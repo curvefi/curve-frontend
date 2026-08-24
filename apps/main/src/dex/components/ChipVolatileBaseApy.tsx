@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { Chip } from '@legacy-ui/Typography/Chip'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
 
 export const ChipVolatileBaseApy = ({
   isBold,

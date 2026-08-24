@@ -1,10 +1,10 @@
 import { type FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import type { Row } from '@tanstack/react-table'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExpandedPanelContext, TableItem } from './data-table.utils'
 import type { DataRowProps } from './DataRow'
 

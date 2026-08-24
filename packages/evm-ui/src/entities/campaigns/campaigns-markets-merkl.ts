@@ -1,5 +1,5 @@
-import { EmptyValidationSuite } from '@ui-kit/lib'
-import { queryFactory } from '@ui-kit/lib/model'
+import { EmptyValidationSuite } from '@evm-ui/lib'
+import { queryFactory } from '@evm-ui/lib/model'
 import { fetchMerklRewards } from './merkl'
 
 export const { getQueryOptions: getCampaignsMarketsMerklOptions } = queryFactory({

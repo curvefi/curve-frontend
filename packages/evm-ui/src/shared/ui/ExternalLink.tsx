@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
+import { ArrowTopRightIcon } from '@evm-ui/shared/icons/ArrowTopRightIcon'
+import { applySxProps } from '@evm-ui/utils'
 import Button, { type ButtonOwnProps } from '@mui/material/Button'
-import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
-import { applySxProps } from '@ui-kit/utils'
 
 export const ExternalLink = ({
   href,

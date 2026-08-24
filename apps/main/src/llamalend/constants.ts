@@ -1,6 +1,6 @@
-import { t } from '@ui-kit/lib/i18n'
-import { MarketType } from '@ui-kit/types/market'
-import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
+import { t } from '@evm-ui/lib/i18n'
+import { MarketType } from '@evm-ui/types/market'
+import type { SlippageType } from '@evm-ui/widgets/SlippageSettings'
 
 /**
  * Preset options for loan creation

@@ -9,9 +9,9 @@ import { Loading } from '@/routes/Loading'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import type { TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
+import { useCurve } from '@evm-ui/features/connect-wallet'
+import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
 import type { Address } from '@primitives/address.utils'
-import { useCurve } from '@ui-kit/features/connect-wallet'
-import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 
 export type SwapTestCaseProps = {
   chainId: ChainId

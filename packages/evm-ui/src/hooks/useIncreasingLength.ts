@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { setTimeoutInterval } from '@ui-kit/utils/timers'
+import { setTimeoutInterval } from '@evm-ui/utils/timers'
 
 type IncreasingLengthOptions = {
   initialLength?: number

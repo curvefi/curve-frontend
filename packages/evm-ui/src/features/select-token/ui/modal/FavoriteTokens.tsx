@@ -1,9 +1,9 @@
+import { t } from '@evm-ui/lib/i18n'
+import { SelectableChip } from '@evm-ui/shared/ui/SelectableChip'
+import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from '../../types'
 
 const { Spacing } = SizesAndSpaces

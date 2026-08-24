@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import type { CampaignRewards } from '@ui-kit/entities/campaigns'
-import { MarketType, MarketRateType } from '@ui-kit/types/market'
+import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import { MarketType, MarketRateType } from '@evm-ui/types/market'
 
 const RewardsActionMap = {
   [MarketRateType.Borrow]: {

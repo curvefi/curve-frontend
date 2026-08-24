@@ -1,9 +1,9 @@
 import type { ComponentProps } from 'react'
 import { fn } from 'storybook/test'
+import { FireIcon } from '@evm-ui/shared/icons/FireIcon'
+import { q } from '@evm-ui/types/util'
 import type { Amount } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
-import { q } from '@ui-kit/types/util'
 import { Balance } from '../LargeTokenInput/Balance'
 
 type BalanceStoryArgs = Omit<ComponentProps<typeof Balance>, 'balance'> & {

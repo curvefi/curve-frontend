@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
+import { useResizeObserver } from '@evm-ui/hooks/useResizeObserver'
 
 /** Determines whether the table header can stay sticky based on the table and wrapper widths. */
 export const useTableStickyHeader = ({

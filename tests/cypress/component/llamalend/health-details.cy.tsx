@@ -1,10 +1,10 @@
 import { HealthDetails } from '@/llamalend/features/market-position-details/health/HealthDetails'
 import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { lightTheme } from '@evm-ui/themes'
+import { constQ } from '@evm-ui/types/util'
+import { decimalDiv, decimalMultiply, decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { lightTheme } from '@ui-kit/themes'
-import { constQ } from '@ui-kit/types/util'
-import { decimalDiv, decimalMultiply, decimalSum } from '@ui-kit/utils'
 
 const { design } = lightTheme()
 const DISCOUNT_GAP: Decimal = '3'

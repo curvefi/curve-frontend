@@ -1,9 +1,9 @@
 import { useAutoRefresh } from '@/dex/hooks/useAutoRefresh'
 import type { UrlParams } from '@/dex/types/main.types'
+import { useParams } from '@evm-ui/hooks/router'
+import { useRedirectToEth } from '@evm-ui/hooks/useRedirectToEth'
 import { recordValues } from '@primitives/objects.utils'
 import { Outlet } from '@tanstack/react-router'
-import { useParams } from '@ui-kit/hooks/router'
-import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { useNetworks } from './entities/networks'
 
 export function DexLayout() {

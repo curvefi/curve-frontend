@@ -9,10 +9,10 @@ import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { useParams } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import Button from '@mui/material/Button'
-import { useParams } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 
 export const AddGaugeLink = ({
   chainId,

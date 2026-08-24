@@ -16,9 +16,9 @@ import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-moc
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
+import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
-import { MarketType } from '@ui-kit/types/market'
 
 const testCases = recordValues(MarketType).map(type => oneLoanTestMarket(type))
 

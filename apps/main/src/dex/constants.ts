@@ -1,4 +1,4 @@
-import { DEX_ROUTES } from '@ui-kit/shared/routes'
+import { DEX_ROUTES } from '@evm-ui/shared/routes'
 
 export const LARGE_APY = 5000
 

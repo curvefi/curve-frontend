@@ -1,12 +1,12 @@
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
+import { usePathname } from '@evm-ui/hooks/router'
+import { useNetworkFromUrl } from '@evm-ui/hooks/useNetworkFromUrl'
+import { useOnChainUnavailable } from '@evm-ui/hooks/useOnChainUnavailable'
+import { Chain } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
-import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
-import { usePathname } from '@ui-kit/hooks/router'
-import { useNetworkFromUrl } from '@ui-kit/hooks/useNetworkFromUrl'
-import { useOnChainUnavailable } from '@ui-kit/hooks/useOnChainUnavailable'
-import { Chain } from '@ui-kit/utils'
 
 function Test() {
   const { data: networks } = useNetworksQuery()

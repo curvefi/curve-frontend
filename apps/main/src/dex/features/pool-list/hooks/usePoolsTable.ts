@@ -17,10 +17,10 @@ import type {
   V2Pool,
   V2PoolSortField as PoolSortField,
 } from '@curvefi/prices-api/pools'
+import { useCampaigns, type CampaignRewards } from '@evm-ui/entities/campaigns'
+import { DEX_ROUTES } from '@evm-ui/shared/routes'
+import { q, useMappedQuery } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
-import { useCampaigns, type CampaignRewards } from '@ui-kit/entities/campaigns'
-import { DEX_ROUTES } from '@ui-kit/shared/routes'
-import { q, useMappedQuery } from '@ui-kit/types/util'
 import { isVyperVulnerablePool } from '../alerts'
 import type { PoolsApiParams } from '../filters/utils'
 import type { PoolRow, PoolRowData } from '../types'

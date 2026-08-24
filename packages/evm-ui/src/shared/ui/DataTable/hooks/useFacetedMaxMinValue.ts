@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
+import type { TableItem, TanstackTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { maybes } from '@primitives/objects.utils'
-import type { TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
 /** Returns min, max, and step from a TanStack column's faceted min/max values. */
 export const useFacetedMaxMinValue = <TData extends TableItem>({

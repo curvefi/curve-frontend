@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
+import { q, Query, QueryProp } from '@evm-ui/types/util'
+import { decimalMin } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
-import { q, Query, QueryProp } from '@ui-kit/types/util'
-import { decimalMin } from '@ui-kit/utils/decimal'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
   ({

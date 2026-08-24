@@ -1,8 +1,8 @@
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import type { AppPage } from '@evm-ui/widgets/Header/types'
 import { ListItem } from '@mui/material'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import type { AppPage } from '@ui-kit/widgets/Header/types'
 
 type SidebarItemProps = {
   page: AppPage

@@ -14,14 +14,14 @@ import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { useNetworks } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
+import { notify } from '@evm-ui/features/connect-wallet'
+import { t } from '@evm-ui/lib/i18n'
 import { Button } from '@legacy-ui/Button'
 import type { ButtonProps } from '@legacy-ui/Button/types'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
-import { notify } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
 
 export const FormClaimFeesButtons = ({
   activeKey,

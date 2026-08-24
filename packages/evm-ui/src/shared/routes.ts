@@ -1,6 +1,6 @@
+import { t } from '@evm-ui/lib/i18n'
+import { AppPage, AppRoute, AppRoutes } from '@evm-ui/widgets/Header/types'
 import { EXTERNAL_LINKS } from '@legacy-ui/utils'
-import { t } from '@ui-kit/lib/i18n'
-import { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 
 export const PAGE_INTEGRATIONS = '/integrations' as const
 export const PAGE_LEGAL = '/legal' as const

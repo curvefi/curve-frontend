@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
+import { ActionInfoProps, ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { q } from '@evm-ui/types/util'
 import Divider from '@mui/material/Divider'
-import { ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { q } from '@ui-kit/types/util'
 
 const { Spacing } = SizesAndSpaces
 

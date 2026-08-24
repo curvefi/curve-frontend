@@ -1,6 +1,6 @@
 import { getCrvUsdSupply } from '@curvefi/prices-api/crvusd'
-import { EmptyValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { queryFactory } from '@ui-kit/lib/model/query'
+import { EmptyValidationSuite, type FieldsOf } from '@evm-ui/lib'
+import { queryFactory } from '@evm-ui/lib/model/query'
 
 type CrvUsdSupplyQuery = { days: number }
 type CrvUsdSupplyParams = FieldsOf<CrvUsdSupplyQuery>

@@ -1,7 +1,7 @@
+import { t } from '@evm-ui/lib/i18n'
 import { formatDate } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
 
 const LAST_UPDATED_DATE = new Date('2026-06-17') // YYYY-MM-DD
 

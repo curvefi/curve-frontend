@@ -3,9 +3,9 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { BaseConfig } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 
-export type { CurveApi } from '@ui-kit/features/connect-wallet'
+export type { CurveApi } from '@evm-ui/features/connect-wallet'
 export type { GaugeFormattedData, GaugeMapper } from '../queries/gauges.query'
-export type { Provider } from '@ui-kit/lib/ethers'
+export type { Provider } from '@evm-ui/lib/ethers'
 
 export type ChainId = number
 export type NetworkEnum = INetworkName

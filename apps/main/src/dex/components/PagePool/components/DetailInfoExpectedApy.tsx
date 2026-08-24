@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
 import { PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { t } from '@evm-ui/lib/i18n'
+import { weiToEther, formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
-import { t } from '@ui-kit/lib/i18n'
-import { weiToEther, formatNumber } from '@ui-kit/utils'
 
 export const DetailInfoExpectedApy = ({
   crvApr,

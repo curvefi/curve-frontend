@@ -1,4 +1,4 @@
-import { Chain as ChainId } from '@ui-kit/utils/network'
+import { Chain as ChainId } from '@evm-ui/utils/network'
 
 /** Fallback RPC URLs for each chain to improve wallet connection resilience. */
 export const RPC: Record<ChainId, string[]> = {

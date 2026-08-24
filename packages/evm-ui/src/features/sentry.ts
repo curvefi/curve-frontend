@@ -1,3 +1,4 @@
+import { IS_CYPRESS, IS_PREVIEW_HOST } from '@evm-ui/utils/env'
 import { type Event, type Extras } from '@sentry/core'
 import {
   addBreadcrumb as addSentryBreadcrumb,
@@ -9,7 +10,6 @@ import {
   thirdPartyErrorFilterIntegration,
   withScope,
 } from '@sentry/react'
-import { IS_CYPRESS, IS_PREVIEW_HOST } from '@ui-kit/utils/env'
 
 export const SENTRY_DSN =
   'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840'

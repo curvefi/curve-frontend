@@ -1,12 +1,12 @@
 import { useRef } from 'react'
+import { useResizeObserver } from '@evm-ui/hooks/useResizeObserver'
+import { ChevronDownIcon } from '@evm-ui/shared/icons/ChevronDownIcon'
+import { handleBreakpoints } from '@evm-ui/themes/basic-theme'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
-import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
-import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Spinner } from './Spinner'
 
 const { Spacing, ButtonSize, IconSize } = SizesAndSpaces

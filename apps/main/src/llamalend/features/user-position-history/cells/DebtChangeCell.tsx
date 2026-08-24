@@ -1,7 +1,7 @@
+import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
-import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { formatNumber } from '@ui-kit/utils'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 
 export const DebtChangeCell = ({

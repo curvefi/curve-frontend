@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from 'react'
-import { useTabs } from '@ui-kit/hooks/useTabs'
-import { t } from '@ui-kit/lib/i18n'
-import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { useTabs } from '@evm-ui/hooks/useTabs'
+import { t } from '@evm-ui/lib/i18n'
+import { type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { LiquidityDetails } from '../liquidity-details'
 import { useLiquidityDetails, type UseLiquidityDetailsParams } from '../liquidity-details/hooks/useLiquidityDetails'
 

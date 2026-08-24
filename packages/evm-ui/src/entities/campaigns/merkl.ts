@@ -1,8 +1,8 @@
 import { capitalize, groupBy } from 'lodash'
 import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
+import { IS_CYPRESS } from '@evm-ui/utils'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
-import { IS_CYPRESS } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
 import type { CampaignRewards } from './types'
 

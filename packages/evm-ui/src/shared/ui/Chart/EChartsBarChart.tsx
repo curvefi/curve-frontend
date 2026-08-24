@@ -1,9 +1,9 @@
 import type { EChartsOption } from 'echarts'
 import ReactECharts from 'echarts-for-react'
 import { useMemo, type ReactNode } from 'react'
+import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
 import { useTheme } from '@mui/material/styles'
 import { maybe } from '@primitives/objects.utils'
-import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 
 export type EChartsBarChartTooltipContext<TData> = {
   datum: TData

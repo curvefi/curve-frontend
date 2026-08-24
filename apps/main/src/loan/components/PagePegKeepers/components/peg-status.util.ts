@@ -1,4 +1,4 @@
-import type { ChipColors } from '@ui-kit/themes/components/chip'
+import type { ChipColors } from '@evm-ui/themes/components/chip'
 import type { PegKeeperDetails } from '../types'
 
 export type PegStatus = {

@@ -1,10 +1,10 @@
 import { type ChangeEvent, ReactNode } from 'react'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Checkbox from '@mui/material/Checkbox'
 import Collapse from '@mui/material/Collapse'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

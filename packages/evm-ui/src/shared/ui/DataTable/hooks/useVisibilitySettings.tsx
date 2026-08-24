@@ -1,8 +1,8 @@
 import { isEqual } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { useTableColumnVisibility } from '@ui-kit/hooks/useLocalStorage'
-import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
-import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { useTableColumnVisibility } from '@evm-ui/hooks/useLocalStorage'
+import type { MigrationOptions } from '@evm-ui/hooks/useStoredState'
+import type { ColumnDefinition } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { VisibilityGroup } from '../visibility.types'
 
 /**

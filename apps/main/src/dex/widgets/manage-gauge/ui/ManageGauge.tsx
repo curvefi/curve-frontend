@@ -5,9 +5,9 @@ import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gau
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
-import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
+import { t } from '@evm-ui/lib/i18n'
+import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 
 export const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
   const { address: signerAddress } = useConnection()

@@ -9,12 +9,12 @@ import {
 } from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
+import { MarketType } from '@evm-ui/types/market'
+import { Chain, ReleaseChannel } from '@evm-ui/utils'
+import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import type { Address } from '@primitives/address.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
-import { MarketType } from '@ui-kit/types/market'
-import { Chain, ReleaseChannel } from '@ui-kit/utils'
-import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 function MarketAlertHookTest({
   chainId,

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import type { FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { MarketColumnId } from '../columns'
 
 /** Hook for managing a single boolean filter */

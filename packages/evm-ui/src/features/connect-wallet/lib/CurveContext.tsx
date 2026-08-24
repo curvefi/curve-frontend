@@ -1,10 +1,10 @@
 import { BrowserProvider } from 'ethers'
 import { createContext, use, useEffect, useMemo, useState } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
+import { setUser } from '@evm-ui/features/sentry'
+import type { Provider } from '@evm-ui/lib/ethers'
+import { constQ, fakeLoadingQ } from '@evm-ui/types/util'
 import type { NetworkDef } from '@legacy-ui/utils'
-import { setUser } from '@ui-kit/features/sentry'
-import type { Provider } from '@ui-kit/lib/ethers'
-import { constQ, fakeLoadingQ } from '@ui-kit/types/util'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 
 const { FAILURE, LOADING } = ConnectState

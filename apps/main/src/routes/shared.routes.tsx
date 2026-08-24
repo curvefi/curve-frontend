@@ -1,10 +1,10 @@
+import type { AppName } from '@evm-ui/shared/routes'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
-import type { AppName } from '@ui-kit/shared/routes'
 import { Loading } from './Loading'
 import { redirectTo } from './util'
 
-const LegalPage = lazyRouteComponent(() => import('@ui-kit/widgets/Legal'), 'LegalPage')
-const Integrations = lazyRouteComponent(() => import('@ui-kit/features/integrations'), 'Integrations')
+const LegalPage = lazyRouteComponent(() => import('@evm-ui/widgets/Legal'), 'LegalPage')
+const Integrations = lazyRouteComponent(() => import('@evm-ui/features/integrations'), 'Integrations')
 
 type LayoutProps = Pick<Parameters<typeof createRoute>[0], 'getParentRoute'>
 

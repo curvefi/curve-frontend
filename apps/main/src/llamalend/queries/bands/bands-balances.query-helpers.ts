@@ -1,9 +1,6 @@
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { FetchedBandsBalances, SortedBandBalance } from '@/llamalend/queries/bands/types'
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { sortBy } from '@primitives/array.utils'
-import { recordEntries } from '@primitives/objects.utils'
-import PromisePool from '@supercharge/promise-pool'
 import {
   decimal,
   decimalDiv,
@@ -11,7 +8,10 @@ import {
   decimalMultiply,
   decimalSqrt,
   decimalSum,
-} from '@ui-kit/utils/decimal'
+} from '@evm-ui/utils/decimal'
+import { sortBy } from '@primitives/array.utils'
+import { recordEntries } from '@primitives/objects.utils'
+import PromisePool from '@supercharge/promise-pool'
 
 type BandsBalances = Record<number, { borrowed: string; collateral: string }>
 

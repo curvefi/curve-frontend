@@ -1,7 +1,7 @@
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy } from '@/dex/types/main.types'
+import { isSortedBy } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { CellContext } from '@tanstack/react-table'
-import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { LegacyPoolColumnId } from '../columns'
 import { hasLegacyCrvRewards } from '../hooks/useLegacyHasPoolRewards'
 import type { LegacyPoolRow } from '../types'

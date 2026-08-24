@@ -1,10 +1,10 @@
 import { type ReactNode, type ElementType, useRef } from 'react'
+import { CheckedIcon } from '@evm-ui/shared/icons/CheckedIcon'
+import { InvertOnHover } from '@evm-ui/shared/ui/InvertOnHover'
+import type { TypographyVariantKey } from '@evm-ui/themes/typography'
 import CircularProgress from '@mui/material/CircularProgress'
 import MuiMenuItem, { type MenuItemProps as MuiMenuItemProps, type MenuItemTypeMap } from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
-import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
-import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
-import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 
 type Item<T> = {
   label: string

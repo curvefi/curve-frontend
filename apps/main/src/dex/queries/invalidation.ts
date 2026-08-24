@@ -1,4 +1,4 @@
-import type { UserPoolParams } from '@ui-kit/lib/model'
+import type { UserPoolParams } from '@evm-ui/lib/model'
 import { invalidateUserPoolBalancesQuery } from './user-pool-balances.query'
 import { invalidateUserPoolBoostQuery } from './user-pool-boost.query'
 import { invalidateUserPoolLiquidityUsdQuery } from './user-pool-liquidity-usd.query'

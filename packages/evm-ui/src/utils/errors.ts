@@ -1,4 +1,4 @@
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 type CustomError = {
   data?: { message: string }
@@ -6,7 +6,7 @@ type CustomError = {
 } & Error
 
 /**
- * TODO: this function was deduplicated from four different apps into ui-kit for FormAlerts.tsx, but it's rather ugly.
+ * TODO: this function was deduplicated from four different apps into evm-ui for FormAlerts.tsx, but it's rather ugly.
  * A future PR will need to properly get error messages and dedupe the whole AlertFormError.tsx shebang.
  */
 export function getErrorMessage(e: unknown, defaultErrorMessage?: string): string {

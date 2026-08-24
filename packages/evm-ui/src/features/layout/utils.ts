@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { setTimeoutInterval } from '@ui-kit/utils/timers'
+import { setTimeoutInterval } from '@evm-ui/utils/timers'
 import type { PageWidthClassName } from './types'
 
 export function getPageWidthClassName(pageWidth: number): PageWidthClassName {

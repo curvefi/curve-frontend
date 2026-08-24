@@ -1,5 +1,8 @@
 import { type MouseEvent, useEffect } from 'react'
 import { WagmiProviderNotFoundError, useConnection } from 'wagmi'
+import { t } from '@evm-ui/lib/i18n'
+import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
@@ -9,9 +12,6 @@ import TextField from '@mui/material/TextField'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type ContactMethod, type ErrorContext, useErrorReportForm } from './useErrorReportForm'
 
 const { Spacing } = SizesAndSpaces

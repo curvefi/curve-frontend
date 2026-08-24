@@ -1,13 +1,13 @@
 import { capitalize, last } from 'lodash'
 import { useCallback, useId } from 'react'
+import { ChevronLeftIcon } from '@evm-ui/shared/icons/ChevronLeftIcon'
+import type { TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { range } from '@primitives/objects.utils'
 import { type Table } from '@tanstack/table-core'
-import { ChevronLeftIcon } from '@ui-kit/shared/icons/ChevronLeftIcon'
-import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
 /**
  * A button component representing a specific page in pagination.

@@ -1,7 +1,7 @@
+import type { AppName } from '@evm-ui/shared/routes'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import type { AppName } from '@ui-kit/shared/routes'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Link, LinkProps } from './Link'
 
 type SectionProps = {

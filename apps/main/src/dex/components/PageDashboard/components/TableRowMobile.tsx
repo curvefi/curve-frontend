@@ -7,11 +7,11 @@ import { TableCellRewards } from '@/dex/components/PageDashboard/components/Tabl
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { PoolLabel } from '@/dex/components/PoolLabel'
+import { useIntersectionObserver } from '@evm-ui/hooks/useIntersectionObserver'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { Td, Tr } from '@legacy-ui/Table'
-import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
 import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 export const TableRowMobile = ({

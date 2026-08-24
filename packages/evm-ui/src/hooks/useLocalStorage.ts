@@ -1,9 +1,9 @@
 import { kebabCase } from 'lodash'
 import { useCallback, useMemo } from 'react'
+import type { VisibilityVariants } from '@evm-ui/shared/ui/DataTable/visibility.types'
+import { Duration } from '@evm-ui/themes/design/0_primitives'
+import { defaultReleaseChannel, ReleaseChannel } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { getStorageKey, type MigrationOptions, useStoredState } from './useStoredState'
 
 function getFromLocalStorage<T>(storageKey: string) {

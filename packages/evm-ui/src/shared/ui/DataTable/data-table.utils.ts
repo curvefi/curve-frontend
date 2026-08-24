@@ -1,5 +1,9 @@
 import { useMemo } from 'react'
 import type { ReactNode } from 'react'
+import { IncreasingLengthCategory } from '@evm-ui/hooks/useIncreasingLength'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { QueryProp } from '@evm-ui/types/util'
+import { borderStyle } from '@evm-ui/utils'
 import type { ButtonProps } from '@mui/material/Button'
 import type { Theme } from '@mui/material/styles'
 import type { SxProps } from '@mui/system'
@@ -20,10 +24,6 @@ import {
   Row,
 } from '@tanstack/react-table'
 import { RowData, type Table, TableOptions } from '@tanstack/table-core'
-import { IncreasingLengthCategory } from '@ui-kit/hooks/useIncreasingLength'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { QueryProp } from '@ui-kit/types/util'
-import { borderStyle } from '@ui-kit/utils'
 import { EmptyStateCardProps } from '../EmptyStateCard'
 import { EmptyStateRowSize } from './EmptyStateRow'
 

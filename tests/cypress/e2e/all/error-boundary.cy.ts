@@ -3,8 +3,8 @@ import { oneBool } from '@cy/support/generators'
 import { createLendingVaultChainsResponse } from '@cy/support/helpers/lending-mocks'
 import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
-import type { ErrorContext, ErrorReportFormValues } from '@ui-kit/features/report-error'
-import { SENTRY_DSN } from '@ui-kit/features/sentry'
+import type { ErrorContext, ErrorReportFormValues } from '@evm-ui/features/report-error'
+import { SENTRY_DSN } from '@evm-ui/features/sentry'
 
 const INVALID_ICON_ADDRESS = '0x0000000000000000000000000000000000000001' as const
 const DOM_MUTATION_ERROR =

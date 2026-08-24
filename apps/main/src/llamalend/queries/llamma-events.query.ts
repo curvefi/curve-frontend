@@ -1,9 +1,9 @@
 import { enforce, test } from 'vest'
 import { getEvents, type GetEventsParams } from '@curvefi/prices-api/llamma'
-import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_START_INDEX } from '@ui-kit/features/activity-table/utils'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { queryFactory } from '@ui-kit/lib/model/query'
-import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
+import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
+import { queryFactory } from '@evm-ui/lib/model/query'
+import { contractValidationGroup } from '@evm-ui/lib/model/query/contract-validation'
 
 type LlammaEventsParams = FieldsOf<GetEventsParams>
 

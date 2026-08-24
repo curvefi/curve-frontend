@@ -3,9 +3,9 @@ import { ConfirmModal } from '@/dex/components/PageCreatePool/ConfirmModal'
 import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { t } from '@evm-ui/lib/i18n'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
-import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   navigation: number

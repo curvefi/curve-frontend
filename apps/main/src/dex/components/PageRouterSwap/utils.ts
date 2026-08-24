@@ -2,7 +2,7 @@ import lodash from 'lodash'
 import type { FormValues, FormStatus, Route } from '@/dex/components/PageRouterSwap/types'
 import { Pool, PoolData } from '@/dex/types/main.types'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import { log, LogStatus } from '@ui-kit/lib'
+import { log, LogStatus } from '@evm-ui/lib'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   isApproved: false,

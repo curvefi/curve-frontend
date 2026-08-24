@@ -1,10 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference -- referring to a type definition file
 /// <reference path="./mui-radio.d.ts" />
 import type { ReactNode } from 'react'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import type { Components } from '@mui/material/styles'
 import { createSvgIcon } from '@mui/material/utils'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '../../basic-theme'
 
 const { Sizing } = SizesAndSpaces

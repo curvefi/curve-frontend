@@ -6,10 +6,10 @@ import type { FormType } from '@/dex/components/PagePool/Deposit/types'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PagePool/Deposit/utils'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useStore } from '@/dex/store/useStore'
+import { t } from '@evm-ui/lib/i18n'
+import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { AlertBox } from '@legacy-ui/AlertBox'
-import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 const tabs: TabOption<FormType>[] = [
   { value: 'DEPOSIT', label: t`Deposit` },

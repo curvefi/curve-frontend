@@ -1,10 +1,10 @@
-import { t } from '@ui-kit/lib/i18n'
-import { getRangeFilterLabel } from '@ui-kit/shared/ui/DataTable/filters'
+import { t } from '@evm-ui/lib/i18n'
+import { getRangeFilterLabel } from '@evm-ui/shared/ui/DataTable/filters'
 import {
   TableActiveFilterGroups,
   type TableActiveFilterGroup,
-} from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups'
-import { TableActiveFiltersBar } from '@ui-kit/shared/ui/DataTable/TableActiveFiltersBar'
+} from '@evm-ui/shared/ui/DataTable/TableActiveFilterGroups'
+import { TableActiveFiltersBar } from '@evm-ui/shared/ui/DataTable/TableActiveFiltersBar'
 import { POOL_DEFAULT_TVL_MIN, type PoolsFiltersProps } from '../hooks/usePoolsFilters'
 import { getPoolsTvlLabelRange, parsePoolsRangeFilter, PoolFilterId } from './utils'
 

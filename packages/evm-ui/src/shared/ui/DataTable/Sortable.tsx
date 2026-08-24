@@ -1,7 +1,7 @@
 import { forwardRef, type ReactNode, type MouseEvent, type RefAttributes } from 'react'
+import { ArrowDownIcon } from '@evm-ui/shared/icons/ArrowDownIcon'
 import Stack from '@mui/material/Stack'
 import type { Column } from '@tanstack/react-table'
-import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import {
   DataTableHeaderCellSortableAlign,
   getFlexAlignment,

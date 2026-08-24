@@ -1,16 +1,16 @@
 import { sumBy } from 'lodash'
+import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
+import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
+import type { ExtraIncentive } from '@evm-ui/types/market'
+import type { Range } from '@evm-ui/types/util'
+import { decimal, formatNumber, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/averageRates'
+import { aprToApy } from '@evm-ui/utils/rates'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
-import type { CampaignRewards } from '@ui-kit/entities/campaigns'
-import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
-import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
-import type { ExtraIncentive } from '@ui-kit/types/market'
-import type { Range } from '@ui-kit/types/util'
-import { decimal, formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
-import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
-import { aprToApy } from '@ui-kit/utils/rates'
 
-export { aprToApy } from '@ui-kit/utils/rates'
+export { aprToApy } from '@evm-ui/utils/rates'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
   borrowRate: number | null | undefined

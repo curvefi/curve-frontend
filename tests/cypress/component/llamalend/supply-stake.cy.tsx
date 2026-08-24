@@ -15,7 +15,7 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { Chain } from '@ui-kit/utils'
+import { Chain } from '@evm-ui/utils'
 
 const chainId = Chain.Ethereum
 const testCases: { approved: boolean; title: string; buttonText: string; hasGauge?: boolean }[] = [

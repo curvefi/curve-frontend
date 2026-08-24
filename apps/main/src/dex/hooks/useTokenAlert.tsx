@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import type { PoolAlert } from '@/dex/types/main.types'
+import { t, Trans } from '@evm-ui/lib/i18n'
+import { InlineLink } from '@evm-ui/shared/ui/InlineLink'
 import { notFalsy } from '@primitives/objects.utils'
-import { t, Trans } from '@ui-kit/lib/i18n'
-import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 
 const MA_ALERT: PoolAlert = {
   alertType: 'info',

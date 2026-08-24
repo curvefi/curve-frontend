@@ -1,6 +1,6 @@
 /// <reference types="./mui-card.d.ts" />
+import { DesignSystem } from '@evm-ui/themes/design'
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
-import { DesignSystem } from '@ui-kit/themes/design'
 import { cardContentInlineStyles, cardContentSmallStyles } from '../card-content'
 import { cardHeaderInlineStyles, cardHeaderSmallStyles } from '../card-header'
 

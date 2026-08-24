@@ -1,6 +1,6 @@
-import { Trans } from '@ui-kit/lib/i18n'
-import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
-import { MarketType } from '@ui-kit/types/market'
+import { Trans } from '@evm-ui/lib/i18n'
+import { TooltipDescription, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
+import { MarketType } from '@evm-ui/types/market'
 import { BORROW_APR_DESCRIPTION } from './constants'
 
 export const NetBorrowAprHeaderTooltipContent = () => (

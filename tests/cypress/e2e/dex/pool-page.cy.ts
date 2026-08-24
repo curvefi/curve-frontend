@@ -2,7 +2,7 @@ import { oneFloat, oneOf } from '@cy/support/generators'
 import { clickTab } from '@cy/support/helpers/tabs'
 import type { AppRoute } from '@cy/support/routes'
 import { API_LOAD_TIMEOUT } from '@cy/support/ui'
-import { SLIPPAGE, type SlippageType } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { SLIPPAGE, type SlippageType } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 
 describe('Pool page', () => {
   const path: AppRoute = `dex/${oneOf(

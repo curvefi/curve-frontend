@@ -2,8 +2,8 @@ import { invalidateUserCollateralEvents } from '@/llamalend/features/user-positi
 import { getMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { queryClient } from '@ui-kit/lib/api/query-client'
-import { rootKeys, type UserContractQuery, type UserMarketQuery } from '@ui-kit/lib/model'
+import { queryClient } from '@evm-ui/lib/api/query-client'
+import { rootKeys, type UserContractQuery, type UserMarketQuery } from '@evm-ui/lib/model'
 import { invalidateUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
 

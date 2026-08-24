@@ -1,7 +1,7 @@
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { TypographyProps } from '@mui/material/Typography'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TokenIcon, DEFAULT_SIZE, type Size, type TokenIconProps } from './TokenIcon'
 
 const { Spacing } = SizesAndSpaces

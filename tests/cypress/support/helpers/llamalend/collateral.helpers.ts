@@ -1,7 +1,7 @@
 import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { formatNumber } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { formatNumber } from '@ui-kit/utils'
 import { checkEstimatedTxCost, getActionValue, touchInput } from './action-info.helpers'
 
 export const getCollateralInput = (testId: 'add-collateral-input' | 'remove-collateral-input') =>

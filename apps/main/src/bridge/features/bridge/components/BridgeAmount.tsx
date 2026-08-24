@@ -1,9 +1,9 @@
+import { t } from '@evm-ui/lib/i18n'
+import { HelperMessage, LargeTokenInput, type LargeTokenInputProps } from '@evm-ui/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
+import { type QueryProp } from '@evm-ui/types/util'
+import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { HelperMessage, LargeTokenInput, type LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
-import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { type QueryProp } from '@ui-kit/types/util'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 export type BridgeAmountProps = {
   /** Whether the input is disabled (e.g. during a pending transaction or invalid form) */

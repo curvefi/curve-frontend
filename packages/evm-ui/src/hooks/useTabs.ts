@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { assert } from '@primitives/objects.utils'
-import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 
 /** Finds a tab by key, throwing if not found. */
 export const findTab = <T extends { value: string }>(tabs: T[], key: string | undefined): T =>

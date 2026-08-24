@@ -1,6 +1,6 @@
-import { GaugeParams, rootKeys } from '@ui-kit/lib/model/query'
-import { queryFactory } from '@ui-kit/lib/model/query/factory'
-import { poolValidationSuite } from '@ui-kit/lib/model/query/pool-validation'
+import { GaugeParams, rootKeys } from '@evm-ui/lib/model/query'
+import { queryFactory } from '@evm-ui/lib/model/query/factory'
+import { poolValidationSuite } from '@evm-ui/lib/model/query/pool-validation'
 import {
   queryDepositRewardIsApproved,
   queryGaugeDistributors,

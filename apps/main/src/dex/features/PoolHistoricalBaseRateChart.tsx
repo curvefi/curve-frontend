@@ -4,15 +4,8 @@ import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { aprToPoolApy } from '@/dex/features/pool-list/cells/utils'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
-import { formatDate } from '@legacy-ui/utils'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
-import Stack from '@mui/material/Stack'
-import { useTheme } from '@mui/material/styles'
-import { maybe } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { type TimeOption, timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
+import { t } from '@evm-ui/lib/i18n'
+import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
   CHART_LINE_DASH_PATTERNS,
   ChartFooter,
@@ -24,11 +17,18 @@ import {
   type LegendItem,
   type LineSeriesConfig,
   SelectTimeOption,
-} from '@ui-kit/shared/ui/Chart'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery } from '@ui-kit/types/util'
-import { decimal, formatNumber, TIME_OPTION_MS } from '@ui-kit/utils'
+} from '@evm-ui/shared/ui/Chart'
+import { Metric } from '@evm-ui/shared/ui/Metric'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { mapQuery } from '@evm-ui/types/util'
+import { decimal, formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
+import { formatDate } from '@legacy-ui/utils'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Stack from '@mui/material/Stack'
+import { useTheme } from '@mui/material/styles'
+import { maybe } from '@primitives/objects.utils'
 
 const { Height, Spacing } = SizesAndSpaces
 

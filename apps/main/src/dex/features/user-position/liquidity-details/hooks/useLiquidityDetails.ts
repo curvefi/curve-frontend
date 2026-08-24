@@ -6,9 +6,9 @@ import { useUserPoolBoostQuery } from '@/dex/queries/user-pool-boost.query'
 import { useUserPoolLiquidityUsdQuery } from '@/dex/queries/user-pool-liquidity-usd.query'
 import { useUserPoolShareQuery } from '@/dex/queries/user-pool-share.query'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import { combineQueries } from '@ui-kit/lib'
-import { mapQuery, q } from '@ui-kit/types/util'
-import { decimalPercent, decimalSum } from '@ui-kit/utils'
+import { combineQueries } from '@evm-ui/lib'
+import { mapQuery, q } from '@evm-ui/types/util'
+import { decimalPercent, decimalSum } from '@evm-ui/utils'
 
 export type UseLiquidityDetailsParams = {
   chainId: ChainId

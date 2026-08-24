@@ -1,5 +1,5 @@
+import { rabbySvg } from '@evm-ui/shared/icons/RabbyWalletIcon'
 import { createSvgIcon } from '@mui/material/utils'
-import { rabbySvg } from '@ui-kit/shared/icons/RabbyWalletIcon'
 import { frameSvg } from './FrameWalletIcon'
 import { metamaskSvg } from './MetamaskWalletIcon'
 import { phantomSvg } from './PhantomWalletIcon'

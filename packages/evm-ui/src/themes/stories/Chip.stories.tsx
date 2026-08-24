@@ -1,8 +1,8 @@
 import { fn } from 'storybook/test'
+import { type SelectableChipProps, SelectableChip } from '@evm-ui/shared/ui/SelectableChip'
 import CheckIcon from '@mui/icons-material/Check'
 import Grid from '@mui/material/Grid'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { type SelectableChipProps, SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

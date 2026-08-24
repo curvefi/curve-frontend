@@ -1,7 +1,7 @@
 import { type Address, zeroAddress } from 'viem'
 import { DepositRewardApproveQuery, type GaugeDistributorsQuery } from '@/dex/entities/gauge/types'
-import { requireLib } from '@ui-kit/features/connect-wallet'
-import { GaugeQuery } from '@ui-kit/lib/model/query'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { GaugeQuery } from '@evm-ui/lib/model/query'
 
 export const queryGaugeManager = async ({ poolId }: GaugeQuery): Promise<Address | null> => {
   const gaugeManager = (await getGauge(poolId).gaugeManager()) as Address | null

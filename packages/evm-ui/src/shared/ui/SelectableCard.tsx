@@ -1,7 +1,7 @@
+import { Sizing, TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
+import { applySxProps } from '@evm-ui/utils'
 import ButtonBase, { type ButtonBaseProps } from '@mui/material/ButtonBase'
 import Card from '@mui/material/Card'
-import { Sizing, TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
-import { applySxProps } from '@ui-kit/utils'
 
 export const SelectableCard = ({
   isSelected,

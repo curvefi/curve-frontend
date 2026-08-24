@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
+import { t } from '@evm-ui/lib/i18n'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { ExternalLink } from '@legacy-ui/Link'
-import { t } from '@ui-kit/lib/i18n'
 
 export const InfoBox = () => (
   <StyledAlertBox alertType="info">

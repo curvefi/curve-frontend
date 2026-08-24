@@ -1,6 +1,6 @@
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { t } from '@evm-ui/lib/i18n'
 import Button from '@mui/material/Button'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
 import { CreateVoteModal } from './CreateVoteModal'
 
 export const CreateVote = () => {

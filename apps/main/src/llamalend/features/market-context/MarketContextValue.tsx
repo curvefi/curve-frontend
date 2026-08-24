@@ -1,9 +1,9 @@
 import type { IChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@curvefi/primitives/address.utils'
-import type { LlamaApi } from '@ui-kit/features/connect-wallet'
-import type { MarketType } from '@ui-kit/types/market'
-import type { QueryProp } from '@ui-kit/types/util'
-import type { ReleaseChannel } from '@ui-kit/utils'
+import type { LlamaApi } from '@evm-ui/features/connect-wallet'
+import type { MarketType } from '@evm-ui/types/market'
+import type { QueryProp } from '@evm-ui/types/util'
+import type { ReleaseChannel } from '@evm-ui/utils'
 import {
   type BandRangeOrEmpty,
   getAmmAddress,

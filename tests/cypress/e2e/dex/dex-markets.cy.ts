@@ -3,8 +3,8 @@ import { getPoolsTvlLabelRange, POOL_DEFAULT_TVL_MIN } from '@/dex/features/pool
 import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { getRangeFilterLabel } from '@evm-ui/shared/ui/DataTable/filters'
 import { assert } from '@primitives/objects.utils'
-import { getRangeFilterLabel } from '@ui-kit/shared/ui/DataTable/filters'
 
 const DEFAULT_POOL_LIST_MIN_TVL_INPUT = '10k'
 const POOL_LIST_FILTER_POOL_TYPE = 'crypto'

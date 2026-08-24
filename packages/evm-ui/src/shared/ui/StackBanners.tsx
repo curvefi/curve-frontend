@@ -1,7 +1,7 @@
 import { partition } from 'lodash'
 import { useMemo, type ReactNode, type ReactElement, Children, isValidElement } from 'react'
+import { DEFAULT_SEVERITY, type BannerProps } from '@evm-ui/shared/ui/Banner'
 import Box from '@mui/material/Box'
-import { DEFAULT_SEVERITY, type BannerProps } from '@ui-kit/shared/ui/Banner'
 
 type StackBannersProps = {
   children: ReactNode

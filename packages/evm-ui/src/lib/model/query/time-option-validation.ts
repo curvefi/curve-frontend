@@ -1,5 +1,5 @@
 import { enforce, group, test } from 'vest'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite } from '@evm-ui/lib/validation'
 
 export const timeOptions = ['1M', '6M', '1Y'] as const
 export type TimeOption = (typeof timeOptions)[number]

@@ -3,8 +3,8 @@ import { useNetworks } from '@/dex/entities/networks'
 // eslint-disable-next-line import-x/no-restricted-paths
 import { useChainId } from '@/dex/hooks/useChainId'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
-import { useParams } from '@ui-kit/hooks/router'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { useParams } from '@evm-ui/hooks/router'
+import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { BridgeFormTabs } from './features/bridge/BridgeFormTabs'
 import { Bridges } from './features/bridges'
 

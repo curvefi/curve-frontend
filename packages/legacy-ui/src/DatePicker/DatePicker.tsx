@@ -28,6 +28,7 @@ import {
   useDatePickerState,
 } from 'react-stately'
 import { styled } from 'styled-components'
+import { dayjs } from '@evm-ui/lib/dayjs'
 import { createCalendar, getWeeksInMonth } from '@internationalized/date'
 import { Box } from '@legacy-ui/Box'
 import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
@@ -35,7 +36,6 @@ import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { InputProvider } from '@legacy-ui/InputComp'
 import { Chip } from '@legacy-ui/Typography/Chip'
-import { dayjs } from '@ui-kit/lib/dayjs'
 import { type InputProviderProps } from '../InputComp/InputContext'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details

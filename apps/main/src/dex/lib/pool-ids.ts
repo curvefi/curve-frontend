@@ -1,5 +1,5 @@
-import { log } from '@ui-kit/lib/logging'
-import type { ChainQuery } from '@ui-kit/lib/model'
+import { log } from '@evm-ui/lib/logging'
+import type { ChainQuery } from '@evm-ui/lib/model'
 import { getNetworks } from '../entities/networks'
 import type { CurveApi } from '../types/main.types'
 

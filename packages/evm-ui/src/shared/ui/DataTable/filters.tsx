@@ -1,7 +1,7 @@
+import { Range } from '@evm-ui/types/util'
+import { formatNumber } from '@evm-ui/utils'
+import type { Unit } from '@evm-ui/utils/units'
 import type { FilterFn } from '@tanstack/react-table'
-import { Range } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
-import type { Unit } from '@ui-kit/utils/units'
 
 const RANGE_SEPARATOR = '~'
 const LIST_SEPARATOR = ','

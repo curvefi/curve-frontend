@@ -1,11 +1,11 @@
+import { t } from '@evm-ui/lib/i18n'
+import { type TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
+import { formatNumber, type SxProps } from '@evm-ui/utils'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
-import { t } from '@ui-kit/lib/i18n'
-import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { formatNumber, type SxProps } from '@ui-kit/utils'
 
 type NotionalCellData = TableItem & {
   isLoading?: boolean // used for partial loading states e.g. notional rates

@@ -1,5 +1,5 @@
 import { RewardsApy } from '@/dex/types/main.types'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@evm-ui/utils'
 
 export function filterRewardsApy<T extends { apy: number | string }>(rewards: T[]) {
   if (Array.isArray(rewards)) {

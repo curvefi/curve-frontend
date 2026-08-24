@@ -1,11 +1,11 @@
 import { type ReactElement } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
+import { queryClient, QueryProvider } from '@evm-ui/lib/api'
+import { ThemeProvider } from '@evm-ui/shared/ui/ThemeProvider'
+import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
+import { Toast } from '@evm-ui/widgets/Toast'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
-import { queryClient, QueryProvider } from '@ui-kit/lib/api'
-import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
-import { Toast } from '@ui-kit/widgets/Toast'
 
 export type Config = ResolvedRegister['config']
 

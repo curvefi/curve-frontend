@@ -1,8 +1,8 @@
+import { VERTICAL_CENTER_TEXT } from '@evm-ui/shared/ui/LargeTokenInput/large-token-input.utils'
+import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
+import { formatNumber, SxProps } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
-import { VERTICAL_CENTER_TEXT } from '@ui-kit/shared/ui/LargeTokenInput/large-token-input.utils'
-import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { formatNumber, SxProps } from '@ui-kit/utils'
 
 /**
  * Displays a balance amount with optional loading and disabled states.

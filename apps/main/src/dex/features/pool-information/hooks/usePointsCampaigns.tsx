@@ -2,10 +2,10 @@ import { useMemo } from 'react'
 import { type Address } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { formatNumber } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
-import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
 import type { PointsCampaignsRow } from '../components/points-campaigns/columns/columns.definitions'
 
 const { IconSize } = SizesAndSpaces

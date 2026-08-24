@@ -5,10 +5,10 @@ import { oneBool, oneOf, type TokenType } from '@cy/support/generators'
 import { getTableCellAssets, withFilters, withMultiSelectFilter } from '@cy/support/helpers/data-table.helpers'
 import { type Chain } from '@cy/support/helpers/lending-mocks'
 import { LOAD_TIMEOUT, Breakpoint } from '@cy/support/ui'
+import { serializeListFilter } from '@evm-ui/shared/ui/DataTable/filters'
+import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { median } from '@primitives/array.utils'
 import { fromEntries, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
-import { serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
-import { MarketType, MarketRateType } from '@ui-kit/types/market'
 
 export function visitAndWait(
   [width, height]: [number, number],

@@ -1,6 +1,6 @@
 import { oneOf } from '@cy/support/generators'
+import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 type Token = {
   symbol: string

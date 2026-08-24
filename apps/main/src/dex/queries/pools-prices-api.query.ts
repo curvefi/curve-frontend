@@ -1,9 +1,9 @@
 import { isAddress, type Address } from 'viem'
 import { getPools } from '@curvefi/prices-api/pools'
+import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } from '@evm-ui/lib/model'
+import { pricesApiChainValidationSuite } from '@evm-ui/lib/model/query/prices-chain-validation'
+import { mapQuery } from '@evm-ui/types/util'
 import { fromEntries, maybe } from '@primitives/objects.utils'
-import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } from '@ui-kit/lib/model'
-import { pricesApiChainValidationSuite } from '@ui-kit/lib/model/query/prices-chain-validation'
-import { mapQuery } from '@ui-kit/types/util'
 
 export const { useQuery: usePoolsPricesApi } = queryFactory({
   queryKey: ({ blockchainId }: ChainNameParams) =>

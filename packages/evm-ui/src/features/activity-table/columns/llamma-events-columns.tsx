@@ -1,5 +1,5 @@
+import { t } from '@evm-ui/lib/i18n'
 import { createColumnHelper } from '@tanstack/react-table'
-import { t } from '@ui-kit/lib/i18n'
 import { TimestampCell, AddressCell, LlammaEventActionCell, LlammaEventChangeCell } from '../cells'
 import type { MarketEventRow } from '../types'
 

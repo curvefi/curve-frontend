@@ -1,18 +1,12 @@
 import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
-import { formatDate } from '@legacy-ui/utils'
-import { CardContent, Stack } from '@mui/material'
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import { useTheme } from '@mui/material/styles'
-import { notFalsyArray } from '@primitives/objects.utils'
-import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
-import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
-import { useCombinedQueries } from '@ui-kit/lib'
-import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
+import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
+import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
+import { useCombinedQueries } from '@evm-ui/lib'
+import { t } from '@evm-ui/lib/i18n'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { timeOptions, type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
 import {
   ChartStateWrapper,
   ChartFooter,
@@ -24,12 +18,18 @@ import {
   type ChartLineDashPattern,
   type LineSeriesConfig,
   SelectTimeOption,
-} from '@ui-kit/shared/ui/Chart'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, q } from '@ui-kit/types/util'
-import { Chain, CRVUSD_ADDRESS, TIME_OPTION_MS } from '@ui-kit/utils'
-import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
+} from '@evm-ui/shared/ui/Chart'
+import { Metric } from '@evm-ui/shared/ui/Metric'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { mapQuery, q } from '@evm-ui/types/util'
+import { Chain, CRVUSD_ADDRESS, TIME_OPTION_MS } from '@evm-ui/utils'
+import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
+import { formatDate } from '@legacy-ui/utils'
+import { CardContent, Stack } from '@mui/material'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import { useTheme } from '@mui/material/styles'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces

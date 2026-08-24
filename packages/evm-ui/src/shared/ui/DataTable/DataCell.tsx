@@ -1,9 +1,9 @@
+import { TriangleDown } from '@evm-ui/shared/icons/TriangleDown'
+import { applySxProps } from '@evm-ui/utils'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { type Cell, flexRender } from '@tanstack/react-table'
-import { TriangleDown } from '@ui-kit/shared/icons/TriangleDown'
-import { applySxProps } from '@ui-kit/utils'
 import { useCellSx, getCellVariant, type TableItem } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 

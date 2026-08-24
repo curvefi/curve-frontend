@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
+import { Sortable } from '@evm-ui/shared/ui/DataTable/Sortable'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { borderStyle } from '@evm-ui/utils'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
 import { type Column, flexRender, type Header } from '@tanstack/react-table'
-import { Sortable } from '@ui-kit/shared/ui/DataTable/Sortable'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { borderStyle } from '@ui-kit/utils'
 import { Tooltip } from '../Tooltip'
 import {
   DataTableHeaderCellPaddingBlockEnd,

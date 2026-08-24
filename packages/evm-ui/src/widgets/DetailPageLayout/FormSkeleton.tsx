@@ -1,10 +1,10 @@
+import { BUTTON_FORM_SIZE } from '@evm-ui/features/forms/constants'
+import { t } from '@evm-ui/lib/i18n'
+import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import Button from '@mui/material/Button'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import { noop } from '@tanstack/react-query'
-import { BUTTON_FORM_SIZE } from '@ui-kit/features/forms/constants'
-import { t } from '@ui-kit/lib/i18n'
-import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { FormContent } from './FormContent'
 import { FormTabs } from './FormTabs'
 

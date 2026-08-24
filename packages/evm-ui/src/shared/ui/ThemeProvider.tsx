@@ -1,8 +1,8 @@
 import memoizee from 'memoizee'
 import { ReactNode } from 'react'
+import type { ThemeKey } from '@evm-ui/themes/basic-theme'
 import { useTheme } from '@mui/material/styles'
 import MuiThemeProvider from '@mui/system/ThemeProvider'
-import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { chadTheme, darkTheme, lightTheme } from '../../themes'
 
 const themes = {

@@ -1,6 +1,6 @@
-import { usePathname } from '@ui-kit/hooks/router'
-import { DEX_ROUTES, getCurrentNetwork, getInternalUrl } from '@ui-kit/shared/routes'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { usePathname } from '@evm-ui/hooks/router'
+import { DEX_ROUTES, getCurrentNetwork, getInternalUrl } from '@evm-ui/shared/routes'
+import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 
 export const useCrvSwapUrl = () =>
   `${getInternalUrl('dex', getCurrentNetwork(usePathname()) ?? 'ethereum', DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`

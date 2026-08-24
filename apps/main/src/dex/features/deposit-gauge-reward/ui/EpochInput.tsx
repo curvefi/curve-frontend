@@ -3,10 +3,10 @@ import { useDepositRewardApproveIsMutating, useDepositRewardIsMutating } from '@
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
+import { useFormContext } from '@evm-ui/features/forms'
+import { TIME_FRAMES } from '@evm-ui/utils'
 import { InputDebounced } from '@legacy-ui/InputComp'
 import { FlexContainer } from '@legacy-ui/styled-containers'
-import { useFormContext } from '@ui-kit/features/forms'
-import { TIME_FRAMES } from '@ui-kit/utils'
 
 export const EpochInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()

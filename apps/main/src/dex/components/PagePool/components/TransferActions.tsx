@@ -8,8 +8,8 @@ import { usePoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { AlertBox } from '@legacy-ui/AlertBox'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 
 export const TransferActions = ({
   children,

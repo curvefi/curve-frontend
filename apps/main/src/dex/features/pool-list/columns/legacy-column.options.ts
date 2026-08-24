@@ -1,5 +1,5 @@
-import { t } from '@ui-kit/lib/i18n'
-import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
+import { t } from '@evm-ui/lib/i18n'
+import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
 import { LegacyPoolColumnId } from './legacy-columns.enum'
 
 const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<LegacyPoolColumnId>[] => [

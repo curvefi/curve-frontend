@@ -1,6 +1,6 @@
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { t } from '@ui-kit/lib/i18n'
-import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import { MarketColumnId } from './columns.enum'
 
 /** Titles for the lending markets table. */

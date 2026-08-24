@@ -1,5 +1,5 @@
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Tooltip, type TooltipProps } from './Tooltip'
 
 const { IconSize, Spacing } = SizesAndSpaces

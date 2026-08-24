@@ -1,7 +1,7 @@
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
 import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
-import { t } from '@ui-kit/lib/i18n'
-import { amount as toAmount, formatNumber, formatToken } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { amount as toAmount, formatNumber, formatToken } from '@evm-ui/utils'
 
 type Props = Pick<WalletPoolData, 'claimableCrv' | 'claimableOthers' | 'claimablesTotalUsd'> & {
   isMobile?: boolean

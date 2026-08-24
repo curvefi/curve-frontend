@@ -1,8 +1,8 @@
+import { EmptyValidationSuite } from '@evm-ui/lib'
+import { queryFactory } from '@evm-ui/lib/model/query'
 import { CURVE_CDN_URL } from '@legacy-ui/utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { fromEntries } from '@primitives/objects.utils'
-import { EmptyValidationSuite } from '@ui-kit/lib'
-import { queryFactory } from '@ui-kit/lib/model/query'
 
 const INTEGRATIONS_TAGS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`
 

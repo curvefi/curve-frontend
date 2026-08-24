@@ -1,7 +1,7 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { parseListFilter } from '@evm-ui/shared/ui/DataTable/filters'
 import { assert } from '@primitives/objects.utils'
 import { getFacetedRowModel, type RowModel, type Table } from '@tanstack/react-table'
-import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketColumnId } from '../columns'
 
 const CHAIN_COLUMN_ID: string = MarketColumnId.Chain

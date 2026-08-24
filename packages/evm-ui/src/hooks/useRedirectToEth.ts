@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { usePathname, useNavigate } from '@ui-kit/hooks/router'
-import { replaceNetworkInPath } from '@ui-kit/shared/routes'
+import { usePathname, useNavigate } from '@evm-ui/hooks/router'
+import { replaceNetworkInPath } from '@evm-ui/shared/routes'
 
 export function useRedirectToEth(network: { showInSelectNetwork?: boolean } | undefined, networkId: string) {
   const push = useNavigate()

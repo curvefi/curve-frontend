@@ -1,5 +1,5 @@
 import { enforce, group, test } from 'vest'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite } from '@evm-ui/lib/validation'
 import { pricesApiChainNameValidationGroup } from './prices-chain-validation'
 import { ContractParams } from './root-keys'
 

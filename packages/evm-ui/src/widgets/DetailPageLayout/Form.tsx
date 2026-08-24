@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
-import { FormProvider } from '@ui-kit/features/forms'
-import type { FieldValues, FormSubmitHandler, UseFormReturn } from '@ui-kit/features/forms'
+import { FormProvider } from '@evm-ui/features/forms'
+import type { FieldValues, FormSubmitHandler, UseFormReturn } from '@evm-ui/features/forms'
 import { FormContent } from './FormContent'
 
 /**

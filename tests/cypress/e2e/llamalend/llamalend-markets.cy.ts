@@ -24,8 +24,8 @@ import {
 } from '@cy/support/helpers/llamalend/llamalend-markets'
 import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { assertInViewport, assertNotInViewport, LOAD_TIMEOUT, oneDesktopViewport, oneViewport } from '@cy/support/ui'
+import { MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
 import { assert, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
-import { MarketType, MarketVersion, MarketRateType } from '@ui-kit/types/market'
 
 const WST_ETH_MARKET = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
 const SFRX_ETH_MARKET = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const

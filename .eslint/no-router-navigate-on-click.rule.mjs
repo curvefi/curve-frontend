@@ -1,4 +1,4 @@
-const routerHookImport = '@ui-kit/hooks/router'
+const routerHookImport = '@evm-ui/hooks/router'
 const unwrapTypes = [
   'ChainExpression',
   'TSAsExpression',

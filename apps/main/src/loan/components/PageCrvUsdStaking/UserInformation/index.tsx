@@ -1,4 +1,10 @@
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import { t } from '@evm-ui/lib/i18n'
+import { YieldGrowth } from '@evm-ui/shared/icons/YieldGrowth'
+import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM } from '@legacy-ui/images'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -6,12 +12,6 @@ import CardContent from '@mui/material/CardContent'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { YieldGrowth } from '@ui-kit/shared/icons/YieldGrowth'
-import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

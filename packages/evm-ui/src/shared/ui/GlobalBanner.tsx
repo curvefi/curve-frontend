@@ -1,24 +1,24 @@
 import { useChainId, useConnection } from 'wagmi'
-import { formatDate } from '@legacy-ui/utils'
-import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@ui-kit/features/connect-wallet'
-import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
-import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/components/BackendMaintenanceBanner'
-import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
-import { usePathname } from '@ui-kit/hooks/router'
-import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
+import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
+import { DOWNGRADED_CHAINS } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { BackendMaintenanceBanner } from '@evm-ui/features/maintenance/components/BackendMaintenanceBanner'
+import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
+import { usePathname } from '@evm-ui/hooks/router'
+import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import {
   useDismissAaveBanner,
   useDismissCurveLiteBanner,
   useDismissFantomRetirementBanner,
   useDismissMoonbeamMigrationBanner,
   useReleaseChannel,
-} from '@ui-kit/hooks/useLocalStorage'
-import { t } from '@ui-kit/lib/i18n'
-import { getCurrentApp } from '@ui-kit/shared/routes'
-import { Banner } from '@ui-kit/shared/ui/Banner'
-import { IS_CYPRESS, ReleaseChannel } from '@ui-kit/utils'
-import { Chain } from '@ui-kit/utils/network'
-import { PhishingWarningBanner } from '@ui-kit/widgets/Header/PhishingWarningBanner'
+} from '@evm-ui/hooks/useLocalStorage'
+import { t } from '@evm-ui/lib/i18n'
+import { getCurrentApp } from '@evm-ui/shared/routes'
+import { Banner } from '@evm-ui/shared/ui/Banner'
+import { IS_CYPRESS, ReleaseChannel } from '@evm-ui/utils'
+import { Chain } from '@evm-ui/utils/network'
+import { PhishingWarningBanner } from '@evm-ui/widgets/Header/PhishingWarningBanner'
+import { formatDate } from '@legacy-ui/utils'
 import { StackBanners } from './StackBanners'
 
 type GlobalBannerProps = {

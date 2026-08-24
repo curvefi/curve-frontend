@@ -1,4 +1,4 @@
-import { TIME_FRAMES } from '@ui-kit/utils/time'
+import { TIME_FRAMES } from '@evm-ui/utils/time'
 
 type TimeRange = { start: number; end: number }
 

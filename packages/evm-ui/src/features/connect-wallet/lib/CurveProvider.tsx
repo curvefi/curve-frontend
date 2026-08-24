@@ -1,7 +1,6 @@
 import { type ReactNode, useEffect, useState } from 'react'
 import { useChainId, useConfig } from 'wagmi'
-import type { NetworkDef } from '@legacy-ui/utils'
-import { CurveContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/CurveContext'
+import { CurveContext, useWagmiWallet } from '@evm-ui/features/connect-wallet/lib/CurveContext'
 import {
   AppChainId,
   AppLib,
@@ -9,10 +8,11 @@ import {
   AppNetworkId,
   ConnectState,
   HydratorMap,
-} from '@ui-kit/features/connect-wallet/lib/types'
-import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
-import type { AppName } from '@ui-kit/shared/routes'
+} from '@evm-ui/features/connect-wallet/lib/types'
+import { useIsDocumentFocused } from '@evm-ui/features/layout/utils'
+import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
+import type { AppName } from '@evm-ui/shared/routes'
+import type { NetworkDef } from '@legacy-ui/utils'
 import { useSwitchChain } from './useSwitchChain'
 import { globalLibs, isWalletMatching } from './utils'
 

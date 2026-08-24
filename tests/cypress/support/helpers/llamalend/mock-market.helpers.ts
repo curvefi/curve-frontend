@@ -3,8 +3,8 @@ import { DEPRECATED_LLAMAS, MARKETS_ALERTS, MARKETS_LEVERAGE_CONFIG } from '@/ll
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { oneAddress, oneDecimal, oneOf } from '@cy/support/generators'
+import { Chain, CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { recordEntries } from '@primitives/objects.utils'
-import { Chain, CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockMethod = (...args: any[]) => any
