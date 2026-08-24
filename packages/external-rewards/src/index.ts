@@ -28,6 +28,7 @@ export type RewardsAction = 'supply' | 'borrow' | 'lp'
 
 const parsedCampaignsJsons = campaignsJsons as Record<string, Campaign>
 
+// eslint-disable-next-line local/use-not-falsy-pattern
 export const campaigns = campaignList
   .map(({ campaign }) => {
     const campaignName = campaign.split('.')?.[0]

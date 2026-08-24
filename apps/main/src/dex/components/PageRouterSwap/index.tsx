@@ -51,7 +51,7 @@ import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert, maybe, maybes } from '@primitives/objects.utils'
+import { assert, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
 
 const { Spacing } = SizesAndSpaces
@@ -137,10 +137,7 @@ export const QuickSwap = ({
   }, [curve, blacklist, userAddress])
 
   const tokens = useMemo(
-    () =>
-      Object.values(tokensMapper ?? {})
-        .filter(token => !!token)
-        .map(toTokenOption(network?.networkId)),
+    () => notFalsy(...Object.values(tokensMapper ?? {})).map(toTokenOption(network?.networkId)),
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [tokensMapperStr, network?.networkId],
   )

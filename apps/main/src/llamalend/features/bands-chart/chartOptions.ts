@@ -1,5 +1,6 @@
 import { formatChartAxisNumber } from '@evm-ui/shared/ui/Chart'
 import { Duration } from '@evm-ui/themes/design/0_primitives'
+import { notFalsy } from '@primitives/objects.utils'
 import { generateOracleReferenceLines, generateRangeBoundaryLines, type HorizontalLine } from './horizontalLines'
 import type {
   BandsChartOption,
@@ -526,16 +527,15 @@ export const getChartOptions = (
         generateOracleReferenceLines(oraclePrice, xStart, xEnd, palette),
         CHART_LAYER.oracleLine,
       )
-      const oracleLineSeries = nativeOracleMarkLine
-        ? [
-            createNativeOracleLineSeries(
-              'Oracle Price Line',
-              outlineSeriesData,
-              CHART_LAYER.oracleLine,
-              nativeOracleMarkLine,
-            ),
-          ]
-        : []
+      const oracleLineSeries = notFalsy(
+        nativeOracleMarkLine &&
+          createNativeOracleLineSeries(
+            'Oracle Price Line',
+            outlineSeriesData,
+            CHART_LAYER.oracleLine,
+            nativeOracleMarkLine,
+          ),
+      )
 
       return [
         ...currentRangeAreaSeries,

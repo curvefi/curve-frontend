@@ -1,4 +1,5 @@
 import type { Amount } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { getUnitOptions, type Unit } from './units'
 
 // Sometimes API returns overflowed USD values. Don't show them!
@@ -369,7 +370,7 @@ export function formatNumber(value: Amount | MissingAmount, options: NumberForma
   const isNegative = decomposed.mainValue.startsWith('-')
   const sign = isNegative ? '-' : ''
   const mainValue = isNegative ? decomposed.mainValue.slice(1) : decomposed.mainValue
-  return [sign, decomposed.prefix, mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
+  return notFalsy(sign, decomposed.prefix, mainValue, decomposed.scaleSuffix, decomposed.suffix).join('')
 }
 
 /**

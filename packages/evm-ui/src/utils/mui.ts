@@ -1,5 +1,6 @@
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { SxProps as MuiSx, Theme } from '@mui/material/styles'
+import { notFalsy } from '@primitives/objects.utils'
 
 const { BorderWidth } = SizesAndSpaces
 
@@ -12,7 +13,7 @@ type SxStyleObject = Exclude<SxProps, ((theme: Theme) => unknown) | readonly unk
  */
 export const applySxProps = (...sx: (SxProps | false | null | undefined)[]): SxProps =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
-  sx.flatMap(s => (Array.isArray(s) ? s : s ? [s] : []))
+  sx.flatMap(s => (Array.isArray(s) ? s : notFalsy(s)))
 
 /**
  * Selects every direct child that has a previous sibling. This is useful for applying styles between children, such as

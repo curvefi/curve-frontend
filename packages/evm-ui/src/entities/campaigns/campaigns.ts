@@ -30,10 +30,7 @@ export const combineCampaigns = memoizee((campaigns: (Campaigns | undefined)[], 
   return fromEntries(
     [...allAddresses]
       .map(address => {
-        const allRewards = campaigns
-          .filter((record): record is Campaigns => record !== undefined)
-          .flatMap(record => record[address] || [])
-
+        const allRewards = notFalsy(...campaigns.flatMap(record => record?.[address]))
         const filteredRewards = network ? allRewards.filter(r => r.network === network) : allRewards
 
         return [address, filteredRewards] as const
