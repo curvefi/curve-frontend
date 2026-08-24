@@ -6,6 +6,7 @@ import { isChinese, t } from '@evm-ui/lib/i18n'
 import { type AppName, getInternalUrl, PAGE_INTEGRATIONS, PAGE_LEGAL, routeToPage } from '@evm-ui/shared/routes'
 import { Toast } from '@evm-ui/widgets/Toast'
 import { EXTERNAL_LINKS } from '@legacy-ui/utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { DesktopHeader } from './DesktopHeader'
 import { MobileHeader } from './MobileHeader'
 import { HeaderProps, NavigationSection } from './types'
@@ -42,7 +43,7 @@ const getSections = (currentApp: AppName, networkId: string): NavigationSection[
       { href: getInternalUrl(currentApp, networkId, PAGE_LEGAL), label: t`Legal` },
       { href: getInternalUrl(currentApp, networkId, PAGE_INTEGRATIONS), label: t`Integrations` },
       { href: EXTERNAL_LINKS.brand.assets, label: t`Branding` },
-      ...(isChinese() ? [{ href: EXTERNAL_LINKS.curve.chinese.wiki, label: t`Wiki` }] : []),
+      ...notFalsy(isChinese() && { href: EXTERNAL_LINKS.curve.chinese.wiki, label: t`Wiki` }),
     ],
   },
   {

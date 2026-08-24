@@ -4,7 +4,7 @@ import { sortBy } from 'lodash'
 import { useEffect, useRef, useCallback, useMemo, type RefObject } from 'react'
 import { CHART_LINE_WIDTHS } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { Box } from '@mui/material'
-import { maybes } from '@primitives/objects.utils'
+import { maybes, notFalsy } from '@primitives/objects.utils'
 import { useLatestValueRef } from '../../hooks/useLatestValueRef'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
@@ -37,15 +37,17 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   range.price2?.forEach(({ time, value }) => assignPoint(time, 'lower', value))
 
   const orderedPoints = sortBy(
-    Array.from(
-      pointMap,
-      ([time, { upper, lower }]) =>
-        maybes([upper, lower], (...points) => ({
-          time,
-          upper: Math.max(...points),
-          lower: Math.min(...points),
-        })) ?? null,
-    ).filter(point => point !== null),
+    notFalsy(
+      ...Array.from(
+        pointMap,
+        ([time, { upper, lower }]) =>
+          maybes([upper, lower], (...points) => ({
+            time,
+            upper: Math.max(...points),
+            lower: Math.min(...points),
+          })) ?? null,
+      ),
+    ),
     point => point.time,
   )
 

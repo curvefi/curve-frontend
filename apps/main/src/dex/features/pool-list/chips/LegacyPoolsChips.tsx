@@ -24,7 +24,7 @@ const getFilterGroups = ({ isConnected }: { isConnected: boolean }) =>
       { key: 'stableng' as const, label: t`Stable NG` },
       { key: 'cross-chain' as const, label: t`Cross-chain` },
     ],
-    ...(isConnected ? [[{ key: 'user' as const, label: t`My Pools` }]] : []),
+    ...notFalsy(isConnected && [{ key: 'user' as const, label: t`My Pools` }]),
   ] satisfies { key: LegacyPoolTag | null; label: string }[][]
 
 export type LegacyPoolsChipsProps = FilterProps<LegacyPoolColumnId> & {

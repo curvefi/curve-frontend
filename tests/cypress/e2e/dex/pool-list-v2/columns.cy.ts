@@ -74,13 +74,15 @@ const OPTIONAL_FULL_COLUMNS = [
 const DEFAULT_LITE_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Tvl]
 const OPTIONAL_LITE_COLUMNS = [PoolColumnId.CrvApy, PoolColumnId.RewardsApy, PoolColumnId.Points]
 const FULL_ONLY_COLUMNS = [PoolColumnId.BaseApy, PoolColumnId.WeeklyBaseApy, PoolColumnId.Volume, PoolColumnId.Age]
-const LITE_SORTABLE_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.Tvl]
-const LITE_NON_SORTABLE_COLUMNS = [
+const LITE_SORTABLE_COLUMNS = [
+  PoolColumnId.PoolName,
   PoolColumnId.NetApy,
   PoolColumnId.CrvApy,
   PoolColumnId.RewardsApy,
-  PoolColumnId.Points,
+  PoolColumnId.Tvl,
 ]
+const LITE_NON_SORTABLE_COLUMNS = [PoolColumnId.Points]
+const LITE_COMPUTED_SORT_COLUMNS = [PoolColumnId.NetApy, PoolColumnId.CrvApy, PoolColumnId.RewardsApy]
 
 describe('V2 pool-list columns', () => {
   beforeEach(() => {
@@ -223,10 +225,16 @@ describe('V2 pool-list columns', () => {
     cy.get('[data-testid^="data-table-row-"]').should('have.length', 2)
 
     cy.get(`[data-testid="data-table-header-${PoolColumnId.Tvl}"]`).click()
-    cy.get('[data-testid^="data-table-row-"]')
-      .first()
-      .find(`[data-testid="market-link-${V2_POOL_FIXTURES.liteLowTvl.address}"]`)
-      .should('exist')
+    expectFirstPool(V2_POOL_FIXTURES.liteLowTvl.address)
+
+    showV2PoolColumns([PoolColumnId.CrvApy, PoolColumnId.RewardsApy])
+    for (const columnId of LITE_COMPUTED_SORT_COLUMNS) {
+      getColumnHeader(columnId).click()
+      expectFirstPool(V2_POOL_FIXTURES.lite.address)
+      getColumnHeader(columnId).click()
+      expectFirstPool(V2_POOL_FIXTURES.liteLowTvl.address)
+    }
+
     cy.get('@dex-v2-lite-pools.all').should('have.length', 1)
   })
 

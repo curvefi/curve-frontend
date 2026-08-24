@@ -1,4 +1,5 @@
 import { z } from 'zod/v4'
+import { notFalsy } from '@primitives/objects.utils'
 import { address, camelizeKeys, chain, sortDirection, timestamp } from '../schemas'
 
 const rawCoin = z.object({
@@ -447,10 +448,7 @@ export const listLitePoolChainsResponse = z
     generated_time_ms: z.number(),
   })
   .transform(({ data: { platforms, platforms_metadata: platformMetadata } }) =>
-    Object.keys(platforms).flatMap(platform => {
-      const metadata = platformMetadata[platform]
-      return metadata ? [metadata] : []
-    }),
+    Object.keys(platforms).flatMap(platform => notFalsy(platformMetadata[platform])),
   )
 
 export const listLitePoolsResponse = z

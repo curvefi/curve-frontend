@@ -7,6 +7,7 @@ import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/vali
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 
 export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHealth } = queryFactory({
   queryKey: ({
@@ -59,5 +60,7 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
   category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ debtRequired: true, leverageRequired: false, maxDebtRequired: false }),
   dependencies: params =>
-    isLeverageBorrowMore(params.marketId, params.leverageEnabled) ? [getBorrowMoreExpectedCollateralKey(params)] : [],
+    notFalsy(
+      isLeverageBorrowMore(params.marketId, params.leverageEnabled) && getBorrowMoreExpectedCollateralKey(params),
+    ),
 })

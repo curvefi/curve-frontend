@@ -278,6 +278,8 @@ const LITE_POOL_LOW_TVL = createLitePoolFixture({
   address: '0x9999999999999999999999999999999999999999',
   name: 'V2 Low TVL',
   tvl: 1,
+  gauge_address: address('2009'),
+  gauge_crv_apr: [1, 2.5],
   coins: [
     { address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', decimals: '18', symbol: 'WETH' },
     { address: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', decimals: '18', symbol: 'TAIKO' },

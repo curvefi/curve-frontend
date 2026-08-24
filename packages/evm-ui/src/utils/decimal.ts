@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { formatUnits } from 'viem'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 
 export const ZERO: Decimal = '0'
 
@@ -40,11 +40,10 @@ export const decimalMax = (...data: Decimal[]) =>
   data.length ? (BigNumber.max(...data).toFixed() as Decimal) : undefined
 
 export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
-  data.filter(d => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
+  notFalsy(...data).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
 
 export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): Decimal =>
-  rest
-    .filter(d => d != null)
+  notFalsy(...rest)
     .reduce((acc, value) => acc.minus(value), new BigNumber(first))
     .toFixed() as Decimal
 

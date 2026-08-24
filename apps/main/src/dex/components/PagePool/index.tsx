@@ -34,6 +34,7 @@ import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { FormMargins } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { AlertBox } from '@legacy-ui/AlertBox'
+import { notFalsy } from '@primitives/objects.utils'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
@@ -115,7 +116,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       { value: 'deposit', label: t`Deposit` },
       { value: 'withdraw', label: t`Withdraw` },
       { value: 'swap', label: t`Swap` },
-      ...(isAvailableManageGauge ? [{ value: 'manage-gauge' as const, label: t`Gauge` }] : []),
+      ...notFalsy(isAvailableManageGauge && { value: 'manage-gauge' as const, label: t`Gauge` }),
     ],
     [isAvailableManageGauge],
   )

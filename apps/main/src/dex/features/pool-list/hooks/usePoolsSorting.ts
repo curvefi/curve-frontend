@@ -21,7 +21,13 @@ const POOL_SORT_BY = {
 type PoolSortableColumn = keyof typeof POOL_SORT_BY
 
 const SORT_QUERY_FIELD = 'sort'
-const LITE_SORT_COLUMNS = new Set<PoolColumnId>([PoolColumnId.PoolName, PoolColumnId.Tvl])
+const LITE_SORT_COLUMNS = new Set<PoolColumnId>([
+  PoolColumnId.PoolName,
+  PoolColumnId.NetApy,
+  PoolColumnId.CrvApy,
+  PoolColumnId.RewardsApy,
+  PoolColumnId.Tvl,
+])
 
 type ColumnSort = { id: PoolSortableColumn; desc: boolean }
 export type PoolsSorting = [ColumnSort]

@@ -18,7 +18,7 @@ import type { BaseConfig } from '@legacy-ui/utils'
 import { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { Decimal } from '@primitives/decimal.utils'
-import { maybe, recordValues } from '@primitives/objects.utils'
+import { maybe, notFalsy, recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import type { QueryKey } from '@tanstack/react-query'
 
@@ -117,10 +117,11 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     () =>
       chosenRouter && queries[chosenRouter].enabled
         ? (queries[chosenRouter].data ?? undefined)
-        : recordValues(queries)
-            .filter(q => q.enabled)
-            .map(q => q.data)
-            .filter((q): q is RouteResponse => !!q)
+        : notFalsy(
+            ...recordValues(queries)
+              .filter(q => q.enabled)
+              .map(q => q.data),
+          )
             // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
             .sort(sortRoutes)[0],
     // eslint-disable-next-line @eslint-react/exhaustive-deps
