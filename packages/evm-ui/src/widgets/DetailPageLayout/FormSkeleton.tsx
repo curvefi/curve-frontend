@@ -14,14 +14,22 @@ export const FormSkeleton = () => (
     menu={[
       {
         value: 'tab',
-        label: <Skeleton width={100} />,
+        label: (
+          <Skeleton variant="rectangular" width={100}>
+            <Typography variant="buttonTabsM">{t`Loading`}</Typography>
+          </Skeleton>
+        ),
         component: () => (
           <FormContent>
-            <Skeleton width="100%">
-              <LargeTokenInput name="loading" onBalance={noop} message={t`Loading`} />
-            </Skeleton>
-            <Skeleton width="100%">
-              <Typography variant="buttonM">{t`Loading form...`}</Typography>
+            <Skeleton variant="rectangular" width="100%">
+              <LargeTokenInput
+                name="loading"
+                onBalance={noop}
+                label={t`Loading`}
+                tokenSelector={<Typography variant="bodyMBold">{t`Token`}</Typography>}
+                walletBalance={{ balance: '0', symbol: t`Token` }}
+                inputBalanceUsd="0"
+              />
             </Skeleton>
             <Button loading disabled fullWidth size={BUTTON_FORM_SIZE} />
           </FormContent>
