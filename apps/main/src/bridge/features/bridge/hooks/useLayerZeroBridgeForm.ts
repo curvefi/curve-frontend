@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { enforce, test } from 'vest'
-import { encodeFunctionData, erc20Abi, parseUnits } from 'viem'
+import { encodeFunctionData, erc20Abi, formatUnits, parseUnits } from 'viem'
 import { useBlock, useConfig, useConnection, useEstimateGas as useEstimateTransactionGas, useReadContract } from 'wagmi'
 import type { Address, Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -23,7 +23,7 @@ import {
   layerZeroStableCapacityAbi,
   layerZeroStatusAbi,
 } from '../layerzero'
-import { getLayerZeroCapacityResult } from '../layerzero-capacity'
+import { getLayerZeroCapacityAvailable, isLayerZeroCapacityExceeded } from '../layerzero-capacity'
 import type { BridgeFormValues } from '../types'
 
 const parseAmount = (amount: Decimal | undefined) => {
@@ -100,16 +100,9 @@ export const useLayerZeroBridgeForm = ({
   const capacityLimit = useReadContract({
     chainId: toChainId,
     address: route?.bridgeAddress,
-    abi: route?.family === 'stable' ? layerZeroStableCapacityAbi : layerZeroCrvCapacityAbi,
+    abi: layerZeroStableCapacityAbi,
     functionName: 'limit',
-    query: { enabled: !!route },
-  })
-  const crvPeriod = useReadContract({
-    chainId: toChainId,
-    address: route?.bridgeAddress,
-    abi: layerZeroCrvCapacityAbi,
-    functionName: 'period',
-    query: { enabled: route?.family === 'crv' },
+    query: { enabled: route?.family === 'stable' },
   })
   const stableIssued = useReadContract({
     chainId: toChainId,
@@ -119,63 +112,37 @@ export const useLayerZeroBridgeForm = ({
     args: destinationBlock.data ? [destinationBlock.data.timestamp / 86_400n] : undefined,
     query: { enabled: route?.family === 'stable' && !!destinationBlock.data },
   })
-  const stableDelay = useReadContract({
-    chainId: toChainId,
-    address: route?.bridgeAddress,
-    abi: layerZeroStableCapacityAbi,
-    functionName: 'delay',
-    query: { enabled: route?.family === 'stable' },
-  })
   const capacityAvailable = useMemo(() => {
-    if (route?.family === 'crv') return crvAvailable.data
+    if (route?.family === 'crv' && crvAvailable.data != null) {
+      return getLayerZeroCapacityAvailable({ family: 'crv', available: crvAvailable.data })
+    }
     if (route?.family === 'stable' && capacityLimit.data != null && stableIssued.data != null) {
-      return capacityLimit.data > stableIssued.data ? capacityLimit.data - stableIssued.data : 0n
-    }
-    return undefined
-  }, [capacityLimit.data, crvAvailable.data, route?.family, stableIssued.data])
-  const capacity = useMemo(() => {
-    if (!route || !rawAmount) return undefined
-    if (route.family === 'crv' && crvAvailable.data != null && capacityLimit.data != null && crvPeriod.data != null) {
-      return getLayerZeroCapacityResult('crv', rawAmount, {
-        family: 'crv',
-        available: crvAvailable.data,
-        limit: capacityLimit.data,
-        period: crvPeriod.data,
-      })
-    }
-    if (
-      route.family === 'stable' &&
-      capacityLimit.data != null &&
-      stableIssued.data != null &&
-      stableDelay.data != null
-    ) {
-      return getLayerZeroCapacityResult('stable', rawAmount, {
+      return getLayerZeroCapacityAvailable({
         family: 'stable',
         limit: capacityLimit.data,
         issued: stableIssued.data,
-        delay: stableDelay.data,
       })
     }
     return undefined
-  }, [capacityLimit.data, crvAvailable.data, crvPeriod.data, rawAmount, route, stableDelay.data, stableIssued.data])
+  }, [capacityLimit.data, crvAvailable.data, route?.family, stableIssued.data])
   const capacityError: Error | null =
-    destinationBlock.error ??
-    crvAvailable.error ??
-    capacityLimit.error ??
-    crvPeriod.error ??
-    stableIssued.error ??
-    stableDelay.error
+    route?.family === 'crv'
+      ? crvAvailable.error
+      : route?.family === 'stable'
+        ? (destinationBlock.error ?? capacityLimit.error ?? stableIssued.error)
+        : null
   const capacityLoading =
     !!route &&
-    (destinationBlock.isLoading ||
-      capacityLimit.isLoading ||
-      (route.family === 'crv'
-        ? crvAvailable.isLoading || crvPeriod.isLoading
-        : stableIssued.isLoading || stableDelay.isLoading))
+    (route.family === 'crv'
+      ? crvAvailable.isLoading
+      : destinationBlock.isLoading || capacityLimit.isLoading || stableIssued.isLoading)
+  const capacityExceeded =
+    rawAmount != null && capacityAvailable != null && isLayerZeroCapacityExceeded(rawAmount, capacityAvailable)
+  const capacityReady = !capacityLoading && capacityError == null && capacityAvailable != null && !capacityExceeded
 
   const isApproved = maybe(rawAmount, amount => maybe(allowance.data, approvedAmount => approvedAmount >= amount))
   const transaction = useMemo(() => {
-    if (!route || !rawAmount || !userAddress || isApproved == null) return undefined
+    if (!route || !rawAmount || !userAddress || isApproved == null || !capacityReady) return undefined
     if (!isApproved) {
       return {
         to: route.tokenAddress,
@@ -201,7 +168,7 @@ export const useLayerZeroBridgeForm = ({
           }),
       value: bridgeCost,
     }))
-  }, [isApproved, quote.data, rawAmount, route, userAddress])
+  }, [capacityReady, isApproved, quote.data, rawAmount, route, userAddress])
   const gasUnits = useEstimateTransactionGas({
     chainId,
     account: userAddress,
@@ -214,12 +181,18 @@ export const useLayerZeroBridgeForm = ({
       ? t`Bridge amount must be greater than zero`
       : rawAmount != null && walletBalance.data != null && rawAmount > parseUnits(walletBalance.data, 18)
         ? t`Bridge amount cannot exceed wallet balance`
-        : undefined
+        : rawAmount != null && capacityAvailable === 0n
+          ? t`No destination capacity is currently available. Try again later.`
+          : capacityExceeded && capacityAvailable != null
+            ? token === 'CRV'
+              ? t`Enter no more than ${formatUnits(capacityAvailable, 18)} CRV. This is the current destination capacity.`
+              : t`Enter no more than ${formatUnits(capacityAvailable, 18)} ${token}. This is today's remaining destination capacity.`
+            : undefined
 
   const approveMutation = useTransactionMutation<BridgeFormValues>({
     mutationKey: [...rootKeys.chain({ chainId }), 'layerzero-bridge-approve'] as const,
     mutationFn: async () => {
-      if (!route || !rawAmount) throw new Error('Invalid LayerZero bridge route or amount')
+      if (!route || !rawAmount || !capacityReady) throw new Error('Invalid LayerZero bridge route, amount, or capacity')
       const [hash] = await approve(config, {
         amount: rawAmount,
         chainId,
@@ -239,7 +212,7 @@ export const useLayerZeroBridgeForm = ({
   const bridgeMutation = useTransactionMutation<BridgeFormValues, TransactionContext, LayerZeroBridgeResult>({
     mutationKey: [...rootKeys.chain({ chainId }), 'layerzero-bridge', { toChainId, token }] as const,
     mutationFn: async () => {
-      if (!route || !rawAmount || quote.data == null || !userAddress) {
+      if (!route || !rawAmount || quote.data == null || !userAddress || !capacityReady) {
         throw new Error('LayerZero bridge route is not ready')
       }
       const hash = route.amountFirst
@@ -283,15 +256,21 @@ export const useLayerZeroBridgeForm = ({
     isKilled,
     isApproved,
     amountError,
-    capacity,
     capacityAvailable,
+    capacityExceeded,
     capacityError,
     capacityLoading,
     gas,
     isPending: approveMutation.isPending || bridgeMutation.isPending,
     error: approveMutation.error ?? bridgeMutation.error ?? quote.error ?? isKilled.error ?? allowance.error,
     disabled:
-      !!amountError || !rawAmount || !route || quote.data == null || isKilled.data !== false || allowance.data == null,
+      !!amountError ||
+      !rawAmount ||
+      !route ||
+      quote.data == null ||
+      isKilled.data !== false ||
+      allowance.data == null ||
+      !capacityReady,
     submit: isApproved ? bridgeMutation.mutate : approveMutation.mutate,
   }
 }

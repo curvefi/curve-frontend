@@ -27,10 +27,14 @@ const NETWORKS = [
 
 const BridgeRouteHarness = ({
   isConnected = true,
-  capacityWarning = false,
+  amountError = null,
+  disableBridge = false,
+  capacityError = false,
 }: {
   isConnected?: boolean
-  capacityWarning?: boolean
+  amountError?: Error | null
+  disableBridge?: boolean
+  capacityError?: boolean
 }) => {
   const form = useForm<BridgeFormValues>({
     defaultValues: {
@@ -79,33 +83,30 @@ const BridgeRouteHarness = ({
         onSwapNetworks={() =>
           form.update({ fromChainId: values.toChainId, toChainId: values.fromChainId, amount: undefined })
         }
-        amount={q({ data: values.amount, isLoading: false, error: null })}
+        amount={q({ data: values.amount, isLoading: false, error: amountError })}
         walletBalance={{ balance: values.walletBalance }}
         inputBalanceUsd={undefined}
         tokenSymbol={values.token}
         tokenSelector={<BridgeTokenSelector form={form} token={values.token} disabled={false} />}
         bridgeDisabledAlert={
-          route
-            ? undefined
-            : {
-                alertType: 'warning',
-                message: (
-                  <>
-                    This route is not currently supported.{' '}
-                    <a href={nativeBridgeUrl} target="_blank" rel="noreferrer">
-                      Use the network&apos;s native bridge instead.
-                    </a>
-                  </>
-                ),
-              }
-        }
-        bridgeAdvisoryAlert={
-          capacityWarning
-            ? { alertType: 'warning', message: 'Some tokens may need to be claimed later. You can still bridge.' }
-            : undefined
+          capacityError
+            ? { alertType: 'error', message: 'Destination capacity could not be checked. Try again later.' }
+            : route
+              ? undefined
+              : {
+                  alertType: 'warning',
+                  message: (
+                    <>
+                      This route is not currently supported.{' '}
+                      <a href={nativeBridgeUrl} target="_blank" rel="noreferrer">
+                        Use the network&apos;s native bridge instead.
+                      </a>
+                    </>
+                  ),
+                }
         }
         disableAmount={!route}
-        disableBridge={!route}
+        disableBridge={!route || disableBridge}
         loading={false}
         isPending={false}
         isApproved={true}
@@ -203,18 +204,42 @@ describe('bridge route selection', () => {
     cy.get('input[name="amount"]').should('be.enabled').clear().type('2')
   })
 
-  it('keeps bridging enabled for destination capacity warnings', () => {
+  it('keeps the amount editable but blocks submission for invalid capacity', () => {
     cy.mount(
       <ComponentTestWrapper config={mockedWagmiConfig}>
-        <BridgeRouteHarness capacityWarning />
+        <BridgeRouteHarness
+          amountError={new Error("Enter no more than 5 crvUSD. This is today's remaining destination capacity.")}
+          disableBridge
+        />
       </ComponentTestWrapper>,
     )
 
-    cy.contains('Some tokens may need to be claimed later. You can still bridge.').should('be.visible')
-    cy.get('[data-testid="bridge-submit-button"]').should('be.enabled')
+    cy.contains("Enter no more than 5 crvUSD. This is today's remaining destination capacity.").should('be.visible')
+    cy.get('input[name="amount"]').should('be.enabled')
+    cy.get('[data-testid="bridge-submit-button"]').should('be.disabled')
   })
 
-  it('highlights insufficient LayerZero capacity and explains the delayed claim', () => {
+  it('blocks submission when capacity cannot be checked without disabling wallet connection', () => {
+    cy.mount(
+      <ComponentTestWrapper config={mockedWagmiConfig}>
+        <BridgeRouteHarness capacityError disableBridge />
+      </ComponentTestWrapper>,
+    )
+
+    cy.contains('Destination capacity could not be checked. Try again later.').should('be.visible')
+    cy.get('input[name="amount"]').should('be.enabled')
+    cy.get('[data-testid="bridge-submit-button"]').should('be.disabled')
+
+    cy.mount(
+      <ComponentTestWrapper config={mockedWagmiConfig}>
+        <BridgeRouteHarness isConnected={false} capacityError disableBridge />
+      </ComponentTestWrapper>,
+    )
+    cy.contains('button', 'Connect Wallet').should('be.visible')
+    cy.get('[data-testid="bridge-submit-button"]').should('not.exist')
+  })
+
+  it('highlights insufficient LayerZero capacity and explains the limit', () => {
     cy.mount(
       <ComponentTestWrapper config={mockedWagmiConfig}>
         <BridgeActionInfos
@@ -224,7 +249,7 @@ describe('bridge route selection', () => {
           nativeTokenSymbol="ETH"
           provider="layerzero"
           layerZeroCapacity={constQ('5 crvUSD')}
-          layerZeroCapacityWarning="The requested amount exceeds today's remaining destination capacity."
+          layerZeroCapacityWarning="This transfer exceeds today's remaining destination capacity. Reduce the amount before bridging."
         />
       </ComponentTestWrapper>,
     )
@@ -238,6 +263,8 @@ describe('bridge route selection', () => {
       })
     cy.get('[data-testid="bridge-capacity"] .ActionInfo-value').find('svg').should('exist')
     cy.get('[data-testid="bridge-capacity"] .ActionInfo-value').click()
-    cy.contains("The requested amount exceeds today's remaining destination capacity.").should('be.visible')
+    cy.contains(
+      "This transfer exceeds today's remaining destination capacity. Reduce the amount before bridging.",
+    ).should('be.visible')
   })
 })

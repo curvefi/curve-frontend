@@ -1,19 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { getLayerZeroCapacityResult } from './layerzero-capacity'
+import { getLayerZeroCapacityAvailable, isLayerZeroCapacityExceeded } from './layerzero-capacity'
 
 describe('LayerZero destination capacity', () => {
-  it('partially delays CRV up to the current available capacity', () => {
-    expect(
-      getLayerZeroCapacityResult('crv', 10n, { family: 'crv', available: 4n, limit: 20n, period: 86_400n }),
-    ).toEqual({ immediate: 4n, delayed: 6n, wait: 86_400n })
-    expect(
-      getLayerZeroCapacityResult('crv', 21n, { family: 'crv', available: 20n, limit: 20n, period: 86_400n }),
-    ).toEqual({ immediate: 0n, delayed: 21n, wait: 86_400n })
+  it('uses the currently available CRV capacity', () => {
+    expect(getLayerZeroCapacityAvailable({ family: 'crv', available: 4n })).toBe(4n)
   })
 
-  it('delays the full stablecoin transfer when the daily remainder is exceeded', () => {
-    expect(
-      getLayerZeroCapacityResult('stable', 6n, { family: 'stable', issued: 5n, limit: 10n, delay: 3_600n }),
-    ).toEqual({ immediate: 0n, delayed: 6n, wait: 3_600n })
+  it('subtracts issued stablecoins from the daily limit without underflowing', () => {
+    expect(getLayerZeroCapacityAvailable({ family: 'stable', issued: 5n, limit: 10n })).toBe(5n)
+    expect(getLayerZeroCapacityAvailable({ family: 'stable', issued: 10n, limit: 10n })).toBe(0n)
+    expect(getLayerZeroCapacityAvailable({ family: 'stable', issued: 11n, limit: 10n })).toBe(0n)
+  })
+
+  it('accepts the exact available capacity and rejects amounts above it', () => {
+    expect(isLayerZeroCapacityExceeded(5n, 5n)).toBe(false)
+    expect(isLayerZeroCapacityExceeded(6n, 5n)).toBe(true)
   })
 })

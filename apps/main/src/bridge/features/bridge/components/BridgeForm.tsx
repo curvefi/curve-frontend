@@ -46,8 +46,8 @@ export const BridgeForm = ({
     bridgeCost,
     gas,
     amountError,
-    layerZeroCapacity,
     layerZeroCapacityAvailable,
+    layerZeroCapacityExceeded,
     layerZeroCapacityError,
     layerZeroCapacityLoading,
     error,
@@ -78,7 +78,9 @@ export const BridgeForm = ({
     (route
       ? isKilled
         ? { alertType: 'error' as const, message: t`This LayerZero bridge route is currently disabled` }
-        : undefined
+        : layerZeroCapacityError
+          ? { alertType: 'error' as const, message: t`Destination capacity could not be checked. Try again later.` }
+          : undefined
       : {
           alertType: 'warning' as const,
           message: (
@@ -92,31 +94,11 @@ export const BridgeForm = ({
             </>
           ),
         })
-  const capacityAlert =
-    provider !== 'layerzero' || !amount || layerZeroCapacityLoading
-      ? undefined
-      : layerZeroCapacityError
-        ? {
-            alertType: 'warning' as const,
-            message: t`Destination capacity could not be checked. This transfer may require a later claim. You can still bridge.`,
-          }
-        : layerZeroCapacity?.delayed
-          ? layerZeroCapacity.delayed > 0n
-            ? {
-                alertType: 'warning' as const,
-                message:
-                  token === 'CRV'
-                    ? t`Destination capacity is limited. About ${formatUnits(layerZeroCapacity.immediate, 18)} CRV may arrive first and ${formatUnits(layerZeroCapacity.delayed, 18)} CRV may need to be claimed later. You can still bridge.`
-                    : t`This transfer exceeds today's remaining destination limit. The full amount may be delayed and need to be claimed later. You can still bridge.`,
-              }
-            : undefined
-          : undefined
-  const capacityWarning =
-    layerZeroCapacity?.delayed && layerZeroCapacity.delayed > 0n
-      ? token === 'CRV'
-        ? t`The requested amount exceeds current destination capacity. The excess will remain pending and may need to be claimed later, possibly more than once.`
-        : t`The requested amount exceeds today's remaining destination capacity. The full transfer will be delayed and can be retried after the bridge delay.`
-      : undefined
+  const capacityWarning = layerZeroCapacityExceeded
+    ? token === 'CRV'
+      ? t`This transfer exceeds the CRV currently available on the destination. Reduce the amount before bridging.`
+      : t`This transfer exceeds today's remaining destination capacity. Reduce the amount before bridging.`
+    : undefined
 
   return (
     <Form
@@ -176,7 +158,6 @@ export const BridgeForm = ({
         tokenSymbol={token}
         tokenSelector={<BridgeTokenSelector form={form} token={token} disabled={isPending} />}
         bridgeDisabledAlert={activeAlert}
-        bridgeAdvisoryAlert={capacityAlert}
         disableAmount={!route || isKilled}
         disableBridge={disabled}
         loading={!supportedNetworks.length || loading}

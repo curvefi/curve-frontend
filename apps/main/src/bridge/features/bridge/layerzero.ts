@@ -209,14 +209,10 @@ export const layerZeroStatusAbi = [
 ] as const
 
 export const layerZeroCrvCapacityAbi = [
-  ...layerZeroStatusAbi,
   { type: 'function', name: 'available', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
-  { type: 'function', name: 'limit', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
-  { type: 'function', name: 'period', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
 ] as const
 
 export const layerZeroStableCapacityAbi = [
-  ...layerZeroStatusAbi,
   { type: 'function', name: 'limit', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
   {
     type: 'function',
@@ -225,5 +221,4 @@ export const layerZeroStableCapacityAbi = [
     inputs: [{ type: 'uint256' }],
     outputs: [{ type: 'uint256' }],
   },
-  { type: 'function', name: 'delay', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
 ] as const
