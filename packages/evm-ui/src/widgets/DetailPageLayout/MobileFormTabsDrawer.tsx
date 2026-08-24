@@ -12,14 +12,13 @@ const { Spacing, ButtonSize } = SizesAndSpaces
 
 type MobileFormTabsDrawerProps = {
   children: ReactNode
-  value: string
   tabs: readonly TabOption<string>[]
   onSelectTab: (value: string) => void
+  hideFormButton?: boolean
 }
 
-export const MobileFormTabsDrawer = ({ children, value, tabs, onSelectTab }: MobileFormTabsDrawerProps) => {
+export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab, hideFormButton }: MobileFormTabsDrawerProps) => {
   const [open, setOpen] = useState(false)
-  const withFormButton = tabs.find(tab => tab.value === value)?.withFormButton ?? true
 
   const openTab = useCallback(
     (value: string) => {
@@ -63,7 +62,7 @@ export const MobileFormTabsDrawer = ({ children, value, tabs, onSelectTab }: Mob
               paddingBlockEnd: Spacing.md,
             },
             // Reserve space for the form submit button, which is fixed to the bottom of the drawer.
-            withFormButton && { marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height] },
+            !hideFormButton && { marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height] },
           )}
         >
           {children}

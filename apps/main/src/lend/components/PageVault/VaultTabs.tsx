@@ -28,7 +28,7 @@ const VaultMenu = [
     value: 'claim',
     label: t`Claim`,
     // claim tab handles its own buttons because it has multiple actions that are not submit buttons.
-    withFormButton: false,
+    hideFormButton: true,
     component: props => <ClaimTab networks={networks} {...props} />,
   },
 ] satisfies FormTab<object>[]

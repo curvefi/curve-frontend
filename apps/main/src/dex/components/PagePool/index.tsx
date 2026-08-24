@@ -41,6 +41,8 @@ const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
 type TransferTabsParams = TransferProps & {
   isAvailableManageGauge: boolean
+  isGaugeManager: boolean
+  isRewardsDistributor: boolean
 }
 
 const DepositTab = (params: TransferTabsParams) => <Deposit {...params} />
@@ -60,8 +62,15 @@ const SwapTab = ({ poolAlert, maxSlippage, seed, tokensMapper, ...pageTransferPr
     />
   )
 
-const ManageGaugeTab = ({ poolData, routerParams }: TransferTabsParams) =>
-  poolData ? <ManageGauge poolId={poolData.pool.id} chainId={routerParams.rChainId} /> : null
+const ManageGaugeTab = ({ poolData, routerParams, isGaugeManager, isRewardsDistributor }: TransferTabsParams) =>
+  poolData ? (
+    <ManageGauge
+      poolId={poolData.pool.id}
+      chainId={routerParams.rChainId}
+      isGaugeManager={isGaugeManager}
+      isRewardsDistributor={isRewardsDistributor}
+    />
+  ) : null
 
 const menu: TabItem<TransferFormType, TransferTabsParams>[] = [
   { value: 'deposit', label: t`Deposit`, component: DepositTab },
@@ -170,6 +179,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       seed,
       tokensMapper,
       isAvailableManageGauge,
+      isGaugeManager,
+      isRewardsDistributor,
     },
     value: rFormType as TransferFormType | undefined,
   })

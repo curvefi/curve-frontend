@@ -94,7 +94,7 @@ export const findTab = <Value extends TabValue, Props extends object>(
   value: Value | undefined,
 ): TabItem<Value, Props> | undefined => tabs.find(tab => tab.value === value) ?? tabs[0]
 
-const findValue = <Value extends TabValue, Props extends object>(
+export const findTabValue = <Value extends TabValue, Props extends object>(
   menu: readonly TabItem<Value, Props>[],
   value: string | null,
 ): Value | undefined =>
@@ -104,7 +104,7 @@ const findValue = <Value extends TabValue, Props extends object>(
 export const useTabFromSearchParam = <Value extends TabValue, Props extends object>(
   menu: readonly TabItem<Value, Props>[],
   paramName = 'tab',
-): Value | undefined => findValue(menu, useSearchParams().get(paramName))
+): Value | undefined => findTabValue(menu, useSearchParams().get(paramName))
 
 const createContent = <Value extends TabValue, Props extends object>(
   tab: TabItem<Value, Props> | undefined,

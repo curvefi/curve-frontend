@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { type ComponentType, useEffect, useState } from 'react'
 import { getSearchString, useParams, useSearchParams } from '@evm-ui/hooks/router'
-import { type TabItem, useTabFromSearchParam, useTabs } from '@evm-ui/hooks/useTabs'
+import { findTabValue, type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import type { AppName } from '@evm-ui/shared/routes'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
@@ -16,6 +16,7 @@ import { LastUpdated } from './components/general/LastUpdated'
 import { TabPanel } from './components/general/TabPanel'
 import { Privacy } from './components/tabs/Privacy'
 import { Terms } from './components/tabs/Terms'
+import { DEFAULT_DISCLAIMERS_TABS } from './constants'
 import type { DisclaimerTab, Tab } from './types/tabs'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
@@ -27,29 +28,9 @@ type LegalPageProps = {
 type LegalTab = Tab | DisclaimerTab
 type LegalTabsParams = { currentApp: AppName; network: string; searchParams: URLSearchParams }
 
-const TermsTab = ({ currentApp, network }: LegalTabsParams) => <Terms currentApp={currentApp} network={network} />
-const PrivacyTab = () => <Privacy />
-const DexDisclaimerTab = () => (
+const Disclaimer = ({ content: Content }: { content: ComponentType }) => (
   <>
-    <Dex />
-    <Footer />
-  </>
-)
-const LendDisclaimerTab = () => (
-  <>
-    <LlamaLend />
-    <Footer />
-  </>
-)
-const CrvUsdDisclaimerTab = () => (
-  <>
-    <CrvUsd />
-    <Footer />
-  </>
-)
-const SCrvUsdDisclaimerTab = () => (
-  <>
-    <SCrvUsd />
+    <Content />
     <Footer />
   </>
 )
@@ -59,13 +40,13 @@ const menu: TabItem<LegalTab, LegalTabsParams>[] = [
     value: 'terms',
     label: t`Terms & Conditions`,
     href: ({ searchParams }) => getSearchString({ tab: 'terms', subtab: null }, searchParams),
-    component: TermsTab,
+    component: ({ currentApp, network }) => <Terms currentApp={currentApp} network={network} />,
   },
   {
     value: 'privacy',
     label: t`Privacy Notice`,
     href: ({ searchParams }) => getSearchString({ tab: 'privacy', subtab: null }, searchParams),
-    component: PrivacyTab,
+    component: Privacy,
   },
   {
     value: 'disclaimers',
@@ -76,25 +57,25 @@ const menu: TabItem<LegalTab, LegalTabsParams>[] = [
         value: 'dex',
         label: t`Dex`,
         href: ({ searchParams }) => getSearchString({ tab: 'disclaimers', subtab: 'dex' }, searchParams),
-        component: DexDisclaimerTab,
+        component: () => <Disclaimer content={Dex} />,
       },
       {
         value: 'lend',
         label: t`LlamaLend`,
         href: ({ searchParams }) => getSearchString({ tab: 'disclaimers', subtab: 'lend' }, searchParams),
-        component: LendDisclaimerTab,
+        component: () => <Disclaimer content={LlamaLend} />,
       },
       {
         value: 'crvusd',
         label: t`crvUSD`,
         href: ({ searchParams }) => getSearchString({ tab: 'disclaimers', subtab: 'crvusd' }, searchParams),
-        component: CrvUsdDisclaimerTab,
+        component: () => <Disclaimer content={CrvUsd} />,
       },
       {
         value: 'scrvusd',
         label: t`Savings crvUSD`,
         href: ({ searchParams }) => getSearchString({ tab: 'disclaimers', subtab: 'scrvusd' }, searchParams),
-        component: SCrvUsdDisclaimerTab,
+        component: () => <Disclaimer content={SCrvUsd} />,
       },
     ],
   },
@@ -110,11 +91,12 @@ function useAfterHydration(result: string) {
 export const LegalPage = ({ currentApp }: LegalPageProps) => {
   const { network } = useParams<{ network: string }>()
   const searchParams = useSearchParams()
-  const tabFromUrl = useTabFromSearchParam(menu)
+  const tabFromUrl = findTabValue(menu, searchParams.get('tab'))
+  const subTabFromUrl = findTabValue(menu, searchParams.get('subtab'))
   const { content, subTab, subTabs, tab, tabs } = useTabs({
     menu,
     params: { currentApp, network, searchParams },
-    value: useTabFromSearchParam(menu, 'subtab') ?? tabFromUrl,
+    value: subTabFromUrl ?? (tabFromUrl === 'disclaimers' ? DEFAULT_DISCLAIMERS_TABS[currentApp] : tabFromUrl),
   })
 
   return (

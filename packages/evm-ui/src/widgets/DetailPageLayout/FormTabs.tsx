@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
-import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { TabsSwitcher, TabsSwitcherProps } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
 import { applySxProps } from '@evm-ui/utils'
 import CardHeader from '@mui/material/CardHeader'
@@ -10,8 +10,8 @@ import { FormContent } from './FormContent'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 
 type FormTabBase<Props extends object> = Omit<TabItem<string, Props>, 'subTabs'> & {
-  /** Whether this tab renders a standard fixed form button in the mobile drawer */
-  withFormButton?: boolean
+  /** Whether this tab hides the standard fixed form button in the mobile drawer */
+  hideFormButton?: boolean
 }
 
 type FormSubTab<Props extends object> = FormTabBase<Props>
@@ -25,27 +25,11 @@ type UseFormTabOptions<T extends object> = {
   params: T
 }
 
-const addFormTabOptions = <T extends object>(
-  tabs: readonly TabOption<string>[],
-  menu: readonly FormTab<T>[] | undefined,
-): TabOption<string>[] =>
-  tabs.map(tab => ({ ...tab, withFormButton: menu?.find(({ value }) => value === tab.value)?.withFormButton ?? true }))
-
 /** Hook to manage form tabs and sub-tabs. */
 function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
   const isMobileDrawer = useIsMobileFormDrawer()
   const { tab, tabs, subTabs, subTab, content, onChange } = useTabs({ menu, params })
-  const formTabs = addFormTabOptions(tabs, menu)
-
-  return {
-    tab,
-    tabs: formTabs,
-    subTabs,
-    subTab,
-    content,
-    onChange,
-    isMobileDrawer,
-  }
+  return { tab, tabs, subTabs, subTab, content, onChange, isMobileDrawer }
 }
 
 const marginInline = { tablet: 'auto', desktop: 0 } as const
@@ -74,6 +58,7 @@ export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...
       value={tab.value}
       tabs={tabs}
       onSelectTab={onChange}
+      hideFormButton={options.menu.find(({ value }) => value === tab.value)?.hideFormButton}
     >
       <Stack sx={{ marginInline }}>
         {isMobileDrawer ? (
