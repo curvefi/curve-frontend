@@ -1,6 +1,6 @@
 import type { FastifyRequest } from 'fastify'
 import lodash from 'lodash'
-import { handleTimeout } from '@primitives/objects.utils'
+import { handleTimeout } from '@primitives/promise.utils'
 import { type RouterRouteResponse } from '@primitives/router.utils'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
 import { buildCurveSolverRouteResponse } from '../curve-solver-router/curve-solver-router'

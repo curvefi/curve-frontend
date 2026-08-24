@@ -44,15 +44,6 @@ export function assert<T>(value: T | Falsy, message: string) {
 /** Best case guess if for some reason we don't know the actual amount of decimals */
 export const DEFAULT_DECIMALS = 18
 
-export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?: string): Promise<T> =>
-  new Promise((resolve, reject) => {
-    const id = setTimeout(() => {
-      clearTimeout(id)
-      reject(new Error(message || `Promise timed out after ${timeout}ms`))
-    }, timeout)
-    promise.then(resolve, reject)
-  })
-
 /**
  * Generate an array of numbers from 0 to lengthOrStart - 1 or from lengthOrStart to lengthOrStart + length - 1
  * Example: range(3) => [0, 1, 2]
