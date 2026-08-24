@@ -8,6 +8,7 @@ import { ChainId } from '@/dex/types/main.types'
 import { t } from '@evm-ui/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
+import { notFalsy } from '@primitives/objects.utils'
 
 export const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
   const { address: signerAddress } = useConnection()
@@ -29,10 +30,11 @@ export const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: Chai
 
   type Tab = 'add_reward' | 'deposit_reward'
   const tabs: TabOption<Tab>[] = useMemo(
-    () => [
-      ...(isGaugeManager ? [{ value: 'add_reward' as const, label: t`Add Reward` }] : []),
-      ...(isRewardsDistributor ? [{ value: 'deposit_reward' as const, label: t`Deposit Reward` }] : []),
-    ],
+    () =>
+      notFalsy<TabOption<Tab>>(
+        isGaugeManager && { value: 'add_reward', label: t`Add Reward` },
+        isRewardsDistributor && { value: 'deposit_reward', label: t`Deposit Reward` },
+      ),
     [isGaugeManager, isRewardsDistributor],
   )
 

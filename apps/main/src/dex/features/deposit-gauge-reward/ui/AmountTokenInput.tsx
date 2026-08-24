@@ -16,7 +16,7 @@ import {
 } from '@/dex/features/deposit-gauge-reward/ui/styled'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, Token } from '@/dex/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { useFormContext } from '@evm-ui/features/forms'
 import { TokenList, type TokenOption, TokenSelector } from '@evm-ui/features/select-token'
@@ -27,6 +27,7 @@ import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@evm-ui/utils'
 import { InputDebounced, InputMaxBtn } from '@legacy-ui/InputComp'
 import { FlexContainer } from '@legacy-ui/styled-containers'
+import { notFalsy } from '@primitives/objects.utils'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
@@ -60,11 +61,9 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
       .filter(([_, distributor]) => isAddressEqual(distributor as Address, signerAddress))
       .map(([tokenId]) => tokenId)
 
-    return Object.values(tokensMapper)
-      .filter(
-        (token): token is Token =>
-          !!token &&
-          activeRewardTokens.some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
+    return notFalsy(...Object.values(tokensMapper))
+      .filter(token =>
+        activeRewardTokens.some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
       )
       .map(toTokenOption(networkId))
   }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, networkId])

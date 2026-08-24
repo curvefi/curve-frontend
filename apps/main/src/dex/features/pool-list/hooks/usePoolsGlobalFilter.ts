@@ -1,5 +1,6 @@
 import type { FuseOptionKey } from 'fuse.js'
 import { cleanValue, useFuzzyFilterFn } from '@evm-ui/hooks/useFuzzySearch'
+import { notFalsy } from '@primitives/objects.utils'
 import type { PoolRow } from '../types'
 
 const POOL_SEARCH_KEYS = [
@@ -10,7 +11,7 @@ const POOL_SEARCH_KEYS = [
     getFn: ({ address, gauge, gauges, coins }) => [
       ...new Set([
         address,
-        ...(gauge ? [gauge.address] : []),
+        ...notFalsy(gauge?.address),
         ...gauges.map(({ address }) => address),
         ...coins.map(({ address }) => address),
       ]),

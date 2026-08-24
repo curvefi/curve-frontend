@@ -22,6 +22,7 @@ import { Checkbox } from '@legacy-ui/Checkbox'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Chip } from '@legacy-ui/Typography'
 import type { Address } from '@primitives/address.utils'
+import { notFalsy } from '@primitives/objects.utils'
 
 type Props = {
   curve: CurveApi
@@ -91,7 +92,7 @@ export const SelectTokenButton = ({
         chain: blockchainId,
         address: token.address as Address,
         symbol: token.symbol,
-        label: [token.basePool && 'Base pool', token.userAddedToken && 'User added'].filter(Boolean).join(' - '),
+        label: notFalsy(token.basePool && 'Base pool', token.userAddedToken && 'User added').join(' - '),
         volume: token.volume,
       })),
     [filteredResults, blockchainId],

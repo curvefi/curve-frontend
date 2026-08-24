@@ -20,7 +20,7 @@ import type {
 import { useCampaigns, type CampaignRewards } from '@evm-ui/entities/campaigns'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { q, useMappedQuery } from '@evm-ui/types/util'
-import type { Address } from '@primitives/address.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { isVyperVulnerablePool } from '../alerts'
 import type { PoolsApiParams } from '../filters/utils'
 import type { PoolRow, PoolRowData } from '../types'
@@ -61,9 +61,10 @@ const poolToRowData = (pool: V2Pool): PoolRowData => ({
 
 /** Maps API2's Lite pool shape into the source-independent pool-list model. */
 const litePoolToRowData = (pool: LitePool): PoolRowData => {
-  const gauges = [
-    ...new Set([pool.gaugeAddress, pool.rootGaugeAddress].filter((address): address is Address => address != null)),
-  ].map(address => ({ address, isKilled: pool.gaugeIsKilled ?? false }))
+  const gauges = [...new Set(notFalsy(pool.gaugeAddress, pool.rootGaugeAddress))].map(address => ({
+    address,
+    isKilled: pool.gaugeIsKilled ?? false,
+  }))
   const coins = (pool.coins ?? []).map(coin => ({ address: coin.address, symbol: coin.symbol ?? '' }))
 
   return {
@@ -75,18 +76,16 @@ const litePoolToRowData = (pool: LitePool): PoolRowData => {
     crvApr: pool.gaugeCrvApr?.[0],
     crvAprBoosted: pool.gaugeCrvApr?.[1],
     extraRewardsApr: (pool.gaugeExtraRewards ?? []).flatMap(reward =>
-      reward.apr == null
-        ? []
-        : [
-            {
-              address: reward.tokenAddress,
-              apr: reward.apr,
-              decimals: Number(reward.decimals),
-              name: reward.name,
-              price: reward.tokenPrice,
-              symbol: reward.symbol,
-            },
-          ],
+      notFalsy(
+        reward.apr != null && {
+          address: reward.tokenAddress,
+          apr: reward.apr,
+          decimals: Number(reward.decimals),
+          name: reward.name,
+          price: reward.tokenPrice,
+          symbol: reward.symbol,
+        },
+      ),
     ),
     gauge: gauges[0],
     gauges,
