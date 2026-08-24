@@ -5,7 +5,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { FetchError, fetchJson } from '@primitives/fetch.utils'
 import { assert, maybe, notFalsy } from '@primitives/objects.utils'
-import type { RouteStep, RouterRouteResponse } from '@primitives/router.utils'
+import type { RouterRouteResponse, RouteStep } from '@primitives/router.utils'
 import {
   calculateFeePercentage,
   combineFeePercentages,
@@ -18,14 +18,11 @@ import type { ZeroExQuoteRequest, ZeroExQuoteResponse } from './zeroex.types'
 const { ZEROEX_API_URL = 'https://api.0x.org', ZEROEX_API_KEY } = process.env
 const PROTOCOL = '0x' as const
 
-async function getZeroExQuote({ chainId, ...params }: ZeroExQuoteRequest) {
-  const quote = await fetchJson<ZeroExQuoteResponse>(
+const getZeroExQuote = async ({ chainId, ...params }: ZeroExQuoteRequest) =>
+  await fetchJson<ZeroExQuoteResponse>(
     `${ZEROEX_API_URL}/swap/allowance-holder/quote?${new URLSearchParams({ ...params, chainId: `${chainId}` })}`,
     { headers: { '0x-api-key': assert(ZEROEX_API_KEY, 'Missing 0x API KEY'), '0x-version': 'v2' } },
   )
-  assert(quote.liquidityAvailable, `0x quote error - no liquidity available`)
-  return quote
-}
 
 /**
  * Normalizes 0x volume fees into one effective percentage.
@@ -89,9 +86,12 @@ export const buildZeroExRouteResponse = async (
       swapFeeToken: sellToken,
     })),
   }
-  const { buyAmount, fees, route, sellAmount, transaction } = await getZeroExQuote(params).catch(error =>
-    logZeroExError(error, log, params),
-  )
+  const quote = await getZeroExQuote(params).catch(error => logZeroExError(error, log, params))
+  if (!quote?.liquidityAvailable) {
+    log.info({ message: '0x quote returned no liquidity', params, quote })
+    return []
+  }
+  const { buyAmount, fees, route, sellAmount, transaction } = quote
   const { data, gas, to, value } = transaction
   return [
     {
