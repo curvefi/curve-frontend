@@ -28,14 +28,13 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare, apiMa
         labelTooltip={{
           title: t`The price source that determines your collateral value, health, and when your position moves toward soft liquidation.`,
         }}
-        value={mapQuery(oraclePrice, data => formatNumber(data, { abbreviate: false, fallback: '-' }))}
-        valueTooltip={formatNumber(oraclePrice.data, { decimals: 5, abbreviate: false, fallback: '-' })}
+        value={mapQuery(oraclePrice, data => formatNumber(data, 'pool.parameter'))}
       />
       {enablePricePerShare && marketId && (
         <ActionInfo
           testId="market-price-per-share"
           label={t`Price per share`}
-          value={mapQuery(pricePerShare, data => formatNumber(data, { decimals: 5, abbreviate: false, fallback: '-' }))}
+          value={mapQuery(pricePerShare, data => formatNumber(data, 'pool.parameter'))}
         />
       )}
     </>

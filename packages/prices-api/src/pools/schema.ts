@@ -192,7 +192,7 @@ const poolLiquidityEvent = z
 
 const poolSnapshot = z
   .object({
-    timestamp: z.number(),
+    timestamp,
     a: z.number().nullable(),
     fee: z.number().nullable(),
     admin_fee: z.number().nullable(),

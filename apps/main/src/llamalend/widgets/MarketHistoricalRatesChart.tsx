@@ -30,7 +30,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
-import { formatNumber, TIME_OPTION_MS } from '@ui-kit/utils'
+import { decimal, formatNumber, TIME_OPTION_MS } from '@ui-kit/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
 import { useMarketContext } from '../features/market-context'
 import { MarketCardHeader } from './MarketCardHeader'
@@ -264,7 +264,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
-            yTickFormatter={value => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 2 })}
+            yTickFormatter={value => formatNumber(decimal(value), 'percent.value')}
             yPaddingRatio={0.05}
             renderTooltip={HistoricalRatesTooltip}
           />
