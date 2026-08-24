@@ -35,7 +35,7 @@ type HealthQueryOptions = UseQueryOptions<Decimal, Error, Decimal, QueryKey>
  *   In or below soft-liq healthFull = healthNotFull, above soft-liq healthFull > healthNotFull
  *   When healthNotFull is below 0, the user is in soft-liq and we should return the corresponding metric.
  */
-const combineHealth = ([healthFull, healthNotFull]: Query<Decimal>[]) => ({
+const combineHealth = ([healthFull, healthNotFull]: [Query<Decimal>, Query<Decimal>]) => ({
   data: maybes([healthFull?.data, healthNotFull?.data], (full, notFull) => (+notFull < 0 ? notFull : full)),
   ...combineQueryState(healthFull, healthNotFull),
 })
@@ -46,4 +46,4 @@ const combineHealth = ([healthFull, healthNotFull]: Query<Decimal>[]) => ({
  * @returns Combined health query result.
  */
 export const useHealthQueries = (getOptions: (isFull: boolean) => HealthQueryOptions) =>
-  useQueries({ queries: [true, false].map(getOptions), combine: combineHealth })
+  useQueries({ queries: [getOptions(true), getOptions(false)], combine: combineHealth })

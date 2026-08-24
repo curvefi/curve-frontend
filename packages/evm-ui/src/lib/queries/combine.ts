@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { q, Query, QueryProp } from '@ui-kit/types/util'
 import { decimalMin } from '@ui-kit/utils/decimal'
 
@@ -44,13 +44,9 @@ export const useCombinedQueries = <const TQueries extends Queries, TResult>(
 /** Combines multiple queries into a query whose data is keyed by the matching key list. */
 export const combineQueriesToObject = <TData, K extends string = string>(results: Query<TData>[], keys: readonly K[]) =>
   q<Record<K, TData>>({
-    data: (results.some(({ data }) => data != null)
-      ? Object.fromEntries(
-          notFalsy(...results.map(({ data }, index) => data != null && ([keys[index], data] as const))),
-        )
-      : results.some(({ data }) => data === null)
-        ? null
-        : undefined) as Record<K, TData> | undefined,
+    data: results.some(({ data }) => data != null)
+      ? fromEntries(notFalsy(...results.map(({ data }, index) => data != null && ([keys[index], data] as const))))
+      : undefined,
     ...combineQueryState(...results),
   })
 
