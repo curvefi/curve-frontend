@@ -1,7 +1,7 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
-import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
+import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import { getBlockchainId } from '@curvefi/prices-api'
 import {
@@ -15,7 +15,7 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
 import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
 import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { fakeLoadingQ } from '@evm-ui/types/util'
+import { fakeLoadingQ, mapQuery } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
@@ -35,12 +35,9 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const { isHydrated } = useCurve()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
-  const poolPriceApi = usePoolsPricesApi({ blockchainId: network })
-  const { data: pricesApiPoolsMapper } = poolPriceApi
-  const poolTokens = useMemo(
-    () => pricesApiPoolsMapper?.[poolAddress]?.coins ?? [],
-    [pricesApiPoolsMapper, poolAddress],
-  )
+  const poolPriceApi = usePoolPricesApi({ blockchainId: network, poolAddress })
+
+  const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
   const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
   const poolTrades = usePoolTrades({

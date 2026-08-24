@@ -23,7 +23,7 @@ import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@evm-ui/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@evm-ui/types/util'
-import { formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
+import { decimal, formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { formatDate } from '@legacy-ui/utils'
 import { CardContent, Stack } from '@mui/material'
@@ -264,7 +264,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
-            yTickFormatter={value => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 2 })}
+            yTickFormatter={value => formatNumber(decimal(value), 'percent.value')}
             yPaddingRatio={0.05}
             renderTooltip={HistoricalRatesTooltip}
           />

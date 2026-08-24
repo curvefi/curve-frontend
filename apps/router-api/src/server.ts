@@ -6,8 +6,5 @@ export const createRouterApiServer = (env = process.env) =>
   createApiServer({ serviceName: 'router-api', env }).get<{ Querystring: RoutesQuery }>(
     ROUTES_PATH,
     RoutesOpts,
-    async (request, reply) => {
-      const { status, data } = await getRoutes(request)
-      return reply.code(status).send(data)
-    },
+    getRoutes,
   )

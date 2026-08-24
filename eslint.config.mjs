@@ -17,6 +17,7 @@ import { noJsxStringLiteralBracesRule } from './.eslint/no-jsx-string-literal-br
 import { noQueryComponentPropsRule } from './.eslint/no-query-component-props.rule.mjs'
 import { noMutableArrayMethodsRule } from './.eslint/no-mutable-array-methods.rule.mjs'
 import { noRedundantTernaryRule } from './.eslint/no-redundant-ternary.rule.mjs'
+import { noRouterNavigateOnClickRule } from './.eslint/no-router-navigate-on-click.rule.mjs'
 import { noSingleLineNamedFunctionsRule } from './.eslint/no-single-line-named-functions.rule.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -62,6 +63,7 @@ const config = [
           'no-query-component-props': noQueryComponentPropsRule,
           'no-mutable-array-methods': noMutableArrayMethodsRule,
           'no-redundant-ternary': noRedundantTernaryRule,
+          'no-router-navigate-on-click': noRouterNavigateOnClickRule,
           'no-single-line-named-functions': noSingleLineNamedFunctionsRule,
         },
       },
@@ -90,6 +92,7 @@ const config = [
       'local/no-query-component-props': 'error',
       'local/no-mutable-array-methods': 'error',
       'local/no-redundant-ternary': 'error',
+      'local/no-router-navigate-on-click': 'error',
       'local/no-single-line-named-functions': 'error',
 
       'object-shorthand': 'warn',

@@ -1,4 +1,3 @@
-import { styled } from 'styled-components'
 import {
   STABLESWAP,
   STABLESWAPOLD,
@@ -10,8 +9,9 @@ import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useParams, useNavigate } from '@evm-ui/hooks/router'
+import { useParams } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import Button from '@mui/material/Button'
 
 export const AddGaugeLink = ({
@@ -26,7 +26,7 @@ export const AddGaugeLink = ({
   const setLpTokenAddress = useStore(state => state.deployGauge.setLpTokenAddress)
 
   const params = useParams<PoolUrlParams>()
-  const push = useNavigate()
+  const deployGaugePath = getPath(params, `/deploy-gauge`)
 
   const handleClick = () => {
     if (chainId === 1) {
@@ -48,18 +48,11 @@ export const AddGaugeLink = ({
     } else if (!poolDataCacheOrApi.pool.isNg && !poolDataCacheOrApi.pool.isCrypto) {
       setCurrentPoolType(STABLESWAPOLD)
     }
-
-    push(getPath(params, `/deploy-gauge`))
   }
 
   return (
-    <AddGaugeWrapper>
-      <Button onClick={handleClick}>{t`Add Gauge`} </Button>
-    </AddGaugeWrapper>
+    <Button component={RouterLink} href={deployGaugePath} onClick={handleClick}>
+      {t`Add Gauge`}
+    </Button>
   )
 }
-
-const AddGaugeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`

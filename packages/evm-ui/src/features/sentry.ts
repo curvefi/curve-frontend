@@ -1,5 +1,5 @@
 import { IS_CYPRESS, IS_PREVIEW_HOST } from '@evm-ui/utils/env'
-import { type Extras } from '@sentry/core'
+import { type Event, type Extras } from '@sentry/core'
 import {
   addBreadcrumb as addSentryBreadcrumb,
   captureException,
@@ -36,9 +36,10 @@ export const initSentry = () =>
       ...integrations.filter(i => i.name !== 'BrowserSession'), // we don't use session tracking
       thirdPartyErrorFilterIntegration({
         filterKeys: [SENTRY_APPLICATION_KEY],
-        behaviour: 'drop-error-if-exclusively-contains-third-party-frames',
+        behaviour: 'apply-tag-if-exclusively-contains-third-party-frames',
       }),
     ],
+    beforeSend: event => (isUserErrorReport(event) || !event.tags?.third_party_code ? event : null),
     sendClientReports: false, // prevents client_report envelopes for dropped events
     tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
     // Filter out noise
@@ -59,6 +60,8 @@ export const initSentry = () =>
       "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
     ],
   })
+
+const isUserErrorReport = (event: Event) => event.extra?.userReport === true
 
 /**
  * Capture an error manually with optional context.

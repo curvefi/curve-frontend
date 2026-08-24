@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { type ReactNode, useEffect, useMemo } from 'react'
 import { OverlayProvider } from 'react-aria'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
@@ -11,7 +11,6 @@ import { useWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/useWag
 import { BackendMaintenanceModal } from '@evm-ui/features/maintenance/components/BackendMaintenanceModal'
 import { MaintenancePage } from '@evm-ui/features/maintenance/components/MaintenancePage'
 import { useMaintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
-import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
 import { addBreadcrumb } from '@evm-ui/features/sentry'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { usePathname } from '@evm-ui/hooks/router'
@@ -25,6 +24,7 @@ import { getCurrentApp } from '@evm-ui/shared/routes'
 import { ThemeProvider } from '@evm-ui/shared/ui/ThemeProvider'
 import { IS_CYPRESS } from '@evm-ui/utils'
 import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
+import MuiLink from '@mui/material/Link'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
@@ -44,8 +44,14 @@ const useBreadcrumbs = (pathname: string, { origin, search } = window.location) 
     [origin, pathname, search],
   )
 
-// Inner component that uses TanStack Query hooks
-const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: Maintenance }) => {
+const WagmiConfigProvider = ({ children }: { children: ReactNode }) => {
+  const { data: networks } = useNetworksQuery()
+  const config = useWagmiConfig(networks)
+  return config && networks ? <WagmiProvider config={config}>{children}</WagmiProvider> : <Loading />
+}
+
+export const NetworkAwareLayout = () => {
+  const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
   const { data: networks } = useNetworksQuery()
   const network = useNetworkFromUrl(networks)
   const pathname = usePathname()
@@ -53,55 +59,51 @@ const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: Mainte
   const onChainUnavailable = useOnChainUnavailable(networks)
   const { hydrate: dex } = useDexStore()
   const hydrate = useMemo(() => ({ dex }), [dex])
-  const config = useWagmiConfig(networks)
   useBreadcrumbs(pathname)
-  useLayoutStoreResponsive()
 
-  return config && networks ? (
-    <WagmiProvider config={config}>
-      <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
-        {network ? (
-          <GlobalLayout
-            backendMaintenance={backendMaintenance}
-            currentApp={currentApp}
-            network={network}
-            networks={networks}
-          >
-            <HeadContent />
-            <Outlet />
-          </GlobalLayout>
-        ) : (
-          <Loading />
-        )}
-      </CurveProvider>
-    </WagmiProvider>
-  ) : (
-    <Loading />
+  return (
+    <>
+      {backendMaintenance.isMaintenanceMode ? (
+        <MaintenancePage />
+      ) : (
+        <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
+          {network && networks ? (
+            <GlobalLayout
+              backendMaintenance={backendMaintenance}
+              currentApp={currentApp}
+              network={network}
+              networks={networks}
+            >
+              <HeadContent />
+              <Outlet />
+            </GlobalLayout>
+          ) : (
+            <Loading />
+          )}
+          {!IS_CYPRESS && <TanStackRouterDevtools />}
+        </CurveProvider>
+      )}
+      {!IS_CYPRESS && <BackendMaintenanceModal {...backendMaintenance} />}
+    </>
   )
 }
 
-export const RootLayout = () => {
+export const RootLayout = ({ children }: { children: ReactNode }) => {
   const theme = useUserProfileStore(state => state.theme)
-  const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
   const devTools = !IS_CYPRESS
   useBodyThemeClass()
+  useLayoutStoreResponsive()
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>
-        <ErrorBoundary title={t`Layout error`}>
+        <ErrorBoundary title={t`Root layout error`} LinkComponent={MuiLink}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              {backendMaintenance.isMaintenanceMode ? (
-                <MaintenancePage />
-              ) : (
-                <NetworkAwareLayout backendMaintenance={backendMaintenance} />
-              )}
-              {!IS_CYPRESS && <BackendMaintenanceModal {...backendMaintenance} />}
+              <WagmiConfigProvider>{children}</WagmiConfigProvider>
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>
-          {devTools && <TanStackRouterDevtools />}
         </ErrorBoundary>
       </ThemeProvider>
     </StyleSheetManager>

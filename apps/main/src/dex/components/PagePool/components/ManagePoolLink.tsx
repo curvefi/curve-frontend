@@ -1,6 +1,6 @@
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
+import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
 import { t } from '@evm-ui/lib/i18n'
 import { getInternalUrl } from '@evm-ui/shared/routes'
@@ -15,8 +15,7 @@ const hasRefuelMethod = (poolMethods?: string[]) => poolMethods?.includes('donat
 
 export const ManagePoolLink = ({ chainId, poolAddress }: { chainId: number; poolAddress: string | undefined }) => {
   const { data: network } = useNetworkByChain({ chainId })
-  const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: network?.networkId as Chain })
-  const pricesApiPoolData = poolAddress ? pricesApiPoolsMapper?.[poolAddress] : undefined
+  const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: network?.networkId as Chain, poolAddress })
 
   return (
     poolAddress != null &&

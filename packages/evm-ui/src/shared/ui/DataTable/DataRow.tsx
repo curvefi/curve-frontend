@@ -94,6 +94,7 @@ export const DataRow = <T extends TableItem>({
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
+          // eslint-disable-next-line local/no-router-navigate-on-click -- A `<tr>` cannot be a link.
           onClick={isMobile ? () => row.toggleExpanded() : hasUrl ? onClickDesktop : undefined}
         >
           {visibleCells.map((cell, index) => (

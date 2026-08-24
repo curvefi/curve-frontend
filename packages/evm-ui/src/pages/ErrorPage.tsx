@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { type ElementType, useCallback, useState } from 'react'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
@@ -22,12 +22,14 @@ export const ErrorPage = ({
   resetError,
   continueUrl,
   error,
+  LinkComponent: Link = RouterLink,
 }: {
   title: string
   subtitle: string
   resetError?: () => void
   continueUrl?: string
   error?: Error | string
+  LinkComponent?: ElementType
 }) => {
   const navHeight = useLayoutStore(state => state.navHeight)
   const [resetClicked, setResetClicked] = useState(false)
@@ -72,7 +74,7 @@ export const ErrorPage = ({
       <Stack direction="row" spacing={Spacing.sm} sx={{ margin: 2 }}>
         {continueUrl ? (
           <Button
-            component={RouterLink}
+            component={Link}
             href={continueUrl}
             variant="contained"
             data-testid="continue-button"
@@ -85,7 +87,7 @@ export const ErrorPage = ({
             data-testid="retry-error-button"
           >{t`Try again`}</Button>
         )}
-        <Button component={RouterLink} href="/" variant="contained">
+        <Button component={Link} href="/" variant="contained">
           {t`Go to homepage`}
         </Button>
         <Button onClick={openReportModal} color="secondary" data-testid="submit-error-report-button">
