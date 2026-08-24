@@ -548,7 +548,6 @@ export const QuickSwap = ({
               tokens={tokens}
               balances={balances}
               tokenPrices={tokenPrices}
-              disableMyTokens
               onToken={({ address: toAddress }) => {
                 const fromAddress =
                   toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress

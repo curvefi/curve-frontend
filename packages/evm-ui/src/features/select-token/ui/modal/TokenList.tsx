@@ -10,6 +10,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { orderSearchTokens } from '../../search-ordering'
 import type { TokenOption as Option } from '../../types'
 import { ErrorAlert } from './ErrorAlert'
 import { FavoriteTokens } from './FavoriteTokens'
@@ -65,11 +66,16 @@ export const TokenList = ({
   const showFavorites = !!favorites?.length && !search
 
   const tokensSearched = useFuzzySearch(tokens, search, ['symbol', 'address'])
+  const [searchedMyTokens, searchedAllTokens] = useMemo(
+    () =>
+      disableSorting || !search ? [undefined, undefined] : orderSearchTokens(tokensSearched, { balances, tokenPrices }),
+    [disableSorting, search, tokensSearched, balances, tokenPrices],
+  )
 
   /**
    * Filters and sorts tokens that the user owns (has a balance > 0).
    *
-   * When disableSorting is false, tokens are sorted by:
+   * Outside of search, when disableSorting is false, tokens are sorted by:
    * 1. USD value of balance (highest first)
    * 2. Raw token balance (highest first) as a tiebreaker
    *
@@ -77,6 +83,8 @@ export const TokenList = ({
    */
   const myTokens = useMemo(() => {
     if (disableMyTokens) return []
+
+    if (searchedMyTokens) return searchedMyTokens
 
     const balanceTokens = tokensSearched.filter(token => +(balances?.[token.address] ?? 0) > 0)
 
@@ -94,7 +102,7 @@ export const TokenList = ({
     }
 
     return balanceTokens
-  }, [disableMyTokens, tokensSearched, disableSorting, balances, tokenPrices])
+  }, [disableMyTokens, searchedMyTokens, tokensSearched, disableSorting, balances, tokenPrices])
 
   /**
    * Filters tokens to show only those with significant value.
@@ -132,6 +140,9 @@ export const TokenList = ({
    * This keeps the UI clean while ensuring all tokens remain accessible.
    */
   const allTokens = useMemo(() => {
+    if (searchedAllTokens)
+      return disableMyTokens ? [...(searchedMyTokens ?? []), ...searchedAllTokens] : searchedAllTokens
+
     const allTokensBase = notFalsy(
       disableMyTokens ? tokensSearched : tokensSearched.filter(token => +(balances?.[token.address] ?? 0) === 0),
 
@@ -145,7 +156,17 @@ export const TokenList = ({
       ? allTokensBase
       : // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
-  }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy])
+  }, [
+    disableMyTokens,
+    searchedMyTokens,
+    searchedAllTokens,
+    tokensSearched,
+    showPreviewMy,
+    myTokens,
+    disableSorting,
+    balances,
+    previewMy,
+  ])
 
   /**
    * Filters tokens to show in the preview of "All tokens" section.
@@ -176,7 +197,7 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            preview={previewMy}
+            preview={search ? myTokens : previewMy}
             showAllLabel={t`Show dust`}
             isLoading={isLoading}
             onShowAll={closeShowPreviewMy}
@@ -189,7 +210,7 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            preview={previewAll}
+            preview={search ? allTokens : previewAll}
             isLoading={isLoading}
             onShowAll={closeShowPreviewAll}
             onToken={onToken}
