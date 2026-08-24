@@ -1,5 +1,4 @@
 import type { ComponentProps, ComponentPropsWithRef } from 'react'
-import { useState } from 'react'
 import { Item, Section } from 'react-stately'
 import { styled, type IStyledComponent } from 'styled-components'
 import { ComboBoxAddress } from '@/dex/components/PageDashboard/components/ComboBoxAddress'
@@ -11,8 +10,9 @@ import { SummaryTotal } from '@/dex/components/PageDashboard/components/SummaryT
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { useStore } from '@/dex/store/useStore'
 import { useLayoutStore } from '@evm-ui/features/layout'
+import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { Box } from '@legacy-ui/Box'
 import { SpinnerWrapper } from '@legacy-ui/Spinner'
 import { Stats } from '@legacy-ui/Stats'
@@ -20,9 +20,9 @@ import { shortenAccount } from '@legacy-ui/utils'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 
 type Tab = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
-const tabs: TabOption<Tab>[] = [
-  { value: 'DAY_PROFITS', label: t`Daily Profits` },
-  { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens` },
+const menu: TabItem<Tab>[] = [
+  { value: 'DAY_PROFITS', label: t`Daily Profits`, component: SummaryRecurrence },
+  { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens`, component: SummaryClaimable },
 ]
 
 export const Summary = () => {
@@ -33,7 +33,7 @@ export const Summary = () => {
 
   const networkHaveLockedCrv = rChainId === 1
 
-  const [tab, setTab] = useState<Tab>('DAY_PROFITS')
+  const { tab, tabs, content, onChange } = useTabs({ menu })
 
   return (
     <div>
@@ -76,16 +76,14 @@ export const Summary = () => {
         {isMdUp ? (
           <>
             <SummaryRecurrence title="Daily" />
-            {/* eslint-disable-next-line @typescript-eslint/no-base-to-string -- Existing violation before enabling this rule. */}
-            <SummaryClaimable title={tabs[1].label?.toString()} />
+            <SummaryClaimable title={t`Claimable Tokens`} />
           </>
         ) : (
           <>
             <TabContentWrapper>
               <SummaryTitle>{t`Total Summary`}</SummaryTitle>
-              <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} />
-              {tab === 'DAY_PROFITS' && <SummaryRecurrence />}
-              {tab === 'CLAIMABLE_TOKENS' && <SummaryClaimable />}
+              <TabsSwitcher variant="underlined" value={tab.value} onChange={onChange} options={tabs} />
+              {content}
             </TabContentWrapper>
           </>
         )}

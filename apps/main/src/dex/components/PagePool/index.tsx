@@ -4,7 +4,7 @@ import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { Deposit } from '@/dex/components/PagePool/Deposit'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, Seed, TransferFormType } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, Seed, TransferFormType, TransferProps } from '@/dex/components/PagePool/types'
 import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { Withdraw } from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
@@ -27,20 +27,56 @@ import type { Chain } from '@curvefi/prices-api'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { useNavigate } from '@evm-ui/hooks/router'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
+import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { type TabOption, TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { FormMargins } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { AlertBox } from '@legacy-ui/AlertBox'
-import { notFalsy } from '@primitives/objects.utils'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
+type TransferTabsParams = TransferProps & {
+  isAvailableManageGauge: boolean
+}
+
+const DepositTab = (params: TransferTabsParams) => <Deposit {...params} />
+
+const WithdrawTab = (params: TransferTabsParams) => <Withdraw {...params} />
+
+const SwapTab = ({ poolAlert, maxSlippage, seed, tokensMapper, ...pageTransferProps }: TransferTabsParams) =>
+  poolAlert?.isDisableSwap ? (
+    <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+  ) : (
+    <Swap
+      {...pageTransferProps}
+      poolAlert={poolAlert}
+      maxSlippage={maxSlippage}
+      seed={seed}
+      tokensMapper={tokensMapper}
+    />
+  )
+
+const ManageGaugeTab = ({ poolData, routerParams }: TransferTabsParams) =>
+  poolData ? <ManageGauge poolId={poolData.pool.id} chainId={routerParams.rChainId} /> : null
+
+const menu: TabItem<TransferFormType, TransferTabsParams>[] = [
+  { value: 'deposit', label: t`Deposit`, component: DepositTab },
+  { value: 'withdraw', label: t`Withdraw`, component: WithdrawTab },
+  { value: 'swap', label: t`Swap`, component: SwapTab },
+  {
+    value: 'manage-gauge',
+    label: t`Gauge`,
+    visible: ({ isAvailableManageGauge }) => isAvailableManageGauge,
+    component: ManageGaugeTab,
+  },
+]
+
 export const Transfer = (pageTransferProps: PageTransferProps) => {
-  const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
+  const { params, curve, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const { signerAddress } = curve ?? {}
@@ -111,16 +147,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     [isGaugeManager, isPendingGaugeManager, isPendingRewardsDistributors, isRewardsDistributor],
   )
 
-  const tabs: TabOption<TransferFormType>[] = useMemo(
-    () => [
-      { value: 'deposit', label: t`Deposit` },
-      { value: 'withdraw', label: t`Withdraw` },
-      { value: 'swap', label: t`Swap` },
-      ...notFalsy(isAvailableManageGauge && { value: 'manage-gauge' as const, label: t`Gauge` }),
-    ],
-    [isAvailableManageGauge],
-  )
-
   const toggleForm = useCallback(
     (updatedFormType: TransferFormType) => {
       push(getPath(params, `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${updatedFormType}`))
@@ -133,6 +159,28 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       toggleForm('deposit')
     }
   }, [isAvailableManageGauge, rFormType, toggleForm])
+
+  const formTabs = useTabs({
+    menu,
+    params: {
+      ...pageTransferProps,
+      blockchainId: networkId,
+      poolAlert,
+      maxSlippage,
+      seed,
+      tokensMapper,
+      isAvailableManageGauge,
+    },
+    value: rFormType as TransferFormType | undefined,
+  })
+  const formTabOptions = useMemo(
+    () =>
+      formTabs.tabs.map(tab => ({
+        ...tab,
+        href: getPath(params, `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${tab.value}`),
+      })),
+    [formTabs.tabs, params],
+  )
 
   return (
     <>
@@ -159,45 +207,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             <FormMargins>
               <TabsSwitcher
                 variant="contained"
-                value={rFormType || 'deposit'}
-                onChange={key => toggleForm(key as TransferFormType)}
-                options={tabs}
+                value={formTabs.tab.value}
+                options={formTabOptions}
                 testIdPrefix="pool-form-tab"
               />
-              {rFormType === 'swap' ? (
-                poolAlert?.isDisableSwap ? (
-                  <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-                ) : (
-                  <Swap
-                    {...pageTransferProps}
-                    poolAlert={poolAlert}
-                    maxSlippage={maxSlippage}
-                    seed={seed}
-                    tokensMapper={tokensMapper}
-                  />
-                )
-              ) : rFormType === 'deposit' ? (
-                <Deposit
-                  {...pageTransferProps}
-                  blockchainId={networkId}
-                  hasDepositAndStake={hasDepositAndStake}
-                  poolAlert={poolAlert}
-                  maxSlippage={maxSlippage}
-                  seed={seed}
-                  tokensMapper={tokensMapper}
-                />
-              ) : rFormType === 'withdraw' ? (
-                <Withdraw
-                  {...pageTransferProps}
-                  blockchainId={networkId}
-                  poolAlert={poolAlert}
-                  maxSlippage={maxSlippage}
-                  seed={seed}
-                  tokensMapper={tokensMapper}
-                />
-              ) : (
-                rFormType === 'manage-gauge' && poolData && <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
-              )}
+              {formTabs.content}
             </FormMargins>
           ),
         }}

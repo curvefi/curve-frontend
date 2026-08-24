@@ -1,5 +1,4 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import { findTab } from '@evm-ui/hooks/useTabs'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import Stack from '@mui/material/Stack'
 import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
@@ -12,19 +11,18 @@ type UserPositionProps = {
 }
 
 export const UserPosition = ({ blockchainId, chainId, poolDataCacheOrApi, poolId }: UserPositionProps) => {
-  const { hasPosition, tab, onTabChange, tabOptions } = usePositionDetailsTabs({
+  const { hasPosition, tab, tabs, onChange, content } = usePositionDetailsTabs({
     blockchainId,
     chainId,
     poolDataCacheOrApi,
     poolId,
   })
-  const activeTab = findTab(tabOptions, tab)
 
   return (
     hasPosition && (
       <Stack>
-        <TabsSwitcher variant="contained" value={tab} onChange={onTabChange} options={tabOptions} />
-        <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{activeTab.render()}</Stack>
+        <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
+        <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{content}</Stack>
       </Stack>
     )
   )
