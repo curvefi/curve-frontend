@@ -4,7 +4,7 @@ import { STABLESWAP, CRYPTOSWAP, FXSWAP } from '@/dex/components/PageCreatePool/
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { Box } from '@ui/Box'
+import { Box } from '@legacy-ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {

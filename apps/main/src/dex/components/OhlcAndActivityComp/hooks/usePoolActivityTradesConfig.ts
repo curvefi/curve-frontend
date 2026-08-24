@@ -1,11 +1,11 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
-import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
+import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import { getBlockchainId } from '@curvefi/prices-api'
+import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
   type PoolTradeRow,
   POOL_TRADES_COLUMNS,
@@ -17,7 +17,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useCombinedQueries } from '@ui-kit/lib/queries/combine'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { fakeLoadingQ } from '@ui-kit/types/util'
+import { fakeLoadingQ, mapQuery } from '@ui-kit/types/util'
 import { getPageCount } from '@ui-kit/utils'
 
 type UsePoolActivityProps = {
@@ -35,12 +35,9 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const { isHydrated } = useCurve()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
-  const poolPriceApi = usePoolsPricesApi({ blockchainId: network })
-  const { data: pricesApiPoolsMapper } = poolPriceApi
-  const poolTokens = useMemo(
-    () => pricesApiPoolsMapper?.[poolAddress]?.coins ?? [],
-    [pricesApiPoolsMapper, poolAddress],
-  )
+  const poolPriceApi = usePoolPricesApi({ blockchainId: network, poolAddress })
+
+  const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
   const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
   const poolTrades = usePoolTrades({

@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import type { TooltipProps } from '@legacy-ui/Tooltip/types'
+import type { BaseConfig } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { TooltipProps } from '@ui/Tooltip/types'
-import type { BaseConfig } from '@ui/utils'
 import { BannerProps } from '@ui-kit/shared/ui/Banner'
 
 export type { Provider } from '@ui-kit/lib/ethers'

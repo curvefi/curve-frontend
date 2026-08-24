@@ -1,0 +1,35 @@
+import { ReactNode, useRef } from 'react'
+import { useButton } from 'react-aria'
+import { OverlayTriggerState } from 'react-stately'
+import { styled } from 'styled-components'
+import { Button } from '@legacy-ui/Button'
+import type { ButtonProps } from '@legacy-ui/Button/types'
+import { Icon } from '@legacy-ui/Icon/Icon'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
+
+type OpenDialogButtonProps = {
+  children: ReactNode
+  overlayTriggerState: OverlayTriggerState
+  showCaret?: boolean
+} & ButtonProps
+
+export const OpenDialogButton = ({ children, overlayTriggerState, showCaret, ...props }: OpenDialogButtonProps) => {
+  const openButtonRef = useRef<HTMLButtonElement>(null)
+  const isMobile = useIsMobile()
+  const { buttonProps } = useButton(
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
+    { onPress: () => (isMobile ? setTimeout(overlayTriggerState.open, Duration.Delay) : overlayTriggerState.open()) },
+    openButtonRef,
+  )
+
+  return (
+    <Button size="medium" {...buttonProps} {...props} ref={openButtonRef}>
+      {children} {showCaret ? <StyledCaretDown16 name="CaretDown" size={16} /> : null}
+    </Button>
+  )
+}
+
+const StyledCaretDown16 = styled(Icon)`
+  margin-left: var(--spacing-1);
+`

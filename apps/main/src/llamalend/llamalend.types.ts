@@ -1,7 +1,7 @@
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import type { BaseConfig } from '@ui/utils'
+import type { BaseConfig } from '@legacy-ui/utils'
 
 export type LlamaNetwork<ChainId extends IChainId = IChainId> = BaseConfig<INetworkName, ChainId>
 export type NetworkDict<ChainId extends IChainId = IChainId> = Record<ChainId, LlamaNetwork<ChainId>>

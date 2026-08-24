@@ -13,8 +13,8 @@ import {
   removeCollateralFormValidationSuite,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { BaseConfig } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { BaseConfig } from '@ui/utils'
 import { useCallbackSync, useFormSync, useForm, useOnChangeCallback } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { mapQuery, type Range } from '@ui-kit/types/util'

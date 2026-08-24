@@ -48,8 +48,28 @@ const visitNotFoundPage = () => {
   return e2eBaseUrl() + url
 }
 
-function check500Error({ context }: { context: object }) {
+type SentryException = { type: string; value: string; stacktrace?: { frames?: object[] } }
+
+type SentryPayload = {
+  message?: string
+  fingerprint?: string[]
+  exception?: { values?: SentryException[] }
+  extra: { body: ErrorReportBody }
+}
+
+type ErrorReportBody = {
+  formData: ErrorReportFormValues
+  url: string
+  context: { title: string; subtitle: string }
+}
+
+function check500Error({ context }: ErrorReportBody, exception: SentryException | undefined) {
   const [expectedName, expectedMessage] = ['TypeError', 'toLowerCase is not a function']
+  expect(exception).to.deep.include({
+    type: expectedName,
+    value: expectedMessage,
+  })
+  expect(exception?.stacktrace?.frames ?? []).not.to.have.length(0)
   expect(Object.keys(context)).to.have.members(['title', 'subtitle', 'error'])
   const { subtitle, error, title } = context as Record<keyof ErrorContext, string>
   expect(title).to.equal('Unexpected Error')
@@ -65,12 +85,6 @@ function check500Error({ context }: { context: object }) {
     expect(stack).to.contain(expectedName)
     expect(stack).to.contain(expectedMessage)
   }
-}
-
-type ErrorReportBody = {
-  formData: ErrorReportFormValues
-  url: string
-  context: { title: string; subtitle: string }
 }
 
 describe('Error Boundary', () => {
@@ -99,16 +113,16 @@ describe('Error Boundary', () => {
       // eslint-disable-next-line @typescript-eslint/unbound-method
       ({ body: envelope, reply }: CyHttpMessages.IncomingHttpRequest<string, unknown>) => {
         const lines = envelope.split('\n').filter(Boolean)
-        const event = JSON.parse(lines[2]) as { extra: { body: ErrorReportBody } } // event payload is the third line
+        const event = JSON.parse(lines[2]) as SentryPayload // event payload is the third line
 
         const body = event.extra.body
-
         expect(Object.keys(body)).to.have.members(['formData', 'url', 'context'])
         expect(body.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
         expect(body.url).to.equal(url)
         if (is500) {
-          check500Error(body)
+          check500Error(body, event.exception?.values?.[0])
         } else {
+          expect(event.message).to.equal('Error Report')
           expect(body).to.deep.equal({
             formData: { address, contactMethod: 'email', contact, description },
             url,
@@ -148,7 +162,7 @@ describe('Error Boundary', () => {
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
   })
 
-  it('should open error report when app crashes before WagmiProvider', () => {
+  it('should open error report with wallet address when the route-aware layout crashes after WagmiProvider', () => {
     cy.visit('/dex/bad-chain', {
       onLoad: win => {
         const warn = win.console.warn
@@ -160,7 +174,28 @@ describe('Error Boundary', () => {
       },
     })
 
-    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Layout error')
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Root route error')
+    cy.get('[data-testid="submit-error-report-button"]').click()
+    cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
+    cy.get('[data-testid="submit-error-report-address"]')
+      .invoke('val')
+      .should('match', /^0x[a-fA-F0-9]{40}$/)
+  })
+
+  it('should open error report without wallet address when app crashes before WagmiProvider', () => {
+    cy.visit('/dex/ethereum/pools', {
+      onBeforeLoad: win => {
+        const OriginalURL = win.URL
+        win.URL = class extends OriginalURL {
+          constructor(url: string | URL, base?: string | URL) {
+            if (String(url).includes('etherscan')) throw new Error('Simulating error before WagmiProvider')
+            super(url, base)
+          }
+        }
+      },
+    })
+
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Root layout error')
     cy.get('[data-testid="submit-error-report-button"]').click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
     cy.get('[data-testid="submit-error-report-address"]').should('have.value', '')

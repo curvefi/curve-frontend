@@ -1,5 +1,5 @@
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { BaseConfig } from '@ui/utils'
+import type { BaseConfig } from '@legacy-ui/utils'
 
 export type ChainId = 1 // note lend also has other chains, but we only use eth in this app
 

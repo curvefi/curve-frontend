@@ -42,6 +42,12 @@ export const chains = [
 
 export type Chain = (typeof chains)[number]
 
+/** Chains used for Prices API LlamaLend position lookups; app-supported networks may differ. */
+export const LEND_CHAINS = ['ethereum', 'arbitrum', 'optimism', 'fraxtal', 'sonic'] as const satisfies Chain[]
+
+/** Chains used for Prices API crvUSD position lookups; app-supported networks may differ. */
+export const MINT_CHAINS = ['ethereum'] as const satisfies Chain[]
+
 export const isPricesApiChain = (chain: string): chain is Chain => chains.includes(chain as Chain)
 export const getBlockchainId = (networkId: string): Chain | undefined =>
   isPricesApiChain(networkId) ? networkId : undefined

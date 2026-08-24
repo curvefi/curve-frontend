@@ -12,13 +12,14 @@ import { curveProps } from '@/dex/lib/utils'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
-import { AlertBox } from '@ui/AlertBox'
-import { Button } from '@ui/Button'
-import { SpinnerWrapper, Spinner } from '@ui/Spinner'
-import { scanTxPath } from '@ui/utils'
+import { AlertBox } from '@legacy-ui/AlertBox'
+import { Button } from '@legacy-ui/Button'
+import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
+import { scanTxPath } from '@legacy-ui/utils'
+import MuiButton from '@mui/material/Button'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
-import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
@@ -32,7 +33,6 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
   const { data: networks } = useNetworks()
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
-  const push = useNavigate()
   const lpTokenAddress = useStore(state => state.deployGauge.lpTokenAddress)
   const currentPoolType = useStore(state => state.deployGauge.currentPoolType)
   const sidechainGauge = useStore(state => state.deployGauge.sidechainGauge)
@@ -42,8 +42,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
   const { connectState, connect: connectWallet } = useWallet()
   const isLoadingApi = !pageLoaded
   const restFullPathname = useRestFullPathname()
-
-  const handleConnectEth = () => push(getPath({ network: 'ethereum' }, `/${restFullPathname}`))
+  const connectEthPath = getPath({ network: 'ethereum' }, `/${restFullPathname}`)
 
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const handleClick = async () => {
@@ -82,9 +81,9 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
           <StyledSpinner isDisabled size={15} />
         </StyledSpinnerWrapper>
       ) : (
-        <StyledButton variant="icon-filled" onClick={() => handleConnectEth()}>
+        <MuiButton component={RouterLink} href={connectEthPath} variant="contained" fullWidth>
           {t`Connect to Ethereum`}
-        </StyledButton>
+        </MuiButton>
       )
     ) : haveSigner ? (
       <>
@@ -163,9 +162,9 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         <StyledSpinner isDisabled size={15} />
       </StyledSpinnerWrapper>
     ) : (
-      <StyledButton variant="icon-filled" onClick={() => handleConnectEth()}>
+      <MuiButton component={RouterLink} href={connectEthPath} variant="contained" fullWidth>
         {t`Connect to Ethereum`}
-      </StyledButton>
+      </MuiButton>
     )
   ) : haveSigner ? (
     <>

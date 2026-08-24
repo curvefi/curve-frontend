@@ -1,0 +1,45 @@
+import { Box } from '@legacy-ui/Box/Box'
+import { InputLabel } from '@legacy-ui/InputComp'
+import { Input } from '@legacy-ui/InputComp/Input'
+import { useDebounce } from '@ui-kit/hooks/useDebounce'
+import { useInputContext } from './InputContext'
+import type { InputLabelProps, InputProps } from './types'
+
+export const InputDebounced = ({
+  delay = 700,
+  disabled,
+  labelProps,
+  value,
+  onChange,
+  testId,
+  ...inputProps
+}: Omit<InputProps, 'onChange'> & {
+  delay?: number
+  labelProps?: InputLabelProps | false
+  value: string
+  testId?: string
+  onChange: (value: string) => void
+}) => {
+  const { disabled: contextDisabled } = useInputContext()
+  const [debouncedValue, handleInputChange] = useDebounce({
+    initialValue: value,
+    debounceMs: delay,
+    callback: onChange,
+  })
+
+  return (
+    <Box grid>
+      {labelProps && <InputLabel {...labelProps} testId={testId} />}
+      <Input
+        value={debouncedValue}
+        onChange={e => handleInputChange(e.target.value)}
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
+        disabled={contextDisabled || disabled}
+        testId={testId}
+        {...inputProps}
+      />
+    </Box>
+  )
+}
+
+InputDebounced.displayName = 'InputDebounced'

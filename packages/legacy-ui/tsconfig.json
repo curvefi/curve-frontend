@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@legacy-ui": ["./src/index.tsx"],
+      "@legacy-ui/*": ["./src/*"],
+      "@external-rewards": ["../external-rewards/src/index.ts"],
+      "@curvefi/prices-api": ["../prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../prices-api/src/*"],
+      "@primitives/*": ["../primitives/src/*"],
+      "@ui-kit/*": ["../evm-ui/src/*"]
+    }
+  },
+  "include": ["src", "../evm-ui/**/*.d.ts"]
+}

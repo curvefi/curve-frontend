@@ -1,7 +1,7 @@
 import { useChainId } from 'wagmi'
 import { FieldHelperUsdRate } from '@/dex/components/FieldHelperUsdRate'
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
-import { FlexContainer } from '@ui/styled-containers'
+import { FlexContainer } from '@legacy-ui/styled-containers'
 import { useFormContext } from '@ui-kit/features/forms'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 

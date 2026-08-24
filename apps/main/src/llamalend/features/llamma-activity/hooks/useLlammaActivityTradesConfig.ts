@@ -1,6 +1,6 @@
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
-import { scanAddressPath, scanTxPath } from '@ui/utils'
+import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import {
   type MarketTradeRow,
   LLAMMA_TRADES_COLUMNS,

@@ -1,0 +1,19 @@
+import type { AnchorHTMLAttributes } from 'react'
+import { styled } from 'styled-components'
+import type { LinkProps } from '@legacy-ui/Link/styles'
+import { linkStyles } from '@legacy-ui/Link/styles'
+
+export type ExternalLinkProps = {
+  isNumber?: boolean
+} & AnchorHTMLAttributes<HTMLAnchorElement> &
+  LinkProps
+
+export const ExternalLink = ({ className, children, ...props }: ExternalLinkProps) => (
+  <StyledLink target="_blank" {...props} className={className} rel="noreferrer noopener">
+    {children}
+  </StyledLink>
+)
+
+const StyledLink = styled.a`
+  ${linkStyles}
+`

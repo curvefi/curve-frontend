@@ -6,6 +6,15 @@ export { tvl } from './util'
 
 export type * from './schema'
 
+export const USER_MARKETS_FIRST_PAGE = 1
+export const USER_MARKETS_DEFAULT_PER_PAGE = 100
+
+type GetUserMarketsParams = {
+  page?: number
+  per_page?: number
+  include_closed?: boolean
+}
+
 export async function getChains(options?: Options): Promise<Chain[]> {
   const host = getHost(options)
 
@@ -70,9 +79,20 @@ export async function getAllUserMarkets(
   return Schema.getAllUserMarketsResponse.parse(response)
 }
 
-export async function getUserMarkets(userAddr: string, chain: Chain, options?: Options) {
+export async function getUserMarkets(
+  userAddr: string,
+  chain: Chain,
+  {
+    page = USER_MARKETS_FIRST_PAGE,
+    per_page = USER_MARKETS_DEFAULT_PER_PAGE,
+    include_closed = false,
+  }: GetUserMarketsParams = {},
+  options?: Options,
+) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/users/${chain}/${userAddr}?page=1&per_page=100&include_closed=false`)
+  const response = await fetch(
+    `${host}/v1/lending/users/${chain}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
+  )
 
   return Schema.getUserMarketsResponse.parse(response)
 }
@@ -91,12 +111,16 @@ export async function getAllUserLendingPositions(
 export async function getUserLendingPositions(
   userAddr: string,
   chain: Chain,
-  params: { include_closed?: boolean } = { include_closed: false },
+  {
+    page = USER_MARKETS_FIRST_PAGE,
+    per_page = USER_MARKETS_DEFAULT_PER_PAGE,
+    include_closed = false,
+  }: GetUserMarketsParams = {},
   options?: Options,
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/lending/users/lending_positions/${chain}/${userAddr}${addQueryString(params)}`,
+    `${host}/v1/lending/users/lending_positions/${chain}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
   )
 
   return Schema.getUserLendingPositionsResponse.parse(response)

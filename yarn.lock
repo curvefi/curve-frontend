@@ -3182,7 +3182,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/pluginutils@npm:^5.0.2, @rollup/pluginutils@npm:^5.1.3, @rollup/pluginutils@npm:^5.2.0":
+"@rollup/pluginutils@npm:^5.0.2, @rollup/pluginutils@npm:^5.1.3":
   version: 5.3.0
   resolution: "@rollup/pluginutils@npm:5.3.0"
   dependencies:
@@ -3195,6 +3195,22 @@ __metadata:
     rollup:
       optional: true
   checksum: 10c0/001834bf62d7cf5bac424d2617c113f7f7d3b2bf3c1778cbcccb72cdc957b68989f8e7747c782c2b911f1dde8257f56f8ac1e779e29e74e638e3f1e2cac2bcd0
+  languageName: node
+  linkType: hard
+
+"@rollup/pluginutils@npm:^5.3.0":
+  version: 5.4.0
+  resolution: "@rollup/pluginutils@npm:5.4.0"
+  dependencies:
+    "@types/estree": "npm:^1.0.0"
+    estree-walker: "npm:^2.0.2"
+    picomatch: "npm:^4.0.2"
+  peerDependencies:
+    rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  checksum: 10c0/ccc2cbd3a05df642df60ab05ffb81b2e564bd945e2a118bb8a474ea75b941033c8f44273133d4865643cca1492d0c80b14de1281f74779a64285a80fc3a194d8
   languageName: node
   linkType: hard
 
@@ -7574,56 +7590,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"curve-ui-kit@npm:*, curve-ui-kit@workspace:packages/curve-ui-kit":
-  version: 0.0.0-use.local
-  resolution: "curve-ui-kit@workspace:packages/curve-ui-kit"
-  dependencies:
-    "@chromatic-com/storybook": "npm:5.2.1"
-    "@coinbase/wallet-sdk": "npm:4.3.7"
-    "@emotion/react": "npm:11.14.0"
-    "@emotion/styled": "npm:11.14.1"
-    "@hookform/resolvers": "npm:5.4.0"
-    "@metamask/connect-evm": "npm:2.1.1"
-    "@mui/icons-material": "npm:9.3.1"
-    "@mui/material": "npm:9.3.1"
-    "@safe-global/safe-apps-provider": "npm:0.18.6"
-    "@safe-global/safe-apps-sdk": "npm:9.1.0"
-    "@sentry/react": "npm:10.68.0"
-    "@storybook/addon-a11y": "npm:10.5.5"
-    "@storybook/addon-docs": "npm:10.5.5"
-    "@storybook/addon-themes": "npm:10.5.5"
-    "@storybook/react-vite": "npm:10.5.5"
-    "@tanstack/query-async-storage-persister": "npm:5.101.4"
-    "@tanstack/react-query": "npm:5.101.4"
-    "@tanstack/react-query-devtools": "npm:5.101.4"
-    "@tanstack/react-query-persist-client": "npm:5.101.4"
-    "@tanstack/react-table": "npm:8.21.3"
-    "@types/lodash": "npm:*"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    "@vitejs/plugin-react": "npm:*"
-    "@walletconnect/ethereum-provider": "npm:2.23.10"
-    dayjs: "npm:1.11.21"
-    eslint: "npm:*"
-    lodash: "npm:*"
-    react-hook-form: "npm:7.77.0"
-    storybook: "npm:10.5.5"
-    typescript: "npm:*"
-    viem: "npm:2.55.10"
-    vite: "npm:*"
-    vitest: "npm:*"
-    wagmi: "npm:3.7.4"
-  peerDependencies:
-    echarts: "*"
-    echarts-for-react: "*"
-    ethers: "*"
-    immer: "*"
-    react: "*"
-    react-dom: "*"
-    zustand: "*"
-  languageName: unknown
-  linkType: soft
-
 "cypress@npm:15.19.0":
   version: 15.19.0
   resolution: "cypress@npm:15.19.0"
@@ -9011,6 +8977,56 @@ __metadata:
   languageName: node
   linkType: hard
 
+"evm-ui@npm:*, evm-ui@workspace:packages/evm-ui":
+  version: 0.0.0-use.local
+  resolution: "evm-ui@workspace:packages/evm-ui"
+  dependencies:
+    "@chromatic-com/storybook": "npm:5.2.1"
+    "@coinbase/wallet-sdk": "npm:4.3.7"
+    "@emotion/react": "npm:11.14.0"
+    "@emotion/styled": "npm:11.14.1"
+    "@hookform/resolvers": "npm:5.4.0"
+    "@metamask/connect-evm": "npm:2.1.1"
+    "@mui/icons-material": "npm:9.3.1"
+    "@mui/material": "npm:9.3.1"
+    "@safe-global/safe-apps-provider": "npm:0.18.6"
+    "@safe-global/safe-apps-sdk": "npm:9.1.0"
+    "@sentry/react": "npm:10.68.0"
+    "@storybook/addon-a11y": "npm:10.5.5"
+    "@storybook/addon-docs": "npm:10.5.5"
+    "@storybook/addon-themes": "npm:10.5.5"
+    "@storybook/react-vite": "npm:10.5.5"
+    "@tanstack/query-async-storage-persister": "npm:5.101.4"
+    "@tanstack/react-query": "npm:5.101.4"
+    "@tanstack/react-query-devtools": "npm:5.101.4"
+    "@tanstack/react-query-persist-client": "npm:5.101.4"
+    "@tanstack/react-table": "npm:8.21.3"
+    "@types/lodash": "npm:*"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
+    "@vitejs/plugin-react": "npm:*"
+    "@walletconnect/ethereum-provider": "npm:2.23.10"
+    dayjs: "npm:1.11.21"
+    eslint: "npm:*"
+    lodash: "npm:*"
+    react-hook-form: "npm:7.77.0"
+    storybook: "npm:10.5.5"
+    typescript: "npm:*"
+    viem: "npm:2.55.10"
+    vite: "npm:*"
+    vitest: "npm:*"
+    wagmi: "npm:3.7.4"
+  peerDependencies:
+    echarts: "*"
+    echarts-for-react: "*"
+    ethers: "*"
+    immer: "*"
+    react: "*"
+    react-dom: "*"
+    zustand: "*"
+  languageName: unknown
+  linkType: soft
+
 "execa@npm:4.1.0":
   version: 4.1.0
   resolution: "execa@npm:4.1.0"
@@ -10232,6 +10248,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"legacy-ui@npm:*, legacy-ui@workspace:packages/legacy-ui":
+  version: 0.0.0-use.local
+  resolution: "legacy-ui@workspace:packages/legacy-ui"
+  dependencies:
+    "@carbon/icons-react": "npm:11.84.0"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
+    eslint: "npm:*"
+    react-aria: "npm:3.50.0"
+    react-stately: "npm:3.48.0"
+    typescript: "npm:*"
+  peerDependencies:
+    bignumber.js: "*"
+    ethers: "*"
+    lodash: "*"
+    react: "*"
+    react-dom: "*"
+    styled-components: "*"
+  languageName: unknown
+  linkType: soft
+
 "levn@npm:^0.4.1":
   version: 0.4.1
   resolution: "levn@npm:0.4.1"
@@ -10510,15 +10547,15 @@ __metadata:
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     "@vitejs/plugin-react": "npm:*"
-    curve-ui-kit: "npm:*"
     eslint: "npm:*"
+    evm-ui: "npm:*"
     external-rewards: "npm:*"
     fuse.js: "npm:7.5.0"
+    legacy-ui: "npm:*"
     lightweight-charts: "npm:5.2.0"
     memoizee: "npm:0.4.17"
     pinst: "npm:3.0.0"
     typescript: "npm:*"
-    ui: "npm:*"
     vest: "npm:5.4.6"
     vite: "npm:*"
     vite-plugin-svgr: "npm:*"
@@ -13327,27 +13364,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ui@npm:*, ui@workspace:packages/ui":
-  version: 0.0.0-use.local
-  resolution: "ui@workspace:packages/ui"
-  dependencies:
-    "@carbon/icons-react": "npm:11.84.0"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    eslint: "npm:*"
-    react-aria: "npm:3.50.0"
-    react-stately: "npm:3.48.0"
-    typescript: "npm:*"
-  peerDependencies:
-    bignumber.js: "*"
-    ethers: "*"
-    lodash: "*"
-    react: "*"
-    react-dom: "*"
-    styled-components: "*"
-  languageName: unknown
-  linkType: soft
-
 "uint8arrays@npm:3.1.1, uint8arrays@npm:^3.0.0":
   version: 3.1.1
   resolution: "uint8arrays@npm:3.1.1"
@@ -13772,16 +13788,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-svgr@npm:4.5.0":
-  version: 4.5.0
-  resolution: "vite-plugin-svgr@npm:4.5.0"
+"vite-plugin-svgr@npm:5.2.0":
+  version: 5.2.0
+  resolution: "vite-plugin-svgr@npm:5.2.0"
   dependencies:
-    "@rollup/pluginutils": "npm:^5.2.0"
+    "@rollup/pluginutils": "npm:^5.3.0"
     "@svgr/core": "npm:^8.1.0"
     "@svgr/plugin-jsx": "npm:^8.1.0"
   peerDependencies:
-    vite: ">=2.6.0"
-  checksum: 10c0/3e1959fec626bb4f5a8ec13ff15bc40ffbc1c0ff38149bebe3f37dc2d67ed1f276f129ff7983e06946cf712e19996affd9d6868aa7d20d8921d1fe4449109b55
+    vite: ">=3.0.0"
+  checksum: 10c0/818ddea9a25839f9a5e3903f55e738b3de2f76c374148a637e61e31e6a3ada815a061d3e8010306a9f2701827d2f34d8fbc5db47bf1e74059050ad7a57c0f601
   languageName: node
   linkType: hard
 

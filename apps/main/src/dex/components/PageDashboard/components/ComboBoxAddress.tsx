@@ -23,12 +23,12 @@ import {
 import type { ComboBoxStateOptions, ListState, Node } from 'react-stately'
 import { useComboBoxState } from 'react-stately'
 import { styled } from 'styled-components'
-import { Box } from '@ui/Box'
-import { Icon } from '@ui/Icon'
-import { IconButton } from '@ui/IconButton'
-import { InputProvider } from '@ui/InputComp'
-import { ShadowedBox } from '@ui/ShadowedBox'
-import { breakpoints } from '@ui/utils/responsive'
+import { Box } from '@legacy-ui/Box'
+import { Icon } from '@legacy-ui/Icon'
+import { IconButton } from '@legacy-ui/IconButton'
+import { InputProvider } from '@legacy-ui/InputComp'
+import { ShadowedBox } from '@legacy-ui/ShadowedBox'
+import { breakpoints } from '@legacy-ui/utils/responsive'
 
 const Popover = (props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElement | null>; children: ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null)

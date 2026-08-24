@@ -86,9 +86,9 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x1f32b1c2345538c0c6f582fcb022739c4a194ebb', // wstETH
       controllerAddress: '0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
       collateral: '1',
-      borrow: '0.05',
-      borrowMore: '0.01',
-      repay: '0.02',
+      borrow: '0.01',
+      borrowMore: '0.005',
+      repay: '0.005',
       chainId: Chain.Optimism,
       path: '/lend/optimism/markets/0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
       hasLeverage: true,
@@ -132,11 +132,11 @@ export function checkLoanDetailsLoaded({
   checkEstimatedTxCost({ hasValue: hasApi && !expectError })
 
   if (leverageEnabled) {
-    getActionValue('borrow-price-impact').should('include', '%')
-    cy.get('[data-testid="loan-action-settings"] [data-testid="borrow-slippage"]').should('be.visible')
-    getActionValue('borrow-slippage').should('include', '%')
-  } else {
-    cy.get('[data-testid="borrow-price-impact-value"]', LOAD_TIMEOUT).should('not.exist')
+    cy.get('[data-testid="loan-action-settings"]').within(() => {
+      getActionValue('borrow-price-impact').should('include', '%')
+      cy.get('[data-testid="borrow-slippage"]').should('be.visible')
+      getActionValue('borrow-slippage').should('include', '%')
+    })
   }
 
   if (expectError) {

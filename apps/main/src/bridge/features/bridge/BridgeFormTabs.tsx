@@ -1,4 +1,4 @@
-import type { BaseConfig } from '@ui/utils'
+import type { BaseConfig } from '@legacy-ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { BridgeForm } from './components/BridgeForm'

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from '@ui/Icon'
+import { Icon } from '@legacy-ui/Icon'
 
 type Props = {
   message: string

@@ -4,8 +4,8 @@ import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
+import { scanTokenPath } from '@legacy-ui/utils'
 import { maybe } from '@primitives/objects.utils'
-import { scanTokenPath } from '@ui/utils'
 import type { PoolCompositionRow } from '../components/pool-composition/columns/columns.definitions'
 
 export const usePoolComposition = ({

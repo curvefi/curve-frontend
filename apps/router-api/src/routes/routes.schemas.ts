@@ -55,9 +55,10 @@ export type RoutesQuery = {
 
 const routeItemSchema = {
   type: 'object',
-  required: ['router', 'amountOut', 'createdAt'],
+  required: ['router', 'routerFeePercentage', 'amountOut', 'createdAt'],
   properties: {
     router: { type: 'string', enum: RouteProviders },
+    routerFeePercentage: DecimalSchema,
     amountIn: WeiAmountArraySchema,
     amountOut: WeiAmountArraySchema,
     gas: { anyOf: [DecimalSchema, DecimalTupleSchema, { type: 'null' }] },

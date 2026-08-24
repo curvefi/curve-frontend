@@ -1,4 +1,4 @@
-import { CURVE_LOGO_URL } from '@ui/utils'
+import { CURVE_LOGO_URL } from '@legacy-ui/utils'
 
 /**
  * Duplicate code from the index.html file, reusing the styles defined there, avoiding layout shifts during loading.

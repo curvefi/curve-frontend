@@ -7,7 +7,7 @@ import { createVirtualTestnet, createTenderlyWagmiConfigFromVNet } from '@cy/sup
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { skipTestsAfterFailure } from '@cy/support/ui'
-import type { BaseConfig } from '@ui/utils'
+import type { BaseConfig } from '@legacy-ui/utils'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import { Chain } from '@ui-kit/utils'
 

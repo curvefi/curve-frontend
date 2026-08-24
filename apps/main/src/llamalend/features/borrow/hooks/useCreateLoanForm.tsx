@@ -17,7 +17,7 @@ import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { useCallbackSync, useForm, useFormSync } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
-import { q, type Range } from '@ui-kit/types/util'
+import { mapQuery, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { LEVERAGE, LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
@@ -37,7 +37,7 @@ const userDefaultValues = {
 } satisfies Partial<CreateLoanForm>
 
 const validation = createLoanQueryValidationSuite({
-  debtRequired: false,
+  debtRequired: true,
   skipMarketValidation: true, // given separately to the mutation
   collateralRequired: true,
 })
@@ -181,6 +181,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
       ...combineQueryState(maxTokenValues.debt, expectedCollateral),
     },
+    exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     isApproved: useCreateLoanIsApproved(params),
     isHighLiquidationRisk,
     isLeverageSupported,

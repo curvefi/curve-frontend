@@ -5,7 +5,7 @@ import { useBlock, useConfig, useConnection, useEstimateGas as useEstimateTransa
 import type { Address, Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import type { BaseConfig } from '@ui/utils'
+import type { BaseConfig } from '@legacy-ui/utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { invalidateTokenBalances, useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { createValidationSuite } from '@ui-kit/lib'

@@ -3,13 +3,13 @@ import { useCallback, useMemo, useState } from 'react'
 import { type MarketRates, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
+import { formatDate } from '@legacy-ui/utils'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
-import { formatDate } from '@ui/utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
@@ -30,7 +30,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
-import { formatNumber, TIME_OPTION_MS } from '@ui-kit/utils'
+import { decimal, formatNumber, TIME_OPTION_MS } from '@ui-kit/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
 import { useMarketContext } from '../features/market-context'
 import { MarketCardHeader } from './MarketCardHeader'
@@ -264,7 +264,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
-            yTickFormatter={value => formatNumber(+value, { unit: 'percentage', abbreviate: false, decimals: 2 })}
+            yTickFormatter={value => formatNumber(decimal(value), 'percent.value')}
             yPaddingRatio={0.05}
             renderTooltip={HistoricalRatesTooltip}
           />

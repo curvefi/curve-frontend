@@ -3,13 +3,13 @@ import { useConnection } from 'wagmi'
 import { usePriceImpact } from '@/llamalend/hooks/usePriceImpact'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import type { BaseConfig } from '@legacy-ui/utils'
 import { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybe, recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import type { QueryKey } from '@tanstack/react-query'
-import type { BaseConfig } from '@ui/utils'
 import {
   type GetGasCallback,
   type RouteQueries,

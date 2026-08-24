@@ -12,18 +12,19 @@ import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gau
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { AdvancedDetails } from '@/dex/features/advanced-details'
 import { PoolInformation } from '@/dex/features/pool-information'
+import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
+import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
-import { AlertBox } from '@ui/AlertBox'
+import { AlertBox } from '@legacy-ui/AlertBox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
@@ -69,10 +70,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
-  const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
   const poolAddress = poolData?.pool.address as Address
-
-  const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
+  const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: networkId as Chain, poolAddress })
 
   const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
   usePageVisibleInterval(() => {
@@ -212,6 +211,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         {!isLite && pricesApiPoolData && pricesApi && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
+        {pricesApi && <PoolHistoricalBaseRateChart blockchainId={networkId} poolAddress={poolAddress} />}
         <PoolInformation
           curve={curve}
           routerParams={routerParams}

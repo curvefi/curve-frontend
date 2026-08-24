@@ -1,6 +1,6 @@
 import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
-import { Chip } from '@ui/Typography'
+import { Chip } from '@legacy-ui/Typography'
 import { formatNumber, amount } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 

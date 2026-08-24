@@ -1,0 +1,143 @@
+import { useMemo } from 'react'
+import type { BaseConfig } from '@legacy-ui/utils'
+import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { notFalsy } from '@primitives/objects.utils'
+import type { RouteProvider } from '@primitives/router.utils'
+import type { RouteQueries, RouteResponse } from '@ui-kit/entities/router-api'
+import { t } from '@ui-kit/lib/i18n'
+import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
+import { Accordion } from '@ui-kit/shared/ui/Accordion'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { LoadingAnimation } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { decimalMax } from '@ui-kit/utils'
+import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
+import { RouteProviderCard, type RouteProviderCardProps } from './RouteProviderCard'
+import { RouteProviderIcons, RouteProviderLabels } from './RouteProviders'
+
+const { Spacing } = SizesAndSpaces
+
+export type RouteProviderProps = {
+  queries: RouteQueries
+  enabled: boolean
+  selectedRoute: RouteResponse | undefined
+  selectedRouter: RouteProvider | undefined
+  onChange: (router: RouteProvider) => void
+  tokenOut: RouteProviderCardProps['tokenOut']
+  isExpanded: boolean
+  onToggle: () => void
+  onRefresh: () => void
+  networks: Record<number, BaseConfig>
+  chainId: number
+  providers: readonly RouteProvider[]
+}
+
+export const RouteProvidersAccordion = ({
+  queries,
+  enabled,
+  selectedRoute,
+  selectedRouter,
+  onChange,
+  tokenOut,
+  isExpanded,
+  onToggle,
+  onRefresh,
+  networks,
+  chainId,
+  providers,
+}: RouteProviderProps) => {
+  const queryList = useMemo(() => providers.map(provider => queries[provider]), [providers, queries])
+  const maxAmountOut = useMemo(
+    () => queries && decimalMax(...notFalsy(...queryList.flatMap(route => route.data?.amountOut))),
+    [queryList, queries],
+  )
+  const Icon = selectedRoute ? RouteProviderIcons[selectedRoute.router] : null
+  const allError = queryList.every(r => r.error)
+  const allLoading = queryList.every(r => r.isLoading)
+  const allDisabled = queryList.every(r => !r.enabled)
+  const anyFetching = queryList.some(r => r.isFetching)
+  const anyData = queryList.some(route => route.data)
+  return (
+    enabled && (
+      <Accordion
+        ghost
+        title={t`Route provider`}
+        size="extraSmall"
+        testId="route-provider-accordion"
+        info={
+          allError ? (
+            <ErrorIconButton error={t`Cannot fetch any routes. Please try again later.`} size="extraExtraSmall" />
+          ) : (
+            !isExpanded &&
+            (selectedRouter || allLoading ? (
+              <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+                {Icon && <Icon />}
+                <WithSkeleton loading={allLoading}>
+                  <Typography variant="bodyXsRegular" color="textPrimary">
+                    {selectedRouter ? RouteProviderLabels[selectedRouter] : t`Loading routes`}
+                  </Typography>
+                </WithSkeleton>
+                {selectedRoute && (
+                  <RouteComparisonChip maxAmountOut={maxAmountOut} amountOut={selectedRoute.amountOut} />
+                )}
+              </Stack>
+            ) : (
+              '-'
+            ))
+          )
+        }
+        expanded={isExpanded}
+        toggle={onToggle}
+      >
+        <Stack sx={{ gap: Spacing.sm }}>
+          <Stack>
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="headingXsBold" color="textSecondary">
+                {t`Select a route`}
+              </Typography>
+              <IconButton
+                size="extraExtraSmall"
+                onClick={() => void onRefresh()}
+                aria-label={t`Refresh routes`}
+                disabled={anyFetching}
+                data-testid="refresh-button"
+              >
+                <ReloadIcon sx={{ ...(anyFetching && LoadingAnimation) }} />
+              </IconButton>
+            </Stack>
+            <Typography variant="bodyXsRegular" color="textTertiary">
+              {t`Best route is selected based on net output after gas fees (only when possible to calculate).`}
+            </Typography>
+          </Stack>
+          {anyData ? (
+            <Stack sx={{ gap: Spacing.xs }}>
+              {providers.map(provider => (
+                <RouteProviderCard
+                  key={provider}
+                  tokenOut={tokenOut}
+                  isSelected={provider === selectedRouter}
+                  router={provider}
+                  query={queries[provider]}
+                  bestOutputAmount={maxAmountOut}
+                  onSelect={onChange}
+                  networks={networks}
+                  chainId={chainId}
+                />
+              ))}
+            </Stack>
+          ) : (
+            <EmptyStateCard
+              title={anyFetching ? t`Finding the best route...` : t`No routes available`}
+              description={!allDisabled && !anyFetching && t`We could not find any routes with your parameters.`}
+              size="sm"
+            />
+          )}
+        </Stack>
+      </Accordion>
+    )
+  )
+}

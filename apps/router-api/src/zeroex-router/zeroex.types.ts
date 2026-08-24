@@ -23,12 +23,21 @@ export type ZeroExQuoteResponse = {
   transaction: { to: Address; data: Hex; gas: Decimal; gasPrice: Decimal; value: Decimal }
   route: { fills: ZeroExRouteFill[]; tokens: ZeroExRouteToken[] }
   fees: {
-    integratorFee: unknown
-    zeroExFee: { amount: Decimal; token: Address; type: string } | null
-    gasFee: unknown
+    /**
+     * use this instead of legacy integratorFee
+     * https://docs.0x.org/evm/0x-swap-api/additional-topics/multi-fee-support#example-response
+     */
+    integratorFees: ZeroExVolumeFee[] | null
+    zeroExFee: ZeroExVolumeFee | null
   }
   issues: { simulationIncomplete: boolean; invalidSourcesPassed: string[] }
   zid: string
+}
+
+export type ZeroExVolumeFee = {
+  amount: Decimal
+  token: Address
+  type: 'volume' // identifies a trade-volume fee rather than a gas fee
 }
 
 type ZeroExRouteFill = {

@@ -1,7 +1,7 @@
 import { curvejsApi } from '@/dao/lib/curvejs'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
+import type { BaseConfig } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import type { BaseConfig } from '@ui/utils'
 
 export type { CurveApi } from '@ui-kit/features/connect-wallet'
 export type { GaugeFormattedData, GaugeMapper } from '../queries/gauges.query'

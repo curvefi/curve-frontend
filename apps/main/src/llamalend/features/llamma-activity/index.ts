@@ -1,7 +1,7 @@
 import type { Chain } from '@curvefi/prices-api'
 import type { Endpoint } from '@curvefi/prices-api/llamma'
+import { type BaseConfig } from '@legacy-ui/utils'
 import type { Address, Token } from '@primitives/address.utils'
-import { type BaseConfig } from '@ui/utils'
 
 export { LlammaActivityEvents } from './LlammaActivityEvents'
 export { LlammaActivityTrades } from './LlammaActivityTrades'

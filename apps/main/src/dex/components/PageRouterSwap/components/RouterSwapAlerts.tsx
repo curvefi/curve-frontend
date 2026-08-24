@@ -4,7 +4,7 @@ import { useChainId } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { AlertSlippage } from '@/dex/components/AlertSlippage'
 import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-import { AlertBox } from '@ui/AlertBox'
+import { AlertBox } from '@legacy-ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 

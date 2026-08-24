@@ -1,8 +1,8 @@
 import { ReactNode, useMemo } from 'react'
 import type { Slippage } from '@/dex/components/PagePool/types'
-import { DetailInfo } from '@ui/DetailInfo'
-import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
-import { Chip } from '@ui/Typography'
+import { DetailInfo } from '@legacy-ui/DetailInfo'
+import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
+import { Chip } from '@legacy-ui/Typography'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 
