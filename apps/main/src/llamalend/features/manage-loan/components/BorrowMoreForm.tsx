@@ -72,10 +72,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     [updateForm],
   )
   const maxDebt = mapQuery(max.debt, ({ maxDebt }) => maxDebt)
-  const onMax = useCallback((): undefined => {
-    const { maxDebt: maxDebt, router } = assert(max.debt.data, 'expected max debt data')
+  const onMax = useCallback(() => {
+    const { maxDebt: debt, router } = assert(max.debt.data, 'expected max debt data')
     if (router) routes?.onChange(router)
-    updateForm({ maxDebt: getMaxBorrowAmount(maxDebt, values.leverageEnabled) })
+    updateForm({ debt: getMaxBorrowAmount(debt, values.leverageEnabled) })
   }, [max.debt.data, routes, updateForm, values.leverageEnabled])
 
   return (
@@ -143,12 +143,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       </Stack>
       {isLeverageSupported && (
         <Stack>
-          <LeverageInput
-            checked={values.leverageEnabled}
-            leverage={leverage}
-            onToggle={onLeverageToggle}
-            maxLeverage={max.maxLeverage.data}
-          />
+          <LeverageInput checked={values.leverageEnabled} leverage={leverage} onToggle={onLeverageToggle} />
           <LoanActionSettings
             show={values.leverageEnabled === true}
             slippage={values.slippage}

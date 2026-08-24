@@ -79,7 +79,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     [updateForm],
   )
   const maxDebtBalance = mapQuery(maxDebt, ({ maxDebt }) => maxDebt)
-  const onMax = useCallback((): undefined => {
+  const onMax = useCallback(() => {
     const { maxDebt: maxDebtAmount, router } = assert(maxDebt.data, 'expected max debt data')
     if (router) routes?.onChange(router)
     updateForm({ debt: getMaxBorrowAmount(maxDebtAmount, values.leverageEnabled) })
