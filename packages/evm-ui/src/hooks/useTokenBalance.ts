@@ -6,10 +6,11 @@ import { combineQueriesToObject, type FieldsOf } from '@evm-ui/lib'
 import { queryClient } from '@evm-ui/lib/api'
 import { type ChainQuery, type UserQuery } from '@evm-ui/lib/model'
 import { QUERY_CATEGORIES } from '@evm-ui/lib/model/query/query-categories'
+import type { Query } from '@evm-ui/types/util'
 import { uniqAddresses } from '@evm-ui/utils'
 import { DEFAULT_DECIMALS } from '@evm-ui/utils/units'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useQueries, type UseQueryResult } from '@tanstack/react-query'
+import { useQueries } from '@tanstack/react-query'
 import type { Config, GetBalanceReturnType, ReadContractsReturnType } from '@wagmi/core'
 import { multicall } from '@wagmi/core'
 import { getBalanceQueryOptions, readContractsQueryOptions } from '@wagmi/core/query'
@@ -186,7 +187,7 @@ export function useTokenBalances(
       [config, chainId, userAddress, uniqueAddresses, isEnabled],
     ),
     combine: useCallback(
-      (results: UseQueryResult[]) => combineQueriesToObject(results as UseQueryResult<Decimal>[], uniqueAddresses),
+      (results: Query<unknown>[]) => combineQueriesToObject<Decimal>(results as Query<Decimal>[], uniqueAddresses),
       [uniqueAddresses],
     ),
   })

@@ -1,20 +1,7 @@
-import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type QueryOptionsArray = readonly UseQueryOptions<any, any, any, any>[]
+import type { UseQueryOptions } from '@tanstack/react-query'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type QueryOptionsData<T> = T extends UseQueryOptions<infer TData, any, any, any> ? TData : never
-
-export type QueryResultsArray<T extends QueryOptionsArray> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [K in keyof T]: T[K] extends UseQueryOptions<infer TData, any, any, any> ? UseQueryResult<TData> : never
-}
-
-export type PartialQueryResult<T> = Pick<
-  UseQueryResult<T>,
-  'data' | 'isLoading' | 'isPending' | 'isError' | 'isFetching' | 'error'
->
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyFunction = (...args: any[]) => any

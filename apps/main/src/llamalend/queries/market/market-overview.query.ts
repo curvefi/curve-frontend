@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
-import { combineQueriesMeta } from '@evm-ui/lib/queries/combine'
+import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import { MarketType } from '@evm-ui/types/market'
 import { q } from '@evm-ui/types/util'
 import { TIME_FRAMES } from '@evm-ui/utils'
@@ -52,7 +52,7 @@ export const useMarketOverview = ({
           )
 
           return {
-            ...combineQueriesMeta(results),
+            ...combineQueryState(...results),
             data: maybe(marketOverview, ({ createdAt, totalBorrowers }) => ({
               deployedDays: Math.floor((Date.now() - createdAt) / TIME_FRAMES.DAY_MS),
               totalBorrowers,

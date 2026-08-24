@@ -1,6 +1,6 @@
 import memoizee from 'memoizee'
 import { useCallback } from 'react'
-import { combineQueriesMeta } from '@evm-ui/lib'
+import { combineQueryState } from '@evm-ui/lib'
 import { useMappedQuery } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
 import { fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
@@ -80,7 +80,7 @@ export const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
     queries,
     combine: useCallback(
       ([external, merklPools, merklMarkets]: QueriesResults<CampaignQueries>) => ({
-        ...combineQueriesMeta([external, merklPools, merklMarkets]),
+        ...combineQueryState(external, merklPools, merklMarkets),
         // Combine campaigns with an optional network filter
         data: combineCampaigns([external.data, merklPools.data, merklMarkets.data], blockchainId),
       }),

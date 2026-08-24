@@ -20,10 +20,10 @@ import { type Chain } from '@curvefi/prices-api'
 import { type CampaignRewards, combineCampaigns } from '@evm-ui/entities/campaigns'
 import { getCampaignsExternalOptions } from '@evm-ui/entities/campaigns/campaigns-external'
 import { getCampaignsMarketsMerklOptions } from '@evm-ui/entities/campaigns/campaigns-markets-merkl'
-import { combineQueryState, RESOLVED_QUERY_RESULT } from '@evm-ui/lib'
+import { combineQueryState } from '@evm-ui/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@evm-ui/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
-import type { Query } from '@evm-ui/types/util'
+import { DISABLED_Q, type Query } from '@evm-ui/types/util'
 import { decimal, decimalDiv } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -422,7 +422,7 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
     ),
     combine: useCallback(
       (results: QueriesResults<LlamaMarketsQueries>): Query<LlamaMarketsResult> => {
-        if (!enabled) return RESOLVED_QUERY_RESULT // used in the header, only run when llamalend is selected
+        if (!enabled) return DISABLED_Q // used in the header, only run when llamalend is selected
         const [
           lendingVaults,
           mintMarkets,

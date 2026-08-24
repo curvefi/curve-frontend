@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
-import { RESOLVED_QUERY_RESULT } from '@evm-ui/lib/queries'
-import { combineQueriesMeta } from '@evm-ui/lib/queries/combine'
+import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import { MarketType } from '@evm-ui/types/market'
+import { DISABLED_Q } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
@@ -40,9 +40,7 @@ export const useSolvencyMarket = (
     ),
     combine: useCallback(
       (results: QueriesResults<SolvencyMarketsQueries>) => {
-        if (!isEnabled) {
-          return RESOLVED_QUERY_RESULT
-        }
+        if (!isEnabled) return DISABLED_Q
         const [lendingVaults, badDebtLendMarkets] = results
         const getLendMarketBadDebt = createGetBadDebtMarket(badDebtLendMarkets.data)
 
@@ -62,7 +60,7 @@ export const useSolvencyMarket = (
           })
 
         return {
-          ...combineQueriesMeta(results),
+          ...combineQueryState(...results),
           data: maybes([solvencyPercent, badDebtUsd], (solvencyPercent, badDebtUsd) => ({
             solvencyPercent,
             badDebtUsd,

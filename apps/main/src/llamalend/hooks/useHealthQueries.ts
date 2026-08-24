@@ -1,5 +1,5 @@
-import { combineQueriesMeta } from '@evm-ui/lib/queries/combine'
-import type { QueryResultsArray } from '@evm-ui/lib/queries/types'
+import { combineQueryState } from '@evm-ui/lib/queries/combine'
+import type { Query } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
@@ -8,7 +8,6 @@ import type { UseQueryOptions } from '@tanstack/react-query'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type QueryKey = any // disable typecheck for this as we accept any query key
 type HealthQueryOptions = UseQueryOptions<Decimal, Error, Decimal, QueryKey>
-type HealthQueryResults = QueryResultsArray<readonly HealthQueryOptions[]>
 
 /**
  * Docs courtesy of Saint Rat:
@@ -36,9 +35,9 @@ type HealthQueryResults = QueryResultsArray<readonly HealthQueryOptions[]>
  *   In or below soft-liq healthFull = healthNotFull, above soft-liq healthFull > healthNotFull
  *   When healthNotFull is below 0, the user is in soft-liq and we should return the corresponding metric.
  */
-const combineHealth = ([healthFull, healthNotFull]: HealthQueryResults) => ({
-  data: maybes([healthFull.data, healthNotFull.data], (full, notFull) => (+notFull < 0 ? notFull : full)),
-  ...combineQueriesMeta([healthFull, healthNotFull]),
+const combineHealth = ([healthFull, healthNotFull]: [Query<Decimal>, Query<Decimal>]) => ({
+  data: maybes([healthFull?.data, healthNotFull?.data], (full, notFull) => (+notFull < 0 ? notFull : full)),
+  ...combineQueryState(healthFull, healthNotFull),
 })
 
 /**
@@ -47,7 +46,4 @@ const combineHealth = ([healthFull, healthNotFull]: HealthQueryResults) => ({
  * @returns Combined health query result.
  */
 export const useHealthQueries = (getOptions: (isFull: boolean) => HealthQueryOptions) =>
-  useQueries({
-    queries: [true, false].map(getOptions),
-    combine: combineHealth,
-  })
+  useQueries({ queries: [getOptions(true), getOptions(false)], combine: combineHealth })
