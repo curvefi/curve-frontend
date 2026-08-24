@@ -1,9 +1,9 @@
 import { ChainId } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
-import { ActivityTable, PoolTradesExpandedPanel, PoolLiquidityExpandedPanel } from '@evm-ui/features/activity-table'
+import { ActivityTable, PoolLiquidityExpandedPanel, PoolTradesExpandedPanel } from '@evm-ui/features/activity-table'
 import { ChartWrapper } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
-import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { ChartHeader } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
@@ -16,7 +16,6 @@ import { usePoolActivityTradesConfig } from './hooks/usePoolActivityTradesConfig
 
 const { Spacing } = SizesAndSpaces
 
-type Tab = 'chart' | 'events' | 'trades'
 type OhlcTabsParams = {
   chart: ReturnType<typeof useOhlcChartState>
   liquidityTable: ReturnType<typeof usePoolActivityEventsConfig>
@@ -64,7 +63,7 @@ const ChartTab = ({
   </Stack>
 )
 
-const menu: TabItem<Tab, OhlcTabsParams>[] = [
+const menu = [
   { value: 'chart', label: t`Chart`, component: ChartTab },
   { value: 'trades', label: t`Swaps`, component: TradesTab },
   { value: 'events', label: t`Liquidity`, component: EventsTab },

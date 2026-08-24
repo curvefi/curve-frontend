@@ -60,15 +60,14 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   const hasLockedCrv = +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0
 
+  const onChange = (value: FormType) => setFormValues(curve, isLoadingCurve, value, {}, vecrvInfo, true)
   const formTabs = useTabs({
     menu,
     params: { ...pageProps, canUnlock, hasLockedCrv },
     defaultValue: rFormType,
-    onChange: value => setFormValues(curve, isLoadingCurve, value, {}, vecrvInfo, true),
+    onChange,
   })
-  const refreshFormValues = useEffectEvent(() =>
-    setFormValues(curve, isLoadingCurve, formTabs.tab.value, {}, vecrvInfo, true),
-  )
+  const refreshFormValues = useEffectEvent(() => onChange(formTabs.tab.value))
 
   // fetch locked crv data
   useEffect(() => refreshFormValues(), [chainId, signerAddress, isPageVisible])

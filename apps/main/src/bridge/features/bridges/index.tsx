@@ -1,5 +1,5 @@
 import { getSearchString, useSearchParams } from '@evm-ui/hooks/router'
-import { type TabItem, useTabFromSearchParam, useTabs } from '@evm-ui/hooks/useTabs'
+import { useTabFromSearchParam, useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
@@ -15,20 +15,19 @@ const NativeBridgesTab = () => (
   <BridgeOverview bridges={NATIVE_BRIDGES} title={t`Trust & security with chain canonical bridges`} />
 )
 
-type BridgeTab = 'web3' | 'native'
 type BridgeTabsParams = { searchParams: URLSearchParams }
 
-const menu: TabItem<BridgeTab, BridgeTabsParams>[] = [
+const menu = [
   {
     value: 'web3',
     label: t`Web3 Bridges`,
-    href: ({ searchParams }) => getSearchString({ tab: 'web3' }, searchParams),
+    href: ({ searchParams }: BridgeTabsParams) => getSearchString({ tab: 'web3' }, searchParams),
     component: Web3BridgesTab,
   },
   {
     value: 'native',
     label: t`Native Bridges`,
-    href: ({ searchParams }) => getSearchString({ tab: 'native' }, searchParams),
+    href: ({ searchParams }: BridgeTabsParams) => getSearchString({ tab: 'native' }, searchParams),
     component: NativeBridgesTab,
   },
 ]
