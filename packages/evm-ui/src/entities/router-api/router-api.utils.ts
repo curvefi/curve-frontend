@@ -89,14 +89,8 @@ export const getExpectedFn =
       userAddress,
       zapAddress,
     })
-    // Prefer Curve Solver, then Curve Router, then the rest
-    const route = assert(
-      routes.find(({ router }) => router === 'curve-solver') ??
-        routes.find(({ router }) => router === 'curve') ??
-        routes[0],
-      'No route available',
-    )
-    return parseRoute(route.id).quote
+    if (!routes.length) return { outAmount: '0', priceImpact: null }
+    return parseRoute(routes[0].id).quote // router api is expected to return a single entry, add sorting if needed
   }
 
 export const createHash = async (

@@ -5,7 +5,6 @@ import { getExpectedFn, getRouteById } from '@evm-ui/entities/router-api'
 import { type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
-import type { Query } from '@evm-ui/types/util'
 import { decimal, decimalCompare } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -152,12 +151,9 @@ export const useCreateLoanMaxReceiveQueries = (params: CreateLoanMaxReceiveParam
       () => getMaxReceiveProviders(params).map(router => getCreateLoanMaxReceiveOptions({ ...params, router })),
       [params],
     ),
-    combine: (results: Query<CreateLoanMaxReceiveResult>[]) =>
-      combineQueries(results, (...data) =>
-        data.reduce<CreateLoanMaxReceiveResult | undefined>(
-          (max, data) => (!max || decimalCompare(data.maxDebt, max.maxDebt) > 0 ? data : max),
-          undefined,
-        ),
+    combine: results =>
+      combineQueries(results, (first, ...rest) =>
+        rest.reduce((max, item) => (decimalCompare(item.maxDebt, max.maxDebt) > 0 ? item : max), first),
       ),
   })
 
