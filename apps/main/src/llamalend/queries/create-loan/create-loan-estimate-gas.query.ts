@@ -10,7 +10,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { useCreateLoanIsApproved } from './create-loan-approved.query'
-import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
+import { createLoanRouteMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanEstimateGasQuery<T = IChainId> = CreateLoanFormQuery<T>
 type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>>
@@ -37,7 +37,7 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
     },
     category: 'llamalend.createLoan',
     validationSuite: createLoanQueryValidationSuite({ debtRequired: false, collateralRequired: true }),
-    dependencies: params => [createLoanMaxReceiveKey(params)],
+    dependencies: params => [createLoanRouteMaxReceiveKey(params)],
   })
 
 const {
@@ -95,7 +95,7 @@ const {
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true, collateralRequired: true }),
   dependencies: params => [
-    createLoanMaxReceiveKey(params),
+    createLoanRouteMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],
 })

@@ -12,13 +12,14 @@ import { t } from '@evm-ui/lib/i18n'
 import { AlertDisableForm } from '@evm-ui/shared/ui/AlertDisableForm'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { q, type Range } from '@evm-ui/types/util'
+import { mapQuery, q, type Range } from '@evm-ui/types/util'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { shouldBlockTransaction } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { useMarketContext } from '../../market-context'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
@@ -77,6 +78,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
     [updateForm],
   )
+  const maxDebtBalance = mapQuery(maxDebt, ({ maxDebt }) => maxDebt)
+  const onMax = useCallback((): undefined => {
+    const { maxDebt: maxDebtAmount, router } = assert(maxDebt.data, 'expected max debt data')
+    if (router) routes?.onChange(router)
+    updateForm({ debt: getMaxBorrowAmount(maxDebtAmount, values.leverageEnabled) })
+  }, [maxDebt.data, routes, updateForm, values.leverageEnabled])
 
   return (
     <Form
@@ -113,11 +120,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          max={{
-            ...q(maxDebt),
-            fieldName: 'maxDebt',
-            onMax: maxDebt => getMaxBorrowAmount(maxDebt, values.leverageEnabled),
-          }}
+          max={{ ...maxDebtBalance, fieldName: 'maxDebt', onMax }}
           hideBalance
           testId="borrow-debt-input"
           network={network}
@@ -127,11 +130,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               prefix={t`Max borrow:`}
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
-              balance={q(maxDebt)}
-              onClick={useCallback(
-                () => updateForm({ debt: getMaxBorrowAmount(values.maxDebt, values.leverageEnabled) }),
-                [updateForm, values.leverageEnabled, values.maxDebt],
-              )}
+              balance={maxDebtBalance}
+              onClick={onMax}
               buttonTestId="borrow-set-debt-to-max"
             />
           }
