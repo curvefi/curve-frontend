@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
+import { pickMaxDebtQuery } from '@/llamalend/queries/max-receive-query.helpers'
 import { getExpectedFn, getRouteById } from '@evm-ui/entities/router-api'
 import { type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { pickQuery } from '@evm-ui/lib/queries/combine'
-import { decimal, decimalCompare } from '@evm-ui/utils'
+import { decimal } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
@@ -136,10 +137,7 @@ export const useCreateLoanMaxReceiveQueries = (params: CreateLoanMaxReceiveParam
       () => getMaxReceiveProviders(params).map(router => getCreateLoanMaxReceiveOptions({ ...params, router })),
       [params],
     ),
-    combine: results =>
-      pickQuery(results, ([first, ...rest]) =>
-        rest.reduce((max, item) => (decimalCompare(item.maxDebt, max.maxDebt) > 0 ? item : max), first),
-      ),
+    combine: results => pickQuery(results, pickMaxDebtQuery),
   })
 
 export const invalidateCreateLoanMaxReceive = async (params: CreateLoanMaxReceiveParams) =>

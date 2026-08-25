@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { fallbackQ, q, Query, QueryProp } from '@evm-ui/types/util'
 import { decimalMin } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert, fromEntries, notFalsy } from '@primitives/objects.utils'
+import { fromEntries, notFalsy } from '@primitives/objects.utils'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
   ({
@@ -14,6 +14,8 @@ type Queries = readonly Query<unknown>[]
 type QueriesData<TQueries extends Queries> = {
   [K in keyof TQueries]: TQueries[K] extends Query<infer TData> ? Exclude<TData, undefined> : never
 }
+/** a query with non-nullable data */
+export type QueryWithData<TData> = Query<TData> & { data: NonNullable<TData> }
 
 const combineQueryData = <const TQueries extends Queries, TResult>(
   queries: TQueries,
@@ -30,13 +32,10 @@ export const combineQueries = <const TQueries extends Queries, TResult>(
 
 export const pickQuery = <TData>(
   queries: readonly Query<TData>[],
-  selector: (data: [NonNullable<TData>, ...NonNullable<TData>[]]) => TData,
+  selector: (queries: readonly [QueryWithData<TData>, ...QueryWithData<TData>[]]) => QueryWithData<TData>,
 ) => {
-  const [first, ...rest] = queries.map(q => q.data).filter(data => data != null)
-  if (!first) return fallbackQ(...queries.map(q))
-  const pickedData = selector([first, ...rest])
-  const result = queries.find(({ data }) => data === pickedData)
-  return assert(result, `No query data found for selector`)
+  const [first, ...rest] = queries.filter((query): query is QueryWithData<TData> => query.data != null)
+  return first ? selector([first, ...rest]) : fallbackQ(...queries.map(q))
 }
 
 export const useCombinedQueries = <const TQueries extends Queries, TResult>(
