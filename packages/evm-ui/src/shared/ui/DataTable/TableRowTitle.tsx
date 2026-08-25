@@ -5,12 +5,13 @@ import { t } from '@evm-ui/lib/i18n'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
-import { CopyIconButton } from '../shared/ui/CopyIconButton'
-import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from '../shared/ui/DataTable/data-table.utils'
-import { RouterLink } from '../shared/ui/RouterLink'
-import { responsiveTitleEllipsisSx } from '../shared/ui/titleTruncate'
+import { CopyIconButton } from '../CopyIconButton'
+import { RouterLink } from '../RouterLink'
+import { responsiveTitleEllipsisSx } from '../titleTruncate'
+import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from './data-table.utils'
 
-export function MarketTitle({
+/** Title as in, the name of the pool or market, used in the corresponding title cell */
+export function TableRowTitle({
   address,
   title,
   url,

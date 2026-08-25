@@ -1,9 +1,9 @@
 import { memo } from 'react'
 import { t } from '@evm-ui/lib/i18n'
+import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
 import { UserPositionIndicator } from '@evm-ui/shared/ui/DataTable/UserPositionIndicator'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { MarketTitle } from '@evm-ui/widgets/MarketTitle'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
 import type { PoolRow } from '../../types'
@@ -24,7 +24,7 @@ const PoolListTitle = memo(function PoolListTitle({ pool }: { pool: PoolRow }) {
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <TokenIcons blockchainId={pool.network} tokens={pool.tradeableCoins} />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
-          <MarketTitle url={pool.url} address={pool.address} title={pool.name} addressLabel={t`pool`} />
+          <TableRowTitle url={pool.url} address={pool.address} title={pool.name} addressLabel={t`pool`} />
           <PoolBadges pool={pool} />
         </Stack>
       </Stack>

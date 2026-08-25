@@ -1,8 +1,8 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
+import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { MarketTitle } from '@evm-ui/widgets/MarketTitle'
 import Stack from '@mui/material/Stack'
 import { CellContext } from '@tanstack/react-table'
 import { MarketBadges } from './MarketBadges'
@@ -19,7 +19,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
       <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
         <TokenIcons blockchainId={market.chain} tokens={[collateral, borrowed]} />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
-          <MarketTitle
+          <TableRowTitle
             title={[collateral.symbol, borrowed.symbol].join(' • ')}
             address={market.controllerAddress}
             url={market.url}
