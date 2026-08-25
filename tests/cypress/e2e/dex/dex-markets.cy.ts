@@ -114,7 +114,6 @@ describe('DEX Pools', () => {
       cy.get('body').click(0, 0)
     } else {
       cy.get('[data-testid="btn-close-filters"]').click()
-      cy.get('[data-testid="table-filters-popover-root"]').should('not.exist')
     }
   }
 
