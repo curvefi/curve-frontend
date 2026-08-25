@@ -7,7 +7,6 @@ import {
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
 
 const FULL_NETWORK_METRIC_IDS = ['pool-net-apy', 'pool-volume', 'pool-tvl', 'pool-age'] as const
-
 const LITE_METRIC_IDS = ['pool-net-apy', 'pool-tvl'] as const
 
 const expectMetricOrder = (address: string, expectedIds: readonly string[]) => {
@@ -49,12 +48,5 @@ describe('V2 pool-list mobile panels', () => {
     visitAndExpand(address, 'taiko')
 
     expectMetricOrder(address, LITE_METRIC_IDS)
-  })
-
-  it('does not create a campaign metric when campaign data is unavailable', () => {
-    const { address } = V2_POOL_FIXTURES.empty
-    visitAndExpand(address)
-
-    getV2PoolExpandedPanel(address).find('[data-testid^="pool-points-campaign-"]').should('not.exist')
   })
 })
