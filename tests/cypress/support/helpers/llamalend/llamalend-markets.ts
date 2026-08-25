@@ -35,9 +35,12 @@ export const clickMarketAction = (breakpoint: Breakpoint, selector: string) =>
 export function enableGraphColumn() {
   cy.get(`[data-testid="line-graph-${MarketRateType.Borrow}"]`).should('not.exist')
   cy.get(`[data-testid="btn-visibility-settings"]`).click()
+  cy.get('[data-testid="table-visibility-settings-popover"]', LOAD_TIMEOUT).should('be.visible')
   cy.get(`[data-testid="visibility-toggle-borrowChart"]`).click()
   cy.get(`[data-testid="line-graph-${MarketRateType.Borrow}"]`).should('exist')
   cy.get('body').click(0, 0) // close popover
+  cy.get('[data-testid="table-visibility-settings-popover"]', LOAD_TIMEOUT).should('not.exist')
+  cy.get('[data-testid="table-visibility-settings-popover-root"]').should('not.exist')
 }
 
 export const typeFilterInput = (testId: string, value: number) => {

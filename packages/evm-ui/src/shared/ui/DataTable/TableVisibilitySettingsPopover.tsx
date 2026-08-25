@@ -1,4 +1,5 @@
 import type { RefObject } from 'react'
+import { useTransitionTestId } from '@evm-ui/hooks/useTransitionTestId'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { borderStyle } from '@evm-ui/utils'
 import { FormControlLabel } from '@mui/material'
@@ -25,8 +26,10 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
   anchorRef: RefObject<HTMLButtonElement | null>
-}) =>
-  anchorEl && (
+}) => {
+  const { transition, props } = useTransitionTestId('table-visibility-settings-popover')
+  if (!anchorEl) return
+  return (
     <Popover
       open={open}
       onClose={onClose}
@@ -34,11 +37,13 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       slotProps={{
         paper: {
+          ...{ 'data-testid': 'table-visibility-settings-popover-root' },
           sx: { padding: Spacing.md },
         },
+        transition,
       }}
     >
-      <Stack sx={{ gap: Spacing.md }}>
+      <Stack sx={{ gap: Spacing.md }} {...props}>
         {visibilityGroups
           .filter(({ options }) => options.some(o => o.enabled))
           .map(({ options, label }) => (
@@ -70,3 +75,4 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
       </Stack>
     </Popover>
   )
+}

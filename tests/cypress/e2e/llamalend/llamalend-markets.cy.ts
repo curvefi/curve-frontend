@@ -104,6 +104,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
       cy.get(`[data-testid="${element}"]`).should('be.visible')
       cy.get(`[data-testid="btn-visibility-settings"]`).click()
+      cy.get('[data-testid="table-visibility-settings-popover"]', LOAD_TIMEOUT).should('be.visible')
       cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
       cy.get(`[data-testid="${element}"]`).should('not.exist')
     })

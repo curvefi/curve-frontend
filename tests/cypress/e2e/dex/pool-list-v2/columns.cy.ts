@@ -202,6 +202,7 @@ describe('V2 pool-list columns', () => {
     cy.get('[data-testid="dex-pool-filters-collapsible"]').should('not.exist')
 
     cy.get('[data-testid="btn-visibility-settings"]').click()
+    cy.get('[data-testid="table-visibility-settings-popover"]', API_LOAD_TIMEOUT).should('be.visible')
     for (const columnId of OPTIONAL_LITE_COLUMNS) {
       cy.get(`[data-testid="visibility-toggle-${columnId}"]`).should('exist')
     }
@@ -209,6 +210,8 @@ describe('V2 pool-list columns', () => {
       cy.get(`[data-testid="visibility-toggle-${columnId}"]`).should('not.exist')
     }
     cy.get('body').click(0, 0)
+    cy.get('[data-testid="table-visibility-settings-popover"]', API_LOAD_TIMEOUT).should('not.exist')
+    cy.get('[data-testid="table-visibility-settings-popover-root"]').should('not.exist')
 
     showV2PoolColumns(OPTIONAL_LITE_COLUMNS)
     expectHeaderOrder([

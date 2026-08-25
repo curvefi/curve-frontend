@@ -1,6 +1,6 @@
 import { type ReactNode, type RefObject } from 'react'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { useTransitionTestId } from '@evm-ui/hooks/useTransitionTestId'
 import { t } from '@evm-ui/lib/i18n'
 import { Cross2Icon } from '@evm-ui/shared/icons/Cross2Icon'
 import { DrawerHeader } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerHeader'
@@ -27,8 +27,6 @@ type TableFiltersOverlayProps = {
   title: string
 }
 
-const testId = (testId: string, isReady: boolean | undefined) => isReady && ({ 'data-testid': testId } as const)
-
 /** Renders table filters in a mobile drawer or desktop popover. */
 export const TableFiltersOverlay = ({
   anchorRef,
@@ -41,7 +39,7 @@ export const TableFiltersOverlay = ({
   title,
 }: TableFiltersOverlayProps) => {
   const isMobile = useIsMobile()
-  const [isReady, setReady, resetReady] = useSwitch()
+  const { transition, props } = useTransitionTestId('table-filters-popover')
   const resetButton = (
     <Button
       color="ghost"
@@ -73,10 +71,10 @@ export const TableFiltersOverlay = ({
           sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
         },
         // Keep test IDs until exit completes so tests cannot reopen the popover during its closing transition.
-        transition: { onEntered: setReady, onExited: resetReady },
+        transition,
       }}
     >
-      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} {...testId('table-filters-popover', isReady)}>
+      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} {...props}>
         <Stack
           direction="row"
           sx={{
@@ -90,7 +88,7 @@ export const TableFiltersOverlay = ({
           <Typography variant="headingXsBold" color="textSecondary" sx={{ paddingBlockEnd: Spacing.xs }}>
             {title}
           </Typography>
-          <IconButton size="extraSmall" onClick={() => setOpen(false)} {...testId('btn-close-filters', isReady)}>
+          <IconButton size="extraSmall" onClick={() => setOpen(false)} data-testid="btn-close-filters">
             <Cross2Icon />
           </IconButton>
         </Stack>

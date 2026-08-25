@@ -40,24 +40,23 @@ export const visitV2PoolList = ({
 }
 
 export const getV2PoolRow = (address: string) =>
-  cy
-    .get(`[data-testid="table-row-link-${address}"]`, API_LOAD_TIMEOUT)
-    .should('exist')
-    .closest('[data-testid^="data-table-row-"]')
+  cy.get(`[data-testid="table-row-link-${address}"]`, API_LOAD_TIMEOUT).closest('[data-testid^="data-table-row-"]')
 
 export const getV2PoolCell = (address: string, columnId: PoolColumnId) =>
   getV2PoolRow(address).find(`[data-testid="data-table-cell-${columnId}"]`)
 
 export const showV2PoolColumns = (columnIds: readonly PoolColumnId[]) => {
+  cy.get('[data-testid="btn-visibility-settings"]').click()
+  cy.get('[data-testid="table-visibility-settings-popover"]', API_LOAD_TIMEOUT).should('be.visible')
   for (const columnId of columnIds) {
     cy.get('[data-testid="btn-visibility-settings"]').click()
-    cy.get(`[data-testid="visibility-toggle-${columnId}"]`)
-      .should('be.visible')
-      .find('input')
-      .then($input => {
-        if (!$input.is(':checked')) cy.wrap($input).check({ force: true })
-      })
+    cy.get(`[data-testid="visibility-toggle-${columnId}"]`).should('be.visible')
+    cy.get(`[data-testid="visibility-toggle-${columnId}"] input`).then($input => {
+      if (!$input.is(':checked')) cy.wrap($input).check({ force: true })
+    })
     cy.get('body').click(0, 0)
+    cy.get('[data-testid="table-visibility-settings-popover"]', API_LOAD_TIMEOUT).should('not.exist')
+    cy.get('[data-testid="table-visibility-settings-popover-root"]').should('not.exist')
   }
 }
 
