@@ -6,6 +6,7 @@ import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
 import { queryClient } from '@evm-ui/lib/api'
 import { type GasInfo, type GasInfoQueryOptions, setGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { getTokenUsdRateKey } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { blockUnmockedApis, mockNewHashCollateralEvents } from './market-list-mocks'
 
 export const llamaNetworks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 
@@ -15,6 +16,12 @@ export const resetLlamaTestContext = () => {
   queryClient.clear()
   globalLibs.current = {}
   globalLibs.hydrated = {}
+}
+
+export const setupMockedLlamalendComponentTest = () => {
+  resetLlamaTestContext()
+  blockUnmockedApis()
+  mockNewHashCollateralEvents()
 }
 
 export const setGasInfo = (

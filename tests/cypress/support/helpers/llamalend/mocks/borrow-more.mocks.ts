@@ -4,7 +4,7 @@ import { oneDecimal, oneInt } from '@cy/support/generators'
 import { decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { createMockLlamaApi, TEST_TX_HASH } from '../mock-loan-test-data'
-import { createIsApprovedStub, createStub, createSyncStub } from '../test-stub.utils'
+import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
   createBorrowMoreMintMarket,
   createMockLendLoanMarket,
@@ -38,8 +38,8 @@ export const createBorrowMoreScenario = ({
   const expectedCurrentDebt = oneDecimal(10, 200, 2)
   const expectedFutureDebt = decimalSum(expectedCurrentDebt, borrow)
 
-  const borrowMoreApprove = createStub(TEST_TX_HASH)
-  const borrowMoreLeverageApprove = createStub(TEST_TX_HASH)
+  const borrowMoreApprove = createTransactionStub(TEST_TX_HASH)
+  const borrowMoreLeverageApprove = createTransactionStub(TEST_TX_HASH)
   const normalStubs = {
     parameters: createStub(oneRatePair()),
     estimateGasBorrowMore: createStub(oneInt(120_000, 240_000)),
@@ -47,7 +47,7 @@ export const createBorrowMoreScenario = ({
     borrowMoreHealth: createStub(oneDecimal(10, 65, 2)),
     borrowMoreMaxRecv: createStub(oneDecimal(100, 900, 2)),
     borrowMoreIsApproved: approved ? createStub(true) : createIsApprovedStub(borrowMoreApprove),
-    borrowMore: createStub(TEST_TX_HASH),
+    borrowMore: createTransactionStub(TEST_TX_HASH),
     borrowMoreApprove,
     borrowMorePrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
     borrowMoreExpectedCollateral: createStub(leverageMetrics()),
@@ -75,7 +75,7 @@ export const createBorrowMoreScenario = ({
       avgPrice: oneDecimal(900, 2300, 2),
     }),
     borrowMoreIsApproved: approved ? createStub(true) : createIsApprovedStub(borrowMoreLeverageApprove),
-    borrowMore: createStub(TEST_TX_HASH),
+    borrowMore: createTransactionStub(TEST_TX_HASH),
     borrowMoreApprove: borrowMoreLeverageApprove,
     borrowMoreExpectedCollateral: createStub(leverageMetrics()),
     borrowMoreFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),

@@ -11,7 +11,7 @@ import {
 import { createClaimScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -35,7 +35,7 @@ const testCases: {
 ]
 
 describe('ClaimTab (mocked)', () => {
-  beforeEach(resetLlamaTestContext)
+  beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(({ title, claimableCrv, claimableRewards }) => {
     it(`shows ${title} state`, () => {

@@ -18,7 +18,7 @@ import {
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
-import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
+import { setupLlammalendTestCaseMocks } from '@cy/support/helpers/llamalend/mock-market.helpers'
 import {
   checkRepayDetailsLoaded,
   selectRepayToken,
@@ -32,9 +32,9 @@ import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { getLib } from '@evm-ui/features/connect-wallet'
 import { MarketType } from '@evm-ui/types/market'
-import { waitFor } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
+import { waitFor } from '@primitives/promise.utils'
 
 const testCases = recordValues(MarketType).map(marketType => oneLoanTestMarket(marketType))
 /**
@@ -124,7 +124,7 @@ testCases.forEach(
         fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
 
-        if (!HAS_API) blockUnmockedApis()
+        setupLlammalendTestCaseMocks({ hasApi: HAS_API })
       })
 
       const LoanTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (

@@ -4,7 +4,7 @@ import type { UserCollateralEvents } from '@/llamalend/features/user-position-hi
 export const TEST_PRIVATE_KEY = generatePrivateKey()
 export const TEST_ACCOUNT = privateKeyToAccount(TEST_PRIVATE_KEY)
 export const TEST_ADDRESS = TEST_ACCOUNT.address
-// Real mined Ethereum mainnet transaction hash used to avoid any RPC mocking in component tests.
+// Deterministic transaction hash with a mocked receipt in mocked LlamaLend component tests.
 export const TEST_TX_HASH: `0x${string}` = '0xb664cb54f72491d8f459bb2a0db0bf074b30fa0fb1179a989ff4e1932291a69d'
 
 export const createMockLlamaApi = (chainId: number, mockMarket: unknown) => ({

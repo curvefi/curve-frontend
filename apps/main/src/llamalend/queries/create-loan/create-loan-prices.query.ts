@@ -7,7 +7,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import type { CreateLoanDebtQuery, CreateLoanForm, CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
-import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
+import { createLoanRouteMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanPricesReceiveQuery = CreateLoanFormQuery & Pick<CreateLoanForm, 'maxDebt'>
 type CreateLoanPricesReceiveParams = FieldsOf<CreateLoanPricesReceiveQuery>
@@ -59,7 +59,7 @@ export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPr
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true, ignoreMaxCollateral: true }),
   dependencies: params => [
-    createLoanMaxReceiveKey(params),
+    createLoanRouteMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],
 })

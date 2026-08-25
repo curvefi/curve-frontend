@@ -10,7 +10,7 @@ import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestW
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/mocks/borrow-more.mocks'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -63,7 +63,7 @@ const testCases = [
 
 describe('BorrowMoreForm (mocked)', () => {
   beforeEach(() => {
-    resetLlamaTestContext()
+    setupMockedLlamalendComponentTest()
     mockMintSnapshots({ limit: 1 })
   })
 

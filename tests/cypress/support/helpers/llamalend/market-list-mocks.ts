@@ -5,6 +5,7 @@ import {
   mockLendingVaults,
   mockMerklCampaigns,
 } from '@cy/support/helpers/lending-mocks'
+import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
 import { mockMintMarkets, mockMintSnapshots } from '../minting-mocks'
 import { mockTokenPrices } from '../tokens'
 
@@ -63,11 +64,44 @@ const mockEmptyCrvUsdAmms = () =>
     { body: { success: true, data: { amms: [], totalVolume: 0 }, generatedTimeMs: Date.now() } },
   )
 
+/**
+ * During component tests, the backend can take a long time to reply when we send a new_hash.
+ * The transactions do not exist in the backend anyway, since we are in a fork, so we mock an empty response.
+ */
+export const mockNewHashCollateralEvents = () => {
+  cy.intercept(
+    { method: 'GET', pathname: /^\/v1\/(crvusd|lending)\/collateral_events\/.+/, query: { new_hash: /.+/ } },
+    req => {
+      const [, , endpoint, , chain, controller, user] = new URL(req.url).pathname.split('/')
+      const body = {
+        chain,
+        controller,
+        user,
+        total_deposit: 0,
+        total_deposit_from_user: 0,
+        total_borrowed: 0,
+        total_deposit_precise: '0',
+        total_borrowed_precise: '0',
+        total_deposit_from_user_precise: '0',
+        total_deposit_from_user_usd_value: 0,
+        total_deposit_usd_value: 0,
+        ...(endpoint === 'lending' && { total_borrowed_usd_value: 0 }),
+        count: 0,
+        pagination: null,
+        page: null,
+        data: [],
+      }
+      req.reply({ body })
+    },
+  )
+}
+
 export function setupLlamalendListMocks(vaultData = createLendingVaultChainsResponse()) {
   blockUnmockedApis()
   mockEmptyMarketUserData()
   mockEmptyMarketBadDebt()
   mockEmptyCrvUsdAmms()
+  mockLlamalendChartApis()
   mockTokenPrices()
   const lendingVaults = mockLendingVaults(vaultData)
   mockLendingSnapshots().as('lend-snapshots')

@@ -4,6 +4,7 @@ import {
   shouldLoadLendVaultDetails,
 } from '@cy/support/helpers/llamalend/market-details.helpers'
 import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
+import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
 import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 
 const LEND_MARKET = '0x23F5a668A9590130940eF55964ead9787976f2CC'
@@ -14,6 +15,7 @@ describe('Lend app', () => {
   beforeEach(() => {
     mockLendingSnapshots('ethereum')
     mockMerklCampaigns()
+    mockLlamalendChartApis()
     cy.viewport(WIDTH, HEIGHT)
   })
 

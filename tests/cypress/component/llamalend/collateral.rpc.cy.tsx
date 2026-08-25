@@ -12,7 +12,7 @@ import {
 import { oneLoanTestMarket } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LlammalendTestCase } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { setupTenderlyLoan } from '@cy/support/helpers/llamalend/loan-setup.helpers'
-import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
+import { setupLlammalendTestCaseMocks } from '@cy/support/helpers/llamalend/mock-market.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
@@ -97,7 +97,7 @@ describe('Collateral forms', () => {
 
         beforeEach(() => {
           onPricesUpdated = cy.stub().as('onPricesUpdated')
-          if (!hasApi) blockUnmockedApis()
+          setupLlammalendTestCaseMocks({ hasApi })
         })
 
         it('adds collateral', () => {

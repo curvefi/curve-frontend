@@ -47,10 +47,10 @@ const OldRoutes: Record<AppName, string[]> = {
  * This handles the old hash-based routing from react-router. We remove the hash and redirect to the new routes.
  * We also handle old redirects that were hardcoded in react-router.
  */
-export function getHashRedirectUrl({ pathname: path, search: query, hash }: ParsedLocation, networkId: string) {
-  const { host } = window.location // host is not available in the tanstack router location
+export function getHashRedirectUrl({ pathname: path, search: query }: ParsedLocation, networkId: string) {
+  const { host, hash } = window.location // host is not available in the tanstack router location
   const search = new URLSearchParams(query)
-  const hashPath = hash.replace(/^\/?/, '') // note tanstack hash doesn't start with #, but window.location.hash does
+  const hashPath = hash.replace(/^#?\/?/, '') // note tanstack hash doesn't start with #, but window.location.hash does
   const pathname = path.endsWith('/') ? path : `${path}/` // the ending slash is only there in root routes
   const oldApp = oldOrigins.find(app => host.startsWith(app)) || (pathname === '/' && hashPath && 'dex')
   const [, app, network, ...rest] = `${oldApp ? `/${oldApp}` : ''}${pathname}${hashPath}`.split('/')

@@ -10,6 +10,15 @@ export type TestStub<TArgs extends readonly TestStubArg[], TResult> = ((...args:
 export const createStub = <TResult, TArgs extends readonly TestStubArg[] = readonly TestStubArg[]>(result: TResult) =>
   cy.stub().resolves(result) as TestStub<TArgs, Promise<TResult>>
 
+/** Resolves on the next macrotask so mocked transactions do not bypass UI query updates. */
+export const createTransactionStub = <TResult, TArgs extends readonly TestStubArg[] = readonly TestStubArg[]>(
+  result: TResult,
+) =>
+  cy.stub().callsFake(() => new Promise<TResult>(resolve => setTimeout(() => resolve(result), 0))) as TestStub<
+    TArgs,
+    Promise<TResult>
+  >
+
 export const createSyncStub = <TResult, TArgs extends readonly TestStubArg[] = readonly TestStubArg[]>(
   result: TResult,
 ) => cy.stub().returns(result) as TestStub<TArgs, TResult>

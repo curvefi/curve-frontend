@@ -19,10 +19,10 @@ import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
-import { sleep } from '@evm-ui/utils'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { sleep } from '@primitives/promise.utils'
 import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
