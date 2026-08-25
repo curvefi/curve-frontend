@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { getExpectedFn, getRouteById, NoQuoteError } from '@evm-ui/entities/router-api'
+import { getExpectedFn, getRouteById } from '@evm-ui/entities/router-api'
 import { type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
@@ -24,7 +24,6 @@ export type CreateLoanMaxReceiveQueryParams = FieldsOf<CreateLoanMaxReceiveQuery
 export type CreateLoanMaxReceiveParams = Omit<CreateLoanMaxReceiveQueryParams, 'router'> & {
   leverageProviders?: readonly RouteProvider[] | undefined
 }
-type CreateLoanMaxReceiveRouteParams = CreateLoanMaxReceiveParams & { routeId?: string | null }
 
 export type CreateLoanMaxReceiveResult = {
   maxDebt: Decimal
@@ -38,7 +37,6 @@ export type CreateLoanMaxReceiveResult = {
 }
 
 const convertNumbers = ({
-  router,
   maxDebt,
   maxLeverage,
   maxTotalCollateral,
@@ -46,11 +44,8 @@ const convertNumbers = ({
   userCollateral,
   collateralFromUserBorrowed,
   collateralFromMaxDebt,
-}: Omit<{ [K in keyof CreateLoanMaxReceiveResult]: string }, 'router'> & {
-  router?: RouteProvider
-}): CreateLoanMaxReceiveResult => ({
+}: { [K in keyof CreateLoanMaxReceiveResult]: string }) => ({
   maxDebt: maxDebt as Decimal,
-  router,
   maxLeverage: decimal(maxLeverage),
   maxTotalCollateral: decimal(maxTotalCollateral),
   avgPrice: decimal(avgPrice),
@@ -94,23 +89,17 @@ const {
     range,
     leverageEnabled,
     slippage,
-    router,
+    router: routerProvider,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
     const market = getMarket(marketId)
     const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2': {
-        const selectedRouter = assert(router, 'No router enabled')
+        const router = assert(routerProvider, 'No router enabled')
         const zapAddress = getZapAddress(market)
-        const getExpected = getExpectedFn({ chainId, router: selectedRouter, userAddress, zapAddress, slippage })
-        try {
-          const result = await impl.createLoanMaxRecv({ userCollateral, range, getExpected })
-          return convertNumbers({ router: selectedRouter, ...result })
-        } catch (e) {
-          // todo: remove this after https://github.com/curvefi/curve-llamalend.js/pull/141
-          if (e instanceof NoQuoteError) return { maxDebt: '0' }
-          throw e
-        }
+        const getExpected = getExpectedFn({ chainId, router, userAddress, zapAddress, slippage })
+        const result = await impl.createLoanMaxRecv({ userCollateral, range, getExpected })
+        return { router, ...convertNumbers(result) }
       }
       case 'V0': {
         assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
@@ -132,7 +121,7 @@ const {
   }),
 })
 
-export const createLoanRouteMaxReceiveKey = (params: CreateLoanMaxReceiveRouteParams) =>
+export const createLoanRouteMaxReceiveKey = (params: CreateLoanMaxReceiveParams & { routeId?: string | null }) =>
   createLoanProviderMaxReceiveKey({ ...params, router: params.routeId ? getRouteById(params.routeId).router : null })
 
 const getMaxReceiveProviders = ({ marketId, leverageEnabled, leverageProviders }: CreateLoanMaxReceiveParams) => {

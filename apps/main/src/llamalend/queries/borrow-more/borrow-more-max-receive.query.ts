@@ -3,7 +3,7 @@ import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
-import { getExpectedFn, NoQuoteError } from '@evm-ui/entities/router-api'
+import { getExpectedFn } from '@evm-ui/entities/router-api'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
@@ -32,34 +32,28 @@ export type BorrowMoreMaxReceiveParams<ChainId = number> = Omit<BorrowMoreMaxRec
   leverageProviders?: readonly RouteProvider[] | undefined
 }
 
-function castFieldsToDecimal(foo: {
+const castFieldsToDecimal = ({
+  maxDebt,
+  maxTotalCollateral,
+  userCollateral: userCollateralReceive,
+  collateralFromUserBorrowed,
+  collateralFromMaxDebt,
+  avgPrice,
+}: {
   maxDebt: string
-  router?: RouteProvider
   maxTotalCollateral: string
   userCollateral: string
   collateralFromUserBorrowed: string
   collateralFromMaxDebt: string
   avgPrice: string
-}) {
-  const {
-    maxDebt,
-    router,
-    maxTotalCollateral,
-    userCollateral: userCollateralReceive,
-    collateralFromUserBorrowed,
-    collateralFromMaxDebt,
-    avgPrice,
-  } = foo
-  return {
-    maxDebt: maxDebt as Decimal,
-    router,
-    maxTotalCollateral: decimal(maxTotalCollateral),
-    userCollateral: decimal(userCollateralReceive),
-    collateralFromUserBorrowed: decimal(collateralFromUserBorrowed),
-    collateralFromMaxDebt: decimal(collateralFromMaxDebt),
-    avgPrice: decimal(avgPrice),
-  }
-}
+}) => ({
+  maxDebt: maxDebt as Decimal,
+  maxTotalCollateral: decimal(maxTotalCollateral),
+  userCollateral: decimal(userCollateralReceive),
+  collateralFromUserBorrowed: decimal(collateralFromUserBorrowed),
+  collateralFromMaxDebt: decimal(collateralFromMaxDebt),
+  avgPrice: decimal(avgPrice),
+})
 
 const { getQueryOptions: getBorrowMoreMaxReceiveOptions, invalidate: invalidateBorrowMoreProviderMaxReceive } =
   queryFactory({
@@ -89,29 +83,24 @@ const { getQueryOptions: getBorrowMoreMaxReceiveOptions, invalidate: invalidateB
       chainId,
       userAddress,
       slippage,
-      router,
+      router: routerProvider,
     }: BorrowMoreMaxReceiveQuery): Promise<BorrowMoreMaxReceiveResult> => {
       const market = getMarket(marketId)
       const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
       switch (type) {
         case 'zapV2': {
-          const selectedRouter = assert(router, 'No router enabled')
+          const router = assert(routerProvider, 'No router enabled')
           const zapAddress = getZapAddress(market)
-          const getExpected = getExpectedFn({ chainId, userAddress, zapAddress, slippage, router: selectedRouter })
-          try {
-            const result = await impl.borrowMoreMaxRecv({ userCollateral, address: userAddress, getExpected })
-            return castFieldsToDecimal({ router: selectedRouter, ...result })
-          } catch (e) {
-            if (e instanceof NoQuoteError) return { maxDebt: '0' } // todo: remove this after https://github.com/curvefi/curve-llamalend.js/pull/141
-            throw e
-          }
+          const getExpected = getExpectedFn({ chainId, userAddress, zapAddress, slippage, router })
+          const result = await impl.borrowMoreMaxRecv({ userCollateral, address: userAddress, getExpected })
+          return { router, ...castFieldsToDecimal(result) }
         }
         case 'unleveraged':
           return { maxDebt: (await impl.borrowMoreMaxRecv(userCollateral)) as Decimal }
       }
     },
     category: 'llamalend.borrowMore',
-    validationSuite: createValidationSuite((params: BorrowMoreMaxReceiveParams) =>
+    validationSuite: createValidationSuite((params: BorrowMoreMaxReceiveQueryParams) =>
       borrowMoreValidationGroup(params, {
         leverageRequired: false,
         debtRequired: false,
