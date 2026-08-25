@@ -1,25 +1,33 @@
+import { useMemo } from 'react'
 import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { getExpectedFn } from '@evm-ui/entities/router-api'
+import { getExpectedFn, getRouteById } from '@evm-ui/entities/router-api'
 import { type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { decimal } from '@evm-ui/utils'
+import { combineQueries } from '@evm-ui/lib/queries/combine'
+import { decimal, decimalCompare } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
+import { useQueries } from '@tanstack/react-query'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
 type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt' | 'routeId'> & {
   userCollateral: Decimal
   userAddress: Address
-  leverageProviders: readonly RouteProvider[] | undefined
+  router: RouteProvider | null
 }
-export type CreateLoanMaxReceiveParams = FieldsOf<CreateLoanMaxReceiveQuery>
+export type CreateLoanMaxReceiveQueryParams = FieldsOf<CreateLoanMaxReceiveQuery>
 
-type CreateLoanMaxReceiveResult = {
+export type CreateLoanMaxReceiveParams = Omit<CreateLoanMaxReceiveQueryParams, 'router'> & {
+  leverageProviders?: readonly RouteProvider[] | undefined
+}
+
+export type CreateLoanMaxReceiveResult = {
   maxDebt: Decimal
+  router?: RouteProvider
   maxTotalCollateral?: Decimal
   maxLeverage?: Decimal
   userCollateral?: Decimal
@@ -36,7 +44,7 @@ const convertNumbers = ({
   userCollateral,
   collateralFromUserBorrowed,
   collateralFromMaxDebt,
-}: { [K in keyof CreateLoanMaxReceiveResult]: string }): CreateLoanMaxReceiveResult => ({
+}: { [K in keyof CreateLoanMaxReceiveResult]: string }) => ({
   maxDebt: maxDebt as Decimal,
   maxLeverage: decimal(maxLeverage),
   maxTotalCollateral: decimal(maxTotalCollateral),
@@ -46,10 +54,10 @@ const convertNumbers = ({
   collateralFromMaxDebt: decimal(collateralFromMaxDebt),
 })
 
-export const {
-  useQuery: useCreateLoanMaxReceive,
-  queryKey: createLoanMaxReceiveKey,
-  invalidate: invalidateCreateLoanMaxReceive,
+const {
+  queryKey: createLoanProviderMaxReceiveKey,
+  getQueryOptions: getCreateLoanMaxReceiveOptions,
+  invalidate: invalidateCreateLoanProviderMaxReceive,
 } = queryFactory({
   queryKey: ({
     chainId,
@@ -60,8 +68,8 @@ export const {
     range,
     leverageEnabled,
     slippage,
-    leverageProviders,
-  }: CreateLoanMaxReceiveParams) =>
+    router,
+  }: CreateLoanMaxReceiveQueryParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'createLoanMaxRecv',
@@ -70,7 +78,7 @@ export const {
       { range },
       { leverageEnabled },
       { slippage },
-      { leverageProviders },
+      { router },
     ] as const,
   queryFn: async ({
     chainId,
@@ -81,25 +89,18 @@ export const {
     range,
     leverageEnabled,
     slippage,
-    leverageProviders,
+    router: routerProvider,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
     const market = getMarket(marketId)
     const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
     switch (type) {
-      case 'zapV2':
-        return convertNumbers(
-          await impl.createLoanMaxRecv({
-            userCollateral,
-            range,
-            getExpected: getExpectedFn({
-              chainId,
-              router: leverageProviders,
-              userAddress,
-              zapAddress: getZapAddress(market),
-              slippage,
-            }),
-          }),
-        )
+      case 'zapV2': {
+        const router = assert(routerProvider, 'No router enabled')
+        const zapAddress = getZapAddress(market)
+        const getExpected = getExpectedFn({ chainId, router, userAddress, zapAddress, slippage })
+        const result = await impl.createLoanMaxRecv({ userCollateral, range, getExpected })
+        return { router, ...convertNumbers(result) }
+      }
       case 'V0': {
         assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
         const result = await impl.createLoanMaxRecv(userCollateral, range)
@@ -119,3 +120,29 @@ export const {
     ignoreMaxCollateral: true, // allow users to calculate max receive before they have collateral
   }),
 })
+
+export const createLoanRouteMaxReceiveKey = (params: CreateLoanMaxReceiveParams & { routeId?: string | null }) =>
+  createLoanProviderMaxReceiveKey({ ...params, router: params.routeId ? getRouteById(params.routeId).router : null })
+
+const getMaxReceiveProviders = ({ marketId, leverageEnabled, leverageProviders }: CreateLoanMaxReceiveParams) => {
+  if (!marketId || leverageEnabled == null) return []
+  const [type] = getCreateLoanImplementation(marketId, leverageEnabled)
+  return type === 'zapV2' ? (leverageProviders ?? []) : [null]
+}
+
+export const useCreateLoanMaxReceiveQueries = (params: CreateLoanMaxReceiveParams) =>
+  useQueries({
+    queries: useMemo(
+      () => getMaxReceiveProviders(params).map(router => getCreateLoanMaxReceiveOptions({ ...params, router })),
+      [params],
+    ),
+    combine: results =>
+      combineQueries(results, (first, ...rest) =>
+        rest.reduce((max, item) => (decimalCompare(item.maxDebt, max.maxDebt) > 0 ? item : max), first),
+      ),
+  })
+
+export const invalidateCreateLoanMaxReceive = async (params: CreateLoanMaxReceiveParams) =>
+  await Promise.all(
+    getMaxReceiveProviders(params).map(router => invalidateCreateLoanProviderMaxReceive({ ...params, router })),
+  )
