@@ -12,7 +12,7 @@ import {
   type MockLendVault,
 } from '../mock-market.helpers'
 import { seedErc20BalanceForAddresses, seedLendMarketSolvencyQueries } from '../query-cache.helpers'
-import { createIsApprovedStub, createStub, type TestStub } from '../test-stub.utils'
+import { createIsApprovedStub, createStub, createTransactionStub, type TestStub } from '../test-stub.utils'
 
 const seedSupplyMarketBalances = ({
   chainId,
@@ -170,13 +170,13 @@ export const createDepositScenario = ({
   } as const
   const currentApy = '0.0456'
   const futureApy = '0.0412'
-  const depositApprove = createStub([TEST_TX_HASH])
+  const depositApprove = createTransactionStub([TEST_TX_HASH])
   const depositIsApproved = approved ? createStub(true) : createIsApprovedStub(depositApprove)
   const maxDepositStub = createStub(input.maxDeposit)
   const previewDeposit = createStub(input.amount)
   const estimateGasDeposit = createStub(`${150_000}`)
   const estimateGasDepositApprove = createStub(`${95_000}`)
-  const deposit = createStub(TEST_TX_HASH)
+  const deposit = createTransactionStub(TEST_TX_HASH)
   const vaultShares = decimalSum(balances.vaultShares, balances.gauge)
 
   const { market, sharedStubs } = createBaseSupplyMarket({
@@ -258,11 +258,11 @@ export const createStakeScenario = ({
   } as const
   const currentApy = '0.0375'
   const futureApy = currentApy
-  const stakeApprove = createStub([TEST_TX_HASH])
+  const stakeApprove = createTransactionStub([TEST_TX_HASH])
   const stakeIsApproved = approved ? createStub(true) : createIsApprovedStub(stakeApprove)
   const estimateGasStake = createStub(`${132_000}`)
   const estimateGasStakeApprove = createStub(`${91_000}`)
-  const stake = createStub(TEST_TX_HASH)
+  const stake = createTransactionStub(TEST_TX_HASH)
   const convertToAssets = cy
     .stub()
     .callsFake((shares: Decimal) => Promise.resolve(decimalDiv(shares, '2'))) as TestStub<readonly [string], string>
@@ -355,8 +355,8 @@ export const createWithdrawScenario = ({
   const previewWithdraw = createStub(input.amount)
   const estimateGasWithdraw = createStub(`${142_000}`)
   const estimateGasRedeem = createStub(`${149_000}`)
-  const withdraw = createStub(TEST_TX_HASH)
-  const redeem = createStub(TEST_TX_HASH)
+  const withdraw = createTransactionStub(TEST_TX_HASH)
+  const redeem = createTransactionStub(TEST_TX_HASH)
   const vaultShares = decimalSum(depositedShares, stakedShares)
 
   const { market, sharedStubs } = createBaseSupplyMarket({
@@ -426,7 +426,7 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
   const currentApy = '0.0440'
   const futureApy = currentApy
   const estimateGasUnstake = createStub(`${121_000}`)
-  const unstake = createStub(TEST_TX_HASH)
+  const unstake = createTransactionStub(TEST_TX_HASH)
   const convertToAssets = cy
     .stub()
     .callsFake((shares: Decimal) => Promise.resolve(decimalDiv(shares, '2'))) as TestStub<readonly [string], string>
@@ -489,8 +489,8 @@ export const createClaimScenario = ({
   claimableCrv?: Decimal
   claimableRewards?: { amount: Decimal; symbol: string; token: Address }[]
 }) => {
-  const claimCrv = createStub(TEST_TX_HASH)
-  const claimRewards = createStub(TEST_TX_HASH)
+  const claimCrv = createTransactionStub(TEST_TX_HASH)
+  const claimRewards = createTransactionStub(TEST_TX_HASH)
   const claimableCrvStub = createStub(claimableCrv)
   const claimableRewardsStub = createStub(claimableRewards)
   const estimateGasClaimCrv = createStub(`${77_000}`)

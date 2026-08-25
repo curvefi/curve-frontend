@@ -20,8 +20,8 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
   const stateBorrowed = oneDecimal(0.2, 8, 2)
   const debt = decimalSum(borrow, oneDecimal(0.5, 40, 2))
   const slippage = DEFAULT_LEVERAGE_SLIPPAGE
-  const repayApproveStub = createStub(TEST_TX_HASH)
-  const selfLiquidateApproveStub = createStub(TEST_TX_HASH)
+  const repayApproveStub = createTransactionStub(TEST_TX_HASH)
+  const selfLiquidateApproveStub = createTransactionStub(TEST_TX_HASH)
   const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
   const stubs = {
@@ -120,7 +120,7 @@ export const createResetPositionScenario = ({
   const collateral = '10' as const
   const debt = '10000' as const
   const fullRepayUserBorrowed = decimalMinus(debt, convertedBorrowed)
-  const repayApproveStub = createStub(TEST_TX_HASH)
+  const repayApproveStub = createTransactionStub(TEST_TX_HASH)
   const getDebtReduction = (walletBorrowed: Decimal) => decimalSum(convertedBorrowed, walletBorrowed)
   const getFutureDebt = (walletBorrowed: Decimal) => decimalMinus(debt, decimalSum(convertedBorrowed, walletBorrowed))
   const getExpected = (walletBorrowed: Decimal) => {

@@ -37,8 +37,8 @@ export const createRepayScenario = ({
     ...expectedBorrowedMetrics(),
     totalBorrowed: oneDecimal(0.1, Math.max(0.2, Number(currentDebt) - 0.1), 2),
   }
-  const repayApproveStub = createStub(TEST_TX_HASH)
-  const repayLeverageApproveStub = createStub(TEST_TX_HASH)
+  const repayApproveStub = createTransactionStub(TEST_TX_HASH)
+  const repayLeverageApproveStub = createTransactionStub(TEST_TX_HASH)
   const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
   const normalStubs = {

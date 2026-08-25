@@ -36,8 +36,8 @@ export const createCreateLoanScenario = ({
   const borrow = oneDecimal(5, 140, 2)
   const collateralAddress = DEFAULT_COLLATERAL_ADDRESS
   const lowPrice = oneDecimal(900, 2300, 2)
-  const createLoanApprove = createStub(TEST_TX_HASH)
-  const createLoanLeverageApprove = createStub(TEST_TX_HASH)
+  const createLoanApprove = createTransactionStub(TEST_TX_HASH)
+  const createLoanLeverageApprove = createTransactionStub(TEST_TX_HASH)
   const maxLeverage = oneDecimal(1.5, 10, 2)
 
   const normalStubs = {
