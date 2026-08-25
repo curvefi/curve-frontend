@@ -93,6 +93,15 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
       )}
 
       <Grid size={12}>
+        {variant === 'full' && (
+          <Metric
+            category={DETAIL_METRIC_CATEGORY}
+            label={POOL_TITLES[PoolColumnId.Tvl]}
+            value={pool.tvlUsd}
+            valueOptions={{ unit: 'dollar' }}
+            testId="pool-tvl"
+          />
+        )}
         {maybe(pool.creationDate, creationDate => (
           <Metric
             category={DETAIL_METRIC_CATEGORY}
