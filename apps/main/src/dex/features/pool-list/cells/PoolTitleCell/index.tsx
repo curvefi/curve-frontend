@@ -24,7 +24,7 @@ const PoolListTitle = memo(function PoolListTitle({ pool }: { pool: PoolRow }) {
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <TokenIcons blockchainId={pool.network} tokens={pool.tradeableCoins} />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
-          <TableRowTitle url={pool.url} address={pool.address} title={pool.name} addressLabel={t`pool`} />
+          <TableRowTitle id={pool.address} url={pool.url} title={pool.name} />
           <PoolBadges pool={pool} />
         </Stack>
       </Stack>

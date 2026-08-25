@@ -20,7 +20,7 @@ const getPoolListResponseFirstPoolName = (body: unknown) =>
 const waitForPoolListResponse = () =>
   cy.wait('@dex-pools', API_LOAD_TIMEOUT).then(({ response }) => {
     cy.contains(
-      '[data-testid^="market-link-"]',
+      '[data-testid^="table-row-link-"]',
       getPoolListResponseFirstPoolName(response?.body),
       API_LOAD_TIMEOUT,
     ).should('be.visible')
@@ -348,7 +348,7 @@ describe('DEX Pools', () => {
         .should('be.visible')
         .click({ waitForAnimations: false })
     } else {
-      cy.contains('[data-testid^="market-link-"]', filter).click()
+      cy.contains('[data-testid^="table-row-link-"]', filter).click()
     }
     cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
     cy.window().then(win => win.history.go(-1))
