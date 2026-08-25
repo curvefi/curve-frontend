@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { LiquidityDetails } from '../liquidity-details'
@@ -17,6 +18,12 @@ export const usePositionDetailsTabs = ({
   poolId,
 }: UserPositionTabsParams) => {
   const { hasPosition } = useLiquidityDetails({ chainId, poolDataCacheOrApi, poolId })
-  const tabs = useTabs({ menu, params: { blockchainId, chainId, poolDataCacheOrApi, poolId } })
+  const tabs = useTabs({
+    menu,
+    params: useMemo(
+      () => ({ blockchainId, chainId, poolDataCacheOrApi, poolId }),
+      [blockchainId, chainId, poolDataCacheOrApi, poolId],
+    ),
+  })
   return { hasPosition, ...tabs }
 }

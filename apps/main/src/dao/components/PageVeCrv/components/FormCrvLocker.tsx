@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent } from 'react'
+import { useCallback, useEffect, useEffectEvent, useMemo } from 'react'
 import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate'
@@ -45,7 +45,7 @@ const menu: TabItem<FormType, LockerTabsParams>[] = [
 ]
 
 export const FormCrvLocker = (pageProps: PageVecrv) => {
-  const { curve, rFormType, vecrvInfo } = pageProps
+  const { curve, rChainId, rFormType, vecrvInfo } = pageProps
 
   const { connectState } = useCurve()
   const isLoadingCurve = isLoading(connectState)
@@ -60,7 +60,10 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   const hasLockedCrv = +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0
 
-  const onChange = (value: FormType) => void setFormValues(curve, isLoadingCurve, value, {}, vecrvInfo, true)
+  const onChange = useCallback(
+    (value: FormType) => void setFormValues(curve, isLoadingCurve, value, {}, vecrvInfo, true),
+    [curve, isLoadingCurve, setFormValues, vecrvInfo],
+  )
   const {
     content,
     onChange: onChangeTab,
@@ -68,7 +71,10 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
     tabs,
   } = useTabs({
     menu,
-    params: { ...pageProps, canUnlock, hasLockedCrv },
+    params: useMemo(
+      () => ({ curve, rChainId, rFormType, vecrvInfo, canUnlock, hasLockedCrv }),
+      [curve, rChainId, rFormType, vecrvInfo, canUnlock, hasLockedCrv],
+    ),
     defaultValue: rFormType,
     onChange,
   })

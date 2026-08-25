@@ -83,7 +83,12 @@ const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
 
 export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutProps, 'activity'>) => (
   <Stack data-testid="market-activity">
-    <Tabs menu={MARKET_ACTIVITY_MENU} params={{ activity }} variant="contained" ContentWrapper={ActivityTabsContent} />
+    <Tabs
+      menu={MARKET_ACTIVITY_MENU}
+      params={useMemo(() => ({ activity }), [activity])}
+      variant="contained"
+      ContentWrapper={ActivityTabsContent}
+    />
   </Stack>
 )
 
@@ -190,7 +195,7 @@ export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAn
   <Stack data-testid="market-chart-and-activity">
     <Tabs
       menu={CHART_AND_ACTIVITY_MENU}
-      params={{ chart, bands, activity }}
+      params={useMemo(() => ({ chart, bands, activity }), [chart, bands, activity])}
       variant="contained"
       ContentWrapper={ActivityTabsContent}
     />

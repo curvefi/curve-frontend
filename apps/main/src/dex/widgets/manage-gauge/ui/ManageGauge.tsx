@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
@@ -25,7 +26,10 @@ const menu: TabItem<Tab, ManageGaugeProps>[] = [
 export const ManageGauge = ({ poolId, chainId, isGaugeManager, isRewardsDistributor }: ManageGaugeProps) => {
   const { tab, tabs, content, onChange } = useTabs({
     menu,
-    params: { chainId, poolId, isGaugeManager, isRewardsDistributor },
+    params: useMemo(
+      () => ({ chainId, poolId, isGaugeManager, isRewardsDistributor }),
+      [chainId, poolId, isGaugeManager, isRewardsDistributor],
+    ),
   })
   return (
     <FormContent

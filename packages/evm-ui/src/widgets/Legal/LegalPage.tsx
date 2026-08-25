@@ -1,4 +1,4 @@
-import { type ComponentType, useEffect, useState } from 'react'
+import { type ComponentType, useEffect, useMemo, useState } from 'react'
 import { getSearchString, useParams, useSearchParams } from '@evm-ui/hooks/router'
 import { findTabValue, type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
@@ -95,7 +95,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
   const subTabFromUrl = findTabValue(menu, searchParams.get('subtab'))
   const { content, subTab, subTabs, tab, tabs } = useTabs({
     menu,
-    params: { currentApp, network, searchParams },
+    params: useMemo(() => ({ currentApp, network, searchParams }), [currentApp, network, searchParams]),
     value: subTabFromUrl ?? (tabFromUrl === 'disclaimers' ? DEFAULT_DISCLAIMERS_TABS[currentApp] : tabFromUrl),
   })
 

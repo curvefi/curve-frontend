@@ -80,7 +80,7 @@ const menu: TabItem<TransferFormType, TransferTabsParams>[] = [
 ]
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
-  const { params, curve, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
+  const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const { signerAddress } = curve ?? {}
@@ -170,17 +170,40 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     tabs,
   } = useTabs({
     menu,
-    params: {
-      ...pageTransferProps,
-      blockchainId: networkId,
-      poolAlert,
-      maxSlippage,
-      seed,
-      tokensMapper,
-      isAvailableManageGauge,
-      isGaugeManager,
-      isRewardsDistributor,
-    },
+    params: useMemo(
+      () => ({
+        curve,
+        params,
+        routerParams,
+        hasDepositAndStake,
+        poolData,
+        poolDataCacheOrApi,
+        blockchainId: networkId,
+        poolAlert,
+        maxSlippage,
+        seed,
+        tokensMapper,
+        isAvailableManageGauge,
+        isGaugeManager,
+        isRewardsDistributor,
+      }),
+      [
+        curve,
+        params,
+        routerParams,
+        hasDepositAndStake,
+        poolData,
+        poolDataCacheOrApi,
+        networkId,
+        poolAlert,
+        maxSlippage,
+        seed,
+        tokensMapper,
+        isAvailableManageGauge,
+        isGaugeManager,
+        isRewardsDistributor,
+      ],
+    ),
     value: rFormType as TransferFormType | undefined,
   })
 
@@ -188,9 +211,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     () =>
       tabs.map(tab => ({
         ...tab,
-        href: getPath(params, `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${tab.value}`),
+        href: getInternalUrl('dex', params.network, `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${tab.value}`),
       })),
-    [tabs, params],
+    [tabs, params.network, params.poolIdOrAddress],
   )
 
   return (

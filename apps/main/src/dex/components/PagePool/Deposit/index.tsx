@@ -38,8 +38,8 @@ const menu: TabItem<FormType, DepositTabsParams>[] = [
   { value: 'DEPOSIT_STAKE', label: t`Deposit & Stake`, component: DepositStakeTab },
 ]
 
-export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
-  const { poolAlert, poolData } = transferProps
+export const Deposit = (depositProps: TransferProps & { hasDepositAndStake: boolean }) => {
+  const { poolAlert, poolData } = depositProps
   const formType = useStore(state => state.poolDeposit.formType)
   const resetState = useStore(state => state.poolDeposit.resetState)
   const setStateByKeys = useStore(state => state.poolDeposit.setStateByKeys)
@@ -66,7 +66,7 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
     tabs,
   } = useTabs({
     menu,
-    params: { hasDepositAndStake, ...transferProps },
+    params: depositProps,
     value: formType,
     onChange: handleTabChange,
   })

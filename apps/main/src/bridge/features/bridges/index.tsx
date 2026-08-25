@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import { getSearchString, useSearchParams } from '@evm-ui/hooks/router'
 import { useTabFromSearchParam } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
@@ -44,7 +44,7 @@ export const Bridges = () => {
     <Stack data-testid="bridges">
       <Tabs
         menu={menu}
-        params={{ searchParams }}
+        params={useMemo(() => ({ searchParams }), [searchParams])}
         value={tabValue}
         variant="contained"
         ContentWrapper={BridgeTabPanel}

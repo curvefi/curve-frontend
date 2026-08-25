@@ -33,4 +33,6 @@ const VaultMenu = [
   },
 ] satisfies FormTab<object>[]
 
-export const VaultTabs = () => <FormTabs params={{}} menu={VaultMenu} />
+const VaultParams = {}
+
+export const VaultTabs = () => <FormTabs params={VaultParams} menu={VaultMenu} />

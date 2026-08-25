@@ -43,7 +43,7 @@ export const User = () => {
       </Box>
 
       <Box>
-        <Tabs menu={menu} params={{ userAddress, tableMinWidth }} variant="contained" />
+        <Tabs menu={menu} params={useMemo(() => ({ userAddress, tableMinWidth }), [userAddress])} variant="contained" />
       </Box>
     </DetailPageLayout>
   )

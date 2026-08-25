@@ -1,5 +1,5 @@
 import type { UrlObject } from 'url'
-import { createElement, type ComponentType, type ReactNode, useState } from 'react'
+import { createElement, type ComponentType, type ReactNode, useCallback, useMemo, useState } from 'react'
 import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { assert } from '@primitives/objects.utils'
 import { useSearchParams } from './router'
@@ -58,6 +58,8 @@ export type TabState<Value extends TabValue, Props extends object> = {
   content: ReactNode
   onChange: (value: Value) => void
 }
+
+const EMPTY_PARAMS = {}
 
 const applyFnOrValue = <Props extends object, Result>(
   fnOrValue: FnOrValue<Props, Result> | null | undefined,
@@ -131,10 +133,13 @@ function useTabValue<Value extends TabValue>(props: UncontrolledTabsOptions<Valu
   const { defaultValue } = props as UncontrolledTabsOptions<Value>
   const [internalValue, setInternalValue] = useState<Value | undefined>(defaultValue)
   const { value = internalValue, onChange } = props as ControlledTabsOptions<Value>
-  const handleChange = (value: Value) => {
-    setInternalValue(value)
-    onChange?.(value)
-  }
+  const handleChange = useCallback(
+    (value: Value) => {
+      setInternalValue(value)
+      onChange?.(value)
+    },
+    [onChange],
+  )
   return [value, handleChange] as const
 }
 
@@ -142,20 +147,31 @@ function useTabValue<Value extends TabValue>(props: UncontrolledTabsOptions<Valu
 export function useTabs<Value extends TabValue, Props extends object = Record<string, never>>(
   props: UseTabsOptions<Value, Props>,
 ): TabState<Value, Props> {
-  const { menu, params = {} as Props } = props
+  const { menu } = props
+  const params = (props.params ?? EMPTY_PARAMS) as Props
   const [selectedValue, onChange] = useTabValue(props)
-  const visibleTabs = getVisibleTabs(menu, params)
-  const tab =
-    visibleTabs.find(tab => getVisibleTabs(tab.subTabs, params).some(subTab => subTab.value === selectedValue)) ??
-    findTab(visibleTabs, selectedValue)
-  const subTab = findTab(getVisibleTabs(tab?.subTabs, params), selectedValue)
+  const { tab, tabs, subTabs, subTab, content } = useMemo(() => {
+    const visibleTabs = getVisibleTabs(menu, params)
+    const tab =
+      visibleTabs.find(tab => getVisibleTabs(tab.subTabs, params).some(subTab => subTab.value === selectedValue)) ??
+      findTab(visibleTabs, selectedValue)
+    const subTab = findTab(getVisibleTabs(tab?.subTabs, params), selectedValue)
+
+    return {
+      tab,
+      tabs: createOptions(menu, params),
+      subTabs: createOptions(tab?.subTabs, params),
+      subTab,
+      content: createContent(tab, subTab, params),
+    }
+  }, [menu, params, selectedValue])
 
   return {
     tab: assert(tab, 'No visible tabs found'),
-    tabs: createOptions(menu, params),
-    subTabs: createOptions(tab?.subTabs, params),
+    tabs,
+    subTabs,
     subTab,
-    content: createContent(tab, subTab, params),
+    content,
     onChange,
   }
 }

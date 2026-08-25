@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import { ChainId } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
 import { ActivityTable, PoolLiquidityExpandedPanel, PoolTradesExpandedPanel } from '@evm-ui/features/activity-table'
@@ -89,7 +89,7 @@ export const OhlcAndActivityComp = ({
     <Stack>
       <Tabs
         menu={menu}
-        params={{ chart, liquidityTable, tradesTable }}
+        params={useMemo(() => ({ chart, liquidityTable, tradesTable }), [chart, liquidityTable, tradesTable])}
         variant="contained"
         ContentWrapper={OhlcTabsContent}
       />
