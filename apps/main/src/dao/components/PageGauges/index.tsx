@@ -1,4 +1,4 @@
-import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
@@ -7,20 +7,18 @@ import { GaugesList } from './GaugeList'
 import { GaugeVoting } from './GaugeVoting'
 import { GaugeWeightDistribution } from './GaugeWeightDistribution'
 
-type Tab = 'gaugeList' | 'gaugeVoting'
-const menu: TabItem<Tab>[] = [
+const menu = [
   { value: 'gaugeList', label: t`Gauges`, component: GaugesList },
   { value: 'gaugeVoting', label: t`Voting`, component: GaugeVoting },
-]
+] as const
 
 export const Gauges = () => {
   const { tab, tabs, content, onChange } = useTabs({ menu })
-
   return (
     <DetailPageLayout formTabs={null} testId="gauges-page">
       <GaugeWeightDistribution isUserVotes={tab.value === 'gaugeVoting'} />
       <Stack>
-        <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
+        <TabsSwitcher value={tab.value} onChange={onChange} options={tabs} />
         {content}
       </Stack>
     </DetailPageLayout>

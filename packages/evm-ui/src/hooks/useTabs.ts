@@ -6,7 +6,7 @@ import { useSearchParams } from './router'
 
 export type TabValue = string | number
 
-export type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
+type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
 
 export type TabItem<Value extends TabValue, Props extends object = Record<string, never>> = {
   /** Unique value of the tab, it might be used in the URL later */
@@ -50,7 +50,7 @@ type ControlledTabsOptions<Value extends TabValue> = {
   onChange?: (value: Value) => void
 }
 
-export type TabState<Value extends TabValue, Props extends object> = {
+type TabState<Value extends TabValue, Props extends object> = {
   tab: TabItem<Value, Props>
   tabs: readonly TabOption<Value>[]
   subTabs: readonly TabOption<Value>[]
@@ -64,13 +64,12 @@ const EMPTY_PARAMS = {}
 const applyFnOrValue = <Props extends object, Result>(
   fnOrValue: FnOrValue<Props, Result> | null | undefined,
   props: Props,
-): Result | undefined =>
-  (typeof fnOrValue === 'function' ? (fnOrValue as (props: Props) => Result)(props) : fnOrValue) ?? undefined
+) => (typeof fnOrValue === 'function' ? (fnOrValue as (props: Props) => Result)(props) : fnOrValue) ?? undefined
 
 const createOptions = <Value extends TabValue, Props extends object>(
   tabs: readonly TabItem<Value, Props>[] | undefined,
   params: Props,
-): TabOption<Value>[] =>
+) =>
   tabs
     ?.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
     .map(({ value, label, disabled, alwaysInKebab, href, icon, sx, suffix, startAdornment, endAdornment }) => ({
@@ -89,7 +88,7 @@ const createOptions = <Value extends TabValue, Props extends object>(
 const getVisibleTabs = <Value extends TabValue, Props extends object>(
   tabs: readonly TabItem<Value, Props>[] | undefined,
   params: Props,
-): TabItem<Value, Props>[] => tabs?.filter(({ visible }) => applyFnOrValue(visible, params) !== false) ?? []
+) => tabs?.filter(({ visible }) => applyFnOrValue(visible, params) !== false) ?? []
 
 export const findTab = <Value extends TabValue, Props extends object>(
   tabs: readonly TabItem<Value, Props>[],

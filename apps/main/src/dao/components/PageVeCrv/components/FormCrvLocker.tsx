@@ -7,7 +7,7 @@ import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { useStore } from '@/dao/store/useStore'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
 import { useLayoutStore } from '@evm-ui/features/layout'
-import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
@@ -25,24 +25,34 @@ const LockDateTab = (pageProps: LockerTabsParams) => <FormLockDate {...pageProps
 const WithdrawTab = (pageProps: LockerTabsParams) => <FormWithdraw {...pageProps} rFormType="withdraw" />
 const CreateTab = (pageProps: LockerTabsParams) => <FormLockCreate {...pageProps} />
 
-const menu: TabItem<FormType, LockerTabsParams>[] = [
+const menu = [
   {
     value: 'adjust_crv',
     label: t`Lock More`,
-    disabled: ({ canUnlock }) => canUnlock,
-    visible: ({ canUnlock, hasLockedCrv }) => hasLockedCrv && !canUnlock,
+    disabled: ({ canUnlock }: LockerTabsParams) => canUnlock,
+    visible: ({ canUnlock, hasLockedCrv }: LockerTabsParams) => hasLockedCrv && !canUnlock,
     component: LockCrvTab,
   },
   {
     value: 'adjust_date',
     label: t`Extend Lock`,
-    disabled: ({ canUnlock }) => canUnlock,
-    visible: ({ canUnlock, hasLockedCrv }) => hasLockedCrv && !canUnlock,
+    disabled: ({ canUnlock }: LockerTabsParams) => canUnlock,
+    visible: ({ canUnlock, hasLockedCrv }: LockerTabsParams) => hasLockedCrv && !canUnlock,
     component: LockDateTab,
   },
-  { value: 'withdraw', label: t`Withdraw`, visible: ({ hasLockedCrv }) => hasLockedCrv, component: WithdrawTab },
-  { value: 'create', label: t`Create Lock`, visible: ({ hasLockedCrv }) => !hasLockedCrv, component: CreateTab },
-]
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    visible: ({ hasLockedCrv }: LockerTabsParams) => hasLockedCrv,
+    component: WithdrawTab,
+  },
+  {
+    value: 'create',
+    label: t`Create Lock`,
+    visible: ({ hasLockedCrv }: LockerTabsParams) => !hasLockedCrv,
+    component: CreateTab,
+  },
+] as const
 
 export const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rChainId, rFormType, vecrvInfo } = pageProps

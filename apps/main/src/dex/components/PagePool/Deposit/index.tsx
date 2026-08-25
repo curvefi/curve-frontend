@@ -6,7 +6,7 @@ import type { FormType } from '@/dex/components/PagePool/Deposit/types'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PagePool/Deposit/utils'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useStore } from '@/dex/store/useStore'
-import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
@@ -32,11 +32,11 @@ const StakeTab = ({ hasDepositAndStake, ...transferProps }: DepositTabsParams) =
     <FormStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />
   )
 
-const menu: TabItem<FormType, DepositTabsParams>[] = [
+const menu = [
   { value: 'DEPOSIT', label: t`Deposit`, component: DepositTab },
   { value: 'STAKE', label: t`Stake`, component: StakeTab },
   { value: 'DEPOSIT_STAKE', label: t`Deposit & Stake`, component: DepositStakeTab },
-]
+] as const
 
 export const Deposit = (depositProps: TransferProps & { hasDepositAndStake: boolean }) => {
   const { poolAlert, poolData } = depositProps

@@ -5,7 +5,7 @@ import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormU
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import { useStore } from '@/dex/store/useStore'
-import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
@@ -21,11 +21,11 @@ const WithdrawTab = (transferProps: TransferProps) =>
 const UnstakeTab = (transferProps: TransferProps) => <FormUnstake {...transferProps} />
 const ClaimTab = (transferProps: TransferProps) => <FormClaim {...transferProps} />
 
-const menu: TabItem<FormType, TransferProps>[] = [
+const menu = [
   { value: 'WITHDRAW', label: t`Withdraw`, component: WithdrawTab },
   { value: 'UNSTAKE', label: t`Unstake`, component: UnstakeTab },
   { value: 'CLAIM', label: t`Claim Rewards`, component: ClaimTab },
-]
+] as const
 
 export const Withdraw = (transferProps: TransferProps) => {
   const { poolData } = transferProps

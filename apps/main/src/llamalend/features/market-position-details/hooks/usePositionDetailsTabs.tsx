@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { MarketRateType } from '@evm-ui/types/market'
 import type { QueryProp } from '@evm-ui/types/util'
@@ -20,7 +20,7 @@ const activityTab = ({ events }: PositionDetailsTabsParams) => (
   </Stack>
 )
 
-const menu: TabItem<'borrowDetails' | 'activity', PositionDetailsTabsParams>[] = [
+const menu = [
   {
     value: 'borrowDetails',
     label: t`Your position`,
@@ -33,7 +33,7 @@ const menu: TabItem<'borrowDetails' | 'activity', PositionDetailsTabsParams>[] =
     visible: ({ events }: PositionDetailsTabsParams) => !!events.data?.length,
     component: activityTab,
   },
-]
+] as const
 
 export const usePositionDetailsTabs = ({ events, hasPosition }: PositionDetailsTabsParams) =>
   useTabs({ menu, params: useMemo(() => ({ events, hasPosition }), [events, hasPosition]) })

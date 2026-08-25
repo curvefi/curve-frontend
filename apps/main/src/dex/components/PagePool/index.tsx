@@ -27,7 +27,7 @@ import type { Chain } from '@curvefi/prices-api'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { useNavigate } from '@evm-ui/hooks/router'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
-import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
@@ -72,12 +72,17 @@ const ManageGaugeTab = ({ poolData, routerParams, isGaugeManager, isRewardsDistr
     />
   ) : null
 
-const menu: TabItem<TransferFormType, TransferTabsParams>[] = [
+const menu = [
   { value: 'deposit', label: t`Deposit`, component: DepositTab },
   { value: 'withdraw', label: t`Withdraw`, component: WithdrawTab },
   { value: 'swap', label: t`Swap`, component: SwapTab },
-  { value: 'manage-gauge', label: t`Gauge`, visible: p => p.isAvailableManageGauge, component: ManageGaugeTab },
-]
+  {
+    value: 'manage-gauge',
+    label: t`Gauge`,
+    visible: (p: TransferTabsParams) => p.isAvailableManageGauge,
+    component: ManageGaugeTab,
+  },
+] as const
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps

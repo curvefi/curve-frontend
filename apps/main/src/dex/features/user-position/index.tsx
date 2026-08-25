@@ -1,7 +1,10 @@
+import { type ReactNode, useMemo } from 'react'
+import { LiquidityDetails } from '@/dex/features/user-position/liquidity-details'
+import { useLiquidityDetails } from '@/dex/features/user-position/liquidity-details/hooks/useLiquidityDetails'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { t } from '@evm-ui/lib/i18n'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import Stack from '@mui/material/Stack'
-import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
 
 type UserPositionProps = {
   blockchainId: string
@@ -10,19 +13,25 @@ type UserPositionProps = {
   poolId: string | undefined
 }
 
-export const UserPosition = ({ blockchainId, chainId, poolDataCacheOrApi, poolId }: UserPositionProps) => {
-  const { hasPosition, tab, tabs, onChange, content } = usePositionDetailsTabs({
-    blockchainId,
-    chainId,
-    poolDataCacheOrApi,
-    poolId,
-  })
+const menu = [
+  { value: 'liquidityDetails', label: t`Liquidity Details`, component: LiquidityDetails },
+  // There'll be a (user) activity tab here in the future (as per Figma)
+]
 
+const Content = ({ children }: { children: ReactNode }) => (
+  <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
+)
+
+export const UserPosition = ({ blockchainId, chainId, poolDataCacheOrApi, poolId }: UserPositionProps) => {
+  const params = useMemo(
+    () => ({ blockchainId, chainId, poolDataCacheOrApi, poolId }),
+    [blockchainId, chainId, poolDataCacheOrApi, poolId],
+  )
+  const { hasPosition } = useLiquidityDetails(params)
   return (
     hasPosition && (
       <Stack>
-        <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
-        <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{content}</Stack>
+        <Tabs menu={menu} params={params} ContentWrapper={Content} />
       </Stack>
     )
   )
