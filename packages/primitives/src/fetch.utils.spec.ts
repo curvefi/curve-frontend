@@ -55,17 +55,27 @@ describe('fetchJson', () => {
 
   it('retries GET requests that exceed the per-attempt timeout', async () => {
     vi.useFakeTimers()
+    const timeout = new AbortController()
+    vi.spyOn(AbortSignal, 'timeout').mockReturnValue(timeout.signal)
+    let firstSignal: AbortSignal | undefined
     const fetch = vi
       .fn()
-      .mockReturnValueOnce(new Promise(() => undefined))
+      .mockImplementationOnce((_url: string, { signal }: RequestInit = {}) => {
+        firstSignal = signal ?? undefined
+        return new Promise((_resolve, reject) => {
+          signal?.addEventListener('abort', () => reject(signal.reason as Error), { once: true })
+        })
+      })
       .mockResolvedValueOnce(jsonResponse({ ok: true }))
     vi.stubGlobal('fetch', fetch)
 
     const request = fetchJson<{ ok: boolean }>('/api/slow')
 
     expect(fetch).toHaveBeenCalledTimes(1)
-    await advance(30_000)
+    timeout.abort(new DOMException('The operation timed out', 'TimeoutError'))
+    await vi.advanceTimersByTimeAsync(0)
     expect(fetch).toHaveBeenCalledTimes(1)
+    expect(firstSignal?.aborted).toBe(true)
     await advance(499)
     expect(fetch).toHaveBeenCalledTimes(1)
     await advance(1)

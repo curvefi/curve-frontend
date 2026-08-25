@@ -1,17 +1,10 @@
-export class TimeoutError extends Error {
-  constructor(message: string) {
-    super(message)
-  }
+export const handleTimeout = async <T>(promise: Promise<T>, ms: number, message?: string): Promise<T> => {
+  let id: ReturnType<typeof setTimeout> | undefined
+  const timeout = new Promise<never>(
+    (_, reject) => (id = setTimeout(() => reject(new Error(message || `Promise timed out after ${ms}ms`)), ms)),
+  )
+  return await Promise.race([promise, timeout]).finally(() => clearTimeout(id))
 }
-
-export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?: string): Promise<T> =>
-  new Promise((resolve, reject) => {
-    const id = setTimeout(() => {
-      clearTimeout(id)
-      reject(new TimeoutError(message || `Promise timed out after ${timeout}ms`))
-    }, timeout)
-    promise.then(resolve, reject)
-  })
 
 type RetryOptions = {
   retries: number

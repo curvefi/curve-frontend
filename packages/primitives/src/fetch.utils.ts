@@ -1,4 +1,11 @@
-import { retry, TimeoutError } from './promise.utils'
+import { notFalsy } from './objects.utils'
+import { retry } from './promise.utils'
+
+const RETRIES = 2
+const RETRY_DELAY_MS = 500
+const REQUEST_TIMEOUT_MS = 30_000
+const EXPONENTIAL_BACKOFF = 2
+const RETRY_STATUSES = [0, 408, 425, 429, 500, 502, 503, 504]
 
 /**
  * Converts a Record of string key-value pairs to a URL query string.
@@ -41,7 +48,7 @@ async function requestJson<T>(url: string, { body, headers, signal }: RequestOpt
       body: JSON.stringify(body),
     },
     ...(body && { body: JSON.stringify(body) }),
-    signal,
+    signal: AbortSignal.any(notFalsy(signal, AbortSignal.timeout(REQUEST_TIMEOUT_MS))),
   }).catch(error => {
     const { message } = error as Error
     if (message == 'Failed to fetch') throw new FetchError(0, `Cannot fetch ${url}`, message)
@@ -53,11 +60,8 @@ async function requestJson<T>(url: string, { body, headers, signal }: RequestOpt
   return (await resp.json()) as T
 }
 
-const RETRIES = 2
-const RETRY_DELAY_MS = 500
-const REQUEST_TIMEOUT_MS = 30_000
-const EXPONENTIAL_BACKOFF = 2
-const RETRY_STATUSES = [0, 408, 425, 429, 500, 502, 503, 504]
+const isRetryable = (error: unknown) =>
+  (error instanceof FetchError && RETRY_STATUSES.includes(error.status)) || (error as Error).name === 'TimeoutError'
 
 /**
  * Fetches data from a URL and parses the response as JSON.
@@ -72,10 +76,5 @@ export const fetchJson = async <T>(url: string, options: RequestOptions = {}): P
     retries: RETRIES,
     delay: attempt => RETRY_DELAY_MS * EXPONENTIAL_BACKOFF ** attempt,
     signal: options.signal,
-    timeout: REQUEST_TIMEOUT_MS,
-    timeoutMessage: `Fetch timed out after ${REQUEST_TIMEOUT_MS}ms for URL: ${url}`,
-    shouldRetry: error =>
-      !options.body &&
-      !options.signal?.aborted &&
-      ((error instanceof FetchError && RETRY_STATUSES.includes(error.status)) || error instanceof TimeoutError),
+    shouldRetry: error => !options.body && !options.signal?.aborted && isRetryable(error),
   })
