@@ -4,7 +4,7 @@ import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/cre
 import { getExpectedFn, getRouteById } from '@evm-ui/entities/router-api'
 import { type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { combineQueries } from '@evm-ui/lib/queries/combine'
+import { pickQuery } from '@evm-ui/lib/queries/combine'
 import { decimal, decimalCompare } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -137,7 +137,7 @@ export const useCreateLoanMaxReceiveQueries = (params: CreateLoanMaxReceiveParam
       [params],
     ),
     combine: results =>
-      combineQueries(results, (first, ...rest) =>
+      pickQuery(results, ([first, ...rest]) =>
         rest.reduce((max, item) => (decimalCompare(item.maxDebt, max.maxDebt) > 0 ? item : max), first),
       ),
   })

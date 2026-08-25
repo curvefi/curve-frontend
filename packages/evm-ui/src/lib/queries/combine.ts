@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { q, Query, QueryProp } from '@evm-ui/types/util'
+import { fallbackQ, q, Query, QueryProp } from '@evm-ui/types/util'
 import { decimalMin } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries, notFalsy } from '@primitives/objects.utils'
+import { assert, fromEntries, notFalsy } from '@primitives/objects.utils'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
   ({
@@ -27,6 +27,17 @@ export const combineQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
   selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
 ) => ({ data: combineQueryData(queries, selector), ...combineQueryState(...queries) }) as QueryProp<TResult>
+
+export const pickQuery = <TData>(
+  queries: readonly Query<TData>[],
+  selector: (data: [NonNullable<TData>, ...NonNullable<TData>[]]) => TData,
+) => {
+  const [first, ...rest] = queries.map(q => q.data).filter(data => data != null)
+  if (!first) return fallbackQ(...queries.map(q))
+  const pickedData = selector([first, ...rest])
+  const result = queries.find(({ data }) => data === pickedData)
+  return assert(result, `No query data found for selector`)
+}
 
 export const useCombinedQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,

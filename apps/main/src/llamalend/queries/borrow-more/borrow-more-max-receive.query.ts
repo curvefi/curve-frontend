@@ -6,7 +6,7 @@ import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow
 import { getExpectedFn } from '@evm-ui/entities/router-api'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { combineQueries } from '@evm-ui/lib/queries/combine'
+import { pickQuery } from '@evm-ui/lib/queries/combine'
 import { decimal, decimalCompare } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
@@ -123,8 +123,8 @@ export const useBorrowMoreMaxReceiveQueries = (params: BorrowMoreMaxReceiveParam
       [params],
     ),
     combine: results =>
-      combineQueries(results, (first, ...rest) =>
-        rest.reduce((max, item) => (decimalCompare(item.maxDebt, max?.maxDebt ?? '0') > 0 ? item : max), first),
+      pickQuery(results, ([first, ...rest]) =>
+        rest.reduce((max, item) => (decimalCompare(item.maxDebt, max.maxDebt) > 0 ? item : max), first),
       ),
   })
 
