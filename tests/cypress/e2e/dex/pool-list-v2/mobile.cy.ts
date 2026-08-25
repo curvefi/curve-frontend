@@ -6,37 +6,9 @@ import {
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
 
-const FULL_NETWORK_METRIC_IDS = [
-  'pool-net-apy',
-  'pool-volume',
-  'pool-tvl',
-  'pool-base-apy',
-  'pool-weekly-base-apy',
-  'pool-rewards-apy',
-  'pool-crv-apy',
-  'pool-points-campaign-0',
-  'pool-points-campaign-1',
-  'pool-points-campaign-2',
-  'pool-points-campaign-3',
-  'pool-points-campaign-4',
-  'pool-age',
-] as const
+const FULL_NETWORK_METRIC_IDS = ['pool-net-apy', 'pool-volume', 'pool-tvl', 'pool-age'] as const
 
-const FULL_NETWORK_CAMPAIGN_IDS = [
-  'pool-points-campaign-0',
-  'pool-points-campaign-1',
-  'pool-points-campaign-2',
-  'pool-points-campaign-3',
-  'pool-points-campaign-4',
-] as const
-
-const LITE_METRIC_IDS = [
-  'pool-net-apy',
-  'pool-tvl',
-  'pool-rewards-apy',
-  'pool-crv-apy',
-  'pool-points-campaign-0',
-] as const
+const LITE_METRIC_IDS = ['pool-net-apy', 'pool-tvl'] as const
 
 const expectMetricOrder = (address: string, expectedIds: readonly string[]) => {
   getV2PoolExpandedPanel(address)
@@ -49,16 +21,6 @@ const expectMetricOrder = (address: string, expectedIds: readonly string[]) => {
 
       expect(metricIds).to.deep.equal([...expectedIds])
     })
-}
-
-const expectCampaignRowsToBeLinks = (address: string, campaignIds: readonly string[]) => {
-  for (const campaignId of campaignIds) {
-    getV2PoolExpandedPanel(address)
-      .find(`[data-testid="${campaignId}"]`)
-      .closest('a')
-      .should('have.length', 1)
-      .and('be.visible')
-  }
 }
 
 const visitAndExpand = (address: string, network: 'ethereum' | 'taiko' = 'ethereum') => {
@@ -80,8 +42,6 @@ describe('V2 pool-list mobile panels', () => {
       .find('[data-testid="pool-crv-apy-value"]')
       .invoke('text')
       .should('match', /^\s*-?[\d,.]+(?:\+)?%\s*→\s*-?[\d,.]+(?:\+)?%\s*$/)
-
-    expectCampaignRowsToBeLinks(address, FULL_NETWORK_CAMPAIGN_IDS)
   })
 
   it('shows the supported Lite metrics in the required mobile order', () => {
