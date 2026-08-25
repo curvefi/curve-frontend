@@ -264,7 +264,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
-            yTickFormatter={value => formatNumber(decimal(value), 'percent.value')}
+            yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
             yPaddingRatio={0.05}
             renderTooltip={HistoricalRatesTooltip}
           />
