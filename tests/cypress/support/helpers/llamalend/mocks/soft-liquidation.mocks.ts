@@ -4,7 +4,7 @@ import { decimal, decimalMinus, decimalSum, formatToken } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockLendMarket, createMockMintMarket } from '../mock-market.helpers'
-import { createIsApprovedStub, createStub } from '../test-stub.utils'
+import { createIsApprovedStub, createStub, createTransactionStub } from '../test-stub.utils'
 import {
   DEFAULT_COLLATERAL_ADDRESS,
   DEFAULT_LEVERAGE_SLIPPAGE,
@@ -34,10 +34,10 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
     repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayApproveStub),
     repayApprove: repayApproveStub,
-    repay: createStub(TEST_TX_HASH),
+    repay: createTransactionStub(TEST_TX_HASH),
     selfLiquidateIsApproved: approved ? createStub(true) : createIsApprovedStub(selfLiquidateApproveStub),
     selfLiquidateApprove: selfLiquidateApproveStub,
-    selfLiquidate: createStub(TEST_TX_HASH),
+    selfLiquidate: createTransactionStub(TEST_TX_HASH),
     walletBalances: createStub({
       // Ensure wallet stablecoin balance is always enough to close the position
       // canClose requires: borrowed >= (debt - stablecoin) * 1.0001
@@ -153,7 +153,7 @@ export const createResetPositionScenario = ({
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
     repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayApproveStub),
     repayApprove: repayApproveStub,
-    repay: createStub(TEST_TX_HASH),
+    repay: createTransactionStub(TEST_TX_HASH),
     loanExists: createStub(true),
     userState: createStub({ collateral, borrowed: convertedBorrowed, debt, N: 10 }),
     userHealth: createStub(oneDecimal(20, 70, 2)),

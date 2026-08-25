@@ -5,7 +5,7 @@ import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators
 import { decimal } from '@evm-ui/utils'
 import { createMockLlamaApi, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockMintMarket } from '../mock-market.helpers'
-import { createIsApprovedStub, createStub, createSyncStub } from '../test-stub.utils'
+import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
   DEFAULT_COLLATERAL_ADDRESS,
   DEFAULT_USER_BORROWED,
@@ -49,7 +49,7 @@ export const createCreateLoanScenario = ({
     createLoanMaxRecv: createStub(decimal(new BigNumber(borrow).plus(oneFloat(10, 400)).decimalPlaces(2))!),
     createLoanIsApproved: approved ? createStub(true) : createIsApprovedStub(createLoanApprove),
     estimateGasCreateLoan: createStub(`${oneInt(80_000, 220_000)}`),
-    createLoan: createStub(TEST_TX_HASH),
+    createLoan: createTransactionStub(TEST_TX_HASH),
     createLoanApprove,
     estimateGasCreateLoanApprove: createStub(`${oneInt(70_000, 200_000)}`),
     createLoanExpectedCollateral: createStub(leverageMetrics()),
@@ -75,7 +75,7 @@ export const createCreateLoanScenario = ({
     }),
     createLoanIsApproved: approved ? createStub(true) : createIsApprovedStub(createLoanLeverageApprove),
     estimateGasCreateLoan: createStub(`${oneInt(80_000, 220_000)}`),
-    createLoan: createStub(TEST_TX_HASH),
+    createLoan: createTransactionStub(TEST_TX_HASH),
     createLoanApprove: createLoanLeverageApprove,
     estimateGasCreateLoanApprove: createStub(`${oneInt(70_000, 200_000)}`),
     createLoanExpectedCollateral: createStub(leverageMetrics()),

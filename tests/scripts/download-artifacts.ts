@@ -98,21 +98,19 @@ async function downloadFailedJobLogs(runId: string, dest: string) {
   const logsDir = join(dest, 'failed-job-logs')
   await mkdir(logsDir, { recursive: true })
 
-  await Promise.all(
-    failedJobs.map(async job => {
-      const log = await run(
-        'gh',
-        ['run', 'view', '--repo', REPOSITORY, '--job', String(job.databaseId), '--log-failed'],
-        {
-          encoding: 'utf8',
-          maxBuffer: MAX_LOG_SIZE,
-        },
-      )
-      const path = join(logsDir, `${job.databaseId}-${safeFilename(job.name)}.log`)
-      await writeFile(path, `${stripVTControlCharacters(log)}\n`)
-      console.info(`Downloaded failed job log: ${path}`)
-    }),
-  )
+  for (const job of failedJobs) {
+    const log = await run(
+      'gh',
+      ['run', 'view', '--repo', REPOSITORY, '--job', String(job.databaseId), '--log-failed'],
+      {
+        encoding: 'utf8',
+        maxBuffer: MAX_LOG_SIZE,
+      },
+    )
+    const path = join(logsDir, `${job.databaseId}-${safeFilename(job.name)}.log`)
+    await writeFile(path, `${stripVTControlCharacters(log)}\n`)
+    console.info(`Downloaded failed job log: ${path}`)
+  }
 }
 
 const getArtifactCount = (runId: string) =>

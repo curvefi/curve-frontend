@@ -1,11 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { oneBool, oneOf } from '@cy/support/generators'
-import {
-  LlammalendTestCase,
-  setupLlammalendTestCaseMocks,
-  type LlammalendTestCaseProps,
-} from '@cy/support/helpers/llamalend/LlammalendTestCase'
+import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
+import { setupLlammalendTestCaseMocks } from '@cy/support/helpers/llamalend/mock-market.helpers'
 import {
   checkClaimDetailsLoaded,
   prepareClaimRewards,

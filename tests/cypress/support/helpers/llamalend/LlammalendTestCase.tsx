@@ -20,7 +20,6 @@ import { ChainId as MintChain } from '@/loan/types/loan.types'
 import { Loading } from '@/routes/Loading'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { blockUnmockedApis, mockNewHashCollateralEvents } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { llamaNetworks } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
@@ -106,9 +105,6 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
 }
 
 export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet
-
-export const setupLlammalendTestCaseMocks = ({ hasApi = true }: { hasApi?: boolean } = {}) =>
-  hasApi ? mockNewHashCollateralEvents() : blockUnmockedApis()
 
 export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>

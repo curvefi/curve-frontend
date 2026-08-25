@@ -4,7 +4,7 @@ import { oneDecimal, oneInt } from '@cy/support/generators'
 import { decimalMinus, decimalSum } from '@evm-ui/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockMintMarket } from '../mock-market.helpers'
-import { createIsApprovedStub, createStub, createSyncStub } from '../test-stub.utils'
+import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
   createMockLendLoanMarket,
   DEFAULT_COLLATERAL_ADDRESS,
@@ -49,7 +49,7 @@ export const createRepayScenario = ({
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
     repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayApproveStub),
     repayApprove: repayApproveStub,
-    repay: createStub(TEST_TX_HASH),
+    repay: createTransactionStub(TEST_TX_HASH),
     repayExpectedBorrowed: createStub(expectedBorrowed),
     repayFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),
     repayPriceImpact: createStub(oneDecimal(0.01, 1, 3)),
@@ -67,7 +67,7 @@ export const createRepayScenario = ({
     repayIsAvailable: createStub(true),
     repayIsFull: createStub(false),
     repayApprove: repayLeverageApproveStub,
-    repay: createStub(TEST_TX_HASH),
+    repay: createTransactionStub(TEST_TX_HASH),
     repayExpectedBorrowed: createStub(expectedBorrowed),
     repayFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),
     calcMinRecv: createSyncStub(ROUTE_MIN_RECV),

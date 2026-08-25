@@ -17,11 +17,8 @@ import {
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
-import {
-  LlammalendTestCase,
-  setupLlammalendTestCaseMocks,
-  type LlammalendTestCaseProps,
-} from '@cy/support/helpers/llamalend/LlammalendTestCase'
+import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
+import { setupLlammalendTestCaseMocks } from '@cy/support/helpers/llamalend/mock-market.helpers'
 import {
   checkRepayDetailsLoaded,
   selectRepayToken,
