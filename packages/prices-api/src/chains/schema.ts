@@ -94,13 +94,8 @@ export const getPoolFiltersResponse = z
   .object({
     data: z.array(
       z.object({
-        chain,
-        pools: z.array(
-          z.object({
-            name: z.string(),
-            address,
-          }),
-        ),
+        chain: z.string(), // API proxies Lite API filters for integrators, so chains are not limited to package support
+        pools: z.array(z.object({ name: z.string(), address })),
       }),
     ),
   })
