@@ -57,6 +57,8 @@ const isColumnEnabled = (variant: PoolColumnVariant, columnId: PoolColumnId) =>
 
 type PoolExpandedPanelProps = Parameters<ExpandedPanelComponent<PoolRow>>[0] & { variant: PoolColumnVariant }
 
+const PRIMARY_METRIC_SIZE = 6 as const
+
 export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
   const pool = row.original
   const currentDate = useCurrentDate()
@@ -66,39 +68,32 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
   const rewardsApy = getRewardsApy(pool)
   const crvApyRange = pool.gauge?.isKilled ? null : getCrvApyRange(pool)
   const pointsCampaigns = getPointsCampaigns(pool)
-  const supportsNetApy = isColumnEnabled(variant, PoolColumnId.NetApy)
-  const supportsVolume = isColumnEnabled(variant, PoolColumnId.Volume)
-  const supportsTvl = isColumnEnabled(variant, PoolColumnId.Tvl)
-  const primaryMetricCount = [supportsNetApy, supportsVolume, supportsTvl].filter(Boolean).length
-  const primaryMetricSize = primaryMetricCount ? 12 / primaryMetricCount : 12
   const volatileBaseApy = isVolatileApy(baseApy)
 
   return (
     <Grid container spacing={Spacing.md}>
-      {supportsNetApy && (
-        <Grid size={primaryMetricSize}>
-          <Metric
-            category={PRIMARY_METRIC_CATEGORY}
-            label={POOL_TITLES[PoolColumnId.NetApy]}
-            value={netApy || null}
-            valueOptions={getRateValueOptions(netApy, { volatile: volatileBaseApy })}
-            valueTooltip={
-              netApy
-                ? {
-                    body: <NetApyTooltipContent pool={pool} volatile={volatileBaseApy} />,
-                    clickable: true,
-                    placement: 'top',
-                    title: t`Net APY`,
-                  }
-                : undefined
-            }
-            icon={<RewardIcons pool={pool} includeCrv includePoints tooltipPlacement="top" />}
-            testId="pool-net-apy"
-          />
-        </Grid>
-      )}
-      {supportsVolume && (
-        <Grid size={primaryMetricSize}>
+      <Grid size={PRIMARY_METRIC_SIZE}>
+        <Metric
+          category={PRIMARY_METRIC_CATEGORY}
+          label={POOL_TITLES[PoolColumnId.NetApy]}
+          value={netApy || null}
+          valueOptions={getRateValueOptions(netApy, { volatile: volatileBaseApy })}
+          valueTooltip={
+            netApy
+              ? {
+                  body: <NetApyTooltipContent pool={pool} volatile={volatileBaseApy} />,
+                  clickable: true,
+                  placement: 'top',
+                  title: t`Net APY`,
+                }
+              : undefined
+          }
+          icon={<RewardIcons pool={pool} includeCrv includePoints tooltipPlacement="top" />}
+          testId="pool-net-apy"
+        />
+      </Grid>
+      {variant === 'full' && (
+        <Grid size={PRIMARY_METRIC_SIZE}>
           <Metric
             category={PRIMARY_METRIC_CATEGORY}
             label={t`24h Volume`}
@@ -108,8 +103,8 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
           />
         </Grid>
       )}
-      {supportsTvl && (
-        <Grid size={primaryMetricSize}>
+      {variant === 'lite' && (
+        <Grid size={PRIMARY_METRIC_SIZE}>
           <Metric
             category={PRIMARY_METRIC_CATEGORY}
             label={t`TVL`}
