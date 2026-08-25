@@ -31,7 +31,6 @@ import type { PoolRow } from '../types'
 const { Spacing } = SizesAndSpaces
 const PRIMARY_METRIC_CATEGORY = 'dex.poolListMobileExpanded'
 const DETAIL_METRIC_CATEGORY = 'dex.poolListMobileExpandedDetails'
-const highlight = { color: 'success' as const }
 
 type RateValueOptions = {
   hasTooltip?: boolean
@@ -58,7 +57,7 @@ const isColumnEnabled = (variant: PoolColumnVariant, columnId: PoolColumnId) =>
 
 type PoolExpandedPanelProps = Parameters<ExpandedPanelComponent<PoolRow>>[0] & { variant: PoolColumnVariant }
 
-export const PoolExpandedPanel = ({ row, table, variant }: PoolExpandedPanelProps) => {
+export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
   const pool = row.original
   const currentDate = useCurrentDate()
   const baseApy = getBaseApy(pool, 'daily')
@@ -104,10 +103,7 @@ export const PoolExpandedPanel = ({ row, table, variant }: PoolExpandedPanelProp
             category={PRIMARY_METRIC_CATEGORY}
             label={t`24h Volume`}
             value={decimal(pool.tradingVolume24h) ?? null}
-            valueOptions={{
-              unit: 'dollar',
-              ...(table.getColumn(PoolColumnId.Volume)?.getIsSorted() && highlight),
-            }}
+            valueOptions={{ unit: 'dollar' }}
             testId="pool-volume"
           />
         </Grid>
@@ -118,10 +114,7 @@ export const PoolExpandedPanel = ({ row, table, variant }: PoolExpandedPanelProp
             category={PRIMARY_METRIC_CATEGORY}
             label={t`TVL`}
             value={decimal(pool.tvlUsd) ?? null}
-            valueOptions={{
-              unit: 'dollar',
-              ...(table.getColumn(PoolColumnId.Tvl)?.getIsSorted() && highlight),
-            }}
+            valueOptions={{ unit: 'dollar' }}
             testId="pool-tvl"
           />
         </Grid>
