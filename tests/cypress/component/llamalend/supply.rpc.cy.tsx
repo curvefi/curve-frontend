@@ -1,8 +1,11 @@
 import { BigNumber } from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { oneBool, oneOf } from '@cy/support/generators'
-import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
-import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
+import {
+  LlammalendTestCase,
+  setupLlammalendTestCaseMocks,
+  type LlammalendTestCaseProps,
+} from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import {
   checkClaimDetailsLoaded,
   prepareClaimRewards,
@@ -96,7 +99,7 @@ testCases.forEach(
       })
 
       beforeEach(() => {
-        if (!hasApi) blockUnmockedApis()
+        setupLlammalendTestCaseMocks({ hasApi })
       })
 
       it('deposits into the vault', () => {

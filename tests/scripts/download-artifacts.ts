@@ -6,6 +6,7 @@ import { stripVTControlCharacters } from 'util'
 const { ARTIFACT_BRANCH, BRANCH, WORKFLOW, RUN_ID, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 const DEST_DIR = 'artifacts'
 const MAX_LOG_SIZE = 100 * 1024 * 1024
+const COMMAND_TIMEOUT = 10 * 60 * 1000
 
 type WorkflowJob = {
   databaseId: number
@@ -17,8 +18,14 @@ type WorkflowJob = {
  */
 const run = (command: string, args: string[], options?: ExecFileOptionsWithStringEncoding): Promise<string> =>
   new Promise((resolve, reject) => {
-    execFile(command, args, { encoding: 'utf8', ...options }, (error, stdout) =>
-      error ? reject(new Error(`${error.code}`, { cause: error })) : resolve(stdout.trim()),
+    execFile(command, args, { encoding: 'utf8', timeout: COMMAND_TIMEOUT, ...options }, (error, stdout, stderr) =>
+      error
+        ? reject(
+            new Error(`Command failed with exit code ${error.code}: ${stderr.trim() || stdout.trim()}`, {
+              cause: error,
+            }),
+          )
+        : resolve(stdout.trim()),
     )
   })
 

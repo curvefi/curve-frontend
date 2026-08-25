@@ -17,8 +17,11 @@ import {
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
-import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
-import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
+import {
+  LlammalendTestCase,
+  setupLlammalendTestCaseMocks,
+  type LlammalendTestCaseProps,
+} from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import {
   checkRepayDetailsLoaded,
   selectRepayToken,
@@ -124,7 +127,7 @@ testCases.forEach(
         fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
 
-        if (!HAS_API) blockUnmockedApis()
+        setupLlammalendTestCaseMocks({ hasApi: HAS_API })
       })
 
       const LoanTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
