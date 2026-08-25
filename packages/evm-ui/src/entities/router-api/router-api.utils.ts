@@ -89,8 +89,14 @@ export const getExpectedFn =
       userAddress,
       zapAddress,
     })
-    if (!routes.length) return null
-    return parseRoute(routes[0].id).quote // router api is expected to return a single entry, add sorting if needed
+    // Prefer Curve Solver, then Curve Router, then the rest
+    const route = assert(
+      routes.find(({ router }) => router === 'curve-solver') ??
+        routes.find(({ router }) => router === 'curve') ??
+        routes[0],
+      'No route available',
+    )
+    return parseRoute(route.id).quote
   }
 
 export const createHash = async (

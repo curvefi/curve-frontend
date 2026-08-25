@@ -12,7 +12,7 @@ import { mapQuery } from '@evm-ui/types/util'
 import { decimal, decimalMin } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useCreateLoanMaxReceiveQueries } from '../../../queries/create-loan/create-loan-max-receive.query'
+import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import type { CreateLoanForm } from '../types'
 
 /**
@@ -33,7 +33,7 @@ export function useMaxTokenValues({
 }) {
   const { update: updateForm, getValues } = form
   const tokenBalance = useTokenBalance({ ...params, tokenAddress: collateralTokenAddress })
-  const maxBorrow = useCreateLoanMaxReceiveQueries(params)
+  const maxBorrow = useCreateLoanMaxReceive(params)
   const maxLeverage = useMarketMaxLeverage(params)
 
   const { maxDebt } = maxBorrow.data ?? {}
@@ -72,7 +72,7 @@ export function useMaxTokenValues({
   return {
     setRange,
     collateral: maxCollateral,
-    debt: mapQuery(maxBorrow, ({ maxDebt, router }) => ({ maxDebt, router })),
+    debt: mapQuery(maxBorrow, ({ maxDebt }) => maxDebt),
     maxLeverage: combineQueries(
       [maxLeverage, maxBorrow],
       (maxTotalLeverage, { maxLeverage: maxBorrowLeverage }) => maxBorrowLeverage ?? maxTotalLeverage,

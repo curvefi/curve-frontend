@@ -98,7 +98,7 @@ export type LargeTokenInputProps = {
     /** Custom or preset chips to show. */
     chips?: ChipsPreset | InputChip[]
     /** Optional override for the amount selected by a Max-style chip. */
-    onMax?: (maxBalance?: Decimal) => void
+    onMax?: (maxBalance?: Decimal) => Decimal | undefined
   }
 
   /** Optional usd value of the balance given as input. */
@@ -337,8 +337,8 @@ export const LargeTokenInput = ({
                       data-testid={!chipDisabled && `input-chip-${chip.label}`}
                       disabled={chipDisabled}
                       toggle={() => {
-                        if (chip.isMax && onMax) return onMax(maxBalanceValue)
-                        const newBalance = chip.newBalance(maxBalanceValue)
+                        const newBalance =
+                          chip.isMax && onMax ? onMax(maxBalanceValue) : chip.newBalance(maxBalanceValue)
                         if (newBalance !== undefined) {
                           handleBalanceChange(newBalance)
                         }

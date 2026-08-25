@@ -171,7 +171,13 @@ export function queryFactory<
         ...options,
         staleTime: 0,
       }),
-    useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
+    useQuery: (params: TParams, condition?: boolean) => {
+      const { enabled, ...options } = getQueryOptions(params, condition)
+      const query = useQuery({ enabled, ...options })
+      const validation = enabled ? {} : validate(validationSuite, params)
+      // eslint-disable-next-line @eslint-react/purity -- Preserve the query result object's getters and generic inference.
+      return Object.assign(query, { enabled, validation })
+    },
     /** Invalidates the cache for the query, marking it as stale and triggering a refetch if needed **/
     invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
     /** Removes all the cached data for the query **/

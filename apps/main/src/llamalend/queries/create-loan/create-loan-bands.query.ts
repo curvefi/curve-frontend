@@ -6,7 +6,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
-import { createLoanRouteMaxReceiveKey } from './create-loan-max-receive.query'
+import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanBandsResult = Range<number>
 
@@ -53,7 +53,7 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
   category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
   dependencies: params => [
-    createLoanRouteMaxReceiveKey(params),
+    createLoanMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],
 })

@@ -29,7 +29,10 @@ export type LoanFormTokenInputProps<
    * Optional max-value query for this field, including loading and error state.
    * When present, it also carries an optional related max-field name whose errors should be reflected here.
    */
-  max?: QueryProp<Decimal> & { fieldName: TMaxFieldName; onMax?: () => void }
+  max?: QueryProp<Decimal> & {
+    fieldName: TMaxFieldName
+    onMax?: NonNullable<LargeTokenInputProps['maxBalance']>['onMax']
+  }
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
@@ -128,6 +131,7 @@ export const LoanFormTokenInput = <
     },
     [name, onValueChange, updateForm],
   )
+  const onMaxBalance = useCallback((v?: Decimal) => onBalance(onMax ? onMax(v) : v), [onBalance, onMax])
   return (
     <LargeTokenInput
       name={name}
@@ -146,13 +150,13 @@ export const LoanFormTokenInput = <
       balance={q({ data: value, isLoading: value == null, error: error ?? null })}
       onBalance={onBalance}
       {...(!hideBalance && { walletBalance })}
-      maxBalance={max && { chips: 'range', balance: max, onMax }}
+      maxBalance={max && { chips: 'range', balance: max, onMax: max.onMax }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
       message={errorMessage ? undefined : message}
       disabled={disabled}
     >
       {maxMessage && !errorMessage && <HelperMessage onNumberClick={onBalance} message={maxMessage} />}
-      {errorMessage && <HelperMessage message={errorMessage} onNumberClick={onMax ?? onBalance} isError />}
+      {errorMessage && <HelperMessage message={errorMessage} onNumberClick={onMaxBalance} isError />}
     </LargeTokenInput>
   )
 }

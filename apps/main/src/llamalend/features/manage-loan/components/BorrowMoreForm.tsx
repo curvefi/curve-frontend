@@ -14,13 +14,13 @@ import { t } from '@evm-ui/lib/i18n'
 import { AlertDisableForm } from '@evm-ui/shared/ui/AlertDisableForm'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery, q, type QueryProp, type Range } from '@evm-ui/types/util'
+import { q, type QueryProp, type Range } from '@evm-ui/types/util'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { shouldBlockTransaction } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert, notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { useMarketContext } from '../../market-context'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
@@ -71,12 +71,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
     [updateForm],
   )
-  const maxDebt = mapQuery(max.debt, ({ maxDebt }) => maxDebt)
-  const onMax = useCallback(() => {
-    const { maxDebt: debt, router } = assert(max.debt.data, 'expected max debt data')
-    if (router) routes?.onChange(router)
-    updateForm({ debt: getMaxBorrowAmount(debt, values.leverageEnabled) })
-  }, [max.debt.data, routes, updateForm, values.leverageEnabled])
+  const getMaxDebt = (maxDebt?: Decimal) => getMaxBorrowAmount(maxDebt, values.leverageEnabled)
 
   return (
     <Form
@@ -125,7 +120,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          max={{ ...maxDebt, fieldName: max.debt.field, onMax }}
+          max={{ ...max.debt, fieldName: max.debt.field, onMax: getMaxDebt }}
           testId="borrow-more-input-debt"
           network={network}
           hideBalance
@@ -135,15 +130,20 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
               prefix={t`Max borrow amount:`}
               tooltip={t`Max available to borrow`}
               symbol={borrowToken?.symbol}
-              balance={maxDebt}
-              onClick={onMax}
+              balance={max.debt}
+              onClick={() => updateForm({ debt: getMaxDebt(max.debt.data) })}
             />
           }
         />
       </Stack>
       {isLeverageSupported && (
         <Stack>
-          <LeverageInput checked={values.leverageEnabled} leverage={leverage} onToggle={onLeverageToggle} />
+          <LeverageInput
+            checked={values.leverageEnabled}
+            leverage={leverage}
+            onToggle={onLeverageToggle}
+            maxLeverage={max.maxLeverage.data}
+          />
           <LoanActionSettings
             show={values.leverageEnabled === true}
             slippage={values.slippage}

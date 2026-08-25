@@ -64,5 +64,5 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
 export function useBorrowMoreLeverage(params: BorrowMoreParams) {
   const current = useUserCurrentLeverage(params)
   const future = useBorrowMoreFutureLeverage(params)
-  return q(future.isEnabled ? future : current)
+  return q(future.enabled ? future : current)
 }

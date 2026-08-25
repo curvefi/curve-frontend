@@ -5,15 +5,16 @@ import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { resetBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import {
   type BorrowMoreMaxReceiveParams,
-  useBorrowMoreMaxReceiveQueries,
+  useBorrowMoreMaxReceive,
 } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { BorrowMoreForm } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { UseFormReturn } from '@evm-ui/features/forms'
 import { useFormSync, useOnChangeCallback } from '@evm-ui/features/forms'
+import type { UseFormReturn } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { mapQuery, type QueryProp } from '@evm-ui/types/util'
+import { decimal } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 
@@ -45,7 +46,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
     tokenAddress: borrowTokenAddress,
   })
 
-  const maxReceive = useBorrowMoreMaxReceiveQueries(params)
+  const maxReceive = useBorrowMoreMaxReceive(params)
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv })
 
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
@@ -65,7 +66,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   return {
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },
     userBorrowed: { ...maxUserBorrowed, field: 'maxBorrowed' as const },
-    debt: { ...mapQuery(maxReceive, ({ maxDebt, router }) => ({ maxDebt, router })), field: 'maxDebt' as const },
+    debt: { ...mapQuery(maxReceive, d => decimal(d.maxDebt)), field: 'maxDebt' as const },
     maxLeverage,
   }
 }
