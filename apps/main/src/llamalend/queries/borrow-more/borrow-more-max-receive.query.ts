@@ -7,7 +7,6 @@ import { getExpectedFn, NoQuoteError } from '@evm-ui/entities/router-api'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
-import type { Query } from '@evm-ui/types/util'
 import { decimal, decimalCompare } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
@@ -71,7 +70,6 @@ const { getQueryOptions: getBorrowMoreMaxReceiveOptions, invalidate: invalidateB
       userCollateral = '0',
       userBorrowed = '0',
       leverageEnabled,
-      routeId,
       slippage,
       router,
     }: BorrowMoreMaxReceiveQueryParams) =>
@@ -81,7 +79,6 @@ const { getQueryOptions: getBorrowMoreMaxReceiveOptions, invalidate: invalidateB
         { userCollateral },
         { userBorrowed },
         { leverageEnabled },
-        { routeId },
         { slippage },
         { router },
       ] as const,
@@ -136,12 +133,9 @@ export const useBorrowMoreMaxReceiveQueries = (params: BorrowMoreMaxReceiveParam
       () => getMaxReceiveProviders(params).map(router => getBorrowMoreMaxReceiveOptions({ ...params, router })),
       [params],
     ),
-    combine: (results: Query<BorrowMoreMaxReceiveResult>[]) =>
-      combineQueries(results, (...data) =>
-        data.reduce<BorrowMoreMaxReceiveResult | undefined>(
-          (max, data) => (decimalCompare(data.maxDebt, max?.maxDebt ?? '0') > 0 ? data : max),
-          undefined,
-        ),
+    combine: results =>
+      combineQueries(results, (first, ...rest) =>
+        rest.reduce((max, item) => (decimalCompare(item.maxDebt, max?.maxDebt ?? '0') > 0 ? item : max), first),
       ),
   })
 
