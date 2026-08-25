@@ -4,7 +4,6 @@ import { ethAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
-import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/ui'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { ChainId } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
@@ -13,7 +12,12 @@ import { useFormContext } from '@evm-ui/features/forms'
 import { TokenList, TokenSelector as TokenSelectorUIKit } from '@evm-ui/features/select-token'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { notFalsy } from '@primitives/objects.utils'
+
+const { Spacing } = SizesAndSpaces
 
 export const TokenSelector = ({
   chainId,
@@ -75,8 +79,8 @@ export const TokenSelector = ({
   }, [gaugeRewardsDistributors, getValue, isGaugeRewardsDistributorsSuccess, filteredTokens, updateForm])
 
   return (
-    <FlexItemToken>
-      <SubTitle>{t`Token`}</SubTitle>
+    <Stack sx={{ gap: Spacing.xxs, width: { tablet: '7.5rem' } }}>
+      <Typography variant="headingXsBold">{t`Token`}</Typography>
       <TokenSelectorUIKit
         selectedToken={selectedToken}
         disabled={disabled || filteredTokens.length === 0}
@@ -86,6 +90,6 @@ export const TokenSelector = ({
       >
         <TokenList tokens={filteredTokens} onToken={token => updateForm({ rewardTokenId: token.address })} />
       </TokenSelectorUIKit>
-    </FlexItemToken>
+    </Stack>
   )
 }

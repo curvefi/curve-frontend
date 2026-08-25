@@ -1,23 +1,28 @@
 import { useCallback } from 'react'
 import { zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
-import { AlertFormError } from '@/dex/components/AlertFormError'
-import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
-import { useNetworkByChain } from '@/dex/entities/networks'
+import {
+  useAddRewardToken,
+  useAddRewardTokenEstimateGas,
+  useGaugeRewardsDistributors,
+  useIsDepositRewardAvailable,
+} from '@/dex/entities/gauge'
+import { useNetworkByChain, useNetworks } from '@/dex/entities/networks'
 import { addGaugeRewardTokenValidationSuite } from '@/dex/features/add-gauge-reward-token/model'
 import type { AddRewardFormValues, AddRewardTokenProps } from '@/dex/features/add-gauge-reward-token/types'
-import {
-  DistributorInput,
-  EstimatedGasInfo,
-  FormActions,
-  TokenSelector,
-} from '@/dex/features/add-gauge-reward-token/ui'
-import { FormProvider, useForm } from '@evm-ui/features/forms'
+import { DistributorInput, FormActions, TokenSelector } from '@/dex/features/add-gauge-reward-token/ui'
+import { useForm } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
-import { FormErrorsDisplay } from '@legacy-ui/FormErrorsDisplay'
-import { FlexContainer, FormContainer, FormFieldsContainer } from '@legacy-ui/styled-containers'
+import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { q } from '@evm-ui/types/util'
+import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
+import Stack from '@mui/material/Stack'
+
+const { Spacing } = SizesAndSpaces
 
 export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
   const { address: signerAddress } = useConnection()
@@ -71,26 +76,32 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
 
   const isFormLoading =
     isSubmitting || isFetchingGaugeRewardsDistributors || isFetchingIsDepositRewardAvailable || isPendingAddRewardToken
+  const rewardTokenId = form.watchValue('rewardTokenId')
+  const distributorId = form.watchValue('distributorId')
+  const { data: networks } = useNetworks()
+  const gas = useAddRewardTokenEstimateGas(
+    networks,
+    { chainId, poolId, rewardTokenId, distributorId },
+    form.formState.isValid,
+  )
 
   return (
-    <FormProvider {...form}>
-      <form onSubmit={event => void handleSubmit(onSubmit)(event)}>
-        <FormContainer>
-          <FormFieldsContainer>
-            <FlexContainer>
-              <TokenSelector chainId={chainId} poolId={poolId} disabled={isFormLoading || isFormDisabled} />
-              <DistributorInput disabled={isFormLoading || isFormDisabled} />
-            </FlexContainer>
-          </FormFieldsContainer>
-          <FormErrorsDisplay errorKeys={['rewardTokenId', 'distributorId']} component={AlertFormError} />
-          <EstimatedGasInfo chainId={chainId} poolId={poolId} />
-          <FormActions chainId={chainId} poolId={poolId} />
-          {isSuccessAddRewardToken && addRewardTokenData && (
-            <TxInfoBar description={t`Reward token added`} txHash={scanTxPath(network, addRewardTokenData)} />
-          )}
-          <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
-        </FormContainer>
-      </form>
-    </FormProvider>
+    <Form {...form} onSubmit={handleSubmit(onSubmit)} footer={<ActionInfoGasEstimate gas={q(gas)} />}>
+      <Stack sx={{ gap: Spacing.sm }}>
+        <Stack direction={{ mobile: 'column', tablet: 'row' }} sx={{ gap: Spacing.sm }}>
+          <TokenSelector chainId={chainId} poolId={poolId} disabled={isFormLoading || isFormDisabled} />
+          <DistributorInput disabled={isFormLoading || isFormDisabled} />
+        </Stack>
+        <FormActions chainId={chainId} poolId={poolId} />
+        {isSuccessAddRewardToken && addRewardTokenData && (
+          <TxInfoBar description={t`Reward token added`} txHash={scanTxPath(network, addRewardTokenData)} />
+        )}
+        <FormAlerts
+          error={form.formState.errors['root.serverError'] ?? null}
+          formErrors={form.formState.visibleErrors}
+          handledErrors={['distributorId']}
+        />
+      </Stack>
+    </Form>
   )
 }

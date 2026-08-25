@@ -1,7 +1,7 @@
 import { useAddRewardTokenIsMutating, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
 import { useAddRewardTokenFormContext } from '@/dex/features/add-gauge-reward-token/lib'
-import { StyledButton } from '@/dex/features/add-gauge-reward-token/ui/styled'
 import { ChainId } from '@/dex/types/main.types'
+import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
 
 export const FormActions = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
@@ -21,10 +21,12 @@ export const FormActions = ({ chainId, poolId }: { chainId: ChainId; poolId: str
   const isLoading = isSubmitting || isFetchingIsDepositRewardAvailable || isMutatingAddRewardToken
 
   return (
-    <>
-      <StyledButton disabled={isDisabled} loading={isLoading} variant="filled" size="medium">
-        {t`Add Reward`}
-      </StyledButton>
-    </>
+    <FormButton
+      disabled={isDisabled}
+      loading={isLoading}
+      label={t`Add Reward`}
+      testId="add-reward-submit-button"
+      connectWalletTestId="add-reward-connect-wallet-button"
+    />
   )
 }

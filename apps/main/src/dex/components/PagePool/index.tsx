@@ -209,7 +209,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         isRewardsDistributor,
       ],
     ),
-    value: rFormType as TransferFormType | undefined,
+    value: rFormType,
   })
 
   return (

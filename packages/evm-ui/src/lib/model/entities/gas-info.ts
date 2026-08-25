@@ -428,6 +428,25 @@ type WithOptionalChainId = {
   chainId?: number | null | undefined
 }
 
+export const createEstimateGasHook =
+  <Query extends WithOptionalChainId, Estimate extends EstimateValue>(
+    useEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
+  ) =>
+  (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled = true) => {
+    const { data: estimate, isLoading: estimateLoading, error: estimateError } = useEstimate(query, enabled)
+    const {
+      data,
+      isLoading: conversionLoading,
+      error: conversionError,
+    } = useEstimateGas(networks, query.chainId, estimate, enabled && estimate != null)
+
+    return {
+      data,
+      isLoading: [estimateLoading, conversionLoading].some(Boolean),
+      error: [estimateError, conversionError].find(Boolean) ?? null,
+    }
+  }
+
 type ApprovedEstimateGasHookConfig<Query, Estimate extends EstimateValue> = {
   useIsApproved: (query: Query, enabled?: boolean) => QueryResult<boolean>
   useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>

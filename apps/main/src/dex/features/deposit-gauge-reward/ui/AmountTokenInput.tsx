@@ -1,5 +1,5 @@
-import { MouseEvent, useCallback, useEffect, useMemo } from 'react'
-import { Address, ethAddress, isAddressEqual } from 'viem'
+import { useCallback, useEffect, useMemo } from 'react'
+import { isAddressEqual, zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import {
   useDepositRewardApproveIsMutating,
@@ -8,26 +8,18 @@ import {
 } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
-import {
-  FlexItemAmount,
-  FlexItemMaxBtn,
-  FlexItemToken,
-  StyledInputProvider,
-} from '@/dex/features/deposit-gauge-reward/ui/styled'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { toTokenOption } from '@/dex/utils'
 import { useFormContext } from '@evm-ui/features/forms'
 import { TokenList, type TokenOption, TokenSelector } from '@evm-ui/features/select-token'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { formatNumber } from '@evm-ui/utils'
-import { InputDebounced, InputMaxBtn } from '@legacy-ui/InputComp'
-import { FlexContainer } from '@legacy-ui/styled-containers'
-import { notFalsy } from '@primitives/objects.utils'
+import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
+import { q } from '@evm-ui/types/util'
+import { decimal, shortenAddress } from '@evm-ui/utils'
+import { recordEntries } from '@primitives/objects.utils'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
@@ -38,7 +30,6 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const [isOpen, openModal, closeModal] = useSwitch()
 
   const { address: signerAddress } = useConnection()
-  const isMaxLoading = useStore(state => state.quickSwap.isMaxLoading)
   const {
     data: { networkId },
   } = useNetworkByChain({ chainId })
@@ -57,15 +48,16 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const filteredTokens = useMemo<TokenOption[]>(() => {
     if (isPendingRewardDistributors || !rewardDistributors || !signerAddress) return []
 
-    const activeRewardTokens = Object.entries(rewardDistributors)
-      .filter(([_, distributor]) => isAddressEqual(distributor as Address, signerAddress))
+    const activeRewardTokens = recordEntries(rewardDistributors)
+      .filter(([_, distributor]) => isAddressEqual(distributor, signerAddress))
       .map(([tokenId]) => tokenId)
 
-    return notFalsy(...Object.values(tokensMapper))
-      .filter(token =>
-        activeRewardTokens.some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
-      )
-      .map(toTokenOption(networkId))
+    return activeRewardTokens.map(address => ({
+      chain: networkId,
+      address,
+      symbol: tokensMapper[address.toLowerCase()]?.symbol ?? shortenAddress(address),
+      volume: tokensMapper[address.toLowerCase()]?.volume ?? 0,
+    }))
   }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, networkId])
 
   useEffect(() => {
@@ -79,7 +71,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   }, [filteredTokens, rewardTokenId, updateForm])
 
   const token = filteredTokens.find(x => x.address === rewardTokenId)
-  const tokenAddresses = filteredTokens.map(t => t.address)
+  const tokenAddresses = filteredTokens.map(t => t.address).filter(t => !isAddressEqual(t, zeroAddress))
 
   const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses })
   const { data: tokenBalances, isLoading: isTokenBalancesLoading } = useTokenBalances({
@@ -93,8 +85,12 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     [rewardTokenId, tokenBalances],
   )
 
+  const amountError = formState.visibleErrors.find(([field]) => field === 'amount')?.[1]
+  const rewardTokenIdError = formState.visibleErrors.find(([field]) => field === 'rewardTokenId')?.[1]
+  const tokenUsdRate = rewardTokenId ? tokenPrices?.[rewardTokenId] : undefined
+
   const onChangeAmount = useCallback(
-    (amount: string) => {
+    (amount: string | undefined) => {
       updateForm({ amount })
     },
     [updateForm],
@@ -108,50 +104,34 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     [rewardTokenId, updateForm],
   )
 
-  const onMaxButtonClick = useCallback(
-    (e?: MouseEvent<HTMLButtonElement>) => {
-      e?.preventDefault()
-      if (!rewardTokenBalance) return
-      updateForm({ amount: rewardTokenBalance })
-    },
-    [rewardTokenBalance, updateForm],
-  )
-
   const isDisabled = isMutatingDepositReward || isMutatingDepositRewardApprove
 
   return (
-    <FlexContainer>
-      <StyledInputProvider
-        id="deposit-reward"
-        inputVariant={formState.errors.rewardTokenId ? 'error' : undefined}
-        disabled={isDisabled}
-      >
-        <FlexItemAmount>
-          <InputDebounced
-            id="deposit-amount"
-            type="number"
-            labelProps={
-              signerAddress && {
-                label: t`Avail.`,
-                descriptionLoading: isTokenBalancesLoading,
-                description: formatNumber(rewardTokenBalance, 'token.amount'),
-              }
+    <LargeTokenInput
+      name="amount"
+      label={t`Amount to deposit`}
+      balance={q({ data: decimal(amount), isLoading: false, error: amountError ? Error(amountError) : null })}
+      onBalance={onChangeAmount}
+      walletBalance={
+        signerAddress
+          ? {
+              symbol: token?.symbol,
+              balance: q({ data: rewardTokenBalance, isLoading: isTokenBalancesLoading, error: null }),
+              usdRate: tokenUsdRate,
+              disabled: isDisabled,
+              buttonTestId: 'max',
             }
-            testId="deposit-amount"
-            value={isMaxLoading ? '' : (amount ?? '')}
-            onChange={onChangeAmount}
-          />
-        </FlexItemAmount>
-        <FlexItemMaxBtn>
-          <InputMaxBtn
-            loading={isMaxLoading}
-            disabled={isDisabled}
-            isNetworkToken={rewardTokenId === ethAddress}
-            testId="max"
-            onClick={onMaxButtonClick}
-          />
-        </FlexItemMaxBtn>
-        <FlexItemToken>
+          : undefined
+      }
+      maxBalance={{
+        balance: q({ data: rewardTokenBalance, isLoading: isTokenBalancesLoading, error: null }),
+        chips: 'max',
+      }}
+      inputBalanceUsd={decimal(amount && tokenUsdRate && +amount * tokenUsdRate)}
+      disabled={isDisabled}
+      testId="deposit-amount"
+      tokenSelector={
+        token && (
           <TokenSelector
             selectedToken={token}
             disabled={isDisabled}
@@ -166,8 +146,10 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
               onToken={onChangeToken}
             />
           </TokenSelector>
-        </FlexItemToken>
-      </StyledInputProvider>
-    </FlexContainer>
+        )
+      }
+    >
+      {(amountError || rewardTokenIdError) && <HelperMessage message={amountError ?? rewardTokenIdError} isError />}
+    </LargeTokenInput>
   )
 }

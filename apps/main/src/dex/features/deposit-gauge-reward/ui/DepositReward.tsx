@@ -1,21 +1,21 @@
 import { useConnection } from 'wagmi'
-import { AlertFormError } from '@/dex/components/AlertFormError'
-import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useDepositRewardEstimateGas, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useNetworks } from '@/dex/entities/networks'
 import { DepositRewardDefaultValues, depositRewardValidationSuite } from '@/dex/features/deposit-gauge-reward/model'
 import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
-import {
-  AmountTokenInput,
-  DepositStepper,
-  EpochInput,
-  GasEstimation,
-  HelperFields,
-} from '@/dex/features/deposit-gauge-reward/ui'
+import { AmountTokenInput, DepositStepper, EpochInput, HelperFields } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
-import { useFormSync, FormProvider, useForm } from '@evm-ui/features/forms'
+import { useFormSync, useForm } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { FormErrorsDisplay } from '@legacy-ui/FormErrorsDisplay'
+import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { q } from '@evm-ui/types/util'
+import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { BlockSkeleton } from '@legacy-ui/skeleton'
-import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@legacy-ui/styled-containers'
+import Stack from '@mui/material/Stack'
+
+const { Spacing } = SizesAndSpaces
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { address: signerAddress } = useConnection()
@@ -31,8 +31,16 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   })
 
   const tokenAddress = form.watchValue('rewardTokenId')
+  const amount = form.watchValue('amount')
+  const epoch = form.watchValue('epoch')
   const { address: userAddress } = useConnection()
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress })
+  const { data: networks } = useNetworks()
+  const gas = useDepositRewardEstimateGas(
+    networks,
+    { chainId, poolId, rewardTokenId: tokenAddress, amount, epoch, userBalance },
+    form.formState.isValid,
+  )
 
   // Sync userBalance from query into form for validation
   useFormSync(form, { userBalance })
@@ -42,23 +50,26 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   }
 
   return (
-    <FormProvider {...form}>
-      <form>
-        <FormContainer>
-          <FormFieldsContainer>
-            <AmountTokenInput chainId={chainId} poolId={poolId} />
-            <FormErrorsDisplay errorKeys={['rewardTokenId', 'amount']} component={AlertFormError} />
-            <EpochInput chainId={chainId} poolId={poolId} />
-            <FormErrorsDisplay errorKeys={['epoch']} component={AlertFormError} />
-            <GroupedFieldsContainer>
-              <HelperFields />
-              <GasEstimation chainId={chainId} poolId={poolId} />
-            </GroupedFieldsContainer>
-          </FormFieldsContainer>
-          <DepositStepper chainId={chainId} poolId={poolId} />
-          <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
-        </FormContainer>
-      </form>
-    </FormProvider>
+    <Form
+      {...form}
+      onSubmit={() => undefined}
+      footer={
+        <Stack sx={{ gap: Spacing.xs }}>
+          <HelperFields />
+          <ActionInfoGasEstimate gas={q(gas)} />
+        </Stack>
+      }
+    >
+      <Stack sx={{ gap: Spacing.sm }}>
+        <AmountTokenInput chainId={chainId} poolId={poolId} />
+        <EpochInput chainId={chainId} poolId={poolId} />
+        <DepositStepper chainId={chainId} poolId={poolId} />
+        <FormAlerts
+          error={form.formState.errors['root.serverError'] ?? null}
+          formErrors={form.formState.visibleErrors}
+          handledErrors={['rewardTokenId', 'amount', 'epoch']}
+        />
+      </Stack>
+    </Form>
   )
 }
