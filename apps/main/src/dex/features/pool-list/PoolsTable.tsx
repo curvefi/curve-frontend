@@ -14,7 +14,7 @@ import { TableSortDrawer } from '@evm-ui/shared/ui/DataTable/TableSortDrawer'
 import { CURVE_SOCIALS } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
-import { LITE_POOL_COLUMNS, POOL_COLUMNS, PoolColumnId } from './columns'
+import { POOL_COLUMNS, PoolColumnId } from './columns'
 import { PoolExpandedPanel } from './components/PoolExpandedPanel'
 import { PoolExpandedPanelActions } from './components/PoolExpandedPanelActions'
 import { PoolsFilters } from './filters/PoolsFilters'
@@ -67,7 +67,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   )
 
   const table = useTable({
-    columns: isLite ? LITE_POOL_COLUMNS : POOL_COLUMNS,
+    columns: POOL_COLUMNS,
     query: tableQuery,
     state: {
       expanded,

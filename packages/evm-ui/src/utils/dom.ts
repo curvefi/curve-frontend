@@ -1,3 +1,5 @@
+import { notFalsy } from '@primitives/objects.utils'
+
 /**
  * Check if the target has a parent with the given class name.
  * Optionally, you can specify a tag name to stop the search at.
@@ -16,4 +18,4 @@ export function hasParentWithClass(target: EventTarget, className: string, { unt
   return false
 }
 
-export const classNames = (...items: (string | false | undefined | null)[]): string => items.filter(Boolean).join(' ')
+export const classNames = (...items: (string | false | undefined | null)[]): string => notFalsy(...items).join(' ')

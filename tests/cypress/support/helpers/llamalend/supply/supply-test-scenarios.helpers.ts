@@ -3,6 +3,7 @@ import type { Address } from 'viem'
 import { oneAddress } from '@cy/support/generators'
 import { CRVUSD_ADDRESS, decimalDiv, decimalMinus, decimalMultiply, decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import {
   createMockLendMarket,
@@ -529,9 +530,9 @@ export const createClaimScenario = ({
       otherRewardsButtonDisabled: claimableRewards.every(({ amount }) => Number(amount) <= 0),
       table: {
         rows: [
-          ...(Number(claimableCrv) > 0
-            ? [{ amount: claimableCrv, symbol: 'CRV', notional: Number(claimableCrv) }]
-            : []),
+          ...notFalsy(
+            Number(claimableCrv) > 0 && { amount: claimableCrv, symbol: 'CRV', notional: Number(claimableCrv) },
+          ),
           ...claimableRewards.map(({ amount, symbol }) => ({ amount, symbol, notional: Number(amount) })),
         ],
         totalNotional:

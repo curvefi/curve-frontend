@@ -6,7 +6,7 @@ import { QUERY_CATEGORIES, type QueryCategory } from '@evm-ui/lib/model/query/qu
 import { FieldName, FieldsOf, validate } from '@evm-ui/lib/validation'
 import { formatTimeDiff } from '@evm-ui/utils/time'
 import { FetchError } from '@primitives/fetch.utils'
-import { isEmpty } from '@primitives/objects.utils'
+import { isEmpty, notFalsy } from '@primitives/objects.utils'
 import {
   type DefaultError,
   type FetchQueryOptions,
@@ -98,7 +98,7 @@ async function runQuery<TKey extends QueryKey, TData, TQuery>(
     const start = new Date()
     if (!disableLog) logQuery(queryKey)
     const data = await queryFn(getParamsFromQueryKey(queryKey))
-    if (!disableLog) logSuccess(queryKey, formatTimeDiff(start), ...[data ? [data] : []])
+    if (!disableLog) logSuccess(queryKey, formatTimeDiff(start), notFalsy(data))
     return data
   } catch (error) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.

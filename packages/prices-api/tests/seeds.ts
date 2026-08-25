@@ -1,6 +1,7 @@
 /** Discovers reproducible live endpoint parameters for schema tests. */
 import { beforeAll } from 'vitest'
 import type { Address } from '@primitives/address.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import type { Chain, Options } from '../src'
 import * as chains from '../src/chains'
 import * as crvusd from '../src/crvusd'
@@ -212,9 +213,9 @@ export const getSavingsUserSeed = once(async () => {
   const firstPage = await savings.getEvents(1, requestOptions)
   const page = randomPage(firstPage.count, perPage, 50)
   const response = page === 1 ? firstPage : await savings.getEvents(page, requestOptions)
-  const users = response.events
-    .flatMap(event => [event.owner, event.sender, event.receiver])
-    .filter((value): value is Address => value !== undefined && isAddress(value))
+  const users = notFalsy(...response.events.flatMap(event => [event.owner, event.sender, event.receiver])).filter(
+    (value): value is Address => isAddress(value),
+  )
 
   return randomItem(users, `savings.getEvents(${page}) address user`)
 })

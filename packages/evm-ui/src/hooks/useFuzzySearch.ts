@@ -45,7 +45,6 @@ function useFuseResultSet<T>(data: readonly T[], filterValue: string, keys: read
         ignoreLocation: true,
         ignoreDiacritics: true,
         isCaseSensitive: false,
-        minMatchCharLength: 2,
         threshold: 0.01,
         getFn: (obj, path) => cleanValue(get(obj, path)) as string,
         keys: [...keys],

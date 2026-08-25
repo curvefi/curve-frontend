@@ -51,7 +51,9 @@ export const useUserLlamaPositions = ({ userAddress }: { userAddress: Address | 
       const [userBorrows, hasBorrowed] = groupAddressesByChain(userLendingVaults, LEND_CHAINS)
       const [userMints, hasMinted] = groupAddressesByChain(userMintMarkets, MINT_CHAINS)
       const userSuppliesByChain = fromEntries(
-        zip(LEND_CHAINS, userSuppliedMarkets).flatMap(([chain, { data }]) => (data == null ? [] : [[chain, data]])),
+        zip(LEND_CHAINS, userSuppliedMarkets).flatMap(([chain, { data }]) =>
+          notFalsy(data && ([chain, data] as const)),
+        ),
       )
       const hasSupplied = userSuppliedMarkets.some(query => recordValues(query.data ?? {}).length)
       const userHasPositions =

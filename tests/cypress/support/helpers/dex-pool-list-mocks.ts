@@ -5,7 +5,7 @@ import { oneAddress, oneFloat } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import { Chain, requireBlockchainId } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
-import { range } from '@primitives/objects.utils'
+import { notFalsy, range } from '@primitives/objects.utils'
 
 const MOCK_CHAIN_IDS = [Chain.Ethereum, Chain.Arbitrum] as const
 type MockChainId = (typeof MOCK_CHAIN_IDS)[number]
@@ -101,76 +101,69 @@ type MockPool = ReturnType<typeof createPool>
 
 // Hardcode known pools where tests need exact search text, or a real address because
 // generated addresses do not resolve on the pool detail page.
-const createMockPools = (chainId: MockChainId): MockPool[] => [
-  ...(chainId === Chain.Ethereum
-    ? [
+const createMockPools = (chainId: MockChainId): MockPool[] =>
+  notFalsy(
+    chainId === Chain.Ethereum && {
+      ...createPool({
+        address: SearchPool.address,
+        chainId,
+        index: POOL_COUNT,
+        name: SearchPool.name,
+        poolType: 'main',
+      }),
+      coins: [
         {
-          ...createPool({
-            address: SearchPool.address,
-            chainId,
-            index: POOL_COUNT,
-            name: SearchPool.name,
-            poolType: 'main',
-          }),
-          coins: [
-            {
-              pool_index: 0,
-              symbol: 'DAI',
-              address: '0x6b175474e89094c44da98b954eedeac495271d0f' as Address,
-              name: 'Dai Stablecoin',
-              decimals: 18,
-            },
-            {
-              pool_index: 1,
-              symbol: 'USDC',
-              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
-              name: 'USD Coin',
-              decimals: 6,
-            },
-            {
-              pool_index: 2,
-              symbol: 'USDT',
-              address: '0xdac17f958d2ee523a2206206994597c13d831ec7' as Address,
-              name: 'Tether USD',
-              decimals: 6,
-            },
-          ],
+          pool_index: 0,
+          symbol: 'DAI',
+          address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+          name: 'Dai Stablecoin',
+          decimals: 18,
         },
-      ]
-    : []),
-  ...(chainId === Chain.Arbitrum
-    ? [
         {
-          ...createPool({
-            address: DEX_POOL_LIST_NAVIGATION_POOL.address,
-            chainId,
-            index: POOL_COUNT + 1,
-            name: DEX_POOL_LIST_NAVIGATION_POOL.name,
-            poolType: 'main',
-          }),
-          tvl_usd: onePriorityPoolUsdValue(),
-          trading_volume_24h: onePriorityPoolUsdValue(),
-          coins: [
-            {
-              pool_index: 0,
-              symbol: 'USDC',
-              address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8' as Address,
-              name: 'USD Coin',
-              decimals: 6,
-            },
-            {
-              pool_index: 1,
-              symbol: 'USDT',
-              address: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9' as Address,
-              name: 'Tether USD',
-              decimals: 6,
-            },
-          ],
+          pool_index: 1,
+          symbol: 'USDC',
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          name: 'USD Coin',
+          decimals: 6,
         },
-      ]
-    : []),
-  ...range(POOL_COUNT).map(index => createPool({ chainId, index })),
-]
+        {
+          pool_index: 2,
+          symbol: 'USDT',
+          address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+          name: 'Tether USD',
+          decimals: 6,
+        },
+      ],
+    },
+    chainId === Chain.Arbitrum && {
+      ...createPool({
+        address: DEX_POOL_LIST_NAVIGATION_POOL.address,
+        chainId,
+        index: POOL_COUNT + 1,
+        name: DEX_POOL_LIST_NAVIGATION_POOL.name,
+        poolType: 'main',
+      }),
+      tvl_usd: onePriorityPoolUsdValue(),
+      trading_volume_24h: onePriorityPoolUsdValue(),
+      coins: [
+        {
+          pool_index: 0,
+          symbol: 'USDC',
+          address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
+          name: 'USD Coin',
+          decimals: 6,
+        },
+        {
+          pool_index: 1,
+          symbol: 'USDT',
+          address: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
+          name: 'Tether USD',
+          decimals: 6,
+        },
+      ],
+    },
+    ...range(POOL_COUNT).map(index => createPool({ chainId, index })),
+  )
 
 const MOCK_POOLS = MOCK_CHAIN_IDS.flatMap(createMockPools)
 
