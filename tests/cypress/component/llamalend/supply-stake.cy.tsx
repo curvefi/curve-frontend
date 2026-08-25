@@ -11,7 +11,7 @@ import { createStakeScenario } from '@cy/support/helpers/llamalend/supply/supply
 import { checkSupplyActionInfoValues } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -25,7 +25,7 @@ const testCases: { approved: boolean; title: string; buttonText: string; hasGaug
 ]
 
 describe('StakeForm (mocked)', () => {
-  beforeEach(resetLlamaTestContext)
+  beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(({ approved, title, buttonText, hasGauge }) => {
     it(title, () => {

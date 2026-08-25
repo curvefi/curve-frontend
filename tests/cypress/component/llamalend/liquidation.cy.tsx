@@ -28,7 +28,7 @@ import {
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -55,7 +55,7 @@ const mountResetPositionForm = ({
 }
 
 describe('Soft Liquidation Forms (mocked)', () => {
-  beforeEach(resetLlamaTestContext)
+  beforeEach(setupMockedLlamalendComponentTest)
 
   describe('ImproveHealthForm', () => {
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
