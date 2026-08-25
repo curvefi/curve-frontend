@@ -42,7 +42,7 @@ export const LegacyPoolTitleCell = ({
         <Stack direction="column">
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <PoolAlertIcons poolAlert={poolAlert} tokenAlert={tokenAlert} />
-            <TableRowTitle id={pool.address} url={url} title={pool.name}></TableRowTitle>
+            <TableRowTitle url={url} title={pool.name} testId={pool.address} />
             <CopyIconButton
               className={`${DESKTOP_ONLY_HOVER_CLASS} ${CLICKABLE_IN_ROW_CLASS}`}
               label={t`Copy pool address`}

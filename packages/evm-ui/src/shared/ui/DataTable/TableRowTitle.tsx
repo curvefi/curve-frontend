@@ -7,7 +7,7 @@ import { responsiveTitleEllipsisSx } from '../titleTruncate'
 import { CLICKABLE_IN_ROW_CLASS } from './data-table.utils'
 
 /** Title as in, the name of the pool or market, used in the corresponding title cell */
-export function TableRowTitle({ id, title, url }: { id: string; title: ReactNode; url: string }) {
+export function TableRowTitle({ title, url, testId }: { title: ReactNode; url: string; testId: string }) {
   const isMobile = useIsMobile()
   return (
     <Typography
@@ -21,7 +21,7 @@ export function TableRowTitle({ id, title, url }: { id: string; title: ReactNode
         underline="none"
         href={url}
         className={CLICKABLE_IN_ROW_CLASS}
-        data-testid={`table-row-link-${id}`}
+        {...(testId && { 'data-testid': `table-row-link-${testId}` })}
         {...(isMobile && {
           // cancel click on mobile so the panel can open, there is a separate button for navigating
           onClick: (e: MouseEvent<HTMLAnchorElement>) => e.preventDefault(),

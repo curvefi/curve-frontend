@@ -19,7 +19,7 @@ export const PoolTitleCell = ({ row: { original: pool } }: CellContext<PoolRow, 
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <TokenIcons blockchainId={pool.network} tokens={pool.tradeableCoins} showTooltips={false} />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
-          <TableRowTitle id={pool.address} url={pool.url} title={pool.name} />
+          <TableRowTitle url={pool.url} title={pool.name} testId={pool.address} />
           <PoolBadges pool={pool} />
         </Stack>
       </Stack>

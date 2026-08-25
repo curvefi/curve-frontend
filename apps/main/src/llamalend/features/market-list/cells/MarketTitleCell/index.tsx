@@ -24,9 +24,9 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <TableRowTitle
-              id={market.controllerAddress}
               title={[collateral.symbol, borrowed.symbol].join(' • ')}
               url={market.url}
+              testId={market.controllerAddress}
             />
             <CopyIconButton
               className={`${DESKTOP_ONLY_HOVER_CLASS} ${CLICKABLE_IN_ROW_CLASS}`}
