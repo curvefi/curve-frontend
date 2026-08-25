@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { useLocation, useNavigate } from '@evm-ui/hooks/router'
 import { useResizeObserver } from '@evm-ui/hooks/useResizeObserver'
+import { notFalsy } from '@primitives/objects.utils'
 import { useRouterState } from '@tanstack/react-router'
 
 /** Height in pixels of the viewport band used to determine the active section. */
@@ -61,9 +62,7 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
     const section = sections.find(({ value }) => value === hash)
     // The target may render after TanStack Router's initial hash scroll attempt.
     const target = section && document.getElementById(section.value)
-    const elements = sections
-      .map(({ value }) => document.getElementById(value))
-      .filter((element): element is HTMLElement => element != null)
+    const elements = notFalsy(...sections.map(({ value }) => document.getElementById(value)))
     if (target && getActiveSection<T>(elements, activationTop) !== section.value) {
       scrollSpyHashRef.current = section.value
       target.scrollIntoView()
@@ -71,9 +70,7 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
   }, [activationTop, hash, sections])
 
   useEffect(() => {
-    const elements = sections
-      .map(({ value }) => document.getElementById(value))
-      .filter((element): element is HTMLElement => element != null)
+    const elements = notFalsy(...sections.map(({ value }) => document.getElementById(value)))
     if (!elements.length) return
 
     const updateActiveSection = () => {

@@ -6,13 +6,14 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/ui'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { ChainId, Token } from '@/dex/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useFormContext } from '@evm-ui/features/forms'
 import { TokenList, TokenSelector as TokenSelectorUIKit } from '@evm-ui/features/select-token'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
+import { notFalsy } from '@primitives/objects.utils'
 
 export const TokenSelector = ({
   chainId,
@@ -40,10 +41,9 @@ export const TokenSelector = ({
 
   const filteredTokens = useMemo(
     () =>
-      Object.values(tokensMapper)
+      notFalsy(...Object.values(tokensMapper))
         .filter(
-          (token): token is Token =>
-            !!token &&
+          token =>
             // Roman: "There are calculation errors for coins with small decimals, including USDC. Though, new cross chain gauges are good with it, so it depends which gauge do you ask"
             // I fixed it here: https://github.com/curvefi/curve-xchain-factory/blob/3e03f19d49826cad7c1e84829b35cc34955b046e/contracts/implementations/ChildGauge.vy#L117
             token.decimals == 18 &&

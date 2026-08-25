@@ -25,7 +25,7 @@ import { useMappedQuery } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
-import { DEFAULT_DECIMALS, maybe } from '@primitives/objects.utils'
+import { DEFAULT_DECIMALS, maybe, notFalsy } from '@primitives/objects.utils'
 import { REFUEL_TIMESERIES_PAGE_SIZE, RefuelTimeSeriesData, useRefuelTimeseries } from '../queries/timeseries.query'
 
 const { Spacing } = SizesAndSpaces
@@ -48,7 +48,7 @@ const formatPrice = (value: number | null | undefined) =>
   formatNumber(value, { abbreviate: false, decimals: 6, fallback: '-' })
 
 // Helper functions and filters that don't type check nicely when inlined
-const toExportPoint = (time: number, value: number | null) => (value == null ? [] : [{ time, value }])
+const toExportPoint = (time: number, value: number | null) => notFalsy(value != null && { time, value })
 const isFinitePrice = (value: number | null): value is number => value != null && Number.isFinite(value)
 const getLatestMetric = (values: (number | null | undefined)[]) =>
   values.findLast((value): value is number => value != null && Number.isFinite(value))

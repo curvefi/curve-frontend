@@ -48,9 +48,7 @@ const formatEndpointCatalogStatus = (status: EndpointCatalogStatus) =>
     status.missing.length && `missing: ${status.missing.join(', ')}`,
     status.staleCases.length && `stale cases: ${status.staleCases.join(', ')}`,
     status.staleExclusions.length && `stale exclusions: ${status.staleExclusions.join(', ')}`,
-  )
-    .filter(Boolean)
-    .join('; ')
+  ).join('; ')
 
 /** Returns a memoized skip reason for live tests when the endpoint catalog is stale. */
 export const getEndpointCatalogSkipReason = (() => {
