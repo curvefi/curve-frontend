@@ -1,5 +1,5 @@
 import type { UrlObject } from 'url'
-import { createElement, type ComponentType, type ReactNode, useCallback, useMemo, useState } from 'react'
+import { type ComponentType, createElement, type ReactNode, useCallback, useMemo, useState } from 'react'
 import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { assert } from '@primitives/objects.utils'
 import { useSearchParams } from './router'
@@ -150,28 +150,22 @@ export function useTabs<Value extends TabValue, Props extends object = Record<st
   const { menu } = props
   const params = (props.params ?? EMPTY_PARAMS) as Props
   const [selectedValue, onChange] = useTabValue(props)
-  const { tab, tabs, subTabs, subTab, content } = useMemo(() => {
-    const visibleTabs = getVisibleTabs(menu, params)
-    const tab =
-      visibleTabs.find(tab => getVisibleTabs(tab.subTabs, params).some(subTab => subTab.value === selectedValue)) ??
-      findTab(visibleTabs, selectedValue)
-    const subTab = findTab(getVisibleTabs(tab?.subTabs, params), selectedValue)
-
-    return {
-      tab,
-      tabs: createOptions(menu, params),
-      subTabs: createOptions(tab?.subTabs, params),
-      subTab,
-      content: createContent(tab, subTab, params),
-    }
-  }, [menu, params, selectedValue])
-
   return {
-    tab: assert(tab, 'No visible tabs found'),
-    tabs,
-    subTabs,
-    subTab,
-    content,
     onChange,
+    ...useMemo(() => {
+      const visibleTabs = getVisibleTabs(menu, params)
+      const tab =
+        visibleTabs.find(tab => getVisibleTabs(tab.subTabs, params).some(subTab => subTab.value === selectedValue)) ??
+        findTab(visibleTabs, selectedValue)
+      const subTab = findTab(getVisibleTabs(tab?.subTabs, params), selectedValue)
+
+      return {
+        tab: assert(tab, 'No visible tabs found'),
+        tabs: createOptions(menu, params),
+        subTabs: createOptions(tab?.subTabs, params),
+        subTab,
+        content: createContent(tab, subTab, params),
+      }
+    }, [menu, params, selectedValue]),
   }
 }

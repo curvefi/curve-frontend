@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { BUTTON_FORM_SIZE } from '@evm-ui/features/forms/constants'
 import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
@@ -14,20 +14,11 @@ type MobileFormTabsDrawerProps = {
   children: ReactNode
   tabs: readonly TabOption<string>[]
   onSelectTab: (value: string) => void
-  hideFormButton?: boolean
+  omitFormButton?: boolean
 }
 
-export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab, hideFormButton }: MobileFormTabsDrawerProps) => {
+export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab, omitFormButton }: MobileFormTabsDrawerProps) => {
   const [open, setOpen] = useState(false)
-
-  const openTab = useCallback(
-    (value: string) => {
-      onSelectTab(value)
-      setOpen(true)
-    },
-    [onSelectTab, setOpen],
-  )
-
   return (
     <>
       <Stack
@@ -46,7 +37,10 @@ export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab, hideFormButt
             key={value}
             disabled={disabled}
             data-testid={`mobile-form-action-${value}`}
-            onClick={() => openTab(value)}
+            onClick={() => {
+              onSelectTab(value)
+              setOpen(true)
+            }}
             sx={{ flex: 1 }}
           >
             {label}
@@ -62,7 +56,7 @@ export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab, hideFormButt
               paddingBlockEnd: Spacing.md,
             },
             // Reserve space for the form submit button, which is fixed to the bottom of the drawer.
-            !hideFormButton && { marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height] },
+            !omitFormButton && { marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height] },
           )}
         >
           {children}

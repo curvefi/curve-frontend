@@ -207,15 +207,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     value: rFormType as TransferFormType | undefined,
   })
 
-  const formTabOptions = useMemo(
-    () =>
-      tabs.map(tab => ({
-        ...tab,
-        href: getInternalUrl('dex', params.network, `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${tab.value}`),
-      })),
-    [tabs, params.network, params.poolIdOrAddress],
-  )
-
   return (
     <>
       {poolAlert?.banner && (
@@ -239,7 +230,23 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         formTabs={{
           content: (
             <FormMargins>
-              <TabsSwitcher variant="contained" value={value} options={formTabOptions} testIdPrefix="pool-form-tab" />
+              <TabsSwitcher
+                variant="contained"
+                value={value}
+                options={useMemo(
+                  () =>
+                    tabs.map(tab => ({
+                      ...tab,
+                      href: getInternalUrl(
+                        'dex',
+                        params.network,
+                        `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${tab.value}`,
+                      ),
+                    })),
+                  [tabs, params.network, params.poolIdOrAddress],
+                )}
+                testIdPrefix="pool-form-tab"
+              />
               {content}
             </FormMargins>
           ),

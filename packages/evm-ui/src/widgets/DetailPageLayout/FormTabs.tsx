@@ -11,7 +11,7 @@ import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 
 type FormTabBase<Props extends object> = Omit<TabItem<string, Props>, 'subTabs'> & {
   /** Whether this tab hides the standard fixed form button in the mobile drawer */
-  hideFormButton?: boolean
+  omitFormButton?: boolean
 }
 
 type FormSubTab<Props extends object> = FormTabBase<Props>
@@ -58,7 +58,7 @@ export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...
       value={tab.value}
       tabs={tabs}
       onSelectTab={onChange}
-      hideFormButton={options.menu.find(({ value }) => value === tab.value)?.hideFormButton}
+      omitFormButton={options.menu.find(({ value }) => value === tab.value)?.omitFormButton}
     >
       <Stack sx={{ marginInline }}>
         {isMobileDrawer ? (
