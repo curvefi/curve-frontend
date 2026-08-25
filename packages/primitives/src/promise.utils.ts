@@ -6,19 +6,10 @@ export const handleTimeout = async <T>(promise: Promise<T>, ms: number, message?
   return await Promise.race([promise, timeout]).finally(() => clearTimeout(id))
 }
 
-type RetryOptions = {
-  retries: number
-  delay: (attempt: number) => number
-  shouldRetry: (error: unknown) => boolean
-  signal?: AbortSignal
-  timeout?: number
-  timeoutMessage?: string
-}
-
 const getAbortError = (signal: AbortSignal) =>
   signal.reason instanceof Error ? signal.reason : new Error('Request aborted')
 
-const sleep = (ms: number, signal?: AbortSignal) => {
+export const sleep = (ms: number, signal?: AbortSignal) => {
   if (signal?.aborted) return Promise.reject(getAbortError(signal))
 
   return new Promise<void>((resolve, reject) => {
@@ -32,6 +23,26 @@ const sleep = (ms: number, signal?: AbortSignal) => {
       { once: true },
     )
   })
+}
+
+/** Waits for a callback to return a truthy value, polling at specified intervals, with a timeout. */
+export const waitFor = async (
+  callback: () => unknown,
+  { timeout, step = 1000, message }: { timeout: number; message?: string; step?: number },
+) => {
+  const waitUntil = async () => {
+    while (!(await callback())) await sleep(step)
+  }
+  await handleTimeout<void>(waitUntil(), timeout, message)
+}
+
+type RetryOptions = {
+  retries: number
+  delay: (attempt: number) => number
+  shouldRetry: (error: unknown) => boolean
+  signal?: AbortSignal
+  timeout?: number
+  timeoutMessage?: string
 }
 
 export async function retry<T>(
