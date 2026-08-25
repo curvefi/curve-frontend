@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { getExpectedFn, getRouteById } from '@evm-ui/entities/router-api'
+import { getExpectedFn, getRouteById, NoQuoteError } from '@evm-ui/entities/router-api'
 import { type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
@@ -101,20 +101,16 @@ const {
     switch (type) {
       case 'zapV2': {
         const selectedRouter = assert(router, 'No router enabled')
-        return convertNumbers({
-          router: selectedRouter,
-          ...(await impl.createLoanMaxRecv({
-            userCollateral,
-            range,
-            getExpected: getExpectedFn({
-              chainId,
-              router: selectedRouter,
-              userAddress,
-              zapAddress: getZapAddress(market),
-              slippage,
-            }),
-          })),
-        })
+        const zapAddress = getZapAddress(market)
+        const getExpected = getExpectedFn({ chainId, router: selectedRouter, userAddress, zapAddress, slippage })
+        try {
+          const result = await impl.createLoanMaxRecv({ userCollateral, range, getExpected })
+          return convertNumbers({ router: selectedRouter, ...result })
+        } catch (e) {
+          // todo: remove this after https://github.com/curvefi/curve-llamalend.js/pull/141
+          if (e instanceof NoQuoteError) return { maxDebt: '0' }
+          throw e
+        }
       }
       case 'V0': {
         assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)

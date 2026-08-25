@@ -61,6 +61,8 @@ export const parseMutationRoute = (
   return { ...route, minRecv: zapV2.calcMinRecv(expected, Number(slippage)) }
 }
 
+export class NoQuoteError extends Error {}
+
 /**
  * This function can be used as a callback for curve-js calldata methods or llamalend.js leverageZapV2 methods.
  */
@@ -89,7 +91,7 @@ export const getExpectedFn =
       userAddress,
       zapAddress,
     })
-    if (!routes.length) return { outAmount: '0', priceImpact: null }
+    if (!routes.length) throw new NoQuoteError()
     return parseRoute(routes[0].id).quote // router api is expected to return a single entry, add sorting if needed
   }
 

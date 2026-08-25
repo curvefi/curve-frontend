@@ -3,7 +3,7 @@ import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
-import { getExpectedFn } from '@evm-ui/entities/router-api'
+import { getExpectedFn, NoQuoteError } from '@evm-ui/entities/router-api'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
@@ -99,20 +99,15 @@ const { getQueryOptions: getBorrowMoreMaxReceiveOptions, invalidate: invalidateB
       switch (type) {
         case 'zapV2': {
           const selectedRouter = assert(router, 'No router enabled')
-          return castFieldsToDecimal({
-            router: selectedRouter,
-            ...(await impl.borrowMoreMaxRecv({
-              userCollateral,
-              address: userAddress,
-              getExpected: getExpectedFn({
-                chainId,
-                userAddress,
-                zapAddress: getZapAddress(market),
-                slippage,
-                router: selectedRouter,
-              }),
-            })),
-          })
+          const zapAddress = getZapAddress(market)
+          const getExpected = getExpectedFn({ chainId, userAddress, zapAddress, slippage, router: selectedRouter })
+          try {
+            const result = await impl.borrowMoreMaxRecv({ userCollateral, address: userAddress, getExpected })
+            return castFieldsToDecimal({ router: selectedRouter, ...result })
+          } catch (e) {
+            if (e instanceof NoQuoteError) return { maxDebt: '0' } // todo: remove this after https://github.com/curvefi/curve-llamalend.js/pull/141
+            throw e
+          }
         }
         case 'unleveraged':
           return { maxDebt: (await impl.borrowMoreMaxRecv(userCollateral)) as Decimal }
