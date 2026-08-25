@@ -29,7 +29,14 @@ export const BridgeInfoAlert = () => (
         {t`Bridges are not instant, and funds may take up to 15 minutes or more before arriving.`}
       </Typography>
 
-      <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: 'space-between',
+          // MUI Button endIcon has a negative right margin, which creates a tiny horizontal scroll in Alert.
+          '& .MuiButton-endIcon': { marginRight: 0 },
+        }}
+      >
         <ExternalLink href="https://curvefi.github.io/fast-bridge/" label={t`FastBridge Monitor`} />
         <ExternalLink href="https://docs.curve.finance/developer/fast-bridge/overview" label={t`Learn More`} />
       </Stack>
