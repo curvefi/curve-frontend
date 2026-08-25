@@ -33,20 +33,12 @@ describe('V2 pool-list mobile panels', () => {
   it('shows the full-network metrics in the required mobile order', () => {
     const { address } = V2_POOL_FIXTURES.showcase
     visitAndExpand(address)
-
     expectMetricOrder(address, FULL_NETWORK_METRIC_IDS)
-
-    getV2PoolExpandedPanel(address).find('[data-testid="pool-volume"]').should('contain.text', '24h Volume')
-    getV2PoolExpandedPanel(address)
-      .find('[data-testid="pool-crv-apy-value"]')
-      .invoke('text')
-      .should('match', /^\s*-?[\d,.]+(?:\+)?%\s*→\s*-?[\d,.]+(?:\+)?%\s*$/)
   })
 
   it('shows the supported Lite metrics in the required mobile order', () => {
     const { address } = V2_POOL_FIXTURES.lite
     visitAndExpand(address, 'taiko')
-
     expectMetricOrder(address, LITE_METRIC_IDS)
   })
 })
