@@ -164,7 +164,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     }
   }, [isAvailableManageGauge, rFormType, toggleForm])
 
-  const formTabs = useTabs({
+  const {
+    content,
+    tab: { value },
+    tabs,
+  } = useTabs({
     menu,
     params: {
       ...pageTransferProps,
@@ -179,13 +183,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     },
     value: rFormType as TransferFormType | undefined,
   })
+
   const formTabOptions = useMemo(
     () =>
-      formTabs.tabs.map(tab => ({
+      tabs.map(tab => ({
         ...tab,
         href: getPath(params, `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${tab.value}`),
       })),
-    [formTabs.tabs, params],
+    [tabs, params],
   )
 
   return (
@@ -211,13 +216,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         formTabs={{
           content: (
             <FormMargins>
-              <TabsSwitcher
-                variant="contained"
-                value={formTabs.tab.value}
-                options={formTabOptions}
-                testIdPrefix="pool-form-tab"
-              />
-              {formTabs.content}
+              <TabsSwitcher variant="contained" value={value} options={formTabOptions} testIdPrefix="pool-form-tab" />
+              {content}
             </FormMargins>
           ),
         }}

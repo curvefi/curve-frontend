@@ -60,32 +60,29 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   const hasLockedCrv = +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0
 
-  const onChange = (value: FormType) => setFormValues(curve, isLoadingCurve, value, {}, vecrvInfo, true)
-  const formTabs = useTabs({
+  const onChange = (value: FormType) => void setFormValues(curve, isLoadingCurve, value, {}, vecrvInfo, true)
+  const {
+    content,
+    onChange: onChangeTab,
+    tab: { value },
+    tabs,
+  } = useTabs({
     menu,
     params: { ...pageProps, canUnlock, hasLockedCrv },
     defaultValue: rFormType,
     onChange,
   })
-  const refreshFormValues = useEffectEvent(() => onChange(formTabs.tab.value))
+  const refreshFormValues = useEffectEvent(() => onChange(value))
 
   // fetch locked crv data
   useEffect(() => refreshFormValues(), [chainId, signerAddress, isPageVisible])
 
-  const showTabs = formTabs.tabs.length > 1
-
   return (
     <>
-      {showTabs && (
-        <TabsSwitcher
-          variant="underlined"
-          value={formTabs.tab.value}
-          onChange={formTabs.onChange}
-          options={formTabs.tabs}
-          overflow="fullWidth"
-        />
+      {tabs.length > 1 && (
+        <TabsSwitcher variant="underlined" value={value} onChange={onChangeTab} options={tabs} overflow="fullWidth" />
       )}
-      <Stack sx={{ gap: Spacing.md, padding: Spacing.md, paddingBlockStart: Spacing.xs }}>{formTabs.content}</Stack>
+      <Stack sx={{ gap: Spacing.md, padding: Spacing.md, paddingBlockStart: Spacing.xs }}>{content}</Stack>
     </>
   )
 }

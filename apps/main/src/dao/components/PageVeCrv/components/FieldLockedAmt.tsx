@@ -66,7 +66,7 @@ export const FieldLockedAmt = ({
             .
           </>
         ) : (
-          isAdjustCrv && t`CRV Locked: ${formatNumber(amount(lockedAmount), 'token.amount')}`
+          isAdjustCrv && t`CRV Locked: ${lockedAmount}`
         )
       }
       onBalance={onBalance}

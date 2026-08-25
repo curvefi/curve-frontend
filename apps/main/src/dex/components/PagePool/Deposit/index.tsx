@@ -59,7 +59,12 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolData?.pool?.id])
 
-  const formTabs = useTabs({
+  const {
+    content,
+    onChange,
+    tab: { value },
+    tabs,
+  } = useTabs({
     menu,
     params: { hasDepositAndStake, ...transferProps },
     value: formType,
@@ -69,16 +74,10 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
   return (
     <FormContent
       header={
-        <TabsSwitcher
-          variant="underlined"
-          value={formTabs.tab.value}
-          onChange={formTabs.onChange}
-          options={formTabs.tabs}
-          overflow="fullWidth"
-        />
+        <TabsSwitcher variant="underlined" value={value} onChange={onChange} options={tabs} overflow="fullWidth" />
       }
     >
-      {poolAlert?.isDisableDeposit ? <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox> : formTabs.content}
+      {poolAlert?.isDisableDeposit ? <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox> : content}
     </FormContent>
   )
 }
