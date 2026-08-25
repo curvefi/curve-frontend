@@ -6,6 +6,7 @@ import { stripVTControlCharacters } from 'util'
 const { ARTIFACT_BRANCH, BRANCH, WORKFLOW, RUN_ID, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 const DEST_DIR = 'artifacts'
 const MAX_LOG_SIZE = 100 * 1024 * 1024
+const COMMAND_TIMEOUT = 10 * 60 * 1000
 
 type WorkflowJob = {
   databaseId: number
@@ -17,8 +18,14 @@ type WorkflowJob = {
  */
 const run = (command: string, args: string[], options?: ExecFileOptionsWithStringEncoding): Promise<string> =>
   new Promise((resolve, reject) => {
-    execFile(command, args, { encoding: 'utf8', ...options }, (error, stdout) =>
-      error ? reject(new Error(`${error.code}`, { cause: error })) : resolve(stdout.trim()),
+    execFile(command, args, { encoding: 'utf8', timeout: COMMAND_TIMEOUT, ...options }, (error, stdout, stderr) =>
+      error
+        ? reject(
+            new Error(`Command failed with exit code ${error.code}: ${stderr.trim() || stdout.trim()}`, {
+              cause: error,
+            }),
+          )
+        : resolve(stdout.trim()),
     )
   })
 
@@ -91,21 +98,19 @@ async function downloadFailedJobLogs(runId: string, dest: string) {
   const logsDir = join(dest, 'failed-job-logs')
   await mkdir(logsDir, { recursive: true })
 
-  await Promise.all(
-    failedJobs.map(async job => {
-      const log = await run(
-        'gh',
-        ['run', 'view', '--repo', REPOSITORY, '--job', String(job.databaseId), '--log-failed'],
-        {
-          encoding: 'utf8',
-          maxBuffer: MAX_LOG_SIZE,
-        },
-      )
-      const path = join(logsDir, `${job.databaseId}-${safeFilename(job.name)}.log`)
-      await writeFile(path, `${stripVTControlCharacters(log)}\n`)
-      console.info(`Downloaded failed job log: ${path}`)
-    }),
-  )
+  for (const job of failedJobs) {
+    const log = await run(
+      'gh',
+      ['run', 'view', '--repo', REPOSITORY, '--job', String(job.databaseId), '--log-failed'],
+      {
+        encoding: 'utf8',
+        maxBuffer: MAX_LOG_SIZE,
+      },
+    )
+    const path = join(logsDir, `${job.databaseId}-${safeFilename(job.name)}.log`)
+    await writeFile(path, `${stripVTControlCharacters(log)}\n`)
+    console.info(`Downloaded failed job log: ${path}`)
+  }
 }
 
 const getArtifactCount = (runId: string) =>

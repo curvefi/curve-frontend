@@ -1,6 +1,7 @@
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { shouldLoadMintBorrowDetails } from '@cy/support/helpers/llamalend/market-details.helpers'
 import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
+import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
 import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 
 const MINT_MARKET = 'WBTC'
@@ -10,6 +11,7 @@ const [WIDTH, HEIGHT, BREAKPOINT] = oneViewport()
 describe('Mint app', () => {
   beforeEach(() => {
     mockMerklCampaigns()
+    mockLlamalendChartApis()
     cy.viewport(WIDTH, HEIGHT)
   })
 

@@ -1,5 +1,6 @@
 import { type ReactNode, type RefObject } from 'react'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
 import { Cross2Icon } from '@evm-ui/shared/icons/Cross2Icon'
 import { DrawerHeader } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerHeader'
@@ -40,6 +41,7 @@ export const TableFiltersOverlay = ({
   title,
 }: TableFiltersOverlayProps) => {
   const isMobile = useIsMobile()
+  const [isReady, setReady, resetReady] = useSwitch()
   const resetButton = (
     <Button
       color="ghost"
@@ -70,9 +72,11 @@ export const TableFiltersOverlay = ({
           ...{ 'data-testid': 'table-filters-popover-root' },
           sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
         },
+        // Keep test IDs until exit completes so tests cannot reopen the popover during its closing transition.
+        transition: { onEntered: setReady, onExited: resetReady },
       }}
     >
-      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} {...testId('table-filters-popover', open)}>
+      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} {...testId('table-filters-popover', isReady)}>
         <Stack
           direction="row"
           sx={{
@@ -86,7 +90,7 @@ export const TableFiltersOverlay = ({
           <Typography variant="headingXsBold" color="textSecondary" sx={{ paddingBlockEnd: Spacing.xs }}>
             {title}
           </Typography>
-          <IconButton size="extraSmall" onClick={() => setOpen(false)} {...testId('btn-close-filters', open)}>
+          <IconButton size="extraSmall" onClick={() => setOpen(false)} {...testId('btn-close-filters', isReady)}>
             <Cross2Icon />
           </IconButton>
         </Stack>

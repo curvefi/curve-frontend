@@ -2,6 +2,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { DECIMAL_REGEX, DECIMAL_RANGE_REGEX, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
 import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
+import { setupLlammalendTestCaseMocks } from '@cy/support/helpers/llamalend/mock-market.helpers'
 import { submitRepayForm, writeRepayLoanForm } from '@cy/support/helpers/llamalend/repay-loan.helpers'
 import { setupTenderlySoftLiquidation } from '@cy/support/helpers/llamalend/soft-liq-setup.helpers'
 import {
@@ -90,6 +91,7 @@ describe('Manage liquidation', () => {
   beforeEach(() => {
     resetLlamaTestContext()
     snapshot.revert()
+    setupLlammalendTestCaseMocks()
   })
 
   it('resets the position', () => {

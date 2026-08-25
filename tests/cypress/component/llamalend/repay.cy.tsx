@@ -12,7 +12,7 @@ import {
 } from '@cy/support/helpers/llamalend/repay-loan.helpers'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -38,7 +38,7 @@ const testCases = [
 ])
 
 describe('RepayForm (mocked)', () => {
-  beforeEach(resetLlamaTestContext)
+  beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(({ approved, leverage, repayToken, title }) => {
     it(title, () => {

@@ -13,7 +13,7 @@ import { createRepayScenario } from '@cy/support/helpers/llamalend/mocks/repay.m
 import { selectRepayToken, writeRepayLoanForm } from '@cy/support/helpers/llamalend/repay-loan.helpers'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -32,7 +32,7 @@ const checkOversizedCalldataBlocked = (submitButtonTestId: string) => {
 }
 
 describe('ZapV2 router calldata size', () => {
-  beforeEach(resetLlamaTestContext)
+  beforeEach(setupMockedLlamalendComponentTest)
 
   it('accepts calldata at the size limit', () => {
     const { llamaApi, market, borrow, collateral } = createCreateLoanScenario({

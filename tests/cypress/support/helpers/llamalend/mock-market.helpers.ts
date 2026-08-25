@@ -3,6 +3,7 @@ import { DEPRECATED_LLAMAS, MARKETS_ALERTS, MARKETS_LEVERAGE_CONFIG } from '@/ll
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { oneAddress, oneDecimal, oneOf } from '@cy/support/generators'
+import { blockUnmockedApis, mockNewHashCollateralEvents } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { Chain, CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { recordEntries } from '@primitives/objects.utils'
 
@@ -171,3 +172,6 @@ export const createMockLendMarket = (overrides?: object) =>
     vault: createMockLendVault(),
     ...overrides,
   }) as LendMarketTemplate
+
+export const setupLlammalendTestCaseMocks = ({ hasApi = true }: { hasApi?: boolean } = {}) =>
+  hasApi ? mockNewHashCollateralEvents() : blockUnmockedApis()

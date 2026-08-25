@@ -13,7 +13,7 @@ import { createDepositScenario } from '@cy/support/helpers/llamalend/supply/supp
 import { checkSupplyActionInfoValues } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -43,7 +43,7 @@ const testCases: {
 ]
 
 describe('DepositForm (mocked)', () => {
-  beforeEach(resetLlamaTestContext)
+  beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(
     ({

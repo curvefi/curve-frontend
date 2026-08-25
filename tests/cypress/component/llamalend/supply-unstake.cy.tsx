@@ -13,7 +13,7 @@ import {
 } from '@cy/support/helpers/llamalend/supply/unstake.helpers'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -22,7 +22,7 @@ import { Chain } from '@evm-ui/utils'
 const chainId = Chain.Ethereum
 
 describe('UnstakeForm (mocked)', () => {
-  beforeEach(resetLlamaTestContext)
+  beforeEach(setupMockedLlamalendComponentTest)
 
   it('fills and submits', () => {
     const { input, market, llamaApi, expected, stubs } = createUnstakeScenario({ chainId })

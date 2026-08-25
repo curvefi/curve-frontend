@@ -1,4 +1,4 @@
-import { Breakpoint } from '@cy/support/ui'
+import { Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
 
 /**
  * Makes sure that the filter chips are visible during the given callback.
@@ -60,13 +60,14 @@ export function closeDrawer(breakpoint: Breakpoint) {
 export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
   cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
   if (breakpoint !== 'mobile') {
-    cy.get('[data-testid="table-filters-popover"]').should('be.visible')
+    cy.get('[data-testid="table-filters-popover"]', LOAD_TIMEOUT).should('be.visible')
   }
   return callback().then(result => {
     if (breakpoint === 'mobile') {
       closeDrawer(breakpoint)
     } else {
       cy.get('[data-testid="btn-close-filters"]').click({ waitForAnimations: true })
+      cy.get('[data-testid="table-filters-popover"]', LOAD_TIMEOUT).should('not.exist')
       cy.get('[data-testid="table-filters-popover-root"]').should('not.exist')
     }
     return cy.wrap(result)

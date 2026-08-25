@@ -9,7 +9,7 @@ import {
 import { submitWithdrawForm, writeWithdrawForm } from '@cy/support/helpers/llamalend/supply/withdraw.helpers'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -22,7 +22,7 @@ const testCases = [
 ]
 
 describe('WithdrawForm (mocked)', () => {
-  beforeEach(resetLlamaTestContext)
+  beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(({ isFull, title, buttonText }) => {
     it(title, () => {

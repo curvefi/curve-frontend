@@ -225,6 +225,7 @@ export const checkLoanRangeSlider = () => {
 }
 
 export function submitLoanForm({ form, message }: { form: string; message: string }) {
+  cy.get('[data-testid="toast-success"]', LOAD_TIMEOUT).should('not.exist') // wait previous confirmations are gone
   cy.get(`[data-testid="${form}-submit-button"]`).click(LOAD_TIMEOUT)
   cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
   return cy.get('[data-testid="loan-form-errors"]').should('not.exist')

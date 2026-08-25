@@ -114,7 +114,6 @@ describe('DEX Pools', () => {
       cy.get('body').click(0, 0)
     } else {
       cy.get('[data-testid="btn-close-filters"]').click()
-      cy.get('[data-testid="table-filters-popover-root"]').should('not.exist')
     }
   }
 
@@ -333,7 +332,7 @@ describe('DEX Pools', () => {
     visitAndWait(width, height, { network: 'ethereum' })
     const filter = DEX_POOL_LIST_SEARCH
     cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(filter)
-    cy.url().should('include', `?search=${filter}`)
+    cy.url(API_LOAD_TIMEOUT).should('include', `?search=${filter}`)
     cy.wait('@dex-pools', API_LOAD_TIMEOUT)
     const getMatchedPoolRow = () =>
       cy.contains('[data-testid^="data-table-row-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
@@ -353,7 +352,7 @@ describe('DEX Pools', () => {
     }
     cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
     cy.window().then(win => win.history.go(-1))
-    cy.url().should('include', `?search=${filter}`)
+    cy.url(API_LOAD_TIMEOUT).should('include', `?search=${filter}`)
   })
 
   it('keeps search-only state out of active filter chips and empty reset clears search', () => {

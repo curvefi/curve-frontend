@@ -10,7 +10,7 @@ import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestW
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/mocks/create-loan.mocks'
 import {
   llamaNetworks,
-  resetLlamaTestContext,
+  setupMockedLlamalendComponentTest,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
@@ -34,7 +34,7 @@ const testCases = [
 ])
 
 describe('CreateLoanForm (mocked)', () => {
-  beforeEach(resetLlamaTestContext)
+  beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(({ approved, hasLeverage, leverageEnabled, title }) => {
     it(title, () => {
