@@ -34,7 +34,7 @@ describe('V2 pool-list network support', () => {
   it('shows the table error state without fetching pools for an unsupported Lite network', () => {
     cy.intercept(
       { method: 'GET', hostname: 'api2.curve.finance', pathname: `/get_pools/${Chain.Celo}` },
-      { statusCode: 503 },
+      { statusCode: 510 },
     ).as('dex-v2-unexpected-lite-pools')
 
     visitPoolList('celo', '@dex-v2-lite-pool-chains')

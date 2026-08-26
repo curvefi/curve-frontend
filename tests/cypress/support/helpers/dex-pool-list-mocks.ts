@@ -239,7 +239,7 @@ const mockDexPoolList = () =>
 // Keep DEX pool-list tests deterministic by failing on any prices API endpoint this helper does not own.
 const blockUnmockedDexPoolListApis = () =>
   cy.intercept({ method: 'GET', hostname: 'prices.curve.finance', pathname: /^\/v2\/pools(?:\/.*)?$/ }, req => {
-    req.reply({ statusCode: 503, body: { error: `Unexpected DEX pool list API request: ${req.url}` } })
+    req.reply({ statusCode: 510, body: { error: `Unexpected DEX pool list API request: ${req.url}` } })
   })
 
 export const setupDexPoolListMocks = () => {

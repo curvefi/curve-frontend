@@ -22,11 +22,11 @@ export const blockUnmockedApis = () => {
   ].forEach(
     hostname =>
       void cy.intercept({ hostname }, req =>
-        req.reply({ statusCode: 503, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
+        req.reply({ statusCode: 510, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
       ),
   )
   cy.intercept('/api/merkl/*', req =>
-    req.reply({ statusCode: 503, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
+    req.reply({ statusCode: 510, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
   )
 }
 

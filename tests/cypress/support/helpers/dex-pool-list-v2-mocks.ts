@@ -564,15 +564,15 @@ const mockMerklOpportunities = () =>
       return
     }
 
-    req.reply({ statusCode: 503, body: { error: `Unexpected Merkl request: ${req.url}` } })
+    req.reply({ statusCode: 510, body: { error: `Unexpected Merkl request: ${req.url}` } })
   })
 
 export const setupDexPoolListV2Mocks = () => {
   cy.intercept({ method: 'GET', hostname: 'prices.curve.finance', pathname: /^\/v2\/pools(?:\/.*)?$/ }, req => {
-    req.reply({ statusCode: 503, body: { error: `Unexpected V2 pool-list request: ${req.url}` } })
+    req.reply({ statusCode: 510, body: { error: `Unexpected V2 pool-list request: ${req.url}` } })
   })
   cy.intercept({ method: 'GET', hostname: 'api2.curve.finance', pathname: /^\/get_pools\/\d+$/ }, req => {
-    req.reply({ statusCode: 503, body: { error: `Unexpected API2 pool-list request: ${req.url}` } })
+    req.reply({ statusCode: 510, body: { error: `Unexpected API2 pool-list request: ${req.url}` } })
   })
   mockPoolChains().as('dex-v2-pool-chains')
   mockLitePoolChains().as('dex-v2-lite-pool-chains')

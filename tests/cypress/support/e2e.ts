@@ -2,10 +2,17 @@ import '@evm-ui/eip6963-test-setup'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 
+let routeDiagnostics: string[] = []
+
 const addRouteDiagnostic = (win: Window, message: string) => {
   const timestamp = new Date().toISOString()
   const entry = `[${timestamp}] ${message}`
+  routeDiagnostics = [...routeDiagnostics, entry]
   win.CurveCypressDiagnostics = [...(win.CurveCypressDiagnostics ?? []), entry]
+}
+
+const addCommandRouteDiagnostic = (message: string) => {
+  routeDiagnostics = [...routeDiagnostics, `[${new Date().toISOString()}] ${message}`]
 }
 
 const installRouteDiagnostics = (win: Window) => {
@@ -36,6 +43,13 @@ Cypress.on(
 
 Cypress.on('window:before:load', installRouteDiagnostics)
 
+Cypress.Commands.overwrite('visit', (originalFn, ...args) => {
+  const [url] = args
+  const requestedUrl = typeof url === 'string' ? url : url.url
+  addCommandRouteDiagnostic(`cy.visit requested url=${requestedUrl ?? '<unknown>'}`)
+  return originalFn(...args)
+})
+
 /**
  * For most of our e2e tests we have a wagmi test connect that auto-connects, so there's a wallet available.
  * However, in some cases we want to test functionality without a wallet connected.
@@ -51,6 +65,7 @@ Cypress.Commands.add('visitWithoutTestConnector', (route: AppRoute, options?: Pa
 )
 
 beforeEach(() => {
+  routeDiagnostics = []
   cy.then(() => {
     const test = Cypress.currentTest
     Cypress.log({
@@ -64,7 +79,7 @@ afterEach(function () {
   if (this.currentTest?.state !== 'failed') return
 
   cy.window({ log: false }).then(win => {
-    const diagnostics = win.CurveCypressDiagnostics ?? []
+    const diagnostics = [...routeDiagnostics, ...(win.CurveCypressDiagnostics ?? [])]
     const message = [
       'Route diagnostics for failed Cypress test:',
       `spec: ${Cypress.spec.relative}`,
