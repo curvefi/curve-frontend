@@ -7,7 +7,7 @@ import { QUERY_TYPES } from '@evm-ui/lib/model/query/query-types'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Decimal } from '@primitives/decimal.utils'
-import { recordEntries } from '@primitives/objects.utils'
+import { recordValues } from '@primitives/objects.utils'
 import { readContractsQueryOptions } from '@wagmi/core/query'
 import { createMockLendMarket } from './mock-market.helpers'
 import { mockedWagmiConfig } from './test-wagmi.helpers'
@@ -26,8 +26,8 @@ export const seedErc20BalanceQuery = ({
   decimals?: number
 }) => {
   // disable refetching, otherwise real RPC calls to invalid token addresses run after expiration
-  recordEntries(QUERY_TYPES).forEach(([key, value]) =>
-    Object.assign(key, { ...value, staleTime: Infinity, gcTime: Infinity, refetchInterval: undefined }),
+  recordValues(QUERY_TYPES).forEach(queryType =>
+    Object.assign(queryType, { ...queryType, staleTime: Infinity, gcTime: Infinity, refetchInterval: undefined }),
   )
 
   const { queryKey } = readContractsQueryOptions(mockedWagmiConfig, {

@@ -7,6 +7,7 @@ declare global {
   interface Window {
     CypressNoTestConnector?: string
     CypressTestConnectorChain?: number
+    CurveCypressDiagnostics?: string[]
   }
 
   namespace Cypress {

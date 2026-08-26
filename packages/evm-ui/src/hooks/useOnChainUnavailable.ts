@@ -10,6 +10,7 @@ import {
   LLAMALEND_ROUTES,
   replaceNetworkInPath,
 } from '@evm-ui/shared/routes'
+import { IS_CYPRESS } from '@evm-ui/utils'
 import type { NetworkMapping } from '@legacy-ui/utils'
 import { useLocation, useNavigate } from './router'
 
@@ -34,7 +35,25 @@ export function useOnChainUnavailable<T extends NetworkMapping>(networks: T | un
       const redirectUrl = getCurrentNetwork(pathname)
         ? replaceNetworkInPath(pathname, networkId)
         : `/${app}/${networkId}${defaultRoutes[app]}`
-      console.warn('Redirecting from %s to %s...', href, redirectUrl)
+      if (IS_CYPRESS) {
+        const message = [
+          'onChainUnavailable redirect',
+          `from=${href}`,
+          `pathname=${pathname}`,
+          `app=${app}`,
+          `walletChainId=${walletChainId ?? 'none'}`,
+          `resolvedNetworkId=${networkId}`,
+          `networksLoaded=${Boolean(networks)}`,
+          `to=${redirectUrl}`,
+        ].join(' ')
+        window.CurveCypressDiagnostics = [
+          ...(window.CurveCypressDiagnostics ?? []),
+          `[${new Date().toISOString()}] ${message}`,
+        ]
+        console.warn('Redirecting from %s to %s...', href, redirectUrl, message)
+      } else {
+        console.warn('Redirecting from %s to %s...', href, redirectUrl)
+      }
       return navigate(redirectUrl, { replace: true })
     },
     [networks, navigate, location],

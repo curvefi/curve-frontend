@@ -1,14 +1,32 @@
 import { useEffect } from 'react'
 import { usePathname, useNavigate } from '@evm-ui/hooks/router'
 import { replaceNetworkInPath } from '@evm-ui/shared/routes'
+import { IS_CYPRESS } from '@evm-ui/utils'
 
 export function useRedirectToEth(network: { showInSelectNetwork?: boolean } | undefined, networkId: string) {
   const push = useNavigate()
   const pathname = usePathname()
   useEffect(() => {
     if (!network?.showInSelectNetwork && pathname) {
-      console.warn(`Network not supported ${networkId}, redirecting...`)
-      push(replaceNetworkInPath(pathname, 'ethereum'))
+      const redirectUrl = replaceNetworkInPath(pathname, 'ethereum')
+      if (IS_CYPRESS) {
+        const message = [
+          'useRedirectToEth redirect',
+          `from=${pathname}`,
+          `networkId=${networkId}`,
+          `networkExists=${Boolean(network)}`,
+          `showInSelectNetwork=${String(network?.showInSelectNetwork)}`,
+          `to=${redirectUrl}`,
+        ].join(' ')
+        window.CurveCypressDiagnostics = [
+          ...(window.CurveCypressDiagnostics ?? []),
+          `[${new Date().toISOString()}] ${message}`,
+        ]
+        console.warn(`Network not supported ${networkId}, redirecting...`, message)
+      } else {
+        console.warn(`Network not supported ${networkId}, redirecting...`)
+      }
+      push(redirectUrl)
     }
-  }, [networkId, network?.showInSelectNetwork, push, pathname])
+  }, [networkId, network, push, pathname])
 }

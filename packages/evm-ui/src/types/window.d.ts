@@ -31,5 +31,6 @@ declare global {
     localStorage: Storage | null // storage can be null on iOS private mode
     CypressNoTestConnector?: string
     CypressTestConnectorChain?: number
+    CurveCypressDiagnostics?: string[]
   }
 }

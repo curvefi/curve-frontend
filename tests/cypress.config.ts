@@ -18,6 +18,12 @@ export default defineConfig({
     specPattern: 'cypress/e2e/**/*',
     setupNodeEvents(on, config) {
       on('file:preprocessor', vitePreprocessor())
+      on('task', {
+        log(message: string) {
+          console.info(message)
+          return null
+        },
+      })
       return config
     },
   },
