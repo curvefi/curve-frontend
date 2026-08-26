@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { pickMaxDebtQuery } from '@/llamalend/queries/max-receive-query.helpers'
+import { pickMaxDebtQuery } from '@/llamalend/queries/llamma-query.helpers'
 import { getExpectedFn, getRouteById } from '@evm-ui/entities/router-api'
 import { type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'

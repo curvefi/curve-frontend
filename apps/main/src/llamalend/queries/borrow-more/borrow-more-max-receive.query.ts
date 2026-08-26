@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
-import { pickMaxDebtQuery } from '@/llamalend/queries/max-receive-query.helpers'
+import { pickMaxDebtQuery } from '@/llamalend/queries/llamma-query.helpers'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
 import { getExpectedFn } from '@evm-ui/entities/router-api'
