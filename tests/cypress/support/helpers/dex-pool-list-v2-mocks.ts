@@ -1,5 +1,6 @@
 import { orderBy } from 'lodash'
 import type { PoolType } from '@curvefi/prices-api/pools'
+import { UnexpectedApiRequest } from '@cy/support/ui'
 import { Chain } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
 
@@ -564,16 +565,15 @@ const mockMerklOpportunities = () =>
       return
     }
 
-    req.reply({ statusCode: 510, body: { error: `Unexpected Merkl request: ${req.url}` } })
+    req.reply(UnexpectedApiRequest)
   })
 
 export const setupDexPoolListV2Mocks = () => {
-  cy.intercept({ method: 'GET', hostname: 'prices.curve.finance', pathname: /^\/v2\/pools(?:\/.*)?$/ }, req => {
-    req.reply({ statusCode: 510, body: { error: `Unexpected V2 pool-list request: ${req.url}` } })
-  })
-  cy.intercept({ method: 'GET', hostname: 'api2.curve.finance', pathname: /^\/get_pools\/\d+$/ }, req => {
-    req.reply({ statusCode: 510, body: { error: `Unexpected API2 pool-list request: ${req.url}` } })
-  })
+  cy.intercept(
+    { method: 'GET', hostname: 'prices.curve.finance', pathname: /^\/v2\/pools(?:\/.*)?$/ },
+    UnexpectedApiRequest,
+  )
+  cy.intercept({ method: 'GET', hostname: 'api2.curve.finance', pathname: /^\/get_pools\/\d+$/ }, UnexpectedApiRequest)
   mockPoolChains().as('dex-v2-pool-chains')
   mockLitePoolChains().as('dex-v2-lite-pool-chains')
   mockPoolList().as('dex-v2-pools')

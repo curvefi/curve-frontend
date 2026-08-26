@@ -1,3 +1,4 @@
+import type { HttpRequestInterceptor } from 'cypress/types/net-stubbing'
 import { oneInt, oneOf } from '@cy/support/generators'
 
 export const e2eBaseUrl = () => Cypress.config('baseUrl')
@@ -48,6 +49,10 @@ export type AppPath = ReturnType<typeof oneAppPath>
 export const LOAD_TIMEOUT = { timeout: 30000 }
 export const TRANSACTION_LOAD_TIMEOUT = { timeout: 60000 } // higher timeout in case confirmations are slow
 export const API_LOAD_TIMEOUT = { timeout: 120000 } // unfortunately the prices API can be REAL SLOW 😭
+
+/** Intercept callback for blocking the backend for testing. We use 510 to avoid the HTTP retries for some 5xx errors */
+export const UnexpectedApiRequest: HttpRequestInterceptor = req =>
+  req.reply({ statusCode: 510, body: { error: `Unexpected API request in Cypress test to url ${req.url}` } })
 
 // scrollbar in px for the test browser. Firefox behaves when headless.
 export const SCROLL_WIDTH = Cypress.browser.name === 'firefox' ? (Cypress.browser.isHeadless ? 12 : 0) : 15

@@ -56,7 +56,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         [MarketType.Lend, /\/lend\/\w+\/markets\/.+\/?$/],
       )
       filterByMarketType([width, height], type)
-      cy.get(`[data-testid^="market-link-"]`).first().click()
+      cy.get(`[data-testid^="table-row-link-"]`).first().click()
       if (breakpoint === 'mobile') {
         cy.get(`[data-testid^="llama-market-go-to-borrow"]`).click()
       }
@@ -128,7 +128,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       const utilizationColumnId = MarketColumnId.UtilizationPercent
       cy.get(`[data-testid^="data-table-row"]`)
         .first()
-        .find(`[data-testid="market-link-${HIGH_TVL_ADDRESS}"]`)
+        .find(`[data-testid="table-row-link-${HIGH_TVL_ADDRESS}"]`)
         .should('exist')
       if (breakpoint == 'mobile') {
         withFilters(breakpoint, () => {
@@ -142,7 +142,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.be.visible')
         cy.get(`[data-testid^="data-table-row"]`)
           .first()
-          .find(`[data-testid="market-link-${HIGH_UTILIZATION_ADDRESS}"]`)
+          .find(`[data-testid="table-row-link-${HIGH_UTILIZATION_ADDRESS}"]`)
           .should('exist')
         expandFirstRowOnMobile(breakpoint)
         // note: not possible currently to sort ascending
@@ -194,14 +194,14 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
       cy.url().should('include', 'search=wstETH+crvUSD')
       cy.scrollTo(0, 0)
-      cy.get(`[data-testid='market-link-${SFRX_ETH_MARKET}']`).should('not.exist')
-      cy.get(`[data-testid="market-link-${WST_ETH_MARKET}"]`).should('exist')
+      cy.get(`[data-testid='table-row-link-${SFRX_ETH_MARKET}']`).should('not.exist')
+      cy.get(`[data-testid="table-row-link-${WST_ETH_MARKET}"]`).should('exist')
     })
 
     it('should persists search filter across reload', () => {
       visitAndWait([width, height], `/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
-      cy.get(`[data-testid="market-link-${WST_ETH_MARKET}"]`).should('exist')
+      cy.get(`[data-testid="table-row-link-${WST_ETH_MARKET}"]`).should('exist')
       getTableCellAssets().first().contains('wstETH')
     })
 

@@ -58,7 +58,7 @@ const expectFirstPool = (address: string) =>
   cy
     .get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT)
     .first()
-    .find(`[data-testid="market-link-${address}"]`)
+    .find(`[data-testid="table-row-link-${address}"]`)
     .should('exist')
 
 const DEFAULT_FULL_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Volume, PoolColumnId.Tvl]
