@@ -25,7 +25,7 @@ const visitErrorBoundary = (errorFactory: (win: Cypress.AUTWindow) => Error) => 
   }).lendingVaults.as('error')
   const url = '/llamalend/ethereum/markets'
   cy.visit(url, {
-    timeout: API_LOAD_TIMEOUT.timeout,
+    ...API_LOAD_TIMEOUT,
     onBeforeLoad: win => {
       const { String } = win
       // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
