@@ -3,6 +3,7 @@ import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 
 let routeDiagnostics: string[] = []
+let betweenTestDiagnostics: string[] = []
 let testStartedAt = 0
 const ROUTE_DIAGNOSTICS_KEY = 'CurveCypressRouteDiagnostics'
 
@@ -25,6 +26,8 @@ const isCurrentTestDiagnostic = (entry: string) => {
   return Number.isNaN(timestamp) || timestamp >= testStartedAt - 1000
 }
 
+const isRelevantDiagnostic = (entry: string) => isCurrentTestDiagnostic(entry) || betweenTestDiagnostics.includes(entry)
+
 const parseStoredRouteDiagnostics = (win: Window) => {
   try {
     const diagnostics: unknown = JSON.parse(win.localStorage?.getItem(ROUTE_DIAGNOSTICS_KEY) ?? '[]')
@@ -45,13 +48,34 @@ const getCurrentAutHref = () => {
   }
 }
 
+const formatDiagnostic = (message: string) => `[${new Date().toISOString()}] ${message}`
+
 const addCommandRouteDiagnostic = (message: string) => {
-  routeDiagnostics = [...routeDiagnostics, `[${new Date().toISOString()}] ${message}`]
+  routeDiagnostics = [...routeDiagnostics, formatDiagnostic(message)]
+}
+
+const addBetweenTestDiagnostic = (message: string) => {
+  const entry = formatDiagnostic(message)
+  betweenTestDiagnostics = [...betweenTestDiagnostics, entry].slice(-20)
+  routeDiagnostics = [...routeDiagnostics, entry]
+}
+
+const visitBlank = () => {
+  const cypressAction = Cypress.action as unknown as (event: string, ...args: unknown[]) => void
+  addBetweenTestDiagnostic(`firefox afterEach blank before href=${getCurrentAutHref()}`)
+
+  return new Cypress.Promise<void>(resolve => {
+    cy.once('window:load', () => {
+      addBetweenTestDiagnostic(`firefox afterEach blank loaded href=${getCurrentAutHref()}`)
+      resolve()
+    })
+    cypressAction('cy:url:changed', '')
+    cypressAction('cy:visit:blank', { testIsolation: true })
+  })
 }
 
 const addRouteDiagnostic = (win: Window, message: string) => {
-  const timestamp = new Date().toISOString()
-  const entry = `[${timestamp}] ${message}`
+  const entry = formatDiagnostic(message)
   routeDiagnostics = [...routeDiagnostics, entry]
   win.CurveCypressDiagnostics = [...(win.CurveCypressDiagnostics ?? []), entry]
   win.localStorage?.setItem(ROUTE_DIAGNOSTICS_KEY, JSON.stringify(routeDiagnostics))
@@ -98,6 +122,12 @@ Cypress.on(
 
 Cypress.on('window:before:load', installRouteDiagnostics)
 Cypress.on('url:changed', url => addCommandRouteDiagnostic(`Cypress url:changed ${url}`))
+Cypress.on('test:before:run', (_attributes, test) =>
+  addBetweenTestDiagnostic(`test:before:run title=${test.title} href=${getCurrentAutHref()}`),
+)
+Cypress.on('test:after:run', (_attributes, test) =>
+  addBetweenTestDiagnostic(`test:after:run title=${test.title} href=${getCurrentAutHref()}`),
+)
 
 Cypress.Commands.overwrite('visit', (originalFn, ...args) => {
   const [url] = args
@@ -129,7 +159,8 @@ Cypress.Commands.add('visitWithoutTestConnector', (route: AppRoute, options?: Pa
 
 beforeEach(() => {
   testStartedAt = Date.now()
-  routeDiagnostics = []
+  routeDiagnostics = betweenTestDiagnostics
+  betweenTestDiagnostics = []
   cy.then(() => {
     const test = Cypress.currentTest
     Cypress.log({
@@ -146,7 +177,7 @@ afterEach(function () {
     const storedDiagnostics = parseStoredRouteDiagnostics(win)
     const diagnostics = Array.from(
       new Set([...routeDiagnostics, ...(win.CurveCypressDiagnostics ?? []), ...storedDiagnostics]),
-    ).filter(isCurrentTestDiagnostic)
+    ).filter(isRelevantDiagnostic)
     const message = [
       'Route diagnostics for failed Cypress test:',
       `spec: ${Cypress.spec.relative}`,
@@ -158,6 +189,16 @@ afterEach(function () {
 
     Cypress.log({ name: 'route diagnostics', message })
     cy.task('log', `\n${message}\n`, { log: false })
+  })
+})
+
+afterEach(() => {
+  if (!Cypress.isBrowser('firefox')) return
+
+  cy.then(() => {
+    if (getCurrentAutHref() === 'about:blank') return
+
+    return visitBlank()
   })
 })
 
