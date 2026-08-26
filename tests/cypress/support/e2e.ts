@@ -3,6 +3,7 @@ import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 
 let routeDiagnostics: string[] = []
+let testStartedAt = 0
 const ROUTE_DIAGNOSTICS_KEY = 'CurveCypressRouteDiagnostics'
 
 type NavigationEvent = Event & {
@@ -12,6 +13,36 @@ type NavigationEvent = Event & {
 
 type NavigationWithEvents = {
   addEventListener(type: 'navigate', listener: (event: NavigationEvent) => void): void
+}
+
+const getEntryTimestamp = (entry: string) => {
+  const match = /^\[([^\]]+)]/.exec(entry)
+  return match ? Date.parse(match[1]) : Number.NaN
+}
+
+const isCurrentTestDiagnostic = (entry: string) => {
+  const timestamp = getEntryTimestamp(entry)
+  return Number.isNaN(timestamp) || timestamp >= testStartedAt - 1000
+}
+
+const parseStoredRouteDiagnostics = (win: Window) => {
+  try {
+    const diagnostics: unknown = JSON.parse(win.localStorage?.getItem(ROUTE_DIAGNOSTICS_KEY) ?? '[]')
+    return Array.isArray(diagnostics) && diagnostics.every(item => typeof item === 'string')
+      ? diagnostics.filter(isCurrentTestDiagnostic)
+      : []
+  } catch {
+    return []
+  }
+}
+
+const getCurrentAutHref = () => {
+  try {
+    const win = (Cypress as unknown as { state(name: 'window'): Window | undefined }).state('window')
+    return win?.location.href ?? '<no window>'
+  } catch (error) {
+    return `<unavailable: ${error instanceof Error ? error.message : String(error)}>`
+  }
 }
 
 const addCommandRouteDiagnostic = (message: string) => {
@@ -27,7 +58,7 @@ const addRouteDiagnostic = (win: Window, message: string) => {
 }
 
 const installRouteDiagnostics = (win: Window) => {
-  const storedDiagnostics = JSON.parse(win.localStorage?.getItem(ROUTE_DIAGNOSTICS_KEY) ?? '[]') as string[]
+  const storedDiagnostics = parseStoredRouteDiagnostics(win)
   routeDiagnostics = [...storedDiagnostics, ...routeDiagnostics]
   addRouteDiagnostic(win, `window:before:load ${win.location.href}`)
   win.CurveCypressDiagnostics = routeDiagnostics
@@ -71,6 +102,13 @@ Cypress.on('url:changed', url => addCommandRouteDiagnostic(`Cypress url:changed 
 Cypress.Commands.overwrite('visit', (originalFn, ...args) => {
   const [url] = args
   const requestedUrl = typeof url === 'string' ? url : url.url
+  addCommandRouteDiagnostic(
+    [
+      `cy.visit before href=${getCurrentAutHref()}`,
+      `testIsolation=${String(Cypress.config('testIsolation'))}`,
+      `browser=${Cypress.browser.name}/${Cypress.browser.version}`,
+    ].join(' '),
+  )
   addCommandRouteDiagnostic(`cy.visit requested url=${requestedUrl ?? '<unknown>'}`)
   return originalFn(...args)
 })
@@ -90,6 +128,7 @@ Cypress.Commands.add('visitWithoutTestConnector', (route: AppRoute, options?: Pa
 )
 
 beforeEach(() => {
+  testStartedAt = Date.now()
   routeDiagnostics = []
   cy.then(() => {
     const test = Cypress.currentTest
@@ -98,17 +137,16 @@ beforeEach(() => {
       message: `${test.titlePath.join(' > ')}: ${Cypress.config('baseUrl')}`,
     })
   })
-  cy.window({ log: false }).then(win => win.localStorage?.removeItem(ROUTE_DIAGNOSTICS_KEY))
 })
 
 afterEach(function () {
   if (this.currentTest?.state !== 'failed') return
 
   cy.window({ log: false }).then(win => {
-    const storedDiagnostics = JSON.parse(win.localStorage?.getItem(ROUTE_DIAGNOSTICS_KEY) ?? '[]') as string[]
+    const storedDiagnostics = parseStoredRouteDiagnostics(win)
     const diagnostics = Array.from(
       new Set([...routeDiagnostics, ...(win.CurveCypressDiagnostics ?? []), ...storedDiagnostics]),
-    )
+    ).filter(isCurrentTestDiagnostic)
     const message = [
       'Route diagnostics for failed Cypress test:',
       `spec: ${Cypress.spec.relative}`,
