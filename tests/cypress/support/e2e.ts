@@ -61,7 +61,7 @@ const addBetweenTestDiagnostic = (message: string) => {
 }
 
 const visitBlank = () => {
-  const cypressAction = Cypress.action as unknown as (event: string, ...args: unknown[]) => void
+  const cypress = Cypress as unknown as { action(event: string, ...args: unknown[]): void }
   addBetweenTestDiagnostic(`firefox afterEach blank before href=${getCurrentAutHref()}`)
 
   return new Cypress.Promise<void>(resolve => {
@@ -69,8 +69,8 @@ const visitBlank = () => {
       addBetweenTestDiagnostic(`firefox afterEach blank loaded href=${getCurrentAutHref()}`)
       resolve()
     })
-    cypressAction('cy:url:changed', '')
-    cypressAction('cy:visit:blank', { testIsolation: true })
+    cypress.action('cy:url:changed', '')
+    cypress.action('cy:visit:blank', { testIsolation: true })
   })
 }
 
