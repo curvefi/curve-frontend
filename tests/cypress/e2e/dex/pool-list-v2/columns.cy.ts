@@ -29,6 +29,46 @@ const expectPoolBadgeSet = (address: string, expected: readonly string[]) =>
       expect(actual).to.deep.equal(expected.toSorted())
     })
 
+type TokenExpectation = { address: string; symbol?: string | null }
+
+const expectTokenCellContents = (address: string, expected: readonly TokenExpectation[]) =>
+  getV2PoolCell(address, PoolColumnId.Tokens)
+    .find('[data-testid="pool-tokens"]')
+    .children()
+    .should($tokens => {
+      const tokenItems = [...$tokens]
+
+      expect(tokenItems).to.have.length(expected.length)
+      expected.forEach(({ address: tokenAddress, symbol }, index) => {
+        const expectedSymbol = symbol ?? ''
+        const tokenItem = tokenItems[index]
+        const icon = tokenItem.querySelector<HTMLElement>(`[data-testid="token-icon-${tokenAddress}"]`)
+        const label = [...tokenItem.querySelectorAll<HTMLElement>('*')].find(
+          element => element.children.length === 0 && element.textContent === expectedSymbol,
+        )
+
+        expect(tokenItem.textContent, `token ${index} label`).to.equal(expectedSymbol)
+        expect(icon, `token ${index} icon`).to.not.equal(null)
+        expect(label, `token ${index} symbol`).to.not.equal(undefined)
+        if (!icon || !label) return
+
+        expect(icon.getBoundingClientRect().right, `token ${index} icon right edge`).to.be.at.most(
+          label.getBoundingClientRect().left,
+        )
+      })
+    })
+
+const expectHorizontalWrappingLayout = (address: string) =>
+  getV2PoolCell(address, PoolColumnId.Tokens)
+    .find('[data-testid="pool-tokens"]')
+    .should($stack => {
+      const style = getComputedStyle($stack[0])
+
+      expect(style.display).to.equal('flex')
+      expect(style.flexDirection).to.equal('row')
+      expect(style.flexWrap).to.equal('wrap')
+    })
+
 const SORTABLE_COLUMNS = [
   PoolColumnId.PoolName,
   PoolColumnId.NetApy,
@@ -41,7 +81,7 @@ const SORTABLE_COLUMNS = [
   PoolColumnId.Age,
 ] as const
 
-const NON_SORTABLE_COLUMNS = [PoolColumnId.Points] as const
+const NON_SORTABLE_COLUMNS = [PoolColumnId.Tokens, PoolColumnId.Points] as const
 
 const SERVER_SORT_CASES = [
   [PoolColumnId.NetApy, V2_POOL_FIXTURES.highRewards.address, V2_POOL_FIXTURES.empty.address],
@@ -63,6 +103,7 @@ const expectFirstPool = (address: string) =>
 
 const DEFAULT_FULL_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Volume, PoolColumnId.Tvl]
 const OPTIONAL_FULL_COLUMNS = [
+  PoolColumnId.Tokens,
   PoolColumnId.BaseApy,
   PoolColumnId.WeeklyBaseApy,
   PoolColumnId.CrvApy,
@@ -72,7 +113,7 @@ const OPTIONAL_FULL_COLUMNS = [
 ]
 
 const DEFAULT_LITE_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Tvl]
-const OPTIONAL_LITE_COLUMNS = [PoolColumnId.CrvApy, PoolColumnId.RewardsApy, PoolColumnId.Points]
+const OPTIONAL_LITE_COLUMNS = [PoolColumnId.Tokens, PoolColumnId.CrvApy, PoolColumnId.RewardsApy, PoolColumnId.Points]
 const FULL_ONLY_COLUMNS = [PoolColumnId.BaseApy, PoolColumnId.WeeklyBaseApy, PoolColumnId.Volume, PoolColumnId.Age]
 const LITE_SORTABLE_COLUMNS = [
   PoolColumnId.PoolName,
@@ -81,7 +122,7 @@ const LITE_SORTABLE_COLUMNS = [
   PoolColumnId.RewardsApy,
   PoolColumnId.Tvl,
 ]
-const LITE_NON_SORTABLE_COLUMNS = [PoolColumnId.Points]
+const LITE_NON_SORTABLE_COLUMNS = [PoolColumnId.Tokens, PoolColumnId.Points]
 const LITE_COMPUTED_SORT_COLUMNS = [PoolColumnId.NetApy, PoolColumnId.CrvApy, PoolColumnId.RewardsApy]
 
 describe('V2 pool-list columns', () => {
@@ -114,6 +155,7 @@ describe('V2 pool-list columns', () => {
 
     expectHeaderOrder([
       PoolColumnId.PoolName,
+      PoolColumnId.Tokens,
       PoolColumnId.NetApy,
       PoolColumnId.BaseApy,
       PoolColumnId.WeeklyBaseApy,
@@ -131,6 +173,14 @@ describe('V2 pool-list columns', () => {
     getV2PoolCell(V2_POOL_FIXTURES.killed.address, PoolColumnId.Age)
       .find('[data-testid="pool-age"]')
       .should('have.text', '-')
+  })
+
+  it('renders tokens in a horizontal stack that wraps', () => {
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    showV2PoolColumns([PoolColumnId.Tokens])
+
+    expectTokenCellContents(V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.showcase.tradeable_coins)
+    expectHorizontalWrappingLayout(V2_POOL_FIXTURES.showcase.address)
   })
 
   it('only exposes sorting controls for server-supported columns', () => {
@@ -184,12 +234,16 @@ describe('V2 pool-list columns', () => {
     showV2PoolColumns(OPTIONAL_LITE_COLUMNS)
     expectHeaderOrder([
       PoolColumnId.PoolName,
+      PoolColumnId.Tokens,
       PoolColumnId.NetApy,
       PoolColumnId.CrvApy,
       PoolColumnId.RewardsApy,
       PoolColumnId.Points,
       PoolColumnId.Tvl,
     ])
+
+    expectTokenCellContents(V2_POOL_FIXTURES.lite.address, V2_POOL_FIXTURES.lite.coins)
+    expectHorizontalWrappingLayout(V2_POOL_FIXTURES.lite.address)
 
     for (const columnId of LITE_SORTABLE_COLUMNS) {
       getColumnHeader(columnId).find(`[data-testid^="icon-sort-${columnId}-"]`).should('exist')
