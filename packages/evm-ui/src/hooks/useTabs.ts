@@ -16,7 +16,7 @@ export type TabItem<Value extends TabValue, Props extends object = Record<string
   /** Optional href for tabs that should link out instead of rendering content */
   href?: FnOrValue<Props, string | UrlObject>
   /** Optional sub-tabs of the tab */
-  subTabs?: Omit<TabItem<Value, Props>, 'subTabs'>[]
+  subTabs?: readonly Omit<TabItem<Value, Props>, 'subTabs'>[]
   /** Function or value to determine if the tab is visible */
   visible?: FnOrValue<Props, boolean>
   /** Function or value to determine if the tab is disabled */

@@ -142,7 +142,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     () =>
       !!rewardDistributors &&
       !!signerAddress &&
-      Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId as Address, signerAddress)),
+      Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
     [rewardDistributors, signerAddress],
   )
 
