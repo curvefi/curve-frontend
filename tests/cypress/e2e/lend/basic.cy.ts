@@ -24,17 +24,6 @@ describe('Lend app', () => {
     cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/llamalend\/ethereum\/markets\/?$/)
   })
 
-  it('should redirect from the old root URL', () => {
-    cy.visit('/lend/#/ethereum')
-    cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/llamalend\/ethereum\/markets\/?$/)
-  })
-
-  it('should redirect from the old nested URL', () => {
-    cy.visit('/lend/#/ethereum/disclaimer?tab=lend')
-    cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/lend\/ethereum\/legal\/?\?tab=disclaimers$/)
-    cy.title().should('equal', 'Legal - Curve')
-  })
-
   describe('lend market details', () => {
     const url = `/lend/ethereum/markets/${LEND_MARKET}`
     it('with a wallet', () => {

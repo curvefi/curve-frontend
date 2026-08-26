@@ -61,7 +61,6 @@ export function skipTestsAfterFailure() {
   beforeEach(function () {
     if (failed) this.skip() // skip when any test failed since they are interdependent
   })
-
   afterEach(function () {
     failed ||= this.currentTest!.state === 'failed'
   })
