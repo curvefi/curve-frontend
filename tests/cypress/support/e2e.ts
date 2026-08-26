@@ -4,6 +4,19 @@ import type { AppRoute } from './routes'
 
 let routeDiagnostics: string[] = []
 
+type NavigationEvent = Event & {
+  destination?: { url?: string }
+  navigationType?: string
+}
+
+type NavigationWithEvents = {
+  addEventListener(type: 'navigate', listener: (event: NavigationEvent) => void): void
+}
+
+const addCommandRouteDiagnostic = (message: string) => {
+  routeDiagnostics = [...routeDiagnostics, `[${new Date().toISOString()}] ${message}`]
+}
+
 const addRouteDiagnostic = (win: Window, message: string) => {
   const timestamp = new Date().toISOString()
   const entry = `[${timestamp}] ${message}`
@@ -11,12 +24,9 @@ const addRouteDiagnostic = (win: Window, message: string) => {
   win.CurveCypressDiagnostics = [...(win.CurveCypressDiagnostics ?? []), entry]
 }
 
-const addCommandRouteDiagnostic = (message: string) => {
-  routeDiagnostics = [...routeDiagnostics, `[${new Date().toISOString()}] ${message}`]
-}
-
 const installRouteDiagnostics = (win: Window) => {
   addRouteDiagnostic(win, `window:before:load ${win.location.href}`)
+  win.CurveCypressDiagnostics = routeDiagnostics
 
   const pushState = win.history.pushState.bind(win.history)
   const replaceState = win.history.replaceState.bind(win.history)
@@ -31,6 +41,16 @@ const installRouteDiagnostics = (win: Window) => {
 
   win.addEventListener('popstate', () => addRouteDiagnostic(win, `popstate ${win.location.href}`))
   win.addEventListener('hashchange', () => addRouteDiagnostic(win, `hashchange ${win.location.href}`))
+  win.addEventListener('beforeunload', () => addRouteDiagnostic(win, `beforeunload ${win.location.href}`))
+  win.addEventListener('pagehide', () => addRouteDiagnostic(win, `pagehide ${win.location.href}`))
+  win.addEventListener('unload', () => addRouteDiagnostic(win, `unload ${win.location.href}`))
+
+  ;(win as Window & { navigation?: NavigationWithEvents }).navigation?.addEventListener('navigate', event => {
+    addRouteDiagnostic(
+      win,
+      `navigation.navigate to=${event.destination?.url ?? '<unknown>'} type=${event.navigationType ?? '<unknown>'} from=${win.location.href}`,
+    )
+  })
 }
 
 /** Global Cypress exception handler to ignore specific known errors. */
@@ -42,6 +62,7 @@ Cypress.on(
 )
 
 Cypress.on('window:before:load', installRouteDiagnostics)
+Cypress.on('url:changed', url => addCommandRouteDiagnostic(`Cypress url:changed ${url}`))
 
 Cypress.Commands.overwrite('visit', (originalFn, ...args) => {
   const [url] = args
@@ -79,7 +100,7 @@ afterEach(function () {
   if (this.currentTest?.state !== 'failed') return
 
   cy.window({ log: false }).then(win => {
-    const diagnostics = [...routeDiagnostics, ...(win.CurveCypressDiagnostics ?? [])]
+    const diagnostics = Array.from(new Set([...routeDiagnostics, ...(win.CurveCypressDiagnostics ?? [])]))
     const message = [
       'Route diagnostics for failed Cypress test:',
       `spec: ${Cypress.spec.relative}`,
