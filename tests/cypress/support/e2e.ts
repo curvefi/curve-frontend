@@ -3,6 +3,7 @@ import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 
 let routeDiagnostics: string[] = []
+const ROUTE_DIAGNOSTICS_KEY = 'CurveCypressRouteDiagnostics'
 
 type NavigationEvent = Event & {
   destination?: { url?: string }
@@ -22,9 +23,12 @@ const addRouteDiagnostic = (win: Window, message: string) => {
   const entry = `[${timestamp}] ${message}`
   routeDiagnostics = [...routeDiagnostics, entry]
   win.CurveCypressDiagnostics = [...(win.CurveCypressDiagnostics ?? []), entry]
+  win.localStorage?.setItem(ROUTE_DIAGNOSTICS_KEY, JSON.stringify(routeDiagnostics))
 }
 
 const installRouteDiagnostics = (win: Window) => {
+  const storedDiagnostics = JSON.parse(win.localStorage?.getItem(ROUTE_DIAGNOSTICS_KEY) ?? '[]') as string[]
+  routeDiagnostics = [...storedDiagnostics, ...routeDiagnostics]
   addRouteDiagnostic(win, `window:before:load ${win.location.href}`)
   win.CurveCypressDiagnostics = routeDiagnostics
 
@@ -94,13 +98,17 @@ beforeEach(() => {
       message: `${test.titlePath.join(' > ')}: ${Cypress.config('baseUrl')}`,
     })
   })
+  cy.window({ log: false }).then(win => win.localStorage?.removeItem(ROUTE_DIAGNOSTICS_KEY))
 })
 
 afterEach(function () {
   if (this.currentTest?.state !== 'failed') return
 
   cy.window({ log: false }).then(win => {
-    const diagnostics = Array.from(new Set([...routeDiagnostics, ...(win.CurveCypressDiagnostics ?? [])]))
+    const storedDiagnostics = JSON.parse(win.localStorage?.getItem(ROUTE_DIAGNOSTICS_KEY) ?? '[]') as string[]
+    const diagnostics = Array.from(
+      new Set([...routeDiagnostics, ...(win.CurveCypressDiagnostics ?? []), ...storedDiagnostics]),
+    )
     const message = [
       'Route diagnostics for failed Cypress test:',
       `spec: ${Cypress.spec.relative}`,

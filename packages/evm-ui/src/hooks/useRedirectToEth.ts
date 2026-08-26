@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { usePathname, useNavigate } from '@evm-ui/hooks/router'
 import { replaceNetworkInPath } from '@evm-ui/shared/routes'
-import { IS_CYPRESS } from '@evm-ui/utils'
+import { addCypressRouteDiagnostic, IS_CYPRESS } from '@evm-ui/utils'
 
 export function useRedirectToEth(network: { showInSelectNetwork?: boolean } | undefined, networkId: string) {
   const push = useNavigate()
@@ -18,10 +18,7 @@ export function useRedirectToEth(network: { showInSelectNetwork?: boolean } | un
           `showInSelectNetwork=${String(network?.showInSelectNetwork)}`,
           `to=${redirectUrl}`,
         ].join(' ')
-        window.CurveCypressDiagnostics = [
-          ...(window.CurveCypressDiagnostics ?? []),
-          `[${new Date().toISOString()}] ${message}`,
-        ]
+        addCypressRouteDiagnostic(message)
         console.warn(`Network not supported ${networkId}, redirecting...`, message)
       } else {
         console.warn(`Network not supported ${networkId}, redirecting...`)

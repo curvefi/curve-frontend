@@ -13,6 +13,7 @@ export * from './average-categories'
 export * from './rates'
 export * from './tokens'
 export * from './time'
+export * from './cypressDiagnostics'
 
 /**
  * Copies text to clipboard with Ethereum address checksumming
