@@ -1,6 +1,6 @@
 import { setupDexPoolListV2Mocks } from '@cy/support/helpers/dex-pool-list-v2-mocks'
 import { DESKTOP_VIEWPORT } from '@cy/support/helpers/dex-pools-list-v2.helpers'
-import { API_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, UnexpectedApiRequest } from '@cy/support/ui'
 import { Chain } from '@evm-ui/utils/network'
 
 const visitPoolList = (network: string, supportAlias: `@${string}`) => {
@@ -34,7 +34,7 @@ describe('V2 pool-list network support', () => {
   it('shows the table error state without fetching pools for an unsupported Lite network', () => {
     cy.intercept(
       { method: 'GET', hostname: 'api2.curve.finance', pathname: `/get_pools/${Chain.Celo}` },
-      { statusCode: 503 },
+      UnexpectedApiRequest,
     ).as('dex-v2-unexpected-lite-pools')
 
     visitPoolList('celo', '@dex-v2-lite-pool-chains')

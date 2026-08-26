@@ -3,12 +3,13 @@ import { useMemo } from 'react'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { t } from '@evm-ui/lib/i18n'
+import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
+import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
 import { UserPositionIndicator } from '@evm-ui/shared/ui/DataTable/UserPositionIndicator'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { MarketTitle } from '@evm-ui/widgets/MarketTitle'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import type { CellContext } from '@tanstack/react-table'
 import type { LegacyPoolRow } from '../../types'
 import { PoolAlertBadge } from './PoolAlertBadge'
@@ -41,7 +42,13 @@ export const LegacyPoolTitleCell = ({
         <Stack direction="column">
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <PoolAlertIcons poolAlert={poolAlert} tokenAlert={tokenAlert} />
-            <MarketTitle url={url} address={pool.address as Address} title={pool.name} />
+            <TableRowTitle url={url} title={pool.name} testId={pool.address} />
+            <CopyIconButton
+              className={`${DESKTOP_ONLY_HOVER_CLASS} ${CLICKABLE_IN_ROW_CLASS}`}
+              label={t`Copy pool address`}
+              copyText={pool.address}
+              confirmationText={t`Pool address copied`}
+            />
           </Stack>
           <PoolTokens tokenList={tokenList} filterValue={getFilterValue() as string} />
         </Stack>

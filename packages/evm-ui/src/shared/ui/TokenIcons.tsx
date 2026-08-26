@@ -43,6 +43,7 @@ export type TokenIconsProps = {
   /** Size of the complete token group, not the individual token icons. */
   size?: TokenIconsSize
   showChainIcon?: boolean
+  showTooltips?: boolean
   /** How to render token collections containing more than four tokens. */
   overflowMode?: TokenIconsOverflowMode
 }
@@ -65,6 +66,7 @@ export function TokenIcons({
   tokens,
   size = 'xl',
   showChainIcon = false,
+  showTooltips = true,
   overflowMode = 'counter',
 }: TokenIconsProps) {
   // Trivial base case of zero tokens.
@@ -79,7 +81,7 @@ export function TokenIcons({
       <TokenIcon
         blockchainId={blockchainId}
         address={address}
-        tooltip={symbol}
+        {...(showTooltips && { tooltip: symbol })}
         showChainIcon={showChainIcon}
         sx={{ width: IconSize[size], height: IconSize[size] }}
       />
@@ -97,7 +99,7 @@ export function TokenIcons({
             key={address}
             blockchainId={blockchainId}
             address={address}
-            tooltip={symbol}
+            {...(showTooltips && { tooltip: symbol })}
             showChainIcon={showChainIcon && index === 0}
             sx={{
               width: IconSize[STACK_ICON_SIZE[size]],
@@ -132,7 +134,7 @@ export function TokenIcons({
           <TokenIcon
             blockchainId={blockchainId}
             address={address}
-            tooltip={symbol}
+            {...(showTooltips && { tooltip: symbol })}
             showChainIcon={showChainIcon && index === 0}
             sx={{ width: '100%', height: '100%' }}
           />

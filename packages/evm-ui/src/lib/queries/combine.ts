@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { q, Query, QueryProp } from '@evm-ui/types/util'
+import { DISABLED_Q, fallbackQ, q, Query, QueryProp } from '@evm-ui/types/util'
 import { decimalMin } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
@@ -14,6 +14,8 @@ type Queries = readonly Query<unknown>[]
 type QueriesData<TQueries extends Queries> = {
   [K in keyof TQueries]: TQueries[K] extends Query<infer TData> ? Exclude<TData, undefined> : never
 }
+/** a query with non-nullable data */
+export type QueryWithData<TData> = Query<TData> & { data: NonNullable<TData> }
 
 const combineQueryData = <const TQueries extends Queries, TResult>(
   queries: TQueries,
@@ -27,6 +29,14 @@ export const combineQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
   selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
 ) => ({ data: combineQueryData(queries, selector), ...combineQueryState(...queries) }) as QueryProp<TResult>
+
+export const pickQuery = <TData>(
+  queries: readonly Query<TData>[],
+  selector: (queries: readonly [QueryWithData<TData>, ...QueryWithData<TData>[]]) => QueryWithData<TData>,
+) => {
+  const [first, ...rest] = queries.filter((query): query is QueryWithData<TData> => query.data != null)
+  return first ? selector([first, ...rest]) : (fallbackQ(...queries.map(q)) ?? DISABLED_Q)
+}
 
 export const useCombinedQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,

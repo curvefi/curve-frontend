@@ -45,6 +45,28 @@ describe('GET routes mocked unit tests', () => {
     expect(json()).toEqual([])
   })
 
+  it('returns an empty response when curve-solver returns no route found', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>(() => Promise.resolve(Response.json({ error: 'no routes found' }, { status: 404 }))),
+    )
+
+    const { json, statusCode } = await server.inject({
+      url: '/api/router/v1/routes',
+      query: {
+        chainId: '1',
+        tokenIn: [zeroAddress],
+        tokenOut: [zeroAddress],
+        amountIn: ['1000000000'],
+        router: ['curve-solver'],
+        userAddress: zeroAddress,
+      },
+    })
+
+    expect(statusCode).toBe(200)
+    expect(json()).toEqual([])
+  })
+
   // TODO: test 0x slippage and fees
   it.each([
     { slippage: '0.5', expectedSlippage: '50', expectedFee: '0' },
