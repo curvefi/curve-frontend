@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
@@ -19,7 +19,7 @@ import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/Chart
 import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
-import { type TabOption, TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Card from '@mui/material/Card'
@@ -29,16 +29,6 @@ import { notFalsy } from '@primitives/objects.utils'
 import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing } = SizesAndSpaces
-
-type ChartAndActivityTab = 'chart' | 'trades' | 'events'
-const LEGACY_DEFAULT_TAB: ChartAndActivityTab = 'chart'
-const DEFAULT_MARKET_ACTIVITY_TAB: ChartAndActivityTab = 'trades'
-
-const MARKET_ACTIVITY_TABS: TabOption<ChartAndActivityTab>[] = [
-  { value: 'trades', label: t`Swaps` },
-  { value: 'events', label: t`Activity` },
-]
-const TABS: TabOption<ChartAndActivityTab>[] = [{ value: 'chart', label: t`Chart` }, ...MARKET_ACTIVITY_TABS]
 
 const EMPTY_ARRAY: never[] = []
 // Ignore tiny floating-point jitter from chart autoscale updates.
@@ -68,23 +58,39 @@ type ChartAndActivityLayoutProps = {
   activity: LlammaActivityProps
 }
 
-export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutProps, 'activity'>) => {
-  const [activeTab, setActiveTab] = useState<ChartAndActivityTab>(DEFAULT_MARKET_ACTIVITY_TAB)
+type MarketActivityTabsParams = { activity: LlammaActivityProps }
 
-  return (
-    <Stack data-testid="market-activity">
-      <TabsSwitcher variant="contained" value={activeTab} onChange={setActiveTab} options={MARKET_ACTIVITY_TABS} />
-      <Stack
-        sx={{
-          backgroundColor: t => t.design.Layer[1].Fill,
-        }}
-      >
-        {activeTab === 'events' && <LlammaActivityEvents {...activity} />}
-        {activeTab === 'trades' && <LlammaActivityTrades {...activity} />}
-      </Stack>
-    </Stack>
-  )
-}
+const MarketActivityEventsTab = ({ activity }: MarketActivityTabsParams) => <LlammaActivityEvents {...activity} />
+const MarketActivityTradesTab = ({ activity }: MarketActivityTabsParams) => <LlammaActivityTrades {...activity} />
+const LegacyMarketPriceChartTab = ({ chart, bands }: ChartAndActivityLayoutProps) => (
+  <LegacyMarketPriceChartLayout chart={chart} bands={bands} />
+)
+
+const MARKET_ACTIVITY_MENU = [
+  { value: 'trades', label: t`Swaps`, component: MarketActivityTradesTab },
+  { value: 'events', label: t`Activity`, component: MarketActivityEventsTab },
+]
+
+const CHART_AND_ACTIVITY_MENU = [
+  { value: 'chart', label: t`Chart`, component: LegacyMarketPriceChartTab },
+  { value: 'trades', label: t`Swaps`, component: MarketActivityTradesTab },
+  { value: 'events', label: t`Activity`, component: MarketActivityEventsTab },
+]
+
+const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
+  <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
+)
+
+export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutProps, 'activity'>) => (
+  <Stack data-testid="market-activity">
+    <Tabs
+      menu={MARKET_ACTIVITY_MENU}
+      params={useMemo(() => ({ activity }), [activity])}
+      variant="contained"
+      ContentWrapper={ActivityTabsContent}
+    />
+  </Stack>
+)
 
 export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
@@ -185,20 +191,16 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
   )
 }
 
-export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
-  const [activeTab, setActiveTab] = useState<ChartAndActivityTab>(LEGACY_DEFAULT_TAB)
-
-  return (
-    <Stack data-testid="market-chart-and-activity">
-      <TabsSwitcher variant="contained" value={activeTab} onChange={setActiveTab} options={TABS} />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-        {activeTab === 'events' && <LlammaActivityEvents {...activity} />}
-        {activeTab === 'trades' && <LlammaActivityTrades {...activity} />}
-        {activeTab === 'chart' && <LegacyMarketPriceChartLayout chart={chart} bands={bands} />}
-      </Stack>
-    </Stack>
-  )
-}
+export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => (
+  <Stack data-testid="market-chart-and-activity">
+    <Tabs
+      menu={CHART_AND_ACTIVITY_MENU}
+      params={useMemo(() => ({ chart, bands, activity }), [chart, bands, activity])}
+      variant="contained"
+      ContentWrapper={ActivityTabsContent}
+    />
+  </Stack>
+)
 
 export const LegacyMarketPriceChartLayout = ({
   chart,

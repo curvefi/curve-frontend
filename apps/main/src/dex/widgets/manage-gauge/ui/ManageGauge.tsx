@@ -1,51 +1,47 @@
-import { useMemo, useState } from 'react'
-import { isAddressEqual, type Address } from 'viem'
-import { useConnection } from 'wagmi'
-import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useMemo } from 'react'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
-import { notFalsy } from '@primitives/objects.utils'
 
-export const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
-  const { address: signerAddress } = useConnection()
-  const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
-  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress: signerAddress })
+type ManageGaugeProps = { chainId: ChainId; poolId: string; isGaugeManager: boolean; isRewardsDistributor: boolean }
 
-  const isGaugeManager = useMemo(
-    () => !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress),
-    [gaugeManager, signerAddress],
-  )
+const AddRewardTab = ({ chainId, poolId }: ManageGaugeProps) => <AddRewardToken chainId={chainId} poolId={poolId} />
+const DepositRewardTab = ({ chainId, poolId }: ManageGaugeProps) => <DepositReward chainId={chainId} poolId={poolId} />
 
-  const isRewardsDistributor = useMemo(
-    () =>
-      !!rewardDistributors &&
-      !!signerAddress &&
-      Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId as Address, signerAddress)),
-    [rewardDistributors, signerAddress],
-  )
+const menu = [
+  {
+    value: 'add_reward',
+    label: t`Add Reward`,
+    visible: (p: ManageGaugeProps) => p.isGaugeManager,
+    component: AddRewardTab,
+  },
+  {
+    value: 'deposit_reward',
+    label: t`Deposit Reward`,
+    visible: (p: ManageGaugeProps) => p.isRewardsDistributor,
+    component: DepositRewardTab,
+  },
+] as const
 
-  type Tab = 'add_reward' | 'deposit_reward'
-  const tabs: TabOption<Tab>[] = useMemo(
-    () =>
-      notFalsy<TabOption<Tab>>(
-        isGaugeManager && { value: 'add_reward', label: t`Add Reward` },
-        isRewardsDistributor && { value: 'deposit_reward', label: t`Deposit Reward` },
-      ),
-    [isGaugeManager, isRewardsDistributor],
-  )
-
-  const [tab, setTab] = useState<Tab>(isGaugeManager ? 'add_reward' : 'deposit_reward')
-
+export const ManageGauge = ({ poolId, chainId, isGaugeManager, isRewardsDistributor }: ManageGaugeProps) => {
+  const { tab, tabs, content, onChange } = useTabs({
+    menu,
+    params: useMemo(
+      () => ({ chainId, poolId, isGaugeManager, isRewardsDistributor }),
+      [chainId, poolId, isGaugeManager, isRewardsDistributor],
+    ),
+  })
   return (
     <FormContent
-      header={<TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} overflow="fullWidth" />}
+      header={
+        <TabsSwitcher variant="underlined" value={tab.value} onChange={onChange} options={tabs} overflow="fullWidth" />
+      }
     >
-      {tab === 'add_reward' && <AddRewardToken chainId={chainId} poolId={poolId} />}
-      {tab === 'deposit_reward' && <DepositReward chainId={chainId} poolId={poolId} />}
+      {content}
     </FormContent>
   )
 }

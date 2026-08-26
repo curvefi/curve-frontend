@@ -1,5 +1,4 @@
 import type { ComponentProps, ComponentPropsWithRef } from 'react'
-import { useState } from 'react'
 import { Item, Section } from 'react-stately'
 import { styled, type IStyledComponent } from 'styled-components'
 import { ComboBoxAddress } from '@/dex/components/PageDashboard/components/ComboBoxAddress'
@@ -12,17 +11,16 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { useStore } from '@/dex/store/useStore'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { Box } from '@legacy-ui/Box'
 import { SpinnerWrapper } from '@legacy-ui/Spinner'
 import { Stats } from '@legacy-ui/Stats'
 import { shortenAccount } from '@legacy-ui/utils'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 
-type Tab = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
-const tabs: TabOption<Tab>[] = [
-  { value: 'DAY_PROFITS', label: t`Daily Profits` },
-  { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens` },
+const menu = [
+  { value: 'DAY_PROFITS', label: t`Daily Profits`, component: SummaryRecurrence },
+  { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens`, component: SummaryClaimable },
 ]
 
 export const Summary = () => {
@@ -32,8 +30,6 @@ export const Summary = () => {
   const searchedWalletAddresses = useStore(state => state.dashboard.searchedWalletAddresses)
 
   const networkHaveLockedCrv = rChainId === 1
-
-  const [tab, setTab] = useState<Tab>('DAY_PROFITS')
 
   return (
     <div>
@@ -76,16 +72,13 @@ export const Summary = () => {
         {isMdUp ? (
           <>
             <SummaryRecurrence title="Daily" />
-            {/* eslint-disable-next-line @typescript-eslint/no-base-to-string -- Existing violation before enabling this rule. */}
-            <SummaryClaimable title={tabs[1].label?.toString()} />
+            <SummaryClaimable title={t`Claimable Tokens`} />
           </>
         ) : (
           <>
             <TabContentWrapper>
               <SummaryTitle>{t`Total Summary`}</SummaryTitle>
-              <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} />
-              {tab === 'DAY_PROFITS' && <SummaryRecurrence />}
-              {tab === 'CLAIMABLE_TOKENS' && <SummaryClaimable />}
+              <Tabs menu={menu} variant="underlined" />
             </TabContentWrapper>
           </>
         )}

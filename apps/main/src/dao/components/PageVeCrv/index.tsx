@@ -4,7 +4,7 @@ import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
 import { networksIdMapper } from '@/dao/networks'
 import { useStore } from '@/dao/store/useStore'
 import { type VeCrvUrlParams } from '@/dao/types/dao.types'
-import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useParams } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
@@ -19,9 +19,8 @@ const MAX_WIDTH = '30rem' as const // Temporary hard coded with, in the future t
 
 export const VeCrv = () => {
   const { formType: rFormType, network } = useParams<VeCrvUrlParams>()
-  const { curveApi = null, connectState } = useCurve()
+  const { curveApi } = useCurve()
   const rChainId = networksIdMapper[network]
-  const isLoadingCurve = isLoading(connectState)
 
   const { address: userAddress } = useConnection()
 
@@ -46,7 +45,7 @@ export const VeCrv = () => {
 
         {rChainId === 1 ? (
           <Stack>
-            {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
+            {rChainId && rFormType && vecrvInfo && curveApi ? (
               <FormCrvLocker curve={curveApi} rChainId={rChainId} rFormType={rFormType} vecrvInfo={vecrvInfo} />
             ) : (
               <SpinnerWrapper>

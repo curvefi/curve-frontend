@@ -1,8 +1,10 @@
+import { type ReactNode, useMemo } from 'react'
+import { LiquidityDetails } from '@/dex/features/user-position/liquidity-details'
+import { useLiquidityDetails } from '@/dex/features/user-position/liquidity-details/hooks/useLiquidityDetails'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import { findTab } from '@evm-ui/hooks/useTabs'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { t } from '@evm-ui/lib/i18n'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import Stack from '@mui/material/Stack'
-import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
 
 type UserPositionProps = {
   blockchainId: string
@@ -11,20 +13,25 @@ type UserPositionProps = {
   poolId: string | undefined
 }
 
-export const UserPosition = ({ blockchainId, chainId, poolDataCacheOrApi, poolId }: UserPositionProps) => {
-  const { hasPosition, tab, onTabChange, tabOptions } = usePositionDetailsTabs({
-    blockchainId,
-    chainId,
-    poolDataCacheOrApi,
-    poolId,
-  })
-  const activeTab = findTab(tabOptions, tab)
+const menu = [
+  { value: 'liquidityDetails', label: t`Liquidity Details`, component: LiquidityDetails },
+  // There'll be a (user) activity tab here in the future (as per Figma)
+]
 
+const Content = ({ children }: { children: ReactNode }) => (
+  <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
+)
+
+export const UserPosition = ({ blockchainId, chainId, poolDataCacheOrApi, poolId }: UserPositionProps) => {
+  const params = useMemo(
+    () => ({ blockchainId, chainId, poolDataCacheOrApi, poolId }),
+    [blockchainId, chainId, poolDataCacheOrApi, poolId],
+  )
+  const { hasPosition } = useLiquidityDetails(params)
   return (
     hasPosition && (
       <Stack>
-        <TabsSwitcher variant="contained" value={tab} onChange={onTabChange} options={tabOptions} />
-        <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{activeTab.render()}</Stack>
+        <Tabs menu={menu} params={params} ContentWrapper={Content} />
       </Stack>
     )
   )

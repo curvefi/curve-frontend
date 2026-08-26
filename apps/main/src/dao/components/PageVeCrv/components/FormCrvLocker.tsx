@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useCallback, useEffect, useEffectEvent, useMemo } from 'react'
 import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate'
@@ -7,16 +7,55 @@ import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { useStore } from '@/dao/store/useStore'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
 import { useLayoutStore } from '@evm-ui/features/layout'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import Stack from '@mui/material/Stack'
 
 const { Spacing } = SizesAndSpaces
+type LockerTabsParams = PageVecrv & {
+  canUnlock: boolean
+  hasLockedCrv: boolean
+}
+
+const LockCrvTab = (pageProps: LockerTabsParams) => <FormLockCrv {...pageProps} rFormType="adjust_crv" />
+const LockDateTab = (pageProps: LockerTabsParams) => <FormLockDate {...pageProps} rFormType="adjust_date" />
+const WithdrawTab = (pageProps: LockerTabsParams) => <FormWithdraw {...pageProps} rFormType="withdraw" />
+const CreateTab = (pageProps: LockerTabsParams) => <FormLockCreate {...pageProps} />
+
+const menu = [
+  {
+    value: 'adjust_crv',
+    label: t`Lock More`,
+    disabled: ({ canUnlock }: LockerTabsParams) => canUnlock,
+    visible: ({ canUnlock, hasLockedCrv }: LockerTabsParams) => hasLockedCrv && !canUnlock,
+    component: LockCrvTab,
+  },
+  {
+    value: 'adjust_date',
+    label: t`Extend Lock`,
+    disabled: ({ canUnlock }: LockerTabsParams) => canUnlock,
+    visible: ({ canUnlock, hasLockedCrv }: LockerTabsParams) => hasLockedCrv && !canUnlock,
+    component: LockDateTab,
+  },
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    visible: ({ hasLockedCrv }: LockerTabsParams) => hasLockedCrv,
+    component: WithdrawTab,
+  },
+  {
+    value: 'create',
+    label: t`Create Lock`,
+    visible: ({ hasLockedCrv }: LockerTabsParams) => !hasLockedCrv,
+    component: CreateTab,
+  },
+] as const
 
 export const FormCrvLocker = (pageProps: PageVecrv) => {
-  const { curve, rFormType, vecrvInfo } = pageProps
+  const { curve, rChainId, rFormType, vecrvInfo } = pageProps
 
   const { connectState } = useCurve()
   const isLoadingCurve = isLoading(connectState)
@@ -29,50 +68,37 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
     vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
   )
 
-  const tabs: TabOption<FormType>[] = [
-    { value: 'adjust_crv', label: t`Lock More`, disabled: canUnlock },
-    { value: 'adjust_date', label: t`Extend Lock`, disabled: canUnlock },
-    { value: 'withdraw', label: t`Withdraw` },
-  ]
-  const [tab, setTab] = useState<FormType>(rFormType ?? 'adjust_crv')
+  const hasLockedCrv = +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0
 
-  const setData = useEffectEvent(() => setFormValues(curve, isLoadingCurve, tab, {}, vecrvInfo, true))
-
-  useEffect(() => {
-    if (canUnlock) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setTab('withdraw')
-    }
-    // if user has no locked crv, and is not on the create tab, set the tab to create
-    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount === 0 && tab !== 'create') {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setTab('create')
-    }
-    // if user has locked crv, and is on the create tab, set the tab to adjust_crv
-    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && tab === 'create') {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setTab('adjust_crv')
-    }
-  }, [tab, vecrvInfo, canUnlock])
+  const onChange = useCallback(
+    (value: FormType) => void setFormValues(curve, isLoadingCurve, value, {}, vecrvInfo, true),
+    [curve, isLoadingCurve, setFormValues, vecrvInfo],
+  )
+  const {
+    content,
+    onChange: onChangeTab,
+    tab: { value },
+    tabs,
+  } = useTabs({
+    menu,
+    params: useMemo(
+      () => ({ curve, rChainId, rFormType, vecrvInfo, canUnlock, hasLockedCrv }),
+      [curve, rChainId, rFormType, vecrvInfo, canUnlock, hasLockedCrv],
+    ),
+    defaultValue: rFormType,
+    onChange,
+  })
+  const refreshFormValues = useEffectEvent(() => onChange(value))
 
   // fetch locked crv data
-  useEffect(() => {
-    setData()
-  }, [chainId, signerAddress, isPageVisible])
+  useEffect(() => refreshFormValues(), [chainId, signerAddress, isPageVisible])
 
-  return tab === 'adjust_crv' || tab === 'adjust_date' || tab === 'withdraw' ? (
+  return (
     <>
-      <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} overflow="fullWidth" />
-
-      <Stack sx={{ gap: Spacing.md, padding: Spacing.md, paddingBlockStart: Spacing.xs }}>
-        {tab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={tab} />}
-        {tab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={tab} />}
-        {tab === 'withdraw' && <FormWithdraw {...pageProps} rFormType={tab} />}
-      </Stack>
+      {tabs.length > 1 && (
+        <TabsSwitcher variant="underlined" value={value} onChange={onChangeTab} options={tabs} overflow="fullWidth" />
+      )}
+      <Stack sx={{ gap: Spacing.md, padding: Spacing.md, paddingBlockStart: Spacing.xs }}>{content}</Stack>
     </>
-  ) : (
-    <Stack sx={{ gap: Spacing.md, padding: Spacing.md }}>
-      <FormLockCreate {...pageProps} />
-    </Stack>
   )
 }
