@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { BUTTON_FORM_SIZE } from '@evm-ui/features/forms/constants'
 import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
@@ -12,23 +12,13 @@ const { Spacing, ButtonSize } = SizesAndSpaces
 
 type MobileFormTabsDrawerProps = {
   children: ReactNode
-  value: string
   tabs: readonly TabOption<string>[]
   onSelectTab: (value: string) => void
+  omitFormButton?: boolean
 }
 
-export const MobileFormTabsDrawer = ({ children, value, tabs, onSelectTab }: MobileFormTabsDrawerProps) => {
+export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab, omitFormButton }: MobileFormTabsDrawerProps) => {
   const [open, setOpen] = useState(false)
-  const withFormButton = tabs.find(tab => tab.value === value)?.withFormButton ?? true
-
-  const openTab = useCallback(
-    (value: string) => {
-      onSelectTab(value)
-      setOpen(true)
-    },
-    [onSelectTab, setOpen],
-  )
-
   return (
     <>
       <Stack
@@ -47,7 +37,10 @@ export const MobileFormTabsDrawer = ({ children, value, tabs, onSelectTab }: Mob
             key={value}
             disabled={disabled}
             data-testid={`mobile-form-action-${value}`}
-            onClick={() => openTab(value)}
+            onClick={() => {
+              onSelectTab(value)
+              setOpen(true)
+            }}
             sx={{ flex: 1 }}
           >
             {label}
@@ -63,7 +56,7 @@ export const MobileFormTabsDrawer = ({ children, value, tabs, onSelectTab }: Mob
               paddingBlockEnd: Spacing.md,
             },
             // Reserve space for the form submit button, which is fixed to the bottom of the drawer.
-            withFormButton && { marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height] },
+            !omitFormButton && { marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height] },
           )}
         >
           {children}

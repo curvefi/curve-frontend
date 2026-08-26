@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { FormDeposit } from '@/dex/components/PagePool/Deposit/components/FormDeposit'
 import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
 import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
@@ -6,33 +6,47 @@ import type { FormType } from '@/dex/components/PagePool/Deposit/types'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PagePool/Deposit/utils'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useStore } from '@/dex/store/useStore'
+import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { AlertBox } from '@legacy-ui/AlertBox'
 
-const tabs: TabOption<FormType>[] = [
-  { value: 'DEPOSIT', label: t`Deposit` },
-  { value: 'STAKE', label: t`Stake` },
-  { value: 'DEPOSIT_STAKE', label: t`Deposit & Stake` },
-]
+type DepositTabsParams = TransferProps & { hasDepositAndStake: boolean }
 
-export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
-  const { poolAlert, poolData, poolDataCacheOrApi } = transferProps
+const DepositTab = ({ hasDepositAndStake, ...transferProps }: DepositTabsParams) => (
+  <FormDeposit hasDepositAndStake={hasDepositAndStake} {...transferProps} />
+)
+
+const DepositStakeTab = ({ hasDepositAndStake, ...transferProps }: DepositTabsParams) =>
+  transferProps.poolDataCacheOrApi.gauge.isKilled ? (
+    <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
+  ) : (
+    <FormDepositStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />
+  )
+
+const StakeTab = ({ hasDepositAndStake, ...transferProps }: DepositTabsParams) =>
+  transferProps.poolDataCacheOrApi.gauge.isKilled ? (
+    <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
+  ) : (
+    <FormStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />
+  )
+
+const menu = [
+  { value: 'DEPOSIT', label: t`Deposit`, component: DepositTab },
+  { value: 'STAKE', label: t`Stake`, component: StakeTab },
+  { value: 'DEPOSIT_STAKE', label: t`Deposit & Stake`, component: DepositStakeTab },
+] as const
+
+export const Deposit = (depositProps: TransferProps & { hasDepositAndStake: boolean }) => {
+  const { poolAlert, poolData } = depositProps
   const formType = useStore(state => state.poolDeposit.formType)
   const resetState = useStore(state => state.poolDeposit.resetState)
   const setStateByKeys = useStore(state => state.poolDeposit.setStateByKeys)
 
-  const [tab, setTab] = useState<FormType>('DEPOSIT')
-
   const handleTabChange = useCallback(
     (tab: FormType) => {
-      setStateByKeys({
-        formStatus: DEFAULT_FORM_STATUS,
-        formType: tab,
-      })
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setTab(tab)
+      setStateByKeys({ formStatus: DEFAULT_FORM_STATUS, formType: tab })
     },
     [setStateByKeys],
   )
@@ -45,37 +59,25 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolData?.pool?.id])
 
+  const {
+    content,
+    onChange,
+    tab: { value },
+    tabs,
+  } = useTabs({
+    menu,
+    params: depositProps,
+    value: formType,
+    onChange: handleTabChange,
+  })
+
   return (
     <FormContent
       header={
-        <TabsSwitcher variant="underlined" value={tab} onChange={handleTabChange} options={tabs} overflow="fullWidth" />
+        <TabsSwitcher variant="underlined" value={value} onChange={onChange} options={tabs} overflow="fullWidth" />
       }
     >
-      {poolAlert?.isDisableDeposit ? (
-        <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-      ) : (
-        <>
-          {formType === 'DEPOSIT' && <FormDeposit hasDepositAndStake={hasDepositAndStake} {...transferProps} />}
-          {formType === 'DEPOSIT_STAKE' && (
-            <>
-              {poolDataCacheOrApi.gauge.isKilled ? (
-                <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
-              ) : (
-                <FormDepositStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />
-              )}
-            </>
-          )}
-          {formType === 'STAKE' && (
-            <>
-              {poolDataCacheOrApi.gauge.isKilled ? (
-                <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
-              ) : (
-                <FormStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />
-              )}
-            </>
-          )}
-        </>
-      )}
+      {poolAlert?.isDisableDeposit ? <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox> : content}
     </FormContent>
   )
 }

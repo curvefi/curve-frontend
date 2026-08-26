@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useEnsName } from 'wagmi'
 import { useVeCrvHoldersQuery } from '@/dao/entities/vecrv-holders'
 import type { UserUrlParams } from '@/dao/types/dao.types'
 import { useParams } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
@@ -14,17 +14,15 @@ import { UserLocksTable } from './UserLocksTable'
 import { UserProposalVotesTable } from './UserProposalVotesTable'
 import { UserStats } from './UserStats'
 
-type Tab = 'proposals' | 'gauge_votes' | 'locks'
-const tabs: TabOption<Tab>[] = [
-  { value: 'proposals', label: t`User Proposal Votes` },
-  { value: 'gauge_votes', label: t`User Gauge Votes` },
-  { value: 'locks', label: t`User Locks` },
+const menu = [
+  { value: 'proposals', label: t`User Proposal Votes`, component: UserProposalVotesTable },
+  { value: 'gauge_votes', label: t`User Gauge Votes`, component: UserGaugeVotesTable },
+  { value: 'locks', label: t`User Locks`, component: UserLocksTable },
 ]
 
 export const User = () => {
   const { userAddress: rUserAddress } = useParams<UserUrlParams>()
   const { data: veCrvHolders, isLoading: holdersLoading } = useVeCrvHoldersQuery({})
-  const [tab, setTab] = useState<Tab>('proposals')
 
   const userAddress = rUserAddress.toLowerCase()
 
@@ -45,10 +43,7 @@ export const User = () => {
       </Box>
 
       <Box>
-        <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
-        {tab === 'proposals' && <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
-        {tab === 'gauge_votes' && <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
-        {tab === 'locks' && <UserLocksTable userAddress={userAddress} />}
+        <Tabs menu={menu} params={useMemo(() => ({ userAddress, tableMinWidth }), [userAddress])} variant="contained" />
       </Box>
     </DetailPageLayout>
   )

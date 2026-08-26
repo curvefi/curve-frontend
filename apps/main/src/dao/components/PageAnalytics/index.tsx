@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { PAGE_SPACING } from '@evm-ui/widgets/DetailPageLayout/constants'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import Stack from '@mui/material/Stack'
@@ -10,30 +9,24 @@ import { TopHoldersTable as HoldersTable } from './HoldersTable'
 import { TopLockers as TopHolders } from './TopHoldersChart'
 import { VeCrcFees as VeCrvFees } from './VeCrvFeesTable'
 
-type Tab = 'fees' | 'holders' | 'locks'
-const tabs: TabOption<Tab>[] = [
-  { value: 'fees', label: t`veCRV Fees` },
-  { value: 'holders', label: t`Holders` },
-  { value: 'locks', label: t`Locks` },
+const Holders = () => (
+  <Stack sx={{ gap: PAGE_SPACING }}>
+    <TopHolders />
+    <HoldersTable />
+  </Stack>
+)
+
+const menu = [
+  { value: 'fees', label: t`veCRV Fees`, component: VeCrvFees },
+  { value: 'holders', label: t`Holders`, component: Holders },
+  { value: 'locks', label: t`Locks`, component: DailyLocks },
 ]
 
-export const Analytics = () => {
-  const [tab, setTab] = useState<Tab>('fees')
-
-  return (
-    <DetailPageLayout formTabs={null} testId="analytics-page">
-      <CrvStats />
-      <Stack>
-        <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
-        {tab === 'fees' && <VeCrvFees />}
-        {tab === 'holders' && (
-          <Stack sx={{ gap: PAGE_SPACING }}>
-            <TopHolders />
-            <HoldersTable />
-          </Stack>
-        )}
-        {tab === 'locks' && <DailyLocks />}
-      </Stack>
-    </DetailPageLayout>
-  )
-}
+export const Analytics = () => (
+  <DetailPageLayout formTabs={null} testId="analytics-page">
+    <CrvStats />
+    <Stack>
+      <Tabs menu={menu} variant="contained" />
+    </Stack>
+  </DetailPageLayout>
+)

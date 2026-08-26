@@ -1,62 +1,24 @@
-import type { UrlObject } from 'url'
-import { type ComponentType, type ReactNode } from 'react'
-import { findTab, useTabs } from '@evm-ui/hooks/useTabs'
-import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { type ReactNode } from 'react'
+import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
+import { TabsSwitcher, TabsSwitcherProps } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
 import { applySxProps } from '@evm-ui/utils'
 import CardHeader from '@mui/material/CardHeader'
-import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
-import { notFalsy } from '@primitives/objects.utils'
 import { useIsMobileFormDrawer } from './form-context/FormPlacementContext'
 import { FormContent } from './FormContent'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 
-type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
-
-const applyFnOrValue = <Props extends object, Result>(
-  fnOrValue: FnOrValue<Props, Result> | null | undefined,
-  props: Props,
-): Result | undefined =>
-  (typeof fnOrValue === 'function' ? (fnOrValue as (props: Props) => Result)(props) : fnOrValue) ?? undefined
-
-type FormSubTab<Props extends object> = Omit<FormTab<Props>, 'subTabs'>
-
-export type FormTab<Props extends object> = {
-  /** Unique value of the tab, it might be used in the URL later */
-  value: string
-  /** Label of the tab */
-  label: ReactNode
-  /** Optional href for tabs that should link out instead of rendering content */
-  href?: FnOrValue<Props, string | UrlObject>
-  /** Optional sub-tabs of the tab */
-  subTabs?: FormSubTab<Props>[]
-  /** Function or value to determine if the tab is visible */
-  visible?: FnOrValue<Props, boolean>
-  /** Function or value to determine if the tab is disabled */
-  disabled?: FnOrValue<Props, boolean>
-  /** Force the tab into the kebab menu */
-  alwaysInKebab?: FnOrValue<Props, boolean>
-  /** Whether this tab renders a standard fixed form button in the mobile drawer */
-  withFormButton?: boolean
-  /** Component to render when the tab is selected */
-  component?: ComponentType<Props>
+type FormTabBase<Props extends object> = Omit<TabItem<string, Props>, 'subTabs'> & {
+  /** Whether this tab hides the standard fixed form button in the mobile drawer */
+  omitFormButton?: boolean
 }
 
-const createOptions = <Props extends object>(
-  tabs: FormSubTab<Props>[] | undefined,
-  params: Props,
-): TabOption<string>[] =>
-  tabs
-    ?.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
-    .map(({ value, label, disabled, alwaysInKebab, href, withFormButton = true }) => ({
-      value,
-      label,
-      disabled: applyFnOrValue(disabled, params),
-      alwaysInKebab: applyFnOrValue(alwaysInKebab, params),
-      href: applyFnOrValue(href, params),
-      withFormButton,
-    })) ?? []
+type FormSubTab<Props extends object> = FormTabBase<Props>
+
+export type FormTab<Props extends object> = FormTabBase<Props> & {
+  subTabs?: FormSubTab<Props>[]
+}
 
 type UseFormTabOptions<T extends object> = {
   menu: FormTab<T>[]
@@ -66,32 +28,8 @@ type UseFormTabOptions<T extends object> = {
 /** Hook to manage form tabs and sub-tabs. */
 function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
   const isMobileDrawer = useIsMobileFormDrawer()
-  const tabs = createOptions(menu, params)
-  const { tab: tabKey, onTabChange: onChangeTab } = useTabs(tabs)
-
-  const tab = findTab(menu, tabKey)
-  const subTabs = createOptions(tab.subTabs, params)
-  const { tab: subTabKey, onTabChange: onChangeSubTab } = useTabs(subTabs)
-
-  const subTab = tab.subTabs && findTab(tab.subTabs, subTabKey)
-
-  const components = notFalsy(subTab?.component, tab.component)
-  const urls = notFalsy(subTab?.href, tab.href)
-  if (components.length + urls.length != 1)
-    throw new Error(`${components.length} components and ${urls.length} urls found for [${tabKey}, ${subTabKey}]`)
-
-  const Component = components[0] || Skeleton // skeleton just for mui Tab validation, won't be rendered due to href
-  const content = <Component {...params} />
-  return {
-    tab,
-    tabs,
-    subTabs,
-    subTab,
-    content,
-    onChangeTab,
-    onChangeSubTab,
-    isMobileDrawer,
-  }
+  const { tab, tabs, subTabs, subTab, content, onChange } = useTabs({ menu, params })
+  return { tab, tabs, subTabs, subTab, content, onChange, isMobileDrawer }
 }
 
 const marginInline = { tablet: 'auto', desktop: 0 } as const
@@ -101,7 +39,7 @@ export const FormMargins = ({ children }: { children: ReactNode }) => <Stack sx=
 
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
   shouldWrap?: boolean
-  overflow?: TabsSwitcherProps<T>['overflow']
+  overflow?: TabsSwitcherProps<string>['overflow']
 }
 
 /**
@@ -112,26 +50,21 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  * @param options - useFormTabs options
  */
 export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
-  const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer } = useFormTabs(options)
+  const { tab, tabs, subTabs, subTab, content, onChange, isMobileDrawer } = useFormTabs(options)
   return (
     <WithWrapper
       shouldWrap={isMobileDrawer}
       Wrapper={MobileFormTabsDrawer}
       value={tab.value}
       tabs={tabs}
-      onSelectTab={onChangeTab}
+      onSelectTab={onChange}
+      omitFormButton={options.menu.find(({ value }) => value === tab.value)?.omitFormButton}
     >
       <Stack sx={{ marginInline }}>
         {isMobileDrawer ? (
           <CardHeader title={tab.label} size="small" data-testid="mobile-form-active-action" />
         ) : (
-          <TabsSwitcher
-            variant="contained"
-            value={tab.value}
-            options={tabs}
-            onChange={onChangeTab}
-            overflow={overflow}
-          />
+          <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChange} overflow={overflow} />
         )}
         {subTab && subTabs.length > 1 && (
           <TabsSwitcher
@@ -140,7 +73,7 @@ export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...
             options={subTabs}
             overflow="fullWidth"
             sx={applySxProps(!isMobileDrawer && { backgroundColor: t => t.design.Layer[1].Fill })}
-            onChange={onChangeSubTab}
+            onChange={onChange}
           />
         )}
         <WithWrapper shouldWrap={shouldWrap} Wrapper={FormContent}>

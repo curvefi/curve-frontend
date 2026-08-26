@@ -1,14 +1,21 @@
 import { oneAddress, oneFloat, oneInt, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
+import {
+  SECONDS_PER_DAY,
+  SECONDS_PER_HOUR,
+  SECONDS_PER_MINUTE,
+  SECONDS_PER_MONTH,
+  SECONDS_PER_WEEK,
+} from '@evm-ui/utils/time'
 import { range } from '@primitives/objects.utils'
 
 const MAX_OHLC_POINTS = 240
 const AGG_UNIT_SECONDS = {
-  minute: 60,
-  hour: 60 * 60,
-  day: 24 * 60 * 60,
-  week: 7 * 24 * 60 * 60,
-  month: 30 * 24 * 60 * 60,
+  minute: SECONDS_PER_MINUTE,
+  hour: SECONDS_PER_HOUR,
+  day: SECONDS_PER_DAY,
+  week: SECONDS_PER_WEEK,
+  month: SECONDS_PER_MONTH,
 } as const
 
 const getOhlcTimeRange = (params: URLSearchParams) => {
