@@ -41,7 +41,7 @@ export const visitV2PoolList = ({
 
 export const getV2PoolRow = (address: string) =>
   cy
-    .get(`[data-testid="market-link-${address}"]`, API_LOAD_TIMEOUT)
+    .get(`[data-testid="table-row-link-${address}"]`, API_LOAD_TIMEOUT)
     .should('exist')
     .closest('[data-testid^="data-table-row-"]')
 
