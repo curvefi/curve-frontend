@@ -9,25 +9,14 @@ import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import type { PoolRow } from '../../types'
+import { poolTypeClassifications, type PoolClassification } from './classifications'
 
 const { Spacing } = SizesAndSpaces
-type PoolType = NonNullable<PoolRow['poolType']>
-
-const poolTypeClassifications: Record<PoolType, 'stable' | 'volatile'> = {
-  main: 'stable',
-  factory: 'stable',
-  crvusd: 'stable',
-  stableswapng: 'stable',
-  crypto: 'volatile',
-  factory_crypto: 'volatile',
-  factory_tricrypto: 'volatile',
-  twocryptong: 'volatile',
-}
 
 const poolTypeLabels = {
   stable: t`Stable`,
   volatile: t`Volatile`,
-} as const
+} satisfies Record<PoolClassification, string>
 
 const alertTypeToBadgeColor: Record<AlertType, BadgeProps['color']> = {
   '': 'accent',
