@@ -6,6 +6,7 @@ import {
   mockMerklCampaigns,
 } from '@cy/support/helpers/lending-mocks'
 import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
+import { UnexpectedApiRequest } from '@cy/support/ui'
 import { mockMintMarkets, mockMintSnapshots } from '../minting-mocks'
 import { mockTokenPrices } from '../tokens'
 
@@ -19,15 +20,8 @@ export const blockUnmockedApis = () => {
     'api.merkl.xyz',
     'api-core.curve.finance',
     'api.coingecko.com',
-  ].forEach(
-    hostname =>
-      void cy.intercept({ hostname }, req =>
-        req.reply({ statusCode: 503, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
-      ),
-  )
-  cy.intercept('/api/merkl/*', req =>
-    req.reply({ statusCode: 503, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
-  )
+  ].forEach(hostname => void cy.intercept({ hostname }, UnexpectedApiRequest))
+  cy.intercept('/api/merkl/*', UnexpectedApiRequest)
 }
 
 /** The cypress-wagmi-test-connector generates a fresh address at runtime, so we have to mock by pattern. */
