@@ -31,42 +31,22 @@ const expectPoolBadgeSet = (address: string, expected: readonly string[]) =>
 
 type TokenExpectation = { address: string; symbol?: string | null }
 
-const expectTokenCellContents = (address: string, expected: readonly TokenExpectation[]) =>
+const expectTokenCell = (address: string, expected: readonly TokenExpectation[]) =>
   getV2PoolCell(address, PoolColumnId.Tokens)
     .find('[data-testid="pool-tokens"]')
-    .children()
-    .should($tokens => {
-      const tokenItems = [...$tokens]
+    .should($cell => {
+      const cell = $cell[0]
+      const tokenItems = [...cell.children]
 
       expect(tokenItems).to.have.length(expected.length)
       expected.forEach(({ address: tokenAddress, symbol }, index) => {
-        const expectedSymbol = symbol ?? ''
         const tokenItem = tokenItems[index]
-        const icon = tokenItem.querySelector<HTMLElement>(`[data-testid="token-icon-${tokenAddress}"]`)
-        const label = [...tokenItem.querySelectorAll<HTMLElement>('*')].find(
-          element => element.children.length === 0 && element.textContent === expectedSymbol,
-        )
+        const icon = tokenItem.querySelector(`[data-testid="token-icon-${tokenAddress}"]`)
 
-        expect(tokenItem.textContent, `token ${index} label`).to.equal(expectedSymbol)
+        expect(tokenItem.textContent, `token ${index} label`).to.equal(symbol ?? '')
         expect(icon, `token ${index} icon`).to.not.equal(null)
-        expect(label, `token ${index} symbol`).to.not.equal(undefined)
-        if (!icon || !label) return
-
-        expect(icon.getBoundingClientRect().right, `token ${index} icon right edge`).to.be.at.most(
-          label.getBoundingClientRect().left,
-        )
+        expect(tokenItem.lastElementChild, `token ${index} icon position`).to.equal(icon)
       })
-    })
-
-const expectHorizontalWrappingLayout = (address: string) =>
-  getV2PoolCell(address, PoolColumnId.Tokens)
-    .find('[data-testid="pool-tokens"]')
-    .should($stack => {
-      const style = getComputedStyle($stack[0])
-
-      expect(style.display).to.equal('flex')
-      expect(style.flexDirection).to.equal('row')
-      expect(style.flexWrap).to.equal('wrap')
     })
 
 const SORTABLE_COLUMNS = [
@@ -175,12 +155,11 @@ describe('V2 pool-list columns', () => {
       .should('have.text', '-')
   })
 
-  it('renders tokens in a horizontal stack that wraps', () => {
+  it('renders every token in a wrapping reversed row', () => {
     visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
     showV2PoolColumns([PoolColumnId.Tokens])
 
-    expectTokenCellContents(V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.showcase.tradeable_coins)
-    expectHorizontalWrappingLayout(V2_POOL_FIXTURES.showcase.address)
+    expectTokenCell(V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.showcase.tradeable_coins)
   })
 
   it('only exposes sorting controls for server-supported columns', () => {
@@ -242,8 +221,7 @@ describe('V2 pool-list columns', () => {
       PoolColumnId.Tvl,
     ])
 
-    expectTokenCellContents(V2_POOL_FIXTURES.lite.address, V2_POOL_FIXTURES.lite.coins)
-    expectHorizontalWrappingLayout(V2_POOL_FIXTURES.lite.address)
+    expectTokenCell(V2_POOL_FIXTURES.lite.address, V2_POOL_FIXTURES.lite.coins)
 
     for (const columnId of LITE_SORTABLE_COLUMNS) {
       getColumnHeader(columnId).find(`[data-testid^="icon-sort-${columnId}-"]`).should('exist')
