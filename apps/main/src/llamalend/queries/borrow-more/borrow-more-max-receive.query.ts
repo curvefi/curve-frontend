@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { pickMaxDebtQuery } from '@/llamalend/queries/llamma-query.helpers'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
 import { getExpectedFn } from '@evm-ui/entities/router-api'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { combineQueries } from '@evm-ui/lib/queries/combine'
-import { decimal, decimalCompare } from '@evm-ui/utils'
+import { pickQuery } from '@evm-ui/lib/queries/combine'
+import { decimal } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
@@ -122,10 +123,7 @@ export const useBorrowMoreMaxReceiveQueries = (params: BorrowMoreMaxReceiveParam
       () => getMaxReceiveProviders(params).map(router => getBorrowMoreMaxReceiveOptions({ ...params, router })),
       [params],
     ),
-    combine: results =>
-      combineQueries(results, (first, ...rest) =>
-        rest.reduce((max, item) => (decimalCompare(item.maxDebt, max?.maxDebt ?? '0') > 0 ? item : max), first),
-      ),
+    combine: results => pickQuery(results, pickMaxDebtQuery),
   })
 
 export const invalidateBorrowMoreMaxReceive = async (params: BorrowMoreMaxReceiveParams) =>
