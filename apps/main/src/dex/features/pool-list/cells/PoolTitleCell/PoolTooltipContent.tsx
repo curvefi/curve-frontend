@@ -9,11 +9,11 @@ import type { PoolRow } from '../../types'
 import { poolTypeClassifications, type PoolClassification } from './classifications'
 
 const CLASSIFICATIONS = {
-  stable: t`A stable pool is a liquidity pool designed for assets that trade at similar values, enabling low-slippage swaps with minimal fees.`,
-  volatile: t`A volatile pool is a liquidity pool designed for assets whose values can fluctuate independently, enabling efficient swaps across a wide range of prices.`,
+  stable: t`A stable pool is designed for assets expected to maintain a similar value.`,
+  volatile: t`A volatile pool is designed for assets whose relative values may change significantly.`,
 } satisfies Record<PoolClassification, string>
 
-const METAPOOL_DESCRIPTION = t`A metapool pairs an asset with a base pool's LP token, enabling swaps with the base pool's underlying assets.`
+const METAPOOL_DESCRIPTION = t`A metapool pairs an asset with the liquidity of an existing base pool.`
 
 export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
   const network = useNetworkFromUrl()
