@@ -1,5 +1,4 @@
 export * from './AmountTokenInput'
 export * from './DepositReward'
-export * from './HelperFields'
 export * from './ActionsStepper'
 export * from './EpochInput'

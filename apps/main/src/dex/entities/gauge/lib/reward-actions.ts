@@ -1,31 +1,18 @@
+import { useConnection } from 'wagmi'
 import * as models from '@/dex/entities/gauge/model'
-import { gaugeKeys as keys } from '@/dex/entities/gauge/model'
-import type {
-  AddReward,
-  AddRewardMutation,
-  AddRewardParams,
-  DepositReward,
-  DepositRewardApprove,
-  DepositRewardApproveMutation,
-  DepositRewardApproveParams,
-  DepositRewardMutation,
-  DepositRewardParams,
-} from '@/dex/entities/gauge/types'
+import type { AddRewardMutation, DepositRewardApproveMutation, DepositRewardMutation } from '@/dex/entities/gauge/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { queryClient } from '@evm-ui/lib/api/query-client'
 import { t } from '@evm-ui/lib/i18n'
 import { GaugeParams } from '@evm-ui/lib/model/query'
-import { DefaultError, Mutation, useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
-
-// we cannot use a proper T here because `useIsMutating` expects `unknown` for some reason
-type QueryMutation = Mutation<unknown, DefaultError, unknown>
+import { useMutation, UseMutationResult } from '@tanstack/react-query'
 
 export const useAddRewardToken = ({
   chainId,
   poolId,
 }: GaugeParams): UseMutationResult<string, Error, AddRewardMutation> => {
   const { tokensMapper } = useTokensMapper(chainId)
+  const { address: userAddress } = useConnection()
 
   return useMutation({
     ...models.getAddRewardTokenMutation({ chainId, poolId }),
@@ -36,8 +23,8 @@ export const useAddRewardToken = ({
       }
 
       return Promise.all([
-        queryClient.invalidateQueries({ queryKey: keys.distributors({ chainId, poolId }) }),
-        queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) }),
+        userAddress && models.gaugeDistributors.invalidate({ chainId, poolId, userAddress }),
+        models.depositRewardAvailable.invalidate({ chainId, poolId }),
       ])
     },
     onError: error => {
@@ -46,22 +33,6 @@ export const useAddRewardToken = ({
     },
   })
 }
-
-export const useAddRewardTokenIsMutating = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  distributorId,
-}: AddRewardParams): boolean =>
-  Boolean(
-    useIsMutating({
-      mutationKey: keys.addRewardToken({ chainId, poolId }),
-      predicate: ({ state }: QueryMutation) => {
-        const vars = state.variables as AddReward | undefined
-        return vars?.rewardTokenId === rewardTokenId && vars?.distributorId === distributorId
-      },
-    }),
-  )
 
 export const useDepositRewardApprove = ({
   chainId,
@@ -76,9 +47,7 @@ export const useDepositRewardApprove = ({
         const notifyMessage = t`Approve spending ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
         notify(notifyMessage, 'success')
       }
-      return queryClient.invalidateQueries({
-        queryKey: keys.depositRewardIsApproved({ chainId, poolId, rewardTokenId, amount }),
-      })
+      return models.depositRewardIsApproved.invalidate({ chainId, poolId, rewardTokenId, amount })
     },
     onError: error => {
       console.error('Error approving deposit reward:', error)
@@ -86,22 +55,6 @@ export const useDepositRewardApprove = ({
     },
   })
 }
-
-export const useDepositRewardApproveIsMutating = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  amount,
-}: DepositRewardApproveParams): boolean =>
-  Boolean(
-    useIsMutating({
-      mutationKey: keys.depositRewardIsApproved({ chainId, poolId }),
-      predicate: ({ state }: QueryMutation) => {
-        const vars = state.variables as DepositRewardApprove | undefined
-        return vars?.rewardTokenId === rewardTokenId && vars?.amount === amount
-      },
-    }),
-  )
 
 export const useDepositReward = ({
   chainId,
@@ -116,7 +69,7 @@ export const useDepositReward = ({
         const txDescription = t`Deposited reward token ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
         notify(txDescription, 'success')
       }
-      return queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) })
+      return models.depositRewardAvailable.invalidate({ chainId, poolId })
     },
     onError: error => {
       console.error('Error depositing reward:', error)
@@ -124,20 +77,3 @@ export const useDepositReward = ({
     },
   })
 }
-
-export const useDepositRewardIsMutating = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  amount,
-  epoch,
-}: DepositRewardParams): boolean =>
-  Boolean(
-    useIsMutating({
-      mutationKey: keys.depositReward({ chainId, poolId }),
-      predicate: ({ state }: QueryMutation) => {
-        const vars = state.variables as DepositReward | undefined
-        return vars?.rewardTokenId === rewardTokenId && vars?.amount === amount && vars?.epoch === epoch
-      },
-    }),
-  )

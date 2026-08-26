@@ -1,72 +1,115 @@
+import { enforce, test } from 'vest'
 import { useConnection } from 'wagmi'
-import { useDepositRewardEstimateGas, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import {
+  useDepositReward,
+  gaugeDepositRewardValidationGroup,
+  useDepositRewardApprove,
+  useDepositRewardEstimateGas,
+  useGaugeRewardsDistributors,
+} from '@/dex/entities/gauge'
 import { useNetworks } from '@/dex/entities/networks'
-import { DepositRewardDefaultValues, depositRewardValidationSuite } from '@/dex/features/deposit-gauge-reward/model'
-import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
-import { AmountTokenInput, DepositStepper, EpochInput, HelperFields } from '@/dex/features/deposit-gauge-reward/ui'
+import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
+import { AmountTokenInput, DepositStepper, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
-import { useFormSync, useForm } from '@evm-ui/features/forms'
+import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
+import { t } from '@evm-ui/lib/i18n'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { createValidationSuite } from '@evm-ui/lib/validation'
+import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { q } from '@evm-ui/types/util'
+import { decimalMultiply, formatNumber, TIME_FRAMES } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { BlockSkeleton } from '@legacy-ui/skeleton'
 import Stack from '@mui/material/Stack'
+import { maybes } from '@primitives/objects.utils'
 
 const { Spacing } = SizesAndSpaces
 
+const validation = createValidationSuite((data: DepositRewardFormValues) => {
+  gaugeDepositRewardValidationGroup(data)
+  test('step', () => {
+    enforce(Object.values(DepositRewardStep).includes(data.step)).message('Invalid deposit reward step')
+  })
+})
+
+const defaultValues = {
+  rewardTokenId: undefined,
+  amount: undefined,
+  userBalance: undefined,
+  epoch: TIME_FRAMES.WEEK,
+  step: DepositRewardStep.APPROVAL,
+} as const
+
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  const { address: signerAddress } = useConnection()
+  const { data: networks } = useNetworks()
+  const network = networks[chainId]
+  const { address: userAddress } = useConnection()
   const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
     poolId,
-    userAddress: signerAddress,
+    userAddress,
   })
 
-  const form = useForm<DepositRewardFormValues>({
-    validation: depositRewardValidationSuite,
-    defaultValues: DepositRewardDefaultValues,
-  })
+  const form = useForm<DepositRewardFormValues>({ validation, defaultValues })
+  const { errors, isValid, visibleErrors } = form.formState
+  const { rewardTokenId, amount, epoch } = form.watchValues()
 
-  const tokenAddress = form.watchValue('rewardTokenId')
-  const amount = form.watchValue('amount')
-  const epoch = form.watchValue('epoch')
-  const { address: userAddress } = useConnection()
-  const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress })
-  const { data: networks } = useNetworks()
+  const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
+  const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId })
   const gas = useDepositRewardEstimateGas(
     networks,
-    { chainId, poolId, rewardTokenId: tokenAddress, amount, epoch, userBalance },
-    form.formState.isValid,
+    { chainId, poolId, rewardTokenId, amount, epoch, userBalance },
+    isValid,
   )
+  const depositRewardApprove = useDepositRewardApprove({ chainId, poolId })
+  const depositReward = useDepositReward({ chainId, poolId })
 
-  // Sync userBalance from query into form for validation
-  useFormSync(form, { userBalance })
+  useFormSync(form, { userBalance }) // Sync userBalance from query into form for validation
 
-  if (isPendingRewardDistributors) {
-    return <BlockSkeleton height={440} />
-  }
-
-  return (
+  return isPendingRewardDistributors ? (
+    <BlockSkeleton height={440} />
+  ) : (
     <Form
       {...form}
       onSubmit={() => undefined}
       footer={
         <Stack sx={{ gap: Spacing.xs }}>
-          <HelperFields />
+          <ActionInfo
+            label={t`Reward value`}
+            value={formatNumber(maybes([amount, tokenUsdRate], decimalMultiply), 'usd.amount')}
+            valueTooltip={tokenUsdRate && `${t`Token price`}: ${formatNumber(tokenUsdRate, 'usd.amount')}`}
+            size="small"
+          />
           <ActionInfoGasEstimate gas={q(gas)} />
         </Stack>
       }
     >
       <Stack sx={{ gap: Spacing.sm }}>
-        <AmountTokenInput chainId={chainId} poolId={poolId} />
-        <EpochInput chainId={chainId} poolId={poolId} />
-        <DepositStepper chainId={chainId} poolId={poolId} />
+        <AmountTokenInput
+          chainId={chainId}
+          poolId={poolId}
+          networkId={network.id}
+          isPendingDepositRewardApprove={depositRewardApprove.isPending}
+          isPendingDepositReward={depositReward.isPending}
+        />
+        <EpochInput
+          isPendingDepositRewardApprove={depositRewardApprove.isPending}
+          isPendingDepositReward={depositReward.isPending}
+        />
+        <DepositStepper
+          chainId={chainId}
+          poolId={poolId}
+          depositRewardApprove={depositRewardApprove.mutate}
+          depositReward={depositReward.mutate}
+          isPendingDepositRewardApprove={depositRewardApprove.isPending}
+          isPendingDepositReward={depositReward.isPending}
+        />
         <FormAlerts
-          error={form.formState.errors['root.serverError'] ?? null}
-          formErrors={form.formState.visibleErrors}
+          error={errors['root.serverError'] ?? null}
+          formErrors={visibleErrors}
           handledErrors={['rewardTokenId', 'amount', 'epoch']}
         />
       </Stack>

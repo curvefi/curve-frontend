@@ -11,15 +11,13 @@ const { Spacing } = SizesAndSpaces
 
 export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
   const { update: updateForm, formState, watchValue } = useFormContext<AddRewardFormValues>()
-  const distributorId = watchValue('distributorId')
   const distributorError = formState.visibleErrors.find(([field]) => field === 'distributorId')?.[1]
-
   return (
     <Stack sx={{ flex: 1, gap: Spacing.xxs }}>
       <Typography variant="headingXsBold">{t`Distributor`}</Typography>
       <TextField
         id="inpDistributor"
-        value={distributorId ?? ''}
+        value={watchValue('distributorId') ?? ''}
         onChange={event => updateForm({ distributorId: event.target.value as Address })}
         disabled={disabled}
         error={!!distributorError}

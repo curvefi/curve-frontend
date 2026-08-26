@@ -4,10 +4,12 @@ import { ChainId } from '@/dex/types/main.types'
 import { t } from '@evm-ui/lib/i18n'
 import { FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 
-type ManageGaugeProps = { chainId: ChainId; poolId: string; isGaugeManager: boolean; isRewardsDistributor: boolean }
-
-const AddRewardTab = ({ chainId, poolId }: ManageGaugeProps) => <AddRewardToken chainId={chainId} poolId={poolId} />
-const DepositRewardTab = ({ chainId, poolId }: ManageGaugeProps) => <DepositReward chainId={chainId} poolId={poolId} />
+type ManageGaugeProps = {
+  chainId: ChainId
+  poolId: string
+  isGaugeManager: boolean
+  isRewardsDistributor: boolean
+}
 
 // todo: these should be subtabs defined in the pool page
 const menu = [
@@ -15,13 +17,13 @@ const menu = [
     value: 'add_reward',
     label: t`Add Reward`,
     visible: (p: ManageGaugeProps) => p.isGaugeManager,
-    component: AddRewardTab,
+    component: AddRewardToken,
   },
   {
     value: 'deposit_reward',
     label: t`Deposit Reward`,
     visible: (p: ManageGaugeProps) => p.isRewardsDistributor,
-    component: DepositRewardTab,
+    component: DepositReward,
   },
 ] as const
 

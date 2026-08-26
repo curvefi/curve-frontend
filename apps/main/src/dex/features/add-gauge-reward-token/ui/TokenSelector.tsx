@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { type Address, isAddressEqual, zeroAddress } from 'viem'
-import { ethAddress } from 'viem'
+import { ethAddress, isAddressEqual, zeroAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
@@ -15,7 +14,8 @@ import { t } from '@evm-ui/lib/i18n'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { notFalsy } from '@primitives/objects.utils'
+import type { Address } from '@primitives/address.utils'
+import { notFalsy, objectKeys } from '@primitives/objects.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,24 +23,24 @@ export const TokenSelector = ({
   chainId,
   poolId,
   disabled,
+  userAddress,
 }: {
   chainId: ChainId
   poolId: string
   disabled: boolean
+  userAddress: Address | undefined
 }) => {
   const { curveApi } = useCurve()
-  const aliasesCrv = curveApi?.getNetworkConstants()?.ALIASES?.crv
+  const crvAddress = curveApi?.getNetworkConstants()?.ALIASES?.crv as Address
   const { getValue, update: updateForm, watchValue } = useFormContext<AddRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
-  const rewardTokenId = watchValue('rewardTokenId')
   const { tokensMapper } = useTokensMapper(chainId)
-
   const [isOpen, openModal, closeModal] = useSwitch()
 
   const { data: gaugeRewardsDistributors, isSuccess: isGaugeRewardsDistributorsSuccess } = useGaugeRewardsDistributors({
     chainId,
     poolId,
-    userAddress: curveApi?.signerAddress,
+    userAddress,
   })
 
   const filteredTokens = useMemo(
@@ -51,29 +51,29 @@ export const TokenSelector = ({
             // Roman: "There are calculation errors for coins with small decimals, including USDC. Though, new cross chain gauges are good with it, so it depends which gauge do you ask"
             // I fixed it here: https://github.com/curvefi/curve-xchain-factory/blob/3e03f19d49826cad7c1e84829b35cc34955b046e/contracts/implementations/ChildGauge.vy#L117
             token.decimals == 18 &&
-            !!aliasesCrv &&
+            !!crvAddress &&
             ![
-              ...Object.keys(gaugeRewardsDistributors ?? {}), // Tokens already added as reward
+              ...objectKeys(gaugeRewardsDistributors ?? {}), // Tokens already added as reward
               zeroAddress,
               ethAddress,
-              aliasesCrv,
-            ].some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
+              crvAddress,
+            ].some(rewardToken => isAddressEqual(rewardToken, token.address as Address)),
         )
         .map(toTokenOption(network?.networkId)),
-    [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId],
+    [gaugeRewardsDistributors, tokensMapper, crvAddress, network.networkId],
   )
 
-  const selectedToken = filteredTokens.find(x => x.address === rewardTokenId)
+  const selectedToken = filteredTokens.find(x => x.address === watchValue('rewardTokenId'))
 
   useEffect(() => {
     if (!isGaugeRewardsDistributorsSuccess) return
 
     const rewardTokenId = getValue('rewardTokenId')
 
-    const isRewardTokenInGaugeRewardsDistributors = Object.keys(gaugeRewardsDistributors || {}).some(gaugeRewardToken =>
-      isAddressEqual(gaugeRewardToken as Address, rewardTokenId!),
+    const isRewardTokenInGaugeRewardsDistributors = objectKeys(gaugeRewardsDistributors || {}).some(gaugeRewardToken =>
+      isAddressEqual(gaugeRewardToken, rewardTokenId!),
     )
-    if (filteredTokens.length > 0 && (isRewardTokenInGaugeRewardsDistributors || rewardTokenId === zeroAddress)) {
+    if (filteredTokens.length > 0 && (!rewardTokenId || isRewardTokenInGaugeRewardsDistributors)) {
       updateForm({ rewardTokenId: filteredTokens[0].address }, { automated: true })
     }
   }, [gaugeRewardsDistributors, getValue, isGaugeRewardsDistributorsSuccess, filteredTokens, updateForm])

@@ -1,5 +1,6 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
-import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
+import { useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
+import type { DepositRewardApproveMutation, DepositRewardMutation } from '@/dex/entities/gauge/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import { ChainId } from '@/dex/types/main.types'
@@ -13,6 +14,7 @@ import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
+import type { UseMutateFunction } from '@tanstack/react-query'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,10 +23,24 @@ type TxInfo = {
   txHash: string | undefined
 }
 
-export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
+export const DepositStepper = ({
+  chainId,
+  poolId,
+  depositRewardApprove,
+  depositReward,
+  isPendingDepositRewardApprove,
+  isPendingDepositReward,
+}: {
+  chainId: ChainId
+  poolId: string
+  depositRewardApprove: UseMutateFunction<string[], Error, DepositRewardApproveMutation>
+  depositReward: UseMutateFunction<string, Error, DepositRewardMutation>
+  isPendingDepositRewardApprove: boolean
+  isPendingDepositReward: boolean
+}) => {
   const {
     formState: { isValid, isSubmitting },
-    watchValue,
+    watchValues,
     update: updateForm,
     getValue,
     setError,
@@ -32,17 +48,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   } = useFormContext<DepositRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
 
-  const amount = watchValue('amount')
-  const rewardTokenId = watchValue('rewardTokenId')
-  const step = watchValue('step')
-  const userBalance = watchValue('userBalance')
-
-  const { mutate: depositRewardApprove, isPending: isPendingDepositRewardApprove } = useDepositRewardApprove({
-    chainId,
-    poolId,
-  })
-
-  const { mutate: depositReward, isPending: isPendingDepositReward } = useDepositReward({ chainId, poolId })
+  const { amount, rewardTokenId, step, userBalance } = watchValues()
 
   const [latestTxInfo, setLatestTxInfo] = useState<TxInfo | null>(null)
 

@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { isAddressEqual, zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
-import {
-  useDepositRewardApproveIsMutating,
-  useDepositRewardIsMutating,
-  useGaugeRewardsDistributors,
-} from '@/dex/entities/gauge'
-import { useNetworkByChain } from '@/dex/entities/networks'
+import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { ChainId } from '@/dex/types/main.types'
+import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
 import { useFormContext } from '@evm-ui/features/forms'
 import { TokenList, type TokenOption, TokenSelector } from '@evm-ui/features/select-token'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
@@ -17,39 +12,43 @@ import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
-import { q } from '@evm-ui/types/util'
-import { decimal, shortenAddress } from '@evm-ui/utils'
-import { recordEntries } from '@primitives/objects.utils'
+import { mapQuery, q, useMappedQuery } from '@evm-ui/types/util'
+import { decimal, decimalMultiply, shortenAddress } from '@evm-ui/utils'
+import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 
-export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
-  const rewardTokenId = watchValue('rewardTokenId')
-  const amount = watchValue('amount')
-  const epoch = watchValue('epoch')
+export const AmountTokenInput = ({
+  chainId,
+  poolId,
+  networkId,
+  isPendingDepositRewardApprove,
+  isPendingDepositReward,
+}: {
+  chainId: ChainId
+  poolId: string
+  networkId: NetworkEnum
+  isPendingDepositRewardApprove: boolean
+  isPendingDepositReward: boolean
+}) => {
+  const { update: updateForm, formState, watchValues } = useFormContext<DepositRewardFormValues>()
+  const { rewardTokenId, amount } = watchValues()
+  const { amount: amountError, rewardTokenId: rewardTokenIdError } = fromEntries(formState.visibleErrors)
 
   const [isOpen, openModal, closeModal] = useSwitch()
 
-  const { address: signerAddress } = useConnection()
-  const {
-    data: { networkId },
-  } = useNetworkByChain({ chainId })
-
+  const { address: userAddress } = useConnection()
   const { tokensMapper } = useTokensMapper(chainId)
 
   const { data: rewardDistributors, isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
     poolId,
-    userAddress: signerAddress,
+    userAddress,
   })
 
-  const isMutatingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })
-  const isMutatingDepositReward = useDepositRewardIsMutating({ chainId, poolId, rewardTokenId, amount, epoch })
-
   const filteredTokens = useMemo<TokenOption[]>(() => {
-    if (isPendingRewardDistributors || !rewardDistributors || !signerAddress) return []
+    if (isPendingRewardDistributors || !rewardDistributors || !userAddress) return []
 
     const activeRewardTokens = recordEntries(rewardDistributors)
-      .filter(([_, distributor]) => isAddressEqual(distributor, signerAddress))
+      .filter(([_, distributor]) => isAddressEqual(distributor, userAddress))
       .map(([tokenId]) => tokenId)
 
     return activeRewardTokens.map(address => ({
@@ -58,13 +57,12 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
       symbol: tokensMapper[address.toLowerCase()]?.symbol ?? shortenAddress(address),
       volume: tokensMapper[address.toLowerCase()]?.volume ?? 0,
     }))
-  }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, networkId])
+  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, networkId])
 
   useEffect(() => {
     if (
-      rewardTokenId &&
       filteredTokens.length &&
-      !filteredTokens.some(token => isAddressEqual(token.address, rewardTokenId))
+      (!rewardTokenId || !filteredTokens.some(token => isAddressEqual(token.address, rewardTokenId)))
     ) {
       updateForm({ rewardTokenId: filteredTokens[0].address }, { automated: true })
     }
@@ -73,27 +71,20 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const token = filteredTokens.find(x => x.address === rewardTokenId)
   const tokenAddresses = filteredTokens.map(t => t.address).filter(t => !isAddressEqual(t, zeroAddress))
 
-  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses })
-  const { data: tokenBalances, isLoading: isTokenBalancesLoading } = useTokenBalances({
+  const tokenPrices = useTokenUsdRates({ chainId, tokenAddresses })
+  const tokenBalances = useTokenBalances({
     chainId,
-    userAddress: signerAddress,
+    userAddress,
     tokenAddresses,
   })
 
-  const rewardTokenBalance = useMemo(
-    () => rewardTokenId && tokenBalances?.[rewardTokenId],
-    [rewardTokenId, tokenBalances],
+  const rewardTokenBalance = useMappedQuery(
+    tokenBalances,
+    useCallback(tokenBalances => rewardTokenId && tokenBalances?.[rewardTokenId], [rewardTokenId]),
   )
 
-  const amountError = formState.visibleErrors.find(([field]) => field === 'amount')?.[1]
-  const rewardTokenIdError = formState.visibleErrors.find(([field]) => field === 'rewardTokenId')?.[1]
-  const tokenUsdRate = rewardTokenId ? tokenPrices?.[rewardTokenId] : undefined
-
-  const onChangeAmount = useCallback(
-    (amount: string | undefined) => {
-      updateForm({ amount })
-    },
-    [updateForm],
+  const tokenUsdRate = mapQuery(tokenPrices, tokenPrices =>
+    maybe(rewardTokenId, rewardTokenId => tokenPrices?.[rewardTokenId]),
   )
 
   const onChangeToken = useCallback(
@@ -104,30 +95,25 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     [rewardTokenId, updateForm],
   )
 
-  const isDisabled = isMutatingDepositReward || isMutatingDepositRewardApprove
+  const isDisabled = isPendingDepositReward || isPendingDepositRewardApprove
 
   return (
     <LargeTokenInput
       name="amount"
       label={t`Amount to deposit`}
       balance={q({ data: decimal(amount), isLoading: false, error: amountError ? Error(amountError) : null })}
-      onBalance={onChangeAmount}
+      onBalance={useCallback(amount => updateForm({ amount }), [updateForm])}
       walletBalance={
-        signerAddress
-          ? {
-              symbol: token?.symbol,
-              balance: q({ data: rewardTokenBalance, isLoading: isTokenBalancesLoading, error: null }),
-              usdRate: tokenUsdRate,
-              disabled: isDisabled,
-              buttonTestId: 'max',
-            }
-          : undefined
+        userAddress && {
+          symbol: token?.symbol,
+          balance: rewardTokenBalance,
+          usdRate: tokenUsdRate,
+          disabled: isDisabled,
+          buttonTestId: 'max',
+        }
       }
-      maxBalance={{
-        balance: q({ data: rewardTokenBalance, isLoading: isTokenBalancesLoading, error: null }),
-        chips: 'max',
-      }}
-      inputBalanceUsd={decimal(amount && tokenUsdRate && +amount * tokenUsdRate)}
+      maxBalance={{ balance: rewardTokenBalance, chips: 'max' }}
+      inputBalanceUsd={maybes([amount, decimal(tokenUsdRate.data)], decimalMultiply)}
       disabled={isDisabled}
       testId="deposit-amount"
       tokenSelector={
@@ -141,8 +127,8 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
           >
             <TokenList
               tokens={filteredTokens}
-              balances={tokenBalances}
-              tokenPrices={tokenPrices}
+              balances={tokenBalances.data}
+              tokenPrices={tokenPrices.data}
               onToken={onChangeToken}
             />
           </TokenSelector>
