@@ -19,12 +19,12 @@ import { maybe } from '@primitives/objects.utils'
 import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = {
-  convertedBorrowed: undefined,
   userBorrowed: undefined,
 } satisfies Partial<ResetForm>
 
 const defaultValues = {
   ...userDefaultValues,
+  convertedBorrowed: undefined,
   maxBorrowed: undefined,
   maxTotalBorrowed: undefined,
   minBorrowed: undefined,
@@ -71,6 +71,7 @@ const useResetParams = <ChainId extends LlamaChainId>({
         resetAvailable,
       ],
     ),
+    userDefaultValues,
   )
 
 export const useResetPositionForm = <ChainId extends LlamaChainId>({
