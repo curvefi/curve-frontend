@@ -86,15 +86,16 @@ export { createAppColumnHelper }
 const EMPTY_ARRAY: never[] = []
 
 /** Query-aware wrapper around the Curve app table hook. */
-export const useCurveTable = <TData extends RowData>(
-  options: Omit<TableOptions<CurveTableFeatures, TData>, 'data' | 'features'> & {
-    query: QueryProp<TData[]>
-  },
-) => {
-  const { query, ...tableOptions } = options
-  const table = useAppTable({ ...tableOptions, data: query.data ?? EMPTY_ARRAY })
-  return { ...table, isLoading: query.isLoading, error: query.error }
-}
+export const useCurveTable = <TData extends RowData>({
+  query,
+  ...tableOptions
+}: Omit<TableOptions<CurveTableFeatures, TData>, 'data' | 'features'> & {
+  query: QueryProp<TData[]>
+}) => ({
+  ...useAppTable({ ...tableOptions, data: query.data ?? EMPTY_ARRAY }),
+  isLoading: query.isLoading,
+  error: query.error,
+})
 
 /** Define the alignment of the data or header cell based on the column type. */
 export const getAlignment = <TData extends RowData>({ columnDef }: Column<CurveTableFeatures, TData>) =>
