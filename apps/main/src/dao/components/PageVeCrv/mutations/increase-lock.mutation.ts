@@ -6,8 +6,8 @@ import { rootKeys } from '@evm-ui/lib/model'
 import { type OnTransactionSuccess, useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactionMutation'
 import { formatToken, waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
-import type { IncreaseLockMutation } from '../queries/increase-lock.types'
 import { fetchIncreaseLockIsApproved } from '../queries/increase-lock-approved.query'
+import type { IncreaseLockMutation } from '../queries/increase-lock.types'
 import { increaseLockFormValidationSuite } from '../queries/increase-lock.validation'
 
 export const useIncreaseLockMutation = ({

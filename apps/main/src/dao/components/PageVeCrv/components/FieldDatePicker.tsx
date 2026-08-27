@@ -136,6 +136,7 @@ export const FieldDatePicker = ({
                 return (
                   <QuickActionButton
                     key={label}
+                    type="button"
                     variant="outlined"
                     fillWidth
                     itemsInRow={itemsInThisRow}
@@ -191,6 +192,7 @@ export const FieldDatePicker = ({
             return (
               <QuickActionButton
                 key={label}
+                type="button"
                 variant="outlined"
                 itemsInRow={itemsInThisRow}
                 onClick={() => {

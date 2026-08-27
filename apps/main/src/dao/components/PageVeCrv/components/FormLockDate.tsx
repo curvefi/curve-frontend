@@ -1,233 +1,70 @@
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { DateValue } from 'react-stately'
-import { styled } from 'styled-components'
-import { AlertFormError } from '@/dao/components/AlertFormError'
-import { DetailInfoEstGas } from '@/dao/components/DetailInfoEstGas'
 import { FieldDatePicker } from '@/dao/components/PageVeCrv/components/FieldDatePicker'
-import { FormActions } from '@/dao/components/PageVeCrv/components/FormActions'
-import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dao/components/PageVeCrv/types'
-import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
+import { useExtendLockForm } from '@/dao/components/PageVeCrv/hooks/useExtendLockForm'
+import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { networks } from '@/dao/networks'
-import { useStore } from '@/dao/store/useStore'
-import { CurveApi } from '@/dao/types/dao.types'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
-import { isLoading, notify, useCurve } from '@evm-ui/features/connect-wallet'
-import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
+import { FormButton } from '@evm-ui/features/forms'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { t } from '@evm-ui/lib/i18n'
-import { REFRESH_INTERVAL } from '@evm-ui/utils'
+import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
+import { q } from '@evm-ui/types/util'
+import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
-import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
-import { Stepper } from '@legacy-ui/Stepper/Stepper'
-import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
-import { formatDate, scanTxPath } from '@legacy-ui/utils'
-
-const FORM_TYPE = 'adjust_date' as const
+import { scanTxPath } from '@legacy-ui/utils'
 
 export const FormLockDate = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
-  const isSubscribedRef = useRef(false)
-
-  const activeKey = useStore(state => state.lockedCrv.activeKey)
-  const { connectState } = useCurve()
-  const isLoadingCurve = isLoading(connectState)
-  const formEstGas = useStore(state => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore(state => state.lockedCrv.formStatus)
-  const formValues = useStore(state => state.lockedCrv.formValues)
-  const fetchStepIncreaseTime = useStore(state => state.lockedCrv.fetchStepIncreaseTime)
-  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
-
-  const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
-
-  const { signerAddress } = curve ?? {}
-  const haveSigner = !!signerAddress
-
-  const currUnlockTime = vecrvInfo.lockedAmountAndUnlockTime.unlockTime
-  const currUnlockUtcTime = dayjs.utc(currUnlockTime)
-  const currUnlockUtcDate = currUnlockUtcTime.format('YYYY-MM-DD')
-  const todayUtcDate = dayjs.utc().format('YYYY-MM-DD')
-  const minUtcDate = currUnlockUtcTime
-  const remainingLockedDays = dayjs(currUnlockUtcDate).diff(dayjs(todayUtcDate), 'day', false)
-
-  const maxUtcDate = useMemo((): dayjs.Dayjs => {
-    const { calcUnlockTime } = networks[rChainId].api.lockCrv
-    return calcUnlockTime(curve!, FORM_TYPE, currUnlockTime, 365 * 4 - remainingLockedDays)
-  }, [currUnlockTime, curve, rChainId, remainingLockedDays])
-
-  const isMax = maxUtcDate ? 365 * 4 - remainingLockedDays <= 7 : false
-
-  const updateFormValues = useCallback(
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    async (updatedFormValues: Partial<FormValues>, { isFullReset = false }: { isFullReset?: boolean } = {}) => {
-      setTxInfoBar(null)
-      setFormValues(curve, isLoadingCurve, FORM_TYPE, updatedFormValues, vecrvInfo, isFullReset)
-    },
-    [curve, isLoadingCurve, vecrvInfo, setFormValues],
-  )
-
-  const handleInpEstUnlockedDays = useCallback(
-    (curve: CurveApi, unlockDate: DateValue) => {
-      const utcDate = dayjs.utc(unlockDate.toString())
-
-      // validate locked date
-      let utcDateError = ''
-      if (haveSigner && (utcDate.isAfter(maxUtcDate, 'day') || utcDate.isBefore(minUtcDate, 'day'))) {
-        utcDateError = 'invalid-date'
-      }
-
-      const days = utcDate.diff(currUnlockUtcTime, 'd')
-      const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-      const calcdUtcDate = fn(curve, FORM_TYPE, currUnlockTime, days)
-
-      void updateFormValues({
-        utcDate: toCalendarDate(utcDate),
-        utcDateError,
-        calcdUtcDate:
-          utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
-        days,
-      })
-    },
-    [currUnlockTime, currUnlockUtcTime, haveSigner, maxUtcDate, minUtcDate, rChainId, updateFormValues],
-  )
-
-  const handleBtnClickQuickAction = useCallback(
-    (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => {
-      const { calcUnlockTime } = networks[rChainId].api.lockCrv
-      // max button
-      if (!value || !unit) {
-        const days = maxUtcDate.diff(currUnlockUtcTime, 'd')
-        const calcdUtcDate = calcUnlockTime(curve, FORM_TYPE, currUnlockTime, days)
-        void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
-        return maxUtcDate
-      }
-
-      const utcDate = dayjs.utc(currUnlockTime).add(value, unit)
-      const days = utcDate.diff(currUnlockUtcTime, 'd')
-      const calcdUtcDate = calcUnlockTime(curve, FORM_TYPE, currUnlockTime, days)
-
-      void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days })
-      return calcdUtcDate
-    },
-    [currUnlockTime, currUnlockUtcTime, maxUtcDate, rChainId, updateFormValues],
-  )
-
-  const handleBtnClickIncrease = useCallback(
-    async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
-      if (formValues.utcDate) {
-        const localUtcDate = formValues.calcdUtcDate || formatDate(formValues.utcDate.toString())
-        const notifyMessage = t`Please confirm changing unlock date to ${localUtcDate}.`
-        const { dismiss } = notify(notifyMessage, 'pending')
-        const resp = await fetchStepIncreaseTime(activeKey, curve, formValues)
-
-        if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
-          const txDescription = t`Lock date updated`
-          setTxInfoBar(
-            <TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />,
-          )
-        }
-        if (typeof dismiss === 'function') dismiss()
-      }
-    },
-    [fetchStepIncreaseTime],
-  )
-
-  const getSteps = useCallback(
-    (activeKey: string, curve: CurveApi, formEstGas: FormEstGas, formValues: FormValues, formStatus: FormStatus) => {
-      const stepsObj: Record<string, Step> = {
-        INCREASE_TIME: {
-          key: 'INCREASE_TIME',
-          status: getStepStatus(
-            formStatus.formTypeCompleted === 'INCREASE_TIME',
-            formStatus.step === 'INCREASE_TIME',
-            !!formValues.utcDate && !formValues.utcDateError && !formStatus.error && !formEstGas.loading,
-          ),
-          type: 'action',
-          content: formStatus.formTypeCompleted === 'INCREASE_TIME' ? t`Lock Increased` : t`Increase Lock`,
-          onClick: () => void handleBtnClickIncrease(activeKey, curve, formValues),
-        },
-      }
-
-      const stepsKey: StepKey[] = ['INCREASE_TIME']
-      return stepsKey.map(key => stepsObj[key])
-    },
-    [handleBtnClickIncrease],
-  )
-
-  // Refresh when the connected account or network changes.
-  useEffect(() => {
-    isSubscribedRef.current = true
-    void updateFormValues({}, { isFullReset: true })
-
-    return () => {
-      isSubscribedRef.current = false
-    }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [curve?.chainId, curve?.signerAddress])
-
-  // steps
-  useEffect(() => {
-    if (curve && activeKey) {
-      const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus)
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setSteps(updatedSteps)
-    }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [activeKey, curve?.chainId, curve?.signerAddress, isLoadingCurve, formEstGas, formValues, formStatus])
-
-  // interval
-  usePageVisibleInterval(() => updateFormValues({}), REFRESH_INTERVAL['5m'])
-
-  const activeStep = haveSigner ? getActiveStep(steps) : null
-  const loading = typeof vecrvInfo === 'undefined'
+  const {
+    form,
+    values,
+    currUnlockUtcTime,
+    minUtcDate,
+    maxUtcDate,
+    isMax,
+    calculatedDateLabel,
+    gas,
+    isPending,
+    isDisabled,
+    error,
+    success,
+    onSubmit,
+    updateUnlockDate,
+    selectQuickDate,
+  } = useExtendLockForm({ curve, vecrvInfo })
+  const dateError = form.formState.visibleErrors.find(([field]) => field === 'utcDate' || field === 'days')?.[1] ?? ''
 
   return (
-    <>
-      <StyledForm
-        autoComplete="off"
-        onSubmit={evt => {
-          evt.preventDefault()
-        }}
-      >
-        <FieldDatePicker
-          curve={curve}
-          formType={FORM_TYPE}
-          disabled={formStatus.formProcessing}
-          isMax={isMax}
-          vecrvInfo={vecrvInfo}
-          currUnlockUtcTime={currUnlockUtcTime}
-          minUtcDate={minUtcDate}
-          maxUtcDate={maxUtcDate}
-          handleInpEstUnlockedDays={handleInpEstUnlockedDays}
-          handleBtnClickQuickAction={handleBtnClickQuickAction}
-          {...formValues}
-        />
-      </StyledForm>
-
-      <div>
-        {!!signerAddress && (
-          <DetailInfoEstGas
-            chainId={rChainId}
-            {...formEstGas}
-            estimatedGas={formEstGas.estimatedGas}
-            stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
-          />
-        )}
-      </div>
-
-      <FormActions haveSigner={haveSigner} loading={loading}>
-        {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
-        {formStatus.error && (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => void updateFormValues({})} />
-        )}
-        {txInfoBar}
-        <Stepper steps={steps} hideStepNumber />
-      </FormActions>
-    </>
+    <Form {...form} onSubmit={onSubmit} footer={null}>
+      <FieldDatePicker
+        curve={curve}
+        formType="adjust_date"
+        currUnlockUtcTime={currUnlockUtcTime}
+        disabled={isPending}
+        isMax={isMax}
+        minUtcDate={minUtcDate}
+        maxUtcDate={maxUtcDate}
+        vecrvInfo={vecrvInfo}
+        utcDate={values.utcDate}
+        utcDateError={dateError}
+        calcdUtcDate={calculatedDateLabel}
+        handleInpEstUnlockedDays={(_, date) => updateUnlockDate(toCalendarDate(dayjs.utc(date.toString())))}
+        handleBtnClickQuickAction={(_, value, unit) => selectQuickDate(value, unit)}
+      />
+      <ActionInfoGasEstimate gas={q(gas)} />
+      {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
+      {success && (
+        <TxInfoBar description={t`Lock date updated`} txHash={scanTxPath(networks[rChainId], success.hash)} />
+      )}
+      <FormButton
+        pending={isPending}
+        loading={gas.isLoading || isPending}
+        disabled={isDisabled}
+        label={t`Increase Lock`}
+        testId="extend-lock-submit-button"
+        connectWalletTestId="vecrv-extend-lock-form"
+      />
+      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={['utcDate', 'days']} />
+    </Form>
   )
 }
-
-const StyledForm = styled.form`
-  display: grid;
-  grid-row-gap: var(--spacing-3);
-`
