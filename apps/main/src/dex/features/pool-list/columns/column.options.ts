@@ -8,6 +8,12 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
     label: t`Pools`,
     options: [
       {
+        label: POOL_TITLES[PoolColumnId.Tokens],
+        columns: [PoolColumnId.Tokens],
+        active: false,
+        enabled: true,
+      },
+      {
         label: POOL_TITLES[PoolColumnId.NetApy],
         columns: [PoolColumnId.NetApy],
         active: true,
