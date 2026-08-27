@@ -1,5 +1,5 @@
 import { t } from '@evm-ui/lib/i18n'
-import { createAppColumnHelper, type CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
 import { TokenInfo, type TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
@@ -7,7 +7,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { PointsCampaignsColumnId } from './columns.enum'
 
-export type PointsCampaignsRow = CurveTableItem & {
+export type PointsCampaignsRow = {
   source: TokenInfoProps
   multiplier: string
   campaignUrl: string

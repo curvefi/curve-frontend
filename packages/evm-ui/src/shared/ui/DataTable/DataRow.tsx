@@ -4,22 +4,21 @@ import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
 import { hasParentWithClass } from '@evm-ui/utils/dom'
 import TableRow from '@mui/material/TableRow'
-import type { ReactTable, Row } from '@tanstack/react-table'
+import type { ReactTable, Row, RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '../InvertOnHover'
 import {
   CLICKABLE_IN_ROW_CLASS,
   type CurveTableFeatures,
   DESKTOP_ONLY_HOVER_CLASS,
   TABLE_SECONDARY_TEXT_CLASS,
-  type CurveTableItem,
 } from './data-table.utils'
 import { DataCell } from './DataCell'
 import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
-export type DataRowProps<T extends CurveTableItem> = {
-  table: ReactTable<CurveTableFeatures, T>
-  row: Row<CurveTableFeatures, T>
-  expandedPanel?: ExpandedPanelConfig<T>
+export type DataRowProps<TData extends RowData> = {
+  table: ReactTable<CurveTableFeatures, TData>
+  row: Row<CurveTableFeatures, TData>
+  expandedPanel?: ExpandedPanelConfig<TData>
   shouldStickFirstColumn?: boolean
   verticalAlign?: 'top' | 'middle' | 'bottom'
 }
@@ -36,23 +35,23 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
-export const DataRow = <T extends CurveTableItem>({
+export const DataRow = <TData extends RowData>({
   table,
   row,
   expandedPanel,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
-}: DataRowProps<T>) => {
+}: DataRowProps<TData>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const push = useNavigate()
-  const url = row.original.url
-  const hasUrl = Boolean(url?.trim())
+  const href = table.options.meta?.getRowHref?.(row.original)
+  const hasHref = Boolean(href?.trim())
   const hasExpansionRow = isMobile && !!expandedPanel
-  const isInteractive = hasUrl || hasExpansionRow
+  const isInteractive = hasHref || hasExpansionRow
   const onClickDesktop = useCallback(
-    (e: MouseEvent<HTMLTableRowElement>) => hasUrl && url && onCellClick(e.target, url, push),
-    [url, push, hasUrl],
+    (e: MouseEvent<HTMLTableRowElement>) => hasHref && href && onCellClick(e.target, href, push),
+    [href, push, hasHref],
   )
   const visibleCells = row.getVisibleCells()
 
@@ -95,7 +94,7 @@ export const DataRow = <T extends CurveTableItem>({
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
           // eslint-disable-next-line local/no-router-navigate-on-click -- A `<tr>` cannot be a link.
-          onClick={isMobile ? () => row.toggleExpanded() : hasUrl ? onClickDesktop : undefined}
+          onClick={isMobile ? () => row.toggleExpanded() : hasHref ? onClickDesktop : undefined}
         >
           {visibleCells.map((cell, index) => (
             <DataCell
@@ -109,7 +108,7 @@ export const DataRow = <T extends CurveTableItem>({
       </InvertOnHover>
 
       {hasExpansionRow && (
-        <ExpansionRow<T> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
+        <ExpansionRow<TData> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
       )}
     </>
   )

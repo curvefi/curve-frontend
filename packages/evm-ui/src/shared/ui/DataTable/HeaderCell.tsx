@@ -5,15 +5,9 @@ import { borderStyle } from '@evm-ui/utils'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
-import { type Column, flexRender, type Header } from '@tanstack/react-table'
+import { type Column, flexRender, type Header, type RowData } from '@tanstack/react-table'
 import { Tooltip } from '../Tooltip'
-import {
-  type CurveTableFeatures,
-  getAlignment,
-  getExtraColumnPadding,
-  type DataTableSize,
-  type CurveTableItem,
-} from './data-table.utils'
+import { type CurveTableFeatures, getAlignment, getExtraColumnPadding, type DataTableSize } from './data-table.utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -31,7 +25,7 @@ const HeaderCellVerticalAlign = {
   large: 'bottom',
 }
 
-function useHeaderSx<T extends CurveTableItem>({
+function useHeaderSx<T extends RowData>({
   isSticky,
   column,
   width,
@@ -76,7 +70,7 @@ function useHeaderSx<T extends CurveTableItem>({
   )
 }
 
-export const HeaderCell = function <T extends CurveTableItem>({
+export const HeaderCell = function <T extends RowData>({
   header,
   isSticky,
   width,

@@ -1,18 +1,17 @@
 import { ClaimableReward } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import { t } from '@evm-ui/lib/i18n'
-import { createAppColumnHelper, type CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import { formatNumber } from '@evm-ui/utils'
 import { ClaimTabColumnId } from './columns.enum'
 import { NotionalCell } from './notional-cells'
 
-export type ClaimableToken = CurveTableItem &
-  ClaimableReward & {
-    networkId: string
-    notional?: number
-    isLoading?: boolean // used for partial loading states e.g. notional rates
-  }
+export type ClaimableToken = ClaimableReward & {
+  networkId: string
+  notional?: number
+  isLoading?: boolean // used for partial loading states e.g. notional rates
+}
 
 const columnHelper = createAppColumnHelper<ClaimableToken>()
 

@@ -1,11 +1,11 @@
 import { t } from '@evm-ui/lib/i18n'
-import { createAppColumnHelper, type CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { LabelCell } from '../cells/LabelCell'
 import { ValueCell } from '../cells/ValueCell'
 import { ClosePositionRowColumnId } from './columns.enum'
 
-export type ClosePositionRow = CurveTableItem & {
+export type ClosePositionRow = {
   label: string // row description, like "Collateral"
   value: { symbol: string; amount: Decimal; usd?: Amount }[]
   testId?: string // used for testing, added to the ValueCell when present

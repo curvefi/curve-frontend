@@ -1,11 +1,11 @@
 import { useEffect, useEffectEvent, useRef } from 'react'
-import type { ReactTable } from '@tanstack/react-table'
-import type { CurveTableFeatures, CurveTableItem } from '../data-table.utils'
+import type { ReactTable, RowData } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '../data-table.utils'
 /**
  * Resets the table pagination to the first page whenever the number of filtered results changes.
  * Skipped for manual pagination since data changes on every page change.
  */
-export function useResetPageOnResultChange<T extends CurveTableItem>(table: ReactTable<CurveTableFeatures, T>) {
+export function useResetPageOnResultChange<T extends RowData>(table: ReactTable<CurveTableFeatures, T>) {
   const isManualPagination = table.options.manualPagination
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)

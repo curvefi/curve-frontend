@@ -1,16 +1,16 @@
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { FavoriteHeartIcon } from '@evm-ui/shared/icons/HeartIcon'
-import type { CurveTableFeatures, FilterProps, CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import type { CurveTableFeatures, FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TableActiveFiltersBar } from '@evm-ui/shared/ui/DataTable/TableActiveFiltersBar'
 import IconButton from '@mui/material/IconButton'
-import type { ReactTable } from '@tanstack/react-table'
+import type { ReactTable, RowData } from '@tanstack/react-table'
 import { MarketColumnId } from '../columns'
 import { useToggleFilter } from '../hooks/useToggleFilter'
 import { MarketsActiveFiltersChip } from './MarketsActiveFiltersChip'
 
 const TEST_ID = 'table-filters-collapsible'
 
-export const MarketsFiltersCollapsible = <T extends CurveTableItem>({
+export const MarketsFiltersCollapsible = <T extends RowData>({
   table,
   resetFilters,
   hasActiveFilters,

@@ -1,8 +1,8 @@
 import { type RefObject, useEffect, useEffectEvent, useRef } from 'react'
-import type { ReactTable } from '@tanstack/react-table'
-import type { CurveTableFeatures, CurveTableItem } from '../data-table.utils'
+import type { ReactTable, RowData } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '../data-table.utils'
 
-type UseTableScrollOptions<T extends CurveTableItem> = {
+type UseTableScrollOptions<T extends RowData> = {
   table: ReactTable<CurveTableFeatures, T>
   tableTopRef?: RefObject<HTMLElement | null>
   containerRef?: RefObject<HTMLElement | null>
@@ -26,10 +26,7 @@ const useEffectOnValueChange = <T>(value: T, effect: () => void) => {
 }
 
 /** Scrolls to the top of the table whenever the column filters change. */
-export function useScrollToTopOnFilterChange<T extends CurveTableItem>({
-  table,
-  tableTopRef,
-}: UseTableScrollOptions<T>) {
+export function useScrollToTopOnFilterChange<T extends RowData>({ table, tableTopRef }: UseTableScrollOptions<T>) {
   const { columnFilters } = table.state
   const columnFiltersKey = JSON.stringify(columnFilters)
 
@@ -39,7 +36,7 @@ export function useScrollToTopOnFilterChange<T extends CurveTableItem>({
 }
 
 /** Scrolls to the top of the table whenever the page changes. */
-export function useScrollToTopOnPageChange<T extends CurveTableItem>({
+export function useScrollToTopOnPageChange<T extends RowData>({
   table,
   tableTopRef,
   containerRef,

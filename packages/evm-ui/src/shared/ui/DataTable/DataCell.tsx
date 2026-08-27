@@ -3,12 +3,12 @@ import { applySxProps } from '@evm-ui/utils'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { type Cell, flexRender } from '@tanstack/react-table'
-import { getCellVariant, type CurveTableFeatures, type CurveTableItem } from './data-table.utils'
+import { type Cell, flexRender, type RowData } from '@tanstack/react-table'
+import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import { useCellSx } from './hooks/useCellSx'
 import { RotatableIcon } from './RotatableIcon'
 
-export const DataCell = <T extends CurveTableItem>({
+export const DataCell = <T extends RowData>({
   cell,
   enableCollapse,
   isSticky,

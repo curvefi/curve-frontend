@@ -69,6 +69,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
+    meta: { getRowHref: ({ url }) => url },
     state: {
       expanded,
       sorting,

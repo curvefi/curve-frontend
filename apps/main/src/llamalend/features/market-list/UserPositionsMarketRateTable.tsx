@@ -52,6 +52,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
   const table = useCurveTable({
     columns: MARKET_COLUMNS,
     query: tableQuery,
+    meta: { getRowHref: ({ url }) => url },
     state: { expanded, sorting, columnVisibility },
     initialState: { pagination },
     onSortingChange,

@@ -62,7 +62,7 @@ export const MarketsTable = ({
     onSortingChange,
     onExpandedChange: setExpanded,
     globalFilterFn,
-    meta: { facetedRowModelFactory: getMarketFacetedRowModel },
+    meta: { facetedRowModelFactory: getMarketFacetedRowModel, getRowHref: ({ url }) => url },
   })
 
   const hasActiveFilters = !!table.state.columnFilters.length

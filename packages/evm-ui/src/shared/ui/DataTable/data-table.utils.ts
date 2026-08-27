@@ -71,6 +71,8 @@ const features = tableFeatures({
   },
 })
 
+export type CurveTableFeatures = typeof features
+
 const options = tableOptions({
   features,
   getRowCanExpand: () => true, // Curve renders expanded content as sibling detail rows with its own expansion check, not TanStack subRows.
@@ -79,11 +81,7 @@ const options = tableOptions({
 })
 
 const { createAppColumnHelper, useAppTable } = createTableHook(options)
-
 export { createAppColumnHelper }
-
-export type CurveTableFeatures = typeof features
-export type CurveTableItem = { url?: string | null }
 
 const EMPTY_ARRAY: never[] = []
 

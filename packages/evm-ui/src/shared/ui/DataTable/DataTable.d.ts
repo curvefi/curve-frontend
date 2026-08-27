@@ -24,5 +24,7 @@ declare module '@tanstack/table-core' {
   interface TableMeta<in out TFeatures extends TableFeatures, in out TData extends RowData> {
     /** Optional per-table override selected by the shared faceted row-model dispatcher. */
     facetedRowModelFactory?: (table: Table<TFeatures, TData>, columnId: string) => () => RowModel<TFeatures, TData>
+    /** Resolve an optional navigation target for rows rendered by Curve DataTable. */
+    getRowHref?: (data: TData) => string | null | undefined
   }
 }

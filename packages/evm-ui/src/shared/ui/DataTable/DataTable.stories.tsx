@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { createAppColumnHelper, type CurveTableItem, useCurveTable } from './data-table.utils'
+import { createAppColumnHelper, useCurveTable } from './data-table.utils'
 import { DataTable, DataTableProps } from './DataTable'
 
 const { Spacing } = SizesAndSpaces
@@ -15,7 +15,7 @@ const { Spacing } = SizesAndSpaces
 const formatPercentage = (value: number) => formatNumber(value, 'percent.value')
 const formatUsdNotional = (value: number) => formatNumber(value, 'usd.notional')
 
-type MarketRow = CurveTableItem & {
+type MarketRow = {
   id: number
   collateral: string
   debt: string

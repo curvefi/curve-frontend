@@ -4,14 +4,13 @@ import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
 import { hasParentWithClass } from '@evm-ui/utils/dom'
 import TableRow from '@mui/material/TableRow'
-import type { ReactTable, Row } from '@tanstack/react-table'
+import type { ReactTable, Row, RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '../InvertOnHover'
 import {
   CLICKABLE_IN_ROW_CLASS,
   type CurveTableFeatures,
   DESKTOP_ONLY_HOVER_CLASS,
   TABLE_SECONDARY_TEXT_CLASS,
-  type CurveTableItem,
 } from './data-table.utils'
 import { DataCell } from './DataCell'
 import { type ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
@@ -28,17 +27,17 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
-export type LegacyDataRowProps<T extends CurveTableItem> = {
-  table: ReactTable<CurveTableFeatures, T>
-  row: Row<CurveTableFeatures, T>
-  expandedPanel?: ExpandedPanelConfig<T>
+export type LegacyDataRowProps<TData extends RowData> = {
+  table: ReactTable<CurveTableFeatures, TData>
+  row: Row<CurveTableFeatures, TData>
+  expandedPanel?: ExpandedPanelConfig<TData>
   isLastRow?: boolean
   shouldStickLastRowToTop?: boolean
   shouldStickFirstColumn?: boolean
   verticalAlign?: 'top' | 'middle' | 'bottom'
 }
 
-export const LegacyDataRow = <T extends CurveTableItem>({
+export const LegacyDataRow = <TData extends RowData>({
   table,
   row,
   expandedPanel,
@@ -46,15 +45,15 @@ export const LegacyDataRow = <T extends CurveTableItem>({
   shouldStickLastRowToTop,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
-}: LegacyDataRowProps<T>) => {
+}: LegacyDataRowProps<TData>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const push = useNavigate()
-  const url = row.original.url
-  const hasUrl = Boolean(url?.trim())
+  const href = table.options.meta?.getRowHref?.(row.original)
+  const hasHref = Boolean(href?.trim())
   const onClickDesktop = useCallback(
-    (e: MouseEvent<HTMLTableRowElement>) => hasUrl && url && onCellClick(e.target, url, push),
-    [url, push, hasUrl],
+    (e: MouseEvent<HTMLTableRowElement>) => hasHref && href && onCellClick(e.target, href, push),
+    [href, push, hasHref],
   )
   const visibleCells = row.getVisibleCells()
   const shouldApplyStickyLastRow = isLastRow && shouldStickLastRowToTop
@@ -66,7 +65,7 @@ export const LegacyDataRow = <T extends CurveTableItem>({
           sx={useMemo(
             () => ({
               marginBlock: 0,
-              cursor: hasUrl ? 'pointer' : 'default',
+              cursor: hasHref ? 'pointer' : 'default',
               verticalAlign,
               transition: `border-bottom ${TRANSITION_FUNCTION}`,
               [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
@@ -93,12 +92,12 @@ export const LegacyDataRow = <T extends CurveTableItem>({
                 backgroundColor: t => t.design.Table.Row.Default,
               }),
             }),
-            [shouldApplyStickyLastRow, hasUrl, verticalAlign],
+            [shouldApplyStickyLastRow, hasHref, verticalAlign],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
           // eslint-disable-next-line local/no-router-navigate-on-click -- A `<tr>` cannot be a link.
-          onClick={isMobile ? () => row.toggleExpanded() : hasUrl ? onClickDesktop : undefined}
+          onClick={isMobile ? () => row.toggleExpanded() : hasHref ? onClickDesktop : undefined}
         >
           {visibleCells.map((cell, index) => (
             <DataCell
@@ -112,7 +111,7 @@ export const LegacyDataRow = <T extends CurveTableItem>({
       </InvertOnHover>
 
       {isMobile && expandedPanel && (
-        <ExpansionRow<T> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
+        <ExpansionRow<TData> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
       )}
     </>
   )

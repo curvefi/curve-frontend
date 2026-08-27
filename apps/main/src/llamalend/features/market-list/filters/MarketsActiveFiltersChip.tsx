@@ -1,7 +1,7 @@
 import { capitalize } from 'lodash'
 import { useMemo } from 'react'
 import { ChainFilterChips } from '@evm-ui/shared/ui/DataTable/chips/ChainFilterChips'
-import type { CurveTableFeatures, FilterProps, CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import type { CurveTableFeatures, FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import {
   getRangeFilterLabel,
   parseListFilter,
@@ -15,9 +15,10 @@ import {
   type TableActiveFilterGroupChipsProps,
 } from '@evm-ui/shared/ui/DataTable/TableActiveFilterGroups'
 import { constQ } from '@evm-ui/types/util'
+import type { Unit } from '@evm-ui/utils/units'
 import { toArray } from '@primitives/array.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
-import type { ColumnMeta, ReactTable } from '@tanstack/react-table'
+import type { ReactTable, RowData } from '@tanstack/react-table'
 import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
 
 const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))
@@ -25,8 +26,6 @@ const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [colum
 // capitalize all labels except columns containing tokens symbols
 const formatLabel = (label: string, id: MarketColumnId) =>
   [MarketColumnId.CollateralSymbol, MarketColumnId.BorrowedSymbol].includes(id) ? label : capitalize(label)
-
-type Unit = ColumnMeta<CurveTableFeatures, CurveTableItem>['unit']
 
 // Convert a serialized range filter (`min~max`) into a single chip label
 const getRangeLabel = (serializedRange: string | undefined, unit?: Unit) => {
@@ -38,7 +37,7 @@ const ChainActiveFilterChips = ({ labels, onRemove }: TableActiveFilterGroupChip
   <ChainFilterChips chainsQuery={constQ(labels)} selectedChains={labels} toggleChain={onRemove} />
 )
 
-export const MarketsActiveFiltersChip = <T extends CurveTableItem>({
+export const MarketsActiveFiltersChip = <T extends RowData>({
   table,
   setColumnFilter,
   testIdPrefix,

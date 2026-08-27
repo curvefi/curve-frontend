@@ -1,5 +1,5 @@
 import { t } from '@evm-ui/lib/i18n'
-import { createAppColumnHelper, type CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { AddressCell, TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import type { Address } from '@primitives/address.utils'
 import { AmountCell } from '../cells/AmountCell'
@@ -11,7 +11,7 @@ export type RecentRefuelsToken = {
   decimals: number
 }
 
-export type RecentRefuelRow = CurveTableItem & {
+export type RecentRefuelRow = {
   timestamp: number
   donor?: Address | null
   donorUrl?: string

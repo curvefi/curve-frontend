@@ -3,8 +3,8 @@ import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { borderStyle } from '@evm-ui/utils'
 import type { Theme } from '@mui/material/styles'
 import type { SxProps } from '@mui/system'
-import type { Column } from '@tanstack/react-table'
-import { getAlignment, getExtraColumnPadding, type CurveTableFeatures, type CurveTableItem } from '../data-table.utils'
+import type { Column, RowData } from '@tanstack/react-table'
+import { getAlignment, getExtraColumnPadding, type CurveTableFeatures } from '../data-table.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -17,7 +17,7 @@ const emptyObject = {} satisfies SxProps<Theme>
  * @param isSticky whether the column is sticky (first column on tablet)
  * @returns an array with the cell sx and the wrapper sx (empty object if no wrapper needed)
  */
-export function useCellSx<T extends CurveTableItem>({
+export function useCellSx<T extends RowData>({
   column,
   showCollapseIcon,
   isSticky,

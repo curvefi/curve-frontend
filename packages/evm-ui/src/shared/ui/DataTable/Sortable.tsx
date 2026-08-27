@@ -1,11 +1,11 @@
 import { forwardRef, type ReactNode, type MouseEvent, type RefAttributes } from 'react'
 import { ArrowDownIcon } from '@evm-ui/shared/icons/ArrowDownIcon'
 import Stack from '@mui/material/Stack'
-import type { Column } from '@tanstack/react-table'
-import { type CurveTableFeatures, getFlexAlignment, type DataTableSize, type CurveTableItem } from './data-table.utils'
+import type { Column, RowData } from '@tanstack/react-table'
+import { type CurveTableFeatures, getFlexAlignment, type DataTableSize } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 
-type SortableProps<T extends CurveTableItem> = {
+type SortableProps<T extends RowData> = {
   column: Column<CurveTableFeatures, T, unknown> | undefined
   children: ReactNode
   size: DataTableSize
@@ -21,7 +21,7 @@ const HeaderCellSortableAlign = {
 
 // forwardRef needed to pass ref to Tooltip for it to work
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
-const _Sortable = forwardRef<HTMLDivElement, SortableProps<CurveTableItem>>(function Sortable(
+const _Sortable = forwardRef<HTMLDivElement, SortableProps<RowData>>(function Sortable(
   { children, column, size, isEnabled = true, ...props },
   ref,
 ) {
@@ -55,6 +55,6 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<CurveTableItem>>(func
 })
 
 /** Type assertion to support generics with forwardRef (forwardRef doesn't natively support generic components) */
-export const Sortable = _Sortable as <T extends CurveTableItem>(
+export const Sortable = _Sortable as <T extends RowData>(
   props: SortableProps<T> & RefAttributes<HTMLDivElement>,
 ) => ReactNode

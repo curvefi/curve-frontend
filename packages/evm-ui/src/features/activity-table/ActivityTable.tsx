@@ -1,10 +1,9 @@
-import type { CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable, DataTableProps } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { getTransactionActions } from './utils'
 
-type ActivityTableItem = CurveTableItem & { txUrl?: string | null }
+type ActivityTableItem = { txUrl?: string | null }
 
 type ActivityTableProps<TData extends ActivityTableItem> = Pick<
   DataTableProps<TData>,

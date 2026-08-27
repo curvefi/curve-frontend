@@ -3,11 +3,11 @@ import Skeleton from '@mui/material/Skeleton'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
-import type { Column, ReactTable } from '@tanstack/react-table'
-import { getCellVariant, type CurveTableFeatures, type CurveTableItem } from './data-table.utils'
+import type { Column, ReactTable, RowData } from '@tanstack/react-table'
+import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import { useCellSx } from './hooks/useCellSx'
 
-const SkeletonCell = <T extends CurveTableItem>({
+const SkeletonCell = <T extends RowData>({
   column,
   isSticky,
 }: {
@@ -27,7 +27,7 @@ const SkeletonCell = <T extends CurveTableItem>({
   </TableCell>
 )
 
-export const SkeletonRows = <T extends CurveTableItem>({
+export const SkeletonRows = <T extends RowData>({
   table,
   shouldStickFirstColumn,
   increasingLength,

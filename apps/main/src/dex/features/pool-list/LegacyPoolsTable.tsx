@@ -49,6 +49,7 @@ export const LegacyPoolsTable = ({ network }: { network: NetworkConfig }) => {
   const table = useCurveTable({
     columns: LEGACY_POOL_COLUMNS,
     query: q({ data, isLoading, error: null }),
+    meta: { getRowHref: ({ url }) => url },
     state: { expanded, sorting, columnVisibility, columnFilters, pagination, globalFilter },
     onSortingChange,
     onExpandedChange,

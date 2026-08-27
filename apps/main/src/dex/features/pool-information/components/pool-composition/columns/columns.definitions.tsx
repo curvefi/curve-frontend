@@ -1,5 +1,5 @@
 import { t } from '@evm-ui/lib/i18n'
-import { createAppColumnHelper, type CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo, type TokenInfoTokenIconProps } from '@evm-ui/shared/ui/TokenInfo'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
@@ -11,7 +11,7 @@ import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { TokenCell } from '../../TokenCell'
 import { PoolCompositionColumnId } from './columns.enum'
 
-export type PoolCompositionRow = CurveTableItem & {
+export type PoolCompositionRow = {
   source: TokenInfoTokenIconProps
   explorerUrl?: string
   marketShare?: number
