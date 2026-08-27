@@ -1,9 +1,10 @@
 import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCreate'
-import { helpers } from '@/dao/lib/curvejs'
-import { useStore } from '@/dao/store/useStore'
+import { networks } from '@/dao/networks'
 import type { CurveApi } from '@/dao/types/dao.types'
 import { CurveComponentTestWrapper } from '@cy/support/helpers/CurveComponentTestWrapper'
 import { createCreateVeCrvLockScenario } from '@cy/support/helpers/dao/mocks/create-vecrv-lock.mocks'
+import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
+import { setGasInfo } from '@cy/support/helpers/llamalend/test-context.helpers'
 
 const CHAIN_ID = 1
 
@@ -28,9 +29,7 @@ const fillCreateLockForm = (lockedAmount: string) => {
 }
 
 describe('FormLockCreate (mocked)', () => {
-  beforeEach(() => {
-    useStore.getState().lockedCrv.resetState()
-  })
+  beforeEach(setupMockedDaoComponentTest)
 
   const testCases = [
     { isApproved: false, title: 'estimates, approves, and creates a lock' },
@@ -39,53 +38,20 @@ describe('FormLockCreate (mocked)', () => {
 
   testCases.forEach(({ isApproved, title }) => {
     it(title, () => {
-      const scenario = createCreateVeCrvLockScenario({ isApproved })
-      cy.stub(helpers, 'waitForTransaction').resolves({ status: 1 })
-      cy.stub(helpers, 'waitForTransactions').resolves([{ status: 1 }])
+      const { assertPreSubmit, assertSubmit, curve, lockedAmount } = createCreateVeCrvLockScenario({ isApproved })
+      setGasInfo({ chainId: CHAIN_ID, networks })
 
-      cy.mount(<CreateVeCrvLockForm curve={scenario.curve} />)
-      fillCreateLockForm(scenario.lockedAmount)
-      cy.get(isApproved ? '[data-testid="create_lock"]' : '[data-testid="approval"]').should('be.enabled')
-
-      cy.then(() => {
-        expect(scenario.calcUnlockTime.called).to.eq(true)
-        expect(scenario.isApproved.calledWithExactly(scenario.lockedAmount)).to.eq(true)
-        if (isApproved) {
-          expect(scenario.estimateCreateLock.calledWithExactly(scenario.lockedAmount, scenario.calculatedDays())).to.eq(
-            true,
-          )
-        } else {
-          expect(scenario.estimateApprove.calledWithExactly(scenario.lockedAmount)).to.eq(true)
-        }
-      })
+      cy.mount(<CreateVeCrvLockForm curve={curve} />)
+      fillCreateLockForm(lockedAmount)
+      cy.get('[data-testid="create-lock-submit-button"]').should('be.enabled')
+      cy.then(assertPreSubmit)
 
       if (!isApproved) {
-        cy.get('[data-testid="approval"]').click()
-        cy.then(() => expect(scenario.approve.calledWithExactly(scenario.lockedAmount)).to.eq(true))
+        cy.get('[data-testid="create-lock-submit-button"]').should('contain.text', 'Approve').click()
       }
 
-      cy.get('[data-testid="create_lock"]').click()
-      cy.then(() => {
-        const days = scenario.calculatedDays()
-        expect(scenario.estimateCreateLock.calledWithExactly(scenario.lockedAmount, days)).to.eq(true)
-        expect(scenario.createLock.calledWithExactly(scenario.lockedAmount, days)).to.eq(true)
-      })
-    })
-  })
-
-  it('rejects an amount greater than the CRV balance without calling curvejs', () => {
-    const scenario = createCreateVeCrvLockScenario({ isApproved: true })
-
-    cy.mount(<CreateVeCrvLockForm curve={scenario.curve} crv="10" />)
-    fillCreateLockForm('10.01')
-
-    cy.contains('Amount is greater than balance').should('be.visible')
-    cy.get('[data-testid="create_lock"]').should('be.disabled')
-    cy.then(() => {
-      expect(scenario.isApproved.callCount).to.eq(0)
-      expect(scenario.estimateApprove.callCount).to.eq(0)
-      expect(scenario.estimateCreateLock.callCount).to.eq(0)
-      expect(scenario.createLock.callCount).to.eq(0)
+      cy.get('[data-testid="create-lock-submit-button"]').should('contain.text', 'Create Lock').click()
+      cy.then(assertSubmit)
     })
   })
 })

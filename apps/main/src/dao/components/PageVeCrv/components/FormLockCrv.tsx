@@ -11,7 +11,7 @@ import { useStore } from '@/dao/store/useStore'
 import { type CurveApi, isLoading, notify, useCurve } from '@evm-ui/features/connect-wallet'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { t } from '@evm-ui/lib/i18n'
-import { REFRESH_INTERVAL } from '@evm-ui/utils'
+import { decimal, REFRESH_INTERVAL } from '@evm-ui/utils'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
@@ -161,6 +161,7 @@ export const FormLockCrv = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
           vecrvInfo={vecrvInfo}
           handleInpLockedAmt={useCallback(lockedAmt => updateFormValues({ lockedAmt }), [updateFormValues])}
           {...formValues}
+          lockedAmt={decimal(formValues.lockedAmt)}
         />
       </StyledForm>
 

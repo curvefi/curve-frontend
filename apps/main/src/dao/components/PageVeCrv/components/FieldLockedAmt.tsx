@@ -24,7 +24,7 @@ export const FieldLockedAmt = ({
   haveSigner: boolean
   formType: FormType
   vecrvInfo: VecrvInfo
-  lockedAmt: Decimal | string | undefined
+  lockedAmt: Decimal | undefined
   lockedAmtError: string
   handleInpLockedAmt: (lockedAmt: Decimal | undefined) => void
 }) => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { CurveApi } from '@/dao/types/dao.types'
 import { oneDecimal } from '@cy/support/generators'
 import { TEST_ADDRESS, TEST_TX_HASH } from '@cy/support/helpers/llamalend/mock-loan-test-data'
@@ -11,7 +12,16 @@ import { dayjs } from '@evm-ui/lib/dayjs'
 
 const CHAIN_ID = 1
 
-export const createCreateVeCrvLockScenario = ({ isApproved: approved }: { isApproved: boolean }) => {
+export const createCreateVeCrvLockScenario = ({
+  isApproved: approved,
+}: {
+  isApproved: boolean
+}): {
+  assertPreSubmit: () => void
+  assertSubmit: () => void
+  curve: CurveApi
+  lockedAmount: string
+} => {
   let calculatedDays = 0
   const lockedAmount = oneDecimal(1, 999, 2).toString()
   const approve = createTransactionStub([TEST_TX_HASH])
@@ -38,14 +48,21 @@ export const createCreateVeCrvLockScenario = ({ isApproved: approved }: { isAppr
   } as unknown as CurveApi
 
   return {
-    approve,
-    calcUnlockTime,
-    calculatedDays: () => calculatedDays,
-    createLock,
     curve,
-    estimateApprove,
-    estimateCreateLock,
-    isApproved,
     lockedAmount,
+    assertPreSubmit: () => {
+      expect(calcUnlockTime).to.have.been.called
+      expect(isApproved).to.have.been.calledWithExactly(lockedAmount)
+      if (approved) {
+        expect(estimateCreateLock).to.have.been.calledWithExactly(lockedAmount, calculatedDays)
+      } else {
+        expect(estimateApprove).to.have.been.calledWithExactly(lockedAmount)
+      }
+    },
+    assertSubmit: () => {
+      if (!approved) expect(approve).to.have.been.calledWithExactly(lockedAmount)
+      expect(estimateCreateLock).to.have.been.calledWithExactly(lockedAmount, calculatedDays)
+      expect(createLock).to.have.been.calledWithExactly(lockedAmount, calculatedDays)
+    },
   }
 }
