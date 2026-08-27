@@ -13,7 +13,7 @@ import { scanAddressPath } from '@legacy-ui/utils'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { RECENT_REFUELS_PAGE_SIZE, useRecentRefuels } from '../../queries/recent-refuels.query'
-import { createRecentRefuelsColumns, type RecentRefuelRow } from './columns/columns.definitions'
+import { createRecentRefuelsColumns } from './columns/columns.definitions'
 
 export const RecentRefuels = ({
   chainId,
@@ -56,7 +56,7 @@ export const RecentRefuels = ({
   return (
     <Stack data-testid="refuel-recent-refuels">
       <CardHeader title={t`Recent Refuels`} size="small" />
-      <DataTable<RecentRefuelRow>
+      <DataTable
         table={table}
         emptyState={{ title: t`No recent refuels found` }}
         errorState={{ title: t`Could not load recent refuels` }}

@@ -1,4 +1,5 @@
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import type { TypographyVariantKey } from '@evm-ui/themes/typography'
 import { QueryProp } from '@evm-ui/types/util'
 import type { PartialRecord } from '@primitives/objects.utils'
 import {
@@ -20,7 +21,6 @@ import {
   sortFn_text,
   tableFeatures,
   tableOptions,
-  type Column,
   type RowData,
   type RowModel,
   type Table,
@@ -28,6 +28,7 @@ import {
   type TableMeta,
   type TableOptions,
 } from '@tanstack/react-table'
+import { column_getIsSorted } from '@tanstack/react-table/static-functions'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -98,30 +99,23 @@ export const useCurveTable = <TData extends RowData>({
 })
 
 /** Define the alignment of the data or header cell based on the column type. */
-export const getAlignment = <TData extends RowData>({ columnDef }: Column<CurveTableFeatures, TData>) =>
-  columnDef.meta?.type == 'numeric' ? 'right' : 'left'
+export const getAlignment = (type?: 'numeric') => (type == 'numeric' ? 'right' : 'left')
 
-/** Similar to `getAlignment`, but for the flex alignment. */
-export const getFlexAlignment = <TData extends RowData>({ columnDef }: Column<CurveTableFeatures, TData>) =>
-  columnDef.meta?.type == 'numeric' ? 'end' : 'start'
-
-export const getExtraColumnPadding = <TData extends RowData>(column: Column<CurveTableFeatures, TData>) => {
-  const visibleColumns = column.table.getVisibleLeafColumns()
-  return {
-    ...(visibleColumns[0]?.id === column.id && { paddingInlineStart: Spacing.md }),
-    ...(visibleColumns.at(-1)?.id === column.id && { paddingInlineEnd: Spacing.md }),
-  }
-}
+export const getExtraColumnPadding = (columnId: string, visibleColumns: readonly { id: string }[]) => ({
+  ...(visibleColumns[0]?.id === columnId && { paddingInlineStart: Spacing.md }),
+  ...(visibleColumns.at(-1)?.id === columnId && { paddingInlineEnd: Spacing.md }),
+})
 
 /** Get the typography variant for the cell based on the column definition. */
-export const getCellVariant = <TData extends RowData>({ columnDef }: Column<CurveTableFeatures, TData>) =>
-  columnDef.meta?.variant ?? 'tableCellMBold'
+export const getCellVariant = (variant?: TypographyVariantKey) => variant ?? 'tableCellMBold'
 
-export const isSortedBy = <TData extends RowData>(table: Table<CurveTableFeatures, TData>, columnId: string) =>
-  Boolean(table.getColumn(columnId)?.getIsSorted())
-
-export const getHiddenCount = <TData extends RowData>(table: Table<CurveTableFeatures, TData>): number =>
-  table.getPreFilteredRowModel().rows.length - table.getFilteredRowModel().rows.length
+export const isSortedBy = <TFeatures extends TableFeatures, TData extends RowData>(
+  table: Pick<Table<TFeatures, TData>, 'getColumn'>,
+  columnId: string,
+) => {
+  const column = table.getColumn(columnId)
+  return column ? Boolean(column_getIsSorted(column)) : false
+}
 
 // The following datatable size code lives in the util file, because at the moment of writing we have both DataTable and LegacyDataTable.
 // TODO: move to the final DataTable.tsx component once we remove the LegacyDataTable and make sure there are no circular dependencies with the other files in the DataTable folder.

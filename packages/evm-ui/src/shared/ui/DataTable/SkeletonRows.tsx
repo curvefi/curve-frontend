@@ -17,7 +17,7 @@ const SkeletonCell = <T extends RowData>({
   <TableCell sx={useCellSx({ isSticky, column })}>
     <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
       <Typography
-        variant={getCellVariant(column)}
+        variant={getCellVariant(column.columnDef.meta?.variant)}
         data-testid={`data-table-cell-${column.id}`}
         sx={{ paddingBlock: '9px' }} // hardcoded to match the correct height of the cells
       >

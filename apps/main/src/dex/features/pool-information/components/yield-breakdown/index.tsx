@@ -7,11 +7,7 @@ import { constQ } from '@evm-ui/types/util'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useYieldBreakdown } from '../../hooks/useYieldBreakdown'
-import {
-  YIELD_BREAKDOWN_COLUMNS,
-  YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY,
-  type YieldBreakdownRow,
-} from './columns/columns.definitions'
+import { YIELD_BREAKDOWN_COLUMNS, YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY } from './columns/columns.definitions'
 import { FooterRow } from './FooterRow'
 
 export const YieldBreakdown = ({
@@ -39,7 +35,7 @@ export const YieldBreakdown = ({
     rows.length > 0 && (
       <Stack>
         <CardHeader title={t`Yield Breakdown`} size="small" />
-        <DataTable<YieldBreakdownRow>
+        <DataTable
           category="detail"
           table={table}
           emptyState={{ title: t`No yield breakdown found` }}

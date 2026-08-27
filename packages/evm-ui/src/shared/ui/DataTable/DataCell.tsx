@@ -24,7 +24,7 @@ export const DataCell = <T extends RowData>({
   const [sx, wrapperSx] = useCellSx({ column, showCollapseIcon, isSticky })
   return (
     <Typography
-      variant={getCellVariant(column)}
+      variant={getCellVariant(column.columnDef.meta?.variant)}
       component="td"
       data-testid={`data-table-cell-${column.id}`}
       sx={applySxProps({ color: 'text.primary' }, sx)}

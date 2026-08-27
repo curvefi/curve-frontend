@@ -36,9 +36,12 @@ function useHeaderSx<T extends RowData>({
   width?: string | number
   size: DataTableSize
 }) {
-  const { paddingInlineStart, paddingInlineEnd } = getExtraColumnPadding(column)
+  const { paddingInlineStart, paddingInlineEnd } = getExtraColumnPadding(
+    column.id,
+    column.table.getVisibleLeafColumns(),
+  )
   const canSort = column.getCanSort()
-  const textAlign = getAlignment(column)
+  const textAlign = getAlignment(column.columnDef.meta?.type)
   const isSorted = column.getIsSorted()
   return useMemo(
     (): SxProps<Theme> => ({

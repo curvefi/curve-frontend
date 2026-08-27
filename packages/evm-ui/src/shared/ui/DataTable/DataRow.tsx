@@ -108,7 +108,7 @@ export const DataRow = <TData extends RowData>({
       </InvertOnHover>
 
       {hasExpansionRow && (
-        <ExpansionRow<TData> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
+        <ExpansionRow colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
       )}
     </>
   )

@@ -126,7 +126,7 @@ export const DataTable = <T extends RowData>({
             {!hideHeader && (
               <TableHead sx={tableHeaderSx} data-testid="data-table-head">
                 {children && shouldStickyHeader && (
-                  <FilterRow table={table} testId={TABLE_FILTERS_TEST_ID}>
+                  <FilterRow colSpan={columnCount} testId={TABLE_FILTERS_TEST_ID}>
                     {children}
                   </FilterRow>
                 )}
@@ -147,10 +147,10 @@ export const DataTable = <T extends RowData>({
             )}
             <TableBody>
               {visibleRows.map(row => (
-                <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
+                <DataRow key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
               ))}
               {error ? (
-                <EmptyStateRow table={table} size={emptyStateRowSize}>
+                <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>
                   <ErrorMessage
                     title={errorState?.title ?? t`Could not load data`}
                     subtitle={errorState?.description ?? error.message}
@@ -167,7 +167,7 @@ export const DataTable = <T extends RowData>({
                 />
               ) : (
                 !rows.length && (
-                  <EmptyStateRow table={table} size={emptyStateRowSize}>
+                  <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>
                     <EmptyStateCard
                       title={emptyState?.title ?? t`No results found`}
                       description={emptyState?.description}

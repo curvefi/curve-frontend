@@ -1,5 +1,6 @@
 import { capitalize } from 'lodash'
 import { useMemo } from 'react'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { ChainFilterChips } from '@evm-ui/shared/ui/DataTable/chips/ChainFilterChips'
 import type { CurveTableFeatures, FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import {
@@ -18,7 +19,7 @@ import { constQ } from '@evm-ui/types/util'
 import type { Unit } from '@evm-ui/utils/units'
 import { toArray } from '@primitives/array.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
-import type { ReactTable, RowData } from '@tanstack/react-table'
+import type { ReactTable } from '@tanstack/react-table'
 import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
 
 const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))
@@ -37,12 +38,12 @@ const ChainActiveFilterChips = ({ labels, onRemove }: TableActiveFilterGroupChip
   <ChainFilterChips chainsQuery={constQ(labels)} selectedChains={labels} toggleChain={onRemove} />
 )
 
-export const MarketsActiveFiltersChip = <T extends RowData>({
+export const MarketsActiveFiltersChip = ({
   table,
   setColumnFilter,
   testIdPrefix,
 }: {
-  table: ReactTable<CurveTableFeatures, T>
+  table: ReactTable<CurveTableFeatures, LlamaMarketRow>
   testIdPrefix: string
 } & Pick<FilterProps<MarketColumnId>, 'setColumnFilter'>) => {
   const filtersState = table.state.columnFilters as { id: MarketColumnId; value: string }[]

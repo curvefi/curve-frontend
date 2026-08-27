@@ -6,7 +6,7 @@ import { constQ } from '@evm-ui/types/util'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { usePointsCampaigns } from '../../hooks/usePointsCampaigns'
-import { POINTS_CAMPAIGNS_COLUMNS, type PointsCampaignsRow } from './columns/columns.definitions'
+import { POINTS_CAMPAIGNS_COLUMNS } from './columns/columns.definitions'
 
 export const PointsCampaigns = ({
   chainId,
@@ -28,11 +28,7 @@ export const PointsCampaigns = ({
     rows.length > 0 && (
       <Stack>
         <CardHeader title={t`Points Campaigns`} size="small" />
-        <DataTable<PointsCampaignsRow>
-          category="detail"
-          table={table}
-          emptyState={{ title: t`No points campaigns found` }}
-        />
+        <DataTable category="detail" table={table} emptyState={{ title: t`No points campaigns found` }} />
       </Stack>
     )
   )

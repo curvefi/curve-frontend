@@ -4,7 +4,7 @@ import { useIsTablet } from '@evm-ui/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@evm-ui/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
 import { t } from '@evm-ui/lib/i18n'
-import { getHiddenCount, useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@evm-ui/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@evm-ui/shared/ui/DataTable/hooks/useFilters'
 import { LegacyDataTable } from '@evm-ui/shared/ui/DataTable/LegacyDataTable'
@@ -58,11 +58,12 @@ export const LegacyPoolsTable = ({ network }: { network: NetworkConfig }) => {
   })
 
   const resultCount = table.getFilteredRowModel().rows.length
+  const colSpan = table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)
   return (
     <LegacyDataTable
       table={table}
       emptyState={
-        <EmptyStateRow table={table}>
+        <EmptyStateRow colSpan={colSpan}>
           <LegacyPoolsEmptyState columnFiltersById={columnFiltersById} resetFilters={resetFilters} />
         </EmptyStateRow>
       }
@@ -84,7 +85,7 @@ export const LegacyPoolsTable = ({ network }: { network: NetworkConfig }) => {
         chips={
           <LegacyPoolsFilters
             poolFilters={poolFilters}
-            hiddenCount={getHiddenCount(table)}
+            hiddenCount={table.getPreFilteredRowModel().rows.length - resultCount}
             resetFilters={resetFilters}
             onSortingChange={onSortingChange}
             sortField={sortField}

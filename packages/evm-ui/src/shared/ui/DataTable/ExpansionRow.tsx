@@ -4,8 +4,7 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import type { Row, RowData } from '@tanstack/react-table'
-import type { CurveTableFeatures } from './data-table.utils'
+import type { RowData } from '@tanstack/react-table'
 import type { DataRowProps } from './DataRow'
 
 const { Spacing } = SizesAndSpaces
@@ -60,7 +59,7 @@ export function ExpansionRow<T extends RowData>({
  *
  * It would be tidier to use a grid layout for the whole table
  */
-function useRowExpansion<T extends RowData>(row: Row<CurveTableFeatures, T>) {
+function useRowExpansion(row: { getIsExpanded: () => boolean }) {
   const rowExpanded = row.getIsExpanded()
   const [render, setRender] = useState(rowExpanded)
   const [expanded, setExpanded] = useState(false)

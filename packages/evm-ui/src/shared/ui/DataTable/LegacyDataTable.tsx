@@ -120,7 +120,7 @@ export const LegacyDataTable = <T extends RowData>({
       >
         {!hideHeader && (
           <TableHead sx={tableHeaderSx} data-testid="data-table-head">
-            {children && <LegacyFilterRow table={table}>{children}</LegacyFilterRow>}
+            {children && <LegacyFilterRow colSpan={columnCount}>{children}</LegacyFilterRow>}
 
             {headerGroups.map(headerGroup => (
               <TableRow key={headerGroup.id} sx={{ height: DataTableHeaderHeight[size] }}>
@@ -144,7 +144,7 @@ export const LegacyDataTable = <T extends RowData>({
             emptyState
           ) : (
             visibleRows.map((row, index) => (
-              <LegacyDataRow<T>
+              <LegacyDataRow
                 key={row.id}
                 row={row}
                 isLastRow={index === visibleRows.length - 1}

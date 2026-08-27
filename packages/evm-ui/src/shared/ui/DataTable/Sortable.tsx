@@ -1,12 +1,17 @@
-import { forwardRef, type ReactNode, type MouseEvent, type RefAttributes } from 'react'
+import { forwardRef, type ReactNode, type MouseEvent } from 'react'
 import { ArrowDownIcon } from '@evm-ui/shared/icons/ArrowDownIcon'
 import Stack from '@mui/material/Stack'
-import type { Column, RowData } from '@tanstack/react-table'
-import { type CurveTableFeatures, getFlexAlignment, type DataTableSize } from './data-table.utils'
+import type { Column, ColumnMeta, RowData, StockFeatures } from '@tanstack/react-table'
+import type { DataTableSize } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 
-type SortableProps<T extends RowData> = {
-  column: Column<CurveTableFeatures, T, unknown> | undefined
+type SortingFeatures = Pick<StockFeatures, 'rowSortingFeature'>
+type SortableColumn = Pick<Column<SortingFeatures, RowData>, 'id' | 'getIsSorted' | 'getToggleSortingHandler'> & {
+  columnDef: { meta?: Pick<ColumnMeta<SortingFeatures, RowData>, 'type'> }
+}
+
+type SortableProps = {
+  column: SortableColumn | undefined
   children: ReactNode
   size: DataTableSize
   isEnabled?: boolean
@@ -21,7 +26,7 @@ const HeaderCellSortableAlign = {
 
 // forwardRef needed to pass ref to Tooltip for it to work
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
-const _Sortable = forwardRef<HTMLDivElement, SortableProps<RowData>>(function Sortable(
+export const Sortable = forwardRef<HTMLDivElement, SortableProps>(function Sortable(
   { children, column, size, isEnabled = true, ...props },
   ref,
 ) {
@@ -39,7 +44,7 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<RowData>>(function So
       sx={{
         alignItems: HeaderCellSortableAlign[size],
         ...(isEnabled && { sx: { cursor: 'pointer' } }),
-        ...(column && { justifyContent: getFlexAlignment(column) }),
+        ...(column && { justifyContent: column.columnDef.meta?.type === 'numeric' ? 'end' : 'start' }),
       }}
     >
       {children}
@@ -53,8 +58,3 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<RowData>>(function So
     </Stack>
   )
 })
-
-/** Type assertion to support generics with forwardRef (forwardRef doesn't natively support generic components) */
-export const Sortable = _Sortable as <T extends RowData>(
-  props: SortableProps<T> & RefAttributes<HTMLDivElement>,
-) => ReactNode

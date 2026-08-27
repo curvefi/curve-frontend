@@ -15,7 +15,6 @@ import { AlertAdditionalDebtToken } from '../alerts/AlertAdditionalDebtToken'
 import { AlertClosePosition } from '../alerts/AlertClosePosition'
 import { LabelCellDisplay } from '../cells/LabelCell'
 import { ValueCellDisplay } from '../cells/ValueCell'
-import type { ClosePositionRow } from '../columns/columns.definitions'
 
 const { Spacing } = SizesAndSpaces
 
@@ -53,7 +52,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         />
       }
     >
-      <DataTable<ClosePositionRow>
+      <DataTable
         category="form"
         table={table}
         emptyState={{ title: t`No close position data` }}

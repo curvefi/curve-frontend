@@ -27,10 +27,13 @@ export function useCellSx<T extends RowData>({
   isSticky: boolean
 }) {
   // with the collapse icon there is an extra wrapper, so keep the sx separate
-  const textAlign = getAlignment(column)
+  const textAlign = getAlignment(column.columnDef.meta?.type)
   const wrapperSx = useMemo(() => ({ textAlign, paddingInline: Spacing.sm }), [textAlign])
 
-  const { paddingInlineStart, paddingInlineEnd } = getExtraColumnPadding(column)
+  const { paddingInlineStart, paddingInlineEnd } = getExtraColumnPadding(
+    column.id,
+    column.table.getVisibleLeafColumns(),
+  )
   const sx = useMemo(
     () => ({
       ...(!showCollapseIcon && wrapperSx),

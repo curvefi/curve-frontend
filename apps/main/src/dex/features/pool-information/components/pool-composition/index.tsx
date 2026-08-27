@@ -8,11 +8,7 @@ import { q } from '@evm-ui/types/util'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { usePoolComposition } from '../../hooks/usePoolComposition'
-import {
-  POOL_COMPOSITION_COLUMNS,
-  POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY,
-  type PoolCompositionRow,
-} from './columns/columns.definitions'
+import { POOL_COMPOSITION_COLUMNS, POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY } from './columns/columns.definitions'
 import { FooterRow } from './FooterRow'
 
 export const PoolComposition = ({
@@ -42,7 +38,7 @@ export const PoolComposition = ({
   return (
     <Stack>
       <CardHeader title={t`Composition`} size="small" />
-      <DataTable<PoolCompositionRow>
+      <DataTable
         category="detail"
         table={table}
         emptyState={{ title: t`No market composition found` }}
