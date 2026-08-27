@@ -1,9 +1,10 @@
 import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
-import { helpers } from '@/dao/lib/curvejs'
+import { networks } from '@/dao/networks'
 import type { CurveApi } from '@/dao/types/dao.types'
 import { CurveComponentTestWrapper } from '@cy/support/helpers/CurveComponentTestWrapper'
 import { createLockMoreScenario } from '@cy/support/helpers/dao/mocks/lock-more.mocks'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
+import { setGasInfo } from '@cy/support/helpers/llamalend/test-context.helpers'
 
 const CHAIN_ID = 1
 
@@ -37,18 +38,19 @@ describe('FormLockCrv (mocked)', () => {
   testCases.forEach(({ isApproved, title }) => {
     it(title, () => {
       const { assertPreSubmit, assertSubmit, curve, lockedAmount } = createLockMoreScenario({ isApproved })
-      cy.stub(helpers, 'waitForTransaction').resolves({ status: 1 })
-      cy.stub(helpers, 'waitForTransactions').resolves([{ status: 1 }])
+      setGasInfo({ chainId: CHAIN_ID, networks })
 
       cy.mount(<LockMoreForm curve={curve} />)
       writeLockMoreForm(lockedAmount)
-      cy.get(isApproved ? '[data-testid="increase_crv"]' : '[data-testid="approval"]').should('be.enabled')
+      cy.get('[data-testid="increase-lock-submit-button"]').should('be.enabled')
       cy.then(assertPreSubmit)
 
-      if (!isApproved) cy.get('[data-testid="approval"]').click()
-
-      cy.get('[data-testid="increase_crv"]').click()
-      cy.then(assertSubmit)
+      if (isApproved) {
+        cy.get('[data-testid="increase-lock-submit-button"]').should('contain.text', 'Increase Lock Amount').click()
+      } else {
+        cy.get('[data-testid="increase-lock-submit-button"]').should('contain.text', 'Approve').click()
+      }
+      cy.wrap(null).should(assertSubmit)
     })
   })
 })

@@ -1,192 +1,51 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { styled } from 'styled-components'
-import { AlertFormError } from '@/dao/components/AlertFormError'
-import { DetailInfoEstGas } from '@/dao/components/DetailInfoEstGas'
 import { FieldLockedAmt } from '@/dao/components/PageVeCrv/components/FieldLockedAmt'
-import { FormActions } from '@/dao/components/PageVeCrv/components/FormActions'
-import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dao/components/PageVeCrv/types'
-import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
+import { useIncreaseLockForm } from '@/dao/components/PageVeCrv/hooks/useIncreaseLockForm'
+import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { networks } from '@/dao/networks'
-import { useStore } from '@/dao/store/useStore'
-import { type CurveApi, isLoading, notify, useCurve } from '@evm-ui/features/connect-wallet'
-import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
+import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
-import { decimal, REFRESH_INTERVAL } from '@evm-ui/utils'
-import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
-import { Stepper } from '@legacy-ui/Stepper/Stepper'
-import type { Step } from '@legacy-ui/Stepper/types'
+import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
+import { q } from '@evm-ui/types/util'
+import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 
-const FORM_TYPE = 'adjust_crv' as const
-
 export const FormLockCrv = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
-  const isSubscribedRef = useRef(false)
-
-  const activeKey = useStore(state => state.lockedCrv.activeKey)
-  const { connectState } = useCurve()
-  const isLoadingCurve = isLoading(connectState)
-  const formEstGas = useStore(state => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore(state => state.lockedCrv.formStatus)
-  const formValues = useStore(state => state.lockedCrv.formValues)
-  const fetchStepApprove = useStore(state => state.lockedCrv.fetchStepApprove)
-  const fetchStepIncreaseCrv = useStore(state => state.lockedCrv.fetchStepIncreaseCrv)
-  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
-
-  const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
-
-  const { signerAddress } = curve ?? {}
-  const haveSigner = !!signerAddress
-
-  const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setTxInfoBar(null)
-      setFormValues(curve, isLoadingCurve, FORM_TYPE, updatedFormValues, vecrvInfo, isFullReset)
-    },
-    [curve, isLoadingCurve, vecrvInfo, setFormValues],
-  )
-
-  const handleBtnClickApproval = useCallback(
-    async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
-      const notifyMessage = t`Please approve spending your CRV.`
-      const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, curve, FORM_TYPE, formValues)
-      if (typeof dismiss === 'function') dismiss()
-    },
-    [fetchStepApprove],
-  )
-
-  const handleBtnClickIncrease = useCallback(
-    async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
-      const notifyMessage = t`Please confirm increasing lock amount by ${formValues.lockedAmt} CRV.`
-      const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepIncreaseCrv(activeKey, curve, formValues)
-
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
-        const txDescription = t`Lock amount updated`
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />)
-      }
-      if (typeof dismiss === 'function') dismiss()
-    },
-    [fetchStepIncreaseCrv],
-  )
-
-  const getSteps = useCallback(
-    (
-      activeKey: string,
-      curve: CurveApi,
-      formEstGas: FormEstGas,
-      formValues: FormValues,
-      formStatus: FormStatus,
-      steps: Step[],
-    ) => {
-      const isValid =
-        +formValues.lockedAmt > 0 && formValues.lockedAmtError === '' && !formStatus.error && !formEstGas.loading
-
-      const stepsObj: Record<string, Step> = {
-        APPROVAL: {
-          key: 'APPROVAL',
-          status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),
-          type: 'action',
-          content: formStatus.isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => void handleBtnClickApproval(activeKey, curve, formValues),
-        },
-        INCREASE_CRV: {
-          key: 'INCREASE_CRV',
-          status: getStepStatus(
-            formStatus.formTypeCompleted === 'INCREASE_CRV',
-            formStatus.step === 'INCREASE_CRV',
-            isValid && formStatus.isApproved,
-          ),
-          type: 'action',
-          content: formStatus.formTypeCompleted === 'INCREASE_CRV' ? t`Lock Amount Increased` : t`Increase Lock Amount`,
-          onClick: () => void handleBtnClickIncrease(activeKey, curve, formValues),
-        },
-      }
-
-      let stepsKey: StepKey[]
-
-      if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map(s => s.key as StepKey)
-      } else {
-        stepsKey = formStatus.isApproved ? ['INCREASE_CRV'] : ['APPROVAL', 'INCREASE_CRV']
-      }
-
-      return stepsKey.map(key => stepsObj[key])
-    },
-    [handleBtnClickApproval, handleBtnClickIncrease],
-  )
-
-  // Refresh when the connected account or network changes.
-  useEffect(() => {
-    isSubscribedRef.current = true
-    updateFormValues({}, true)
-
-    return () => {
-      isSubscribedRef.current = false
-    }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [curve?.chainId, curve?.signerAddress])
-
-  // steps
-  useEffect(() => {
-    if (curve) {
-      const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus, steps)
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setSteps(updatedSteps)
-    }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [curve?.chainId, curve?.signerAddress, isLoadingCurve, formEstGas, formValues, formStatus])
-
-  // interval
-  usePageVisibleInterval(() => updateFormValues({}, false), REFRESH_INTERVAL['5m'])
-
-  const activeStep = haveSigner ? getActiveStep(steps) : null
-  const loading = typeof vecrvInfo === 'undefined'
+  const { form, values, gas, isApproved, isPending, isDisabled, error, success, onSubmit, updateAmount } =
+    useIncreaseLockForm({ curve, vecrvInfo })
+  const amountFieldError =
+    form.formState.visibleErrors.find(([field]) => field === 'lockedAmt' || field === 'maxLockedAmt')?.[1] || ''
 
   return (
-    <>
-      <StyledForm
-        autoComplete="off"
-        onSubmit={evt => {
-          evt.preventDefault()
-        }}
-      >
-        <FieldLockedAmt
-          curve={curve}
-          haveSigner={haveSigner}
-          formType={FORM_TYPE}
-          vecrvInfo={vecrvInfo}
-          handleInpLockedAmt={useCallback(lockedAmt => updateFormValues({ lockedAmt }), [updateFormValues])}
-          {...formValues}
-          lockedAmt={decimal(formValues.lockedAmt)}
-        />
-      </StyledForm>
-
-      <div>
-        {haveSigner && (
-          <DetailInfoEstGas
-            chainId={rChainId}
-            {...formEstGas}
-            stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
-          />
-        )}
-      </div>
-
-      <FormActions haveSigner={haveSigner} loading={loading}>
-        {formStatus.error && (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false)} />
-        )}
-        {txInfoBar}
-        <Stepper steps={steps} />
-      </FormActions>
-    </>
+    <Form {...form} onSubmit={onSubmit} footer={null}>
+      <FieldLockedAmt
+        curve={curve}
+        disabled={isPending}
+        haveSigner={!!curve?.signerAddress}
+        formType="adjust_crv"
+        vecrvInfo={vecrvInfo}
+        lockedAmt={values.lockedAmt}
+        lockedAmtError={amountFieldError}
+        handleInpLockedAmt={updateAmount}
+      />
+      <ActionInfoGasEstimate gas={q(gas)} isApproved={isApproved} />
+      {success && (
+        <TxInfoBar description={t`Lock amount updated`} txHash={scanTxPath(networks[rChainId], success.hash)} />
+      )}
+      <FormButton
+        pending={isPending}
+        loading={gas.isLoading || isPending}
+        disabled={isDisabled}
+        label={[isApproved === false && t`Approve`, t`Increase Lock Amount`]}
+        testId="increase-lock-submit-button"
+        connectWalletTestId="vecrv-increase-lock-form"
+      />
+      <FormAlerts
+        error={error}
+        formErrors={form.formState.visibleErrors}
+        handledErrors={['lockedAmt', 'maxLockedAmt']}
+      />
+    </Form>
   )
 }
-
-const StyledForm = styled.form`
-  display: grid;
-  grid-row-gap: var(--spacing-3);
-`
