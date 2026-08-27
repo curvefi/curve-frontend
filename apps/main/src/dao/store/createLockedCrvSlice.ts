@@ -48,7 +48,6 @@ export type LockedCrvSlice = {
     // steps
     fetchEstGasApproval: (activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues) => Promise<FnStepEstGasApprovalResponse>
     fetchStepApprove: (activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues) => Promise<FnStepApproveResponse | undefined>
-    fetchStepCreate: (activeKey: string, curve: CurveApi, formValues: FormValues) => Promise<FnStepResponse & { lockedAmt: string, lockedDate: string } | undefined>
     fetchStepIncreaseCrv: (activeKey: string, curve: CurveApi, formValues: FormValues) => Promise<FnStepResponse  | undefined>
     fetchStepIncreaseTime: (activeKey: string, curve: CurveApi, formValues: FormValues) => Promise<FnStepResponse  | undefined>
 
@@ -112,11 +111,10 @@ export const createLockedCrvSlice = (
       //   fetch est gas
       const isValidLockedAmt = +cFormValues.lockedAmt > 0 && !cFormValues.lockedAmtError
       const isValidDays = cFormValues.days > 0 && !cFormValues.utcDateError
-      const isValidCreateForm = rFormType === 'create' ? isValidLockedAmt && isValidDays : true
       const isValidLockCrvForm = rFormType === 'adjust_crv' ? isValidLockedAmt : true
       const isValidLockDateForm = rFormType === 'adjust_date' ? isValidDays : true
 
-      if (isValidCreateForm && isValidLockCrvForm && isValidLockDateForm) {
+      if (isValidLockCrvForm && isValidLockDateForm) {
         void get()[SLICE_KEY].fetchEstGasApproval(activeKey, curve, rFormType, cFormValues)
       } else {
         get()[SLICE_KEY].setStateByKey('formEstGas', { [activeKey]: DEFAULT_FORM_EST_GAS })
@@ -176,43 +174,6 @@ export const createLockedCrvSlice = (
         }
 
         return resp
-      }
-    },
-    fetchStepCreate: async (activeKey, curve, formValues) => {
-      const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[SLICE_KEY])
-
-      if (formValues.lockedAmt && formValues.utcDate && formValues.days) {
-        let cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
-        cFormStatus.formProcessing = true
-        cFormStatus.step = 'CREATE_LOCK'
-        get()[SLICE_KEY].setStateByKey('formStatus', cloneDeep(cFormStatus))
-
-        const { chainId } = curve
-        const fn = networks[chainId].api.lockCrv.createLock
-        const resp = await fn(activeKey, curve, provider, formValues.lockedAmt, formValues.utcDate, formValues.days)
-
-        if (resp.activeKey === get()[SLICE_KEY].activeKey) {
-          cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
-
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
-          } else {
-            cFormStatus.formTypeCompleted = 'CREATE_LOCK'
-            get()[SLICE_KEY].setStateByKeys({
-              formValues: cloneDeep(DEFAULT_FORM_VALUES),
-              formStatus: cloneDeep(cFormStatus),
-            })
-          }
-
-          // re-fetch user vecrv info
-          await invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          await invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
-        }
       }
     },
     fetchStepIncreaseCrv: async (activeKey, curve, formValues) => {
