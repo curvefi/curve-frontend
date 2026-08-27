@@ -1,9 +1,6 @@
-import type { DateValue } from 'react-stately'
-import { ChainId, CurveApi, EstimatedGas } from '@/dao/types/dao.types'
+import { ChainId, CurveApi } from '@/dao/types/dao.types'
 
 export type { FormType } from '@/dao/types/dao.types'
-
-export type StepKey = 'APPROVE' | 'INCREASE_CRV' | 'INCREASE_TIME' | 'APPROVAL' | 'WITHDRAW' | ''
 
 export type VecrvInfo = {
   crv: string
@@ -16,28 +13,4 @@ export type PageVecrv = {
   curve: CurveApi | null
   rChainId: ChainId
   vecrvInfo: VecrvInfo
-}
-
-export type FormStatus = {
-  isApproved: boolean
-  formProcessing: boolean
-  formTypeCompleted: StepKey | ''
-  step: StepKey
-  error: string
-}
-
-export type FormEstGas = {
-  loading: boolean
-  estimatedGas: EstimatedGas | null
-  error: string
-}
-
-export type FormValues = {
-  utcDate: DateValue | null
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
-  utcDateError: 'invalid-date' | string
-  days: number
-  calcdUtcDate: string
-  lockedAmt: string
-  lockedAmtError: string
 }

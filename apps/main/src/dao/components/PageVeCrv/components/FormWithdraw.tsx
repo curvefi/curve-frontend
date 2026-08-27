@@ -1,64 +1,28 @@
-import { ReactNode, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { useConnection } from 'wagmi'
-import { AlertFormError } from '@/dao/components/AlertFormError'
 import { Countdown } from '@/dao/components/Countdown'
-import { FormActions } from '@/dao/components/PageVeCrv/components/FormActions'
+import { useWithdrawLockForm } from '@/dao/components/PageVeCrv/hooks/useWithdrawLockForm'
 import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
-import { useLockEstimateWithdrawGas } from '@/dao/entities/locker-estimate-withdraw-gas'
-import { useEstimateGasConversion } from '@/dao/hooks/useEstimateGasConversion'
-import { useStore } from '@/dao/store/useStore'
+import { networks } from '@/dao/networks'
+import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
-import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery } from '@evm-ui/types/util'
+import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
+import { q } from '@evm-ui/types/util'
 import { amount, formatNumber } from '@evm-ui/utils'
-import { getIsLockExpired } from '@evm-ui/utils/vecrv'
+import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
-import { Button } from '@legacy-ui/Button'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
+import { scanTxPath } from '@legacy-ui/utils'
 
-const { IconSize } = SizesAndSpaces
-
-export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
-  const withdrawLockedCrv = useStore(state => state.lockedCrv.withdrawLockedCrv)
-  const withdrawLockedCrvStatus = useStore(state => state.lockedCrv.withdrawLockedCrvStatus)
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
-
-  const { address } = useConnection()
-
-  const haveSigner = !!address
-  const canUnlock = getIsLockExpired(
-    vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
-    vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
-  )
-  const gasEstimate = useEstimateGasConversion(
-    useLockEstimateWithdrawGas({ chainId: rChainId, userAddress: address }, canUnlock),
-  )
-
-  const loading = typeof vecrvInfo === 'undefined'
-  const withdrawTxLoading =
-    withdrawLockedCrvStatus.transactionState === 'CONFIRMING' || withdrawLockedCrvStatus.transactionState === 'LOADING'
-  const withdrawTxError = withdrawLockedCrvStatus.transactionState === 'ERROR'
-  const withdrawTxSuccess = withdrawLockedCrvStatus.transactionState === 'SUCCESS'
-
-  useEffect(() => {
-    if (withdrawTxSuccess) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setTxInfoBar(
-        <TxInfoBar
-          description={t`Locked CRV withdrawn`}
-          txHash={withdrawLockedCrvStatus.txHash ?? ''}
-          onClose={() => setTxInfoBar(null)}
-        />,
-      )
-    }
-  }, [withdrawTxSuccess, withdrawLockedCrvStatus.txHash])
+export const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
+  const { form, canUnlock, gas, isPending, isDisabled, error, success, onSubmit } = useWithdrawLockForm({
+    curve,
+    vecrvInfo,
+  })
 
   return (
-    <Box display="flex" flexDirection="column" flexGap="var(--spacing-3)" fillHeight>
+    <Form {...form} onSubmit={onSubmit} footer={null}>
       <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`CRV Locked`}:</p>
@@ -75,52 +39,26 @@ export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
         </Box>
       </WithdrawInfo>
 
-      <Box display="flex" flexDirection="column" margin="auto 0 0" flexGap="var(--spacing-3)">
-        {haveSigner && canUnlock && (
-          <ActionInfo
-            label={t`Estimated TX cost`}
-            labelColor="tertiary" // Change the label color to tertiary to work together with legacy background colors until we can fully upgrade to the new design system
-            value={mapQuery(gasEstimate, ({ estGasCostUsd }) => {
-              const valueGas = formatNumber(estGasCostUsd, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 4,
-                abbreviate: false,
-                fallback: '-',
-              })
-              return valueGas !== '' && valueGas !== '0' ? `$${valueGas}` : '-'
-            })}
-            valueColor="tertiary"
-            valueLeft={<LocalFireDepartmentIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
-            valueTooltip={mapQuery(gasEstimate, e => e.tooltip)}
-          />
-        )}
-        <FormActions haveSigner={haveSigner} loading={loading}>
-          {!canUnlock && (
-            <AlertBox alertType="info">
-              {t`Your CRV unlocks in:`}
-              <StyledCountdown endDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / 1000} />
-            </AlertBox>
-          )}
-          {withdrawTxError && withdrawLockedCrvStatus.errorMessage && (
-            <AlertFormError errorKey={withdrawLockedCrvStatus.errorMessage} />
-          )}
-          {txInfoBar}
-          {withdrawTxSuccess && <SuccessBox>{t`Withdrawal successful`}</SuccessBox>}
-          {!withdrawTxSuccess && canUnlock && (
-            <Button
-              fillWidth
-              size="large"
-              variant="filled"
-              disabled={!canUnlock}
-              loading={withdrawTxLoading}
-              onClick={() => withdrawLockedCrv()}
-            >
-              {t`Withdraw`}
-            </Button>
-          )}
-        </FormActions>
-      </Box>
-    </Box>
+      {!canUnlock && (
+        <AlertBox alertType="info">
+          {t`Your CRV unlocks in:`}
+          <StyledCountdown endDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / 1000} />
+        </AlertBox>
+      )}
+      {canUnlock && <ActionInfoGasEstimate gas={q(gas)} />}
+      {success && (
+        <TxInfoBar description={t`Locked CRV withdrawn`} txHash={scanTxPath(networks[rChainId], success.hash)} />
+      )}
+      <FormButton
+        pending={isPending}
+        loading={isPending}
+        disabled={isDisabled}
+        label={t`Withdraw`}
+        testId="withdraw-lock-submit-button"
+        connectWalletTestId="vecrv-withdraw-lock-form"
+      />
+      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={[]} />
+    </Form>
   )
 }
 
@@ -136,20 +74,4 @@ const RowParagraph = styled.p`
 
 const StyledCountdown = styled(Countdown)`
   margin-left: var(--spacing-2);
-`
-
-// mimics StepBox from StepAction.tsx
-const SuccessBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-1) var(--spacing-2);
-  min-height: var(--height-large);
-  font-size: var(--box_action--button--font-size);
-  font-weight: var(--button--font-weight);
-  width: 100%;
-  color: var(--success-400);
-  border: 2px solid var(--success-400);
-  background-color: var(--success-600);
-  text-align: center;
 `
