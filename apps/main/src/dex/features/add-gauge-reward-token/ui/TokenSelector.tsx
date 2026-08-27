@@ -32,16 +32,12 @@ export const TokenSelector = ({
 }) => {
   const { curveApi } = useCurve()
   const crvAddress = curveApi?.getNetworkConstants()?.ALIASES?.crv as Address
-  const { getValue, update: updateForm, watchValue } = useFormContext<AddRewardFormValues>()
+  const { update: updateForm, watchValue } = useFormContext<AddRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
   const { tokensMapper } = useTokensMapper(chainId)
   const [isOpen, openModal, closeModal] = useSwitch()
 
-  const { data: gaugeRewardsDistributors, isSuccess: isGaugeRewardsDistributorsSuccess } = useGaugeRewardsDistributors({
-    chainId,
-    poolId,
-    userAddress,
-  })
+  const { data: gaugeRewardsDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
 
   const filteredTokens = useMemo(
     () =>
@@ -63,20 +59,19 @@ export const TokenSelector = ({
     [gaugeRewardsDistributors, tokensMapper, crvAddress, network.networkId],
   )
 
-  const selectedToken = filteredTokens.find(x => x.address === watchValue('rewardTokenId'))
+  const rewardTokenId = watchValue('rewardTokenId')
+  const selectedToken = filteredTokens.find(x => x.address === rewardTokenId)
 
   useEffect(() => {
-    if (!isGaugeRewardsDistributorsSuccess) return
-
-    const rewardTokenId = getValue('rewardTokenId')
-
-    const isRewardTokenInGaugeRewardsDistributors = objectKeys(gaugeRewardsDistributors || {}).some(gaugeRewardToken =>
-      isAddressEqual(gaugeRewardToken, rewardTokenId!),
-    )
+    const isRewardTokenInGaugeRewardsDistributors =
+      !!rewardTokenId &&
+      objectKeys(gaugeRewardsDistributors ?? {}).some(gaugeRewardToken =>
+        isAddressEqual(gaugeRewardToken, rewardTokenId),
+      )
     if (filteredTokens.length > 0 && (!rewardTokenId || isRewardTokenInGaugeRewardsDistributors)) {
       updateForm({ rewardTokenId: filteredTokens[0].address }, { automated: true })
     }
-  }, [gaugeRewardsDistributors, getValue, isGaugeRewardsDistributorsSuccess, filteredTokens, updateForm])
+  }, [gaugeRewardsDistributors, rewardTokenId, filteredTokens, updateForm])
 
   return (
     <Stack sx={{ gap: Spacing.xxs, width: { tablet: '7.5rem' } }}>
