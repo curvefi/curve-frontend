@@ -12,7 +12,7 @@ const SkeletonCell = <T extends RowData>({
   isSticky,
 }: {
   isSticky: boolean
-  column: Column<CurveTableFeatures, T, unknown>
+  column: Column<CurveTableFeatures, T>
 }) => (
   <TableCell sx={useCellSx({ isSticky, column })}>
     <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>

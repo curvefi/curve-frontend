@@ -31,7 +31,7 @@ function useHeaderSx<T extends RowData>({
   width,
   size,
 }: {
-  column: Column<CurveTableFeatures, T, unknown>
+  column: Column<CurveTableFeatures, T>
   isSticky: boolean
   width?: string | number
   size: DataTableSize

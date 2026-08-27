@@ -13,7 +13,7 @@ import { PoolCompositionColumnId } from './columns/columns.enum'
 const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
-  visibleColumns: Column<CurveTableFeatures, PoolCompositionRow, unknown>[]
+  visibleColumns: Column<CurveTableFeatures, PoolCompositionRow>[]
   isLoading: boolean
   totalUsd: string
   hasBalance: boolean

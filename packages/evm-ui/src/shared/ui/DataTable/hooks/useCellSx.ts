@@ -22,7 +22,7 @@ export function useCellSx<T extends RowData>({
   showCollapseIcon,
   isSticky,
 }: {
-  column: Column<CurveTableFeatures, T, unknown>
+  column: Column<CurveTableFeatures, T>
   showCollapseIcon?: boolean
   isSticky: boolean
 }) {

@@ -12,7 +12,7 @@ import { YieldBreakdownColumnId } from './columns/columns.enum'
 const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
-  visibleColumns: Column<CurveTableFeatures, YieldBreakdownRow, unknown>[]
+  visibleColumns: Column<CurveTableFeatures, YieldBreakdownRow>[]
   maxBoostTotal: number
   total: number
 }
