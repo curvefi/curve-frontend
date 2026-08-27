@@ -124,7 +124,7 @@ export const FormVecrv = () => {
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curve?.chainId, curve?.signerAddress, lockedAmount, parsedFormStatus])
 
-  const adjustVecrvUrl = getInternalUrl('dao', NETWORK_BASE_CONFIG[Chain.Ethereum].id, DAO_ROUTES.PAGE_VECRV_CREATE)
+  const adjustVecrvUrl = getInternalUrl('dao', NETWORK_BASE_CONFIG[Chain.Ethereum].id, DAO_ROUTES.PAGE_VECRV)
 
   return (
     <>

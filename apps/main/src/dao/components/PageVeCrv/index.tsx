@@ -3,22 +3,16 @@ import { useConnection } from 'wagmi'
 import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
 import { networksIdMapper } from '@/dao/networks'
 import { useStore } from '@/dao/store/useStore'
-import { type VeCrvUrlParams } from '@/dao/types/dao.types'
+import { type NetworkUrlParams } from '@/dao/types/dao.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useParams } from '@evm-ui/hooks/router'
-import { t } from '@evm-ui/lib/i18n'
+import { Chain } from '@evm-ui/utils'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
-import { BoxHeader } from '@legacy-ui/Box'
-import { IconButton } from '@legacy-ui/IconButton'
-import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
-import Stack from '@mui/material/Stack'
 import { FormCrvLocker } from './components/FormCrvLocker'
 import { WrongNetwork } from './WrongNetwork'
 
-const MAX_WIDTH = '30rem' as const // Temporary hard coded with, in the future this'll get a redesign
-
 export const VeCrv = () => {
-  const { formType: rFormType, network } = useParams<VeCrvUrlParams>()
+  const { network } = useParams<NetworkUrlParams>()
   const { curveApi } = useCurve()
   const rChainId = networksIdMapper[network]
 
@@ -35,28 +29,18 @@ export const VeCrv = () => {
   )
 
   return (
-    <DetailPageLayout formTabs={null} testId="vecrv-page">
-      <Stack sx={{ margin: 'auto', maxWidth: MAX_WIDTH, backgroundColor: t => t.design.Layer[1].Fill }}>
-        <BoxHeader className="title-text">
-          <IconButton hidden />
-          {t`CRV Locker`}
-          <IconButton hidden />
-        </BoxHeader>
-
-        {rChainId === 1 ? (
-          <Stack>
-            {rChainId && rFormType && vecrvInfo && curveApi ? (
-              <FormCrvLocker curve={curveApi} rChainId={rChainId} rFormType={rFormType} vecrvInfo={vecrvInfo} />
-            ) : (
-              <SpinnerWrapper>
-                <Spinner />
-              </SpinnerWrapper>
-            )}
-          </Stack>
-        ) : (
-          <WrongNetwork />
-        )}
-      </Stack>
-    </DetailPageLayout>
+    <DetailPageLayout
+      testId="vecrv-page"
+      formTabs={{
+        content:
+          rChainId === Chain.Ethereum ? (
+            vecrvInfo && curveApi ? (
+              <FormCrvLocker curve={curveApi} rChainId={rChainId} vecrvInfo={vecrvInfo} />
+            ) : undefined
+          ) : (
+            <WrongNetwork />
+          ),
+      }}
+    />
   )
 }

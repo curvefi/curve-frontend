@@ -23,7 +23,9 @@ import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { formatDate, scanTxPath } from '@legacy-ui/utils'
 
-export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
+const FORM_TYPE = 'create' as const
+
+export const FormLockCreate = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.lockedCrv.activeKey)
@@ -49,9 +51,9 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
     (updatedFormValues: Partial<FormValues>, { isFullReset = false }: { isFullReset?: boolean } = {}) => {
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
-      setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
+      setFormValues(curve, isLoadingCurve, FORM_TYPE, updatedFormValues, vecrvInfo, isFullReset)
     },
-    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
+    [curve, isLoadingCurve, vecrvInfo, setFormValues],
   )
 
   const handleInpEstUnlockedDays = useCallback(
@@ -103,10 +105,10 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your CRV.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, curve, rFormType, formValues)
+      await fetchStepApprove(activeKey, curve, FORM_TYPE, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, rFormType],
+    [fetchStepApprove],
   )
 
   const handleBtnClickCreate = useCallback(
@@ -180,7 +182,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
     [handleBtnClickApproval, handleBtnClickCreate],
   )
 
-  // onMount
+  // Refresh when the connected account or network changes.
   useEffect(() => {
     isSubscribedRef.current = true
     updateFormValues({}, { isFullReset: true })
@@ -189,7 +191,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
       isSubscribedRef.current = false
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [])
+  }, [curve?.chainId, curve?.signerAddress])
 
   // steps
   useEffect(() => {
@@ -220,7 +222,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
           curve={curve}
           disabled={disabled}
           haveSigner={haveSigner}
-          formType={rFormType}
+          formType={FORM_TYPE}
           vecrvInfo={vecrvInfo}
           handleInpLockedAmt={useCallback(lockedAmt => updateFormValues({ lockedAmt }), [updateFormValues])}
           {...formValues}
@@ -228,7 +230,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
 
         <FieldDatePicker
           curve={curve}
-          formType={rFormType}
+          formType={FORM_TYPE}
           currUnlockUtcTime={currUtcDate}
           disabled={disabled}
           minUtcDate={minUtcDate}

@@ -23,7 +23,9 @@ import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { formatDate, scanTxPath } from '@legacy-ui/utils'
 
-export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
+const FORM_TYPE = 'adjust_date' as const
+
+export const FormLockDate = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.lockedCrv.activeKey)
@@ -50,8 +52,8 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
   const maxUtcDate = useMemo((): dayjs.Dayjs => {
     const { calcUnlockTime } = networks[rChainId].api.lockCrv
-    return calcUnlockTime(curve!, rFormType, currUnlockTime, 365 * 4 - remainingLockedDays)
-  }, [currUnlockTime, curve, rChainId, rFormType, remainingLockedDays])
+    return calcUnlockTime(curve!, FORM_TYPE, currUnlockTime, 365 * 4 - remainingLockedDays)
+  }, [currUnlockTime, curve, rChainId, remainingLockedDays])
 
   const isMax = maxUtcDate ? 365 * 4 - remainingLockedDays <= 7 : false
 
@@ -59,9 +61,9 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
     // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     async (updatedFormValues: Partial<FormValues>, { isFullReset = false }: { isFullReset?: boolean } = {}) => {
       setTxInfoBar(null)
-      setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
+      setFormValues(curve, isLoadingCurve, FORM_TYPE, updatedFormValues, vecrvInfo, isFullReset)
     },
-    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
+    [curve, isLoadingCurve, vecrvInfo, setFormValues],
   )
 
   const handleInpEstUnlockedDays = useCallback(
@@ -76,7 +78,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
       const days = utcDate.diff(currUnlockUtcTime, 'd')
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-      const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
+      const calcdUtcDate = fn(curve, FORM_TYPE, currUnlockTime, days)
 
       void updateFormValues({
         utcDate: toCalendarDate(utcDate),
@@ -86,7 +88,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
         days,
       })
     },
-    [currUnlockTime, currUnlockUtcTime, haveSigner, maxUtcDate, minUtcDate, rChainId, rFormType, updateFormValues],
+    [currUnlockTime, currUnlockUtcTime, haveSigner, maxUtcDate, minUtcDate, rChainId, updateFormValues],
   )
 
   const handleBtnClickQuickAction = useCallback(
@@ -95,19 +97,19 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       // max button
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUnlockUtcTime, 'd')
-        const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
+        const calcdUtcDate = calcUnlockTime(curve, FORM_TYPE, currUnlockTime, days)
         void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' })
         return maxUtcDate
       }
 
       const utcDate = dayjs.utc(currUnlockTime).add(value, unit)
       const days = utcDate.diff(currUnlockUtcTime, 'd')
-      const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
+      const calcdUtcDate = calcUnlockTime(curve, FORM_TYPE, currUnlockTime, days)
 
       void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days })
       return calcdUtcDate
     },
-    [currUnlockTime, currUnlockUtcTime, maxUtcDate, rChainId, rFormType, updateFormValues],
+    [currUnlockTime, currUnlockUtcTime, maxUtcDate, rChainId, updateFormValues],
   )
 
   const handleBtnClickIncrease = useCallback(
@@ -152,7 +154,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
     [handleBtnClickIncrease],
   )
 
-  // onMount
+  // Refresh when the connected account or network changes.
   useEffect(() => {
     isSubscribedRef.current = true
     void updateFormValues({}, { isFullReset: true })
@@ -161,7 +163,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       isSubscribedRef.current = false
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [])
+  }, [curve?.chainId, curve?.signerAddress])
 
   // steps
   useEffect(() => {
@@ -189,7 +191,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
       >
         <FieldDatePicker
           curve={curve}
-          formType={rFormType}
+          formType={FORM_TYPE}
           disabled={formStatus.formProcessing}
           isMax={isMax}
           vecrvInfo={vecrvInfo}

@@ -1,28 +1,20 @@
-import { useCallback, useEffect, useEffectEvent, useMemo } from 'react'
 import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate'
 import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw'
-import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
-import { useStore } from '@/dao/store/useStore'
-import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
-import { useLayoutStore } from '@evm-ui/features/layout'
-import { useTabs } from '@evm-ui/hooks/useTabs'
+import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
-import Stack from '@mui/material/Stack'
+import { FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 
-const { Spacing } = SizesAndSpaces
 type LockerTabsParams = PageVecrv & {
   canUnlock: boolean
   hasLockedCrv: boolean
 }
 
-const LockCrvTab = (pageProps: LockerTabsParams) => <FormLockCrv {...pageProps} rFormType="adjust_crv" />
-const LockDateTab = (pageProps: LockerTabsParams) => <FormLockDate {...pageProps} rFormType="adjust_date" />
-const WithdrawTab = (pageProps: LockerTabsParams) => <FormWithdraw {...pageProps} rFormType="withdraw" />
+const LockCrvTab = (pageProps: LockerTabsParams) => <FormLockCrv {...pageProps} />
+const LockDateTab = (pageProps: LockerTabsParams) => <FormLockDate {...pageProps} />
+const WithdrawTab = (pageProps: LockerTabsParams) => <FormWithdraw {...pageProps} />
 const CreateTab = (pageProps: LockerTabsParams) => <FormLockCreate {...pageProps} />
 
 const menu = [
@@ -55,14 +47,7 @@ const menu = [
 ] as const
 
 export const FormCrvLocker = (pageProps: PageVecrv) => {
-  const { curve, rChainId, rFormType, vecrvInfo } = pageProps
-
-  const { connectState } = useCurve()
-  const isLoadingCurve = isLoading(connectState)
-  const isPageVisible = useLayoutStore(state => state.isPageVisible)
-  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
-  const signerAddress = curve?.signerAddress
-  const { chainId } = curve ?? {}
+  const { vecrvInfo } = pageProps
   const canUnlock = getIsLockExpired(
     vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
     vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
@@ -70,35 +55,5 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   const hasLockedCrv = +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0
 
-  const onChange = useCallback(
-    (value: FormType) => void setFormValues(curve, isLoadingCurve, value, {}, vecrvInfo, true),
-    [curve, isLoadingCurve, setFormValues, vecrvInfo],
-  )
-  const {
-    content,
-    onChange: onChangeTab,
-    tab: { value },
-    tabs,
-  } = useTabs({
-    menu,
-    params: useMemo(
-      () => ({ curve, rChainId, rFormType, vecrvInfo, canUnlock, hasLockedCrv }),
-      [curve, rChainId, rFormType, vecrvInfo, canUnlock, hasLockedCrv],
-    ),
-    defaultValue: rFormType,
-    onChange,
-  })
-  const refreshFormValues = useEffectEvent(() => onChange(value))
-
-  // fetch locked crv data
-  useEffect(() => refreshFormValues(), [chainId, signerAddress, isPageVisible])
-
-  return (
-    <>
-      {tabs.length > 1 && (
-        <TabsSwitcher variant="underlined" value={value} onChange={onChangeTab} options={tabs} overflow="fullWidth" />
-      )}
-      <Stack sx={{ gap: Spacing.md, padding: Spacing.md, paddingBlockStart: Spacing.xs }}>{content}</Stack>
-    </>
-  )
+  return <FormTabs menu={menu} params={{ ...pageProps, canUnlock, hasLockedCrv }} overflow="fullWidth" shouldWrap />
 }

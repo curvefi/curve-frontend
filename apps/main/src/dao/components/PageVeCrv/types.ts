@@ -15,7 +15,6 @@ export type VecrvInfo = {
 export type PageVecrv = {
   curve: CurveApi | null
   rChainId: ChainId
-  rFormType: FormType
   vecrvInfo: VecrvInfo
 }
 

@@ -18,7 +18,9 @@ import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 
-export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
+const FORM_TYPE = 'adjust_crv' as const
+
+export const FormLockCrv = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.lockedCrv.activeKey)
@@ -41,19 +43,19 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
-      setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
+      setFormValues(curve, isLoadingCurve, FORM_TYPE, updatedFormValues, vecrvInfo, isFullReset)
     },
-    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
+    [curve, isLoadingCurve, vecrvInfo, setFormValues],
   )
 
   const handleBtnClickApproval = useCallback(
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your CRV.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, curve, rFormType, formValues)
+      await fetchStepApprove(activeKey, curve, FORM_TYPE, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, rFormType],
+    [fetchStepApprove],
   )
 
   const handleBtnClickIncrease = useCallback(
@@ -117,7 +119,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
     [handleBtnClickApproval, handleBtnClickIncrease],
   )
 
-  // onMount
+  // Refresh when the connected account or network changes.
   useEffect(() => {
     isSubscribedRef.current = true
     updateFormValues({}, true)
@@ -126,7 +128,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
       isSubscribedRef.current = false
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [])
+  }, [curve?.chainId, curve?.signerAddress])
 
   // steps
   useEffect(() => {
@@ -155,7 +157,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
         <FieldLockedAmt
           curve={curve}
           haveSigner={haveSigner}
-          formType={rFormType}
+          formType={FORM_TYPE}
           vecrvInfo={vecrvInfo}
           handleInpLockedAmt={useCallback(lockedAmt => updateFormValues({ lockedAmt }), [updateFormValues])}
           {...formValues}

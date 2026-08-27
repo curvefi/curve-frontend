@@ -81,7 +81,6 @@ const ROUTE_TEST_IDS = {
     [DAO_ROUTES.PAGE_PROPOSALS]: 'proposal-title',
     [DAO_ROUTES.PAGE_GAUGES]: 'gauges-page',
     [DAO_ROUTES.PAGE_ANALYTICS]: 'analytics-page',
-    [DAO_ROUTES.PAGE_VECRV_CREATE]: 'vecrv-page',
     [DAO_ROUTES.PAGE_VECRV]: 'vecrv-page',
     [DAO_ROUTES.PAGE_USER]: 'user-page',
     ...COMMON_ROUTE_TEST_IDS,
