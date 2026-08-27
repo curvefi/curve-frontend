@@ -185,7 +185,7 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
 
   const path = join(DEST_DIR, artifactBranch.replace(/\//g, '-') || 'current', runId)
   const destination = join(repoRoot, path)
-  await mkdir(destination, { recursive: true })
+  await mkdir(destination) // hard fail on purpose when the folder exists
 
   console.info(
     `Downloading failure evidence for branch '${branch}' (artifact branch: ${artifactBranch}, workflow: ${workflow}, run: ${runId}) into '${path}'...`,
