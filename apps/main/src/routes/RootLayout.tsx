@@ -66,22 +66,24 @@ export const NetworkAwareLayout = () => {
       {backendMaintenance.isMaintenanceMode ? (
         <MaintenancePage />
       ) : (
-        <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
-          {network && networks ? (
-            <GlobalLayout
-              backendMaintenance={backendMaintenance}
-              currentApp={currentApp}
-              network={network}
-              networks={networks}
-            >
-              <HeadContent />
-              <Outlet />
-            </GlobalLayout>
-          ) : (
-            <Loading />
-          )}
-          {!IS_CYPRESS && <TanStackRouterDevtools />}
-        </CurveProvider>
+        networks && (
+          <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
+            {network ? (
+              <GlobalLayout
+                backendMaintenance={backendMaintenance}
+                currentApp={currentApp}
+                network={network}
+                networks={networks}
+              >
+                <HeadContent />
+                <Outlet />
+              </GlobalLayout>
+            ) : (
+              <Loading />
+            )}
+            {!IS_CYPRESS && <TanStackRouterDevtools />}
+          </CurveProvider>
+        )
       )}
       {!IS_CYPRESS && <BackendMaintenanceModal {...backendMaintenance} />}
     </>
