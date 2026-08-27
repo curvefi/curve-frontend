@@ -8,23 +8,36 @@ import type { SxProps } from '@mui/system'
 import { type Column, flexRender, type Header } from '@tanstack/react-table'
 import { Tooltip } from '../Tooltip'
 import {
-  DataTableHeaderCellPaddingBlockEnd,
-  DataTableHeaderCellVerticalAlign,
+  type CurveTableFeatures,
   getAlignment,
   getExtraColumnPadding,
   type DataTableSize,
-  type TableItem,
+  type CurveTableItem,
 } from './data-table.utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-function useHeaderSx<T extends TableItem>({
+const HeaderCellPaddingBlockEnd = {
+  extraSmall: 0,
+  small: 0,
+  medium: Spacing.sm,
+  large: Spacing.sm,
+}
+
+const HeaderCellVerticalAlign = {
+  extraSmall: 'middle',
+  small: 'middle',
+  medium: 'bottom',
+  large: 'bottom',
+}
+
+function useHeaderSx<T extends CurveTableItem>({
   isSticky,
   column,
   width,
   size,
 }: {
-  column: Column<T>
+  column: Column<CurveTableFeatures, T, unknown>
   isSticky: boolean
   width?: string | number
   size: DataTableSize
@@ -36,10 +49,10 @@ function useHeaderSx<T extends TableItem>({
   return useMemo(
     (): SxProps<Theme> => ({
       textAlign,
-      verticalAlign: DataTableHeaderCellVerticalAlign[size],
+      verticalAlign: HeaderCellVerticalAlign[size],
       color: t => t.design.Table.Header['Label_&_icon'][isSorted ? 'Active' : 'Default'],
       paddingBlockStart: 0,
-      paddingBlockEnd: DataTableHeaderCellPaddingBlockEnd[size],
+      paddingBlockEnd: HeaderCellPaddingBlockEnd[size],
       paddingInline: Spacing.xs,
       paddingInlineStart,
       paddingInlineEnd,
@@ -63,13 +76,13 @@ function useHeaderSx<T extends TableItem>({
   )
 }
 
-export const HeaderCell = function <T extends TableItem>({
+export const HeaderCell = function <T extends CurveTableItem>({
   header,
   isSticky,
   width,
   size,
 }: {
-  header: Header<T, unknown>
+  header: Header<CurveTableFeatures, T, unknown>
   isSticky: boolean
   width?: string | number
   size: DataTableSize

@@ -5,15 +5,15 @@ import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import type { Row } from '@tanstack/react-table'
-import type { ExpandedPanelContext, TableItem } from './data-table.utils'
+import type { CurveTableFeatures, CurveTableItem } from './data-table.utils'
 import type { DataRowProps } from './DataRow'
 
 const { Spacing } = SizesAndSpaces
 
 /** A component that renders part of the expanded panel for a table row */
-export type ExpandedPanelComponent<T extends TableItem> = FunctionComponent<ExpandedPanelContext<T>>
+export type ExpandedPanelComponent<T extends CurveTableItem> = FunctionComponent<Pick<DataRowProps<T>, 'row' | 'table'>>
 
-export type ExpandedPanelConfig<T extends TableItem> = {
+export type ExpandedPanelConfig<T extends CurveTableItem> = {
   Body: ExpandedPanelComponent<T>
   Actions?: ExpandedPanelComponent<T>
 }
@@ -21,7 +21,7 @@ export type ExpandedPanelConfig<T extends TableItem> = {
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
  */
-export function ExpansionRow<T extends TableItem>({
+export function ExpansionRow<T extends CurveTableItem>({
   row,
   table,
   expandedPanel,
@@ -60,7 +60,7 @@ export function ExpansionRow<T extends TableItem>({
  *
  * It would be tidier to use a grid layout for the whole table
  */
-function useRowExpansion<T>(row: Row<T>) {
+function useRowExpansion<T extends CurveTableItem>(row: Row<CurveTableFeatures, T>) {
   const rowExpanded = row.getIsExpanded()
   const [render, setRender] = useState(rowExpanded)
   const [expanded, setExpanded] = useState(false)

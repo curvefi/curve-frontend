@@ -4,21 +4,21 @@ import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
 import { hasParentWithClass } from '@evm-ui/utils/dom'
 import TableRow from '@mui/material/TableRow'
-import { type Row } from '@tanstack/react-table'
-import type { Table } from '@tanstack/table-core'
+import type { ReactTable, Row } from '@tanstack/react-table'
 import { InvertOnHover } from '../InvertOnHover'
 import {
   CLICKABLE_IN_ROW_CLASS,
+  type CurveTableFeatures,
   DESKTOP_ONLY_HOVER_CLASS,
   TABLE_SECONDARY_TEXT_CLASS,
-  type TableItem,
+  type CurveTableItem,
 } from './data-table.utils'
 import { DataCell } from './DataCell'
 import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
-export type DataRowProps<T extends TableItem> = {
-  table: Table<T>
-  row: Row<T>
+export type DataRowProps<T extends CurveTableItem> = {
+  table: ReactTable<CurveTableFeatures, T>
+  row: Row<CurveTableFeatures, T>
   expandedPanel?: ExpandedPanelConfig<T>
   shouldStickFirstColumn?: boolean
   verticalAlign?: 'top' | 'middle' | 'bottom'
@@ -36,7 +36,7 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
-export const DataRow = <T extends TableItem>({
+export const DataRow = <T extends CurveTableItem>({
   table,
   row,
   expandedPanel,

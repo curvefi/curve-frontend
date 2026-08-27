@@ -2,23 +2,26 @@ import { forwardRef, type ReactNode, type MouseEvent, type RefAttributes } from 
 import { ArrowDownIcon } from '@evm-ui/shared/icons/ArrowDownIcon'
 import Stack from '@mui/material/Stack'
 import type { Column } from '@tanstack/react-table'
-import {
-  DataTableHeaderCellSortableAlign,
-  getFlexAlignment,
-  type DataTableSize,
-  type TableItem,
-} from './data-table.utils'
+import { type CurveTableFeatures, getFlexAlignment, type DataTableSize, type CurveTableItem } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 
-type SortableProps<T extends TableItem> = {
-  column: Column<T, unknown> | undefined
+type SortableProps<T extends CurveTableItem> = {
+  column: Column<CurveTableFeatures, T, unknown> | undefined
   children: ReactNode
   size: DataTableSize
   isEnabled?: boolean
 }
+
+const HeaderCellSortableAlign = {
+  extraSmall: 'center',
+  small: 'center',
+  medium: 'end',
+  large: 'end',
+}
+
 // forwardRef needed to pass ref to Tooltip for it to work
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
-const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function Sortable(
+const _Sortable = forwardRef<HTMLDivElement, SortableProps<CurveTableItem>>(function Sortable(
   { children, column, size, isEnabled = true, ...props },
   ref,
 ) {
@@ -34,7 +37,7 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
         },
       })}
       sx={{
-        alignItems: DataTableHeaderCellSortableAlign[size],
+        alignItems: HeaderCellSortableAlign[size],
         ...(isEnabled && { sx: { cursor: 'pointer' } }),
         ...(column && { justifyContent: getFlexAlignment(column) }),
       }}
@@ -52,6 +55,6 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
 })
 
 /** Type assertion to support generics with forwardRef (forwardRef doesn't natively support generic components) */
-export const Sortable = _Sortable as <T extends TableItem>(
+export const Sortable = _Sortable as <T extends CurveTableItem>(
   props: SortableProps<T> & RefAttributes<HTMLDivElement>,
 ) => ReactNode

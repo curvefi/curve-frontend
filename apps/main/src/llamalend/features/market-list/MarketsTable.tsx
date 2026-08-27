@@ -4,7 +4,7 @@ import { useIsMobile, useIsTablet } from '@evm-ui/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { useFilters } from '@evm-ui/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@evm-ui/shared/ui/DataTable/TableFilters'
@@ -54,7 +54,7 @@ export const MarketsTable = ({
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
 
-  const table = useTable({
+  const table = useCurveTable({
     columns: MARKET_COLUMNS,
     query: mapQuery(tableQuery, d => d.markets),
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
@@ -62,11 +62,10 @@ export const MarketsTable = ({
     onSortingChange,
     onExpandedChange: setExpanded,
     globalFilterFn,
-    ...getTableOptions(queryData ? data : undefined),
-    getFacetedRowModel: getMarketFacetedRowModel,
+    meta: { facetedRowModelFactory: getMarketFacetedRowModel },
   })
 
-  const hasActiveFilters = !!table.getState().columnFilters.length
+  const hasActiveFilters = !!table.state.columnFilters.length
 
   return (
     <Stack>

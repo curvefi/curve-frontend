@@ -1,14 +1,15 @@
 import type { ReactNode } from 'react'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import type { TableItem, TanstackTable } from './data-table.utils'
+import type { ReactTable } from '@tanstack/react-table'
+import type { CurveTableFeatures, CurveTableItem } from './data-table.utils'
 
-export const LegacyFilterRow = <T extends TableItem>({
+export const LegacyFilterRow = <T extends CurveTableItem>({
   table,
   children,
 }: {
   children: ReactNode
-  table: TanstackTable<T>
+  table: ReactTable<CurveTableFeatures, T>
 }) => (
   <TableRow>
     <TableCell

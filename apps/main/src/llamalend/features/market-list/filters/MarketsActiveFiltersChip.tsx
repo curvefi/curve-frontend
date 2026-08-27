@@ -1,7 +1,7 @@
 import { capitalize } from 'lodash'
 import { useMemo } from 'react'
 import { ChainFilterChips } from '@evm-ui/shared/ui/DataTable/chips/ChainFilterChips'
-import type { ColumnMeta, FilterProps, TableItem, TanstackTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import type { CurveTableFeatures, FilterProps, CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import {
   getRangeFilterLabel,
   parseListFilter,
@@ -17,6 +17,7 @@ import {
 import { constQ } from '@evm-ui/types/util'
 import { toArray } from '@primitives/array.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
+import type { ColumnMeta, ReactTable } from '@tanstack/react-table'
 import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
 
 const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))
@@ -25,8 +26,10 @@ const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [colum
 const formatLabel = (label: string, id: MarketColumnId) =>
   [MarketColumnId.CollateralSymbol, MarketColumnId.BorrowedSymbol].includes(id) ? label : capitalize(label)
 
+type Unit = ColumnMeta<CurveTableFeatures, CurveTableItem>['unit']
+
 // Convert a serialized range filter (`min~max`) into a single chip label
-const getRangeLabel = (serializedRange: string | undefined, unit?: ColumnMeta['unit']) => {
+const getRangeLabel = (serializedRange: string | undefined, unit?: Unit) => {
   const range = parseRangeFilter(serializedRange)
   return range ? getRangeFilterLabel(range, unit) : null
 }
@@ -35,15 +38,15 @@ const ChainActiveFilterChips = ({ labels, onRemove }: TableActiveFilterGroupChip
   <ChainFilterChips chainsQuery={constQ(labels)} selectedChains={labels} toggleChain={onRemove} />
 )
 
-export const MarketsActiveFiltersChip = <T extends TableItem>({
+export const MarketsActiveFiltersChip = <T extends CurveTableItem>({
   table,
   setColumnFilter,
   testIdPrefix,
 }: {
-  table: TanstackTable<T>
+  table: ReactTable<CurveTableFeatures, T>
   testIdPrefix: string
 } & Pick<FilterProps<MarketColumnId>, 'setColumnFilter'>) => {
-  const filtersState = table.getState().columnFilters as { id: MarketColumnId; value: string }[]
+  const filtersState = table.state.columnFilters as { id: MarketColumnId; value: string }[]
   // Keep networks first than remaining filters in the same order as the market columns to avoid chips jumping when filters are removed.
   const sortedFiltersState = useMemo(
     () =>

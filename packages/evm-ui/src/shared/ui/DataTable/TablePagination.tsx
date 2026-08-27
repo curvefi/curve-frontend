@@ -1,18 +1,24 @@
 import { capitalize, last } from 'lodash'
 import { useCallback, useId } from 'react'
 import { ChevronLeftIcon } from '@evm-ui/shared/icons/ChevronLeftIcon'
-import type { TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import type { CurveTableFeatures, CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { range } from '@primitives/objects.utils'
-import { type Table } from '@tanstack/table-core'
+import type { ReactTable } from '@tanstack/react-table'
 
 /**
  * A button component representing a specific page in pagination.
  */
-const PageButton = <T extends TableItem>({ page, table }: { page: number; table: Table<T> }) => (
+const PageButton = <T extends CurveTableItem>({
+  page,
+  table,
+}: {
+  page: number
+  table: ReactTable<CurveTableFeatures, T>
+}) => (
   <ToggleButton
     value={page}
     sx={{ backgroundColor: 'transparent' }}
@@ -56,7 +62,13 @@ const getPageOptions = (pageIndex: number, pageCount: number): [number[], number
 /**
  * A button component for navigating to the previous or next page in pagination.
  */
-const NeighborButton = <T extends TableItem>({ table, type }: { table: Table<T>; type: 'previous' | 'next' }) => (
+const NeighborButton = <T extends CurveTableItem>({
+  table,
+  type,
+}: {
+  table: ReactTable<CurveTableFeatures, T>
+  type: 'previous' | 'next'
+}) => (
   <IconButton
     size="extraExtraSmall"
     {...(table[`getCan${capitalize(type)}Page`]()
@@ -71,8 +83,8 @@ const NeighborButton = <T extends TableItem>({ table, type }: { table: Table<T>;
  * Table pagination component for navigating through pages of a data table.
  * Renders previous/next buttons and page number buttons with ellipses for skipped pages.
  */
-export const TablePagination = <T extends TableItem>({ table }: { table: Table<T> }) => {
-  const { pageIndex } = table.getState().pagination
+export const TablePagination = <T extends CurveTableItem>({ table }: { table: ReactTable<CurveTableFeatures, T> }) => {
+  const { pageIndex } = table.state.pagination
   const [firstPages, aroundPages, lastPages] = getPageOptions(pageIndex, table.getPageCount())
   return (
     <Stack direction="row" data-testid="table-pagination" sx={{ justifyContent: 'center', alignItems: 'center' }}>

@@ -1,13 +1,14 @@
 import { keyBy, type Dictionary } from 'lodash'
 import { type MouseEvent, useMemo } from 'react'
 import { t } from '@evm-ui/lib/i18n'
-import type { FilterProps, TanstackTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import type { CurveTableFeatures, FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@evm-ui/shared/ui/DataTable/filters'
 import { useFacetedMaxMinValue } from '@evm-ui/shared/ui/DataTable/hooks/useFacetedMaxMinValue'
 import { useFacetedSortedOptions } from '@evm-ui/shared/ui/DataTable/hooks/useFacetedSortedOptions'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { type QueryProp } from '@evm-ui/types/util'
 import { notFalsyArray, recordEntries } from '@primitives/objects.utils'
+import type { ReactTable } from '@tanstack/react-table'
 import type { LlamaMarketRow } from '../../../../queries/market-list/llama-market-stats'
 import type { AssetDetails, LlamaMarket } from '../../../../queries/market-list/llama-markets'
 import { MarketColumnId } from '../../columns'
@@ -41,7 +42,7 @@ const MARKET_VERSION_LABELS: Record<MarketVersionFilterValue, string> = {
 
 export type MarketsFiltersProps = FilterProps<MarketColumnId> & {
   marketsQuery: QueryProp<LlamaMarket[]>
-  table: TanstackTable<LlamaMarketRow>
+  table: ReactTable<CurveTableFeatures, LlamaMarketRow>
 }
 
 export const useMarketsFilters = ({ marketsQuery, table, ...filterProps }: MarketsFiltersProps) => {

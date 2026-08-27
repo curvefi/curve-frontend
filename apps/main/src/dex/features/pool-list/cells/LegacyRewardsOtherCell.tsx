@@ -1,4 +1,5 @@
 import { RewardsApy } from '@/dex/types/main.types'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { useLegacyHasPoolRewards } from '../hooks/useLegacyHasPoolRewards'
 import type { LegacyPoolRow } from '../types'
@@ -6,7 +7,7 @@ import { LegacyRewardsCrvCell } from './LegacyRewardsCrvCell'
 import { LegacyRewardsIncentivesCell } from './LegacyRewardsIncentivesCell'
 import { Placeholder } from './Placeholder'
 
-type Prop = CellContext<LegacyPoolRow, RewardsApy | undefined>
+type Prop = CellContext<CurveTableFeatures, LegacyPoolRow, RewardsApy | undefined>
 
 export const LegacyRewardsOtherCell = (props: Prop) => {
   const rewards = props.getValue()

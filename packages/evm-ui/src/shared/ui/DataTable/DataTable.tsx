@@ -16,14 +16,8 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { EmptyStateCard, EmptyStateCardProps } from '../EmptyStateCard'
 import { ErrorMessage } from '../ErrorMessage'
-import {
-  DATA_TABLE_CATEGORIES,
-  DataTableCategory,
-  DataTableCategoryConfig,
-  DataTableHeaderHeight,
-  type TableItem,
-  type TanstackTable,
-} from './data-table.utils'
+import { DATA_TABLE_CATEGORIES, type DataTableCategory, type DataTableCategoryConfig } from './categories'
+import { DataTableHeaderHeight, type CurveTableItem, type useCurveTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
 import { EmptyStateRow } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
@@ -44,9 +38,9 @@ type TableEmptyState = {
 } & Pick<EmptyStateCardProps, 'title' | 'description' | 'button' | 'secondaryButton'>
 type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
 
-export type DataTableProps<T extends TableItem> = {
+export type DataTableProps<T extends CurveTableItem> = {
   category?: DataTableCategory
-  table: TanstackTable<T>
+  table: ReturnType<typeof useCurveTable<T>>
   emptyState?: TableEmptyState // optional overrides for the built-in empty state
   errorState?: TableErrorState // optional overrides for the built-in error state
   children?: ReactNode // passed to <FilterRow />
@@ -59,7 +53,7 @@ export type DataTableProps<T extends TableItem> = {
  * The table header stays sticky only when enabled, rows are not limited, and table content fits within its parent.
  * When the table is wider than its parent, the header stops being sticky and the table becomes horizontally scrollable.
  */
-export const DataTable = <T extends TableItem>({
+export const DataTable = <T extends CurveTableItem>({
   category = 'list',
   emptyState,
   errorState,

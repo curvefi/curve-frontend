@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
-import type { TableItem, TanstackTable } from './data-table.utils'
+import type { ReactTable } from '@tanstack/react-table'
+import type { CurveTableFeatures, CurveTableItem } from './data-table.utils'
 
 const { Height, Spacing } = SizesAndSpaces
 
@@ -13,14 +14,14 @@ const SPACING_SIZE_MAP: Record<EmptyStateRowSize, keyof typeof Spacing> = {
   lg: 'xl',
 }
 
-export const EmptyStateRow = <T extends TableItem>({
+export const EmptyStateRow = <T extends CurveTableItem>({
   table,
   size = 'lg',
   children,
 }: {
   children: ReactNode
   size?: EmptyStateRowSize
-  table: TanstackTable<T>
+  table: ReactTable<CurveTableFeatures, T>
 }) => (
   <TableRow data-testid="table-empty-row" sx={{ height: Height.table.noResults[size] }}>
     <Typography

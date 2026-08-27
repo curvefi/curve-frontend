@@ -1,7 +1,7 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { constQ } from '@evm-ui/types/util'
 import CardHeader from '@mui/material/CardHeader'
@@ -29,11 +29,10 @@ export const YieldBreakdown = ({
     poolDataCacheOrApi,
     poolId,
   })
-  const table = useTable({
+  const table = useCurveTable({
     query: constQ(rows), // TODO: get error and loading state properly
     columns: YIELD_BREAKDOWN_COLUMNS,
     state: { columnVisibility: isMobile ? YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY : undefined },
-    ...getTableOptions(rows),
   })
 
   return (

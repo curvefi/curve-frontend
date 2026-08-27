@@ -3,7 +3,7 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { useIsMobile, useIsTablet } from '@evm-ui/hooks/useBreakpoints'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { TableFilters } from '@evm-ui/shared/ui/DataTable/TableFilters'
@@ -66,7 +66,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
     globalFilter,
   )
 
-  const table = useTable({
+  const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
     state: {
@@ -84,10 +84,9 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
     manualFiltering: !isLite,
     pageCount: isLite ? 1 : pageCount,
     ...(isLite && { globalFilterFn }),
-    ...getTableOptions(tableQuery ? tableQuery.data : undefined),
   })
 
-  const hasActiveFilters = !isLite && !!table.getState().columnFilters.length
+  const hasActiveFilters = !isLite && !!table.state.columnFilters.length
 
   return (
     <Stack>

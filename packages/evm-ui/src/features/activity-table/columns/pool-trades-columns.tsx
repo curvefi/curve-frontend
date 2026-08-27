@@ -1,8 +1,8 @@
 import { t } from '@evm-ui/lib/i18n'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import { formatNumber } from '@evm-ui/utils'
-import { createColumnHelper } from '@tanstack/react-table'
 import { TimestampCell, AddressCell } from '../cells'
 import type { PoolTradeRow } from '../types'
 
@@ -13,13 +13,13 @@ export enum PoolTradesColumnId {
   Time = 'time',
 }
 
-const columnHelper = createColumnHelper<PoolTradeRow>()
+const columnHelper = createAppColumnHelper<PoolTradeRow>()
 
-export const POOL_TRADES_COLUMNS = [
+export const POOL_TRADES_COLUMNS = columnHelper.columns([
   columnHelper.accessor('buyer', {
     id: PoolTradesColumnId.User,
     header: t`Address`,
-    cell: ({ getValue, row }) => <AddressCell address={getValue()} explorerUrl={row.original.buyerUrl} />,
+    cell: ({ row }) => <AddressCell address={row.original.buyer} explorerUrl={row.original.buyerUrl} />,
   }),
   columnHelper.accessor('tokensBought', {
     id: PoolTradesColumnId.Bought,
@@ -59,4 +59,4 @@ export const POOL_TRADES_COLUMNS = [
     cell: ({ row }) => <TimestampCell timestamp={new Date(row.original.time)} txUrl={row.original.txUrl} align="end" />,
     meta: { type: 'numeric' },
   }),
-]
+])

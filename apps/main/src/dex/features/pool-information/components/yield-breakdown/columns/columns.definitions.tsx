@@ -1,5 +1,5 @@
 import { t } from '@evm-ui/lib/i18n'
-import type { TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper, type CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo, type TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
 import { Tooltip, type TooltipProps } from '@evm-ui/shared/ui/Tooltip'
@@ -7,11 +7,11 @@ import { formatNumber } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
-import { createColumnHelper, type VisibilityState } from '@tanstack/react-table'
+import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { TokenCell } from '../../TokenCell'
 import { YieldBreakdownColumnId } from './columns.enum'
 
-export type YieldBreakdownRow = TableItem & {
+export type YieldBreakdownRow = CurveTableItem & {
   source: TokenInfoProps
   address?: string
   explorerUrl?: string
@@ -21,7 +21,7 @@ export type YieldBreakdownRow = TableItem & {
   apyTooltip?: Pick<TooltipProps, 'title' | 'body' | 'clickable'>
 }
 
-const columnHelper = createColumnHelper<YieldBreakdownRow>()
+const columnHelper = createAppColumnHelper<YieldBreakdownRow>()
 
 const headers = {
   [YieldBreakdownColumnId.Source]: t`Source`,
@@ -33,9 +33,9 @@ export const YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY = {
   [YieldBreakdownColumnId.Source]: true,
   [YieldBreakdownColumnId.Price]: false,
   [YieldBreakdownColumnId.Apy]: true,
-} satisfies VisibilityState
+} satisfies ColumnVisibilityState
 
-export const YIELD_BREAKDOWN_COLUMNS = [
+export const YIELD_BREAKDOWN_COLUMNS = columnHelper.columns([
   columnHelper.accessor('source', {
     id: YieldBreakdownColumnId.Source,
     header: headers[YieldBreakdownColumnId.Source],
@@ -76,4 +76,4 @@ export const YIELD_BREAKDOWN_COLUMNS = [
     enableSorting: false,
     meta: { type: 'numeric' },
   }),
-]
+])

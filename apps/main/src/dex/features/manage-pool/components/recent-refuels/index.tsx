@@ -5,7 +5,7 @@ import type { ChainId } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import { useManualPagination } from '@evm-ui/features/activity-table'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { mapQuery } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
@@ -39,7 +39,7 @@ export const RecentRefuels = ({
     [recentRefuels.data?.tokens],
   )
   const pageCount = getPageCount(recentRefuels.data?.count, RECENT_REFUELS_PAGE_SIZE)
-  const table = useTable({
+  const table = useCurveTable({
     columns,
     query: mapQuery(recentRefuels, ({ data: events }) =>
       events.map(event => ({
@@ -51,7 +51,6 @@ export const RecentRefuels = ({
     manualPagination: true,
     pageCount,
     onPaginationChange,
-    ...getTableOptions<RecentRefuelRow>(recentRefuels.data?.data),
   })
 
   return (

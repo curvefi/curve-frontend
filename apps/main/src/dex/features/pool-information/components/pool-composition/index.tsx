@@ -2,7 +2,7 @@ import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { q } from '@evm-ui/types/util'
 import CardHeader from '@mui/material/CardHeader'
@@ -33,11 +33,10 @@ export const PoolComposition = ({
     poolId,
     pricesApiPoolData,
   })
-  const table = useTable({
+  const table = useCurveTable({
     query: q({ data: rows, isLoading, error }),
     columns: POOL_COMPOSITION_COLUMNS,
     state: { columnVisibility: isMobile ? POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY : undefined },
-    ...getTableOptions(rows),
   })
 
   return (

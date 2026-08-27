@@ -1,5 +1,5 @@
 import { t } from '@evm-ui/lib/i18n'
-import type { TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper, type CurveTableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo, type TokenInfoTokenIconProps } from '@evm-ui/shared/ui/TokenInfo'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
@@ -7,11 +7,11 @@ import { formatNumber, formatToken } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
-import { createColumnHelper, type VisibilityState } from '@tanstack/react-table'
+import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { TokenCell } from '../../TokenCell'
 import { PoolCompositionColumnId } from './columns.enum'
 
-export type PoolCompositionRow = TableItem & {
+export type PoolCompositionRow = CurveTableItem & {
   source: TokenInfoTokenIconProps
   explorerUrl?: string
   marketShare?: number
@@ -20,7 +20,7 @@ export type PoolCompositionRow = TableItem & {
   price?: number
 }
 
-const columnHelper = createColumnHelper<PoolCompositionRow>()
+const columnHelper = createAppColumnHelper<PoolCompositionRow>()
 
 const headers = {
   [PoolCompositionColumnId.Asset]: t`Asset`,
@@ -34,9 +34,9 @@ export const POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY = {
   [PoolCompositionColumnId.Price]: false,
   [PoolCompositionColumnId.Balance]: true,
   [PoolCompositionColumnId.TokenAmount]: true,
-} satisfies VisibilityState
+} satisfies ColumnVisibilityState
 
-export const POOL_COMPOSITION_COLUMNS = [
+export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
   columnHelper.accessor('source', {
     id: PoolCompositionColumnId.Asset,
     header: headers[PoolCompositionColumnId.Asset],
@@ -98,4 +98,4 @@ export const POOL_COMPOSITION_COLUMNS = [
     enableSorting: false,
     meta: { type: 'numeric' },
   }),
-]
+])

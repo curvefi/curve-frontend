@@ -14,7 +14,13 @@ import TableCell from '@mui/material/TableCell'
 import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
+import type { ReactTable } from '@tanstack/react-table'
+import {
+  type CurveTableFeatures,
+  DataTableHeaderHeight,
+  type DataTableSize,
+  type CurveTableItem,
+} from './data-table.utils'
 import { HeaderCell } from './HeaderCell'
 import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from './hooks/useTableScroll'
 import { LegacyDataRow, LegacyDataRowProps } from './LegacyDataRow'
@@ -27,7 +33,7 @@ import { useTableRowLimit } from './useTableRowLimit'
  * Resets the table pagination to the first page whenever the number of filtered results changes.
  * Skipped for manual pagination since data changes on every page change.
  */
-function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
+function useResetPageOnResultChange<T extends CurveTableItem>(table: ReactTable<CurveTableFeatures, T>) {
   const isManualPagination = table.options.manualPagination
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)
@@ -49,7 +55,7 @@ const { Sizing } = SizesAndSpaces
 /**
  * DataTable component to render the table with headers and rows.
  */
-export const LegacyDataTable = <T extends TableItem>({
+export const LegacyDataTable = <T extends CurveTableItem>({
   emptyState,
   children,
   loading,
@@ -63,7 +69,7 @@ export const LegacyDataTable = <T extends TableItem>({
   footerRow,
   ...rowProps
 }: {
-  table: TanstackTable<T>
+  table: ReactTable<CurveTableFeatures, T>
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
   loading: boolean

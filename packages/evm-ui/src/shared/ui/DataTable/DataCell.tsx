@@ -4,21 +4,23 @@ import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { type Cell, flexRender } from '@tanstack/react-table'
-import { useCellSx, getCellVariant, type TableItem } from './data-table.utils'
+import { getCellVariant, type CurveTableFeatures, type CurveTableItem } from './data-table.utils'
+import { useCellSx } from './hooks/useCellSx'
 import { RotatableIcon } from './RotatableIcon'
 
-export const DataCell = <T extends TableItem>({
+export const DataCell = <T extends CurveTableItem>({
   cell,
   enableCollapse,
   isSticky,
 }: {
-  cell: Cell<T, unknown>
+  cell: Cell<CurveTableFeatures, T, unknown>
   enableCollapse: boolean
   isSticky: boolean
 }) => {
   const { column, row } = cell
   const children = flexRender(column.columnDef.cell, cell.getContext())
-  const showCollapseIcon = enableCollapse && column.getIsLastColumn()
+  const visibleCells = row.getVisibleCells()
+  const showCollapseIcon = enableCollapse && visibleCells[visibleCells.length - 1]?.id === cell.id
   const [sx, wrapperSx] = useCellSx({ column, showCollapseIcon, isSticky })
   return (
     <Typography

@@ -7,8 +7,7 @@ import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { createColumnHelper } from '@tanstack/react-table'
-import { type ColumnDefinition, getTableOptions, type TableItem, useTable } from './data-table.utils'
+import { createAppColumnHelper, type CurveTableItem, useCurveTable } from './data-table.utils'
 import { DataTable, DataTableProps } from './DataTable'
 
 const { Spacing } = SizesAndSpaces
@@ -16,7 +15,7 @@ const { Spacing } = SizesAndSpaces
 const formatPercentage = (value: number) => formatNumber(value, 'percent.value')
 const formatUsdNotional = (value: number) => formatNumber(value, 'usd.notional')
 
-type MarketRow = TableItem & {
+type MarketRow = CurveTableItem & {
   id: number
   collateral: string
   debt: string
@@ -47,7 +46,7 @@ type DemoDataTableProps = Omit<
   emptyMessage?: string
 }
 
-const columnHelper = createColumnHelper<MarketRow>()
+const columnHelper = createAppColumnHelper<MarketRow>()
 
 const generateMarketRows = (count: number | undefined): MarketRow[] =>
   Array.from({ length: count ?? 0 }, (_, index) => {
@@ -69,66 +68,67 @@ const generateMarketRows = (count: number | undefined): MarketRow[] =>
     }
   })
 
-const createMarketColumns = (extraColumnCount = 0): ColumnDefinition<MarketRow>[] => [
-  columnHelper.accessor('market', {
-    header: 'Market',
-    cell: ({ row }) => (
-      <Stack sx={{ gap: 0.25 }}>
-        <Typography component="span" variant="tableCellMBold">
-          {row.original.market}
-        </Typography>
-      </Stack>
-    ),
-  }),
-  columnHelper.accessor('userDebt', {
-    header: 'Borrow Amount',
-    cell: ({ row }) => formatToken(row.original.userDebt, 'crvUSD', 'amount'),
-    meta: { type: 'numeric' },
-  }),
-  columnHelper.accessor('userCollateral', {
-    header: 'Collateral Amount',
-    cell: ({ row }) => formatToken(row.original.userCollateral, 'WETH', 'amount'),
-    meta: { type: 'numeric' },
-  }),
-  columnHelper.accessor('borrowApr', {
-    header: 'Borrow APR',
-    cell: ({ row }) => formatPercentage(row.original.borrowApr),
-    meta: { type: 'numeric' },
-  }),
-  columnHelper.accessor('lendApy', {
-    header: 'Supply APY',
-    cell: ({ row }) => formatPercentage(row.original.lendApy),
-    meta: { type: 'numeric' },
-  }),
-  columnHelper.accessor('maxLtv', {
-    header: 'Max LTV',
-    cell: ({ row }) => formatPercentage(row.original.maxLtv),
-    meta: { type: 'numeric' },
-  }),
-  columnHelper.accessor('utilization', {
-    header: 'Utilization',
-    cell: ({ row }) => formatPercentage(row.original.utilization),
-    meta: { type: 'numeric' },
-  }),
-  columnHelper.accessor('liquidity', {
-    header: 'Available Liquidity',
-    cell: ({ row }) => formatUsdNotional(row.original.liquidity),
-    meta: { type: 'numeric' },
-  }),
-  columnHelper.accessor('totalDebt', {
-    header: 'Total Debt',
-    cell: ({ row }) => formatUsdNotional(row.original.totalDebt),
-    meta: { type: 'numeric' },
-  }),
-  ...Array.from({ length: extraColumnCount }, (_, index) =>
-    columnHelper.accessor(row => row.extraMetrics[index], {
-      id: `extraMetric${index + 1}`,
-      header: `Metric ${index + 1}`,
-      cell: ({ row }) => formatUsdNotional(row.original.extraMetrics[index]),
+const createMarketColumns = (extraColumnCount = 0) =>
+  columnHelper.columns([
+    columnHelper.accessor('market', {
+      header: 'Market',
+      cell: ({ row }) => (
+        <Stack sx={{ gap: 0.25 }}>
+          <Typography component="span" variant="tableCellMBold">
+            {row.original.market}
+          </Typography>
+        </Stack>
+      ),
+    }),
+    columnHelper.accessor('userDebt', {
+      header: 'Borrow Amount',
+      cell: ({ row }) => formatToken(row.original.userDebt, 'crvUSD', 'amount'),
       meta: { type: 'numeric' },
     }),
-  ),
-]
+    columnHelper.accessor('userCollateral', {
+      header: 'Collateral Amount',
+      cell: ({ row }) => formatToken(row.original.userCollateral, 'WETH', 'amount'),
+      meta: { type: 'numeric' },
+    }),
+    columnHelper.accessor('borrowApr', {
+      header: 'Borrow APR',
+      cell: ({ row }) => formatPercentage(row.original.borrowApr),
+      meta: { type: 'numeric' },
+    }),
+    columnHelper.accessor('lendApy', {
+      header: 'Supply APY',
+      cell: ({ row }) => formatPercentage(row.original.lendApy),
+      meta: { type: 'numeric' },
+    }),
+    columnHelper.accessor('maxLtv', {
+      header: 'Max LTV',
+      cell: ({ row }) => formatPercentage(row.original.maxLtv),
+      meta: { type: 'numeric' },
+    }),
+    columnHelper.accessor('utilization', {
+      header: 'Utilization',
+      cell: ({ row }) => formatPercentage(row.original.utilization),
+      meta: { type: 'numeric' },
+    }),
+    columnHelper.accessor('liquidity', {
+      header: 'Available Liquidity',
+      cell: ({ row }) => formatUsdNotional(row.original.liquidity),
+      meta: { type: 'numeric' },
+    }),
+    columnHelper.accessor('totalDebt', {
+      header: 'Total Debt',
+      cell: ({ row }) => formatUsdNotional(row.original.totalDebt),
+      meta: { type: 'numeric' },
+    }),
+    ...Array.from({ length: extraColumnCount }, (_, index) =>
+      columnHelper.accessor(row => row.extraMetrics[index], {
+        id: `extraMetric${index + 1}`,
+        header: `Metric ${index + 1}`,
+        cell: ({ row }) => formatUsdNotional(row.original.extraMetrics[index]),
+        meta: { type: 'numeric' },
+      }),
+    ),
+  ])
 
 const ScrollableStoryWrapper = ({ children, width = '100%' }: { children: ReactNode; width?: string }) => (
   <Box sx={{ width, maxWidth: '100%', border: t => `1px solid ${t.design.Layer[2].Outline}` }}>{children}</Box>
@@ -154,7 +154,7 @@ const DemoDataTable = ({
   const generatedRows = useMemo(() => generateMarketRows(rowCount), [rowCount])
   const data = isLoading || isError ? [] : generatedRows
   const columns = useMemo(() => createMarketColumns(extraColumnCount), [extraColumnCount])
-  const table = useTable({
+  const table = useCurveTable({
     query: q({
       data,
       isLoading: !!isLoading,
@@ -162,7 +162,6 @@ const DemoDataTable = ({
     }),
     columns,
     initialState: { pagination },
-    ...getTableOptions(data),
   })
   const columnCount = table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)
 
