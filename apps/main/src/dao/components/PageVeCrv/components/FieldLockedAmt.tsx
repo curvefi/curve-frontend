@@ -5,7 +5,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
 import { q } from '@evm-ui/types/util'
-import { MAINNET_CRV_ADDRESS, decimal, formatNumber, amount } from '@evm-ui/utils'
+import { MAINNET_CRV_ADDRESS, decimal, decimalSum, formatNumber, amount } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 
@@ -35,7 +35,7 @@ export const FieldLockedAmt = ({
   const futureVeCrv = useMemo(
     () =>
       curve?.boosting.calculateVeCrv(
-        Number(lockedAmt) + Number(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount),
+        decimalSum(lockedAmt, decimal(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount)),
         vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
       ),
     [curve, lockedAmt, vecrvInfo.lockedAmountAndUnlockTime],
@@ -59,7 +59,7 @@ export const FieldLockedAmt = ({
       }}
       tokenSelector={<TokenLabel blockchainId="ethereum" address={MAINNET_CRV_ADDRESS} label="CRV" />}
     >
-      {isAdjustCrv && lockedAmt && Number(lockedAmt) != 0 && futureVeCrv != null && (
+      {isAdjustCrv && lockedAmt && futureVeCrv != null && (
         <HelperMessage
           message={`${t`Future veCRV:`} ${formatNumber(amount(vecrvInfo.veCrv), 'token.amount')} → ${formatNumber(futureVeCrv, 'token.amount')}`}
         />

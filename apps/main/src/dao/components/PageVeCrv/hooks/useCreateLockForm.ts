@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useCreateLockMutation } from '@/dao/components/PageVeCrv/mutations/create-lock.mutation'
 import { useCreateLockIsApproved } from '@/dao/components/PageVeCrv/queries/create-lock-approved.query'
 import { useCreateLockGasEstimate } from '@/dao/components/PageVeCrv/queries/create-lock-estimate-gas.query'
@@ -28,12 +28,6 @@ export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
   const values = form.watchValues()
   const requestKey = getRequestKey(curve)
   const requestKeyRef = useRef(requestKey)
-  const [success, setSuccess] = useState<{
-    requestKey: string
-    hash: string
-    lockedAmt: Decimal
-    lockedDate: string
-  } | null>(null)
 
   useEffect(() => {
     requestKeyRef.current = requestKey
@@ -93,13 +87,8 @@ export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
   } = useCreateLockMutation({
     chainId: curve?.chainId ?? 0,
     userAddress: curve?.signerAddress,
-    onCreated: async ({ hash }, _receipt, variables) => {
+    onCreated: async () => {
       if (requestKeyRef.current !== requestKey || !curve) return
-      const calculatedDate = dayjs.utc(curve.boosting.calcUnlockTime(variables.days))
-      const lockedDate = dayjs.utc(variables.utcDate.toString()).isSame(calculatedDate)
-        ? formatDate(variables.utcDate.toString())
-        : formatDate(calculatedDate.valueOf())
-      setSuccess({ requestKey, hash, lockedAmt: variables.lockedAmt, lockedDate })
       reset(defaultValues)
       await invalidate(curve)
     },
@@ -125,7 +114,6 @@ export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
     isPending,
     isDisabled,
     error,
-    success: success?.requestKey === requestKey ? success : null,
     onSubmit,
     updateAmount: (lockedAmt: Decimal | undefined) => update({ lockedAmt }),
     updateUnlockDate,

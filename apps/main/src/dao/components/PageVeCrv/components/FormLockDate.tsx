@@ -1,20 +1,17 @@
 import { FieldDatePicker } from '@/dao/components/PageVeCrv/components/FieldDatePicker'
+import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useExtendLockForm } from '@/dao/components/PageVeCrv/hooks/useExtendLockForm'
 import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
-import { networks } from '@/dao/networks'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { FormButton } from '@evm-ui/features/forms'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { t } from '@evm-ui/lib/i18n'
-import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { q } from '@evm-ui/types/util'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
-import { TxInfoBar } from '@legacy-ui/TxInfoBar'
-import { scanTxPath } from '@legacy-ui/utils'
 
-export const FormLockDate = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
+export const FormLockDate = ({ curve, vecrvInfo }: PageVecrv) => {
   const {
     form,
     values,
@@ -27,7 +24,6 @@ export const FormLockDate = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
     isPending,
     isDisabled,
     error,
-    success,
     onSubmit,
     updateUnlockDate,
     selectQuickDate,
@@ -35,7 +31,7 @@ export const FormLockDate = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
   const dateError = form.formState.visibleErrors.find(([field]) => field === 'utcDate' || field === 'days')?.[1] ?? ''
 
   return (
-    <Form {...form} onSubmit={onSubmit} footer={null}>
+    <Form {...form} onSubmit={onSubmit} footer={<VeCrvActionInfo gas={q(gas)} isOpen={form.formState.isValid} />}>
       <FieldDatePicker
         curve={curve}
         formType="adjust_date"
@@ -51,11 +47,8 @@ export const FormLockDate = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
         handleInpEstUnlockedDays={(_, date) => updateUnlockDate(toCalendarDate(dayjs.utc(date.toString())))}
         handleBtnClickQuickAction={(_, value, unit) => selectQuickDate(value, unit)}
       />
-      <ActionInfoGasEstimate gas={q(gas)} />
       {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
-      {success && (
-        <TxInfoBar description={t`Lock date updated`} txHash={scanTxPath(networks[rChainId], success.hash)} />
-      )}
+      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={['utcDate', 'days']} />
       <FormButton
         pending={isPending}
         loading={gas.isLoading || isPending}
@@ -64,7 +57,6 @@ export const FormLockDate = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
         testId="extend-lock-submit-button"
         connectWalletTestId="vecrv-extend-lock-form"
       />
-      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={['utcDate', 'days']} />
     </Form>
   )
 }

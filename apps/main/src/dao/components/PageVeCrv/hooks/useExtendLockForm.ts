@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useExtendLockMutation } from '@/dao/components/PageVeCrv/mutations/extend-lock.mutation'
 import { useExtendLockGasEstimate } from '@/dao/components/PageVeCrv/queries/extend-lock-estimate-gas.query'
 import type { ExtendLockFormValues, ExtendLockParams } from '@/dao/components/PageVeCrv/queries/extend-lock.types'
@@ -25,7 +25,6 @@ export const useExtendLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
   const values = form.watchValues()
   const requestKey = getRequestKey(curve)
   const requestKeyRef = useRef(requestKey)
-  const [success, setSuccess] = useState<{ requestKey: string; hash: string } | null>(null)
   const currUnlockTime = vecrvInfo.lockedAmountAndUnlockTime.unlockTime
   const currUnlockUtcTime = dayjs.utc(currUnlockTime)
   const currentUtcDate = dayjs.utc(useCurrentDate())
@@ -91,9 +90,8 @@ export const useExtendLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
     isPending,
   } = useExtendLockMutation({
     chainId: curve?.chainId ?? 0,
-    onExtended: async ({ hash }) => {
+    onExtended: async () => {
       if (requestKeyRef.current !== requestKey || !curve) return
-      setSuccess({ requestKey, hash })
       reset(defaultValues)
       await invalidate(curve)
     },
@@ -115,7 +113,6 @@ export const useExtendLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
     isPending,
     isDisabled,
     error: extendError ?? gas.error,
-    success: success?.requestKey === requestKey ? success : null,
     onSubmit,
     updateUnlockDate,
     selectQuickDate,

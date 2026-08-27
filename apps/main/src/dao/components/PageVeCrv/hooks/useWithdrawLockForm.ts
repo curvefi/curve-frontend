@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useWithdrawLockMutation } from '@/dao/components/PageVeCrv/mutations/withdraw-lock.mutation'
 import { useWithdrawLockGasEstimate } from '@/dao/components/PageVeCrv/queries/withdraw-lock-estimate-gas.query'
 import type { WithdrawLockFormValues, WithdrawLockParams } from '@/dao/components/PageVeCrv/queries/withdraw-lock.types'
@@ -19,7 +19,6 @@ export const useWithdrawLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
   const { reset } = form
   const requestKey = getRequestKey(curve)
   const requestKeyRef = useRef(requestKey)
-  const [success, setSuccess] = useState<{ requestKey: string; hash: string } | null>(null)
 
   useEffect(() => {
     requestKeyRef.current = requestKey
@@ -48,9 +47,8 @@ export const useWithdrawLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
     userAddress: curve?.signerAddress,
     lockedAmount: vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
     unlockTime: vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
-    onWithdrawn: async ({ hash }) => {
+    onWithdrawn: async () => {
       if (requestKeyRef.current !== requestKey || !curve) return
-      setSuccess({ requestKey, hash })
       await Promise.all([
         invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress }),
         invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress }),
@@ -63,9 +61,8 @@ export const useWithdrawLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
     canUnlock,
     gas,
     isPending,
-    isDisabled: !canUnlock || isPending || success?.requestKey === requestKey,
+    isDisabled: !canUnlock || isPending,
     error,
-    success: success?.requestKey === requestKey ? success : null,
     onSubmit: form.handleSubmit(() => onSubmitWithdraw()),
   }
 }

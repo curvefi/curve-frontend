@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useIncreaseLockMutation } from '@/dao/components/PageVeCrv/mutations/increase-lock.mutation'
 import { useIncreaseLockIsApproved } from '@/dao/components/PageVeCrv/queries/increase-lock-approved.query'
 import { useIncreaseLockGasEstimate } from '@/dao/components/PageVeCrv/queries/increase-lock-estimate-gas.query'
@@ -23,7 +23,6 @@ export const useIncreaseLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
   const values = form.watchValues()
   const requestKey = getRequestKey(curve)
   const requestKeyRef = useRef(requestKey)
-  const [success, setSuccess] = useState<{ requestKey: string; hash: string } | null>(null)
 
   useEffect(() => {
     requestKeyRef.current = requestKey
@@ -53,9 +52,8 @@ export const useIncreaseLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
   } = useIncreaseLockMutation({
     chainId: curve?.chainId ?? 0,
     userAddress: curve?.signerAddress,
-    onIncreased: async ({ hash }) => {
+    onIncreased: async () => {
       if (requestKeyRef.current !== requestKey || !curve) return
-      setSuccess({ requestKey, hash })
       reset(defaultValues)
       await invalidate(curve)
     },
@@ -77,7 +75,6 @@ export const useIncreaseLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
     isPending,
     isDisabled,
     error,
-    success: success?.requestKey === requestKey ? success : null,
     onSubmit,
     updateAmount: (lockedAmt: Decimal | undefined) => update({ lockedAmt }),
   }

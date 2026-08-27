@@ -11,6 +11,7 @@ import { Button } from '@legacy-ui/Button'
 import { DatePicker } from '@legacy-ui/DatePicker'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate } from '@legacy-ui/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },
@@ -50,7 +51,7 @@ export const FieldDatePicker = ({
   utcDateError: 'invalid-date' | string
   minUtcDate: dayjs.Dayjs
   maxUtcDate: dayjs.Dayjs | null
-  lockedAmt?: string
+  lockedAmt?: Decimal
   vecrvInfo: VecrvInfo
   handleInpEstUnlockedDays: (curve: CurveApi, updatedLockedDays: DateValue) => void
   handleBtnClickQuickAction: (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => dayjs.Dayjs
@@ -85,10 +86,7 @@ export const FieldDatePicker = ({
 
     if (isCreateLock) {
       if (!lockedAmt) return undefined
-      return curve.boosting.calculateVeCrv(
-        Number(lockedAmt),
-        Math.floor(dayjs.utc(utcDate.toString()).valueOf() / 1000),
-      )
+      return curve.boosting.calculateVeCrv(lockedAmt, Math.floor(dayjs.utc(utcDate.toString()).valueOf() / 1000))
     }
     return curve.boosting.calculateVeCrv(
       vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,

@@ -1,28 +1,25 @@
 import { styled } from 'styled-components'
 import { Countdown } from '@/dao/components/Countdown'
+import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useWithdrawLockForm } from '@/dao/components/PageVeCrv/hooks/useWithdrawLockForm'
 import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
-import { networks } from '@/dao/networks'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
-import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { q } from '@evm-ui/types/util'
 import { amount, formatNumber } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
-import { TxInfoBar } from '@legacy-ui/TxInfoBar'
-import { scanTxPath } from '@legacy-ui/utils'
 
-export const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
-  const { form, canUnlock, gas, isPending, isDisabled, error, success, onSubmit } = useWithdrawLockForm({
+export const FormWithdraw = ({ curve, vecrvInfo }: PageVecrv) => {
+  const { form, canUnlock, gas, isPending, isDisabled, error, onSubmit } = useWithdrawLockForm({
     curve,
     vecrvInfo,
   })
 
   return (
-    <Form {...form} onSubmit={onSubmit} footer={null}>
+    <Form {...form} onSubmit={onSubmit} footer={<VeCrvActionInfo gas={q(gas)} isOpen={canUnlock} />}>
       <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`CRV Locked`}:</p>
@@ -45,10 +42,7 @@ export const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
           <StyledCountdown endDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / 1000} />
         </AlertBox>
       )}
-      {canUnlock && <ActionInfoGasEstimate gas={q(gas)} />}
-      {success && (
-        <TxInfoBar description={t`Locked CRV withdrawn`} txHash={scanTxPath(networks[rChainId], success.hash)} />
-      )}
+      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={[]} />
       <FormButton
         pending={isPending}
         loading={isPending}
@@ -57,7 +51,6 @@ export const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
         testId="withdraw-lock-submit-button"
         connectWalletTestId="vecrv-withdraw-lock-form"
       />
-      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={[]} />
     </Form>
   )
 }
