@@ -35,7 +35,7 @@ export const FormLockCrv = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
       )}
       <FormButton
         pending={isPending}
-        loading={gas.isLoading || isPending}
+        loading={isPending}
         disabled={isDisabled}
         label={[isApproved === false && t`Approve`, t`Increase Lock Amount`]}
         testId="increase-lock-submit-button"

@@ -43,7 +43,7 @@ describe('FormLockCrv (mocked)', () => {
       cy.mount(<LockMoreForm curve={curve} />)
       writeLockMoreForm(lockedAmount)
       cy.get('[data-testid="increase-lock-submit-button"]').should('be.enabled')
-      cy.then(assertPreSubmit)
+      cy.wrap(null).should(assertPreSubmit)
 
       if (isApproved) {
         cy.get('[data-testid="increase-lock-submit-button"]').should('contain.text', 'Increase Lock Amount').click()

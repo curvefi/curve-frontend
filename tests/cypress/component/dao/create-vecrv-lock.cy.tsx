@@ -44,14 +44,14 @@ describe('FormLockCreate (mocked)', () => {
       cy.mount(<CreateVeCrvLockForm curve={curve} />)
       fillCreateLockForm(lockedAmount)
       cy.get('[data-testid="create-lock-submit-button"]').should('be.enabled')
-      cy.then(assertPreSubmit)
+      cy.wrap(null).should(assertPreSubmit)
 
-      if (!isApproved) {
+      if (isApproved) {
+        cy.get('[data-testid="create-lock-submit-button"]').should('contain.text', 'Create Lock').click()
+      } else {
         cy.get('[data-testid="create-lock-submit-button"]').should('contain.text', 'Approve').click()
       }
-
-      cy.get('[data-testid="create-lock-submit-button"]').should('contain.text', 'Create Lock').click()
-      cy.then(assertSubmit)
+      cy.wrap(null).should(assertSubmit)
     })
   })
 })

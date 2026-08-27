@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useCreateLockApproveMutation } from '@/dao/components/PageVeCrv/mutations/create-lock-approve.mutation'
 import { useCreateLockMutation } from '@/dao/components/PageVeCrv/mutations/create-lock.mutation'
-import {
-  invalidateCreateLockIsApproved,
-  useCreateLockIsApproved,
-} from '@/dao/components/PageVeCrv/queries/create-lock-approved.query'
+import { useCreateLockIsApproved } from '@/dao/components/PageVeCrv/queries/create-lock-approved.query'
 import { useCreateLockGasEstimate } from '@/dao/components/PageVeCrv/queries/create-lock-estimate-gas.query'
 import type { CreateLockFormValues, CreateLockParams } from '@/dao/components/PageVeCrv/queries/create-lock.types'
 import { createLockFormValidationSuite } from '@/dao/components/PageVeCrv/queries/create-lock.validation'
@@ -46,7 +42,7 @@ export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
 
   const crvBalance = decimal(vecrvInfo.crv)
   useFormSync(form, { maxLockedAmt: crvBalance })
-  const isFormValid = form.formState.isValid && !!curve?.signerAddress
+  const isFormValid = form.formState.isValid
   const estimateParams: CreateLockParams =
     curve?.signerAddress && values.lockedAmt
       ? { chainId: curve.chainId, userAddress: curve.signerAddress, lockedAmt: values.lockedAmt, days: values.days }
@@ -91,19 +87,12 @@ export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
   )
 
   const {
-    onSubmit: onSubmitApprove,
-    error: approveError,
-    isPending: isApproving,
-  } = useCreateLockApproveMutation({
-    chainId: curve?.chainId ?? 0,
-    onApproved: async () => await invalidateCreateLockIsApproved(estimateParams),
-  })
-  const {
     onSubmit: onSubmitCreate,
     error: createError,
     isPending: isCreating,
   } = useCreateLockMutation({
     chainId: curve?.chainId ?? 0,
+    userAddress: curve?.signerAddress,
     onCreated: async ({ hash }, _receipt, variables) => {
       if (requestKeyRef.current !== requestKey || !curve) return
       const calculatedDate = dayjs.utc(curve.boosting.calcUnlockTime(variables.days))
@@ -115,11 +104,10 @@ export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
       await invalidate(curve)
     },
   })
-  const error = approveError ?? createError ?? isApproved.error ?? gas.error
-  const isPending = isApproving || isCreating
-  const isDisabled = !isFormValid || isApproved.isLoading || gas.isLoading || isPending
+  const error = createError ?? isApproved.error ?? gas.error
+  const isPending = isCreating
+  const isDisabled = !isFormValid || isPending
   const onSubmit = form.handleSubmit(values => {
-    if (isApproved.data === false && values.lockedAmt) return onSubmitApprove({ lockedAmt: values.lockedAmt })
     if (values.lockedAmt && values.utcDate) {
       return onSubmitCreate({ lockedAmt: values.lockedAmt, utcDate: values.utcDate, days: values.days })
     }

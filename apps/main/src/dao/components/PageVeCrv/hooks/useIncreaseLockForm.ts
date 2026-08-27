@@ -31,7 +31,7 @@ export const useIncreaseLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
   }, [requestKey, reset])
 
   useFormSync(form, { maxLockedAmt: decimal(vecrvInfo.crv) })
-  const isFormValid = form.formState.isValid && !!curve?.signerAddress
+  const isFormValid = form.formState.isValid
   const estimateParams: IncreaseLockParams =
     curve?.signerAddress && values.lockedAmt
       ? { chainId: curve.chainId, userAddress: curve.signerAddress, lockedAmt: values.lockedAmt }
@@ -63,7 +63,7 @@ export const useIncreaseLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
 
   const error = increaseError ?? isApproved.error ?? gas.error
   const isPending = isIncreasing
-  const isDisabled = !isFormValid || isApproved.isLoading || gas.isLoading || isPending
+  const isDisabled = !isFormValid || isPending
   const onSubmit = form.handleSubmit(values => {
     if (!values.lockedAmt) return
     return onSubmitIncrease({ lockedAmt: values.lockedAmt })
