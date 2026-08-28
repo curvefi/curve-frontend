@@ -57,7 +57,11 @@ const createDispatchedFacetedRowModel = <TFeatures extends TableFeatures, TData 
   return override ? override(table, columnId) : createFacetedRowModel<TFeatures, TData>()(table, columnId)
 }
 
-/** Static feature set shared by every the Curve app table. */
+/**
+ * Static feature set availabled for every the Curve app table. App tables are new in v9 and use a global set of features and options,
+ * kinda how we already used Tanstack Table v8. Technically it's possible for each table to have its own feature set and options for
+ * better tree-shaking, but it's a bit unpractical for the time being.
+ */
 const features = tableFeatures({
   columnVisibilityFeature,
   columnFilteringFeature,
