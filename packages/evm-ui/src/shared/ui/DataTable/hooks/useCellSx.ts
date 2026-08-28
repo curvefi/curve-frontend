@@ -2,13 +2,12 @@ import { useMemo } from 'react'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { borderStyle } from '@evm-ui/utils'
 import type { Theme } from '@mui/material/styles'
-import type { SxProps } from '@mui/system'
 import type { Column, RowData } from '@tanstack/react-table'
 import { getAlignment, getExtraColumnPadding, type CurveTableFeatures } from '../data-table.utils'
 
 const { Spacing } = SizesAndSpaces
 
-const emptyObject = {} satisfies SxProps<Theme>
+const emptyObject = {}
 
 /**
  * Creates the styles for the table cell, including handling sticky columns and collapse icon.
@@ -17,12 +16,12 @@ const emptyObject = {} satisfies SxProps<Theme>
  * @param isSticky whether the column is sticky (first column on tablet)
  * @returns an array with the cell sx and the wrapper sx (empty object if no wrapper needed)
  */
-export function useCellSx<T extends RowData>({
+export function useCellSx<TData extends RowData>({
   column,
   showCollapseIcon,
   isSticky,
 }: {
-  column: Column<CurveTableFeatures, T>
+  column: Column<CurveTableFeatures, TData>
   showCollapseIcon?: boolean
   isSticky: boolean
 }) {

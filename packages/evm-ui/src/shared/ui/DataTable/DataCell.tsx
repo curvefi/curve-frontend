@@ -8,19 +8,18 @@ import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import { useCellSx } from './hooks/useCellSx'
 import { RotatableIcon } from './RotatableIcon'
 
-export const DataCell = <T extends RowData>({
+export const DataCell = <TData extends RowData>({
   cell,
   enableCollapse,
   isSticky,
 }: {
-  cell: Cell<CurveTableFeatures, T, unknown>
+  cell: Cell<CurveTableFeatures, TData>
   enableCollapse: boolean
   isSticky: boolean
 }) => {
   const { column, row } = cell
   const children = flexRender(column.columnDef.cell, cell.getContext())
-  const visibleCells = row.getVisibleCells()
-  const showCollapseIcon = enableCollapse && visibleCells[visibleCells.length - 1]?.id === cell.id
+  const showCollapseIcon = enableCollapse && row.getVisibleCells().at(-1)?.id === cell.id
   const [sx, wrapperSx] = useCellSx({ column, showCollapseIcon, isSticky })
   return (
     <Typography

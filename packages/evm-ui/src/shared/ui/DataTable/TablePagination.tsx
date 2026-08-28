@@ -12,7 +12,13 @@ import type { ReactTable, RowData } from '@tanstack/react-table'
 /**
  * A button component representing a specific page in pagination.
  */
-const PageButton = <T extends RowData>({ page, table }: { page: number; table: ReactTable<CurveTableFeatures, T> }) => (
+const PageButton = <TData extends RowData>({
+  page,
+  table,
+}: {
+  page: number
+  table: ReactTable<CurveTableFeatures, TData>
+}) => (
   <ToggleButton
     value={page}
     sx={{ backgroundColor: 'transparent' }}
@@ -56,11 +62,11 @@ const getPageOptions = (pageIndex: number, pageCount: number): [number[], number
 /**
  * A button component for navigating to the previous or next page in pagination.
  */
-const NeighborButton = <T extends RowData>({
+const NeighborButton = <TData extends RowData>({
   table,
   type,
 }: {
-  table: ReactTable<CurveTableFeatures, T>
+  table: ReactTable<CurveTableFeatures, TData>
   type: 'previous' | 'next'
 }) => (
   <IconButton
@@ -77,7 +83,7 @@ const NeighborButton = <T extends RowData>({
  * Table pagination component for navigating through pages of a data table.
  * Renders previous/next buttons and page number buttons with ellipses for skipped pages.
  */
-export const TablePagination = <T extends RowData>({ table }: { table: ReactTable<CurveTableFeatures, T> }) => {
+export const TablePagination = <TData extends RowData>({ table }: { table: ReactTable<CurveTableFeatures, TData> }) => {
   const { pageIndex } = table.state.pagination
   const [firstPages, aroundPages, lastPages] = getPageOptions(pageIndex, table.getPageCount())
   return (

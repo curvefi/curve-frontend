@@ -7,12 +7,12 @@ import type { Column, ReactTable, RowData } from '@tanstack/react-table'
 import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import { useCellSx } from './hooks/useCellSx'
 
-const SkeletonCell = <T extends RowData>({
+const SkeletonCell = <TData extends RowData>({
   column,
   isSticky,
 }: {
   isSticky: boolean
-  column: Column<CurveTableFeatures, T>
+  column: Column<CurveTableFeatures, TData>
 }) => (
   <TableCell sx={useCellSx({ isSticky, column })}>
     <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
@@ -27,12 +27,12 @@ const SkeletonCell = <T extends RowData>({
   </TableCell>
 )
 
-export const SkeletonRows = <T extends RowData>({
+export const SkeletonRows = <TData extends RowData>({
   table,
   shouldStickFirstColumn,
   increasingLength,
 }: {
-  table: ReactTable<CurveTableFeatures, T>
+  table: ReactTable<CurveTableFeatures, TData>
   shouldStickFirstColumn: boolean
   increasingLength?: IncreasingLengthCategory
 }) =>

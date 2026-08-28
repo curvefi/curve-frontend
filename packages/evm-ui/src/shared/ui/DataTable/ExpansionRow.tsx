@@ -10,23 +10,24 @@ import type { DataRowProps } from './DataRow'
 const { Spacing } = SizesAndSpaces
 
 /** A component that renders part of the expanded panel for a table row */
-export type ExpandedPanelComponent<T extends RowData> = FunctionComponent<Pick<DataRowProps<T>, 'row' | 'table'>>
-
-export type ExpandedPanelConfig<T extends RowData> = {
-  Body: ExpandedPanelComponent<T>
-  Actions?: ExpandedPanelComponent<T>
+export type ExpandedPanelComponent<TData extends RowData> = FunctionComponent<
+  Pick<DataRowProps<TData>, 'row' | 'table'>
+>
+export type ExpandedPanelConfig<TData extends RowData> = {
+  Body: ExpandedPanelComponent<TData>
+  Actions?: ExpandedPanelComponent<TData>
 }
 
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
  */
-export function ExpansionRow<T extends RowData>({
+export function ExpansionRow<TData extends RowData>({
   row,
   table,
   expandedPanel,
   colSpan,
-}: Pick<DataRowProps<T>, 'table' | 'row'> & {
-  expandedPanel: NonNullable<DataRowProps<T>['expandedPanel']>
+}: Pick<DataRowProps<TData>, 'table' | 'row'> & {
+  expandedPanel: NonNullable<DataRowProps<TData>['expandedPanel']>
   colSpan: number
 }) {
   const { render, onExited, expanded } = useRowExpansion(row)

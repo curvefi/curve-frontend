@@ -25,13 +25,13 @@ const HeaderCellVerticalAlign = {
   large: 'bottom',
 }
 
-function useHeaderSx<T extends RowData>({
+function useHeaderSx<TData extends RowData>({
   isSticky,
   column,
   width,
   size,
 }: {
-  column: Column<CurveTableFeatures, T>
+  column: Column<CurveTableFeatures, TData>
   isSticky: boolean
   width?: string | number
   size: DataTableSize
@@ -73,13 +73,13 @@ function useHeaderSx<T extends RowData>({
   )
 }
 
-export const HeaderCell = function <T extends RowData>({
+export const HeaderCell = function <TData extends RowData>({
   header,
   isSticky,
   width,
   size,
 }: {
-  header: Header<CurveTableFeatures, T, unknown>
+  header: Header<CurveTableFeatures, TData>
   isSticky: boolean
   width?: string | number
   size: DataTableSize

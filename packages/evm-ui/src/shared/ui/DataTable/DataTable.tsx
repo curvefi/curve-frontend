@@ -39,22 +39,22 @@ type TableEmptyState = {
 } & Pick<EmptyStateCardProps, 'title' | 'description' | 'button' | 'secondaryButton'>
 type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
 
-export type DataTableProps<T extends RowData> = {
+export type DataTableProps<TData extends RowData> = {
   category?: DataTableCategory
-  table: ReturnType<typeof useCurveTable<T>>
+  table: ReturnType<typeof useCurveTable<TData>>
   emptyState?: TableEmptyState // optional overrides for the built-in empty state
   errorState?: TableErrorState // optional overrides for the built-in error state
   children?: ReactNode // passed to <FilterRow />
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
-} & Omit<DataRowProps<T>, 'table' | 'row'>
+} & Omit<DataRowProps<TData>, 'table' | 'row'>
 
 /**
  * DataTable component to render the table with headers and rows.
  * The table header stays sticky only when enabled, rows are not limited, and table content fits within its parent.
  * When the table is wider than its parent, the header stops being sticky and the table becomes horizontally scrollable.
  */
-export const DataTable = <T extends RowData>({
+export const DataTable = <TData extends RowData>({
   category = 'list',
   emptyState,
   errorState,
@@ -63,7 +63,7 @@ export const DataTable = <T extends RowData>({
   footerRow,
   viewAllLabel,
   ...rowProps
-}: DataTableProps<T>) => {
+}: DataTableProps<TData>) => {
   const {
     size = 'small',
     height,

@@ -1,7 +1,7 @@
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@evm-ui/themes/typography'
 import { QueryProp } from '@evm-ui/types/util'
-import type { PartialRecord } from '@primitives/objects.utils'
+import { maybe, type PartialRecord } from '@primitives/objects.utils'
 import {
   columnFacetingFeature,
   columnFilteringFeature,
@@ -13,6 +13,7 @@ import {
   createPaginatedRowModel,
   createSortedRowModel,
   createTableHook,
+  filterFn_includesString,
   globalFilteringFeature,
   rowExpandingFeature,
   rowPaginationFeature,
@@ -51,7 +52,7 @@ const createDispatchedFacetedRowModel = <TFeatures extends TableFeatures, TData 
   return override ? override(table, columnId) : createFacetedRowModel<TFeatures, TData>()(table, columnId)
 }
 
-/** Static feature set shared by every Curve DataTable. */
+/** Static feature set shared by every the Curve app table. */
 const features = tableFeatures({
   columnVisibilityFeature,
   columnFilteringFeature,
@@ -66,6 +67,7 @@ const features = tableFeatures({
   facetedRowModel: createDispatchedFacetedRowModel,
   facetedUniqueValues: createFacetedUniqueValues(),
   facetedMinMaxValues: createFacetedMinMaxValues(),
+  filterFns: { includesString: filterFn_includesString },
   sortFns: {
     alphanumeric: sortFn_alphanumeric,
     text: sortFn_text,
@@ -76,7 +78,7 @@ export type CurveTableFeatures = typeof features
 
 const options = tableOptions({
   features,
-  getRowCanExpand: () => true, // Curve renders expanded content as sibling detail rows with its own expansion check, not TanStack subRows.
+  getRowCanExpand: () => true, // expanded panels are generic sibling rows with their own 'can expand' check; subRows are tied to the column layout (which means you can't show just *any* generic panel component)
   autoResetPageIndex: false, // autoreset causes stack-too-deep errors when receiving new data
   maxMultiSortColCount: 3, // allow three columns to be sorted while holding shift
 })
@@ -88,14 +90,14 @@ const EMPTY_ARRAY: never[] = []
 
 /** Query-aware wrapper around the Curve app table hook. */
 export const useCurveTable = <TData extends RowData>({
-  query,
+  query: { data, isLoading, error },
   ...tableOptions
 }: Omit<TableOptions<CurveTableFeatures, TData>, 'data' | 'features'> & {
   query: QueryProp<TData[]>
 }) => ({
-  ...useAppTable({ ...tableOptions, data: query.data ?? EMPTY_ARRAY }),
-  isLoading: query.isLoading,
-  error: query.error,
+  ...useAppTable({ ...tableOptions, data: data ?? EMPTY_ARRAY }),
+  isLoading,
+  error,
 })
 
 /** Define the alignment of the data or header cell based on the column type. */
@@ -112,10 +114,7 @@ export const getCellVariant = (variant?: TypographyVariantKey) => variant ?? 'ta
 export const isSortedBy = <TFeatures extends TableFeatures, TData extends RowData>(
   table: Pick<Table<TFeatures, TData>, 'getColumn'>,
   columnId: string,
-) => {
-  const column = table.getColumn(columnId)
-  return column ? Boolean(column_getIsSorted(column)) : false
-}
+) => !!maybe(table.getColumn(columnId), column_getIsSorted)
 
 // The following datatable size code lives in the util file, because at the moment of writing we have both DataTable and LegacyDataTable.
 // TODO: move to the final DataTable.tsx component once we remove the LegacyDataTable and make sure there are no circular dependencies with the other files in the DataTable folder.

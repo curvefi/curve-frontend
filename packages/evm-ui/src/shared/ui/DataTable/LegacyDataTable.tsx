@@ -28,7 +28,7 @@ import { useTableRowLimit } from './useTableRowLimit'
  * Resets the table pagination to the first page whenever the number of filtered results changes.
  * Skipped for manual pagination since data changes on every page change.
  */
-function useResetPageOnResultChange<T extends RowData>(table: ReactTable<CurveTableFeatures, T>) {
+function useResetPageOnResultChange<TData extends RowData>(table: ReactTable<CurveTableFeatures, TData>) {
   const isManualPagination = table.options.manualPagination
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)
@@ -50,7 +50,7 @@ const { Sizing } = SizesAndSpaces
 /**
  * DataTable component to render the table with headers and rows.
  */
-export const LegacyDataTable = <T extends RowData>({
+export const LegacyDataTable = <TData extends RowData>({
   emptyState,
   children,
   loading,
@@ -64,7 +64,7 @@ export const LegacyDataTable = <T extends RowData>({
   footerRow,
   ...rowProps
 }: {
-  table: ReactTable<CurveTableFeatures, T>
+  table: ReactTable<CurveTableFeatures, TData>
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
   loading: boolean
@@ -75,7 +75,7 @@ export const LegacyDataTable = <T extends RowData>({
   disableStickyHeader?: boolean
   hideHeader?: boolean
   footerRow?: ReactNode
-} & Omit<LegacyDataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
+} & Omit<LegacyDataRowProps<TData>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
   const { table } = rowProps
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
