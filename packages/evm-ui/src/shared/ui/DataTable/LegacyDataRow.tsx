@@ -50,10 +50,9 @@ export const LegacyDataRow = <TData extends RowData>({
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const push = useNavigate()
   const href = table.options.meta?.getRowHref?.(row.original)
-  const hasHref = Boolean(href?.trim())
   const onClickDesktop = useCallback(
-    (e: MouseEvent<HTMLTableRowElement>) => hasHref && href && onCellClick(e.target, href, push),
-    [href, push, hasHref],
+    (e: MouseEvent<HTMLTableRowElement>) => href && onCellClick(e.target, href, push),
+    [href, push],
   )
   const visibleCells = row.getVisibleCells()
   const shouldApplyStickyLastRow = isLastRow && shouldStickLastRowToTop
@@ -65,7 +64,7 @@ export const LegacyDataRow = <TData extends RowData>({
           sx={useMemo(
             () => ({
               marginBlock: 0,
-              cursor: hasHref ? 'pointer' : 'default',
+              cursor: href ? 'pointer' : 'default',
               verticalAlign,
               transition: `border-bottom ${TRANSITION_FUNCTION}`,
               [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
@@ -92,12 +91,12 @@ export const LegacyDataRow = <TData extends RowData>({
                 backgroundColor: t => t.design.Table.Row.Default,
               }),
             }),
-            [shouldApplyStickyLastRow, hasHref, verticalAlign],
+            [shouldApplyStickyLastRow, href, verticalAlign],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
           // eslint-disable-next-line local/no-router-navigate-on-click -- A `<tr>` cannot be a link.
-          onClick={isMobile ? () => row.toggleExpanded() : hasHref ? onClickDesktop : undefined}
+          onClick={isMobile ? () => row.toggleExpanded() : href ? onClickDesktop : undefined}
         >
           {visibleCells.map((cell, index) => (
             <DataCell

@@ -46,12 +46,11 @@ export const DataRow = <TData extends RowData>({
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const push = useNavigate()
   const href = table.options.meta?.getRowHref?.(row.original)
-  const hasHref = Boolean(href?.trim())
   const hasExpansionRow = isMobile && !!expandedPanel
-  const isInteractive = hasHref || hasExpansionRow
+  const isInteractive = !!href || hasExpansionRow
   const onClickDesktop = useCallback(
-    (e: MouseEvent<HTMLTableRowElement>) => hasHref && href && onCellClick(e.target, href, push),
-    [href, push, hasHref],
+    (e: MouseEvent<HTMLTableRowElement>) => href && onCellClick(e.target, href, push),
+    [href, push],
   )
   const visibleCells = row.getVisibleCells()
 
@@ -94,7 +93,7 @@ export const DataRow = <TData extends RowData>({
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
           // eslint-disable-next-line local/no-router-navigate-on-click -- A `<tr>` cannot be a link.
-          onClick={isMobile ? () => row.toggleExpanded() : hasHref ? onClickDesktop : undefined}
+          onClick={isMobile ? () => row.toggleExpanded() : href ? onClickDesktop : undefined}
         >
           {visibleCells.map((cell, index) => (
             <DataCell
