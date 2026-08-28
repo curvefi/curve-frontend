@@ -5,9 +5,9 @@ import { borderStyle } from '@evm-ui/utils'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
-import { type Column, flexRender, type Header, type RowData } from '@tanstack/react-table'
+import { flexRender, type Header, type RowData } from '@tanstack/react-table'
 import { Tooltip } from '../Tooltip'
-import { type CurveTableFeatures, getAlignment, getExtraColumnPadding, type DataTableSize } from './data-table.utils'
+import { type CurveTableFeatures, getAlignment, type DataTableSize, EXTRA_COLUMN_PADDING } from './data-table.utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -25,24 +25,22 @@ const HeaderCellVerticalAlign = {
   large: 'bottom',
 }
 
-function useHeaderSx<TData extends RowData>({
+function useHeaderSx({
+  canSort,
+  columnType,
+  isSorted,
   isSticky,
-  column,
   width,
   size,
 }: {
-  column: Column<CurveTableFeatures, TData>
+  canSort: boolean
+  columnType?: Parameters<typeof getAlignment>[0]
+  isSorted: boolean
   isSticky: boolean
   width?: string | number
   size: DataTableSize
 }) {
-  const { paddingInlineStart, paddingInlineEnd } = getExtraColumnPadding(
-    column.id,
-    column.table.getVisibleLeafColumns(),
-  )
-  const canSort = column.getCanSort()
-  const textAlign = getAlignment(column.columnDef.meta?.type)
-  const isSorted = column.getIsSorted()
+  const textAlign = getAlignment(columnType)
   return useMemo(
     (): SxProps<Theme> => ({
       textAlign,
@@ -51,8 +49,7 @@ function useHeaderSx<TData extends RowData>({
       paddingBlockStart: 0,
       paddingBlockEnd: HeaderCellPaddingBlockEnd[size],
       paddingInline: Spacing.xs,
-      paddingInlineStart,
-      paddingInlineEnd,
+      ...EXTRA_COLUMN_PADDING,
       ...(canSort && {
         cursor: 'pointer',
         '&:hover': {
@@ -69,7 +66,7 @@ function useHeaderSx<TData extends RowData>({
       width,
       minWidth: Sizing['3xl'],
     }),
-    [canSort, isSorted, isSticky, paddingInlineEnd, paddingInlineStart, size, textAlign, width],
+    [canSort, isSorted, isSticky, size, textAlign, width],
   )
 }
 
@@ -86,17 +83,26 @@ export const HeaderCell = function <TData extends RowData>({
 }) {
   const { column } = header
   const { tooltip } = column.columnDef.meta ?? {}
+  const canSort = column.getCanSort()
+  const isSorted = !!column.getIsSorted()
   return (
     <Typography
       component="th"
-      sx={useHeaderSx({ column, isSticky, width, size })}
+      sx={useHeaderSx({
+        canSort,
+        columnType: column.columnDef.meta?.type,
+        isSorted,
+        isSticky,
+        width,
+        size,
+      })}
       colSpan={header.colSpan}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}
       variant="tableHeaderS"
     >
       <Tooltip title={tooltip?.title} {...tooltip}>
-        <Sortable column={column} size={size} isEnabled={column.getCanSort()}>
+        <Sortable column={column} size={size} isEnabled={canSort}>
           {flexRender(column.columnDef.header, header.getContext())}
         </Sortable>
       </Tooltip>

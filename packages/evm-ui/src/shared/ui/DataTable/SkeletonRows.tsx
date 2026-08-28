@@ -14,7 +14,7 @@ const SkeletonCell = <TData extends RowData>({
   isSticky: boolean
   column: Column<CurveTableFeatures, TData>
 }) => (
-  <TableCell sx={useCellSx({ isSticky, column })}>
+  <TableCell sx={useCellSx({ isSticky, columnType: column.columnDef.meta?.type })}>
     <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
       <Typography
         variant={getCellVariant(column.columnDef.meta?.variant)}

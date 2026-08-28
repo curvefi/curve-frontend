@@ -20,7 +20,7 @@ export const DataCell = <TData extends RowData>({
   const { column, row } = cell
   const children = flexRender(column.columnDef.cell, cell.getContext())
   const showCollapseIcon = enableCollapse && row.getVisibleCells().at(-1)?.id === cell.id
-  const [sx, wrapperSx] = useCellSx({ column, showCollapseIcon, isSticky })
+  const [sx, wrapperSx] = useCellSx({ columnType: column.columnDef.meta?.type, showCollapseIcon, isSticky })
   return (
     <Typography
       variant={getCellVariant(column.columnDef.meta?.variant)}

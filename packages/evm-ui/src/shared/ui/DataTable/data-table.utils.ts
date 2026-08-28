@@ -31,7 +31,7 @@ import {
 } from '@tanstack/react-table'
 import { column_getIsSorted } from '@tanstack/react-table/static-functions'
 
-const { Spacing, Sizing } = SizesAndSpaces
+const { Sizing, Spacing } = SizesAndSpaces
 
 /** css class to hide elements on desktop unless the row is hovered */
 export const DESKTOP_ONLY_HOVER_CLASS = 'desktop-only-on-hover'
@@ -41,6 +41,11 @@ export const CLICKABLE_IN_ROW_CLASS = 'clickable-in-row'
 
 /** css class for secondary text inside data table rows */
 export const TABLE_SECONDARY_TEXT_CLASS = 'table-secondary-text'
+
+export const EXTRA_COLUMN_PADDING = {
+  '&:first-child': { paddingInlineStart: Spacing.md },
+  '&:last-child': { paddingInlineEnd: Spacing.md },
+}
 
 /** Select a table-specific faceting strategy, falling back to TanStack's standard implementation. */
 const createDispatchedFacetedRowModel = <TFeatures extends TableFeatures, TData extends RowData>(
@@ -102,11 +107,6 @@ export const useCurveTable = <TData extends RowData>({
 
 /** Define the alignment of the data or header cell based on the column type. */
 export const getAlignment = (type?: 'numeric') => (type == 'numeric' ? 'right' : 'left')
-
-export const getExtraColumnPadding = (columnId: string, visibleColumns: readonly { id: string }[]) => ({
-  ...(visibleColumns[0]?.id === columnId && { paddingInlineStart: Spacing.md }),
-  ...(visibleColumns.at(-1)?.id === columnId && { paddingInlineEnd: Spacing.md }),
-})
 
 /** Get the typography variant for the cell based on the column definition. */
 export const getCellVariant = (variant?: TypographyVariantKey) => variant ?? 'tableCellMBold'
