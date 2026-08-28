@@ -13,14 +13,10 @@ export const LegacyPoolExpandedPanelActions: ExpandedPanelComponent<LegacyPoolRo
   const path = getPath({ network }, `${ROUTE.PAGE_POOLS}/${poolId}`)
 
   const actions = [
-    {
-      id: 'deposit',
-      label: t`Deposit`,
-      href: path + ROUTE.PAGE_POOL_DEPOSIT,
-      testId: 'pool-link-deposit',
-    },
-    { id: 'withdraw', label: t`Withdraw`, href: path + ROUTE.PAGE_POOL_WITHDRAW },
-    { id: 'swap', label: t`Swap`, href: path + ROUTE.PAGE_SWAP },
+    // todo: URLs to specific actions don't exist anymore, do we really need these links?
+    { id: 'deposit', label: t`Deposit`, href: path, testId: 'pool-link-deposit' },
+    { id: 'withdraw', label: t`Withdraw`, href: path },
+    { id: 'swap', label: t`Swap`, href: path },
   ]
 
   return <ExpandedPanelActions actions={actions} />
