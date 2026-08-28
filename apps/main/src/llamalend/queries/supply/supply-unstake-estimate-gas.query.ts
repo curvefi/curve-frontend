@@ -17,22 +17,4 @@ export const useUnstakeEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   query: UnstakeParams<ChainId>,
   enabled?: boolean,
-) => {
-  const { chainId } = query
-  const {
-    data: unstakeEstimate,
-    isLoading: unstakeLoading,
-    error: unstakeError,
-  } = useUnstakeEstimateGasQuery(query, enabled)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas(networks, chainId, unstakeEstimate, enabled)
-
-  return {
-    data,
-    isLoading: [unstakeLoading, conversionLoading].some(Boolean),
-    error: [unstakeError, estimateError].find(Boolean) ?? null,
-  }
-}
+) => useEstimateGas(networks, query.chainId, useUnstakeEstimateGasQuery(query, enabled), enabled)

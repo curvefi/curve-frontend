@@ -24,22 +24,4 @@ export const useScrvUsdWithdrawEstimateGas = (
   networks: Record<number, BaseConfig>,
   query: ScrvUsdWithdrawParams,
   enabled?: boolean,
-) => {
-  const { chainId } = query
-  const {
-    data: withdrawEstimate,
-    isLoading: withdrawLoading,
-    error: withdrawError,
-  } = useScrvUsdWithdrawEstimateGasQuery(query, enabled)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas(networks, chainId, withdrawEstimate, enabled && withdrawEstimate != null)
-
-  return {
-    data,
-    isLoading: [withdrawLoading, conversionLoading].some(Boolean),
-    error: [withdrawError, estimateError].find(Boolean) ?? null,
-  }
-}
+) => useEstimateGas(networks, query.chainId, useScrvUsdWithdrawEstimateGasQuery(query, enabled), enabled)

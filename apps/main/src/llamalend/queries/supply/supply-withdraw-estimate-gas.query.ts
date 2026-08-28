@@ -25,22 +25,4 @@ export const useWithdrawEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   query: WithdrawParams<ChainId>,
   enabled?: boolean,
-) => {
-  const { chainId } = query
-  const {
-    data: withdrawEstimate,
-    isLoading: withdrawLoading,
-    error: withdrawError,
-  } = useWithdrawEstimateGasQuery(query, enabled)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas(networks, chainId, withdrawEstimate, enabled)
-
-  return {
-    data,
-    isLoading: [withdrawLoading, conversionLoading].some(Boolean),
-    error: [withdrawError, estimateError].find(Boolean) ?? null,
-  }
-}
+) => useEstimateGas(networks, query.chainId, useWithdrawEstimateGasQuery(query, enabled), enabled)

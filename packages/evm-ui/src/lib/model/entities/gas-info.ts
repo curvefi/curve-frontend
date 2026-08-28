@@ -1,16 +1,16 @@
-import { useMemo } from 'react'
 import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { AnyCurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import type { Provider } from '@evm-ui/lib/ethers'
 import { type ChainQuery, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
+import { combineQueries, pickQuery } from '@evm-ui/lib/queries/combine'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib/validation'
-import type { Query as QueryResult } from '@evm-ui/types/util'
+import { constQ, type Query as QueryResult } from '@evm-ui/types/util'
 import { Chain, gweiToEther, gweiToWai, weiToGwei, formatNumber, formatToken } from '@evm-ui/utils'
 import { type BaseConfig } from '@legacy-ui/utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
+import { assert, maybe } from '@primitives/objects.utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { useTokenUsdRate } from './token-usd-rate'
 
@@ -391,34 +391,29 @@ export function calculateGas(
   return { estGasCost, tooltip, ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }) }
 }
 
-type GasEstimateConversionResult = ReturnType<typeof calculateGas>
+type GasEstimate = Amount | [Decimal, Decimal] | number[] | null | undefined
 
 export const useEstimateGas = (
   networks: Record<number, BaseConfig>,
   chainId: number | null | undefined,
-  estimate: Amount | [Decimal, Decimal] | number[] | null | undefined,
+  estimate: QueryResult<GasEstimate>,
   enabled?: boolean,
 ) => {
-  const network = chainId && networks[chainId]
-  const {
-    data: ethRate,
-    isLoading: ethRateLoading,
-    error: ethRateError,
-  } = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
-  const {
-    data: gasInfo,
-    isLoading: gasInfoLoading,
-    error: gasInfoError,
-  } = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
+  const network = maybe(chainId, chainId => networks[chainId])
+  const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
+  const gasInfo = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
 
-  const data = useMemo(
-    (): GasEstimateConversionResult | undefined =>
-      network && estimate != null ? calculateGas(estimate, gasInfo, ethRate, network) : undefined,
-    [estimate, network, gasInfo, ethRate],
+  return combineQueries([estimate, gasInfo, ethRate], (estimate, gasInfo, ethRate) =>
+    maybe(network, network => calculateGas(estimate, gasInfo, ethRate, network)),
   )
-
-  return { data, isLoading: ethRateLoading || gasInfoLoading, error: ethRateError ?? gasInfoError }
 }
+
+export const useEstimateGasValue = (
+  networks: Record<number, BaseConfig>,
+  chainId: number | null | undefined,
+  estimate: GasEstimate,
+  enabled?: boolean,
+) => useEstimateGas(networks, chainId, constQ(estimate), enabled)
 
 type NetworkDict = Record<number, BaseConfig>
 
@@ -441,26 +436,13 @@ export const createApprovedEstimateGasHook =
     useActionEstimate,
   }: ApprovedEstimateGasHookConfig<Query, Estimate>) =>
   (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled = true) => {
-    const { data: isApproved, isLoading: isApprovedLoading, error: isApprovedError } = useIsApproved(query, enabled)
-    const {
-      data: approveEstimate,
-      isLoading: approveLoading,
-      error: approveError,
-    } = useApproveEstimate(query, enabled && isApproved === false)
-    const {
-      data: actionEstimate,
-      isLoading: actionLoading,
-      error: actionError,
-    } = useActionEstimate(query, enabled && isApproved === true)
-    const {
-      data,
-      isLoading: conversionLoading,
-      error: estimateError,
-    } = useEstimateGas(networks, query.chainId, isApproved ? actionEstimate : approveEstimate, enabled)
+    const isApproved = useIsApproved(query, enabled)
+    const approveEstimate = useApproveEstimate(query, enabled && isApproved.data === false)
+    const actionEstimate = useActionEstimate(query, enabled && isApproved.data === true)
+    const estimate = pickQuery([actionEstimate, approveEstimate], ([action, approve]) =>
+      isApproved.data ? action : approve,
+    )
+    const gas = useEstimateGas(networks, query.chainId, estimate, enabled)
 
-    return {
-      data,
-      isLoading: [isApprovedLoading, approveLoading, actionLoading, conversionLoading].some(Boolean),
-      error: [isApprovedError, approveError, actionError, estimateError].find(Boolean) ?? null,
-    }
+    return combineQueries([isApproved, gas], (_, gas) => gas)
   }

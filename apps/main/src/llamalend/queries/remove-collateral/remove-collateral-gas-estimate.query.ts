@@ -34,17 +34,4 @@ export const useRemoveCollateralEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   query: RemoveCollateralGasParams<ChainId>,
   enabled?: boolean,
-) => {
-  const { chainId } = query
-  const {
-    data: estimate,
-    isLoading: estimateLoading,
-    error: estimateError,
-  } = useRemoveCollateralGasEstimate(query, enabled)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: conversionError,
-  } = useEstimateGas(networks, chainId, estimate, enabled)
-  return { data, isLoading: estimateLoading || conversionLoading, error: estimateError ?? conversionError }
-}
+) => useEstimateGas(networks, query.chainId, useRemoveCollateralGasEstimate(query, enabled), enabled)

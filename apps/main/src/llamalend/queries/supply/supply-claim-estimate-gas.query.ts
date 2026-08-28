@@ -1,5 +1,6 @@
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import { combineQueries } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { useEstimateGas } from '@evm-ui/lib/model/entities/gas-info'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
@@ -35,15 +36,8 @@ const useClaimEstimateGas = <ChainId extends IChainId, T>(
   enabled = true,
 ) => {
   const { chainId } = query
-  const { isLoading: claimableLoading, error: claimableError } = claimable
-  const { data: gasEstimate, isLoading: estimateLoading, error: crvError } = claimableEstimateGas
-  const { data, isLoading, error } = useEstimateGas(networks, chainId, gasEstimate, enabled && gasEstimate != null)
-
-  return {
-    data,
-    isLoading: [claimableLoading, estimateLoading, isLoading].some(Boolean),
-    error: [claimableError, crvError, error].find(Boolean) ?? null,
-  }
+  const gas = useEstimateGas(networks, chainId, claimableEstimateGas, enabled)
+  return combineQueries([claimable, gas], (_, gas) => gas)
 }
 
 export const useClaimCrvEstimateGas = <ChainId extends IChainId>(
