@@ -7,9 +7,9 @@ import {
   gaugeDepositRewardValidationSuite,
 } from './gauge-validation'
 import { gaugeKeys } from './query-keys'
-import { depositRewardAvailable, depositRewardIsApproved } from './query-options'
+import { getDepositRewardAvailableQueryKey, getDepositRewardIsApprovedQueryKey } from './query-options'
 
-export const estimateGasDepositRewardApprove = queryFactory({
+export const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
   queryKey: ({ rewardTokenId, amount, userBalance, ...gaugeParams }: DepositRewardApproveParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
@@ -26,7 +26,7 @@ export const estimateGasDepositRewardApprove = queryFactory({
   category: 'dex.deployGauge',
 })
 
-export const estimateGasAddRewardToken = queryFactory({
+export const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
   queryKey: ({ rewardTokenId, distributorId, ...gaugeParams }: AddRewardParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
@@ -37,13 +37,13 @@ export const estimateGasAddRewardToken = queryFactory({
     ] as const,
   queryFn: api.queryEstimateGasAddRewardToken,
   validationSuite: gaugeAddRewardValidationSuite,
-  dependencies: (params: AddRewardParams) => [depositRewardAvailable.queryKey(params)],
+  dependencies: (params: AddRewardParams) => [getDepositRewardAvailableQueryKey(params)],
   refetchOnWindowFocus: 'always',
   refetchOnMount: 'always',
   category: 'dex.deployGauge',
 })
 
-export const estimateGasDepositReward = queryFactory({
+export const { useQuery: useEstimateGasDepositReward } = queryFactory({
   queryKey: ({ rewardTokenId, amount, epoch, userBalance, ...gaugeParams }: DepositRewardParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
@@ -56,7 +56,7 @@ export const estimateGasDepositReward = queryFactory({
     ] as const,
   queryFn: api.queryEstimateGasDepositReward,
   validationSuite: gaugeDepositRewardValidationSuite,
-  dependencies: (params: DepositRewardParams) => [depositRewardIsApproved.queryKey(params)],
+  dependencies: (params: DepositRewardParams) => [getDepositRewardIsApprovedQueryKey(params)],
   refetchOnWindowFocus: 'always',
   refetchOnMount: 'always',
   category: 'dex.deployGauge',

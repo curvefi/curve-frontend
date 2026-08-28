@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { isAddressEqual, zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
-import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
+import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
 import { useFormContext } from '@evm-ui/features/forms'
@@ -20,14 +20,12 @@ export const AmountTokenInput = ({
   chainId,
   poolId,
   networkId,
-  isPendingDepositRewardApprove,
-  isPendingDepositReward,
+  disabled,
 }: {
   chainId: ChainId
   poolId: string
   networkId: NetworkEnum
-  isPendingDepositRewardApprove: boolean
-  isPendingDepositReward: boolean
+  disabled: boolean
 }) => {
   const { update: updateForm, formState, watchValues } = useFormContext<DepositRewardFormValues>()
   const { rewardTokenId, amount } = watchValues()
@@ -91,12 +89,10 @@ export const AmountTokenInput = ({
   const onChangeToken = useCallback(
     (value: TokenOption) => {
       if (rewardTokenId && isAddressEqual(value.address, rewardTokenId)) return
-      updateForm({ rewardTokenId: value.address, step: DepositRewardStep.APPROVAL })
+      updateForm({ rewardTokenId: value.address })
     },
     [rewardTokenId, updateForm],
   )
-
-  const isDisabled = isPendingDepositReward || isPendingDepositRewardApprove
 
   return (
     <LargeTokenInput
@@ -109,19 +105,19 @@ export const AmountTokenInput = ({
           symbol: token?.symbol,
           balance: rewardTokenBalance,
           usdRate: tokenUsdRate,
-          disabled: isDisabled,
+          disabled,
           buttonTestId: 'max',
         }
       }
       maxBalance={{ balance: rewardTokenBalance, chips: 'max' }}
       inputBalanceUsd={maybes([amount, decimal(tokenUsdRate.data)], decimalMultiply)}
-      disabled={isDisabled}
+      disabled={disabled}
       testId="deposit-amount"
       tokenSelector={
         token && (
           <TokenSelector
             selectedToken={token}
-            disabled={isDisabled}
+            disabled={disabled}
             isOpen={!!isOpen}
             onOpen={openModal}
             onClose={closeModal}

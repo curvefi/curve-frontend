@@ -10,13 +10,7 @@ import Typography from '@mui/material/Typography'
 
 const { Spacing } = SizesAndSpaces
 
-export const EpochInput = ({
-  isPendingDepositRewardApprove,
-  isPendingDepositReward,
-}: {
-  isPendingDepositRewardApprove: boolean
-  isPendingDepositReward: boolean
-}) => {
+export const EpochInput = ({ disabled }: { disabled: boolean }) => {
   const { update: updateForm, formState, watchValues } = useFormContext<DepositRewardFormValues>()
   const { epoch } = watchValues()
 
@@ -25,7 +19,6 @@ export const EpochInput = ({
     [updateForm],
   )
 
-  const isDisabled = isPendingDepositReward || isPendingDepositRewardApprove
   const epochError = formState.visibleErrors.find(([field]) => field === 'epoch')?.[1]
 
   return (
@@ -40,7 +33,7 @@ export const EpochInput = ({
           type="number"
           value={String((epoch ?? 0) / TIME_FRAMES.WEEK)}
           onChange={event => onEpochChange(event.target.value)}
-          disabled={isDisabled}
+          disabled={disabled}
           error={!!formState.errors.epoch}
           slotProps={{ htmlInput: { 'data-testid': 'deposit-epoch' } }}
         />

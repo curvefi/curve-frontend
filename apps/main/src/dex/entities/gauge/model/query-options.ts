@@ -10,21 +10,25 @@ import {
 import type { DepositRewardApproveParams, GaugeDistributorsParams } from '../types'
 import { gaugeDepositRewardApproveValidationSuite, gaugeDistributorsValidationSuite } from './gauge-validation'
 
-export const depositRewardAvailable = queryFactory({
+export const {
+  useQuery: useIsDepositRewardAvailable,
+  invalidate: invalidateDepositRewardAvailable,
+  queryKey: getDepositRewardAvailableQueryKey,
+} = queryFactory({
   queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'isDepositRewardAvailable'] as const,
   queryFn: queryIsDepositRewardAvailable,
   validationSuite: poolValidationSuite,
   category: 'dex.gauge',
 })
 
-export const gaugeManager = queryFactory({
+export const { useQuery: useGaugeManager } = queryFactory({
   queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'manager'] as const,
   queryFn: queryGaugeManager,
   validationSuite: poolValidationSuite,
   category: 'dex.poolParams',
 })
 
-export const gaugeDistributors = queryFactory({
+export const { useQuery: useGaugeRewardsDistributors, invalidate: invalidateGaugeDistributors } = queryFactory({
   queryKey: ({ userAddress, ...params }: GaugeDistributorsParams) =>
     [...rootKeys.gauge(params), ...rootKeys.user({ userAddress }), 'distributors'] as const,
   queryFn: queryGaugeDistributors,
@@ -32,7 +36,11 @@ export const gaugeDistributors = queryFactory({
   category: 'dex.gauge',
 })
 
-export const depositRewardIsApproved = queryFactory({
+export const {
+  useQuery: useGaugeDepositRewardIsApproved,
+  fetchQuery: fetchDepositRewardIsApproved,
+  queryKey: getDepositRewardIsApprovedQueryKey,
+} = queryFactory({
   queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) =>
     [...rootKeys.gauge(gaugeParams), 'depositRewardIsApproved', { rewardTokenId }, { amount }] as const,
   queryFn: queryDepositRewardIsApproved,
