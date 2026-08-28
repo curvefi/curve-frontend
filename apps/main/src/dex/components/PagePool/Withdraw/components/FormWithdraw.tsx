@@ -222,7 +222,7 @@ export const FormWithdraw = ({
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, 'WITHDRAW')
+      resetState(poolData)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])

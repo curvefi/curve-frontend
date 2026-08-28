@@ -136,7 +136,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, 'CLAIM')
+      resetState(poolData)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])

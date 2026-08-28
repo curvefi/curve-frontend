@@ -115,7 +115,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, 'UNSTAKE')
+      resetState(poolData)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])

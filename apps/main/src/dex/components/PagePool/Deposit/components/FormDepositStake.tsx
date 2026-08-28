@@ -207,7 +207,7 @@ export const FormDepositStake = ({
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, 'DEPOSIT_STAKE')
+      resetState(poolData)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
