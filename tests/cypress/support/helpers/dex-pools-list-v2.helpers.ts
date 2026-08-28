@@ -50,6 +50,7 @@ export const getV2PoolCell = (address: string, columnId: PoolColumnId) =>
 
 export const showV2PoolColumns = (columnIds: readonly PoolColumnId[]) => {
   for (const columnId of columnIds) {
+    cy.get('.MuiBackdrop-root').should('not.exist')
     cy.get('[data-testid="btn-visibility-settings"]').click()
     cy.get(`[data-testid="visibility-toggle-${columnId}"]`)
       .should('be.visible')
@@ -59,6 +60,7 @@ export const showV2PoolColumns = (columnIds: readonly PoolColumnId[]) => {
       })
     cy.get('body').click(0, 0)
   }
+  cy.get('.MuiBackdrop-root').should('not.exist')
 }
 
 export const getV2PoolExpandedPanel = (address: string) => getV2PoolRow(address).next('tr').should('be.visible')
