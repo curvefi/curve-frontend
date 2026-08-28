@@ -25,12 +25,8 @@ const expectMetricOrder = (address: string, expectedIds: readonly string[]) => {
 }
 
 const expectPoolTokens = (address: string, representativeSymbol: string) => {
-  getV2PoolExpandedPanel(address)
-    .find('[data-testid="pool-tokens"]')
-    .should('be.visible')
-    .and($section => {
-      expect($section.text()).to.contain(representativeSymbol)
-    })
+  getV2PoolExpandedPanel(address).find('[data-testid="pool-tokens"]').should('be.visible')
+  getV2PoolExpandedPanel(address).find('[data-testid="pool-tokens"]').contains(representativeSymbol)
 }
 
 const visitAndExpand = (address: string, network: 'ethereum' | 'taiko' = 'ethereum') => {
