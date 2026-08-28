@@ -49,17 +49,16 @@ export const getV2PoolCell = (address: string, columnId: PoolColumnId) =>
   getV2PoolRow(address).find(`[data-testid="data-table-cell-${columnId}"]`)
 
 export const showV2PoolColumns = (columnIds: readonly PoolColumnId[]) => {
-  cy.get('[data-testid="btn-visibility-settings"]').click()
   for (const columnId of columnIds) {
+    cy.get('[data-testid="btn-visibility-settings"]').click()
     cy.get(`[data-testid="visibility-toggle-${columnId}"]`)
-      .should('exist')
-      .then($toggle => {
-        const $input = $toggle.is('input') ? $toggle : $toggle.find('input')
-
-        if (!$input.is(':checked')) cy.wrap($toggle).click()
+      .should('be.visible')
+      .find('input')
+      .then($input => {
+        if (!$input.is(':checked')) cy.wrap($input).check({ force: true })
       })
+    cy.get('body').click(0, 0)
   }
-  cy.get('body').click(0, 0)
 }
 
 export const getV2PoolExpandedPanel = (address: string) => getV2PoolRow(address).next('tr').should('be.visible')

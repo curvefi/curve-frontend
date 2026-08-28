@@ -1,5 +1,6 @@
 export enum PoolColumnId {
   PoolName = 'PoolName',
+  Tokens = 'Tokens',
   NetApy = 'NetApy',
   BaseApy = 'BaseApy',
   WeeklyBaseApy = 'WeeklyBaseApy',
