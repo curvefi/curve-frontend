@@ -19,7 +19,7 @@ const { MaxHeight, Spacing } = SizesAndSpaces
 // number of button rendered before hiding the rest in a kebab menu
 const VISIBLE_ACTION_COUNT = 2
 
-type ExpandedPanelAction = Omit<ButtonProps, 'children' | 'component' | 'href' | 'ref'> & {
+type ExpandedPanelAction = Pick<ButtonProps, 'color' | 'onClick' | 'size' | 'sx' | 'type'> & {
   id: string
   label: ReactNode
   href?: string
@@ -35,19 +35,7 @@ const ExpandedPanelActionButton = ({
   action: ExpandedPanelAction
   onDrawerActionClick?: () => void
 }) => {
-  const {
-    id: _id,
-    alwaysInKebabMenu: _alwaysInKebabMenu,
-    label,
-    href,
-    testId,
-    sx,
-    type,
-    color,
-    size,
-    onClick,
-    ...buttonProps
-  } = action
+  const { label, href, testId, sx, type, color, size, onClick } = action
   const inDrawer = !!onDrawerActionClick
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -56,7 +44,6 @@ const ExpandedPanelActionButton = ({
   }
 
   const sharedProps = {
-    ...buttonProps,
     onClick: onDrawerActionClick ? handleClick : onClick,
     color: inDrawer ? ('ghost' as const) : color,
     size: inDrawer ? 'small' : size,
