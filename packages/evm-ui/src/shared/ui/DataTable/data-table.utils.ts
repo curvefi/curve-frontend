@@ -47,15 +47,14 @@ export const EXTRA_COLUMN_PADDING = {
   '&:last-child': { paddingInlineEnd: Spacing.md },
 }
 
-/** Select a table-specific faceting strategy, falling back to TanStack's standard implementation. */
-const createDispatchedFacetedRowModel = <TFeatures extends TableFeatures, TData extends RowData>(
+/** Builds the rows used to calculate a column's filter choices. Markets override this so their choices only depend on selected chains. */
+const createCustomFacetedRowModel = <TFeatures extends TableFeatures, TData extends RowData>(
   table: Table<TFeatures, TData>,
   columnId: string,
-): (() => RowModel<TFeatures, TData>) => {
-  // This fixed feature set intentionally omits the type-only `tableMeta` slot, so the global generic augmentation wins.
-  const override = (table.options.meta as TableMeta<TFeatures, TData> | undefined)?.facetedRowModelFactory
-  return override ? override(table, columnId) : createFacetedRowModel<TFeatures, TData>()(table, columnId)
-}
+): (() => RowModel<TFeatures, TData>) =>
+  maybe((table.options.meta as TableMeta<TFeatures, TData> | undefined)?.facetedRowModelFactory, factory =>
+    factory(table, columnId),
+  ) ?? createFacetedRowModel<TFeatures, TData>()(table, columnId)
 
 /**
  * Static feature set availabled for every the Curve app table. App tables are new in v9 and use a global set of features and options,
@@ -73,7 +72,7 @@ const features = tableFeatures({
   filteredRowModel: createFilteredRowModel(),
   paginatedRowModel: createPaginatedRowModel(),
   sortedRowModel: createSortedRowModel(),
-  facetedRowModel: createDispatchedFacetedRowModel,
+  facetedRowModel: createCustomFacetedRowModel,
   facetedUniqueValues: createFacetedUniqueValues(),
   facetedMinMaxValues: createFacetedMinMaxValues(),
   filterFns: { includesString: filterFn_includesString },
