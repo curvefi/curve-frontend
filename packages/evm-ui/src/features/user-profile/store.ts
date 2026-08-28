@@ -5,10 +5,13 @@ import type { ThemeKey } from '@evm-ui/themes/basic-theme'
 import { SLIPPAGE, type SlippageSettings } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import { mapRecord } from '@primitives/objects.utils'
 
+export type RateDisplay = 'apr' | 'apy'
+
 type UserProfileState = {
   theme: ThemeKey
   maxSlippage: SlippageSettings
   showDeprecatedMarkets: boolean
+  rateDisplay: RateDisplay
 }
 
 type Action = {
@@ -16,6 +19,7 @@ type Action = {
   setTheme: (theme: ThemeKey) => void
   setMaxSlippage: (settings: SlippageSettings) => void
   setShowDeprecatedMarkets: (showDeprecatedMarkets: boolean) => void
+  setRateDisplay: (rateDisplay: RateDisplay) => void
 }
 
 type Store = UserProfileState & Action
@@ -24,6 +28,7 @@ const INITIAL_STATE: UserProfileState = {
   theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
   maxSlippage: mapRecord(SLIPPAGE, (_, v) => v.default),
   showDeprecatedMarkets: false,
+  rateDisplay: 'apy',
 }
 
 const store: StateCreator<Store> = set => ({
@@ -32,6 +37,7 @@ const store: StateCreator<Store> = set => ({
   setTheme: theme => set(state => ({ ...state, theme })),
   setMaxSlippage: maxSlippage => set(state => ({ ...state, maxSlippage })),
   setShowDeprecatedMarkets: (showDeprecatedMarkets: boolean) => set(state => ({ ...state, showDeprecatedMarkets })),
+  setRateDisplay: rateDisplay => set(state => ({ ...state, rateDisplay })),
 })
 
 const cache: PersistOptions<Store> = {

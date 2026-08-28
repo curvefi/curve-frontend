@@ -5,6 +5,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { RateToggle } from './RateToggle'
 import { ShowDeprecatedMarketsToggle } from './ShowDeprecatedMarketsToggle'
 import { ThemeToggleButtons } from './ThemeToggleButtons'
 
@@ -22,6 +23,10 @@ export const Settings = () => (
 
     <SettingsOption label={t`Show deprecated markets`}>
       <ShowDeprecatedMarketsToggle />
+    </SettingsOption>
+
+    <SettingsOption label={t`Display rates as`}>
+      <RateToggle />
     </SettingsOption>
   </Stack>
 )
