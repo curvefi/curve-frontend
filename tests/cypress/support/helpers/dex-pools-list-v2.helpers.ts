@@ -24,6 +24,7 @@ export const visitV2PoolList = ({
     cy.wait('@dex-v2-lite-pool-chains', API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-lite-pools', API_LOAD_TIMEOUT)
   } else {
+    cy.wait(['@dex-v2-pool-filters', '@dex-v2-hidden-pools'], API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
   }
@@ -50,16 +51,16 @@ export const getV2PoolCell = (address: string, columnId: PoolColumnId) =>
   getV2PoolRow(address).find(`[data-testid="data-table-cell-${columnId}"]`)
 
 export const showV2PoolColumns = (columnIds: readonly PoolColumnId[]) => {
+  cy.get('[data-testid="btn-visibility-settings"]').click()
+  cy.get('[data-testid="visibility-settings-popover"]').should('be.visible')
   for (const columnId of columnIds) {
-    // Adding columns can remount the filters when the table starts overflowing.
-    cy.get('[data-testid="btn-visibility-settings"]').click()
     cy.get(`[data-testid="visibility-toggle-${columnId}"]`)
       .should('be.visible')
       .then($toggle => {
         if (!$toggle.find('input').is(':checked')) cy.wrap($toggle).click()
       })
-    cy.get('body').click(0, 0)
   }
+  cy.get('body').click(0, 0)
 }
 
 export const getV2PoolExpandedPanel = (address: string) => getV2PoolRow(address).next('tr').should('be.visible')
