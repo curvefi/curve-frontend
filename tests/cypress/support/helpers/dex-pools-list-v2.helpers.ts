@@ -28,6 +28,7 @@ export const visitV2PoolList = ({
     cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
   }
   cy.wait('@dex-v2-merkl-curve', API_LOAD_TIMEOUT)
+  cy.get('[data-testid="data-table"]', API_LOAD_TIMEOUT).should('be.visible')
 
   if (!isMobile && network === 'ethereum') {
     cy.get(`[data-testid="data-table-header-${PoolColumnId.NetApy}"]`, API_LOAD_TIMEOUT).should('be.visible')
