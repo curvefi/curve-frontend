@@ -5,7 +5,7 @@ import type { ThemeKey } from '@evm-ui/themes/basic-theme'
 import { SLIPPAGE, type SlippageSettings } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import { mapRecord } from '@primitives/objects.utils'
 
-export type RateDisplay = 'apr' | 'apy'
+type RateDisplay = 'apr' | 'apy'
 
 type UserProfileState = {
   theme: ThemeKey

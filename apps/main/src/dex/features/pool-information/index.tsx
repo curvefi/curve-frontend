@@ -58,7 +58,12 @@ export const PoolInformation = ({
           poolId={resolvedPoolId}
           pricesApiPoolData={pricesApiPoolData}
         />
-        <YieldBreakdown chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} poolId={resolvedPoolId} />
+        <YieldBreakdown
+          chainId={chainId}
+          poolDataCacheOrApi={poolDataCacheOrApi}
+          poolId={resolvedPoolId}
+          pricesApiPoolData={pricesApiPoolData}
+        />
         <PointsCampaigns chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} />
         <Alerts poolAlert={poolAlert} tokenAlert={tokenAlert} />
       </CardContent>

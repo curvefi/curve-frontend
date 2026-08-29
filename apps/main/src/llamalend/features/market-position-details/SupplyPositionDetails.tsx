@@ -1,17 +1,15 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
-import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
-  aprToApy,
   formatSupplyExtraIncentives,
+  getCampaignAprs,
   getLatestSnapshotValue,
-  getSupplyApyAverageMetrics,
-  getSupplyApyMetrics,
-  sumCampaignsApy,
-  sumOnChainExtraIncentivesApy,
+  getOnChainExtraIncentiveAprs,
+  getSupplyRateAverageMetrics,
+  getSupplyRateMetrics,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
@@ -20,6 +18,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import { useLendingSnapshots } from '@evm-ui/entities/lending-snapshots'
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
+import { useAprToApy, useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { combineQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -70,6 +69,9 @@ export const SupplyPositionDetailsCard = ({ children }: { children: ReactNode })
 )
 
 export const SupplyPositionDetails = () => {
+  const convertRate = useAprToApy()
+  const rateDisplay = useRateDisplay()
+  const netSupplyRateTitle = rateDisplay === 'apy' ? t`Your net supply APY` : t`Your net supply APR`
   const {
     chainId,
     blockchainId,
@@ -91,22 +93,30 @@ export const SupplyPositionDetails = () => {
   const onChainRewards = useMarketVaultOnChainRewards(params)
   const snapshots = mapQuery(
     useLendingSnapshots({ blockchainId, contractAddress: controllerAddress, limit: rateWindow }),
-    snapshots => ({
-      rebasingYield: getLatestSnapshotValue(snapshots, snapshot => snapshot.borrowedToken.rebasingYield),
-      supplyAverageMetrics: getSupplyApyAverageMetrics({ snapshots, daysBack: rateWindow }),
-    }),
+    snapshots => {
+      const rebasingYieldApr = getLatestSnapshotValue(
+        snapshots,
+        snapshot => snapshot.borrowedToken.rebasingYieldApr,
+      )
+      return {
+        rebasingYieldApr,
+        rebasingYieldRate: convertRate(rebasingYieldApr),
+        supplyAverageMetrics: getSupplyRateAverageMetrics({ snapshots, daysBack: rateWindow, convertRate }),
+      }
+    },
   )
 
   const supplyMetrics = combineQueries(
     [snapshots, useMarketRates(params), onChainRewards, userSupplyBoost],
-    ({ rebasingYield }, marketRatesData, { crvRates, rewardsApr }, userSupplyBoost) =>
-      getSupplyApyMetrics({
-        supplyApy: toNumberOrNull(marketRatesData?.lendApy),
-        rebasingYieldApy: rebasingYield,
+    ({ rebasingYieldApr }, marketRatesData, { crvRates, rewardsApr }, userSupplyBoost) =>
+      getSupplyRateMetrics({
+        supplyApr: toNumberOrNull(marketRatesData?.lendApr),
+        rebasingYieldApr,
         crvBoostApr: crvRates,
-        extraIncentivesApy: sumOnChainExtraIncentivesApy(rewardsApr),
-        campaignsApy: sumCampaignsApy(campaigns),
+        extraIncentivesApr: getOnChainExtraIncentiveAprs(rewardsApr),
+        campaignsApr: getCampaignAprs(campaigns),
         userSupplyBoost,
+        convertRate,
       }),
   )
 
@@ -128,15 +138,15 @@ export const SupplyPositionDetails = () => {
 
   const extraIncentives = combineQueries(
     [supplyMetrics, userSupplyBoost, onChainRewards],
-    ({ userBoostApy }, userBoost, { rewardsApr }) =>
+    ({ userBoostRate }, userBoost, { rewardsApr }) =>
       formatSupplyExtraIncentives({
         incentives: rewardsApr.map(r => ({
           title: r.symbol,
-          percentage: aprToApy(r.apy),
+          percentage: convertRate(r.apr),
           blockchainId,
           address: r.tokenAddress,
         })),
-        userRate: userBoostApy,
+        userRate: userBoostRate,
         userBoost,
       }),
   )
@@ -147,7 +157,7 @@ export const SupplyPositionDetails = () => {
         <MetricGrid>
           <Metric
             category={METRIC_CATEGORY}
-            label={USER_NET_SUPPLY_RATE_TITLE}
+            label={netSupplyRateTitle}
             value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
             valueOptions={{
               unit: 'percentage',
@@ -157,23 +167,23 @@ export const SupplyPositionDetails = () => {
             }}
             notional={mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
             valueTooltip={{
-              title: USER_NET_SUPPLY_RATE_TITLE,
+              title: netSupplyRateTitle,
               body: (
                 <MarketSupplyRateTooltipContent
-                  supplyApy={supplyMetrics.data?.supplyApy}
-                  averageSupplyApy={snapshots.data?.supplyAverageMetrics.averageLendApy}
+                  supplyRate={supplyMetrics.data?.supplyRate}
+                  averageSupplyRate={snapshots.data?.supplyAverageMetrics.averageLendRate}
                   periodLabel={AVERAGE_CATEGORIES[RATE_CATEGORY].period}
                   extraRewards={campaigns}
                   extraIncentives={extraIncentives.data ?? []}
-                  totalApy={supplyMetrics.data?.totalUserBoost}
-                  totalAverageApy={snapshots.data?.supplyAverageMetrics.totalAverageUserBoost}
+                  totalRate={supplyMetrics.data?.totalUserBoost}
+                  totalAverageRate={snapshots.data?.supplyAverageMetrics.totalAverageUserBoost}
                   boost={{
                     type: 'user',
-                    apy: supplyMetrics.data?.userBoostApy,
-                    totalApy: supplyMetrics.data?.totalUserBoost,
-                    totalAverageApy: snapshots.data?.supplyAverageMetrics.totalAverageUserBoost,
+                    rate: supplyMetrics.data?.userBoostRate,
+                    totalRate: supplyMetrics.data?.totalUserBoost,
+                    totalAverageRate: snapshots.data?.supplyAverageMetrics.totalAverageUserBoost,
                   }}
-                  rebasingYieldApy={snapshots.data?.rebasingYield}
+                  rebasingYieldRate={snapshots.data?.rebasingYieldRate}
                   rebasingSymbol={supplyAsset.data?.symbol}
                   isLoading={extraIncentives.isLoading} // todo: implement Query<> states in tooltip
                 />

@@ -33,7 +33,7 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
 
   const { data: isApproved } = useStakeIsApproved(params, isOpen)
 
-  const { prevRates, prevNetSupplyApy } = useSupplyRates({ params, controllerAddress }, isOpen)
+  const { prevSupplyRate, prevNetSupplyRate } = useSupplyRates({ params, controllerAddress }, isOpen)
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
 
@@ -48,8 +48,8 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
       vaultShares={mapQuery(userBalances, d => maybes([d.stakedShares, stakeShares], decimalSum))}
       prevSuppliedAssets={mapQuery(userBalances, d => d.stakedSharesAmount)}
       suppliedAssets={mapQuery(userBalances, d => maybes([d.stakedSharesAmount, stakeAssets], decimalSum))}
-      supplyApy={mapQuery(prevRates, d => d.lendApy)}
-      netSupplyApy={prevNetSupplyApy}
+      supplyRate={prevSupplyRate}
+      netSupplyRate={prevNetSupplyRate}
       gas={q(useStakeEstimateGas(networks, params, isOpen))}
     />
   )

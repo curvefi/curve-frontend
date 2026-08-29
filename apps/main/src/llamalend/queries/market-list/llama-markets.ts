@@ -1,4 +1,4 @@
-import { countBy, sumBy } from 'lodash'
+import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
@@ -9,13 +9,7 @@ import {
   createGetBadDebtMarket,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
-import {
-  aprToApy,
-  computeTotalRate,
-  getSupplyApyMetrics,
-  sumCampaignsApr,
-  sumCampaignsApy,
-} from '@/llamalend/rates.utils'
+import { computeTotalRate, sumCampaignsApr } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import { type CampaignRewards, combineCampaigns } from '@evm-ui/entities/campaigns'
 import { getCampaignsExternalOptions } from '@evm-ui/entities/campaigns/campaigns-external'
@@ -49,7 +43,6 @@ export type AssetDetails = {
   chain: Chain
   balance: number | null
   balanceUsd: number | null
-  rebasingYield: number | null
   rebasingYieldApr: number | null
 }
 
@@ -78,13 +71,9 @@ export type LlamaMarket = {
   badDebtUsd: number | undefined
   debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
-    lendApy: number | null // base lend APY %
+    lendApr: number | null // base lend APR %
     lendCrvAprUnboosted: number | null
     lendCrvAprBoosted: number | null
-    lendTotalApyMinBoosted: number | null
-    lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
-    borrowApy: number // base borrow APY %
-    borrowTotalApy: number // borrow APY - yield from collateral
     borrowApr: number
     borrowTotalApr: number // borrow APR - yield from collateral
     // extra lending incentives, like OP rewards (so non CRV)
@@ -129,11 +118,10 @@ const convertLendingVault = (
     borrowedToken,
     borrowedBalanceUsd,
     collateralBalanceUsd,
-    borrowApy,
     borrowApr,
-    apyLend: lendApy,
-    aprLendCrv0Boost: lendCrvAprUnboosted,
-    aprLendCrvMaxBoost: lendCrvAprBoosted,
+    lendApr,
+    lendAprCrv0Boost: lendCrvAprUnboosted,
+    lendAprCrvMaxBoost: lendCrvAprBoosted,
     leverage,
     extraRewardApr,
     maxLtv,
@@ -157,20 +145,8 @@ const convertLendingVault = (
 ): LlamaMarket => {
   const marketType = MarketType.Lend
   const hasBorrowed = userBorrows?.has(controller) ?? null
-  const totalExtraRewardApy =
-    // sumBy returns 0 for empty arrays
-    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate)) : null
   const rewards = [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])]
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
-  const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
-  const supplyCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'supply'))
-  const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
-    supplyApy: lendApy,
-    crvBoostApr: [lendCrvAprUnboosted, lendCrvAprBoosted],
-    rebasingYieldApy: borrowedToken?.rebasingYield,
-    extraIncentivesApy: totalExtraRewardApy,
-    campaignsApy: supplyCampaignsApy,
-  })
   const solvencyPercent = calculateMarketSolvency({ totalAssetsUsd, badDebtUsd })
 
   return {
@@ -216,13 +192,9 @@ const convertLendingVault = (
     // TVL = collateral converted to borrow token + collateral + unborrowed supplied assets.
     tvl: calculateLendMarketTvlUsd({ borrowedBalanceUsd, collateralBalanceUsd, totalAssetsUsd, totalDebtUsd }),
     rates: {
-      lendApy,
+      lendApr,
       lendCrvAprUnboosted,
       lendCrvAprBoosted,
-      lendTotalApyMinBoosted: totalMinBoost,
-      lendTotalApyMaxBoosted: totalMaxBoost,
-      borrowApy,
-      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
       borrowApr,
       borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
       incentives: extraRewardApr
@@ -263,7 +235,6 @@ const convertMintMarket = (
     collateralAmountUsd,
     stablecoinToken,
     llamma,
-    borrowApy,
     borrowApr,
     borrowed,
     borrowedUsd,
@@ -295,7 +266,6 @@ const convertMintMarket = (
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
   const rewards = [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])]
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
-  const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
   const tvl = calculateMintMarketTvlUsd({ collateralAmountUsd })
 
   return {
@@ -315,7 +285,6 @@ const convertMintMarket = (
         chain,
         balance: borrowed,
         balanceUsd: borrowedUsd,
-        rebasingYield: stablecoinToken.rebasingYield,
         rebasingYieldApr: stablecoinToken.rebasingYieldApr,
       },
       collateral: {
@@ -325,7 +294,6 @@ const convertMintMarket = (
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
-        rebasingYield: collateralToken.rebasingYield,
         rebasingYieldApr: collateralToken.rebasingYieldApr,
       },
     },
@@ -352,13 +320,9 @@ const convertMintMarket = (
     totalDebtUsd: borrowedUsd,
     totalCollateralUsd: tvl,
     rates: {
-      lendApy: null,
+      lendApr: null,
       lendCrvAprBoosted: null,
       lendCrvAprUnboosted: null,
-      lendTotalApyMinBoosted: null,
-      lendTotalApyMaxBoosted: null,
-      borrowApy,
-      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
       borrowApr,
       borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
       incentives: [],

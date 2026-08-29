@@ -8,13 +8,11 @@ const token = z
     symbol: z.string(),
     address,
     decimals: z.number(),
-    rebasing_yield: z.number().nullable().optional(),
     rebasing_yield_apr: z.number().nullable().optional(),
   })
   .transform(camelizeKeys)
-  .transform(({ rebasingYield, rebasingYieldApr, ...data }) => ({
+  .transform(({ rebasingYieldApr, ...data }) => ({
     ...data,
-    rebasingYield: rebasingYield ?? null,
     rebasingYieldApr: rebasingYieldApr ?? null,
   }))
 
@@ -27,8 +25,6 @@ const market = z
     oracle: address,
     oracle_pools: z.array(address),
     rate: z.number(),
-    borrow_apy: z.number(),
-    borrow_total_apy: z.number(),
     borrow_apr: z.number(),
     borrow_total_apr: z.number(),
     future_rate: z.number(),
@@ -77,7 +73,6 @@ const market = z
 const snapshot = z
   .object({
     rate: z.number(),
-    borrow_apy: z.number(),
     borrow_apr: z.number(),
     minted: z.number(),
     redeemed: z.number(),

@@ -1,4 +1,5 @@
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import { useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import {
   TooltipDescription,
@@ -15,41 +16,43 @@ import { RewardsTooltipItems } from './RewardTooltipItems'
 type SupplyBoostType = 'market' | 'user'
 type SupplyBoost = {
   type: SupplyBoostType
-  apy: number | null | undefined
-  totalApy: number | null | undefined
-  totalAverageApy: number | null | undefined
+  rate: number | null | undefined
+  totalRate: number | null | undefined
+  totalAverageRate: number | null | undefined
 }
 type MarketSupplyRateTooltipContentProps = {
-  supplyApy: number | null | undefined
-  averageSupplyApy: number | null | undefined
+  supplyRate: number | null | undefined
+  averageSupplyRate: number | null | undefined
   periodLabel: string
   extraRewards: CampaignRewards[]
   extraIncentives: ExtraIncentive[]
-  totalApy: number | null | undefined
-  totalAverageApy: number | null | undefined
+  totalRate: number | null | undefined
+  totalAverageRate: number | null | undefined
   boost: SupplyBoost
-  rebasingYieldApy: number | null | undefined
+  rebasingYieldRate: number | null | undefined
   rebasingSymbol?: string | null | undefined
   isLoading: boolean
 }
 
 export const MarketSupplyRateTooltipContent = ({
-  supplyApy,
-  averageSupplyApy,
+  supplyRate,
+  averageSupplyRate,
   periodLabel,
   extraRewards,
   extraIncentives,
-  totalApy,
-  totalAverageApy,
+  totalRate,
+  totalAverageRate,
   boost,
-  rebasingYieldApy,
+  rebasingYieldRate,
   rebasingSymbol,
   isLoading,
 }: MarketSupplyRateTooltipContentProps) => {
-  const showApyDescription = [extraRewards.length, extraIncentives.length, rebasingYieldApy != null].some(Boolean)
+  const rateDisplay = useRateDisplay()
+  const showApyDescription =
+    rateDisplay === 'apy' && [extraRewards.length, extraIncentives.length, rebasingYieldRate != null].some(Boolean)
   const hasIncentives = !!(extraRewards.length || extraIncentives.length)
-  const hasRebasingYield = rebasingYieldApy != null
-  const showBoostRow = boost.type === 'market' && !!boost.apy
+  const hasRebasingYield = rebasingYieldRate != null
+  const showBoostRow = boost.type === 'market' && !!boost.rate
 
   return (
     <TooltipWrapper>
@@ -59,11 +62,11 @@ export const MarketSupplyRateTooltipContent = ({
 
       <Stack>
         <TooltipItems secondary>
-          <TooltipItem title={t`Supply APY`} loading={isLoading}>
-            {formatCappedRatePercent(supplyApy)}
+          <TooltipItem title={rateDisplay === 'apy' ? t`Supply APY` : t`Supply APR`} loading={isLoading}>
+            {formatCappedRatePercent(supplyRate)}
           </TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {averageSupplyApy == null ? 'N/A' : formatCappedRatePercent(averageSupplyApy)}
+            {averageSupplyRate == null ? 'N/A' : formatCappedRatePercent(averageSupplyRate)}
           </TooltipItem>
         </TooltipItems>
 
@@ -80,26 +83,26 @@ export const MarketSupplyRateTooltipContent = ({
 
         {hasRebasingYield && (
           <TooltipItems secondary>
-            <TooltipItem title={t`Yield bearing APY*`} loading={isLoading}>
-              {formatCappedRatePercent(rebasingYieldApy)}
+            <TooltipItem title={rateDisplay === 'apy' ? t`Yield bearing APY*` : t`Yield bearing APR`} loading={isLoading}>
+              {formatCappedRatePercent(rebasingYieldRate)}
             </TooltipItem>
             {!!rebasingSymbol && (
               <TooltipItem variant="subItem" title={rebasingSymbol}>
-                {formatCappedRatePercent(rebasingYieldApy)}
+                {formatCappedRatePercent(rebasingYieldRate)}
               </TooltipItem>
             )}
           </TooltipItems>
         )}
 
-        {totalApy != null && (hasIncentives || hasRebasingYield) && (
+        {totalRate != null && (hasIncentives || hasRebasingYield) && (
           <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={t`Net total APY`} loading={isLoading}>
-              {formatCappedRatePercent(totalApy)}
+            <TooltipItem variant="primary" title={rateDisplay === 'apy' ? t`Net total APY` : t`Net total APR`} loading={isLoading}>
+              {formatCappedRatePercent(totalRate)}
             </TooltipItem>
             {/* Historical boost data is only available at the market level, so user totals do not show an average. */}
             {boost.type === 'market' && (
               <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-                {totalAverageApy == null ? 'N/A' : formatCappedRatePercent(totalAverageApy)}
+                {totalAverageRate == null ? 'N/A' : formatCappedRatePercent(totalAverageRate)}
               </TooltipItem>
             )}
           </TooltipItems>
@@ -113,18 +116,22 @@ export const MarketSupplyRateTooltipContent = ({
               loading={isLoading}
               variant="independent"
             >
-              {formatCappedRatePercent(boost.apy)}
+              {formatCappedRatePercent(boost.rate)}
             </TooltipItem>
           </TooltipItems>
         )}
 
         {showBoostRow && (
           <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={t`Total max veCRV APY`} loading={isLoading}>
-              {formatCappedRatePercent(boost.totalApy)}
+            <TooltipItem
+              variant="primary"
+              title={rateDisplay === 'apy' ? t`Total max veCRV APY` : t`Total max veCRV APR`}
+              loading={isLoading}
+            >
+              {formatCappedRatePercent(boost.totalRate)}
             </TooltipItem>
             <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-              {boost.totalAverageApy == null ? 'N/A' : formatCappedRatePercent(boost.totalAverageApy)}
+              {boost.totalAverageRate == null ? 'N/A' : formatCappedRatePercent(boost.totalAverageRate)}
             </TooltipItem>
           </TooltipItems>
         )}

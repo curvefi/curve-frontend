@@ -1,7 +1,8 @@
-import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { MarketTypeSuffix } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
+import { useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
@@ -31,6 +32,8 @@ export const LegacyMetricsRow = ({
   collateral: { symbol: string } | undefined
   borrowToken: { symbol: string } | undefined
 }) => {
+  const rateDisplay = useRateDisplay()
+  const netSupplyRateTitle = rateDisplay === 'apy' ? t`Net Supply APY` : t`Net Supply APR`
   const supplyRatePeriod = supplyRate?.data ? AVERAGE_CATEGORIES[supplyRate.data.averageCategory].period : null
 
   return (
@@ -50,8 +53,8 @@ export const LegacyMetricsRow = ({
       {supplyRate && (
         <Metric
           category={METRIC_CATEGORY}
-          testId="market-net-supply-apy"
-          label={NET_SUPPLY_RATE_TITLE}
+          testId="market-net-supply-rate"
+          label={netSupplyRateTitle}
           value={mapQuery(supplyRate, supplyRate => supplyRate.totalMinBoost)}
           valueOptions={{ unit: 'percentage' }}
           notional={mapQuery(supplyRate, ({ totalAverageMinBoost: data }) =>
@@ -61,21 +64,21 @@ export const LegacyMetricsRow = ({
             })),
           )}
           valueTooltip={{
-            title: NET_SUPPLY_RATE_TITLE,
+            title: netSupplyRateTitle,
             body: (
               // todo: implement loading/error states for tooltip
               <MarketSupplyRateTooltipContent
-                supplyApy={supplyRate.data?.supplyApy}
-                averageSupplyApy={supplyRate.data?.averageLendApy}
-                totalApy={supplyRate.data?.totalMinBoost}
-                totalAverageApy={supplyRate.data?.totalAverageMinBoost}
+                supplyRate={supplyRate.data?.supplyRate}
+                averageSupplyRate={supplyRate.data?.averageLendRate}
+                totalRate={supplyRate.data?.totalMinBoost}
+                totalAverageRate={supplyRate.data?.totalAverageMinBoost}
                 boost={{
                   type: 'market',
-                  apy: supplyRate.data?.supplyApyCrvMaxBoost,
-                  totalApy: supplyRate.data?.totalMaxBoost,
-                  totalAverageApy: supplyRate.data?.totalAverageMaxBoost,
+                  rate: supplyRate.data?.supplyRateCrvMaxBoost,
+                  totalRate: supplyRate.data?.totalMaxBoost,
+                  totalAverageRate: supplyRate.data?.totalAverageMaxBoost,
                 }}
-                rebasingYieldApy={supplyRate.data?.rebasingYield}
+                rebasingYieldRate={supplyRate.data?.rebasingYieldRate}
                 isLoading={supplyRate.isLoading}
                 periodLabel={supplyRatePeriod!}
                 extraRewards={supplyRate.data?.extraRewards ?? []}

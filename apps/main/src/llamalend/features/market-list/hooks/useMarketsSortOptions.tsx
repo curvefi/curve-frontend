@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import { MarketColumnId } from '../columns'
 
@@ -9,6 +9,7 @@ type Option<T = string> = { id: T; label: ReactNode }
 /** Creates a list of select options for sorting the Llama Market table (used for mobile only) */
 export const useMarketsSortOptions = () => {
   const { isConnected } = useConnection()
+  const rateDisplay = useRateDisplay()
   return [
     { id: MarketColumnId.Assets, label: t`Collateral` },
     ...(isConnected
@@ -53,7 +54,7 @@ export const useMarketsSortOptions = () => {
     },
     {
       id: MarketColumnId.LendRate,
-      label: NET_SUPPLY_RATE_TITLE,
+      label: rateDisplay === 'apy' ? t`Net Supply APY` : t`Net Supply APR`,
     },
     {
       id: MarketColumnId.Tvl,

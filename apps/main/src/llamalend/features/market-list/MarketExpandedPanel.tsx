@@ -1,8 +1,10 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { tokenMetric } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { getCampaignAprs, getSupplyRateMetrics } from '@/llamalend/rates.utils'
 import { useLayoutStore } from '@evm-ui/features/layout'
+import { useAprToApy, useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { useIsTiny } from '@evm-ui/hooks/useBreakpoints'
 import { t } from '@evm-ui/lib/i18n'
 import { type ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
@@ -30,19 +32,13 @@ const ratesConfig: Record<
   MarketRateType,
   {
     tooltipComponent: FunctionComponent<RateTooltipProps>
-    title: string
-    rateKey: keyof LlamaMarket['rates']
   }
 > = {
   [MarketRateType.Supply]: {
     tooltipComponent: SupplyRateLendTooltip,
-    title: NET_SUPPLY_RATE_TITLE,
-    rateKey: 'lendTotalApyMinBoosted',
   },
   [MarketRateType.Borrow]: {
     tooltipComponent: BorrowRateTooltip,
-    title: t`Borrow APR`,
-    rateKey: 'borrowApr',
   },
 }
 
@@ -53,8 +49,27 @@ function useMobileGraphSize() {
 }
 
 const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType }) => {
-  const { tooltipComponent: Tooltip, title, rateKey } = ratesConfig[type]
-  const rateValue = market.rates[rateKey] as number
+  const convertRate = useAprToApy()
+  const rateDisplay = useRateDisplay()
+  const { tooltipComponent: Tooltip } = ratesConfig[type]
+  const supplyRewards = useFilteredRewards(market.rewards, market.type, MarketRateType.Supply)
+  const rateValue =
+    type === MarketRateType.Borrow
+      ? market.rates.borrowApr
+      : getSupplyRateMetrics({
+          supplyApr: market.rates.lendApr,
+          crvBoostApr: [market.rates.lendCrvAprUnboosted, market.rates.lendCrvAprBoosted],
+          rebasingYieldApr: market.assets.borrowed.rebasingYieldApr,
+          extraIncentivesApr: market.rates.incentives.map(incentive => incentive.percentage),
+          campaignsApr: getCampaignAprs(supplyRewards),
+          convertRate,
+        }).totalMinBoost
+  const title =
+    type === MarketRateType.Borrow
+      ? t`Borrow APR`
+      : rateDisplay === 'apy'
+        ? t`Net Supply APY`
+        : t`Net Supply APR`
   return (
     rateValue != null && (
       <Grid size={6}>

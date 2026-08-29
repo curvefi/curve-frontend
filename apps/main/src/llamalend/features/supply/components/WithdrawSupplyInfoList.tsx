@@ -31,7 +31,7 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   const { chainId, marketId, userAddress, withdrawAmount, isFull } = params
   const isOpen = form.isTouched('withdrawAmount')
 
-  const { prevRates, rates, prevNetSupplyApy, netSupplyApy } = useSupplyRates(
+  const { prevSupplyRate, supplyRate, prevNetSupplyRate, netSupplyRate } = useSupplyRates(
     { params, reservesDelta: decimalNegate(withdrawAmount), controllerAddress },
     isOpen,
   )
@@ -51,10 +51,10 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
       )}
       prevSuppliedAssets={mapQuery(userBalances, d => d.totalSharesAmount)}
       suppliedAssets={mapQuery(userBalances, d => maybes([d.totalSharesAmount, withdrawAmount], decimalMinus))}
-      prevSupplyApy={mapQuery(prevRates, d => d.lendApy)}
-      supplyApy={mapQuery(rates, d => d.lendApy)}
-      prevNetSupplyApy={prevNetSupplyApy}
-      netSupplyApy={netSupplyApy}
+      prevSupplyRate={prevSupplyRate}
+      supplyRate={supplyRate}
+      prevNetSupplyRate={prevNetSupplyRate}
+      netSupplyRate={netSupplyRate}
       gas={q(useWithdrawEstimateGas(networks, params, isOpen))}
     />
   )

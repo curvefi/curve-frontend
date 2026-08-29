@@ -16,7 +16,7 @@ export const { useQuery: useCrvUsdSnapshots } = queryFactory({
       ...rootKeys.contract({ contractAddress, blockchainId }),
       'crvUsd',
       'snapshots',
-      'v3',
+      'v4',
       { timeOption },
       { limit },
     ] as const,

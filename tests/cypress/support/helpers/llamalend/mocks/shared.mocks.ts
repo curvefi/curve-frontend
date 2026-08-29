@@ -33,9 +33,7 @@ export const seedMarketBalances = (chainId: number, collateralAddress: Address) 
 
 export const generateMarketRates = () => ({
   borrowApr: oneDecimal(0.01, 0.3, 4),
-  borrowApy: oneDecimal(0.01, 0.3, 4),
   lendApr: oneDecimal(0.01, 0.1, 4),
-  lendApy: oneDecimal(0.01, 0.1, 4),
 })
 
 export const oneRatePair = () => ({

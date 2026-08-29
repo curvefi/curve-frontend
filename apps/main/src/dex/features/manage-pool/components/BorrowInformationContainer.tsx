@@ -1,5 +1,7 @@
 import type { Address } from 'viem'
+import { convertPoolRate } from '@/dex/features/pool-list/cells/utils'
 import type { Chain } from '@curvefi/prices-api'
+import { useAprToApy, useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
@@ -22,6 +24,8 @@ export const BorrowInformationContainer = ({
   blockchainId: Chain
   poolAddress: Address
 }) => {
+  const convertAprToApy = useAprToApy()
+  const rateDisplay = useRateDisplay()
   const refuel = useRefuelPool({ blockchainId, poolAddress })
   return (
     <Card size="small" data-testid="refuel-pool-information">
@@ -61,10 +65,10 @@ export const BorrowInformationContainer = ({
           <Grid size={METRIC_SIZE}>
             <Metric
               category={METRIC_CATEGORY}
-              label={t`1W APR`}
-              value={mapQuery(refuel, pool => pool.baseWeeklyApr)}
+              label={rateDisplay === 'apy' ? t`1W APY` : t`1W APR`}
+              value={mapQuery(refuel, pool => convertPoolRate(convertAprToApy, pool.baseWeeklyApr * 100))}
               valueOptions={{ unit: 'percentage', abbreviate: true }}
-              testId="refuel-pool-apr"
+              testId="refuel-pool-rate"
             />
           </Grid>
         </Grid>

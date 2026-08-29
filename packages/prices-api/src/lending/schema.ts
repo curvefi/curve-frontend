@@ -167,8 +167,6 @@ export const getUserCollateralEventsResponse = z
 const rateCurvePoint = z
   .object({
     utilization: z.number(),
-    borrow_apy: z.number(),
-    supply_apy: z.number(),
     borrow_apr: z.number(),
     supply_apr: z.number(),
   })
@@ -179,8 +177,6 @@ export const getRateCurveResponse = z
     chain: z.string(),
     rates: z.array(rateCurvePoint),
     current_utilization: z.number().nullable(),
-    current_borrow_apy: z.number().nullable(),
-    current_supply_apy: z.number().nullable(),
     current_borrow_apr: z.number().nullable(),
     current_supply_apr: z.number().nullable(),
   })

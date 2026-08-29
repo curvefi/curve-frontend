@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
@@ -17,16 +18,16 @@ type FooterRowProps = {
   total: number
 }
 
-type FooterCellProps = FooterRowProps & { columnId: YieldBreakdownColumnId }
+type FooterCellProps = FooterRowProps & { columnId: YieldBreakdownColumnId; rateDisplay: ReturnType<typeof useRateDisplay> }
 
 const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellProps) => ReactNode> = {
-  [YieldBreakdownColumnId.Source]: ({ columnId }: FooterCellProps) => (
+  [YieldBreakdownColumnId.Source]: ({ columnId, rateDisplay }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md }}>
-      <Typography variant="tableCellMBold">{t`Total APY`}</Typography>
+      <Typography variant="tableCellMBold">{rateDisplay === 'apy' ? t`Total APY` : t`Total APR`}</Typography>
     </TableCell>
   ),
   [YieldBreakdownColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
-  [YieldBreakdownColumnId.Apy]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
+  [YieldBreakdownColumnId.Rate]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
       {!!maxBoostTotal && maxBoostTotal != total && (
@@ -38,7 +39,14 @@ const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellPro
   ),
 }
 
-export const FooterRow = (props: FooterRowProps) =>
-  props.visibleColumns.map(({ id }) =>
-    footerCellByColumnId[id as YieldBreakdownColumnId]({ columnId: id as YieldBreakdownColumnId, ...props }),
+export const FooterRow = (props: FooterRowProps) => {
+  const rateDisplay = useRateDisplay()
+
+  return props.visibleColumns.map(({ id }) =>
+    footerCellByColumnId[id as YieldBreakdownColumnId]({
+      columnId: id as YieldBreakdownColumnId,
+      rateDisplay,
+      ...props,
+    }),
   )
+}

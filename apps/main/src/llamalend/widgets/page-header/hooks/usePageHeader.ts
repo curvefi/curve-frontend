@@ -12,23 +12,23 @@ import {
 } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
-  aprToApy,
   formatSupplyExtraIncentives,
+  getCampaignAprs,
   getBorrowRateMetrics,
   getLatestSnapshotValue,
+  getOnChainExtraIncentiveAprs,
   getSnapshotBorrowApr,
   getSnapshotCollateralRebasingYieldApr,
-  getSupplyApyAverageMetrics,
-  getSupplyApyMetrics,
+  getSupplyRateAverageMetrics,
+  getSupplyRateMetrics,
   sumCampaignsApr,
-  sumCampaignsApy,
-  sumOnChainExtraIncentivesApy,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { Chain } from '@curvefi/prices-api'
 import { type CampaignRewards, useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
+import { useAprToApy } from '@evm-ui/hooks/useAprToApy'
 import { combineQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
@@ -42,35 +42,39 @@ const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 const { window: RATE_WINDOW } = AVERAGE_CATEGORIES[RATE_CATEGORY]
 
 function buildSupplyRate({
-  supplyApy,
-  rebasingYieldApy,
+  supplyApr,
+  rebasingYieldApr,
   marketOnChainRewards,
   lendingSnapshots,
   campaigns,
   blockchainId,
   category,
+  convertRate,
 }: {
-  supplyApy?: number | string | null
-  rebasingYieldApy?: number | string | null
+  supplyApr?: number | string | null
+  rebasingYieldApr?: number | string | null
   marketOnChainRewards:
-    | { crvRates?: Range<number> | null; rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[] }
+    | { crvRates?: Range<number> | null; rewardsApr?: { apr: number; symbol: string; tokenAddress: string }[] }
     | undefined
   lendingSnapshots: LendingSnapshot[] | undefined
   campaigns: CampaignRewards[]
   blockchainId: Chain | undefined
   category: AverageCategory
+  convertRate: ReturnType<typeof useAprToApy>
 }) {
   const { window: daysBack } = AVERAGE_CATEGORIES[category]
-  const supplyMetrics = getSupplyApyMetrics({
-    supplyApy: toNumberOrNull(supplyApy),
-    rebasingYieldApy: toNumberOrNull(rebasingYieldApy),
+  const supplyMetrics = getSupplyRateMetrics({
+    supplyApr: toNumberOrNull(supplyApr),
+    rebasingYieldApr: toNumberOrNull(rebasingYieldApr),
     crvBoostApr: marketOnChainRewards?.crvRates,
-    extraIncentivesApy: sumOnChainExtraIncentivesApy(marketOnChainRewards?.rewardsApr),
-    campaignsApy: sumCampaignsApy(campaigns),
+    extraIncentivesApr: getOnChainExtraIncentiveAprs(marketOnChainRewards?.rewardsApr),
+    campaignsApr: getCampaignAprs(campaigns),
+    convertRate,
   })
-  const supplyAverageMetrics = getSupplyApyAverageMetrics({
+  const supplyAverageMetrics = getSupplyRateAverageMetrics({
     snapshots: lendingSnapshots,
     daysBack,
+    convertRate,
   })
 
   return {
@@ -83,12 +87,12 @@ function buildSupplyRate({
           incentives: notFalsyArray(
             marketOnChainRewards?.rewardsApr?.map(reward => ({
               title: reward.symbol,
-              percentage: aprToApy(reward.apy),
+              percentage: convertRate(reward.apr),
               blockchainId,
               address: reward.tokenAddress,
             })),
           ),
-          baseRate: supplyMetrics.supplyApyCrvMinBoost,
+          baseRate: supplyMetrics.supplyRateCrvMinBoost,
         }),
     ),
     extraRewards: campaigns,
@@ -113,20 +117,20 @@ const useBorrowRate = ({
   const borrowCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Borrow)
 
   const onChainBorrowRate = combineQueries([marketRates, snapshot, marketQuery], ({ borrowApr }, snapshots) => {
-    const { averageRate, averageRebasingYield, averageTotalRate, rebasingYield, totalRate } = getBorrowRateMetrics({
+    const { averageRate, averageRebasingYieldApr, averageTotalRate, rebasingYieldApr, totalRate } = getBorrowRateMetrics({
       borrowRate: toNumberOrNull(borrowApr),
       campaignsRate: sumCampaignsApr(borrowCampaigns),
       snapshots,
       getBorrowRate: getSnapshotBorrowApr,
-      getRebasingYield: getSnapshotCollateralRebasingYieldApr,
+      getRebasingYieldApr: getSnapshotCollateralRebasingYieldApr,
       daysBack: RATE_WINDOW,
     })
     return {
       rate: toNumberOrNull(borrowApr),
       averageRate,
       averageCategory: RATE_CATEGORY,
-      rebasingYield,
-      averageRebasingYield,
+      rebasingYieldApr,
+      averageRebasingYieldApr,
       totalBorrowRate: totalRate,
       totalAverageBorrowRate: averageTotalRate,
       extraRewards: borrowCampaigns,
@@ -143,7 +147,7 @@ const useBorrowRate = ({
     rate: d.rates.borrowApr,
     averageRate: averageApr,
     averageCategory: RATE_CATEGORY,
-    rebasingYield: d.assets.collateral.rebasingYieldApr,
+    rebasingYieldApr: d.assets.collateral.rebasingYieldApr,
     totalBorrowRate: d.rates.borrowTotalApr,
     totalAverageBorrowRate: totalAverageBorrowApr,
     extraRewards: borrowCampaigns,
@@ -173,6 +177,7 @@ const useSupplyRate = ({
   marketType: MarketType
   campaigns: CampaignRewards[]
 }) => {
+  const convertRate = useAprToApy()
   const marketId = marketQuery.data?.id
   const enabled = marketType === MarketType.Lend
   const apiSupplySnapshots = useMarketRateHistory<LendingSnapshot>(
@@ -189,25 +194,29 @@ const useSupplyRate = ({
     [marketRates, snapshot as Query<LendingSnapshot[]>, onChainRewards, marketQuery],
     (marketRates, lendingSnapshots, marketOnChainRewards) =>
       buildSupplyRate({
-        supplyApy: marketRates?.lendApy,
-        rebasingYieldApy: getLatestSnapshotValue(lendingSnapshots, snapshot => snapshot.borrowedToken.rebasingYield),
+        supplyApr: marketRates?.lendApr,
+        rebasingYieldApr: getLatestSnapshotValue(
+          lendingSnapshots,
+          snapshot => snapshot.borrowedToken.rebasingYieldApr,
+        ),
         marketOnChainRewards,
         lendingSnapshots,
         campaigns: supplyCampaigns,
         blockchainId,
         category: RATE_CATEGORY,
+        convertRate,
       }),
   )
   const apiSupplyRate = mapQuery(apiMarket, ({ rates, assets }) =>
     buildSupplyRate({
-      supplyApy: rates.lendApy,
-      rebasingYieldApy: assets.borrowed.rebasingYield,
+      supplyApr: rates.lendApr,
+      rebasingYieldApr: assets.borrowed.rebasingYieldApr,
       marketOnChainRewards: {
         crvRates:
           maybes([rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted], (min, max) => [min, max] as Range<number>) ??
           null,
         rewardsApr: rates.incentives.map(({ percentage, title, address }) => ({
-          apy: percentage,
+          apr: percentage,
           symbol: title,
           tokenAddress: address,
         })),
@@ -216,6 +225,7 @@ const useSupplyRate = ({
       campaigns: apiSupplyCampaigns,
       blockchainId,
       category: RATE_CATEGORY,
+      convertRate,
     }),
   )
   return enabled ? fallbackQ(onChainSupplyRate, apiSupplyRate) : undefined

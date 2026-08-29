@@ -22,6 +22,21 @@ const flatten = <ColumnIds extends string>(visibilitySettings: VisibilityGroup<C
     {},
   )
 
+/** Keep the user's visibility choices while treating labels and availability as live presentation metadata. */
+const withCurrentMetadata = <ColumnIds extends string>(
+  storedGroups: VisibilityGroup<ColumnIds>[] | undefined,
+  currentGroups: VisibilityGroup<ColumnIds>[],
+) => {
+  const storedOptions = storedGroups?.flatMap(group => group.options) ?? []
+  return currentGroups.map(group => ({
+    ...group,
+    options: group.options.map(option => ({
+      ...option,
+      active: storedOptions.find(stored => isEqual(stored.columns, option.columns))?.active ?? option.active,
+    })),
+  }))
+}
+
 /**
  * Hook to manage column and feature visibility settings. Currently saved in the state.
  *
@@ -50,17 +65,20 @@ export const useVisibilitySettings = <TVariant extends string, ColumnIds extends
     (columns: string[]): void =>
       setVisibilitySettings(prev => ({
         ...prev,
-        [variant]: prev[variant].map(group => ({
+        [variant]: withCurrentMetadata(prev[variant], groups[variant]).map(group => ({
           ...group,
           options: group.options.map(option =>
             isEqual(option.columns, columns) ? { ...option, active: !option.active } : option,
           ),
         })),
       })),
-    [setVisibilitySettings, variant],
+    [groups, setVisibilitySettings, variant],
   )
 
-  const columnSettings = visibilitySettings[variant]
+  const columnSettings = useMemo(
+    () => withCurrentMetadata(visibilitySettings[variant], groups[variant]),
+    [groups, variant, visibilitySettings],
+  )
   /** current column visibility state as used internally by tanstack */
   const columnVisibility = useMemo(
     () =>

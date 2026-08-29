@@ -20,9 +20,7 @@ import type { Unit } from '@evm-ui/utils/units'
 import { toArray } from '@primitives/array.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
 import type { ReactTable } from '@tanstack/react-table'
-import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
-
-const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))
+import { MARKET_TITLES, MarketColumnId } from '../columns'
 
 // capitalize all labels except columns containing tokens symbols
 const formatLabel = (label: string, id: MarketColumnId) =>
@@ -47,15 +45,19 @@ export const MarketsActiveFiltersChip = ({
   testIdPrefix: string
 } & Pick<FilterProps<MarketColumnId>, 'setColumnFilter'>) => {
   const filtersState = table.state.columnFilters as { id: MarketColumnId; value: string }[]
+  const marketColumnOrder = useMemo(
+    () => new Map(table.getAllLeafColumns().map((column, index) => [column.id, index])),
+    [table],
+  )
   // Keep networks first than remaining filters in the same order as the market columns to avoid chips jumping when filters are removed.
   const sortedFiltersState = useMemo(
     () =>
       filtersState.toSorted((a, b) => {
         if (a.id === MarketColumnId.Chain) return -1
         if (b.id === MarketColumnId.Chain) return 1
-        return MARKET_COLUMN_ORDER.get(a.id)! - MARKET_COLUMN_ORDER.get(b.id)!
+        return marketColumnOrder.get(a.id)! - marketColumnOrder.get(b.id)!
       }),
-    [filtersState],
+    [filtersState, marketColumnOrder],
   )
 
   return (

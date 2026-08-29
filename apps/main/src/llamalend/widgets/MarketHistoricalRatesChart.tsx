@@ -5,6 +5,7 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
+import { useAprToApy, useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { t } from '@evm-ui/lib/i18n'
 import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
@@ -84,7 +85,10 @@ const toSnapshotRatePoints = (
     }),
   )
 
-const RATE_MODE_CONFIG = {
+const getRateModeConfig = (
+  rateDisplay: ReturnType<typeof useRateDisplay>,
+  convertRate: ReturnType<typeof useAprToApy>,
+) => ({
   [MarketRateType.Borrow]: {
     chartTitle: t`Historical Borrow Rate`,
     currentRateLabel: t`Current APR`,
@@ -104,22 +108,30 @@ const RATE_MODE_CONFIG = {
   },
   [MarketRateType.Supply]: {
     chartTitle: t`Historical Supply Rate`,
-    currentRateLabel: t`Current APY`,
+    currentRateLabel: rateDisplay === 'apy' ? t`Current APY` : t`Current APR`,
     averageRateLabels: {
-      week: t`1W average APY`,
-      month: t`1M average APY`,
-      year: t`1Y average APY`,
+      week: rateDisplay === 'apy' ? t`1W average APY` : t`1W average APR`,
+      month: rateDisplay === 'apy' ? t`1M average APY` : t`1M average APR`,
+      year: rateDisplay === 'apy' ? t`1Y average APY` : t`1Y average APR`,
     },
     series: [
-      { key: 'rate', label: t`Supply APY` },
-      { key: 'movingAverage', label: t`7-day MA APY`, dash: CHART_LINE_DASH_PATTERNS.tight },
-      { key: 'totalAverage', label: t`Average APY`, dash: CHART_LINE_DASH_PATTERNS.regular },
+      { key: 'rate', label: rateDisplay === 'apy' ? t`Supply APY` : t`Supply APR` },
+      {
+        key: 'movingAverage',
+        label: rateDisplay === 'apy' ? t`7-day MA APY` : t`7-day MA APR`,
+        dash: CHART_LINE_DASH_PATTERNS.tight,
+      },
+      {
+        key: 'totalAverage',
+        label: rateDisplay === 'apy' ? t`Average APY` : t`Average APR`,
+        dash: CHART_LINE_DASH_PATTERNS.regular,
+      },
     ],
-    getLiveRate: marketRates => marketRates?.lendApy ?? null,
-    getApiRate: market => market.rates.lendApy,
-    getSnapshotRate: snapshot => ('lendApy' in snapshot ? snapshot.lendApy * 100 : null),
+    getLiveRate: marketRates => convertRate(toRateNumber(marketRates?.lendApr)),
+    getApiRate: market => convertRate(market.rates.lendApr),
+    getSnapshotRate: snapshot => ('lendApr' in snapshot ? convertRate(snapshot.lendApr * 100) : null),
   },
-} satisfies Record<MarketRateType, RateModeConfig>
+}) satisfies Record<MarketRateType, RateModeConfig>
 
 const averageRate = (ratePoints: { rate: number; timestamp: number }[], days: number) =>
   calculateAverageRates(ratePoints, days, { rate: ({ rate }) => rate })?.rate
@@ -132,10 +144,15 @@ const getAverageRates = (ratePoints: { rate: number; timestamp: number }[]) => (
 })
 
 export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesChartProps) => {
+  const convertRate = useAprToApy()
+  const rateDisplay = useRateDisplay()
   const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const { chainId, blockchainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
-  const modeConfig = RATE_MODE_CONFIG[rateMode]
+  const modeConfig = useMemo(
+    () => getRateModeConfig(rateDisplay, convertRate)[rateMode],
+    [convertRate, rateDisplay, rateMode],
+  )
   const activeSeriesConfig = modeConfig.series
   const [visibleSeries, setVisibleSeries] = useState<RateSeriesKey[]>(() => activeSeriesConfig.map(({ key }) => key))
   const {

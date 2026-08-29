@@ -14,7 +14,7 @@ import { TableSortDrawer } from '@evm-ui/shared/ui/DataTable/TableSortDrawer'
 import { CURVE_SOCIALS } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
-import { POOL_COLUMNS, PoolColumnId } from './columns'
+import { PoolColumnId, type PoolColumnVariant } from './columns'
 import { PoolExpandedPanel } from './components/PoolExpandedPanel'
 import { PoolExpandedPanelActions } from './components/PoolExpandedPanelActions'
 import { PoolsFilters } from './filters/PoolsFilters'
@@ -24,7 +24,7 @@ import { usePoolsGlobalFilterFn } from './hooks/usePoolsGlobalFilter'
 import { usePoolsPagination } from './hooks/usePoolsPagination'
 import { usePoolsSorting } from './hooks/usePoolsSorting'
 import { usePoolsTable } from './hooks/usePoolsTable'
-import { type PoolColumnVariant, usePoolsVisibility } from './hooks/usePoolsVisibility'
+import { usePoolsVisibility } from './hooks/usePoolsVisibility'
 import type { PoolRow } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
@@ -47,10 +47,13 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   )
 
   const [expanded, setExpanded] = useState<ExpandedState>({})
-  const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
-    isLite,
-    sorting,
-  })
+  const { columns, columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(
+    LOCAL_STORAGE_KEY,
+    {
+      isLite,
+      sorting,
+    },
+  )
 
   const { isFetching, onReload, pageCount, userHasPositions, tableQuery } = usePoolsTable({
     filters: isLite ? {} : apiParams,
@@ -67,7 +70,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   )
 
   const table = useCurveTable({
-    columns: POOL_COLUMNS,
+    columns,
     query: tableQuery,
     meta: { getRowHref: ({ url }) => url },
     state: {

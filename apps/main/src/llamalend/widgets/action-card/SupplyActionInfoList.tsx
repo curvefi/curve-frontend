@@ -1,4 +1,4 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { useShowNetRate } from '@evm-ui/hooks/useLocalStorage'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@evm-ui/shared/ui/ActionInfo'
@@ -25,18 +25,18 @@ type SupplyActionInfoListProps = {
   amountLabel?: string
   /** Symbol of the supplied asset */
   suppliedSymbol?: string
-  /** Supply APY with optional previous value */
-  supplyApy?: QueryProp<Decimal | null>
-  prevSupplyApy?: QueryProp<Decimal | null>
-  /** Net supply APY (accounting for rewards, etc.) */
-  netSupplyApy?: QueryProp<Decimal | null>
-  prevNetSupplyApy?: QueryProp<Decimal | null>
+  /** Supply rate with optional previous value */
+  supplyRate?: QueryProp<Decimal | null>
+  prevSupplyRate?: QueryProp<Decimal | null>
+  /** Net supply rate (accounting for rewards, etc.) */
+  netSupplyRate?: QueryProp<Decimal | null>
+  prevNetSupplyRate?: QueryProp<Decimal | null>
   /** Estimated gas cost for the transaction */
   gas: QueryProp<TxGasInfo | null>
 }
 
 /**
- * List with action infos about the supply (like vault shares, amount supplied, supply APY, net supply APY, estimated gas)
+ * List with action infos about the supply (like vault shares, amount supplied, supply rate, net supply rate, estimated gas)
  * By default, the action info are hidden. They are visible when the isOpen prop is true.
  */
 export const SupplyActionInfoList = ({
@@ -49,18 +49,19 @@ export const SupplyActionInfoList = ({
   sharesLabel = t`Vault Shares`,
   amountLabel = t`Amount Supplied`,
   suppliedSymbol,
-  supplyApy,
-  prevSupplyApy,
-  netSupplyApy,
-  prevNetSupplyApy,
+  supplyRate,
+  prevSupplyRate,
+  netSupplyRate,
+  prevNetSupplyRate,
   gas,
 }: SupplyActionInfoListProps) => {
-  const shouldShowNetSupplyApy = useShouldShowNetRate({
+  const rateDisplay = useRateDisplay()
+  const shouldShowNetSupplyRate = useShouldShowNetRate({
     tokenSymbol: suppliedSymbol,
-    prevNetRate: prevNetSupplyApy,
-    prevRate: prevSupplyApy,
-    netRate: netSupplyApy,
-    rate: supplyApy,
+    prevNetRate: prevNetSupplyRate,
+    prevRate: prevSupplyRate,
+    netRate: netSupplyRate,
+    rate: supplyRate,
     defaultValue: useShowNetRate('supply'),
   })
 
@@ -68,22 +69,22 @@ export const SupplyActionInfoList = ({
     <ActionInfoCollapse isOpen={isOpen} testId="supply-action-info-list">
       <Stack sx={ACTION_INFO_GROUP_SX}>
         <Stack>
-          {(supplyApy ?? prevSupplyApy) && (
+          {(supplyRate ?? prevSupplyRate) && (
             <ActionInfo
-              label={t`Supply APY`}
-              value={mapQuery(prevSupplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
-              futureValue={mapQuery(supplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
+              label={rateDisplay === 'apy' ? t`Supply APY` : t`Supply APR`}
+              value={mapQuery(prevSupplyRate ?? DISABLED_Q, data => formatCappedRatePercent(data))}
+              futureValue={mapQuery(supplyRate ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               size="small"
-              testId="supply-apy"
+              testId="supply-rate"
             />
           )}
-          {shouldShowNetSupplyApy && (
+          {shouldShowNetSupplyRate && (
             <ActionInfo
-              label={NET_SUPPLY_RATE_TITLE}
-              value={mapQuery(prevNetSupplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
-              futureValue={mapQuery(netSupplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
+              label={rateDisplay === 'apy' ? t`Net Supply APY` : t`Net Supply APR`}
+              value={mapQuery(prevNetSupplyRate ?? DISABLED_Q, data => formatCappedRatePercent(data))}
+              futureValue={mapQuery(netSupplyRate ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               size="small"
-              testId="supply-net-apy"
+              testId="supply-net-rate"
             />
           )}
         </Stack>

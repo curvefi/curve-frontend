@@ -9,7 +9,7 @@ import { getLendMarketVersion, getMarket } from '../../llama.utils'
 import { convertRates } from '../../rates.utils'
 
 export const { useQuery: useMarketParameters } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'parameters'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'parameters', 'v1'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)
     if (market instanceof MintMarketTemplate) {

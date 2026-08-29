@@ -8,7 +8,6 @@ const token = z
     symbol: z.string(),
     address,
     decimals: z.number(),
-    rebasing_yield: z.number().nullable(),
     rebasing_yield_apr: z.number().nullable(),
   })
   .transform(camelizeKeys)
@@ -38,11 +37,8 @@ const market = z
     oracle: address,
     oracle_pools: z.array(address),
     rate: z.number(),
-    borrow_apy: z.number(),
-    borrow_total_apy: z.number(),
     borrow_apr: z.number(),
     borrow_total_apr: z.number(),
-    lend_apy: z.number(),
     lend_apr: z.number(),
     lend_apr_crv_0_boost: z.number(),
     lend_apr_crv_max_boost: z.number(),
@@ -75,22 +71,12 @@ const market = z
     max_ltv: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(({ lendApy, lendApr, lendAprCrv0Boost, lendAprCrvMaxBoost, ...data }) => ({
-    ...data,
-    apyLend: lendApy,
-    aprLend: lendApr,
-    aprLendCrv0Boost: lendAprCrv0Boost,
-    aprLendCrvMaxBoost: lendAprCrvMaxBoost,
-  }))
 
 const snapshot = z
   .object({
     rate: numberLike,
-    borrow_apy: z.number(),
     borrow_apr: z.number(),
-    borrow_total_apy: z.number(),
     borrow_total_apr: z.number(),
-    lend_apy: z.number(),
     lend_apr: z.number(),
     lend_apr_crv_0_boost: z.number(),
     lend_apr_crv_max_boost: z.number(),
@@ -125,10 +111,7 @@ const snapshot = z
   .transform(camelizeKeys)
   .transform(
     ({
-      borrowTotalApy: _borrowTotalApy,
-      borrowTotalApr: _borrowTotalApr,
       extraRewardsApr,
-      lendApy,
       lendApr,
       lendAprCrv0Boost,
       lendAprCrvMaxBoost,
@@ -138,7 +121,6 @@ const snapshot = z
       ...data
     }) => ({
       ...data,
-      lendApy: lendApy / 100,
       lendApr: lendApr / 100,
       lendAprCrv0Boost: lendAprCrv0Boost / 100,
       lendAprCrvMaxBoost: lendAprCrvMaxBoost / 100,

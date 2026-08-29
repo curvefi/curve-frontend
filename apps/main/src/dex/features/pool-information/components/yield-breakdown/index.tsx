@@ -1,4 +1,5 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { t } from '@evm-ui/lib/i18n'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
@@ -7,27 +8,34 @@ import { constQ } from '@evm-ui/types/util'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useYieldBreakdown } from '../../hooks/useYieldBreakdown'
-import { YIELD_BREAKDOWN_COLUMNS, YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY } from './columns/columns.definitions'
+import {
+  YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY,
+  useYieldBreakdownColumns,
+} from './columns/columns.definitions'
 import { FooterRow } from './FooterRow'
 
 export const YieldBreakdown = ({
   chainId,
   poolDataCacheOrApi,
   poolId,
+  pricesApiPoolData,
 }: {
   chainId: ChainId
   poolDataCacheOrApi: PoolDataCacheOrApi
   poolId: string
+  pricesApiPoolData?: PricesApiPool
 }) => {
   const isMobile = useIsMobile()
+  const columns = useYieldBreakdownColumns()
   const { maxBoostTotal, total, rows } = useYieldBreakdown({
     chainId,
     poolDataCacheOrApi,
     poolId,
+    pricesApiPoolData,
   })
   const table = useCurveTable({
     query: constQ(rows), // TODO: get error and loading state properly
-    columns: YIELD_BREAKDOWN_COLUMNS,
+    columns,
     state: { columnVisibility: isMobile ? YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY : undefined },
   })
 

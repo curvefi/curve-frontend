@@ -1,9 +1,11 @@
 import { sortBy } from 'lodash'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
+import type { RateCurve } from '@curvefi/prices-api/lending'
+import { useAprToApy, useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { combineQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
@@ -38,18 +40,21 @@ const METRIC_CATEGORY = 'llamalend.marketCharts'
 export type RateCurveChartPoint = {
   utilization: number
   borrowApr: number
-  supplyApy: number
+  supplyRate: number
 }
 
 type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>
 
-const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
+const getSeriesConfig = (
+  rateDisplay: ReturnType<typeof useRateDisplay>,
+): { key: RateCurveSeriesKey; label: string; dash?: ChartLineDashPattern }[] => [
   { key: 'borrowApr', label: t`Borrow APR` },
-  { key: 'supplyApy', label: t`Supply APY`, dash: CHART_LINE_DASH_PATTERNS.wide },
+  {
+    key: 'supplyRate',
+    label: rateDisplay === 'apy' ? t`Supply APY` : t`Supply APR`,
+    dash: CHART_LINE_DASH_PATTERNS.wide,
+  },
 ]
-
-const transform = ({ rates = [] }: { rates: RateCurveChartPoint[] | undefined }): RateCurveChartPoint[] =>
-  sortBy(rates, 'utilization')
 
 /**
  * Returns the total collateral expressed in collateral-token units.
@@ -77,6 +82,9 @@ const calculateCombinedCollateral = ({
       )
 
 export const MarketRateCurveChart = () => {
+  const convertRate = useAprToApy()
+  const rateDisplay = useRateDisplay()
+  const seriesConfig = useMemo(() => getSeriesConfig(rateDisplay), [rateDisplay])
   const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const {
     chainId,
@@ -86,7 +94,7 @@ export const MarketRateCurveChart = () => {
     apiMarket,
     tokens: { collateralToken, borrowToken },
   } = useMarketContext()
-  const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
+  const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(() => seriesConfig.map(({ key }) => key))
   const {
     design: { Color },
   } = useTheme()
@@ -126,7 +134,15 @@ export const MarketRateCurveChart = () => {
   )
   const combinedCollateralUsdValue = combineQueries([collateralUsdValue, borrowedCollateralUsdValue], (c, b) => c + b)
 
-  const chartData = useMappedQuery(rateCurve, transform)
+  const transformRateCurve = useCallback(
+    ({ rates }: RateCurve) =>
+      sortBy(
+        rates.map(({ supplyApr, ...point }) => ({ ...point, supplyRate: convertRate(supplyApr) })),
+        'utilization',
+      ),
+    [convertRate],
+  )
+  const chartData = useMappedQuery(rateCurve, transformRateCurve)
 
   const markLines = useMemo(
     () =>
@@ -142,25 +158,25 @@ export const MarketRateCurveChart = () => {
   )
 
   const seriesColors: Record<RateCurveSeriesKey, string> = useMemo(
-    () => ({ borrowApr: Color.Primary[500], supplyApy: Color.Tertiary[400] }),
+    () => ({ borrowApr: Color.Primary[500], supplyRate: Color.Tertiary[400] }),
     [Color.Primary, Color.Tertiary],
   )
 
   const series: LineSeriesConfig<RateCurveSeriesKey>[] = useMemo(
-    () => SERIES_CONFIG.map(serie => ({ ...serie, color: seriesColors[serie.key] })),
-    [seriesColors],
+    () => seriesConfig.map(serie => ({ ...serie, color: seriesColors[serie.key] })),
+    [seriesColors, seriesConfig],
   )
 
   const legendSets: LegendItem[] = useMemo(
     () =>
-      SERIES_CONFIG.map(({ key, label, dash }) => ({
+      seriesConfig.map(({ key, label, dash }) => ({
         label,
         line: { lineStroke: seriesColors[key], dash },
         toggled: visibleSeries.includes(key),
         onToggle: () =>
           setVisibleSeries(prev => (prev.includes(key) ? prev.filter(item => item !== key) : [...prev, key])),
       })),
-    [seriesColors, visibleSeries],
+    [seriesColors, seriesConfig, visibleSeries],
   )
 
   return (

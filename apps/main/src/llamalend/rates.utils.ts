@@ -2,27 +2,25 @@ import { sumBy } from 'lodash'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
+import type { useAprToApy } from '@evm-ui/hooks/useAprToApy'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import type { Range } from '@evm-ui/types/util'
 import { decimal, formatNumber, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/averageRates'
-import { aprToApy } from '@evm-ui/utils/rates'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
-
-export { aprToApy } from '@evm-ui/utils/rates'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
   borrowRate: number | null | undefined
   campaignsRate: number | null | undefined
   snapshots: TSnapshot[] | undefined
   getBorrowRate: (snapshot: TSnapshot) => number | null | undefined
-  getRebasingYield: (snapshot: TSnapshot) => number | null | undefined
+  getRebasingYieldApr: (snapshot: TSnapshot) => number | null | undefined
   daysBack: number
 }
 
-export const computeTotalRate = (rate: number, rebasingYield: number, campaignsRate: number) =>
-  rate - rebasingYield - campaignsRate
+export const computeTotalRate = (rate: number, rebasingYieldApr: number, campaignsRate: number) =>
+  rate - rebasingYieldApr - campaignsRate
 
 export const getSnapshotBorrowApr = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr
 export const getSnapshotCollateralRebasingYieldApr = <
@@ -46,27 +44,27 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
   campaignsRate,
   snapshots,
   getBorrowRate,
-  getRebasingYield,
+  getRebasingYieldApr,
   daysBack,
 }: BorrowRateMetricsParams<TSnapshot>) => {
-  const rebasingYield = getLatestSnapshotValue(snapshots, getRebasingYield)
+  const rebasingYieldApr = getLatestSnapshotValue(snapshots, getRebasingYieldApr)
   const totalRate =
-    maybe(borrowRate, borrowRate => computeTotalRate(borrowRate, rebasingYield ?? 0, campaignsRate ?? 0)) ?? null
+    maybe(borrowRate, borrowRate => computeTotalRate(borrowRate, rebasingYieldApr ?? 0, campaignsRate ?? 0)) ?? null
 
   const averages = calculateAverageRates(snapshots, daysBack, {
     rate: getBorrowRate,
-    rebasingYield: getRebasingYield,
+    rebasingYieldApr: getRebasingYieldApr,
   })
   const averageRate = averages?.rate ?? null
-  const averageRebasingYield = averages?.rebasingYield ?? null
+  const averageRebasingYieldApr = averages?.rebasingYieldApr ?? null
 
   return {
-    rebasingYield,
+    rebasingYieldApr,
     totalRate,
     averageRate,
-    averageRebasingYield,
+    averageRebasingYieldApr,
     averageTotalRate:
-      maybe(averageRate, averageRate => computeTotalRate(averageRate, averageRebasingYield ?? 0, 0)) ?? null,
+      maybe(averageRate, averageRate => computeTotalRate(averageRate, averageRebasingYieldApr ?? 0, 0)) ?? null,
   }
 }
 
@@ -77,26 +75,18 @@ const sumRates = (base: number | null | undefined, ...components: (number | null
 export const toNumberOrNull = (value: number | string | null | undefined) =>
   maybe(value, value => Number(value)) ?? null
 
-type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
+type OnChainSupplyRewardApr = { apr: number; symbol: string; tokenAddress: string }
 
-export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
-  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy)) : null
+export const getOnChainExtraIncentiveAprs = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
+  rewardsApr?.map(reward => reward.apr) ?? []
+
+export const getCampaignAprs = (campaigns: CampaignRewards[] | undefined) =>
+  campaigns?.flatMap(campaign =>
+    campaign.reward?.type === 'apr' ? [campaign.reward.value] : [],
+  ) ?? []
 
 export const sumCampaignsApr = (campaigns: CampaignRewards[] | undefined) =>
-  campaigns && campaigns.length > 0
-    ? sumBy(
-        campaigns.filter(c => c.reward?.type === 'apr'),
-        c => c.reward?.value ?? 0,
-      )
-    : null
-
-export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
-  campaigns && campaigns.length > 0
-    ? sumBy(
-        campaigns.filter(c => c.reward?.type === 'apr'),
-        c => aprToApy(c.reward?.value ?? 0),
-      )
-    : null
+  campaigns && campaigns.length > 0 ? sumBy(getCampaignAprs(campaigns)) : null
 
 export const formatSupplyExtraIncentives = ({
   incentives,
@@ -127,98 +117,96 @@ export const formatSupplyExtraIncentives = ({
   )
 
 type SupplyRateMetricsParams = {
-  supplyApy: number | null | undefined
-  crvBoostApr: Range<number> | null | undefined
-  rebasingYieldApy: number | null | undefined
-  extraIncentivesApy: number | null | undefined
-  campaignsApy: number | null | undefined
+  supplyApr: number | null | undefined
+  crvBoostApr: Range<number | null> | null | undefined
+  rebasingYieldApr: number | null | undefined
+  extraIncentivesApr: readonly number[] | null | undefined
+  campaignsApr: readonly number[] | null | undefined
   userSupplyBoost?: Decimal | null | undefined
+  convertRate: ReturnType<typeof useAprToApy>
 }
 
 /**
- * Get the supply rate metrics for a given supply APY and lending snapshots, like average rate, total boosted rates.
+ * Convert each independent APR component for presentation before adding them into supply totals.
  * Parallels `getBorrowRateMetrics` for the supply side.
  */
-export const getSupplyApyMetrics = ({
-  supplyApy,
+export const getSupplyRateMetrics = ({
+  supplyApr,
   crvBoostApr,
-  rebasingYieldApy,
-  extraIncentivesApy,
-  campaignsApy,
+  rebasingYieldApr,
+  extraIncentivesApr,
+  campaignsApr,
   userSupplyBoost,
+  convertRate,
 }: SupplyRateMetricsParams) => {
-  rebasingYieldApy = rebasingYieldApy ?? null
-  extraIncentivesApy = extraIncentivesApy ?? 0
-
   const [crvMinBoostApr, crvMaxBoostApr] = crvBoostApr ?? []
-
-  const crvMinBoostApy = aprToApy(crvMinBoostApr)
-  const crvMaxBoostApy = aprToApy(crvMaxBoostApr)
-  const userBoostApy = maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) => aprToApy(apr * +boost)) ?? null
-
-  const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy, campaignsApy)
-
-  return {
-    supplyApy,
-    supplyApyCrvMinBoost: crvMinBoostApy,
-    supplyApyCrvMaxBoost: crvMaxBoostApy,
-    userBoostApy,
-    rebasingYield: rebasingYieldApy,
-    extraIncentivesTotalApy: extraIncentivesApy,
-    totalMinBoost: sumRates(totalWithoutBoost, crvMinBoostApy),
-    totalMaxBoost: sumRates(totalWithoutBoost, crvMaxBoostApy),
-    totalUserBoost: maybes([totalWithoutBoost, userBoostApy], (total, boost) => sumRates(total, boost)) ?? null,
-  }
-}
-
-export const getSupplyApyAverageMetrics = ({
-  snapshots,
-  daysBack,
-}: {
-  snapshots: LendingSnapshot[] | undefined
-  daysBack: number
-}) => {
-  const averages = calculateAverageRates(snapshots, daysBack, {
-    supplyApy: ({ lendApy }) => Number(lendApy) * 100,
-    rebasingYieldApy: ({ borrowedToken }) => borrowedToken.rebasingYield,
-    crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost * 100,
-    crvMinBoostApy: ({ lendAprCrv0Boost }) => aprToApy(lendAprCrv0Boost * 100),
-    crvMaxBoostApy: ({ lendAprCrvMaxBoost }) => aprToApy(lendAprCrvMaxBoost * 100),
-    extraIncentivesApy: ({ extraRewardApr }) => sumBy(extraRewardApr, reward => aprToApy(reward.rate)),
-  })
-
-  const averageTotalWithoutBoost = sumRates(
-    averages?.supplyApy,
-    averages?.rebasingYieldApy,
-    averages?.extraIncentivesApy,
+  const supplyRate = convertRate(supplyApr)
+  const crvMinBoostRate = convertRate(crvMinBoostApr)
+  const crvMaxBoostRate = convertRate(crvMaxBoostApr)
+  const userBoostRate = maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) => convertRate(apr * +boost)) ?? null
+  const rebasingYieldRate = convertRate(rebasingYieldApr)
+  const extraIncentivesTotalRate = sumBy(extraIncentivesApr ?? [], apr => convertRate(apr))
+  const campaignsTotalRate = sumBy(campaignsApr ?? [], apr => convertRate(apr))
+  const totalWithoutBoost = sumRates(
+    supplyRate,
+    rebasingYieldRate,
+    extraIncentivesTotalRate,
+    campaignsTotalRate,
   )
 
   return {
-    averageLendApy: averages?.supplyApy ?? null,
-    averageApyCrvMinBoost: averages?.crvMinBoostApy ?? null,
-    averageApyCrvMaxBoost: averages?.crvMaxBoostApy ?? null,
-    averageUserBoostApy: null,
-    averageRebasingYield: averages?.rebasingYieldApy ?? null,
-    averageExtraIncentivesApy: averages?.extraIncentivesApy ?? null,
-    totalAverageMinBoost: sumRates(averageTotalWithoutBoost, averages?.crvMinBoostApy),
-    totalAverageMaxBoost: sumRates(averageTotalWithoutBoost, averages?.crvMaxBoostApy),
+    supplyRate,
+    supplyRateCrvMinBoost: crvMinBoostRate,
+    supplyRateCrvMaxBoost: crvMaxBoostRate,
+    userBoostRate,
+    rebasingYieldRate,
+    extraIncentivesTotalRate,
+    totalMinBoost: sumRates(totalWithoutBoost, crvMinBoostRate),
+    totalMaxBoost: sumRates(totalWithoutBoost, crvMaxBoostRate),
+    totalUserBoost: maybes([totalWithoutBoost, userBoostRate], (total, boost) => sumRates(total, boost)) ?? null,
+  }
+}
+
+export const getSupplyRateAverageMetrics = ({
+  snapshots,
+  daysBack,
+  convertRate,
+}: {
+  snapshots: LendingSnapshot[] | undefined
+  daysBack: number
+  convertRate: ReturnType<typeof useAprToApy>
+}) => {
+  const averages = calculateAverageRates(snapshots, daysBack, {
+    supplyRate: ({ lendApr }) => convertRate(Number(lendApr) * 100),
+    rebasingYieldRate: ({ borrowedToken }) => convertRate(borrowedToken.rebasingYieldApr),
+    crvMinBoostRate: ({ lendAprCrv0Boost }) => convertRate(lendAprCrv0Boost * 100),
+    crvMaxBoostRate: ({ lendAprCrvMaxBoost }) => convertRate(lendAprCrvMaxBoost * 100),
+    extraIncentivesRate: ({ extraRewardApr }) => sumBy(extraRewardApr, reward => convertRate(reward.rate)),
+  })
+
+  const averageTotalWithoutBoost = sumRates(
+    averages?.supplyRate,
+    averages?.rebasingYieldRate,
+    averages?.extraIncentivesRate,
+  )
+
+  return {
+    averageLendRate: averages?.supplyRate ?? null,
+    averageRateCrvMinBoost: averages?.crvMinBoostRate ?? null,
+    averageRateCrvMaxBoost: averages?.crvMaxBoostRate ?? null,
+    averageUserBoostRate: null,
+    averageRebasingYieldRate: averages?.rebasingYieldRate ?? null,
+    averageExtraIncentivesRate: averages?.extraIncentivesRate ?? null,
+    totalAverageMinBoost: sumRates(averageTotalWithoutBoost, averages?.crvMinBoostRate),
+    totalAverageMaxBoost: sumRates(averageTotalWithoutBoost, averages?.crvMaxBoostRate),
     totalAverageUserBoost: null,
   }
 }
 
-export const convertRates = ({
-  borrowApr,
-  borrowApy,
-  lendApr,
-  lendApy,
-}: {
+export const convertRates = ({ borrowApr, lendApr }: {
   borrowApr: string
-  borrowApy: string
   lendApr: string
-  lendApy: string
 }) => ({
   borrowApr: decimal(borrowApr),
-  borrowApy: decimal(borrowApy),
-  lendApy: decimal(lendApy),
   lendApr: decimal(lendApr),
 })

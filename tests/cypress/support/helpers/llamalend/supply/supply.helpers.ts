@@ -119,8 +119,8 @@ export const checkSupplySubmitButtonText = (type: SupplyFormType, buttonText: st
   cy.get(`[data-testid="supply-${type}-submit-button"]`, LOAD_TIMEOUT).should('have.text', buttonText)
 
 export const checkSupplyActionInfoValues = ({
-  supplyApy,
-  prevSupplyApy,
+  supplyRate,
+  prevSupplyRate,
   vaultShares,
   prevVaultShares,
   suppliedAssets,
@@ -128,8 +128,8 @@ export const checkSupplyActionInfoValues = ({
   symbol,
   hasApi = true,
 }: {
-  supplyApy?: string
-  prevSupplyApy?: string
+  supplyRate?: string
+  prevSupplyRate?: string
   vaultShares?: string
   prevVaultShares?: string
   suppliedAssets?: string
@@ -139,11 +139,11 @@ export const checkSupplyActionInfoValues = ({
 }) => {
   cy.get('[data-testid="supply-action-info-list"]').should('be.visible')
 
-  if (supplyApy != null) {
-    getActionValue('supply-apy').should('equal', formatNumber(supplyApy as Decimal, 'percent.rate'))
+  if (supplyRate != null) {
+    getActionValue('supply-rate').should('equal', formatNumber(supplyRate as Decimal, 'percent.rate'))
   }
-  if (prevSupplyApy != null) {
-    getActionValue('supply-apy', 'previous').should('equal', formatNumber(prevSupplyApy as Decimal, 'percent.rate'))
+  if (prevSupplyRate != null) {
+    getActionValue('supply-rate', 'previous').should('equal', formatNumber(prevSupplyRate as Decimal, 'percent.rate'))
   }
   if (vaultShares != null) {
     getActionValue('supply-vault-shares').should('equal', formatNumber(vaultShares as Decimal, { abbreviate: true }))

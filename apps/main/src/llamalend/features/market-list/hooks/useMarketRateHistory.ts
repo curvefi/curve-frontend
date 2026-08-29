@@ -4,10 +4,11 @@ import {
   getBorrowRateMetrics,
   getSnapshotBorrowApr,
   getSnapshotCollateralRebasingYieldApr,
-  getSupplyApyAverageMetrics,
+  getSupplyRateAverageMetrics,
 } from '@/llamalend/rates.utils'
 import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@evm-ui/entities/crvusd-snapshots'
 import { LendingSnapshot, useLendingSnapshots } from '@evm-ui/entities/lending-snapshots'
+import { useAprToApy } from '@evm-ui/hooks/useAprToApy'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
 
@@ -18,21 +19,22 @@ type UseRateHistoryResult<T> = {
   rate: number | null
   averageRate: number | null
   averageTotalBorrowRate: number | null
-  minBoostedAprAverage: number | null
-  maxBoostedAprAverage: number | null
+  minBoostedRateAverage: number | null
+  maxBoostedRateAverage: number | null
   error: unknown
 }
 
 const RateKeys = {
   [MarketRateType.Borrow]: 'borrowApr',
-  [MarketRateType.Supply]: 'lendApy',
-} as const satisfies Record<MarketRateType, 'borrowApr' | 'lendApy'>
+  [MarketRateType.Supply]: 'lendApr',
+} as const satisfies Record<MarketRateType, 'borrowApr' | 'lendApr'>
 
 export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>(
   market: LlamaMarket | undefined,
   { type, category }: { type: MarketRateType; category: AverageCategory },
   enabled: boolean,
 ): UseRateHistoryResult<T> {
+  const convertRate = useAprToApy()
   const { chain, controllerAddress, type: marketType, rates } = market ?? {}
   const isLend = marketType == MarketType.Lend
   const showLendGraph = isLend && enabled
@@ -71,7 +73,7 @@ export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>
               borrowRate: rates?.borrowApr,
               snapshots: snapshots ?? undefined,
               getBorrowRate: getSnapshotBorrowApr,
-              getRebasingYield: getSnapshotCollateralRebasingYieldApr,
+              getRebasingYieldApr: getSnapshotCollateralRebasingYieldApr,
               daysBack: rateWindow,
             } as Parameters<typeof getBorrowRateMetrics>[0]),
           [MarketRateType.Supply]: () => null,
@@ -83,26 +85,30 @@ export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>
   const supplyRateMetrics = useMemo(
     () =>
       isLend && type === MarketRateType.Supply
-        ? getSupplyApyAverageMetrics({
+        ? getSupplyRateAverageMetrics({
             snapshots: poolSnapshots,
             daysBack: rateWindow,
+            convertRate,
           })
         : null,
-    [rateWindow, isLend, poolSnapshots, type],
+    [convertRate, rateWindow, isLend, poolSnapshots, type],
   )
 
   return {
     snapshots,
     isLoading,
     snapshotKey,
-    rate: rates?.[RateKeys[type]] ?? null,
+    rate:
+      type === MarketRateType.Supply
+        ? convertRate(rates?.lendApr)
+        : (rates?.borrowApr ?? null),
     averageRate:
       type === MarketRateType.Supply
-        ? (supplyRateMetrics?.averageLendApy ?? null)
+        ? (supplyRateMetrics?.averageLendRate ?? null)
         : (borrowRateMetrics?.averageRate ?? null),
     averageTotalBorrowRate: borrowRateMetrics?.averageTotalRate ?? null,
-    minBoostedAprAverage: supplyRateMetrics?.totalAverageMinBoost ?? null,
-    maxBoostedAprAverage: supplyRateMetrics?.totalAverageMaxBoost ?? null,
+    minBoostedRateAverage: supplyRateMetrics?.totalAverageMinBoost ?? null,
+    maxBoostedRateAverage: supplyRateMetrics?.totalAverageMaxBoost ?? null,
     error,
   } as UseRateHistoryResult<T>
 }

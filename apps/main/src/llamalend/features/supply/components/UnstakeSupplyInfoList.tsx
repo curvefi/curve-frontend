@@ -30,7 +30,7 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
   const { chainId, marketId, userAddress, unstakeAssets, unstakeShares } = params
   const isOpen = form.isTouched('unstakeAssets')
 
-  const { prevRates, prevNetSupplyApy } = useSupplyRates({ params, controllerAddress }, isOpen)
+  const { prevSupplyRate, prevNetSupplyRate } = useSupplyRates({ params, controllerAddress }, isOpen)
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
 
@@ -44,8 +44,8 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
       vaultShares={mapQuery(userBalances, d => maybes([d.stakedShares, unstakeShares], decimalMinus))}
       prevSuppliedAssets={mapQuery(userBalances, d => d.stakedSharesAmount)}
       suppliedAssets={mapQuery(userBalances, d => maybes([d.stakedSharesAmount, unstakeAssets], decimalMinus))}
-      supplyApy={mapQuery(prevRates, d => d.lendApy)}
-      netSupplyApy={prevNetSupplyApy}
+      supplyRate={prevSupplyRate}
+      netSupplyRate={prevNetSupplyRate}
       gas={q(useUnstakeEstimateGas(networks, params, isOpen))}
     />
   )

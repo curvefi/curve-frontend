@@ -14,7 +14,7 @@ import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { MarketsChips } from './chips/MarketsChips'
-import { DEFAULT_SORT, MARKET_COLUMNS, MarketColumnId } from './columns'
+import { DEFAULT_SORT, MarketColumnId, useMarketColumns } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useMarketsGlobalFilterFn } from './filters/hooks/useMarketsGlobalFilter'
 import { getMarketFacetedRowModel } from './filters/marketFaceting'
@@ -46,16 +46,18 @@ export const MarketsTable = ({
   )
   const globalFilterFn = useMarketsGlobalFilterFn(data, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
+  const marketColumns = useMarketColumns()
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useMarketsVisibility(
     LOCAL_STORAGE_KEY,
     sorting,
     getMarketsColumnVariant(userHasPositions),
+    marketColumns,
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useCurveTable({
-    columns: MARKET_COLUMNS,
+    columns: marketColumns,
     query: mapQuery(tableQuery, d => d.markets),
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },

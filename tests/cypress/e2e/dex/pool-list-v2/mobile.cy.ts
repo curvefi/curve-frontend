@@ -6,8 +6,8 @@ import {
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
 
-const FULL_NETWORK_METRIC_IDS = ['pool-net-apy', 'pool-volume', 'pool-tvl', 'pool-age'] as const
-const LITE_METRIC_IDS = ['pool-net-apy', 'pool-tvl'] as const
+const FULL_NETWORK_METRIC_IDS = ['pool-net-rate', 'pool-volume', 'pool-tvl', 'pool-age'] as const
+const LITE_METRIC_IDS = ['pool-net-rate', 'pool-tvl'] as const
 
 const expectMetricOrder = (address: string, expectedIds: readonly string[]) => {
   getV2PoolExpandedPanel(address)

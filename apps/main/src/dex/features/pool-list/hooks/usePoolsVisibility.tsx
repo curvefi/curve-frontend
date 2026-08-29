@@ -4,13 +4,11 @@ import type { MigrationOptions } from '@evm-ui/hooks/useStoredState'
 import { useVisibilitySettings } from '@evm-ui/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
-import { POOL_COLUMNS, POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
+import { PoolColumnId, usePoolColumns, usePoolsColumnOptions, type PoolColumnVariant } from '../columns'
 import type { PoolsSorting } from './usePoolsSorting'
 
-export type PoolColumnVariant = keyof typeof POOLS_COLUMN_OPTIONS
-
 const migration: MigrationOptions<Record<PoolColumnVariant, VisibilityGroup<PoolColumnId>[]>> = {
-  version: 3,
+  version: 4,
 }
 
 /**
@@ -30,10 +28,12 @@ export function usePoolsVisibility(
     sorting: PoolsSorting
   },
 ) {
+  const columns = usePoolColumns()
+  const columnOptions = usePoolsColumnOptions()
   const variant: PoolColumnVariant = isLite ? 'lite' : 'full'
   const [{ id: sortField }] = sorting
-  const visibilitySettings = useVisibilitySettings(title, POOLS_COLUMN_OPTIONS, variant, POOL_COLUMNS, migration)
+  const visibilitySettings = useVisibilitySettings(title, columnOptions, variant, columns, migration)
   const columnVisibility = useMemo(() => createMobileColumns(sortField), [sortField])
 
-  return { variant, sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
+  return { columns, variant, sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }

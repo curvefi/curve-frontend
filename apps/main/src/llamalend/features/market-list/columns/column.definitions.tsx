@@ -1,5 +1,8 @@
+import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { getCampaignAprs, getSupplyRateMetrics } from '@/llamalend/rates.utils'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
+import { useAprToApy } from '@evm-ui/hooks/useAprToApy'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@evm-ui/shared/ui/DataTable/filters'
 import { MarketRateType } from '@evm-ui/types/market'
@@ -34,57 +37,65 @@ import {
   getUserPositionHealth,
   getUserPositionLtv,
 } from '../user-position.utils'
-import { MARKET_TITLES } from './column.titles'
+import { useMarketTitles } from './column.titles'
 import { MarketColumnId } from './columns.enum'
 
 const columnHelper = createAppColumnHelper<LlamaMarketRow>()
 
 /** Define a hidden column. */
-const hidden = (id: MarketColumnId, field: DeepKeys<LlamaMarketRow>, filterFn: typeof multiFilterFn) =>
+const hidden = (
+  marketTitles: Record<MarketColumnId, string>,
+  id: MarketColumnId,
+  field: DeepKeys<LlamaMarketRow>,
+  filterFn: typeof multiFilterFn,
+) =>
   columnHelper.accessor(field, {
     id,
-    header: MARKET_TITLES[id],
+    header: marketTitles[id],
     filterFn,
     meta: { hidden: true },
   })
 
 /** Columns for the lending markets table. */
-export const MARKET_COLUMNS = columnHelper.columns([
+const createMarketColumns = (
+  marketTitles: Record<MarketColumnId, string>,
+  convertRate: ReturnType<typeof useAprToApy>,
+) => columnHelper.columns([
   columnHelper.accessor(
     ({ assets }) => `${assets.collateral.symbol.toLowerCase()}•${assets.borrowed.symbol.toLowerCase()}`,
     {
       id: MarketColumnId.Assets,
-      header: MARKET_TITLES[MarketColumnId.Assets],
+      header: marketTitles[MarketColumnId.Assets],
       cell: MarketTitleCell,
       meta: {
-        tooltip: { title: MARKET_TITLES[MarketColumnId.Assets], body: <CollateralBorrowHeaderTooltipContent /> },
+        tooltip: { title: marketTitles[MarketColumnId.Assets], body: <CollateralBorrowHeaderTooltipContent /> },
       },
     },
   ),
   columnHelper.accessor(getUserBorrowedUsd, {
     id: MarketColumnId.UserBorrowed,
-    header: MARKET_TITLES[MarketColumnId.UserBorrowed],
+    header: marketTitles[MarketColumnId.UserBorrowed],
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserCollateralUsd, {
     id: MarketColumnId.UserCollateral,
-    header: MARKET_TITLES[MarketColumnId.UserCollateral],
+    header: marketTitles[MarketColumnId.UserCollateral],
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('lendingPosition.earnings', {
     id: MarketColumnId.UserEarnings,
-    header: MARKET_TITLES[MarketColumnId.UserEarnings],
+    header: marketTitles[MarketColumnId.UserEarnings],
     cell: PriceCell,
     meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
     sortUndefined: 'last',
   }),
   columnHelper.accessor('lendingPosition.supplied', {
     id: MarketColumnId.UserDeposited,
-    header: MARKET_TITLES[MarketColumnId.UserDeposited],
+    header: marketTitles[MarketColumnId.UserDeposited],
     cell: PriceCell,
     meta: { type: 'numeric' },
     filterFn: boolFilterFn,
@@ -92,14 +103,14 @@ export const MARKET_COLUMNS = columnHelper.columns([
   }),
   columnHelper.accessor('lendingPosition.boostMultiplier', {
     id: MarketColumnId.UserBoostMultiplier,
-    header: MARKET_TITLES[MarketColumnId.UserBoostMultiplier],
+    header: marketTitles[MarketColumnId.UserBoostMultiplier],
     cell: BoostCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.borrowApr', {
     id: MarketColumnId.BorrowRate,
-    header: MARKET_TITLES[MarketColumnId.BorrowRate],
+    header: marketTitles[MarketColumnId.BorrowRate],
     cell: RateCell,
     meta: {
       type: 'numeric',
@@ -110,48 +121,55 @@ export const MARKET_COLUMNS = columnHelper.columns([
   }),
   columnHelper.accessor('rates.borrowTotalApr', {
     id: MarketColumnId.NetBorrowRate,
-    header: MARKET_TITLES[MarketColumnId.NetBorrowRate],
+    header: marketTitles[MarketColumnId.NetBorrowRate],
     cell: RateCell,
     meta: {
       type: 'numeric',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.NetBorrowRate], body: <NetBorrowAprHeaderTooltipContent /> },
+      tooltip: { title: marketTitles[MarketColumnId.NetBorrowRate], body: <NetBorrowAprHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionLtv, {
     id: MarketColumnId.UserLtv,
-    header: MARKET_TITLES[MarketColumnId.UserLtv],
+    header: marketTitles[MarketColumnId.UserLtv],
     cell: LtvCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionHealth, {
     id: MarketColumnId.UserHealth,
-    header: MARKET_TITLES[MarketColumnId.UserHealth],
+    header: marketTitles[MarketColumnId.UserHealth],
     cell: HealthCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.lendTotalApyMinBoosted', {
+  columnHelper.accessor(({ assets, rates, rewards }) => getSupplyRateMetrics({
+    supplyApr: rates.lendApr,
+    crvBoostApr: [rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted],
+    rebasingYieldApr: assets.borrowed.rebasingYieldApr,
+    extraIncentivesApr: rates.incentives.map(incentive => incentive.percentage),
+    campaignsApr: getCampaignAprs(rewards.filter(reward => reward.action === 'supply')),
+    convertRate,
+  }).totalMinBoost, {
     id: MarketColumnId.LendRate,
-    header: MARKET_TITLES[MarketColumnId.LendRate],
+    header: marketTitles[MarketColumnId.LendRate],
     cell: RateCell,
     meta: {
       type: 'numeric',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.LendRate], body: <LendRateHeaderTooltipContent /> },
+      tooltip: { title: marketTitles[MarketColumnId.LendRate], body: <LendRateHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.borrowApr', {
     id: MarketColumnId.BorrowChart,
-    header: MARKET_TITLES[MarketColumnId.BorrowChart],
+    header: marketTitles[MarketColumnId.BorrowChart],
     cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
   columnHelper.accessor<(row: LlamaMarketRow) => LlamaMarketRow['leverage'], LlamaMarketRow['leverage']>(
     row => row.leverage,
     {
       id: MarketColumnId.MaxLeverage,
-      header: MARKET_TITLES[MarketColumnId.MaxLeverage],
+      header: marketTitles[MarketColumnId.MaxLeverage],
       cell: MaxLeverageCell,
       meta: { type: 'numeric' },
       sortUndefined: 'last',
@@ -159,19 +177,19 @@ export const MARKET_COLUMNS = columnHelper.columns([
   ),
   columnHelper.accessor('maxLtv', {
     id: MarketColumnId.MaxLtv,
-    header: MARKET_TITLES[MarketColumnId.MaxLtv],
+    header: marketTitles[MarketColumnId.MaxLtv],
     cell: PercentCell,
     meta: { type: 'numeric', unit: 'percentage' },
     filterFn: rangeFilterFn,
   }),
   columnHelper.accessor('utilizationPercent', {
     id: MarketColumnId.UtilizationPercent,
-    header: MARKET_TITLES[MarketColumnId.UtilizationPercent],
+    header: marketTitles[MarketColumnId.UtilizationPercent],
     cell: UtilizationCell,
     meta: {
       type: 'numeric',
       unit: 'percentage',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.UtilizationPercent], body: <UtilizationHeaderTooltipContent /> },
+      tooltip: { title: marketTitles[MarketColumnId.UtilizationPercent], body: <UtilizationHeaderTooltipContent /> },
     },
     filterFn: rangeFilterFn,
   }),
@@ -180,60 +198,66 @@ export const MARKET_COLUMNS = columnHelper.columns([
     ({ solvencyPercent }) => solvencyPercent ?? undefined,
     {
       id: MarketColumnId.SolvencyPercent,
-      header: MARKET_TITLES[MarketColumnId.SolvencyPercent],
+      header: marketTitles[MarketColumnId.SolvencyPercent],
       cell: SolvencyCell,
       meta: {
         type: 'numeric',
         unit: 'percentage',
-        tooltip: { title: MARKET_TITLES[MarketColumnId.SolvencyPercent], body: <SolvencyTooltip type="overview" /> },
+        tooltip: { title: marketTitles[MarketColumnId.SolvencyPercent], body: <SolvencyTooltip type="overview" /> },
       },
       sortUndefined: 'last',
     },
   ),
   columnHelper.accessor('liquidityUsd', {
     id: MarketColumnId.LiquidityUsd,
-    header: MARKET_TITLES[MarketColumnId.LiquidityUsd],
+    header: marketTitles[MarketColumnId.LiquidityUsd],
     cell: LiquidityUsdCell,
     meta: {
       type: 'numeric',
       unit: 'dollar',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.LiquidityUsd], body: <LiquidityUsdHeaderTooltipContent /> },
+      tooltip: { title: marketTitles[MarketColumnId.LiquidityUsd], body: <LiquidityUsdHeaderTooltipContent /> },
     },
     filterFn: rangeFilterFn,
   }),
   columnHelper.accessor('totalDebtUsd', {
     id: MarketColumnId.TotalDebt,
-    header: MARKET_TITLES[MarketColumnId.TotalDebt],
+    header: marketTitles[MarketColumnId.TotalDebt],
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('totalCollateralUsd', {
     id: MarketColumnId.TotalCollateralUsd,
-    header: MARKET_TITLES[MarketColumnId.TotalCollateralUsd],
+    header: marketTitles[MarketColumnId.TotalCollateralUsd],
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('tvl', {
     id: MarketColumnId.Tvl,
-    header: MARKET_TITLES[MarketColumnId.Tvl],
+    header: marketTitles[MarketColumnId.Tvl],
     cell: TvlCell,
     meta: {
       type: 'numeric',
       unit: 'dollar',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.Tvl], body: <TvlHeaderTooltipContent /> },
+      tooltip: { title: marketTitles[MarketColumnId.Tvl], body: <TvlHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
-  hidden(MarketColumnId.Chain, MarketColumnId.Chain, multiFilterFn),
-  hidden(MarketColumnId.CollateralSymbol, 'assets.collateral.symbol', multiFilterFn),
-  hidden(MarketColumnId.BorrowedSymbol, 'assets.borrowed.symbol', multiFilterFn),
-  hidden(MarketColumnId.IsFavorite, MarketColumnId.IsFavorite, boolFilterFn),
-  hidden(MarketColumnId.Rewards, MarketColumnId.Rewards, listNotEmptyFilterFn),
-  hidden(MarketColumnId.DeprecatedMessage, MarketColumnId.DeprecatedMessage, boolFilterFn),
-  hidden(MarketColumnId.Type, MarketColumnId.Type, multiFilterFn),
-  hidden(MarketColumnId.Version, MarketColumnId.Version, multiFilterFn),
+  hidden(marketTitles, MarketColumnId.Chain, MarketColumnId.Chain, multiFilterFn),
+  hidden(marketTitles, MarketColumnId.CollateralSymbol, 'assets.collateral.symbol', multiFilterFn),
+  hidden(marketTitles, MarketColumnId.BorrowedSymbol, 'assets.borrowed.symbol', multiFilterFn),
+  hidden(marketTitles, MarketColumnId.IsFavorite, MarketColumnId.IsFavorite, boolFilterFn),
+  hidden(marketTitles, MarketColumnId.Rewards, MarketColumnId.Rewards, listNotEmptyFilterFn),
+  hidden(marketTitles, MarketColumnId.DeprecatedMessage, MarketColumnId.DeprecatedMessage, boolFilterFn),
+  hidden(marketTitles, MarketColumnId.Type, MarketColumnId.Type, multiFilterFn),
+  hidden(marketTitles, MarketColumnId.Version, MarketColumnId.Version, multiFilterFn),
 ])
+
+export const useMarketColumns = () => {
+  const marketTitles = useMarketTitles()
+  const convertRate = useAprToApy()
+  return useMemo(() => createMarketColumns(marketTitles, convertRate), [convertRate, marketTitles])
+}

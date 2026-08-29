@@ -34,7 +34,7 @@ export type MintMarket = MintMarketFromApi & {
 }
 
 export const { getQueryOptions: getMintMarketOptions, reset: resetMintMarkets } = queryFactory({
-  queryKey: () => ['mint-markets', 'v4'] as const,
+  queryKey: () => ['mint-markets', 'v5'] as const,
   queryFn: async (): Promise<MintMarket[]> =>
     recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map(market => ({ ...market, chain }))),
   category: 'llamalend.marketList',

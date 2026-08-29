@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import type { Address } from 'viem'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
-import { aprToPoolApy } from '@/dex/features/pool-list/cells/utils'
+import { convertPoolRate } from '@/dex/features/pool-list/cells/utils'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
+import { useAprToApy, useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
@@ -34,17 +35,15 @@ const { Height, Spacing } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'dex.poolInformation'
 
-type BaseRateSeriesKey = 'dailyBaseApy' | 'weeklyBaseApy'
+type BaseRateSeriesKey = 'dailyBaseRate' | 'weeklyBaseRate'
 type BaseRateChartPoint = {
   timestamp: number
-  dailyBaseApy: number | undefined
-  weeklyBaseApy: number | undefined
+  dailyBaseRate: number | undefined
+  weeklyBaseRate: number | undefined
 }
+type BaseRateSeriesConfig = Omit<LineSeriesConfig<BaseRateSeriesKey>, 'color'>
 
-const SERIES_CONFIG = [
-  { key: 'dailyBaseApy', label: t`Daily Base APY` },
-  { key: 'weeklyBaseApy', label: t`Weekly Base APY`, dash: CHART_LINE_DASH_PATTERNS.tight },
-] as const
+const SERIES_KEYS: BaseRateSeriesKey[] = ['dailyBaseRate', 'weeklyBaseRate']
 
 export const PoolHistoricalBaseRateChart = ({
   blockchainId,
@@ -53,8 +52,21 @@ export const PoolHistoricalBaseRateChart = ({
   blockchainId: string
   poolAddress: Address
 }) => {
+  const convertAprToApy = useAprToApy()
+  const rateDisplay = useRateDisplay()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
-  const [visibleSeries, setVisibleSeries] = useState<BaseRateSeriesKey[]>(() => SERIES_CONFIG.map(({ key }) => key))
+  const [visibleSeries, setVisibleSeries] = useState<BaseRateSeriesKey[]>(SERIES_KEYS)
+  const seriesConfig = useMemo<BaseRateSeriesConfig[]>(
+    () => [
+      { key: 'dailyBaseRate', label: rateDisplay === 'apy' ? t`Daily Base APY` : t`Daily Base APR` },
+      {
+        key: 'weeklyBaseRate',
+        label: rateDisplay === 'apy' ? t`Weekly Base APY` : t`Weekly Base APR`,
+        dash: CHART_LINE_DASH_PATTERNS.tight,
+      },
+    ],
+    [rateDisplay],
+  )
 
   const chain = blockchainId as Chain
   const [end] = useState(() => Math.floor(Date.now() / 1000))
@@ -69,8 +81,8 @@ export const PoolHistoricalBaseRateChart = ({
   const ratePoints = mapQuery(snapshots, snapshots =>
     snapshots.toReversed().map(snapshot => ({
       timestamp: snapshot.timestamp,
-      dailyBaseApy: maybe(snapshot.baseDailyApr, apr => aprToPoolApy(apr * 100)) ?? undefined,
-      weeklyBaseApy: maybe(snapshot.baseWeeklyApr, apr => aprToPoolApy(apr * 100)) ?? undefined,
+      dailyBaseRate: maybe(snapshot.baseDailyApr, apr => convertPoolRate(convertAprToApy, apr * 100)) ?? undefined,
+      weeklyBaseRate: maybe(snapshot.baseWeeklyApr, apr => convertPoolRate(convertAprToApy, apr * 100)) ?? undefined,
     })),
   )
 
@@ -82,18 +94,18 @@ export const PoolHistoricalBaseRateChart = ({
   } = useTheme()
 
   const seriesColors: Record<BaseRateSeriesKey, string> = useMemo(
-    () => ({ dailyBaseApy: Color.Primary[500], weeklyBaseApy: Color.Secondary[500] }),
+    () => ({ dailyBaseRate: Color.Primary[500], weeklyBaseRate: Color.Secondary[500] }),
     [Color.Primary, Color.Secondary],
   )
 
   const series: LineSeriesConfig<BaseRateSeriesKey>[] = useMemo(
-    () => SERIES_CONFIG.map(({ key, label, ...config }) => ({ key, label, color: seriesColors[key], ...config })),
-    [seriesColors],
+    () => seriesConfig.map(({ key, label, ...config }) => ({ key, label, color: seriesColors[key], ...config })),
+    [seriesColors, seriesConfig],
   )
 
   const legendSets: LegendItem[] = useMemo(
     () =>
-      SERIES_CONFIG.map(({ key, label, ...config }) => ({
+      seriesConfig.map(({ key, label, ...config }) => ({
         label,
         line: { lineStroke: seriesColors[key], ...config },
         toggled: visibleSeries.includes(key),
@@ -102,7 +114,7 @@ export const PoolHistoricalBaseRateChart = ({
             previous.includes(key) ? previous.filter(seriesKey => seriesKey !== key) : [...previous, key],
           ),
       })),
-    [seriesColors, visibleSeries],
+    [seriesColors, seriesConfig, visibleSeries],
   )
 
   return (
@@ -128,14 +140,14 @@ export const PoolHistoricalBaseRateChart = ({
         >
           <Metric
             category={METRIC_CATEGORY}
-            label={t`Current daily base APY`}
-            value={mapQuery(currentPool, pool => aprToPoolApy(pool.baseDailyApr * 100))}
+            label={rateDisplay === 'apy' ? t`Current daily base APY` : t`Current daily base APR`}
+            value={mapQuery(currentPool, pool => convertPoolRate(convertAprToApy, pool.baseDailyApr * 100))}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             category={METRIC_CATEGORY}
-            label={t`Current weekly base APY`}
-            value={mapQuery(currentPool, pool => aprToPoolApy(pool.baseWeeklyApr * 100))}
+            label={rateDisplay === 'apy' ? t`Current weekly base APY` : t`Current weekly base APR`}
+            value={mapQuery(currentPool, pool => convertPoolRate(convertAprToApy, pool.baseWeeklyApr * 100))}
             valueOptions={{ unit: 'percentage' }}
           />
         </Stack>

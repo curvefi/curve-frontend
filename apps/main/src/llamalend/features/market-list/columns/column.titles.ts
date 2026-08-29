@@ -1,10 +1,13 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { useMemo } from 'react'
+import { useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import { MarketColumnId } from './columns.enum'
 
 /** Titles for the lending markets table. */
-export const MARKET_TITLES: Record<MarketColumnId, string> = {
+export const getMarketTitles = (
+  rateDisplay: ReturnType<typeof useRateDisplay>,
+): Record<MarketColumnId, string> => ({
   [MarketColumnId.BorrowedSymbol]: t`Debt`,
   [MarketColumnId.CollateralSymbol]: t`Collateral`,
   [MarketColumnId.DeprecatedMessage]: t`Deprecated Message`,
@@ -23,7 +26,7 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.UserDeposited]: t`Supplied Amount`,
   [MarketColumnId.BorrowRate]: t`Borrow APR`,
   [MarketColumnId.NetBorrowRate]: t`Net Borrow APR`,
-  [MarketColumnId.LendRate]: NET_SUPPLY_RATE_TITLE,
+  [MarketColumnId.LendRate]: rateDisplay === 'apy' ? t`Net Supply APY` : t`Net Supply APR`,
   [MarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Borrow APR`,
   [MarketColumnId.MaxLtv]: t`Max LTV`,
   [MarketColumnId.MaxLeverage]: t`Max Leverage`,
@@ -33,4 +36,12 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.Tvl]: t`TVL`,
   [MarketColumnId.TotalDebt]: t`Total Debt`,
   [MarketColumnId.TotalCollateralUsd]: t`Total Collateral`,
-} as const
+})
+
+/** Default titles retained for fixed-rate filters and other non-presentation metadata. */
+export const MARKET_TITLES = getMarketTitles('apy')
+
+export const useMarketTitles = () => {
+  const rateDisplay = useRateDisplay()
+  return useMemo(() => getMarketTitles(rateDisplay), [rateDisplay])
+}

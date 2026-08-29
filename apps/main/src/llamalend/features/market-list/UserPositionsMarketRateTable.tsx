@@ -11,7 +11,7 @@ import { QueryProp } from '@evm-ui/types/util'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
-import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, MARKET_COLUMNS } from './columns'
+import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, useMarketColumns } from './columns'
 import { useMarketsVisibility } from './hooks/useMarketsVisibility'
 import { MarketExpandedPanel } from './MarketExpandedPanel'
 import { UserPositionExpandedPanelActions } from './UserPositionExpandedPanelActions'
@@ -46,11 +46,12 @@ const pagination = { pageIndex: 0, pageSize: 50 }
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
-  const { columnVisibility } = useMarketsVisibility(storageKey, sorting, marketRateType)
+  const marketColumns = useMarketColumns()
+  const { columnVisibility } = useMarketsVisibility(storageKey, sorting, marketRateType, marketColumns)
   const [expanded, setExpanded] = useState<ExpandedState>({})
 
   const table = useCurveTable({
-    columns: MARKET_COLUMNS,
+    columns: marketColumns,
     query: tableQuery,
     meta: { getRowHref: ({ url }) => url },
     state: { expanded, sorting, columnVisibility },

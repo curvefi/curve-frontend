@@ -23,9 +23,6 @@ export const MarketTypeSuffix: Record<MarketType, string> = {
   [MarketType.Mint]: t`(Mint Markets)`,
 }
 
-export const NET_SUPPLY_RATE_TITLE = t`Net Supply APY`
-export const USER_NET_SUPPLY_RATE_TITLE = t`Your net supply APY`
-
 export const LEVERAGE = 'leverage' as const satisfies SlippageType
 
 /** Any v1 lend market created after this date is considered deprecated. */

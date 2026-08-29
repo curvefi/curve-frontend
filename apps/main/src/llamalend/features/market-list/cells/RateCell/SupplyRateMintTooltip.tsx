@@ -1,4 +1,4 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
@@ -17,10 +17,19 @@ const TooltipContent = () => (
   </Typography>
 )
 
-export const SupplyRateMintTooltip = () => (
-  <Tooltip clickable title={NET_SUPPLY_RATE_TITLE} body={<TooltipContent />} placement="top" mobileDrawer>
-    <Typography variant="tableCellMBold" color="textPrimary" sx={{ width: '100%' }}>
-      -
-    </Typography>
-  </Tooltip>
-)
+export const SupplyRateMintTooltip = () => {
+  const rateDisplay = useRateDisplay()
+  return (
+    <Tooltip
+      clickable
+      title={rateDisplay === 'apy' ? t`Net Supply APY` : t`Net Supply APR`}
+      body={<TooltipContent />}
+      placement="top"
+      mobileDrawer
+    >
+      <Typography variant="tableCellMBold" color="textPrimary" sx={{ width: '100%' }}>
+        -
+      </Typography>
+    </Tooltip>
+  )
+}

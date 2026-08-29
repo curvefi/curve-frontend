@@ -34,7 +34,7 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
 
-  const { prevRates, rates, prevNetSupplyApy, netSupplyApy } = useSupplyRates(
+  const { prevSupplyRate, supplyRate, prevNetSupplyRate, netSupplyRate } = useSupplyRates(
     { params, reservesDelta: depositAmount, controllerAddress },
     isOpen,
   )
@@ -53,10 +53,10 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
       )}
       prevSuppliedAssets={mapQuery(userBalances, d => d.totalSharesAmount)}
       suppliedAssets={mapQuery(userBalances, d => maybes([d.totalSharesAmount, depositAmount], decimalSum))}
-      prevSupplyApy={mapQuery(prevRates, d => d.lendApy)}
-      supplyApy={mapQuery(rates, d => d.lendApy)}
-      prevNetSupplyApy={prevNetSupplyApy}
-      netSupplyApy={netSupplyApy}
+      prevSupplyRate={prevSupplyRate}
+      supplyRate={supplyRate}
+      prevNetSupplyRate={prevNetSupplyRate}
+      netSupplyRate={netSupplyRate}
       gas={q(useDepositEstimateGas(networks, params, isOpen))}
     />
   )

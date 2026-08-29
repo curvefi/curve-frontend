@@ -15,7 +15,7 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
     [
       ...rootKeys.contract({ contractAddress, blockchainId }),
       'lendingSnapshots',
-      'v5',
+      'v6',
       { timeOption },
       { limit },
     ] as const,

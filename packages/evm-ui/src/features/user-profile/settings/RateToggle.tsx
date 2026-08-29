@@ -1,10 +1,11 @@
+import { useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { type RateDisplay, useUserProfileStore } from '../store'
+import { useUserProfileStore } from '../store'
 
 export const RateToggle = () => {
-  const rateDisplay = useUserProfileStore(state => state.rateDisplay)
+  const rateDisplay = useRateDisplay()
   const setRateDisplay = useUserProfileStore(state => state.setRateDisplay)
 
   return (
@@ -12,8 +13,8 @@ export const RateToggle = () => {
       value={rateDisplay}
       exclusive
       size="small"
-      onChange={(_, value: RateDisplay | null) => {
-        if (value != null) setRateDisplay(value)
+      onChange={(_, value: unknown) => {
+        if (value === 'apr' || value === 'apy') setRateDisplay(value)
       }}
     >
       <ToggleButton value="apr" data-testid="rate-display-button-apr">

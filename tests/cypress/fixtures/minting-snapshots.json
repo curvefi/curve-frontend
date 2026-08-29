@@ -4,7 +4,6 @@
   "data": [
     {
       "rate": 0.12816072453935456,
-      "borrow_apy": 12.816072453935456,
       "borrow_apr": 12.816072453935456,
       "minted": 57687520.68004391,
       "redeemed": 49327367.94485391,
@@ -30,19 +29,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.12350547389952227,
-      "borrow_apy": 12.350547389952227,
       "borrow_apr": 12.350547389952227,
       "minted": 57546524.98534437,
       "redeemed": 49327367.94485391,
@@ -68,19 +66,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.05986224417328345,
-      "borrow_apy": 5.986224417328345,
       "borrow_apr": 5.986224417328345,
       "minted": 57446524.985344365,
       "redeemed": 49287319.616797455,
@@ -106,19 +103,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.05986224417328345,
-      "borrow_apy": 5.986224417328345,
       "borrow_apr": 5.986224417328345,
       "minted": 57446524.985344365,
       "redeemed": 49287319.616797455,
@@ -144,19 +140,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.04974604614220168,
-      "borrow_apy": 4.974604614220168,
       "borrow_apr": 4.974604614220168,
       "minted": 57446524.985344365,
       "redeemed": 49287319.616797455,
@@ -182,19 +177,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.04974604614220168,
-      "borrow_apy": 4.974604614220168,
       "borrow_apr": 4.974604614220168,
       "minted": 57446524.985344365,
       "redeemed": 49287319.616797455,
@@ -220,19 +214,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.047944530655772866,
-      "borrow_apy": 4.794453065577286,
       "borrow_apr": 4.794453065577286,
       "minted": 57414597.19452046,
       "redeemed": 49287319.616797455,
@@ -258,19 +251,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.03401332663166623,
-      "borrow_apy": 3.401332663166623,
       "borrow_apr": 3.401332663166623,
       "minted": 57384597.19452046,
       "redeemed": 49287319.616797455,
@@ -296,19 +288,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.0327819465080883,
-      "borrow_apy": 3.27819465080883,
       "borrow_apr": 3.27819465080883,
       "minted": 56748697.19452045,
       "redeemed": 49282319.616797455,
@@ -334,19 +325,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.03293724986562663,
-      "borrow_apy": 3.293724986562663,
       "borrow_apr": 3.293724986562663,
       "minted": 56673697.19452046,
       "redeemed": 49282319.616797455,
@@ -372,19 +362,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.03293724986562663,
-      "borrow_apy": 3.293724986562663,
       "borrow_apr": 3.293724986562663,
       "minted": 56673697.19452046,
       "redeemed": 49282319.616797455,
@@ -410,19 +399,18 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     },
     {
       "rate": 0.030969959883235365,
-      "borrow_apy": 3.0969959883235365,
       "borrow_apr": 3.0969959883235365,
       "minted": 56548986.8908721,
       "redeemed": 49281345.44166028,
@@ -448,13 +436,13 @@
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
         "decimals": 18,
-        "rebasing_yield": null
+        "rebasing_yield_apr": null
       },
       "max_ltv": 0.8
     }

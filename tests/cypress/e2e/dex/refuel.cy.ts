@@ -38,7 +38,7 @@ describe('Refuel page', () => {
     getTestById('pool-tvl-value').invoke(API_LOAD_TIMEOUT, 'attr', 'data-value').should('match', /\d/)
     getTestById('pool-volume-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('pool-fees-value').invoke('attr', 'data-value').should('match', /\d/)
-    getTestById('pool-apr-value').invoke('attr', 'data-value').should('match', /\d/)
+    getTestById('pool-rate-value').invoke('attr', 'data-value').should('match', /\d/)
 
     getTestById('prices-chart').should('be.visible')
     getTestById('lp-token-value-value').invoke(API_LOAD_TIMEOUT, 'attr', 'data-value').should('match', /\d/)

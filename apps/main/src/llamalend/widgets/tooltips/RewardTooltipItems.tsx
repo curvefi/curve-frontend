@@ -1,9 +1,10 @@
 import { CampaignRewards } from '@evm-ui/entities/campaigns'
+import { useAprToApy } from '@evm-ui/hooks/useAprToApy'
 import { t } from '@evm-ui/lib/i18n'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import { TooltipItem, TooltipValueLink } from '@evm-ui/shared/ui/TooltipComponents'
 import type { ExtraIncentive } from '@evm-ui/types/market'
-import { aprToApy, formatNumber } from '@evm-ui/utils'
+import { formatNumber } from '@evm-ui/utils'
 import type { RewardsAction } from '@external-rewards'
 
 type RewardsTooltipItemsProps = {
@@ -20,6 +21,7 @@ export const RewardsTooltipItems = ({
   extraIncentives,
   tooltipType,
 }: RewardsTooltipItemsProps) => {
+  const convertRate = useAprToApy()
   const totalExtraPercentage =
     extraIncentives.length > 0
       ? formatNumber(
@@ -49,7 +51,7 @@ export const RewardsTooltipItems = ({
             >
               <TooltipValueLink href={r.dashboardLink}>
                 {r.reward?.type === 'apr'
-                  ? `${tooltipType === 'supply' ? '+' : ''}${formatNumber(tooltipType === 'supply' ? aprToApy(r.reward.value) : -r.reward.value, 'percent.rate')}`
+                  ? `${tooltipType === 'supply' ? '+' : ''}${formatNumber(tooltipType === 'supply' ? convertRate(r.reward.value) : -r.reward.value, 'percent.rate')}`
                   : formatNumber(r.reward?.value, 'multiplier')}
               </TooltipValueLink>
             </TooltipItem>

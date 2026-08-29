@@ -1,3 +1,4 @@
+import { useAprToApy, useRateDisplay } from '@evm-ui/hooks/useAprToApy'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { t } from '@evm-ui/lib/i18n'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
@@ -7,11 +8,10 @@ import { decimal, formatCappedRateValue, relativeTime } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import Grid from '@mui/material/Grid'
 import { maybe } from '@primitives/objects.utils'
-import { NetApyTooltipContent } from '../cells/NetApyTooltipContent'
+import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { RewardIcons } from '../cells/RewardIcons'
-import { getBaseApy, getNetApy, isVolatileApy } from '../cells/utils'
-import { POOL_TITLES, PoolColumnId } from '../columns'
-import type { PoolColumnVariant } from '../hooks/usePoolsVisibility'
+import { getBaseRate, getNetRate, isVolatileRate } from '../cells/utils'
+import { PoolColumnId, usePoolTitles, type PoolColumnVariant } from '../columns'
 import type { PoolRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
@@ -43,30 +43,33 @@ const PRIMARY_METRIC_SIZE = 6 as const
 export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
   const pool = row.original
   const currentDate = useCurrentDate()
-  const baseApy = getBaseApy(pool, 'daily')
-  const netApy = getNetApy(pool)
-  const volatileBaseApy = isVolatileApy(baseApy)
+  const convertAprToApy = useAprToApy()
+  const rateDisplay = useRateDisplay()
+  const poolTitles = usePoolTitles()
+  const baseRate = getBaseRate(pool, 'daily', convertAprToApy)
+  const netRate = getNetRate(pool, convertAprToApy)
+  const volatileBaseRate = isVolatileRate(baseRate)
 
   return (
     <Grid container spacing={Spacing.md}>
       <Grid size={PRIMARY_METRIC_SIZE}>
         <Metric
           category={PRIMARY_METRIC_CATEGORY}
-          label={POOL_TITLES[PoolColumnId.NetApy]}
-          value={netApy || null}
-          valueOptions={getRateValueOptions(netApy, { volatile: volatileBaseApy })}
+          label={poolTitles[PoolColumnId.NetRate]}
+          value={netRate || null}
+          valueOptions={getRateValueOptions(netRate, { volatile: volatileBaseRate })}
           valueTooltip={
-            netApy
+            netRate
               ? {
-                  body: <NetApyTooltipContent pool={pool} volatile={volatileBaseApy} />,
+                  body: <NetRateTooltipContent pool={pool} volatile={volatileBaseRate} />,
                   clickable: true,
                   placement: 'top',
-                  title: t`Net APY`,
+                  title: rateDisplay === 'apy' ? t`Net APY` : t`Net APR`,
                 }
               : undefined
           }
           icon={<RewardIcons pool={pool} includeCrv includePoints tooltipPlacement="top" />}
-          testId="pool-net-apy"
+          testId="pool-net-rate"
         />
       </Grid>
       {variant === 'full' && (
@@ -96,7 +99,7 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
         {variant === 'full' && (
           <Metric
             category={DETAIL_METRIC_CATEGORY}
-            label={POOL_TITLES[PoolColumnId.Tvl]}
+            label={poolTitles[PoolColumnId.Tvl]}
             value={pool.tvlUsd}
             valueOptions={{ unit: 'dollar' }}
             testId="pool-tvl"
@@ -105,7 +108,7 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
         {maybe(pool.creationDate, creationDate => (
           <Metric
             category={DETAIL_METRIC_CATEGORY}
-            label={POOL_TITLES[PoolColumnId.Age]}
+            label={poolTitles[PoolColumnId.Age]}
             value={creationDate}
             valueOptions={{
               abbreviate: false,

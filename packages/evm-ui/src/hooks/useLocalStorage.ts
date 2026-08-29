@@ -49,14 +49,15 @@ export const useFilterExpanded = (tableTitle: string) =>
 
 type RateType = 'borrow' | 'supply'
 
-export const useShowNetRate = (type: RateType) =>
-  useLocalStorage<Record<string, boolean>>(
-    {
-      borrow: 'showNetApr',
-      supply: 'showNetApy',
-    }[type],
-    useMemo(() => ({}), []),
-  )
+const NET_RATE_STORAGE = {
+  borrow: { key: 'showNetApr', migration: undefined },
+  supply: { key: 'showNetRate', migration: { version: 1 } },
+} as const
+
+export const useShowNetRate = (type: RateType) => {
+  const { key, migration } = NET_RATE_STORAGE[type]
+  return useLocalStorage<Record<string, boolean>>(key, useMemo(() => ({}), []), migration)
+}
 
 export const useCreateLoanPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
   useLocalStorage<T>('create-loan-preset', defaultValue)

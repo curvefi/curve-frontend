@@ -143,11 +143,11 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
   getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
   if (hasApi) getMetricValue('market-total-suppliers').should('match', DECIMAL_REGEX)
   if (hasApi) {
-    getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
+    getActionValue('market-net-supply-rate').should('match', DECIMAL_REGEX)
     shouldLoadHistoricalSupplyRateChart()
     shouldShowCanvas('interest-rate-utilization-chart')
   } else {
-    getActionInfo('market-net-supply-apy').should('not.exist')
+    getActionInfo('market-net-supply-rate').should('not.exist')
   }
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: hasWallet })

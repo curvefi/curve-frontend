@@ -46,11 +46,9 @@ const SUPPLY_MARKET_ADDRESSES = {
   collateral: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497',
 } as const
 
-const createSupplyRates = (lendApy: Decimal) => ({
+const createSupplyRates = (lendApr: Decimal) => ({
   borrowApr: '0.0825',
-  borrowApy: '0.0841',
-  lendApr: lendApy,
-  lendApy,
+  lendApr,
 })
 
 const createIdentityConvertToAssetsStub = () =>
@@ -65,8 +63,8 @@ const createBaseSupplyMarket = ({
   chainId,
   walletBalances,
   vaultOverrides,
-  currentApy,
-  futureApy,
+  currentRate,
+  futureRate,
   hasGauge = true,
   controller = SUPPLY_MARKET_ADDRESSES.controller,
 }: {
@@ -80,13 +78,13 @@ const createBaseSupplyMarket = ({
   vaultOverrides: Partial<Omit<MockLendVault, 'estimateGas'>> & {
     estimateGas?: Partial<MockLendEstimateGas>
   }
-  currentApy: Decimal
-  futureApy: Decimal
+  currentRate: Decimal
+  futureRate: Decimal
   hasGauge?: boolean
   controller?: Address
 }) => {
-  const statsRates = createStub(createSupplyRates(currentApy))
-  const statsFutureRates = createStub(createSupplyRates(futureApy))
+  const statsRates = createStub(createSupplyRates(currentRate))
+  const statsFutureRates = createStub(createSupplyRates(futureRate))
   const walletBalancesStub = createStub(walletBalances)
   const defaultConvertToAssets = createIdentityConvertToAssetsStub()
   const defaultConvertToShares = createIdentityConvertToSharesStub()
@@ -168,8 +166,8 @@ export const createDepositScenario = ({
     vaultShares: '100.00',
     gauge: '25.00',
   } as const
-  const currentApy = '0.0456'
-  const futureApy = '0.0412'
+  const currentRate = '0.0456'
+  const futureRate = '0.0412'
   const depositApprove = createTransactionStub([TEST_TX_HASH])
   const depositIsApproved = approved ? createStub(true) : createIsApprovedStub(depositApprove)
   const maxDepositStub = createStub(input.maxDeposit)
@@ -182,8 +180,8 @@ export const createDepositScenario = ({
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
     walletBalances: balances,
-    currentApy,
-    futureApy,
+    currentRate,
+    futureRate,
     controller,
     vaultOverrides: {
       maxDeposit: maxDepositStub,
@@ -216,8 +214,8 @@ export const createDepositScenario = ({
       approve: amountArgs,
       submit: amountArgs,
       actionInfo: {
-        supplyApy: futureApy,
-        prevSupplyApy: currentApy,
+        supplyRate: futureRate,
+        prevSupplyRate: currentRate,
         vaultShares: decimalSum(vaultShares, input.amount),
         prevVaultShares: vaultShares,
         suppliedAssets: decimalSum(vaultShares, input.amount),
@@ -256,8 +254,8 @@ export const createStakeScenario = ({
     vaultShares: '80.00',
     gauge: '20.00',
   } as const
-  const currentApy = '0.0375'
-  const futureApy = currentApy
+  const currentRate = '0.0375'
+  const futureRate = currentRate
   const stakeApprove = createTransactionStub([TEST_TX_HASH])
   const stakeIsApproved = approved ? createStub(true) : createIsApprovedStub(stakeApprove)
   const estimateGasStake = createStub(`${132_000}`)
@@ -275,8 +273,8 @@ export const createStakeScenario = ({
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
     walletBalances: balances,
-    currentApy,
-    futureApy,
+    currentRate,
+    futureRate,
     hasGauge,
     vaultOverrides: {
       convertToAssets,
@@ -305,7 +303,7 @@ export const createStakeScenario = ({
       approve: [stakeShares] as const,
       submit: [stakeShares] as const,
       actionInfo: {
-        supplyApy: currentApy,
+        supplyRate: currentRate,
         vaultShares,
         prevVaultShares: balances.gauge,
         suppliedAssets: decimalSum(stakedAssets, assets),
@@ -348,8 +346,8 @@ export const createWithdrawScenario = ({
     vaultShares: depositedShares,
     gauge: stakedShares,
   } as const
-  const currentApy = '0.0510'
-  const futureApy = isFull ? '0.0540' : '0.0531'
+  const currentRate = '0.0510'
+  const futureRate = isFull ? '0.0540' : '0.0531'
   const maxWithdraw = createStub(depositedShares)
   const maxRedeem = createStub(depositedShares)
   const previewWithdraw = createStub(input.amount)
@@ -362,8 +360,8 @@ export const createWithdrawScenario = ({
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
     walletBalances: balances,
-    currentApy,
-    futureApy,
+    currentRate,
+    futureRate,
     vaultOverrides: {
       maxWithdraw,
       maxRedeem,
@@ -391,8 +389,8 @@ export const createWithdrawScenario = ({
       estimateGas: [submitAmount] as const,
       submit: [submitAmount] as const,
       actionInfo: {
-        supplyApy: futureApy,
-        prevSupplyApy: currentApy,
+        supplyRate: futureRate,
+        prevSupplyRate: currentRate,
         vaultShares: decimalMinus(vaultShares, isFull ? depositedShares : input.amount),
         prevVaultShares: vaultShares,
         suppliedAssets: decimalMinus(vaultShares, input.amount),
@@ -423,8 +421,8 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
     vaultShares: '0',
     gauge: '40.00',
   } as const
-  const currentApy = '0.0440'
-  const futureApy = currentApy
+  const currentRate = '0.0440'
+  const futureRate = currentRate
   const estimateGasUnstake = createStub(`${121_000}`)
   const unstake = createTransactionStub(TEST_TX_HASH)
   const convertToAssets = cy
@@ -439,8 +437,8 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
     walletBalances: balances,
-    currentApy,
-    futureApy,
+    currentRate,
+    futureRate,
     vaultOverrides: {
       convertToAssets,
       convertToShares,
@@ -462,7 +460,7 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
       submit: [unstakeShares] as const,
       convertToShares: [assets] as const,
       actionInfo: {
-        supplyApy: currentApy,
+        supplyRate: currentRate,
         vaultShares,
         prevVaultShares: balances.gauge,
         suppliedAssets: decimalMinus(stakedAssets, assets),
@@ -504,8 +502,8 @@ export const createClaimScenario = ({
       vaultShares: '0',
       gauge: '0',
     },
-    currentApy: '0.0400',
-    futureApy: '0.0400',
+    currentRate: '0.0400',
+    futureRate: '0.0400',
     vaultOverrides: {
       claimableCrv: claimableCrvStub,
       claimableRewards: claimableRewardsStub,

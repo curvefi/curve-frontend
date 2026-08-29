@@ -14,7 +14,6 @@ const oneApiToken = (token: ReturnType<typeof oneToken>) => ({
   symbol: token.symbol,
   address: token.address,
   decimals: DEFAULT_DECIMALS,
-  rebasing_yield: null,
   rebasing_yield_apr: null,
 })
 
@@ -56,11 +55,8 @@ const oneLendingPool = (
     oracle: oneAddress(),
     oracle_pools: oneOf([], [oneAddress()]),
     rate: oneFloat(),
-    borrow_apy: oneFloat(),
-    borrow_total_apy: oneFloat(),
     borrow_apr: oneFloat(),
     borrow_total_apr: oneFloat(),
-    lend_apy: oneFloat(),
     lend_apr: oneFloat(),
     lend_apr_crv_0_boost: oneFloat(),
     lend_apr_crv_max_boost: oneFloat(),
@@ -155,12 +151,9 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
 
         return {
           rate: i / 100,
-          borrow_apy: i / 2, // increasing APY, graph should be green
           borrow_apr: i / 2, // increasing APR, graph should be green
-          borrow_total_apy: i / 2 - 1,
           borrow_total_apr: i / 2 - 1,
-          lend_apy: 2 / (i + 1), // decreasing APY, graph should be red
-          lend_apr: 2 / (i + 1),
+          lend_apr: 2 / (i + 1), // decreasing APR, graph should be red
           lend_apr_crv_0_boost: 0,
           lend_apr_crv_max_boost: 0,
           liquidation_discount: 0.04,

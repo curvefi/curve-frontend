@@ -13,7 +13,7 @@ type BorrowRateMetric = {
   rate: number | null | undefined
   averageRate: number | null | undefined
   averageCategory: AverageCategory
-  rebasingYield: number | null | undefined
+  rebasingYieldApr: number | null | undefined
   totalBorrowRate: number | null | undefined
   totalAverageBorrowRate: number | null | undefined
   extraRewards: CampaignRewards[]
@@ -31,7 +31,7 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
   const title = getBorrowRateTooltipTitle({
     totalBorrowApr: borrowRate.data?.totalBorrowRate,
     extraRewards: borrowRate.data?.extraRewards ?? [],
-    rebasingYieldApr: borrowRate.data?.rebasingYield,
+    rebasingYieldApr: borrowRate.data?.rebasingYieldApr,
   })
   return (
     <Metric
@@ -60,7 +60,7 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
             averageApr={borrowRate.data?.averageRate}
             periodLabel={averageRatePeriod}
             extraRewards={borrowRate.data?.extraRewards ?? []}
-            rebasingYieldApr={borrowRate.data?.rebasingYield}
+            rebasingYieldApr={borrowRate.data?.rebasingYieldApr}
             collateralSymbol={collateralSymbol}
             isLoading={borrowRate.isLoading}
           />
