@@ -30,7 +30,7 @@ export const TableFilters = <ColumnIds extends string>({
   onSearch,
 }: {
   testIdPrefix: string
-  visibilityGroups: VisibilityGroup<ColumnIds>[]
+  visibilityGroups?: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
   // collapsible bar that displays the active filters
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
@@ -46,6 +46,7 @@ export const TableFilters = <ColumnIds extends string>({
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
   const { collapsible, hasActiveFilters } = collapsibleFilters ?? {}
+  const hasVisibilitySettings = !!toggleVisibility && !!visibilityGroups?.length
 
   return (
     <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
@@ -77,18 +78,20 @@ export const TableFilters = <ColumnIds extends string>({
         {!isMobile && (
           <Grid container size="grow" spacing="none" sx={{ justifyContent: 'flex-end' }}>
             {chips}
-            <TableButton
-              ref={settingsRef}
-              onClick={openVisibilitySettings}
-              icon={GearIcon}
-              testId="btn-visibility-settings"
-              active={visibilitySettingsOpen}
-            />
+            {hasVisibilitySettings && (
+              <TableButton
+                ref={settingsRef}
+                onClick={openVisibilitySettings}
+                icon={GearIcon}
+                testId="btn-visibility-settings"
+                active={visibilitySettingsOpen}
+              />
+            )}
           </Grid>
         )}
       </Grid>
       {collapsible && <Collapse in={!!hasActiveFilters || isMobile}>{collapsible}</Collapse>}
-      {visibilitySettingsOpen != null && toggleVisibility && (
+      {visibilitySettingsOpen != null && toggleVisibility && visibilityGroups?.length && (
         <TableVisibilitySettingsPopover<ColumnIds>
           anchorRef={settingsRef}
           visibilityGroups={visibilityGroups}

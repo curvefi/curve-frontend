@@ -12,10 +12,10 @@ import { OnChangeFn, PaginationState } from '@tanstack/react-table'
 export function usePageFromQueryString(pageSize: number, fieldName = 'page') {
   const searchParams = useSearchParams()
   const searchNavigate = useSearchNavigate(searchParams)
-  const pageIndex = useMemo(
-    () => (searchParams.has(fieldName) ? +searchParams.get(fieldName)! - 1 : 0),
-    [fieldName, searchParams],
-  )
+  const pageIndex = useMemo(() => {
+    const page = Number(searchParams.get(fieldName))
+    return Number.isSafeInteger(page) && page > 0 ? page - 1 : 0
+  }, [fieldName, searchParams])
   const onChange: OnChangeFn<PaginationState> = useCallback(
     newPagination => {
       const { pageIndex: newPage } =

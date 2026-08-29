@@ -18,7 +18,14 @@ export const TableFiltersChip = ({ open, popoverFilterChipRef, setOpen, testId }
   const openFilters = () => setOpen(true)
 
   return isMobile ? (
-    <SelectableChip size="medium" selected={open} icon={<FilterIcon />} toggle={openFilters} data-testid={testId} />
+    <SelectableChip
+      size="medium"
+      selected={open}
+      icon={<FilterIcon />}
+      toggle={openFilters}
+      aria-label={t`Filters`}
+      data-testid={testId}
+    />
   ) : (
     <GridChip
       ref={popoverFilterChipRef}

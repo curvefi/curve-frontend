@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import { ProgressBar } from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
-import { ProposalData } from '@/dao/entities/proposals-mapper'
+import type { ProposalData } from '@/dao/entities/proposals'
 import { t } from '@evm-ui/lib/i18n'
 import { formatNumber, formatToken } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
