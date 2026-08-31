@@ -1,10 +1,11 @@
-import { createPublicClient, encodeFunctionData, http, parseAbi } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
+import { Loading } from '@/routes/Loading'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { expectGaugeRewardDistributor, setGaugeManager } from '@cy/support/helpers/dex/gauge.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import {
   createTenderlyWagmiConfigFromVNet,
@@ -12,12 +13,10 @@ import {
   type TenderlyWagmiConfigFromVNet,
 } from '@cy/support/helpers/tenderly/vnet'
 import { fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { sendAdminTransaction } from '@cy/support/helpers/tenderly/vnet-tx'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
 import { Chain } from '@evm-ui/utils/network'
 import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
-import { assert } from '@primitives/objects.utils'
 
 const POOL_ADDRESS = '0x159a866f13f3931e256946ad7d921d18acbc599f'
 const GAUGE_ADDRESS = '0x456ba8aa2aa07c26a6b5d5a6a029ab754fb851c2'
@@ -27,14 +26,9 @@ const REWARD_TOKEN_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
 const REWARD_DISTRIBUTOR_ADDRESS = '0x427Caf62D66fCec08FA55F0991DBCA66a8BfA7E7'
 const FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH in wei
 
-const gaugeAbi = parseAbi([
-  'function set_gauge_manager(address _manager)',
-  'function reward_data(address _reward_token) view returns (address token, address distributor, uint256 period_finish, uint256 rate, uint256 last_update, uint256 integral)',
-])
-
-function WaitForNetworks() {
+function AddRewardTokenTest() {
   const { isPending } = useNetworksQuery()
-  return !isPending && <AddRewardToken chainId={Chain.Ethereum} poolId={POOL_ADDRESS} />
+  return isPending ? <Loading /> : <AddRewardToken chainId={Chain.Ethereum} poolId={POOL_ADDRESS} />
 }
 
 const AddRewardTestCase = ({ vnet, privateKey }: TenderlyWagmiConfigFromVNet) => (
@@ -46,7 +40,7 @@ const AddRewardTestCase = ({ vnet, privateKey }: TenderlyWagmiConfigFromVNet) =>
       hydrate={{ dex: useStore(state => state.hydrate) }}
     >
       <FormPlacementProvider placement="inline">
-        <WaitForNetworks />
+        <AddRewardTokenTest />
       </FormPlacementProvider>
     </CurveProvider>
   </ComponentTestWrapper>
@@ -72,35 +66,28 @@ describe('Gauge Add Reward (RPC)', () => {
   it('adds a gauge reward token', () => {
     const vnet = getVirtualNetwork()
     const { adminRpcUrl, publicRpcUrl } = getRpcUrls(vnet)
-    const client = createPublicClient({ transport: http(publicRpcUrl) })
 
-    sendAdminTransaction({
+    setGaugeManager({
       adminRpcUrl,
-      client,
-      from: MANAGER_ADDRESS,
-      to: GAUGE_ADDRESS,
-      data: encodeFunctionData({ abi: gaugeAbi, functionName: 'set_gauge_manager', args: [address] }),
+      publicRpcUrl,
+      gaugeAddress: GAUGE_ADDRESS,
+      currentManagerAddress: MANAGER_ADDRESS,
+      nextManagerAddress: address,
     })
 
     cy.mount(<AddRewardTestCase vnet={vnet} privateKey={privateKey} />)
 
     cy.contains(REWARD_TOKEN_SYMBOL, LOAD_TIMEOUT).should('be.visible')
-    cy.get('#inpDistributor').clear().type(REWARD_DISTRIBUTOR_ADDRESS)
-    cy.get('[data-testid="add-reward-submit-button"]', LOAD_TIMEOUT).should('be.enabled').click()
+    cy.get('[data-testid="add-reward-distributor-input"]').clear()
+    cy.get('[data-testid="add-reward-distributor-input"]').type(REWARD_DISTRIBUTOR_ADDRESS)
+    cy.get('[data-testid="add-reward-submit-button"]', LOAD_TIMEOUT).click()
 
-    cy.contains('Reward token added', LOAD_TIMEOUT).should('be.visible')
-    cy.then(() =>
-      client.readContract({
-        address: GAUGE_ADDRESS,
-        abi: gaugeAbi,
-        functionName: 'reward_data',
-        args: [REWARD_TOKEN_ADDRESS],
-      }),
-    ).then(([, distributor]) =>
-      assert(
-        distributor.toLowerCase() === REWARD_DISTRIBUTOR_ADDRESS.toLowerCase(),
-        `Expected ${REWARD_TOKEN_SYMBOL} distributor to be ${REWARD_DISTRIBUTOR_ADDRESS}, got ${distributor}`,
-      ),
-    )
+    cy.contains(`Added reward token ${REWARD_TOKEN_SYMBOL}`, LOAD_TIMEOUT).should('be.visible')
+    expectGaugeRewardDistributor({
+      publicRpcUrl,
+      gaugeAddress: GAUGE_ADDRESS,
+      rewardTokenAddress: REWARD_TOKEN_ADDRESS,
+      expectedDistributorAddress: REWARD_DISTRIBUTOR_ADDRESS,
+    })
   })
 })

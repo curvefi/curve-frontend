@@ -36,11 +36,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   const { data: networks } = useNetworks()
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
-  const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
-    chainId,
-    poolId,
-    userAddress,
-  })
+  const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
 
   const form = useForm<DepositRewardFormValues>({ validation, defaultValues })
   const { errors, isValid, visibleErrors } = form.formState
@@ -49,10 +45,20 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
   const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId })
   const gas = useDepositRewardEstimateGas(networks, { chainId, poolId, rewardTokenId, amount, epoch, userBalance })
-  const depositReward = useDepositReward({ chainId, poolId })
-  const isApproved = useGaugeDepositRewardIsApproved({ chainId, poolId, rewardTokenId, amount, userBalance })
-  const isPending = form.formState.isSubmitting || depositReward.isPending
-  const isLoading = isPending || isApproved.isLoading
+  const {
+    onSubmit,
+    error: depositRewardError,
+    isPending: isPendingDepositReward,
+  } = useDepositReward({ chainId, poolId })
+  const { data: isApproved, isLoading: isLoadingApproved } = useGaugeDepositRewardIsApproved({
+    chainId,
+    poolId,
+    rewardTokenId,
+    amount,
+    userBalance,
+  })
+  const isPending = form.formState.isSubmitting || isPendingDepositReward
+  const isLoading = isPending || isLoadingApproved
 
   useFormSync(form, { userBalance }) // Sync userBalance from query into form for validation
 
@@ -61,7 +67,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   ) : (
     <Form
       {...form}
-      onSubmit={form.handleSubmit(depositReward.mutate)}
+      onSubmit={form.handleSubmit(onSubmit)}
       footer={
         <Stack sx={{ gap: Spacing.xs }}>
           <ActionInfo
@@ -70,7 +76,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
             valueTooltip={tokenUsdRate && `${t`Token price`}: ${formatNumber(tokenUsdRate, 'usd.amount')}`}
             size="small"
           />
-          <ActionInfoGasEstimate gas={q(gas)} isApproved={isApproved.data} />
+          <ActionInfoGasEstimate gas={q(gas)} isApproved={isApproved} />
         </Stack>
       }
     >
@@ -81,12 +87,12 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
           pending={isPending}
           loading={isLoading}
           disabled={!isValid || isLoading}
-          label={[isApproved.data === false && t`Approve`, t`Deposit`]}
+          label={[isApproved === false && t`Approve`, t`Deposit`]}
           testId="deposit-reward-submit-button"
           connectWalletTestId="deposit-reward-connect-wallet-button"
         />
         <FormAlerts
-          error={errors['root.serverError'] ?? depositReward.error}
+          error={errors['root.serverError'] ?? depositRewardError}
           formErrors={visibleErrors}
           handledErrors={['rewardTokenId', 'amount', 'epoch']}
         />
