@@ -10,6 +10,7 @@ import { useFilters } from '@evm-ui/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@evm-ui/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@evm-ui/shared/ui/DataTable/TableFiltersChip'
 import { TableHeader } from '@evm-ui/shared/ui/DataTable/TableHeader'
+import { TableVisibilitySettingsPopover } from '@evm-ui/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
@@ -38,7 +39,9 @@ export const MarketsTable = ({
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
+  const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
+  const visibilitySettingsRef = useRef<HTMLButtonElement>(null)
   const isMobile = useIsMobile()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
@@ -82,10 +85,13 @@ export const MarketsTable = ({
         expandedPanel={{ Body: MarketExpandedPanel, Actions: MarketExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
-        <TableFilters<MarketColumnId>
+        <TableFilters
           testIdPrefix={LOCAL_STORAGE_KEY}
-          visibilityGroups={columnSettings}
-          toggleVisibility={toggleVisibility}
+          visibilitySettings={{
+            anchorRef: visibilitySettingsRef,
+            open: visibilitySettingsOpen,
+            onOpen: openVisibilitySettings,
+          }}
           disableSearchAutoFocus
           searchText={globalFilter}
           onSearch={setGlobalFilter}
@@ -113,7 +119,13 @@ export const MarketsTable = ({
           chips={<MarketsChips hasFavorites={hasFavorites} {...filterProps} />}
         />
       </DataTable>
-      {/* Keep the overlay outside DataTable children because DataTable remounts them when switching sticky header layout. */}
+      <TableVisibilitySettingsPopover<MarketColumnId>
+        anchorRef={visibilitySettingsRef}
+        visibilityGroups={columnSettings}
+        toggleVisibility={toggleVisibility}
+        open={visibilitySettingsOpen}
+        onClose={closeVisibilitySettings}
+      />
       <MarketsFiltersOverlay
         table={table}
         hasActiveFilters={hasActiveFilters}
