@@ -1,27 +1,46 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
-import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
+import { useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
+import type { DepositRewardApproveMutation, DepositRewardMutation } from '@/dex/entities/gauge/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
-import { StepperContainer } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
 import { useFormContext } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
+import Stack from '@mui/material/Stack'
+import type { UseMutateFunction } from '@tanstack/react-query'
+
+const { Spacing } = SizesAndSpaces
 
 type TxInfo = {
   description: string
   txHash: string | undefined
 }
 
-export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
+export const DepositStepper = ({
+  chainId,
+  poolId,
+  depositRewardApprove,
+  depositReward,
+  isPendingDepositRewardApprove,
+  isPendingDepositReward,
+}: {
+  chainId: ChainId
+  poolId: string
+  depositRewardApprove: UseMutateFunction<string[], Error, DepositRewardApproveMutation>
+  depositReward: UseMutateFunction<string, Error, DepositRewardMutation>
+  isPendingDepositRewardApprove: boolean
+  isPendingDepositReward: boolean
+}) => {
   const {
     formState: { isValid, isSubmitting },
-    watchValue,
+    watchValues,
     update: updateForm,
     getValue,
     setError,
@@ -29,17 +48,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   } = useFormContext<DepositRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
 
-  const amount = watchValue('amount')
-  const rewardTokenId = watchValue('rewardTokenId')
-  const step = watchValue('step')
-  const userBalance = watchValue('userBalance')
-
-  const { mutate: depositRewardApprove, isPending: isPendingDepositRewardApprove } = useDepositRewardApprove({
-    chainId,
-    poolId,
-  })
-
-  const { mutate: depositReward, isPending: isPendingDepositReward } = useDepositReward({ chainId, poolId })
+  const { amount, rewardTokenId, step, userBalance } = watchValues()
 
   const [latestTxInfo, setLatestTxInfo] = useState<TxInfo | null>(null)
 
@@ -163,9 +172,9 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
 
   return (
     <>
-      <StepperContainer>
+      <Stack sx={{ gap: Spacing.md }}>
         <Stepper steps={steps} testId="deposit-reward" />
-      </StepperContainer>
+      </Stack>
       {latestTxInfo && <TxInfoBar description={latestTxInfo.description} txHash={latestTxInfo.txHash} />}
     </>
   )
