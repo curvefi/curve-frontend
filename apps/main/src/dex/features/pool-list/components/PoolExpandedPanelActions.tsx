@@ -10,11 +10,17 @@ export const PoolExpandedPanelActions: ExpandedPanelComponent<PoolRow> = ({ row 
   const pool = row.original
   const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
 
+  /** Pool form paths were removed; mobile expanded rows still need direct links to a specific pool form. */
   const actions = [
-    // todo: URLs to specific actions don't exist anymore, do we really need these links?
-    { id: 'deposit', label: t`Deposit`, href: path, testId: 'pool-link-deposit' },
-    { id: 'withdraw', label: t`Withdraw`, href: path },
-    { id: 'swap', label: t`Swap`, href: path },
+    {
+      id: 'deposit',
+      label: t`Deposit`,
+      href: path,
+      state: { defaultTab: 'deposit' },
+      testId: 'pool-link-deposit',
+    },
+    { id: 'withdraw', label: t`Withdraw`, href: path, state: { defaultTab: 'withdraw' } },
+    { id: 'swap', label: t`Swap`, href: path, state: { defaultTab: 'swap' } },
     {
       id: 'copy-pool-address',
       label: t`Copy pool address`,

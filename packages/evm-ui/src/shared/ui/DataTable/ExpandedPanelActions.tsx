@@ -19,10 +19,16 @@ const { MaxHeight, Spacing } = SizesAndSpaces
 // number of button rendered before hiding the rest in a kebab menu
 const VISIBLE_ACTION_COUNT = 2
 
+type ExpandedPanelRouteState = {
+  /** The default tab to pass as a route state when navigating to this action. **/
+  defaultTab?: string | number
+}
+
 type ExpandedPanelAction = Pick<ButtonProps, 'color' | 'onClick' | 'size' | 'sx' | 'type'> & {
   id: string
   label: ReactNode
   href?: string
+  state?: ExpandedPanelRouteState
   testId?: string
   /** Keep this action always in the more-actions drawer */
   alwaysInKebabMenu?: boolean
@@ -35,7 +41,7 @@ const ExpandedPanelActionButton = ({
   action: ExpandedPanelAction
   onDrawerActionClick?: () => void
 }) => {
-  const { label, href, testId, sx, type, color, size, onClick } = action
+  const { label, href, state, testId, sx, type, color, size, onClick } = action
   const inDrawer = !!onDrawerActionClick
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -54,7 +60,7 @@ const ExpandedPanelActionButton = ({
   return href?.startsWith('https') ? (
     <ExternalLink {...sharedProps} href={href} label={label} />
   ) : href ? (
-    <Button {...(sharedProps as ButtonOwnProps)} component={RouterLink} href={href}>
+    <Button {...(sharedProps as ButtonOwnProps)} component={RouterLink} href={href} state={state}>
       {label}
     </Button>
   ) : (

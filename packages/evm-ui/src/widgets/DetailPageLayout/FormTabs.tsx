@@ -23,14 +23,14 @@ export type FormTab<Props extends object> = FormTabBase<Props> & {
 type UseFormTabOptions<T extends object> = {
   menu: readonly FormTab<T>[]
   params: T
+  defaultValue?: string
 }
 
 /** Hook to manage form tabs and sub-tabs. */
-function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
-  const isMobileDrawer = useIsMobileFormDrawer()
-  const { tab, tabs, subTabs, subTab, content, onChange } = useTabs({ menu, params })
-  return { tab, tabs, subTabs, subTab, content, onChange, isMobileDrawer }
-}
+const useFormTabs = <T extends object>(options: UseFormTabOptions<T>) => ({
+  ...useTabs(options),
+  isMobileDrawer: useIsMobileFormDrawer(),
+})
 
 const marginInline = { tablet: 'auto', desktop: 0 } as const
 

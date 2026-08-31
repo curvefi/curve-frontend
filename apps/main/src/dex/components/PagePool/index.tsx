@@ -28,6 +28,7 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import { getBlockchainId } from '@curvefi/prices-api'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
+import { useLocation } from '@evm-ui/hooks/router'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
@@ -156,6 +157,11 @@ const menu = [
   },
 ] satisfies FormTab<TransferTabsParams>[]
 
+/** Replaces old form-specific pool URLs for expanded-row links that should open a specific form tab. */
+type PoolRouteState = {
+  defaultTab?: (typeof menu)[number]['value']
+}
+
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rPoolIdOrAddress } = routerParams
@@ -181,6 +187,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   })
 
   const [seed, setSeed] = useState(DEFAULT_SEED)
+  const { state } = useLocation()
+  const defaultTab = (state as PoolRouteState).defaultTab
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
@@ -260,7 +268,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
         }
         formTabs={{
-          content: tabParams && <FormTabs menu={menu} params={tabParams} shouldWrap />,
+          content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} shouldWrap />,
         }}
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
