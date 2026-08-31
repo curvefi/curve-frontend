@@ -36,7 +36,7 @@ export const VoteDialog = ({
 }: Props) => {
   const { data: proposalsMapper } = useProposalsMapperQuery({})
   const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId, proposalType })
-  const { data: userProposalVotes, isSuccess: userProposalVotesSuccess } = useUserProposalVotesQuery({
+  const { data: userProposalVotes, isLoading: isLoadingUserProposalVotes } = useUserProposalVotesQuery({
     userAddress: userAddress ?? '',
   })
   const proposalKey = createProposalKey(proposalId, proposalType)
@@ -149,7 +149,7 @@ export const VoteDialog = ({
     return <PendingTx pendingMessage={t`Casting vote...`} />
   }
 
-  if (userProposalVotesSuccess) {
+  if (!voted && !isLoadingUserProposalVotes) {
     return (
       <Wrapper className={className}>
         {/* Vote */}
