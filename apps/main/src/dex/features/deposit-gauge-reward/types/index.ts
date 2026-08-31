@@ -8,9 +8,9 @@ export enum DepositRewardStep {
 }
 
 export type DepositRewardFormValues = {
-  rewardTokenId?: Address
-  amount?: string
-  userBalance?: Decimal
-  epoch?: number
+  rewardTokenId: Address | undefined
+  amount: Decimal | undefined
+  userBalance: Decimal | undefined
+  epoch: number | undefined
   step: DepositRewardStep
 }

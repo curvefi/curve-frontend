@@ -10,7 +10,8 @@ export const queryGaugeManager = async ({ poolId }: GaugeQuery): Promise<Address
 
 export const getGauge = (poolId: string) => requireLib('curveApi').getPool(poolId).gauge
 
-export const queryGaugeDistributors = async ({ poolId }: GaugeDistributorsQuery) => getGauge(poolId).gaugeDistributors()
+export const queryGaugeDistributors = async ({ poolId }: GaugeDistributorsQuery) =>
+  (await getGauge(poolId).gaugeDistributors()) as Record<Address, Address>
 
 export const queryIsDepositRewardAvailable = async ({ poolId }: GaugeQuery) =>
   getGauge(poolId).isDepositRewardAvailable()

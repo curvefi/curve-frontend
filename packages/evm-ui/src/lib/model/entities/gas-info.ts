@@ -1,16 +1,17 @@
-import { useMemo } from 'react'
+import { useCallback } from 'react'
 import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { AnyCurveApi } from '@evm-ui/features/connect-wallet/lib/types'
+import { combineQueries, useCombinedQueries } from '@evm-ui/lib'
 import type { Provider } from '@evm-ui/lib/ethers'
 import { type ChainQuery, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib/validation'
-import type { Query as QueryResult } from '@evm-ui/types/util'
+import { type Query as QueryResult } from '@evm-ui/types/util'
 import { Chain, gweiToEther, gweiToWai, weiToGwei, formatNumber, formatToken } from '@evm-ui/utils'
 import { type BaseConfig } from '@legacy-ui/utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
+import { assert, maybe } from '@primitives/objects.utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { useTokenUsdRate } from './token-usd-rate'
 
@@ -391,33 +392,22 @@ export function calculateGas(
   return { estGasCost, tooltip, ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }) }
 }
 
-type GasEstimateConversionResult = ReturnType<typeof calculateGas>
-
 export const useEstimateGas = (
   networks: Record<number, BaseConfig>,
   chainId: number | null | undefined,
   estimate: Amount | [Decimal, Decimal] | number[] | null | undefined,
   enabled?: boolean,
 ) => {
-  const network = chainId && networks[chainId]
-  const {
-    data: ethRate,
-    isLoading: ethRateLoading,
-    error: ethRateError,
-  } = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
-  const {
-    data: gasInfo,
-    isLoading: gasInfoLoading,
-    error: gasInfoError,
-  } = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
-
-  const data = useMemo(
-    (): GasEstimateConversionResult | undefined =>
-      network && estimate != null ? calculateGas(estimate, gasInfo, ethRate, network) : undefined,
-    [estimate, network, gasInfo, ethRate],
+  const network = maybe(chainId, chainId => networks[chainId])
+  const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
+  const gasInfo = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
+  return useCombinedQueries(
+    [ethRate, gasInfo],
+    useCallback(
+      (ethRate, gasInfo) => maybe(network, network => calculateGas(estimate, gasInfo, ethRate, network)),
+      [estimate, network],
+    ),
   )
-
-  return { data, isLoading: ethRateLoading || gasInfoLoading, error: ethRateError ?? gasInfoError }
 }
 
 type NetworkDict = Record<number, BaseConfig>
@@ -427,6 +417,17 @@ type EstimateValue = number | number[] | null | undefined
 type WithOptionalChainId = {
   chainId?: number | null | undefined
 }
+
+export const createEstimateGasHook =
+  <Query extends WithOptionalChainId, Estimate extends EstimateValue>(
+    useEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
+  ) =>
+  (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled = true) => {
+    const estimate = useEstimate(query, enabled)
+    const { data: gas } = estimate
+    const converted = useEstimateGas(networks, query.chainId, gas, enabled && gas != null)
+    return combineQueries([converted, estimate], data => data) // todo: useEstimateGas should receive the query
+  }
 
 type ApprovedEstimateGasHookConfig<Query, Estimate extends EstimateValue> = {
   useIsApproved: (query: Query, enabled?: boolean) => QueryResult<boolean>
