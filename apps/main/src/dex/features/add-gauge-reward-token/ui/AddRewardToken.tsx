@@ -45,7 +45,7 @@ export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   } = useAddRewardToken({
     chainId,
     poolId,
-    onReset: () => form.reset({ rewardTokenId: undefined, distributorId: userAddress }),
+    onReset: () => form.reset({ rewardTokenId: undefined }), // keep distributor in case of adding multiple rewards
   })
 
   const isLoading = isSubmitting || isLoadingDistributors || isLoadingRewards || isPendingAddRewardToken
