@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import { useCalculateVeCrv } from '@/dao/components/PageVeCrv/queries/calculate-vecrv.query'
-import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
-import { CurveApi } from '@/dao/types/dao.types'
+import { useConnection } from 'wagmi'
+import { calculateVeCrv } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
+import { useLockerLockedAmountAndUnlockTime, useLockerVeCrv } from '@/dao/entities/locker-vecrv-info'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { t } from '@evm-ui/lib/i18n'
@@ -26,45 +26,50 @@ const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: strin
 ]
 
 export const FieldDatePicker = ({
-  curve,
+  chainId,
   currUnlockUtcTime,
   dateLabel,
+  id,
   disabled,
-  formType,
   isMax,
+  noCurrentLock,
   utcDate,
   utcDateError,
   minUtcDate,
   maxUtcDate,
   lockedAmount,
-  vecrvInfo,
   handleInpEstUnlockedDays,
   handleBtnClickQuickAction,
   ...rest
 }: {
-  curve: CurveApi | null
-  currUnlockUtcTime: dayjs.Dayjs
+  chainId: number
+  currUnlockUtcTime: dayjs.Dayjs | null
+  id: string
   disabled?: boolean
-  formType: FormType | ''
   isDisabled?: boolean
   isMax?: boolean
+  /** Set for create-lock flows, where there is no existing lock to compare against. */
+  noCurrentLock?: boolean
   dateLabel: string | undefined
   utcDate: DateValue | null
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   utcDateError: 'invalid-date' | string
-  minUtcDate: dayjs.Dayjs
+  minUtcDate: dayjs.Dayjs | null
   maxUtcDate: dayjs.Dayjs | null
   lockedAmount?: Decimal
-  vecrvInfo: VecrvInfo
-  handleInpEstUnlockedDays: (curve: CurveApi, updatedLockedDays: DateValue) => void
-  handleBtnClickQuickAction: (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => dayjs.Dayjs
+  handleInpEstUnlockedDays: (updatedLockedDays: DateValue) => void
+  handleBtnClickQuickAction: (value?: number, unit?: dayjs.ManipulateType) => dayjs.Dayjs
 }) => {
   const [quickActionValue, setQuickActionValue] = useState<dayjs.Dayjs | null>(null)
+  const { address: userAddress } = useConnection()
+  const currentLock = useLockerLockedAmountAndUnlockTime({ chainId, userAddress }, !noCurrentLock)
+  const currentVeCrv = useLockerVeCrv({ chainId, userAddress }, !noCurrentLock)
 
   // Only add durations that fit the maximum veCRV lock window.
   const quickActions = useMemo(
     () =>
       QUICK_ACTIONS.filter(({ unit, value }) => {
+        if (!currUnlockUtcTime || !minUtcDate || !maxUtcDate) return false
         if (!value || !unit) return !isMax // max button, only show if not already at max
         const quickActionUtcDate = currUnlockUtcTime.add(value, unit)
         return (
@@ -75,11 +80,8 @@ export const FieldDatePicker = ({
     [currUnlockUtcTime, maxUtcDate, minUtcDate, isMax],
   )
 
-  const isCreateLock = formType === 'create'
-
-  const futureVeCrv = useCalculateVeCrv({
-    chainId: curve?.chainId,
-    lockedAmount: isCreateLock ? lockedAmount : vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
+  const futureVeCrv = calculateVeCrv({
+    lockedAmount: noCurrentLock ? lockedAmount : currentLock.data?.lockedAmount,
     unlockTime: maybe(utcDate, date => Math.floor(dayjs.utc(date.toString()).valueOf() / MILLISECONDS_PER_SECOND)),
   })
 
@@ -91,22 +93,22 @@ export const FieldDatePicker = ({
         inputProviderProps={{
           grid: true,
           gridRowGap: 1,
-          id: `${formType}-date-picker`,
+          id,
           hasError: !!utcDateError,
-          showError: !!curve?.signerAddress,
+          showError: !!userAddress,
         }}
-        isDisabled={!vecrvInfo || !curve || !!disabled || isMax}
+        isDisabled={[disabled, isMax, !minUtcDate, !maxUtcDate, !currentLock.data].some(Boolean)}
         isDateUnavailable={(date: DateValue) => {
           const todayUtcDate = dayjs.utc(date.toString()).day()
           const dayZeroUtcDate = dayjs.utc(new Date(0)).day()
           return todayUtcDate !== dayZeroUtcDate
         }}
         label={t`Select unlock date`}
-        minValue={toCalendarDate(minUtcDate)}
-        maxValue={maxUtcDate ? toCalendarDate(maxUtcDate) : null}
+        minValue={minUtcDate && toCalendarDate(minUtcDate)}
+        maxValue={maxUtcDate && toCalendarDate(maxUtcDate)}
         value={utcDate}
         onChange={(val: DateValue | null) => {
-          if (curve && val) handleInpEstUnlockedDays(curve, val)
+          if (val) handleInpEstUnlockedDays(val)
         }}
         quickActionValue={quickActionValue}
         quickActions={
@@ -130,9 +132,7 @@ export const FieldDatePicker = ({
                     variant="outlined"
                     fillWidth
                     itemsInRow={itemsInThisRow}
-                    onClick={() => {
-                      if (curve) setQuickActionValue(handleBtnClickQuickAction(curve, value, unit))
-                    }}
+                    onClick={() => setQuickActionValue(handleBtnClickQuickAction(value, unit))}
                   >
                     {label}
                   </QuickActionButton>
@@ -142,17 +142,17 @@ export const FieldDatePicker = ({
           </>
         }
       />
-      {curve && typeof futureVeCrv.data === 'number' && (
+      {maybe(futureVeCrv, futureVeCrv => (
         <>
           <Chip size="xs">
             {t`Future veCRV:`}{' '}
-            {!isCreateLock && `${formatNumber(amount(vecrvInfo.veCrv), { abbreviate: false, fallback: '-' })} → `}{' '}
-            {formatNumber(futureVeCrv.data, { abbreviate: false })}
+            {!noCurrentLock && `${formatNumber(amount(currentVeCrv.data), { abbreviate: false, fallback: '-' })} → `}{' '}
+            {formatNumber(futureVeCrv, { abbreviate: false })}
           </Chip>
           <br />
         </>
-      )}
-      {!!curve?.signerAddress && utcDateError ? (
+      ))}
+      {!!userAddress && utcDateError ? (
         <Chip size="xs" isError>
           {utcDateError === 'invalid-date' ? t`Invalid date` : utcDateError}
         </Chip>
@@ -160,16 +160,12 @@ export const FieldDatePicker = ({
         <Chip size="xs" isBold>
           Unlock date will be set to {dateLabel}
         </Chip>
-      ) : formType !== 'create' && currUnlockUtcTime ? (
-        <Chip size="xs">
-          {t`Current unlock date:`}{' '}
-          {vecrvInfo.lockedAmountAndUnlockTime.unlockTime
-            ? formatDate(vecrvInfo.lockedAmountAndUnlockTime.unlockTime)
-            : '-'}{' '}
-          UTC
-        </Chip>
       ) : (
-        ''
+        !noCurrentLock && (
+          <Chip size="xs">
+            {t`Current unlock date:`} {currentLock.data?.unlockTime ? formatDate(currentLock.data.unlockTime) : '-'} UTC
+          </Chip>
+        )
       )}
 
       {Array.isArray(quickActions) && quickActions.length > 0 && (
@@ -185,9 +181,7 @@ export const FieldDatePicker = ({
                 type="button"
                 variant="outlined"
                 itemsInRow={itemsInThisRow}
-                onClick={() => {
-                  if (curve) setQuickActionValue(handleBtnClickQuickAction(curve, value, unit))
-                }}
+                onClick={() => setQuickActionValue(handleBtnClickQuickAction(value, unit))}
               >
                 {label}
               </QuickActionButton>

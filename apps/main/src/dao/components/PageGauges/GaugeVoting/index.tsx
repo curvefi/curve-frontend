@@ -1,12 +1,13 @@
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
+import type { ChainId } from '@/dao/types/dao.types'
 import { ConnectWalletPrompt, useCurve } from '@evm-ui/features/connect-wallet'
 import { Chain } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import { CurrentVotes } from './CurrentVotes'
 
-export const GaugeVoting = () => {
-  const { provider, curveApi: { chainId } = {} } = useCurve()
-  if (chainId !== Chain.Ethereum) {
+export const GaugeVoting = ({ chainId }: { chainId: ChainId }) => {
+  const { provider, curveApi } = useCurve()
+  if (curveApi?.chainId !== chainId || chainId !== +Chain.Ethereum) {
     return <WrongNetwork />
   }
   if (!provider) {
@@ -14,7 +15,7 @@ export const GaugeVoting = () => {
   }
   return (
     <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-      <CurrentVotes />
+      <CurrentVotes chainId={chainId} />
     </Box>
   )
 }

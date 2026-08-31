@@ -1,25 +1,16 @@
 import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import { networks } from '@/dao/networks'
-import type { CurveApi } from '@/dao/types/dao.types'
 import { CurveComponentTestWrapper } from '@cy/support/helpers/CurveComponentTestWrapper'
 import { createCreateVeCrvLockScenario } from '@cy/support/helpers/dao/mocks/create-vecrv-lock.mocks'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
 import { setGasInfo } from '@cy/support/helpers/llamalend/test-context.helpers'
+import type { CurveApi } from '@evm-ui/features/connect-wallet'
 
 const CHAIN_ID = 1
 
-const CreateVeCrvLockForm = ({ curve, crv = '1000' }: { curve: CurveApi; crv?: string }) => (
+const CreateVeCrvLockForm = ({ curve }: { curve: CurveApi }) => (
   <CurveComponentTestWrapper curve={curve}>
-    <FormLockCreate
-      curve={curve}
-      rChainId={CHAIN_ID}
-      vecrvInfo={{
-        crv,
-        lockedAmountAndUnlockTime: { lockedAmount: '0', unlockTime: 0 },
-        veCrv: '0',
-        veCrvPct: '0',
-      }}
-    />
+    <FormLockCreate chainId={CHAIN_ID} />
   </CurveComponentTestWrapper>
 )
 

@@ -2,7 +2,7 @@ import { FieldDatePicker } from '@/dao/components/PageVeCrv/components/FieldDate
 import { FieldLockedAmount } from '@/dao/components/PageVeCrv/components/FieldLockedAmount'
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useCreateLockForm } from '@/dao/components/PageVeCrv/hooks/useCreateLockForm'
-import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
+import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
 import { q } from '@evm-ui/types/util'
@@ -10,7 +10,7 @@ import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { fromEntries } from '@primitives/objects.utils'
 
-export const FormLockCreate = ({ curve, vecrvInfo }: PageVecrv) => {
+export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
   const {
     form,
     values,
@@ -27,9 +27,8 @@ export const FormLockCreate = ({ curve, vecrvInfo }: PageVecrv) => {
     dateLabel,
     updateUnlockDate,
     selectQuickDate,
-  } = useCreateLockForm({ curve, vecrvInfo })
+  } = useCreateLockForm({ chainId })
 
-  const haveSigner = !!curve?.signerAddress
   const errors = fromEntries(form.formState.visibleErrors)
   const dateError = errors.utcDate ?? errors.days ?? ''
   const amountFieldError = errors.lockedAmount ?? errors.maxLockedAmount ?? ''
@@ -41,29 +40,27 @@ export const FormLockCreate = ({ curve, vecrvInfo }: PageVecrv) => {
       footer={<VeCrvActionInfo gas={q(gas)} isApproved={isApproved} isOpen={form.formState.isValid} />}
     >
       <FieldLockedAmount
-        curve={curve}
+        chainId={chainId}
         disabled={isPending}
-        haveSigner={haveSigner}
-        formType="create"
-        vecrvInfo={vecrvInfo}
+        noCurrentLock
         lockedAmount={values.lockedAmount}
         lockedAmountError={amountFieldError}
         handleInpLockedAmount={updateAmount}
       />
       <FieldDatePicker
-        curve={curve}
-        formType="create"
+        chainId={chainId}
+        id="create-date-picker"
+        noCurrentLock
         currUnlockUtcTime={currUtcDate}
         disabled={isPending}
         minUtcDate={minUtcDate}
         maxUtcDate={maxUtcDate}
-        vecrvInfo={vecrvInfo}
         utcDate={values.utcDate}
         utcDateError={dateError}
         dateLabel={dateLabel}
         lockedAmount={values.lockedAmount}
-        handleInpEstUnlockedDays={(_, date) => updateUnlockDate(date)}
-        handleBtnClickQuickAction={(_, value, unit) => selectQuickDate(value, unit)}
+        handleInpEstUnlockedDays={updateUnlockDate}
+        handleBtnClickQuickAction={selectQuickDate}
       />
       <FormAlerts
         error={error}

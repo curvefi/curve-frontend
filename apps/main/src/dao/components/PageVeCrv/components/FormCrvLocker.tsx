@@ -1,14 +1,19 @@
+import { useConnection } from 'wagmi'
 import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate'
 import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw'
-import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
+import { useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
+import type { ChainId } from '@/dao/types/dao.types'
 import { t } from '@evm-ui/lib/i18n'
-import { decimal, decimalGreaterThan, ZERO } from '@evm-ui/utils'
+import { decimalGreaterThan, ZERO } from '@evm-ui/utils'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import { maybe } from '@primitives/objects.utils'
 
-type LockerTabsParams = PageVecrv & {
+type LockerTabsParams = {
+  chainId: ChainId
+} & {
   canUnlock: boolean
   hasLockedCrv: boolean
 }
@@ -42,14 +47,23 @@ const menu = [
   },
 ] as const
 
-export const FormCrvLocker = (pageProps: PageVecrv) => {
-  const { vecrvInfo } = pageProps
-  const canUnlock = getIsLockExpired(
-    vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
-    vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
-  )
+export const FormCrvLocker = (pageProps: { chainId: ChainId }) => {
+  const { chainId } = pageProps
+  const { address: userAddress } = useConnection()
+  const lockedAmountAndUnlockTime = useLockerLockedAmountAndUnlockTime({
+    chainId,
+    userAddress,
+  })
 
-  const hasLockedCrv = decimalGreaterThan(decimal(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount) ?? ZERO, ZERO)
-
-  return <FormTabs menu={menu} params={{ ...pageProps, canUnlock, hasLockedCrv }} overflow="fullWidth" />
+  return maybe(lockedAmountAndUnlockTime.data, ({ lockedAmount, unlockTime }) => (
+    <FormTabs
+      menu={menu}
+      params={{
+        ...pageProps,
+        canUnlock: getIsLockExpired(lockedAmount, unlockTime),
+        hasLockedCrv: decimalGreaterThan(lockedAmount, ZERO),
+      }}
+      overflow="fullWidth"
+    />
+  ))
 }

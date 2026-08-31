@@ -3,31 +3,36 @@ import { styled } from 'styled-components'
 import { useConnection } from 'wagmi'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
-import { useStore } from '@/dao/store/useStore'
-import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { ChainId, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { t } from '@evm-ui/lib/i18n'
 import { formatNumber } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
 import { formatDate } from '@legacy-ui/utils'
+import { useGaugeVoteMutation } from '../gauge-vote.mutation'
 import { NumberField } from './NumberField'
 
 type VoteGaugeFieldProps = {
+  chainId: ChainId
   powerUsed: number
   userGaugeVoteData: UserGaugeVoteWeight
   userVeCrv: number
   newVote?: boolean
 }
 
-export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
+export const VoteGaugeField = ({
+  chainId,
+  powerUsed,
+  userGaugeVoteData,
+  userVeCrv,
+  newVote = false,
+}: VoteGaugeFieldProps) => {
   const { address: userAddress } = useConnection()
-  const castVote = useStore(state => state.gauges.castVote)
-  const txCastVoteState = useStore(state => state.gauges.txCastVoteState)
+  const vote = useGaugeVoteMutation({ chainId, userAddress })
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({
-    chainId: Chain.Ethereum,
+    chainId,
     gaugeAddress: userGaugeVoteData?.gaugeAddress,
     userAddress,
   })
@@ -39,7 +44,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
   const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100
   const availableVeCrv = userVeCrv * (availablePower / 100)
 
-  const loading = nextVoteTimeLoading || txCastVoteState?.state === 'LOADING' || txCastVoteState?.state === 'CONFIRMING'
+  const loading = nextVoteTimeLoading || vote.isPending
 
   const handleChangePower = (value: number) => {
     if (value > maxPower) {
@@ -51,7 +56,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
 
   const handleCastVote = () => {
     if (!userAddress) return
-    void castVote(userAddress, gaugeAddress, power)
+    vote.onSubmit({ gaugeAddress, voteWeight: power })
   }
 
   return (

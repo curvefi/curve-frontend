@@ -4,7 +4,7 @@ import { useConnection } from 'wagmi'
 import { DAO_COMPACT_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import { useGauges } from '@/dao/queries/gauges.query'
-import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { ChainId, GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { truncateToShortenedAddressLength } from '@/dao/utils'
 import { t } from '@evm-ui/lib/i18n'
 import {
@@ -14,7 +14,6 @@ import {
   EChartsBarChart,
   formatChartAxisNumber,
 } from '@evm-ui/shared/ui/Chart'
-import { Chain } from '@evm-ui/utils/network'
 import { Box } from '@legacy-ui/Box'
 import { useTheme } from '@mui/material/styles'
 import { sortBy, toArray } from '@primitives/array.utils'
@@ -26,10 +25,11 @@ import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarCha
 const getXAxisInterval = (length: number) => (length > 50 ? 1 : 0)
 
 type GaugeWeightDistributionProps = {
+  chainId: ChainId
   isUserVotes: boolean
 }
 
-export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistributionProps) => {
+export const GaugeWeightDistribution = ({ chainId, isUserVotes }: GaugeWeightDistributionProps) => {
   const theme = useTheme()
   const barColors = useMemo(() => createChartSeriesColorScale(theme), [theme])
   const getBarColor = useCallback((_: unknown, index: number) => barColors[index % barColors.length], [barColors])
@@ -39,10 +39,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
     isLoading: userGaugeWeightsLoading,
     error: userGaugeWeightsError,
     refetch: refetchUserGaugeWeights,
-  } = useUserGaugeWeightVotesQuery({
-    chainId: Chain.Ethereum, // DAO is only used on mainnet
-    userAddress: userAddress ?? '',
-  })
+  } = useUserGaugeWeightVotesQuery({ chainId, userAddress })
   const {
     data: gaugeMapper,
     isLoading: gaugesIsLoading,

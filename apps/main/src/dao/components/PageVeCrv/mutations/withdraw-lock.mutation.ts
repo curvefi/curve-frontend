@@ -18,8 +18,8 @@ export const useWithdrawLockMutation = ({
 }: {
   chainId: number
   userAddress: Address | undefined
-  lockedAmount: Decimal
-  unlockTime: number
+  lockedAmount: Decimal | undefined
+  unlockTime: number | undefined
   onReset: () => void
   onWithdrawn: OnTransactionSuccess<WithdrawLockMutation>
 }) => {
@@ -33,6 +33,5 @@ export const useWithdrawLockMutation = ({
     onSuccess: onWithdrawn,
     onReset,
   })
-
   return { onSubmit: useCallback(() => mutate({}), [mutate]), error, isPending }
 }

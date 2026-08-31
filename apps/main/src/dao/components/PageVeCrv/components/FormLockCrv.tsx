@@ -1,7 +1,7 @@
 import { FieldLockedAmount } from '@/dao/components/PageVeCrv/components/FieldLockedAmount'
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useIncreaseLockForm } from '@/dao/components/PageVeCrv/hooks/useIncreaseLockForm'
-import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
+import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
 import { q } from '@evm-ui/types/util'
@@ -9,10 +9,9 @@ import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { fromEntries } from '@primitives/objects.utils'
 
-export const FormLockCrv = ({ curve, vecrvInfo }: PageVecrv) => {
+export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
   const { form, values, gas, isApproved, isPending, isDisabled, error, onSubmit, updateAmount } = useIncreaseLockForm({
-    curve,
-    vecrvInfo,
+    chainId,
   })
   const errors = fromEntries(form.formState.visibleErrors)
   const amountFieldError = errors.lockedAmount ?? errors.maxLockedAmount ?? ''
@@ -24,11 +23,8 @@ export const FormLockCrv = ({ curve, vecrvInfo }: PageVecrv) => {
       footer={<VeCrvActionInfo gas={q(gas)} isApproved={isApproved} isOpen={form.formState.isValid} />}
     >
       <FieldLockedAmount
-        curve={curve}
+        chainId={chainId}
         disabled={isPending}
-        haveSigner={!!curve?.signerAddress}
-        formType="adjust_crv"
-        vecrvInfo={vecrvInfo}
         lockedAmount={values.lockedAmount}
         lockedAmountError={amountFieldError}
         handleInpLockedAmount={updateAmount}

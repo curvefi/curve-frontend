@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import type { CurveApi } from '@/dao/types/dao.types'
 import { oneDecimal } from '@cy/support/generators'
 import { TEST_ADDRESS, TEST_TX_HASH } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import {
@@ -8,6 +7,7 @@ import {
   createSyncStub,
   createTransactionStub,
 } from '@cy/support/helpers/llamalend/test-stub.utils'
+import type { CurveApi } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/lib/dayjs'
 
 const CHAIN_ID = 1
@@ -38,6 +38,7 @@ export const createCreateVeCrvLockScenario = ({
     chainId: CHAIN_ID,
     signerAddress: TEST_ADDRESS,
     boosting: {
+      getCrv: createStub('1000'),
       isApproved,
       approve,
       createLock,

@@ -7,7 +7,7 @@ import { withdrawLockValidationSuite } from './withdraw-lock.validation'
 
 const { useQuery: useWithdrawLockEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, userAddress }: WithdrawLockParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.withdraw.estimateGas'] as const,
+    [...rootKeys.userChain({ chainId, userAddress }), 'boosting.estimateGas.withdrawLockedCrv'] as const,
   queryFn: async (_query: WithdrawLockQuery) => await requireLib('curveApi').boosting.estimateGas.withdrawLockedCrv(),
   category: 'dao.user',
   validationSuite: withdrawLockValidationSuite,

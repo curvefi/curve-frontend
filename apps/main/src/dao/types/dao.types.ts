@@ -1,4 +1,3 @@
-import { curvejsApi } from '@/dao/lib/curvejs'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { BaseConfig } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
@@ -10,7 +9,6 @@ export type { Provider } from '@evm-ui/lib/ethers'
 export type ChainId = number
 export type NetworkEnum = INetworkName
 
-export type FormType = 'create' | 'adjust_crv' | 'adjust_date' | 'withdraw'
 export type NetworkUrlParams = { network: INetworkName }
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
@@ -18,7 +16,6 @@ export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
 export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams>
 
 export type NetworkConfig = {
-  api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
 } & BaseConfig<NetworkEnum, ChainId>

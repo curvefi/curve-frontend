@@ -13,6 +13,7 @@ import {
 import { useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
 import {
+  ChainId,
   GaugeFormattedData,
   UserGaugeVoteWeight,
   UserGaugeVoteWeightSortBy,
@@ -20,14 +21,13 @@ import {
 } from '@/dao/types/dao.types'
 import { findRootGauge } from '@/dao/utils'
 import { t } from '@evm-ui/lib/i18n'
-import { Chain } from '@evm-ui/utils/network'
 import { Box } from '@legacy-ui/Box'
 import { USER_VOTES_TABLE_LABELS } from './constants'
 
 const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy: UserGaugeVoteWeightSortBy) =>
   gauges.toSorted((a, b) => (order === 'asc' ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]))
 
-export const CurrentVotes = () => {
+export const CurrentVotes = ({ chainId }: { chainId: ChainId }) => {
   const { address: userAddress } = useConnection()
   const setUserGaugeVoteWeightsSortBy = useStore(state => state.user.setUserGaugeVoteWeightsSortBy)
   const userGaugeVoteWeightsSortBy = useStore(state => state.user.userGaugeVoteWeightsSortBy)
@@ -40,7 +40,7 @@ export const CurrentVotes = () => {
     isLoading: userGaugeWeightsLoading,
     isError: userGaugeWeightsError,
   } = useUserGaugeWeightVotesQuery({
-    chainId: Chain.Ethereum, // DAO is only used on mainnet
+    chainId,
     userAddress: userAddress ?? '',
   })
 
@@ -81,10 +81,11 @@ export const CurrentVotes = () => {
     <Wrapper>
       <VoteStats selectedGauge={selectedGauge}>
         <h3>{t`USER GAUGE VOTES`}</h3>
-        {<GaugeVotingStats />}
+        {<GaugeVotingStats chainId={chainId} />}
       </VoteStats>
       {selectedGauge && gaugeMapper && (
         <VoteGauge
+          chainId={chainId}
           gaugeData={gaugeMapper[formattedSelectedGauge.gaugeAddress]}
           userGaugeVoteData={formattedSelectedGauge}
           powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}
@@ -102,11 +103,12 @@ export const CurrentVotes = () => {
           errorMessage={t`An error occurred while fetching user gauge weight votes.`}
           noDataMessage={t`No gauge votes found`}
           setSortBy={key => setUserGaugeVoteWeightsSortBy(key as UserGaugeVoteWeightSortBy)}
-          getData={() => void invalidateUserGaugeWeightVotesQuery({ chainId: Chain.Ethereum, userAddress })}
+          getData={() => void invalidateUserGaugeWeightVotesQuery({ chainId, userAddress })}
           renderRow={(gauge, index) => (
             <Fragment key={index}>
               <GaugeListItemWrapper>
                 <GaugeListItem
+                  chainId={chainId}
                   gaugeData={gaugeMapper[gauge.gaugeAddress.toLowerCase()]}
                   userGaugeWeightVoteData={gauge}
                   gridTemplateColumns={gridTemplateColumns}
@@ -116,6 +118,7 @@ export const CurrentVotes = () => {
               </GaugeListItemWrapper>
               <SmallScreenCardWrapper>
                 <SmallScreenCard
+                  chainId={chainId}
                   gaugeData={gaugeMapper[gauge.gaugeAddress.toLowerCase()]}
                   userGaugeWeightVoteData={gauge}
                   powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}

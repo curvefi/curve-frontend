@@ -1,54 +1,49 @@
 import { useCallback, useMemo } from 'react'
+import { useConnection } from 'wagmi'
 import { useIncreaseLockMutation } from '@/dao/components/PageVeCrv/mutations/increase-lock.mutation'
 import { useIncreaseLockIsApproved } from '@/dao/components/PageVeCrv/queries/increase-lock-approved.query'
 import { useIncreaseLockGasEstimate } from '@/dao/components/PageVeCrv/queries/increase-lock-estimate-gas.query'
 import type { IncreaseLockFormValues } from '@/dao/components/PageVeCrv/queries/increase-lock.types'
 import { increaseLockFormValidationSuite } from '@/dao/components/PageVeCrv/queries/increase-lock.validation'
-import type { VecrvInfo } from '@/dao/components/PageVeCrv/types'
-import { invalidateLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
-import { invalidateLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
+import { invalidateVeCrvQueries, useLockerCrv } from '@/dao/entities/locker-vecrv-info'
 import { networks } from '@/dao/networks'
-import type { CurveApi } from '@/dao/types/dao.types'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
-import { decimal } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
 const defaultValues: IncreaseLockFormValues = { lockedAmount: undefined, maxLockedAmount: undefined }
 const userDefaultValues = { lockedAmount: undefined }
 
-export const useIncreaseLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null; vecrvInfo: VecrvInfo }) => {
+export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
   const form = useForm<IncreaseLockFormValues>({ defaultValues, validation: increaseLockFormValidationSuite })
   const { update } = form
   const values = form.watchValues()
+  const { address: userAddress } = useConnection()
+  const crv = useLockerCrv({ chainId, userAddress })
 
-  useFormSync(form, { maxLockedAmount: decimal(vecrvInfo.crv) })
+  useFormSync(form, { maxLockedAmount: crv.data })
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
-      () => ({ chainId: curve?.chainId, userAddress: curve?.signerAddress, lockedAmount: values.lockedAmount }),
-      [curve?.chainId, curve?.signerAddress, values.lockedAmount],
+      () => ({ chainId, userAddress, lockedAmount: values.lockedAmount }),
+      [chainId, userAddress, values.lockedAmount],
     ),
     userDefaultValues,
   )
   const isApproved = useIncreaseLockIsApproved(params)
   const gas = useIncreaseLockGasEstimate(networks, params)
 
-  const invalidate = useCallback(async (currentCurve: CurveApi) => {
-    await Promise.all([
-      invalidateLockerVecrvInfo({ chainId: currentCurve.chainId, userAddress: currentCurve.signerAddress }),
-      invalidateLockerVecrvUser({ chainId: currentCurve.chainId, userAddress: currentCurve.signerAddress }),
-    ])
-  }, [])
-
   const {
     onSubmit: onSubmitIncrease,
     error: increaseError,
     isPending: isIncreasing,
   } = useIncreaseLockMutation({
-    chainId: curve?.chainId ?? 0,
-    userAddress: curve?.signerAddress,
+    chainId,
+    userAddress,
     onReset: () => form.reset(defaultValues),
-    onIncreased: async () => curve && invalidate(curve),
+    onIncreased: useCallback(
+      async () => await invalidateVeCrvQueries({ chainId, userAddress }),
+      [chainId, userAddress],
+    ),
   })
 
   const error = increaseError ?? isApproved.error ?? gas.error

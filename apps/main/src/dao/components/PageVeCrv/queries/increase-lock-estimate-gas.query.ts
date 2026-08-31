@@ -7,11 +7,7 @@ import { increaseLockQueryValidationSuite } from './increase-lock.validation'
 
 export const { useQuery: useIncreaseLockApproveEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) =>
-    [
-      ...rootKeys.userChain({ chainId, userAddress }),
-      'lockCrv.increase.estimateGas.approve',
-      { lockedAmount },
-    ] as const,
+    [...rootKeys.userChain({ chainId, userAddress }), 'boosting.estimateGas.approve', { lockedAmount }] as const,
   queryFn: async ({ lockedAmount }: IncreaseLockQuery) =>
     await requireLib('curveApi').boosting.estimateGas.approve(lockedAmount),
   category: 'dao.user',
@@ -20,7 +16,7 @@ export const { useQuery: useIncreaseLockApproveEstimateGas } = queryFactory({
 
 export const { useQuery: useIncreaseLockEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.increase.estimateGas.action', { lockedAmount }] as const,
+    [...rootKeys.userChain({ chainId, userAddress }), 'boosting.estimateGas.increaseAmount', { lockedAmount }] as const,
   queryFn: async ({ lockedAmount }: IncreaseLockQuery) =>
     await requireLib('curveApi').boosting.estimateGas.increaseAmount(lockedAmount),
   category: 'dao.user',

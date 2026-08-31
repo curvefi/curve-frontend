@@ -1,31 +1,31 @@
+import { useCallback } from 'react'
+import { useConnection } from 'wagmi'
 import { useWithdrawLockMutation } from '@/dao/components/PageVeCrv/mutations/withdraw-lock.mutation'
 import { useWithdrawLockGasEstimate } from '@/dao/components/PageVeCrv/queries/withdraw-lock-estimate-gas.query'
 import type { WithdrawLockFormValues, WithdrawLockParams } from '@/dao/components/PageVeCrv/queries/withdraw-lock.types'
-import type { VecrvInfo } from '@/dao/components/PageVeCrv/types'
-import { invalidateLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
-import { invalidateLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
+import { invalidateVeCrvQueries, useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
 import { networks } from '@/dao/networks'
-import type { CurveApi } from '@/dao/types/dao.types'
 import { useForm } from '@evm-ui/features/forms'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 
 const defaultValues: WithdrawLockFormValues = {}
 
-export const useWithdrawLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null; vecrvInfo: VecrvInfo }) => {
+export const useWithdrawLockForm = ({ chainId }: { chainId: number }) => {
   const form = useForm<WithdrawLockFormValues>({ defaultValues })
+  const { address: userAddress } = useConnection()
+  const lockedAmountAndUnlockTime = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })
+  const lock = lockedAmountAndUnlockTime.data
 
-  const canUnlock = getIsLockExpired(
-    vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
-    vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
-  )
-  const params: WithdrawLockParams = curve?.signerAddress
-    ? {
-        chainId: curve.chainId,
-        userAddress: curve.signerAddress,
-        lockedAmount: vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
-        unlockTime: vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
-      }
-    : {}
+  const canUnlock = lock ? getIsLockExpired(lock.lockedAmount, lock.unlockTime) : false
+  const params: WithdrawLockParams =
+    userAddress && lock
+      ? {
+          chainId,
+          userAddress,
+          lockedAmount: lock.lockedAmount,
+          unlockTime: lock.unlockTime,
+        }
+      : {}
   const gas = useWithdrawLockGasEstimate(networks, params)
 
   const {
@@ -33,23 +33,18 @@ export const useWithdrawLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
     error,
     isPending,
   } = useWithdrawLockMutation({
-    chainId: curve?.chainId ?? 0,
-    userAddress: curve?.signerAddress,
-    lockedAmount: vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
-    unlockTime: vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
+    chainId,
+    userAddress,
+    lockedAmount: lock?.lockedAmount,
+    unlockTime: lock?.unlockTime,
     onReset: () => form.reset(defaultValues),
-    onWithdrawn: async () => {
-      if (!curve) return
-      await Promise.all([
-        invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress }),
-        invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress }),
-      ])
-    },
+    onWithdrawn: useCallback(() => invalidateVeCrvQueries({ chainId, userAddress }), [chainId, userAddress]),
   })
 
   return {
     form,
     canUnlock,
+    lockedAmountAndUnlockTime,
     gas,
     isPending,
     isDisabled: !canUnlock || isPending,

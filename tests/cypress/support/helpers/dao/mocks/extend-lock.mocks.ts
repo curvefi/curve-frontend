@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import type { CurveApi } from '@/dao/types/dao.types'
 import { TEST_ADDRESS, TEST_TX_HASH } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { createSyncStub, createTransactionStub } from '@cy/support/helpers/llamalend/test-stub.utils'
+import type { CurveApi } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/lib/dayjs'
 
 const CHAIN_ID = 1
@@ -23,6 +23,8 @@ export const createExtendLockScenario = (): {
     chainId: CHAIN_ID,
     signerAddress: TEST_ADDRESS,
     boosting: {
+      getLockedAmountAndUnlockTime: createSyncStub({ lockedAmount: '100', unlockTime }),
+      getVeCrv: createSyncStub('100'),
       calcUnlockTime: cy
         .stub()
         .callsFake((days: number, currentUnlockTime: number) =>

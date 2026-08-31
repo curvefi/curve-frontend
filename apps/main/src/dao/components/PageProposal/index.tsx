@@ -7,6 +7,7 @@ import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { CONTRACT_VECRV } from '@/dao/constants'
 import { invalidateProposalPricesApi, useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
+import { networksIdMapper } from '@/dao/networks'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
@@ -32,7 +33,8 @@ import { ProposalInformation } from './ProposalInformation'
 import { Voters } from './Voters'
 
 export const Proposal = () => {
-  const { proposalId: rProposalId } = useParams<ProposalUrlParams>()
+  const { network, proposalId: rProposalId } = useParams<ProposalUrlParams>()
+  const chainId = networksIdMapper[network]
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const proposalType = voteType.toLowerCase() as ProposalType
   const { address: userAddress } = useConnection()
@@ -68,7 +70,7 @@ export const Proposal = () => {
   const block = proposal?.block ?? pricesProposal?.block
   const enabled = !!userAddress && block != null
   const { data: votingPower, isLoading: snapshotVeCrvLoading } = useReadContract({
-    chainId: Chain.Ethereum,
+    chainId,
     abi: ABI_VECRV,
     address: CONTRACT_VECRV,
     functionName: 'balanceOfAt',
@@ -151,6 +153,7 @@ export const Proposal = () => {
             <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
               {proposal && snapshotVeCrv != null && !snapshotVeCrvLoading && (
                 <VoteDialog
+                  chainId={chainId}
                   userAddress={userAddress}
                   snapshotVotingPower
                   activeProposal={activeProposal}
@@ -176,6 +179,7 @@ export const Proposal = () => {
             >
               {proposal && snapshotVeCrv != null && !snapshotVeCrvLoading && (
                 <VoteDialog
+                  chainId={chainId}
                   userAddress={userAddress}
                   snapshotVotingPower
                   activeProposal={activeProposal}

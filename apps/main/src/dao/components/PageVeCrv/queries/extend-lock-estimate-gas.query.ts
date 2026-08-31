@@ -7,7 +7,7 @@ import { extendLockQueryValidationSuite } from './extend-lock.validation'
 
 const { useQuery: useExtendLockGasEstimateQuery } = queryFactory({
   queryKey: ({ chainId, userAddress, days }: ExtendLockParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.extend.estimateGas', { days }] as const,
+    [...rootKeys.userChain({ chainId, userAddress }), 'boosting.estimateGas.increaseUnlockTime', { days }] as const,
   queryFn: async ({ days }: ExtendLockQuery) =>
     await requireLib('curveApi').boosting.estimateGas.increaseUnlockTime(days),
   category: 'dao.user',

@@ -12,11 +12,10 @@ import { VoteGaugeField } from '@/dao/components/PageGauges/GaugeVoting/VoteGaug
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
-import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { ChainId, GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { Chain } from '@evm-ui/utils/network'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
@@ -24,6 +23,7 @@ import { IconButton } from '@legacy-ui/IconButton'
 import type { Address } from '@primitives/address.utils'
 
 type Props = {
+  chainId: ChainId
   gaugeData: GaugeFormattedData
   gridTemplateColumns: string
   userGaugeWeightVoteData?: UserGaugeVoteWeight
@@ -33,6 +33,7 @@ type Props = {
 }
 
 export const GaugeListItem = ({
+  chainId,
   gaugeData,
   gridTemplateColumns,
   userGaugeWeightVoteData,
@@ -42,7 +43,7 @@ export const GaugeListItem = ({
 }: Props) => {
   const { address: userAddress } = useConnection()
   const { data: userGaugeVoteNextTime } = useUserGaugeVoteNextTimeQuery({
-    chainId: Chain.Ethereum,
+    chainId,
     gaugeAddress: userGaugeWeightVoteData?.gaugeAddress,
     userAddress,
   })
@@ -51,7 +52,7 @@ export const GaugeListItem = ({
   const gaugeCurveApiData =
     gaugesLegacy?.[gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()]
 
-  const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
+  const { data: userVeCrv } = useLockerVecrvUser({ chainId, userAddress })
   const [open, setOpen] = useState(false)
   const currentDate = useCurrentDate()
   const canVote = !userGaugeVoteNextTime || currentDate.getTime() > userGaugeVoteNextTime
@@ -86,6 +87,7 @@ export const GaugeListItem = ({
             {userGaugeVote && powerUsed && userGaugeWeightVoteData && (
               <VoteGaugeFieldWrapper>
                 <VoteGaugeField
+                  chainId={chainId}
                   powerUsed={powerUsed}
                   userVeCrv={+(userVeCrv?.veCrv ?? 0)}
                   userGaugeVoteData={userGaugeWeightVoteData}

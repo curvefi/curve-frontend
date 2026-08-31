@@ -1,10 +1,10 @@
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import type { ChainParams, ChainQuery } from '@evm-ui/lib/model/query'
+import type { UserChainParams, UserChainQuery } from '@evm-ui/lib/model/query'
 import { queryFactory } from '@evm-ui/lib/model/query'
 import { curveApiValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
 
-const _fetchUserGaugeWeightVotes = async ({ userAddress }: ChainQuery<ChainId> & { userAddress: string }) => {
+const _fetchUserGaugeWeightVotes = async ({ userAddress }: UserChainQuery<ChainId>) => {
   const curve = requireLib('curveApi')
   const { gauges, powerUsed, veCrvUsed } = await curve.dao.userGaugeVotes(userAddress)
   return {
@@ -30,7 +30,7 @@ const _fetchUserGaugeWeightVotes = async ({ userAddress }: ChainQuery<ChainId> &
 
 export const { useQuery: useUserGaugeWeightVotesQuery, invalidate: invalidateUserGaugeWeightVotesQuery } = queryFactory(
   {
-    queryKey: (params: ChainParams<ChainId> & { userAddress: string }) =>
+    queryKey: (params: UserChainParams<ChainId>) =>
       ['user-gauge-weight-votes', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
     queryFn: _fetchUserGaugeWeightVotes,
     category: 'dao.user',

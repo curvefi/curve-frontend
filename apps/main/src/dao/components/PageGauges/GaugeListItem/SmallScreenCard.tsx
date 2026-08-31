@@ -5,10 +5,10 @@ import { GaugeWeightHistoryChart } from '@/dao/components/Charts/GaugeWeightHist
 import { InternalLinkButton } from '@/dao/components/InternalLinkButton'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useStore } from '@/dao/store/useStore'
-import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { ChainId, GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { Chain, formatNumber } from '@evm-ui/utils'
+import { formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -18,6 +18,7 @@ import { GaugeDetailsSm } from './GaugeDetailsSm'
 import { TitleComp } from './TitleComp'
 
 type Props = {
+  chainId: ChainId
   gaugeData: GaugeFormattedData
   userGaugeWeightVoteData?: UserGaugeVoteWeight
   powerUsed?: number
@@ -26,6 +27,7 @@ type Props = {
 }
 
 export const SmallScreenCard = ({
+  chainId,
   gaugeData,
   userGaugeWeightVoteData,
   powerUsed,
@@ -34,7 +36,7 @@ export const SmallScreenCard = ({
 }: Props) => {
   const { address: userAddress } = useConnection()
   const gaugeListSortBy = useStore(state => state.gauges.gaugeListSortBy)
-  const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
+  const { data: userVeCrv } = useLockerVecrvUser({ chainId, userAddress })
   const [open, setOpen] = useState(false)
 
   const getGaugeListSortingData = (key: string) => {
@@ -91,6 +93,7 @@ export const SmallScreenCard = ({
             {userGaugeVote && powerUsed && userGaugeWeightVoteData && (
               <VoteGaugeFieldWrapper>
                 <VoteGaugeField
+                  chainId={chainId}
                   powerUsed={powerUsed}
                   userVeCrv={+(userVeCrv?.veCrv ?? 0)}
                   userGaugeVoteData={userGaugeWeightVoteData}

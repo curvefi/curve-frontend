@@ -1,4 +1,3 @@
-import type { CurveApi } from '@/dao/types/dao.types'
 import { oneDecimal } from '@cy/support/generators'
 import { TEST_ADDRESS, TEST_TX_HASH } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import {
@@ -7,6 +6,7 @@ import {
   createSyncStub,
   createTransactionStub,
 } from '@cy/support/helpers/llamalend/test-stub.utils'
+import type { CurveApi } from '@evm-ui/features/connect-wallet'
 
 const CHAIN_ID = 1
 
@@ -30,6 +30,9 @@ export const createLockMoreScenario = ({
     chainId: CHAIN_ID,
     signerAddress: TEST_ADDRESS,
     boosting: {
+      getCrv: createStub('1000'),
+      getLockedAmountAndUnlockTime: createStub({ lockedAmount: '100', unlockTime: 2_000_000_000 }),
+      getVeCrv: createStub('100'),
       isApproved,
       approve,
       increaseAmount,

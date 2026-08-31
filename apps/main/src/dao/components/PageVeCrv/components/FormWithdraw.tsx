@@ -2,21 +2,22 @@ import { styled } from 'styled-components'
 import { Countdown } from '@/dao/components/Countdown'
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useWithdrawLockForm } from '@/dao/components/PageVeCrv/hooks/useWithdrawLockForm'
-import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
+import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
 import { q } from '@evm-ui/types/util'
-import { MILLISECONDS_PER_SECOND, amount, formatNumber } from '@evm-ui/utils'
+import { amount, formatNumber, MILLISECONDS_PER_SECOND } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 
-export const FormWithdraw = ({ curve, vecrvInfo }: PageVecrv) => {
-  const { form, canUnlock, gas, isPending, isDisabled, error, onSubmit } = useWithdrawLockForm({
-    curve,
-    vecrvInfo,
-  })
+export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
+  const { form, canUnlock, lockedAmountAndUnlockTime, gas, isPending, isDisabled, error, onSubmit } =
+    useWithdrawLockForm({
+      chainId,
+    })
+  const lock = lockedAmountAndUnlockTime.data
 
   return (
     <Form {...form} onSubmit={onSubmit} footer={<VeCrvActionInfo gas={q(gas)} isOpen={canUnlock} />}>
@@ -24,7 +25,7 @@ export const FormWithdraw = ({ curve, vecrvInfo }: PageVecrv) => {
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`CRV Locked`}:</p>
           <RowParagraph>
-            {formatNumber(amount(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount), {
+            {formatNumber(amount(lock?.lockedAmount), {
               abbreviate: false,
               fallback: '-',
             })}
@@ -32,14 +33,14 @@ export const FormWithdraw = ({ curve, vecrvInfo }: PageVecrv) => {
         </Box>
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`Unlock Time`}:</p>
-          <RowParagraph>{new Date(vecrvInfo.lockedAmountAndUnlockTime.unlockTime).toLocaleString()}</RowParagraph>
+          <RowParagraph>{lock?.unlockTime ? new Date(lock.unlockTime).toLocaleString() : '-'}</RowParagraph>
         </Box>
       </WithdrawInfo>
 
       {!canUnlock && (
         <AlertBox alertType="info">
           {t`Your CRV unlocks in:`}
-          <StyledCountdown endDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / MILLISECONDS_PER_SECOND} />
+          {lock?.unlockTime && <StyledCountdown endDate={lock.unlockTime / MILLISECONDS_PER_SECOND} />}
         </AlertBox>
       )}
       <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={[]} />

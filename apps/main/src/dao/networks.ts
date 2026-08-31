@@ -1,8 +1,7 @@
-import { curvejsApi } from '@/dao/lib/curvejs'
 import { ChainId, NetworkConfig, NetworkEnum } from '@/dao/types/dao.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
 
-const DEFAULT_NETWORK_CONFIG = { api: curvejsApi, isActiveNetwork: true, showInSelectNetwork: true }
+const DEFAULT_NETWORK_CONFIG = { isActiveNetwork: true, showInSelectNetwork: true }
 
 export const { networks, networksIdMapper } = Object.entries(NETWORK_BASE_CONFIG).reduce(
   (
