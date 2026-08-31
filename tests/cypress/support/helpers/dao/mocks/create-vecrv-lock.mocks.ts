@@ -11,14 +11,17 @@ import type { CurveApi } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/lib/dayjs'
 
 const CHAIN_ID = 1
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000
+
+const calcRoundedUnlockTime = (days: number) => Math.floor(dayjs.utc().add(days, 'day').valueOf() / WEEK_MS) * WEEK_MS
 
 export const createCreateVeCrvLockScenario = ({
   isApproved: approved,
 }: {
   isApproved: boolean
 }): {
-  assertPreSubmit: () => void
-  assertSubmit: () => void
+  assertPreSubmit: (expectedDays?: number) => void
+  assertSubmit: (expectedDays?: number) => void
   curve: CurveApi
   lockedAmount: string
 } => {
@@ -31,7 +34,7 @@ export const createCreateVeCrvLockScenario = ({
   const createLock = createTransactionStub(TEST_TX_HASH)
   const calcUnlockTime = cy.stub().callsFake((days: number) => {
     calculatedDays = days
-    return dayjs.utc().add(1, 'year').startOf('day').valueOf()
+    return calcRoundedUnlockTime(days)
   })
 
   const curve = {
@@ -51,8 +54,9 @@ export const createCreateVeCrvLockScenario = ({
   return {
     curve,
     lockedAmount,
-    assertPreSubmit: () => {
+    assertPreSubmit: expectedDays => {
       expect(calcUnlockTime).to.have.been.called
+      if (expectedDays != null) expect(calculatedDays).to.equal(expectedDays)
       expect(isApproved).to.have.been.calledWithExactly(lockedAmount)
       if (approved) {
         expect(estimateCreateLock).to.have.been.calledWithExactly(lockedAmount, calculatedDays)
@@ -60,7 +64,8 @@ export const createCreateVeCrvLockScenario = ({
         expect(estimateApprove).to.have.been.calledWithExactly(lockedAmount)
       }
     },
-    assertSubmit: () => {
+    assertSubmit: expectedDays => {
+      if (expectedDays != null) expect(calculatedDays).to.equal(expectedDays)
       if (!approved) expect(approve).to.have.been.calledWithExactly(lockedAmount)
       expect(estimateCreateLock).to.have.been.calledWithExactly(lockedAmount, calculatedDays)
       expect(createLock).to.have.been.calledWithExactly(lockedAmount, calculatedDays)

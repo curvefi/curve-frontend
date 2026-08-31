@@ -1,7 +1,7 @@
 import type { ChainId } from '@/dao/types/dao.types'
 import type { FieldsOf } from '@evm-ui/lib'
+import type { UserChainQuery } from '@evm-ui/lib/model'
 import type { CalendarDate } from '@internationalized/date'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type CreateLockFormValues = {
@@ -12,12 +12,7 @@ export type CreateLockFormValues = {
   days: number
 }
 
-export type CreateLockQuery = {
-  chainId: ChainId
-  userAddress: Address
-  lockedAmount: Decimal
-  days: number
-}
+export type CreateLockQuery = UserChainQuery<ChainId> & { lockedAmount: Decimal; days: number }
 
 export type CreateLockParams = FieldsOf<CreateLockQuery>
 

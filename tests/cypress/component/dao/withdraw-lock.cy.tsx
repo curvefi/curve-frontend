@@ -34,7 +34,7 @@ describe('FormWithdraw (mocked)', () => {
     const { curve } = createWithdrawLockScenario({ unlockTime })
 
     cy.mount(<WithdrawLockForm curve={curve} />)
-    cy.contains('Your CRV unlocks in:').should('be.visible')
-    cy.contains('button', 'Withdraw').should('be.disabled')
+    cy.get('[data-testid="withdraw-lock-countdown"]').should('be.visible')
+    cy.get('[data-testid="withdraw-lock-submit-button"]').should('be.disabled')
   })
 })

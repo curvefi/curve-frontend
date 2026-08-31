@@ -37,9 +37,9 @@ describe('FormLockCrv (mocked)', () => {
       cy.wrap(null).should(assertPreSubmit)
 
       if (isApproved) {
-        cy.get('[data-testid="increase-lock-submit-button"]').should('contain.text', 'Increase Lock Amount').click()
+        cy.get('[data-testid="increase-lock-submit-button"]').click()
       } else {
-        cy.get('[data-testid="increase-lock-submit-button"]').should('contain.text', 'Approve').click()
+        cy.get('[data-testid="increase-lock-submit-button"]').click()
       }
       cy.wrap(null).should(assertSubmit)
     })

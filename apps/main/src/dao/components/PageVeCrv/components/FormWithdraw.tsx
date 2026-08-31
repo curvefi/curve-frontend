@@ -36,7 +36,7 @@ export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
       </WithdrawInfo>
 
       {!canUnlock && (
-        <AlertBox alertType="info">
+        <AlertBox alertType="info" data-testid="withdraw-lock-countdown">
           {t`Your CRV unlocks in:`}
           {lock?.unlockTime && <StyledCountdown endDate={lock.unlockTime / MILLISECONDS_PER_SECOND} />}
         </AlertBox>

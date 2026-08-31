@@ -94,7 +94,7 @@ export const FieldDatePicker = ({
   })
 
   return (
-    <div>
+    <div data-testid={`${id}-field`}>
       <DatePicker
         {...rest}
         granularity="day"
@@ -129,6 +129,7 @@ export const FieldDatePicker = ({
                     type="button"
                     variant="outlined"
                     fillWidth
+                    testId={`${id}-modal-quick-action-${index}`}
                     itemsInRow={itemsInThisRow}
                     onClick={() => setQuickActionValue(handleBtnClickQuickAction(value, unit))}
                   >
@@ -176,6 +177,7 @@ export const FieldDatePicker = ({
                 key={label}
                 type="button"
                 variant="outlined"
+                testId={`${id}-inline-quick-action-${index}`}
                 itemsInRow={itemsInThisRow}
                 onClick={() => setQuickActionValue(handleBtnClickQuickAction(value, unit))}
               >

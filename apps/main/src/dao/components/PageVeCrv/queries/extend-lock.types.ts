@@ -1,7 +1,7 @@
 import type { ChainId } from '@/dao/types/dao.types'
 import type { FieldsOf } from '@evm-ui/lib'
+import type { UserChainQuery } from '@evm-ui/lib/model'
 import type { CalendarDate } from '@internationalized/date'
-import type { Address } from '@primitives/address.utils'
 
 export type ExtendLockFormValues = {
   utcDate: CalendarDate | null
@@ -10,7 +10,7 @@ export type ExtendLockFormValues = {
   maxUnlockDate: CalendarDate | null
 }
 
-export type ExtendLockQuery = { chainId: ChainId; userAddress: Address; days: number }
+export type ExtendLockQuery = UserChainQuery<ChainId> & { days: number }
 
 export type ExtendLockParams = FieldsOf<ExtendLockQuery>
 

@@ -65,7 +65,7 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     chainId,
     userAddress,
     onReset: () => form.reset(defaultValues),
-    onCreated: useCallback(() => invalidateVeCrvQueries({ chainId, userAddress }), [chainId, userAddress]),
+    onCreated: () => invalidateVeCrvQueries({ chainId, userAddress }),
   })
 
   return {

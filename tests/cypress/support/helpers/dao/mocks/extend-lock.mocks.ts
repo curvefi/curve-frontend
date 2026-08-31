@@ -5,15 +5,19 @@ import type { CurveApi } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/lib/dayjs'
 
 const CHAIN_ID = 1
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000
+
+const calcRoundedUnlockTime = (days: number, currentUnlockTime: number) =>
+  Math.floor(dayjs.utc(currentUnlockTime).add(days, 'day').valueOf() / WEEK_MS) * WEEK_MS
 
 export const createExtendLockScenario = (): {
-  assertPreSubmit: () => void
-  assertSubmit: () => void
+  assertPreSubmit: (expectedDays?: number) => void
+  assertSubmit: (expectedDays?: number) => void
   curve: CurveApi
   unlockTime: number
 } => {
   let estimatedDays = 0
-  const unlockTime = dayjs.utc().add(1, 'year').startOf('day').valueOf()
+  const unlockTime = calcRoundedUnlockTime(365, dayjs.utc().valueOf())
   const estimateIncreaseUnlockTime = cy.stub().callsFake((days: number) => {
     estimatedDays = days
     return Promise.resolve(143_000)
@@ -25,11 +29,7 @@ export const createExtendLockScenario = (): {
     boosting: {
       getLockedAmountAndUnlockTime: createSyncStub({ lockedAmount: '100', unlockTime }),
       getVeCrv: createSyncStub('100'),
-      calcUnlockTime: cy
-        .stub()
-        .callsFake((days: number, currentUnlockTime: number) =>
-          dayjs.utc(currentUnlockTime).add(days, 'day').valueOf(),
-        ),
+      calcUnlockTime: cy.stub().callsFake(calcRoundedUnlockTime),
       calculateVeCrv: createSyncStub(100),
       increaseUnlockTime,
       estimateGas: { increaseUnlockTime: estimateIncreaseUnlockTime },
@@ -39,11 +39,13 @@ export const createExtendLockScenario = (): {
   return {
     curve,
     unlockTime,
-    assertPreSubmit: () => {
+    assertPreSubmit: expectedDays => {
       expect(estimateIncreaseUnlockTime).to.have.been.called
+      if (expectedDays != null) expect(estimatedDays).to.equal(expectedDays)
       expect(estimatedDays).to.be.greaterThan(0)
     },
-    assertSubmit: () => {
+    assertSubmit: expectedDays => {
+      if (expectedDays != null) expect(estimatedDays).to.equal(expectedDays)
       expect(increaseUnlockTime).to.have.been.calledWithExactly(estimatedDays)
     },
   }

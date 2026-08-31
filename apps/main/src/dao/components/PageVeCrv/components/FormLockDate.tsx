@@ -8,7 +8,6 @@ import { q } from '@evm-ui/types/util'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
-import { fromEntries } from '@primitives/objects.utils'
 
 export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
   const {
@@ -26,10 +25,8 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
     onSubmit,
     updateUnlockDate,
     selectQuickDate,
+    validationErrors: errors,
   } = useExtendLockForm({ chainId })
-  const errors = fromEntries(form.formState.visibleErrors)
-  const dateError = errors.utcDate ?? errors.days ?? ''
-
   return (
     <Form {...form} onSubmit={onSubmit} footer={<VeCrvActionInfo gas={q(gas)} isOpen={form.formState.isValid} />}>
       <FieldDatePicker
@@ -41,7 +38,7 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
         minUtcDate={minUtcDate}
         maxUtcDate={maxUtcDate}
         utcDate={values.utcDate}
-        utcDateError={dateError}
+        utcDateError={errors.utcDate ?? errors.days}
         effectiveUnlockDateLabel={effectiveUnlockDateLabel}
         handleInpEstUnlockedDays={updateUnlockDate}
         handleBtnClickQuickAction={selectQuickDate}
