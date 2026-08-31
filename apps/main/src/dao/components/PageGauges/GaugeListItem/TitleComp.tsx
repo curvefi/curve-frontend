@@ -41,10 +41,10 @@ export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
           <GaugeAddress>{shortenAddress(gaugeAddress)}</GaugeAddress>
           <ButtonsWrapper>
             <ExternalLinkIconButton
-              href={scanAddressPath(networks[1], gaugeAddress)}
+              href={scanAddressPath(networks[1], gaugeAddress ?? '')}
               tooltip={t`View gauge on explorer`}
             />
-            <CopyIconButton copyContent={gaugeAddress} tooltip={t`Copy gauge address`} />
+            <CopyIconButton copyContent={gaugeAddress ?? ''} tooltip={t`Copy gauge address`} />
           </ButtonsWrapper>
         </Box>
       )}

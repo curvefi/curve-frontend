@@ -4,24 +4,24 @@ import { ComboBoxGauges as ComboBoxSelectGauge } from '@/dao/components/ComboBox
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import type { ChainId } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress, formatNumber, amount } from '@evm-ui/utils'
+import { Chain } from '@evm-ui/utils/network'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { InternalLink } from '@legacy-ui/Link/InternalLink'
 import { calculateUserPowerStale } from './utils'
 
-export const GaugeVotingStats = ({ chainId }: { chainId: ChainId }) => {
+export const GaugeVotingStats = () => {
   const { address: userAddress } = useConnection()
   const { data: userGaugeWeightVotes, isLoading: userGaugeWeightsLoading } = useUserGaugeWeightVotesQuery({
-    chainId,
-    userAddress,
+    chainId: Chain.Ethereum, // DAO is only used on mainnet
+    userAddress: userAddress ?? '',
   })
   const { data: userEns } = useEnsName({ address: userAddress })
-  const { data: userVeCrv, isLoading: userVeCrvLoading } = useLockerVecrvUser({ chainId, userAddress })
+  const { data: userVeCrv, isLoading: userVeCrvLoading } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 
   const isUserPowerStale = calculateUserPowerStale(
     +(userVeCrv?.veCrv ?? 0),

@@ -1,10 +1,12 @@
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { queryFactory, rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/lib/model/query'
+import type { ChainParams, ChainQuery } from '@evm-ui/lib/model/query'
+import { queryFactory } from '@evm-ui/lib/model/query'
 import { curveApiValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
 
-const _fetchUserGaugeWeightVotes = async ({ userAddress }: UserChainQuery<ChainId>) => {
-  const { gauges, powerUsed, veCrvUsed } = await requireLib('curveApi').dao.userGaugeVotes(userAddress)
+const _fetchUserGaugeWeightVotes = async ({ userAddress }: ChainQuery<ChainId> & { userAddress: string }) => {
+  const curve = requireLib('curveApi')
+  const { gauges, powerUsed, veCrvUsed } = await curve.dao.userGaugeVotes(userAddress)
   return {
     powerUsed: Number(powerUsed),
     veCrvUsed: Number(veCrvUsed),
@@ -28,8 +30,8 @@ const _fetchUserGaugeWeightVotes = async ({ userAddress }: UserChainQuery<ChainI
 
 export const { useQuery: useUserGaugeWeightVotesQuery, invalidate: invalidateUserGaugeWeightVotesQuery } = queryFactory(
   {
-    queryKey: ({ chainId, userAddress }: UserChainParams<ChainId>) =>
-      [...rootKeys.userChain({ chainId, userAddress }), 'dao.userGaugeVotes'] as const,
+    queryKey: (params: ChainParams<ChainId> & { userAddress: string }) =>
+      ['user-gauge-weight-votes', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
     queryFn: _fetchUserGaugeWeightVotes,
     category: 'dao.user',
     validationSuite: curveApiValidationSuite,

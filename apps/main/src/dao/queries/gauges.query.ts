@@ -66,7 +66,7 @@ const formatGaugeTitle = (poolName: string | undefined, marketName: string | nul
 /** TODO: This query body implementation can probably be replaced with a simple call of getGauges from prices-api\src\gauge\api.ts? */
 export const {
   useQuery: useGauges,
-  getQueryData: getGaugesQueryData,
+  getQueryData: getGauges,
   refetchQuery: refetchGauges,
 } = queryFactory({
   queryKey: () => ['gauges'] as const,

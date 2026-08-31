@@ -6,7 +6,7 @@ import { SmallScreenCard } from '@/dao/components/PageGauges/GaugeListItem/Small
 import { PaginatedTable } from '@/dao/components/PaginatedTable'
 import { refetchGauges, useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
-import { ChainId, GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
+import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
 import { t } from '@evm-ui/lib/i18n'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { SearchInput } from '@legacy-ui/SearchInput'
@@ -19,7 +19,7 @@ import { CreateVote } from '../CreateVote'
 
 const { Spacing } = SizesAndSpaces
 
-export const GaugesList = ({ chainId }: { chainId: ChainId }) => {
+export const GaugesList = () => {
   const { data: gauges, isSuccess: gaugesIsSuccess, isLoading: gaugesIsLoading, isError: gaugesIsError } = useGauges({})
   const setGauges = useStore(state => state.gauges.setGauges)
   const gaugeListSortBy = useStore(state => state.gauges.gaugeListSortBy)
@@ -103,15 +103,10 @@ export const GaugesList = ({ chainId }: { chainId: ChainId }) => {
             renderRow={(gauge, index) => (
               <Fragment key={index}>
                 <GaugeListItemWrapper>
-                  <GaugeListItem
-                    key={index}
-                    chainId={chainId}
-                    gaugeData={gauge}
-                    gridTemplateColumns={gridTemplateColumns}
-                  />
+                  <GaugeListItem key={index} gaugeData={gauge} gridTemplateColumns={gridTemplateColumns} />
                 </GaugeListItemWrapper>
                 <SmallScreenCardWrapper>
-                  <SmallScreenCard chainId={chainId} gaugeData={gauge} />
+                  <SmallScreenCard gaugeData={gauge} />
                 </SmallScreenCardWrapper>
               </Fragment>
             )}

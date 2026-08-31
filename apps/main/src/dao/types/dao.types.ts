@@ -78,6 +78,7 @@ export type UserGaugeVoteWeight = {
 }
 
 type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
+export type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
 export type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
 export type ProposalListFilterItem = { key: ProposalListFilter; label: string }
 export type SortByFilterProposals = 'timeCreated' | 'endingSoon'

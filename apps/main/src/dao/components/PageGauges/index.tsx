@@ -1,6 +1,3 @@
-import { networksIdMapper } from '@/dao/networks'
-import type { NetworkUrlParams } from '@/dao/types/dao.types'
-import { useParams } from '@evm-ui/hooks/router'
 import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
@@ -16,12 +13,10 @@ const menu = [
 ] as const
 
 export const Gauges = () => {
-  const { network } = useParams<NetworkUrlParams>()
-  const chainId = networksIdMapper[network]
-  const { tab, tabs, content, onChange } = useTabs({ menu, params: { chainId } })
+  const { tab, tabs, content, onChange } = useTabs({ menu })
   return (
     <DetailPageLayout formTabs={null} testId="gauges-page">
-      <GaugeWeightDistribution chainId={chainId} isUserVotes={tab.value === 'gaugeVoting'} />
+      <GaugeWeightDistribution isUserVotes={tab.value === 'gaugeVoting'} />
       <Stack>
         <TabsSwitcher value={tab.value} onChange={onChange} options={tabs} />
         {content}

@@ -1,6 +1,8 @@
 import Fuse from 'fuse.js'
 import { produce } from 'immer'
 import type { StoreApi } from 'zustand'
+import { invalidateUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
+import { invalidateUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import type { State } from '@/dao/store/useStore'
 import {
   GaugeVotesMapper,
@@ -9,12 +11,22 @@ import {
   SortByFilterGauges,
   SortByFilterGaugesKeys,
   SortDirection,
+  TransactionState,
 } from '@/dao/types/dao.types'
-import { getGaugesQueryData, type GaugeFormattedData, type GaugeMapper } from '../queries/gauges.query'
+import { getLib, notify, useWallet } from '@evm-ui/features/connect-wallet'
+import { waitForTransaction } from '@evm-ui/lib/ethers'
+import { t } from '@evm-ui/lib/i18n'
+import { Chain } from '@evm-ui/utils/network'
+import { getGauges, type GaugeFormattedData, type GaugeMapper } from '../queries/gauges.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
+  txCastVoteState: {
+    state: TransactionState
+    hash: string
+    errorMessage: string
+  } | null
   filteringGaugesLoading: boolean
   gaugeListSortBy: SortByFilterGauges
   searchValue: string
@@ -48,6 +60,8 @@ export type GaugesSlice = {
     setSelectGaugeFilterValue: (filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions) => void
     setSelectedGauge: (gauge: GaugeFormattedData | null) => void
 
+    castVote: (userAddress: string, gaugeAddress: string, voteWeight: number) => Promise<void>
+
     setStateByKey: <T>(key: StateKey, value: T) => void
     setStateByKeys: (SliceState: Partial<SliceState>) => void
     resetState: () => void
@@ -55,6 +69,7 @@ export type GaugesSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
+  txCastVoteState: null,
   filteringGaugesLoading: true,
   gaugeListSortBy: {
     key: 'gauge_relative_weight',
@@ -114,7 +129,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     setGauges: (searchValue: string) => {
       const { gaugeListSortBy } = get()[SLICE_KEY]
-      const gaugeMapper = getGaugesQueryData({}) ?? {}
+      const gaugeMapper = getGauges({}) ?? {}
       const gauges = sortGauges(gaugeMapper, gaugeListSortBy)
 
       if (searchValue !== '') {
@@ -200,6 +215,95 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
       }
 
       get()[SLICE_KEY].setStateByKey('selectedGauge', gauge)
+    },
+
+    castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
+      const curve = getLib('curveApi')
+      const { provider } = useWallet.getState()
+      const address = getGauges({})?.[gaugeAddress].address
+
+      if (!curve || !address) return
+
+      const { dismiss: dismissConfirm } = notify(t`Please confirm cast vote.`, 'pending')
+
+      set(
+        produce(get(), state => {
+          state[SLICE_KEY].txCastVoteState = {
+            state: 'CONFIRMING',
+            hash: '',
+            errorMessage: '',
+          }
+        }),
+      )
+
+      try {
+        const res = await curve.dao.voteForGauge(address, voteWeight * 100)
+
+        set(
+          produce(get(), state => {
+            state[SLICE_KEY].txCastVoteState = {
+              state: 'LOADING',
+              hash: '',
+              errorMessage: '',
+            }
+          }),
+        )
+        dismissConfirm()
+
+        const loadingNotificationMessage = t`Casting vote...`
+        const { dismiss: dismissLoading } = notify(loadingNotificationMessage, 'pending')
+
+        await waitForTransaction(res, provider!)
+
+        set(
+          produce(get(), state => {
+            state[SLICE_KEY].txCastVoteState = {
+              state: 'SUCCESS',
+              hash: res,
+              errorMessage: '',
+            }
+          }),
+        )
+        dismissLoading()
+        const successNotificationMessage = t`Succesfully cast vote!`
+        notify(successNotificationMessage, 'success')
+
+        await invalidateUserGaugeWeightVotesQuery({
+          chainId: Chain.Ethereum,
+          userAddress,
+        })
+        await invalidateUserGaugeVoteNextTimeQuery({
+          chainId: Chain.Ethereum,
+          gaugeAddress,
+          userAddress,
+        })
+
+        set(
+          produce(get(), state => {
+            state[SLICE_KEY].selectedGauge = null
+          }),
+        )
+
+        setTimeout(() => {
+          set(
+            produce(get(), state => {
+              state[SLICE_KEY].txCastVoteState = null
+            }),
+          )
+        }, 5000)
+      } catch (error) {
+        dismissConfirm()
+        console.error('Error casting vote:', error)
+        set(
+          produce(get(), state => {
+            state[SLICE_KEY].txCastVoteState = {
+              state: 'ERROR',
+              hash: '',
+              errorMessage: 'Error casting vote',
+            }
+          }),
+        )
+      }
     },
 
     // slice helpers
