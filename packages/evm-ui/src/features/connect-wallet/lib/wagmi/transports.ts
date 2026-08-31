@@ -18,15 +18,14 @@ export const WAGMI_HTTP_OPTIONS = {
 /**
  * Gets a list of unique RPC URLs for a given chain in priority order:
  * 1. Hardcoded RPC URLs from RPC configuration
- * 2. Network-specific RPC URL from the provided configuration
- * 3. Default Wagmi chain RPC URLs as fallbacks
+ * 2. Default Wagmi chain RPC URLs as fallbacks
  *
  * @param chainId - The chain ID to get RPC URLs for
  * @param networkRpcUrl - The primary RPC URL from the network configuration
  * @returns Array of unique RPC URLs in priority order
  */
-export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId, networkRpcUrl: string) =>
-  lodash.uniq([...(RPC[chainId] ?? []), networkRpcUrl, ...(wagmiChainsMap[chainId]?.rpcUrls.default.http ?? [])])
+export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId) =>
+  lodash.uniq([...(RPC[chainId] ?? []), ...(wagmiChainsMap[chainId]?.rpcUrls.default.http ?? [])])
 
 /**
  * Transport configuration for Wagmi:
@@ -54,5 +53,5 @@ export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId, netw
 export const createTransportFromNetwork = (network: NetworkDef, getRpcUrls: typeof defaultGetRpcUrls) =>
   fallback([
     unstable_connector(injected),
-    ...getRpcUrls(network.chainId, network.rpcUrl).map(url => http(url, WAGMI_HTTP_OPTIONS)),
+    ...getRpcUrls(network.chainId).map(url => http(url, WAGMI_HTTP_OPTIONS)),
   ])

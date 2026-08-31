@@ -109,7 +109,7 @@ export const createChainFromNetwork = (network: NetworkDef, getRpcUrls: typeof d
     id: network.chainId,
     testnet: network.isTestnet,
     name: network.name,
-    rpcUrls: { default: { http: getRpcUrls(network.chainId, network.rpcUrl) } },
+    rpcUrls: { default: { http: getRpcUrls(network.chainId) } },
     ...(network.explorerUrl && {
       blockExplorers: { default: { name: new URL(network.explorerUrl).host, url: network.explorerUrl } },
     }),
