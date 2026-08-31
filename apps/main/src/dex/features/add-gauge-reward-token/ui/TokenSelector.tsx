@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { ethAddress, isAddressEqual, zeroAddress } from 'viem'
-import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/query-options'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'

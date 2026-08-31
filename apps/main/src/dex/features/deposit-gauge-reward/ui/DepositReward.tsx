@@ -1,11 +1,7 @@
 import { useConnection } from 'wagmi'
-import {
-  useGaugeDepositRewardIsApproved,
-  useDepositReward,
-  gaugeDepositRewardValidationGroup,
-  useDepositRewardEstimateGas,
-  useGaugeRewardsDistributors,
-} from '@/dex/entities/gauge'
+import { useDepositReward, useDepositRewardEstimateGas } from '@/dex/entities/gauge/lib'
+import { gaugeDepositRewardValidationGroup } from '@/dex/entities/gauge/model/gauge-validation'
+import { useGaugeDepositRewardIsApproved, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/query-options'
 import { useNetworks } from '@/dex/entities/networks'
 import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'

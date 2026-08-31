@@ -1,13 +1,9 @@
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
-import {
-  AddRewardParams,
-  gaugeAddRewardValidationGroup,
-  useAddRewardToken,
-  useAddRewardTokenEstimateGas,
-  useGaugeRewardsDistributors,
-  useIsDepositRewardAvailable,
-} from '@/dex/entities/gauge'
+import { useAddRewardToken, useAddRewardTokenEstimateGas } from '@/dex/entities/gauge/lib'
+import { gaugeAddRewardValidationGroup } from '@/dex/entities/gauge/model/gauge-validation'
+import { useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge/model/query-options'
+import type { AddRewardParams } from '@/dex/entities/gauge/types'
 import { useNetworks } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { DistributorInput, TokenSelector } from '@/dex/features/add-gauge-reward-token/ui'

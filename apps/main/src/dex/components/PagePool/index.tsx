@@ -8,7 +8,7 @@ import type { PageTransferProps, Seed, TransferFormType, TransferProps } from '@
 import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { Withdraw } from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
-import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/query-options'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { AdvancedDetails } from '@/dex/features/advanced-details'
 import { PoolInformation } from '@/dex/features/pool-information'
