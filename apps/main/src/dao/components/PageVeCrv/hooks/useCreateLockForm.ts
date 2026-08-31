@@ -5,19 +5,21 @@ import { useCreateLockIsApproved } from '@/dao/components/PageVeCrv/queries/crea
 import { useCreateLockGasEstimate } from '@/dao/components/PageVeCrv/queries/create-lock-estimate-gas.query'
 import type { CreateLockFormValues } from '@/dao/components/PageVeCrv/queries/create-lock.types'
 import { createLockFormValidationSuite } from '@/dao/components/PageVeCrv/queries/create-lock.validation'
-import { calcUnlockTime } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
+import {
+  calcUnlockTime,
+  getCreateLockDates,
+  getCreateQuickDateUpdate,
+  getEffectiveUnlockDateLabel,
+  getUnlockDateUpdate,
+} from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
 import { invalidateVeCrvQueries, useLockerCrv } from '@/dao/entities/locker-vecrv-info'
 import { networks } from '@/dao/networks'
-import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { dayjs } from '@evm-ui/lib/dayjs'
-import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
-import { formatDate } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
 
 const defaultValues: CreateLockFormValues = {
   lockedAmount: undefined,
@@ -44,17 +46,13 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
   const gas = useCreateLockGasEstimate(networks, params)
   useFormSync(form, { maxLockedAmount: crv.data })
 
-  const currUtcDate = dayjs.utc(useCurrentDate())
-  const currUtcDay = currUtcDate.startOf('day')
-  const minUtcDate = currUtcDate
-  const maxUtcDate = currUtcDay.add(VECRV_MAX_LOCK_DAYS, 'day')
+  const { currentUtcDate, currentUtcDay, minUtcDate, maxUtcDate } = getCreateLockDates(useCurrentDate())
 
   const updateUnlockDate = useCallback(
     (unlockDate: DateValue) => {
-      const utcDate = dayjs.utc(unlockDate.toString())
-      update({ utcDate: toCalendarDate(utcDate), days: utcDate.diff(currUtcDay, 'd') })
+      update(getUnlockDateUpdate(unlockDate, currentUtcDay))
     },
-    [currUtcDay, update],
+    [currentUtcDay, update],
   )
 
   const {
@@ -71,12 +69,13 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
   return {
     form,
     values,
-    currUtcDate,
+    currentUtcDate,
     minUtcDate,
     maxUtcDate,
-    effectiveUnlockDateLabel: maybes([values.utcDate, calcUnlockTime({ days: values.days })], (utcDate, unlockTime) =>
-      dayjs.utc(utcDate.toString()).isSame(unlockTime) ? undefined : formatDate(unlockTime),
-    ),
+    effectiveUnlockDateLabel: getEffectiveUnlockDateLabel({
+      selectedDate: values.utcDate,
+      unlockTime: calcUnlockTime({ days: values.days, unlockTime: undefined }),
+    }),
     gas,
     isApproved: isApproved.data,
     isPending,
@@ -86,15 +85,17 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     updateAmount: (lockedAmount: Decimal | undefined) => update({ lockedAmount }),
     updateUnlockDate,
     selectQuickDate: useCallback(
-      (value?: number, unit?: dayjs.ManipulateType) => {
-        const targetDate = value && unit ? dayjs.utc().add(value, unit) : maxUtcDate
-        const days = targetDate.diff(currUtcDay, 'd')
-        const unlockTime = calcUnlockTime({ days })
-        const utcDate = dayjs.utc(unlockTime)
-        update({ utcDate: toCalendarDate(utcDate), days })
-        return utcDate
+      (value: number | undefined, unit: dayjs.ManipulateType | undefined) => {
+        const { utcDate, quickActionValue, days } = getCreateQuickDateUpdate({
+          currentUtcDay,
+          maxUtcDate,
+          value,
+          unit,
+        })
+        update({ utcDate, days })
+        return quickActionValue
       },
-      [currUtcDay, maxUtcDate, update],
+      [currentUtcDay, maxUtcDate, update],
     ),
   }
 }

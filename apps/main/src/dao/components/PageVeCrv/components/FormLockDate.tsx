@@ -13,7 +13,7 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
   const {
     form,
     values,
-    currUnlockUtcTime,
+    currentUnlockUtcTime,
     minUtcDate,
     maxUtcDate,
     isMax,
@@ -32,7 +32,7 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
       <FieldDatePicker
         chainId={chainId}
         id="adjust-date-date-picker"
-        currUnlockUtcTime={currUnlockUtcTime}
+        currentUnlockUtcTime={currentUnlockUtcTime}
         disabled={isPending}
         isMax={isMax}
         minUtcDate={minUtcDate}
@@ -40,8 +40,8 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
         utcDate={values.utcDate}
         utcDateError={errors.utcDate ?? errors.days}
         effectiveUnlockDateLabel={effectiveUnlockDateLabel}
-        handleInpEstUnlockedDays={updateUnlockDate}
-        handleBtnClickQuickAction={selectQuickDate}
+        handleInputEstimatedUnlockedDays={updateUnlockDate}
+        handleQuickActionClick={selectQuickDate}
       />
       {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
       <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={['utcDate', 'days']} />

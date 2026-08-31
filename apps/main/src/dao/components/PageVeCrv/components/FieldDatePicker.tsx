@@ -1,13 +1,18 @@
 import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { useConnection } from 'wagmi'
-import { calculateVeCrv } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
+import {
+  calculateVeCrv,
+  getDateValueTimestamp,
+  isDateUnavailable,
+  isQuickActionInRange,
+} from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
 import { useLockerLockedAmountAndUnlockTime, useLockerVeCrv } from '@/dao/entities/locker-vecrv-info'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { t } from '@evm-ui/lib/i18n'
 import { HelperMessage } from '@evm-ui/shared/ui/LargeTokenInput'
-import { amount, formatNumber, MILLISECONDS_PER_SECOND } from '@evm-ui/utils'
+import { amount, formatNumber } from '@evm-ui/utils'
 import { VECRV_MAX_LOCK_YEARS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
 import { Button } from '@legacy-ui/Button'
@@ -17,25 +22,18 @@ import { formatDate } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 
-const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: string }[] = [
+const QUICK_ACTIONS: { unit: dayjs.ManipulateType | undefined; value: number | undefined; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },
   { unit: 'month', value: 1, label: t`1 month` },
   { unit: 'month', value: 3, label: t`3 months` },
   { unit: 'year', value: 1, label: t`1 year` },
   { unit: 'year', value: VECRV_MAX_LOCK_YEARS, label: t`${VECRV_MAX_LOCK_YEARS} years` },
-  { label: t`Max` },
+  { unit: undefined, value: undefined, label: t`Max` },
 ]
-
-/** veCRV unlocks are rounded to Thursday UTC week boundaries. */
-const isDateUnavailable = (date: DateValue) => {
-  const todayUtcDate = dayjs.utc(date.toString()).day()
-  const dayZeroUtcDate = dayjs.utc(new Date(0)).day()
-  return todayUtcDate !== dayZeroUtcDate
-}
 
 export const FieldDatePicker = ({
   chainId,
-  currUnlockUtcTime,
+  currentUnlockUtcTime,
   effectiveUnlockDateLabel,
   id,
   disabled,
@@ -46,12 +44,12 @@ export const FieldDatePicker = ({
   minUtcDate,
   maxUtcDate,
   lockedAmount,
-  handleInpEstUnlockedDays,
-  handleBtnClickQuickAction,
+  handleInputEstimatedUnlockedDays,
+  handleQuickActionClick,
   ...rest
 }: {
   chainId: number
-  currUnlockUtcTime: dayjs.Dayjs | null
+  currentUnlockUtcTime: dayjs.Dayjs | null
   id: string
   disabled?: boolean
   isDisabled?: boolean
@@ -65,8 +63,8 @@ export const FieldDatePicker = ({
   minUtcDate: dayjs.Dayjs | null
   maxUtcDate: dayjs.Dayjs | null
   lockedAmount?: Decimal
-  handleInpEstUnlockedDays: (updatedLockedDays: DateValue) => void
-  handleBtnClickQuickAction: (value?: number, unit?: dayjs.ManipulateType) => dayjs.Dayjs
+  handleInputEstimatedUnlockedDays: (updatedLockedDays: DateValue) => void
+  handleQuickActionClick: (value: number | undefined, unit: dayjs.ManipulateType | undefined) => dayjs.Dayjs
 }) => {
   const [quickActionValue, setQuickActionValue] = useState<dayjs.Dayjs | null>(null)
   const { address: userAddress } = useConnection()
@@ -77,20 +75,16 @@ export const FieldDatePicker = ({
   const quickActions = useMemo(
     () =>
       QUICK_ACTIONS.filter(({ unit, value }) => {
-        if (!currUnlockUtcTime || !minUtcDate || !maxUtcDate) return false
+        if (!currentUnlockUtcTime || !minUtcDate || !maxUtcDate) return false
         if (!value || !unit) return !isMax // max button, only show if not already at max
-        const quickActionUtcDate = currUnlockUtcTime.add(value, unit)
-        return (
-          (quickActionUtcDate.isSame(minUtcDate, 'd') || quickActionUtcDate.isAfter(minUtcDate, 'd')) &&
-          (quickActionUtcDate.isSame(maxUtcDate, 'd') || quickActionUtcDate.isBefore(maxUtcDate, 'd'))
-        )
+        return isQuickActionInRange({ currentUnlockUtcTime, maxUtcDate, minUtcDate, value, unit })
       }),
-    [currUnlockUtcTime, maxUtcDate, minUtcDate, isMax],
+    [currentUnlockUtcTime, maxUtcDate, minUtcDate, isMax],
   )
 
   const futureVeCrv = calculateVeCrv({
     lockedAmount: noCurrentLock ? lockedAmount : currentLock.data?.lockedAmount,
-    unlockTime: maybe(utcDate, date => Math.floor(dayjs.utc(date.toString()).valueOf() / MILLISECONDS_PER_SECOND)),
+    unlockTime: maybe(utcDate, getDateValueTimestamp),
   })
 
   return (
@@ -106,7 +100,7 @@ export const FieldDatePicker = ({
         maxValue={maxUtcDate && toCalendarDate(maxUtcDate)}
         value={utcDate}
         onChange={(val: DateValue | null) => {
-          if (val) handleInpEstUnlockedDays(val)
+          if (val) handleInputEstimatedUnlockedDays(val)
         }}
         quickActionValue={quickActionValue}
         quickActions={
@@ -131,7 +125,7 @@ export const FieldDatePicker = ({
                     fillWidth
                     testId={`${id}-modal-quick-action-${index}`}
                     itemsInRow={itemsInThisRow}
-                    onClick={() => setQuickActionValue(handleBtnClickQuickAction(value, unit))}
+                    onClick={() => setQuickActionValue(handleQuickActionClick(value, unit))}
                   >
                     {label}
                   </QuickActionButton>
@@ -179,7 +173,7 @@ export const FieldDatePicker = ({
                 variant="outlined"
                 testId={`${id}-inline-quick-action-${index}`}
                 itemsInRow={itemsInThisRow}
-                onClick={() => setQuickActionValue(handleBtnClickQuickAction(value, unit))}
+                onClick={() => setQuickActionValue(handleQuickActionClick(value, unit))}
               >
                 {label}
               </QuickActionButton>

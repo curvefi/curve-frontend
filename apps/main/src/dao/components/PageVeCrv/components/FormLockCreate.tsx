@@ -14,7 +14,7 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
   const {
     form,
     values,
-    currUtcDate,
+    currentUtcDate,
     minUtcDate,
     maxUtcDate,
     gas,
@@ -49,7 +49,7 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
         chainId={chainId}
         id="create-date-picker"
         noCurrentLock
-        currUnlockUtcTime={currUtcDate}
+        currentUnlockUtcTime={currentUtcDate}
         disabled={isPending}
         minUtcDate={minUtcDate}
         maxUtcDate={maxUtcDate}
@@ -57,8 +57,8 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
         utcDateError={errors.utcDate ?? errors.days}
         effectiveUnlockDateLabel={effectiveUnlockDateLabel}
         lockedAmount={values.lockedAmount}
-        handleInpEstUnlockedDays={updateUnlockDate}
-        handleBtnClickQuickAction={selectQuickDate}
+        handleInputEstimatedUnlockedDays={updateUnlockDate}
+        handleQuickActionClick={selectQuickDate}
       />
       <FormAlerts
         error={error}
