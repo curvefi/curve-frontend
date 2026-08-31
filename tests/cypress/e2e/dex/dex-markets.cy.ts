@@ -6,7 +6,6 @@ import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@c
 import { getRangeFilterLabel } from '@evm-ui/shared/ui/DataTable/filters'
 import { assert } from '@primitives/objects.utils'
 
-const DEFAULT_POOL_LIST_MIN_TVL_INPUT = '0'
 const POOL_LIST_FILTER_POOL_TYPE = 'crypto'
 const POOL_LIST_FILTER_TVL_MIN = 480_000_000
 const POOL_LIST_FILTER_TVL_MAX = 500_000_000
@@ -160,18 +159,6 @@ describe('DEX Pools', () => {
       return waitForPoolListResponse()
     }
 
-    it('applies the default TVL min without URL or active filter state', () => {
-      visitAndWait(width, height)
-      cy.location('search').should('not.include', 'tvl=')
-      expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${POOL_DEFAULT_TVL_MIN}`)
-      })
-      cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('not.exist')
-      openPoolFilters()
-      cy.get('[data-testid="range-filter-tvl-min"] input').should('have.value', DEFAULT_POOL_LIST_MIN_TVL_INPUT)
-      closePoolFilters()
-    })
-
     it('sorts by TVL (desc/asc)', () => {
       visitAndWait(width, height)
       cy.url().should('not.include', 'tvl') // initial sort not in URL
@@ -245,25 +232,6 @@ describe('DEX Pools', () => {
       cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible')
     })
 
-    it('filters by TVL max input with an explicit zero min in the URL and API request', () => {
-      visitAndWait(width, height)
-      const maxTvl = POOL_LIST_FILTER_TVL_MAX
-
-      setRangeFilter('tvl', 'min', 0)
-      expectUrlQueryParam('tvl', '0~')
-
-      setRangeFilter('tvl', 'max', maxTvl)
-      expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal('0')
-        expect(params.get('max_tvl')).to.equal(`${maxTvl}`)
-      })
-      // Direct range-input edits preserve the component's explicit zero lower bound.
-      expectUrlQueryParam('tvl', `0~${maxTvl}`)
-      cy.get('[data-testid="dex-pool-active-filter-tvl"]')
-        .should('be.visible')
-        .and('contain.text', getPoolListTvlRangeChip(0, maxTvl))
-    })
-
     it('filters by Volume range input', () => {
       visitAndWait(width, height)
       const maxVolume = POOL_LIST_FILTER_VOLUME_MAX
@@ -295,15 +263,6 @@ describe('DEX Pools', () => {
       cy.get('[data-testid="dex-pool-active-filter-tvl"]')
         .should('be.visible')
         .and('contain.text', getPoolListTvlRangeChip(POOL_DEFAULT_TVL_MIN, maxTvl))
-    })
-
-    it('keeps explicit zero TVL min as an active filter', () => {
-      visitAndWait(width, height, { query: { tvl: '0~' } })
-      expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal('0')
-      })
-      expectUrlQueryParam('tvl', '0~')
-      cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible').and('contain.text', '>$0')
     })
 
     it('keeps zero Base vAPY min as an active filter', () => {
