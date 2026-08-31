@@ -31,20 +31,6 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   }
 }
 
-// curve.finance url
-export function getCurvefiUrl(poolId: string, host: string) {
-  const v2Key = 'factory-v2-'
-  const cryptoKey = 'factory-crypto-'
-
-  if (RegExp(v2Key).exec(poolId)) {
-    return `${host}/factory/${poolId.split(v2Key)[1]}`
-  } else if (RegExp(cryptoKey).exec(poolId)) {
-    return `${host}/factory-crypto/${poolId.split(cryptoKey)[1]}`
-  } else {
-    return `${host}/${poolId}`
-  }
-}
-
 export const delayAction = <T extends () => unknown>(cb: T) => setTimeout(() => cb(), 50)
 
 export const getChainPoolIdActiveKey = (chainId: ChainId | null, poolId: string | undefined) =>

@@ -25,7 +25,6 @@ export const DEFAULT_NETWORK_CONFIG = {
   useApi: true, // default to true when calling fetchPools
   isLite: false,
   isActiveNetwork: true,
-  missingPools: [],
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
   poolIsWrappedOnly: {}, // show only wrapped pool data
   swap: { fromAddress: '', toAddress: '' },
