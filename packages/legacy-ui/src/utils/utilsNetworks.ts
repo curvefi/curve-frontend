@@ -6,7 +6,6 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
   gasPricesUnit: 'GWEI',
   gasPricesUrl: '',
   gasPricesDefault: 0,
-  orgUIPath: '',
   isTestnet: false,
 }
 
@@ -18,7 +17,6 @@ export const NETWORK_BASE_CONFIG = {
     nativeCurrencySymbol: 'ETH',
     rpcUrl: `https://eth.drpc.org`,
     explorerUrl: 'https://etherscan.io/',
-    orgUIPath: 'https://classic.curve.finance',
   },
   [Chain.Optimism]: {
     id: 'optimism',
@@ -33,14 +31,12 @@ export const NETWORK_BASE_CONFIG = {
     rpcUrl: 'https://rpc.gnosischain.com',
     nativeCurrencySymbol: 'XDAI',
     explorerUrl: 'https://gnosisscan.io/',
-    orgUIPath: 'https://xdai.curve.finance',
   },
   [Chain.Moonbeam]: {
     id: 'moonbeam',
     rpcUrl: 'https://moonbeam.drpc.org',
     nativeCurrencySymbol: 'GLMR',
     explorerUrl: 'https://moonscan.io/',
-    orgUIPath: 'https://moonbeam.curve.finance',
   },
   [Chain.Polygon]: {
     id: 'polygon',
@@ -49,7 +45,6 @@ export const NETWORK_BASE_CONFIG = {
     rpcUrl: 'https://polygon.drpc.org',
     nativeCurrencySymbol: 'POL',
     explorerUrl: 'https://polygonscan.com/',
-    orgUIPath: 'https://polygon.curve.finance',
   },
   [Chain.Kava]: {
     id: 'kava',
@@ -57,21 +52,18 @@ export const NETWORK_BASE_CONFIG = {
     rpcUrl: 'https://evm.kava.io',
     nativeCurrencySymbol: 'KAVA',
     explorerUrl: 'https://kavascan.io/',
-    orgUIPath: 'https://kava.curve.finance',
   },
   [Chain.Fantom]: {
     id: 'fantom',
     rpcUrl: 'https://rpc.ftm.tools/',
     nativeCurrencySymbol: 'FTM',
     explorerUrl: 'https://ftmscout.com/',
-    orgUIPath: 'https://ftm.curve.finance',
   },
   [Chain.Arbitrum]: {
     id: 'arbitrum',
     rpcUrl: 'https://arb1.arbitrum.io/rpc',
     nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://arbiscan.io/',
-    orgUIPath: 'https://arbitrum.curve.finance',
   },
   [Chain.Avalanche]: {
     id: 'avalanche',
@@ -81,21 +73,18 @@ export const NETWORK_BASE_CONFIG = {
     rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
     nativeCurrencySymbol: 'AVAX',
     explorerUrl: 'https://snowscan.xyz/',
-    orgUIPath: 'https://avax.curve.finance',
   },
   [Chain.Celo]: {
     id: 'celo',
     rpcUrl: 'https://forno.celo.org',
     nativeCurrencySymbol: 'CELO',
     explorerUrl: 'https://celoscan.io/',
-    orgUIPath: 'https://celo.curve.finance',
   },
   [Chain.Aurora]: {
     id: 'aurora',
     rpcUrl: 'https://mainnet.aurora.dev',
     nativeCurrencySymbol: 'aETH',
     explorerUrl: 'https://aurorascan.dev/',
-    orgUIPath: 'https://aurora.curve.finance',
   },
   [Chain.ZkSync]: {
     id: 'zksync',
@@ -173,7 +162,6 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
   gasPricesUnit: string
   gasPricesUrl: string
   gasPricesDefault: number
-  orgUIPath: string
 }
 
 export function getBaseNetworksConfig<TId extends string, ChainId extends number>(

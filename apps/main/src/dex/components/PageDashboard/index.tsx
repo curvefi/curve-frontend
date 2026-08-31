@@ -184,7 +184,7 @@ export const Dashboard = ({
           </tbody>
         </StyledTable>
       </TableWrapper>
-      <ClassicPoolsOnlyDescription />
+      <ClassicPoolsOnlyDescription chainId={rChainId} />
     </DashboardContextProvider>
   )
 }
