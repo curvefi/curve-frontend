@@ -56,6 +56,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
       }),
       [chainId, marketId, userAddress, values.userCollateral, values.maxCollateral],
     ),
+    userDefaultValues,
   )
 
   const { onSubmit, ...action } = useAddCollateralMutation({

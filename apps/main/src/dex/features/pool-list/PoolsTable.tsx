@@ -11,6 +11,7 @@ import { TableFiltersChip } from '@evm-ui/shared/ui/DataTable/TableFiltersChip'
 import { TableFiltersOverlay } from '@evm-ui/shared/ui/DataTable/TableFiltersOverlay'
 import { TableHeader } from '@evm-ui/shared/ui/DataTable/TableHeader'
 import { TableSortDrawer } from '@evm-ui/shared/ui/DataTable/TableSortDrawer'
+import { TableVisibilitySettingsPopover } from '@evm-ui/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { CURVE_SOCIALS } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
@@ -38,7 +39,9 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const isLite = network.isLite
   const isMobile = useIsMobile()
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
+  const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
+  const visibilitySettingsRef = useRef<HTMLButtonElement>(null)
   const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolsPagination()
   const { globalFilter, columnFilters, apiParams, filterProps, onSearch, resetFilters, searchText } = usePoolsFilters()
   const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolsSorting(
@@ -108,10 +111,13 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
         expandedPanel={{ Body: POOL_EXPANDED_PANEL_BODIES[variant], Actions: PoolExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
-        <TableFilters<PoolColumnId>
+        <TableFilters
           testIdPrefix={LOCAL_STORAGE_KEY}
-          visibilityGroups={columnSettings}
-          toggleVisibility={toggleVisibility}
+          visibilitySettings={{
+            anchorRef: visibilitySettingsRef,
+            open: visibilitySettingsOpen,
+            onOpen: openVisibilitySettings,
+          }}
           searchText={searchText}
           onSearch={onSearch}
           collapsibleFilters={
@@ -151,7 +157,13 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
           }
         />
       </DataTable>
-      {/* Keep the overlay outside DataTable children because DataTable remounts them when switching sticky header layout. */}
+      <TableVisibilitySettingsPopover<PoolColumnId>
+        anchorRef={visibilitySettingsRef}
+        visibilityGroups={columnSettings}
+        toggleVisibility={toggleVisibility}
+        open={visibilitySettingsOpen}
+        onClose={closeVisibilitySettings}
+      />
       {!isLite && (
         <TableFiltersOverlay
           anchorRef={filterChipRef}

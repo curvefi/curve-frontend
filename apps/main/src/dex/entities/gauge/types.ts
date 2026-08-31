@@ -17,11 +17,11 @@ export type DepositRewardApprove = {
   userBalance?: Decimal
 }
 export type GaugeDistributorsQuery = GaugeQuery & UserQuery
+export type GaugeDistributorsParams = FieldsOf<GaugeDistributorsQuery>
 
 export type DepositRewardApproveQuery = GaugeQuery & DepositRewardApprove
 export type DepositRewardApproveParams = FieldsOf<DepositRewardApproveQuery>
 export type DepositRewardApproveMutation = FieldsOf<DepositRewardApprove>
-export type GaugeDistributorsParams = FieldsOf<GaugeDistributorsQuery>
 
 export type DepositReward = DepositRewardApprove & {
   epoch: number | string
