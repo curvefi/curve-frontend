@@ -1,6 +1,7 @@
-import { identity, isEqual } from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { identity, isEqual, pick } from 'lodash'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Duration } from '@evm-ui/themes/design/0_primitives'
+import { objectKeys } from '@primitives/objects.utils'
 
 type DebouncedValueOptions<T> = {
   defaultValue?: T
@@ -104,12 +105,24 @@ export function useDebouncedValue<T>(
   return value
 }
 
-/** A wrapper around useDebouncedValue that also reports whether the value is still settling. */
-export function useFormDebounce<T>(givenValue: T, options?: DebouncedValueOptions<T>) {
-  const debouncedValue = useDebouncedValue(givenValue, options)
-  const isDebouncing = !isEqual(debouncedValue, givenValue)
+/**
+ * Delays fields a person changes while keeping calculated values and application context current.
+ *
+ * Pass the complete params object and the form's `userDefaultValues`. Only fields named in
+ * `userDefaultValues` are delayed; everything else remains current while an input is settling.
+ */
+export function useFormDebounce<T extends object, TDefaultKey extends keyof T>(
+  values: T,
+  userDefaultValues: Pick<T, TDefaultKey>,
+  options?: DebouncedValueOptions<Pick<T, TDefaultKey>>,
+) {
+  const valuesToDebounce = useMemo(() => pick(values, objectKeys(userDefaultValues)), [values, userDefaultValues])
+  const debouncedValue = useDebouncedValue(valuesToDebounce, options)
+  const isDebouncing = !isEqual(debouncedValue, valuesToDebounce)
 
-  return [debouncedValue, isDebouncing] as const
+  const value = useMemo(() => ({ ...values, ...debouncedValue }), [values, debouncedValue])
+
+  return [value, isDebouncing] as const
 }
 
 /**

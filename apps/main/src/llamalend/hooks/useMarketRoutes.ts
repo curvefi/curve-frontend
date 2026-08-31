@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
+import { useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { usePriceImpact } from '@/llamalend/hooks/usePriceImpact'
 import type { MarketToken } from '@/llamalend/llama.utils'
@@ -92,7 +92,6 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
 }): { routes: MarketRoutes | undefined; priceImpact?: QueryProp<PriceImpact | Decimal | null> } {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
-  const [, startTransition] = useTransition() // todo: use isTransitioning for something
 
   const params = {
     chainId,
@@ -131,7 +130,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   usePinRouteById(selectedRoute?.id)
 
   const onChangeEffect = useEffectEvent(onChangeProp)
-  useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
+  useEffect(() => void onChangeEffect(selectedRoute), [selectedRoute])
 
   const selectedRouter = chosenRouter && queries[chosenRouter].enabled ? chosenRouter : selectedRoute?.router
   const priceImpact = usePriceImpact({ selectedRoute, tokenIn, tokenOut, chainId }, routesEnabled)
