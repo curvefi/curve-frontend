@@ -18,7 +18,7 @@ export const GaugeVotingStats = ({ chainId }: { chainId: ChainId }) => {
   const { address: userAddress } = useConnection()
   const { data: userGaugeWeightVotes, isLoading: userGaugeWeightsLoading } = useUserGaugeWeightVotesQuery({
     chainId,
-    userAddress: userAddress ?? '',
+    userAddress,
   })
   const { data: userEns } = useEnsName({ address: userAddress })
   const { data: userVeCrv, isLoading: userVeCrvLoading } = useLockerVecrvUser({ chainId, userAddress })

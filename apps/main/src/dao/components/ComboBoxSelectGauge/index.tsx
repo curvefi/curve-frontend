@@ -9,11 +9,10 @@ import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import { useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
-import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { type ChainId, GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { t } from '@evm-ui/lib/i18n'
-import { Chain } from '@evm-ui/utils/network'
 import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
 
 export const ComboBoxGauges = ({
@@ -22,12 +21,14 @@ export const ComboBoxGauges = ({
   testId,
   title,
   onOpen,
+  chainId,
 }: {
   disabled?: boolean
   listBoxHeight?: string
   testId?: string
   title: string
   onOpen?: () => void
+  chainId: ChainId
 }) => {
   const { endsWith } = useFilter({ sensitivity: 'base' })
   const overlayTriggerState = useOverlayTriggerState({})
@@ -40,10 +41,7 @@ export const ComboBoxGauges = ({
 
   const { data: gaugeMapper } = useGauges({})
 
-  const { data: userGaugeWeightVotes } = useUserGaugeWeightVotesQuery({
-    chainId: Chain.Ethereum, // DAO is only used on mainnet
-    userAddress: userAddress ?? '',
-  })
+  const { data: userGaugeWeightVotes } = useUserGaugeWeightVotesQuery({ chainId, userAddress })
   const gauges = Object.values(gaugeMapper ?? {})
     .filter(
       gauge =>

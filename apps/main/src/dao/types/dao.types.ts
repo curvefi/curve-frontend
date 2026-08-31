@@ -77,27 +77,7 @@ export type UserGaugeVoteWeight = {
   totalVeCrv: number
 }
 
-export type FnStepEstGasApprovalResponse = {
-  activeKey: string
-  isApproved: boolean
-  estimatedGas: EstimatedGas
-  error: string
-}
-
-export type FnStepApproveResponse = {
-  activeKey: string
-  hashes: string[]
-  error: string
-}
-
-export type FnStepResponse = {
-  activeKey: string
-  hash: string
-  error: string
-}
-
 type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
-export type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
 export type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
 export type ProposalListFilterItem = { key: ProposalListFilter; label: string }
 export type SortByFilterProposals = 'timeCreated' | 'endingSoon'
@@ -115,8 +95,3 @@ export type UserGaugeVotesSortBy = 'weight' | 'timestamp'
 export type UserProposalVotesSortBy = 'voteId' | 'voteFor' | 'voteAgainst' | 'voteOpen' | 'voteClose'
 export type GaugeVotesSortBy = 'weight' | 'timestamp'
 export type UserGaugeVoteWeightSortBy = 'userPower' | 'userVeCrv'
-
-export enum ClaimButtonsKey {
-  '3CRV' = '3CRV',
-  crvUSD = 'crvUSD',
-}

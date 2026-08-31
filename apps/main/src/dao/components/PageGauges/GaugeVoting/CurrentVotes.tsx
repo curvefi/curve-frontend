@@ -39,10 +39,7 @@ export const CurrentVotes = ({ chainId }: { chainId: ChainId }) => {
     isSuccess: userGaugeWeightsSuccess,
     isLoading: userGaugeWeightsLoading,
     isError: userGaugeWeightsError,
-  } = useUserGaugeWeightVotesQuery({
-    chainId,
-    userAddress: userAddress ?? '',
-  })
+  } = useUserGaugeWeightVotesQuery({ chainId, userAddress })
 
   const tableLoading = userGaugeWeightsLoading || gaugesIsLoading
 
@@ -60,7 +57,7 @@ export const CurrentVotes = ({ chainId }: { chainId: ChainId }) => {
   )
 
   const formattedSelectedGauge: UserGaugeVoteWeight = {
-    title: selectedGauge?.title ?? '',
+    title: selectedGauge?.title,
     userPower: 0,
     userVeCrv: 0,
     expired: false,

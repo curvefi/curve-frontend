@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
+import { enforce, test } from 'vest'
 import { useConnection } from 'wagmi'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import { ChainId, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { t } from '@evm-ui/lib/i18n'
+import { createValidationSuite } from '@evm-ui/lib/validation'
 import { formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
@@ -22,6 +25,17 @@ type VoteGaugeFieldProps = {
   newVote?: boolean
 }
 
+type VoteGaugeFormValues = {
+  gaugeAddress: string
+  voteWeight: number
+}
+
+const voteGaugeFormValidationSuite = createValidationSuite(({ voteWeight }: VoteGaugeFormValues) => {
+  test('voteWeight', () => {
+    enforce(voteWeight).isNumber().greaterThanOrEquals(0)
+  })
+})
+
 export const VoteGaugeField = ({
   chainId,
   powerUsed,
@@ -30,34 +44,30 @@ export const VoteGaugeField = ({
   newVote = false,
 }: VoteGaugeFieldProps) => {
   const { address: userAddress } = useConnection()
-  const vote = useGaugeVoteMutation({ chainId, userAddress })
+  const { userPower, gaugeAddress } = userGaugeVoteData
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({
     chainId,
-    gaugeAddress: userGaugeVoteData?.gaugeAddress,
+    gaugeAddress,
     userAddress,
   })
-  const { userPower, gaugeAddress } = userGaugeVoteData
+  const defaultValues = useMemo(
+    () => ({
+      gaugeAddress,
+      voteWeight: userPower / 100,
+    }),
+    [gaugeAddress, userPower],
+  )
+  const form = useForm<VoteGaugeFormValues>({ defaultValues, validation: voteGaugeFormValidationSuite })
+  useFormSync(form, defaultValues)
+  const { voteWeight } = form.watchValues()
+  const vote = useGaugeVoteMutation({ chainId, onReset: () => form.reset(defaultValues), userAddress })
   const currentDate = useCurrentDate()
   const canVote = !userGaugeVoteNextTime || currentDate.getTime() > userGaugeVoteNextTime
-  const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed
   const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100
   const availableVeCrv = userVeCrv * (availablePower / 100)
 
   const loading = nextVoteTimeLoading || vote.isPending
-
-  const handleChangePower = (value: number) => {
-    if (value > maxPower) {
-      setPower(maxPower)
-    } else {
-      setPower(value)
-    }
-  }
-
-  const handleCastVote = () => {
-    if (!userAddress) return
-    vote.onSubmit({ gaugeAddress, voteWeight: power })
-  }
 
   return (
     <Wrapper>
@@ -143,14 +153,14 @@ export const VoteGaugeField = ({
               </Box>
             ) : null
           }
-          value={power}
-          onChange={handleChangePower}
+          value={voteWeight}
+          onChange={(value: number) => form.update({ voteWeight: value > maxPower ? maxPower : value })}
           formatOptions={{ style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }}
           maxValue={maxPower}
         />
         {!newVote && (
           <AbsoluteData>
-            {formatNumber(power * userVeCrv, {
+            {formatNumber(voteWeight * userVeCrv, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
               abbreviate: false,
@@ -159,14 +169,20 @@ export const VoteGaugeField = ({
           </AbsoluteData>
         )}
         <ButtonWrapper>
-          <StyledButton fillWidth disabled={!canVote} variant="filled" onClick={handleCastVote} loading={loading}>
+          <StyledButton
+            fillWidth
+            disabled={!canVote || !form.formState.isValid}
+            variant="filled"
+            onClick={() => void form.handleSubmit(values => vote.onSubmit(values))()}
+            loading={loading}
+          >
             {newVote ? t`Vote` : t`Update Vote`}
           </StyledButton>
         </ButtonWrapper>
       </Box>
       {newVote && (
         <NewVoteAbsoluteData>
-          {formatNumber(power * userVeCrv, {
+          {formatNumber(voteWeight * userVeCrv, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
             abbreviate: false,

@@ -10,18 +10,16 @@ import { useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactio
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import { addressValidationFn, createValidationSuite } from '@evm-ui/lib/validation'
-import type { Hex } from '@primitives/address.utils'
-
-const resetFormlessMutation = () => undefined
+import type { Address, Hex } from '@primitives/address.utils'
 
 type GaugeVoteMutation = {
-  gaugeAddress: string
+  gaugeAddress: Address
   voteWeight: number
 }
 
 type GaugeVoteValidation = GaugeVoteMutation & {
   chainId: ChainId
-  userAddress: string | undefined
+  userAddress: Address | undefined
 }
 
 const gaugeVoteValidationSuite = createValidationSuite(
@@ -37,10 +35,12 @@ const gaugeVoteValidationSuite = createValidationSuite(
 
 export const useGaugeVoteMutation = ({
   chainId,
+  onReset,
   userAddress,
 }: {
   chainId: ChainId
-  userAddress: string | undefined
+  onReset: () => void
+  userAddress: Address | undefined
 }) => {
   const { mutate, error, isPending } = useTransactionMutation<GaugeVoteMutation>({
     mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'dao.voteForGauge'] as const,
@@ -51,18 +51,11 @@ export const useGaugeVoteMutation = ({
     validationParams: { chainId },
     pendingMessage: () => t`Casting vote...`,
     successMessage: () => t`Succesfully cast vote!`,
-    onSuccess: async (data, receipt, variables, context) => {
-      await invalidateUserGaugeWeightVotesQuery({
-        chainId,
-        userAddress: context.wallet.address,
-      })
-      await invalidateUserGaugeVoteNextTimeQuery({
-        chainId,
-        gaugeAddress: variables.gaugeAddress,
-        userAddress: context.wallet.address,
-      })
+    onSuccess: async (_data, _receipt, { gaugeAddress }) => {
+      await invalidateUserGaugeWeightVotesQuery({ chainId, userAddress })
+      await invalidateUserGaugeVoteNextTimeQuery({ chainId, gaugeAddress, userAddress })
     },
-    onReset: resetFormlessMutation,
+    onReset,
   })
 
   const onSubmit = useCallback((values: GaugeVoteMutation) => mutate(values), [mutate])
