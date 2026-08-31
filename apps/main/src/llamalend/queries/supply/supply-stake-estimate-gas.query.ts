@@ -1,8 +1,5 @@
-import { type NetworkDict } from '@/llamalend/llamalend.types'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { combineQueries, pickQuery } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { useEstimateGas } from '@evm-ui/lib/model/entities/gas-info'
+import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
 import { StakeParams, StakeQuery, stakeValidationSuite, requireVault } from '../validation/supply.validation'
 import { useStakeIsApproved } from './supply-stake-approved.query'
 
@@ -24,18 +21,9 @@ const { useQuery: useStakeEstimateGasQuery } = queryFactory({
   validationSuite: stakeValidationSuite,
 })
 
-export const useStakeEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: StakeParams<ChainId>,
-  enabled?: boolean,
-) => {
-  const isApproved = useStakeIsApproved(query, enabled)
-  const approveEstimate = useStakeApproveEstimateGasQuery(query, enabled && !isApproved.data)
-  const stakeEstimate = useStakeEstimateGasQuery(query, enabled && !!isApproved.data)
-  const estimate = pickQuery([stakeEstimate, approveEstimate], ([stake, approve]) =>
-    isApproved.data ? stake : approve,
-  )
-  const gas = useEstimateGas(networks, query.chainId, estimate, enabled)
-
-  return combineQueries([isApproved, gas], (_, gas) => gas)
-}
+/** Estimates stake gas, using approval gas first when staking shares are not approved. */
+export const useStakeEstimateGas = createApprovedEstimateGasHook({
+  useIsApproved: useStakeIsApproved,
+  useApproveEstimate: useStakeApproveEstimateGasQuery,
+  useActionEstimate: useStakeEstimateGasQuery,
+})

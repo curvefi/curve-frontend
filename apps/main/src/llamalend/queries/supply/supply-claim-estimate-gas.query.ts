@@ -1,10 +1,9 @@
-import { type NetworkDict } from '@/llamalend/llamalend.types'
-import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { combineQueries } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { useEstimateGas } from '@evm-ui/lib/model/entities/gas-info'
+import { createEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
-import { q, QueryProp } from '@evm-ui/types/util'
+import type { Query } from '@evm-ui/types/util'
 import { claimableRewardsValidationSuite, requireGauge, requireVault } from '../validation/supply.validation'
 import { useClaimableCrv, useClaimableRewards } from './supply-claimable-rewards.query'
 import { hasClaimableRewards } from './supply-query.helpers'
@@ -28,48 +27,29 @@ const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
   validationSuite: claimableRewardsValidationSuite,
 })
 
-const useClaimEstimateGas = <ChainId extends IChainId, T>(
-  networks: NetworkDict<ChainId>,
-  query: ClaimEstimateParams<ChainId>,
-  claimable: QueryProp<T>,
-  claimableEstimateGas: QueryProp<TGas>,
-  enabled = true,
-) => {
-  const { chainId } = query
-  const gas = useEstimateGas(networks, chainId, claimableEstimateGas, enabled)
-  return combineQueries([claimable, gas], (_, gas) => gas)
-}
+/** Like `createEstimateGasHook`, but first fetches claimable rewards and skips gas estimation when none exist. */
+const createClaimEstimateGasHook = <T>(
+  useClaimable: (query: ClaimEstimateParams, enabled?: boolean) => Query<T>,
+  useEstimateGasQuery: (query: ClaimEstimateParams, enabled?: boolean) => Query<TGas>,
+  isClaimEnabled: (claimable: T | undefined) => boolean,
+) =>
+  createEstimateGasHook((query: ClaimEstimateParams, enabled?: boolean) => {
+    const claimable = useClaimable(query, enabled)
+    const estimateGas = useEstimateGasQuery(query, enabled && isClaimEnabled(claimable.data))
 
-export const useClaimCrvEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: ClaimEstimateParams<ChainId>,
-  enabled = true,
-) => {
-  const claimableCrv = useClaimableCrv(query, enabled)
-  const isClaimCrvEnabled = enabled && Number(claimableCrv.data) > 0
+    return combineQueries([claimable, estimateGas], (_, estimateGas) => estimateGas)
+  })
 
-  return useClaimEstimateGas(
-    networks,
-    query,
-    q(claimableCrv),
-    q(useClaimCrvEstimateGasQuery(query, isClaimCrvEnabled)),
-    isClaimCrvEnabled,
-  )
-}
+/** Estimates claim-CRV gas only when the user has claimable CRV. */
+export const useClaimCrvEstimateGas = createClaimEstimateGasHook(
+  useClaimableCrv,
+  useClaimCrvEstimateGasQuery,
+  claimable => Number(claimable) > 0,
+)
 
-export const useClaimRewardsEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: ClaimEstimateParams<ChainId>,
-  enabled = true,
-) => {
-  const claimableRewards = useClaimableRewards(query, enabled)
-  const isClaimRewardsEnabled = enabled && hasClaimableRewards(claimableRewards.data)
-
-  return useClaimEstimateGas(
-    networks,
-    query,
-    q(claimableRewards),
-    q(useClaimRewardsEstimateQuery(query, isClaimRewardsEnabled)),
-    isClaimRewardsEnabled,
-  )
-}
+/** Estimates claim-rewards gas only when the user has claimable rewards. */
+export const useClaimRewardsEstimateGas = createClaimEstimateGasHook(
+  useClaimableRewards,
+  useClaimRewardsEstimateQuery,
+  hasClaimableRewards,
+)

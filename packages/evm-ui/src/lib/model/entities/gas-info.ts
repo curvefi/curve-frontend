@@ -394,7 +394,8 @@ export function calculateGas(
 
 type GasEstimate = Amount | [Decimal, Decimal] | number[] | null | undefined
 
-export const useEstimateGas = (
+/** Converts an existing gas estimate query into native/USD gas cost info. */
+const useEstimateGas = (
   networks: Record<number, BaseConfig>,
   chainId: number | null | undefined,
   estimate: QueryResult<GasEstimate>,
@@ -412,6 +413,10 @@ export const useEstimateGas = (
   )
 }
 
+/**
+ * Converts a raw gas estimate value into native/USD gas cost info.
+ * @deprecated Prefer `useEstimateGas` for query results, or `createEstimateGasHook` for reusable estimate hooks.
+ */
 export const useEstimateGasValue = (
   networks: Record<number, BaseConfig>,
   chainId: number | null | undefined,
@@ -427,6 +432,7 @@ type WithOptionalChainId = {
   chainId?: number | null | undefined
 }
 
+/** Builds a reusable gas-cost hook from a single estimate-gas query hook. */
 export const createEstimateGasHook =
   <Query extends WithOptionalChainId, Estimate extends EstimateValue>(
     useEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
@@ -434,21 +440,20 @@ export const createEstimateGasHook =
   (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled = true) => {
     const estimate = useEstimate(query, enabled)
     const converted = useEstimateGas(networks, query.chainId, estimate, enabled && estimate.data != null)
-    return combineQueries([converted, estimate], data => data) // todo: useEstimateGas should receive the query
+    return combineQueries([converted, estimate], data => data)
   }
 
-type ApprovedEstimateGasHookConfig<Query, Estimate extends EstimateValue> = {
-  useIsApproved: (query: Query, enabled?: boolean) => QueryResult<boolean>
-  useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
-  useActionEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
-}
-
+/** Builds a reusable gas-cost hook for actions that may need approval first. */
 export const createApprovedEstimateGasHook =
   <Query extends WithOptionalChainId, Estimate extends EstimateValue>({
     useIsApproved,
     useApproveEstimate,
     useActionEstimate,
-  }: ApprovedEstimateGasHookConfig<Query, Estimate>) =>
+  }: {
+    useIsApproved: (query: Query, enabled?: boolean) => QueryResult<boolean>
+    useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
+    useActionEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
+  }) =>
   (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled = true) => {
     const isApproved = useIsApproved(query, enabled)
     const approveEstimate = useApproveEstimate(query, enabled && isApproved.data === false)
@@ -457,6 +462,5 @@ export const createApprovedEstimateGasHook =
       isApproved.data ? action : approve,
     )
     const gas = useEstimateGas(networks, query.chainId, estimate, enabled)
-
     return combineQueries([isApproved, gas], (_, gas) => gas)
   }
