@@ -24,10 +24,12 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
-const userDefaultValues = { stakeAssets: undefined, stakeShares: undefined, isFull: false }
+const userDefaultValues = { stakeAssets: undefined }
 
 const emptyStakeForm = (): StakeForm => ({
   ...userDefaultValues,
+  stakeShares: undefined,
+  isFull: false,
   maxStakeAssets: undefined,
 })
 
@@ -76,6 +78,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
       }),
       [chainId, marketId, stakeShares, userAddress, values.isFull, values.stakeAssets],
     ),
+    userDefaultValues,
   )
 
   const {

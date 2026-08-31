@@ -53,11 +53,12 @@ export const useRemoveCollateralForm = <
         chainId,
         marketId,
         userAddress,
-        maxCollateral: values.maxCollateral,
         userCollateral: values.userCollateral,
+        maxCollateral: values.maxCollateral,
       }),
       [chainId, marketId, userAddress, values.userCollateral, values.maxCollateral],
     ),
+    userDefaultValues,
   )
 
   const { onSubmit, ...action } = useRemoveCollateralMutation({
