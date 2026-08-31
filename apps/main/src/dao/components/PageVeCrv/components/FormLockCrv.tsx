@@ -14,7 +14,7 @@ export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
     chainId,
   })
   const errors = fromEntries(form.formState.visibleErrors)
-  const amountFieldError = errors.lockedAmount ?? errors.maxLockedAmount ?? ''
+  const amountFieldError = errors.lockedAmount ?? errors.maxLockedAmount
 
   return (
     <Form
@@ -27,7 +27,7 @@ export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
         disabled={isPending}
         lockedAmount={values.lockedAmount}
         lockedAmountError={amountFieldError}
-        handleInpLockedAmount={updateAmount}
+        onBalance={updateAmount}
       />
       <FormAlerts
         error={error}

@@ -24,14 +24,12 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
     error,
     onSubmit,
     updateAmount,
-    dateLabel,
+    effectiveUnlockDateLabel,
     updateUnlockDate,
     selectQuickDate,
   } = useCreateLockForm({ chainId })
 
   const errors = fromEntries(form.formState.visibleErrors)
-  const dateError = errors.utcDate ?? errors.days ?? ''
-  const amountFieldError = errors.lockedAmount ?? errors.maxLockedAmount ?? ''
 
   return (
     <Form
@@ -44,8 +42,8 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
         disabled={isPending}
         noCurrentLock
         lockedAmount={values.lockedAmount}
-        lockedAmountError={amountFieldError}
-        handleInpLockedAmount={updateAmount}
+        lockedAmountError={errors.lockedAmount ?? errors.maxLockedAmount}
+        onBalance={updateAmount}
       />
       <FieldDatePicker
         chainId={chainId}
@@ -56,8 +54,8 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
         minUtcDate={minUtcDate}
         maxUtcDate={maxUtcDate}
         utcDate={values.utcDate}
-        utcDateError={dateError}
-        dateLabel={dateLabel}
+        utcDateError={errors.utcDate ?? errors.days}
+        effectiveUnlockDateLabel={effectiveUnlockDateLabel}
         lockedAmount={values.lockedAmount}
         handleInpEstUnlockedDays={updateUnlockDate}
         handleBtnClickQuickAction={selectQuickDate}

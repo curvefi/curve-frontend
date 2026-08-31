@@ -1,15 +1,32 @@
+import { useConnection } from 'wagmi'
+import { useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
 import { networksIdMapper } from '@/dao/networks'
 import type { NetworkUrlParams } from '@/dao/types/dao.types'
+import { ConnectWalletPrompt } from '@evm-ui/features/connect-wallet'
 import { useParams } from '@evm-ui/hooks/router'
-import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
+import { t } from '@evm-ui/lib/i18n'
+import { ErrorMessage } from '@evm-ui/shared/ui/ErrorMessage'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
+import { FormSkeleton } from '@evm-ui/widgets/DetailPageLayout/FormSkeleton'
+import Box from '@mui/material/Box'
 import { FormCrvLocker } from './components/FormCrvLocker'
+
+const { MaxWidth, Spacing } = SizesAndSpaces
 
 export const VeCrv = () => {
   const { network } = useParams<NetworkUrlParams>()
+  const { address: userAddress } = useConnection()
+  const chainId = networksIdMapper[network]
+  const { data, error, isLoading } = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })
   return (
-    <DetailPageLayout
-      testId="vecrv-page"
-      formTabs={{ content: <FormCrvLocker chainId={networksIdMapper[network]} /> }}
-    />
+    <FormPlacementProvider placement="inline">
+      <Box sx={{ maxWidth: MaxWidth.actionCard, marginInline: 'auto', marginBlock: Spacing.md }}>
+        {data && <FormCrvLocker chainId={chainId} {...data} />}
+        {isLoading && <FormSkeleton />}
+        {error && <ErrorMessage title={t`Locker Error`} error={error} />}
+        {!userAddress && <ConnectWalletPrompt description={t`Please connect your wallet to view your locked CRV.`} />}
+      </Box>
+    </FormPlacementProvider>
   )
 }

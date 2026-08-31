@@ -14,13 +14,11 @@ import { Box } from '@legacy-ui/Box'
 
 export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
   const { form, canUnlock, lockedAmountAndUnlockTime, gas, isPending, isDisabled, error, onSubmit } =
-    useWithdrawLockForm({
-      chainId,
-    })
+    useWithdrawLockForm({ chainId })
   const lock = lockedAmountAndUnlockTime.data
 
   return (
-    <Form {...form} onSubmit={onSubmit} footer={<VeCrvActionInfo gas={q(gas)} isOpen={canUnlock} />}>
+    <Form {...form} onSubmit={onSubmit} footer={<VeCrvActionInfo gas={q(gas)} isOpen={!!canUnlock} />}>
       <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`CRV Locked`}:</p>

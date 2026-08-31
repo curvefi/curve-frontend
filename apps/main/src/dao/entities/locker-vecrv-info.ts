@@ -11,7 +11,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 type LockerVecrvQuery = UserChainQuery<ChainId>
 type LockerVecrvParams = UserChainParams<ChainId>
 
-type LockedAmountAndUnlockTime = {
+export type LockedAmountAndUnlockTime = {
   lockedAmount: Decimal
   /** Unix timestamp in milliseconds. */
   unlockTime: number

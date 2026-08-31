@@ -49,10 +49,6 @@ export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
   const error = increaseError ?? isApproved.error ?? gas.error
   const isPending = isIncreasing
   const isDisabled = !form.formState.isValid || isPending || isDebouncing
-  const onSubmit = form.handleSubmit(({ lockedAmount }) => {
-    if (lockedAmount == null) return
-    onSubmitIncrease({ lockedAmount })
-  })
 
   return {
     form,
@@ -62,7 +58,7 @@ export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
     isPending,
     isDisabled,
     error,
-    onSubmit,
+    onSubmit: form.handleSubmit(onSubmitIncrease),
     updateAmount: (lockedAmount: Decimal | undefined) => update({ lockedAmount }),
   }
 }

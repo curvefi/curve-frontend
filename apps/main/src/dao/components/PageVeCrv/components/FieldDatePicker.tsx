@@ -6,6 +6,7 @@ import { useLockerLockedAmountAndUnlockTime, useLockerVeCrv } from '@/dao/entiti
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { t } from '@evm-ui/lib/i18n'
+import { HelperMessage } from '@evm-ui/shared/ui/LargeTokenInput'
 import { amount, formatNumber, MILLISECONDS_PER_SECOND } from '@evm-ui/utils'
 import { VECRV_MAX_LOCK_YEARS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
@@ -25,10 +26,17 @@ const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: strin
   { label: t`Max` },
 ]
 
+/** veCRV unlocks are rounded to Thursday UTC week boundaries. */
+const isDateUnavailable = (date: DateValue) => {
+  const todayUtcDate = dayjs.utc(date.toString()).day()
+  const dayZeroUtcDate = dayjs.utc(new Date(0)).day()
+  return todayUtcDate !== dayZeroUtcDate
+}
+
 export const FieldDatePicker = ({
   chainId,
   currUnlockUtcTime,
-  dateLabel,
+  effectiveUnlockDateLabel,
   id,
   disabled,
   isMax,
@@ -50,7 +58,7 @@ export const FieldDatePicker = ({
   isMax?: boolean
   /** Set for create-lock flows, where there is no existing lock to compare against. */
   noCurrentLock?: boolean
-  dateLabel: string | undefined
+  effectiveUnlockDateLabel: string | undefined
   utcDate: DateValue | null
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   utcDateError: 'invalid-date' | string
@@ -90,19 +98,9 @@ export const FieldDatePicker = ({
       <DatePicker
         {...rest}
         granularity="day"
-        inputProviderProps={{
-          grid: true,
-          gridRowGap: 1,
-          id,
-          hasError: !!utcDateError,
-          showError: !!userAddress,
-        }}
-        isDisabled={[disabled, isMax, !minUtcDate, !maxUtcDate, !currentLock.data].some(Boolean)}
-        isDateUnavailable={(date: DateValue) => {
-          const todayUtcDate = dayjs.utc(date.toString()).day()
-          const dayZeroUtcDate = dayjs.utc(new Date(0)).day()
-          return todayUtcDate !== dayZeroUtcDate
-        }}
+        inputProviderProps={{ grid: true, gridRowGap: 1, id, hasError: !!utcDateError, showError: !!userAddress }}
+        isDisabled={[disabled, isMax, !minUtcDate, !maxUtcDate, !noCurrentLock && !currentLock.data].some(Boolean)}
+        isDateUnavailable={isDateUnavailable}
         label={t`Select unlock date`}
         minValue={minUtcDate && toCalendarDate(minUtcDate)}
         maxValue={maxUtcDate && toCalendarDate(maxUtcDate)}
@@ -152,14 +150,12 @@ export const FieldDatePicker = ({
           <br />
         </>
       ))}
-      {!!userAddress && utcDateError ? (
+      {userAddress && utcDateError ? (
         <Chip size="xs" isError>
           {utcDateError === 'invalid-date' ? t`Invalid date` : utcDateError}
         </Chip>
-      ) : dateLabel && utcDate ? (
-        <Chip size="xs" isBold>
-          Unlock date will be set to {dateLabel}
-        </Chip>
+      ) : effectiveUnlockDateLabel && utcDate ? (
+        <HelperMessage message={`${t`Unlock date will be set to`} ${effectiveUnlockDateLabel}`} isError />
       ) : (
         !noCurrentLock && (
           <Chip size="xs">

@@ -18,7 +18,7 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
     minUtcDate,
     maxUtcDate,
     isMax,
-    dateLabel,
+    effectiveUnlockDateLabel,
     gas,
     isPending,
     isDisabled,
@@ -42,7 +42,7 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
         maxUtcDate={maxUtcDate}
         utcDate={values.utcDate}
         utcDateError={dateError}
-        dateLabel={dateLabel}
+        effectiveUnlockDateLabel={effectiveUnlockDateLabel}
         handleInpEstUnlockedDays={updateUnlockDate}
         handleBtnClickQuickAction={selectQuickDate}
       />

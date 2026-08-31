@@ -37,12 +37,17 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
   const maxDays = maybe(remainingLockedDays, remainingLockedDays => VECRV_MAX_LOCK_DAYS - remainingLockedDays)
   const maxUnlockTime = calcUnlockTime({ days: maxDays, unlockTime: currUnlockTime })
   const maxUtcDate = useMemo(() => (maxUnlockTime ? dayjs.utc(maxUnlockTime) : null), [maxUnlockTime])
-  const isMax = maxDays != null && maxDays <= MAX_LOCK_REMAINDER_DAYS
 
-  useFormSync(form, {
-    minUnlockDate: currUnlockUtcTime ? toCalendarDate(currUnlockUtcTime) : null,
-    maxUnlockDate: maxUtcDate ? toCalendarDate(maxUtcDate) : null,
-  })
+  useFormSync(
+    form,
+    useMemo(
+      () => ({
+        minUnlockDate: maybe(currUnlockTime, unlockTime => toCalendarDate(dayjs.utc(unlockTime))),
+        maxUnlockDate: maybe(maxUtcDate, toCalendarDate),
+      }),
+      [currUnlockTime, maxUtcDate],
+    ),
+  )
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(() => ({ chainId, userAddress, days: values.days }), [chainId, userAddress, values.days]),
@@ -51,8 +56,6 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
 
   const estimateParams: ExtendLockParams = params
   const gas = useExtendLockGasEstimate(networks, estimateParams)
-  const calculatedUnlockTime = calcUnlockTime({ days: values.days, unlockTime: currUnlockTime })
-
   const updateUnlockDate = useCallback(
     (unlockDate: DateValue) => {
       if (!currUnlockUtcTime) return
@@ -71,8 +74,6 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
     onReset: () => form.reset(defaultValues),
     onExtended: useCallback(() => invalidateVeCrvQueries({ chainId, userAddress }), [chainId, userAddress]),
   })
-  const isDisabled = !form.formState.isValid || isPending || isDebouncing
-  const onSubmit = form.handleSubmit(onSubmitExtend)
 
   return {
     form,
@@ -80,26 +81,29 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
     currUnlockUtcTime,
     minUtcDate: currUnlockUtcTime,
     maxUtcDate,
-    isMax,
-    dateLabel: maybes([values.utcDate, calculatedUnlockTime], (utcDate, calculatedUnlockTime) =>
-      dayjs.utc(utcDate.toString()).isSame(dayjs.utc(calculatedUnlockTime))
-        ? undefined
-        : formatDate(calculatedUnlockTime),
+    isMax: maybe(maxDays, maxDays => maxDays <= MAX_LOCK_REMAINDER_DAYS),
+    effectiveUnlockDateLabel: maybes(
+      [values.utcDate, calcUnlockTime({ days: values.days, unlockTime: currUnlockTime })],
+      (utcDate, unlockTime) =>
+        dayjs.utc(utcDate.toString()).isSame(dayjs.utc(unlockTime)) ? undefined : formatDate(unlockTime),
     ),
     gas,
     isPending,
-    isDisabled,
+    isDisabled: !form.formState.isValid || isPending || isDebouncing,
     error: extendError ?? gas.error,
-    onSubmit,
+    onSubmit: form.handleSubmit(onSubmitExtend),
     updateUnlockDate,
     selectQuickDate: useCallback(
       (value?: number, unit?: dayjs.ManipulateType) => {
-        if (!currUnlockUtcTime || !maxUtcDate) return currentUtcDate
+        if (!currUnlockTime || !currUnlockUtcTime || !maxUtcDate) return currentUtcDate
         const targetDate = value && unit ? currUnlockUtcTime.add(value, unit) : maxUtcDate
-        updateUnlockDate(toCalendarDate(targetDate))
-        return targetDate
+        const days = targetDate.diff(currUnlockUtcTime, 'd')
+        const unlockTime = calcUnlockTime({ days, unlockTime: currUnlockTime })
+        const utcDate = dayjs.utc(unlockTime)
+        update({ utcDate: toCalendarDate(utcDate), days })
+        return utcDate
       },
-      [currUnlockUtcTime, currentUtcDate, maxUtcDate, updateUnlockDate],
+      [currUnlockTime, currUnlockUtcTime, currentUtcDate, maxUtcDate, update],
     ),
   }
 }

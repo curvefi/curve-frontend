@@ -1,15 +1,13 @@
-import { useConnection } from 'wagmi'
 import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate'
 import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw'
-import { useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
+import type { LockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
 import type { ChainId } from '@/dao/types/dao.types'
 import { t } from '@evm-ui/lib/i18n'
 import { decimalGreaterThan, ZERO } from '@evm-ui/utils'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
-import { maybe } from '@primitives/objects.utils'
 
 type LockerTabsParams = {
   chainId: ChainId
@@ -47,23 +45,20 @@ const menu = [
   },
 ] as const
 
-export const FormCrvLocker = (pageProps: { chainId: ChainId }) => {
-  const { chainId } = pageProps
-  const { address: userAddress } = useConnection()
-  const lockedAmountAndUnlockTime = useLockerLockedAmountAndUnlockTime({
-    chainId,
-    userAddress,
-  })
-
-  return maybe(lockedAmountAndUnlockTime.data, ({ lockedAmount, unlockTime }) => (
-    <FormTabs
-      menu={menu}
-      params={{
-        ...pageProps,
-        canUnlock: getIsLockExpired(lockedAmount, unlockTime),
-        hasLockedCrv: decimalGreaterThan(lockedAmount, ZERO),
-      }}
-      overflow="fullWidth"
-    />
-  ))
-}
+export const FormCrvLocker = ({
+  chainId,
+  unlockTime,
+  lockedAmount,
+}: { chainId: ChainId } & LockedAmountAndUnlockTime) => (
+  <FormTabs
+    menu={menu}
+    params={{
+      chainId,
+      lockedAmount,
+      unlockTime,
+      canUnlock: getIsLockExpired(lockedAmount, unlockTime),
+      hasLockedCrv: decimalGreaterThan(lockedAmount, ZERO),
+    }}
+    overflow="fullWidth"
+  />
+)

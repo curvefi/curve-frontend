@@ -7,7 +7,7 @@ import { type OnTransactionSuccess, useTransactionMutation } from '@evm-ui/lib/m
 import { formatToken, waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
 import { fetchIncreaseLockIsApproved } from '../queries/increase-lock-approved.query'
-import type { IncreaseLockMutation } from '../queries/increase-lock.types'
+import type { IncreaseLockFormValues, IncreaseLockMutation } from '../queries/increase-lock.types'
 import { increaseLockQueryValidationSuite } from '../queries/increase-lock.validation'
 
 export const useIncreaseLockMutation = ({
@@ -42,5 +42,6 @@ export const useIncreaseLockMutation = ({
     onSuccess: onIncreased,
     onReset,
   })
-  return { onSubmit: useCallback((values: IncreaseLockMutation) => mutate(values), [mutate]), error, isPending }
+  const onSubmit = useCallback((values: IncreaseLockFormValues) => mutate(values as IncreaseLockMutation), [mutate])
+  return { onSubmit, error, isPending }
 }

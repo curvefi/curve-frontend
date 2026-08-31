@@ -13,7 +13,7 @@ import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { dayjs } from '@evm-ui/lib/dayjs'
-import { VECRV_MAX_LOCK_YEARS } from '@evm-ui/utils/vecrv'
+import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
 import { formatDate } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -33,8 +33,6 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
   const values = form.watchValues()
   const { address: userAddress } = useConnection()
   const crv = useLockerCrv({ chainId, userAddress })
-
-  useFormSync(form, { maxLockedAmount: crv.data })
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       () => ({ chainId, userAddress, lockedAmount: values.lockedAmount, days: values.days }),
@@ -44,46 +42,31 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
   )
   const isApproved = useCreateLockIsApproved(params)
   const gas = useCreateLockGasEstimate(networks, params)
+  useFormSync(form, { maxLockedAmount: crv.data })
 
   const currUtcDate = dayjs.utc(useCurrentDate())
+  const currUtcDay = currUtcDate.startOf('day')
   const minUtcDate = currUtcDate
-  const maxUtcDate = currUtcDate.add(VECRV_MAX_LOCK_YEARS, 'year')
+  const maxUtcDate = currUtcDay.add(VECRV_MAX_LOCK_DAYS, 'day')
 
   const updateUnlockDate = useCallback(
     (unlockDate: DateValue) => {
       const utcDate = dayjs.utc(unlockDate.toString())
-      update({ utcDate: toCalendarDate(utcDate), days: utcDate.diff(currUtcDate, 'd') })
+      update({ utcDate: toCalendarDate(utcDate), days: utcDate.diff(currUtcDay, 'd') })
     },
-    [currUtcDate, update],
-  )
-  const selectQuickDate = useCallback(
-    (value?: number, unit?: dayjs.ManipulateType) => {
-      const targetDate = value && unit ? dayjs.utc().add(value, unit) : maxUtcDate
-      updateUnlockDate(toCalendarDate(targetDate))
-      return targetDate
-    },
-    [maxUtcDate, updateUnlockDate],
+    [currUtcDay, update],
   )
 
   const {
     onSubmit: onSubmitCreate,
     error: createError,
-    isPending: isCreating,
+    isPending,
   } = useCreateLockMutation({
     chainId,
     userAddress,
     onReset: () => form.reset(defaultValues),
     onCreated: useCallback(() => invalidateVeCrvQueries({ chainId, userAddress }), [chainId, userAddress]),
   })
-  const error = createError ?? isApproved.error ?? gas.error
-  const isPending = isCreating
-  const isDisabled = !form.formState.isValid || isPending || isDebouncing
-  const onSubmit = form.handleSubmit(({ lockedAmount, utcDate, days }) => {
-    if (lockedAmount == null || utcDate == null) return
-    onSubmitCreate({ lockedAmount, utcDate, days })
-  })
-
-  const calculatedUnlockTime = calcUnlockTime({ days: values.days })
 
   return {
     form,
@@ -91,17 +74,27 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     currUtcDate,
     minUtcDate,
     maxUtcDate,
-    dateLabel: maybes([values.utcDate, calculatedUnlockTime], (utcDate, calculatedUnlockTime) =>
-      dayjs.utc(utcDate.toString()).isSame(calculatedUnlockTime) ? undefined : formatDate(calculatedUnlockTime),
+    effectiveUnlockDateLabel: maybes([values.utcDate, calcUnlockTime({ days: values.days })], (utcDate, unlockTime) =>
+      dayjs.utc(utcDate.toString()).isSame(unlockTime) ? undefined : formatDate(unlockTime),
     ),
     gas,
     isApproved: isApproved.data,
     isPending,
-    isDisabled,
-    error,
-    onSubmit,
+    isDisabled: !form.formState.isValid || isPending || isDebouncing,
+    error: createError ?? isApproved.error ?? gas.error,
+    onSubmit: form.handleSubmit(onSubmitCreate),
     updateAmount: (lockedAmount: Decimal | undefined) => update({ lockedAmount }),
     updateUnlockDate,
-    selectQuickDate,
+    selectQuickDate: useCallback(
+      (value?: number, unit?: dayjs.ManipulateType) => {
+        const targetDate = value && unit ? dayjs.utc().add(value, unit) : maxUtcDate
+        const days = targetDate.diff(currUtcDay, 'd')
+        const unlockTime = calcUnlockTime({ days })
+        const utcDate = dayjs.utc(unlockTime)
+        update({ utcDate: toCalendarDate(utcDate), days })
+        return utcDate
+      },
+      [currUtcDay, maxUtcDate, update],
+    ),
   }
 }
