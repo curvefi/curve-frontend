@@ -5,7 +5,7 @@ import type { ChainId } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import { useManualPagination } from '@evm-ui/features/activity-table'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { mapQuery } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
@@ -13,7 +13,7 @@ import { scanAddressPath } from '@legacy-ui/utils'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { RECENT_REFUELS_PAGE_SIZE, useRecentRefuels } from '../../queries/recent-refuels.query'
-import { createRecentRefuelsColumns, type RecentRefuelRow } from './columns/columns.definitions'
+import { createRecentRefuelsColumns } from './columns/columns.definitions'
 
 export const RecentRefuels = ({
   chainId,
@@ -39,7 +39,7 @@ export const RecentRefuels = ({
     [recentRefuels.data?.tokens],
   )
   const pageCount = getPageCount(recentRefuels.data?.count, RECENT_REFUELS_PAGE_SIZE)
-  const table = useTable({
+  const table = useCurveTable({
     columns,
     query: mapQuery(recentRefuels, ({ data: events }) =>
       events.map(event => ({
@@ -51,13 +51,12 @@ export const RecentRefuels = ({
     manualPagination: true,
     pageCount,
     onPaginationChange,
-    ...getTableOptions<RecentRefuelRow>(recentRefuels.data?.data),
   })
 
   return (
     <Stack data-testid="refuel-recent-refuels">
       <CardHeader title={t`Recent Refuels`} size="small" />
-      <DataTable<RecentRefuelRow>
+      <DataTable
         table={table}
         emptyState={{ title: t`No recent refuels found` }}
         errorState={{ title: t`Could not load recent refuels` }}

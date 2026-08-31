@@ -3,14 +3,21 @@ import Skeleton from '@mui/material/Skeleton'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
-import type { Column } from '@tanstack/react-table'
-import { useCellSx, getCellVariant, type TableItem, type TanstackTable } from './data-table.utils'
+import type { Column, ReactTable, RowData } from '@tanstack/react-table'
+import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
+import { useCellSx } from './hooks/useCellSx'
 
-const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boolean; column: Column<T> }) => (
-  <TableCell sx={useCellSx({ isSticky, column })}>
+const SkeletonCell = <TData extends RowData>({
+  column,
+  isSticky,
+}: {
+  isSticky: boolean
+  column: Column<CurveTableFeatures, TData>
+}) => (
+  <TableCell sx={useCellSx({ isSticky, columnType: column.columnDef.meta?.type })}>
     <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
       <Typography
-        variant={getCellVariant(column)}
+        variant={getCellVariant(column.columnDef.meta?.variant)}
         data-testid={`data-table-cell-${column.id}`}
         sx={{ paddingBlock: '9px' }} // hardcoded to match the correct height of the cells
       >
@@ -20,12 +27,12 @@ const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boo
   </TableCell>
 )
 
-export const SkeletonRows = <T extends TableItem>({
+export const SkeletonRows = <TData extends RowData>({
   table,
   shouldStickFirstColumn,
   increasingLength,
 }: {
-  table: TanstackTable<T>
+  table: ReactTable<CurveTableFeatures, TData>
   shouldStickFirstColumn: boolean
   increasingLength?: IncreasingLengthCategory
 }) =>

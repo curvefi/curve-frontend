@@ -2,7 +2,6 @@ import { isEqual } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { useTableColumnVisibility } from '@evm-ui/hooks/useLocalStorage'
 import type { MigrationOptions } from '@evm-ui/hooks/useStoredState'
-import type { ColumnDefinition } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { VisibilityGroup } from '../visibility.types'
 
 /**
@@ -26,7 +25,6 @@ const flatten = <ColumnIds extends string>(visibilitySettings: VisibilityGroup<C
 /**
  * Hook to manage column and feature visibility settings. Currently saved in the state.
  *
- * @template Data - The data type of the table rows.
  * @template Variant - The variant type for visibility settings.
  * @template ColumnIds - The type of column identifiers.
  * @param tableTitle - The title of the table, used as a key for local storage.
@@ -37,11 +35,11 @@ const flatten = <ColumnIds extends string>(visibilitySettings: VisibilityGroup<C
  * @returns An object containing the current column settings, column visibility state, and a function to
  * toggle visibility of columns.
  */
-export const useVisibilitySettings = <TData, TVariant extends string, ColumnIds extends string>(
+export const useVisibilitySettings = <TVariant extends string, ColumnIds extends string>(
   tableTitle: string,
   groups: Record<TVariant, VisibilityGroup<ColumnIds>[]>,
   variant: TVariant,
-  columns: ColumnDefinition<TData>[],
+  columns: readonly { id?: string; meta?: { hidden?: boolean } }[],
   migration: MigrationOptions<Record<TVariant, VisibilityGroup<ColumnIds>[]>>,
 ) => {
   /** current visibility settings in grouped format */

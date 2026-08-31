@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { getTransactionActions } from '@evm-ui/features/activity-table'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
@@ -26,13 +26,12 @@ export const UserEventsTable = ({ eventsQuery }: UserEventsTableProps) => {
   const { columnVisibility } = useUserPositionHistoryVisibility()
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT)
 
-  const table = useTable({
+  const table = useCurveTable({
     query: eventsQuery,
     columns: USER_POSITION_HISTORY_COLUMNS,
     state: { columnVisibility, sorting },
     initialState: { pagination },
     onSortingChange: setSorting,
-    ...getTableOptions(eventsQuery.data),
   })
 
   return (

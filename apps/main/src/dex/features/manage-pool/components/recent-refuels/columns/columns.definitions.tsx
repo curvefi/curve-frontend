@@ -1,8 +1,7 @@
 import { t } from '@evm-ui/lib/i18n'
-import type { TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { AddressCell, TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import type { Address } from '@primitives/address.utils'
-import { createColumnHelper } from '@tanstack/react-table'
 import { AmountCell } from '../cells/AmountCell'
 import { getTokenAmountColumnId, RecentRefuelsColumnId } from './columns.enum'
 
@@ -12,7 +11,7 @@ export type RecentRefuelsToken = {
   decimals: number
 }
 
-export type RecentRefuelRow = TableItem & {
+export type RecentRefuelRow = {
   timestamp: number
   donor?: Address | null
   donorUrl?: string
@@ -23,7 +22,7 @@ export type RecentRefuelRow = TableItem & {
   txUrl?: string | null
 }
 
-const columnHelper = createColumnHelper<RecentRefuelRow>()
+const columnHelper = createAppColumnHelper<RecentRefuelRow>()
 
 const headers = {
   [RecentRefuelsColumnId.Time]: t`Time`,
@@ -34,33 +33,34 @@ const headers = {
 const getTokenAmountHeader = (token: RecentRefuelsToken) =>
   token.symbol ? `${token.symbol} ${t`amount`}` : t`Token amount`
 
-export const createRecentRefuelsColumns = (tokens: RecentRefuelsToken[]) => [
-  columnHelper.accessor('timestamp', {
-    id: RecentRefuelsColumnId.Time,
-    header: headers[RecentRefuelsColumnId.Time],
-    cell: ({ getValue, row }) => <TimestampCell timestamp={new Date(getValue())} txUrl={row.original.txUrl} />,
-    enableSorting: false,
-  }),
-  columnHelper.accessor('donor', {
-    id: RecentRefuelsColumnId.Refueler,
-    header: headers[RecentRefuelsColumnId.Refueler],
-    cell: ({ getValue, row }) => <AddressCell address={getValue() ?? ''} explorerUrl={row.original.donorUrl} />,
-    enableSorting: false,
-  }),
-  columnHelper.accessor('lpSharesMinted', {
-    id: RecentRefuelsColumnId.LpShares,
-    header: headers[RecentRefuelsColumnId.LpShares],
-    cell: ({ row }) => <AmountCell amount={row.original.lpSharesMinted} usdAmount={row.original.usdValue} />,
-    enableSorting: false,
-    meta: { type: 'numeric' },
-  }),
-  ...tokens.map((token, index) =>
-    columnHelper.display({
-      id: getTokenAmountColumnId(index),
-      header: getTokenAmountHeader(token),
-      cell: ({ row }) => <AmountCell amount={row.original.tokenAmounts?.[index]} usdAmount={undefined} />,
+export const createRecentRefuelsColumns = (tokens: RecentRefuelsToken[]) =>
+  columnHelper.columns([
+    columnHelper.accessor('timestamp', {
+      id: RecentRefuelsColumnId.Time,
+      header: headers[RecentRefuelsColumnId.Time],
+      cell: ({ getValue, row }) => <TimestampCell timestamp={new Date(getValue())} txUrl={row.original.txUrl} />,
+      enableSorting: false,
+    }),
+    columnHelper.accessor('donor', {
+      id: RecentRefuelsColumnId.Refueler,
+      header: headers[RecentRefuelsColumnId.Refueler],
+      cell: ({ getValue, row }) => <AddressCell address={getValue() ?? ''} explorerUrl={row.original.donorUrl} />,
+      enableSorting: false,
+    }),
+    columnHelper.accessor('lpSharesMinted', {
+      id: RecentRefuelsColumnId.LpShares,
+      header: headers[RecentRefuelsColumnId.LpShares],
+      cell: ({ row }) => <AmountCell amount={row.original.lpSharesMinted} usdAmount={row.original.usdValue} />,
       enableSorting: false,
       meta: { type: 'numeric' },
     }),
-  ),
-]
+    ...tokens.map((token, index) =>
+      columnHelper.display({
+        id: getTokenAmountColumnId(index),
+        header: getTokenAmountHeader(token),
+        cell: ({ row }) => <AmountCell amount={row.original.tokenAmounts?.[index]} usdAmount={undefined} />,
+        enableSorting: false,
+        meta: { type: 'numeric' },
+      }),
+    ),
+  ])

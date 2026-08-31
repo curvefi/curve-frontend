@@ -1,6 +1,6 @@
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { RewardsApy } from '@/dex/types/main.types'
-import { isSortedBy } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { isSortedBy, type CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -10,7 +10,7 @@ import { useLegacyHasPoolRewards } from '../hooks/useLegacyHasPoolRewards'
 import type { LegacyPoolRow } from '../types'
 import { Placeholder } from './Placeholder'
 
-type Prop = CellContext<LegacyPoolRow, RewardsApy | undefined> & { placeholder?: boolean }
+type Prop = CellContext<CurveTableFeatures, LegacyPoolRow, RewardsApy | undefined> & { placeholder?: boolean }
 
 export const LegacyRewardsIncentivesCell = ({
   getValue,

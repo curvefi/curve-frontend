@@ -13,7 +13,6 @@ import Stack from '@mui/material/Stack'
 import { useMarketContext } from '../../market-context'
 import { useClaimTab } from '../hooks/useClaimTab'
 import { ClaimActionInfoList } from './ClaimActionInfoList'
-import { type ClaimableToken } from './columns'
 import { TotalNotionalRow } from './columns/notional-cells'
 
 type ClaimTabProps<ChainId extends IChainId> = {
@@ -48,7 +47,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
       <FormContent
         footer={<ClaimActionInfoList params={params} networks={networks} isOpen={!!claimableTokens.length} />}
       >
-        <DataTable<ClaimableToken>
+        <DataTable
           category="form"
           table={table}
           emptyState={{ title: t`No rewards to claim`, testId: `${TEST_ID_PREFIX}-empty-state` }}

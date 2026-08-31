@@ -5,44 +5,51 @@ import { borderStyle } from '@evm-ui/utils'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
-import { type Column, flexRender, type Header } from '@tanstack/react-table'
+import { flexRender, type Header, type RowData } from '@tanstack/react-table'
 import { Tooltip } from '../Tooltip'
-import {
-  DataTableHeaderCellPaddingBlockEnd,
-  DataTableHeaderCellVerticalAlign,
-  getAlignment,
-  getExtraColumnPadding,
-  type DataTableSize,
-  type TableItem,
-} from './data-table.utils'
+import { type CurveTableFeatures, getAlignment, type DataTableSize, EXTRA_COLUMN_PADDING } from './data-table.utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-function useHeaderSx<T extends TableItem>({
+const HeaderCellPaddingBlockEnd = {
+  extraSmall: 0,
+  small: 0,
+  medium: Spacing.sm,
+  large: Spacing.sm,
+}
+
+const HeaderCellVerticalAlign = {
+  extraSmall: 'middle',
+  small: 'middle',
+  medium: 'bottom',
+  large: 'bottom',
+}
+
+function useHeaderSx({
+  canSort,
+  columnType,
+  isSorted,
   isSticky,
-  column,
   width,
   size,
 }: {
-  column: Column<T>
+  canSort: boolean
+  columnType?: Parameters<typeof getAlignment>[0]
+  isSorted: boolean
   isSticky: boolean
   width?: string | number
   size: DataTableSize
 }) {
-  const { paddingInlineStart, paddingInlineEnd } = getExtraColumnPadding(column)
-  const canSort = column.getCanSort()
-  const textAlign = getAlignment(column)
-  const isSorted = column.getIsSorted()
+  const textAlign = getAlignment(columnType)
   return useMemo(
     (): SxProps<Theme> => ({
       textAlign,
-      verticalAlign: DataTableHeaderCellVerticalAlign[size],
+      verticalAlign: HeaderCellVerticalAlign[size],
       color: t => t.design.Table.Header['Label_&_icon'][isSorted ? 'Active' : 'Default'],
       paddingBlockStart: 0,
-      paddingBlockEnd: DataTableHeaderCellPaddingBlockEnd[size],
+      paddingBlockEnd: HeaderCellPaddingBlockEnd[size],
       paddingInline: Spacing.xs,
-      paddingInlineStart,
-      paddingInlineEnd,
+      ...EXTRA_COLUMN_PADDING,
       ...(canSort && {
         cursor: 'pointer',
         '&:hover': {
@@ -59,34 +66,43 @@ function useHeaderSx<T extends TableItem>({
       width,
       minWidth: Sizing['3xl'],
     }),
-    [canSort, isSorted, isSticky, paddingInlineEnd, paddingInlineStart, size, textAlign, width],
+    [canSort, isSorted, isSticky, size, textAlign, width],
   )
 }
 
-export const HeaderCell = function <T extends TableItem>({
+export const HeaderCell = function <TData extends RowData>({
   header,
   isSticky,
   width,
   size,
 }: {
-  header: Header<T, unknown>
+  header: Header<CurveTableFeatures, TData>
   isSticky: boolean
   width?: string | number
   size: DataTableSize
 }) {
   const { column } = header
   const { tooltip } = column.columnDef.meta ?? {}
+  const canSort = column.getCanSort()
+  const isSorted = !!column.getIsSorted()
   return (
     <Typography
       component="th"
-      sx={useHeaderSx({ column, isSticky, width, size })}
+      sx={useHeaderSx({
+        canSort,
+        columnType: column.columnDef.meta?.type,
+        isSorted,
+        isSticky,
+        width,
+        size,
+      })}
       colSpan={header.colSpan}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}
       variant="tableHeaderS"
     >
       <Tooltip title={tooltip?.title} {...tooltip}>
-        <Sortable column={column} size={size} isEnabled={column.getCanSort()}>
+        <Sortable column={column} size={size} isEnabled={canSort}>
           {flexRender(column.columnDef.header, header.getContext())}
         </Sortable>
       </Tooltip>

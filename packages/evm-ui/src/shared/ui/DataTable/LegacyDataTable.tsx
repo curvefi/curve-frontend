@@ -14,7 +14,8 @@ import TableCell from '@mui/material/TableCell'
 import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
+import type { ReactTable, RowData } from '@tanstack/react-table'
+import { type CurveTableFeatures, DataTableHeaderHeight, type DataTableSize } from './data-table.utils'
 import { HeaderCell } from './HeaderCell'
 import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from './hooks/useTableScroll'
 import { LegacyDataRow, LegacyDataRowProps } from './LegacyDataRow'
@@ -27,7 +28,7 @@ import { useTableRowLimit } from './useTableRowLimit'
  * Resets the table pagination to the first page whenever the number of filtered results changes.
  * Skipped for manual pagination since data changes on every page change.
  */
-function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
+function useResetPageOnResultChange<TData extends RowData>(table: ReactTable<CurveTableFeatures, TData>) {
   const isManualPagination = table.options.manualPagination
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)
@@ -49,7 +50,7 @@ const { Sizing } = SizesAndSpaces
 /**
  * DataTable component to render the table with headers and rows.
  */
-export const LegacyDataTable = <T extends TableItem>({
+export const LegacyDataTable = <TData extends RowData>({
   emptyState,
   children,
   loading,
@@ -63,7 +64,7 @@ export const LegacyDataTable = <T extends TableItem>({
   footerRow,
   ...rowProps
 }: {
-  table: TanstackTable<T>
+  table: ReactTable<CurveTableFeatures, TData>
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
   loading: boolean
@@ -74,7 +75,7 @@ export const LegacyDataTable = <T extends TableItem>({
   disableStickyHeader?: boolean
   hideHeader?: boolean
   footerRow?: ReactNode
-} & Omit<LegacyDataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
+} & Omit<LegacyDataRowProps<TData>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
   const { table } = rowProps
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
@@ -119,7 +120,7 @@ export const LegacyDataTable = <T extends TableItem>({
       >
         {!hideHeader && (
           <TableHead sx={tableHeaderSx} data-testid="data-table-head">
-            {children && <LegacyFilterRow table={table}>{children}</LegacyFilterRow>}
+            {children && <LegacyFilterRow colSpan={columnCount}>{children}</LegacyFilterRow>}
 
             {headerGroups.map(headerGroup => (
               <TableRow key={headerGroup.id} sx={{ height: DataTableHeaderHeight[size] }}>
@@ -143,7 +144,7 @@ export const LegacyDataTable = <T extends TableItem>({
             emptyState
           ) : (
             visibleRows.map((row, index) => (
-              <LegacyDataRow<T>
+              <LegacyDataRow
                 key={row.id}
                 row={row}
                 isLastRow={index === visibleRows.length - 1}

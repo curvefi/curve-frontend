@@ -12,7 +12,7 @@ import { useForm } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
 import { type TokenUsdRate, useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { mapQuery } from '@evm-ui/types/util'
 import { decimal, decimalNegate } from '@evm-ui/utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
@@ -192,10 +192,9 @@ export function useClosePositionForm({
   const { data: closePositionData } = tableDataQuery
   const missing = closePositionData?.missing
 
-  const table = useTable({
+  const table = useCurveTable({
     columns: CLOSE_POSITION_COLUMNS,
     query: mapQuery(tableDataQuery, ({ rows }) => rows),
-    ...getTableOptions(closePositionData?.rows),
   })
 
   return {

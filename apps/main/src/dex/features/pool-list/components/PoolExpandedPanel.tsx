@@ -1,11 +1,15 @@
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { t } from '@evm-ui/lib/i18n'
+import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { Metric, type MetricProps } from '@evm-ui/shared/ui/Metric'
+import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { decimal, formatCappedRateValue, relativeTime } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
 import { NetApyTooltipContent } from '../cells/NetApyTooltipContent'
 import { RewardIcons } from '../cells/RewardIcons'
@@ -39,6 +43,34 @@ const getRateValueOptions = (
 type PoolExpandedPanelProps = Parameters<ExpandedPanelComponent<PoolRow>>[0] & { variant: PoolColumnVariant }
 
 const PRIMARY_METRIC_SIZE = 6 as const
+
+const PoolTokens = ({ pool }: { pool: PoolRow }) => (
+  <Stack data-testid="pool-tokens" sx={{ marginBlockStart: Spacing.md, gap: Spacing.sm }}>
+    <Typography variant="bodyMBold" color="textSecondary">
+      {t`Pool tokens`}
+    </Typography>
+
+    <Stack sx={{ gap: Spacing.xs }}>
+      {pool.tradeableCoins.map(({ address, symbol }) => (
+        <AddressActionInfo
+          key={address}
+          network={undefined} // Used for tooltip only, which we don't want anyway
+          title={
+            <TokenLabel
+              blockchainId={pool.network}
+              address={address}
+              label={symbol}
+              size="mui-md"
+              typographyVariant="bodyMRegular"
+            />
+          }
+          address={address}
+          testId={`pool-token-${address}`}
+        />
+      ))}
+    </Stack>
+  </Stack>
+)
 
 export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
   const pool = row.original
@@ -115,6 +147,7 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
             testId="pool-age"
           />
         ))}
+        <PoolTokens pool={pool} />
       </Grid>
     </Grid>
   )

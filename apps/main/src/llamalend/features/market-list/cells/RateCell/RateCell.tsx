@@ -1,6 +1,7 @@
 import type { FunctionComponent } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TooltipProps } from '@evm-ui/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
@@ -9,7 +10,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { assert } from '@primitives/objects.utils'
-import { CellContext } from '@tanstack/react-table'
+import type { CellContext } from '@tanstack/react-table'
 import { MarketColumnId } from '../../columns'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
 import { RewardsIcons } from './RewardsIcons'
@@ -37,11 +38,11 @@ const TooltipComponents: Record<MarketRateType, Record<MarketType, FunctionCompo
   },
 } as const
 
-export const RateCell = ({
+export const RateCell = <TValue extends number | null>({
   row: { original: market },
   getValue,
   column: { id },
-}: CellContext<LlamaMarketRow, number | null>) => {
+}: CellContext<CurveTableFeatures, LlamaMarketRow, TValue>) => {
   const rateType = assert(RateTypes[id as keyof typeof RateTypes], `RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType][market.type]
   const rate = getValue()
