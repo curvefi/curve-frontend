@@ -83,11 +83,7 @@ export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: 
         {isSuccessAddRewardToken && addRewardTokenData && (
           <TxInfoBar description={t`Reward token added`} txHash={scanTxPath(network, addRewardTokenData)} />
         )}
-        <FormAlerts
-          error={errors['root.serverError'] ?? null}
-          formErrors={visibleErrors}
-          handledErrors={['distributorId']}
-        />
+        <FormAlerts error={errors['root.serverError']} formErrors={visibleErrors} handledErrors={['distributorId']} />
       </Stack>
     </Form>
   )
