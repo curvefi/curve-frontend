@@ -4,30 +4,30 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import type { Row } from '@tanstack/react-table'
-import type { ExpandedPanelContext, TableItem } from './data-table.utils'
+import type { RowData } from '@tanstack/react-table'
 import type { DataRowProps } from './DataRow'
 
 const { Spacing } = SizesAndSpaces
 
 /** A component that renders part of the expanded panel for a table row */
-export type ExpandedPanelComponent<T extends TableItem> = FunctionComponent<ExpandedPanelContext<T>>
-
-export type ExpandedPanelConfig<T extends TableItem> = {
-  Body: ExpandedPanelComponent<T>
-  Actions?: ExpandedPanelComponent<T>
+export type ExpandedPanelComponent<TData extends RowData> = FunctionComponent<
+  Pick<DataRowProps<TData>, 'row' | 'table'>
+>
+export type ExpandedPanelConfig<TData extends RowData> = {
+  Body: ExpandedPanelComponent<TData>
+  Actions?: ExpandedPanelComponent<TData>
 }
 
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
  */
-export function ExpansionRow<T extends TableItem>({
+export function ExpansionRow<TData extends RowData>({
   row,
   table,
   expandedPanel,
   colSpan,
-}: Pick<DataRowProps<T>, 'table' | 'row'> & {
-  expandedPanel: NonNullable<DataRowProps<T>['expandedPanel']>
+}: Pick<DataRowProps<TData>, 'table' | 'row'> & {
+  expandedPanel: NonNullable<DataRowProps<TData>['expandedPanel']>
   colSpan: number
 }) {
   const { render, onExited, expanded } = useRowExpansion(row)
@@ -60,7 +60,7 @@ export function ExpansionRow<T extends TableItem>({
  *
  * It would be tidier to use a grid layout for the whole table
  */
-function useRowExpansion<T>(row: Row<T>) {
+function useRowExpansion(row: { getIsExpanded: () => boolean }) {
   const rowExpanded = row.getIsExpanded()
   const [render, setRender] = useState(rowExpanded)
   const [expanded, setExpanded] = useState(false)

@@ -74,7 +74,7 @@ export const TokenSelector = ({
   }, [gaugeRewardsDistributors, rewardTokenId, filteredTokens, updateForm])
 
   return (
-    <Stack sx={{ gap: Spacing.xxs, width: { tablet: '7.5rem' } }}>
+    <Stack sx={{ gap: Spacing.xxs }}>
       <Typography variant="headingXsBold">{t`Token`}</Typography>
       <TokenSelectorUIKit
         selectedToken={selectedToken}

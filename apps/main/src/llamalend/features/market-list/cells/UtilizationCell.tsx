@@ -3,6 +3,7 @@ import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-marke
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { Chain } from '@curvefi/prices-api'
 import { t, Trans } from '@evm-ui/lib/i18n'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { LinearProgress } from '@evm-ui/shared/ui/LinearProgress'
 import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
@@ -12,7 +13,7 @@ import { MarketType } from '@evm-ui/types/market'
 import { CRVUSD, formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { CellContext } from '@tanstack/react-table'
+import type { CellContext } from '@tanstack/react-table'
 
 const { Spacing } = SizesAndSpaces
 
@@ -96,7 +97,7 @@ const UtilizationTooltip = ({ market, children }: { market: LlamaMarket; childre
   </Tooltip>
 )
 
-export const UtilizationCell = ({ row, getValue }: CellContext<LlamaMarketRow, number>) => (
+export const UtilizationCell = ({ row, getValue }: CellContext<CurveTableFeatures, LlamaMarketRow, number>) => (
   <UtilizationTooltip market={row.original}>
     <Stack sx={{ gap: Spacing.xs }}>
       {formatNumber(getValue(), 'percent.rate')}

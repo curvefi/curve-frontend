@@ -1,4 +1,5 @@
 import { t } from '@evm-ui/lib/i18n'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
 import { UserPositionIndicator } from '@evm-ui/shared/ui/DataTable/UserPositionIndicator'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
@@ -12,7 +13,7 @@ import { PoolTooltipContent } from './PoolTooltipContent'
 
 const { Spacing, Height } = SizesAndSpaces
 
-export const PoolTitleCell = ({ row: { original: pool } }: CellContext<PoolRow, string>) => (
+export const PoolTitleCell = ({ row: { original: pool } }: CellContext<CurveTableFeatures, PoolRow, string>) => (
   <Stack direction="row" sx={{ height: Height.row }}>
     {pool.hasPosition && <UserPositionIndicator tooltipTitle={t`You have a balance in this pool`} />}
     <Tooltip clickable title={pool.name} body={<PoolTooltipContent pool={pool} />} placement="top">

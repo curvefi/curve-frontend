@@ -1,9 +1,9 @@
-import type { ExpandedPanelContext, TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable, DataTableProps } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
+import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { getTransactionActions } from './utils'
 
-type ActivityTableItem = TableItem & { txUrl?: string | null }
+type ActivityTableItem = { txUrl?: string | null }
 
 type ActivityTableProps<TData extends ActivityTableItem> = Pick<
   DataTableProps<TData>,
@@ -14,7 +14,7 @@ const DefaultExpandedPanelActions = <TData extends ActivityTableItem>({
   row: {
     original: { txUrl },
   },
-}: ExpandedPanelContext<TData>) => <ExpandedPanelActions actions={getTransactionActions(txUrl)} />
+}: Parameters<ExpandedPanelComponent<TData>>[0]) => <ExpandedPanelActions actions={getTransactionActions(txUrl)} />
 
 export const ActivityTable = <TData extends ActivityTableItem>({
   table,

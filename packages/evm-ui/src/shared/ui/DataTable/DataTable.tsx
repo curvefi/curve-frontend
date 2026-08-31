@@ -14,16 +14,11 @@ import TableCell from '@mui/material/TableCell'
 import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import type { RowData } from '@tanstack/react-table'
 import { EmptyStateCard, EmptyStateCardProps } from '../EmptyStateCard'
 import { ErrorMessage } from '../ErrorMessage'
-import {
-  DATA_TABLE_CATEGORIES,
-  DataTableCategory,
-  DataTableCategoryConfig,
-  DataTableHeaderHeight,
-  type TableItem,
-  type TanstackTable,
-} from './data-table.utils'
+import { DATA_TABLE_CATEGORIES, type DataTableCategory, type DataTableCategoryConfig } from './categories'
+import { DataTableHeaderHeight, type useCurveTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
 import { EmptyStateRow } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
@@ -44,22 +39,22 @@ type TableEmptyState = {
 } & Pick<EmptyStateCardProps, 'title' | 'description' | 'button' | 'secondaryButton'>
 type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
 
-export type DataTableProps<T extends TableItem> = {
+export type DataTableProps<TData extends RowData> = {
   category?: DataTableCategory
-  table: TanstackTable<T>
+  table: ReturnType<typeof useCurveTable<TData>>
   emptyState?: TableEmptyState // optional overrides for the built-in empty state
   errorState?: TableErrorState // optional overrides for the built-in error state
   children?: ReactNode // passed to <FilterRow />
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
-} & Omit<DataRowProps<T>, 'table' | 'row'>
+} & Omit<DataRowProps<TData>, 'table' | 'row'>
 
 /**
  * DataTable component to render the table with headers and rows.
  * The table header stays sticky only when enabled, rows are not limited, and table content fits within its parent.
  * When the table is wider than its parent, the header stops being sticky and the table becomes horizontally scrollable.
  */
-export const DataTable = <T extends TableItem>({
+export const DataTable = <TData extends RowData>({
   category = 'list',
   emptyState,
   errorState,
@@ -68,7 +63,7 @@ export const DataTable = <T extends TableItem>({
   footerRow,
   viewAllLabel,
   ...rowProps
-}: DataTableProps<T>) => {
+}: DataTableProps<TData>) => {
   const {
     size = 'small',
     height,
@@ -131,7 +126,7 @@ export const DataTable = <T extends TableItem>({
             {!hideHeader && (
               <TableHead sx={tableHeaderSx} data-testid="data-table-head">
                 {children && shouldStickyHeader && (
-                  <FilterRow table={table} testId={TABLE_FILTERS_TEST_ID}>
+                  <FilterRow colSpan={columnCount} testId={TABLE_FILTERS_TEST_ID}>
                     {children}
                   </FilterRow>
                 )}
@@ -152,10 +147,10 @@ export const DataTable = <T extends TableItem>({
             )}
             <TableBody>
               {visibleRows.map(row => (
-                <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
+                <DataRow key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
               ))}
               {error ? (
-                <EmptyStateRow table={table} size={emptyStateRowSize}>
+                <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>
                   <ErrorMessage
                     title={errorState?.title ?? t`Could not load data`}
                     subtitle={errorState?.description ?? error.message}
@@ -172,7 +167,7 @@ export const DataTable = <T extends TableItem>({
                 />
               ) : (
                 !rows.length && (
-                  <EmptyStateRow table={table} size={emptyStateRowSize}>
+                  <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>
                     <EmptyStateCard
                       title={emptyState?.title ?? t`No results found`}
                       description={emptyState?.description}

@@ -1,3 +1,4 @@
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
@@ -8,7 +9,7 @@ export const CollateralChangeCell = ({
   row: {
     original: { collateralChange, collateralChangeUsd, collateralToken },
   },
-}: CellContext<ParsedUserCollateralEvent, unknown>) => (
+}: CellContext<CurveTableFeatures, ParsedUserCollateralEvent, ParsedUserCollateralEvent['collateralChange']>) => (
   <InlineTableCell>
     <Typography
       variant="tableCellMBold"

@@ -4,14 +4,14 @@ import { useIsTablet } from '@evm-ui/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@evm-ui/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
 import { t } from '@evm-ui/lib/i18n'
-import { getHiddenCount, getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@evm-ui/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@evm-ui/shared/ui/DataTable/hooks/useFilters'
 import { LegacyDataTable } from '@evm-ui/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@evm-ui/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@evm-ui/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { q } from '@evm-ui/types/util'
-import { ExpandedState, getPaginationRowModel } from '@tanstack/react-table'
+import type { ExpandedState } from '@tanstack/react-table'
 import { LEGACY_POOL_COLUMNS, LegacyPoolColumnId, getDefaultLegacyPoolsSort } from './columns'
 import { LegacyPoolExpandedPanel } from './components/LegacyPoolExpandedPanel'
 import { LegacyPoolExpandedPanelActions } from './components/LegacyPoolExpandedPanelActions'
@@ -46,24 +46,24 @@ export const LegacyPoolsTable = ({ network }: { network: NetworkConfig }) => {
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
 
-  const table = useTable({
+  const table = useCurveTable({
     columns: LEGACY_POOL_COLUMNS,
     query: q({ data, isLoading, error: null }),
+    meta: { getRowHref: ({ url }) => url },
     state: { expanded, sorting, columnVisibility, columnFilters, pagination, globalFilter },
     onSortingChange,
     onExpandedChange,
     onPaginationChange,
     globalFilterFn,
-    ...getTableOptions(data),
-    getPaginationRowModel: getPaginationRowModel(),
   })
 
   const resultCount = table.getFilteredRowModel().rows.length
+  const colSpan = table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)
   return (
     <LegacyDataTable
       table={table}
       emptyState={
-        <EmptyStateRow table={table}>
+        <EmptyStateRow colSpan={colSpan}>
           <LegacyPoolsEmptyState columnFiltersById={columnFiltersById} resetFilters={resetFilters} />
         </EmptyStateRow>
       }
@@ -85,7 +85,7 @@ export const LegacyPoolsTable = ({ network }: { network: NetworkConfig }) => {
         chips={
           <LegacyPoolsFilters
             poolFilters={poolFilters}
-            hiddenCount={getHiddenCount(table)}
+            hiddenCount={table.getPreFilteredRowModel().rows.length - resultCount}
             resetFilters={resetFilters}
             onSortingChange={onSortingChange}
             sortField={sortField}

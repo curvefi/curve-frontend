@@ -1,28 +1,26 @@
 import { ClaimableReward } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import { t } from '@evm-ui/lib/i18n'
-import { type TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import { formatNumber } from '@evm-ui/utils'
-import { createColumnHelper } from '@tanstack/react-table'
 import { ClaimTabColumnId } from './columns.enum'
 import { NotionalCell } from './notional-cells'
 
-export type ClaimableToken = TableItem &
-  ClaimableReward & {
-    networkId: string
-    notional?: number
-    isLoading?: boolean // used for partial loading states e.g. notional rates
-  }
+export type ClaimableToken = ClaimableReward & {
+  networkId: string
+  notional?: number
+  isLoading?: boolean // used for partial loading states e.g. notional rates
+}
 
-const columnHelper = createColumnHelper<ClaimableToken>()
+const columnHelper = createAppColumnHelper<ClaimableToken>()
 
 const headers = {
   [ClaimTabColumnId.Token]: t`Token`,
   [ClaimTabColumnId.Notional]: t`Notional`,
 } as const
 
-export const CLAIM_TAB_COLUMNS = [
+export const CLAIM_TAB_COLUMNS = columnHelper.columns([
   columnHelper.accessor('amount', {
     id: ClaimTabColumnId.Token,
     header: headers[ClaimTabColumnId.Token],
@@ -48,4 +46,4 @@ export const CLAIM_TAB_COLUMNS = [
     meta: { type: 'numeric' },
     enableSorting: false,
   }),
-]
+])

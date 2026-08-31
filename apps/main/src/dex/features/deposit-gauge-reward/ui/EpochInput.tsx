@@ -42,7 +42,6 @@ export const EpochInput = ({
           onChange={event => onEpochChange(event.target.value)}
           disabled={isDisabled}
           error={!!formState.errors.epoch}
-          sx={{ width: '7.75rem' }}
           slotProps={{ htmlInput: { 'data-testid': 'deposit-epoch' } }}
         />
       </Stack>

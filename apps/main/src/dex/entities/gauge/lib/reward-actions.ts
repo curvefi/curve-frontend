@@ -23,7 +23,7 @@ export const useAddRewardToken = ({
       }
 
       return Promise.all([
-        userAddress && models.gaugeDistributors.invalidate({ chainId, poolId, userAddress }),
+        models.gaugeDistributors.invalidate({ chainId, poolId, userAddress }),
         models.depositRewardAvailable.invalidate({ chainId, poolId }),
       ])
     },

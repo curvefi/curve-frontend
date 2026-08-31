@@ -1,3 +1,4 @@
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
@@ -8,7 +9,7 @@ export const DebtChangeCell = ({
   row: {
     original: { loanChange, borrowToken },
   },
-}: CellContext<ParsedUserCollateralEvent, unknown>) => (
+}: CellContext<CurveTableFeatures, ParsedUserCollateralEvent, ParsedUserCollateralEvent['loanChange']>) => (
   <InlineTableCell>
     <Typography variant="tableCellMBold" color={loanChange ? (loanChange > 0 ? 'error' : 'success') : 'textPrimary'}>
       {loanChange > 0 ? '+' : ''}

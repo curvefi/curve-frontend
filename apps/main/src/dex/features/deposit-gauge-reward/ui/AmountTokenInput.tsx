@@ -32,6 +32,7 @@ export const AmountTokenInput = ({
   const { update: updateForm, formState, watchValues } = useFormContext<DepositRewardFormValues>()
   const { rewardTokenId, amount } = watchValues()
   const { amount: amountError, rewardTokenId: rewardTokenIdError } = fromEntries(formState.visibleErrors)
+  const error = amountError ?? rewardTokenIdError
 
   const [isOpen, openModal, closeModal] = useSwitch()
 
@@ -135,7 +136,7 @@ export const AmountTokenInput = ({
         )
       }
     >
-      {(amountError || rewardTokenIdError) && <HelperMessage message={amountError ?? rewardTokenIdError} isError />}
+      {error && <HelperMessage message={error} isError />}
     </LargeTokenInput>
   )
 }

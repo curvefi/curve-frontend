@@ -1,6 +1,4 @@
-import type { ReactNode } from 'react'
-import type { ColumnDefinition } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { AgeCell } from '../cells/AgeCell'
 import { BaseApyCell, WeeklyBaseApyCell } from '../cells/BaseApyCell'
 import { CrvApyCell } from '../cells/CrvApyCell'
@@ -25,115 +23,113 @@ import type { PoolRow } from '../types'
 import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
 
-type Tooltip = ColumnMeta<never, never>['tooltip']
-type PoolColumn = ColumnDefinition<PoolRow>
-type PoolColumnOptions = Omit<PoolColumn, 'id' | 'header'>
+const columnHelper = createAppColumnHelper<PoolRow>()
 
-const columnHelper = createColumnHelper<PoolRow>()
-
-const createTooltip = (id: keyof typeof POOL_TITLES, body: ReactNode): Tooltip => ({
-  title: POOL_TITLES[id],
-  body,
-})
-
-const display = (id: PoolColumnId, column: PoolColumnOptions): PoolColumn => ({
-  ...column,
-  id,
-  header: POOL_TITLES[id],
-})
-
-const accessor = (
-  id: PoolColumnId,
-  accessorFn: Parameters<typeof columnHelper.accessor>[0],
-  column: PoolColumnOptions,
-): PoolColumn =>
-  columnHelper.accessor(accessorFn, {
-    ...column,
-    id,
-    header: POOL_TITLES[id],
-  })
-
-export const POOL_COLUMNS = [
-  accessor(PoolColumnId.PoolName, 'name', {
+export const POOL_COLUMNS = columnHelper.columns([
+  columnHelper.accessor('name', {
+    id: PoolColumnId.PoolName,
+    header: POOL_TITLES[PoolColumnId.PoolName],
     cell: PoolTitleCell,
-    meta: { tooltip: createTooltip(PoolColumnId.PoolName, <PoolHeaderTooltipContent />) },
+    meta: {
+      tooltip: { title: POOL_TITLES[PoolColumnId.PoolName], body: <PoolHeaderTooltipContent /> },
+    },
   }),
-  accessor(PoolColumnId.NetApy, getNetApy, {
+  columnHelper.accessor(getNetApy, {
+    id: PoolColumnId.NetApy,
+    header: POOL_TITLES[PoolColumnId.NetApy],
     cell: ({ row }) => <NetApyCell pool={row.original} />,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.NetApy, <NetApyHeaderTooltipContent />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.NetApy], body: <NetApyHeaderTooltipContent /> },
     },
   }),
-  accessor(PoolColumnId.BaseApy, 'baseDailyApr', {
+  columnHelper.accessor('baseDailyApr', {
+    id: PoolColumnId.BaseApy,
+    header: POOL_TITLES[PoolColumnId.BaseApy],
     cell: BaseApyCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.BaseApy, <BaseApyHeaderTooltipContent />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.BaseApy], body: <BaseApyHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
-  accessor(PoolColumnId.WeeklyBaseApy, 'baseWeeklyApr', {
+  columnHelper.accessor('baseWeeklyApr', {
+    id: PoolColumnId.WeeklyBaseApy,
+    header: POOL_TITLES[PoolColumnId.WeeklyBaseApy],
     cell: WeeklyBaseApyCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.WeeklyBaseApy, <BaseApyHeaderTooltipContent weekly />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.WeeklyBaseApy], body: <BaseApyHeaderTooltipContent weekly /> },
     },
     sortUndefined: 'last',
   }),
-  accessor(PoolColumnId.CrvApy, pool => (pool.gauge?.isKilled ? undefined : getCrvApyRange(pool)?.unboostedApy), {
+  columnHelper.accessor(pool => (pool.gauge?.isKilled ? undefined : getCrvApyRange(pool)?.unboostedApy), {
+    id: PoolColumnId.CrvApy,
+    header: POOL_TITLES[PoolColumnId.CrvApy],
     cell: ({ row }) => <CrvApyCell pool={row.original} />,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.CrvApy, <CrvApyHeaderTooltipContent />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.CrvApy], body: <CrvApyHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
-  accessor(PoolColumnId.RewardsApy, getRewardsApy, {
+  columnHelper.accessor(getRewardsApy, {
+    id: PoolColumnId.RewardsApy,
+    header: POOL_TITLES[PoolColumnId.RewardsApy],
     cell: ({ row }) => <RewardsApyCell pool={row.original} />,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.RewardsApy, <RewardsApyHeaderTooltipContent />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.RewardsApy], body: <RewardsApyHeaderTooltipContent /> },
     },
   }),
-  display(PoolColumnId.Points, {
+  columnHelper.display({
+    id: PoolColumnId.Points,
+    header: POOL_TITLES[PoolColumnId.Points],
     cell: ({ row }) => <PointsCell pool={row.original} />,
     enableSorting: false,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.Points, <PointsHeaderTooltipContent />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.Points], body: <PointsHeaderTooltipContent /> },
     },
   }),
-  display(PoolColumnId.Tokens, {
+  columnHelper.display({
+    id: PoolColumnId.Tokens,
+    header: POOL_TITLES[PoolColumnId.Tokens],
     cell: ({ row }) => <TokensCell pool={row.original} />,
     enableSorting: false,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.Tokens, <TokensHeaderTooltipContent />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.Tokens], body: <TokensHeaderTooltipContent /> },
     },
   }),
-  accessor(PoolColumnId.Volume, 'tradingVolume24h', {
+  columnHelper.accessor('tradingVolume24h', {
+    id: PoolColumnId.Volume,
+    header: POOL_TITLES[PoolColumnId.Volume],
     cell: UsdCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.Volume, <VolumeHeaderTooltipContent />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.Volume], body: <VolumeHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
-  accessor(PoolColumnId.Tvl, 'tvlUsd', {
+  columnHelper.accessor('tvlUsd', {
+    id: PoolColumnId.Tvl,
+    header: POOL_TITLES[PoolColumnId.Tvl],
     cell: UsdCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.Tvl, <TvlHeaderTooltipContent />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.Tvl], body: <TvlHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
-  accessor(PoolColumnId.Age, 'creationDate', {
+  columnHelper.accessor('creationDate', {
+    id: PoolColumnId.Age,
+    header: POOL_TITLES[PoolColumnId.Age],
     cell: AgeCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.Age, <AgeHeaderTooltipContent />),
+      tooltip: { title: POOL_TITLES[PoolColumnId.Age], body: <AgeHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
-] satisfies PoolColumn[]
+])

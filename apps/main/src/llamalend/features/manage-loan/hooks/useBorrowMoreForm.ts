@@ -84,17 +84,18 @@ const useBorrowMoreParams = <ChainId extends LlamaChainId>({
         leverageProviders,
       ],
     ),
+    userDefaultValues,
   )
 
 const userDefaultValues = {
   userCollateral: undefined,
   userBorrowed: undefined,
   debt: undefined,
-  routeId: undefined,
 } satisfies Partial<BorrowMoreForm>
 
 const emptyBorrowMoreForm = (slippage: Decimal): BorrowMoreForm => ({
   ...userDefaultValues,
+  routeId: undefined,
   maxCollateral: undefined,
   maxBorrowed: undefined,
   maxDebt: undefined,
@@ -154,7 +155,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   } = useBorrowMoreMutation({
     network: networks[chainId],
     marketId,
-    onReset: () => form.reset(userDefaultValues),
+    onReset: () => form.reset({ ...userDefaultValues, routeId: undefined }),
     userAddress,
     leverageProviders,
   })

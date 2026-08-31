@@ -1,14 +1,13 @@
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
 import {
-  type MarketTradeRow,
   LLAMMA_TRADES_COLUMNS,
   useLlammaActivityVisibility,
   useManualPagination,
   DEFAULT_PAGE_SIZE,
 } from '@evm-ui/features/activity-table'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { mapQuery, q } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
@@ -46,7 +45,7 @@ export const useLlammaActivityTradesConfig = ({
       })),
   )
 
-  const table = useTable({
+  const table = useCurveTable({
     query: q({
       data: tradesWithUrlsQuery.data,
       isLoading: tradesWithUrlsQuery.isLoading || !ammAddress,
@@ -57,7 +56,6 @@ export const useLlammaActivityTradesConfig = ({
     manualPagination: true,
     pageCount,
     onPaginationChange,
-    ...getTableOptions<MarketTradeRow>(tradesWithUrlsQuery.data),
   })
 
   return {

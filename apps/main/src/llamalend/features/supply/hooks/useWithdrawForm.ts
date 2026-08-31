@@ -12,10 +12,11 @@ import { useForm } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { useMarketContext } from '../../market-context'
 
-const userDefaultValues = { withdrawAmount: undefined, userVaultShares: undefined }
+const userDefaultValues = { withdrawAmount: undefined }
 
 const emptyWithdrawForm = (): WithdrawForm => ({
   ...userDefaultValues,
+  userVaultShares: undefined,
   maxWithdrawAmount: undefined,
   isFull: false,
 })
@@ -42,8 +43,9 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { net
         isFull: values.isFull,
         userVaultShares: values.userVaultShares,
       }),
-      [chainId, marketId, userAddress, values.isFull, values.userVaultShares, values.withdrawAmount],
+      [chainId, marketId, userAddress, values.withdrawAmount, values.isFull, values.userVaultShares],
     ),
+    userDefaultValues,
   )
 
   const { maxWithdrawAmount: max, maxStakedShares, isFull } = useMaxWithdrawTokenValues({ params, form })

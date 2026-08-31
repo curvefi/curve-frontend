@@ -2,18 +2,18 @@ import { useMemo } from 'react'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { type Token } from '@primitives/address.utils'
 import { fromEntries } from '@primitives/objects.utils'
-import type { VisibilityState } from '@tanstack/react-table'
+import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { getTokenAmountColumnId, PoolLiquidityColumnId } from '../columns/pool-liquidity-columns'
 import { PoolTradesColumnId } from '../columns/pool-trades-columns'
 
-const createTradesMobileVisibility = (): VisibilityState => ({
+const createTradesMobileVisibility = (): ColumnVisibilityState => ({
   [PoolTradesColumnId.User]: true,
   [PoolTradesColumnId.Bought]: true,
   [PoolTradesColumnId.Sold]: false,
   [PoolTradesColumnId.Time]: false,
 })
 
-const createLiquidityMobileVisibility = (poolTokens: Token[]): VisibilityState => ({
+const createLiquidityMobileVisibility = (poolTokens: Token[]): ColumnVisibilityState => ({
   [PoolLiquidityColumnId.User]: true,
   [PoolLiquidityColumnId.Action]: true,
   [PoolLiquidityColumnId.Time]: false,
