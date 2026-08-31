@@ -5,7 +5,7 @@ import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { AnyCurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import type { Provider } from '@evm-ui/lib/ethers'
 import { type ChainQuery, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
-import { combineQueries, pickQuery, useCombinedQueries } from '@evm-ui/lib/queries/combine'
+import { combineQueries, useCombinedQueries } from '@evm-ui/lib/queries/combine'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib/validation'
 import { constQ, type Query as QueryResult } from '@evm-ui/types/util'
 import { Chain, formatNumber, formatToken, gweiToEther, gweiToWai, weiToGwei } from '@evm-ui/utils'
@@ -415,7 +415,7 @@ const useEstimateGas = (
 
 /**
  * Converts a raw gas estimate value into native/USD gas cost info.
- * @deprecated Prefer `useEstimateGas` for query results, or `createEstimateGasHook` for reusable estimate hooks.
+ * @deprecated Prefer `createEstimateGasHook`.
  */
 export const useEstimateGasValue = (
   networks: Record<number, BaseConfig>,
@@ -458,9 +458,7 @@ export const createApprovedEstimateGasHook =
     const isApproved = useIsApproved(query, enabled)
     const approveEstimate = useApproveEstimate(query, enabled && isApproved.data === false)
     const actionEstimate = useActionEstimate(query, enabled && isApproved.data === true)
-    const estimate = pickQuery([actionEstimate, approveEstimate], ([action, approve]) =>
-      isApproved.data ? action : approve,
-    )
+    const estimate = isApproved.data ? actionEstimate : approveEstimate
     const gas = useEstimateGas(networks, query.chainId, estimate, enabled)
     return combineQueries([isApproved, gas], (_, gas) => gas)
   }
