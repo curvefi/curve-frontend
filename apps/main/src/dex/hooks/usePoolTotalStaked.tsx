@@ -5,18 +5,15 @@ import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import { useCurve, useWallet } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/lib/dayjs'
-import { useNetworks } from '../entities/networks'
 
 type PoolTotalStaked = State['pools']['stakedMapper'][string]
 
 export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): PoolTotalStaked | undefined => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
   const { curveApi = null } = useCurve()
-  const { provider: walletProvider } = useWallet()
+  const { provider } = useWallet()
   const staked = useStore(state => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore(state => state.pools.setStateByActiveKey)
-  const { data: networks } = useNetworks()
-  const { rpcUrl } = (curveApi && networks[curveApi.chainId]) ?? {}
 
   const updateTotalStakeValue = useCallback(
     (value: { totalStakedPercent: string | number; gaugeTotalSupply: number | string }) => {
@@ -63,9 +60,8 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   useEffect(() => {
     const shouldCallApi = staked?.timestamp ? dayjs().diff(staked.timestamp, 'seconds') > 30 : true
 
-    if (address && rpcUrl && shouldCallApi) {
+    if (address && provider && shouldCallApi) {
       void (async () => {
-        const provider = walletProvider ?? new JsonRpcProvider(rpcUrl)
         const gaugeContract = isValidAddress(gauge.address)
           ? await getContract('gaugeTotalSupply', gauge.address, provider)
           : null
@@ -83,7 +79,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
       })()
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [curveApi?.signerAddress, curveApi?.chainId, address, rpcUrl, walletProvider])
+  }, [curveApi?.signerAddress, curveApi?.chainId, address, provider])
 
   return staked
 }

@@ -15,26 +15,22 @@ export const NETWORK_BASE_CONFIG = {
     gasPricesUrl: 'https://api.curve.finance/api/getGas',
     gasPricesDefault: 1,
     nativeCurrencySymbol: 'ETH',
-    rpcUrl: `https://eth.drpc.org`,
     explorerUrl: 'https://etherscan.io/',
   },
   [Chain.Optimism]: {
     id: 'optimism',
     gasL2: true,
-    rpcUrl: 'https://mainnet.optimism.io',
     nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://optimistic.etherscan.io/',
   },
   [Chain.Gnosis]: {
     id: 'xdai',
     name: 'Gnosis',
-    rpcUrl: 'https://rpc.gnosischain.com',
     nativeCurrencySymbol: 'XDAI',
     explorerUrl: 'https://gnosisscan.io/',
   },
   [Chain.Moonbeam]: {
     id: 'moonbeam',
-    rpcUrl: 'https://moonbeam.drpc.org',
     nativeCurrencySymbol: 'GLMR',
     explorerUrl: 'https://moonscan.io/',
   },
@@ -42,26 +38,22 @@ export const NETWORK_BASE_CONFIG = {
     id: 'polygon',
     gasPricesUrl: 'https://gasstation.polygon.technology/v2',
     gasPricesDefault: 0,
-    rpcUrl: 'https://polygon.drpc.org',
     nativeCurrencySymbol: 'POL',
     explorerUrl: 'https://polygonscan.com/',
   },
   [Chain.Kava]: {
     id: 'kava',
     gasPricesUnit: 'UKAVA',
-    rpcUrl: 'https://evm.kava.io',
     nativeCurrencySymbol: 'KAVA',
     explorerUrl: 'https://kavascan.io/',
   },
   [Chain.Fantom]: {
     id: 'fantom',
-    rpcUrl: 'https://rpc.ftm.tools/',
     nativeCurrencySymbol: 'FTM',
     explorerUrl: 'https://ftmscout.com/',
   },
   [Chain.Arbitrum]: {
     id: 'arbitrum',
-    rpcUrl: 'https://arb1.arbitrum.io/rpc',
     nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://arbiscan.io/',
   },
@@ -70,69 +62,58 @@ export const NETWORK_BASE_CONFIG = {
     gasPricesUnit: 'nAVAX',
     gasPricesUrl: 'https://api.avax.network/ext/bc/C/rpc',
     gasPricesDefault: 0,
-    rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
     nativeCurrencySymbol: 'AVAX',
     explorerUrl: 'https://snowscan.xyz/',
   },
   [Chain.Celo]: {
     id: 'celo',
-    rpcUrl: 'https://forno.celo.org',
     nativeCurrencySymbol: 'CELO',
     explorerUrl: 'https://celoscan.io/',
   },
   [Chain.Aurora]: {
     id: 'aurora',
-    rpcUrl: 'https://mainnet.aurora.dev',
     nativeCurrencySymbol: 'aETH',
     explorerUrl: 'https://aurorascan.dev/',
   },
   [Chain.ZkSync]: {
     id: 'zksync',
     name: 'zkSync Era',
-    rpcUrl: 'https://mainnet.era.zksync.io',
     nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://era.zksync.network/',
   },
   [Chain.Base]: {
     id: 'base',
     gasL2: true,
-    rpcUrl: 'https://base-rpc.publicnode.com',
     nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://basescan.org/',
   },
   [Chain.Bsc]: {
     id: 'bsc',
-    rpcUrl: 'https://rpc.nodeflare.app/bnb/public',
     nativeCurrencySymbol: 'BNB',
     explorerUrl: 'https://bscscan.com/',
   },
   [Chain.Fraxtal]: {
     id: 'fraxtal',
-    rpcUrl: `https://rpc.frax.com`,
     nativeCurrencySymbol: 'FRAX',
     explorerUrl: 'https://fraxscan.com/',
   },
   [Chain.XLayer]: {
     id: 'x-layer',
-    rpcUrl: `https://rpc.xlayer.tech`,
     nativeCurrencySymbol: 'OKB',
     explorerUrl: 'https://www.okx.com/web3/explorer/xlayer/',
   },
   [Chain.Mantle]: {
     id: 'mantle',
-    rpcUrl: `https://rpc.mantle.xyz`,
     nativeCurrencySymbol: 'MNT',
     explorerUrl: 'https://mantlescan.xyz/',
   },
   [Chain.Sonic]: {
     id: 'sonic',
-    rpcUrl: `https://rpc.soniclabs.com`,
     nativeCurrencySymbol: 'S',
     explorerUrl: 'https://sonicscan.org/',
   },
   [Chain.Hyperliquid]: {
     id: 'hyperliquid',
-    rpcUrl: `https://rpc.hyperliquid.xyz/evm`,
     nativeCurrencySymbol: 'HYPE',
     explorerUrl: 'https://hyperevmscan.io/',
   },
@@ -146,7 +127,6 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   explorerUrl: string
   isTestnet: boolean
   symbol: string
-  rpcUrl: string
   showInSelectNetwork: boolean
   showRouterSwap?: boolean // only for dex
 }
@@ -169,7 +149,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
   networkConfig: {
     nativeCurrencySymbol: string
     explorerUrl: string
-    rpcUrl: string
     id: TId
     name?: string
     isTestnet?: boolean
