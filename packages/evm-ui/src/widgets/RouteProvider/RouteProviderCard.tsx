@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import type { RouteQuery } from '@evm-ui/entities/router-api'
 import { t } from '@evm-ui/lib/i18n'
-import { useEstimateGas } from '@evm-ui/lib/model/entities/gas-info'
+import { useEstimateGasValue } from '@evm-ui/lib/model/entities/gas-info'
 import { FireIcon } from '@evm-ui/shared/icons/FireIcon'
 import { ReloadIcon } from '@evm-ui/shared/icons/ReloadIcon'
 import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
@@ -48,7 +48,7 @@ export const RouteProviderCard = ({
   networks,
 }: RouteProviderCardProps) => {
   const out = maybes([route, decimals], ({ amountOut }, decimals) => fromWei(amountOut[0], decimals))
-  const { data: gasEstimate } = useEstimateGas(networks, chainId, route?.gas)
+  const { data: gasEstimate } = useEstimateGasValue(networks, chainId, route?.gas)
   const Icon = RouteProviderIcons[router]
   const disabledTooltip = t`${RouteProviderLabels[router]} is unavailable on ${networks[chainId].name}.`
   const onClick = useCallback(() => (enabled ? onSelect(router) : undefined), [onSelect, router, enabled])

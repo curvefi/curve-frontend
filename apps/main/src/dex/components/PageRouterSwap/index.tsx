@@ -31,7 +31,7 @@ import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { logSuccess } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
-import { useEstimateGas } from '@evm-ui/lib/model/entities/gas-info'
+import { useEstimateGasValue } from '@evm-ui/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
@@ -108,7 +108,7 @@ export const QuickSwap = ({
     { chainId, userAddress, searchedParams },
     !userAddress,
   )
-  const gas = useEstimateGas(networks, chainId, formEstGas?.estimatedGas, !!userAddress)
+  const gas = useEstimateGasValue(networks, chainId, formEstGas?.estimatedGas, !!userAddress)
 
   const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
   const slippageType = routesAndOutput && getSlippageType(routesAndOutput)
