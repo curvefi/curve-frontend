@@ -1,7 +1,8 @@
 import Fuse, { type FuseOptionKey } from 'fuse.js'
 import { get, partition } from 'lodash'
 import { useMemo } from 'react'
-import type { FilterFn, Row } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import type { FilterFn, RowData } from '@tanstack/react-table'
 
 /** Replace ₮ with T so users don't need the special character to find Tether markets */
 export const cleanValue = <T>(value: T): T =>
@@ -77,14 +78,17 @@ function useFuseResultSet<T>(data: readonly T[], filterValue: string, keys: read
   }, [fuse, filterValue])
 }
 
-/** Returns a stable {@link FilterFn} backed by Fuse.js, for use as TanStack Table's `globalFilterFn`. */
-export function useFuzzyFilterFn<T>(
-  data: readonly T[],
+/** Returns a stable DataTable filter function backed by Fuse.js, for use as TanStack Table's `globalFilterFn`. */
+export function useFuzzyFilterFn<TData extends RowData>(
+  data: readonly TData[],
   filterValue: string,
-  keys: readonly FuseOptionKey<T>[],
-): FilterFn<T> {
+  keys: readonly FuseOptionKey<TData>[],
+): FilterFn<CurveTableFeatures, TData> {
   const resultSet = useFuseResultSet(data, filterValue, keys)
-  return useMemo(() => (row: Row<T>) => !resultSet || resultSet.has(row.original), [resultSet])
+  return useMemo<FilterFn<CurveTableFeatures, TData>>(
+    () => row => !resultSet || resultSet.has(row.original),
+    [resultSet],
+  )
 }
 
 /**

@@ -1,18 +1,11 @@
 import type { ReactNode } from 'react'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import type { TableItem, TanstackTable } from './data-table.utils'
 
-export const LegacyFilterRow = <T extends TableItem>({
-  table,
-  children,
-}: {
-  children: ReactNode
-  table: TanstackTable<T>
-}) => (
+export const LegacyFilterRow = ({ colSpan, children }: { children: ReactNode; colSpan: number }) => (
   <TableRow>
     <TableCell
-      colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
+      colSpan={colSpan}
       sx={t => ({ backgroundColor: t.design.Layer[1].Fill, padding: 0 })}
       data-testid="table-filters"
     >

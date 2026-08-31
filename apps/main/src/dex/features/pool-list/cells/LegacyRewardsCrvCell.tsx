@@ -1,13 +1,13 @@
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy } from '@/dex/types/main.types'
-import { isSortedBy } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { isSortedBy, type CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { LegacyPoolColumnId } from '../columns'
 import { hasLegacyCrvRewards } from '../hooks/useLegacyHasPoolRewards'
 import type { LegacyPoolRow } from '../types'
 import { Placeholder } from './Placeholder'
 
-type Prop = CellContext<LegacyPoolRow, RewardsApy | undefined> & { placeholder?: boolean }
+type Prop = CellContext<CurveTableFeatures, LegacyPoolRow, RewardsApy | undefined> & { placeholder?: boolean }
 
 export const LegacyRewardsCrvCell = ({ getValue, table, row: { original: poolData }, placeholder = true }: Prop) => {
   const rewards = getValue()

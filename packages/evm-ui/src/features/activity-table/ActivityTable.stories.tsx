@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { fromDate } from '@curvefi/prices-api/timestamp'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { constQ, fakeLoadingQ, q } from '@evm-ui/types/util'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -193,16 +193,14 @@ const DexPoolActivityComponent = () => {
   const tradesData = useMemo(() => generatePoolTrades(20), [])
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
 
-  const tradesTable = useTable({
+  const tradesTable = useCurveTable({
     query: constQ(tradesData),
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions(tradesData),
   })
 
-  const liquidityTable = useTable({
+  const liquidityTable = useCurveTable({
     query: constQ(liquidityData),
     columns: liquidityColumns,
-    ...getTableOptions(liquidityData),
   })
 
   return (
@@ -231,16 +229,14 @@ const LendMarketActivityComponent = () => {
   const tradesData = useMemo(() => generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN), [])
   const eventsData = useMemo(() => generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN), [])
 
-  const tradesTable = useTable({
+  const tradesTable = useCurveTable({
     query: constQ(tradesData),
     columns: LLAMMA_TRADES_COLUMNS,
-    ...getTableOptions(tradesData),
   })
 
-  const eventsTable = useTable({
+  const eventsTable = useCurveTable({
     query: constQ(eventsData),
     columns: LLAMMA_EVENTS_COLUMNS,
-    ...getTableOptions(eventsData),
   })
 
   return (
@@ -315,10 +311,9 @@ export const LendMarketActivity: LendStory = {
 }
 
 const LoadingStateComponent = () => {
-  const table = useTable({
+  const table = useCurveTable({
     query: fakeLoadingQ<PoolTradeRow[]>(undefined),
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions<PoolTradeRow>([]),
   })
   return (
     <ActivityTable
@@ -341,10 +336,9 @@ export const LoadingState: StoryObj = {
 }
 
 const EmptyStateComponent = () => {
-  const table = useTable({
+  const table = useCurveTable({
     query: constQ([] as PoolTradeRow[]),
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions<PoolTradeRow>([]),
   })
   return (
     <ActivityTable
@@ -367,10 +361,9 @@ export const EmptyState: StoryObj = {
 }
 
 const ErrorStateComponent = () => {
-  const table = useTable({
+  const table = useCurveTable({
     query: q({ data: [] as PoolTradeRow[], isLoading: false, error: new Error('Could not load swap data.') }),
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions<PoolTradeRow>([]),
   })
   return (
     <ActivityTable

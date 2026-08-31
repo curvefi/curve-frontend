@@ -1,5 +1,5 @@
 import { partition } from 'lodash'
-import { type MouseEvent, useId } from 'react'
+import { type MouseEvent, type ReactNode, useId } from 'react'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
 import { DotsVerticalIcon } from '@evm-ui/shared/icons/DotsVertical'
@@ -10,15 +10,23 @@ import { DrawerItems } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { applySxProps } from '@evm-ui/utils'
-import Button, { type ButtonOwnProps } from '@mui/material/Button'
+import Button, { type ButtonOwnProps, type ButtonProps } from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { splitAt } from '@primitives/array.utils'
-import type { ExpandedPanelAction } from './data-table.utils'
 
 const { MaxHeight, Spacing } = SizesAndSpaces
 // number of button rendered before hiding the rest in a kebab menu
 const VISIBLE_ACTION_COUNT = 2
+
+type ExpandedPanelAction = Pick<ButtonProps, 'color' | 'onClick' | 'size' | 'sx' | 'type'> & {
+  id: string
+  label: ReactNode
+  href?: string
+  testId?: string
+  /** Keep this action always in the more-actions drawer */
+  alwaysInKebabMenu?: boolean
+}
 
 const ExpandedPanelActionButton = ({
   action,
@@ -27,19 +35,7 @@ const ExpandedPanelActionButton = ({
   action: ExpandedPanelAction
   onDrawerActionClick?: () => void
 }) => {
-  const {
-    id: _id,
-    alwaysInKebabMenu: _alwaysInKebabMenu,
-    label,
-    href,
-    testId,
-    sx,
-    type,
-    color,
-    size,
-    onClick,
-    ...buttonProps
-  } = action
+  const { label, href, testId, sx, type, color, size, onClick } = action
   const inDrawer = !!onDrawerActionClick
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -48,7 +44,6 @@ const ExpandedPanelActionButton = ({
   }
 
   const sharedProps = {
-    ...buttonProps,
     onClick: onDrawerActionClick ? handleClick : onClick,
     color: inDrawer ? ('ghost' as const) : color,
     size: inDrawer ? 'small' : size,

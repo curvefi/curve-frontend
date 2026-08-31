@@ -1,4 +1,5 @@
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
 import { relativeTime } from '@evm-ui/utils'
@@ -8,7 +9,7 @@ import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import type { PoolRow } from '../types'
 
-export const AgeCell = ({ getValue }: CellContext<PoolRow, PoolRow['creationDate']>) => {
+export const AgeCell = ({ getValue }: CellContext<CurveTableFeatures, PoolRow, PoolRow['creationDate']>) => {
   const creationDate = getValue()
   const currentDate = useCurrentDate()
 

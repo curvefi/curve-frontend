@@ -10,8 +10,10 @@ const FULL_NETWORK_METRIC_IDS = ['pool-net-apy', 'pool-volume', 'pool-tvl', 'poo
 const LITE_METRIC_IDS = ['pool-net-apy', 'pool-tvl'] as const
 
 const expectMetricOrder = (address: string, expectedIds: readonly string[]) => {
+  const metricValueSelector = expectedIds.map(id => `[data-testid="${id}-value"]`).join(',')
+
   getV2PoolExpandedPanel(address)
-    .find('[data-testid$="-value"]')
+    .find(metricValueSelector)
     .should($values => {
       const metricIds = [...$values]
         .map(value => value.getAttribute('data-testid'))
@@ -20,6 +22,11 @@ const expectMetricOrder = (address: string, expectedIds: readonly string[]) => {
 
       expect(metricIds).to.deep.equal([...expectedIds])
     })
+}
+
+const expectPoolTokens = (address: string, representativeSymbol: string) => {
+  getV2PoolExpandedPanel(address).find('[data-testid="pool-tokens"]').should('be.visible')
+  getV2PoolExpandedPanel(address).find('[data-testid="pool-tokens"]').contains(representativeSymbol)
 }
 
 const visitAndExpand = (address: string, network: 'ethereum' | 'taiko' = 'ethereum') => {
@@ -34,11 +41,13 @@ describe('V2 pool-list mobile panels', () => {
     const { address } = V2_POOL_FIXTURES.showcase
     visitAndExpand(address)
     expectMetricOrder(address, FULL_NETWORK_METRIC_IDS)
+    expectPoolTokens(address, 'USDC')
   })
 
   it('shows the supported Lite metrics in the required mobile order', () => {
     const { address } = V2_POOL_FIXTURES.lite
     visitAndExpand(address, 'taiko')
     expectMetricOrder(address, LITE_METRIC_IDS)
+    expectPoolTokens(address, 'USDC')
   })
 })

@@ -1,14 +1,15 @@
 import { useMemo } from 'react'
-import type { TableItem, TanstackTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { maybes } from '@primitives/objects.utils'
+import type { ReactTable, RowData } from '@tanstack/react-table'
 
 /** Returns min, max, and step from a TanStack column's faceted min/max values. */
-export const useFacetedMaxMinValue = <TData extends TableItem>({
+export const useFacetedMaxMinValue = <TData extends RowData>({
   table,
   columnId,
 }: {
   /** TanStack table used as the source of faceted min/max values. */
-  table: TanstackTable<TData>
+  table: ReactTable<CurveTableFeatures, TData>
   /** Column id to read faceted min/max values from. */
   columnId: string
 }) => {

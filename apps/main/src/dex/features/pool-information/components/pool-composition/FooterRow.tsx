@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { t } from '@evm-ui/lib/i18n'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { amount, formatNumber } from '@evm-ui/utils'
@@ -12,7 +13,7 @@ import { PoolCompositionColumnId } from './columns/columns.enum'
 const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
-  visibleColumns: Column<PoolCompositionRow, unknown>[]
+  visibleColumns: Column<CurveTableFeatures, PoolCompositionRow>[]
   isLoading: boolean
   totalUsd: string
   hasBalance: boolean

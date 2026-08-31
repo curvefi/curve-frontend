@@ -1,23 +1,10 @@
 import type { ReactNode } from 'react'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import type { TableItem, TanstackTable } from './data-table.utils'
 
-export const FilterRow = <T extends TableItem>({
-  table,
-  children,
-  testId,
-}: {
-  children: ReactNode
-  table: TanstackTable<T>
-  testId?: string
-}) => (
+export const FilterRow = ({ colSpan, children, testId }: { children: ReactNode; colSpan: number; testId?: string }) => (
   <TableRow>
-    <TableCell
-      colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
-      sx={{ padding: 0 }}
-      data-testid={testId}
-    >
+    <TableCell colSpan={colSpan} sx={{ padding: 0 }} data-testid={testId}>
       {children}
     </TableCell>
   </TableRow>
