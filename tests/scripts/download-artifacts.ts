@@ -183,9 +183,11 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   const runId = RUN_ID || (await findLatestRunId(branch, workflow))
   if (!runId) throw new Error(`No ${workflow} runs for branch '${branch}'`)
 
-  const path = join(DEST_DIR, artifactBranch.replace(/\//g, '-') || 'current', runId)
+  const parent = join(DEST_DIR, artifactBranch.replace(/\//g, '-') || 'current')
+  await mkdir(parent, { recursive: true }) // make sure the parent directory exists
+  const path = join(parent, runId)
   const destination = join(repoRoot, path)
-  await mkdir(destination, { recursive: true })
+  await mkdir(destination) // hard fail on purpose when the folder exists
 
   console.info(
     `Downloading failure evidence for branch '${branch}' (artifact branch: ${artifactBranch}, workflow: ${workflow}, run: ${runId}) into '${path}'...`,

@@ -18,6 +18,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { constQ } from '@evm-ui/types/util'
 
 const routerCalldataOfSize = (bytes: number): Hex => `0x${'00'.repeat(bytes)}`
@@ -26,7 +27,7 @@ const OVERSIZED_CALLDATA = routerCalldataOfSize(9_401)
 const ROUTE_ERROR = '[data-testid="loan-form-error-routeId"]'
 
 const checkOversizedCalldataBlocked = (submitButtonTestId: string) => {
-  cy.wait('@routerRoutes')
+  cy.wait('@routerRoutes', LOAD_TIMEOUT)
   cy.get(ROUTE_ERROR).should('be.visible')
   cy.get(`[data-testid="${submitButtonTestId}"]`).should('be.disabled')
 }

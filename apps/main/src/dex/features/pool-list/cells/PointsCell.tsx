@@ -27,7 +27,8 @@ export const PointsCell = ({ pool }: { pool: PoolRow }) => {
         gridTemplateRows: campaigns.length > 1 ? 'repeat(2, auto)' : undefined,
         columnGap: Spacing.sm,
         rowGap: Spacing.xs,
-        justifyContent: 'flex-end',
+        justifyContent: 'end',
+        justifyItems: 'end',
       }}
     >
       {campaigns.map((campaign, index) => (

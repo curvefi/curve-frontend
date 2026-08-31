@@ -44,41 +44,24 @@ type TransferTabsParams = TransferProps & {
   isRewardsDistributor: boolean
 }
 
-const DepositTab = (params: TransferTabsParams) => <Deposit {...params} />
-
-const WithdrawTab = (params: TransferTabsParams) => <Withdraw {...params} />
-
-const SwapTab = ({ poolAlert, maxSlippage, seed, tokensMapper, ...pageTransferProps }: TransferTabsParams) =>
+const SwapTab = ({ poolAlert, ...props }: TransferTabsParams) =>
   poolAlert?.isDisableSwap ? (
     <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
   ) : (
-    <Swap
-      {...pageTransferProps}
-      poolAlert={poolAlert}
-      maxSlippage={maxSlippage}
-      seed={seed}
-      tokensMapper={tokensMapper}
-    />
+    <Swap poolAlert={poolAlert} {...props} />
   )
 
-const ManageGaugeTab = ({ poolData, routerParams, isGaugeManager, isRewardsDistributor }: TransferTabsParams) =>
-  poolData ? (
-    <ManageGauge
-      poolId={poolData.pool.id}
-      chainId={routerParams.rChainId}
-      isGaugeManager={isGaugeManager}
-      isRewardsDistributor={isRewardsDistributor}
-    />
-  ) : null
+const ManageGaugeTab = ({ poolData, routerParams, ...props }: TransferTabsParams) =>
+  poolData && <ManageGauge poolId={poolData.pool.id} chainId={routerParams.rChainId} {...props} />
 
 const menu = [
-  { value: 'deposit', label: t`Deposit`, component: DepositTab },
-  { value: 'withdraw', label: t`Withdraw`, component: WithdrawTab },
+  { value: 'deposit', label: t`Deposit`, component: Deposit },
+  { value: 'withdraw', label: t`Withdraw`, component: Withdraw },
   { value: 'swap', label: t`Swap`, component: SwapTab },
   {
     value: 'manage-gauge',
     label: t`Gauge`,
-    visible: (p: TransferTabsParams) => p.isAvailableManageGauge,
+    visible: (p: TransferTabsParams) => p.isAvailableManageGauge && !!p.poolData,
     component: ManageGaugeTab,
   },
 ] as const
@@ -141,7 +124,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     () =>
       !!rewardDistributors &&
       !!signerAddress &&
-      Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId as Address, signerAddress)),
+      Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
     [rewardDistributors, signerAddress],
   )
 
@@ -208,7 +191,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         isRewardsDistributor,
       ],
     ),
-    value: rFormType as TransferFormType | undefined,
+    value: rFormType,
   })
 
   return (

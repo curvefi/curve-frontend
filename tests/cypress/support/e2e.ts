@@ -24,6 +24,28 @@ Cypress.Commands.add('visitWithoutTestConnector', (route: AppRoute, options?: Pa
   }),
 )
 
+/** Types of some cypress internals we use to force a blank page */
+const _Cypress = Cypress as unknown as {
+  state(name: 'window'): Window | undefined
+  action(event: string, ...args: unknown[]): void
+}
+
+/**
+ * Firefox can sometimes reload the previous test's page while loading a new one, causing flaky tests.
+ * After each test, we now force the page to about:blank by using cypress internals.
+ * @see PR #3093 for diagnostics code that proves the issue.
+ */
+const ensureTestExited = () =>
+  _Cypress.state('window')?.location.href === 'about:blank' ||
+  new Cypress.Promise<void>(resolve => {
+    cy.once('window:load', () => resolve())
+    _Cypress.action('cy:url:changed', '')
+    _Cypress.action('cy:visit:blank', { testIsolation: true })
+  })
+
+/** Install the cypress internals to force a blank page after each test */
+afterEach(() => Cypress.isBrowser('firefox') && cy.then(ensureTestExited))
+
 if (Cypress.config('isInteractive')) {
   skipTestsAfterFailure()
 }

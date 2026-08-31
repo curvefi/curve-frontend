@@ -106,6 +106,31 @@ const createCoins = (network: V2PoolNetwork): RawV2Pool['coins'] => [
   },
 ]
 
+const createShowcaseTradeableCoins = (): RawV2Pool['tradeable_coins'] => [
+  ...createCoins('ethereum'),
+  {
+    pool_index: 2,
+    symbol: 'DAI',
+    address: address('4103'),
+    name: 'Dai Stablecoin',
+    decimals: 18,
+  },
+  {
+    pool_index: 3,
+    symbol: 'FRAX',
+    address: address('4104'),
+    name: 'Frax',
+    decimals: 18,
+  },
+  {
+    pool_index: 4,
+    symbol: 'WBTC',
+    address: address('4105'),
+    name: 'Wrapped Bitcoin',
+    decimals: 8,
+  },
+]
+
 const createLiteCoins = (): RawLitePool['coins'] => [
   {
     address: address('4001'),
@@ -201,6 +226,7 @@ const FULL_V2_POOL_FIXTURES = {
     crv_apr: 5,
     crv_apr_boosted: 12.5,
     extra_rewards_apr: [extraReward(2)],
+    tradeable_coins: createShowcaseTradeableCoins(),
     gauges: [{ address: address('2001'), is_killed: false }],
     trading_volume_24h: 6_000_000,
   }),

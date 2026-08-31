@@ -1,103 +1,91 @@
-import { MouseEvent, useCallback, useEffect, useMemo } from 'react'
-import { Address, ethAddress, isAddressEqual } from 'viem'
+import { useCallback, useEffect, useMemo } from 'react'
+import { isAddressEqual, zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
-import {
-  useDepositRewardApproveIsMutating,
-  useDepositRewardIsMutating,
-  useGaugeRewardsDistributors,
-} from '@/dex/entities/gauge'
-import { useNetworkByChain } from '@/dex/entities/networks'
+import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
-import {
-  FlexItemAmount,
-  FlexItemMaxBtn,
-  FlexItemToken,
-  StyledInputProvider,
-} from '@/dex/features/deposit-gauge-reward/ui/styled'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { useStore } from '@/dex/store/useStore'
-import { ChainId } from '@/dex/types/main.types'
-import { toTokenOption } from '@/dex/utils'
+import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
 import { useFormContext } from '@evm-ui/features/forms'
 import { TokenList, type TokenOption, TokenSelector } from '@evm-ui/features/select-token'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { formatNumber } from '@evm-ui/utils'
-import { InputDebounced, InputMaxBtn } from '@legacy-ui/InputComp'
-import { FlexContainer } from '@legacy-ui/styled-containers'
-import { notFalsy } from '@primitives/objects.utils'
+import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
+import { mapQuery, q, useMappedQuery } from '@evm-ui/types/util'
+import { decimal, decimalMultiply, shortenAddress } from '@evm-ui/utils'
+import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 
-export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
-  const rewardTokenId = watchValue('rewardTokenId')
-  const amount = watchValue('amount')
-  const epoch = watchValue('epoch')
+export const AmountTokenInput = ({
+  chainId,
+  poolId,
+  networkId,
+  isPendingDepositRewardApprove,
+  isPendingDepositReward,
+}: {
+  chainId: ChainId
+  poolId: string
+  networkId: NetworkEnum
+  isPendingDepositRewardApprove: boolean
+  isPendingDepositReward: boolean
+}) => {
+  const { update: updateForm, formState, watchValues } = useFormContext<DepositRewardFormValues>()
+  const { rewardTokenId, amount } = watchValues()
+  const { amount: amountError, rewardTokenId: rewardTokenIdError } = fromEntries(formState.visibleErrors)
+  const error = amountError ?? rewardTokenIdError
 
   const [isOpen, openModal, closeModal] = useSwitch()
 
-  const { address: signerAddress } = useConnection()
-  const isMaxLoading = useStore(state => state.quickSwap.isMaxLoading)
-  const {
-    data: { networkId },
-  } = useNetworkByChain({ chainId })
-
+  const { address: userAddress } = useConnection()
   const { tokensMapper } = useTokensMapper(chainId)
 
   const { data: rewardDistributors, isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
     poolId,
-    userAddress: signerAddress,
+    userAddress,
   })
 
-  const isMutatingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })
-  const isMutatingDepositReward = useDepositRewardIsMutating({ chainId, poolId, rewardTokenId, amount, epoch })
-
   const filteredTokens = useMemo<TokenOption[]>(() => {
-    if (isPendingRewardDistributors || !rewardDistributors || !signerAddress) return []
+    if (isPendingRewardDistributors || !rewardDistributors || !userAddress) return []
 
-    const activeRewardTokens = Object.entries(rewardDistributors)
-      .filter(([_, distributor]) => isAddressEqual(distributor as Address, signerAddress))
+    const activeRewardTokens = recordEntries(rewardDistributors)
+      .filter(([_, distributor]) => isAddressEqual(distributor, userAddress))
       .map(([tokenId]) => tokenId)
 
-    return notFalsy(...Object.values(tokensMapper))
-      .filter(token =>
-        activeRewardTokens.some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
-      )
-      .map(toTokenOption(networkId))
-  }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, networkId])
+    return activeRewardTokens.map(address => ({
+      chain: networkId,
+      address,
+      symbol: tokensMapper[address.toLowerCase()]?.symbol ?? shortenAddress(address),
+      volume: tokensMapper[address.toLowerCase()]?.volume ?? 0,
+    }))
+  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, networkId])
 
   useEffect(() => {
     if (
-      rewardTokenId &&
       filteredTokens.length &&
-      !filteredTokens.some(token => isAddressEqual(token.address, rewardTokenId))
+      (!rewardTokenId || !filteredTokens.some(token => isAddressEqual(token.address, rewardTokenId)))
     ) {
       updateForm({ rewardTokenId: filteredTokens[0].address }, { automated: true })
     }
   }, [filteredTokens, rewardTokenId, updateForm])
 
   const token = filteredTokens.find(x => x.address === rewardTokenId)
-  const tokenAddresses = filteredTokens.map(t => t.address)
+  const tokenAddresses = filteredTokens.map(t => t.address).filter(t => !isAddressEqual(t, zeroAddress))
 
-  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses })
-  const { data: tokenBalances, isLoading: isTokenBalancesLoading } = useTokenBalances({
+  const tokenPrices = useTokenUsdRates({ chainId, tokenAddresses })
+  const tokenBalances = useTokenBalances({
     chainId,
-    userAddress: signerAddress,
+    userAddress,
     tokenAddresses,
   })
 
-  const rewardTokenBalance = useMemo(
-    () => rewardTokenId && tokenBalances?.[rewardTokenId],
-    [rewardTokenId, tokenBalances],
+  const rewardTokenBalance = useMappedQuery(
+    tokenBalances,
+    useCallback(tokenBalances => rewardTokenId && tokenBalances?.[rewardTokenId], [rewardTokenId]),
   )
 
-  const onChangeAmount = useCallback(
-    (amount: string) => {
-      updateForm({ amount })
-    },
-    [updateForm],
+  const tokenUsdRate = mapQuery(tokenPrices, tokenPrices =>
+    maybe(rewardTokenId, rewardTokenId => tokenPrices?.[rewardTokenId]),
   )
 
   const onChangeToken = useCallback(
@@ -108,50 +96,29 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     [rewardTokenId, updateForm],
   )
 
-  const onMaxButtonClick = useCallback(
-    (e?: MouseEvent<HTMLButtonElement>) => {
-      e?.preventDefault()
-      if (!rewardTokenBalance) return
-      updateForm({ amount: rewardTokenBalance })
-    },
-    [rewardTokenBalance, updateForm],
-  )
-
-  const isDisabled = isMutatingDepositReward || isMutatingDepositRewardApprove
+  const isDisabled = isPendingDepositReward || isPendingDepositRewardApprove
 
   return (
-    <FlexContainer>
-      <StyledInputProvider
-        id="deposit-reward"
-        inputVariant={formState.errors.rewardTokenId ? 'error' : undefined}
-        disabled={isDisabled}
-      >
-        <FlexItemAmount>
-          <InputDebounced
-            id="deposit-amount"
-            type="number"
-            labelProps={
-              signerAddress && {
-                label: t`Avail.`,
-                descriptionLoading: isTokenBalancesLoading,
-                description: formatNumber(rewardTokenBalance, 'token.amount'),
-              }
-            }
-            testId="deposit-amount"
-            value={isMaxLoading ? '' : (amount ?? '')}
-            onChange={onChangeAmount}
-          />
-        </FlexItemAmount>
-        <FlexItemMaxBtn>
-          <InputMaxBtn
-            loading={isMaxLoading}
-            disabled={isDisabled}
-            isNetworkToken={rewardTokenId === ethAddress}
-            testId="max"
-            onClick={onMaxButtonClick}
-          />
-        </FlexItemMaxBtn>
-        <FlexItemToken>
+    <LargeTokenInput
+      name="amount"
+      label={t`Amount to deposit`}
+      balance={q({ data: decimal(amount), isLoading: false, error: amountError ? Error(amountError) : null })}
+      onBalance={useCallback(amount => updateForm({ amount }), [updateForm])}
+      walletBalance={
+        userAddress && {
+          symbol: token?.symbol,
+          balance: rewardTokenBalance,
+          usdRate: tokenUsdRate,
+          disabled: isDisabled,
+          buttonTestId: 'max',
+        }
+      }
+      maxBalance={{ balance: rewardTokenBalance, chips: 'max' }}
+      inputBalanceUsd={maybes([amount, decimal(tokenUsdRate.data)], decimalMultiply)}
+      disabled={isDisabled}
+      testId="deposit-amount"
+      tokenSelector={
+        token && (
           <TokenSelector
             selectedToken={token}
             disabled={isDisabled}
@@ -161,13 +128,15 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
           >
             <TokenList
               tokens={filteredTokens}
-              balances={tokenBalances}
-              tokenPrices={tokenPrices}
+              balances={tokenBalances.data}
+              tokenPrices={tokenPrices.data}
               onToken={onChangeToken}
             />
           </TokenSelector>
-        </FlexItemToken>
-      </StyledInputProvider>
-    </FlexContainer>
+        )
+      }
+    >
+      {error && <HelperMessage message={error} isError />}
+    </LargeTokenInput>
   )
 }

@@ -24,10 +24,12 @@ export const visitV2PoolList = ({
     cy.wait('@dex-v2-lite-pool-chains', API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-lite-pools', API_LOAD_TIMEOUT)
   } else {
+    cy.wait(['@dex-v2-pool-filters', '@dex-v2-hidden-pools'], API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
   }
   cy.wait('@dex-v2-merkl-curve', API_LOAD_TIMEOUT)
+  cy.get('[data-testid="data-table"]', API_LOAD_TIMEOUT).should('be.visible')
 
   if (!isMobile && network === 'ethereum') {
     cy.get(`[data-testid="data-table-header-${PoolColumnId.NetApy}"]`, API_LOAD_TIMEOUT).should('be.visible')
@@ -50,13 +52,12 @@ export const getV2PoolCell = (address: string, columnId: PoolColumnId) =>
 
 export const showV2PoolColumns = (columnIds: readonly PoolColumnId[]) => {
   cy.get('[data-testid="btn-visibility-settings"]').click()
+  cy.get('[data-testid="visibility-settings-popover"]').should('be.visible')
   for (const columnId of columnIds) {
     cy.get(`[data-testid="visibility-toggle-${columnId}"]`)
-      .should('exist')
+      .should('be.visible')
       .then($toggle => {
-        const $input = $toggle.is('input') ? $toggle : $toggle.find('input')
-
-        if (!$input.is(':checked')) cy.wrap($toggle).click()
+        if (!$toggle.find('input').is(':checked')) cy.wrap($toggle).click()
       })
   }
   cy.get('body').click(0, 0)

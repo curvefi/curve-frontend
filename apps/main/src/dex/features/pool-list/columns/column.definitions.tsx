@@ -8,6 +8,7 @@ import { NetApyCell } from '../cells/NetApyCell'
 import { PointsCell } from '../cells/PointsCell'
 import { PoolTitleCell } from '../cells/PoolTitleCell'
 import { RewardsApyCell } from '../cells/RewardsApyCell'
+import { TokensCell } from '../cells/TokensCell'
 import { UsdCell } from '../cells/UsdCell'
 import { getCrvApyRange, getNetApy, getRewardsApy } from '../cells/utils'
 import { AgeHeaderTooltipContent } from '../header-tooltips/AgeHeaderTooltipContent'
@@ -17,6 +18,7 @@ import { NetApyHeaderTooltipContent } from '../header-tooltips/NetApyHeaderToolt
 import { PointsHeaderTooltipContent } from '../header-tooltips/PointsHeaderTooltipContent'
 import { PoolHeaderTooltipContent } from '../header-tooltips/PoolHeaderTooltipContent'
 import { RewardsApyHeaderTooltipContent } from '../header-tooltips/RewardsApyHeaderTooltipContent'
+import { TokensHeaderTooltipContent } from '../header-tooltips/TokensHeaderTooltipContent'
 import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
 import { VolumeHeaderTooltipContent } from '../header-tooltips/VolumeHeaderTooltipContent'
 import type { PoolRow } from '../types'
@@ -100,6 +102,14 @@ export const POOL_COLUMNS = [
     meta: {
       type: 'numeric',
       tooltip: createTooltip(PoolColumnId.Points, <PointsHeaderTooltipContent />),
+    },
+  }),
+  display(PoolColumnId.Tokens, {
+    cell: ({ row }) => <TokensCell pool={row.original} />,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(PoolColumnId.Tokens, <TokensHeaderTooltipContent />),
     },
   }),
   accessor(PoolColumnId.Volume, 'tradingVolume24h', {
