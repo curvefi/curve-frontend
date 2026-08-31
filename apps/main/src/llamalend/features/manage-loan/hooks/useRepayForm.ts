@@ -72,17 +72,18 @@ const useRepayParams = ({
         routeId,
       ],
     ),
+    userDefaultValues,
   )
 
 const userDefaultValues = {
   stateCollateral: undefined,
   userCollateral: undefined,
   userBorrowed: undefined,
-  routeId: undefined,
 }
 
 const defaultValues = {
   ...userDefaultValues,
+  routeId: undefined,
   maxStateCollateral: undefined,
   maxCollateral: undefined,
   maxBorrowed: undefined,
@@ -129,7 +130,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   } = useRepayMutation({
     network: networks[chainId],
     marketId,
-    onReset: () => form.reset(userDefaultValues),
+    onReset: () => form.reset({ ...userDefaultValues, routeId: undefined }),
     userAddress,
     leverageProviders,
   })

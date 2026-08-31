@@ -38,6 +38,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
       (): DepositParams<ChainId> => ({ chainId, marketId, userAddress, depositAmount }),
       [chainId, marketId, userAddress, depositAmount],
     ),
+    userDefaultValues,
   )
 
   const {

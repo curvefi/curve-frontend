@@ -23,8 +23,9 @@ export const useScrvUsdDepositForm = ({ chainId }: { chainId: ChainId }) => {
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       () => ({ chainId, userAddress, depositAmount, maxDepositAmount, approveInfinite }),
-      [chainId, depositAmount, maxDepositAmount, approveInfinite, userAddress],
+      [chainId, userAddress, depositAmount, maxDepositAmount, approveInfinite],
     ),
+    userDefaultValues,
   )
   const userBalances = useScrvUsdUserBalances({ chainId, userAddress })
   const isApproved = useScrvUsdDepositIsApproved(params, form.formState.isValid)

@@ -1,10 +1,9 @@
 import { getMarket } from '@/llamalend/llama.utils'
-import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { useEstimateGas } from '@evm-ui/lib/model/entities/gas-info'
+import { createEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
 import type { CollateralQuery } from '../validation/manage-loan.types'
 import { collateralValidationSuite } from '../validation/manage-loan.validation'
 import { maxRemovableCollateralKey } from './remove-collateral-max-removable.query'
@@ -30,21 +29,4 @@ const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
   dependencies: params => [maxRemovableCollateralKey(params)],
 })
 
-export const useRemoveCollateralEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: RemoveCollateralGasParams<ChainId>,
-  enabled?: boolean,
-) => {
-  const { chainId } = query
-  const {
-    data: estimate,
-    isLoading: estimateLoading,
-    error: estimateError,
-  } = useRemoveCollateralGasEstimate(query, enabled)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: conversionError,
-  } = useEstimateGas(networks, chainId, estimate, enabled)
-  return { data, isLoading: estimateLoading || conversionLoading, error: estimateError ?? conversionError }
-}
+export const useRemoveCollateralEstimateGas = createEstimateGasHook(useRemoveCollateralGasEstimate)

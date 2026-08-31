@@ -1,4 +1,5 @@
 import type { RefObject } from 'react'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { borderStyle } from '@evm-ui/utils'
 import { FormControlLabel } from '@mui/material'
@@ -18,27 +19,30 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
   toggleVisibility,
   open,
   onClose,
-  anchorRef: { current: anchorEl },
+  anchorRef,
 }: {
   open: boolean
   onClose: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
   anchorRef: RefObject<HTMLButtonElement | null>
-}) =>
-  anchorEl && (
+}) => {
+  const [isReady, setReady, resetReady] = useSwitch()
+
+  return (
     <Popover
       open={open}
       onClose={onClose}
-      anchorEl={anchorEl}
+      anchorEl={() => anchorRef.current}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       slotProps={{
         paper: {
           sx: { padding: Spacing.md },
         },
+        transition: { onEntered: setReady, onExited: resetReady },
       }}
     >
-      <Stack sx={{ gap: Spacing.md }}>
+      <Stack data-testid={isReady ? 'visibility-settings-popover' : undefined} sx={{ gap: Spacing.md }}>
         {visibilityGroups
           .filter(({ options }) => options.some(o => o.enabled))
           .map(({ options, label }) => (
@@ -70,3 +74,4 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
       </Stack>
     </Popover>
   )
+}
