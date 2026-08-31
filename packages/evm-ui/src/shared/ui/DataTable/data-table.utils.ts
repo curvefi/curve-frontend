@@ -88,6 +88,7 @@ const options = tableOptions({
   features,
   getRowCanExpand: () => true, // expanded panels are generic sibling rows with their own 'can expand' check; subRows are tied to the column layout (which means you can't show just *any* generic panel component)
   autoResetPageIndex: false, // autoreset causes stack-too-deep errors when receiving new data
+  autoResetExpanded: false, // very annoying to have rows collapsed when searching or Merkl data comes in
   maxMultiSortColCount: 3, // allow three columns to be sorted while holding shift
 })
 
