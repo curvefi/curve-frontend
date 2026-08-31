@@ -4,7 +4,7 @@ import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
 import { DotsVerticalIcon } from '@evm-ui/shared/icons/DotsVertical'
 import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { RouterLink, type RouterState } from '@evm-ui/shared/ui/RouterLink'
 import { DrawerHeader } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerHeader'
 import { DrawerItems } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
@@ -19,16 +19,11 @@ const { MaxHeight, Spacing } = SizesAndSpaces
 // number of button rendered before hiding the rest in a kebab menu
 const VISIBLE_ACTION_COUNT = 2
 
-type ExpandedPanelRouteState = {
-  /** The default tab to pass as a route state when navigating to this action. **/
-  defaultTab?: string | number
-}
-
 type ExpandedPanelAction = Pick<ButtonProps, 'color' | 'onClick' | 'size' | 'sx' | 'type'> & {
   id: string
   label: ReactNode
   href?: string
-  state?: ExpandedPanelRouteState
+  state?: RouterState
   testId?: string
   /** Keep this action always in the more-actions drawer */
   alwaysInKebabMenu?: boolean

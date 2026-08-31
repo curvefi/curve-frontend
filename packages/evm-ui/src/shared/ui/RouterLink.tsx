@@ -1,16 +1,15 @@
 import MuiLink, { LinkProps as MuiLinkProps } from '@mui/material/Link'
-import type { HistoryState, ParsedHistoryState } from '@tanstack/history'
+import type { ParsedHistoryState } from '@tanstack/history'
 import { Link as TanstackLink } from '@tanstack/react-router'
 
-declare module '@tanstack/history' {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface HistoryState {
-    defaultTab?: string | number
-  }
+export type RouterState = {
+  /** The default tab to pass as a route state when navigating to this action. **/
+  defaultTab?: string | number
 }
 
 type RouterLinkProps = MuiLinkProps & {
-  state?: HistoryState
+  /** The default tab to pass as a route state when navigating to this action. **/
+  state?: RouterState
 }
 
 /**
