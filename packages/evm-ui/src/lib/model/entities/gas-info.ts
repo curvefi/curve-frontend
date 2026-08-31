@@ -403,12 +403,12 @@ const useEstimateGas = (
 ) => {
   const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
   const gasInfo = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
+  const network = maybe(chainId, chainId => networks[chainId])
   return useCombinedQueries(
     [estimate, gasInfo, ethRate],
     useCallback(
-      (estimate, gasInfo, ethRate) =>
-        maybe(chainId, chainId => calculateGas(estimate, gasInfo, ethRate, networks[chainId])),
-      [chainId, networks],
+      (estimate, gasInfo, ethRate) => maybe(network, network => calculateGas(estimate, gasInfo, ethRate, network)),
+      [network],
     ),
   )
 }
@@ -439,7 +439,7 @@ export const createEstimateGasHook =
   ) =>
   (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled = true) => {
     const estimate = useEstimate(query, enabled)
-    const converted = useEstimateGas(networks, query.chainId, estimate, enabled && estimate.data != null)
+    const converted = useEstimateGas(networks, query.chainId, estimate, enabled)
     return combineQueries([converted, estimate], data => data)
   }
 
