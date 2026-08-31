@@ -1,7 +1,6 @@
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
 import {
-  type MarketEventRow,
   LLAMMA_EVENTS_COLUMNS,
   useLlammaActivityVisibility,
   useManualPagination,
@@ -9,7 +8,7 @@ import {
 } from '@evm-ui/features/activity-table'
 import { combineQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { fakeLoadingQ } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
@@ -44,14 +43,13 @@ export const useLlammaActivityEventsConfig = ({
   )
 
   return {
-    table: useTable({
+    table: useCurveTable({
       query,
       columns: LLAMMA_EVENTS_COLUMNS,
       state: { columnVisibility: eventsColumnVisibility, pagination },
       manualPagination: true,
       pageCount: getPageCount(eventsQuery.data?.count, DEFAULT_PAGE_SIZE),
       onPaginationChange,
-      ...getTableOptions<MarketEventRow>(query.data),
     }),
     emptyState: { title: t`No activity data found.` },
     errorState: { title: t`Could not load activity data.` },

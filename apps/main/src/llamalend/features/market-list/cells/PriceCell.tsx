@@ -5,6 +5,7 @@ import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { t } from '@evm-ui/lib/i18n'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
@@ -162,7 +163,11 @@ const AssetUsdValue = ({
  * - Two assets (2 columns, 2 rows): Each row shows [USD | Value] for each asset
  * This behaviour is easier to achieve with a vanilla CSS grid compared to MUI's Grid component.
  */
-export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarketRow, number | undefined>) => {
+export const PriceCell = ({
+  getValue,
+  row,
+  column,
+}: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const market = row.original
   const { assets, lendingPosition } = market
   const columnId = column.id as MarketColumnId

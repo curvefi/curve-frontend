@@ -1,17 +1,13 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { t } from '@evm-ui/lib/i18n'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { constQ } from '@evm-ui/types/util'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useYieldBreakdown } from '../../hooks/useYieldBreakdown'
-import {
-  YIELD_BREAKDOWN_COLUMNS,
-  YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY,
-  type YieldBreakdownRow,
-} from './columns/columns.definitions'
+import { YIELD_BREAKDOWN_COLUMNS, YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY } from './columns/columns.definitions'
 import { FooterRow } from './FooterRow'
 
 export const YieldBreakdown = ({
@@ -29,18 +25,17 @@ export const YieldBreakdown = ({
     poolDataCacheOrApi,
     poolId,
   })
-  const table = useTable({
+  const table = useCurveTable({
     query: constQ(rows), // TODO: get error and loading state properly
     columns: YIELD_BREAKDOWN_COLUMNS,
     state: { columnVisibility: isMobile ? YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY : undefined },
-    ...getTableOptions(rows),
   })
 
   return (
     rows.length > 0 && (
       <Stack>
         <CardHeader title={t`Yield Breakdown`} size="small" />
-        <DataTable<YieldBreakdownRow>
+        <DataTable
           category="detail"
           table={table}
           emptyState={{ title: t`No yield breakdown found` }}

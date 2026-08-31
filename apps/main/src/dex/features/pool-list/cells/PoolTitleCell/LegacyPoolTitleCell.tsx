@@ -4,7 +4,11 @@ import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { t } from '@evm-ui/lib/i18n'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
-import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import {
+  CLICKABLE_IN_ROW_CLASS,
+  DESKTOP_ONLY_HOVER_CLASS,
+  type CurveTableFeatures,
+} from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
 import { UserPositionIndicator } from '@evm-ui/shared/ui/DataTable/UserPositionIndicator'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
@@ -20,8 +24,8 @@ const { Spacing, Height } = SizesAndSpaces
 
 export const LegacyPoolTitleCell = ({
   row: { original: poolData },
-  column: { getFilterValue },
-}: CellContext<LegacyPoolRow, string>) => {
+  column,
+}: CellContext<CurveTableFeatures, LegacyPoolRow, string>) => {
   const { tokenAddresses, tokens, tokenAddressesAll, pool, url, network } = poolData
   const tokenList = useMemo(
     () => lodash.zip(tokens, tokenAddresses).map(([symbol, address]) => ({ symbol: symbol!, address: address! })),
@@ -50,7 +54,7 @@ export const LegacyPoolTitleCell = ({
               confirmationText={t`Pool address copied`}
             />
           </Stack>
-          <PoolTokens tokenList={tokenList} filterValue={getFilterValue() as string} />
+          <PoolTokens tokenList={tokenList} filterValue={column.getFilterValue() as string} />
         </Stack>
       </Stack>
       {poolAlert && <PoolAlertBadge alert={poolAlert} />}

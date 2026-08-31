@@ -3,26 +3,27 @@ import { applySxProps } from '@evm-ui/utils'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { type Cell, flexRender } from '@tanstack/react-table'
-import { useCellSx, getCellVariant, type TableItem } from './data-table.utils'
+import { type Cell, flexRender, type RowData } from '@tanstack/react-table'
+import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
+import { useCellSx } from './hooks/useCellSx'
 import { RotatableIcon } from './RotatableIcon'
 
-export const DataCell = <T extends TableItem>({
+export const DataCell = <TData extends RowData>({
   cell,
   enableCollapse,
   isSticky,
 }: {
-  cell: Cell<T, unknown>
+  cell: Cell<CurveTableFeatures, TData>
   enableCollapse: boolean
   isSticky: boolean
 }) => {
   const { column, row } = cell
   const children = flexRender(column.columnDef.cell, cell.getContext())
-  const showCollapseIcon = enableCollapse && column.getIsLastColumn()
-  const [sx, wrapperSx] = useCellSx({ column, showCollapseIcon, isSticky })
+  const showCollapseIcon = enableCollapse && row.getVisibleCells().at(-1)?.id === cell.id
+  const [sx, wrapperSx] = useCellSx({ columnType: column.columnDef.meta?.type, showCollapseIcon, isSticky })
   return (
     <Typography
-      variant={getCellVariant(column)}
+      variant={getCellVariant(column.columnDef.meta?.variant)}
       component="td"
       data-testid={`data-table-cell-${column.id}`}
       sx={applySxProps({ color: 'text.primary' }, sx)}

@@ -5,7 +5,6 @@ import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import { getBlockchainId } from '@curvefi/prices-api'
 import {
-  type PoolLiquidityRow,
   createPoolLiquidityColumns,
   usePoolActivityVisibility,
   useManualPagination,
@@ -14,7 +13,7 @@ import {
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
 import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
-import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { fakeLoadingQ, mapQuery } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
@@ -72,14 +71,13 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
     [network, poolTokens],
   )
 
-  const table = useTable({
+  const table = useCurveTable({
     query: liquidityWithUrls,
     columns: liquidityColumns,
     state: { columnVisibility: liquidityColumnVisibility, pagination },
     manualPagination: true,
     pageCount,
     onPaginationChange,
-    ...getTableOptions<PoolLiquidityRow>(liquidityWithUrls.data),
   })
 
   return {

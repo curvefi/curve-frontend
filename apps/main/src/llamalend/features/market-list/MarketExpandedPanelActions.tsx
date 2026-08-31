@@ -12,8 +12,8 @@ export const MarketExpandedPanelActions: ExpandedPanelComponent<LlamaMarketRow> 
   const extraPanels = useMarketExpandedPanelActions(market)
 
   const actions = useMemo(
-    () =>
-      notFalsy(
+    () => [
+      ...notFalsy(
         market.type === MarketType.Lend && {
           id: 'earn',
           label: t`Earn`,
@@ -21,8 +21,9 @@ export const MarketExpandedPanelActions: ExpandedPanelComponent<LlamaMarketRow> 
           testId: 'llama-market-go-to-vault',
         },
         { id: 'borrow', label: t`Borrow`, href: market.url, testId: 'llama-market-go-to-borrow' },
-        ...extraPanels,
       ),
+      ...extraPanels,
+    ],
     [extraPanels, market.type, market.url],
   )
 

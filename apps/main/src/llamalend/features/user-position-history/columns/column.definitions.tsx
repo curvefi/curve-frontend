@@ -1,10 +1,10 @@
 import { t } from '@evm-ui/lib/i18n'
-import { createColumnHelper } from '@tanstack/react-table'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TimestampCell, DebtChangeCell, EventTypeCell, CollateralChangeCell } from '../cells'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 import { UserPositionHistoryColumnId } from './columns.enum'
 
-const columnHelper = createColumnHelper<ParsedUserCollateralEvent>()
+const columnHelper = createAppColumnHelper<ParsedUserCollateralEvent>()
 
 const headers = {
   [UserPositionHistoryColumnId.Type]: t`Type`,
@@ -14,7 +14,7 @@ const headers = {
   [UserPositionHistoryColumnId.Time]: t`Time`,
 }
 
-export const USER_POSITION_HISTORY_COLUMNS = [
+export const USER_POSITION_HISTORY_COLUMNS = columnHelper.columns([
   columnHelper.accessor('type', {
     id: UserPositionHistoryColumnId.Type,
     header: headers[UserPositionHistoryColumnId.Type],
@@ -42,4 +42,4 @@ export const USER_POSITION_HISTORY_COLUMNS = [
     ),
     meta: { type: 'numeric' },
   }),
-]
+])

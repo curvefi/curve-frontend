@@ -2,14 +2,15 @@ import { type RefObject } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { t } from '@evm-ui/lib/i18n'
-import { FilterProps, TanstackTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import type { CurveTableFeatures, FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TableFiltersOverlay } from '@evm-ui/shared/ui/DataTable/TableFiltersOverlay'
 import type { QueryProp } from '@evm-ui/types/util'
+import type { ReactTable } from '@tanstack/react-table'
 import { MarketColumnId } from '../columns'
 import { MarketsFilters } from './MarketsFilters'
 
 type MarketsFiltersOverlayProps = {
-  table: TanstackTable<LlamaMarketRow>
+  table: ReactTable<CurveTableFeatures, LlamaMarketRow>
   open: boolean
   setOpen: (open: boolean) => void
   anchorRef: RefObject<HTMLDivElement | null>

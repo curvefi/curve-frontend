@@ -1,5 +1,5 @@
 import { t } from '@evm-ui/lib/i18n'
-import { createColumnHelper } from '@tanstack/react-table'
+import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TimestampCell, AddressCell, LlammaEventActionCell, LlammaEventChangeCell } from '../cells'
 import type { MarketEventRow } from '../types'
 
@@ -10,13 +10,13 @@ export enum LlammaEventsColumnId {
   Time = 'timestamp',
 }
 
-const columnHelper = createColumnHelper<MarketEventRow>()
+const columnHelper = createAppColumnHelper<MarketEventRow>()
 
-export const LLAMMA_EVENTS_COLUMNS = [
+export const LLAMMA_EVENTS_COLUMNS = columnHelper.columns([
   columnHelper.accessor('provider', {
     id: LlammaEventsColumnId.User,
     header: t`Address`,
-    cell: ({ getValue, row }) => <AddressCell address={getValue()} explorerUrl={row.original.providerUrl} />,
+    cell: ({ row }) => <AddressCell address={row.original.provider} explorerUrl={row.original.providerUrl} />,
   }),
   columnHelper.display({
     id: LlammaEventsColumnId.Action,
@@ -44,4 +44,4 @@ export const LLAMMA_EVENTS_COLUMNS = [
     ),
     meta: { type: 'numeric' },
   }),
-]
+])

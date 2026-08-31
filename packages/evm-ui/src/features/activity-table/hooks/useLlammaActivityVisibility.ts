@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import type { VisibilityState } from '@tanstack/react-table'
+import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { LlammaEventsColumnId } from '../columns/llamma-events-columns'
 import { LlammaTradesColumnId } from '../columns/llamma-trades-columns'
 
-const createTradesMobileVisibility = (): VisibilityState => ({
+const createTradesMobileVisibility = (): ColumnVisibilityState => ({
   [LlammaTradesColumnId.User]: true,
   [LlammaTradesColumnId.Bought]: true,
   [LlammaTradesColumnId.Sold]: false,
   [LlammaTradesColumnId.Time]: false,
 })
 
-const createEventsMobileVisibility = (): VisibilityState => ({
+const createEventsMobileVisibility = (): ColumnVisibilityState => ({
   [LlammaEventsColumnId.User]: true,
   [LlammaEventsColumnId.Action]: true,
   [LlammaEventsColumnId.Change]: false,

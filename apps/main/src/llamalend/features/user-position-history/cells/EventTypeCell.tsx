@@ -6,6 +6,7 @@ import { MinusCircleIcon } from '@evm-ui/shared/icons/MinusCircleIcon'
 import { PlusCircleIcon } from '@evm-ui/shared/icons/PlusCircleIcon'
 import { RewardsIcon } from '@evm-ui/shared/icons/RewardsIcon'
 import { UploadIcon } from '@evm-ui/shared/icons/UploadIcon'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
@@ -33,7 +34,7 @@ export const EventTypeCell = ({
   row: {
     original: { type },
   },
-}: CellContext<ParsedUserCollateralEvent, unknown>) => (
+}: CellContext<CurveTableFeatures, ParsedUserCollateralEvent, ParsedUserCollateralEvent['type']>) => (
   <InlineTableCell>
     <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
       {icons[type]}
