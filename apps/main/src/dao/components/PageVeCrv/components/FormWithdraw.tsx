@@ -6,7 +6,7 @@ import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
 import { q } from '@evm-ui/types/util'
-import { amount, formatNumber } from '@evm-ui/utils'
+import { MILLISECONDS_PER_SECOND, amount, formatNumber } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -39,7 +39,7 @@ export const FormWithdraw = ({ curve, vecrvInfo }: PageVecrv) => {
       {!canUnlock && (
         <AlertBox alertType="info">
           {t`Your CRV unlocks in:`}
-          <StyledCountdown endDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / 1000} />
+          <StyledCountdown endDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / MILLISECONDS_PER_SECOND} />
         </AlertBox>
       )}
       <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={[]} />

@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useIncreaseLockMutation } from '@/dao/components/PageVeCrv/mutations/increase-lock.mutation'
 import { useIncreaseLockIsApproved } from '@/dao/components/PageVeCrv/queries/increase-lock-approved.query'
 import { useIncreaseLockGasEstimate } from '@/dao/components/PageVeCrv/queries/increase-lock-estimate-gas.query'
-import type { IncreaseLockFormValues, IncreaseLockParams } from '@/dao/components/PageVeCrv/queries/increase-lock.types'
+import type { IncreaseLockFormValues } from '@/dao/components/PageVeCrv/queries/increase-lock.types'
 import { increaseLockFormValidationSuite } from '@/dao/components/PageVeCrv/queries/increase-lock.validation'
 import type { VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { invalidateLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
@@ -10,33 +10,28 @@ import { invalidateLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { networks } from '@/dao/networks'
 import type { CurveApi } from '@/dao/types/dao.types'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
+import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { decimal } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
-const defaultValues: IncreaseLockFormValues = { lockedAmt: undefined, maxLockedAmt: undefined }
-
-const getRequestKey = (curve: CurveApi | null) => `${curve?.chainId ?? ''}-${curve?.signerAddress ?? ''}`
+const defaultValues: IncreaseLockFormValues = { lockedAmount: undefined, maxLockedAmount: undefined }
+const userDefaultValues = { lockedAmount: undefined }
 
 export const useIncreaseLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null; vecrvInfo: VecrvInfo }) => {
   const form = useForm<IncreaseLockFormValues>({ defaultValues, validation: increaseLockFormValidationSuite })
-  const { reset, update } = form
+  const { update } = form
   const values = form.watchValues()
-  const requestKey = getRequestKey(curve)
-  const requestKeyRef = useRef(requestKey)
 
-  useEffect(() => {
-    requestKeyRef.current = requestKey
-    reset(defaultValues)
-  }, [requestKey, reset])
-
-  useFormSync(form, { maxLockedAmt: decimal(vecrvInfo.crv) })
-  const isFormValid = form.formState.isValid
-  const estimateParams: IncreaseLockParams =
-    curve?.signerAddress && values.lockedAmt
-      ? { chainId: curve.chainId, userAddress: curve.signerAddress, lockedAmt: values.lockedAmt }
-      : {}
-  const isApproved = useIncreaseLockIsApproved(estimateParams)
-  const gas = useIncreaseLockGasEstimate(networks, estimateParams)
+  useFormSync(form, { maxLockedAmount: decimal(vecrvInfo.crv) })
+  const [params, isDebouncing] = useFormDebounce(
+    useMemo(
+      () => ({ chainId: curve?.chainId, userAddress: curve?.signerAddress, lockedAmount: values.lockedAmount }),
+      [curve?.chainId, curve?.signerAddress, values.lockedAmount],
+    ),
+    userDefaultValues,
+  )
+  const isApproved = useIncreaseLockIsApproved(params)
+  const gas = useIncreaseLockGasEstimate(networks, params)
 
   const invalidate = useCallback(async (currentCurve: CurveApi) => {
     await Promise.all([
@@ -52,19 +47,16 @@ export const useIncreaseLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
   } = useIncreaseLockMutation({
     chainId: curve?.chainId ?? 0,
     userAddress: curve?.signerAddress,
-    onIncreased: async () => {
-      if (requestKeyRef.current !== requestKey || !curve) return
-      reset(defaultValues)
-      await invalidate(curve)
-    },
+    onReset: () => form.reset(defaultValues),
+    onIncreased: async () => curve && invalidate(curve),
   })
 
   const error = increaseError ?? isApproved.error ?? gas.error
   const isPending = isIncreasing
-  const isDisabled = !isFormValid || isPending
-  const onSubmit = form.handleSubmit(values => {
-    if (!values.lockedAmt) return
-    return onSubmitIncrease({ lockedAmt: values.lockedAmt })
+  const isDisabled = !form.formState.isValid || isPending || isDebouncing
+  const onSubmit = form.handleSubmit(({ lockedAmount }) => {
+    if (lockedAmount == null) return
+    onSubmitIncrease({ lockedAmount })
   })
 
   return {
@@ -76,6 +68,6 @@ export const useIncreaseLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
     isDisabled,
     error,
     onSubmit,
-    updateAmount: (lockedAmt: Decimal | undefined) => update({ lockedAmt }),
+    updateAmount: (lockedAmount: Decimal | undefined) => update({ lockedAmount }),
   }
 }

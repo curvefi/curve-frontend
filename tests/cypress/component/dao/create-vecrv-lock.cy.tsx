@@ -24,7 +24,7 @@ const CreateVeCrvLockForm = ({ curve, crv = '1000' }: { curve: CurveApi; crv?: s
 )
 
 const fillCreateLockForm = (lockedAmount: string) => {
-  cy.get('input[name="lockedAmt"]').clear().type(lockedAmount)
+  cy.get('input[name="lockedAmount"]').clear().type(lockedAmount)
   cy.contains('button', '1 year').click()
 }
 

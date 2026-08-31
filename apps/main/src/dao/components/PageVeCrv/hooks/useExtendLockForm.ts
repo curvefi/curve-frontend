@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useExtendLockMutation } from '@/dao/components/PageVeCrv/mutations/extend-lock.mutation'
 import { useExtendLockGasEstimate } from '@/dao/components/PageVeCrv/queries/extend-lock-estimate-gas.query'
 import type { ExtendLockFormValues, ExtendLockParams } from '@/dao/components/PageVeCrv/queries/extend-lock.types'
@@ -11,20 +11,21 @@ import type { CurveApi } from '@/dao/types/dao.types'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
+import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { dayjs } from '@evm-ui/lib/dayjs'
-import type { CalendarDate } from '@internationalized/date'
+import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
+import type { DateValue } from '@internationalized/date'
 import { formatDate } from '@legacy-ui/utils'
+import { maybes } from '@primitives/objects.utils'
 
 const defaultValues: ExtendLockFormValues = { utcDate: null, days: 0, minUnlockDate: null, maxUnlockDate: null }
-
-const getRequestKey = (curve: CurveApi | null) => `${curve?.chainId ?? ''}-${curve?.signerAddress ?? ''}`
+const userDefaultValues = { days: 0 }
+const MAX_LOCK_REMAINDER_DAYS = 7
 
 export const useExtendLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null; vecrvInfo: VecrvInfo }) => {
   const form = useForm<ExtendLockFormValues>({ defaultValues, validation: extendLockFormValidationSuite })
-  const { reset, update } = form
+  const { update } = form
   const values = form.watchValues()
-  const requestKey = getRequestKey(curve)
-  const requestKeyRef = useRef(requestKey)
   const currUnlockTime = vecrvInfo.lockedAmountAndUnlockTime.unlockTime
   const currUnlockUtcTime = dayjs.utc(currUnlockTime)
   const currentUtcDate = dayjs.utc(useCurrentDate())
@@ -33,38 +34,36 @@ export const useExtendLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
     'day',
     false,
   )
-  const maxDays = 365 * 4 - remainingLockedDays
+  const maxDays = VECRV_MAX_LOCK_DAYS - remainingLockedDays
   const maxUtcDate = useMemo(
     () => (curve ? dayjs.utc(curve.boosting.calcUnlockTime(maxDays, currUnlockTime)) : currUnlockUtcTime),
     [currUnlockTime, curve, maxDays, currUnlockUtcTime],
   )
-  const isMax = maxDays <= 7
+  const isMax = maxDays <= MAX_LOCK_REMAINDER_DAYS
 
   useFormSync(form, {
     minUnlockDate: toCalendarDate(currUnlockUtcTime),
     maxUnlockDate: toCalendarDate(maxUtcDate),
   })
 
-  useEffect(() => {
-    requestKeyRef.current = requestKey
-    reset(defaultValues)
-  }, [requestKey, reset])
-
-  const estimateParams: ExtendLockParams =
-    curve?.signerAddress && values.days > 0
-      ? { chainId: curve.chainId, userAddress: curve.signerAddress, days: values.days }
-      : {}
+  const [params, isDebouncing] = useFormDebounce(
+    useMemo(
+      () => ({ chainId: curve?.chainId, userAddress: curve?.signerAddress, days: values.days }),
+      [curve?.chainId, curve?.signerAddress, values.days],
+    ),
+    userDefaultValues,
+  )
+  const estimateParams: ExtendLockParams = params
   const gas = useExtendLockGasEstimate(networks, estimateParams)
   const calculatedUtcDate = useMemo(
     () => (curve && values.days > 0 ? dayjs.utc(curve.boosting.calcUnlockTime(values.days, currUnlockTime)) : null),
     [currUnlockTime, curve, values.days],
   )
-  const calculatedDateLabel =
-    values.utcDate && calculatedUtcDate && !dayjs.utc(values.utcDate.toString()).isSame(calculatedUtcDate)
-      ? formatDate(calculatedUtcDate.valueOf())
-      : ''
+  const dateLabel = maybes([values.utcDate, calculatedUtcDate], (utcDate, calculatedUtcDate) =>
+    dayjs.utc(utcDate.toString()).isSame(calculatedUtcDate) ? undefined : formatDate(calculatedUtcDate.valueOf()),
+  )
   const updateUnlockDate = useCallback(
-    (unlockDate: CalendarDate) => {
+    (unlockDate: DateValue) => {
       const utcDate = dayjs.utc(unlockDate.toString())
       update({ utcDate: toCalendarDate(utcDate), days: utcDate.diff(currUnlockUtcTime, 'd') })
     },
@@ -90,16 +89,11 @@ export const useExtendLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
     isPending,
   } = useExtendLockMutation({
     chainId: curve?.chainId ?? 0,
-    onExtended: async () => {
-      if (requestKeyRef.current !== requestKey || !curve) return
-      reset(defaultValues)
-      await invalidate(curve)
-    },
+    onReset: () => form.reset(defaultValues),
+    onExtended: async () => curve && invalidate(curve),
   })
-  const isDisabled = !form.formState.isValid || isPending
-  const onSubmit = form.handleSubmit(values => {
-    if (values.utcDate) return onSubmitExtend(values)
-  })
+  const isDisabled = !form.formState.isValid || isPending || isDebouncing
+  const onSubmit = form.handleSubmit(onSubmitExtend)
 
   return {
     form,
@@ -108,7 +102,7 @@ export const useExtendLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
     minUtcDate: currUnlockUtcTime,
     maxUtcDate,
     isMax,
-    calculatedDateLabel,
+    dateLabel,
     gas,
     isPending,
     isDisabled,

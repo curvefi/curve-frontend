@@ -6,19 +6,24 @@ import type { CreateLockParams, CreateLockQuery } from './create-lock.types'
 import { createLockApprovalQueryValidationSuite, createLockQueryValidationSuite } from './create-lock.validation'
 
 export const { useQuery: useCreateLockApproveEstimateGas } = queryFactory({
-  queryKey: ({ chainId, userAddress, lockedAmt }: CreateLockParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.estimateGas.approve', { lockedAmt }] as const,
-  queryFn: async ({ lockedAmt }: CreateLockQuery) =>
-    await requireLib('curveApi').boosting.estimateGas.approve(lockedAmt),
+  queryKey: ({ chainId, userAddress, lockedAmount }: CreateLockParams) =>
+    [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.estimateGas.approve', { lockedAmount }] as const,
+  queryFn: async ({ lockedAmount }: CreateLockQuery) =>
+    await requireLib('curveApi').boosting.estimateGas.approve(lockedAmount),
   category: 'dao.user',
   validationSuite: createLockApprovalQueryValidationSuite,
 })
 
 export const { useQuery: useCreateLockEstimateGas } = queryFactory({
-  queryKey: ({ chainId, userAddress, lockedAmt, days }: CreateLockParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.estimateGas.create', { lockedAmt }, { days }] as const,
-  queryFn: async ({ lockedAmt, days }: CreateLockQuery) =>
-    await requireLib('curveApi').boosting.estimateGas.createLock(lockedAmt, days),
+  queryKey: ({ chainId, userAddress, lockedAmount, days }: CreateLockParams) =>
+    [
+      ...rootKeys.userChain({ chainId, userAddress }),
+      'lockCrv.estimateGas.create',
+      { lockedAmount },
+      { days },
+    ] as const,
+  queryFn: async ({ lockedAmount, days }: CreateLockQuery) =>
+    await requireLib('curveApi').boosting.estimateGas.createLock(lockedAmount, days),
   category: 'dao.user',
   validationSuite: createLockQueryValidationSuite,
 })

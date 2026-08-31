@@ -1,12 +1,17 @@
 import { ChainId, CurveApi } from '@/dao/types/dao.types'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export type { FormType } from '@/dao/types/dao.types'
 
 export type VecrvInfo = {
-  crv: string
-  lockedAmountAndUnlockTime: { lockedAmount: string; unlockTime: number }
-  veCrv: string
-  veCrvPct: string
+  crv: Decimal
+  lockedAmountAndUnlockTime: {
+    lockedAmount: Decimal
+    /** Unix timestamp in milliseconds. */
+    unlockTime: number
+  }
+  veCrv: Decimal
+  veCrvPct: Decimal
 }
 
 export type PageVecrv = {

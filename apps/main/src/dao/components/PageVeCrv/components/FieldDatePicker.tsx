@@ -1,31 +1,34 @@
 import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
+import { useCalculateVeCrv } from '@/dao/components/PageVeCrv/queries/calculate-vecrv.query'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { t } from '@evm-ui/lib/i18n'
-import { formatNumber, amount } from '@evm-ui/utils'
+import { amount, formatNumber, MILLISECONDS_PER_SECOND } from '@evm-ui/utils'
+import { VECRV_MAX_LOCK_YEARS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
 import { Button } from '@legacy-ui/Button'
 import { DatePicker } from '@legacy-ui/DatePicker'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 
 const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },
   { unit: 'month', value: 1, label: t`1 month` },
   { unit: 'month', value: 3, label: t`3 months` },
   { unit: 'year', value: 1, label: t`1 year` },
-  { unit: 'year', value: 4, label: t`4 years` },
+  { unit: 'year', value: VECRV_MAX_LOCK_YEARS, label: t`${VECRV_MAX_LOCK_YEARS} years` },
   { label: t`Max` },
 ]
 
 export const FieldDatePicker = ({
   curve,
   currUnlockUtcTime,
-  calcdUtcDate,
+  dateLabel,
   disabled,
   formType,
   isMax,
@@ -33,7 +36,7 @@ export const FieldDatePicker = ({
   utcDateError,
   minUtcDate,
   maxUtcDate,
-  lockedAmt,
+  lockedAmount,
   vecrvInfo,
   handleInpEstUnlockedDays,
   handleBtnClickQuickAction,
@@ -45,20 +48,20 @@ export const FieldDatePicker = ({
   formType: FormType | ''
   isDisabled?: boolean
   isMax?: boolean
-  calcdUtcDate: string
+  dateLabel: string | undefined
   utcDate: DateValue | null
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   utcDateError: 'invalid-date' | string
   minUtcDate: dayjs.Dayjs
   maxUtcDate: dayjs.Dayjs | null
-  lockedAmt?: Decimal
+  lockedAmount?: Decimal
   vecrvInfo: VecrvInfo
   handleInpEstUnlockedDays: (curve: CurveApi, updatedLockedDays: DateValue) => void
   handleBtnClickQuickAction: (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => dayjs.Dayjs
 }) => {
   const [quickActionValue, setQuickActionValue] = useState<dayjs.Dayjs | null>(null)
 
-  // only add duration <= 4 years
+  // Only add durations that fit the maximum veCRV lock window.
   const quickActions = useMemo(
     () =>
       QUICK_ACTIONS.filter(({ unit, value }) => {
@@ -72,27 +75,13 @@ export const FieldDatePicker = ({
     [currUnlockUtcTime, maxUtcDate, minUtcDate, isMax],
   )
 
-  const isDateUnavailable = (date: DateValue) => {
-    const todayUtcDate = dayjs.utc(date.toString()).day()
-    const dayZeroUtcDate = dayjs.utc(new Date(0)).day()
-    return todayUtcDate !== dayZeroUtcDate
-  }
-
-  const loading = typeof vecrvInfo === 'undefined' || !curve
   const isCreateLock = formType === 'create'
 
-  const futureVeCrv = useMemo(() => {
-    if (!curve || !utcDate) return undefined
-
-    if (isCreateLock) {
-      if (!lockedAmt) return undefined
-      return curve.boosting.calculateVeCrv(lockedAmt, Math.floor(dayjs.utc(utcDate.toString()).valueOf() / 1000))
-    }
-    return curve.boosting.calculateVeCrv(
-      vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
-      Math.floor(dayjs.utc(utcDate.toString()).valueOf() / 1000),
-    )
-  }, [curve, utcDate, isCreateLock, lockedAmt, vecrvInfo.lockedAmountAndUnlockTime.lockedAmount])
+  const futureVeCrv = useCalculateVeCrv({
+    chainId: curve?.chainId,
+    lockedAmount: isCreateLock ? lockedAmount : vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
+    unlockTime: maybe(utcDate, date => Math.floor(dayjs.utc(date.toString()).valueOf() / MILLISECONDS_PER_SECOND)),
+  })
 
   return (
     <div>
@@ -106,9 +95,12 @@ export const FieldDatePicker = ({
           hasError: !!utcDateError,
           showError: !!curve?.signerAddress,
         }}
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-        isDisabled={loading || disabled || isMax}
-        isDateUnavailable={isDateUnavailable}
+        isDisabled={!vecrvInfo || !curve || !!disabled || isMax}
+        isDateUnavailable={(date: DateValue) => {
+          const todayUtcDate = dayjs.utc(date.toString()).day()
+          const dayZeroUtcDate = dayjs.utc(new Date(0)).day()
+          return todayUtcDate !== dayZeroUtcDate
+        }}
         label={t`Select unlock date`}
         minValue={toCalendarDate(minUtcDate)}
         maxValue={maxUtcDate ? toCalendarDate(maxUtcDate) : null}
@@ -150,12 +142,12 @@ export const FieldDatePicker = ({
           </>
         }
       />
-      {curve && typeof futureVeCrv === 'number' && (
+      {curve && typeof futureVeCrv.data === 'number' && (
         <>
           <Chip size="xs">
             {t`Future veCRV:`}{' '}
             {!isCreateLock && `${formatNumber(amount(vecrvInfo.veCrv), { abbreviate: false, fallback: '-' })} → `}{' '}
-            {formatNumber(futureVeCrv, { abbreviate: false })}
+            {formatNumber(futureVeCrv.data, { abbreviate: false })}
           </Chip>
           <br />
         </>
@@ -164,9 +156,9 @@ export const FieldDatePicker = ({
         <Chip size="xs" isError>
           {utcDateError === 'invalid-date' ? t`Invalid date` : utcDateError}
         </Chip>
-      ) : calcdUtcDate && utcDate ? (
+      ) : dateLabel && utcDate ? (
         <Chip size="xs" isBold>
-          Unlock date will be set to {calcdUtcDate}
+          Unlock date will be set to {dateLabel}
         </Chip>
       ) : formType !== 'create' && currUnlockUtcTime ? (
         <Chip size="xs">

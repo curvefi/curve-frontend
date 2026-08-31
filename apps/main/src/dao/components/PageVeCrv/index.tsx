@@ -6,9 +6,6 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useParams } from '@evm-ui/hooks/router'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { FormCrvLocker } from './components/FormCrvLocker'
-import { WrongNetwork } from './WrongNetwork'
-
-const ETHEREUM_CHAIN_ID = 1
 
 export const VeCrv = () => {
   const { network } = useParams<NetworkUrlParams>()
@@ -23,13 +20,9 @@ export const VeCrv = () => {
       testId="vecrv-page"
       formTabs={{
         content:
-          rChainId === ETHEREUM_CHAIN_ID ? (
-            vecrvInfo && curveApi ? (
-              <FormCrvLocker curve={curveApi} rChainId={rChainId} vecrvInfo={vecrvInfo} />
-            ) : undefined
-          ) : (
-            <WrongNetwork />
-          ),
+          vecrvInfo && curveApi ? (
+            <FormCrvLocker curve={curveApi} rChainId={rChainId} vecrvInfo={vecrvInfo} />
+          ) : undefined,
       }}
     />
   )

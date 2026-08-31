@@ -30,17 +30,17 @@ export const extendLockFormValidationSuite = createValidationSuite(
     validateExtendLockDays(days)
     skipWhen(utcDate == null || minUnlockDate == null || maxUnlockDate == null, () => {
       test('utcDate', t`Select a valid unlock date`, () => {
-        if (utcDate && minUnlockDate && maxUnlockDate) {
-          enforce(utcDate.compare(minUnlockDate)).gte(0)
-          enforce(utcDate.compare(maxUnlockDate)).lte(0)
-        }
+        enforce(utcDate!.compare(minUnlockDate!)).gte(0)
+        enforce(utcDate!.compare(maxUnlockDate!)).lte(0)
       })
     })
   },
 )
 
-export const extendLockQueryValidationSuite = createValidationSuite((params: ExtendLockQuery) => {
-  curveApiValidationGroup({ chainId: params.chainId })
-  userAddressValidationGroup({ userAddress: params.userAddress })
-  validateExtendLockDays(params.days)
-})
+export const extendLockQueryValidationSuite = createValidationSuite(
+  ({ chainId, userAddress, days }: ExtendLockQuery) => {
+    curveApiValidationGroup({ chainId })
+    userAddressValidationGroup({ userAddress })
+    validateExtendLockDays(days)
+  },
+)

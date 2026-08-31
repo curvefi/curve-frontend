@@ -1,4 +1,4 @@
-import { FieldLockedAmt } from '@/dao/components/PageVeCrv/components/FieldLockedAmt'
+import { FieldLockedAmount } from '@/dao/components/PageVeCrv/components/FieldLockedAmount'
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useIncreaseLockForm } from '@/dao/components/PageVeCrv/hooks/useIncreaseLockForm'
 import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
@@ -7,14 +7,15 @@ import { t } from '@evm-ui/lib/i18n'
 import { q } from '@evm-ui/types/util'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
+import { fromEntries } from '@primitives/objects.utils'
 
 export const FormLockCrv = ({ curve, vecrvInfo }: PageVecrv) => {
   const { form, values, gas, isApproved, isPending, isDisabled, error, onSubmit, updateAmount } = useIncreaseLockForm({
     curve,
     vecrvInfo,
   })
-  const amountFieldError =
-    form.formState.visibleErrors.find(([field]) => field === 'lockedAmt' || field === 'maxLockedAmt')?.[1] || ''
+  const errors = fromEntries(form.formState.visibleErrors)
+  const amountFieldError = errors.lockedAmount ?? errors.maxLockedAmount ?? ''
 
   return (
     <Form
@@ -22,20 +23,20 @@ export const FormLockCrv = ({ curve, vecrvInfo }: PageVecrv) => {
       onSubmit={onSubmit}
       footer={<VeCrvActionInfo gas={q(gas)} isApproved={isApproved} isOpen={form.formState.isValid} />}
     >
-      <FieldLockedAmt
+      <FieldLockedAmount
         curve={curve}
         disabled={isPending}
         haveSigner={!!curve?.signerAddress}
         formType="adjust_crv"
         vecrvInfo={vecrvInfo}
-        lockedAmt={values.lockedAmt}
-        lockedAmtError={amountFieldError}
-        handleInpLockedAmt={updateAmount}
+        lockedAmount={values.lockedAmount}
+        lockedAmountError={amountFieldError}
+        handleInpLockedAmount={updateAmount}
       />
       <FormAlerts
         error={error}
         formErrors={form.formState.visibleErrors}
-        handledErrors={['lockedAmt', 'maxLockedAmt']}
+        handledErrors={['lockedAmount', 'maxLockedAmount']}
       />
       <FormButton
         pending={isPending}

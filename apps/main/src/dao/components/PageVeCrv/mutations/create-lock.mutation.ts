@@ -8,36 +8,39 @@ import { formatToken, waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
 import { fetchCreateLockIsApproved } from '../queries/create-lock-approved.query'
 import type { CreateLockMutation } from '../queries/create-lock.types'
-import { createLockFormValidationSuite } from '../queries/create-lock.validation'
+import { createLockQueryValidationSuite } from '../queries/create-lock.validation'
 
 export const useCreateLockMutation = ({
   chainId,
   userAddress,
+  onReset,
   onCreated,
 }: {
   chainId: number
   userAddress: Address | undefined
+  onReset: () => void
   onCreated: OnTransactionSuccess<CreateLockMutation>
 }) => {
   const config = useConfig()
   const { mutate, error, isPending } = useTransactionMutation<CreateLockMutation>({
     mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.create'] as const,
-    mutationFn: async ({ lockedAmt, days }) => {
-      const params = { chainId, userAddress, lockedAmt, days }
+    mutationFn: async ({ lockedAmount, days }) => {
+      const params = { chainId, userAddress, lockedAmount, days }
+      const curveApi = requireLib('curveApi')
       await waitForApproval({
-        isApproved: async () => await fetchCreateLockIsApproved(params, { staleTime: 0 }),
-        onApprove: async () => (await requireLib('curveApi').boosting.approve(lockedAmt)) as Hex[],
+        isApproved: () => fetchCreateLockIsApproved(params, { staleTime: 0 }),
+        onApprove: async () => (await curveApi.boosting.approve(lockedAmount)) as Hex[],
         message: t`Approved lock creation`,
         config,
       })
-      return { hash: (await requireLib('curveApi').boosting.createLock(lockedAmt, days)) as Hex }
+      return { hash: (await curveApi.boosting.createLock(lockedAmount, days)) as Hex }
     },
-    validationSuite: createLockFormValidationSuite,
-    validationParams: {},
-    pendingMessage: ({ lockedAmt }) => t`Creating lock for ${formatToken(lockedAmt, 'CRV', 'amount')}...`,
+    validationSuite: createLockQueryValidationSuite,
+    validationParams: { chainId },
+    pendingMessage: ({ lockedAmount }) => t`Creating lock for ${formatToken(lockedAmount, 'CRV', 'amount')}...`,
     successMessage: () => t`CRV locked successfully`,
     onSuccess: onCreated,
-    onReset: () => undefined,
+    onReset,
   })
   return { onSubmit: useCallback((values: CreateLockMutation) => mutate(values), [mutate]), error, isPending }
 }

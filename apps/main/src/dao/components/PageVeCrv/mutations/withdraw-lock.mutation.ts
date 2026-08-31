@@ -4,6 +4,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { rootKeys } from '@evm-ui/lib/model'
 import { type OnTransactionSuccess, useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactionMutation'
 import type { Address, Hex } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { WithdrawLockMutation } from '../queries/withdraw-lock.types'
 import { withdrawLockValidationSuite } from '../queries/withdraw-lock.validation'
 
@@ -12,12 +13,14 @@ export const useWithdrawLockMutation = ({
   userAddress,
   lockedAmount,
   unlockTime,
+  onReset,
   onWithdrawn,
 }: {
   chainId: number
   userAddress: Address | undefined
-  lockedAmount: string
+  lockedAmount: Decimal
   unlockTime: number
+  onReset: () => void
   onWithdrawn: OnTransactionSuccess<WithdrawLockMutation>
 }) => {
   const { mutate, error, isPending } = useTransactionMutation<WithdrawLockMutation>({
@@ -28,7 +31,7 @@ export const useWithdrawLockMutation = ({
     pendingMessage: () => t`Withdrawing locked CRV...`,
     successMessage: () => t`CRV withdrawal successful.`,
     onSuccess: onWithdrawn,
-    onReset: () => undefined,
+    onReset,
   })
 
   return { onSubmit: useCallback(() => mutate({}), [mutate]), error, isPending }

@@ -8,36 +8,39 @@ import { formatToken, waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
 import { fetchIncreaseLockIsApproved } from '../queries/increase-lock-approved.query'
 import type { IncreaseLockMutation } from '../queries/increase-lock.types'
-import { increaseLockFormValidationSuite } from '../queries/increase-lock.validation'
+import { increaseLockQueryValidationSuite } from '../queries/increase-lock.validation'
 
 export const useIncreaseLockMutation = ({
   chainId,
   userAddress,
+  onReset,
   onIncreased,
 }: {
   chainId: number
   userAddress: Address | undefined
+  onReset: () => void
   onIncreased: OnTransactionSuccess<IncreaseLockMutation>
 }) => {
   const config = useConfig()
   const { mutate, error, isPending } = useTransactionMutation<IncreaseLockMutation>({
     mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.increase'] as const,
-    mutationFn: async ({ lockedAmt }) => {
-      const params = { chainId, userAddress, lockedAmt }
+    mutationFn: async ({ lockedAmount }) => {
+      const params = { chainId, userAddress, lockedAmount }
+      const curveApi = requireLib('curveApi')
       await waitForApproval({
-        isApproved: async () => await fetchIncreaseLockIsApproved(params, { staleTime: 0 }),
-        onApprove: async () => (await requireLib('curveApi').boosting.approve(lockedAmt)) as Hex[],
+        isApproved: () => fetchIncreaseLockIsApproved(params, { staleTime: 0 }),
+        onApprove: async () => (await curveApi.boosting.approve(lockedAmount)) as Hex[],
         message: t`Approved lock increase`,
         config,
       })
-      return { hash: (await requireLib('curveApi').boosting.increaseAmount(lockedAmt)) as Hex }
+      return { hash: (await curveApi.boosting.increaseAmount(lockedAmount)) as Hex }
     },
-    validationSuite: increaseLockFormValidationSuite,
-    validationParams: {},
-    pendingMessage: ({ lockedAmt }) => t`Increasing lock amount by ${formatToken(lockedAmt, 'CRV', 'amount')}...`,
+    validationSuite: increaseLockQueryValidationSuite,
+    validationParams: { chainId },
+    pendingMessage: ({ lockedAmount }) => t`Increasing lock amount by ${formatToken(lockedAmount, 'CRV', 'amount')}...`,
     successMessage: () => t`Lock amount updated`,
     onSuccess: onIncreased,
-    onReset: () => undefined,
+    onReset,
   })
   return { onSubmit: useCallback((values: IncreaseLockMutation) => mutate(values), [mutate]), error, isPending }
 }

@@ -2,14 +2,13 @@ import { FieldDatePicker } from '@/dao/components/PageVeCrv/components/FieldDate
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useExtendLockForm } from '@/dao/components/PageVeCrv/hooks/useExtendLockForm'
 import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
-import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { FormButton } from '@evm-ui/features/forms'
-import { dayjs } from '@evm-ui/lib/dayjs'
 import { t } from '@evm-ui/lib/i18n'
 import { q } from '@evm-ui/types/util'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
+import { fromEntries } from '@primitives/objects.utils'
 
 export const FormLockDate = ({ curve, vecrvInfo }: PageVecrv) => {
   const {
@@ -19,7 +18,7 @@ export const FormLockDate = ({ curve, vecrvInfo }: PageVecrv) => {
     minUtcDate,
     maxUtcDate,
     isMax,
-    calculatedDateLabel,
+    dateLabel,
     gas,
     isPending,
     isDisabled,
@@ -28,7 +27,8 @@ export const FormLockDate = ({ curve, vecrvInfo }: PageVecrv) => {
     updateUnlockDate,
     selectQuickDate,
   } = useExtendLockForm({ curve, vecrvInfo })
-  const dateError = form.formState.visibleErrors.find(([field]) => field === 'utcDate' || field === 'days')?.[1] ?? ''
+  const errors = fromEntries(form.formState.visibleErrors)
+  const dateError = errors.utcDate ?? errors.days ?? ''
 
   return (
     <Form {...form} onSubmit={onSubmit} footer={<VeCrvActionInfo gas={q(gas)} isOpen={form.formState.isValid} />}>
@@ -43,8 +43,8 @@ export const FormLockDate = ({ curve, vecrvInfo }: PageVecrv) => {
         vecrvInfo={vecrvInfo}
         utcDate={values.utcDate}
         utcDateError={dateError}
-        calcdUtcDate={calculatedDateLabel}
-        handleInpEstUnlockedDays={(_, date) => updateUnlockDate(toCalendarDate(dayjs.utc(date.toString())))}
+        dateLabel={dateLabel}
+        handleInpEstUnlockedDays={(_, date) => updateUnlockDate(date)}
         handleBtnClickQuickAction={(_, value, unit) => selectQuickDate(value, unit)}
       />
       {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}

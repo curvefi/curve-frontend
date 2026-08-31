@@ -24,7 +24,7 @@ const LockMoreForm = ({ curve }: { curve: CurveApi }) => (
 )
 
 const writeLockMoreForm = (lockedAmount: string) => {
-  cy.get('input[name="lockedAmt"]').clear().type(lockedAmount)
+  cy.get('input[name="lockedAmount"]').clear().type(lockedAmount)
 }
 
 describe('FormLockCrv (mocked)', () => {

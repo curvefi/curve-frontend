@@ -4,7 +4,7 @@ import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate
 import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { t } from '@evm-ui/lib/i18n'
-import { decimal, decimalGreaterThan } from '@evm-ui/utils'
+import { decimal, decimalGreaterThan, ZERO } from '@evm-ui/utils'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 
@@ -49,7 +49,7 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
     vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
   )
 
-  const hasLockedCrv = decimalGreaterThan(decimal(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount) ?? '0', '0')
+  const hasLockedCrv = decimalGreaterThan(decimal(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount) ?? ZERO, ZERO)
 
   return <FormTabs menu={menu} params={{ ...pageProps, canUnlock, hasLockedCrv }} overflow="fullWidth" />
 }

@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import { useWithdrawLockMutation } from '@/dao/components/PageVeCrv/mutations/withdraw-lock.mutation'
 import { useWithdrawLockGasEstimate } from '@/dao/components/PageVeCrv/queries/withdraw-lock-estimate-gas.query'
 import type { WithdrawLockFormValues, WithdrawLockParams } from '@/dao/components/PageVeCrv/queries/withdraw-lock.types'
@@ -12,18 +11,9 @@ import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 
 const defaultValues: WithdrawLockFormValues = {}
 
-const getRequestKey = (curve: CurveApi | null) => `${curve?.chainId ?? ''}-${curve?.signerAddress ?? ''}`
-
 export const useWithdrawLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null; vecrvInfo: VecrvInfo }) => {
   const form = useForm<WithdrawLockFormValues>({ defaultValues })
-  const { reset } = form
-  const requestKey = getRequestKey(curve)
-  const requestKeyRef = useRef(requestKey)
 
-  useEffect(() => {
-    requestKeyRef.current = requestKey
-    reset(defaultValues)
-  }, [requestKey, reset])
   const canUnlock = getIsLockExpired(
     vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
     vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
@@ -47,8 +37,9 @@ export const useWithdrawLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
     userAddress: curve?.signerAddress,
     lockedAmount: vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
     unlockTime: vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
+    onReset: () => form.reset(defaultValues),
     onWithdrawn: async () => {
-      if (requestKeyRef.current !== requestKey || !curve) return
+      if (!curve) return
       await Promise.all([
         invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress }),
         invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress }),
@@ -63,6 +54,6 @@ export const useWithdrawLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | nu
     isPending,
     isDisabled: !canUnlock || isPending,
     error,
-    onSubmit: form.handleSubmit(() => onSubmitWithdraw()),
+    onSubmit: form.handleSubmit(onSubmitWithdraw),
   }
 }

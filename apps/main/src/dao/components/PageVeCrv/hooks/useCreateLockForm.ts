@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useCreateLockMutation } from '@/dao/components/PageVeCrv/mutations/create-lock.mutation'
 import { useCreateLockIsApproved } from '@/dao/components/PageVeCrv/queries/create-lock-approved.query'
 import { useCreateLockGasEstimate } from '@/dao/components/PageVeCrv/queries/create-lock-estimate-gas.query'
-import type { CreateLockFormValues, CreateLockParams } from '@/dao/components/PageVeCrv/queries/create-lock.types'
+import type { CreateLockFormValues } from '@/dao/components/PageVeCrv/queries/create-lock.types'
 import { createLockFormValidationSuite } from '@/dao/components/PageVeCrv/queries/create-lock.validation'
 import type { VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { invalidateLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
@@ -12,37 +12,44 @@ import type { CurveApi } from '@/dao/types/dao.types'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
+import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { decimal } from '@evm-ui/utils'
-import type { CalendarDate } from '@internationalized/date'
+import { VECRV_MAX_LOCK_YEARS } from '@evm-ui/utils/vecrv'
+import type { DateValue } from '@internationalized/date'
 import { formatDate } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 
-const defaultValues: CreateLockFormValues = { lockedAmt: undefined, maxLockedAmt: undefined, utcDate: null, days: 0 }
-
-const getRequestKey = (curve: CurveApi | null) => `${curve?.chainId ?? ''}-${curve?.signerAddress ?? ''}`
+const defaultValues: CreateLockFormValues = {
+  lockedAmount: undefined,
+  maxLockedAmount: undefined,
+  utcDate: null,
+  days: 0,
+}
+const userDefaultValues = { lockedAmount: undefined, days: 0 }
 
 export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null; vecrvInfo: VecrvInfo }) => {
   const form = useForm<CreateLockFormValues>({ defaultValues, validation: createLockFormValidationSuite })
-  const { reset, update } = form
+  const { update } = form
   const values = form.watchValues()
-  const requestKey = getRequestKey(curve)
-  const requestKeyRef = useRef(requestKey)
-
-  useEffect(() => {
-    requestKeyRef.current = requestKey
-    reset(defaultValues)
-  }, [requestKey, reset])
 
   const crvBalance = decimal(vecrvInfo.crv)
-  useFormSync(form, { maxLockedAmt: crvBalance })
-  const isFormValid = form.formState.isValid
-  const estimateParams: CreateLockParams =
-    curve?.signerAddress && values.lockedAmt
-      ? { chainId: curve.chainId, userAddress: curve.signerAddress, lockedAmt: values.lockedAmt, days: values.days }
-      : {}
-  const isApproved = useCreateLockIsApproved(estimateParams)
-  const gas = useCreateLockGasEstimate(networks, estimateParams)
+  useFormSync(form, { maxLockedAmount: crvBalance })
+  const [params, isDebouncing] = useFormDebounce(
+    useMemo(
+      () => ({
+        chainId: curve?.chainId,
+        userAddress: curve?.signerAddress,
+        lockedAmount: values.lockedAmount,
+        days: values.days,
+      }),
+      [curve?.chainId, curve?.signerAddress, values.days, values.lockedAmount],
+    ),
+    userDefaultValues,
+  )
+  const isApproved = useCreateLockIsApproved(params)
+  const gas = useCreateLockGasEstimate(networks, params)
 
   const invalidate = useCallback(async (currentCurve: CurveApi) => {
     await Promise.all([
@@ -53,17 +60,10 @@ export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
 
   const currUtcDate = dayjs.utc(useCurrentDate())
   const minUtcDate = currUtcDate
-  const maxUtcDate = currUtcDate.add(4, 'year')
-  const calculatedUtcDate = useMemo(
-    () => (curve && values.days > 0 ? dayjs.utc(curve.boosting.calcUnlockTime(values.days)) : null),
-    [curve, values.days],
-  )
-  const calculatedDateLabel =
-    values.utcDate && calculatedUtcDate && !dayjs.utc(values.utcDate.toString()).isSame(calculatedUtcDate)
-      ? formatDate(calculatedUtcDate.valueOf())
-      : ''
+  const maxUtcDate = currUtcDate.add(VECRV_MAX_LOCK_YEARS, 'year')
+
   const updateUnlockDate = useCallback(
-    (unlockDate: CalendarDate) => {
+    (unlockDate: DateValue) => {
       if (!curve) return
       const utcDate = dayjs.utc(unlockDate.toString())
       update({ utcDate: toCalendarDate(utcDate), days: utcDate.diff(currUtcDate, 'd') })
@@ -87,19 +87,15 @@ export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
   } = useCreateLockMutation({
     chainId: curve?.chainId ?? 0,
     userAddress: curve?.signerAddress,
-    onCreated: async () => {
-      if (requestKeyRef.current !== requestKey || !curve) return
-      reset(defaultValues)
-      await invalidate(curve)
-    },
+    onReset: () => form.reset(defaultValues),
+    onCreated: async () => curve && invalidate(curve),
   })
   const error = createError ?? isApproved.error ?? gas.error
   const isPending = isCreating
-  const isDisabled = !isFormValid || isPending
-  const onSubmit = form.handleSubmit(values => {
-    if (values.lockedAmt && values.utcDate) {
-      return onSubmitCreate({ lockedAmt: values.lockedAmt, utcDate: values.utcDate, days: values.days })
-    }
+  const isDisabled = !form.formState.isValid || isPending || isDebouncing
+  const onSubmit = form.handleSubmit(({ lockedAmount, utcDate, days }) => {
+    if (lockedAmount == null || utcDate == null) return
+    onSubmitCreate({ lockedAmount, utcDate, days })
   })
 
   return {
@@ -108,14 +104,24 @@ export const useCreateLockForm = ({ curve, vecrvInfo }: { curve: CurveApi | null
     currUtcDate,
     minUtcDate,
     maxUtcDate,
-    calculatedDateLabel,
+    dateLabel: maybes(
+      [
+        values.utcDate,
+        useMemo(
+          () => (curve && values.days > 0 ? dayjs.utc(curve.boosting.calcUnlockTime(values.days)) : null),
+          [curve, values.days],
+        ),
+      ],
+      (utcDate, calculatedUtcDate) =>
+        dayjs.utc(utcDate.toString()).isSame(calculatedUtcDate) ? undefined : formatDate(calculatedUtcDate.valueOf()),
+    ),
     gas,
     isApproved: isApproved.data,
     isPending,
     isDisabled,
     error,
     onSubmit,
-    updateAmount: (lockedAmt: Decimal | undefined) => update({ lockedAmt }),
+    updateAmount: (lockedAmount: Decimal | undefined) => update({ lockedAmount }),
     updateUnlockDate,
     selectQuickDate,
   }

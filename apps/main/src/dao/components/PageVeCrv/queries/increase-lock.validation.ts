@@ -6,30 +6,30 @@ import { createValidationSuite } from '@evm-ui/lib/validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { IncreaseLockQuery } from './increase-lock.types'
 
-export const validateIncreaseLockAmount = (lockedAmt: Decimal | undefined) => {
-  test('lockedAmt', t`Enter an amount to lock`, () => {
-    enforce(lockedAmt).isNotEmpty()
+export const validateIncreaseLockAmount = (lockedAmount: Decimal | undefined) => {
+  test('lockedAmount', t`Enter an amount to lock`, () => {
+    enforce(lockedAmount).isNotEmpty()
   })
-  test('lockedAmt', t`Enter an amount greater than zero`, () => {
-    enforce(lockedAmt).isDecimal().gt(0)
+  test('lockedAmount', t`Enter an amount greater than zero`, () => {
+    enforce(lockedAmount).isDecimal().gt(0)
   })
 }
 
 export const increaseLockFormValidationSuite = createValidationSuite(
-  ({ lockedAmt, maxLockedAmt }: { lockedAmt: Decimal | undefined; maxLockedAmt: Decimal | undefined }) => {
-    validateIncreaseLockAmount(lockedAmt)
-    skipWhen(lockedAmt == null || maxLockedAmt == null, () => {
-      test('maxLockedAmt', t`Amount exceeds maximum of ${maxLockedAmt}`, () => {
-        enforce(lockedAmt).lte(maxLockedAmt)
+  ({ lockedAmount, maxLockedAmount }: { lockedAmount: Decimal | undefined; maxLockedAmount: Decimal | undefined }) => {
+    validateIncreaseLockAmount(lockedAmount)
+    skipWhen(lockedAmount == null || maxLockedAmount == null, () => {
+      test('maxLockedAmount', t`Amount exceeds maximum of ${maxLockedAmount}`, () => {
+        enforce(lockedAmount).lte(maxLockedAmount)
       })
     })
   },
 )
 
-const validateIncreaseLockQueryContext = (params: IncreaseLockQuery) => {
-  curveApiValidationGroup({ chainId: params.chainId })
-  userAddressValidationGroup({ userAddress: params.userAddress })
-  validateIncreaseLockAmount(params.lockedAmt)
+const validateIncreaseLockQueryContext = ({ chainId, userAddress, lockedAmount }: IncreaseLockQuery) => {
+  curveApiValidationGroup({ chainId })
+  userAddressValidationGroup({ userAddress })
+  validateIncreaseLockAmount(lockedAmount)
 }
 
 export const increaseLockQueryValidationSuite = createValidationSuite((params: IncreaseLockQuery) => {
