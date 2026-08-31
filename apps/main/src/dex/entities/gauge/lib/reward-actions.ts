@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig, useConnection } from 'wagmi'
-import { mutateAddRewardToken, mutateDepositReward, mutateDepositRewardApprove } from '@/dex/entities/gauge/api'
+import { getGauge } from '@/dex/entities/gauge/lib/gauge-info'
 import {
   fetchDepositRewardIsApproved,
   invalidateDepositRewardAvailable,
@@ -32,7 +32,7 @@ export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutat
 
   const { mutate, error, isPending } = useTransactionMutation<AddRewardMutation>({
     mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'addRewardToken'] as const,
-    mutationFn: async params => ({ hash: (await mutateAddRewardToken({ chainId, poolId, ...params })) as Hex }),
+    mutationFn: async params => ({ hash: (await getGauge(poolId).addReward(undefined, undefined)) as Hex }),
     validationSuite: gaugeAddRewardValidationSuite,
     validationParams: { chainId, poolId },
     pendingMessage: mutation => t`Adding reward token ${getRewardTokenSymbol(mutation)}`,
@@ -61,12 +61,12 @@ export const useDepositReward = ({ chainId, poolId, onReset }: GaugeRewardMutati
     mutationFn: async params => {
       await waitForApproval({
         isApproved: async () => await fetchDepositRewardIsApproved({ chainId, poolId, ...params }, { staleTime: 0 }),
-        onApprove: async () => (await mutateDepositRewardApprove({ chainId, poolId, ...params })) as Hex[],
+        onApprove: async () => (await getGauge(poolId).depositRewardApprove(undefined, undefined)) as Hex[],
         message: t`Approved deposit reward`,
         config,
       })
       return {
-        hash: (await mutateDepositReward({ chainId, poolId, ...params })) as Hex,
+        hash: (await getGauge(poolId).depositReward(undefined, undefined, undefined)) as Hex,
       }
     },
     validationSuite: gaugeDepositRewardValidationSuite,

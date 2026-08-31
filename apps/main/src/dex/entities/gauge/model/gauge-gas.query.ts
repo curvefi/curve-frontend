@@ -1,12 +1,19 @@
-import * as api from '@/dex/entities/gauge/api'
-import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/dex/entities/gauge/types'
+import { getGauge } from '@/dex/entities/gauge/lib'
+import type {
+  AddRewardParams,
+  AddRewardQuery,
+  DepositRewardApproveParams,
+  DepositRewardApproveQuery,
+  DepositRewardParams,
+  DepositRewardQuery,
+} from '@/dex/entities/gauge/types'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model/query'
 import {
   gaugeAddRewardValidationSuite,
   gaugeDepositRewardApproveValidationSuite,
   gaugeDepositRewardValidationSuite,
 } from './gauge-validation'
-import { getDepositRewardAvailableQueryKey, getDepositRewardIsApprovedQueryKey } from './query-options'
+import { getDepositRewardAvailableQueryKey, getDepositRewardIsApprovedQueryKey } from './gauge.query'
 
 export const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
   queryKey: ({ rewardTokenId, amount, userBalance, ...gaugeParams }: DepositRewardApproveParams) =>
@@ -17,7 +24,8 @@ export const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
       { amount },
       { userBalance },
     ] as const,
-  queryFn: api.queryEstimateGasDepositRewardApprove,
+  queryFn: async ({ poolId, rewardTokenId, amount }: DepositRewardApproveQuery) =>
+    getGauge(poolId).estimateGas.depositRewardApprove(rewardTokenId, amount),
   validationSuite: gaugeDepositRewardApproveValidationSuite,
   refetchOnWindowFocus: 'always',
   refetchOnMount: 'always',
@@ -32,7 +40,8 @@ export const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
       { rewardTokenId },
       { distributorId },
     ] as const,
-  queryFn: api.queryEstimateGasAddRewardToken,
+  queryFn: async ({ poolId, rewardTokenId, distributorId }: AddRewardQuery) =>
+    getGauge(poolId).estimateGas.addReward(rewardTokenId, distributorId),
   validationSuite: gaugeAddRewardValidationSuite,
   dependencies: (params: AddRewardParams) => [getDepositRewardAvailableQueryKey(params)],
   refetchOnWindowFocus: 'always',
@@ -50,7 +59,8 @@ export const { useQuery: useEstimateGasDepositReward } = queryFactory({
       { epoch },
       { userBalance },
     ] as const,
-  queryFn: api.queryEstimateGasDepositReward,
+  queryFn: async ({ poolId, rewardTokenId, amount, epoch }: DepositRewardQuery) =>
+    getGauge(poolId).estimateGas.depositReward(rewardTokenId, amount, epoch),
   validationSuite: gaugeDepositRewardValidationSuite,
   dependencies: (params: DepositRewardParams) => [getDepositRewardIsApprovedQueryKey(params)],
   refetchOnWindowFocus: 'always',

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { isAddressEqual, zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
-import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/query-options'
+import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
