@@ -21,7 +21,7 @@ import {
   type TenderlyWagmiConfigFromVNet,
 } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
 import { Chain } from '@evm-ui/utils/network'
 import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
@@ -32,22 +32,20 @@ const MANAGER_ADDRESS = '0xE13aDC278c252e04DCBdca8eDced2C973Db994fA'
 const REWARD_TOKEN_SYMBOL = 'DAI'
 const REWARD_TOKEN_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
 const REWARD_DISTRIBUTOR_ADDRESS = '0x427Caf62D66fCec08FA55F0991DBCA66a8BfA7E7'
-const DEPOSIT_REWARD_TOKEN_SYMBOL = 'USDT'
 const DEPOSIT_REWARD_TOKEN_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
 const FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH in wei
 const REWARD_TOKEN_FUND_AMOUNT = '0x5f5e100' // 100 USDT in token units
 const DEPOSIT_REWARD_AMOUNT = '1'
 const DEPOSIT_REWARD_AMOUNT_WEI = parseUnits(DEPOSIT_REWARD_AMOUNT, 6)
+const CHAIN_ID = Chain.Ethereum
 
-type GaugeManagementForm = 'addReward' | 'depositReward'
+const gaugeManagementForms = { addReward: AddRewardToken, depositReward: DepositReward }
+type GaugeManagementForm = keyof typeof gaugeManagementForms
 
 function GaugeManagementFormTest({ form }: { form: GaugeManagementForm }) {
   const { isPending } = useNetworksQuery()
-
-  if (isPending) return <Loading />
-  if (form === 'depositReward') return <DepositReward chainId={Chain.Ethereum} poolId={POOL_ADDRESS} />
-
-  return <AddRewardToken chainId={Chain.Ethereum} poolId={POOL_ADDRESS} />
+  const Form = gaugeManagementForms[form]
+  return isPending ? <Loading /> : <Form chainId={CHAIN_ID} poolId={POOL_ADDRESS} />
 }
 
 const GaugeManagementTestCase = ({
@@ -58,7 +56,7 @@ const GaugeManagementTestCase = ({
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
     <CurveProvider
       app="dex"
-      network={defaultNetworks[Chain.Ethereum]}
+      network={defaultNetworks[CHAIN_ID]}
       onChainUnavailable={console.error}
       hydrate={{ dex: useStore(state => state.hydrate) }}
     >
@@ -74,14 +72,13 @@ describe('Gauge Management (RPC)', () => {
 
   const privateKey = generatePrivateKey()
   const { address } = privateKeyToAccount(privateKey)
-  let adminRpcUrl: string
-  let publicRpcUrl: string
+  let adminRpcUrl: string, publicRpcUrl: string
 
   const getVirtualNetwork = createVirtualTestnet(uuid => ({
     slug: `gauge-management-${uuid}`,
     display_name: `GaugeManagement (${uuid})`,
     fork_config: { block_number: 'latest' },
-    chain_id: Chain.Ethereum,
+    chain_id: CHAIN_ID,
   }))
 
   before(() => {
@@ -122,12 +119,13 @@ describe('Gauge Management (RPC)', () => {
   it('adds a gauge reward token', () => {
     cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} privateKey={privateKey} form="addReward" />)
 
-    cy.contains(REWARD_TOKEN_SYMBOL, LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid="add-reward-token-selector"]', LOAD_TIMEOUT).click()
+    cy.get(`[data-testid="token-option-${REWARD_TOKEN_SYMBOL}"]`).click()
     cy.get('[data-testid="add-reward-distributor-input"]').clear()
     cy.get('[data-testid="add-reward-distributor-input"]').type(REWARD_DISTRIBUTOR_ADDRESS)
     cy.get('[data-testid="add-reward-submit-button"]', LOAD_TIMEOUT).click()
 
-    cy.contains(`Added reward token ${REWARD_TOKEN_SYMBOL}`, LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('be.visible')
     expectGaugeRewardDistributor({
       publicRpcUrl,
       gaugeAddress: GAUGE_ADDRESS,
@@ -144,11 +142,11 @@ describe('Gauge Management (RPC)', () => {
     }).then(initialBalance => {
       cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} privateKey={privateKey} form="depositReward" />)
 
-      cy.contains(DEPOSIT_REWARD_TOKEN_SYMBOL, LOAD_TIMEOUT).should('be.visible')
-      cy.get('[data-testid="deposit-amount"] input[type="text"]', LOAD_TIMEOUT).type(DEPOSIT_REWARD_AMOUNT)
+      cy.get('[data-testid="deposit-amount"]', LOAD_TIMEOUT).should('be.visible')
+      cy.get('[data-testid="deposit-amount"] input[type="text"]').type(DEPOSIT_REWARD_AMOUNT)
       cy.get('[data-testid="deposit-reward-submit-button"]', LOAD_TIMEOUT).click()
 
-      cy.contains(`Deposited reward token ${DEPOSIT_REWARD_TOKEN_SYMBOL}`, LOAD_TIMEOUT).should('be.visible')
+      cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('be.visible')
       expectErc20BalanceChange({
         publicRpcUrl,
         tokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,

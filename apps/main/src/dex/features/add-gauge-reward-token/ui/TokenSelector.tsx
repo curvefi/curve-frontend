@@ -82,6 +82,7 @@ export const TokenSelector = ({
         isOpen={!!isOpen}
         onOpen={openModal}
         onClose={closeModal}
+        testId="add-reward-token-selector"
       >
         <TokenList tokens={filteredTokens} onToken={token => updateForm({ rewardTokenId: token.address })} />
       </TokenSelectorUIKit>
