@@ -6,7 +6,7 @@ import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@c
 import { getRangeFilterLabel } from '@evm-ui/shared/ui/DataTable/filters'
 import { assert } from '@primitives/objects.utils'
 
-const DEFAULT_POOL_LIST_MIN_TVL_INPUT = '10k'
+const DEFAULT_POOL_LIST_MIN_TVL_INPUT = '0'
 const POOL_LIST_FILTER_POOL_TYPE = 'crypto'
 const POOL_LIST_FILTER_TVL_MIN = 480_000_000
 const POOL_LIST_FILTER_TVL_MAX = 500_000_000
