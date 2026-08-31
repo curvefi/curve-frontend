@@ -13,7 +13,7 @@ export type ProposalData = Omit<Proposal, 'timestamp'> & {
   timestamp: number
 }
 
-type ProposalsMapper = Record<string, ProposalData>
+export type ProposalsByKey = Record<string, ProposalData>
 
 export const createProposalKey = (proposalId: number, proposalType: ProposalType) =>
   `${proposalId}-${proposalType.toLowerCase()}`
@@ -50,7 +50,7 @@ const parseProposalData = (proposal: Proposal) => {
   }
 }
 
-const _fetchProposals = async (): Promise<ProposalsMapper> => {
+const _fetchProposals = async (): Promise<ProposalsByKey> => {
   const pagination = 500
   const results: Proposal[] = await paginate(
     async (page, offset) => {
@@ -61,14 +61,14 @@ const _fetchProposals = async (): Promise<ProposalsMapper> => {
     pagination,
   )
 
-  return results.reduce((mapper, proposal) => {
-    mapper[createProposalKey(proposal.id, proposal.type)] = parseProposalData(proposal)
-    return mapper
-  }, {} as ProposalsMapper)
+  return results.reduce((proposalsByKey, proposal) => {
+    proposalsByKey[createProposalKey(proposal.id, proposal.type)] = parseProposalData(proposal)
+    return proposalsByKey
+  }, {} as ProposalsByKey)
 }
 
-export const { useQuery: useProposalsMapperQuery, invalidate: invalidateProposals } = queryFactory({
-  queryKey: () => ['proposals-mapper'] as const,
+export const { useQuery: useProposals, invalidate: invalidateProposals } = queryFactory({
+  queryKey: () => ['proposals'] as const,
   queryFn: _fetchProposals,
   category: 'dao.proposals',
   validationSuite: EmptyValidationSuite,

@@ -30,13 +30,25 @@ export const TableFilterButtonGroup = <T extends string>({
   const isMobile = useIsMobile()
   return (
     <TableFilterItem title={title}>
-      <ToggleButtonGroup exclusive compact value={value} onChange={onChange} aria-label={ariaLabel}>
+      <ToggleButtonGroup
+        exclusive
+        compact
+        value={value}
+        onChange={onChange}
+        aria-label={ariaLabel}
+        sx={{ width: '100%' }}
+      >
         {options.map(({ value: optionValue, label }) => (
           <ToggleButton
             key={optionValue}
             value={optionValue}
             size={isMobile ? 'small' : 'extraSmall'}
-            sx={{ flex: 1, whiteSpace: 'nowrap' }}
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              whiteSpace: isMobile ? 'normal' : 'nowrap',
+              overflowWrap: isMobile ? 'anywhere' : undefined,
+            }}
             data-testid={notFalsy<string>('table-filter-btn', testIdSuffix, optionValue).join('-')}
           >
             {label}

@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { PendingTx } from '@/dao/components/UserBox/PendingTx'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
-import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'
+import { createProposalKey, useProposals } from '@/dao/entities/proposals'
 import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import { useStore } from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
@@ -34,13 +34,13 @@ export const VoteDialog = ({
   proposalId,
   proposalType,
 }: Props) => {
-  const { data: proposalsMapper } = useProposalsMapperQuery({})
+  const { data: proposals } = useProposals({})
   const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId, proposalType })
   const { data: userProposalVotes, isLoading: isLoadingUserProposalVotes } = useUserProposalVotesQuery({
     userAddress: userAddress ?? '',
   })
   const proposalKey = createProposalKey(proposalId, proposalType)
-  const proposal = proposalsMapper?.[proposalKey] ?? null
+  const proposal = proposals?.[proposalKey] ?? null
   const castVote = useStore(state => state.proposals.castVote)
   const voteTxMapper = useStore(state => state.proposals.voteTxMapper)
   const executeProposal = useStore(state => state.proposals.executeProposal)

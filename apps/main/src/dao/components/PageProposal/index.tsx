@@ -6,7 +6,7 @@ import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { CONTRACT_VECRV } from '@/dao/constants'
 import { invalidateProposalPricesApi, useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
-import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
+import { createProposalKey, useProposals } from '@/dao/entities/proposals'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
@@ -37,18 +37,14 @@ export const Proposal = () => {
   const proposalType = voteType.toLowerCase() as ProposalType
   const { address: userAddress } = useConnection()
 
-  const {
-    data: proposalsMapper,
-    isLoading: proposalsListLoading,
-    isSuccess: proposalsListSuccess,
-  } = useProposalsMapperQuery({})
+  const { data: proposals, isLoading: proposalsListLoading, isSuccess: proposalsListSuccess } = useProposals({})
   const {
     data: pricesProposal,
     isLoading: pricesProposalLoading,
     isError: pricesProposalError,
     isSuccess: pricesProposalSuccess,
   } = useProposalPricesApiQuery({ proposalId: +voteId, proposalType })
-  const proposal = proposalsMapper?.[rProposalId] ?? null
+  const proposal = proposals?.[createProposalKey(+voteId, proposalType)] ?? null
 
   const isLoading = pricesProposalLoading || proposalsListLoading
   const isFetched = pricesProposalSuccess && proposalsListSuccess

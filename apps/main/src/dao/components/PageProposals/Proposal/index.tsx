@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { Countdown } from '@/dao/components/Countdown'
 import { ProposalVoteStatusBox } from '@/dao/components/ProposalVoteStatusBox'
 import { SmallLabel } from '@/dao/components/SmallLabel'
-import { ProposalData } from '@/dao/entities/proposals-mapper'
+import type { ProposalData } from '@/dao/entities/proposals'
 import { t } from '@evm-ui/lib/i18n'
 import { LazyItem } from '@legacy-ui/LazyItem'
 
