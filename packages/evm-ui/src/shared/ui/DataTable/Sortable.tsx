@@ -1,24 +1,32 @@
-import { forwardRef, type ReactNode, type MouseEvent, type RefAttributes } from 'react'
+import { forwardRef, type ReactNode, type MouseEvent } from 'react'
 import { ArrowDownIcon } from '@evm-ui/shared/icons/ArrowDownIcon'
 import Stack from '@mui/material/Stack'
-import type { Column } from '@tanstack/react-table'
-import {
-  DataTableHeaderCellSortableAlign,
-  getFlexAlignment,
-  type DataTableSize,
-  type TableItem,
-} from './data-table.utils'
+import type { Column, ColumnMeta, RowData, StockFeatures } from '@tanstack/react-table'
+import type { DataTableSize } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 
-type SortableProps<T extends TableItem> = {
-  column: Column<T, unknown> | undefined
+type SortingFeatures = Pick<StockFeatures, 'rowSortingFeature'>
+type SortableColumn = Pick<Column<SortingFeatures, RowData>, 'id' | 'getIsSorted' | 'getToggleSortingHandler'> & {
+  columnDef: { meta?: Pick<ColumnMeta<SortingFeatures, RowData>, 'type'> }
+}
+
+type SortableProps = {
+  column: SortableColumn | undefined
   children: ReactNode
   size: DataTableSize
   isEnabled?: boolean
 }
+
+const HeaderCellSortableAlign = {
+  extraSmall: 'center',
+  small: 'center',
+  medium: 'end',
+  large: 'end',
+}
+
 // forwardRef needed to pass ref to Tooltip for it to work
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
-const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function Sortable(
+export const Sortable = forwardRef<HTMLDivElement, SortableProps>(function Sortable(
   { children, column, size, isEnabled = true, ...props },
   ref,
 ) {
@@ -34,9 +42,9 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
         },
       })}
       sx={{
-        alignItems: DataTableHeaderCellSortableAlign[size],
+        alignItems: HeaderCellSortableAlign[size],
         ...(isEnabled && { sx: { cursor: 'pointer' } }),
-        ...(column && { justifyContent: getFlexAlignment(column) }),
+        ...(column && { justifyContent: column.columnDef.meta?.type === 'numeric' ? 'end' : 'start' }),
       }}
     >
       {children}
@@ -50,8 +58,3 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
     </Stack>
   )
 })
-
-/** Type assertion to support generics with forwardRef (forwardRef doesn't natively support generic components) */
-export const Sortable = _Sortable as <T extends TableItem>(
-  props: SortableProps<T> & RefAttributes<HTMLDivElement>,
-) => ReactNode

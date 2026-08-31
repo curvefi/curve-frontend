@@ -1,7 +1,7 @@
 import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
 import { LegacyTooltipBaseApy } from '@/dex/components/LegacyTooltipBaseApy'
 import { LARGE_APY } from '@/dex/constants'
-import { isSortedBy } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { isSortedBy, type CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { formatNumber } from '@evm-ui/utils'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
@@ -9,7 +9,12 @@ import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
 import type { LegacyPoolRow } from '../types'
 
-export const LegacyRewardsBaseCell = ({ table, row, getValue, column }: CellContext<LegacyPoolRow, number | null>) => {
+export const LegacyRewardsBaseCell = ({
+  table,
+  row,
+  getValue,
+  column,
+}: CellContext<CurveTableFeatures, LegacyPoolRow, number | null>) => {
   const { original: poolData } = row
   const { failedFetching24hOldVprice: failed, rewards } = poolData
 

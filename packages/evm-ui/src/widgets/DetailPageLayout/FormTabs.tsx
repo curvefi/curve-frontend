@@ -17,11 +17,11 @@ type FormTabBase<Props extends object> = Omit<TabItem<string, Props>, 'subTabs'>
 type FormSubTab<Props extends object> = FormTabBase<Props>
 
 export type FormTab<Props extends object> = FormTabBase<Props> & {
-  subTabs?: FormSubTab<Props>[]
+  subTabs?: readonly FormSubTab<Props>[]
 }
 
 type UseFormTabOptions<T extends object> = {
-  menu: FormTab<T>[]
+  menu: readonly FormTab<T>[]
   params: T
 }
 

@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import { createContext, type ReactElement, use, useState } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
 import { queryClient, QueryProvider } from '@evm-ui/lib/api'
 import { ThemeProvider } from '@evm-ui/shared/ui/ThemeProvider'
@@ -15,6 +15,9 @@ type Props = {
   autoConnect?: boolean
 }
 
+const ComponentTestChildrenContext = createContext<ReactElement | null>(null)
+const ComponentTestRoute = () => use(ComponentTestChildrenContext)
+
 /**
  * Client wrapper for Cypress component testing.
  *
@@ -24,18 +27,22 @@ type Props = {
  * Similar to apps/main/src/app/ClientWrapper.tsx but optimized for the testing environment.
  */
 export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
-  // Create a minimal router for testing environment
-  const router = createRouter({
-    routeTree: createRootRoute({ component: () => children }),
-    history: createMemoryHistory({ initialEntries: ['/'] }),
-  })
+  // Keep the stateful router stable when test children trigger a wrapper re-render.
+  const [router] = useState(() =>
+    createRouter({
+      routeTree: createRootRoute({ component: ComponentTestRoute }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    }),
+  )
 
   return (
     <ThemeProvider theme="light">
       <WithWrapper Wrapper={WagmiProvider} shouldWrap={config} config={config!} reconnectOnMount={autoConnect}>
         {/* Persistence can restore stale mocked queries after Cypress clears state, leaking data between tests. */}
         <QueryProvider persister={null} queryClient={queryClient}>
-          <RouterProvider router={router} />
+          <ComponentTestChildrenContext value={children}>
+            <RouterProvider router={router} />
+          </ComponentTestChildrenContext>
           <Toast />
           <ReactQueryDevtools />
         </QueryProvider>

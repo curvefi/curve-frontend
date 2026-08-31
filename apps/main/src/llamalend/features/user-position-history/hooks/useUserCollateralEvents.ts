@@ -4,7 +4,6 @@ import { type Chain } from '@curvefi/prices-api'
 import { UserCollateralEvent as CrvUsdUserCollateralEvent } from '@curvefi/prices-api/crvusd'
 import { UserCollateralEvent as LendingUserCollateralEvent } from '@curvefi/prices-api/lending'
 import type { UserContractQuery } from '@evm-ui/lib/model'
-import type { TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { MarketType } from '@evm-ui/types/market'
 import { q, type QueryProp } from '@evm-ui/types/util'
 import { decimalDiv } from '@evm-ui/utils'
@@ -47,8 +46,10 @@ export type UserCollateralEventType =
 
 const OriginalFields = ['loanChange', 'collateralChange', 'collateralChangeUsd', 'timestamp'] as const
 
-export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> &
-  TableItem & { type: UserCollateralEventType } & Partial<MarketTokens>
+export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> & {
+  type: UserCollateralEventType
+  url: string
+} & Partial<MarketTokens>
 
 export type UserCollateralEvents = {
   events: ParsedUserCollateralEvent[]
@@ -104,7 +105,7 @@ export const useUserCollateralEvents = ({
             data.events
               .map((event, index, events) => ({
                 type: parseEventType(event, events[index - 1]),
-                url: scanTxPath(network, event.txHash),
+                url: scanTxPath(network, event.txHash)!,
                 borrowToken,
                 collateralToken,
                 ...pick(event, ...OriginalFields),

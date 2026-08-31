@@ -1,3 +1,4 @@
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -22,7 +23,9 @@ export const LabelCellDisplay = ({
   </Typography>
 )
 
-export const LabelCell = ({ getValue }: CellContext<ClosePositionRow, ClosePositionRow['label'] | undefined>) => {
+export const LabelCell = ({
+  getValue,
+}: CellContext<CurveTableFeatures, ClosePositionRow, ClosePositionRow['label']>) => {
   const value = getValue()
   return (
     value != null && (

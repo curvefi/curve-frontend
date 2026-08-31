@@ -1,4 +1,5 @@
 import { sumBy } from 'lodash'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber, formatToken } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
@@ -70,7 +71,10 @@ export const ValueCellDisplay = ({
   )
 }
 
-export const ValueCell = ({ getValue, row }: CellContext<ClosePositionRow, ClosePositionRow['value'] | undefined>) => {
+export const ValueCell = ({
+  getValue,
+  row,
+}: CellContext<CurveTableFeatures, ClosePositionRow, ClosePositionRow['value']>) => {
   const value = getValue()
   const { testId } = row.original
   return (

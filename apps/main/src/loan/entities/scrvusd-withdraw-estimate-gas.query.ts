@@ -1,7 +1,6 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { useEstimateGas } from '@evm-ui/lib/model/entities/gas-info'
-import type { BaseConfig } from '@legacy-ui/utils'
+import { createEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
 import type { ScrvUsdWithdrawParams, ScrvUsdWithdrawQuery } from './scrvusd.validation'
 import { scrvUsdWithdrawMaxValidationSuite } from './scrvusd.validation'
 
@@ -20,8 +19,4 @@ const { useQuery: useScrvUsdWithdrawEstimateGasQuery } = queryFactory({
   validationSuite: scrvUsdWithdrawMaxValidationSuite,
 })
 
-export const useScrvUsdWithdrawEstimateGas = (
-  networks: Record<number, BaseConfig>,
-  query: ScrvUsdWithdrawParams,
-  enabled?: boolean,
-) => useEstimateGas(networks, query.chainId, useScrvUsdWithdrawEstimateGasQuery(query, enabled), enabled)
+export const useScrvUsdWithdrawEstimateGas = createEstimateGasHook(useScrvUsdWithdrawEstimateGasQuery)

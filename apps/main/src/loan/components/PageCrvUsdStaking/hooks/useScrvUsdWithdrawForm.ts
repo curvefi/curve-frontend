@@ -30,6 +30,7 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
       () => ({ chainId, userAddress, maxWithdrawAmount, withdrawAmount, isFull }),
       [chainId, userAddress, maxWithdrawAmount, withdrawAmount, isFull],
     ),
+    userDefaultValues,
   )
   const userBalances = useScrvUsdUserBalances({ chainId, userAddress })
   const {

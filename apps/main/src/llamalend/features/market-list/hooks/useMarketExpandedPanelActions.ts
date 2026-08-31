@@ -3,13 +3,12 @@ import { useFavoriteMarkets } from '@/llamalend/queries/market-list/favorite-mar
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { copyToClipboardWithToast } from '@evm-ui/hooks/useCopyToClipboard'
 import { t } from '@evm-ui/lib/i18n'
-import type { ExpandedPanelAction } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 
 export const useMarketExpandedPanelActions = (market: LlamaMarket) => {
   const [, toggleFavoriteMarket] = useFavoriteMarkets()
   const { controllerAddress, isFavorite, favoriteKey } = market
 
-  return useMemo<ExpandedPanelAction[]>(
+  return useMemo(
     () => [
       {
         id: 'toggle-favorite-market',

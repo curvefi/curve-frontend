@@ -1,9 +1,8 @@
 import { sumBy } from 'lodash'
 import { t } from '@evm-ui/lib/i18n'
-import type { ColumnDefinition } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper, type CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, inListFilterFn, multiFilterFn, rangeFilterFn } from '@evm-ui/shared/ui/DataTable/filters'
-import { createColumnHelper } from '@tanstack/react-table'
-import type { Row } from '@tanstack/table-core'
+import type { Row } from '@tanstack/react-table'
 import { LegacyRewardsBaseCell } from '../cells/LegacyRewardsBaseCell'
 import { LegacyRewardsBaseHeader } from '../cells/LegacyRewardsBaseHeader'
 import { LegacyRewardsCrvCell } from '../cells/LegacyRewardsCrvCell'
@@ -15,7 +14,7 @@ import { LegacyPoolTitleCell } from '../cells/PoolTitleCell/LegacyPoolTitleCell'
 import type { LegacyPoolRow } from '../types'
 import { LegacyPoolColumnId } from './legacy-columns.enum'
 
-const columnHelper = createColumnHelper<LegacyPoolRow>()
+const columnHelper = createAppColumnHelper<LegacyPoolRow>()
 
 const headers = {
   [LegacyPoolColumnId.PoolName]: t`Pool`,
@@ -27,11 +26,10 @@ const headers = {
   [LegacyPoolColumnId.Tvl]: t`TVL`,
 }
 
-type LegacyPoolColumn = ColumnDefinition<LegacyPoolRow>
-
 /** Sorts pool rows by a numeric reward value, placing rows with no value last. */
 const sortByReward =
-  (getValue: (row: LegacyPoolRow) => number | undefined) => (x: Row<LegacyPoolRow>, y: Row<LegacyPoolRow>) =>
+  (getValue: (row: LegacyPoolRow) => number | undefined) =>
+  (x: Row<CurveTableFeatures, LegacyPoolRow>, y: Row<CurveTableFeatures, LegacyPoolRow>) =>
     (getValue(x.original) ?? -Infinity) - (getValue(y.original) ?? -Infinity)
 
 /** Define a hidden column. */
@@ -45,26 +43,29 @@ const hidden = (
     sortUndefined: 'last',
   })
 
-export const LEGACY_POOL_COLUMNS = [
+export const LEGACY_POOL_COLUMNS = columnHelper.columns([
   columnHelper.accessor('pool.name', {
     id: LegacyPoolColumnId.PoolName,
     header: t`Pool`,
     cell: LegacyPoolTitleCell,
   }),
-  columnHelper.accessor(row => (row.rewards?.base ? +row.rewards.base.day : null), {
-    id: LegacyPoolColumnId.RewardsBase,
-    header: headers[LegacyPoolColumnId.RewardsBase],
-    cell: LegacyRewardsBaseCell,
-    meta: {
-      type: 'numeric',
-      tooltip: {
-        title: [
-          t`Base variable APY (vAPY) is the annualized yield from trading fees based on the activity over the past 24h.`,
-          t`If a pool holds a yield bearing asset, the intrinsic yield is added.`,
-        ].join(' '),
+  columnHelper.accessor<(row: LegacyPoolRow) => number | null, number | null>(
+    row => (row.rewards?.base ? +row.rewards.base.day : null),
+    {
+      id: LegacyPoolColumnId.RewardsBase,
+      header: headers[LegacyPoolColumnId.RewardsBase],
+      cell: LegacyRewardsBaseCell,
+      meta: {
+        type: 'numeric',
+        tooltip: {
+          title: [
+            t`Base variable APY (vAPY) is the annualized yield from trading fees based on the activity over the past 24h.`,
+            t`If a pool holds a yield bearing asset, the intrinsic yield is added.`,
+          ].join(' '),
+        },
       },
     },
-  }),
+  ),
   columnHelper.accessor('rewards', {
     id: LegacyPoolColumnId.RewardsOther,
     header: headers[LegacyPoolColumnId.RewardsOther],
@@ -73,15 +74,18 @@ export const LEGACY_POOL_COLUMNS = [
     enableMultiSort: false, // that's done in the separate columns RewardsCrv and RewardsIncentives
     meta: { type: 'numeric', tooltip: { title: t`Token APR based on current prices of tokens and reward rates` } },
   }),
-  columnHelper.accessor(row => (row.volume ? +row.volume : null), {
-    id: LegacyPoolColumnId.Volume,
-    header: headers[LegacyPoolColumnId.Volume],
-    cell: LegacyUsdCell,
-    meta: { type: 'numeric' },
-    sortUndefined: 'last',
-    filterFn: rangeFilterFn,
-  }),
-  columnHelper.accessor(row => (row.tvl ? +row.tvl : null), {
+  columnHelper.accessor<(row: LegacyPoolRow) => number | null, number | null>(
+    row => (row.volume ? +row.volume : null),
+    {
+      id: LegacyPoolColumnId.Volume,
+      header: headers[LegacyPoolColumnId.Volume],
+      cell: LegacyUsdCell,
+      meta: { type: 'numeric' },
+      sortUndefined: 'last',
+      filterFn: rangeFilterFn,
+    },
+  ),
+  columnHelper.accessor<(row: LegacyPoolRow) => number | null, number | null>(row => (row.tvl ? +row.tvl : null), {
     id: LegacyPoolColumnId.Tvl,
     header: headers[LegacyPoolColumnId.Tvl],
     cell: LegacyUsdCell,
@@ -96,13 +100,13 @@ export const LEGACY_POOL_COLUMNS = [
     header: headers[LegacyPoolColumnId.RewardsCrv],
     cell: LegacyRewardsCrvCell,
     filterFn: multiFilterFn,
-    sortingFn: sortByReward(row => row.rewards?.crv[0]),
+    sortFn: sortByReward(row => row.rewards?.crv[0]),
   }),
   hidden(row => row.rewards, {
     id: LegacyPoolColumnId.RewardsIncentives,
     header: headers[LegacyPoolColumnId.RewardsIncentives],
     cell: LegacyRewardsIncentivesCell,
     filterFn: multiFilterFn,
-    sortingFn: sortByReward(row => row.rewards && sumBy(row.rewards.other, r => r.apy)),
+    sortFn: sortByReward(row => row.rewards && sumBy(row.rewards.other, r => r.apy)),
   }),
-] satisfies LegacyPoolColumn[]
+])

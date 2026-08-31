@@ -1,48 +1,50 @@
 import { useCallback } from 'react'
-import { zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
-import { AlertFormError } from '@/dex/components/AlertFormError'
-import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
-import { useNetworkByChain } from '@/dex/entities/networks'
-import { addGaugeRewardTokenValidationSuite } from '@/dex/features/add-gauge-reward-token/model'
-import type { AddRewardFormValues, AddRewardTokenProps } from '@/dex/features/add-gauge-reward-token/types'
 import {
-  DistributorInput,
-  EstimatedGasInfo,
-  FormActions,
-  TokenSelector,
-} from '@/dex/features/add-gauge-reward-token/ui'
-import { FormProvider, useForm } from '@evm-ui/features/forms'
+  AddRewardParams,
+  gaugeAddRewardValidationGroup,
+  useAddRewardToken,
+  useAddRewardTokenEstimateGas,
+  useGaugeRewardsDistributors,
+  useIsDepositRewardAvailable,
+} from '@/dex/entities/gauge'
+import { useNetworks } from '@/dex/entities/networks'
+import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
+import { DistributorInput, TokenSelector } from '@/dex/features/add-gauge-reward-token/ui'
+import { ChainId } from '@/dex/types/main.types'
+import { FormButton, useForm, useFormSync } from '@evm-ui/features/forms'
+import { createValidationSuite } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
-import { FormErrorsDisplay } from '@legacy-ui/FormErrorsDisplay'
-import { FlexContainer, FormContainer, FormFieldsContainer } from '@legacy-ui/styled-containers'
+import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { q } from '@evm-ui/types/util'
+import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
+import Stack from '@mui/material/Stack'
 
-export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
-  const { address: signerAddress } = useConnection()
+const { Spacing } = SizesAndSpaces
 
-  const { isFetching: isFetchingGaugeRewardsDistributors } = useGaugeRewardsDistributors({
-    chainId,
-    poolId,
-    userAddress: signerAddress,
-  })
+const validation = createValidationSuite((data: AddRewardParams) => gaugeAddRewardValidationGroup(data))
 
-  const { data: isDepositRewardAvailable, isFetching: isFetchingIsDepositRewardAvailable } =
-    useIsDepositRewardAvailable({ chainId, poolId })
+export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
+  const { data: networks } = useNetworks()
+  const { address: userAddress } = useConnection()
+  const { isLoading: isLoadingDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
+  const { data: isRewardsAvailable, isLoading: isLoadingRewards } = useIsDepositRewardAvailable({ chainId, poolId })
+  const network = networks[chainId]
 
   const form = useForm<AddRewardFormValues>({
-    validation: addGaugeRewardTokenValidationSuite,
-    defaultValues: {
-      rewardTokenId: zeroAddress,
-      distributorId: signerAddress ?? zeroAddress,
-    },
+    validation,
+    defaultValues: { rewardTokenId: undefined, distributorId: undefined },
   })
-  const {
-    setError,
-    formState: { isSubmitting },
-    handleSubmit,
-  } = form
+  const { setError, formState, handleSubmit } = form
+  const { errors, visibleErrors, isValid, isSubmitting } = formState
+
+  useFormSync(form, { distributorId: userAddress }, !!userAddress && !form.isTouched('distributorId'))
+
+  const gas = useAddRewardTokenEstimateGas(networks, { chainId, poolId, ...form.watchValues() }, isValid)
 
   const {
     mutate: addRewardToken,
@@ -51,46 +53,42 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
     data: addRewardTokenData,
   } = useAddRewardToken({ chainId, poolId })
 
-  const { data: network } = useNetworkByChain({ chainId })
-
   const onSubmit = useCallback(
     ({ rewardTokenId, distributorId }: AddRewardFormValues) => {
       addRewardToken(
         { rewardTokenId, distributorId },
-        {
-          onError: (error: Error) => {
-            setError('root.serverError', { type: 'manual', message: error.message })
-          },
-        },
+        { onError: (error: Error) => setError('root.serverError', { type: 'manual', message: error.message }) },
       )
     },
     [addRewardToken, setError],
   )
 
-  const isFormDisabled = !isDepositRewardAvailable
-
-  const isFormLoading =
-    isSubmitting || isFetchingGaugeRewardsDistributors || isFetchingIsDepositRewardAvailable || isPendingAddRewardToken
+  const isLoading = isSubmitting || isLoadingDistributors || isLoadingRewards || isPendingAddRewardToken
+  const isDisabled = isLoading || !isRewardsAvailable
 
   return (
-    <FormProvider {...form}>
-      <form onSubmit={event => void handleSubmit(onSubmit)(event)}>
-        <FormContainer>
-          <FormFieldsContainer>
-            <FlexContainer>
-              <TokenSelector chainId={chainId} poolId={poolId} disabled={isFormLoading || isFormDisabled} />
-              <DistributorInput disabled={isFormLoading || isFormDisabled} />
-            </FlexContainer>
-          </FormFieldsContainer>
-          <FormErrorsDisplay errorKeys={['rewardTokenId', 'distributorId']} component={AlertFormError} />
-          <EstimatedGasInfo chainId={chainId} poolId={poolId} />
-          <FormActions chainId={chainId} poolId={poolId} />
-          {isSuccessAddRewardToken && addRewardTokenData && (
-            <TxInfoBar description={t`Reward token added`} txHash={scanTxPath(network, addRewardTokenData)} />
-          )}
-          <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
-        </FormContainer>
-      </form>
-    </FormProvider>
+    <Form {...form} onSubmit={handleSubmit(onSubmit)} footer={<ActionInfoGasEstimate gas={q(gas)} />}>
+      <Stack sx={{ gap: Spacing.sm }}>
+        <Stack direction={{ mobile: 'column', tablet: 'row' }} sx={{ gap: Spacing.sm }}>
+          <TokenSelector chainId={chainId} poolId={poolId} userAddress={userAddress} disabled={isDisabled} />
+          <DistributorInput disabled={isDisabled} />
+        </Stack>
+        <FormButton
+          disabled={isDisabled || !isValid}
+          loading={isLoading}
+          label={t`Add Reward`}
+          testId="add-reward-submit-button"
+          connectWalletTestId="add-reward-connect-wallet-button"
+        />
+        {isSuccessAddRewardToken && addRewardTokenData && (
+          <TxInfoBar description={t`Reward token added`} txHash={scanTxPath(network, addRewardTokenData)} />
+        )}
+        <FormAlerts
+          error={errors['root.serverError'] ?? null}
+          formErrors={visibleErrors}
+          handledErrors={['distributorId']}
+        />
+      </Stack>
+    </Form>
   )
 }

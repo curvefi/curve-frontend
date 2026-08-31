@@ -1,3 +1,4 @@
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
@@ -6,7 +7,9 @@ import type { CellContext } from '@tanstack/react-table'
 import type { PoolRow } from '../types'
 import { formatCellValue } from './utils'
 
-export const UsdCell = ({ getValue }: CellContext<PoolRow, number | null | undefined>) => {
+export const UsdCell = ({
+  getValue,
+}: CellContext<CurveTableFeatures, PoolRow, PoolRow['tradingVolume24h' | 'tvlUsd']>) => {
   const value = getValue()
 
   return (

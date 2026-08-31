@@ -33,7 +33,6 @@ const userDefaultValues = {
   userCollateral: undefined,
   userBorrowed: `0` satisfies Decimal,
   debt: undefined,
-  routeId: undefined,
 } satisfies Partial<CreateLoanForm>
 
 const validation = createLoanQueryValidationSuite({
@@ -74,6 +73,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     validation,
     defaultValues: {
       ...userDefaultValues,
+      routeId: undefined,
       leverageEnabled: false,
       slippage: defaultSlippage,
       range: PRESET_RANGES[preset],
@@ -122,6 +122,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         leverageProviders,
       ],
     ),
+    userDefaultValues,
   )
 
   const {
@@ -131,7 +132,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   } = useCreateLoanMutation({
     network: networks[chainId],
     marketId,
-    onReset: () => form.reset(userDefaultValues),
+    onReset: () => form.reset({ ...userDefaultValues, routeId: undefined }),
     userAddress,
     leverageProviders,
   })

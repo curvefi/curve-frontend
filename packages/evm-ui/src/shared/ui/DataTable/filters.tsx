@@ -2,6 +2,7 @@ import { Range } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import type { Unit } from '@evm-ui/utils/units'
 import type { FilterFn } from '@tanstack/react-table'
+import type { CurveTableFeatures } from './data-table.utils'
 
 const RANGE_SEPARATOR = '~'
 const LIST_SEPARATOR = ','
@@ -41,7 +42,7 @@ export const serializeListFilter = (list: string[] | null | undefined) => list?.
 export const parseListFilter = (serialized: string | undefined) => serialized?.split(LIST_SEPARATOR).filter(v => v)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FilterFunction = FilterFn<any>
+type FilterFunction = FilterFn<CurveTableFeatures, any>
 
 export const multiFilterFn: FilterFunction = (row, columnId, filterValue?: string) =>
   !filterValue?.length || !!parseListFilter(filterValue)?.includes(row.getValue(columnId))

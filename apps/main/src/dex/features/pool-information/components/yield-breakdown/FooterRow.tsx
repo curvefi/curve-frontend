@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { t } from '@evm-ui/lib/i18n'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils'
 import TableCell from '@mui/material/TableCell'
@@ -11,7 +12,7 @@ import { YieldBreakdownColumnId } from './columns/columns.enum'
 const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
-  visibleColumns: Column<YieldBreakdownRow, unknown>[]
+  visibleColumns: Column<CurveTableFeatures, YieldBreakdownRow>[]
   maxBoostTotal: number
   total: number
 }

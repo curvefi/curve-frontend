@@ -1,6 +1,7 @@
 import { BaseApyTooltipContent } from '@/dex/components/BaseApyTooltipContent'
 import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
 import { t } from '@evm-ui/lib/i18n'
+import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
 import Box from '@mui/material/Box'
@@ -45,10 +46,10 @@ const BaseApyTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: bo
   )
 }
 
-export const BaseApyCell = ({ row: { original: pool } }: CellContext<PoolRow, PoolRow['baseDailyApr']>) => (
-  <BaseApyTableCell pool={pool} />
-)
+export const BaseApyCell = ({
+  row: { original: pool },
+}: CellContext<CurveTableFeatures, PoolRow, PoolRow['baseDailyApr']>) => <BaseApyTableCell pool={pool} />
 
-export const WeeklyBaseApyCell = ({ row: { original: pool } }: CellContext<PoolRow, PoolRow['baseWeeklyApr']>) => (
-  <BaseApyTableCell pool={pool} weekly />
-)
+export const WeeklyBaseApyCell = ({
+  row: { original: pool },
+}: CellContext<CurveTableFeatures, PoolRow, PoolRow['baseWeeklyApr']>) => <BaseApyTableCell pool={pool} weekly />
