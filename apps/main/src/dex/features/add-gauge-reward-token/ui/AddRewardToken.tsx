@@ -42,7 +42,11 @@ export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: 
     onSubmit,
     error: addRewardTokenError,
     isPending: isPendingAddRewardToken,
-  } = useAddRewardToken({ chainId, poolId })
+  } = useAddRewardToken({
+    chainId,
+    poolId,
+    onReset: () => form.reset({ rewardTokenId: undefined, distributorId: userAddress }),
+  })
 
   const isLoading = isSubmitting || isLoadingDistributors || isLoadingRewards || isPendingAddRewardToken
   const isDisabled = isLoading || !isRewardsAvailable

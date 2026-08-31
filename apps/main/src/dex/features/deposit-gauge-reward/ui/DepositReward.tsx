@@ -49,7 +49,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
     onSubmit,
     error: depositRewardError,
     isPending: isPendingDepositReward,
-  } = useDepositReward({ chainId, poolId })
+  } = useDepositReward({ chainId, poolId, onReset: () => form.reset(defaultValues) })
   const { data: isApproved, isLoading: isLoadingApproved } = useGaugeDepositRewardIsApproved({
     chainId,
     poolId,

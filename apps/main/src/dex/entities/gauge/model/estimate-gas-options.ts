@@ -6,15 +6,13 @@ import {
   gaugeDepositRewardApproveValidationSuite,
   gaugeDepositRewardValidationSuite,
 } from './gauge-validation'
-import { gaugeKeys } from './query-keys'
 import { getDepositRewardAvailableQueryKey, getDepositRewardIsApprovedQueryKey } from './query-options'
 
 export const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
   queryKey: ({ rewardTokenId, amount, userBalance, ...gaugeParams }: DepositRewardApproveParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
-      ...gaugeKeys.estimateGas(),
-      'depositRewardApprove',
+      'estimateGas.depositRewardApprove',
       { rewardTokenId },
       { amount },
       { userBalance },
@@ -30,8 +28,7 @@ export const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
   queryKey: ({ rewardTokenId, distributorId, ...gaugeParams }: AddRewardParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
-      ...gaugeKeys.estimateGas(),
-      'addRewardToken',
+      'estimateGas.addRewardToken',
       { rewardTokenId },
       { distributorId },
     ] as const,
@@ -47,8 +44,7 @@ export const { useQuery: useEstimateGasDepositReward } = queryFactory({
   queryKey: ({ rewardTokenId, amount, epoch, userBalance, ...gaugeParams }: DepositRewardParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
-      ...gaugeKeys.estimateGas(),
-      'depositReward',
+      'estimateGas.depositReward',
       { rewardTokenId },
       { amount },
       { epoch },
