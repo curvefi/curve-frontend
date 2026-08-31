@@ -1,6 +1,5 @@
-import { ReactNode, useRef } from 'react'
+import type { ReactNode, RefObject } from 'react'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { GearIcon } from '@evm-ui/shared/icons/GearIcon'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
@@ -9,18 +8,15 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { TableButton } from './TableButton'
 import { TableSearchField } from './TableSearchField'
-import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
-import type { VisibilityGroup } from './visibility.types'
 
 const { Spacing } = SizesAndSpaces
 
 /**
  * A component that wraps a table and provides a title, subtitle, and filter controls.
  */
-export const TableFilters = <ColumnIds extends string>({
+export const TableFilters = ({
   testIdPrefix,
-  visibilityGroups,
-  toggleVisibility,
+  visibilitySettings,
   collapsibleFilters,
   chips,
   filterChip,
@@ -30,8 +26,11 @@ export const TableFilters = <ColumnIds extends string>({
   onSearch,
 }: {
   testIdPrefix: string
-  visibilityGroups: VisibilityGroup<ColumnIds>[]
-  toggleVisibility?: (columns: string[]) => void
+  visibilitySettings?: {
+    anchorRef: RefObject<HTMLButtonElement | null>
+    open: boolean
+    onOpen: () => void
+  }
   // collapsible bar that displays the active filters
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
@@ -41,8 +40,6 @@ export const TableFilters = <ColumnIds extends string>({
   disableSearchAutoFocus?: boolean
   onSearch: (value: string) => void
 }) => {
-  const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
-  const settingsRef = useRef<HTMLButtonElement>(null)
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
   const { collapsible, hasActiveFilters } = collapsibleFilters ?? {}
@@ -77,26 +74,19 @@ export const TableFilters = <ColumnIds extends string>({
         {!isMobile && (
           <Grid container size="grow" spacing="none" sx={{ justifyContent: 'flex-end' }}>
             {chips}
-            <TableButton
-              ref={settingsRef}
-              onClick={openVisibilitySettings}
-              icon={GearIcon}
-              testId="btn-visibility-settings"
-              active={visibilitySettingsOpen}
-            />
+            {visibilitySettings && (
+              <TableButton
+                ref={visibilitySettings.anchorRef}
+                onClick={visibilitySettings.onOpen}
+                icon={GearIcon}
+                testId="btn-visibility-settings"
+                active={visibilitySettings.open}
+              />
+            )}
           </Grid>
         )}
       </Grid>
       {collapsible && <Collapse in={!!hasActiveFilters || isMobile}>{collapsible}</Collapse>}
-      {visibilitySettingsOpen != null && toggleVisibility && (
-        <TableVisibilitySettingsPopover<ColumnIds>
-          anchorRef={settingsRef}
-          visibilityGroups={visibilityGroups}
-          toggleVisibility={toggleVisibility}
-          open={visibilitySettingsOpen}
-          onClose={closeVisibilitySettings}
-        />
-      )}
     </Stack>
   )
 }
