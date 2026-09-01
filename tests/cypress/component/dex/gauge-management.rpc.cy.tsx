@@ -29,8 +29,8 @@ import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-con
 const POOL_ADDRESS = '0x159a866f13f3931e256946ad7d921d18acbc599f'
 const GAUGE_ADDRESS = '0x456ba8aa2aa07c26a6b5d5a6a029ab754fb851c2'
 const MANAGER_ADDRESS = '0xE13aDC278c252e04DCBdca8eDced2C973Db994fA'
-const REWARD_TOKEN_SYMBOL = 'DAI'
-const REWARD_TOKEN_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+const REWARD_TOKEN_SYMBOL = 'USDe'
+const REWARD_TOKEN_ADDRESS = '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3'
 const REWARD_DISTRIBUTOR_ADDRESS = '0x427Caf62D66fCec08FA55F0991DBCA66a8BfA7E7'
 const DEPOSIT_REWARD_TOKEN_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
 const FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH in wei
@@ -119,7 +119,8 @@ describe('Gauge Management (RPC)', () => {
   it('adds a gauge reward token', () => {
     cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} privateKey={privateKey} form="addReward" />)
 
-    cy.get('[data-testid="add-reward-token-selector"]', LOAD_TIMEOUT).click()
+    cy.get('[data-testid="add-reward-token-selector"]', LOAD_TIMEOUT).should('contain', 'DAI').click()
+    cy.get('input[name="tokenName"]').type(REWARD_TOKEN_SYMBOL)
     cy.get(`[data-testid="token-option-${REWARD_TOKEN_SYMBOL}"]`).click()
     cy.get('[data-testid="add-reward-distributor-input"]').clear()
     cy.get('[data-testid="add-reward-distributor-input"]').type(REWARD_DISTRIBUTOR_ADDRESS)
