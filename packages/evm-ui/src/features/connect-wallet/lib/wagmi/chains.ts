@@ -9,6 +9,7 @@ import {
   avalanche,
   base,
   bsc,
+  bscTestnet,
   celo,
   corn,
   etherlink,
@@ -22,6 +23,7 @@ import {
   mantle,
   monad,
   moonbeam,
+  neonDevnet,
   neonMainnet,
   optimism,
   plasma,
@@ -48,6 +50,7 @@ const wagmiChains = [
   avalanche,
   base,
   bsc,
+  bscTestnet,
   celo,
   corn,
   etherlink,
@@ -64,6 +67,7 @@ const wagmiChains = [
   monad,
   moonbeam,
   neonMainnet,
+  neonDevnet,
   optimism,
   plasma,
   plumeMainnet,
@@ -97,6 +101,7 @@ export const DOWNGRADED_CHAINS = new Set<number>(
 const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
 
 export const isChainConfigured = (chainId: number) => !!wagmiChainsMap[chainId]
+export const isChainTestnet = (chainId: number) => !!wagmiChainsMap[chainId]?.testnet
 
 export const getChainName = (chainId: number) =>
   CHAIN_NAMES[chainId] ?? wagmiChainsMap[chainId]?.name ?? `Chain ${chainId}`
@@ -126,6 +131,5 @@ export const createChainFromNetwork = (network: NetworkDef, getRpcUrls: typeof d
   defineChain({
     ...wagmiChainsMap[network.chainId],
     id: network.chainId,
-    testnet: network.isTestnet,
     rpcUrls: { default: { http: getRpcUrls(network.chainId) } },
   })
