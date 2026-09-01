@@ -74,7 +74,6 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     currentUtcDate,
     minUtcDate,
     maxUtcDate,
-    currentVeCrv: constQ(0),
     futureVeCrv: constQ(
       calculateVeCrv({
         lockedAmount: values.lockedAmount,

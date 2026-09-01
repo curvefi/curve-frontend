@@ -20,7 +20,6 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
     currentUtcDate,
     minUtcDate,
     maxUtcDate,
-    currentVeCrv,
     futureVeCrv,
     isApproved,
     isPending,
@@ -43,7 +42,6 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
       onSubmit={onSubmit}
       footer={
         <VeCrvActionInfo
-          currentVeCrv={q(currentVeCrv)}
           futureVeCrv={futureVeCrv}
           gas={q(useCreateLockGasEstimate(networks, params, isOpen))}
           isApproved={isApproved}
