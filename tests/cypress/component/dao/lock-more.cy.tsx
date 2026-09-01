@@ -44,4 +44,14 @@ describe('FormLockCrv (mocked)', () => {
       cy.wrap(null).should(assertSubmit)
     })
   })
+
+  it('shows a max lock amount error when the CRV balance is too low', () => {
+    const { curve } = createLockMoreScenario({ isApproved: true })
+
+    cy.mount(<LockMoreForm curve={curve} />)
+    writeLockMoreForm('1001')
+
+    cy.get('[data-testid="helper-message-error"]').should('contain.text', 'The maximum lock amount is 1k')
+    cy.get('[data-testid="increase-lock-submit-button"]').should('be.disabled')
+  })
 })

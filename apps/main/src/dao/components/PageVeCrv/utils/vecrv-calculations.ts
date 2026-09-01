@@ -1,7 +1,7 @@
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/lib/dayjs'
-import { MILLISECONDS_PER_SECOND } from '@evm-ui/utils'
+import { decimal, MILLISECONDS_PER_SECOND } from '@evm-ui/utils'
 import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
 import { formatDate } from '@legacy-ui/utils'
@@ -21,7 +21,7 @@ export const calculateVeCrv = ({
   unlockTime: number | undefined
 }) =>
   maybes([lockedAmount, unlockTime], (lockedAmount, unlockTime) =>
-    requireLib('curveApi').boosting.calculateVeCrv(lockedAmount, unlockTime),
+    decimal(requireLib('curveApi').boosting.calculateVeCrv(lockedAmount, unlockTime)),
   )
 
 /** Builds the current, minimum, and maximum UTC dates for creating a lock. */

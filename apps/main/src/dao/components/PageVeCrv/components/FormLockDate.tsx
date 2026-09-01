@@ -1,6 +1,8 @@
 import { FieldDatePicker } from '@/dao/components/PageVeCrv/components/FieldDatePicker'
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useExtendLockForm } from '@/dao/components/PageVeCrv/hooks/useExtendLockForm'
+import { useExtendLockGasEstimate } from '@/dao/components/PageVeCrv/queries/extend-lock-estimate-gas.query'
+import { networks } from '@/dao/networks'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
@@ -12,13 +14,15 @@ import { AlertBox } from '@legacy-ui/AlertBox'
 export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
   const {
     form,
+    params,
     values,
     currentUnlockUtcTime,
     minUtcDate,
     maxUtcDate,
     isMax,
     effectiveUnlockDateLabel,
-    gas,
+    currentVeCrv,
+    futureVeCrv,
     isPending,
     isDisabled,
     error,
@@ -27,8 +31,21 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
     selectQuickDate,
     validationErrors: errors,
   } = useExtendLockForm({ chainId })
+  const isOpen = form.isTouched('utcDate')
+
   return (
-    <Form {...form} onSubmit={onSubmit} footer={<VeCrvActionInfo gas={q(gas)} isOpen={form.formState.isValid} />}>
+    <Form
+      {...form}
+      onSubmit={onSubmit}
+      footer={
+        <VeCrvActionInfo
+          currentVeCrv={q(currentVeCrv)}
+          futureVeCrv={futureVeCrv}
+          gas={q(useExtendLockGasEstimate(networks, params, isOpen))}
+          isOpen={isOpen}
+        />
+      }
+    >
       <FieldDatePicker
         chainId={chainId}
         id="adjust-date-date-picker"
@@ -47,7 +64,7 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
       <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={['utcDate', 'days']} />
       <FormButton
         pending={isPending}
-        loading={gas.isLoading || isPending}
+        loading={isPending}
         disabled={isDisabled}
         label={t`Increase Lock`}
         testId="extend-lock-submit-button"
