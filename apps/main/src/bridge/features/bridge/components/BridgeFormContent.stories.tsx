@@ -37,9 +37,9 @@ const SupportedNetworks: IFastBridgeNetwork[] = [
 
 // Mock networks for chain selection
 const BridgeNetworks: NetworkDef[] = [
-  { chainId: Chain.Arbitrum, id: 'arbitrum', name: 'Arbitrum' } as NetworkDef,
-  { chainId: Chain.Optimism, id: 'optimism', name: 'Optimism' } as NetworkDef,
-  { chainId: Chain.Fraxtal, id: 'fraxtal', name: 'Fraxtal' } as NetworkDef,
+  { chainId: Chain.Arbitrum, id: 'arbitrum' } as NetworkDef,
+  { chainId: Chain.Optimism, id: 'optimism' } as NetworkDef,
+  { chainId: Chain.Fraxtal, id: 'fraxtal' } as NetworkDef,
 ]
 
 const BridgeNetworkSymbols = {

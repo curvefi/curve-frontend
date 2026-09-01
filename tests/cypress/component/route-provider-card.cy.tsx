@@ -64,7 +64,7 @@ const mountRouteProviderCard = ({
           enabled,
           ...q<RouteResponse | null>({ error: null, isLoading, data: route }),
         }}
-        networks={{ 1: { name: 'Ethereum' } as BaseConfig }}
+        networks={{ 1: {} as BaseConfig }}
         chainId={1}
         tokenOut={{ symbol: 'crvUSD', decimals: 18, usdRate }}
         isSelected={isSelected}
