@@ -1,5 +1,6 @@
 import { useConnection } from 'wagmi'
-import { useAddRewardToken, useAddRewardTokenEstimateGas } from '@/dex/entities/gauge/lib'
+import { useAddRewardToken } from '@/dex/entities/gauge/lib/reward-actions'
+import { useAddRewardTokenEstimateGas } from '@/dex/entities/gauge/model/gauge-gas.query'
 import { gaugeAddRewardValidationGroup } from '@/dex/entities/gauge/model/gauge-validation'
 import { useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge/model/gauge.query'
 import type { AddRewardParams } from '@/dex/entities/gauge/types'

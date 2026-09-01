@@ -1,5 +1,6 @@
 import { useConnection } from 'wagmi'
-import { useDepositReward, useDepositRewardEstimateGas } from '@/dex/entities/gauge/lib'
+import { useDepositReward } from '@/dex/entities/gauge/lib/reward-actions'
+import { useDepositRewardEstimateGas } from '@/dex/entities/gauge/model/gauge-gas.query'
 import { gaugeDepositRewardValidationGroup } from '@/dex/entities/gauge/model/gauge-validation'
 import { useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworks } from '@/dex/entities/networks'
