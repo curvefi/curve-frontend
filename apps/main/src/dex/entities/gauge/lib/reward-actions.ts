@@ -5,7 +5,7 @@ import {
   fetchDepositRewardIsApproved,
   invalidateDepositRewardAvailable,
   invalidateGaugeDistributors,
-} from '@/dex/entities/gauge/model'
+} from '@/dex/entities/gauge/model/gauge.query'
 import {
   gaugeAddRewardValidationSuite,
   gaugeDepositRewardValidationSuite,

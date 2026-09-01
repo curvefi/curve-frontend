@@ -1,4 +1,4 @@
-import { getGauge } from '@/dex/entities/gauge/lib'
+import { getGauge } from '@/dex/entities/gauge/lib/gauge-info'
 import type {
   AddRewardParams,
   AddRewardQuery,
@@ -7,13 +7,18 @@ import type {
   DepositRewardParams,
   DepositRewardQuery,
 } from '@/dex/entities/gauge/types'
+import { createApprovedEstimateGasHook, createEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model/query'
 import {
   gaugeAddRewardValidationSuite,
   gaugeDepositRewardApproveValidationSuite,
   gaugeDepositRewardValidationSuite,
 } from './gauge-validation'
-import { getDepositRewardAvailableQueryKey, getDepositRewardIsApprovedQueryKey } from './gauge.query'
+import {
+  getDepositRewardAvailableQueryKey,
+  getDepositRewardIsApprovedQueryKey,
+  useGaugeDepositRewardIsApproved,
+} from './gauge.query'
 
 export const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
   queryKey: ({ rewardTokenId, amount, userBalance, ...gaugeParams }: DepositRewardApproveParams) =>
@@ -67,3 +72,11 @@ export const { useQuery: useEstimateGasDepositReward } = queryFactory({
   refetchOnMount: 'always',
   category: 'dex.deployGauge',
 })
+
+export const useDepositRewardEstimateGas = createApprovedEstimateGasHook({
+  useIsApproved: useGaugeDepositRewardIsApproved,
+  useApproveEstimate: useEstimateGasDepositRewardApprove,
+  useActionEstimate: useEstimateGasDepositReward,
+})
+
+export const useAddRewardTokenEstimateGas = createEstimateGasHook(useEstimateGasAddRewardToken)
