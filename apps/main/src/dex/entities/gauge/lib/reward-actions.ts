@@ -32,7 +32,9 @@ export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutat
 
   const { mutate, error, isPending } = useTransactionMutation<AddRewardMutation>({
     mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'addRewardToken'] as const,
-    mutationFn: async params => ({ hash: (await getGauge(poolId).addReward(undefined, undefined)) as Hex }),
+    mutationFn: async ({ rewardTokenId, distributorId }) => ({
+      hash: (await getGauge(poolId).addReward(rewardTokenId, distributorId)) as Hex,
+    }),
     validationSuite: gaugeAddRewardValidationSuite,
     validationParams: { chainId, poolId },
     pendingMessage: mutation => t`Adding reward token ${getRewardTokenSymbol(mutation)}`,
