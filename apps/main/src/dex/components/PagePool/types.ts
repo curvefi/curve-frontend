@@ -7,6 +7,7 @@ import {
   PoolAlert,
   type PoolUrlParams,
 } from '@/dex/types/main.types'
+import type { MakeRequired } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type EstimatedGas = {
@@ -22,8 +23,6 @@ export type Slippage = {
   isBonus: boolean
   error: string
 }
-
-export type TransferFormType = 'swap' | 'deposit' | 'withdraw' | 'manage-gauge'
 
 export type Seed = {
   isSeed: boolean | null
@@ -46,3 +45,8 @@ export type TransferProps = {
   seed: Seed
   tokensMapper: TokensMapper
 } & PageTransferProps
+
+export type TransferTabsParams = MakeRequired<TransferProps, 'poolData'> & {
+  isGaugeManager: boolean | undefined
+  isRewardsDistributor: boolean | undefined
+}

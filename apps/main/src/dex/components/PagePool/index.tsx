@@ -2,12 +2,19 @@ import { useEffect, useMemo, useState } from 'react'
 import { type Address, isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
+import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
 import { FormDeposit } from '@/dex/components/PagePool/Deposit/components/FormDeposit'
 import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
 import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, Seed, TransferProps } from '@/dex/components/PagePool/types'
-import { getSlippageType } from '@/dex/components/PagePool/utils'
+import type { PageTransferProps, Seed, TransferTabsParams } from '@/dex/components/PagePool/types'
+import {
+  getDepositTabAlert,
+  getSlippageType,
+  getStakeTabAlert,
+  getSwapTabAlert,
+  getWithdrawTabAlert,
+} from '@/dex/components/PagePool/utils'
 import { FormClaim } from '@/dex/components/PagePool/Withdraw/components/FormClaim'
 import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormUnstake'
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
@@ -32,20 +39,13 @@ import { useLocation } from '@evm-ui/hooks/router'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import type { MakeRequired } from '@evm-ui/types/util'
 import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
-import { AlertBox } from '@legacy-ui/AlertBox'
 import { maybes } from '@primitives/objects.utils'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
-
-export type TransferTabsParams = MakeRequired<TransferProps, 'poolData'> & {
-  isGaugeManager: boolean | undefined
-  isRewardsDistributor: boolean | undefined
-}
 
 const menu = [
   {
@@ -55,41 +55,17 @@ const menu = [
       {
         value: 'DEPOSIT',
         label: t`Deposit`,
-        component: transferProps => (
-          <>
-            {transferProps.poolAlert?.isDisableDeposit ? (
-              <AlertBox {...transferProps.poolAlert}>{transferProps.poolAlert.message}</AlertBox>
-            ) : (
-              <FormDeposit {...transferProps} />
-            )}
-          </>
-        ),
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDeposit} {...props} />,
       },
       {
         value: 'STAKE',
         label: t`Stake`,
-        component: transferProps => (
-          <>
-            {transferProps.poolDataCacheOrApi.gauge.isKilled ? (
-              <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
-            ) : (
-              <FormStake {...transferProps} />
-            )}
-          </>
-        ),
+        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormStake} {...props} />,
       },
       {
         value: 'DEPOSIT_STAKE',
         label: t`Deposit & Stake`,
-        component: transferProps => (
-          <>
-            {transferProps.poolDataCacheOrApi.gauge.isKilled ? (
-              <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
-            ) : (
-              <FormDepositStake {...transferProps} />
-            )}
-          </>
-        ),
+        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormDepositStake} {...props} />,
       },
     ],
   } satisfies FormTab<TransferTabsParams>,
@@ -100,15 +76,7 @@ const menu = [
       {
         value: 'WITHDRAW',
         label: t`Withdraw`,
-        component: transferProps => (
-          <>
-            {transferProps.poolAlert?.isDisableWithdrawOnly ? (
-              <AlertBox {...transferProps.poolAlert}>{transferProps.poolAlert.message}</AlertBox>
-            ) : (
-              <FormWithdraw {...transferProps} />
-            )}
-          </>
-        ),
+        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={FormWithdraw} {...props} />,
       },
       {
         value: 'UNSTAKE',
@@ -125,22 +93,17 @@ const menu = [
   {
     value: 'swap',
     label: t`Swap`,
-    component: ({ poolAlert, ...props }) =>
-      poolAlert?.isDisableSwap ? (
-        <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-      ) : (
-        <Swap poolAlert={poolAlert} {...props} />
-      ),
+    component: props => <TabGuard alert={getSwapTabAlert} otherwise={Swap} {...props} />,
   },
   {
     value: 'manage-gauge',
     label: t`Gauge`,
-    visible: p => p.isGaugeManager ?? p.isRewardsDistributor,
+    visible: p => !!p.isGaugeManager || !!p.isRewardsDistributor,
     subTabs: [
       {
         value: 'add_reward',
         label: t`Add Reward`,
-        visible: p => p.isGaugeManager,
+        visible: p => !!p.isGaugeManager,
         component: ({ poolData, routerParams }) => (
           <AddRewardToken poolId={poolData.pool.id} chainId={routerParams.rChainId} />
         ),
@@ -148,7 +111,7 @@ const menu = [
       {
         value: 'deposit_reward',
         label: t`Deposit Reward`,
-        visible: p => p.isRewardsDistributor,
+        visible: p => !!p.isRewardsDistributor,
         component: ({ poolData, routerParams }) => (
           <DepositReward poolId={poolData.pool.id} chainId={routerParams.rChainId} />
         ),
