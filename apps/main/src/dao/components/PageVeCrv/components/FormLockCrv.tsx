@@ -25,8 +25,9 @@ export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
     onSubmit,
     updateAmount,
   } = useIncreaseLockForm({ chainId })
-  const errors = fromEntries(form.formState.visibleErrors)
-  const amountFieldError = errors.lockedAmount ?? errors.maxLockedAmount
+  const errors = form.formState.errors
+  const visibleErrors = fromEntries(form.formState.visibleErrors)
+
   const isOpen = form.isTouched('lockedAmount')
   return (
     <Form
@@ -46,7 +47,7 @@ export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
         chainId={chainId}
         disabled={isPending}
         lockedAmount={values.lockedAmount}
-        lockedAmountError={amountFieldError}
+        lockedAmountError={visibleErrors.lockedAmount ?? (values.maxLockedAmount && errors.maxLockedAmount?.message)}
         onBalance={updateAmount}
       />
       <FormAlerts

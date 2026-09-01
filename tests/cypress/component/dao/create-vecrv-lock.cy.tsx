@@ -86,4 +86,14 @@ describe('FormLockCreate (mocked)', () => {
     cy.get('[data-testid="create-lock-submit-button"]').should('be.enabled')
     cy.wrap(null).should(() => assertPreSubmit(NON_THURSDAY_DAYS))
   })
+
+  it('shows a max lock amount error when the CRV balance is too low', () => {
+    const { curve } = createCreateVeCrvLockScenario({ isApproved: true })
+
+    cy.mount(<CreateVeCrvLockForm curve={curve} />)
+    fillCreateLockForm('1001')
+
+    cy.get('[data-testid="helper-message-error"]').should('contain.text', 'The maximum lock amount is 1k')
+    cy.get('[data-testid="create-lock-submit-button"]').should('be.disabled')
+  })
 })
