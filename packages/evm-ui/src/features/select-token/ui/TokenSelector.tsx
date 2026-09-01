@@ -18,6 +18,8 @@ type Props<T extends TokenOption = TokenOption> = Partial<Pick<TokenSelectorModa
   onClose: () => void
   /** Size of the trigger button. Defaults to medium to preserve existing usage. */
   size?: SelectProps['size']
+  /** Test id for the selector trigger button. */
+  testId?: string
   /**
    * Token list to render inside the modal.
    * It may be any valid React element as long as it accepts `onToken` prop.
@@ -43,6 +45,7 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
   disabled = false,
   compact = false,
   size,
+  testId,
   onOpen,
   onClose,
   children,
@@ -50,7 +53,7 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
   const { onToken } = checkChildProps(children.props)
   return (
     <>
-      <TokenSelectButton token={selectedToken} disabled={disabled} size={size} onClick={onOpen} />
+      <TokenSelectButton token={selectedToken} disabled={disabled} size={size} testId={testId} onClick={onOpen} />
       <TokenSelectorModal isOpen={isOpen} compact={compact} onClose={onClose}>
         {/* eslint-disable-next-line @eslint-react/no-clone-element -- Existing violation before enabling this rule. */}
         {cloneElement(children, {

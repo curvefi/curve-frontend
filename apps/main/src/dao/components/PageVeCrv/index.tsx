@@ -21,7 +21,10 @@ export const VeCrv = () => {
   const { data, error, isLoading } = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })
   return (
     <FormPlacementProvider placement="inline">
-      <Box sx={{ maxWidth: MaxWidth.actionCard, marginInline: 'auto', marginBlock: Spacing.md }}>
+      <Box
+        data-testid="vecrv-page"
+        sx={{ maxWidth: MaxWidth.actionCard, marginInline: 'auto', marginBlock: Spacing.md }}
+      >
         {data && <FormCrvLocker chainId={chainId} {...data} />}
         {isLoading && <FormSkeleton />}
         {error && <ErrorMessage title={t`Locker Error`} error={error} />}

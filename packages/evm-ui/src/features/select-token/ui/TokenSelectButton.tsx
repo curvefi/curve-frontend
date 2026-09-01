@@ -12,6 +12,7 @@ type TokenSelectButtonProps = {
   token?: TokenOption
   disabled: boolean
   size?: SelectProps['size']
+  testId?: string
 }
 
 /** The token selector is Select but acts like a button, so it's a bit unique */
@@ -19,9 +20,11 @@ export const TokenSelectButton = ({
   token,
   disabled,
   size = 'medium',
+  testId,
   onClick,
 }: TokenSelectButtonProps & TokenSelectButtonCallbacks) => (
   <Select
+    data-testid={testId}
     value=""
     variant="ghost"
     onClick={disabled ? undefined : onClick}
