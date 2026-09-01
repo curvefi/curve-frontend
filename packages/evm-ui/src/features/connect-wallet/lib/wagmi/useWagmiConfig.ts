@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { Chain } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
 import { CYPRESS_CONNECTOR_CHAIN, IS_CYPRESS, NO_CYPRESS_TEST_CONNECTOR } from '@evm-ui/utils/env'
-import { assert } from '@primitives/objects.utils'
+import { assert, fromEntries } from '@primitives/objects.utils'
 import { createChain } from './chains'
 import { createTransport, defaultGetRpcUrls } from './transports'
 import { createWagmiConfig } from './wagmi-config'
@@ -16,7 +16,7 @@ export const useWagmiConfig = (chainIds: number[] | undefined) =>
 
     return createWagmiConfig({
       chains,
-      transports: chainIds.map(chainId => createTransport(chainId, defaultGetRpcUrls)),
+      transports: fromEntries(chainIds.map(chainId => [chainId, createTransport(chainId, defaultGetRpcUrls)] as const)),
       ...(IS_CYPRESS &&
         !NO_CYPRESS_TEST_CONNECTOR && {
           connectors: [
