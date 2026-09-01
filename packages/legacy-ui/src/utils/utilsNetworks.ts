@@ -1,4 +1,4 @@
-import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { getChainBlockExplorer } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { Chain } from '@evm-ui/utils/network'
 import { maybe } from '@primitives/objects.utils'
 
@@ -80,13 +80,11 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
   }
 }
 
-const getBlockExplorerUrl = (chainId: number) => wagmiChainsMap[chainId]?.blockExplorers?.default.url
-
 export const scanAddressPath = (chainId: number, hash: string) =>
-  maybe(getBlockExplorerUrl(chainId), url => `${url}/address/${hash}`)
+  maybe(getChainBlockExplorer(chainId), url => `${url}/address/${hash}`)
 
 export const scanTxPath = (chainId: number, hash: string) =>
-  maybe(getBlockExplorerUrl(chainId), url => `${url}/tx/${hash}`)
+  maybe(getChainBlockExplorer(chainId), url => `${url}/tx/${hash}`)
 
 export const scanTokenPath = (chainId: number, hash: string) =>
-  maybe(getBlockExplorerUrl(chainId), url => `${url}/token/${hash}`)
+  maybe(getChainBlockExplorer(chainId), url => `${url}/token/${hash}`)

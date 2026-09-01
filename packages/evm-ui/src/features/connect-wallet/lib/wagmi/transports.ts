@@ -4,7 +4,7 @@ import { Duration } from '@evm-ui/themes/design/0_primitives'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { injected } from '@wagmi/connectors'
 import { fallback, http, unstable_connector } from '@wagmi/core'
-import { wagmiChainsMap } from './chains'
+import { getChainDefaultRpcUrls } from './chains'
 import { RPC } from './rpc'
 
 const { Size: SIZE, Time: TIME } = Duration.WagmiBatch
@@ -25,7 +25,7 @@ export const WAGMI_HTTP_OPTIONS = {
  * @returns Array of unique RPC URLs in priority order
  */
 export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId) =>
-  lodash.uniq([...(RPC[chainId] ?? []), ...(wagmiChainsMap[chainId]?.rpcUrls.default.http ?? [])])
+  lodash.uniq([...(RPC[chainId] ?? []), ...getChainDefaultRpcUrls(chainId)])
 
 /**
  * Transport configuration for Wagmi:

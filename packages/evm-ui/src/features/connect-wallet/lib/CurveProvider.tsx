@@ -15,7 +15,7 @@ import type { AppName } from '@evm-ui/shared/routes'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { useSwitchChain } from './useSwitchChain'
 import { globalLibs, isWalletMatching } from './utils'
-import { wagmiChainsMap } from './wagmi/chains'
+import { getChainName } from './wagmi/chains'
 
 const { FAILURE, LOADING, HYDRATING, SUCCESS } = ConnectState
 
@@ -101,7 +101,7 @@ export const CurveProvider = <App extends AppName>({
         const newLib = await globalLibs.init(libKey, network, wallet?.provider)
         if (newLib) {
           console.info(
-            `Initialized ${libKey} for ${wagmiChainsMap[network.chainId]?.name} (${network.chainId})`,
+            `Initialized ${libKey} for ${getChainName(network.chainId)} (${network.chainId})`,
             wallet ? `Wallet ${wallet?.address} with chain ${walletChainId}` : 'without wallet',
             prevLib
               ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`

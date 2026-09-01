@@ -5,7 +5,7 @@ import type { DeploymentType, GaugeType, PoolType, PoolTypes } from '@/dex/compo
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { shortenString } from '@primitives/string.utils'
 import { getNetworks } from '../entities/networks'
@@ -101,7 +101,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
         if (chain.hasFactory) {
           networksWithFactory[key] = {
             chainId: +key,
-            name: wagmiChainsMap[chain.chainId]?.name,
+            name: getChainName(chain.chainId),
             poolTypes: {
               stableswap: chain.stableswapFactory,
               stableswapOld: chain.stableswapFactoryOld,

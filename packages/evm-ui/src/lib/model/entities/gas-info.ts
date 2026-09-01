@@ -3,7 +3,7 @@ import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { AnyCurveApi } from '@evm-ui/features/connect-wallet/lib/types'
-import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import type { Provider } from '@evm-ui/lib/ethers'
 import { type ChainQuery, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
 import { combineQueries, useCombinedQueries } from '@evm-ui/lib/queries/combine'
@@ -404,7 +404,7 @@ const useEstimateGas = (
   const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
   const gasInfo = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
   const network = maybe(chainId, chainId => networks[chainId])
-  const networkSymbol = maybe(chainId, chainId => wagmiChainsMap[chainId]?.nativeCurrency.name)
+  const networkSymbol = maybe(chainId, chainId => getChainNativeCurrency(chainId).name)
   return useCombinedQueries(
     [estimate, gasInfo, ethRate],
     useCallback(
