@@ -37,6 +37,7 @@ import {
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
+import { CHAIN_NAMES } from './constants'
 import { expchain, megaeth, strata } from './custom-chains'
 
 const wagmiChains = [
@@ -88,8 +89,27 @@ export const DOWNGRADED_CHAINS = new Set<number>(
   [aurora, avalanche, celo, fantom, kava, mantle, moonbeam, sonic, xLayer, zksync].map(c => c.id),
 )
 
-/** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
-export const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
+/**
+ * Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup
+ * Note that this mapping is explicitly *not* exported, because we do a little massaging,
+ * like custom names and such. Please use the exported helper functions below instead.
+ */
+const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
+
+export const isChainConfigured = (chainId: number) => !!wagmiChainsMap[chainId]
+
+export const getChainName = (chainId: number) =>
+  CHAIN_NAMES[chainId] ?? wagmiChainsMap[chainId]?.name ?? `Chain ${chainId}`
+
+export const getChainNativeCurrency = (chainId: number) =>
+  wagmiChainsMap[chainId]?.nativeCurrency ?? {
+    name: 'Unknown',
+    symbol: 'UNKNOWN',
+    decimals: 18,
+  }
+
+export const getChainBlockExplorer = (chainId: number) => wagmiChainsMap[chainId]?.blockExplorers?.default.url
+export const getChainDefaultRpcUrls = (chainId: number) => wagmiChainsMap[chainId]?.rpcUrls.default.http ?? []
 
 /**
  * Creates a Viem chain configuration from a Curve network definition.

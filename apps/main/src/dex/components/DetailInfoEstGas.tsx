@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import { ChainId, EstimatedGas } from '@/dex/types/main.types'
-import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { calculateGas, useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -35,7 +35,7 @@ export const DetailInfoEstGas = ({
   const { data: network } = useNetworkByChain({ chainId })
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
-  const nativeSymbol = wagmiChainsMap[chainId]?.nativeCurrency.name
+  const nativeSymbol = getChainNativeCurrency(chainId).name
 
   const { estGasCostUsd, tooltip } = useMemo(
     () => calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network, nativeSymbol),
