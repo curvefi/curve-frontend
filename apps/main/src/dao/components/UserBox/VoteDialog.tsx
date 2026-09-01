@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
 import { PendingTx } from '@/dao/components/UserBox/PendingTx'
+import { useProposalExecuteMutation, useProposalVoteMutation } from '@/dao/components/UserBox/proposal-vote.mutation'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'
 import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
-import { useStore } from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { t } from '@evm-ui/lib/i18n'
@@ -15,6 +15,7 @@ import { Icon } from '@legacy-ui/Icon'
 import type { Address } from '@primitives/address.utils'
 
 type Props = {
+  chainId: number
   userAddress?: Address
   activeProposal?: ActiveProposal
   proposalId: number
@@ -27,6 +28,7 @@ type Props = {
 const votePercentage = (vote: number, total: number) => `(${formatNumber((vote / total) * 100, 'percent.value')})`
 
 export const VoteDialog = ({
+  chainId,
   userAddress,
   activeProposal,
   className,
@@ -41,13 +43,12 @@ export const VoteDialog = ({
   })
   const proposalKey = createProposalKey(proposalId, proposalType)
   const proposal = proposalsMapper?.[proposalKey] ?? null
-  const castVote = useStore(state => state.proposals.castVote)
-  const voteTxMapper = useStore(state => state.proposals.voteTxMapper)
-  const executeProposal = useStore(state => state.proposals.executeProposal)
-  const executeTxMapper = useStore(state => state.proposals.executeTxMapper)
-
-  const voteTx = voteTxMapper[proposalKey] ?? null
-  const executeTx = executeTxMapper[proposalKey] ?? null
+  const { isPending: isPendingVote, onSubmit: submitVote } = useProposalVoteMutation({ chainId, userAddress })
+  const {
+    error: executeError,
+    isPending: isPendingExecute,
+    onSubmit: execute,
+  } = useProposalExecuteMutation({ chainId, userAddress })
 
   const votedFor = userProposalVotes?.[proposalKey] ? userProposalVotes[proposalKey].voteFor > 0 : false
   const votedAgainst = userProposalVotes?.[proposalKey] ? userProposalVotes[proposalKey].voteAgainst > 0 : false
@@ -55,28 +56,25 @@ export const VoteDialog = ({
 
   const executeProposalComponent = () => (
     <>
-      {executeTx?.status === 'LOADING' && (
+      {isPendingExecute && (
         <Box>
           <PendingTx pendingMessage={t`Executing proposal...`} />
         </Box>
       )}
-      {executeTx?.status === 'ERROR' && (
+      {executeError && (
         <Box margin="0 0 var(--spacing-2) 0">
           <StyledAlertBox alertType="error" limitHeight>
-            {executeTx?.error}
+            {executeError.message}
           </StyledAlertBox>
         </Box>
       )}
-      {executeTx?.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>}
-      {executeTx?.status !== 'SUCCESS' && (
-        <ExecuteButton
-          variant="icon-filled"
-          onClick={() => void executeProposal(proposalId, proposalType)}
-          loading={executeTx?.status === 'CONFIRMING' || executeTx?.status === 'LOADING'}
-        >
-          {t`Execute`}
-        </ExecuteButton>
-      )}
+      <ExecuteButton
+        variant="icon-filled"
+        onClick={() => execute({ proposalId, proposalType })}
+        loading={isPendingExecute}
+      >
+        {t`Execute`}
+      </ExecuteButton>
     </>
   )
 
@@ -145,7 +143,7 @@ export const VoteDialog = ({
     )
   }
 
-  if (voteTx?.status === 'CONFIRMING' || voteTx?.status === 'LOADING') {
+  if (isPendingVote) {
     return <PendingTx pendingMessage={t`Casting vote...`} />
   }
 
@@ -157,14 +155,14 @@ export const VoteDialog = ({
           <VoteButton
             isFor
             variant="icon-filled"
-            onClick={() => void castVote(proposalId, proposalType, true)}
+            onClick={() => submitVote({ proposalId, proposalType, support: true })}
             loading={false}
           >
             {t`Vote For`}
           </VoteButton>
           <VoteButton
             variant="icon-filled"
-            onClick={() => void castVote(proposalId, proposalType, false)}
+            onClick={() => submitVote({ proposalId, proposalType, support: false })}
             loading={false}
           >
             {t`Vote Against`}
@@ -271,19 +269,4 @@ const ExecuteButton = styled(VoteButton)``
 
 const StyledAlertBox = styled(AlertBox)`
   width: 100%;
-`
-
-const SuccessWrapper = styled.div`
-  padding: var(--spacing-2) var(--spacing-5);
-  display: flex;
-  margin: 0 auto;
-  text-align: center;
-  font-family: var(--button--font);
-
-  text-transform: var(--input_button--text-transform);
-
-  font-weight: var(--button--font-weight);
-  color: var(--success-400);
-  border: 2px solid var(--success-400);
-  background-color: var(--success-600);
 `

@@ -27,6 +27,7 @@ export const UserBox = ({ className, children, votingPower, snapshotVotingPower,
       {address && chainId === 1 ? (
         <Box flex flexColumn flexGap="var(--spacing-3)">
           <UserInformation
+            chainId={chainId}
             votingPower={votingPower}
             snapshotVotingPower={snapshotVotingPower}
             activeProposal={activeProposal}
