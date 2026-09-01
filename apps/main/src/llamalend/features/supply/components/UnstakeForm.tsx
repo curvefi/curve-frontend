@@ -19,7 +19,7 @@ const TEST_ID_PREFIX = 'supply-unstake'
 export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormProps<ChainId>) => {
   const { chainId, marketId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
-  const blockchainId = network.id
+  const blockchainId = network.blockchainId
 
   const {
     form,

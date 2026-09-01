@@ -117,8 +117,8 @@ export const Swap = ({
 
   const { selectList, swapTokensMapper } = useMemo(() => {
     const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
-    return { selectList: selectList.map(toTokenOption(network?.networkId)), swapTokensMapper }
-  }, [poolDataCacheOrApi, tokensMapper, network?.networkId])
+    return { selectList: selectList.map(toTokenOption(network?.blockchainId)), swapTokensMapper }
+  }, [poolDataCacheOrApi, tokensMapper, network?.blockchainId])
 
   const fromToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
   const toToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.toAddress)

@@ -36,6 +36,7 @@ export const CreatePool = ({ curve }: Props) => {
   const navHeight = useLayoutStore(state => state.navHeight)
   const { data: networks } = useNetworks()
   const { chainId, haveSigner } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
+  const blockchainId = networks[chainId]?.blockchainId
   const poolSymbol = useStore(state => state.createPool.poolSymbol)
   const swapType = useStore(state => state.createPool.swapType)
   const poolPresetIndex = useStore(state => state.createPool.poolPresetIndex)
@@ -170,7 +171,12 @@ export const CreatePool = ({ curve }: Props) => {
             <CreateWrapper>
               <TitleWrapper flex>
                 <MainTitle>{t`Pool Creation`}</MainTitle>
-                <SmallSummary smallScreen chainId={chainId} curve={curve} blockchainId={networks[chainId]?.networkId} />
+                <SmallSummary
+                  smallScreen
+                  chainId={chainId}
+                  curve={curve}
+                  blockchainId={networks[chainId]?.blockchainId}
+                />
               </TitleWrapper>
               {/* Top nav */}
               <Navigation
@@ -178,7 +184,7 @@ export const CreatePool = ({ curve }: Props) => {
                 setNavigation={setNavigationIndex}
                 chainId={chainId}
                 curve={curve}
-                blockchainId={networks[chainId]?.networkId}
+                blockchainId={blockchainId}
               />
               <CreateBoxStyles flex flexColumn>
                 {chainId && (
@@ -252,7 +258,7 @@ export const CreatePool = ({ curve }: Props) => {
                     }
                     chainId={chainId}
                     curve={curve}
-                    blockchainId={networks[chainId]?.networkId}
+                    blockchainId={blockchainId}
                   />
                 )}
               </NavButtonsBox>
@@ -275,16 +281,11 @@ export const CreatePool = ({ curve }: Props) => {
                 </NavButtonStyles>
               )}
               {navigationIndex === 3 && (
-                <ConfirmModal
-                  fixedNavButton
-                  chainId={chainId}
-                  curve={curve}
-                  blockchainId={networks[chainId]?.networkId}
-                />
+                <ConfirmModal fixedNavButton chainId={chainId} curve={curve} blockchainId={blockchainId} />
               )}
             </NavButtonsBoxFixed>
             <DetailsContainer>
-              <Summary chainId={chainId} curve={curve} blockchainId={networks[chainId]?.networkId} />
+              <Summary chainId={chainId} curve={curve} blockchainId={blockchainId} />
             </DetailsContainer>
           </>
         ) : (

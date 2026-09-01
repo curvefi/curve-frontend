@@ -49,7 +49,7 @@ export const usePoolComposition = ({
     return {
       source: {
         address: tokenAddress,
-        blockchainId: network.id,
+        blockchainId: network.blockchainId,
         iconPosition: 'left' as const,
         primary: symbol,
       },

@@ -97,9 +97,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const [seed, setSeed] = useState(DEFAULT_SEED)
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const { networkId, isLite, pricesApi } = network
+  const { blockchainId, isLite, pricesApi } = network
   const poolAddress = poolData?.pool.address as Address
-  const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: networkId as Chain, poolAddress })
+  const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
   const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
   usePageVisibleInterval(() => {
@@ -165,7 +165,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         hasDepositAndStake,
         poolData,
         poolDataCacheOrApi,
-        blockchainId: networkId,
+        blockchainId,
         poolAlert,
         maxSlippage,
         seed,
@@ -181,7 +181,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         hasDepositAndStake,
         poolData,
         poolDataCacheOrApi,
-        networkId,
+        blockchainId,
         poolAlert,
         maxSlippage,
         seed,
@@ -208,10 +208,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         header={
           <PoolPageHeader
             chainId={rChainId}
-            blockchainId={networkId}
+            blockchainId={network.blockchainId}
             poolIdOrAddress={rPoolIdOrAddress}
             pricesApiPoolData={pricesApiPoolData}
-            backHref={getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_POOLS)}
+            backHref={getInternalUrl('dex', network.blockchainId, DEX_ROUTES.PAGE_POOLS)}
           />
         }
         formTabs={{
@@ -241,7 +241,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         <UserPosition
-          blockchainId={networkId}
+          blockchainId={network.blockchainId}
           chainId={rChainId}
           poolDataCacheOrApi={poolDataCacheOrApi}
           poolId={poolId}
@@ -249,7 +249,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         {!isLite && pricesApiPoolData && pricesApi && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
-        {pricesApi && <PoolHistoricalBaseRateChart blockchainId={networkId} poolAddress={poolAddress} />}
+        {pricesApi && <PoolHistoricalBaseRateChart blockchainId={network.blockchainId} poolAddress={poolAddress} />}
         <PoolInformation
           curve={curve}
           routerParams={routerParams}

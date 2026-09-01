@@ -57,7 +57,7 @@ export const Dashboard = ({
   const { chainId, signerAddress } = curve ?? {}
   const { walletAddress } = formValues
   const {
-    data: { isLite, networkId },
+    data: { isLite, blockchainId },
   } = useNetworkByChain({ chainId: rChainId })
 
   const isValidAddress = useMemo(() => isAddress(walletAddress as Address), [walletAddress])
@@ -150,7 +150,7 @@ export const Dashboard = ({
                   const tableRowProps: DashboardTableRowProps = {
                     rChainId,
                     isLite,
-                    blockchainId: networkId,
+                    blockchainId,
                     tableLabel: TABLE_LABEL,
                     fetchBoost: {
                       fetchUserPoolBoost:

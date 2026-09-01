@@ -20,7 +20,7 @@ export const usePointsCampaigns = ({
   const poolAddress = poolDataCacheOrApi.pool.address as Address
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network?.networkId,
+    blockchainId: network?.blockchainId,
     address: poolAddress,
   })
 
