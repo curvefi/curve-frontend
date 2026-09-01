@@ -15,6 +15,7 @@ import {
   fantom,
   fraxtal,
   gnosis,
+  hyperliquid,
   ink,
   kava,
   mainnet,
@@ -36,7 +37,7 @@ import {
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
-import { expchain, hyperliquid, megaeth, strata } from './custom-chains'
+import { expchain, megaeth, strata } from './custom-chains'
 
 const wagmiChains = [
   arbitrum,
