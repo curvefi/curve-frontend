@@ -545,6 +545,7 @@ const mockPlatforms = () =>
               rpcUrl: 'https://rpc.mainnet.taiko.xyz',
               explorerBaseUrl: 'https://taikoscan.io/',
               isMainnet: true,
+              chainId: Chain.Taiko,
             },
           },
         },
