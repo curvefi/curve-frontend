@@ -324,6 +324,7 @@ export async function getNetworks() {
     const isUpgraded = !!baseConfig // networks upgraded from lite to full
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
     const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)
+    const showInSelectNetwork = chainId !== Number(Chain.Tac) // temporarily disabled as the chain's halted
     prev[chainId] = {
       ...DEFAULT_NETWORK_CONFIG,
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
@@ -354,6 +355,7 @@ export async function getNetworks() {
       ...(isOnlyPoolRewardsUpgraded && {
         isCrvRewardsEnabled: true,
       }),
+      showInSelectNetwork,
     }
     return prev
   }, {} as Networks)
