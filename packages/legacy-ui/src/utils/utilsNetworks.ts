@@ -14,47 +14,39 @@ export const NETWORK_BASE_CONFIG = {
     id: 'ethereum',
     gasPricesUrl: 'https://api.curve.finance/api/getGas',
     gasPricesDefault: 1,
-    nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://etherscan.io/',
   },
   [Chain.Optimism]: {
     id: 'optimism',
     gasL2: true,
-    nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://optimistic.etherscan.io/',
   },
   [Chain.Gnosis]: {
     id: 'xdai',
     name: 'Gnosis',
-    nativeCurrencySymbol: 'XDAI',
     explorerUrl: 'https://gnosisscan.io/',
   },
   [Chain.Moonbeam]: {
     id: 'moonbeam',
-    nativeCurrencySymbol: 'GLMR',
     explorerUrl: 'https://moonscan.io/',
   },
   [Chain.Polygon]: {
     id: 'polygon',
     gasPricesUrl: 'https://gasstation.polygon.technology/v2',
     gasPricesDefault: 0,
-    nativeCurrencySymbol: 'POL',
     explorerUrl: 'https://polygonscan.com/',
   },
   [Chain.Kava]: {
     id: 'kava',
     gasPricesUnit: 'UKAVA',
-    nativeCurrencySymbol: 'KAVA',
     explorerUrl: 'https://kavascan.io/',
   },
   [Chain.Fantom]: {
     id: 'fantom',
-    nativeCurrencySymbol: 'FTM',
     explorerUrl: 'https://ftmscout.com/',
   },
   [Chain.Arbitrum]: {
     id: 'arbitrum',
-    nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://arbiscan.io/',
   },
   [Chain.Avalanche]: {
@@ -62,34 +54,28 @@ export const NETWORK_BASE_CONFIG = {
     gasPricesUnit: 'nAVAX',
     gasPricesUrl: 'https://api.avax.network/ext/bc/C/rpc',
     gasPricesDefault: 0,
-    nativeCurrencySymbol: 'AVAX',
     explorerUrl: 'https://snowscan.xyz/',
   },
   [Chain.Celo]: {
     id: 'celo',
-    nativeCurrencySymbol: 'CELO',
     explorerUrl: 'https://celoscan.io/',
   },
   [Chain.Aurora]: {
     id: 'aurora',
-    nativeCurrencySymbol: 'aETH',
     explorerUrl: 'https://aurorascan.dev/',
   },
   [Chain.ZkSync]: {
     id: 'zksync',
     name: 'zkSync Era',
-    nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://era.zksync.network/',
   },
   [Chain.Base]: {
     id: 'base',
     gasL2: true,
-    nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://basescan.org/',
   },
   [Chain.Bsc]: {
     id: 'bsc',
-    nativeCurrencySymbol: 'BNB',
     explorerUrl: 'https://bscscan.com/',
   },
   [Chain.Fraxtal]: {
@@ -99,22 +85,18 @@ export const NETWORK_BASE_CONFIG = {
   },
   [Chain.XLayer]: {
     id: 'x-layer',
-    nativeCurrencySymbol: 'OKB',
     explorerUrl: 'https://www.okx.com/web3/explorer/xlayer/',
   },
   [Chain.Mantle]: {
     id: 'mantle',
-    nativeCurrencySymbol: 'MNT',
     explorerUrl: 'https://mantlescan.xyz/',
   },
   [Chain.Sonic]: {
     id: 'sonic',
-    nativeCurrencySymbol: 'S',
     explorerUrl: 'https://sonicscan.org/',
   },
   [Chain.Hyperliquid]: {
     id: 'hyperliquid',
-    nativeCurrencySymbol: 'HYPE',
     explorerUrl: 'https://hyperevmscan.io/',
   },
 } as const
@@ -126,7 +108,6 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   chainId: TChainId
   explorerUrl: string
   isTestnet: boolean
-  symbol: string
   showInSelectNetwork: boolean
   showRouterSwap?: boolean // only for dex
 }
@@ -147,19 +128,17 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
 export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
   chainId: ChainId,
   networkConfig: {
-    nativeCurrencySymbol: string
     explorerUrl: string
     id: TId
     name?: string
     isTestnet?: boolean
   },
 ): Omit<BaseConfig<TId>, 'showInSelectNetwork' | 'showRouterSwap'> {
-  const { name, id, nativeCurrencySymbol, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
+  const { name, id, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   return {
     ...rest,
     name: formatNetworkName(name || id),
     chainId,
-    symbol: nativeCurrencySymbol,
     id, // TODO: remove id or networkId
     networkId: id,
   }
