@@ -2,28 +2,27 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useConnection, useEnsName } from 'wagmi'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
-import { ActiveProposal, ChainId, SnapshotVotingPower } from '@/dao/types/dao.types'
+import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { amount, formatToken, shortenAddress } from '@evm-ui/utils'
+import { amount, Chain, formatToken, shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { InternalLink } from '@legacy-ui/Link/InternalLink'
 import { Loader } from '@legacy-ui/Loader/Loader'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
 
 type Props = {
-  chainId: ChainId
   noLink?: boolean
   snapshotVotingPower: boolean
   activeProposal?: ActiveProposal
   votingPower?: SnapshotVotingPower
 }
 
-export const UserInformation = ({ chainId, noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
+export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
   const { address: userAddress } = useConnection()
   const { data: userEns } = useEnsName({ address: userAddress })
-  const { data: userVeCrv } = useLockerVecrvUser({ chainId, userAddress })
+  const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 
   const decayedVeCrv = useMemo(() => {
     if (activeProposal?.active && votingPower) {
