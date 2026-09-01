@@ -2,14 +2,14 @@ import { useCallback } from 'react'
 import { useConfig, useConnection } from 'wagmi'
 import { getGauge } from '@/dex/entities/gauge/lib/gauge-info'
 import {
+  gaugeAddRewardValidationSuite,
+  gaugeDepositRewardValidationSuite,
+} from '@/dex/entities/gauge/model/gauge-validation'
+import {
   fetchDepositRewardIsApproved,
   invalidateDepositRewardAvailable,
   invalidateGaugeDistributors,
 } from '@/dex/entities/gauge/model/gauge.query'
-import {
-  gaugeAddRewardValidationSuite,
-  gaugeDepositRewardValidationSuite,
-} from '@/dex/entities/gauge/model/gauge-validation'
 import type { AddRewardMutation, DepositRewardMutation } from '@/dex/entities/gauge/types'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
