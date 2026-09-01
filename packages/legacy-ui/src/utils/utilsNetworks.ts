@@ -67,7 +67,7 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
 
 export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
   chainId: ChainId,
-  networkConfig: { id: TId; },
+  networkConfig: { id: TId },
 ): Omit<BaseConfig<TId>, 'showInSelectNetwork' | 'showRouterSwap'> {
   const { id, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   return {
