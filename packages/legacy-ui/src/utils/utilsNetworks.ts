@@ -3,7 +3,6 @@ import { Chain } from '@evm-ui/utils/network'
 import { maybe } from '@primitives/objects.utils'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
-  name: '',
   gasL2: false,
   gasPricesUnit: 'GWEI',
   gasPricesUrl: '',
@@ -18,7 +17,7 @@ export const NETWORK_BASE_CONFIG = {
     gasPricesDefault: 1,
   },
   [Chain.Optimism]: { id: 'optimism', gasL2: true },
-  [Chain.Gnosis]: { id: 'xdai', name: 'Gnosis' },
+  [Chain.Gnosis]: { id: 'xdai' },
   [Chain.Moonbeam]: { id: 'moonbeam' },
   [Chain.Polygon]: {
     id: 'polygon',
@@ -36,7 +35,7 @@ export const NETWORK_BASE_CONFIG = {
   },
   [Chain.Celo]: { id: 'celo' },
   [Chain.Aurora]: { id: 'aurora' },
-  [Chain.ZkSync]: { id: 'zksync', name: 'zkSync Era' },
+  [Chain.ZkSync]: { id: 'zksync' },
   [Chain.Base]: { id: 'base', gasL2: true },
   [Chain.Bsc]: { id: 'bsc' },
   [Chain.Fraxtal]: { id: 'fraxtal' },
@@ -49,7 +48,6 @@ export const NETWORK_BASE_CONFIG = {
 export type NetworkDef<TId extends string = string, TChainId extends number = number> = {
   isLite?: boolean
   id: TId
-  name: string
   chainId: TChainId
   isTestnet: boolean
   showInSelectNetwork: boolean
@@ -71,22 +69,15 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
 
 export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
   chainId: ChainId,
-  networkConfig: { id: TId; name?: string; isTestnet?: boolean },
+  networkConfig: { id: TId; isTestnet?: boolean },
 ): Omit<BaseConfig<TId>, 'showInSelectNetwork' | 'showRouterSwap'> {
-  const { name, id, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
+  const { id, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   return {
     ...rest,
-    name: formatNetworkName(name || id),
     chainId,
     id, // TODO: remove id or networkId
     networkId: id,
   }
-}
-
-/** Capitalizes and separates words in a string by replacing hyphens and underscores with spaces. */
-function formatNetworkName(id: string) {
-  const formattedText = id.replace(/[-_]./g, match => ' ' + match.charAt(1).toUpperCase())
-  return formattedText.charAt(0).toUpperCase() + formattedText.slice(1)
 }
 
 const getBlockExplorerUrl = (chainId: number) => wagmiChainsMap[chainId]?.blockExplorers?.default.url

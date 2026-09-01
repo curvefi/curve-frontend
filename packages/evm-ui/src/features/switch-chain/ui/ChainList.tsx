@@ -47,7 +47,9 @@ export function ChainList({
   const groupedOptions = useMemo(
     () =>
       lodash.groupBy(
-        options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
+        options.filter(o =>
+          wagmiChainsMap[o.chainId]?.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()),
+        ),
         o =>
           o.isTestnet
             ? ChainType.test
@@ -93,7 +95,7 @@ export function ChainList({
                       href={getInternalUrl(getCurrentApp(pathname), network.id)}
                       isSelected={network.id == selectedNetworkId}
                       icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
-                      label={network.name}
+                      label={wagmiChainsMap[network.chainId]?.name}
                       onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
                       isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
                     />

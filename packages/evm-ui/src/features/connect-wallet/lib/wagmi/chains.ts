@@ -107,6 +107,5 @@ export const createChainFromNetwork = (network: NetworkDef, getRpcUrls: typeof d
     ...wagmiChainsMap[network.chainId],
     id: network.chainId,
     testnet: network.isTestnet,
-    name: network.name,
     rpcUrls: { default: { http: getRpcUrls(network.chainId) } },
   })

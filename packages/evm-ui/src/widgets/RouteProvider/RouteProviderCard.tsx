@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import type { RouteQuery } from '@evm-ui/entities/router-api'
+import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { useEstimateGasValue } from '@evm-ui/lib/model/entities/gas-info'
 import { FireIcon } from '@evm-ui/shared/icons/FireIcon'
@@ -50,7 +51,7 @@ export const RouteProviderCard = ({
   const out = maybes([route, decimals], ({ amountOut }, decimals) => fromWei(amountOut[0], decimals))
   const { data: gasEstimate } = useEstimateGasValue(networks, chainId, route?.gas)
   const Icon = RouteProviderIcons[router]
-  const disabledTooltip = t`${RouteProviderLabels[router]} is unavailable on ${networks[chainId].name}.`
+  const disabledTooltip = t`${RouteProviderLabels[router]} is unavailable on ${wagmiChainsMap[chainId]?.name}.`
   const onClick = useCallback(() => (enabled ? onSelect(router) : undefined), [onSelect, router, enabled])
   return (
     <WithWrapper shouldWrap={!enabled} Wrapper={Tooltip} title={disabledTooltip}>

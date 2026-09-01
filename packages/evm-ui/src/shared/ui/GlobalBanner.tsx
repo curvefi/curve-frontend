@@ -1,6 +1,6 @@
 import { useChainId, useConnection } from 'wagmi'
 import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
-import { DOWNGRADED_CHAINS } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { DOWNGRADED_CHAINS, wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { BackendMaintenanceBanner } from '@evm-ui/features/maintenance/components/BackendMaintenanceBanner'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
 import { usePathname } from '@evm-ui/hooks/router'
@@ -30,7 +30,7 @@ type GlobalBannerProps = {
 export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useConnection()
-  const { connectState, network } = useCurve()
+  const { connectState } = useCurve()
   const switchChain = useSwitchChain()
   const walletChainId = useChainId()
   const pathname = usePathname()
@@ -38,6 +38,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
   const deprecationDate = DEPRECATED_CHAINS[chainId]
   const isDowngraded = DOWNGRADED_CHAINS.has(chainId)
   const currentDate = useCurrentDate()
+  const networkName = wagmiChainsMap[chainId]?.name
 
   const [showAaveBanner, dismissAaveBanner] = useDismissAaveBanner()
   const [showFantomRetirementBanner, dismissFantomRetirementBanner] = useDismissFantomRetirementBanner()
@@ -73,7 +74,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
       )}
       {deprecationDate ? (
         <Banner severity="alert">
-          {`“${network?.name}”` +
+          {`“${networkName}”` +
             (deprecationDate > currentDate
               ? t` will be deprecated at ${formatDate(deprecationDate)}. `
               : t` is deprecated. `)}
@@ -88,7 +89,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
             subtitle={t`Advanced metrics won’t be available anymore, but all functions remain available. `}
             onClick={dismissDowngraded}
           >
-            {`“${network?.name}”` + t` has been moved to curve-lite due to low activity. `}
+            {`“${networkName}”` + t` has been moved to curve-lite due to low activity. `}
           </Banner>
         )
       )}
