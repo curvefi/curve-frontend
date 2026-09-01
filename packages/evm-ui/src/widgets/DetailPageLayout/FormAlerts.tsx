@@ -114,8 +114,6 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
 export const HighPriceImpactAlert = ({
   priceImpact: { data, isLoading: isImpactLoading, error },
   max: { isLoading: isMaxLoading },
-  values: { slippage },
-  slippageType,
 }: {
   priceImpact: QueryProp<PriceImpact | Decimal | null>
   max: QueryProp<unknown> // dependent query that is necessary before the price impact query is even enabled
@@ -123,7 +121,7 @@ export const HighPriceImpactAlert = ({
   slippageType: SlippageType
 }) => {
   const isLoading = isImpactLoading || isMaxLoading // impact will only start loading after the max is available
-  const severity = getPriceImpactSeverity(data, { slippage, slippageType })
+  const severity = getPriceImpactSeverity(data)
   const prevSeverity = usePreviousValue(severity)
   return error ? (
     <Alert severity="error" data-testid="high-price-impact-error">

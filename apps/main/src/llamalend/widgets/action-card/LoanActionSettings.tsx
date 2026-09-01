@@ -41,10 +41,7 @@ export const LoanActionSettings = ({
   borrowSymbol?: string
 }) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact, {
-    slippage,
-    slippageType: LEVERAGE,
-  })
+  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact)
 
   return (
     <Collapse in={show}>

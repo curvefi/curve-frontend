@@ -454,14 +454,11 @@ export const QuickSwap = ({
     (toAmount?: Decimal) => updateFormValues({ isFrom: false, toAmount: toAmount ?? '', fromAmount: '' }),
     [updateFormValues],
   )
-  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(
-    {
-      data: decimal(routesAndOutput?.priceImpact),
-      error: null,
-      isLoading: routesAndOutputLoading,
-    },
-    { slippage: maxSlippage, slippageType },
-  )
+  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay({
+    data: decimal(routesAndOutput?.priceImpact),
+    error: null,
+    isLoading: routesAndOutputLoading,
+  })
 
   const routes = toQuery(routesAndOutput, { isLoading: routesAndOutputLoading })
   return (
