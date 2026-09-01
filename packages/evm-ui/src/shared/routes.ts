@@ -42,7 +42,6 @@ export const LLAMALEND_ROUTES = {
 } as const
 
 export const DAO_ROUTES = {
-  PAGE_VECRV_CREATE: '/vecrv/create',
   PAGE_PROPOSALS: '/proposals',
   PAGE_GAUGES: '/gauges',
   PAGE_VECRV: '/vecrv',
@@ -88,7 +87,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   dao: {
     label: 'Governance',
     routes: [
-      { app: 'dao', route: DAO_ROUTES.PAGE_VECRV_CREATE, label: () => t`Lock CRV` },
+      { app: 'dao', route: DAO_ROUTES.PAGE_VECRV, label: () => t`Lock CRV` },
       { app: 'dao', route: DAO_ROUTES.PAGE_PROPOSALS, label: () => t`Proposals` },
       { app: 'dao', route: DAO_ROUTES.PAGE_GAUGES, label: () => t`Gauges` },
       { app: 'dao', route: DAO_ROUTES.PAGE_ANALYTICS, label: () => t`Analytics` },

@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react'
 import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
 import { TabsSwitcher, TabsSwitcherProps } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
@@ -33,9 +32,6 @@ const useFormTabs = <T extends object>(options: UseFormTabOptions<T>) => ({
 })
 
 const marginInline = { tablet: 'auto', desktop: 0 } as const
-
-/** @deprecated This is only necessary until all the forms migrate to using the `FormTabs` component. **/
-export const FormMargins = ({ children }: { children: ReactNode }) => <Stack sx={{ marginInline }}>{children}</Stack>
 
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
   shouldWrap?: boolean

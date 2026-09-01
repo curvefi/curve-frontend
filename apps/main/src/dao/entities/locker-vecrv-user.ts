@@ -11,10 +11,8 @@ import { createValidationSuite } from '@evm-ui/lib/validation'
 export const { useQuery: useLockerVecrvUser, invalidate: invalidateLockerVecrvUser } = queryFactory({
   queryKey: (params: ChainParams<ChainId> & UserParams) =>
     ['locker-vecrv-user', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
-  queryFn: async ({ userAddress }: ChainQuery<ChainId> & UserQuery) => {
-    const curve = requireLib('curveApi')
-    return await curve.dao.userVeCrv(userAddress)
-  },
+  queryFn: async ({ userAddress }: ChainQuery<ChainId> & UserQuery) =>
+    await requireLib('curveApi').dao.userVeCrv(userAddress),
   category: 'dao.user',
   validationSuite: createValidationSuite((params: ChainParams<ChainId> & UserParams) => {
     curveApiValidationGroup({ chainId: params.chainId })

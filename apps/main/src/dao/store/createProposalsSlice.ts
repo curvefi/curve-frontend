@@ -2,7 +2,6 @@ import { produce } from 'immer'
 import type { StoreApi } from 'zustand'
 import { invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { invalidateUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
-import { helpers } from '@/dao/lib/curvejs'
 import { networks } from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
@@ -14,6 +13,7 @@ import {
 } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { notify, useWallet, getLib } from '@evm-ui/features/connect-wallet'
+import { waitForTransaction } from '@evm-ui/lib/ethers'
 import { t } from '@evm-ui/lib/i18n'
 import { scanTxPath } from '@legacy-ui/utils'
 
@@ -139,7 +139,7 @@ export const createProposalsSlice = (
             },
           })
 
-          await helpers.waitForTransaction(voteResponseHash, provider)
+          await waitForTransaction(voteResponseHash, provider)
 
           get()[SLICE_KEY].setStateByKey('voteTxMapper', {
             ...get()[SLICE_KEY].voteTxMapper,
@@ -230,7 +230,7 @@ export const createProposalsSlice = (
             },
           })
 
-          await helpers.waitForTransaction(transactionHash, provider)
+          await waitForTransaction(transactionHash, provider)
 
           dismissDeploying()
           const successNotificationMessage = t`Proposal executed successfully!`

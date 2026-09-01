@@ -1,62 +1,35 @@
-import { useEffect } from 'react'
 import { useConnection } from 'wagmi'
-import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
+import { useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
 import { networksIdMapper } from '@/dao/networks'
-import { useStore } from '@/dao/store/useStore'
-import { type VeCrvUrlParams } from '@/dao/types/dao.types'
-import { useCurve } from '@evm-ui/features/connect-wallet'
+import type { NetworkUrlParams } from '@/dao/types/dao.types'
+import { ConnectWalletPrompt } from '@evm-ui/features/connect-wallet'
 import { useParams } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
-import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
-import { BoxHeader } from '@legacy-ui/Box'
-import { IconButton } from '@legacy-ui/IconButton'
-import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
-import Stack from '@mui/material/Stack'
+import { ErrorMessage } from '@evm-ui/shared/ui/ErrorMessage'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
+import { FormSkeleton } from '@evm-ui/widgets/DetailPageLayout/FormSkeleton'
+import Box from '@mui/material/Box'
 import { FormCrvLocker } from './components/FormCrvLocker'
-import { WrongNetwork } from './WrongNetwork'
 
-const MAX_WIDTH = '30rem' as const // Temporary hard coded with, in the future this'll get a redesign
+const { MaxWidth, Spacing } = SizesAndSpaces
 
 export const VeCrv = () => {
-  const { formType: rFormType, network } = useParams<VeCrvUrlParams>()
-  const { curveApi } = useCurve()
-  const rChainId = networksIdMapper[network]
-
+  const { network } = useParams<NetworkUrlParams>()
   const { address: userAddress } = useConnection()
-
-  const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curveApi?.chainId, userAddress })
-  const resetState = useStore(state => state.lockedCrv.resetState)
-
-  // onMount
-  useEffect(
-    () => () => resetState(),
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [],
-  )
-
+  const chainId = networksIdMapper[network]
+  const { data, error, isLoading } = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })
   return (
-    <DetailPageLayout formTabs={null} testId="vecrv-page">
-      <Stack sx={{ margin: 'auto', maxWidth: MAX_WIDTH, backgroundColor: t => t.design.Layer[1].Fill }}>
-        <BoxHeader className="title-text">
-          <IconButton hidden />
-          {t`CRV Locker`}
-          <IconButton hidden />
-        </BoxHeader>
-
-        {rChainId === 1 ? (
-          <Stack>
-            {rChainId && rFormType && vecrvInfo && curveApi ? (
-              <FormCrvLocker curve={curveApi} rChainId={rChainId} rFormType={rFormType} vecrvInfo={vecrvInfo} />
-            ) : (
-              <SpinnerWrapper>
-                <Spinner />
-              </SpinnerWrapper>
-            )}
-          </Stack>
-        ) : (
-          <WrongNetwork />
-        )}
-      </Stack>
-    </DetailPageLayout>
+    <FormPlacementProvider placement="inline">
+      <Box
+        data-testid="vecrv-page"
+        sx={{ maxWidth: MaxWidth.actionCard, marginInline: 'auto', marginBlock: Spacing.md }}
+      >
+        {data && <FormCrvLocker chainId={chainId} {...data} />}
+        {isLoading && <FormSkeleton />}
+        {error && <ErrorMessage title={t`Locker Error`} error={error} />}
+        {!userAddress && <ConnectWalletPrompt description={t`Please connect your wallet to view your locked CRV.`} />}
+      </Box>
+    </FormPlacementProvider>
   )
 }

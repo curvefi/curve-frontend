@@ -71,14 +71,14 @@ export const daoRoutes = daoLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/vecrv/$formType',
+    path: '$network/vecrv',
     component: PageVeCrv,
     head: () => ({ meta: [{ title: 'CRV Locker - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/vecrv',
-    loader: ({ params: { network } }) => redirectTo(`/dao/${network}/vecrv/create/`),
+    path: '$network/vecrv/$formType',
+    loader: ({ params: { network } }) => redirectTo(`/dao/${network}/vecrv`),
     ...layoutProps,
   }),
 ])
