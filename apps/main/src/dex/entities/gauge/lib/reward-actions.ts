@@ -1,79 +1,86 @@
-import { useConnection } from 'wagmi'
-import * as models from '@/dex/entities/gauge/model'
-import type { AddRewardMutation, DepositRewardApproveMutation, DepositRewardMutation } from '@/dex/entities/gauge/types'
+import { useCallback } from 'react'
+import { useConfig, useConnection } from 'wagmi'
+import { getGauge } from '@/dex/entities/gauge/lib/gauge-info'
+import {
+  gaugeAddRewardValidationSuite,
+  gaugeDepositRewardValidationSuite,
+} from '@/dex/entities/gauge/model/gauge-validation'
+import {
+  fetchDepositRewardIsApproved,
+  invalidateDepositRewardAvailable,
+  invalidateGaugeDistributors,
+} from '@/dex/entities/gauge/model/gauge.query'
+import type { AddRewardMutation, DepositRewardMutation } from '@/dex/entities/gauge/types'
+import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
+import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { notify } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
-import { GaugeParams } from '@evm-ui/lib/model/query'
-import { useMutation, UseMutationResult } from '@tanstack/react-query'
+import { useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactionMutation'
+import { type GaugeQuery, rootKeys } from '@evm-ui/lib/model/query'
+import { waitForApproval } from '@evm-ui/utils'
+import type { Hex } from '@primitives/address.utils'
 
-export const useAddRewardToken = ({
-  chainId,
-  poolId,
-}: GaugeParams): UseMutationResult<string, Error, AddRewardMutation> => {
+type GaugeRewardMutationOptions = GaugeQuery & {
+  onReset: () => void
+}
+
+export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutationOptions) => {
   const { tokensMapper } = useTokensMapper(chainId)
   const { address: userAddress } = useConnection()
+  const getRewardTokenSymbol = ({ rewardTokenId }: AddRewardMutation) =>
+    rewardTokenId ? tokensMapper[rewardTokenId.toLowerCase()]?.symbol : ''
 
-  return useMutation({
-    ...models.getAddRewardTokenMutation({ chainId, poolId }),
-    onSuccess: (resp, { rewardTokenId }) => {
-      if (resp) {
-        const txDescription = t`Added reward token ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notify(txDescription, 'success')
-      }
-
-      return Promise.all([
-        models.gaugeDistributors.invalidate({ chainId, poolId, userAddress }),
-        models.depositRewardAvailable.invalidate({ chainId, poolId }),
-      ])
-    },
-    onError: error => {
-      console.error('Error adding reward:', error)
-      notify(t`Failed to add reward token`, 'error')
-    },
+  const { mutate, error, isPending } = useTransactionMutation<AddRewardMutation>({
+    mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'addRewardToken'] as const,
+    mutationFn: async ({ rewardTokenId, distributorId }) => ({
+      hash: (await getGauge(poolId).addReward(rewardTokenId, distributorId)) as Hex,
+    }),
+    validationSuite: gaugeAddRewardValidationSuite,
+    validationParams: { chainId, poolId },
+    pendingMessage: mutation => t`Adding reward token ${getRewardTokenSymbol(mutation)}`,
+    successMessage: mutation => t`Added reward token ${getRewardTokenSymbol(mutation)}`,
+    onSuccess: () =>
+      Promise.all([
+        invalidateGaugeDistributors({ chainId, poolId, userAddress }),
+        invalidateDepositRewardAvailable({ chainId, poolId }),
+      ]),
+    onReset,
   })
+
+  const onSubmit = useCallback((form: AddRewardFormValues) => mutate(form as AddRewardMutation), [mutate])
+
+  return { onSubmit, mutate, error, isPending }
 }
 
-export const useDepositRewardApprove = ({
-  chainId,
-  poolId,
-}: GaugeParams): UseMutationResult<string[], Error, DepositRewardApproveMutation> => {
+export const useDepositReward = ({ chainId, poolId, onReset }: GaugeRewardMutationOptions) => {
   const { tokensMapper } = useTokensMapper(chainId)
+  const config = useConfig()
+  const getRewardTokenSymbol = ({ rewardTokenId }: DepositRewardMutation) =>
+    rewardTokenId ? tokensMapper[rewardTokenId.toLowerCase()]?.symbol : ''
 
-  return useMutation({
-    ...models.getDepositRewardApproveMutation({ chainId, poolId }),
-    onSuccess: (resp, { rewardTokenId, amount }) => {
-      if (resp) {
-        const notifyMessage = t`Approve spending ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notify(notifyMessage, 'success')
+  const { mutate, error, isPending } = useTransactionMutation<DepositRewardMutation>({
+    mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'depositReward'] as const,
+    mutationFn: async ({ amount, rewardTokenId, epoch, userBalance }) => {
+      await waitForApproval({
+        isApproved: async () =>
+          await fetchDepositRewardIsApproved({ chainId, poolId, amount, rewardTokenId, userBalance }, { staleTime: 0 }),
+        onApprove: async () => (await getGauge(poolId).depositRewardApprove(rewardTokenId, amount)) as Hex[],
+        message: t`Approved deposit reward`,
+        config,
+      })
+      return {
+        hash: (await getGauge(poolId).depositReward(rewardTokenId, amount, epoch)) as Hex,
       }
-      return models.depositRewardIsApproved.invalidate({ chainId, poolId, rewardTokenId, amount })
     },
-    onError: error => {
-      console.error('Error approving deposit reward:', error)
-      notify(t`Failed to approve deposit reward`, 'error')
-    },
+    validationSuite: gaugeDepositRewardValidationSuite,
+    validationParams: { chainId, poolId },
+    pendingMessage: mutation => t`Depositing reward token ${getRewardTokenSymbol(mutation)}`,
+    successMessage: mutation => t`Deposited reward token ${getRewardTokenSymbol(mutation)}`,
+    onSuccess: () => invalidateDepositRewardAvailable({ chainId, poolId }),
+    onReset,
   })
-}
 
-export const useDepositReward = ({
-  chainId,
-  poolId,
-}: GaugeParams): UseMutationResult<string, Error, DepositRewardMutation> => {
-  const { tokensMapper } = useTokensMapper(chainId)
+  const onSubmit = useCallback((form: DepositRewardFormValues) => mutate(form as DepositRewardMutation), [mutate])
 
-  return useMutation({
-    ...models.getDepositRewardMutation({ chainId, poolId }),
-    onSuccess: (resp, { rewardTokenId }) => {
-      if (resp) {
-        const txDescription = t`Deposited reward token ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notify(txDescription, 'success')
-      }
-      return models.depositRewardAvailable.invalidate({ chainId, poolId })
-    },
-    onError: error => {
-      console.error('Error depositing reward:', error)
-      notify(t`Failed to deposit reward`, 'error')
-    },
-  })
+  return { onSubmit, mutate, error, isPending }
 }

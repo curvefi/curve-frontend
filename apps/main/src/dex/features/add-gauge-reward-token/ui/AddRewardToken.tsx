@@ -1,13 +1,9 @@
-import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
-import {
-  AddRewardParams,
-  gaugeAddRewardValidationGroup,
-  useAddRewardToken,
-  useAddRewardTokenEstimateGas,
-  useGaugeRewardsDistributors,
-  useIsDepositRewardAvailable,
-} from '@/dex/entities/gauge'
+import { useAddRewardToken } from '@/dex/entities/gauge/lib/reward-actions'
+import { useAddRewardTokenEstimateGas } from '@/dex/entities/gauge/model/gauge-gas.query'
+import { gaugeAddRewardValidationGroup } from '@/dex/entities/gauge/model/gauge-validation'
+import { useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge/model/gauge.query'
+import type { AddRewardParams } from '@/dex/entities/gauge/types'
 import { useNetworks } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { DistributorInput, TokenSelector } from '@/dex/features/add-gauge-reward-token/ui'
@@ -20,8 +16,6 @@ import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { q } from '@evm-ui/types/util'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
-import { TxInfoBar } from '@legacy-ui/TxInfoBar'
-import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 
 const { Spacing } = SizesAndSpaces
@@ -33,13 +27,12 @@ export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   const { address: userAddress } = useConnection()
   const { isLoading: isLoadingDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
   const { data: isRewardsAvailable, isLoading: isLoadingRewards } = useIsDepositRewardAvailable({ chainId, poolId })
-  const network = networks[chainId]
 
   const form = useForm<AddRewardFormValues>({
     validation,
     defaultValues: { rewardTokenId: undefined, distributorId: undefined },
   })
-  const { setError, formState, handleSubmit } = form
+  const { formState, handleSubmit } = form
   const { errors, visibleErrors, isValid, isSubmitting } = formState
 
   useFormSync(form, { distributorId: userAddress }, !!userAddress && !form.isTouched('distributorId'))
@@ -47,21 +40,14 @@ export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   const gas = useAddRewardTokenEstimateGas(networks, { chainId, poolId, ...form.watchValues() }, isValid)
 
   const {
-    mutate: addRewardToken,
+    onSubmit,
+    error: addRewardTokenError,
     isPending: isPendingAddRewardToken,
-    isSuccess: isSuccessAddRewardToken,
-    data: addRewardTokenData,
-  } = useAddRewardToken({ chainId, poolId })
-
-  const onSubmit = useCallback(
-    ({ rewardTokenId, distributorId }: AddRewardFormValues) => {
-      addRewardToken(
-        { rewardTokenId, distributorId },
-        { onError: (error: Error) => setError('root.serverError', { type: 'manual', message: error.message }) },
-      )
-    },
-    [addRewardToken, setError],
-  )
+  } = useAddRewardToken({
+    chainId,
+    poolId,
+    onReset: () => form.reset({ rewardTokenId: undefined }), // keep distributor in case of adding multiple rewards
+  })
 
   const isLoading = isSubmitting || isLoadingDistributors || isLoadingRewards || isPendingAddRewardToken
   const isDisabled = isLoading || !isRewardsAvailable
@@ -80,11 +66,8 @@ export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: 
           testId="add-reward-submit-button"
           connectWalletTestId="add-reward-connect-wallet-button"
         />
-        {isSuccessAddRewardToken && addRewardTokenData && (
-          <TxInfoBar description={t`Reward token added`} txHash={scanTxPath(network, addRewardTokenData)} />
-        )}
         <FormAlerts
-          error={errors['root.serverError'] ?? null}
+          error={errors['root.serverError'] ?? addRewardTokenError}
           formErrors={visibleErrors}
           handledErrors={['distributorId']}
         />
