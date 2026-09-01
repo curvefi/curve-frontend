@@ -60,15 +60,16 @@ export const useDepositReward = ({ chainId, poolId, onReset }: GaugeRewardMutati
 
   const { mutate, error, isPending } = useTransactionMutation<DepositRewardMutation>({
     mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'depositReward'] as const,
-    mutationFn: async params => {
+    mutationFn: async ({ amount, rewardTokenId, epoch, userBalance }) => {
       await waitForApproval({
-        isApproved: async () => await fetchDepositRewardIsApproved({ chainId, poolId, ...params }, { staleTime: 0 }),
-        onApprove: async () => (await getGauge(poolId).depositRewardApprove(undefined, undefined)) as Hex[],
+        isApproved: async () =>
+          await fetchDepositRewardIsApproved({ chainId, poolId, amount, rewardTokenId, userBalance }, { staleTime: 0 }),
+        onApprove: async () => (await getGauge(poolId).depositRewardApprove(rewardTokenId, amount)) as Hex[],
         message: t`Approved deposit reward`,
         config,
       })
       return {
-        hash: (await getGauge(poolId).depositReward(undefined, undefined, undefined)) as Hex,
+        hash: (await getGauge(poolId).depositReward(rewardTokenId, amount, epoch)) as Hex,
       }
     },
     validationSuite: gaugeDepositRewardValidationSuite,
