@@ -145,7 +145,7 @@ export function useTransactionMutation<
   }
 
   // we use `mutate` instead of `mutateAsync` so that `onSuccess`/`onError` can be handled here
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
       setError(null) // Clear local error at the start of a new mutation attempt.
@@ -195,5 +195,5 @@ export function useTransactionMutation<
     },
   })
 
-  return { mutate, error, isPending }
+  return { mutate, error, isPending, isSuccess }
 }

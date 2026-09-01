@@ -61,7 +61,7 @@ export const useProposalVoteMutation = ({
   userAddress: string | undefined
   onVoted?: OnTransactionSuccess<ProposalVoteMutation>
 }) => {
-  const { mutate, error, isPending } = useTransactionMutation<ProposalVoteMutation>({
+  const { mutate, error, isPending, isSuccess } = useTransactionMutation<ProposalVoteMutation>({
     mutationKey: [...rootKeys.user({ userAddress }), 'dao.voteForProposal'] as const,
     mutationFn: async ({ proposalId, proposalType, support }) => ({
       hash: (await requireLib('curveApi').dao.voteForProposal(
@@ -87,7 +87,7 @@ export const useProposalVoteMutation = ({
   })
 
   const onSubmit = useCallback((values: ProposalVoteMutation) => mutate(values), [mutate])
-  return { onSubmit, error, isPending }
+  return { onSubmit, error, isPending, isSuccess }
 }
 
 export const useProposalExecuteMutation = ({
@@ -99,7 +99,7 @@ export const useProposalExecuteMutation = ({
   userAddress: string | undefined
   onExecuted?: OnTransactionSuccess<ProposalExecuteMutation>
 }) => {
-  const { mutate, error, isPending } = useTransactionMutation<ProposalExecuteMutation>({
+  const { mutate, error, isPending, isSuccess } = useTransactionMutation<ProposalExecuteMutation>({
     mutationKey: [...rootKeys.user({ userAddress }), 'dao.executeVote'] as const,
     mutationFn: async ({ proposalId, proposalType }) => ({
       hash: (await requireLib('curveApi').dao.executeVote(
@@ -123,5 +123,5 @@ export const useProposalExecuteMutation = ({
   })
 
   const onSubmit = useCallback((values: ProposalExecuteMutation) => mutate(values), [mutate])
-  return { onSubmit, error, isPending }
+  return { onSubmit, error, isPending, isSuccess }
 }

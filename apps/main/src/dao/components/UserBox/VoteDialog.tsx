@@ -1,4 +1,5 @@
 import { styled } from 'styled-components'
+import Alert from '@mui/material/Alert'
 import { PendingTx } from '@/dao/components/UserBox/PendingTx'
 import { useProposalExecuteMutation, useProposalVoteMutation } from '@/dao/components/UserBox/proposal-vote.mutation'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
@@ -47,6 +48,7 @@ export const VoteDialog = ({
   const {
     error: executeError,
     isPending: isPendingExecute,
+    isSuccess: isSuccessExecute,
     onSubmit: execute,
   } = useProposalExecuteMutation({ chainId, userAddress })
 
@@ -68,13 +70,19 @@ export const VoteDialog = ({
           </StyledAlertBox>
         </Box>
       )}
-      <ExecuteButton
-        variant="icon-filled"
-        onClick={() => execute({ proposalId, proposalType })}
-        loading={isPendingExecute}
-      >
-        {t`Execute`}
-      </ExecuteButton>
+      {isSuccessExecute ? (
+        <Alert severity="success" variant="outlined">
+          {t`Proposal executed successfully!`}
+        </Alert>
+      ) : (
+        <ExecuteButton
+          variant="icon-filled"
+          onClick={() => execute({ proposalId, proposalType })}
+          loading={isPendingExecute}
+        >
+          {t`Execute`}
+        </ExecuteButton>
+      )}
     </>
   )
 
