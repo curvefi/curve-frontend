@@ -1,7 +1,7 @@
 import { useConnection } from 'wagmi'
 import { useDepositReward, useDepositRewardEstimateGas } from '@/dex/entities/gauge/lib'
 import { gaugeDepositRewardValidationGroup } from '@/dex/entities/gauge/model/gauge-validation'
-import { useGaugeDepositRewardIsApproved, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
+import { useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworks } from '@/dex/entities/networks'
 import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
@@ -17,7 +17,6 @@ import { q } from '@evm-ui/types/util'
 import { decimalMultiply, formatNumber, TIME_FRAMES } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
-import { BlockSkeleton } from '@legacy-ui/skeleton'
 import Stack from '@mui/material/Stack'
 import { maybes } from '@primitives/objects.utils'
 
@@ -36,7 +35,6 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   const { data: networks } = useNetworks()
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
-  const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
 
   const form = useForm<DepositRewardFormValues>({ validation, defaultValues })
   const { errors, isValid, visibleErrors } = form.formState
@@ -62,9 +60,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
 
   useFormSync(form, { userBalance }) // Sync userBalance from query into form for validation
 
-  return isPendingRewardDistributors ? (
-    <BlockSkeleton height={440} />
-  ) : (
+  return (
     <Form
       {...form}
       onSubmit={form.handleSubmit(onSubmit)}

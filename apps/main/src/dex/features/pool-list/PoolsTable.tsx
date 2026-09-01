@@ -80,6 +80,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
       globalFilter,
       ...(!isLite && { pagination, columnFilters }),
     },
+    getRowId: row => row.address,
     onExpandedChange: setExpanded,
     ...(!isLite && { onPaginationChange }),
     onSortingChange,

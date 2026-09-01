@@ -19,8 +19,13 @@ export enum PoolFilterId {
   Apy = 'apy',
 }
 
-// Hide small pools by default, without treating the default min as an active UI filter on its own.
-export const POOL_DEFAULT_TVL_MIN = 10_000
+/**
+ * Hide small pools by default, without treating the default min as an active UI filter on its own.
+ * Used to be $10k but has been set to 0 as it's not immediately obvious to users why some pools are missing.
+ * Tutti is working on an alternative approach, in the menatime the TVL filter should not block the release of the new pools list.
+ * Besides, we have pagination now anyway so do we really need this filter to begin with?
+ */
+export const POOL_DEFAULT_TVL_MIN = 0
 
 export type PoolsNumberRange = Range<number | null>
 export type PoolsQueryUpdater = (update: Record<string, string | string[] | null>) => void
