@@ -9,7 +9,7 @@ export type AddReward = {
 }
 export type AddRewardQuery = GaugeQuery & AddReward
 export type AddRewardParams = FieldsOf<AddRewardQuery>
-export type AddRewardMutation = FieldsOf<AddReward>
+export type AddRewardMutation = AddReward
 
 export type DepositRewardApprove = {
   rewardTokenId: Address
@@ -21,11 +21,11 @@ export type GaugeDistributorsParams = FieldsOf<GaugeDistributorsQuery>
 
 export type DepositRewardApproveQuery = GaugeQuery & DepositRewardApprove
 export type DepositRewardApproveParams = FieldsOf<DepositRewardApproveQuery>
-export type DepositRewardApproveMutation = FieldsOf<DepositRewardApprove>
+export type DepositRewardApproveMutation = DepositRewardApprove
 
 export type DepositReward = DepositRewardApprove & {
   epoch: number | string
 }
 export type DepositRewardQuery = GaugeQuery & DepositReward
 export type DepositRewardParams = FieldsOf<DepositRewardQuery>
-export type DepositRewardMutation = FieldsOf<DepositReward>
+export type DepositRewardMutation = DepositReward

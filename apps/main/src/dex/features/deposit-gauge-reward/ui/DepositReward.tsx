@@ -1,17 +1,13 @@
-import { enforce, test } from 'vest'
 import { useConnection } from 'wagmi'
-import {
-  useDepositReward,
-  gaugeDepositRewardValidationGroup,
-  useDepositRewardApprove,
-  useDepositRewardEstimateGas,
-  useGaugeRewardsDistributors,
-} from '@/dex/entities/gauge'
+import { useDepositReward } from '@/dex/entities/gauge/lib/reward-actions'
+import { useDepositRewardEstimateGas } from '@/dex/entities/gauge/model/gauge-gas.query'
+import { gaugeDepositRewardValidationGroup } from '@/dex/entities/gauge/model/gauge-validation'
+import { useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworks } from '@/dex/entities/networks'
-import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
-import { AmountTokenInput, DepositStepper, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
+import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
+import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
-import { useForm, useFormSync } from '@evm-ui/features/forms'
+import { FormButton, useForm, useFormSync } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -22,36 +18,24 @@ import { q } from '@evm-ui/types/util'
 import { decimalMultiply, formatNumber, TIME_FRAMES } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
-import { BlockSkeleton } from '@legacy-ui/skeleton'
 import Stack from '@mui/material/Stack'
 import { maybes } from '@primitives/objects.utils'
 
 const { Spacing } = SizesAndSpaces
 
-const validation = createValidationSuite((data: DepositRewardFormValues) => {
-  gaugeDepositRewardValidationGroup(data)
-  test('step', () => {
-    enforce(Object.values(DepositRewardStep).includes(data.step)).message('Invalid deposit reward step')
-  })
-})
+const validation = createValidationSuite((data: DepositRewardFormValues) => gaugeDepositRewardValidationGroup(data))
 
 const defaultValues = {
   rewardTokenId: undefined,
   amount: undefined,
   userBalance: undefined,
   epoch: TIME_FRAMES.WEEK,
-  step: DepositRewardStep.APPROVAL,
 } as const
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { data: networks } = useNetworks()
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
-  const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
-    chainId,
-    poolId,
-    userAddress,
-  })
 
   const form = useForm<DepositRewardFormValues>({ validation, defaultValues })
   const { errors, isValid, visibleErrors } = form.formState
@@ -59,22 +43,28 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
 
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
   const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId })
-  const gas = useDepositRewardEstimateGas(
-    networks,
-    { chainId, poolId, rewardTokenId, amount, epoch, userBalance },
-    isValid,
-  )
-  const depositRewardApprove = useDepositRewardApprove({ chainId, poolId })
-  const depositReward = useDepositReward({ chainId, poolId })
+  const gas = useDepositRewardEstimateGas(networks, { chainId, poolId, rewardTokenId, amount, epoch, userBalance })
+  const {
+    onSubmit,
+    error: depositRewardError,
+    isPending: isPendingDepositReward,
+  } = useDepositReward({ chainId, poolId, onReset: () => form.reset(defaultValues) })
+  const { data: isApproved, isLoading: isLoadingApproved } = useGaugeDepositRewardIsApproved({
+    chainId,
+    poolId,
+    rewardTokenId,
+    amount,
+    userBalance,
+  })
+  const isPending = form.formState.isSubmitting || isPendingDepositReward
+  const isLoading = isPending || isLoadingApproved
 
   useFormSync(form, { userBalance }) // Sync userBalance from query into form for validation
 
-  return isPendingRewardDistributors ? (
-    <BlockSkeleton height={440} />
-  ) : (
+  return (
     <Form
       {...form}
-      onSubmit={() => undefined}
+      onSubmit={form.handleSubmit(onSubmit)}
       footer={
         <Stack sx={{ gap: Spacing.xs }}>
           <ActionInfo
@@ -83,32 +73,23 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
             valueTooltip={tokenUsdRate && `${t`Token price`}: ${formatNumber(tokenUsdRate, 'usd.amount')}`}
             size="small"
           />
-          <ActionInfoGasEstimate gas={q(gas)} />
+          <ActionInfoGasEstimate gas={q(gas)} isApproved={isApproved} />
         </Stack>
       }
     >
       <Stack sx={{ gap: Spacing.sm }}>
-        <AmountTokenInput
-          chainId={chainId}
-          poolId={poolId}
-          networkId={network.id}
-          isPendingDepositRewardApprove={depositRewardApprove.isPending}
-          isPendingDepositReward={depositReward.isPending}
-        />
-        <EpochInput
-          isPendingDepositRewardApprove={depositRewardApprove.isPending}
-          isPendingDepositReward={depositReward.isPending}
-        />
-        <DepositStepper
-          chainId={chainId}
-          poolId={poolId}
-          depositRewardApprove={depositRewardApprove.mutate}
-          depositReward={depositReward.mutate}
-          isPendingDepositRewardApprove={depositRewardApprove.isPending}
-          isPendingDepositReward={depositReward.isPending}
+        <AmountTokenInput chainId={chainId} poolId={poolId} networkId={network.id} disabled={isPending} />
+        <EpochInput disabled={isPending} />
+        <FormButton
+          pending={isPending}
+          loading={isLoading}
+          disabled={!isValid || isLoading}
+          label={[isApproved === false && t`Approve`, t`Deposit`]}
+          testId="deposit-reward-submit-button"
+          connectWalletTestId="deposit-reward-connect-wallet-button"
         />
         <FormAlerts
-          error={errors['root.serverError'] ?? null}
+          error={errors['root.serverError'] ?? depositRewardError}
           formErrors={visibleErrors}
           handledErrors={['rewardTokenId', 'amount', 'epoch']}
         />
