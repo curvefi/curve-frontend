@@ -32,7 +32,7 @@ export const LegacyPoolTitleCell = ({
     [tokens, tokenAddresses],
   )
   const poolAlert = usePoolAlert({
-    network,
+    blockchainId: network,
     poolAddress: pool.address,
     hasVyperVulnerability: poolData.hasVyperVulnerability,
   })

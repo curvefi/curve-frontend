@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import type { Address } from 'viem'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import { useManualPagination } from '@evm-ui/features/activity-table'
@@ -24,7 +23,6 @@ export const RecentRefuels = ({
   blockchainId: Chain
   poolAddress: Address
 }) => {
-  const { data: networkConfig } = useNetworkByChain({ chainId })
   const { pagination, onPaginationChange, apiPage } = useManualPagination(RECENT_REFUELS_PAGE_SIZE)
 
   const recentRefuels = useRecentRefuels({
@@ -44,7 +42,7 @@ export const RecentRefuels = ({
     query: mapQuery(recentRefuels, ({ data: events }) =>
       events.map(event => ({
         ...event,
-        donorUrl: event.donor ? scanAddressPath(networkConfig, event.donor) : undefined,
+        donorUrl: event.donor ? scanAddressPath(chainId, event.donor) : undefined,
       })),
     ),
     state: { pagination },

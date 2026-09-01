@@ -7,7 +7,6 @@ import { TransferActions } from '@/dex/components/PagePool/components/TransferAc
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
-import { useNetworks } from '@/dex/entities/networks'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
@@ -31,8 +30,6 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
   const fetchStepUnstake = useStore(state => state.poolWithdraw.fetchStepUnstake)
   const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
   const resetState = useStore(state => state.poolWithdraw.resetState)
-  const { data: networks } = useNetworks()
-  const network = (chainId && networks[chainId]) || null
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -67,13 +64,13 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepUnstake(activeKey, curve, poolData, formValues)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepUnstake, network],
+    [fetchStepUnstake, chainId],
   )
 
   const getSteps = useCallback(

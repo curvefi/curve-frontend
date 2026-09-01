@@ -1,5 +1,6 @@
 import { t } from '@evm-ui/lib/i18n'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { scanTxPath } from '@legacy-ui/utils'
 import { TimestampCell, DebtChangeCell, EventTypeCell, CollateralChangeCell } from '../cells'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 import { UserPositionHistoryColumnId } from './columns.enum'
@@ -38,7 +39,11 @@ export const USER_POSITION_HISTORY_COLUMNS = columnHelper.columns([
     id: UserPositionHistoryColumnId.Time,
     header: headers[UserPositionHistoryColumnId.Time],
     cell: ({ row }) => (
-      <TimestampCell timestamp={new Date(row.original.timestamp)} txUrl={row.original.url} align="end" />
+      <TimestampCell
+        timestamp={new Date(row.original.timestamp)}
+        txUrl={scanTxPath(row.original.chainId, row.original.txHash)}
+        align="end"
+      />
     ),
     meta: { type: 'numeric' },
   }),

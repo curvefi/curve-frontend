@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { t } from '@evm-ui/lib/i18n'
 import type { TypographyVariantKey } from '@evm-ui/themes/typography'
-import { BaseConfig, scanAddressPath } from '@legacy-ui/utils'
+import { scanAddressPath } from '@legacy-ui/utils'
 import { Typography } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
 import { shortenAddress } from '../../utils'
@@ -9,12 +9,13 @@ import { ActionInfo, type ActionInfoProps } from './ActionInfo'
 import { ExternalLink } from './ExternalLink'
 
 type AddressActionInfoProps = {
-  network: BaseConfig | undefined
+  chainId: number
   title: ReactNode
   labelTooltip?: ActionInfoProps['labelTooltip']
   size?: ActionInfoProps['size']
   address: string | undefined
   isBorderBottom?: boolean
+  hideTooltip?: boolean
   testId?: string
 }
 
@@ -24,12 +25,13 @@ const VALUE_SIZE = {
 } satisfies Record<NonNullable<AddressActionInfoProps['size']>, TypographyVariantKey>
 
 export const AddressActionInfo = ({
-  network,
+  chainId,
   title,
   labelTooltip,
   size = 'medium',
   address,
   isBorderBottom,
+  hideTooltip = false,
   testId,
 }: AddressActionInfoProps) => (
   <ActionInfo
@@ -43,9 +45,12 @@ export const AddressActionInfo = ({
       <Typography variant={VALUE_SIZE[size]}>{shortenAddress(address)}</Typography>
     }
     copyValue={address}
-    valueTooltip={maybe(address && scanAddressPath(network, address), link => (
-      <ExternalLink href={link} label={t`View on explorer`} />
-    ))}
+    valueTooltip={
+      !hideTooltip &&
+      maybe(address && scanAddressPath(chainId, address), link => (
+        <ExternalLink href={link} label={t`View on explorer`} />
+      ))
+    }
     sx={{
       alignItems: 'center',
       ...(isBorderBottom && {
