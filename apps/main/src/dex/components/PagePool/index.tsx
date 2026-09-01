@@ -231,7 +231,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
         }
         formTabs={{
-          content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} shouldWrap />,
+          content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} />,
         }}
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}

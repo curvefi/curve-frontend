@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import type { TransferTabsParams } from '@/dex/components/PagePool/types'
 import type { PoolAlert } from '@/dex/types/main.types'
+import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import type { Falsy } from '@primitives/objects.utils'
 
@@ -14,5 +15,11 @@ export const TabGuard = ({
   otherwise: ComponentType<TransferTabsParams>
 }) => {
   const tabAlert = alert(props)
-  return tabAlert ? <AlertBox {...tabAlert}>{tabAlert.message}</AlertBox> : <Otherwise {...props} />
+  return tabAlert ? (
+    <FormContent>
+      <AlertBox {...tabAlert}>{tabAlert.message}</AlertBox>
+    </FormContent>
+  ) : (
+    <Otherwise {...props} />
+  )
 }
