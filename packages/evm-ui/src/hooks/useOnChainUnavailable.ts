@@ -10,10 +10,10 @@ export function useOnChainUnavailable<T extends NetworkMapping>(networks: T | un
   return useCallback(
     (walletChainId?: number) => {
       const { pathname, href } = location
-      const networkId = (walletChainId && networks?.[walletChainId]?.id) || ('ethereum' as const)
+      const blockchainId = (walletChainId && networks?.[walletChainId]?.blockchainId) || ('ethereum' as const)
       const redirectUrl = getCurrentNetwork(pathname)
-        ? replaceNetworkInPath(pathname, networkId)
-        : getHashRedirectUrl(location, networkId)
+        ? replaceNetworkInPath(pathname, blockchainId)
+        : getHashRedirectUrl(location, blockchainId)
       console.warn('Redirecting from %s to %s...', href, redirectUrl)
       return navigate(redirectUrl, { replace: true })
     },

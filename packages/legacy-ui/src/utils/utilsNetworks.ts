@@ -11,42 +11,42 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
 
 export const NETWORK_BASE_CONFIG = {
   [Chain.Ethereum]: {
-    id: 'ethereum',
+    blockchainId: 'ethereum',
     gasPricesUrl: 'https://api.curve.finance/api/getGas',
     gasPricesDefault: 1,
   },
-  [Chain.Optimism]: { id: 'optimism', gasL2: true },
-  [Chain.Gnosis]: { id: 'xdai' },
-  [Chain.Moonbeam]: { id: 'moonbeam' },
+  [Chain.Optimism]: { blockchainId: 'optimism', gasL2: true },
+  [Chain.Gnosis]: { blockchainId: 'xdai' },
+  [Chain.Moonbeam]: { blockchainId: 'moonbeam' },
   [Chain.Polygon]: {
-    id: 'polygon',
+    blockchainId: 'polygon',
     gasPricesUrl: 'https://gasstation.polygon.technology/v2',
     gasPricesDefault: 0,
   },
-  [Chain.Kava]: { id: 'kava', gasPricesUnit: 'UKAVA' },
-  [Chain.Fantom]: { id: 'fantom' },
-  [Chain.Arbitrum]: { id: 'arbitrum' },
+  [Chain.Kava]: { blockchainId: 'kava', gasPricesUnit: 'UKAVA' },
+  [Chain.Fantom]: { blockchainId: 'fantom' },
+  [Chain.Arbitrum]: { blockchainId: 'arbitrum' },
   [Chain.Avalanche]: {
-    id: 'avalanche',
+    blockchainId: 'avalanche',
     gasPricesUnit: 'nAVAX',
     gasPricesUrl: 'https://api.avax.network/ext/bc/C/rpc',
     gasPricesDefault: 0,
   },
-  [Chain.Celo]: { id: 'celo' },
-  [Chain.Aurora]: { id: 'aurora' },
-  [Chain.ZkSync]: { id: 'zksync' },
-  [Chain.Base]: { id: 'base', gasL2: true },
-  [Chain.Bsc]: { id: 'bsc' },
-  [Chain.Fraxtal]: { id: 'fraxtal' },
-  [Chain.XLayer]: { id: 'x-layer' },
-  [Chain.Mantle]: { id: 'mantle' },
-  [Chain.Sonic]: { id: 'sonic' },
-  [Chain.Hyperliquid]: { id: 'hyperliquid' },
+  [Chain.Celo]: { blockchainId: 'celo' },
+  [Chain.Aurora]: { blockchainId: 'aurora' },
+  [Chain.ZkSync]: { blockchainId: 'zksync' },
+  [Chain.Base]: { blockchainId: 'base', gasL2: true },
+  [Chain.Bsc]: { blockchainId: 'bsc' },
+  [Chain.Fraxtal]: { blockchainId: 'fraxtal' },
+  [Chain.XLayer]: { blockchainId: 'x-layer' },
+  [Chain.Mantle]: { blockchainId: 'mantle' },
+  [Chain.Sonic]: { blockchainId: 'sonic' },
+  [Chain.Hyperliquid]: { blockchainId: 'hyperliquid' },
 } as const
 
 export type NetworkDef<TId extends string = string, TChainId extends number = number> = {
   isLite?: boolean
-  id: TId
+  blockchainId: TId
   chainId: TChainId
   showInSelectNetwork: boolean
   showRouterSwap?: boolean // only for dex
@@ -58,7 +58,6 @@ export type NetworkMapping<TId extends string = string, TChainId extends number 
 >
 
 export type BaseConfig<TId extends string = string, TChainId extends number = number> = NetworkDef<TId, TChainId> & {
-  networkId: string
   gasL2: boolean
   gasPricesUnit: string
   gasPricesUrl: string
@@ -67,15 +66,10 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
 
 export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
   chainId: ChainId,
-  networkConfig: { id: TId; },
+  networkConfig: { blockchainId: TId },
 ): Omit<BaseConfig<TId>, 'showInSelectNetwork' | 'showRouterSwap'> {
-  const { id, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
-  return {
-    ...rest,
-    chainId,
-    id, // TODO: remove id or networkId
-    networkId: id,
-  }
+  const { ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
+  return { ...rest, chainId }
 }
 
 export const scanAddressPath = (chainId: number, hash: string) =>

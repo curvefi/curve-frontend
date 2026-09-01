@@ -78,7 +78,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
       }
     >
       <Stack sx={{ gap: Spacing.sm }}>
-        <AmountTokenInput chainId={chainId} poolId={poolId} networkId={network.id} disabled={isPending} />
+        <AmountTokenInput chainId={chainId} poolId={poolId} blockchainId={network.blockchainId} disabled={isPending} />
         <EpochInput disabled={isPending} />
         <FormButton
           pending={isPending}

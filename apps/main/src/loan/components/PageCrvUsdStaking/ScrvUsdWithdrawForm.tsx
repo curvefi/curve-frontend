@@ -29,7 +29,7 @@ export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
       <LoanFormTokenInput
         label={t`Amount to withdraw`}
         token={{ address: SCRVUSD_VAULT_ADDRESS, symbol: 'scrvUSD' }}
-        blockchainId={networkConfig.id}
+        blockchainId={networkConfig.blockchainId}
         name="withdrawAmount"
         form={form}
         max={{ ...q(max), fieldName: max.fieldName }}

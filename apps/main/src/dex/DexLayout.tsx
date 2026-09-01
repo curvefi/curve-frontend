@@ -7,11 +7,11 @@ import { Outlet } from '@tanstack/react-router'
 import { useNetworks } from './entities/networks'
 
 export function DexLayout() {
-  const { network: networkId = 'ethereum' } = useParams<Partial<UrlParams>>()
+  const { network: blockchainId = 'ethereum' } = useParams<Partial<UrlParams>>()
   const { data: networks } = useNetworks()
-  const network = recordValues(networks).find(n => n.id === networkId)
+  const network = recordValues(networks).find(n => n.blockchainId === blockchainId)
 
-  useRedirectToEth(network, networkId)
+  useRedirectToEth(network, blockchainId)
   useAutoRefresh(network?.chainId)
 
   return <Outlet />

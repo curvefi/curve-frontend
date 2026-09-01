@@ -28,7 +28,7 @@ type RepayMutation = {
 
 type RepayOptions = {
   marketId: string | undefined
-  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
   leverageProviders: readonly RouteProvider[] | undefined

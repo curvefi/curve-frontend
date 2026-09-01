@@ -49,7 +49,7 @@ const getLegacyPoolTags = (hasPosition: boolean, { pool, pool: { address, id, na
     ['link', 'eur', 'xdai', 'other'].includes(referenceAsset.toLowerCase()) && 'others',
   )
 
-export function useLegacyPoolsTable({ id: network, chainId, isLite }: NetworkConfig) {
+export function useLegacyPoolsTable({ blockchainId: network, chainId, isLite }: NetworkConfig) {
   const { curveApi } = useCurve()
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[chainId])

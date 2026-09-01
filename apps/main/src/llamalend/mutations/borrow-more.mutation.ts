@@ -22,7 +22,7 @@ import type { RouteProvider } from '@primitives/router.utils'
 
 type BorrowMoreOptions = {
   marketId: string | undefined
-  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
   leverageProviders: readonly RouteProvider[] | undefined

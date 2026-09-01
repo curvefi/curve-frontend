@@ -3,12 +3,15 @@ import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.ty
 import { useParams } from '@evm-ui/hooks/router'
 import { useNetworks } from '../entities/networks'
 
-const useNetwork = (networkId: string) => {
+const useNetwork = (blockchainId: string) => {
   const { data: networks } = useNetworks()
-  return useMemo(() => Object.values(networks).find(network => network.networkId === networkId), [networks, networkId])
+  return useMemo(
+    () => Object.values(networks).find(network => network.blockchainId === blockchainId),
+    [networks, blockchainId],
+  )
 }
 
 export const useNetworkFromUrl = () => useNetwork(useParams<NetworkUrlParams>().network)
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-export const useChainId = (networkId: NetworkEnum): ChainId => useNetwork(networkId)?.chainId!
+export const useChainId = (blockchainId: NetworkEnum): ChainId => useNetwork(blockchainId)?.chainId!

@@ -7,10 +7,10 @@ import { useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { Outlet } from '@tanstack/react-router'
 
 export function LendLayout() {
-  const { network: networkId = 'ethereum' } = useParams<Partial<UrlParams>>()
-  const chainId = networksIdMapper[networkId]
+  const { network: blockchainId = 'ethereum' } = useParams<Partial<UrlParams>>()
+  const chainId = networksIdMapper[blockchainId]
 
-  useRedirectToEth(networks[chainId], networkId)
+  useRedirectToEth(networks[chainId], blockchainId)
   useGasInfoAndUpdateLib({ chainId, networks })
 
   return (

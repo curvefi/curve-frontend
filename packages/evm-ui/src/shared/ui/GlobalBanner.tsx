@@ -22,12 +22,12 @@ import { formatDate } from '@legacy-ui/utils'
 import { StackBanners } from './StackBanners'
 
 type GlobalBannerProps = {
-  networkId: string
+  blockchainId: string
   chainId: number
   backendMaintenance: Maintenance
 }
 
-export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalBannerProps) => {
+export const GlobalBanner = ({ blockchainId, chainId, backendMaintenance }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useConnection()
   const { connectState } = useCurve()
@@ -66,8 +66,8 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
         chainId &&
         walletChainId != chainId && (
           <Banner severity="warning" buttonText={t`Change network`} onClick={() => void switchChain({ chainId })}>
-            {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
-            <strong>{networkId}</strong>.{' '}
+            {t`Please switch your wallet's network to`} <strong>{blockchainId}</strong> {t`to use Curve on`}{' '}
+            <strong>{blockchainId}</strong>.{' '}
           </Banner>
         )
       )}
