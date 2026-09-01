@@ -1,6 +1,5 @@
 import { defineChain, type Chain } from 'viem'
 import { defaultGetRpcUrls } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
-import type { NetworkDef } from '@legacy-ui/utils'
 import {
   arbitrum,
   arbitrumSepolia,
@@ -116,20 +115,6 @@ export const getChainNativeCurrency = (chainId: number) =>
 export const getChainBlockExplorer = (chainId: number) => wagmiChainsMap[chainId]?.blockExplorers?.default.url
 export const getChainDefaultRpcUrls = (chainId: number) => wagmiChainsMap[chainId]?.rpcUrls.default.http ?? []
 
-/**
- * Creates a Viem chain configuration from a Curve network definition.
- *
- * Uses existing Wagmi chain data when available, falling back to network-specific
- * configuration for custom chains.
- *
- * @param network - The network definition containing chain ID, name, RPC URL, etc.
- * @param getRpcUrls - Function to resolve RPC URLs for the chain
- * @returns A Viem Chain configuration ready for use with wagmi
- */
-export const createChainFromNetwork = (network: NetworkDef, getRpcUrls: typeof defaultGetRpcUrls): Chain =>
-  // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
-  defineChain({
-    ...wagmiChainsMap[network.chainId],
-    id: network.chainId,
-    rpcUrls: { default: { http: getRpcUrls(network.chainId) } },
-  })
+/** Creates a Wagmi / Viem chain configuration with potential custom overrides. */
+export const createChain = (chainId: number, getRpcUrls: typeof defaultGetRpcUrls): Chain =>
+  defineChain({ ...wagmiChainsMap[chainId], rpcUrls: { default: { http: getRpcUrls(chainId) } } })

@@ -25,6 +25,7 @@ import { ThemeProvider } from '@evm-ui/shared/ui/ThemeProvider'
 import { IS_CYPRESS } from '@evm-ui/utils'
 import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
 import MuiLink from '@mui/material/Link'
+import { maybe, recordValues } from '@primitives/objects.utils'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
@@ -46,8 +47,8 @@ const useBreadcrumbs = (pathname: string, { origin, search } = window.location) 
 
 const WagmiConfigProvider = ({ children }: { children: ReactNode }) => {
   const { data: networks } = useNetworksQuery()
-  const config = useWagmiConfig(networks)
-  return config && networks ? <WagmiProvider config={config}>{children}</WagmiProvider> : <Loading />
+  const config = useWagmiConfig(maybe(networks, networks => recordValues(networks).map(network => network.chainId)))
+  return config ? <WagmiProvider config={config}>{children}</WagmiProvider> : <Loading />
 }
 
 export const NetworkAwareLayout = () => {
