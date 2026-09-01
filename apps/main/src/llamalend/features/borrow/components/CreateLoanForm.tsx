@@ -1,5 +1,5 @@
 import { type ChangeEvent, useCallback } from 'react'
-import { LEVERAGE, LoanPreset } from '@/llamalend/constants'
+import { LoanPreset } from '@/llamalend/constants'
 import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
@@ -162,12 +162,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           />
         </Collapse>
       </LoanPresetSelector>
-      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} slippageType={LEVERAGE} />
+      <HighPriceImpactAlert priceImpact={priceImpact} max={q(maxLeverage)} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
       <FormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, { leverageEnabled: params.leverageEnabled })}
         label={[isApproved?.data === false && t`Approve`, t`Borrow`]}
         testId="create-loan-submit-button"
         connectWalletTestId="form-market-page"

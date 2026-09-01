@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { LEVERAGE } from '@/llamalend/constants'
 import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayLoanInfoList'
 import { AlertRepayDebtToIncreaseHealth } from '@/llamalend/features/manage-liquidation/ui/alerts/AlertRepayDebtToIncreaseHealth'
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
@@ -195,19 +194,12 @@ export const RepayForm = <ChainId extends IChainId>({
         collateralSymbol={collateralToken?.symbol}
         borrowSymbol={borrowToken?.symbol}
       />
-      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
+      <HighPriceImpactAlert priceImpact={priceImpact} max={q(max.expected)} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
       <FormButton
         pending={isPending}
         loading={isLoading}
-        disabled={
-          isDisabled ||
-          shouldBlockTransaction(priceImpact, {
-            ...values,
-            leverageEnabled: isRepayLeveraged(values),
-            slippageType: LEVERAGE,
-          })
-        }
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, { leverageEnabled: isRepayLeveraged(values) })}
         label={[
           isApproved.data === false && t`Approve`,
           notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),

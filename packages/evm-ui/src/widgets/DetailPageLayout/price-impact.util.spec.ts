@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { getPriceImpactSeverity } from './price-impact.util'
+import { getPriceImpactSeverity, isHighPriceImpact } from './price-impact.util'
+
+describe('isHighPriceImpact', () => {
+  it.each([
+    { priceImpact: '0.5', expected: false },
+    { priceImpact: '1', expected: false },
+    { priceImpact: '1.01', expected: true },
+  ] as const)('returns $expected for $priceImpact% impact', ({ priceImpact, expected }) => {
+    expect(isHighPriceImpact(priceImpact)).toBe(expected)
+  })
+})
 
 describe('getPriceImpactSeverity', () => {
   it.each([

@@ -13,7 +13,6 @@ import {
   getPriceImpactPercent,
   type PriceImpact,
 } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
-import type { SlippageType } from '@evm-ui/widgets/SlippageSettings'
 import CloseIcon from '@mui/icons-material/Close'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -117,8 +116,6 @@ export const HighPriceImpactAlert = ({
 }: {
   priceImpact: QueryProp<PriceImpact | Decimal | null>
   max: QueryProp<unknown> // dependent query that is necessary before the price impact query is even enabled
-  values: { slippage: Decimal | undefined }
-  slippageType: SlippageType
 }) => {
   const isLoading = isImpactLoading || isMaxLoading // impact will only start loading after the max is available
   const severity = getPriceImpactSeverity(data)

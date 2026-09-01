@@ -3,7 +3,6 @@ import { Query } from '@evm-ui/types/util'
 import { decimalGreaterThan } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import type { SlippageType } from '../SlippageSettings/slippage.utils'
 
 const HIGH_PRICE_IMPACT_THRESHOLD = {
   warning: '1',
@@ -23,6 +22,10 @@ const isPriceImpactSignificant = (priceImpact: PriceImpact | Decimal | null | un
 export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | null | undefined) =>
   typeof priceImpact === 'string' ? priceImpact : priceImpact?.priceImpact
 
+export const isHighPriceImpact = (priceImpact: PriceImpact | Decimal | null | undefined) =>
+  isPriceImpactSignificant(priceImpact) &&
+  decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', HIGH_PRICE_IMPACT_THRESHOLD.warning)
+
 /**
  * Returns the alert severity based on the warning and critical price impact thresholds:
  * - 'error' if price impact exceeds the critical threshold (blocks the transaction)
@@ -32,12 +35,10 @@ export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | null 
 export const getPriceImpactSeverity = (
   priceImpact: PriceImpact | Decimal | null | undefined,
 ): 'error' | 'warning' | null =>
-  isPriceImpactSignificant(priceImpact)
+  isHighPriceImpact(priceImpact)
     ? decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', HIGH_PRICE_IMPACT_THRESHOLD.critical)
       ? 'error'
-      : decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', HIGH_PRICE_IMPACT_THRESHOLD.warning)
-        ? 'warning'
-        : null
+      : 'warning'
     : null
 
 /**
@@ -47,13 +48,7 @@ export const getPriceImpactSeverity = (
  */
 export const shouldBlockTransaction = (
   priceImpact: Query<PriceImpact | Decimal | null>,
-  {
-    leverageEnabled,
-  }: {
-    slippage: Decimal | null | undefined
-    leverageEnabled: boolean | undefined
-    slippageType: SlippageType
-  },
+  { leverageEnabled }: { leverageEnabled: boolean | undefined },
 ) =>
   (leverageEnabled == true && priceImpact.data == null && !priceImpact.error) ||
   (getPriceImpactSeverity(priceImpact.data) === 'error' && isPriceImpactSignificant(priceImpact.data))
