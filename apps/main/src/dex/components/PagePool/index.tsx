@@ -18,7 +18,7 @@ import {
 import { FormClaim } from '@/dex/components/PagePool/Withdraw/components/FormClaim'
 import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormUnstake'
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
-import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { AdvancedDetails } from '@/dex/features/advanced-details'

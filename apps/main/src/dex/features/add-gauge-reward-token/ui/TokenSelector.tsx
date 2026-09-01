@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { ethAddress, isAddressEqual, zeroAddress } from 'viem'
-import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
@@ -82,6 +82,7 @@ export const TokenSelector = ({
         isOpen={!!isOpen}
         onOpen={openModal}
         onClose={closeModal}
+        testId="add-reward-token-selector"
       >
         <TokenList tokens={filteredTokens} onToken={token => updateForm({ rewardTokenId: token.address })} />
       </TokenSelectorUIKit>

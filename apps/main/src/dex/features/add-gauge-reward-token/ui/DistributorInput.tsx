@@ -17,6 +17,7 @@ export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
       <Typography variant="headingXsBold">{t`Distributor`}</Typography>
       <TextField
         id="inpDistributor"
+        slotProps={{ htmlInput: { 'data-testid': 'add-reward-distributor-input' } }}
         value={watchValue('distributorId') ?? ''}
         onChange={event => updateForm({ distributorId: event.target.value as Address })}
         disabled={disabled}
