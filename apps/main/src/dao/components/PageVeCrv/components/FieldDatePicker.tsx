@@ -1,122 +1,106 @@
 import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
-import { CurveApi } from '@/dao/types/dao.types'
+import { useConnection } from 'wagmi'
+import {
+  calculateVeCrv,
+  getDateValueTimestamp,
+  isDateUnavailable,
+  isQuickActionInRange,
+} from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
+import { useLockerLockedAmountAndUnlockTime, useLockerVeCrv } from '@/dao/entities/locker-vecrv-info'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { t } from '@evm-ui/lib/i18n'
-import { formatNumber, amount } from '@evm-ui/utils'
+import { HelperMessage } from '@evm-ui/shared/ui/LargeTokenInput'
+import { amount, formatNumber } from '@evm-ui/utils'
+import { VECRV_MAX_LOCK_YEARS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
 import { Button } from '@legacy-ui/Button'
 import { DatePicker } from '@legacy-ui/DatePicker'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate } from '@legacy-ui/utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 
-const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: string }[] = [
+const QUICK_ACTIONS: { unit: dayjs.ManipulateType | undefined; value: number | undefined; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },
   { unit: 'month', value: 1, label: t`1 month` },
   { unit: 'month', value: 3, label: t`3 months` },
   { unit: 'year', value: 1, label: t`1 year` },
-  { unit: 'year', value: 4, label: t`4 years` },
-  { label: t`Max` },
+  { unit: 'year', value: VECRV_MAX_LOCK_YEARS, label: t`${VECRV_MAX_LOCK_YEARS} years` },
+  { unit: undefined, value: undefined, label: t`Max` },
 ]
 
 export const FieldDatePicker = ({
-  curve,
-  currUnlockUtcTime,
-  calcdUtcDate,
+  chainId,
+  currentUnlockUtcTime,
+  effectiveUnlockDateLabel,
+  id,
   disabled,
-  formType,
   isMax,
+  noCurrentLock,
   utcDate,
   utcDateError,
   minUtcDate,
   maxUtcDate,
-  lockedAmt,
-  vecrvInfo,
-  handleInpEstUnlockedDays,
-  handleBtnClickQuickAction,
+  lockedAmount,
+  handleInputEstimatedUnlockedDays,
+  handleQuickActionClick,
   ...rest
 }: {
-  curve: CurveApi | null
-  currUnlockUtcTime: dayjs.Dayjs
+  chainId: number
+  currentUnlockUtcTime: dayjs.Dayjs | null
+  id: string
   disabled?: boolean
-  formType: FormType | ''
   isDisabled?: boolean
   isMax?: boolean
-  calcdUtcDate: string
+  /** Set for create-lock flows, where there is no existing lock to compare against. */
+  noCurrentLock?: boolean
+  effectiveUnlockDateLabel: string | undefined
   utcDate: DateValue | null
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   utcDateError: 'invalid-date' | string
-  minUtcDate: dayjs.Dayjs
+  minUtcDate: dayjs.Dayjs | null
   maxUtcDate: dayjs.Dayjs | null
-  lockedAmt?: string
-  vecrvInfo: VecrvInfo
-  handleInpEstUnlockedDays: (curve: CurveApi, updatedLockedDays: DateValue) => void
-  handleBtnClickQuickAction: (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => dayjs.Dayjs
+  lockedAmount?: Decimal
+  handleInputEstimatedUnlockedDays: (updatedLockedDays: DateValue) => void
+  handleQuickActionClick: (value: number | undefined, unit: dayjs.ManipulateType | undefined) => dayjs.Dayjs
 }) => {
   const [quickActionValue, setQuickActionValue] = useState<dayjs.Dayjs | null>(null)
+  const { address: userAddress } = useConnection()
+  const currentLock = useLockerLockedAmountAndUnlockTime({ chainId, userAddress }, !noCurrentLock)
+  const currentVeCrv = useLockerVeCrv({ chainId, userAddress }, !noCurrentLock)
 
-  // only add duration <= 4 years
+  // Only add durations that fit the maximum veCRV lock window.
   const quickActions = useMemo(
     () =>
       QUICK_ACTIONS.filter(({ unit, value }) => {
+        if (!currentUnlockUtcTime || !minUtcDate || !maxUtcDate) return false
         if (!value || !unit) return !isMax // max button, only show if not already at max
-        const quickActionUtcDate = currUnlockUtcTime.add(value, unit)
-        return (
-          (quickActionUtcDate.isSame(minUtcDate, 'd') || quickActionUtcDate.isAfter(minUtcDate, 'd')) &&
-          (quickActionUtcDate.isSame(maxUtcDate, 'd') || quickActionUtcDate.isBefore(maxUtcDate, 'd'))
-        )
+        return isQuickActionInRange({ currentUnlockUtcTime, maxUtcDate, minUtcDate, value, unit })
       }),
-    [currUnlockUtcTime, maxUtcDate, minUtcDate, isMax],
+    [currentUnlockUtcTime, maxUtcDate, minUtcDate, isMax],
   )
 
-  const isDateUnavailable = (date: DateValue) => {
-    const todayUtcDate = dayjs.utc(date.toString()).day()
-    const dayZeroUtcDate = dayjs.utc(new Date(0)).day()
-    return todayUtcDate !== dayZeroUtcDate
-  }
-
-  const loading = typeof vecrvInfo === 'undefined' || !curve
-  const isCreateLock = formType === 'create'
-
-  const futureVeCrv = useMemo(() => {
-    if (!curve || !utcDate) return undefined
-
-    if (isCreateLock) {
-      if (!lockedAmt) return undefined
-      return curve.boosting.calculateVeCrv(
-        Number(lockedAmt),
-        Math.floor(dayjs.utc(utcDate.toString()).valueOf() / 1000),
-      )
-    }
-    return curve.boosting.calculateVeCrv(
-      vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
-      Math.floor(dayjs.utc(utcDate.toString()).valueOf() / 1000),
-    )
-  }, [curve, utcDate, isCreateLock, lockedAmt, vecrvInfo.lockedAmountAndUnlockTime.lockedAmount])
+  const futureVeCrv = calculateVeCrv({
+    lockedAmount: noCurrentLock ? lockedAmount : currentLock.data?.lockedAmount,
+    unlockTime: maybe(utcDate, getDateValueTimestamp),
+  })
 
   return (
-    <div>
+    <div data-testid={`${id}-field`}>
       <DatePicker
         {...rest}
         granularity="day"
-        inputProviderProps={{
-          grid: true,
-          gridRowGap: 1,
-          id: `${formType}-date-picker`,
-          hasError: !!utcDateError,
-          showError: !!curve?.signerAddress,
-        }}
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-        isDisabled={loading || disabled || isMax}
+        inputProviderProps={{ grid: true, gridRowGap: 1, id, hasError: !!utcDateError, showError: !!userAddress }}
+        isDisabled={[disabled, isMax, !minUtcDate, !maxUtcDate, !noCurrentLock && !currentLock.data].some(Boolean)}
         isDateUnavailable={isDateUnavailable}
         label={t`Select unlock date`}
-        minValue={toCalendarDate(minUtcDate)}
-        maxValue={maxUtcDate ? toCalendarDate(maxUtcDate) : null}
+        minValue={minUtcDate && toCalendarDate(minUtcDate)}
+        maxValue={maxUtcDate && toCalendarDate(maxUtcDate)}
         value={utcDate}
         onChange={(val: DateValue | null) => {
-          if (curve && val) handleInpEstUnlockedDays(curve, val)
+          if (val) handleInputEstimatedUnlockedDays(val)
         }}
         quickActionValue={quickActionValue}
         quickActions={
@@ -136,12 +120,12 @@ export const FieldDatePicker = ({
                 return (
                   <QuickActionButton
                     key={label}
+                    type="button"
                     variant="outlined"
                     fillWidth
+                    testId={`${id}-modal-quick-action-${index}`}
                     itemsInRow={itemsInThisRow}
-                    onClick={() => {
-                      if (curve) setQuickActionValue(handleBtnClickQuickAction(curve, value, unit))
-                    }}
+                    onClick={() => setQuickActionValue(handleQuickActionClick(value, unit))}
                   >
                     {label}
                   </QuickActionButton>
@@ -151,34 +135,28 @@ export const FieldDatePicker = ({
           </>
         }
       />
-      {curve && typeof futureVeCrv === 'number' && (
+      {maybe(futureVeCrv, futureVeCrv => (
         <>
           <Chip size="xs">
             {t`Future veCRV:`}{' '}
-            {!isCreateLock && `${formatNumber(amount(vecrvInfo.veCrv), { abbreviate: false, fallback: '-' })} → `}{' '}
+            {!noCurrentLock && `${formatNumber(amount(currentVeCrv.data), { abbreviate: false, fallback: '-' })} → `}{' '}
             {formatNumber(futureVeCrv, { abbreviate: false })}
           </Chip>
           <br />
         </>
-      )}
-      {!!curve?.signerAddress && utcDateError ? (
+      ))}
+      {userAddress && utcDateError ? (
         <Chip size="xs" isError>
           {utcDateError === 'invalid-date' ? t`Invalid date` : utcDateError}
         </Chip>
-      ) : calcdUtcDate && utcDate ? (
-        <Chip size="xs" isBold>
-          Unlock date will be set to {calcdUtcDate}
-        </Chip>
-      ) : formType !== 'create' && currUnlockUtcTime ? (
-        <Chip size="xs">
-          {t`Current unlock date:`}{' '}
-          {vecrvInfo.lockedAmountAndUnlockTime.unlockTime
-            ? formatDate(vecrvInfo.lockedAmountAndUnlockTime.unlockTime)
-            : '-'}{' '}
-          UTC
-        </Chip>
+      ) : effectiveUnlockDateLabel && utcDate ? (
+        <HelperMessage message={`${t`Unlock date will be set to`} ${effectiveUnlockDateLabel}`} isError />
       ) : (
-        ''
+        !noCurrentLock && (
+          <Chip size="xs">
+            {t`Current unlock date:`} {currentLock.data?.unlockTime ? formatDate(currentLock.data.unlockTime) : '-'} UTC
+          </Chip>
+        )
       )}
 
       {Array.isArray(quickActions) && quickActions.length > 0 && (
@@ -191,11 +169,11 @@ export const FieldDatePicker = ({
             return (
               <QuickActionButton
                 key={label}
+                type="button"
                 variant="outlined"
+                testId={`${id}-inline-quick-action-${index}`}
                 itemsInRow={itemsInThisRow}
-                onClick={() => {
-                  if (curve) setQuickActionValue(handleBtnClickQuickAction(curve, value, unit))
-                }}
+                onClick={() => setQuickActionValue(handleQuickActionClick(value, unit))}
               >
                 {label}
               </QuickActionButton>

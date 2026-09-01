@@ -33,7 +33,6 @@ import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
-import { FormMargins } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
@@ -217,7 +216,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         }
         formTabs={{
           content: (
-            <FormMargins>
+            <>
               <TabsSwitcher
                 variant="contained"
                 value={value}
@@ -236,7 +235,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
                 testIdPrefix="pool-form-tab"
               />
               {content}
-            </FormMargins>
+            </>
           ),
         }}
       >

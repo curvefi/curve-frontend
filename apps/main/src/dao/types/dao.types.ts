@@ -1,4 +1,3 @@
-import { curvejsApi } from '@/dao/lib/curvejs'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { BaseConfig } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
@@ -10,16 +9,13 @@ export type { Provider } from '@evm-ui/lib/ethers'
 export type ChainId = number
 export type NetworkEnum = INetworkName
 
-export type FormType = 'create' | 'adjust_crv' | 'adjust_date' | 'withdraw'
-type NetworkUrlParams = { network: INetworkName }
+export type NetworkUrlParams = { network: INetworkName }
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
 export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
-export type VeCrvUrlParams = NetworkUrlParams & { formType: FormType }
-export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams & VeCrvUrlParams>
+export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams>
 
 export type NetworkConfig = {
-  api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
 } & BaseConfig<NetworkEnum, ChainId>
@@ -81,25 +77,6 @@ export type UserGaugeVoteWeight = {
   totalVeCrv: number
 }
 
-export type FnStepEstGasApprovalResponse = {
-  activeKey: string
-  isApproved: boolean
-  estimatedGas: EstimatedGas
-  error: string
-}
-
-export type FnStepApproveResponse = {
-  activeKey: string
-  hashes: string[]
-  error: string
-}
-
-export type FnStepResponse = {
-  activeKey: string
-  hash: string
-  error: string
-}
-
 type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
 export type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
 export type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
@@ -119,8 +96,3 @@ export type UserGaugeVotesSortBy = 'weight' | 'timestamp'
 export type UserProposalVotesSortBy = 'voteId' | 'voteFor' | 'voteAgainst' | 'voteOpen' | 'voteClose'
 export type GaugeVotesSortBy = 'weight' | 'timestamp'
 export type UserGaugeVoteWeightSortBy = 'userPower' | 'userVeCrv'
-
-export enum ClaimButtonsKey {
-  '3CRV' = '3CRV',
-  crvUSD = 'crvUSD',
-}
