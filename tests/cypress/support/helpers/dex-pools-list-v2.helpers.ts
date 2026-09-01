@@ -63,7 +63,8 @@ export const showV2PoolColumns = (columnIds: readonly PoolColumnId[]) => {
   cy.get('body').click(0, 0)
 }
 
-export const getV2PoolExpandedPanel = (address: string) => getV2PoolRow(address).next('tr').should('be.visible')
+export const getV2PoolExpandedPanel = (address: string) =>
+  getV2PoolRow(address).next('tr').should('have.attr', 'data-testid', 'data-table-expansion-row').and('be.visible')
 
 export const expandV2PoolRow = (address: string) => {
   getV2PoolRow(address).find('[data-testid="expand-icon"]').click()
