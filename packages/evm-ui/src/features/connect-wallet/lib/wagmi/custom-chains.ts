@@ -4,15 +4,6 @@ import { Chain as ChainId } from '@evm-ui/utils/network'
 import { mainnet } from '@wagmi/core/chains'
 import { RPC } from './rpc'
 
-export const hyperliquid = defineChain({
-  ...chainConfig,
-  id: ChainId.Hyperliquid as const,
-  name: 'hyperliquid',
-  testnet: false,
-  nativeCurrency: { name: 'Hype', symbol: 'HYPE', decimals: 18 },
-  rpcUrls: { default: { http: RPC[ChainId.Hyperliquid] } },
-})
-
 export const megaeth = defineChain({
   ...chainConfig,
   id: ChainId.MegaEth as const,
