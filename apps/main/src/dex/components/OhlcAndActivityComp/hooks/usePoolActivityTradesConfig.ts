@@ -16,8 +16,8 @@ import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { fakeLoadingQ, mapQuery } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
-import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 
 type UsePoolActivityProps = {
   chainId: ChainId
@@ -54,14 +54,8 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
     [poolTrades, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
     useCallback(
       tradesData =>
-        network &&
-        tradesData.trades.map(trade => ({
-          ...trade,
-          buyerUrl: scanAddressPath(networkConfig, trade.buyer),
-          txUrl: scanTxPath(networkConfig, trade.txHash),
-          network,
-        })),
-      [networkConfig, network],
+        maybe(network, blockchainId => tradesData.trades.map(trade => ({ ...trade, chainId, blockchainId }))),
+      [chainId, network],
     ),
   )
 

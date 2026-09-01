@@ -90,7 +90,7 @@ const ExtraRewardIcon = ({
     testId="pool-extra-reward-badge"
     title={t`Extra pool reward`}
   >
-    <TokenIcon blockchainId={pool.network} address={reward.address} size="mui-sm" />
+    <TokenIcon blockchainId={pool.blockchainId} address={reward.address} size="mui-sm" />
   </RewardIconTooltip>
 )
 

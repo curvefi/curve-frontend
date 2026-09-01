@@ -41,7 +41,7 @@ export const PoolLabel = ({
   )
 
   const poolAlert = usePoolAlert({
-    network: blockchainId,
+    blockchainId,
     poolAddress: poolData?.pool.address,
     hasVyperVulnerability: poolData?.hasVyperVulnerability,
   })

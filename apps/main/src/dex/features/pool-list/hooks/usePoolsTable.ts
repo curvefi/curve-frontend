@@ -114,10 +114,11 @@ const enrichPoolRow = (
   },
 ): PoolRow => ({
   ...pool,
+  chainId,
+  blockchainId,
   campaigns: campaignsByAddress?.[pool.address.toLocaleLowerCase()] ?? [],
   hasPosition,
   hasVyperVulnerability: isVyperVulnerablePool(chainId, pool.address),
-  network: blockchainId,
   url: getPath({ network: blockchainId }, `${DEX_ROUTES.PAGE_POOLS}/${pool.address}/deposit`),
 })
 

@@ -3,8 +3,6 @@ import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/
 import type { StatisticsChart, YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield.query'
-import { networks } from '@/loan/networks'
-import type { ChainId } from '@/loan/types/loan.types'
 import { t } from '@evm-ui/lib/i18n'
 import { timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
@@ -15,6 +13,7 @@ import {
   type LegendItem,
 } from '@evm-ui/shared/ui/Chart'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { Chain } from '@evm-ui/utils'
 import { Card, CardHeader, Stack } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import { useTheme } from '@mui/material/styles'
@@ -37,11 +36,7 @@ const chartSelections: ChartSelections<StatisticsChart>[] = [
   { activeTitle: t`Historical Distributions`, label: chartLabels.distributions, key: 'distributions' },
 ]
 
-type StatisticsProps = {
-  chainId: ChainId | undefined
-}
-
-export const Statistics = ({ chainId }: StatisticsProps) => {
+export const Statistics = () => {
   const [selectedStatisticsChart, setSelectedStatisticsChart] = useState<StatisticsChart>('savingsRate')
   const [revenueChartTimeOption, setRevenueChartTimeOption] = useState<(typeof timeOptions)[number]>('1M')
 
@@ -82,7 +77,7 @@ export const Statistics = ({ chainId }: StatisticsProps) => {
     <Card size="small">
       <CardHeader title={t`Statistics`} />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
-        <StatsStack chainId={chainId} />
+        <StatsStack chainId={Chain.Ethereum} />
 
         <ChartHeader
           chartSelections={{
@@ -127,7 +122,7 @@ export const Statistics = ({ chainId }: StatisticsProps) => {
           </ChartStateWrapper>
         )}
 
-        <AdvancedDetails network={chainId && networks[chainId]} />
+        <AdvancedDetails chainId={Chain.Ethereum} />
       </CardContent>
     </Card>
   )

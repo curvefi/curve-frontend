@@ -20,7 +20,6 @@ import {
   getSlippageType,
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
@@ -61,7 +60,6 @@ export const FormDepositStake = ({
   const fetchStepDepositStake = useStore(state => state.poolDeposit.fetchStepDepositStake)
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
   const resetState = useStore(state => state.poolDeposit.resetState)
-  const { data: network } = useNetworkByChain({ chainId: rChainId })
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -114,13 +112,13 @@ export const FormDepositStake = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepDepositStake(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         const TxDescription = t`Deposit and staked ${tokenText}`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepDepositStake, network],
+    [fetchStepDepositStake, chainId],
   )
 
   const getSteps = useCallback(

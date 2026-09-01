@@ -73,7 +73,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { signerAddress } = curve ?? {}
   const push = useNavigate()
   const poolAlert = usePoolAlert({
-    network: params.network,
+    blockchainId: params.network,
     poolAddress: poolData?.pool.address,
     hasVyperVulnerability: poolData?.hasVyperVulnerability,
   })

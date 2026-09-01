@@ -3,6 +3,7 @@ import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.ut
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import { formatNumber } from '@evm-ui/utils'
+import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import { TimestampCell, AddressCell } from '../cells'
 import type { MarketTradeRow } from '../types'
 
@@ -19,7 +20,12 @@ export const LLAMMA_TRADES_COLUMNS = columnHelper.columns([
   columnHelper.accessor('buyer', {
     id: LlammaTradesColumnId.User,
     header: t`Address`,
-    cell: ({ row }) => <AddressCell address={row.original.buyer} explorerUrl={row.original.buyerUrl} />,
+    cell: ({ row }) => (
+      <AddressCell
+        address={row.original.buyer}
+        explorerUrl={scanAddressPath(row.original.chainId, row.original.buyer)}
+      />
+    ),
   }),
   columnHelper.accessor('amountBought', {
     id: LlammaTradesColumnId.Bought,
@@ -28,7 +34,7 @@ export const LLAMMA_TRADES_COLUMNS = columnHelper.columns([
       <InlineTableCell sx={{ alignItems: 'end' }}>
         <TokenInfo
           address={row.original.tokenBought.address}
-          blockchainId={row.original.network}
+          blockchainId={row.original.blockchainId}
           iconPosition="right"
           primary={formatNumber(row.original.amountBought, { abbreviate: false })}
         />
@@ -43,7 +49,7 @@ export const LLAMMA_TRADES_COLUMNS = columnHelper.columns([
       <InlineTableCell sx={{ alignItems: 'end' }}>
         <TokenInfo
           address={row.original.tokenSold.address}
-          blockchainId={row.original.network}
+          blockchainId={row.original.blockchainId}
           iconPosition="right"
           primary={formatNumber(-row.original.amountSold, { abbreviate: false })}
         />
@@ -55,7 +61,11 @@ export const LLAMMA_TRADES_COLUMNS = columnHelper.columns([
     id: LlammaTradesColumnId.Time,
     header: t`Time`,
     cell: ({ row }) => (
-      <TimestampCell timestamp={new Date(row.original.timestamp)} txUrl={row.original.txUrl} align="end" />
+      <TimestampCell
+        timestamp={new Date(row.original.timestamp)}
+        txUrl={scanTxPath(row.original.chainId, row.original.txHash)}
+        align="end"
+      />
     ),
     meta: { type: 'numeric' },
   }),

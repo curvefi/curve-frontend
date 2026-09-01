@@ -7,17 +7,17 @@ import { InlineLink } from '@evm-ui/shared/ui/InlineLink'
 import { PoolAlertMessage } from '../components/pool-alert-messages'
 
 type PoolAlertTarget = {
-  network: string | undefined
+  blockchainId: string | undefined
   poolAddress: string | undefined
   hasVyperVulnerability: boolean | undefined
 }
 
-export const usePoolAlert = ({ network, poolAddress, hasVyperVulnerability }: PoolAlertTarget) =>
+export const usePoolAlert = ({ blockchainId, poolAddress, hasVyperVulnerability }: PoolAlertTarget) =>
   useMemo(
     () =>
-      (network && Alerts[network]?.[poolAddress?.toLowerCase() ?? '']) ||
+      (blockchainId && Alerts[blockchainId]?.[poolAddress?.toLowerCase() ?? '']) ||
       (hasVyperVulnerability ? getVyperExploitedAlert() : null),
-    [poolAddress, network, hasVyperVulnerability],
+    [poolAddress, blockchainId, hasVyperVulnerability],
   )
 
 const zunamiAlert = (): PoolAlert => ({

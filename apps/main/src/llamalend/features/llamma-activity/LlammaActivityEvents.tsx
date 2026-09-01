@@ -3,20 +3,20 @@ import { useLlammaActivityEventsConfig } from './hooks/useLlammaActivityEventsCo
 import { LlammaActivityProps } from './'
 
 export const LlammaActivityEvents = ({
-  network,
+  chainId,
+  blockchainId,
   collateralToken,
   borrowToken,
   ammAddress,
   endpoint,
-  networkConfig,
 }: LlammaActivityProps) => {
   const { table, emptyState, errorState } = useLlammaActivityEventsConfig({
-    network,
+    chainId,
+    blockchainId,
     collateralToken,
     borrowToken,
     ammAddress,
     endpoint,
-    networkConfig,
   })
 
   return (

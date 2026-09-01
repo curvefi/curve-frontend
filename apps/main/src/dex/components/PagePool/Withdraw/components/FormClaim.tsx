@@ -7,7 +7,6 @@ import { TransferActions } from '@/dex/components/PagePool/components/TransferAc
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Withdraw/utils'
-import { useNetworks } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
@@ -35,8 +34,6 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const setStateByKey = useStore(state => state.poolWithdraw.setStateByKey)
   const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
   const resetState = useStore(state => state.poolWithdraw.resetState)
-  const { data: networks } = useNetworks()
-  const network = (chainId && networks[chainId]) || null
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -71,16 +68,16 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepClaim(activeKey, curve, poolData)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         const claimedLabel = formStatus.isClaimCrv
           ? 'CRV'
           : `${formValues.claimableRewards.map(r => r.symbol).join(', ')} rewards`
         const TxDescription = `Claimed ${claimedLabel}`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepClaim, network],
+    [fetchStepClaim, chainId],
   )
 
   const getSteps = useCallback(
