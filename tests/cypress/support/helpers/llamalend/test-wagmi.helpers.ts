@@ -1,5 +1,5 @@
 import { custom, fallback, http, type RpcTransactionReceipt, zeroAddress } from 'viem'
-import { ethereum } from '@evm-ui/features/connect-wallet/lib/wagmi/custom-chains'
+import { mainnet } from 'viem/chains'
 import { WAGMI_HTTP_OPTIONS } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
 import { createWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
 import { createTestConnector } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test'
@@ -31,7 +31,7 @@ const mockedReceiptTransport = custom({
 })
 
 export const mockedWagmiConfig = createWagmiConfig({
-  chains: [ethereum],
-  connectors: [createTestConnector({ privateKey: TEST_PRIVATE_KEY, chain: ethereum })],
-  transports: { [ethereum.id]: fallback([mockedReceiptTransport, http(undefined, WAGMI_HTTP_OPTIONS)]) },
+  chains: [mainnet],
+  connectors: [createTestConnector({ privateKey: TEST_PRIVATE_KEY, chain: mainnet })],
+  transports: { [mainnet.id]: fallback([mockedReceiptTransport, http(undefined, WAGMI_HTTP_OPTIONS)]) },
 })
