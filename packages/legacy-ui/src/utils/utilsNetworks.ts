@@ -7,7 +7,6 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
   gasPricesUnit: 'GWEI',
   gasPricesUrl: '',
   gasPricesDefault: 0,
-  isTestnet: false,
 }
 
 export const NETWORK_BASE_CONFIG = {
@@ -49,7 +48,6 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   isLite?: boolean
   id: TId
   chainId: TChainId
-  isTestnet: boolean
   showInSelectNetwork: boolean
   showRouterSwap?: boolean // only for dex
 }
@@ -69,7 +67,7 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
 
 export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
   chainId: ChainId,
-  networkConfig: { id: TId; isTestnet?: boolean },
+  networkConfig: { id: TId; },
 ): Omit<BaseConfig<TId>, 'showInSelectNetwork' | 'showRouterSwap'> {
   const { id, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   return {
