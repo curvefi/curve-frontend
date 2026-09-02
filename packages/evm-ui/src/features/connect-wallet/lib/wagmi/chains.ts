@@ -105,15 +105,9 @@ export const isChainTestnet = (chainId: number) => !!wagmiChainsMap[chainId]?.te
 export const getChainName = (chainId: number) =>
   CHAIN_NAMES[chainId] ?? wagmiChainsMap[chainId]?.name ?? `Chain ${chainId}`
 
-export const getChainNativeCurrency = (chainId: number) =>
-  wagmiChainsMap[chainId]?.nativeCurrency ?? {
-    name: 'Unknown',
-    symbol: 'UNKNOWN',
-    decimals: 18,
-  }
-
+export const getChainNativeCurrency = (chainId: number) => wagmiChainsMap[chainId]?.nativeCurrency
 export const getChainBlockExplorer = (chainId: number) => wagmiChainsMap[chainId]?.blockExplorers?.default.url
-export const getChainDefaultRpcUrls = (chainId: number) => wagmiChainsMap[chainId]?.rpcUrls.default.http ?? []
+export const getChainDefaultRpcUrls = (chainId: number) => wagmiChainsMap[chainId]?.rpcUrls.default.http
 
 /** Creates a Wagmi / Viem chain configuration with potential custom overrides. */
 export const createChain = (chainId: number, getRpcUrls: typeof defaultGetRpcUrls): Chain =>
