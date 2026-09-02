@@ -73,7 +73,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Contract Address`}</StatTitle>
-          <StyledExternalLink href={scanAddressPath(Chain.Ethereum, gaugeData.address)}>
+          <StyledExternalLink href={scanAddressPath(chainId, gaugeData.address)}>
             {shortenAddress(gaugeData.address)}
           </StyledExternalLink>
         </StatsRow>
@@ -98,7 +98,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
           <StatTitle>{t`Contract Address`}</StatTitle>
           {gaugeData.pool?.address && (
             <Box flex flexAlignItems="center">
-              <StyledExternalLink href={scanAddressPath(Chain.Ethereum, gaugeData.pool.address)}>
+              <StyledExternalLink href={scanAddressPath(chainId, gaugeData.pool.address)}>
                 {shortenAddress(gaugeData.pool.address)}
               </StyledExternalLink>
             </Box>

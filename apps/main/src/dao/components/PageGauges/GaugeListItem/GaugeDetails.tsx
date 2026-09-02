@@ -79,11 +79,11 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
         </StatsTitleRow>
         <StatsRow>
           <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-            <StyledExternalLink href={scanAddressPath(Chain.Ethereum, gaugeData.address)}>
+            <StyledExternalLink href={scanAddressPath(chainId, gaugeData.address)}>
               {shortenAddress(gaugeData.address)}
             </StyledExternalLink>
             <ExternalLinkIconButton
-              href={scanAddressPath(Chain.Ethereum, gaugeData.address)}
+              href={scanAddressPath(chainId, gaugeData.address)}
               tooltip={t`View on explorer`}
             />
             <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
