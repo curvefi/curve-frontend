@@ -58,7 +58,7 @@ export const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
     <ChipPoolWrapper>
       <ChipPoolName>
         <RouterLink
-          href={getPath({ network }, `${ROUTE.PAGE_POOLS}/${encodeURIComponent(poolId)}${ROUTE.PAGE_POOL_DEPOSIT}`)}
+          href={getPath({ network }, `${ROUTE.PAGE_POOLS}/${encodeURIComponent(poolId)}`)}
           sx={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}
         >
           {poolName}

@@ -13,6 +13,7 @@ import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
 import { t, Trans } from '@evm-ui/lib/i18n'
 import { amount as toAmount, formatNumber } from '@evm-ui/utils'
+import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
@@ -136,7 +137,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, 'CLAIM')
+      resetState(poolData)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
@@ -185,79 +186,81 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !poolData?.gauge.isKilled
 
   return (
-    <TransferActions
-      poolData={poolData}
-      poolDataCacheOrApi={poolDataCacheOrApi}
-      loading={!chainId || !steps.length || seed.isSeed === null}
-      routerParams={routerParams}
-      seed={seed}
-    >
-      <ClaimableTokensWrapper>
-        {haveClaimableCrv || haveClaimableRewards ? (
-          <>
-            {haveClaimableCrv && (
-              <Stats isOneLine isBorderBottom={formValues.claimableRewards.length > 0} label="CRV">
-                {formatNumber(toAmount(formValues.claimableCrv), { abbreviate: false, fallback: '-' })}
-              </Stats>
-            )}
+    <FormContent>
+      <TransferActions
+        poolData={poolData}
+        poolDataCacheOrApi={poolDataCacheOrApi}
+        loading={!chainId || !steps.length || seed.isSeed === null}
+        routerParams={routerParams}
+        seed={seed}
+      >
+        <ClaimableTokensWrapper>
+          {haveClaimableCrv || haveClaimableRewards ? (
+            <>
+              {haveClaimableCrv && (
+                <Stats isOneLine isBorderBottom={formValues.claimableRewards.length > 0} label="CRV">
+                  {formatNumber(toAmount(formValues.claimableCrv), { abbreviate: false, fallback: '-' })}
+                </Stats>
+              )}
 
-            {formValues.claimableRewards.map(({ token, symbol, amount }, idx) => (
-              <Stats
-                isOneLine
-                isBorderBottom={idx !== formValues.claimableRewards.length - 1}
-                key={token}
-                label={symbol}
-              >
-                {formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })}
-              </Stats>
-            ))}
-          </>
-        ) : (
-          <p>{t`No claimable rewards`}</p>
+              {formValues.claimableRewards.map(({ token, symbol, amount }, idx) => (
+                <Stats
+                  isOneLine
+                  isBorderBottom={idx !== formValues.claimableRewards.length - 1}
+                  key={token}
+                  label={symbol}
+                >
+                  {formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })}
+                </Stats>
+              ))}
+            </>
+          ) : (
+            <p>{t`No claimable rewards`}</p>
+          )}
+        </ClaimableTokensWrapper>
+
+        {rewardsNeedNudgingAndHaveGauge && (
+          <AlertBox alertType="info">
+            <Trans>
+              This pool has CRV rewards that aren&rsquo;t streaming yet. Click &lsquo;Claim CRV&rsquo; to resume reward
+              streaming for you and everyone else!
+            </Trans>
+          </AlertBox>
         )}
-      </ClaimableTokensWrapper>
 
-      {rewardsNeedNudgingAndHaveGauge && (
-        <AlertBox alertType="info">
-          <Trans>
-            This pool has CRV rewards that aren&rsquo;t streaming yet. Click &lsquo;Claim CRV&rsquo; to resume reward
-            streaming for you and everyone else!
-          </Trans>
-        </AlertBox>
-      )}
-
-      {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={updateFormValues} />}
-      {txInfoBar}
-      {!formStatus.isClaimRewards &&
-      !formStatus.isClaimCrv &&
-      typeof formStatus.formTypeCompleted === 'string' &&
-      formStatus.formTypeCompleted.length === 0 ? (
-        <Box grid gridAutoFlow="column" gridColumnGap="3">
-          {curve && poolData && (haveClaimableCrv || rewardsNeedNudgingAndHaveGauge) && (
-            <Button
-              disabled={!!formStatus.error}
-              variant="filled"
-              size="large"
-              onClick={() => handleBtnClick(true, false)}
-            >
-              {getClaimText(formValues, formStatus, 'claimCrvButton', rewardsNeedNudgingAndHaveGauge)}
-            </Button>
-          )}
-          {curve && poolData && haveClaimableRewards && (
-            <Button
-              disabled={!!formStatus.error}
-              variant="filled"
-              size="large"
-              onClick={() => handleBtnClick(false, true)}
-            >
-              {t`Claim Rewards`}
-            </Button>
-          )}
-        </Box>
-      ) : (
-        <Stepper steps={steps} />
-      )}
-    </TransferActions>
+        {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={updateFormValues} />}
+        {txInfoBar}
+        {!formStatus.isClaimRewards &&
+        !formStatus.isClaimCrv &&
+        typeof formStatus.formTypeCompleted === 'string' &&
+        formStatus.formTypeCompleted.length === 0 ? (
+          <Box grid gridAutoFlow="column" gridColumnGap="3">
+            {curve && poolData && (haveClaimableCrv || rewardsNeedNudgingAndHaveGauge) && (
+              <Button
+                disabled={!!formStatus.error}
+                variant="filled"
+                size="large"
+                onClick={() => handleBtnClick(true, false)}
+              >
+                {getClaimText(formValues, formStatus, 'claimCrvButton', rewardsNeedNudgingAndHaveGauge)}
+              </Button>
+            )}
+            {curve && poolData && haveClaimableRewards && (
+              <Button
+                disabled={!!formStatus.error}
+                variant="filled"
+                size="large"
+                onClick={() => handleBtnClick(false, true)}
+              >
+                {t`Claim Rewards`}
+              </Button>
+            )}
+          </Box>
+        ) : (
+          <Stepper steps={steps} />
+        )}
+      </TransferActions>
+    </FormContent>
   )
 }
 

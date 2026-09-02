@@ -1,13 +1,13 @@
 import {
   CurveApi,
   ChainId,
-  RFormType,
   TokensMapper,
   PoolData,
   PoolDataCache,
   PoolAlert,
   type PoolUrlParams,
 } from '@/dex/types/main.types'
+import type { MakeRequired } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type EstimatedGas = {
@@ -24,8 +24,6 @@ export type Slippage = {
   error: string
 }
 
-export type TransferFormType = 'swap' | 'deposit' | 'withdraw' | 'manage-gauge'
-
 export type Seed = {
   isSeed: boolean | null
   loaded: boolean
@@ -34,7 +32,7 @@ export type Seed = {
 export type PageTransferProps = {
   curve: CurveApi | null
   params: PoolUrlParams
-  routerParams: { rChainId: ChainId; rPoolIdOrAddress: string; rFormType: RFormType }
+  routerParams: { rChainId: ChainId; rPoolIdOrAddress: string }
   hasDepositAndStake: boolean
   poolData: PoolData | undefined
   poolDataCacheOrApi: PoolData | PoolDataCache
@@ -47,3 +45,8 @@ export type TransferProps = {
   seed: Seed
   tokensMapper: TokensMapper
 } & PageTransferProps
+
+export type TransferTabsParams = MakeRequired<TransferProps, 'poolData'> & {
+  isGaugeManager: boolean | undefined
+  isRewardsDistributor: boolean | undefined
+}

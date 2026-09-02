@@ -1,16 +1,28 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { type Address, isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
-import { Deposit } from '@/dex/components/PagePool/Deposit'
+import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
+import { FormDeposit } from '@/dex/components/PagePool/Deposit/components/FormDeposit'
+import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
+import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, Seed, TransferFormType, TransferProps } from '@/dex/components/PagePool/types'
-import { getSlippageType } from '@/dex/components/PagePool/utils'
-import { Withdraw } from '@/dex/components/PagePool/Withdraw'
-import { ROUTE } from '@/dex/constants'
+import type { PageTransferProps, Seed, TransferTabsParams } from '@/dex/components/PagePool/types'
+import {
+  getDepositTabAlert,
+  getSlippageType,
+  getStakeTabAlert,
+  getSwapTabAlert,
+  getWithdrawTabAlert,
+} from '@/dex/components/PagePool/utils'
+import { FormClaim } from '@/dex/components/PagePool/Withdraw/components/FormClaim'
+import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormUnstake'
+import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { AdvancedDetails } from '@/dex/features/advanced-details'
+import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
@@ -20,58 +32,104 @@ import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import { getPath } from '@/dex/utils/utilsRouter'
-import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
-import type { Chain } from '@curvefi/prices-api'
+import { getBlockchainId } from '@curvefi/prices-api'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
-import { useNavigate } from '@evm-ui/hooks/router'
+import { useLocation } from '@evm-ui/hooks/router'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
-import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
-import { AlertBox } from '@legacy-ui/AlertBox'
+import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import { maybes } from '@primitives/objects.utils'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
-type TransferTabsParams = TransferProps & {
-  isAvailableManageGauge: boolean
-  isGaugeManager: boolean
-  isRewardsDistributor: boolean
-}
-
-const SwapTab = ({ poolAlert, ...props }: TransferTabsParams) =>
-  poolAlert?.isDisableSwap ? (
-    <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-  ) : (
-    <Swap poolAlert={poolAlert} {...props} />
-  )
-
-const ManageGaugeTab = ({ poolData, routerParams, ...props }: TransferTabsParams) =>
-  poolData && <ManageGauge poolId={poolData.pool.id} chainId={routerParams.rChainId} {...props} />
-
 const menu = [
-  { value: 'deposit', label: t`Deposit`, component: Deposit },
-  { value: 'withdraw', label: t`Withdraw`, component: Withdraw },
-  { value: 'swap', label: t`Swap`, component: SwapTab },
+  {
+    value: 'deposit',
+    label: t`Deposit`,
+    subTabs: [
+      {
+        value: 'DEPOSIT',
+        label: t`Deposit`,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDeposit} {...props} />,
+      },
+      {
+        value: 'STAKE',
+        label: t`Stake`,
+        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormStake} {...props} />,
+      },
+      {
+        value: 'DEPOSIT_STAKE',
+        label: t`Deposit & Stake`,
+        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormDepositStake} {...props} />,
+      },
+    ],
+  } satisfies FormTab<TransferTabsParams>,
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    subTabs: [
+      {
+        value: 'WITHDRAW',
+        label: t`Withdraw`,
+        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={FormWithdraw} {...props} />,
+      },
+      {
+        value: 'UNSTAKE',
+        label: t`Unstake`,
+        component: FormUnstake,
+      },
+      {
+        value: 'CLAIM',
+        label: t`Claim Rewards`,
+        component: FormClaim,
+      },
+    ],
+  } satisfies FormTab<TransferTabsParams>,
+  {
+    value: 'swap',
+    label: t`Swap`,
+    component: props => <TabGuard alert={getSwapTabAlert} otherwise={Swap} {...props} />,
+  },
   {
     value: 'manage-gauge',
     label: t`Gauge`,
-    visible: (p: TransferTabsParams) => p.isAvailableManageGauge && !!p.poolData,
-    component: ManageGaugeTab,
+    visible: p => !!p.isGaugeManager || !!p.isRewardsDistributor,
+    subTabs: [
+      {
+        value: 'add_reward',
+        label: t`Add Reward`,
+        visible: p => !!p.isGaugeManager,
+        component: ({ poolData, routerParams }) => (
+          <AddRewardToken poolId={poolData.pool.id} chainId={routerParams.rChainId} />
+        ),
+      },
+      {
+        value: 'deposit_reward',
+        label: t`Deposit Reward`,
+        visible: p => !!p.isRewardsDistributor,
+        component: ({ poolData, routerParams }) => (
+          <DepositReward poolId={poolData.pool.id} chainId={routerParams.rChainId} />
+        ),
+      },
+    ],
   },
-] as const
+] satisfies FormTab<TransferTabsParams>[]
+
+/** Replaces old form-specific pool URLs for expanded-row links that should open a specific form tab. */
+type PoolRouteState = {
+  defaultTab?: (typeof menu)[number]['value']
+}
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
-  const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
+  const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const { signerAddress } = curve ?? {}
-  const push = useNavigate()
   const poolAlert = usePoolAlert({
     network: params.network,
     poolAddress: poolData?.pool.address,
@@ -84,29 +142,24 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(poolData) ?? 'stable'])
 
-  const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager(
-    { chainId: rChainId, poolId: poolData?.pool.id },
-    !!curve,
-  )
-
-  const { data: rewardDistributors, isPending: isPendingRewardsDistributors } = useGaugeRewardsDistributors(
-    { chainId: rChainId, poolId: poolData?.pool.id, userAddress: signerAddress },
-    !!curve,
-  )
+  const { data: gaugeManager } = useGaugeManager({ chainId: rChainId, poolId: poolData?.pool.id })
+  const { data: rewardDistributors } = useGaugeRewardsDistributors({
+    chainId: rChainId,
+    poolId: poolData?.pool.id,
+    userAddress: signerAddress,
+  })
 
   const [seed, setSeed] = useState(DEFAULT_SEED)
+  const { state } = useLocation()
+  const defaultTab = (state as PoolRouteState).defaultTab
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
   const poolAddress = poolData?.pool.address as Address
-  const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: networkId as Chain, poolAddress })
+  const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: getBlockchainId(networkId), poolAddress })
 
   const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
-  usePageVisibleInterval(() => {
-    if (curve && poolData) {
-      void fetchPoolStats(curve, poolData)
-    }
-  }, REFRESH_INTERVAL['5m'])
+  usePageVisibleInterval(() => curve && poolData && void fetchPoolStats(curve, poolData), REFRESH_INTERVAL['5m'])
 
   // is seed
   useEffect(() => {
@@ -120,45 +173,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolData?.pool?.id, currencyReserves?.total])
 
-  const isRewardsDistributor = useMemo(
+  const tabParams = useMemo(
     () =>
-      !!rewardDistributors &&
-      !!signerAddress &&
-      Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
-    [rewardDistributors, signerAddress],
-  )
-
-  const isGaugeManager = useMemo(
-    () => !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress),
-    [gaugeManager, signerAddress],
-  )
-
-  const isAvailableManageGauge = useMemo(
-    () => !isPendingGaugeManager && !isPendingRewardsDistributors && (isRewardsDistributor || isGaugeManager),
-    [isGaugeManager, isPendingGaugeManager, isPendingRewardsDistributors, isRewardsDistributor],
-  )
-
-  const toggleForm = useCallback(
-    (updatedFormType: TransferFormType) => {
-      push(getPath(params, `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${updatedFormType}`))
-    },
-    [push, params],
-  )
-
-  useEffect(() => {
-    if (!isAvailableManageGauge && rFormType === 'manage-gauge') {
-      toggleForm('deposit')
-    }
-  }, [isAvailableManageGauge, rFormType, toggleForm])
-
-  const {
-    content,
-    tab: { value },
-    tabs,
-  } = useTabs({
-    menu,
-    params: useMemo(
-      () => ({
+      poolData && {
         curve,
         params,
         routerParams,
@@ -170,29 +187,28 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         maxSlippage,
         seed,
         tokensMapper,
-        isAvailableManageGauge,
-        isGaugeManager,
-        isRewardsDistributor,
-      }),
-      [
-        curve,
-        params,
-        routerParams,
-        hasDepositAndStake,
-        poolData,
-        poolDataCacheOrApi,
-        networkId,
-        poolAlert,
-        maxSlippage,
-        seed,
-        tokensMapper,
-        isAvailableManageGauge,
-        isGaugeManager,
-        isRewardsDistributor,
-      ],
-    ),
-    value: rFormType,
-  })
+        isGaugeManager: maybes([gaugeManager, signerAddress], isAddressEqual),
+        isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
+          Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
+        ),
+      },
+    [
+      curve,
+      params,
+      routerParams,
+      hasDepositAndStake,
+      poolData,
+      poolDataCacheOrApi,
+      networkId,
+      poolAlert,
+      maxSlippage,
+      seed,
+      tokensMapper,
+      rewardDistributors,
+      signerAddress,
+      gaugeManager,
+    ],
+  )
 
   return (
     <>
@@ -215,28 +231,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
         }
         formTabs={{
-          content: (
-            <>
-              <TabsSwitcher
-                variant="contained"
-                value={value}
-                options={useMemo(
-                  () =>
-                    tabs.map(tab => ({
-                      ...tab,
-                      href: getInternalUrl(
-                        'dex',
-                        params.network,
-                        `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${tab.value}`,
-                      ),
-                    })),
-                  [tabs, params.network, params.poolIdOrAddress],
-                )}
-                testIdPrefix="pool-form-tab"
-              />
-              {content}
-            </>
-          ),
+          content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} />,
         }}
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}

@@ -57,11 +57,7 @@ const geistFinanceAlert = (): PoolAlert => ({
 })
 
 const yPrismaAlert = (): PoolAlert => {
-  const prismaPoolHref = getInternalUrl(
-    'dex',
-    'ethereum',
-    `${ROUTE.PAGE_POOLS}/factory-v2-372${ROUTE.PAGE_POOL_DEPOSIT}`,
-  )
+  const prismaPoolHref = getInternalUrl('dex', 'ethereum', `${ROUTE.PAGE_POOLS}/factory-v2-372`)
   return {
     isDisableDeposit: true,
     isInformationOnly: true,
@@ -325,7 +321,7 @@ const saturnPoolMigrationAlert = (): PoolAlert => ({
     subtitle: (
       <Trans>
         Gravity and Orbital Points have moved exclusively to the new{' '}
-        <InlineLink to="/dex/ethereum/pools/0x04710a7b238386da58efad8b65e150e5e17aa522/deposit">
+        <InlineLink to="/dex/ethereum/pools/0x04710a7b238386da58efad8b65e150e5e17aa522">
           USDC/sUSDat FXSwap pool
         </InlineLink>
         . This pool is no longer eligible for points.

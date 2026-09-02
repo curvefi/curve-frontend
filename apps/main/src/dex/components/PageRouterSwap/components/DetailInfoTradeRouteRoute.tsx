@@ -51,7 +51,7 @@ export const DetailInfoTradeRouteRoute = ({
               />
             )}
             <RouterLink
-              href={getPath(params, `${ROUTE.PAGE_POOLS}/${route.routeUrlId}/deposit`)}
+              href={getPath(params, `${ROUTE.PAGE_POOLS}/${route.routeUrlId}`)}
               target="_blank"
               sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
             >
