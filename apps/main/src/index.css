@@ -1,4 +1,5 @@
 @import '@legacy-ui/styles/base.css';
+@import '@ui/styles/initial-load.css';
 
 body {
   --font: 'Mona Sans', 'Helvetica Neue', Helvetica, sans-serif;
