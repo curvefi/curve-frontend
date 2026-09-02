@@ -10,11 +10,12 @@
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-primitives.tsbuildinfo"
   },
   "peerDependencies": {
-    "typescript": "*"
+    "typescript": "6.0.3"
   },
   "devDependencies": {
-    "eslint": "*",
-    "typescript": "*"
+    "eslint": "10.8.0",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
   },
   "publishConfig": {
     "access": "public"

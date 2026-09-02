@@ -10,21 +10,36 @@
   },
   "dependencies": {
     "@carbon/icons-react": "11.84.0",
+    "@curvefi/primitives": "0.0.1",
+    "@internationalized/date": "3.12.2",
+    "evm-ui": "0.1.0",
     "react-aria": "3.50.0",
     "react-stately": "3.48.0"
   },
   "devDependencies": {
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "eslint": "*",
-    "typescript": "*"
+    "@mui/icons-material": "9.3.1",
+    "@mui/material": "9.3.1",
+    "@tanstack/react-router": "1.170.32",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "bignumber.js": "9.3.1",
+    "eslint": "10.8.0",
+    "ethers": "6.17.0",
+    "lodash": "4.18.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "styled-components": "6.4.4",
+    "typescript": "6.0.3"
   },
   "peerDependencies": {
-    "bignumber.js": "*",
-    "ethers": "*",
-    "lodash": "*",
-    "react": "*",
-    "react-dom": "*",
-    "styled-components": "*"
+    "@mui/icons-material": "9.3.1",
+    "@mui/material": "9.3.1",
+    "@tanstack/react-router": "1.170.32",
+    "bignumber.js": "9.3.1",
+    "ethers": "6.17.0",
+    "lodash": "4.18.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "styled-components": "6.4.4"
   }
 }

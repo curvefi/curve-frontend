@@ -15,19 +15,24 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "fastify": "*"
+    "@curvefi/api-server": "0.0.1",
+    "@curvefi/prices-api": "3.1.1",
+    "@curvefi/primitives": "0.0.1",
+    "bignumber.js": "9.3.1",
+    "fastify": "5.8.5",
+    "lodash": "4.18.1",
+    "viem": "2.55.10"
   },
   "peerDependencies": {
-    "@curvefi/api": "*",
-    "@curvefi/prices-api": "*"
+    "@curvefi/api": "2.69.17"
   },
   "devDependencies": {
-    "@curvefi/api": "*",
-    "@curvefi/prices-api": "*",
-    "@types/node": "*",
-    "eslint": "*",
+    "@curvefi/api": "2.69.17",
+    "@types/lodash": "4.17.24",
+    "@types/node": "26.1.0",
+    "eslint": "10.8.0",
     "tsx": "4.23.1",
-    "typescript": "*",
-    "vitest": "*"
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
   }
 }

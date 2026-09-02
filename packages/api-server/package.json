@@ -16,12 +16,12 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "dependencies": {
-    "fastify": "*"
+    "fastify": "5.8.5"
   },
   "devDependencies": {
-    "@types/node": "*",
-    "eslint": "*",
-    "typescript": "*",
-    "vitest": "*"
+    "@types/node": "26.1.0",
+    "eslint": "10.8.0",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
   }
 }

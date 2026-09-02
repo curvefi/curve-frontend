@@ -11,7 +11,7 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-external-rewards.tsbuildinfo"
   },
   "devDependencies": {
-    "eslint": "*",
-    "typescript": "*"
+    "eslint": "10.8.0",
+    "typescript": "6.0.3"
   }
 }
