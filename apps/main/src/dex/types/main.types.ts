@@ -30,7 +30,6 @@ export type NetworkConfig = {
   poolIsWrappedOnly: Record<string, boolean>
   poolFilters: string[]
   isActiveNetwork: boolean
-  missingPools: { name: string; url: string }[]
   swap: Record<string, string>
   showInSelectNetwork: boolean
   showRouterSwap: boolean
@@ -130,7 +129,6 @@ export type PoolData = {
   tokensCountBy: Record<string, number>
   tokensAll: string[]
   tokensLowercase: string[]
-  curvefiUrl: string
   failedFetching24hOldVprice: boolean
 }
 
