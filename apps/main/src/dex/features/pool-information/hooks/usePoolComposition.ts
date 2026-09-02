@@ -4,6 +4,7 @@ import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
+import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '../components/pool-composition/columns/columns.definitions'
@@ -23,7 +24,7 @@ export const usePoolComposition = ({
   const currencyReserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(chainId, poolId)])
 
   // We use prices API as a fallback for non-lite networks, and currencyReserves.total is NaN when no wallet is connected.
-  const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !network.isLite
+  const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !isChainLite(chainId)
   const pricesApiTotalUsd = sum(pricesApiPoolData?.balancesUsd)
 
   // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)

@@ -24,7 +24,6 @@ type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
 export type NetworkConfig = {
-  isLite: boolean
   isCrvRewardsEnabled: boolean
   useApi: boolean
   poolIsWrappedOnly: Record<string, boolean>

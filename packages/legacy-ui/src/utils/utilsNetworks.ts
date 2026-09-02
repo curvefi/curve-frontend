@@ -2,7 +2,6 @@ import { getChainBlockExplorer } from '@evm-ui/features/connect-wallet/lib/wagmi
 import { maybe } from '@primitives/objects.utils'
 
 export type NetworkDef<TId extends string = string, TChainId extends number = number> = {
-  isLite?: boolean
   blockchainId: TId
   chainId: TChainId
 }

@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
+import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useIsMobile, useIsTablet } from '@evm-ui/hooks/useBreakpoints'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
@@ -36,7 +37,7 @@ const POOL_EXPANDED_PANEL_BODIES = {
 } satisfies Record<PoolColumnVariant, ExpandedPanelComponent<PoolRow>>
 
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
-  const isLite = network.isLite
+  const isLite = isChainLite(network.chainId)
   const isMobile = useIsMobile()
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)

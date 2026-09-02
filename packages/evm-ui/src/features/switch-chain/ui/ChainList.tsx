@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { Fragment, useMemo, useState } from 'react'
-import { getChainName, isChainConfigured, isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { getChainName, isChainConfigured, isChainLite, isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
@@ -51,7 +51,7 @@ export function ChainList({
         o =>
           isChainTestnet(o.chainId)
             ? ChainType.test
-            : o.isLite || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
+            : isChainLite(o.chainId) || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
               ? ChainType.lite
               : ChainType.main,
       ) as Record<ChainType, NetworkDef[]>,

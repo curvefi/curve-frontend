@@ -2,7 +2,7 @@ import { ethAddress } from 'viem'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig, type Networks } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
-import { DOWNGRADED_CHAINS } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
@@ -293,7 +293,6 @@ export const defaultNetworks = Object.entries({
       ...config,
       chainId,
       blockchainId: CHAIN_BLOCKCHAIN_IDS[chainId],
-      isLite: DOWNGRADED_CHAINS.has(chainId),
       isCrvRewardsEnabled: true,
     }
 
@@ -310,12 +309,7 @@ const fxSwapUpgradedChains = [Chain.Etherlink]
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
   const liteNetworks = Object.values(resp).reduce((prev, { id: blockchainId, chainId, ...config }) => {
-    // Upgraded means both a lite network and full network blockchain id while not being downgraded
-    const isUpgraded =
-      Object.keys(CHAIN_BLOCKCHAIN_IDS)
-        .map(x => +x)
-        .includes(chainId) && !DOWNGRADED_CHAINS.has(chainId)
-
+    const isUpgraded = !isChainLite(chainId) // Upgraded means this is a lite network but is not classified as such any longer
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
     const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)
     prev[chainId] = {
@@ -344,7 +338,6 @@ export async function getNetworks() {
       tricryptoFactory: true,
       fxswapFactory: isLiteFxswapEnabled,
       pricesApi: isUpgraded,
-      isLite: !isUpgraded || DOWNGRADED_CHAINS.has(chainId),
       isCrvRewardsEnabled: isUpgraded,
       ...(isOnlyPoolRewardsUpgraded && {
         isCrvRewardsEnabled: true,
