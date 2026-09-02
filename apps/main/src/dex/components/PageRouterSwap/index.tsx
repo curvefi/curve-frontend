@@ -589,7 +589,7 @@ export const QuickSwap = ({
         }
         formValues={formValues}
         maxSlippage={maxSlippage}
-        isHighImpact={slippageImpact?.isHighImpact}
+        priceImpact={priceImpact}
         isExpectedToAmount={slippageImpact?.isExpectedToAmount}
         toAmountOutput={routesAndOutput?.toAmountOutput}
         isExchangeRateLow={routesAndOutput?.isExchangeRateLow}
