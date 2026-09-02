@@ -2,7 +2,8 @@ import { useCallback, useMemo } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolLiquidityEvents } from '@/dex/entities/pool-liquidity.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
-import { ChainId } from '@/dex/types/main.types'
+import { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { getPoolAddress } from '@/dex/utils'
 import { getBlockchainId } from '@curvefi/prices-api'
 import {
   createPoolLiquidityColumns,
@@ -10,26 +11,24 @@ import {
   useManualPagination,
   DEFAULT_PAGE_SIZE,
 } from '@evm-ui/features/activity-table'
-import { useCurve } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
 import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { fakeLoadingQ, mapQuery } from '@evm-ui/types/util'
+import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
-import type { Address } from '@primitives/address.utils'
 
 type UsePoolActivityProps = {
   chainId: ChainId
-  poolAddress: Address
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
 }
 
 /**
  * Hook to manage pool activity events data for the ActivityTable component.
  * Handles fetching, transforming, and providing table configurations for pool liquidity events.
  */
-export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolActivityProps) => {
-  const { isHydrated } = useCurve()
+export const usePoolActivityEventsConfig = ({ chainId, poolQuery }: UsePoolActivityProps) => {
+  const poolAddress = getPoolAddress(poolQuery.data)
   const { data: networkConfig } = useNetworkByChain({ chainId })
   const network = getBlockchainId(networkConfig?.id)
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
@@ -51,9 +50,10 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
 
   // Transform liquidity data with block explorer URLs and pool tokens
   const liquidityWithUrls = useCombinedQueries(
-    [poolLiquidityEvents, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
+    [poolQuery, poolLiquidityEvents, poolPriceApi],
     useCallback(
-      liquidityData =>
+      (poolData, liquidityData) =>
+        poolData &&
         network &&
         liquidityData.events.map(event => ({
           ...event,

@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
-import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { useStore } from '@/dex/store/useStore'
-import type { PoolAlert } from '@/dex/types/main.types'
+import type { PoolAlert, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { t } from '@evm-ui/lib/i18n'
+import type { QueryProp } from '@evm-ui/types/util'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -18,22 +18,22 @@ import { YieldBreakdown } from './components/yield-breakdown'
 
 type PoolInformation = {
   poolAlert: PoolAlert | null
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
   pricesApiPoolData?: PricesApiPool
-} & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
+} & Pick<PageTransferProps, 'curve' | 'poolData' | 'routerParams'>
 
 export const PoolInformation = ({
   curve,
   routerParams,
   poolData,
-  poolDataCacheOrApi,
+  poolQuery,
   poolAlert,
   pricesApiPoolData,
 }: PoolInformation) => {
-  const { rChainId: chainId, rPoolIdOrAddress: poolIdOrAddress } = routerParams
-  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
-  const resolvedPoolId = poolId ?? poolDataCacheOrApi.pool.id
+  const { rChainId: chainId } = routerParams
+  const poolDataCacheOrApi = poolQuery.data
   const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
-  const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? poolDataCacheOrApi.tokenAddressesAll)
+  const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? poolDataCacheOrApi?.tokenAddressesAll)
 
   // Preserve the legacy stats fetch path; forms still rely on these store-backed values.
   useEffect(() => {
@@ -46,20 +46,10 @@ export const PoolInformation = ({
     <Card size="small">
       <CardHeader title={t`Pool Information`} />
       <CardContent component={Stack}>
-        <Metrics
-          chainId={chainId}
-          poolDataCacheOrApi={poolDataCacheOrApi}
-          poolId={resolvedPoolId}
-          pricesApiPoolData={pricesApiPoolData}
-        />
-        <PoolComposition
-          chainId={chainId}
-          poolDataCacheOrApi={poolDataCacheOrApi}
-          poolId={resolvedPoolId}
-          pricesApiPoolData={pricesApiPoolData}
-        />
-        <YieldBreakdown chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} poolId={resolvedPoolId} />
-        <PointsCampaigns chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} />
+        <Metrics chainId={chainId} poolQuery={poolQuery} pricesApiPoolData={pricesApiPoolData} />
+        <PoolComposition chainId={chainId} poolQuery={poolQuery} pricesApiPoolData={pricesApiPoolData} />
+        <YieldBreakdown chainId={chainId} poolQuery={poolQuery} />
+        <PointsCampaigns chainId={chainId} poolQuery={poolQuery} />
         <Alerts poolAlert={poolAlert} tokenAlert={tokenAlert} />
       </CardContent>
     </Card>

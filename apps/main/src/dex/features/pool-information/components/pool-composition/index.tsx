@@ -4,7 +4,7 @@ import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { t } from '@evm-ui/lib/i18n'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
-import { q } from '@evm-ui/types/util'
+import type { QueryProp } from '@evm-ui/types/util'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { usePoolComposition } from '../../hooks/usePoolComposition'
@@ -13,24 +13,21 @@ import { FooterRow } from './FooterRow'
 
 export const PoolComposition = ({
   chainId,
-  poolDataCacheOrApi,
-  poolId,
+  poolQuery,
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-  poolId: string
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
   pricesApiPoolData?: PricesApiPool
 }) => {
   const isMobile = useIsMobile()
-  const { isLoading, error, rows, totalUsd } = usePoolComposition({
+  const { isLoading, query, rows, totalUsd } = usePoolComposition({
     chainId,
-    poolDataCacheOrApi,
-    poolId,
+    poolQuery,
     pricesApiPoolData,
   })
   const table = useCurveTable({
-    query: q({ data: rows, isLoading, error }),
+    query,
     columns: POOL_COMPOSITION_COLUMNS,
     state: { columnVisibility: isMobile ? POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY : undefined },
   })
@@ -43,6 +40,9 @@ export const PoolComposition = ({
         table={table}
         emptyState={{ title: t`No market composition found` }}
         footerRow={
+          !poolQuery.isLoading &&
+          rows &&
+          totalUsd &&
           rows.length > 0 && (
             <FooterRow
               visibleColumns={table.getVisibleLeafColumns()}

@@ -4,21 +4,30 @@ import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
+import { q, type QueryProp } from '@evm-ui/types/util'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '../components/pool-composition/columns/columns.definitions'
 
+type PoolComposition = {
+  error: Error | null
+  isLoading: boolean
+  query: QueryProp<PoolCompositionRow[] | undefined>
+  rows: PoolCompositionRow[] | undefined
+  totalUsd: string | undefined
+}
+
 export const usePoolComposition = ({
   chainId,
-  poolDataCacheOrApi,
-  poolId,
+  poolQuery,
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-  poolId: string
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
   pricesApiPoolData?: PricesApiPool
-}) => {
+}): PoolComposition => {
+  const poolDataCacheOrApi = poolQuery.data
+  const poolId = poolDataCacheOrApi?.pool.id
   const { data: network } = useNetworkByChain({ chainId })
   const currencyReserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(chainId, poolId)])
 
@@ -28,7 +37,7 @@ export const usePoolComposition = ({
 
   // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
   const reserves = usePricesApiReserves
-    ? poolDataCacheOrApi.tokenAddresses.map((tokenAddress, index) => {
+    ? poolDataCacheOrApi?.tokenAddresses.map((tokenAddress, index) => {
         const balance = pricesApiPoolData?.balances[index]
         const balanceUsd = pricesApiPoolData?.balancesUsd[index]
 
@@ -36,13 +45,14 @@ export const usePoolComposition = ({
           tokenAddress,
           balance,
           balanceUsd,
-          percentShareInPool: pricesApiTotalUsd ? ((balanceUsd ?? 0) / pricesApiTotalUsd) * 100 : undefined,
-          usdRate: balance ? (balanceUsd ?? 0) / balance : 0,
+          percentShareInPool:
+            pricesApiTotalUsd && balanceUsd != null ? (balanceUsd / pricesApiTotalUsd) * 100 : undefined,
+          usdRate: balance && balanceUsd != null ? balanceUsd / balance : undefined,
         }
       })
     : currencyReserves?.tokens
 
-  const rows: PoolCompositionRow[] = poolDataCacheOrApi.tokens.map((symbol, index) => {
+  const rows = poolDataCacheOrApi?.tokens.map((symbol, index) => {
     const tokenAddress = poolDataCacheOrApi.tokenAddresses[index]
     const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
@@ -61,10 +71,14 @@ export const usePoolComposition = ({
     }
   })
 
+  const isLoading =
+    !poolDataCacheOrApi || (usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves)
+
   return {
     error: null, // TODO: correctly handle error and loading state
     // this isn't a proper loading check, but we need a bigger refactor for that later on
-    isLoading: usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves,
+    isLoading,
+    query: q({ data: rows, isLoading, error: null }),
     rows,
     totalUsd: usePricesApiReserves ? pricesApiTotalUsd?.toString() : currencyReserves?.totalUsd,
   }

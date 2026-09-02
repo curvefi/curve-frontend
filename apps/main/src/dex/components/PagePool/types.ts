@@ -3,10 +3,11 @@ import {
   ChainId,
   TokensMapper,
   PoolData,
-  PoolDataCache,
   PoolAlert,
+  PoolDataCacheOrApi,
   type PoolUrlParams,
 } from '@/dex/types/main.types'
+import type { QueryProp } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type EstimatedGas = {
@@ -36,7 +37,12 @@ export type PageTransferProps = {
   routerParams: { rChainId: ChainId; rPoolIdOrAddress: string }
   hasDepositAndStake: boolean
   poolData: PoolData | undefined
-  poolDataCacheOrApi: PoolData | PoolDataCache
+  poolDataCacheOrApi: PoolDataCacheOrApi
+}
+
+export type PoolPageTransferProps = Omit<PageTransferProps, 'hasDepositAndStake' | 'poolDataCacheOrApi'> & {
+  hasDepositAndStake?: boolean
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
 }
 
 export type TransferProps = {

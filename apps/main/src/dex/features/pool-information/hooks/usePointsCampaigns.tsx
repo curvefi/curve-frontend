@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
-import { type Address } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { getPoolAddress } from '@/dex/utils'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import type { PointsCampaignsRow } from '../components/points-campaigns/columns/columns.definitions'
@@ -12,12 +13,13 @@ const { IconSize } = SizesAndSpaces
 
 export const usePointsCampaigns = ({
   chainId,
-  poolDataCacheOrApi,
+  poolQuery,
 }: {
   chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
 }) => {
-  const poolAddress = poolDataCacheOrApi.pool.address as Address
+  const poolDataCacheOrApi = poolQuery.data
+  const poolAddress = getPoolAddress(poolDataCacheOrApi)
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network?.networkId,
@@ -47,5 +49,5 @@ export const usePointsCampaigns = ({
     [campaigns],
   )
 
-  return { rows }
+  return { query: mapQuery(poolQuery, () => rows), rows }
 }

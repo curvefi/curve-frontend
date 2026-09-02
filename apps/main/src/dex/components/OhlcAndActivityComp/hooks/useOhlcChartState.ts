@@ -15,7 +15,7 @@ const { Height } = SizesAndSpaces
 
 type UseOhlcChartStateArgs = {
   rChainId: ChainId
-  pricesApiPoolData: Pool
+  pricesApiPoolData?: Pool
 }
 
 const selectDexOhlcData = (page: { ohlcData: LpPriceOhlcDataFormatted[] }) => page.ohlcData
@@ -25,13 +25,13 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
   const { chartCombinations, selectChartList, selectedChart, selectedChartKey, setSelectedChart, flipChart } =
     useDexChartList({
-      coins: pricesApiPoolData.coins,
-      nCoins: pricesApiPoolData.numCoins,
+      coins: pricesApiPoolData?.coins,
+      nCoins: pricesApiPoolData?.numCoins,
     })
 
   const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(
     rChainId,
-    pricesApiPoolData.address,
+    pricesApiPoolData?.address,
     getDexChartSelectionKey(selectedChart),
     timeOption,
   )
@@ -40,10 +40,10 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     chain: getBlockchainId(networkData.id),
     chartSelection: selectedChart,
     interval: chartInterval,
-    poolAddress: pricesApiPoolData.address,
+    poolAddress: pricesApiPoolData?.address,
     timeOption,
     units: timeUnit,
-    enabled: isAnchorEndReady,
+    enabled: isAnchorEndReady && !!pricesApiPoolData,
   })
   const {
     isLoading: isQueryLoading,

@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-import { type Address, isAddressEqual } from 'viem'
+import { isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { FormDeposit } from '@/dex/components/PagePool/Deposit/components/FormDeposit'
 import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
 import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, Seed, TransferProps } from '@/dex/components/PagePool/types'
+import type { PoolPageTransferProps, Seed, TransferProps } from '@/dex/components/PagePool/types'
 import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { FormClaim } from '@/dex/components/PagePool/Withdraw/components/FormClaim'
 import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormUnstake'
@@ -20,11 +20,10 @@ import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
-import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
-import { getChainPoolIdActiveKey } from '@/dex/utils'
+import { getChainPoolIdActiveKey, getPoolAddress } from '@/dex/utils'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import { getBlockchainId } from '@curvefi/prices-api'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
@@ -42,7 +41,10 @@ import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
-export type TransferTabsParams = MakeRequired<TransferProps, 'poolData'> & {
+export type TransferTabsParams = MakeRequired<
+  TransferProps,
+  'hasDepositAndStake' | 'poolData' | 'poolDataCacheOrApi'
+> & {
   isGaugeManager: boolean | undefined
   isRewardsDistributor: boolean | undefined
 }
@@ -162,10 +164,11 @@ type PoolRouteState = {
   defaultTab?: (typeof menu)[number]['value']
 }
 
-export const Transfer = (pageTransferProps: PageTransferProps) => {
-  const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
-  const { rChainId, rPoolIdOrAddress } = routerParams
-  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
+export const Transfer = (pageTransferProps: PoolPageTransferProps) => {
+  const { params, curve, hasDepositAndStake, poolData, poolQuery, routerParams } = pageTransferProps
+  const { rChainId } = routerParams
+  const poolDataCacheOrApi = poolQuery.data
+  const poolId = poolDataCacheOrApi?.pool.id
   const { signerAddress } = curve ?? {}
   const poolAlert = usePoolAlert({
     network: params.network,
@@ -192,7 +195,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
-  const poolAddress = poolData?.pool.address as Address
+  const poolAddress = getPoolAddress(poolDataCacheOrApi)
   const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: getBlockchainId(networkId), poolAddress })
 
   const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
@@ -212,7 +215,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const tabParams = useMemo(
     () =>
-      poolData && {
+      poolData &&
+      poolDataCacheOrApi &&
+      !poolQuery.isLoading &&
+      hasDepositAndStake != null && {
         curve,
         params,
         routerParams,
@@ -236,6 +242,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       hasDepositAndStake,
       poolData,
       poolDataCacheOrApi,
+      poolQuery.isLoading,
       networkId,
       poolAlert,
       maxSlippage,
@@ -262,7 +269,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           <PoolPageHeader
             chainId={rChainId}
             blockchainId={networkId}
-            poolIdOrAddress={rPoolIdOrAddress}
+            poolQuery={poolQuery}
             pricesApiPoolData={pricesApiPoolData}
             backHref={getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_POOLS)}
           />
@@ -272,25 +279,27 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         }}
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
-        <UserPosition
-          blockchainId={networkId}
-          chainId={rChainId}
-          poolDataCacheOrApi={poolDataCacheOrApi}
-          poolId={poolId}
-        />
-        {!isLite && pricesApiPoolData && pricesApi && (
-          <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
+        {!poolQuery.isLoading && poolDataCacheOrApi && (
+          <UserPosition
+            blockchainId={networkId}
+            chainId={rChainId}
+            poolDataCacheOrApi={poolDataCacheOrApi}
+            poolId={poolId}
+          />
         )}
-        {pricesApi && <PoolHistoricalBaseRateChart blockchainId={networkId} poolAddress={poolAddress} />}
+        {!isLite && pricesApi && (
+          <OhlcAndActivityComp rChainId={rChainId} poolQuery={poolQuery} pricesApiPoolData={pricesApiPoolData} />
+        )}
+        {pricesApi && <PoolHistoricalBaseRateChart blockchainId={networkId} poolQuery={poolQuery} />}
         <PoolInformation
           curve={curve}
           routerParams={routerParams}
           poolData={poolData}
-          poolDataCacheOrApi={poolDataCacheOrApi}
+          poolQuery={poolQuery}
           poolAlert={poolAlert}
           pricesApiPoolData={pricesApiPoolData}
         />
-        <AdvancedDetails routerParams={routerParams} poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} />
+        <AdvancedDetails routerParams={routerParams} poolData={poolData} poolQuery={poolQuery} />
       </DetailPageLayout>
     </>
   )

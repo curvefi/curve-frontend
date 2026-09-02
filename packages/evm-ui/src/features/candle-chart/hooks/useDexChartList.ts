@@ -6,8 +6,8 @@ import type { ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import type { ChartSelection } from '../types'
 
 type UseDexChartListArgs = {
-  coins: PoolCoin[]
-  nCoins: number
+  coins: PoolCoin[] | undefined
+  nCoins: number | undefined
 }
 
 /**
@@ -59,12 +59,15 @@ const DEFAULT_CHART_SELECTION: ChartSelection = { type: 'lp-usd' }
 export const useDexChartList = ({ coins, nCoins }: UseDexChartListArgs) => {
   const [selectedChart, setSelectedChart] = useState<ChartSelection>(DEFAULT_CHART_SELECTION)
 
-  const chartCombinations = useMemo(() => buildChartCombinations(coins, nCoins), [coins, nCoins])
+  const chartCombinations = useMemo(
+    () => (coins && nCoins != null ? buildChartCombinations(coins, nCoins) : undefined),
+    [coins, nCoins],
+  )
 
   // Find which pair index matches the selected chart
   const selectedPairIndex =
     selectedChart.type === 'pair'
-      ? chartCombinations.findIndex(
+      ? chartCombinations?.findIndex(
           ([main, ref]) =>
             (main.address === selectedChart.mainToken.address && ref.address === selectedChart.refToken.address) ||
             (main.address === selectedChart.refToken.address && ref.address === selectedChart.mainToken.address),
@@ -79,10 +82,9 @@ export const useDexChartList = ({ coins, nCoins }: UseDexChartListArgs) => {
         : `pair-${selectedPairIndex}`
 
   const selectChartList: ChartSelections[] = useMemo(() => {
-    const lpTokenSymbol = coins[0]?.symbol
+    const lpTokenSymbol = coins?.[0]?.symbol
     const lpTokenLabel = lpTokenSymbol ? t`LP Token (${lpTokenSymbol})` : t`LP Token`
-
-    return [
+    const lpCharts = [
       {
         activeTitle: t`LP Token (USD)`,
         label: t`LP Token (USD)`,
@@ -93,6 +95,12 @@ export const useDexChartList = ({ coins, nCoins }: UseDexChartListArgs) => {
         label: lpTokenLabel,
         key: 'lp-token',
       },
+    ]
+
+    if (!chartCombinations) return lpCharts
+
+    return [
+      ...lpCharts,
       ...chartCombinations.map(([mainToken, refToken], index) => {
         // Use flipped tokens if this pair is selected
         const isSelected = selectedPairIndex === index && selectedChart.type === 'pair'
@@ -109,9 +117,9 @@ export const useDexChartList = ({ coins, nCoins }: UseDexChartListArgs) => {
       if (key === 'lp-usd') {
         setSelectedChart({ type: 'lp-usd' })
       } else if (key === 'lp-token') {
-        const lpTokenSymbol = coins[0]?.symbol
+        const lpTokenSymbol = coins?.[0]?.symbol
         setSelectedChart(lpTokenSymbol ? { type: 'lp-token', symbol: lpTokenSymbol } : { type: 'lp-token' })
-      } else if (key.startsWith('pair-')) {
+      } else if (chartCombinations && key.startsWith('pair-')) {
         const index = parseInt(key.replace('pair-', ''), 10)
         const [mainToken, refToken] = chartCombinations[index]
         setSelectedChart({ type: 'pair', mainToken, refToken })

@@ -13,7 +13,7 @@ const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
   visibleColumns: Column<CurveTableFeatures, YieldBreakdownRow>[]
-  maxBoostTotal: number
+  maxBoostTotal: number | undefined
   total: number
 }
 

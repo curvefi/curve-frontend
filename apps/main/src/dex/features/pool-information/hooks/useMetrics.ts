@@ -4,28 +4,35 @@ import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { combineQueries } from '@evm-ui/lib'
-import { constQ, fallbackQ } from '@evm-ui/types/util'
+import { constQ, fallbackQ, mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { decimal, decimalPercent } from '@evm-ui/utils'
 import { maybes } from '@primitives/objects.utils'
 
 export const useMetrics = ({
   chainId,
-  poolDataCacheOrApi,
-  poolId,
+  poolQuery,
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-  poolId: string
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
   pricesApiPoolData?: PricesApiPool
 }) => {
-  const staked = usePoolTotalStaked(poolDataCacheOrApi)
+  const poolId = poolQuery.data?.pool.id
+  const staked = usePoolTotalStaked(poolQuery.data)
+  const volume = usePoolVolume({ chainId, poolId })
+  const tvl = usePoolTvl({ chainId, poolId })
+
   return {
-    gaugeTotalSupply: constQ(decimal(staked?.gaugeTotalSupply)),
-    totalStakedPercent: constQ(decimal(staked?.totalStakedPercent)),
+    gaugeTotalSupply: combineQueries([poolQuery, constQ(decimal(staked?.gaugeTotalSupply))], (_pool, supply) => supply),
+    totalStakedPercent: combineQueries(
+      [poolQuery, constQ(decimal(staked?.totalStakedPercent))],
+      (_pool, percent) => percent,
+    ),
     liquidityUtilization: fallbackQ(
-      combineQueries([usePoolVolume({ chainId, poolId }), usePoolTvl({ chainId, poolId })], decimalPercent),
-      constQ(maybes([pricesApiPoolData?.tradingVolume24h, pricesApiPoolData?.tvlUsd].map(decimal), decimalPercent)),
+      combineQueries([poolQuery, volume, tvl], (_pool, volume, tvl) => decimalPercent(volume, tvl)),
+      mapQuery(poolQuery, () =>
+        maybes([pricesApiPoolData?.tradingVolume24h, pricesApiPoolData?.tvlUsd].map(decimal), decimalPercent),
+      ),
     ),
   }
 }

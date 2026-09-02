@@ -6,35 +6,39 @@ import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { t } from '@evm-ui/lib/i18n'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
+import { fakeLoadingQ, type QueryProp } from '@evm-ui/types/util'
 import { PageHeader } from '@evm-ui/widgets/PageHeader'
+import { notFalsy } from '@primitives/objects.utils'
 import { PoolMetricsRow } from './PoolMetricsRow'
 
 const ICON_SIZE = 35
 
 const getPoolTokens = (poolDataCacheOrApi: PoolDataCacheOrApi | undefined) =>
-  poolDataCacheOrApi?.tokens
-    .map((symbol, index) => ({ symbol, address: poolDataCacheOrApi.tokenAddresses[index] ?? '' }))
-    .filter(({ address }) => address) ?? []
+  poolDataCacheOrApi?.tokens.flatMap((symbol, index) => {
+    const address = poolDataCacheOrApi.tokenAddresses[index]
+    return notFalsy(address && { symbol, address })
+  })
 
 export const PoolPageHeader = ({
   chainId,
   blockchainId,
+  poolQuery,
   poolIdOrAddress,
   backHref,
   pricesApiPoolData,
 }: {
   chainId: ChainId
   blockchainId: string
-  poolIdOrAddress: string
+  poolQuery?: QueryProp<PoolDataCacheOrApi | undefined>
+  poolIdOrAddress?: string
   backHref?: string
   pricesApiPoolData?: PricesApiPool
 }) => {
   const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
   const poolData = useStore(state => (poolId ? state.pools.poolsMapper[chainId]?.[poolId] : undefined))
   const poolDataCache = useStore(state => (poolId ? state.storeCache.poolsMapper[chainId]?.[poolId] : undefined))
-  const poolDataCacheOrApi = poolData ?? poolDataCache
-
-  const isLoading = !poolDataCacheOrApi
+  const resolvedPoolQuery = poolQuery ?? fakeLoadingQ(poolData ?? poolDataCache)
+  const poolDataCacheOrApi = resolvedPoolQuery.data
 
   const tokenList = useMemo(() => getPoolTokens(poolDataCacheOrApi), [poolDataCacheOrApi])
   const subtitle = tokenList?.map(({ symbol }) => symbol).join(' / ')
@@ -43,17 +47,26 @@ export const PoolPageHeader = ({
     <PageHeader
       backHref={backHref}
       title={poolDataCacheOrApi?.pool.name ?? 'Pool'}
-      titleLoading={isLoading}
-      subtitle={subtitle ?? (isLoading ? t`Token symbols` : undefined)}
-      subtitleLoading={isLoading}
+      titleLoading={resolvedPoolQuery.isLoading}
+      subtitle={subtitle ?? (resolvedPoolQuery.isLoading ? t`Token symbols` : undefined)}
+      subtitleLoading={resolvedPoolQuery.isLoading}
       icon={
-        (isLoading || tokenList.length > 0) && (
-          <WithSkeleton loading={isLoading} variant="rectangular" width={ICON_SIZE} height={ICON_SIZE}>
-            <TokenIcons blockchainId={blockchainId} tokens={tokenList} overflowMode="stack" />
+        (resolvedPoolQuery.isLoading || tokenList?.length) && (
+          <WithSkeleton
+            loading={resolvedPoolQuery.isLoading}
+            variant="rectangular"
+            width={ICON_SIZE}
+            height={ICON_SIZE}
+          >
+            {tokenList && <TokenIcons blockchainId={blockchainId} tokens={tokenList} overflowMode="stack" />}
           </WithSkeleton>
         )
       }
-      rightItems={poolId && <PoolMetricsRow chainId={chainId} poolId={poolId} pricesApiPoolData={pricesApiPoolData} />}
+      rightItems={
+        (resolvedPoolQuery.isLoading || poolDataCacheOrApi) && (
+          <PoolMetricsRow chainId={chainId} poolQuery={resolvedPoolQuery} pricesApiPoolData={pricesApiPoolData} />
+        )
+      }
     />
   )
 }

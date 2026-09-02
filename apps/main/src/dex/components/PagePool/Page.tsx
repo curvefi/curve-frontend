@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { isAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
@@ -10,35 +9,34 @@ import { useStore } from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
-import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useNavigate, useParams } from '@evm-ui/hooks/router'
+import { getLib } from '@evm-ui/features/connect-wallet'
+import { useParams } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
 import { ErrorPage } from '@evm-ui/pages/ErrorPage'
+import { q } from '@evm-ui/types/util'
 
 export const PagePool = () => {
-  const push = useNavigate()
-  const { curveApi = null, isHydrated } = useCurve()
   const props = useParams<PoolUrlParams>()
   const { poolIdOrAddress: rPoolIdOrAddress, network: networkId } = props
   const rChainId = useChainId(networkId)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
+  const curveApi = getLib('curveApi')
 
   const hasDepositAndStake = useStore(state => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
   const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
   const fetchNewPool = useStore(state => state.pools.fetchNewPool)
-  const poolDataCache = useStore(state => state.storeCache.poolsMapper[rChainId]?.[poolId ?? ''])
-  const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[poolId ?? ''])
-  const { data: network } = useNetworkByChain({ chainId: rChainId })
+  const poolDataCache = useStore(state => (poolId ? state.storeCache.poolsMapper[rChainId]?.[poolId] : undefined))
+  const poolData = useStore(state => (poolId ? state.pools.poolsMapper[rChainId]?.[poolId] : undefined))
   const [poolNotFound, setPoolNotFound] = useState(false)
 
-  const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
+  const poolDataCacheOrApi = useMemo(() => poolData ?? poolDataCache, [poolData, poolDataCache])
 
   useEffect(() => {
-    if (!rChainId || !poolId || curveApi?.chainId !== rChainId || !haveAllPools || poolData) return
+    if (!rChainId || !poolId || curveApi?.chainId !== rChainId || !haveAllPools || poolData || poolDataCache) return
     fetchNewPool(curveApi, poolId)
       .then(found => setPoolNotFound(!found))
       .catch(() => setPoolNotFound(true))
-  }, [curveApi, fetchNewPool, haveAllPools, network, poolId, poolData, push, rChainId])
+  }, [curveApi, fetchNewPool, haveAllPools, poolId, poolData, poolDataCache, rChainId])
 
   /**
    * Blacklisted pools are excluded from the pools mapper during initialization,
@@ -54,26 +52,38 @@ export const PagePool = () => {
    * the lookup will succeed or fail deterministically, and the `useEffect` above
    * will set `poolNotFound` accordingly.
    */
-  const { data: blacklist } = usePoolsBlacklist({ blockchainId: networkId as Chain })
+  const poolAddress = isAddress(rPoolIdOrAddress, {
+    strict: false /* address comes from URL which might be lowercase */,
+  })
+    ? rPoolIdOrAddress
+    : undefined
+  const { data: blacklist, isLoading: isPoolsBlacklistLoading } = usePoolsBlacklist({
+    blockchainId: networkId as Chain,
+  })
   const isBlacklisted = useMemo(
-    () =>
-      isAddress(rPoolIdOrAddress, { strict: false /* address comes from URL which might be lowercase */ }) &&
-      blacklist?.some(badPool => isAddressEqual(badPool, rPoolIdOrAddress)),
-    [blacklist, rPoolIdOrAddress],
+    () => poolAddress != null && blacklist?.some(badPool => isAddressEqual(badPool, poolAddress)),
+    [blacklist, poolAddress],
   )
+  const isPoolAddressNotFound =
+    poolAddress != null && haveAllPools && !isPoolsBlacklistLoading && !poolId && !isBlacklisted
+  const poolLookupError =
+    poolNotFound || isPoolAddressNotFound ? new Error(`${t`Pool`} ${rPoolIdOrAddress} ${t`Not Found`}`) : null
+  const poolQuery = q({
+    data: poolDataCacheOrApi,
+    isLoading: poolDataCacheOrApi == null && poolLookupError == null,
+    error: poolLookupError,
+  })
 
-  return poolNotFound || isBlacklisted ? (
+  return poolQuery.error || isBlacklisted ? (
     <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
   ) : (
-    poolId && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
-      <Transfer
-        curve={curveApi}
-        params={props}
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        routerParams={{ rChainId, rPoolIdOrAddress }}
-        hasDepositAndStake={hasDepositAndStake}
-      />
-    )
+    <Transfer
+      curve={curveApi?.chainId === rChainId ? curveApi : null}
+      params={props}
+      poolData={poolData}
+      poolQuery={poolQuery}
+      routerParams={{ rChainId, rPoolIdOrAddress }}
+      hasDepositAndStake={hasDepositAndStake}
+    />
   )
 }

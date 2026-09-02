@@ -9,17 +9,18 @@ import { useNetworks } from '../entities/networks'
 
 type PoolTotalStaked = State['pools']['stakedMapper'][string]
 
-export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): PoolTotalStaked | undefined => {
+export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi | undefined): PoolTotalStaked | undefined => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
   const { curveApi = null } = useCurve()
   const { provider: walletProvider } = useWallet()
-  const staked = useStore(state => state.pools.stakedMapper[address])
+  const staked = useStore(state => (address ? state.pools.stakedMapper[address] : undefined))
   const setStateByActiveKey = useStore(state => state.pools.setStateByActiveKey)
   const { data: networks } = useNetworks()
   const { rpcUrl } = (curveApi && networks[curveApi.chainId]) ?? {}
 
   const updateTotalStakeValue = useCallback(
     (value: { totalStakedPercent: string | number; gaugeTotalSupply: number | string }) => {
+      if (!address) return
       setStateByActiveKey('stakedMapper', address, { ...value, timestamp: Date.now() })
     },
     [address, setStateByActiveKey],
@@ -63,7 +64,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   useEffect(() => {
     const shouldCallApi = staked?.timestamp ? dayjs().diff(staked.timestamp, 'seconds') > 30 : true
 
-    if (address && rpcUrl && shouldCallApi) {
+    if (address && lpToken && gauge && rpcUrl && shouldCallApi) {
       void (async () => {
         const provider = walletProvider ?? new JsonRpcProvider(rpcUrl)
         const gaugeContract = isValidAddress(gauge.address)

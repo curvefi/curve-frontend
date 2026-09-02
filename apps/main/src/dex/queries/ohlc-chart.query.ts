@@ -18,7 +18,7 @@ type DexOhlcQueryParams = {
   chartSelection: ChartSelection
   enabled?: boolean
   interval: number
-  poolAddress: string
+  poolAddress: string | undefined
   timeOption: TimeOption
   units: 'minute' | 'hour' | 'day'
 }
@@ -55,11 +55,13 @@ const fetchDexOhlc = (
   }: DexOhlcQueryParams & OhlcPageParam & { chain: Chain },
   signal: AbortSignal,
 ) => {
+  const validPoolAddress = assert(poolAddress, t`Cannot fetch DEX OHLC data without a pool address.`)
+
   if (chartSelection.type === 'pair') {
     return getOHLC(
       {
         chain,
-        poolAddress,
+        poolAddress: validPoolAddress,
         mainToken: chartSelection.mainToken.address,
         referenceToken: chartSelection.refToken.address,
         interval,
@@ -74,7 +76,7 @@ const fetchDexOhlc = (
   return getLpOHLC(
     {
       chain,
-      poolAddress,
+      poolAddress: validPoolAddress,
       priceUnits: LP_PRICE_UNITS_BY_CHART_SELECTION[chartSelection.type],
       interval,
       units,

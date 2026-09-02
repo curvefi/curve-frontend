@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react'
-import type { Address } from 'viem'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { aprToPoolApy } from '@/dex/features/pool-list/cells/utils'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
+import type { PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { getPoolAddress } from '@/dex/utils'
 import type { Chain } from '@curvefi/prices-api'
+import { combineQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
 import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
@@ -20,7 +22,7 @@ import {
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery } from '@evm-ui/types/util'
+import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { decimal, formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
@@ -48,11 +50,12 @@ const SERIES_CONFIG = [
 
 export const PoolHistoricalBaseRateChart = ({
   blockchainId,
-  poolAddress,
+  poolQuery,
 }: {
   blockchainId: string
-  poolAddress: Address
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
 }) => {
+  const poolAddress = getPoolAddress(poolQuery.data)
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<BaseRateSeriesKey[]>(() => SERIES_CONFIG.map(({ key }) => key))
 
@@ -76,6 +79,12 @@ export const PoolHistoricalBaseRateChart = ({
 
   // Current metric values are based on pool list data to avoid mismatches, and is also updated more frequently than snapshots
   const currentPool = usePoolPricesApi({ blockchainId: chain, poolAddress })
+  const currentDailyBaseApy = combineQueries([poolQuery, currentPool], (_pool, pool) =>
+    aprToPoolApy(pool.baseDailyApr * 100),
+  )
+  const currentWeeklyBaseApy = combineQueries([poolQuery, currentPool], (_pool, pool) =>
+    aprToPoolApy(pool.baseWeeklyApr * 100),
+  )
 
   const {
     design: { Color },
@@ -114,7 +123,7 @@ export const PoolHistoricalBaseRateChart = ({
             options={timeOptions}
             activeOption={timeOption}
             setActiveOption={setTimeOption}
-            isLoading={snapshots.isLoading}
+            isLoading={poolQuery.isLoading || snapshots.isLoading}
           />
         }
       />
@@ -129,47 +138,50 @@ export const PoolHistoricalBaseRateChart = ({
           <Metric
             category={METRIC_CATEGORY}
             label={t`Current daily base APY`}
-            value={mapQuery(currentPool, pool => aprToPoolApy(pool.baseDailyApr * 100))}
+            value={currentDailyBaseApy}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             category={METRIC_CATEGORY}
             label={t`Current weekly base APY`}
-            value={mapQuery(currentPool, pool => aprToPoolApy(pool.baseWeeklyApr * 100))}
+            value={currentWeeklyBaseApy}
             valueOptions={{ unit: 'percentage' }}
           />
         </Stack>
         <ChartStateWrapper
           height={Height.shortChart}
-          isLoading={ratePoints.isLoading}
+          isLoading={poolQuery.isLoading || ratePoints.isLoading}
+          isEmpty={ratePoints.data == null || ratePoints.data.length === 0}
           error={ratePoints.error}
           errorMessage={t`Unable to fetch historical base rate data.`}
         >
-          <EChartsLineChart<BaseRateChartPoint, BaseRateSeriesKey, 'timestamp'>
-            data={ratePoints.data ?? []}
-            height={Height.shortChart}
-            xKey="timestamp"
-            series={series}
-            visibleSeries={visibleSeries}
-            xTickFormatter={value => formatDate(value)}
-            yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
-            yPaddingRatio={0.05}
-            renderTooltip={({ datum, visibleSeries: activeSeries }) => (
-              <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
-                <ChartTooltipSeriesGroup>
-                  {activeSeries.map(activeSeriesItem => (
-                    <ChartTooltipSeriesRow
-                      key={activeSeriesItem.key}
-                      label={activeSeriesItem.label}
-                      lineColor={activeSeriesItem.color}
-                      dash={activeSeriesItem.dash}
-                      value={formatNumber(datum[activeSeriesItem.key], 'percent.rate')}
-                    />
-                  ))}
-                </ChartTooltipSeriesGroup>
-              </ChartTooltipShell>
-            )}
-          />
+          {ratePoints.data && (
+            <EChartsLineChart<BaseRateChartPoint, BaseRateSeriesKey, 'timestamp'>
+              data={ratePoints.data}
+              height={Height.shortChart}
+              xKey="timestamp"
+              series={series}
+              visibleSeries={visibleSeries}
+              xTickFormatter={value => formatDate(value)}
+              yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
+              yPaddingRatio={0.05}
+              renderTooltip={({ datum, visibleSeries: activeSeries }) => (
+                <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
+                  <ChartTooltipSeriesGroup>
+                    {activeSeries.map(activeSeriesItem => (
+                      <ChartTooltipSeriesRow
+                        key={activeSeriesItem.key}
+                        label={activeSeriesItem.label}
+                        lineColor={activeSeriesItem.color}
+                        dash={activeSeriesItem.dash}
+                        value={formatNumber(datum[activeSeriesItem.key], 'percent.rate')}
+                      />
+                    ))}
+                  </ChartTooltipSeriesGroup>
+                </ChartTooltipShell>
+              )}
+            />
+          )}
         </ChartStateWrapper>
         <ChartFooter legendSets={legendSets} />
       </CardContent>

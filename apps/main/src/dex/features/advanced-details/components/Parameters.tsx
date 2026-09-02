@@ -1,16 +1,17 @@
-import { type Address } from 'viem'
 import { formatCryptoA, FXSWAP } from '@/dex/components/PageCreatePool/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { getPoolAddress } from '@/dex/utils'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
+import { combineQueries } from '@evm-ui/lib'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { fallbackQ, mapQuery } from '@evm-ui/types/util'
+import { fallbackQ, mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { amount, Chain, formatNumber } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
@@ -24,93 +25,105 @@ const { Spacing } = SizesAndSpaces
 
 export const Parameters = ({
   chainId,
-  poolId,
-  poolDataCacheOrApi,
+  poolQuery,
 }: {
   chainId: ChainId
-  poolId: string
-  poolDataCacheOrApi: PoolDataCacheOrApi
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
 }) => {
-  const poolAddress = poolDataCacheOrApi.pool.address as Address
+  const poolDataCacheOrApi = poolQuery.data
+  const poolId = poolDataCacheOrApi?.pool.id
+  const poolAddress = getPoolAddress(poolDataCacheOrApi)
   const { data: network } = useNetworkByChain({ chainId })
   const chain = network.networkId as BlockchainId
   const metadata = usePoolMetadata({ chain, poolAddress })
   const parameters = usePoolParameters({ chainId, poolId })
   const snapshots = usePoolSnapshots({ chain, poolAddress })
+  const poolParameters = combineQueries([poolQuery, parameters], (_pool, parameters) => parameters)
+  const poolSnapshots = combineQueries([poolQuery, snapshots], (_pool, snapshots) => snapshots)
   const snapshotData = snapshots.data?.[0]
   const isFxSwap = metadata.data?.hasDonations ?? false
-  const { A, initial_A, initial_A_time, future_A, future_A_time, gamma, adminFee = '' } = parameters.data ?? {}
+  const { A, initial_A, initial_A_time, future_A, future_A_time, gamma, adminFee } = parameters.data ?? {}
+  const isLoadingPool = poolQuery.isLoading
 
   const formatADisplay = (a: number | string | undefined) =>
     formatNumber(amount(!isFxSwap || a == null ? a : formatCryptoA(a, FXSWAP)), { abbreviate: false, fallback: '-' })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-  const isEywaPool = chainId === Chain.Fantom && poolId.startsWith('factory-eywa')
+  const isEywaPool = chainId === Chain.Fantom && poolId?.startsWith('factory-eywa')
 
   const rampADetails = maybes([initial_A, future_A_time, future_A], (initial_A, future_A_time, future_A) => ({
     isFutureATimePassedToday: dayjs().isAfter(future_A_time, 'day'),
     isRampUp: Number(future_A) > Number(initial_A),
   }))
+  const ammFee = mapQuery(
+    fallbackQ(
+      mapQuery(poolParameters, ({ fee }) => fee),
+      mapQuery(poolSnapshots, ([snapshot]) => maybe(snapshot?.fee, fee => fee / 10 ** 8)),
+    ),
+    fee =>
+      formatNumber(amount(fee), {
+        maximumFractionDigits: 4,
+        unit: 'percentage',
+        abbreviate: false,
+        fallback: '-',
+      }),
+  )
+  const daoFee = mapQuery(poolParameters, () =>
+    formatNumber(amount(isEywaPool && adminFee != null ? +adminFee / 2 : adminFee), {
+      maximumFractionDigits: 4,
+      unit: 'percentage',
+      abbreviate: false,
+      fallback: '-',
+    }),
+  )
+  const virtualPrice = mapQuery(
+    fallbackQ(
+      mapQuery(poolParameters, ({ virtualPrice }) => virtualPrice),
+      mapQuery(poolSnapshots, ([snapshot]) => maybe(snapshot?.virtualPrice, value => value / 10 ** 18)),
+    ),
+    value =>
+      formatNumber(amount(value), {
+        maximumFractionDigits: 8,
+        abbreviate: false,
+        fallback: '-',
+      }),
+  )
+  const amplificationFactor = mapQuery(
+    fallbackQ(
+      mapQuery(poolParameters, ({ A }) => A),
+      mapQuery(poolSnapshots, ([snapshot]) => maybe(snapshot?.a, a => a)),
+    ),
+    formatADisplay,
+  )
 
   return (
     <Card size="inline">
       <CardHeader title={t`Parameters`} />
       <CardContent component={Stack}>
         <Section>
-          <ActionInfo
-            label={t`AMM fee`}
-            value={mapQuery(
-              fallbackQ(
-                mapQuery(parameters, ({ fee }) => fee),
-                mapQuery(snapshots, ([snapshot]) => maybe(snapshot?.fee, fee => fee / 10 ** 8)),
-              ),
-              fee =>
-                formatNumber(amount(fee), {
-                  maximumFractionDigits: 4,
-                  unit: 'percentage',
-                  abbreviate: false,
-                  fallback: '-',
-                }),
-            )}
-          />
+          <ActionInfo label={t`AMM fee`} value={ammFee} />
 
           <ActionInfo
             label={t`DAO fee`}
             valueTooltip={t`The total fee on each trade is split in two parts: one part goes to the pool's Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
-            value={mapQuery(parameters, () =>
-              formatNumber(amount(isEywaPool ? +adminFee / 2 : adminFee), {
-                maximumFractionDigits: 4,
-                unit: 'percentage',
-                abbreviate: false,
-                fallback: '-',
-              }),
-            )}
+            value={daoFee}
           />
 
-          {isEywaPool && <ActionInfo label={t`EYWA fee`} value={mapQuery(parameters, () => +adminFee / 2)} />}
+          {isEywaPool && adminFee != null && (
+            <ActionInfo label={t`EYWA fee`} value={mapQuery(parameters, () => +adminFee / 2)} />
+          )}
 
           <ActionInfo
             label={t`Virtual price`}
-            value={mapQuery(
-              fallbackQ(
-                mapQuery(parameters, ({ virtualPrice }) => virtualPrice),
-                mapQuery(snapshots, ([snapshot]) => maybe(snapshot?.virtualPrice, value => value / 10 ** 18)),
-              ),
-              value =>
-                formatNumber(amount(value), {
-                  maximumFractionDigits: 8,
-                  abbreviate: false,
-                  fallback: '-',
-                }),
-            )}
+            value={virtualPrice}
             valueTooltip={t`Measures pool growth; this is not a dollar value`}
           />
         </Section>
 
         <Section>
-          {(A != null || snapshotData?.a != null) && (
+          {(isLoadingPool || A != null || snapshotData?.a != null) && (
             <ActionInfo
               label={t`Amplification factor`}
-              value={formatADisplay(A ?? snapshotData?.a ?? undefined)}
+              value={amplificationFactor}
               valueTooltip={
                 <Stack sx={{ gap: Spacing.sm }}>
                   {t`Amplification coefficient chosen from fluctuation of prices around 1.`}

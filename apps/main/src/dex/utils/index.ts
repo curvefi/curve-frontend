@@ -1,9 +1,10 @@
 import { zeroAddress } from 'viem'
-import type { ChainId, NetworkConfig, Token } from '@/dex/types/main.types'
+import type { ChainId, NetworkConfig, PoolDataCacheOrApi, Token } from '@/dex/types/main.types'
 import type { TokenOption } from '@evm-ui/features/select-token'
 import { isDexPoolListV2Enabled } from '@evm-ui/hooks/useFeatureFlags'
 import { ReleaseChannel } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 
@@ -17,6 +18,9 @@ export function shortenTokenName(token: string) {
 }
 
 export const isValidAddress = (address: string) => address?.length === 42 && address !== zeroAddress
+
+export const getPoolAddress = <T extends PoolDataCacheOrApi | undefined>(pool: T) =>
+  maybe(pool, data => data.pool.address as Address)
 
 export const isHighSlippage = (slippage: number, maxSlippage: string) =>
   slippage < 0 && Math.abs(slippage) > Number(maxSlippage)

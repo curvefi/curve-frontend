@@ -1,11 +1,12 @@
-import { type Address } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { getPoolAddress } from '@/dex/utils'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
+import type { QueryProp } from '@evm-ui/types/util'
 import { amount, formatNumber } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -14,14 +15,14 @@ import Stack from '@mui/material/Stack'
 
 export const Prices = ({
   chainId,
-  poolId,
-  poolDataCacheOrApi,
+  poolQuery,
 }: {
   chainId: ChainId
-  poolId: string
-  poolDataCacheOrApi: PoolDataCacheOrApi
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
 }) => {
-  const poolAddress = poolDataCacheOrApi.pool.address as Address
+  const poolDataCacheOrApi = poolQuery.data
+  const poolId = poolDataCacheOrApi?.pool.id
+  const poolAddress = getPoolAddress(poolDataCacheOrApi)
   const { data: network } = useNetworkByChain({ chainId })
   const chain = network.networkId as BlockchainId
   const { data: parameters } = usePoolParameters({ chainId, poolId })
@@ -33,8 +34,7 @@ export const Prices = ({
   const priceScaleData = priceScale?.length ? priceScale : snapshotData?.priceScale?.map(price => price / 10 ** 18)
 
   // Curve price oracle/scale arrays omit the base token, so value index 0 belongs to token index 1.
-  const priceRows = poolDataCacheOrApi.tokens.slice(1).map((label, index) => ({
-    key: poolDataCacheOrApi.tokenAddresses[index + 1] ?? `${label}-${index + 1}`,
+  const priceRows = poolDataCacheOrApi?.tokens.slice(1).map((label, index) => ({
     label,
     index,
   }))
@@ -45,9 +45,9 @@ export const Prices = ({
         <Card size="inline">
           <CardHeader title={t`Price Oracle`} />
           <CardContent component={Stack}>
-            {priceRows.map(({ key, label, index }) => (
+            {priceRows?.map(({ label, index }) => (
               <ActionInfo
-                key={`price-oracle-${key}`}
+                key={`price-oracle-${index}`}
                 label={label}
                 value={formatNumber(amount(priceOracleData?.[index]), 'pool.parameter')}
               />
@@ -60,9 +60,9 @@ export const Prices = ({
         <Card size="inline">
           <CardHeader title={t`Price Scale`} />
           <CardContent component={Stack}>
-            {priceRows.map(({ key, label, index }) => (
+            {priceRows?.map(({ label, index }) => (
               <ActionInfo
-                key={`price-scale-${key}`}
+                key={`price-scale-${index}`}
                 label={label}
                 value={formatNumber(amount(priceScaleData?.[index]), 'pool.parameter')}
               />

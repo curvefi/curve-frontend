@@ -1,5 +1,5 @@
 import { type ReactNode, useMemo } from 'react'
-import { ChainId } from '@/dex/types/main.types'
+import { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
 import { ActivityTable, PoolLiquidityExpandedPanel, PoolTradesExpandedPanel } from '@evm-ui/features/activity-table'
 import { ChartWrapper } from '@evm-ui/features/candle-chart/ChartWrapper'
@@ -8,8 +8,8 @@ import { t } from '@evm-ui/lib/i18n'
 import { ChartHeader } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import type { QueryProp } from '@evm-ui/types/util'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { useOhlcChartState } from './hooks/useOhlcChartState'
 import { usePoolActivityEventsConfig } from './hooks/usePoolActivityEventsConfig'
 import { usePoolActivityTradesConfig } from './hooks/usePoolActivityTradesConfig'
@@ -18,6 +18,7 @@ const { Spacing } = SizesAndSpaces
 
 type OhlcTabsParams = {
   chart: ReturnType<typeof useOhlcChartState>
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
   liquidityTable: ReturnType<typeof usePoolActivityEventsConfig>
   tradesTable: ReturnType<typeof usePoolActivityTradesConfig>
 }
@@ -42,26 +43,31 @@ const TradesTab = ({ tradesTable }: OhlcTabsParams) => (
 
 const ChartTab = ({
   chart: { isLoading, setSelectedChart, setTimeOption, ohlcChartProps, flipChart },
-}: OhlcTabsParams) => (
-  <Stack sx={{ gap: Spacing.md, padding: Spacing.sm }}>
-    <ChartHeader
-      flipChart={flipChart}
-      chartOptionVariant="select"
-      chartSelections={{
-        selections: ohlcChartProps.selectChartList,
-        activeSelection: ohlcChartProps.selectedChartKey,
-        setActiveSelection: setSelectedChart,
-      }}
-      timeOption={{
-        options: TIME_OPTIONS,
-        activeOption: ohlcChartProps.timeOption,
-        setActiveOption: setTimeOption,
-      }}
-      isLoading={isLoading}
-    />
-    <ChartWrapper {...ohlcChartProps} />
-  </Stack>
-)
+  poolQuery,
+}: OhlcTabsParams) => {
+  const isLoadingChart = poolQuery.isLoading || isLoading
+
+  return (
+    <Stack sx={{ gap: Spacing.md, padding: Spacing.sm }}>
+      <ChartHeader
+        flipChart={flipChart}
+        chartOptionVariant="select"
+        chartSelections={{
+          selections: ohlcChartProps.selectChartList,
+          activeSelection: ohlcChartProps.selectedChartKey,
+          setActiveSelection: setSelectedChart,
+        }}
+        timeOption={{
+          options: TIME_OPTIONS,
+          activeOption: ohlcChartProps.timeOption,
+          setActiveOption: setTimeOption,
+        }}
+        isLoading={isLoadingChart}
+      />
+      <ChartWrapper {...ohlcChartProps} isLoading={isLoadingChart} />
+    </Stack>
+  )
+}
 
 const menu = [
   { value: 'chart', label: t`Chart`, component: ChartTab },
@@ -75,21 +81,24 @@ const OhlcTabsContent = ({ children }: { children: ReactNode }) => (
 
 export const OhlcAndActivityComp = ({
   rChainId,
-  poolAddress,
+  poolQuery,
   pricesApiPoolData,
 }: {
   rChainId: ChainId
-  poolAddress: Address
-  pricesApiPoolData: Pool
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
+  pricesApiPoolData?: Pool
 }) => {
   const chart = useOhlcChartState({ rChainId, pricesApiPoolData })
-  const liquidityTable = usePoolActivityEventsConfig({ chainId: rChainId, poolAddress })
-  const tradesTable = usePoolActivityTradesConfig({ chainId: rChainId, poolAddress })
+  const liquidityTable = usePoolActivityEventsConfig({ chainId: rChainId, poolQuery })
+  const tradesTable = usePoolActivityTradesConfig({ chainId: rChainId, poolQuery })
   return (
     <Stack>
       <Tabs
         menu={menu}
-        params={useMemo(() => ({ chart, liquidityTable, tradesTable }), [chart, liquidityTable, tradesTable])}
+        params={useMemo(
+          () => ({ chart, liquidityTable, poolQuery, tradesTable }),
+          [chart, liquidityTable, poolQuery, tradesTable],
+        )}
         variant="contained"
         ContentWrapper={OhlcTabsContent}
       />

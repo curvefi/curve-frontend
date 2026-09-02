@@ -1,16 +1,17 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import { type Address } from 'viem'
 import { BaseApyTooltipContent } from '@/dex/components/BaseApyTooltipContent'
 import { CrvApyTooltipContent } from '@/dex/components/CrvApyTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { getPoolAddress } from '@/dex/utils'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
+import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { AVERAGE_CATEGORIES, Chain } from '@evm-ui/utils'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils/address'
 import { aprToApy } from '@evm-ui/utils/rates'
@@ -19,20 +20,26 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/columns.definitions'
 
 const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
+export type YieldBreakdownResult = {
+  maxBoostTotal: number | undefined
+  query: QueryProp<YieldBreakdownRow[]>
+  total: number
+  rows: YieldBreakdownRow[]
+}
 
 export const useYieldBreakdown = ({
   chainId,
-  poolDataCacheOrApi,
-  poolId,
+  poolQuery,
 }: {
   chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-  poolId: string
-}) => {
-  const poolAddress = poolDataCacheOrApi.pool.address as Address
-  const gaugeIsKilled = !!poolDataCacheOrApi.gauge.isKilled
+  poolQuery: QueryProp<PoolDataCacheOrApi | undefined>
+}): YieldBreakdownResult => {
+  const poolDataCacheOrApi = poolQuery.data
+  const poolId = poolDataCacheOrApi?.pool.id
+  const poolAddress = getPoolAddress(poolDataCacheOrApi)
+  const gaugeIsKilled = !!poolDataCacheOrApi?.gauge.isKilled
   const { data: network } = useNetworkByChain({ chainId })
-  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId])
+  const rewardsApy = useStore(state => (poolId ? state.pools.rewardsApyMapper[chainId]?.[poolId] : undefined))
 
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network?.networkId,
@@ -41,13 +48,12 @@ export const useYieldBreakdown = ({
 
   // For some reason it might be curve-js returns no token price, so we'll try to fall back to our own token rates query.
   const missingTokenRates = useMemo(
-    () =>
-      rewardsApy?.other?.flatMap(({ tokenAddress, tokenPrice }) => (tokenPrice == null ? [tokenAddress] : [])) ?? [],
+    () => rewardsApy?.other?.flatMap(({ tokenAddress, tokenPrice }) => (tokenPrice == null ? [tokenAddress] : [])),
     [rewardsApy?.other],
   )
   const { data: fallbackTokenRates } = useTokenUsdRates(
     { chainId, tokenAddresses: missingTokenRates },
-    missingTokenRates.length > 0,
+    missingTokenRates != null && missingTokenRates.length > 0,
   )
 
   const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
@@ -148,7 +154,8 @@ export const useYieldBreakdown = ({
   const total = useMemo(() => sum(rows.map(row => row.apy)), [rows])
 
   return {
-    maxBoostTotal: maybe(crvApyRange, ({ unboostedApy, maximumApy }) => total - unboostedApy + maximumApy) ?? 0,
+    maxBoostTotal: maybe(crvApyRange, ({ unboostedApy, maximumApy }) => total - unboostedApy + maximumApy),
+    query: mapQuery(poolQuery, () => rows),
     total,
     rows,
   }
