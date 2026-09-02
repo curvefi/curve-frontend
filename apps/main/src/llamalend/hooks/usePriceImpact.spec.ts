@@ -1,34 +1,34 @@
 import { describe, expect, it } from 'vitest'
-import { calculatePriceImpact } from './useMarketRoutes'
+import { calculatePriceImpact } from './usePriceImpact.utils'
 
 describe('calculatePriceImpact', () => {
-  it('values yield-bearing output tokens in USD', () => {
+  it('returns the rate deterioration from the tiny reference quote', () => {
     expect(
       Number(
         calculatePriceImpact({
           selectedAmountIn: '5000000000',
-          selectedAmountOut: '4000000000',
+          selectedAmountOut: '3800000000000000000000',
+          referenceAmountIn: '100000',
+          referenceAmountOut: '80000000000000000',
           tokenInDecimals: 6,
-          tokenOutDecimals: 6,
-          tokenInUsdRate: '1',
-          tokenOutUsdRate: '1.25',
+          tokenOutDecimals: 18,
         }),
       ),
-    ).toBe(0)
+    ).toBeCloseTo(5)
   })
 
-  it('returns the loss in USD value', () => {
+  it('clamps improved execution to zero', () => {
     expect(
       Number(
         calculatePriceImpact({
           selectedAmountIn: '1000000000',
-          selectedAmountOut: '900000000',
+          selectedAmountOut: '1010000000',
+          referenceAmountIn: '100000',
+          referenceAmountOut: '100000',
           tokenInDecimals: 6,
           tokenOutDecimals: 6,
-          tokenInUsdRate: '1',
-          tokenOutUsdRate: '1.1',
         }),
       ),
-    ).toBeCloseTo(1)
+    ).toBe(0)
   })
 })

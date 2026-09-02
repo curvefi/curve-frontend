@@ -12,7 +12,7 @@ import {
 } from '@evm-ui/entities/router-api'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { q, type QueryProp } from '@evm-ui/types/util'
-import { decimalCompare, decimalMax, toWei, decimalDiv, decimalMinus, decimalMultiply, fromWei } from '@evm-ui/utils'
+import { decimalCompare, decimalMax, toWei } from '@evm-ui/utils'
 import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import type { BaseConfig } from '@legacy-ui/utils'
 import { Address } from '@primitives/address.utils'
@@ -38,27 +38,6 @@ export type MarketRoutes = {
 const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
   decimalCompare(decimalMax(...b.amountOut) ?? '0', decimalMax(...a.amountOut) ?? '0') ||
   (a.priceImpact ?? 100) - (b.priceImpact ?? 100)
-
-export const calculatePriceImpact = ({
-  selectedAmountIn,
-  selectedAmountOut,
-  tokenInDecimals,
-  tokenOutDecimals,
-  tokenInUsdRate,
-  tokenOutUsdRate,
-}: {
-  selectedAmountIn: Decimal
-  selectedAmountOut: Decimal
-  tokenInDecimals: number
-  tokenOutDecimals: number
-  tokenInUsdRate: Decimal
-  tokenOutUsdRate: Decimal
-}) => {
-  const amountInUsd = decimalMultiply(fromWei(selectedAmountIn, tokenInDecimals), tokenInUsdRate)
-  const amountOutUsd = decimalMultiply(fromWei(selectedAmountOut, tokenOutDecimals), tokenOutUsdRate)
-  const ratio = decimalDiv(amountOutUsd, amountInUsd)
-  return decimalMax('0', decimalMultiply(decimalMinus('1', ratio), '100'))
-}
 
 /**
  * Queries and converts the routes for leveraging on llamalend markets.
@@ -133,7 +112,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   useEffect(() => void onChangeEffect(selectedRoute), [selectedRoute])
 
   const selectedRouter = chosenRouter && queries[chosenRouter].enabled ? chosenRouter : selectedRoute?.router
-  const priceImpact = usePriceImpact({ selectedRoute, tokenIn, tokenOut, chainId }, routesEnabled)
+  const priceImpact = usePriceImpact({ params, selectedRoute, tokenIn, tokenOut, chainId }, routesEnabled)
   const tokenOutUsdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
 
   return {
