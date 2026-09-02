@@ -6,12 +6,14 @@
     { "path": "./apps/main" },
     { "path": "./apps/merkl-api" },
     { "path": "./apps/router-api" },
+    { "path": "./apps/stellar" },
     { "path": "./packages/api-server" },
     { "path": "./packages/evm-ui" },
     { "path": "./packages/external-rewards" },
     { "path": "./packages/primitives" },
     { "path": "./packages/prices-api" },
     { "path": "./packages/legacy-ui" },
+    { "path": "./packages/ui" },
     { "path": "./tests" }
   ]
 }

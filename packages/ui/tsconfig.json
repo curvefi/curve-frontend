@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@primitives/*": ["../primitives/src/*"]
+    }
+  },
+  "include": ["src/**/*.d.ts"]
+}

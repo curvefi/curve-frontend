@@ -15,7 +15,6 @@ const {
   GITHUB_SHA,
   SENTRY_APPLICATION_KEY = 'curve-frontend',
 } = process.env
-const shouldUploadSourcemaps = !!SENTRY_PROJECT || !!GITHUB_SHA
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
@@ -63,6 +62,7 @@ export default defineConfig(({ command }) => ({
       { find: '@', replacement: resolve(__dirname, './src') },
       { find: '@legacy-ui', replacement: resolve(__dirname, '../../packages/legacy-ui/src/') },
       { find: '@evm-ui', replacement: resolve(__dirname, '../../packages/evm-ui/src') },
+      { find: '@ui', replacement: resolve(__dirname, '../../packages/ui/src') },
       { find: '@external-rewards', replacement: resolve(__dirname, '../../packages/external-rewards/src/index.ts') },
       { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
       { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
