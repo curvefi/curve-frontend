@@ -82,10 +82,7 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
             <StyledExternalLink href={scanAddressPath(chainId, gaugeData.address)}>
               {shortenAddress(gaugeData.address)}
             </StyledExternalLink>
-            <ExternalLinkIconButton
-              href={scanAddressPath(chainId, gaugeData.address)}
-              tooltip={t`View on explorer`}
-            />
+            <ExternalLinkIconButton href={scanAddressPath(chainId, gaugeData.address)} tooltip={t`View on explorer`} />
             <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
           </Box>
           <Chip
