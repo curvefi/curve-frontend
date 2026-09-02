@@ -3,7 +3,10 @@ import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import type { MigrationOptions } from '@evm-ui/hooks/useStoredState'
-import { useVisibilitySettings } from '@evm-ui/shared/ui/DataTable/hooks/useVisibilitySettings'
+import {
+  preserveVisibilityChoices,
+  useVisibilitySettings,
+} from '@evm-ui/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
 import { mapRecord } from '@primitives/objects.utils'
 import { SortingState } from '@tanstack/react-table'
@@ -17,28 +20,23 @@ import {
 
 type MarketColumnVariant = keyof typeof MARKETS_COLUMN_OPTIONS
 
-/** Preserve users' saved visibility choices while adding newly introduced column options from defaults. */
-const mergeVisibilityGroups = (
-  oldGroups: VisibilityGroup<MarketColumnId>[] | undefined,
-  initialGroups: VisibilityGroup<MarketColumnId>[],
-): VisibilityGroup<MarketColumnId>[] =>
-  initialGroups.map((initialGroup, index) => {
-    const oldGroup = oldGroups?.find(group => group.label === initialGroup.label) ?? oldGroups?.[index]
-    return oldGroup
-      ? {
-          ...initialGroup,
-          options: initialGroup.options.map(initialOption => {
-            const oldOption =
-              oldGroup.options.find(oldOption => isEqual(oldOption.columns, initialOption.columns)) ?? initialOption
-            return isEqual(initialOption.columns, [MarketColumnId.NetBorrowRate])
-              ? { ...oldOption, active: initialOption.active }
-              : isEqual(initialOption.columns, [MarketColumnId.BorrowRate])
-                ? { ...oldOption, active: false }
-                : oldOption
-          }),
-        }
-      : initialGroup
-  })
+const resolveMarketActive = (
+  preservedActive: boolean,
+  currentOption: VisibilityGroup<MarketColumnId>['options'][number],
+) =>
+  isEqual(currentOption.columns, [MarketColumnId.NetBorrowRate])
+    ? currentOption.active
+    : isEqual(currentOption.columns, [MarketColumnId.BorrowRate])
+      ? false
+      : preservedActive
+
+const migration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
+  version: 6,
+  migrate: (oldValue, initialValue) =>
+    mapRecord(initialValue, (variant, currentGroups) =>
+      preserveVisibilityChoices(oldValue[variant], currentGroups, resolveMarketActive),
+    ),
+}
 
 export const getMarketsColumnVariant = (
   userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined,
@@ -46,12 +44,6 @@ export const getMarketsColumnVariant = (
   userHasPositions == null // we treat undefined (loading),  and null (no positions at all) as the same variant
     ? 'noPositions'
     : 'hasPositions' // show the general market table, for users with positions
-
-const migration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 6,
-  migrate: (oldValue, initialValue) =>
-    mapRecord(initialValue, (variant, initialGroups) => mergeVisibilityGroups(oldValue[variant], initialGroups)),
-}
 
 /**
  * Hook to manage the visibility of columns in the markets table.
