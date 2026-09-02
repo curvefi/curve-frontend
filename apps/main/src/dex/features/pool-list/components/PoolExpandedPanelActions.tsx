@@ -10,15 +10,17 @@ export const PoolExpandedPanelActions: ExpandedPanelComponent<PoolRow> = ({ row 
   const pool = row.original
   const path = getPath({ network: pool.blockchainId }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
 
+  /** Pool form paths were removed; mobile expanded rows still need direct links to a specific pool form. */
   const actions = [
     {
       id: 'deposit',
       label: t`Deposit`,
-      href: path + ROUTE.PAGE_POOL_DEPOSIT,
+      href: path,
+      state: { defaultTab: 'deposit' },
       testId: 'pool-link-deposit',
     },
-    { id: 'withdraw', label: t`Withdraw`, href: path + ROUTE.PAGE_POOL_WITHDRAW },
-    { id: 'swap', label: t`Swap`, href: path + ROUTE.PAGE_SWAP },
+    { id: 'withdraw', label: t`Withdraw`, href: path, state: { defaultTab: 'withdraw' } },
+    { id: 'swap', label: t`Swap`, href: path, state: { defaultTab: 'swap' } },
     {
       id: 'copy-pool-address',
       label: t`Copy pool address`,

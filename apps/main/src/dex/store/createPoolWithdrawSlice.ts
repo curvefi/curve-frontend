@@ -31,7 +31,6 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   activeKey: string
   formEstGas: Record<string, FormEstGas>
-  formType: FormType
   formStatus: FormStatus
   formValues: FormValues
   maxLoading: number | null
@@ -70,14 +69,13 @@ export type PoolWithdrawSlice = {
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
     setStateByKey: <T>(key: StateKey, value: T) => void
     setStateByKeys: (SliceState: Partial<SliceState>) => void
-    resetState: (poolData: PoolData, formType: FormType) => void
+    resetState: (poolData: PoolData) => void
   }
 }
 
 const DEFAULT_STATE: SliceState = {
   activeKey: '',
   formEstGas: {},
-  formType: 'WITHDRAW',
   formStatus: DEFAULT_FORM_STATUS,
   formValues: DEFAULT_FORM_VALUES,
   maxLoading: null,
@@ -319,8 +317,6 @@ export const createPoolWithdrawSlice = (
       isSeed,
       maxSlippage,
     ) => {
-      if (get()[SLICE_KEY].formType !== formType) return
-
       // stored values
       const storedActiveKey = get()[SLICE_KEY].activeKey
       const storedFormValues = get()[SLICE_KEY].formValues
@@ -641,10 +637,9 @@ export const createPoolWithdrawSlice = (
     setStateByKeys: sliceState => {
       get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
-    resetState: ({ tokens, tokenAddresses, isWrapped }, formType) => {
+    resetState: ({ tokens, tokenAddresses, isWrapped }) => {
       get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
-        formType: formType || 'WITHDRAW',
         formValues: {
           ...DEFAULT_FORM_VALUES,
           isWrapped,

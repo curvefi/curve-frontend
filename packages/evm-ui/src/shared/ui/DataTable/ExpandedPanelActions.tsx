@@ -4,7 +4,7 @@ import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
 import { DotsVerticalIcon } from '@evm-ui/shared/icons/DotsVertical'
 import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { RouterLink, type RouterState } from '@evm-ui/shared/ui/RouterLink'
 import { DrawerHeader } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerHeader'
 import { DrawerItems } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
@@ -23,6 +23,7 @@ type ExpandedPanelAction = Pick<ButtonProps, 'color' | 'onClick' | 'size' | 'sx'
   id: string
   label: ReactNode
   href?: string
+  state?: RouterState
   testId?: string
   /** Keep this action always in the more-actions drawer */
   alwaysInKebabMenu?: boolean
@@ -35,7 +36,7 @@ const ExpandedPanelActionButton = ({
   action: ExpandedPanelAction
   onDrawerActionClick?: () => void
 }) => {
-  const { label, href, testId, sx, type, color, size, onClick } = action
+  const { label, href, state, testId, sx, type, color, size, onClick } = action
   const inDrawer = !!onDrawerActionClick
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -54,7 +55,7 @@ const ExpandedPanelActionButton = ({
   return href?.startsWith('https') ? (
     <ExternalLink {...sharedProps} href={href} label={label} />
   ) : href ? (
-    <Button {...(sharedProps as ButtonOwnProps)} component={RouterLink} href={href}>
+    <Button {...(sharedProps as ButtonOwnProps)} component={RouterLink} href={href} state={state}>
       {label}
     </Button>
   ) : (

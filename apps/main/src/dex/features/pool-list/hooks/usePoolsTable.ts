@@ -119,7 +119,7 @@ const enrichPoolRow = (
   campaigns: campaignsByAddress?.[pool.address.toLocaleLowerCase()] ?? [],
   hasPosition,
   hasVyperVulnerability: isVyperVulnerablePool(chainId, pool.address),
-  url: getPath({ network: blockchainId }, `${DEX_ROUTES.PAGE_POOLS}/${pool.address}/deposit`),
+  url: getPath({ network: blockchainId }, `${DEX_ROUTES.PAGE_POOLS}/${pool.address}`),
 })
 
 /** Fetches the selected pool-list source and maps its API rows into table rows. */

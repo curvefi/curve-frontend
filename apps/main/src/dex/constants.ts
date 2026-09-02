@@ -16,9 +16,6 @@ export const ROUTE = {
   PAGE_LOCKER_CREATE: '/create',
   PAGE_LOCKER_ADJUST_CRV: '/adjust_crv',
   PAGE_LOCKER_ADJUST_DATE: '/adjust_date',
-  PAGE_POOL_DEPOSIT: '/deposit',
-  PAGE_POOL_WITHDRAW: '/withdraw',
-  PAGE_POOL_MANAGE: '/manage-gauge',
 } as const
 
 export const DEFAULT_NETWORK_CONFIG = {
