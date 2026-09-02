@@ -404,7 +404,7 @@ const useEstimateGas = (
   const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
   const gasInfo = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
   const network = maybe(chainId, chainId => networks[chainId])
-  const networkSymbol = maybe(chainId, chainId => getChainNativeCurrency(chainId).name)
+  const networkSymbol = maybe(chainId, chainId => getChainNativeCurrency(chainId).symbol)
   return useCombinedQueries(
     [estimate, gasInfo, ethRate],
     useCallback(

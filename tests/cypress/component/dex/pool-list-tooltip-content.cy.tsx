@@ -83,7 +83,7 @@ const createPool = (): PoolRow => ({
   poolType: undefined,
   tradingVolume24h: undefined,
   tvlUsd: undefined,
-  url: `/dex/ethereum/pools/${POOL_ADDRESS}/deposit`,
+  url: `/dex/ethereum/pools/${POOL_ADDRESS}`,
 })
 
 const mountContent = (content: ReactElement) =>

@@ -12,15 +12,17 @@ export const LegacyPoolExpandedPanelActions: ExpandedPanelComponent<LegacyPoolRo
   } = row.original
   const path = getPath({ network }, `${ROUTE.PAGE_POOLS}/${poolId}`)
 
+  /** Pool form paths were removed; mobile expanded rows still need direct links to a specific pool form. */
   const actions = [
     {
       id: 'deposit',
       label: t`Deposit`,
-      href: path + ROUTE.PAGE_POOL_DEPOSIT,
+      href: path,
+      state: { defaultTab: 'deposit' },
       testId: 'pool-link-deposit',
     },
-    { id: 'withdraw', label: t`Withdraw`, href: path + ROUTE.PAGE_POOL_WITHDRAW },
-    { id: 'swap', label: t`Swap`, href: path + ROUTE.PAGE_SWAP },
+    { id: 'withdraw', label: t`Withdraw`, href: path, state: { defaultTab: 'withdraw' } },
+    { id: 'swap', label: t`Swap`, href: path, state: { defaultTab: 'swap' } },
   ]
 
   return <ExpandedPanelActions actions={actions} />

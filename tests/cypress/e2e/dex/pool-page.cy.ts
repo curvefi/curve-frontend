@@ -10,15 +10,15 @@ describe('Pool page', () => {
     'ethereum/pools/factory-stable-ng-561',
     'arbitrum/pools/2pool',
     'plasma/pools/0x1e8d78e9b3f0152d54d32904b7933f1cfe439df1',
-  )}/deposit`
+  )}`
   const slippageType: SlippageType = path.includes('tricrypto') ? 'crypto' : 'stable'
   const slippageConfig = SLIPPAGE[slippageType]
   const formatSlippage = (value: string) => `${Number(value).toFixed(2)}%`
 
   it('should update slippage settings', () => {
     cy.visitWithoutTestConnector(path)
-    clickTab('pool-form-tab', 'deposit', API_LOAD_TIMEOUT)
-    cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('have.class', 'Mui-selected')
+    clickTab('tab', 'deposit', API_LOAD_TIMEOUT)
+    cy.get('[data-testid="tab-deposit"]', API_LOAD_TIMEOUT).should('have.class', 'Mui-selected')
     cy.get('[data-testid="borrow-slippage-value"]').contains(formatSlippage(slippageConfig.default))
     cy.get('[data-testid="slippage-settings-button"]').click()
     const [isPreset, value] = oneOf<[boolean, string]>(

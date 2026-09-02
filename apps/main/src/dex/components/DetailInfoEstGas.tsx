@@ -35,7 +35,7 @@ export const DetailInfoEstGas = ({
   const { data: network } = useNetworkByChain({ chainId })
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
-  const nativeSymbol = getChainNativeCurrency(chainId).name
+  const nativeSymbol = getChainNativeCurrency(chainId).symbol
 
   const { estGasCostUsd, tooltip } = useMemo(
     () => calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network, nativeSymbol),

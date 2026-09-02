@@ -274,7 +274,7 @@ describe('DEX Pools', () => {
       cy.get('[data-testid="dex-pool-active-filter-apy"]').should('be.visible')
     })
 
-    it('navigates to pool deposit page by clicking a row', () => {
+    it('navigates to pool page by clicking a row', () => {
       visitAndWait(width, height)
       cy.get('[data-testid^="data-table-row-"]').first().click()
       if (breakpoint === 'mobile') {
@@ -282,7 +282,7 @@ describe('DEX Pools', () => {
         cy.get('[data-testid="data-table-expansion-row"]').should('be.visible')
         cy.get('[data-testid="pool-link-deposit"]').click()
       }
-      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/\w+\/pools\/0x[0-9a-fA-F]{40}\/(deposit|swap)\/?$/)
+      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/\w+\/pools\/0x[0-9a-fA-F]{40}\/?$/)
       cy.title().should('match', /Curve - Pool - .* - Curve/)
     })
   })
@@ -309,7 +309,7 @@ describe('DEX Pools', () => {
     } else {
       cy.contains('[data-testid^="table-row-link-"]', filter).click()
     }
-    cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid="tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
     cy.window().then(win => win.history.go(-1))
     cy.url(API_LOAD_TIMEOUT).should('include', `?search=${filter}`)
   })

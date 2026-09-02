@@ -57,10 +57,7 @@ export const ChipPool = ({ blockchainId, poolId, poolName, poolAddress }: ChipPo
     <ChipPoolWrapper>
       <ChipPoolName>
         <RouterLink
-          href={getPath(
-            { network: blockchainId },
-            `${ROUTE.PAGE_POOLS}/${encodeURIComponent(poolId)}${ROUTE.PAGE_POOL_DEPOSIT}`,
-          )}
+          href={getPath({ network: blockchainId }, `${ROUTE.PAGE_POOLS}/${encodeURIComponent(poolId)}`)}
           sx={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}
         >
           {poolName}

@@ -53,7 +53,6 @@ type SliceState = {
   poolAddress: string
   formEstGas: Record<string, FormEstGas>
   formLpTokenExpected: Record<string, FormLpTokenExpected>
-  formType: FormType
   formStatus: FormStatus
   formValues: FormValues
   maxLoading: number | null
@@ -82,7 +81,7 @@ export type PoolDepositSlice = {
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
     setStateByKey: <T>(key: StateKey, value: T) => void
     setStateByKeys: (SliceState: Partial<SliceState>) => void
-    resetState: (poolData: PoolData, formType: FormType) => void
+    resetState: (poolData: PoolData) => void
   }
 }
 
@@ -91,7 +90,6 @@ const DEFAULT_STATE: SliceState = {
   poolAddress: '',
   formEstGas: {},
   formLpTokenExpected: {},
-  formType: 'DEPOSIT',
   formStatus: DEFAULT_FORM_STATUS,
   formValues: DEFAULT_FORM_VALUES,
   maxLoading: null,
@@ -625,10 +623,9 @@ export const createPoolDepositSlice = (
     setStateByKeys: sliceState => {
       get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
-    resetState: ({ tokens, tokenAddresses, isWrapped }, formType) => {
+    resetState: ({ tokens, tokenAddresses, isWrapped }) => {
       get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
-        formType,
         formValues: {
           ...DEFAULT_FORM_VALUES,
           isWrapped,

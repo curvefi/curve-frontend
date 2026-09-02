@@ -98,7 +98,7 @@ export function useLegacyPoolsTable({ blockchainId: network, chainId, isLite }: 
                 tvl: decimal(tvls?.[item.pool.id]),
                 hasPosition,
                 network,
-                url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}/deposit`),
+                url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}`),
                 tags: getLegacyPoolTags(!!hasPosition, item),
               }
             }),
