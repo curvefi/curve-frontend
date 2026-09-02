@@ -16,7 +16,7 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { useCallbackSync, useFormSync, useForm, useOnChangeCallback } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { mapQuery, type Range } from '@evm-ui/types/util'
-import type { BaseConfig } from '@legacy-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useMarketContext } from '../../market-context'
 
@@ -34,7 +34,7 @@ export const useRemoveCollateralForm = <
   network,
   onPricesUpdated,
 }: {
-  network: BaseConfig<NetworkName, ChainId>
+  network: NetworkDef<NetworkName, ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { market, marketId, tokens, userAddress } = useMarketContext<ChainId>()

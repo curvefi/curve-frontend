@@ -42,15 +42,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
     <Form
       {...form}
       onSubmit={onSubmit}
-      footer={
-        <ClosePositionInfoList
-          marketId={marketId}
-          tokens={tokens}
-          chainId={network.chainId}
-          networks={networks}
-          values={values}
-        />
-      }
+      footer={<ClosePositionInfoList marketId={marketId} tokens={tokens} chainId={network.chainId} values={values} />}
     >
       <DataTable
         category="form"

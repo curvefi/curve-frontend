@@ -23,7 +23,6 @@ import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { sleep } from '@primitives/promise.utils'
-import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -130,10 +129,8 @@ export const createQuickSwapSlice = (
 
         // get max amount for native token
         if (fromAddress.toLowerCase() === ethAddress) {
-          const networks = await fetchNetworks()
           const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
             chainId,
-            networks,
           })
           const firstBasePlusPriority = basePlusPriority?.[0]
 

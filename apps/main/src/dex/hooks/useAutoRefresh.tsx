@@ -19,7 +19,7 @@ export const useAutoRefresh = (chainId: number | undefined) => {
     [chainId, curveApi, isHydrated],
   )
 
-  useGasInfoAndUpdateLib({ chainId, networks })
+  useGasInfoAndUpdateLib({ chainId })
 
   usePageVisibleInterval(async () => {
     if (!curveApi || !poolIds || !chainId) return

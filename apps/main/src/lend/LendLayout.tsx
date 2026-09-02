@@ -11,7 +11,7 @@ export function LendLayout() {
   const chainId = networksIdMapper[blockchainId]
 
   useRedirectToEth(networks[chainId], blockchainId)
-  useGasInfoAndUpdateLib({ chainId, networks })
+  useGasInfoAndUpdateLib({ chainId })
 
   return (
     <>

@@ -44,7 +44,6 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
         <DepositSupplyInfoList
           form={form}
           params={params}
-          networks={networks}
           tokens={{ borrowToken }}
           controllerAddress={controllerAddress}
         />

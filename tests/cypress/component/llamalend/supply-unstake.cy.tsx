@@ -28,7 +28,7 @@ describe('UnstakeForm (mocked)', () => {
     const { input, market, llamaApi, expected, stubs } = createUnstakeScenario({ chainId })
 
     setLlamaApi(llamaApi)
-    setGasInfo({ chainId, networks: llamaNetworks })
+    setGasInfo({ chainId })
 
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi} market={market}>

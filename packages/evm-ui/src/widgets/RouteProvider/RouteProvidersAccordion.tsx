@@ -9,7 +9,6 @@ import { LoadingAnimation } from '@evm-ui/themes/design/0_primitives'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { decimalMax } from '@evm-ui/utils'
 import { RouteComparisonChip } from '@evm-ui/widgets/RouteProvider/RouteComparisonChip'
-import type { BaseConfig } from '@legacy-ui/utils'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -30,7 +29,6 @@ export type RouteProviderProps = {
   isExpanded: boolean
   onToggle: () => void
   onRefresh: () => void
-  networks: Record<number, BaseConfig>
   chainId: number
   providers: readonly RouteProvider[]
 }
@@ -45,7 +43,6 @@ export const RouteProvidersAccordion = ({
   isExpanded,
   onToggle,
   onRefresh,
-  networks,
   chainId,
   providers,
 }: RouteProviderProps) => {
@@ -121,7 +118,6 @@ export const RouteProvidersAccordion = ({
                 query={queries[provider]}
                 bestOutputAmount={maxAmountOut}
                 onSelect={onChange}
-                networks={networks}
                 chainId={chainId}
               />
             ))}

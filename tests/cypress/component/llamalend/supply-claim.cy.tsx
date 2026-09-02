@@ -46,7 +46,7 @@ describe('ClaimTab (mocked)', () => {
       })
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks: llamaNetworks })
+      setGasInfo({ chainId })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>

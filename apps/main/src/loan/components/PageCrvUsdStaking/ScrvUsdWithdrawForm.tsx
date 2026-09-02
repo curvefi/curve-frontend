@@ -21,11 +21,7 @@ export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
   const networkConfig = networks[chainId]
 
   return (
-    <Form
-      {...form}
-      onSubmit={onSubmit}
-      footer={<ScrvUsdWithdrawInfoList form={form} params={params} networks={networks} />}
-    >
+    <Form {...form} onSubmit={onSubmit} footer={<ScrvUsdWithdrawInfoList form={form} params={params} />}>
       <LoanFormTokenInput
         label={t`Amount to withdraw`}
         token={{ address: SCRVUSD_VAULT_ADDRESS, symbol: 'scrvUSD' }}
