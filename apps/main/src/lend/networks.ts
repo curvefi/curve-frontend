@@ -6,32 +6,15 @@ const DEFAULT_NETWORK_CONFIG = {
   hideMarketsInUI: {},
   marketListFilter: ['all', 'leverage', 'user'],
   marketListFilterType: ['borrow', 'lend'],
-  showInSelectNetwork: false,
   pricesData: false,
 }
 
 const networksConfig = {
-  [Chain.Ethereum]: {
-    hideMarketsInUI: { 'one-way-market-19': true },
-    showInSelectNetwork: true,
-    pricesData: true,
-  },
-  [Chain.Optimism]: {
-    showInSelectNetwork: true,
-    pricesData: true,
-  },
-  [Chain.Fraxtal]: {
-    showInSelectNetwork: true,
-    pricesData: true,
-  },
-  [Chain.Sonic]: {
-    showInSelectNetwork: true,
-    pricesData: true,
-  },
-  [Chain.Arbitrum]: {
-    showInSelectNetwork: true,
-    pricesData: true,
-  },
+  [Chain.Ethereum]: { hideMarketsInUI: { 'one-way-market-19': true }, pricesData: true },
+  [Chain.Optimism]: { pricesData: true },
+  [Chain.Fraxtal]: { pricesData: true },
+  [Chain.Sonic]: { pricesData: true },
+  [Chain.Arbitrum]: { pricesData: true },
 }
 
 export const { networks, networksIdMapper } = Object.entries(networksConfig).reduce(

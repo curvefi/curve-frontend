@@ -9,7 +9,6 @@ export type MarketUrlParams = NetworkUrlParams & { market: string }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
 export type NetworkConfig<TId extends string = string, TChainId extends number = number> = {
-  showInSelectNetwork: boolean
   hideMarketsInUI: Record<string, boolean>
   marketListFilter: string[]
   marketListFilterType: string[]

@@ -28,7 +28,6 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   isLite?: boolean
   blockchainId: TId
   chainId: TChainId
-  showInSelectNetwork: boolean
   showRouterSwap?: boolean // only for dex
 }
 
@@ -40,7 +39,7 @@ export type NetworkMapping<TId extends string = string, TChainId extends number 
 export const getBaseNetworksConfig = <TId extends string, ChainId extends number>(
   chainId: ChainId,
   networkConfig: { blockchainId: TId },
-): Omit<NetworkDef<TId>, 'showInSelectNetwork' | 'showRouterSwap'> => ({ ...networkConfig, chainId })
+): Omit<NetworkDef<TId>, 'showRouterSwap'> => ({ ...networkConfig, chainId })
 
 export const scanAddressPath = (chainId: number, hash: string) =>
   maybe(getChainBlockExplorer(chainId), url => `${url}/address/${hash}`)

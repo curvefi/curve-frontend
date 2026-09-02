@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useAutoRefresh } from '@/dex/hooks/useAutoRefresh'
 import type { UrlParams } from '@/dex/types/main.types'
 import { useParams } from '@evm-ui/hooks/router'
@@ -10,8 +11,9 @@ export function DexLayout() {
   const { network: blockchainId = 'ethereum' } = useParams<Partial<UrlParams>>()
   const { data: networks } = useNetworks()
   const network = recordValues(networks).find(n => n.blockchainId === blockchainId)
+  const supportedBlockchainIds = useMemo(() => recordValues(networks).map(network => network.blockchainId), [networks])
 
-  useRedirectToEth(network, blockchainId)
+  useRedirectToEth(blockchainId, supportedBlockchainIds)
   useAutoRefresh(network?.chainId)
 
   return <Outlet />

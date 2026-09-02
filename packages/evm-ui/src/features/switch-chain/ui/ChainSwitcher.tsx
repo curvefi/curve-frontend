@@ -10,12 +10,13 @@ import { t } from '@evm-ui/lib/i18n'
 import { type AppMenuOption, getCurrentNetwork } from '@evm-ui/shared/routes'
 import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import { ModalSettingsButton } from '@evm-ui/shared/ui/ModalSettingsButton'
+import { Chain } from '@evm-ui/utils'
 import { showToast } from '@evm-ui/widgets/Toast/toast.util'
 import { type NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import IconButton from '@mui/material/IconButton'
-import { maybes } from '@primitives/objects.utils'
+import { maybes, type PartialRecord } from '@primitives/objects.utils'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
@@ -31,6 +32,11 @@ const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
   dao: 'pool', // kind of irrelevant for tvl, since it only supports mainnet
   bridge: 'pool', // only shows lending chains in the form but shows all networks in selector
   analytics: 'pool', // only has crvUSD charts, but shows all networks in selector
+}
+
+// Sometimes a network has been defined and needs to be accessed for legacy purposes, but we want to hide it from the list for whatever reason.
+const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = {
+  dex: [Chain.ZkSync, Chain.Mantle, Chain.Tac /** Temporarily hidden as the chain's halted */],
 }
 
 const getTvl =
@@ -52,11 +58,13 @@ export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherP
   const options = useMemo(
     () =>
       lodash.orderBy(
-        Object.values(supportedNetworks).filter(networkConfig => networkConfig.showInSelectNetwork),
+        Object.values(supportedNetworks).filter(
+          networkConfig => !HIDE_CHAINS[currentMenu]?.includes(networkConfig.chainId),
+        ),
         [getTvl(tvls.data), 'name'],
         ['desc', 'asc'],
       ),
-    [supportedNetworks, tvls.data],
+    [currentMenu, supportedNetworks, tvls.data],
   )
 
   const onClick =

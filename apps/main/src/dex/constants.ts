@@ -25,7 +25,6 @@ export const DEFAULT_NETWORK_CONFIG = {
   poolIsWrappedOnly: {}, // show only wrapped pool data
   swap: { fromAddress: '', toAddress: '' },
   swapCustomRouteRedirect: {},
-  showInSelectNetwork: true,
   showRouterSwap: true,
   createQuickList: [],
   createDisabledTokens: [],

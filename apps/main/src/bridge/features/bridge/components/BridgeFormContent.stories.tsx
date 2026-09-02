@@ -6,7 +6,6 @@ import { TestQueryProvider } from '@evm-ui/lib/queries/test-query.provider.test'
 import { constQ, q } from '@evm-ui/types/util'
 import { Chain, decimal } from '@evm-ui/utils'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
-import type { NetworkDef } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BridgeActionInfos } from './BridgeActionInfos'
@@ -36,10 +35,10 @@ const SupportedNetworks: IFastBridgeNetwork[] = [
 ]
 
 // Mock networks for chain selection
-const BridgeNetworks: NetworkDef[] = [
-  { chainId: Chain.Arbitrum, blockchainId: 'arbitrum' } as NetworkDef,
-  { chainId: Chain.Optimism, blockchainId: 'optimism' } as NetworkDef,
-  { chainId: Chain.Fraxtal, blockchainId: 'fraxtal' } as NetworkDef,
+const BridgeNetworks = [
+  { chainId: Chain.Arbitrum, blockchainId: 'arbitrum' },
+  { chainId: Chain.Optimism, blockchainId: 'optimism' },
+  { chainId: Chain.Fraxtal, blockchainId: 'fraxtal' },
 ]
 
 const BridgeNetworkSymbols = {
