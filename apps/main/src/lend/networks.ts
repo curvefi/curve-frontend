@@ -6,7 +6,6 @@ const DEFAULT_NETWORK_CONFIG = {
   hideMarketsInUI: {},
   marketListFilter: ['all', 'leverage', 'user'],
   marketListFilterType: ['borrow', 'lend'],
-  isActiveNetwork: false,
   showInSelectNetwork: false,
   pricesData: false,
 }
@@ -14,27 +13,22 @@ const DEFAULT_NETWORK_CONFIG = {
 const networksConfig = {
   [Chain.Ethereum]: {
     hideMarketsInUI: { 'one-way-market-19': true },
-    isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: true,
   },
   [Chain.Optimism]: {
-    isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: true,
   },
   [Chain.Fraxtal]: {
-    isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: true,
   },
   [Chain.Sonic]: {
-    isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: true,
   },
   [Chain.Arbitrum]: {
-    isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: true,
   },

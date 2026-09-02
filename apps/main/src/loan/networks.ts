@@ -2,10 +2,7 @@ import { ChainId, NetworkConfig, NetworkEnum } from '@/loan/types/loan.types'
 import { Chain } from '@evm-ui/utils'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
 
-const DEFAULT_NETWORK_CONFIG = {
-  isActiveNetwork: true,
-  showInSelectNetwork: true,
-}
+const DEFAULT_NETWORK_CONFIG = { showInSelectNetwork: true }
 
 export const { networks, networksIdMapper } = Object.entries([NETWORK_BASE_CONFIG[Chain.Ethereum]]).reduce(
   (mapper, [key, config]) => {

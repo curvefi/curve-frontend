@@ -15,10 +15,7 @@ export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
 export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
 export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams>
 
-export type NetworkConfig = {
-  isActiveNetwork: boolean
-  showInSelectNetwork: boolean
-} & NetworkDef<NetworkEnum, ChainId>
+export type NetworkConfig = { showInSelectNetwork: boolean } & NetworkDef<NetworkEnum, ChainId>
 
 export type EstimatedGas = number | number[] | null
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'

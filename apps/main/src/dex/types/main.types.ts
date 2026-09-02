@@ -29,7 +29,6 @@ export type NetworkConfig = {
   useApi: boolean
   poolIsWrappedOnly: Record<string, boolean>
   poolFilters: string[]
-  isActiveNetwork: boolean
   swap: Record<string, string>
   showInSelectNetwork: boolean
   showRouterSwap: boolean
