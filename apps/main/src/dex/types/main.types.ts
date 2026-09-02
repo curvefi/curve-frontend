@@ -30,7 +30,6 @@ export type NetworkConfig = {
   poolIsWrappedOnly: Record<string, boolean>
   poolFilters: string[]
   swap: Record<string, string>
-  showRouterSwap: boolean
   swapCustomRouteRedirect: Record<string, string>
   createQuickList: {
     address: string

@@ -6,7 +6,7 @@ import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import { useStore } from '@/dex/store/useStore'
 import { t } from '@evm-ui/lib/i18n'
 import { APP_LINK } from '@evm-ui/shared/routes'
-import { formatNumber } from '@evm-ui/utils'
+import { Chain, formatNumber } from '@evm-ui/utils'
 import { type NetworkDef } from '@legacy-ui/utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { useNetworkByChain } from '../entities/networks'
@@ -39,13 +39,17 @@ export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean
 
 const [swapRoute, ...dexRoutes] = APP_LINK.dex.routes
 
-export function useDexRoutes({ chainId, showRouterSwap }: NetworkDef) {
+/** For whatever reason, some chains might not be supported on the swap page */
+const HIDE_ROUTER_SWAP = [Chain.Mantle]
+
+export function useDexRoutes({ chainId }: NetworkDef) {
   const routerCached = useStore(state => state.storeCache.routerFormValues[chainId])
   const { data: network } = useNetworkByChain({ chainId })
   return useMemo(
     () => [
-      ...(showRouterSwap
-        ? routerCached && network
+      ...(HIDE_ROUTER_SWAP.includes(chainId)
+        ? []
+        : routerCached && network
           ? [
               {
                 app: 'dex' as const,
@@ -53,11 +57,10 @@ export function useDexRoutes({ chainId, showRouterSwap }: NetworkDef) {
                 label: () => t`Swap`,
               },
             ]
-          : [swapRoute]
-        : []),
+          : [swapRoute]),
       ...dexRoutes.filter(page => page.route !== ROUTE.PAGE_SWAP),
     ],
-    [showRouterSwap, network, routerCached],
+    [chainId, network, routerCached],
   )
 }
 
