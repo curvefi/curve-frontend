@@ -47,7 +47,11 @@ const useBreadcrumbs = (pathname: string, { origin, search } = window.location) 
 
 const WagmiConfigProvider = ({ children }: { children: ReactNode }) => {
   const { data: networks } = useNetworksQuery()
-  const config = useWagmiConfig(maybe(networks, networks => recordValues(networks).map(network => network.chainId)))
+  const chainIds = useMemo(
+    () => maybe(networks, networks => recordValues(networks).map(network => network.chainId)),
+    [networks],
+  )
+  const config = useWagmiConfig(chainIds)
   return config ? <WagmiProvider config={config}>{children}</WagmiProvider> : <Loading />
 }
 

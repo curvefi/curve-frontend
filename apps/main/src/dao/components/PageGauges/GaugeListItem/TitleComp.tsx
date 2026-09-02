@@ -3,9 +3,10 @@ import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { SmallLabel } from '@/dao/components/SmallLabel'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { getChainIdFromGaugeData } from '@/dao/utils'
 import { t } from '@evm-ui/lib/i18n'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
-import { Chain, shortenAddress } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { scanAddressPath } from '@legacy-ui/utils'
 
@@ -40,7 +41,7 @@ export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
           <GaugeAddress>{shortenAddress(gaugeAddress)}</GaugeAddress>
           <ButtonsWrapper>
             <ExternalLinkIconButton
-              href={scanAddressPath(Chain.Ethereum, gaugeAddress ?? '')}
+              href={scanAddressPath(getChainIdFromGaugeData(gaugeData), gaugeAddress ?? '')}
               tooltip={t`View gauge on explorer`}
             />
             <CopyIconButton copyContent={gaugeAddress ?? ''} tooltip={t`Copy gauge address`} />

@@ -59,7 +59,7 @@ export const CrvUsdStakingPage = () => {
         </Fade>
       )}
       {!isUserScrvUsdBalanceZero && <UserPosition chainId={chainId} />}
-      <Statistics />
+      <Statistics chainId={chainId} />
       <UserInformation params={params} />
     </DetailPageLayout>
   )
