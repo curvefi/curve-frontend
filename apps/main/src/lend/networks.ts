@@ -33,24 +33,11 @@ const networksConfig = {
     showInSelectNetwork: true,
     pricesData: true,
   },
-  [Chain.Gnosis]: {},
-  [Chain.Moonbeam]: {},
-  [Chain.Polygon]: {},
-  [Chain.Kava]: {},
-  [Chain.Fantom]: {},
   [Chain.Arbitrum]: {
     isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: true,
   },
-  [Chain.Avalanche]: {},
-  [Chain.Celo]: {},
-  [Chain.Aurora]: {},
-  [Chain.ZkSync]: {},
-  [Chain.Base]: {},
-  [Chain.Bsc]: {},
-  [Chain.XLayer]: {},
-  [Chain.Mantle]: {},
 }
 
 export const { networks, networksIdMapper } = Object.entries(networksConfig).reduce(

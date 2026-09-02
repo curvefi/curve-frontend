@@ -3,35 +3,11 @@ import { Chain } from '@evm-ui/utils'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
 
 const DEFAULT_NETWORK_CONFIG = {
-  isActiveNetwork: false,
-  showInSelectNetwork: false,
+  isActiveNetwork: true,
+  showInSelectNetwork: true,
 }
 
-const networksConfig = {
-  [Chain.Ethereum]: {
-    isActiveNetwork: true,
-    showInSelectNetwork: true,
-  },
-  [Chain.Optimism]: {},
-  [Chain.Fraxtal]: {},
-  [Chain.Sonic]: {},
-  [Chain.Gnosis]: {},
-  [Chain.Moonbeam]: {},
-  [Chain.Polygon]: {},
-  [Chain.Kava]: {},
-  [Chain.Fantom]: {},
-  [Chain.Arbitrum]: {},
-  [Chain.Avalanche]: {},
-  [Chain.Celo]: {},
-  [Chain.Aurora]: {},
-  [Chain.ZkSync]: {},
-  [Chain.Base]: {},
-  [Chain.Bsc]: {},
-  [Chain.XLayer]: {},
-  [Chain.Mantle]: {},
-}
-
-export const { networks, networksIdMapper } = Object.entries(networksConfig).reduce(
+export const { networks, networksIdMapper } = Object.entries([NETWORK_BASE_CONFIG[Chain.Ethereum]]).reduce(
   (mapper, [key, config]) => {
     const chainId = Number(key) as ChainId
     const networkConfig = {
