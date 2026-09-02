@@ -1,14 +1,13 @@
 import { ethAddress } from 'viem'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
-import { ChainId, NetworkConfig, type NetworkEnum, type Networks } from '@/dex/types/main.types'
+import { ChainId, NetworkConfig, type Networks } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { DOWNGRADED_CHAINS } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { Chain } from '@evm-ui/utils/network'
-import { getBaseNetworksConfig, NETWORK_BASE_CONFIG as NETWORKS } from '@legacy-ui/utils/utilsNetworks'
 
-const NETWORK_BASE_CONFIG = NETWORKS as Record<ChainId, (typeof NETWORKS)[keyof typeof NETWORKS]>
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
     poolIsWrappedOnly: {
@@ -287,15 +286,17 @@ export const defaultNetworks = Object.entries({
   },
 }).reduce(
   (prev, [key, config]) => {
-    const chainId = Number(key)
-
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const chainId = Number(key) as keyof typeof CHAIN_BLOCKCHAIN_IDS
     prev[chainId] = {
-      ...getBaseNetworksConfig<NetworkEnum, ChainId>(chainId, NETWORK_BASE_CONFIG[chainId]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
+      chainId,
+      blockchainId: CHAIN_BLOCKCHAIN_IDS[chainId],
       isLite: DOWNGRADED_CHAINS.has(chainId),
       isCrvRewardsEnabled: true,
     }
+
     return prev
   },
   {} as Record<ChainId, NetworkConfig>,
@@ -309,17 +310,19 @@ const fxSwapUpgradedChains = [Chain.Etherlink]
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
   const liteNetworks = Object.values(resp).reduce((prev, { id: blockchainId, chainId, ...config }) => {
-    const baseConfig = NETWORK_BASE_CONFIG[chainId]
-    const isUpgraded = !!baseConfig // networks upgraded from lite to full
+    // Upgraded means both a lite network and full network blockchain id while not being downgraded
+    const isUpgraded =
+      Object.keys(CHAIN_BLOCKCHAIN_IDS)
+        .map(x => +x)
+        .includes(chainId) && !DOWNGRADED_CHAINS.has(chainId)
+
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
     const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)
     prev[chainId] = {
       ...DEFAULT_NETWORK_CONFIG,
-      ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), {
-        ...config,
-        ...baseConfig,
-        blockchainId: baseConfig?.blockchainId ?? blockchainId,
-      }),
+      ...config,
+      chainId,
+      blockchainId,
       ...(isUpgraded && {
         poolFilters: [
           'all',
@@ -335,7 +338,6 @@ export async function getNetworks() {
           'user',
         ],
       }),
-      chainId,
       hasFactory: true,
       stableswapFactory: true,
       twocryptoFactory: true,

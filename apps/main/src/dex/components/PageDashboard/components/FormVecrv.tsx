@@ -8,6 +8,7 @@ import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
+import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
 import { t, Trans } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { formatNumber, amount } from '@evm-ui/utils'
@@ -23,7 +24,7 @@ import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate } from '@legacy-ui/utils'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { NETWORK_BASE_CONFIG, scanTxPath } from '@legacy-ui/utils/utilsNetworks'
+import { scanTxPath } from '@legacy-ui/utils/utilsNetworks'
 
 // TODO uncomment locker link code once it is ready
 export const FormVecrv = () => {
@@ -122,7 +123,7 @@ export const FormVecrv = () => {
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curve?.chainId, curve?.signerAddress, lockedAmount, parsedFormStatus])
 
-  const adjustVecrvUrl = getInternalUrl('dao', NETWORK_BASE_CONFIG[Chain.Ethereum].blockchainId, DAO_ROUTES.PAGE_VECRV)
+  const adjustVecrvUrl = getInternalUrl('dao', CHAIN_BLOCKCHAIN_IDS[Chain.Ethereum], DAO_ROUTES.PAGE_VECRV)
 
   return (
     <>

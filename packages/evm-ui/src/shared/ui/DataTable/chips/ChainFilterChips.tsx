@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { useIncreasingLength } from '@evm-ui/hooks/useIncreasingLength'
 import { t } from '@evm-ui/lib/i18n'
@@ -11,7 +12,6 @@ import { chipSizeClickable } from '@evm-ui/themes/components/chip/mui-chip'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { QueryProp } from '@evm-ui/types/util'
 import { Chain } from '@evm-ui/utils'
-import { NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
 import { capitalize, Skeleton, Typography, TypographyProps } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { notFalsy } from '@primitives/objects.utils'
@@ -24,7 +24,7 @@ type ChainFilterChipsProps = {
   toggleChain: (chain: string) => void
 }
 
-const ETHEREUM = NETWORK_BASE_CONFIG[Chain.Ethereum].blockchainId
+const ETHEREUM = CHAIN_BLOCKCHAIN_IDS[Chain.Ethereum]
 const CHAIN_ICON_FROM_CHIP_SIZE: Record<NonNullable<SelectableChipProps['size']>, ChainIconProps['size']> = {
   extraSmall: 'xs',
   small: 'sm',
