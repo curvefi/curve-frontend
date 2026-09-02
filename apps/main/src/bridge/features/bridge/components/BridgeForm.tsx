@@ -59,7 +59,7 @@ export const BridgeForm = ({
             bridgeCost={q(bridgeCost)}
             gas={q(gas)}
             isApproved={isApproved.data}
-            nativeTokenSymbol={getChainNativeCurrency(chainId).name}
+            nativeTokenSymbol={getChainNativeCurrency(chainId).symbol}
           />
           <BridgeInfoAlert />
         </>
