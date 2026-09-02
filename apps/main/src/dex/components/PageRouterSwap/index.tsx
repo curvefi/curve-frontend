@@ -38,7 +38,7 @@ import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { mapQuery, q, toQuery } from '@evm-ui/types/util'
 import { decimal, formatNumber, REFRESH_INTERVAL } from '@evm-ui/utils'
-import { getPriceImpactDisplay } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
 import { SlippageToleranceActionInfo, type SlippageType } from '@evm-ui/widgets/SlippageSettings'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Icon } from '@legacy-ui/Icon'
@@ -454,13 +454,9 @@ export const QuickSwap = ({
     (toAmount?: Decimal) => updateFormValues({ isFrom: false, toAmount: toAmount ?? '', fromAmount: '' }),
     [updateFormValues],
   )
-  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay({
-    data: decimal(routesAndOutput?.priceImpact),
-    error: null,
-    isLoading: routesAndOutputLoading,
-  })
 
   const routes = toQuery(routesAndOutput, { isLoading: routesAndOutputLoading })
+  const priceImpact = mapQuery(routes, ({ priceImpact }) => decimal(priceImpact))
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       {/* SWAP FROM */}
@@ -562,10 +558,9 @@ export const QuickSwap = ({
             active={slippageType}
             size="small"
           />
-          <ActionInfo
-            label={priceImpactLabel}
-            value={mapQuery(routes, ({ priceImpact }) => formatNumber(priceImpact, 'percent.rate'))}
-            valueColor={priceImpactColor}
+          <PriceImpactActionInfo
+            priceImpact={priceImpact}
+            value={mapQuery(priceImpact, priceImpact => formatNumber(priceImpact, 'percent.rate'))}
             size="small"
             testId="price-impact"
           />
