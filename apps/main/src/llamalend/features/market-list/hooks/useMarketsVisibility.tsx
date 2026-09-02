@@ -26,9 +26,7 @@ const resolveMarketActive = (
 ) =>
   isEqual(currentOption.columns, [MarketColumnId.NetBorrowRate])
     ? currentOption.active
-    : isEqual(currentOption.columns, [MarketColumnId.BorrowRate])
-      ? false
-      : preservedActive
+    : !isEqual(currentOption.columns, [MarketColumnId.BorrowRate]) && preservedActive
 
 const migration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
   version: 6,
