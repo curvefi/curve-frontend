@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import { zeroAddress } from 'viem'
 import {
   getAmmAddress,
   getControllerAddress,
@@ -28,6 +27,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 
 const { Spacing } = SizesAndSpaces

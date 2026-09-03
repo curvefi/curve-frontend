@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
-import { isAddress } from 'viem'
 import { ClassicPoolsOnlyDescription } from '@/dex/components/PageDashboard/components/ClassicPoolsOnlyDescription'
 import { Summary } from '@/dex/components/PageDashboard/components/Summary'
 import { TableHead } from '@/dex/components/PageDashboard/components/TableHead'
@@ -24,6 +23,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Table } from '@legacy-ui/Table'
 import { breakpoints } from '@legacy-ui/utils'
+import { isAddress } from '@primitives/address.utils'
 import type { Address } from '@primitives/address.utils'
 
 export const Dashboard = ({

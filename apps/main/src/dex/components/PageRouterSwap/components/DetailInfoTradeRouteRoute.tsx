@@ -1,5 +1,4 @@
 import { zip } from 'lodash'
-import { zeroAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import { type PoolData, type UrlParams } from '@/dex/types/main.types'
@@ -11,6 +10,7 @@ import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
 import Stack from '@mui/material/Stack'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
-import { isAddress } from 'viem'
 import { t } from '@evm-ui/lib/i18n'
 import { copyToClipboard } from '@evm-ui/utils'
 import { showToast } from '@evm-ui/widgets/Toast/toast.util'
+import { isAddress } from '@primitives/address.utils'
 
 const getTitle = (copyText: string, title: string | undefined) =>
-  title ?? t`${isAddress(copyText, { strict: false }) ? `Address` : `Value`} has been copied to clipboard`
+  title ?? t`${isAddress(copyText) ? `Address` : `Value`} has been copied to clipboard`
 
 type CopyToClipboardWithToastOptions = {
   copyText: string | undefined

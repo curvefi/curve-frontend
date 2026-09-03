@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { FastifyBaseLogger } from 'fastify'
-import { isAddressEqual } from 'viem'
-import type { Address } from '@primitives/address.utils'
+import { isAddressEqual, type Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { FetchError, fetchJson } from '@primitives/fetch.utils'
 import { assert, maybe, notFalsy } from '@primitives/objects.utils'

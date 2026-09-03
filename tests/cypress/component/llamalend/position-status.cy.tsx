@@ -1,4 +1,3 @@
-import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import { BorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { getLiquidationStatus } from '@/llamalend/llama.utils'
@@ -22,7 +21,7 @@ import { TestQueryProvider } from '@evm-ui/lib/queries/test-query.provider.test'
 import { MarketType } from '@evm-ui/types/market'
 import { constQ, type Range } from '@evm-ui/types/util'
 import { CRVUSD_ADDRESS, ReleaseChannel } from '@evm-ui/utils'
-import type { Address } from '@primitives/address.utils'
+import { ZERO_ADDRESS as zeroAddress, type Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, DEFAULT_DECIMALS } from '@primitives/objects.utils'
 

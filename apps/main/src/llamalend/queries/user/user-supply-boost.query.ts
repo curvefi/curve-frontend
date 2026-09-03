@@ -1,8 +1,8 @@
-import { zeroAddress } from 'viem'
 import { queryFactory } from '@evm-ui/lib/model/query'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
 import { rootKeys } from '@evm-ui/lib/model/query/root-keys'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { requireVault } from '../validation/supply.validation'
 

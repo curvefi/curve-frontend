@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import type { ContractTransactionResponse } from 'ethers'
 import { produce } from 'immer'
-import { zeroAddress } from 'viem'
 import type { StoreApi } from 'zustand'
 import {
   CRYPTOSWAP,
@@ -35,6 +34,7 @@ import { notify } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
 import { fetchTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { scanTxPath } from '@legacy-ui/utils'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
 import { fetchNetworks, getNetworks } from '../entities/networks'

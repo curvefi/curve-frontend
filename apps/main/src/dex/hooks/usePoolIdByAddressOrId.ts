@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { isAddress, isAddressEqual, type Address } from 'viem'
+import type { Address } from 'viem'
+import { isAddress, isAddressEqual } from '@primitives/address.utils'
 import { useStore } from '../store/useStore'
 
 /**
@@ -12,7 +13,7 @@ export function usePoolIdByAddressOrId({ chainId, poolIdOrAddress }: { chainId: 
 
   return useMemo(() => {
     // If not an address format, assume it's already a pool ID
-    if (!isAddress(poolIdOrAddress, { strict: false })) {
+    if (!isAddress(poolIdOrAddress)) {
       return poolIdOrAddress
     }
 

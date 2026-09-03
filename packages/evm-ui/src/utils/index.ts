@@ -1,4 +1,5 @@
-import { getAddress, isAddress } from 'viem'
+import { getAddress } from 'viem'
+import { isAddress } from '@primitives/address.utils'
 
 export * from './address'
 export * from './env'

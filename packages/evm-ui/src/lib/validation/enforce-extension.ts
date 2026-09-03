@@ -1,5 +1,5 @@
-import { isAddress, zeroAddress } from 'viem'
 import { isPricesApiChain } from '@curvefi/prices-api'
+import { isAddress, ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 
 // Copied from https://github.com/validatorjs/validator.js/blob/3c857088d58197453957a2b924dfedea328003b6/src/lib/isDecimal.js#L19
 function isDecimal<T>(value: T, options?: { decimal_digits?: string }): boolean {

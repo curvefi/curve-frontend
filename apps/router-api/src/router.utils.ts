@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { formatUnits, parseUnits } from 'viem'
 import type { Decimal } from '@primitives/decimal.utils'
 
 /**
@@ -11,6 +10,4 @@ export const decimalMax = (...data: Decimal[]): Decimal | undefined =>
     undefined,
   )
 
-export const toWei = (n: string, decimals: number) => parseUnits(n, decimals).toString() as Decimal
-export const fromWei = (n: string, decimals: number) => formatUnits(BigInt(n), decimals) as Decimal
 export const decimalCompare = (a: Decimal, b: Decimal) => BigNumber(a).comparedTo(b) ?? 0

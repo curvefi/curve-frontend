@@ -1,5 +1,5 @@
-import { getAddress, zeroAddress } from 'viem'
-import { type Address } from '@primitives/address.utils'
+import { getAddress } from 'viem'
+import { ZERO_ADDRESS as zeroAddress, type Address } from '@primitives/address.utils'
 
 type ShortenAddressOptions = {
   /** Number of digits to show on each side of the shortened address (default: 4) */

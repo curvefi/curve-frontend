@@ -1,4 +1,4 @@
-import { isAddressEqual, zeroAddress, type Address } from 'viem'
+import type { Address } from 'viem'
 import { ChipInactive } from '@/dex/components/ChipInactive'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
@@ -10,6 +10,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import { isAddressEqual, ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { Section } from './Section'
 

@@ -1,5 +1,4 @@
-import type { Address } from 'viem'
-import type { Hex } from '@primitives/address.utils'
+import type { Address, Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type CurveSolverQuoteRequest = {

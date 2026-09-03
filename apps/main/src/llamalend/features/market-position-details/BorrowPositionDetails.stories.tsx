@@ -1,4 +1,3 @@
-import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
@@ -19,6 +18,7 @@ import { TestQueryProvider } from '@evm-ui/lib/queries/test-query.provider.test'
 import { MarketType } from '@evm-ui/types/market'
 import { constQ, type Range } from '@evm-ui/types/util'
 import { CRVUSD_ADDRESS, ReleaseChannel } from '@evm-ui/utils'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
@@ -36,7 +36,7 @@ const baseProps = {
   oraclePrice: 1,
 }
 
-const params = { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress }
+const params = { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress satisfies Address }
 const userBands = [69, 118] as Range<number>
 const COLLATERAL_SYMBOL = 'sUSDe'
 const COLLATERAL_ADDRESS = '0x9d39a5de30e57443bff2a8307a4256c8797a3497' as Address

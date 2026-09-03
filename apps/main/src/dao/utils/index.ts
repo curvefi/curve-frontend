@@ -1,8 +1,8 @@
 import lodash from 'lodash'
-import { isAddress, zeroAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
 import { GaugeFormattedData, GaugeMapper } from '@/dao/types/dao.types'
 import { Chain, shortenAddress } from '@evm-ui/utils'
+import { isAddress, ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 
 export * from './utilsRouter'
 export * from './utilsDates'
@@ -30,7 +30,7 @@ export const findRootGauge = (gaugeAddress: string, gaugeMapper: GaugeMapper) =>
 }
 
 export const formatHolderName = (user: string) =>
-  TOP_HOLDERS[user.toLowerCase()]?.title ?? (isAddress(user, { strict: false }) ? shortenAddress(user) : user)
+  TOP_HOLDERS[user.toLowerCase()]?.title ?? (isAddress(user) ? shortenAddress(user) : user)
 
 const ELLIPSIS = '...'
 

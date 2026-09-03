@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { ethAddress, isAddressEqual, zeroAddress } from 'viem'
+import { ethAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
@@ -14,6 +14,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { isAddressEqual, ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import type { Address } from '@primitives/address.utils'
 import { notFalsy, objectKeys } from '@primitives/objects.utils'
 
@@ -53,7 +54,7 @@ export const TokenSelector = ({
               zeroAddress,
               ethAddress,
               crvAddress,
-            ].some(rewardToken => isAddressEqual(rewardToken, token.address as Address)),
+            ].some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
         )
         .map(toTokenOption(network?.networkId)),
     [gaugeRewardsDistributors, tokensMapper, crvAddress, network.networkId],

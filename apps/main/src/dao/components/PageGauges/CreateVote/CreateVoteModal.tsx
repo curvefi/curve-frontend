@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { zeroAddress } from 'viem'
 import { FormProvider } from '@evm-ui/features/forms'
 import { usePinataJwt } from '@evm-ui/hooks/useLocalStorage'
 import { t } from '@evm-ui/lib/i18n'
@@ -19,6 +18,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { useCreateVoteForm } from './useCreateVoteForm'
 
 const { Spacing } = SizesAndSpaces
