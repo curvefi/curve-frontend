@@ -1,5 +1,3 @@
-export const ETHEREUM_CHAIN_ID = 1
-
 export const TOP_HOLDERS: Record<string, { address: string; title: string }> = {
   ['0x989aeb4d175e16225e39e87d0d97a3360524ad80']: {
     address: '0x989aeb4d175e16225e39e87d0d97a3360524ad80',

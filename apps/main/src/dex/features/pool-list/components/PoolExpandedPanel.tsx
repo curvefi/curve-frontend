@@ -54,10 +54,10 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
       {pool.tradeableCoins.map(({ address, symbol }) => (
         <AddressActionInfo
           key={address}
-          network={undefined} // Used for tooltip only, which we don't want anyway
+          chainId={pool.chainId}
           title={
             <TokenLabel
-              blockchainId={pool.network}
+              blockchainId={pool.blockchainId}
               address={address}
               label={symbol}
               size="mui-md"
@@ -65,6 +65,7 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
             />
           }
           address={address}
+          hideTooltip
           testId={`pool-token-${address}`}
         />
       ))}

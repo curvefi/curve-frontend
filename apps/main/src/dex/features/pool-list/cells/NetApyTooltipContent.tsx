@@ -39,10 +39,10 @@ const getIncentivesItems = (pool: PoolRow) => {
 
 export const NetApyIncentivesTooltipItems = ({
   items: { incentivesApy, extraRewards, campaigns, unboostedCrvApy },
-  network,
+  blockchainId,
 }: {
   items: NonNullable<ReturnType<typeof getIncentivesItems>>
-  network: string
+  blockchainId: string
 }) => (
   <TooltipItems secondary>
     <TooltipItem title={t`Liquidity incentives`}>{formatNumber(incentivesApy, 'percent.rate')}</TooltipItem>
@@ -55,7 +55,7 @@ export const NetApyIncentivesTooltipItems = ({
         {formatNumber(unboostedCrvApy, 'percent.rate')}
       </TooltipItem>
     )}
-    <ExtraRewardTooltipItems network={network} rewards={extraRewards} />
+    <ExtraRewardTooltipItems blockchainId={blockchainId} rewards={extraRewards} />
     <CampaignRewardTooltipItems campaigns={campaigns} />
   </TooltipItems>
 )
@@ -77,7 +77,7 @@ export const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volati
         <TooltipItems secondary>
           <TooltipItem title={t`Base APY`}>{formatNumber(baseApy, 'percent.rate')}</TooltipItem>
         </TooltipItems>
-        {incentiveItems && <NetApyIncentivesTooltipItems items={incentiveItems} network={pool.network} />}
+        {incentiveItems && <NetApyIncentivesTooltipItems items={incentiveItems} blockchainId={pool.blockchainId} />}
         <TooltipItems borderTop>
           <TooltipItem variant="primary" title={t`Net total APY`}>
             {formatNumber(netApy, 'percent.rate')}

@@ -1,5 +1,4 @@
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { type BaseConfig } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import { useMarketContext } from '../market-context'
 import { MarketContractsSection } from './MarketContractsSection'
@@ -7,12 +6,8 @@ import { MarketParametersSection } from './MarketParametersSection'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-type MarketInfoSectionsProps = {
-  network: BaseConfig | undefined
-}
-
-export const MarketInfoLayout = ({ network }: MarketInfoSectionsProps) => {
-  const { chainId, marketType, market, apiMarket } = useMarketContext()
+export const MarketInfoLayout = () => {
+  const { chainId, blockchainId, marketType, market, apiMarket } = useMarketContext()
 
   return (
     <Stack
@@ -28,7 +23,7 @@ export const MarketInfoLayout = ({ network }: MarketInfoSectionsProps) => {
       }}
     >
       <MarketParametersSection chainId={chainId} marketId={market?.id} marketType={marketType} apiMarket={apiMarket} />
-      <MarketContractsSection chainId={chainId} market={market} apiMarket={apiMarket} network={network} />
+      <MarketContractsSection chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket} />
     </Stack>
   )
 }

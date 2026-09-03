@@ -19,7 +19,7 @@ type UserEventsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 
 const RowExpandedPanelActions: ExpandedPanelComponent<ParsedUserCollateralEvent> = ({ row: { original: event } }) => (
-  <ExpandedPanelActions actions={getTransactionActions(event.url)} />
+  <ExpandedPanelActions actions={getTransactionActions(event.chainId, event.txHash)} />
 )
 
 export const UserEventsTable = ({ eventsQuery }: UserEventsTableProps) => {
