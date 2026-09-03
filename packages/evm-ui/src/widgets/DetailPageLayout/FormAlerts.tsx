@@ -134,7 +134,7 @@ export const HighPriceImpactAlert = ({
     (severity || (prevSeverity && isLoading)) && (
       <WithSkeleton loading={isLoading}>
         <Alert severity={severity ?? 'warning'} data-testid="high-price-impact-alert" variant="outlined">
-          <AlertTitle sx={{ color: { warning: 'warning.main', error: 'error.main' }[severity!] }}>
+          <AlertTitle>
             {t`High price impact:`} -{formatNumber(getPriceImpactPercent(data), 'percent.rate')}
           </AlertTitle>
           {t`Consider reducing the amount or waiting for better market conditions.`}
