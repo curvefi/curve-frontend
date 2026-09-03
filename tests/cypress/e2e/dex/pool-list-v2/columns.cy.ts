@@ -51,11 +51,11 @@ const expectTokenCell = (address: string, expected: readonly TokenExpectation[])
 
 const SORTABLE_COLUMNS = [
   PoolColumnId.PoolName,
-  PoolColumnId.NetApy,
-  PoolColumnId.BaseApy,
-  PoolColumnId.WeeklyBaseApy,
-  PoolColumnId.CrvApy,
-  PoolColumnId.RewardsApy,
+  PoolColumnId.NetRate,
+  PoolColumnId.BaseRate,
+  PoolColumnId.WeeklyBaseRate,
+  PoolColumnId.CrvRate,
+  PoolColumnId.RewardsRate,
   PoolColumnId.Volume,
   PoolColumnId.Tvl,
   PoolColumnId.Age,
@@ -64,11 +64,11 @@ const SORTABLE_COLUMNS = [
 const NON_SORTABLE_COLUMNS = [PoolColumnId.Tokens, PoolColumnId.Points] as const
 
 const SERVER_SORT_CASES = [
-  [PoolColumnId.NetApy, V2_POOL_FIXTURES.highRewards.address, V2_POOL_FIXTURES.empty.address],
-  [PoolColumnId.BaseApy, V2_POOL_FIXTURES.volatile.address, V2_POOL_FIXTURES.empty.address],
-  [PoolColumnId.WeeklyBaseApy, V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.volatile.address],
-  [PoolColumnId.CrvApy, V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.alerts.address],
-  [PoolColumnId.RewardsApy, V2_POOL_FIXTURES.highRewards.address, V2_POOL_FIXTURES.alerts.address],
+  [PoolColumnId.NetRate, V2_POOL_FIXTURES.highRewards.address, V2_POOL_FIXTURES.empty.address],
+  [PoolColumnId.BaseRate, V2_POOL_FIXTURES.volatile.address, V2_POOL_FIXTURES.empty.address],
+  [PoolColumnId.WeeklyBaseRate, V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.volatile.address],
+  [PoolColumnId.CrvRate, V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.alerts.address],
+  [PoolColumnId.RewardsRate, V2_POOL_FIXTURES.highRewards.address, V2_POOL_FIXTURES.alerts.address],
   [PoolColumnId.Age, V2_POOL_FIXTURES.alerts.address, V2_POOL_FIXTURES.killed.address],
 ] as const
 
@@ -81,29 +81,29 @@ const expectFirstPool = (address: string) =>
     .find(`[data-testid="table-row-link-${address}"]`)
     .should('exist')
 
-const DEFAULT_FULL_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Volume, PoolColumnId.Tvl]
+const DEFAULT_FULL_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetRate, PoolColumnId.Volume, PoolColumnId.Tvl]
 const OPTIONAL_FULL_COLUMNS = [
   PoolColumnId.Tokens,
-  PoolColumnId.BaseApy,
-  PoolColumnId.WeeklyBaseApy,
-  PoolColumnId.CrvApy,
-  PoolColumnId.RewardsApy,
+  PoolColumnId.BaseRate,
+  PoolColumnId.WeeklyBaseRate,
+  PoolColumnId.CrvRate,
+  PoolColumnId.RewardsRate,
   PoolColumnId.Points,
   PoolColumnId.Age,
 ]
 
-const DEFAULT_LITE_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Tvl]
-const OPTIONAL_LITE_COLUMNS = [PoolColumnId.Tokens, PoolColumnId.CrvApy, PoolColumnId.RewardsApy, PoolColumnId.Points]
-const FULL_ONLY_COLUMNS = [PoolColumnId.BaseApy, PoolColumnId.WeeklyBaseApy, PoolColumnId.Volume, PoolColumnId.Age]
+const DEFAULT_LITE_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetRate, PoolColumnId.Tvl]
+const OPTIONAL_LITE_COLUMNS = [PoolColumnId.Tokens, PoolColumnId.CrvRate, PoolColumnId.RewardsRate, PoolColumnId.Points]
+const FULL_ONLY_COLUMNS = [PoolColumnId.BaseRate, PoolColumnId.WeeklyBaseRate, PoolColumnId.Volume, PoolColumnId.Age]
 const LITE_SORTABLE_COLUMNS = [
   PoolColumnId.PoolName,
-  PoolColumnId.NetApy,
-  PoolColumnId.CrvApy,
-  PoolColumnId.RewardsApy,
+  PoolColumnId.NetRate,
+  PoolColumnId.CrvRate,
+  PoolColumnId.RewardsRate,
   PoolColumnId.Tvl,
 ]
 const LITE_NON_SORTABLE_COLUMNS = [PoolColumnId.Tokens, PoolColumnId.Points]
-const LITE_COMPUTED_SORT_COLUMNS = [PoolColumnId.NetApy, PoolColumnId.CrvApy, PoolColumnId.RewardsApy]
+const LITE_COMPUTED_SORT_COLUMNS = [PoolColumnId.NetRate, PoolColumnId.CrvRate, PoolColumnId.RewardsRate]
 
 describe('V2 pool-list columns', () => {
   beforeEach(() => {
@@ -135,18 +135,18 @@ describe('V2 pool-list columns', () => {
 
     expectHeaderOrder([
       PoolColumnId.PoolName,
-      PoolColumnId.NetApy,
-      PoolColumnId.BaseApy,
-      PoolColumnId.WeeklyBaseApy,
-      PoolColumnId.CrvApy,
-      PoolColumnId.RewardsApy,
+      PoolColumnId.NetRate,
+      PoolColumnId.BaseRate,
+      PoolColumnId.WeeklyBaseRate,
+      PoolColumnId.CrvRate,
+      PoolColumnId.RewardsRate,
       PoolColumnId.Points,
       PoolColumnId.Tokens,
       PoolColumnId.Volume,
       PoolColumnId.Tvl,
       PoolColumnId.Age,
     ])
-    getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.WeeklyBaseApy).should('contain.text', '22.09%')
+    getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.WeeklyBaseRate).should('contain.text', '22.09%')
     getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.Age)
       .find('[data-testid="pool-age"]')
       .should('have.text', '5 days')
@@ -177,10 +177,10 @@ describe('V2 pool-list columns', () => {
   it('sorts yield and age columns through the pools API', () => {
     visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
     showV2PoolColumns([
-      PoolColumnId.BaseApy,
-      PoolColumnId.WeeklyBaseApy,
-      PoolColumnId.CrvApy,
-      PoolColumnId.RewardsApy,
+      PoolColumnId.BaseRate,
+      PoolColumnId.WeeklyBaseRate,
+      PoolColumnId.CrvRate,
+      PoolColumnId.RewardsRate,
       PoolColumnId.Age,
     ])
 
@@ -213,9 +213,9 @@ describe('V2 pool-list columns', () => {
     showV2PoolColumns(OPTIONAL_LITE_COLUMNS)
     expectHeaderOrder([
       PoolColumnId.PoolName,
-      PoolColumnId.NetApy,
-      PoolColumnId.CrvApy,
-      PoolColumnId.RewardsApy,
+      PoolColumnId.NetRate,
+      PoolColumnId.CrvRate,
+      PoolColumnId.RewardsRate,
       PoolColumnId.Points,
       PoolColumnId.Tokens,
       PoolColumnId.Tvl,
@@ -259,7 +259,7 @@ describe('V2 pool-list columns', () => {
     cy.get(`[data-testid="data-table-header-${PoolColumnId.Tvl}"]`).click()
     expectFirstPool(V2_POOL_FIXTURES.liteLowTvl.address)
 
-    showV2PoolColumns([PoolColumnId.CrvApy, PoolColumnId.RewardsApy])
+    showV2PoolColumns([PoolColumnId.CrvRate, PoolColumnId.RewardsRate])
     for (const columnId of LITE_COMPUTED_SORT_COLUMNS) {
       getColumnHeader(columnId).click()
       expectFirstPool(V2_POOL_FIXTURES.lite.address)

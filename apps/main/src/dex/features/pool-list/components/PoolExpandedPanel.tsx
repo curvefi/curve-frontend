@@ -85,7 +85,7 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
       <Grid size={PRIMARY_METRIC_SIZE}>
         <Metric
           category={PRIMARY_METRIC_CATEGORY}
-          label={POOL_TITLES[PoolColumnId.NetApy]}
+          label={POOL_TITLES[PoolColumnId.NetRate]}
           value={netRate || null}
           valueOptions={getRateValueOptions(netRate, { volatile: volatileBaseRate })}
           valueTooltip={
