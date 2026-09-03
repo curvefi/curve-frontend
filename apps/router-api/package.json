@@ -15,9 +15,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@curvefi/api": "*",
+    "@curvefi/api": "2.69.17",
     "@curvefi/api-server": "workspace:^",
     "@curvefi/prices-api": "workspace:^",
+    "bignumber.js": "*",
     "fastify": "*"
   },
   "devDependencies": {

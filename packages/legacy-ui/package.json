@@ -11,11 +11,8 @@
   "dependencies": {
     "@carbon/icons-react": "11.84.0",
     "@curvefi/evm-ui": "workspace:^",
-    "@tanstack/react-router": "*",
-    "bignumber.js": "*",
     "ethers": "*",
     "lodash": "*",
-    "react": "*",
     "react-aria": "3.50.0",
     "react-dom": "*",
     "react-stately": "3.48.0",

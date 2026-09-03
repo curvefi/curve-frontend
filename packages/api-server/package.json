@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": "24"
-  },
   "scripts": {
     "lint": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content . --fix",
@@ -17,11 +14,5 @@
   "types": "src/index.ts",
   "dependencies": {
     "fastify": "*"
-  },
-  "devDependencies": {
-    "@types/node": "*",
-    "eslint": "*",
-    "typescript": "*",
-    "vitest": "*"
   }
 }

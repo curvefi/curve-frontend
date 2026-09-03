@@ -1,5 +1,5 @@
 {
-  "name": "tests",
+  "name": "@curvefi/tests",
   "version": "0.1.0",
   "description": "Curve DApp tests",
   "license": "MIT",
