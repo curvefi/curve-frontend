@@ -9,21 +9,21 @@ import {
 import { t } from '@evm-ui/lib/i18n'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { getPageCount } from '@evm-ui/utils'
-import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
+import { maybe } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
 export const useLlammaActivityTradesConfig = ({
-  network,
+  chainId,
+  blockchainId,
   ammAddress,
   endpoint,
-  networkConfig,
 }: LlammaActivityTradesProps) => {
   const { tradesColumnVisibility } = useLlammaActivityVisibility()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
   const tradesQuery = useLlammaTrades({
-    chain: network,
+    chain: blockchainId,
     llamma: ammAddress,
     endpoint,
     page: apiPage,
@@ -33,16 +33,8 @@ export const useLlammaActivityTradesConfig = ({
   const pageCount = getPageCount(tradesQuery.data?.count, DEFAULT_PAGE_SIZE)
 
   // Transform trades data with block explorer URLs
-  const tradesWithUrlsQuery = mapQuery(
-    tradesQuery,
-    ({ trades }) =>
-      network &&
-      trades.map((trade: LlammaTrade) => ({
-        ...trade,
-        buyerUrl: scanAddressPath(networkConfig, trade.buyer),
-        txUrl: scanTxPath(networkConfig, trade.txHash),
-        network,
-      })),
+  const tradesWithUrlsQuery = mapQuery(tradesQuery, ({ trades }) =>
+    maybe(blockchainId, blockchainId => trades.map((trade: LlammaTrade) => ({ ...trade, chainId, blockchainId }))),
   )
 
   const table = useCurveTable({

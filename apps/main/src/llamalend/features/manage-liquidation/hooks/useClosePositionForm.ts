@@ -24,11 +24,7 @@ const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 const userDefaultValues = {}
 
 /** Hook to build state for the close-position form */
-export function useClosePositionForm({
-  network,
-}: {
-  network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
-}) {
+export function useClosePositionForm({ network }: { network: { id: LlamaNetworkId; chainId: LlamaChainId } }) {
   const { marketId, controllerAddress, tokens, userAddress } = useMarketContext<LlamaChainId>()
   const { chainId } = network
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)

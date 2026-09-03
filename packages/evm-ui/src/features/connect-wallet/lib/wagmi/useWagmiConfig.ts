@@ -1,26 +1,22 @@
 import { useMemo } from 'react'
 import type { Chain } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
-import type { NetworkMapping } from '@legacy-ui/utils'
-import { assert, mapRecord, recordValues } from '@primitives/objects.utils'
+import { assert, fromEntries } from '@primitives/objects.utils'
 import { CYPRESS_CONNECTOR_CHAIN, IS_CYPRESS, NO_CYPRESS_TEST_CONNECTOR } from '@ui/utils/env'
-import { createChainFromNetwork } from './chains'
-import { createTransportFromNetwork, defaultGetRpcUrls } from './transports'
+import { createChain } from './chains'
+import { createTransport, defaultGetRpcUrls } from './transports'
 import { createWagmiConfig } from './wagmi-config'
 import { createTestConnector } from './wagmi-test'
 
-export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined) =>
+export const useWagmiConfig = (chainIds: number[] | undefined) =>
   useMemo(() => {
-    if (networks == null) return
+    if (chainIds == null) return
 
-    const chains = recordValues(networks).map(network => createChainFromNetwork(network, defaultGetRpcUrls)) as [
-      Chain,
-      ...Chain[],
-    ]
+    const chains = chainIds.map(chainId => createChain(chainId, defaultGetRpcUrls)) as [Chain, ...Chain[]]
 
     return createWagmiConfig({
       chains,
-      transports: mapRecord(networks, (_, network) => createTransportFromNetwork(network, defaultGetRpcUrls)),
+      transports: fromEntries(chainIds.map(chainId => [chainId, createTransport(chainId, defaultGetRpcUrls)] as const)),
       ...(IS_CYPRESS &&
         !NO_CYPRESS_TEST_CONNECTOR && {
           connectors: [
@@ -34,4 +30,4 @@ export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined
           ],
         }),
     })
-  }, [networks])
+  }, [chainIds])

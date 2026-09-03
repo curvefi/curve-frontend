@@ -228,7 +228,7 @@ export const QuickSwap = ({
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
-            txHash={scanTxPath(network, resp.hash)}
+            txHash={scanTxPath(chainId, resp.hash)}
             onClose={() => updateFormValues({}, false, true)}
           />,
         )
@@ -236,7 +236,16 @@ export const QuickSwap = ({
       if (resp?.error) setTxInfoBar(null)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepSwap, config, activeKey, network, refetchUserFromBalance, refetchUserToBalance, updateFormValues],
+    [
+      fetchStepSwap,
+      config,
+      activeKey,
+      network,
+      chainId,
+      refetchUserFromBalance,
+      refetchUserToBalance,
+      updateFormValues,
+    ],
   )
 
   const getSteps = useCallback(

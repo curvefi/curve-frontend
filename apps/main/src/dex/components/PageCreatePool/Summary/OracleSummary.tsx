@@ -20,7 +20,6 @@ import {
   AddressLink,
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import type { TokenState } from '@/dex/components/PageCreatePool/types'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@evm-ui/lib/i18n'
@@ -61,39 +60,36 @@ export const OracleSummary = ({ chainId }: Props) => {
   )
 }
 
-const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) => {
-  const { data: network } = useNetworkByChain({ chainId })
-  return (
-    <OracleTokenWrapper>
-      <CategoryDataRow>
-        <SummarySubTitle>{t`${title} ${token.symbol !== '' ? `(${token.symbol})` : ''} Oracle`}</SummarySubTitle>
-      </CategoryDataRow>
-      <CategoryDataRow>
-        <SummaryDataTitle>{t`Address:`}</SummaryDataTitle>
-        {token.oracle.address === '' ? (
-          <SummaryDataPlaceholder>{t`No address set`}</SummaryDataPlaceholder>
-        ) : isAddress(token.oracle.address) ? (
-          <SummaryData>
-            <AddressLink href={scanAddressPath(network, token.oracle.address)}>
-              {shortenAddress(token.oracle.address)}
-              <Icon name="Launch" size={16} aria-label={t`Link to address`} />
-            </AddressLink>
-          </SummaryData>
-        ) : (
-          <SummaryDataPlaceholder>{t`Invalid address`}</SummaryDataPlaceholder>
-        )}
-      </CategoryDataRow>
-      <CategoryDataRow>
-        <SummaryDataTitle>{t`Function:`}</SummaryDataTitle>
-        {token.oracle.functionName === '' ? (
-          <SummaryDataPlaceholder>{t`No function set`}</SummaryDataPlaceholder>
-        ) : (
-          <SummaryData>{token.oracle.functionName}</SummaryData>
-        )}
-      </CategoryDataRow>
-    </OracleTokenWrapper>
-  )
-}
+const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) => (
+  <OracleTokenWrapper>
+    <CategoryDataRow>
+      <SummarySubTitle>{t`${title} ${token.symbol !== '' ? `(${token.symbol})` : ''} Oracle`}</SummarySubTitle>
+    </CategoryDataRow>
+    <CategoryDataRow>
+      <SummaryDataTitle>{t`Address:`}</SummaryDataTitle>
+      {token.oracle.address === '' ? (
+        <SummaryDataPlaceholder>{t`No address set`}</SummaryDataPlaceholder>
+      ) : isAddress(token.oracle.address) ? (
+        <SummaryData>
+          <AddressLink href={scanAddressPath(chainId, token.oracle.address)}>
+            {shortenAddress(token.oracle.address)}
+            <Icon name="Launch" size={16} aria-label={t`Link to address`} />
+          </AddressLink>
+        </SummaryData>
+      ) : (
+        <SummaryDataPlaceholder>{t`Invalid address`}</SummaryDataPlaceholder>
+      )}
+    </CategoryDataRow>
+    <CategoryDataRow>
+      <SummaryDataTitle>{t`Function:`}</SummaryDataTitle>
+      {token.oracle.functionName === '' ? (
+        <SummaryDataPlaceholder>{t`No function set`}</SummaryDataPlaceholder>
+      ) : (
+        <SummaryData>{token.oracle.functionName}</SummaryData>
+      )}
+    </CategoryDataRow>
+  </OracleTokenWrapper>
+)
 
 const OraclesWrapper = styled.div`
   margin-top: var(--spacing-2);

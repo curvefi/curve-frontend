@@ -1,5 +1,4 @@
 import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
-import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { useMarketContext } from '@/llamalend/features/market-context'
@@ -8,7 +7,6 @@ import {
   MarketActivityLayout,
   MarketPriceChartLayout,
 } from '@/llamalend/widgets/ChartAndActivityLayout'
-import { getBlockchainId } from '@curvefi/prices-api'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { useBandsChartVisible } from '@evm-ui/hooks/useLocalStorage'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,13 +19,13 @@ type ChartAndActivityCompProps = {
 export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProps) => {
   const {
     chainId,
+    blockchainId,
     marketId,
     ammAddress,
     controllerAddress,
     tokens: { collateralToken, borrowToken },
   } = useMarketContext<ChainId>()
   const [isBandsVisible] = useBandsChartVisible()
-  const networkConfig = networks[chainId]
   const {
     chartMode,
     isLoading: isChartLoading,
@@ -80,12 +78,12 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
       chart={chart}
       bands={bands}
       activity={{
-        network: getBlockchainId(networkConfig?.id),
+        chainId,
+        blockchainId,
         ammAddress,
         collateralToken,
         borrowToken,
         endpoint: 'lending',
-        networkConfig,
       }}
     />
   )
@@ -94,20 +92,19 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
 export const MarketActivityComp = () => {
   const {
     chainId,
+    blockchainId,
     ammAddress,
     tokens: { collateralToken, borrowToken },
   } = useMarketContext<ChainId>()
-  const networkConfig = networks[chainId]
-
   return (
     <MarketActivityLayout
       activity={{
-        network: getBlockchainId(networkConfig?.id),
+        chainId,
+        blockchainId,
         ammAddress,
         collateralToken,
         borrowToken,
         endpoint: 'lending',
-        networkConfig,
       }}
     />
   )

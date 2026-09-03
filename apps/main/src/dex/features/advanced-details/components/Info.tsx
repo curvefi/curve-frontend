@@ -70,7 +70,7 @@ export const Info = ({
         />
 
         {maybe(metadata?.basePool, x => (
-          <AddressActionInfo network={network} title={t`Basepool`} address={x} />
+          <AddressActionInfo chainId={chainId} title={t`Basepool`} address={x} />
         ))}
 
         {maybe(metadata?.vyperVersion, x => (
@@ -78,7 +78,7 @@ export const Info = ({
         ))}
 
         {maybe(metadata?.registry, x => (
-          <AddressActionInfo network={network} title={t`Registry`} address={x} />
+          <AddressActionInfo chainId={chainId} title={t`Registry`} address={x} />
         ))}
         <ActionInfo label={t`ID`} value={fakeLoadingQ(poolId)} />
       </CardContent>

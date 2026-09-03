@@ -8,14 +8,14 @@ import { aprToPoolApy } from './utils'
 type ExtraReward = PoolRow['extraRewardsApr'][number]
 type Campaign = PoolRow['campaigns'][number]
 
-export const ExtraRewardTooltipItems = ({ network, rewards }: { network: string; rewards: ExtraReward[] }) =>
+export const ExtraRewardTooltipItems = ({ blockchainId, rewards }: { blockchainId: string; rewards: ExtraReward[] }) =>
   rewards.map((reward, index) => (
     <TooltipItem
       // eslint-disable-next-line @eslint-react/no-array-index-key -- API reward rows do not provide a stable unique id and duplicates must remain visible.
       key={`${reward.address}-${reward.symbol}-${index}`}
       variant="subItem"
       title={reward.symbol || reward.name || t`Extra reward`}
-      titleIcon={reward.address ? { blockchainId: network, address: reward.address, size: 'mui-sm' } : undefined}
+      titleIcon={reward.address ? { blockchainId, address: reward.address, size: 'mui-sm' } : undefined}
     >
       {formatNumber(aprToPoolApy(reward.apr), 'percent.rate')}
     </TooltipItem>

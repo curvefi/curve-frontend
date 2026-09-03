@@ -53,7 +53,7 @@ export const usePoolComposition = ({
         iconPosition: 'left' as const,
         primary: symbol,
       },
-      explorerUrl: scanTokenPath(network, tokenAddress),
+      explorerUrl: scanTokenPath(chainId, tokenAddress),
       marketShare: maybe(reserve?.percentShareInPool, x => +x),
       amount: reserve?.balance,
       amountUsd: reserve?.balanceUsd,

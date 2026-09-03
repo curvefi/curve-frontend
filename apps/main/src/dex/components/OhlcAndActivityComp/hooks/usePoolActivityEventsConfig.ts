@@ -15,8 +15,8 @@ import { t } from '@evm-ui/lib/i18n'
 import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { getPageCount } from '@evm-ui/utils'
-import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
 
 type UsePoolActivityProps = {
@@ -54,15 +54,10 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
     [poolLiquidityEvents, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
     useCallback(
       liquidityData =>
-        network &&
-        liquidityData.events.map(event => ({
-          ...event,
-          providerUrl: scanAddressPath(networkConfig, event.provider),
-          txUrl: scanTxPath(networkConfig, event.txHash),
-          network,
-          poolTokens,
-        })),
-      [network, networkConfig, poolTokens],
+        maybe(network, blockchainId =>
+          liquidityData.events.map(event => ({ ...event, chainId, blockchainId, poolTokens })),
+        ),
+      [network, chainId, poolTokens],
     ),
   )
 

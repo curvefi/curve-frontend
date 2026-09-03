@@ -2,7 +2,6 @@ import { BrowserProvider } from 'ethers'
 import { createContext, use, useEffect, useMemo, useState } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
 import type { Provider } from '@evm-ui/lib/ethers'
-import type { NetworkDef } from '@legacy-ui/utils'
 import { constQ, fakeLoadingQ } from '@ui/features/queries/util'
 import { setUser } from '@ui/features/sentry'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
@@ -19,7 +18,6 @@ type CurveContextValue = {
   error?: unknown
   wallet?: Wallet
   provider?: Provider
-  network?: NetworkDef
   isHydrated: boolean
   isInitialized: boolean
 }

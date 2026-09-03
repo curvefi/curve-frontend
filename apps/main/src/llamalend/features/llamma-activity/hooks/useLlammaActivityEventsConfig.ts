@@ -10,36 +10,31 @@ import { combineQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { getPageCount } from '@evm-ui/utils'
-import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import { fakeLoadingQ } from '@ui/features/queries/util'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({
-  network: chain,
+  chainId,
+  blockchainId,
   collateralToken,
   borrowToken,
   ammAddress: llamma,
   endpoint,
-  networkConfig,
 }: LlammaActivityProps) => {
   const { eventsColumnVisibility } = useLlammaActivityVisibility()
   const { pagination, onPaginationChange, apiPage: page } = useManualPagination()
 
-  const eventsQuery = useLlammaEvents({ chain, llamma, endpoint, page, perPage: DEFAULT_PAGE_SIZE })
+  const eventsQuery = useLlammaEvents({ chain: blockchainId, llamma, endpoint, page, perPage: DEFAULT_PAGE_SIZE })
 
   // Transform events data with block explorer URLs
-  const query = combineQueries(
-    [eventsQuery, fakeLoadingQ(llamma)],
-    ({ events }) =>
-      chain &&
-      events.map((event: LlammaEvent) => ({
-        ...event,
-        providerUrl: scanAddressPath(networkConfig, event.provider),
-        txUrl: scanTxPath(networkConfig, event.txHash),
-        network: chain,
-        collateralToken,
-        borrowToken,
-      })),
+  const query = combineQueries([eventsQuery, fakeLoadingQ(llamma)], ({ events }) =>
+    events.map((event: LlammaEvent) => ({
+      ...event,
+      chainId,
+      blockchainId,
+      collateralToken,
+      borrowToken,
+    })),
   )
 
   return {

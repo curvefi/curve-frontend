@@ -1,8 +1,6 @@
 import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/ChartAndActivityComp'
-import { networks } from '@/lend/networks'
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
-import { useMarketContext } from '@/llamalend/features/market-context'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
@@ -28,7 +26,6 @@ type MarketInformationCompProps = {
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
 export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
-  const { chainId } = useMarketContext()
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
   const isBorrow = rateType === MarketRateType.Borrow
   const Header = isNewLlamaMarketDetailPage ? MarketCardHeader : CardHeader
@@ -37,7 +34,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
     <Stack sx={{ gap: PAGE_SPACING }}>
       {isNewLlamaMarketDetailPage && (
         <MarketSection id="market-overview">
-          <MarketOverviewCard network={networks[chainId]} />
+          <MarketOverviewCard />
         </MarketSection>
       )}
       {isBorrow && (
@@ -62,7 +59,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
           <Header title={t`Advanced Details`} />
           <CardContent component={Stack}>
             {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
-            <MarketInfoLayout network={networks[chainId]} />
+            <MarketInfoLayout />
           </CardContent>
         </Card>
       </MarketSection>

@@ -7,7 +7,6 @@ import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketType } from '@evm-ui/types/market'
 import { formatNumber } from '@evm-ui/utils'
-import type { BaseConfig } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -23,8 +22,8 @@ const { Grid, Spacing } = SizesAndSpaces
 
 const OVERVIEW_METRIC_CATEGORY = 'llamalend.marketOverview'
 
-export const MarketOverviewCard = ({ network }: { network: BaseConfig | undefined }) => {
-  const { apiMarket, chainId, market, marketId, marketQuery, marketType } = useMarketContext()
+export const MarketOverviewCard = () => {
+  const { apiMarket, chainId, blockchainId, market, marketId, marketQuery, marketType } = useMarketContext()
   const { solvency, totalBorrowers, totalSuppliers, maxLeverage, deployedDays } = useAdvancedDetailsData({
     chainId,
     marketQuery,
@@ -80,8 +79,8 @@ export const MarketOverviewCard = ({ network }: { network: BaseConfig | undefine
             gridTemplateColumns: { mobile: 'minmax(0, 1fr)', tablet: 'repeat(2, minmax(0, 1fr))' },
           }}
         >
-          <MarketAssets market={market} apiMarket={apiMarket} network={network} />
-          <MarketOverviewSkeleton market={market} apiMarket={apiMarket} network={network}>
+          <MarketAssets chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket} />
+          <MarketOverviewSkeleton chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket}>
             <MarketPricesRows
               chainId={chainId}
               marketId={marketId}

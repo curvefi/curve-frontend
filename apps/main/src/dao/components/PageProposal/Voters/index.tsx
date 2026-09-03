@@ -1,6 +1,5 @@
 import { styled } from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
-import { networks } from '@/dao/networks'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { t } from '@evm-ui/lib/i18n'
@@ -62,7 +61,7 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
                     {vote.topHolder || shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
-                <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], vote.txHash)}>
+                <StyledExternalLink href={scanTxPath(Chain.Ethereum, vote.txHash)}>
                   <Data>
                     {formatNumber(+vote.stake, { abbreviate: true })} (
                     {formatNumber(vote.relativePower, { abbreviate: true })}

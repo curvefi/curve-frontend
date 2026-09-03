@@ -64,10 +64,10 @@ export const MintMarketPage = () => {
 
   const collateralEvents = useUserCollateralEvents({
     app: MarketType.Mint,
-    chain: getBlockchainId(network.id),
+    chainId,
+    blockchainId: getBlockchainId(network.id),
     controllerAddress,
     userAddress: address,
-    network,
     tokens,
   })
   const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists)

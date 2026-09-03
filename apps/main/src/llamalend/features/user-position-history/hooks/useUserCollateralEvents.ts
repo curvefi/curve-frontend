@@ -6,7 +6,6 @@ import { UserCollateralEvent as LendingUserCollateralEvent } from '@curvefi/pric
 import type { UserContractQuery } from '@evm-ui/lib/model'
 import { MarketType } from '@evm-ui/types/market'
 import { decimalDiv } from '@evm-ui/utils'
-import { scanTxPath, type BaseConfig } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
@@ -44,11 +43,11 @@ export type UserCollateralEventType =
   | 'Hard Liquidation'
   | 'Partial Liquidation'
 
-const OriginalFields = ['loanChange', 'collateralChange', 'collateralChangeUsd', 'timestamp'] as const
+const OriginalFields = ['loanChange', 'collateralChange', 'collateralChangeUsd', 'timestamp', 'txHash'] as const
 
 export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> & {
+  chainId: number
   type: UserCollateralEventType
-  url: string
 } & Partial<MarketTokens>
 
 export type UserCollateralEvents = {
@@ -76,8 +75,8 @@ export type UserCollateralEventsProps = {
   app: MarketType
   userAddress: Address | undefined
   controllerAddress: Address | undefined
-  chain: Chain | undefined
-  network: BaseConfig
+  chainId: number
+  blockchainId: Chain | undefined
   tokens: Partial<MarketTokens>
 }
 
@@ -85,11 +84,11 @@ export const useUserCollateralEvents = ({
   app,
   userAddress,
   controllerAddress,
-  chain,
+  chainId,
+  blockchainId,
   tokens: { collateralToken, borrowToken },
-  network,
 }: UserCollateralEventsProps): QueryProp<UserCollateralEvents> => {
-  const params = { blockchainId: chain, contractAddress: controllerAddress, userAddress }
+  const params = { blockchainId, contractAddress: controllerAddress, userAddress }
   const { data, isLoading, error } = {
     [MarketType.Lend]: useUserLendCollateralEventsQuery(params, app === MarketType.Lend),
     [MarketType.Mint]: useUserCrvUsdCollateralEventsQuery(params, app === MarketType.Mint),
@@ -104,8 +103,8 @@ export const useUserCollateralEvents = ({
           events:
             data.events
               .map((event, index, events) => ({
+                chainId,
                 type: parseEventType(event, events[index - 1]),
-                url: scanTxPath(network, event.txHash)!,
                 borrowToken,
                 collateralToken,
                 ...pick(event, ...OriginalFields),
@@ -115,7 +114,7 @@ export const useUserCollateralEvents = ({
         isLoading,
         error,
       }),
-    [data, isLoading, error, network, borrowToken, collateralToken],
+    [data, isLoading, error, chainId, borrowToken, collateralToken],
   )
 }
 

@@ -31,7 +31,7 @@ const routes: MarketRoutes = {
       },
     ]),
   ),
-  networks: { 1: { name: 'Ethereum' } as BaseConfig },
+  networks: { 1: {} as BaseConfig },
   chainId: 1,
   selectedRoute: mockRoutes[0],
   selectedRouter: mockRoutes[0].router,

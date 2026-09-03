@@ -22,6 +22,7 @@ import { getCurrentApp } from '@evm-ui/shared/routes'
 import { ThemeProvider } from '@evm-ui/shared/ui/ThemeProvider'
 import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
 import MuiLink from '@mui/material/Link'
+import { maybe, recordValues } from '@primitives/objects.utils'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
@@ -47,8 +48,12 @@ const useBreadcrumbs = (pathname: string, { origin, search } = window.location) 
 
 const WagmiConfigProvider = ({ children }: { children: ReactNode }) => {
   const { data: networks } = useNetworksQuery()
-  const config = useWagmiConfig(networks)
-  return config && networks ? <WagmiProvider config={config}>{children}</WagmiProvider> : <Loading />
+  const chainIds = useMemo(
+    () => maybe(networks, networks => recordValues(networks).map(network => network.chainId)),
+    [networks],
+  )
+  const config = useWagmiConfig(chainIds)
+  return config ? <WagmiProvider config={config}>{children}</WagmiProvider> : <Loading />
 }
 
 export const NetworkAwareLayout = () => {

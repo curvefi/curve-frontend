@@ -185,13 +185,8 @@ describe('Error Boundary', () => {
   it('should open error report without wallet address when app crashes before WagmiProvider', () => {
     cy.visit('/dex/ethereum/pools', {
       onBeforeLoad: win => {
-        const OriginalURL = win.URL
-        win.URL = class extends OriginalURL {
-          constructor(url: string | URL, base?: string | URL) {
-            if (String(url).includes('etherscan')) throw new Error('Simulating error before WagmiProvider')
-            super(url, base)
-          }
-        }
+        // Force useWagmiConfig to throw before it can render WagmiProvider.
+        win.CypressTestConnectorChain = -1
       },
     })
 
