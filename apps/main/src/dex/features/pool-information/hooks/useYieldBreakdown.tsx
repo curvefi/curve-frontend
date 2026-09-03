@@ -72,7 +72,7 @@ export const useYieldBreakdown = ({
         rate: unboostedCrvRate,
         maxBoostRate: maxBoostCrvRate,
         ...maybe(crvRateRange, range => ({
-          apyTooltip: {
+          rateTooltip: {
             title: t`Gauge APR`,
             body: <CrvRateTooltipContent {...range} />,
             clickable: true,
