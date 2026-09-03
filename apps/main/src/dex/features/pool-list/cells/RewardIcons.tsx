@@ -28,9 +28,9 @@ type ExtraReward = PoolRow['extraRewardsApr'][number]
 const ExtraRewardTooltipBody = ({ reward }: { reward: ExtraReward }) => (
   <Stack sx={{ gap: Spacing.xs, textAlign: 'start' }}>
     {(reward.symbol || reward.name) && <Typography variant="bodySRegular">{reward.symbol ?? reward.name}</Typography>}
-    <Typography variant="bodySRegular">{t`APY from an extra reward for providing liquidity in this pool.`}</Typography>
+    <Typography variant="bodySRegular">{t`APR from an extra reward for providing liquidity in this pool.`}</Typography>
     <Typography variant="bodySRegular">
-      {t`APY`}: {formatNumber(aprToPoolApy(reward.apr), 'percent.rate')}
+      {t`APY`}: {formatNumber(reward.apr, 'percent.rate')}
     </Typography>
   </Stack>
 )

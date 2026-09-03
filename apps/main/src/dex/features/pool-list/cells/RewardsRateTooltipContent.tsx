@@ -4,7 +4,7 @@ import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { PoolRow } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './RateTooltipItems'
-import { getAprCampaigns, getCampaignRewardsApy, getExtraRewards, getExtraRewardsApy, getRewardsApy } from './utils'
+import { getAprCampaigns, getCampaignRewardsApy, getExtraRewards, getExtraRewardsApr, getRewardsApy } from './utils'
 
 export const RewardsRateTooltipContent = ({ pool }: { pool: PoolRow }) => {
   const extraRewards = getExtraRewards(pool)
@@ -12,14 +12,12 @@ export const RewardsRateTooltipContent = ({ pool }: { pool: PoolRow }) => {
 
   return (
     <TooltipWrapper>
-      <TooltipDescription
-        text={t`Annualized yield from extra token rewards and APR campaigns. Points are not included.`}
-      />
+      <TooltipDescription text={t`Yield from extra token rewards and APR campaigns. Points are not included.`} />
       <Stack>
         {extraRewards.length > 0 && (
           <TooltipItems secondary>
             <TooltipItem title={t`Liquidity incentives`}>
-              {formatNumber(getExtraRewardsApy(pool), 'percent.rate')}
+              {formatNumber(getExtraRewardsApr(pool), 'percent.rate')}
             </TooltipItem>
             <ExtraRewardTooltipItems blockchainId={pool.blockchainId} rewards={extraRewards} />
           </TooltipItems>

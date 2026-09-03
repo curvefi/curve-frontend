@@ -43,12 +43,12 @@ export const getCompactPointsCampaigns = (pool: PoolRow) => getPointsCampaigns(p
 export const getAprCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(campaign => !isPointsCampaign(campaign))
 
 export const getExtraRewards = ({ extraRewardsApr }: PoolRow) => extraRewardsApr.filter(({ apr }) => apr > 0)
-export const getExtraRewardsApy = (pool: PoolRow) => sum(getExtraRewards(pool).map(({ apr }) => aprToPoolApy(apr)))
+export const getExtraRewardsApr = (pool: PoolRow) => sum(getExtraRewards(pool).map(({ apr }) => apr))
 
 export const getCampaignRewardsApy = (pool: PoolRow) =>
   sum(getAprCampaigns(pool).flatMap(({ reward }) => (reward?.type === 'apr' ? [aprToPoolApy(reward.value)] : [])))
 
-export const getRewardsApy = (pool: PoolRow) => sum([getExtraRewardsApy(pool), getCampaignRewardsApy(pool)])
+export const getRewardsApy = (pool: PoolRow) => sum([getExtraRewardsApr(pool), getCampaignRewardsApy(pool)])
 
 /** Each APR is compounded individually rather as a whole as they're distinctive sources of yield */
 export const getNetApy = (pool: PoolRow) =>

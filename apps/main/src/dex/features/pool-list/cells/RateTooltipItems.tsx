@@ -17,7 +17,7 @@ export const ExtraRewardTooltipItems = ({ blockchainId, rewards }: { blockchainI
       title={reward.symbol || reward.name || t`Extra reward`}
       titleIcon={reward.address ? { blockchainId, address: reward.address, size: 'mui-sm' } : undefined}
     >
-      {formatNumber(aprToPoolApy(reward.apr), 'percent.rate')}
+      {formatNumber(reward.apr, 'percent.rate')}
     </TooltipItem>
   ))
 
