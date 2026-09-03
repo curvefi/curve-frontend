@@ -15,9 +15,9 @@ npm install @curvefi/primitives
 Import from subpaths (there is no root package entrypoint).
 
 ```ts
-import type { Address } from '@curvefi/primitives/address.utils'
-import { fetchJson, addQueryString } from '@curvefi/primitives/fetch.utils'
-import { fromEntries, recordEntries } from '@curvefi/primitives/objects.utils'
+import type { Address } from '@primitives/address.utils'
+import { fetchJson, addQueryString } from '@primitives/fetch.utils'
+import { fromEntries, recordEntries } from '@primitives/objects.utils'
 ```
 
 ## Available modules

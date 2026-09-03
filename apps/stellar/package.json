@@ -1,0 +1,37 @@
+{
+  "name": "stellar",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/stellar --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/stellar --cache-strategy content . --fix",
+    "start": "vite preview",
+    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-stellar.tsbuildinfo"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "*",
+    "ui": "*",
+    "vite-plugin-svgr": "*",
+    "vite-plugin-vercel": "9.1.1"
+  },
+  "peerDependencies": {
+    "@curvefi/primitives": "*",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@sentry/vite-plugin": "5.4.0",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "@vitejs/plugin-react": "*",
+    "eslint": "*",
+    "typescript": "*",
+    "vite": "*"
+  }
+}
