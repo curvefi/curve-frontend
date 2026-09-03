@@ -12,10 +12,10 @@ import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { PoolRow } from '../types'
 import {
-  formatCrvApyRange,
+  formatCrvAprRange,
   getCompactPointsCampaigns,
-  getCrvApyDescription,
-  getCrvApyRange,
+  getCrvAprDescription,
+  getCrvAprRange,
   getExtraRewards,
   getAprCampaigns,
 } from './utils'
@@ -115,15 +115,15 @@ const CrvRewardIcon = ({
   range,
 }: {
   placement?: TooltipProps['placement']
-  range: NonNullable<ReturnType<typeof getCrvApyRange>>
+  range: NonNullable<ReturnType<typeof getCrvAprRange>>
 }) => (
   <RewardIconTooltip
     body={
       <Stack sx={{ gap: Spacing.xs, textAlign: 'start' }}>
         <Typography variant="bodySRegular">
-          {t`APY`}: {formatCrvApyRange(range)}
+          {t`APR`}: {formatCrvAprRange(range)}
         </Typography>
-        <Typography variant="bodySRegular">{getCrvApyDescription()}</Typography>
+        <Typography variant="bodySRegular">{getCrvAprDescription()}</Typography>
       </Stack>
     }
     placement={placement}
@@ -178,9 +178,9 @@ export const RewardIcons = ({
   const pointsCampaigns = includePoints ? getCompactPointsCampaigns(pool) : []
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
-  const crvApyRange = includeCrv && !pool.gauge?.isKilled ? getCrvApyRange(pool) : null
+  const crvAprRange = includeCrv && !pool.gauge?.isKilled ? getCrvAprRange(pool) : null
 
-  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !crvApyRange) return null
+  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !crvAprRange) return null
 
   return (
     <IconStack iconSize="sm">
@@ -210,7 +210,7 @@ export const RewardIcons = ({
           placement={tooltipPlacement}
         />
       ))}
-      {crvApyRange && <CrvRewardIcon placement={tooltipPlacement} range={crvApyRange} />}
+      {crvAprRange && <CrvRewardIcon placement={tooltipPlacement} range={crvAprRange} />}
     </IconStack>
   )
 }

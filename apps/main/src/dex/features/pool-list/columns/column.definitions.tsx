@@ -8,7 +8,7 @@ import { PoolTitleCell } from '../cells/PoolTitleCell'
 import { RewardsRateCell } from '../cells/RewardsRateCell'
 import { TokensCell } from '../cells/TokensCell'
 import { UsdCell } from '../cells/UsdCell'
-import { getCrvApyRange, getNetApy, getRewardsApr } from '../cells/utils'
+import { getCrvAprRange, getNetApy, getRewardsApr } from '../cells/utils'
 import { AgeHeaderTooltipContent } from '../header-tooltips/AgeHeaderTooltipContent'
 import { BaseRateHeaderTooltipContent } from '../header-tooltips/BaseRateHeaderTooltipContent'
 import { CrvRateHeaderTooltipContent } from '../header-tooltips/CrvRateHeaderTooltipContent'
@@ -63,7 +63,7 @@ export const POOL_COLUMNS = columnHelper.columns([
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(pool => (pool.gauge?.isKilled ? undefined : getCrvApyRange(pool)?.unboostedApy), {
+  columnHelper.accessor(pool => (pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)?.unboostedApr), {
     id: PoolColumnId.CrvApy,
     header: POOL_TITLES[PoolColumnId.CrvApy],
     cell: ({ row }) => <CrvRateCell pool={row.original} />,

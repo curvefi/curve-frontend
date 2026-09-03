@@ -11,10 +11,9 @@ import Stack from '@mui/material/Stack'
 import type { PoolRow } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './RateTooltipItems'
 import {
-  aprToPoolApy,
   getAprCampaigns,
   getBaseApy,
-  getCrvApyRange,
+  getCrvAprRange,
   getExtraRewards,
   getNetApy,
   getPointsCampaigns,
@@ -24,28 +23,28 @@ import {
 const getIncentivesItems = (pool: PoolRow) => {
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
-  const unboostedCrvApy = pool.gauge?.isKilled ? null : aprToPoolApy(pool.crvApr)
-  const hasCrvApy = unboostedCrvApy != null && unboostedCrvApy !== 0
+  const unboostedCrvApr = pool.gauge?.isKilled ? null : pool.crvApr
+  const hasCrvApr = unboostedCrvApr != null && unboostedCrvApr !== 0
 
-  if (!hasCrvApy && !extraRewards.length && !campaigns.length) return null
+  if (!hasCrvApr && !extraRewards.length && !campaigns.length) return null
   else
     return {
-      incentivesApy: getRewardsApr(pool) + (hasCrvApy ? unboostedCrvApy : 0),
+      incentivesApr: getRewardsApr(pool) + (hasCrvApr ? unboostedCrvApr : 0),
       extraRewards,
       campaigns,
-      unboostedCrvApy,
+      unboostedCrvApr,
     }
 }
 
 export const NetRateIncentivesTooltipItems = ({
-  items: { incentivesApy, extraRewards, campaigns, unboostedCrvApy },
+  items: { incentivesApr, extraRewards, campaigns, unboostedCrvApr: unboostedCrvApy },
   blockchainId,
 }: {
   items: NonNullable<ReturnType<typeof getIncentivesItems>>
   blockchainId: string
 }) => (
   <TooltipItems secondary>
-    <TooltipItem title={t`Liquidity incentives`}>{formatNumber(incentivesApy, 'percent.rate')}</TooltipItem>
+    <TooltipItem title={t`Liquidity incentives`}>{formatNumber(incentivesApr, 'percent.rate')}</TooltipItem>
     {!!unboostedCrvApy && (
       <TooltipItem
         variant="subItem"
@@ -63,8 +62,8 @@ export const NetRateIncentivesTooltipItems = ({
 export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
   const baseApy = getBaseApy(pool, 'daily')
   const netApy = getNetApy(pool)
-  const crvApyRange = pool.gauge && !pool.gauge.isKilled ? getCrvApyRange(pool) : null
-  const maxNetApy = crvApyRange ? netApy - crvApyRange.unboostedApy + crvApyRange.boostedApy : null
+  const crvAprRange = pool.gauge && !pool.gauge.isKilled ? getCrvAprRange(pool) : null
+  const maxNetApy = crvAprRange ? netApy - crvAprRange.unboostedApr + crvAprRange.boostedApr : null
   const incentiveItems = getIncentivesItems(pool)
   const pointsCampaigns = getPointsCampaigns(pool)
 
@@ -83,7 +82,7 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
             {formatNumber(netApy, 'percent.rate')}
           </TooltipItem>
         </TooltipItems>
-        {crvApyRange && (
+        {crvAprRange && (
           <>
             <TooltipItems secondary extraMargin>
               <TooltipItem
@@ -91,7 +90,7 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
                 titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
                 variant="independent"
               >
-                {formatNumber(crvApyRange.boostedApy, 'percent.rate')}
+                {formatNumber(crvAprRange.boostedApr, 'percent.rate')}
               </TooltipItem>
             </TooltipItems>
             <TooltipItems borderTop>

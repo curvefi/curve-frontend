@@ -7,22 +7,22 @@ import { MAINNET_CRV } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { PoolRow } from '../types'
-import { formatCellValue, getCrvApyRange } from './utils'
+import { formatCellValue, getCrvAprRange } from './utils'
 
 export const CrvRateCell = ({ pool }: { pool: PoolRow }) => {
-  const range = pool.gauge?.isKilled ? null : getCrvApyRange(pool)
+  const range = pool.gauge?.isKilled ? null : getCrvAprRange(pool)
 
   return (
-    <Box data-testid="pool-crv-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
+    <Box data-testid="pool-crv-rate" sx={{ display: 'flex', justifyContent: 'end' }}>
       <WithWrapper
         shouldWrap={range}
         Wrapper={Tooltip}
         clickable
-        title={t`CRV APY`}
-        body={range && <CrvRateTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
+        title={t`CRV APR`}
+        body={range && <CrvRateTooltipContent unboostedApy={range.unboostedApr} maximumApy={range.boostedApr} />}
         placement="top"
       >
-        <Box data-testid={range && 'pool-crv-apy-tooltip-trigger'}>
+        <Box data-testid={range && 'pool-crv-rate-tooltip-trigger'}>
           {range ? (
             <TokenInfo
               address={MAINNET_CRV.address}
@@ -31,10 +31,10 @@ export const CrvRateCell = ({ pool }: { pool: PoolRow }) => {
               iconPosition="right"
               iconAlignment="start"
               primary={
-                <span data-testid="pool-crv-apy-unboosted">{formatCellValue(range.unboostedApy, 'percent.rate')}</span>
+                <span data-testid="pool-crv-rate-unboosted">{formatCellValue(range.unboostedApr, 'percent.rate')}</span>
               }
               secondary={
-                <span data-testid="pool-crv-apy-boosted">{formatCellValue(range.boostedApy, 'percent.rate')}</span>
+                <span data-testid="pool-crv-rate-boosted">{formatCellValue(range.boostedApr, 'percent.rate')}</span>
               }
               boldPrimary
               sx={{ justifyContent: 'end' }}
