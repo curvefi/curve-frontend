@@ -64,7 +64,7 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Estimated net yield from Base APR, unboosted CRV gauge APR, and various reward APRs.`}
+        text={t`Estimated net yield from base APR, unboosted CRV gauge APR, and various reward APRs.`}
       />
       <Stack>
         <TooltipItems secondary>
