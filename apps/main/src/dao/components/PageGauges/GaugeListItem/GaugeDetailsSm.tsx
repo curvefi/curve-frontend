@@ -1,6 +1,4 @@
 import { styled } from 'styled-components'
-import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-import { networks } from '@/dao/networks'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
@@ -75,7 +73,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Contract Address`}</StatTitle>
-          <StyledExternalLink href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.address)}>
+          <StyledExternalLink href={scanAddressPath(chainId, gaugeData.address)}>
             {shortenAddress(gaugeData.address)}
           </StyledExternalLink>
         </StatsRow>
@@ -100,7 +98,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
           <StatTitle>{t`Contract Address`}</StatTitle>
           {gaugeData.pool?.address && (
             <Box flex flexAlignItems="center">
-              <StyledExternalLink href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.pool.address)}>
+              <StyledExternalLink href={scanAddressPath(chainId, gaugeData.pool.address)}>
                 {shortenAddress(gaugeData.pool.address)}
               </StyledExternalLink>
             </Box>

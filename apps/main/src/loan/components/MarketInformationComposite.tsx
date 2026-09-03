@@ -5,7 +5,6 @@ import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp, MarketActivityComp } from '@/loan/components/ChartAndActivityComp'
-import type { ChainId } from '@/loan/types/loan.types'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { t } from '@evm-ui/lib/i18n'
 import { MarketRateType } from '@evm-ui/types/market'
@@ -17,15 +16,12 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useMarketContext } from '../../llamalend/features/market-context'
-import { networks } from '../networks'
 
 type MarketInformationCompProps = {
   previewPrices: Range<Decimal> | undefined
 }
 
 export const MarketInformationComposite = ({ previewPrices }: MarketInformationCompProps) => {
-  const { chainId } = useMarketContext<ChainId>()
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
   const Header = isNewLlamaMarketDetailPage ? MarketCardHeader : CardHeader
 
@@ -33,7 +29,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
     <Stack sx={{ gap: PAGE_SPACING }}>
       {isNewLlamaMarketDetailPage && (
         <MarketSection id="market-overview">
-          <MarketOverviewCard network={networks[chainId]} />
+          <MarketOverviewCard />
         </MarketSection>
       )}
       <MarketSection id="price-chart">
@@ -55,7 +51,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
           <Header title={t`Advanced Details`} />
           <CardContent component={Stack}>
             {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
-            <MarketInfoLayout network={networks[chainId]} />
+            <MarketInfoLayout />
           </CardContent>
         </Card>
       </MarketSection>

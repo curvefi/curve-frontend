@@ -49,8 +49,8 @@ export const LEND_CHAINS = ['ethereum', 'arbitrum', 'optimism', 'fraxtal', 'soni
 export const MINT_CHAINS = ['ethereum'] as const satisfies Chain[]
 
 export const isPricesApiChain = (chain: string): chain is Chain => chains.includes(chain as Chain)
-export const getBlockchainId = (networkId: string): Chain | undefined =>
-  isPricesApiChain(networkId) ? networkId : undefined
+export const getPricesApiBlockchainId = (blockchainId: string): Chain | undefined =>
+  isPricesApiChain(blockchainId) ? blockchainId : undefined
 
 export type PaginationMeta = {
   page: number

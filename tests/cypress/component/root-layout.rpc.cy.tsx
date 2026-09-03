@@ -17,7 +17,7 @@ function Test() {
     networks && (
       <CurveProvider app="dex" network={network} onChainUnavailable={onChainUnavailable} hydrate={{}}>
         <Box id="pathname">{pathname}</Box>
-        <Box id="network">{network?.id}</Box>
+        <Box id="network">{network?.blockchainId}</Box>
       </CurveProvider>
     )
   )

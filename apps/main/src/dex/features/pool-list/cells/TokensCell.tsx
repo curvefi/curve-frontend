@@ -15,7 +15,7 @@ export const TokensCell = ({ pool }: { pool: PoolRow }) => (
       <TokenInfo
         key={address}
         address={address}
-        blockchainId={pool.network}
+        blockchainId={pool.blockchainId}
         iconPosition="right"
         iconSize="mui-sm"
         primary={symbol}

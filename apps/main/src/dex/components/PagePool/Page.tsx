@@ -19,8 +19,8 @@ export const PagePool = () => {
   const push = useNavigate()
   const { curveApi = null, isHydrated } = useCurve()
   const props = useParams<PoolUrlParams>()
-  const { poolIdOrAddress: rPoolIdOrAddress, network: networkId } = props
-  const rChainId = useChainId(networkId)
+  const { poolIdOrAddress: rPoolIdOrAddress, network: blockchainId } = props
+  const rChainId = useChainId(blockchainId)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
 
   const hasDepositAndStake = useStore(state => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
@@ -54,7 +54,7 @@ export const PagePool = () => {
    * the lookup will succeed or fail deterministically, and the `useEffect` above
    * will set `poolNotFound` accordingly.
    */
-  const { data: blacklist } = usePoolsBlacklist({ blockchainId: networkId as Chain })
+  const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
     () =>
       isAddress(rPoolIdOrAddress, { strict: false /* address comes from URL which might be lowercase */ }) &&

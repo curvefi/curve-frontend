@@ -59,7 +59,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         <LoanFormTokenInput
           label={t`Amount to Remove`}
           token={collateralToken}
-          blockchainId={network.id}
+          blockchainId={network.blockchainId}
           name="userCollateral"
           form={form}
           testId="remove-collateral-input"

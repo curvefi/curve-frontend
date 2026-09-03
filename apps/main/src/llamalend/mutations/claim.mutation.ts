@@ -20,7 +20,7 @@ type ClaimMutation = Record<string, never>
 
 type ClaimOptions = {
   marketId: string | undefined
-  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
   userAddress: Address | undefined
 }
 

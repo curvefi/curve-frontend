@@ -51,7 +51,7 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
       <LoanFormTokenInput
         label={t`Amount to withdraw`}
         token={borrowToken}
-        blockchainId={network.id}
+        blockchainId={network.blockchainId}
         name="withdrawAmount"
         form={form}
         max={max}

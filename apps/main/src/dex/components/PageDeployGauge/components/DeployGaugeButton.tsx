@@ -93,7 +93,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
               <InfoLinkBarWrapper>
                 <StyledInfoLinkBar
                   description={t`Tx: Gauge for ${shortenAddress(lpTokenAddress)} deployed`}
-                  link={scanTxPath(networks[chainId], deploymentStatus.sidechain.transaction.hash)}
+                  link={scanTxPath(chainId, deploymentStatus.sidechain.transaction.hash)}
                 />
               </InfoLinkBarWrapper>
             )
@@ -102,7 +102,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
               <InfoLinkBarWrapper>
                 <StyledInfoLinkBar
                   description={t`Tx: Gauge for ${shortenAddress(lpTokenAddress)} deployed`}
-                  link={scanTxPath(networks[chainId], deploymentStatus.mirror.transaction.hash)}
+                  link={scanTxPath(chainId, deploymentStatus.mirror.transaction.hash)}
                 />
               </InfoLinkBarWrapper>
             )}
@@ -172,7 +172,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         <InfoLinkBarWrapper>
           <StyledInfoLinkBar
             description={t`Tx: Gauge for ${shortenAddress(lpTokenAddress)} deployed`}
-            link={scanTxPath(networks[chainId], deploymentStatus.mainnet.transaction.hash)}
+            link={scanTxPath(chainId, deploymentStatus.mainnet.transaction.hash)}
           />
         </InfoLinkBarWrapper>
       )}

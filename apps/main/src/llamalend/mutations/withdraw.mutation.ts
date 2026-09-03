@@ -14,7 +14,7 @@ import { formatTokenAmounts } from '../llama.utils'
 
 type WithdrawOptions = {
   marketId: string | undefined
-  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
 }

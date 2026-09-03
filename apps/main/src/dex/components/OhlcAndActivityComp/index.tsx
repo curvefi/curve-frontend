@@ -74,7 +74,7 @@ const OhlcTabsContent = ({ children }: { children: ReactNode }) => (
 )
 
 export const OhlcAndActivityComp = ({
-  rChainId,
+  rChainId: chainId,
   poolAddress,
   pricesApiPoolData,
 }: {
@@ -82,9 +82,9 @@ export const OhlcAndActivityComp = ({
   poolAddress: Address
   pricesApiPoolData: Pool
 }) => {
-  const chart = useOhlcChartState({ rChainId, pricesApiPoolData })
-  const liquidityTable = usePoolActivityEventsConfig({ chainId: rChainId, poolAddress })
-  const tradesTable = usePoolActivityTradesConfig({ chainId: rChainId, poolAddress })
+  const chart = useOhlcChartState({ chainId, pricesApiPoolData })
+  const liquidityTable = usePoolActivityEventsConfig({ chainId, poolAddress })
+  const tradesTable = usePoolActivityTradesConfig({ chainId, poolAddress })
   return (
     <Stack>
       <Tabs

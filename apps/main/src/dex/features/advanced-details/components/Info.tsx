@@ -47,9 +47,8 @@ export const Info = ({
   const { pool } = poolDataCacheOrApi
   const poolAddress = pool.address as Address
   const { data: network } = useNetworkByChain({ chainId })
-  const chain = network.networkId as BlockchainId
   const { data: basePools } = useBasePools({ chainId })
-  const { data: metadata } = usePoolMetadata({ chain, poolAddress })
+  const { data: metadata } = usePoolMetadata({ chain: network.blockchainId as BlockchainId, poolAddress })
   const isFxSwap = metadata?.hasDonations ?? false
   const poolType =
     getPoolType({ pool, isFxSwap, tokenCount: metadata?.coins.length ?? poolDataCacheOrApi.tokens.length }) ||
@@ -70,7 +69,7 @@ export const Info = ({
         />
 
         {maybe(metadata?.basePool, x => (
-          <AddressActionInfo network={network} title={t`Basepool`} address={x} />
+          <AddressActionInfo chainId={chainId} title={t`Basepool`} address={x} />
         ))}
 
         {maybe(metadata?.vyperVersion, x => (
@@ -78,7 +77,7 @@ export const Info = ({
         ))}
 
         {maybe(metadata?.registry, x => (
-          <AddressActionInfo network={network} title={t`Registry`} address={x} />
+          <AddressActionInfo chainId={chainId} title={t`Registry`} address={x} />
         ))}
         <ActionInfo label={t`ID`} value={fakeLoadingQ(poolId)} />
       </CardContent>

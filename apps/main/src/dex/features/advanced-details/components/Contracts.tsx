@@ -28,8 +28,7 @@ export const Contracts = ({
   const gaugeIsKilled = !!poolDataCacheOrApi.gauge.isKilled
   const isSameAddress = isAddressEqual(poolAddress, lpTokenAddress)
 
-  const chain = network.networkId as BlockchainId
-  const { data: metadata } = usePoolMetadata({ chain, poolAddress })
+  const { data: metadata } = usePoolMetadata({ chain: network.blockchainId as BlockchainId, poolAddress })
   const oracles = notFalsy(
     ...(metadata?.assetTypes?.map((assetType, index) => {
       const oracleAddress = metadata.oracles?.[index]?.oracleAddress
@@ -53,19 +52,19 @@ export const Contracts = ({
         <Section>
           {poolAddress && (
             <AddressActionInfo
-              network={network}
+              chainId={chainId}
               address={poolAddress}
               title={isSameAddress ? t`Pool / Token` : t`Pool`}
             />
           )}
 
           {!isSameAddress && lpTokenAddress && (
-            <AddressActionInfo network={network} address={lpTokenAddress} title={t`Token`} />
+            <AddressActionInfo chainId={chainId} address={lpTokenAddress} title={t`Token`} />
           )}
 
           {!isAddressEqual(gaugeAddress, zeroAddress) && (
             <AddressActionInfo
-              network={network}
+              chainId={chainId}
               address={gaugeAddress}
               title={
                 <>
@@ -78,7 +77,7 @@ export const Contracts = ({
 
         <Section>
           {oracles.map(oracle => (
-            <AddressActionInfo key={oracle.address} network={network} {...oracle} />
+            <AddressActionInfo key={oracle.address} chainId={chainId} {...oracle} />
           ))}
         </Section>
       </CardContent>

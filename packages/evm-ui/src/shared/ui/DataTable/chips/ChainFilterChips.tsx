@@ -24,7 +24,7 @@ type ChainFilterChipsProps = {
   toggleChain: (chain: string) => void
 }
 
-const ETHEREUM = NETWORK_BASE_CONFIG[Chain.Ethereum].id
+const ETHEREUM = NETWORK_BASE_CONFIG[Chain.Ethereum].blockchainId
 const CHAIN_ICON_FROM_CHIP_SIZE: Record<NonNullable<SelectableChipProps['size']>, ChainIconProps['size']> = {
   extraSmall: 'xs',
   small: 'sm',

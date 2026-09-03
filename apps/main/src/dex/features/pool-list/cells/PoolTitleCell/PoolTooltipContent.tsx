@@ -1,4 +1,3 @@
-import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { t } from '@evm-ui/lib/i18n'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
@@ -11,13 +10,12 @@ import { poolTypeClassifications, type PoolClassification } from './classificati
 const CLASSIFICATIONS = {
   stable: t`A stable pool is designed for assets expected to maintain a similar value.`,
   volatile: t`A volatile pool is designed for assets whose relative values may change significantly.`,
+  fxswap: t`An FXSwap pool automatically recenters liquidity for assets whose relative prices drift over time.`,
 } satisfies Record<PoolClassification, string>
 
 const METAPOOL_DESCRIPTION = t`A metapool pairs an asset with the liquidity of an existing base pool.`
 
 export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
-  const network = useNetworkFromUrl()
-
   const classification = pool.poolType && poolTypeClassifications[pool.poolType]
   const descriptions = notFalsy(
     classification && CLASSIFICATIONS[classification],
@@ -36,10 +34,10 @@ export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
           {pool.tradeableCoins.map(({ address, symbol }) => (
             <AddressActionInfo
               key={address}
-              network={network}
+              chainId={pool.chainId}
               title={
                 <TokenLabel
-                  blockchainId={pool.network}
+                  blockchainId={pool.blockchainId}
                   address={address}
                   label={symbol}
                   size="mui-sm"
@@ -54,9 +52,9 @@ export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
 
         <TooltipItems secondary extraMargin>
           <TooltipItem title={t`Contracts`} />
-          <AddressActionInfo network={network} title={t`Pool`} address={pool.address} size="small" />
+          <AddressActionInfo chainId={pool.chainId} title={t`Pool`} address={pool.address} size="small" />
           {maybe(pool.gauge, gauge => (
-            <AddressActionInfo network={network} title={t`Gauge`} address={gauge.address} size="small" />
+            <AddressActionInfo chainId={pool.chainId} title={t`Gauge`} address={gauge.address} size="small" />
           ))}
         </TooltipItems>
       </Stack>

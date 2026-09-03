@@ -37,7 +37,7 @@ export const MobileHeader = ({
   chainId,
   backendMaintenance,
   supportedNetworks,
-  networkId,
+  blockchainId,
 }: HeaderImplementationProps) => {
   const [isSidebarOpen, , closeSidebar, toggleSidebar] = useSwitch(false)
   const pathname = usePathname()
@@ -52,9 +52,9 @@ export const MobileHeader = ({
         .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
-          pages: routes.map(p => routeToPage(p, { networkId, pathname })),
+          pages: routes.map(p => routeToPage(p, { blockchainId, pathname })),
         })),
-    [currentMenu, networkId, pathname],
+    [currentMenu, blockchainId, pathname],
   )
   return (
     <AppBar
@@ -69,7 +69,7 @@ export const MobileHeader = ({
       }}
       data-testid="mobile-main-bar"
     >
-      <GlobalBanner networkId={networkId} chainId={chainId} backendMaintenance={backendMaintenance} />
+      <GlobalBanner blockchainId={blockchainId} chainId={chainId} backendMaintenance={backendMaintenance} />
       <Toolbar sx={t => ({ paddingBlock: PADDING_BLOCK, zIndex: t.zIndex.drawer + 1 })}>
         <MobileTopBar
           supportedNetworks={supportedNetworks}

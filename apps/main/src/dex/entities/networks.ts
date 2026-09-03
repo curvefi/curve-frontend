@@ -5,7 +5,7 @@ import { assert } from '@primitives/objects.utils'
 import { defaultNetworks, getNetworks as getNetworksLib } from '../lib/networks'
 
 const { useQuery, fetchQuery, getQueryData } = queryFactory({
-  queryKey: () => ['networks'] as const,
+  queryKey: () => ['networks', 'v2'] as const,
   queryFn: getNetworksLib,
   validationSuite: EmptyValidationSuite, // no args
   category: 'dex.network',
