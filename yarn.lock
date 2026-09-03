@@ -595,7 +595,7 @@ __metadata:
   resolution: "@curvefi/prices-api@workspace:packages/prices-api"
   dependencies:
     "@curvefi/primitives": "workspace:^"
-    vite: "npm:7.3.5"
+    vite: "npm:*"
     zod: "npm:4.5.2"
   languageName: unknown
   linkType: soft
@@ -618,7 +618,7 @@ __metadata:
     "@vitest/ui": "npm:4.1.11"
     cypress: "npm:15.21.1"
     main: "workspace:^"
-    vite: "npm:7.3.5"
+    vite: "npm:*"
     vite-plugin-svgr: "npm:5.2.0"
     wait-on: "npm:9.1.0"
   languageName: unknown
@@ -10738,9 +10738,11 @@ __metadata:
     "@types/lodash": "npm:4.17.25"
     "@vitejs/plugin-react": "npm:5.1.2"
     fuse.js: "npm:7.5.0"
+    merkl-api: "workspace:^"
     pinst: "npm:3.0.0"
+    router-api: "workspace:^"
     vest: "npm:5.4.6"
-    vite: "npm:7.3.5"
+    vite: "npm:*"
     vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:9.1.1"
   languageName: unknown
@@ -10821,7 +10823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"merkl-api@workspace:apps/merkl-api":
+"merkl-api@workspace:^, merkl-api@workspace:apps/merkl-api":
   version: 0.0.0-use.local
   resolution: "merkl-api@workspace:apps/merkl-api"
   dependencies:
@@ -12492,7 +12494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"router-api@workspace:apps/router-api":
+"router-api@workspace:^, router-api@workspace:apps/router-api":
   version: 0.0.0-use.local
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
@@ -12944,7 +12946,7 @@ __metadata:
     "@sentry/vite-plugin": "npm:5.4.0"
     "@tanstack/react-router": "npm:1.170.32"
     "@vitejs/plugin-react": "npm:5.1.2"
-    vite: "npm:7.3.5"
+    vite: "npm:*"
     vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:9.1.1"
   languageName: unknown

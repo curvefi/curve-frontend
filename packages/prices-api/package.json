@@ -19,7 +19,7 @@
     "zod": "4.5.2"
   },
   "devDependencies": {
-    "vite": "7.3.5"
+    "vite": "*"
   },
   "publishConfig": {
     "access": "public"
