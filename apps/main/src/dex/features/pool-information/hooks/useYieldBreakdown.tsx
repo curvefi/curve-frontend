@@ -29,16 +29,15 @@ export const useYieldBreakdown = ({
   const gaugeIsKilled = !!poolDataCacheOrApi.gauge.isKilled
   const { data: network } = useNetworkByChain({ chainId })
 
-  // it's called APY but it appears that's fake news except for base apy?
-  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId])
+  // it's called rewards 'APY' but it appears that's fake news and its all APRs
+  const rewards = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId])
 
   const { data: campaigns } = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
 
   // For some reason it might be curve-js returns no token price, so we'll try to fall back to our own token rates query.
   const missingTokenRates = useMemo(
-    () =>
-      rewardsApy?.other?.flatMap(({ tokenAddress, tokenPrice }) => (tokenPrice == null ? [tokenAddress] : [])) ?? [],
-    [rewardsApy?.other],
+    () => rewards?.other?.flatMap(({ tokenAddress, tokenPrice }) => (tokenPrice == null ? [tokenAddress] : [])) ?? [],
+    [rewards?.other],
   )
   const { data: fallbackTokenRates } = useTokenUsdRates(
     { chainId, tokenAddresses: missingTokenRates },
@@ -47,7 +46,7 @@ export const useYieldBreakdown = ({
 
   const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
 
-  const crvAprs = gaugeIsKilled ? undefined : rewardsApy?.crv
+  const crvAprs = gaugeIsKilled ? undefined : rewards?.crv
   const [unboostedCrvRate, maxBoostCrvRate] = [crvAprs?.[0], crvAprs?.[1]]
   const crvRateRange = useMemo(
     () => maybes([unboostedCrvRate, maxBoostCrvRate], (unboostedRate, maximumRate) => ({ unboostedRate, maximumRate })),
@@ -58,7 +57,7 @@ export const useYieldBreakdown = ({
   const rows: YieldBreakdownRow[] = useMemo(() => {
     const rows: YieldBreakdownRow[] = []
 
-    if (rewardsApy?.crv?.some(Boolean)) {
+    if (rewards?.crv?.some(Boolean)) {
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
         source: {
@@ -82,7 +81,7 @@ export const useYieldBreakdown = ({
       })
     }
 
-    rewardsApy?.other?.forEach(({ apy: rate, symbol, tokenAddress, tokenPrice }) => {
+    rewards?.other?.forEach(({ apy: rate, symbol, tokenAddress, tokenPrice }) => {
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
         source: {
@@ -115,8 +114,8 @@ export const useYieldBreakdown = ({
       })
     })
 
-    const baseDailyRate = maybe(rewardsApy?.base?.day, Number)
-    const baseWeeklyRate = maybe(rewardsApy?.base?.week, Number)
+    const baseDailyRate = maybe(rewards?.base?.day, Number)
+    const baseWeeklyRate = maybe(rewards?.base?.week, Number)
 
     // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     rows.push({
@@ -135,10 +134,10 @@ export const useYieldBreakdown = ({
 
     return rows
   }, [
-    rewardsApy?.crv,
-    rewardsApy?.other,
-    rewardsApy?.base?.day,
-    rewardsApy?.base?.week,
+    rewards?.crv,
+    rewards?.other,
+    rewards?.base?.day,
+    rewards?.base?.week,
     campaigns,
     crvPrice,
     unboostedCrvRate,
