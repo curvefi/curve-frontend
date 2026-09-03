@@ -10,14 +10,11 @@ import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
-import { AVERAGE_CATEGORIES, Chain } from '@evm-ui/utils'
+import { Chain } from '@evm-ui/utils'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils/address'
-import { aprToApy } from '@evm-ui/utils/rates'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/columns.definitions'
-
-const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 
 export const useYieldBreakdown = ({
   chainId,
@@ -31,12 +28,11 @@ export const useYieldBreakdown = ({
   const poolAddress = poolDataCacheOrApi.pool.address as Address
   const gaugeIsKilled = !!poolDataCacheOrApi.gauge.isKilled
   const { data: network } = useNetworkByChain({ chainId })
+
+  // it's called APY but it appears that's fake news except for base apy?
   const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId])
 
-  const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network?.blockchainId,
-    address: poolAddress,
-  })
+  const { data: campaigns } = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
 
   // For some reason it might be curve-js returns no token price, so we'll try to fall back to our own token rates query.
   const missingTokenRates = useMemo(
@@ -50,16 +46,12 @@ export const useYieldBreakdown = ({
   )
 
   const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
+
   const crvAprs = gaugeIsKilled ? undefined : rewardsApy?.crv
-  const unboostedCrvApy = maybe(crvAprs?.[0], apr => aprToApy(apr, COMPOUND_WINDOW))
-  const maxBoostCrvApy = maybe(crvAprs?.[1], apr => aprToApy(apr, COMPOUND_WINDOW))
-  const crvApyRange = useMemo(
-    () =>
-      maybes([unboostedCrvApy, maxBoostCrvApy], (unboostedRate, maximumRate) => ({
-        unboostedRate,
-        maximumRate,
-      })),
-    [maxBoostCrvApy, unboostedCrvApy],
+  const [unboostedCrvRate, maxBoostCrvRate] = [crvAprs?.[0], crvAprs?.[1]]
+  const crvRateRange = useMemo(
+    () => maybes([unboostedCrvRate, maxBoostCrvRate], (unboostedRate, maximumRate) => ({ unboostedRate, maximumRate })),
+    [maxBoostCrvRate, unboostedCrvRate],
   )
 
   // Construct all yield rows imperatively rather than functional to improve readability
@@ -78,19 +70,19 @@ export const useYieldBreakdown = ({
         address: MAINNET_CRV_ADDRESS,
         explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
         price: crvPrice,
-        apy: unboostedCrvApy,
-        maxBoostApy: maxBoostCrvApy,
-        ...maybe(crvApyRange, apyRange => ({
+        rate: unboostedCrvRate,
+        maxBoostRate: maxBoostCrvRate,
+        ...maybe(crvRateRange, range => ({
           apyTooltip: {
-            title: t`Gauge APY`,
-            body: <CrvRateTooltipContent {...apyRange} />,
+            title: t`Gauge APR`,
+            body: <CrvRateTooltipContent {...range} />,
             clickable: true,
           },
         })),
       })
     }
 
-    rewardsApy?.other?.forEach(({ apy, symbol, tokenAddress, tokenPrice }) => {
+    rewardsApy?.other?.forEach(({ apy: rate, symbol, tokenAddress, tokenPrice }) => {
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
         source: {
@@ -102,7 +94,7 @@ export const useYieldBreakdown = ({
         address: tokenAddress,
         explorerUrl: scanTokenPath(chainId, tokenAddress),
         price: tokenPrice ?? fallbackTokenRates?.[tokenAddress],
-        apy: aprToApy(apy, COMPOUND_WINDOW),
+        rate,
       })
     })
 
@@ -119,24 +111,24 @@ export const useYieldBreakdown = ({
         address: reward.address,
         explorerUrl: scanAddressPath(chainId, reward.address),
         price: reward.price,
-        apy: aprToApy(reward.value, COMPOUND_WINDOW),
+        rate: reward.value,
       })
     })
 
-    const baseDailyApy = maybe(rewardsApy?.base?.day, Number)
-    const baseWeeklyApy = maybe(rewardsApy?.base?.week, Number)
+    const baseDailyRate = maybe(rewardsApy?.base?.day, Number)
+    const baseWeeklyRate = maybe(rewardsApy?.base?.week, Number)
 
     // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     rows.push({
       source: {
         icon: null,
         iconPosition: 'left',
-        primary: t`Base APY`,
+        primary: t`Base APR`,
       },
-      apy: baseDailyApy,
-      apyTooltip: {
-        title: t`Base APY`,
-        body: <BaseRateTooltipContent dailyRate={baseDailyApy} weeklyRate={baseWeeklyApy} />,
+      rate: baseDailyRate,
+      rateTooltip: {
+        title: t`Base APR`,
+        body: <BaseRateTooltipContent dailyRate={baseDailyRate} weeklyRate={baseWeeklyRate} />,
         clickable: true,
       },
     })
@@ -149,22 +141,18 @@ export const useYieldBreakdown = ({
     rewardsApy?.base?.week,
     campaigns,
     crvPrice,
-    unboostedCrvApy,
-    maxBoostCrvApy,
-    crvApyRange,
+    unboostedCrvRate,
+    maxBoostCrvRate,
+    crvRateRange,
     network?.blockchainId,
     chainId,
     fallbackTokenRates,
   ])
 
-  const total = useMemo(() => sum(rows.map(row => row.apy)), [rows])
+  const total = useMemo(() => sum(rows.map(row => row.rate)), [rows])
 
   return {
-    maxBoostTotal:
-      maybe(
-        crvApyRange,
-        ({ unboostedRate: unboostedApy, maximumRate: maximumApy }) => total - unboostedApy + maximumApy,
-      ) ?? 0,
+    maxBoostTotal: maybe(crvRateRange, ({ unboostedRate, maximumRate }) => total - unboostedRate + maximumRate) ?? 0,
     total,
     rows,
   }
