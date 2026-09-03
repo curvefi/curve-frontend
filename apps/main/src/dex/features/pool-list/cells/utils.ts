@@ -18,15 +18,15 @@ type MissingAmount = null | undefined | ''
 export const formatCellValue = (value: Amount | MissingAmount, category: NumberFormatCategory) =>
   formatNumber(value != null && value !== '' && Number(value) === 0 ? null : value, category)
 
+export const isVolatileRate = (rate: number | null | undefined) => rate != null && rate > LARGE_RATE
+
 export const getBaseApr = (pool: PoolRow, period: 'daily' | 'weekly') =>
   period === 'daily' ? pool.baseDailyApr : pool.baseWeeklyApr
-export const isVolatileRate = (rate: number | null | undefined) => rate != null && rate > LARGE_RATE
+
 export const getCrvAprDescription = () =>
   t`CRV LP reward APR (max APR can be reached with max boost of ${MAX_CRV_BOOST})`
-
 export const getCrvAprRange = ({ crvApr, crvAprBoosted }: PoolRow) =>
   maybes([crvApr, crvAprBoosted], (crvApr, crvAprBoosted) => ({ unboostedRate: crvApr, boostedRate: crvAprBoosted }))
-
 export const formatCrvAprRange = (range: ReturnType<typeof getCrvAprRange>) =>
   maybe(
     range,
