@@ -14,14 +14,14 @@ import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 const { Height } = SizesAndSpaces
 
 type UseOhlcChartStateArgs = {
-  rChainId: ChainId
+  chainId: ChainId
   pricesApiPoolData: Pool
 }
 
 const selectDexOhlcData = (page: { ohlcData: LpPriceOhlcDataFormatted[] }) => page.ohlcData
 
-export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartStateArgs) => {
-  const { data: networkData } = useNetworkByChain({ chainId: rChainId })
+export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartStateArgs) => {
+  const { data: networkData } = useNetworkByChain({ chainId })
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
   const { chartCombinations, selectChartList, selectedChart, selectedChartKey, setSelectedChart, flipChart } =
     useDexChartList({
@@ -30,7 +30,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     })
 
   const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(
-    rChainId,
+    chainId,
     pricesApiPoolData.address,
     getDexChartSelectionKey(selectedChart),
     timeOption,

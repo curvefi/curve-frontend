@@ -5,7 +5,6 @@ import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useCurve } from '@evm-ui/features/connect-wallet'
 import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import { copyToClipboard, shortenAddress } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
@@ -40,13 +39,13 @@ const ChipPoolCopyButton = styled.button`
 `
 
 type ChipPoolProps = {
+  blockchainId: string
   poolId: string
   poolName: string
   poolAddress: string
 }
 
-export const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
-  const network = useCurve().network?.id ?? 'ethereum'
+export const ChipPool = ({ blockchainId, poolId, poolName, poolAddress }: ChipPoolProps) => {
   const parsedPoolAddress = useMemo(() => {
     if (poolAddress) {
       return `${shortenAddress(poolAddress)}`
@@ -58,7 +57,7 @@ export const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
     <ChipPoolWrapper>
       <ChipPoolName>
         <RouterLink
-          href={getPath({ network }, `${ROUTE.PAGE_POOLS}/${encodeURIComponent(poolId)}`)}
+          href={getPath({ network: blockchainId }, `${ROUTE.PAGE_POOLS}/${encodeURIComponent(poolId)}`)}
           sx={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}
         >
           {poolName}

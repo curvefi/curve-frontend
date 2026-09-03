@@ -3,7 +3,6 @@ import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/
 import type { StatisticsChart, YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield.query'
-import { networks } from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
 import { t } from '@evm-ui/lib/i18n'
 import { timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
@@ -18,7 +17,7 @@ import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Card, CardHeader, Stack } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import { useTheme } from '@mui/material/styles'
-import { recordEntries } from '@primitives/objects.utils'
+import { maybe, recordEntries } from '@primitives/objects.utils'
 import { AdvancedDetails } from './AdvancedDetails'
 import { RevenueDistributionsBarChart } from './DistributionsBarChart'
 import { RevenueLineChart } from './RevenueLineChart'
@@ -37,11 +36,7 @@ const chartSelections: ChartSelections<StatisticsChart>[] = [
   { activeTitle: t`Historical Distributions`, label: chartLabels.distributions, key: 'distributions' },
 ]
 
-type StatisticsProps = {
-  chainId: ChainId | undefined
-}
-
-export const Statistics = ({ chainId }: StatisticsProps) => {
+export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
   const [selectedStatisticsChart, setSelectedStatisticsChart] = useState<StatisticsChart>('savingsRate')
   const [revenueChartTimeOption, setRevenueChartTimeOption] = useState<(typeof timeOptions)[number]>('1M')
 
@@ -127,7 +122,9 @@ export const Statistics = ({ chainId }: StatisticsProps) => {
           </ChartStateWrapper>
         )}
 
-        <AdvancedDetails network={chainId && networks[chainId]} />
+        {maybe(chainId, chainId => (
+          <AdvancedDetails chainId={chainId} />
+        ))}
       </CardContent>
     </Card>
   )

@@ -131,7 +131,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const { signerAddress } = curve ?? {}
   const poolAlert = usePoolAlert({
-    network: params.network,
+    blockchainId: params.network,
     poolAddress: poolData?.pool.address,
     hasVyperVulnerability: poolData?.hasVyperVulnerability,
   })

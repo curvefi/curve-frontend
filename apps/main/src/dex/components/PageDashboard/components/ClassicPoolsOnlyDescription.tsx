@@ -22,7 +22,7 @@ export const ClassicPoolsOnlyDescription = ({ chainId }: { chainId: number }) =>
       {t`*This UI does not support the following pools:`}{' '}
       {missingPools.map((pool, idx) => (
         <Fragment key={pool.name}>
-          {idx === 0 ? '' : ', '}
+          {idx > 0 && ', '}
           <ExternalLink $noStyles href={pool.url}>
             {pool.name}
           </ExternalLink>

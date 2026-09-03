@@ -76,7 +76,7 @@ const meta: Meta<typeof RouteProviderStory> = {
   component: RouteProviderStory,
   args: {
     chainId: 1,
-    networks: { 1: { name: 'Ethereum' } as BaseConfig },
+    networks: { 1: {} as BaseConfig },
     queries: fromEntries(
       RouteProviders.map(router => [
         router,
@@ -118,7 +118,6 @@ export const GasEstimate: Story = {
     isExpanded: true,
     networks: {
       1: {
-        name: 'Ethereum',
         gasL2: false,
         gasPricesDefault: 0,
         gasPricesUnit: 'GWEI',

@@ -112,13 +112,13 @@ export const FormDeposit = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepDeposit(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         const txDescription = t`Deposited ${tokenText}.`
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(network, resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(chainId, resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepDeposit, network],
+    [fetchStepDeposit, chainId],
   )
 
   const getSteps = useCallback(

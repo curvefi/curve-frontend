@@ -67,12 +67,12 @@ export const LendMarketPage = () => {
   const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const collateralEvents = useUserCollateralEvents({
+    chainId,
+    blockchainId: getBlockchainId(network.id),
     app: MarketType.Lend,
-    chain: getBlockchainId(network.id),
     controllerAddress,
     userAddress,
     tokens,
-    network,
   })
   const showReset = useMarketResetPosition() && hasResetPosition(market)
   const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists)
