@@ -4,6 +4,7 @@ import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { t } from '@evm-ui/lib/i18n'
 import { aprToApy, AVERAGE_CATEGORIES, formatNumber, type NumberFormatCategory } from '@evm-ui/utils'
 import type { Amount } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import type { PoolRow } from '../types'
 
 const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
@@ -45,10 +46,10 @@ export const getAprCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(camp
 export const getExtraRewards = ({ extraRewardsApr }: PoolRow) => extraRewardsApr.filter(({ apr }) => apr > 0)
 export const getExtraRewardsApr = (pool: PoolRow) => sum(getExtraRewards(pool).map(({ apr }) => apr))
 
-export const getCampaignRewardsApy = (pool: PoolRow) =>
-  sum(getAprCampaigns(pool).flatMap(({ reward }) => (reward?.type === 'apr' ? [aprToPoolApy(reward.value)] : [])))
+export const getCampaignRewardsApr = (pool: PoolRow) =>
+  sum(getAprCampaigns(pool).flatMap(({ reward }) => notFalsy(reward?.type === 'apr' && reward.value)))
 
-export const getRewardsApy = (pool: PoolRow) => sum([getExtraRewardsApr(pool), getCampaignRewardsApy(pool)])
+export const getRewardsApy = (pool: PoolRow) => sum([getExtraRewardsApr(pool), getCampaignRewardsApr(pool)])
 
 /** Each APR is compounded individually rather as a whole as they're distinctive sources of yield */
 export const getNetApy = (pool: PoolRow) =>

@@ -4,7 +4,7 @@ import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { PoolRow } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './RateTooltipItems'
-import { getAprCampaigns, getCampaignRewardsApy, getExtraRewards, getExtraRewardsApr, getRewardsApy } from './utils'
+import { getAprCampaigns, getCampaignRewardsApr, getExtraRewards, getExtraRewardsApr, getRewardsApy } from './utils'
 
 export const RewardsRateTooltipContent = ({ pool }: { pool: PoolRow }) => {
   const extraRewards = getExtraRewards(pool)
@@ -25,7 +25,7 @@ export const RewardsRateTooltipContent = ({ pool }: { pool: PoolRow }) => {
         {campaigns.length > 0 && (
           <TooltipItems secondary>
             <TooltipItem title={t`Campaign rewards`}>
-              {formatNumber(getCampaignRewardsApy(pool), 'percent.rate')}
+              {formatNumber(getCampaignRewardsApr(pool), 'percent.rate')}
             </TooltipItem>
             <CampaignRewardTooltipItems campaigns={campaigns} />
           </TooltipItems>

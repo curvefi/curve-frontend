@@ -12,7 +12,6 @@ import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { PoolRow } from '../types'
 import {
-  aprToPoolApy,
   formatCrvApyRange,
   getCompactPointsCampaigns,
   getCrvApyDescription,
@@ -39,7 +38,7 @@ export const CampaignTooltipContent = ({ campaign, showApy }: { campaign: Campai
   <Stack sx={{ gap: Spacing.sm }}>
     {showApy && campaign.reward?.type === 'apr' && (
       <Typography variant="bodySRegular" sx={{ textAlign: 'start' }}>
-        {t`APY`}: {formatNumber(aprToPoolApy(campaign.reward.value), 'percent.rate')}
+        {t`APR`}: {formatNumber(campaign.reward.value, 'percent.rate')}
       </Typography>
     )}
     <TooltipMessage rewardsPool={campaign} />
