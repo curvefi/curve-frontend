@@ -22,7 +22,15 @@ type PoolRowExtraReward = {
 }
 
 type PoolRowType =
-  'main' | 'crypto' | 'factory' | 'factory_crypto' | 'crvusd' | 'factory_tricrypto' | 'stableswapng' | 'twocryptong'
+  | 'main'
+  | 'crypto'
+  | 'factory'
+  | 'factory_crypto'
+  | 'crvusd'
+  | 'factory_tricrypto'
+  | 'stableswapng'
+  | 'twocryptong'
+  | 'fxswap'
 
 /** Normalized pool data shared by all pool-list API adapters. */
 export type PoolRowData = {
