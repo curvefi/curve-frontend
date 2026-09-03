@@ -10,8 +10,8 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-ui.tsbuildinfo"
   },
   "dependencies": {
-    "@sentry/core": "10.68.0",
-    "@sentry/react": "10.68.0",
+    "@sentry/core": "10.72.0",
+    "@sentry/react": "10.72.0",
     "@tanstack/query-async-storage-persister": "*",
     "@tanstack/query-persist-client-core": "*",
     "@tanstack/react-query": "*",
