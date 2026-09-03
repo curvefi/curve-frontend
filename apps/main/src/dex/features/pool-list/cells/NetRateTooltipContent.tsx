@@ -101,7 +101,7 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
           </TooltipItems>
         )}
       </Stack>
-      {volatile && <TooltipDescription text={t`This net APR is volatile and is unlikely to persist.`} />}
+      {volatile && <TooltipDescription text={t`This net rate is volatile and is unlikely to persist.`} />}
     </TooltipWrapper>
   )
 }

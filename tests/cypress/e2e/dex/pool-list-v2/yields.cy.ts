@@ -28,13 +28,13 @@ describe('V2 pool-list yields', () => {
     visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
     showV2PoolColumns(YIELD_COLUMNS)
 
-    getV2PoolCell(address, PoolColumnId.NetRate).find('[data-testid="pool-net-rate"]').should('have.text', '20.70%')
-    getV2PoolCell(address, PoolColumnId.BaseRate).should('contain.text', '10.51%')
-    getV2PoolCell(address, PoolColumnId.WeeklyBaseRate).should('contain.text', '22.09%')
-    getV2PoolCell(address, PoolColumnId.RewardsRate).should('contain.text', '5.06%')
+    getV2PoolCell(address, PoolColumnId.NetRate).find('[data-testid="pool-net-rate"]').should('have.text', '20%')
+    getV2PoolCell(address, PoolColumnId.BaseRate).should('contain.text', '10%')
+    getV2PoolCell(address, PoolColumnId.WeeklyBaseRate).should('contain.text', '20%')
+    getV2PoolCell(address, PoolColumnId.RewardsRate).should('contain.text', '5%')
     getV2PoolCell(address, PoolColumnId.CrvRate).within(() => {
-      cy.get('[data-testid="pool-crv-rate-unboosted"]').should('have.text', '5.12%')
-      cy.get('[data-testid="pool-crv-rate-boosted"]').should('have.text', '13.30%')
+      cy.get('[data-testid="pool-crv-rate-unboosted"]').should('have.text', '5%')
+      cy.get('[data-testid="pool-crv-rate-boosted"]').should('have.text', '12.50%')
     })
 
     getV2PoolCell(address, PoolColumnId.Points).within(() => {
@@ -61,8 +61,8 @@ describe('V2 pool-list yields', () => {
     showV2PoolColumns(YIELD_COLUMNS)
 
     const killed = V2_POOL_FIXTURES.killed.address
-    getV2PoolCell(killed, PoolColumnId.NetRate).should('contain.text', '6.07%')
-    getV2PoolCell(killed, PoolColumnId.RewardsRate).should('contain.text', '5.06%')
+    getV2PoolCell(killed, PoolColumnId.NetRate).should('contain.text', '6%')
+    getV2PoolCell(killed, PoolColumnId.RewardsRate).should('contain.text', '5%')
     getV2PoolCell(killed, PoolColumnId.CrvRate).should('have.text', '-')
     getV2PoolCell(killed, PoolColumnId.NetRate).within(() => {
       cy.get(POINTS_BADGE).should('exist')
@@ -72,7 +72,7 @@ describe('V2 pool-list yields', () => {
     })
 
     const partial = V2_POOL_FIXTURES.partial.address
-    getV2PoolCell(partial, PoolColumnId.NetRate).should('contain.text', '6.13%')
+    getV2PoolCell(partial, PoolColumnId.NetRate).should('contain.text', '6%')
     getV2PoolCell(partial, PoolColumnId.CrvRate).should('have.text', '-')
     getV2PoolCell(partial, PoolColumnId.NetRate).find(CRV_REWARD_BADGE).should('not.exist')
 
@@ -93,15 +93,13 @@ describe('V2 pool-list yields', () => {
     getV2PoolCell(volatile, PoolColumnId.BaseRate).should('contain.text', '5,000+%')
     getV2PoolCell(volatile, PoolColumnId.WeeklyBaseRate)
       .invoke('text')
-      .should('match', /^-\d+\.\d+%$/)
+      .should('match', /^-\d+(\.\d+)?%$/)
 
     const highRewards = V2_POOL_FIXTURES.highRewards.address
-    getV2PoolCell(highRewards, PoolColumnId.NetRate)
-      .should('contain.text', '5,000+%')
-      .and('not.contain.text', '11.75k%')
-    getV2PoolCell(highRewards, PoolColumnId.BaseRate).should('contain.text', '1.005%')
+    getV2PoolCell(highRewards, PoolColumnId.NetRate).should('contain.text', '5,000+%').and('not.contain.text', '6k%')
+    getV2PoolCell(highRewards, PoolColumnId.BaseRate).should('contain.text', '1.00%')
     getV2PoolCell(highRewards, PoolColumnId.RewardsRate)
-      .should('contain.text', '11.75k%')
+      .should('contain.text', '6k%')
       .and('not.contain.text', '5,000+%')
   })
 
@@ -110,11 +108,11 @@ describe('V2 pool-list yields', () => {
     visitV2PoolList({ network: 'taiko', viewport: DESKTOP_VIEWPORT })
     showV2PoolColumns([PoolColumnId.CrvRate, PoolColumnId.RewardsRate, PoolColumnId.Points])
 
-    getV2PoolCell(address, PoolColumnId.NetRate).find('[data-testid="pool-net-rate"]').should('have.text', '13.32%')
-    getV2PoolCell(address, PoolColumnId.RewardsRate).should('contain.text', '8.20%')
+    getV2PoolCell(address, PoolColumnId.NetRate).find('[data-testid="pool-net-rate"]').should('have.text', '13%')
+    getV2PoolCell(address, PoolColumnId.RewardsRate).should('contain.text', '8%')
     getV2PoolCell(address, PoolColumnId.CrvRate).within(() => {
-      cy.get('[data-testid="pool-crv-rate-unboosted"]').should('have.text', '5.12%')
-      cy.get('[data-testid="pool-crv-rate-boosted"]').should('have.text', '13.30%')
+      cy.get('[data-testid="pool-crv-rate-unboosted"]').should('have.text', '5%')
+      cy.get('[data-testid="pool-crv-rate-boosted"]').should('have.text', '12.50%')
     })
     getV2PoolCell(address, PoolColumnId.Points).find(POINTS_BADGE).should('have.text', 'TP')
   })

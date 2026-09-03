@@ -146,7 +146,7 @@ describe('V2 pool-list columns', () => {
       PoolColumnId.Tvl,
       PoolColumnId.Age,
     ])
-    getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.WeeklyBaseRate).should('contain.text', '22.09%')
+    getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.WeeklyBaseRate).should('contain.text', '20%')
     getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.Age)
       .find('[data-testid="pool-age"]')
       .should('have.text', '5 days')

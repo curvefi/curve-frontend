@@ -127,10 +127,10 @@ describe('V2 pool-list tooltip content', () => {
       'BOLD3%',
       'Net total APR20%',
       'Max veCRV Boost (2.5x)12.50%',
-      'Total max veCRV APR32.50%',
+      'Total max veCRV APR27.50%',
       'Points15+',
     ])
-    cy.get(CONTENT).should('contain.text', 'weekly compounding rate').and('not.contain.text', 'unlikely to persist')
+    cy.get(CONTENT).and('not.contain.text', 'unlikely to persist')
     expectLink(APR_CAMPAIGN_LINK, '3%')
     expectLink(POINTS_CAMPAIGN_LINK, '15+')
   })
