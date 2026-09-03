@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
-    "@vitejs/plugin-react": "5.1.2"
+    "@vitejs/plugin-react": "5.1.2",
+    "vite": "7.3.5"
   }
 }

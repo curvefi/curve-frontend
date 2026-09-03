@@ -595,6 +595,7 @@ __metadata:
   resolution: "@curvefi/prices-api@workspace:packages/prices-api"
   dependencies:
     "@curvefi/primitives": "workspace:^"
+    vite: "npm:7.3.5"
     zod: "npm:4.5.2"
   languageName: unknown
   linkType: soft
@@ -12943,6 +12944,7 @@ __metadata:
     "@sentry/vite-plugin": "npm:5.4.0"
     "@tanstack/react-router": "npm:1.170.32"
     "@vitejs/plugin-react": "npm:5.1.2"
+    vite: "npm:7.3.5"
     vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:9.1.1"
   languageName: unknown
