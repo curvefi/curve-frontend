@@ -32,5 +32,3 @@ export const useMarketMobileFormDrawer = useBetaChannel
 
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useStableChannel
-
-export const isDexPoolListV2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta

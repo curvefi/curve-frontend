@@ -43,7 +43,6 @@ export type NetworkConfig = {
   tricryptoFactory: boolean
   fxswapFactory: boolean
   hasFactory: boolean
-  pricesApi: boolean
 } & NetworkDef<NetworkEnum>
 
 export type Networks = Record<ChainId, NetworkConfig>

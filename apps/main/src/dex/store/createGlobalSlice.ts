@@ -6,10 +6,8 @@ import { curvejsApi } from '@/dex/lib/curvejs'
 import { fetchPoolIds } from '@/dex/lib/pool-ids'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
-import { isLegacyList } from '@/dex/utils'
 import { log } from '@evm-ui/lib/logging'
-import type { ReleaseChannel } from '@evm-ui/utils'
-import { formatTimeDiff } from '@evm-ui/utils'
+import { ReleaseChannel, formatTimeDiff } from '@evm-ui/utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { fetchNetworks } from '../entities/networks'
 import { refetchPoolTvls } from '../queries/pool-tvl.query'
@@ -100,7 +98,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     state.setNetworkConfigFromApi(curveApi)
 
     const networks = await fetchNetworks() // Pool ids have a dependency on networks
-    const isLegacy = isLegacyList(releaseChannel, networks[chainId])
+    const isLegacy = releaseChannel === ReleaseChannel.Legacy
     const poolIds = await fetchPoolIds(curveApi, { chainId })
 
     // After pool bootstrap is completed above, any future query refactored
