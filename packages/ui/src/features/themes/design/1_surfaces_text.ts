@@ -1,5 +1,7 @@
 import { Blues, Grays, Greens, Reds, Violets, Yellows, Oranges } from './0_primitives'
 
+const FeedbackAlert = { Light: '#ff0606', Dark: '#ff6644', Chad: '#ff0606' } as const
+
 function createLightSurfaces() {
   const Text = {
     Primary: Grays[950],
@@ -58,6 +60,7 @@ function createLightSurfaces() {
       Warning: Oranges[500],
       Danger: Oranges[500],
       Error: Reds[500],
+      Alert: FeedbackAlert.Light,
     },
     Highlight: Blues[100],
     TypeAction: {
@@ -171,6 +174,7 @@ function createDarkSurfaces() {
       Warning: Oranges[500],
       Danger: Oranges[500],
       Error: Reds[500],
+      Alert: FeedbackAlert.Dark,
     },
     Highlight: Grays[850],
     TypeAction: {
@@ -283,6 +287,7 @@ function createChadSurfaces() {
       Warning: Oranges[500],
       Danger: Oranges[500],
       Error: Reds[500],
+      Alert: FeedbackAlert.Chad,
     },
     TypeAction: {
       Selected: Violets[50],
@@ -395,6 +400,7 @@ function createLightInvertedSurfaces() {
       Warning: Oranges[500],
       Danger: Oranges[500],
       Error: Reds[500],
+      Alert: FeedbackAlert.Light,
     },
     Highlight: Blues[100],
     TypeAction: {
@@ -506,6 +512,7 @@ function createDarkInvertedSurfaces() {
       Caution: Yellows[500],
       Warning: Oranges[500],
       Danger: Oranges[500],
+      Alert: FeedbackAlert.Dark,
       Error: Reds[500],
     },
     Highlight: Grays[850],
@@ -619,6 +626,7 @@ function createChadInvertedSurfaces() {
       Warning: Oranges[500],
       Error: Reds[500],
       Danger: Oranges[500],
+      Alert: FeedbackAlert.Chad,
     },
     TypeAction: {
       Selected: Violets[900],
