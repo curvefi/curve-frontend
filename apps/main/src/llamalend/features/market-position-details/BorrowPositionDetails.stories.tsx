@@ -13,6 +13,7 @@ import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
 import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { UserMarketQuery } from '@evm-ui/lib/model'
 import { getTokenUsdRateKey } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@evm-ui/lib/queries/test-query.provider.test'
 import { MarketType } from '@evm-ui/types/market'
@@ -36,7 +37,7 @@ const baseProps = {
   oraclePrice: 1,
 }
 
-const params = { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress satisfies Address }
+const params: UserMarketQuery = { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress }
 const userBands = [69, 118] as Range<number>
 const COLLATERAL_SYMBOL = 'sUSDe'
 const COLLATERAL_ADDRESS = '0x9d39a5de30e57443bff2a8307a4256c8797a3497' as Address

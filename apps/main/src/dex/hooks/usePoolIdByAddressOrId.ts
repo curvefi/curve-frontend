@@ -19,14 +19,14 @@ export function usePoolIdByAddressOrId({ chainId, poolIdOrAddress }: { chainId: 
 
     // Check current pool data first
     const currentMatch = Object.values(poolData ?? {}).find(({ pool: { address } }) =>
-      isAddressEqual(address as Address, poolIdOrAddress),
+      isAddressEqual(address as Address, poolIdOrAddress as Address),
     )
 
     if (currentMatch) return currentMatch.pool.id
 
     // Fallback to cached pool data
     const cachedMatch = Object.values(poolDataCache ?? {}).find(({ pool: { address } }) =>
-      isAddressEqual(address as Address, poolIdOrAddress),
+      isAddressEqual(address as Address, poolIdOrAddress as Address),
     )
 
     return cachedMatch?.pool?.id

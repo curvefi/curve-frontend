@@ -13,7 +13,7 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useNavigate, useParams } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
 import { ErrorPage } from '@evm-ui/pages/ErrorPage'
-import { isAddress, isAddressEqual } from '@primitives/address.utils'
+import { isAddress, isAddressEqual, type Address } from '@primitives/address.utils'
 
 export const PagePool = () => {
   const push = useNavigate()
@@ -56,7 +56,8 @@ export const PagePool = () => {
    */
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: networkId as Chain })
   const isBlacklisted = useMemo(
-    () => isAddress(rPoolIdOrAddress) && blacklist?.some(badPool => isAddressEqual(badPool, rPoolIdOrAddress)),
+    () =>
+      isAddress(rPoolIdOrAddress) && blacklist?.some(badPool => isAddressEqual(badPool, rPoolIdOrAddress as Address)),
     [blacklist, rPoolIdOrAddress],
   )
 

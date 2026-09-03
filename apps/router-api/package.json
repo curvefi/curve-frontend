@@ -15,16 +15,12 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@curvefi/api": "*",
     "@curvefi/api-server": "workspace:^",
+    "@curvefi/prices-api": "workspace:^",
     "fastify": "*"
   },
-  "peerDependencies": {
-    "@curvefi/api": "*",
-    "@curvefi/prices-api": "*"
-  },
   "devDependencies": {
-    "@curvefi/api": "*",
-    "@curvefi/prices-api": "*",
     "@types/node": "*",
     "eslint": "*",
     "tsx": "4.23.1",

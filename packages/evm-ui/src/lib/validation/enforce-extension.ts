@@ -21,7 +21,7 @@ export const extendEnforce = (enforce: typeof import('vest').enforce) =>
       message: () => 'Must be a valid decimal number',
     }),
     isAddress: <T>(value: T) => ({
-      pass: !!value && typeof value === 'string' && isAddress(value),
+      pass: !!(value && typeof value === 'string' && isAddress(value)),
       message: () => 'Must be a valid Ethereum address',
     }),
     isNotZeroAddress: <T>(value: T) => ({

@@ -15,15 +15,13 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-stellar.tsbuildinfo"
   },
   "dependencies": {
+    "@curvefi/primitives": "workspace:^",
     "@tanstack/react-router": "*",
+    "react": "*",
+    "react-dom": "*",
     "ui": "*",
     "vite-plugin-svgr": "*",
     "vite-plugin-vercel": "9.1.1"
-  },
-  "peerDependencies": {
-    "@curvefi/primitives": "*",
-    "react": "*",
-    "react-dom": "*"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
