@@ -543,7 +543,6 @@ const mockPlatforms = () =>
             taiko: {
               name: 'Taiko',
               rpcUrl: 'https://rpc.mainnet.taiko.xyz',
-              nativeCurrencySymbol: 'ETH',
               explorerBaseUrl: 'https://taikoscan.io/',
               isMainnet: true,
               chainId: Chain.Taiko,

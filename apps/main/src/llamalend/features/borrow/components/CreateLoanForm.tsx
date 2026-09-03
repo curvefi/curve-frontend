@@ -9,6 +9,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { FormButton } from '@evm-ui/features/forms'
 import { useCreateLoanPreset } from '@evm-ui/hooks/useLocalStorage'
 import { t } from '@evm-ui/lib/i18n'
+import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import { AlertDisableForm } from '@evm-ui/shared/ui/AlertDisableForm'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
@@ -162,7 +163,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           />
         </Collapse>
       </LoanPresetSelector>
-      <HighPriceImpactAlert priceImpact={priceImpact} max={q(maxLeverage)} />
+      <HighPriceImpactAlert priceImpact={{ ...priceImpact, ...combineQueryState(priceImpact, maxLeverage) }} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
       <FormButton
         pending={isPending}

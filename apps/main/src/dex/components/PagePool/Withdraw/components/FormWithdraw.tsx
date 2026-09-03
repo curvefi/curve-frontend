@@ -24,6 +24,7 @@ import { notify } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { constQ } from '@evm-ui/types/util'
+import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import { Box } from '@legacy-ui/Box'
 import { Checkbox } from '@legacy-ui/Checkbox'
@@ -222,7 +223,7 @@ export const FormWithdraw = ({
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, 'WITHDRAW')
+      resetState(poolData)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
@@ -318,7 +319,7 @@ export const FormWithdraw = ({
   )
 
   return (
-    <>
+    <FormContent>
       <FieldLpToken
         amount={formValues.lpToken}
         balance={lpTokenBalance}
@@ -491,7 +492,7 @@ export const FormWithdraw = ({
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>
-    </>
+    </FormContent>
   )
 }
 

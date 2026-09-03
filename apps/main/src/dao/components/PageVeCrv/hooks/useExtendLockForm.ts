@@ -1,23 +1,28 @@
 import { useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useExtendLockMutation } from '@/dao/components/PageVeCrv/mutations/extend-lock.mutation'
-import { useExtendLockGasEstimate } from '@/dao/components/PageVeCrv/queries/extend-lock-estimate-gas.query'
-import type { ExtendLockFormValues, ExtendLockParams } from '@/dao/components/PageVeCrv/queries/extend-lock.types'
+import type { ExtendLockFormValues } from '@/dao/components/PageVeCrv/queries/extend-lock.types'
 import { extendLockFormValidationSuite } from '@/dao/components/PageVeCrv/queries/extend-lock.validation'
 import {
   calcUnlockTime,
+  calculateVeCrv,
+  getDateValueTimestamp,
   getExtendQuickDateUpdate,
   getEffectiveUnlockDateLabel,
   getRemainingLockedDays,
   getUnlockDateUpdate,
 } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
-import { invalidateVeCrvQueries, useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
-import { networks } from '@/dao/networks'
+import {
+  invalidateVeCrvQueries,
+  useLockerLockedAmountAndUnlockTime,
+  useLockerVeCrv,
+} from '@/dao/entities/locker-vecrv-info'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { dayjs } from '@evm-ui/lib/dayjs'
+import { mapQuery } from '@evm-ui/types/util'
 import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
 import { fromEntries, maybe } from '@primitives/objects.utils'
@@ -32,6 +37,7 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
   const values = form.watchValues()
   const { address: userAddress } = useConnection()
   const lockedAmountAndUnlockTime = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })
+  const currentVeCrv = useLockerVeCrv({ chainId, userAddress })
 
   const currentUnlockTime = lockedAmountAndUnlockTime.data?.unlockTime
   const currentUnlockUtcTime = maybe(currentUnlockTime, dayjs.utc) ?? null
@@ -58,8 +64,6 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
     userDefaultValues,
   )
 
-  const estimateParams: ExtendLockParams = params
-  const gas = useExtendLockGasEstimate(networks, estimateParams)
   const updateUnlockDate = useCallback(
     (unlockDate: DateValue) => {
       if (!currentUnlockUtcTime) return
@@ -80,19 +84,26 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
 
   return {
     form,
+    params,
     values,
     currentUnlockUtcTime,
     minUtcDate: currentUnlockUtcTime,
     maxUtcDate,
     isMax: maybe(maxDays, maxDays => maxDays <= MAX_LOCK_REMAINDER_DAYS),
+    currentVeCrv,
+    futureVeCrv: mapQuery(lockedAmountAndUnlockTime, ({ lockedAmount }) =>
+      calculateVeCrv({
+        lockedAmount,
+        unlockTime: maybe(values.utcDate, getDateValueTimestamp),
+      }),
+    ),
     effectiveUnlockDateLabel: getEffectiveUnlockDateLabel({
       selectedDate: values.utcDate,
       unlockTime: calcUnlockTime({ days: values.days, unlockTime: currentUnlockTime }),
     }),
-    gas,
     isPending,
     isDisabled: !form.formState.isValid || isPending || isDebouncing,
-    error: extendError ?? gas.error,
+    error: extendError,
     validationErrors: fromEntries(form.formState.visibleErrors),
     onSubmit: form.handleSubmit(onSubmitExtend),
     updateUnlockDate,

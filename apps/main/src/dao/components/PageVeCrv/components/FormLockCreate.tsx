@@ -2,6 +2,8 @@ import { FieldDatePicker } from '@/dao/components/PageVeCrv/components/FieldDate
 import { FieldLockedAmount } from '@/dao/components/PageVeCrv/components/FieldLockedAmount'
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useCreateLockForm } from '@/dao/components/PageVeCrv/hooks/useCreateLockForm'
+import { useCreateLockGasEstimate } from '@/dao/components/PageVeCrv/queries/create-lock-estimate-gas.query'
+import { networks } from '@/dao/networks'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
@@ -13,11 +15,12 @@ import { fromEntries } from '@primitives/objects.utils'
 export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
   const {
     form,
+    params,
     values,
     currentUtcDate,
     minUtcDate,
     maxUtcDate,
-    gas,
+    futureVeCrv,
     isApproved,
     isPending,
     isDisabled,
@@ -29,20 +32,29 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
     selectQuickDate,
   } = useCreateLockForm({ chainId })
 
-  const errors = fromEntries(form.formState.visibleErrors)
+  const errors = form.formState.errors
+  const visibleErrors = fromEntries(form.formState.visibleErrors)
+  const isOpen = form.isTouched('lockedAmount', 'utcDate')
 
   return (
     <Form
       {...form}
       onSubmit={onSubmit}
-      footer={<VeCrvActionInfo gas={q(gas)} isApproved={isApproved} isOpen={form.formState.isValid} />}
+      footer={
+        <VeCrvActionInfo
+          futureVeCrv={futureVeCrv}
+          gas={q(useCreateLockGasEstimate(networks, params, isOpen))}
+          isApproved={isApproved}
+          isOpen={isOpen}
+        />
+      }
     >
       <FieldLockedAmount
         chainId={chainId}
         disabled={isPending}
         noCurrentLock
         lockedAmount={values.lockedAmount}
-        lockedAmountError={errors.lockedAmount ?? errors.maxLockedAmount}
+        lockedAmountError={visibleErrors.lockedAmount ?? (values.maxLockedAmount && errors.maxLockedAmount?.message)}
         onBalance={updateAmount}
       />
       <FieldDatePicker
@@ -54,9 +66,8 @@ export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
         minUtcDate={minUtcDate}
         maxUtcDate={maxUtcDate}
         utcDate={values.utcDate}
-        utcDateError={errors.utcDate ?? errors.days}
+        utcDateError={visibleErrors.utcDate ?? visibleErrors.days}
         effectiveUnlockDateLabel={effectiveUnlockDateLabel}
-        lockedAmount={values.lockedAmount}
         handleInputEstimatedUnlockedDays={updateUnlockDate}
         handleQuickActionClick={selectQuickDate}
       />

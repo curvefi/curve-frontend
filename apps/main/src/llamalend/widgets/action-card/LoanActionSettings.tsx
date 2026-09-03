@@ -6,11 +6,8 @@ import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { borderStyle, decimal, formatNumber, formatToken } from '@evm-ui/utils'
-import {
-  getPriceImpactDisplay,
-  getPriceImpactPercent,
-  type PriceImpact,
-} from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { getPriceImpactPercent, type PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
 import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
 import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import Collapse from '@mui/material/Collapse'
@@ -41,7 +38,6 @@ export const LoanActionSettings = ({
   borrowSymbol?: string
 }) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact)
 
   return (
     <Collapse in={show}>
@@ -69,10 +65,9 @@ export const LoanActionSettings = ({
           />
         )}
         {priceImpact && (
-          <ActionInfo
-            label={priceImpactLabel}
+          <PriceImpactActionInfo
+            priceImpact={priceImpact}
             value={mapQuery(priceImpact, data => formatNumber(getPriceImpactPercent(data), 'percent.rate'))}
-            valueColor={priceImpactColor}
             size="small"
             testId="borrow-price-impact"
           />

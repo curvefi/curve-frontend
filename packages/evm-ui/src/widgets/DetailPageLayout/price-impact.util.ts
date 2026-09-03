@@ -1,13 +1,7 @@
-import { t } from '@evm-ui/lib/i18n'
-import { Query } from '@evm-ui/types/util'
+import type { Query } from '@evm-ui/types/util'
 import { decimalGreaterThan } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
-
-const HIGH_PRICE_IMPACT_THRESHOLD = {
-  warning: '1',
-  critical: '25',
-} as const satisfies Record<'warning' | 'critical', Decimal>
+import { recordEntries } from '@primitives/objects.utils'
 
 const MIN_USD_PRICE_IMPACT_WARN = 1000
 
@@ -16,15 +10,35 @@ export type PriceImpact = {
   tokenInUsd: Decimal | undefined
 }
 
+export type PriceImpactLevel = 'caution' | 'warning' | 'error' | null
+
+/** Thresholds shared by price-impact value emphasis, alerts, and blocking behavior. */
+const PRICE_IMPACT_THRESHOLDS = {
+  /** Blocks leveraged LlamaLend actions above this price impact. */
+  critical: '25',
+  error: '1',
+  warning: '0.75',
+  caution: '0.5',
+} as const satisfies Record<'critical' | NonNullable<PriceImpactLevel>, Decimal>
+
 const isPriceImpactSignificant = (priceImpact: PriceImpact | Decimal | null | undefined) =>
   !(Number((priceImpact as PriceImpact)?.tokenInUsd) < MIN_USD_PRICE_IMPACT_WARN)
 
 export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | null | undefined) =>
   typeof priceImpact === 'string' ? priceImpact : priceImpact?.priceImpact
 
+/** Returns a percentage-only emphasis level without applying the USD significance filter. */
+export const getPriceImpactLevel = (priceImpact: PriceImpact | Decimal | null | undefined): PriceImpactLevel => {
+  const level =
+    recordEntries(PRICE_IMPACT_THRESHOLDS).find(([, threshold]) =>
+      decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', threshold),
+    )?.[0] ?? null
+  return level === 'critical' ? 'error' : level
+}
+
 export const isHighPriceImpact = (priceImpact: PriceImpact | Decimal | null | undefined) =>
   isPriceImpactSignificant(priceImpact) &&
-  decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', HIGH_PRICE_IMPACT_THRESHOLD.warning)
+  decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', PRICE_IMPACT_THRESHOLDS.error)
 
 /**
  * Returns the alert severity based on the warning and critical price impact thresholds:
@@ -36,7 +50,7 @@ export const getPriceImpactSeverity = (
   priceImpact: PriceImpact | Decimal | null | undefined,
 ): 'error' | 'warning' | null =>
   isHighPriceImpact(priceImpact)
-    ? decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', HIGH_PRICE_IMPACT_THRESHOLD.critical)
+    ? decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', PRICE_IMPACT_THRESHOLDS.critical)
       ? 'error'
       : 'warning'
     : null
@@ -52,11 +66,3 @@ export const shouldBlockTransaction = (
 ) =>
   (leverageEnabled == true && priceImpact.data == null && !priceImpact.error) ||
   (getPriceImpactSeverity(priceImpact.data) === 'error' && isPriceImpactSignificant(priceImpact.data))
-
-export const getPriceImpactDisplay = (priceImpact: Query<PriceImpact | Decimal | null> | undefined) => {
-  const severity = priceImpact && getPriceImpactSeverity(priceImpact.data)
-  return {
-    label: severity ? t`High price impact` : t`Price impact`,
-    color: maybe(severity, s => ({ error: 'error', warning: 'warning.main' })[s]),
-  }
-}

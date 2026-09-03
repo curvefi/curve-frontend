@@ -2,6 +2,8 @@ import { styled } from 'styled-components'
 import { Countdown } from '@/dao/components/Countdown'
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useWithdrawLockForm } from '@/dao/components/PageVeCrv/hooks/useWithdrawLockForm'
+import { useWithdrawLockGasEstimate } from '@/dao/components/PageVeCrv/queries/withdraw-lock-estimate-gas.query'
+import { networks } from '@/dao/networks'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
@@ -13,12 +15,16 @@ import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 
 export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
-  const { form, canUnlock, lockedAmountAndUnlockTime, gas, isPending, isDisabled, error, onSubmit } =
+  const { form, params, canUnlock, lockedAmountAndUnlockTime, isPending, isDisabled, error, onSubmit } =
     useWithdrawLockForm({ chainId })
   const lock = lockedAmountAndUnlockTime.data
-
+  const isOpen = !!canUnlock
   return (
-    <Form {...form} onSubmit={onSubmit} footer={<VeCrvActionInfo gas={q(gas)} isOpen={!!canUnlock} />}>
+    <Form
+      {...form}
+      onSubmit={onSubmit}
+      footer={<VeCrvActionInfo gas={q(useWithdrawLockGasEstimate(networks, params, isOpen))} isOpen={isOpen} />}
+    >
       <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`CRV Locked`}:</p>

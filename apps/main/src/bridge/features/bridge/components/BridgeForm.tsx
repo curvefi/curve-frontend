@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNavigate, usePathname } from '@evm-ui/hooks/router'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
@@ -58,7 +59,7 @@ export const BridgeForm = ({
             bridgeCost={q(bridgeCost)}
             gas={q(gas)}
             isApproved={isApproved.data}
-            nativeTokenSymbol={networks[chainId].symbol}
+            nativeTokenSymbol={wagmiChainsMap[chainId]?.nativeCurrency.name}
           />
           <BridgeInfoAlert />
         </>

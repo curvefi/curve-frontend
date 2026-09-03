@@ -13,6 +13,7 @@ import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
+import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
@@ -115,7 +116,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, 'UNSTAKE')
+      resetState(poolData)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
@@ -144,7 +145,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
   const { gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolId })
 
   return (
-    <>
+    <FormContent>
       {/* input fields */}
       <FieldLpToken
         amount={formValues.stakedLpToken}
@@ -171,6 +172,6 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>
-    </>
+    </FormContent>
   )
 }

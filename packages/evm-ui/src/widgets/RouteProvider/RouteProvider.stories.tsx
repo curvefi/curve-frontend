@@ -119,7 +119,6 @@ export const GasEstimate: Story = {
     networks: {
       1: {
         name: 'Ethereum',
-        symbol: 'ETH',
         gasL2: false,
         gasPricesDefault: 0,
         gasPricesUnit: 'GWEI',

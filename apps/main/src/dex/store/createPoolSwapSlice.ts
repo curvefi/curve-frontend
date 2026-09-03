@@ -1,4 +1,4 @@
-import { Contract, Interface, JsonRpcProvider } from 'ethers'
+import { Contract, Interface } from 'ethers'
 import { cloneDeep } from 'lodash'
 import { ethAddress } from 'viem'
 import type { Config } from 'wagmi'
@@ -52,7 +52,7 @@ const SLICE_KEY = 'poolSwap'
 // prettier-ignore
 export type PoolSwapSlice = {
   [SLICE_KEY]: SliceState & {
-    fetchIgnoreExchangeRateCheck: (curve: CurveApi, pool: Pool) => Promise<boolean>
+    fetchIgnoreExchangeRateCheck: (pool: Pool) => Promise<boolean>
     fetchExchangeOutput: (activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<void>
     fetchMaxAmount: (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<string>
     setFormValues: (config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
@@ -87,19 +87,16 @@ export const createPoolSwapSlice = (
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    fetchIgnoreExchangeRateCheck: async (curve: CurveApi, pool: Pool) => {
+    fetchIgnoreExchangeRateCheck: async (pool: Pool) => {
       const state = get()
       const sliceState = state[SLICE_KEY]
-
-      const { chainId } = curve
 
       const storedIgnoreExchangeRateCheck = sliceState.ignoreExchangeRateCheck[pool.id]
 
       if (typeof storedIgnoreExchangeRateCheck !== 'undefined') {
         return storedIgnoreExchangeRateCheck
       } else {
-        const networks = await fetchNetworks()
-        const provider = useWallet.getState().provider ?? new JsonRpcProvider(networks[chainId].rpcUrl)
+        const provider = useWallet.getState().provider
 
         try {
           const json = await import('@/dex/components/PagePool/abis/stored_rates.json').then(module => module.default)
@@ -129,7 +126,7 @@ export const createPoolSwapSlice = (
       const state = get()
       const sliceState = state[SLICE_KEY]
 
-      const ignoreExchangeRateCheck = await sliceState.fetchIgnoreExchangeRateCheck(curve, pool)
+      const ignoreExchangeRateCheck = await sliceState.fetchIgnoreExchangeRateCheck(pool)
       const resp = await curvejsApi.poolSwap.exchangeOutput(
         activeKey,
         pool,

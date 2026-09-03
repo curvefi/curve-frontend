@@ -111,13 +111,10 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
  * Shows above the submit button to make high price impact visible without opening the accordion.
  */
 export const HighPriceImpactAlert = ({
-  priceImpact: { data, isLoading: isImpactLoading, error },
-  max: { isLoading: isMaxLoading },
+  priceImpact: { data, isLoading, error },
 }: {
   priceImpact: QueryProp<PriceImpact | Decimal | null>
-  max: QueryProp<unknown> // dependent query that is necessary before the price impact query is even enabled
 }) => {
-  const isLoading = isImpactLoading || isMaxLoading // impact will only start loading after the max is available
   const severity = getPriceImpactSeverity(data)
   const prevSeverity = usePreviousValue(severity)
   return error ? (

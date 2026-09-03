@@ -1,0 +1,23 @@
+{
+  "name": "ui",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content . --fix",
+    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-ui.tsbuildinfo"
+  },
+  "peerDependencies": {
+    "@curvefi/primitives": "*",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "eslint": "*",
+    "typescript": "*"
+  }
+}

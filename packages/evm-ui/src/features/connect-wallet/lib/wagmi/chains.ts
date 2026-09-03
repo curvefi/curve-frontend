@@ -1,7 +1,6 @@
 import { defineChain, type Chain } from 'viem'
 import { defaultGetRpcUrls } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
 import type { NetworkDef } from '@legacy-ui/utils'
-import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import {
   arbitrum,
   arbitrumSepolia,
@@ -16,8 +15,10 @@ import {
   fantom,
   fraxtal,
   gnosis,
+  hyperliquid,
   ink,
   kava,
+  mainnet,
   mantle,
   monad,
   moonbeam,
@@ -36,7 +37,7 @@ import {
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
-import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata } from './custom-chains'
+import { expchain, megaeth, strata } from './custom-chains'
 
 const wagmiChains = [
   arbitrum,
@@ -94,7 +95,7 @@ export const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain
  * Creates a Viem chain configuration from a Curve network definition.
  *
  * Uses existing Wagmi chain data when available, falling back to network-specific
- * configuration for custom chains. Handles special cases like TAC's 8-decimal precision.
+ * configuration for custom chains.
  *
  * @param network - The network definition containing chain ID, name, RPC URL, etc.
  * @param getRpcUrls - Function to resolve RPC URLs for the chain
@@ -103,13 +104,11 @@ export const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain
 export const createChainFromNetwork = (network: NetworkDef, getRpcUrls: typeof defaultGetRpcUrls): Chain =>
   // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
   defineChain({
-    ...(wagmiChainsMap[network.chainId] ?? {
-      nativeCurrency: { name: network.symbol, symbol: network.symbol, decimals: DEFAULT_DECIMALS },
-    }),
+    ...wagmiChainsMap[network.chainId],
     id: network.chainId,
     testnet: network.isTestnet,
     name: network.name,
-    rpcUrls: { default: { http: getRpcUrls(network.chainId, network.rpcUrl) } },
+    rpcUrls: { default: { http: getRpcUrls(network.chainId) } },
     ...(network.explorerUrl && {
       blockExplorers: { default: { name: new URL(network.explorerUrl).host, url: network.explorerUrl } },
     }),

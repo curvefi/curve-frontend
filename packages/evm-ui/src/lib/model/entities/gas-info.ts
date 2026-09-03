@@ -3,6 +3,7 @@ import { enforce, group, test } from 'vest'
 import { ethAddress } from 'viem'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { AnyCurveApi } from '@evm-ui/features/connect-wallet/lib/types'
+import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import type { Provider } from '@evm-ui/lib/ethers'
 import { type ChainQuery, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
 import { combineQueries, useCombinedQueries } from '@evm-ui/lib/queries/combine'
@@ -11,7 +12,7 @@ import { constQ, type Query as QueryResult } from '@evm-ui/types/util'
 import { Chain, formatNumber, formatToken, gweiToEther, gweiToWai, weiToGwei } from '@evm-ui/utils'
 import { type BaseConfig } from '@legacy-ui/utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { assert, maybe } from '@primitives/objects.utils'
+import { assert, maybe, maybes } from '@primitives/objects.utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { useTokenUsdRate } from './token-usd-rate'
 
@@ -353,17 +354,16 @@ export function calculateGas(
   chainTokenUsdRate: number | undefined,
   {
     chainId,
-    symbol: networkSymbol,
     gasPricesUnit,
     gasL2: isL2Network,
     gasPricesDefault = 0,
   }: {
     chainId: number
-    symbol: string
     gasPricesUnit: string
     gasL2: boolean
     gasPricesDefault: number | undefined
   },
+  networkSymbol: string,
 ): {
   estGasCost?: number
   estGasCostUsd?: number
@@ -404,11 +404,15 @@ const useEstimateGas = (
   const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
   const gasInfo = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
   const network = maybe(chainId, chainId => networks[chainId])
+  const networkSymbol = maybe(chainId, chainId => wagmiChainsMap[chainId]?.nativeCurrency.name)
   return useCombinedQueries(
     [estimate, gasInfo, ethRate],
     useCallback(
-      (estimate, gasInfo, ethRate) => maybe(network, network => calculateGas(estimate, gasInfo, ethRate, network)),
-      [network],
+      (estimate, gasInfo, ethRate) =>
+        maybes([network, networkSymbol], (network, networkSymbol) =>
+          calculateGas(estimate, gasInfo, ethRate, network, networkSymbol),
+        ),
+      [network, networkSymbol],
     ),
   )
 }

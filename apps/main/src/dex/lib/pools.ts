@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import { type Address, getAddress } from 'viem'
 import { CurveApi, type GaugeStatus, NetworkConfig, Pool, PoolData, PoolDataCache } from '@/dex/types/main.types'
-import { fulfilledValue, getCurvefiUrl } from '@/dex/utils'
+import { fulfilledValue } from '@/dex/utils'
 import { log } from '@evm-ui/lib'
 import { shortenAddress } from '@evm-ui/utils'
 import { PromisePool } from '@supercharge/promise-pool'
@@ -26,7 +26,6 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
   const poolData: PoolData = {
     pool: p,
     chainId: network.chainId,
-    curvefiUrl: '',
 
     // stats
     hasVyperVulnerability: p.hasVyperVulnerability(),
@@ -58,7 +57,6 @@ export async function getPools(
   includeGaugeData: boolean,
 ) {
   const { getPool } = curve
-  const { orgUIPath } = network
 
   const resp = poolList.reduce(
     (
@@ -77,7 +75,6 @@ export async function getPools(
       const poolData = getPoolData(pool, network)
 
       poolData.failedFetching24hOldVprice = failedFetching24hOldVprice?.[pool.address] ?? false
-      poolData.curvefiUrl = getCurvefiUrl(poolId, orgUIPath)
 
       prev.poolsMapper[poolId] = poolData
 

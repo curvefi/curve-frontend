@@ -38,6 +38,7 @@ describe('FormLockDate (mocked)', () => {
     cy.get('[data-testid="extend-lock-submit-button"]').should('be.enabled')
     cy.get('[data-testid="adjust-date-date-picker-field"]').should('contain.text', '8/24/2028')
     cy.get('[data-testid="helper-message-error"]').should('not.exist')
+    cy.get('[data-testid="estimated-tx-cost"]').should('contain.text', '$')
     cy.then(() => assertPreSubmit(ONE_YEAR_FROM_ROUNDED_LOCK_DAYS))
 
     cy.get('[data-testid="extend-lock-submit-button"]').should('be.enabled').click()
@@ -54,6 +55,7 @@ describe('FormLockDate (mocked)', () => {
     cy.get('[data-testid="adjust-date-date-picker-field"]').should('contain.text', '8/25/2028')
     cy.get('[data-testid="helper-message-error"]').should('contain.text', 'Aug 24, 2028')
     cy.get('[data-testid="extend-lock-submit-button"]').should('be.enabled')
+    cy.get('[data-testid="estimated-tx-cost"]').should('contain.text', '$')
     cy.then(() => assertPreSubmit(NON_THURSDAY_EXTEND_DAYS))
   })
 })

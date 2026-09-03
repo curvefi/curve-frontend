@@ -50,6 +50,8 @@ export type DeepPartial<T> = {
  */
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
+export type MakeRequired<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> }
+
 export type AllowUndefined<T> = { [P in keyof T]: T[P] | undefined }
 
 /**
