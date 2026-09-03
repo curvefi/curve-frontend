@@ -8,7 +8,6 @@ import Fraxtal from './Fraxtal.json'
 import Fx from './Fx.json'
 import Infinifi from './Infinifi.json'
 import Jane from './Jane.json'
-import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
 import Noon from './Noon.json'
@@ -36,7 +35,6 @@ export {
   Loop,
   Noon,
   Aegis,
-  Liquity,
   Yuzu,
   TermMax,
   Re,
