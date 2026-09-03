@@ -4,7 +4,7 @@ import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { t } from '@evm-ui/lib/i18n'
 import { formatNumber, type NumberFormatCategory } from '@evm-ui/utils'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import type { PoolRow } from '../types'
 
 const MAX_CRV_BOOST = '2.5x'
@@ -26,7 +26,7 @@ export const getBaseApr = (pool: PoolRow, period: 'daily' | 'weekly') =>
 export const getCrvAprDescription = () =>
   t`CRV LP reward APR (max APR can be reached with max boost of ${MAX_CRV_BOOST})`
 export const getCrvAprRange = ({ crvApr, crvAprBoosted }: PoolRow) =>
-  maybes([crvApr, crvAprBoosted], (crvApr, crvAprBoosted) => ({ unboostedRate: crvApr, boostedRate: crvAprBoosted }))
+  crvApr && crvAprBoosted ? { unboostedRate: crvApr, boostedRate: crvAprBoosted } : null // don't use maybe function as that accepts 0
 export const formatCrvAprRange = (range: ReturnType<typeof getCrvAprRange>) =>
   maybe(
     range,
