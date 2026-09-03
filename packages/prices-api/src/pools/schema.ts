@@ -236,6 +236,7 @@ const poolType = z.enum([
   'factory_tricrypto',
   'stableswapng',
   'twocryptong',
+  'fxswap',
 ])
 export type PoolType = z.infer<typeof poolType>
 export type V2PoolFilterType = Extract<

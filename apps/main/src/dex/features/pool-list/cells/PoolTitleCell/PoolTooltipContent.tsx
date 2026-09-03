@@ -10,6 +10,7 @@ import { poolTypeClassifications, type PoolClassification } from './classificati
 const CLASSIFICATIONS = {
   stable: t`A stable pool is designed for assets expected to maintain a similar value.`,
   volatile: t`A volatile pool is designed for assets whose relative values may change significantly.`,
+  fxswap: t`An FXSwap pool automatically recenters liquidity for assets whose relative prices drift over time.`,
 } satisfies Record<PoolClassification, string>
 
 const METAPOOL_DESCRIPTION = t`A metapool pairs an asset with the liquidity of an existing base pool.`
