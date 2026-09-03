@@ -1,5 +1,5 @@
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { BaseConfig } from '@legacy-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName
@@ -15,4 +15,4 @@ export type NetworkConfig<TId extends string = string, TChainId extends number =
   marketListFilter: string[]
   marketListFilterType: string[]
   pricesData: boolean
-} & BaseConfig<TId, TChainId>
+} & NetworkDef<TId, TChainId>

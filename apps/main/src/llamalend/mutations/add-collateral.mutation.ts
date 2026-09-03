@@ -17,7 +17,7 @@ type AddCollateralMutation = { userCollateral: Decimal }
 
 type AddCollateralOptions = {
   marketId: string | undefined
-  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
 }

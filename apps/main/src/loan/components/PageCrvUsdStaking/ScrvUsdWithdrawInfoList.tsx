@@ -4,7 +4,6 @@ import { ScrvUsdExchangeRateActionInfo } from '@/loan/components/PageCrvUsdStaki
 import { useScrvUsdPreviewWithdraw } from '@/loan/entities/scrvusd-preview.query'
 import { useScrvUsdWithdrawEstimateGas } from '@/loan/entities/scrvusd-withdraw-estimate-gas.query'
 import type { ScrvUsdWithdrawForm, ScrvUsdWithdrawParams } from '@/loan/entities/scrvusd.validation'
-import type { NetworkConfig } from '@/loan/types/loan.types'
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
@@ -14,11 +13,10 @@ import Stack from '@mui/material/Stack'
 
 type ScrvUsdWithdrawInfoListProps = {
   params: ScrvUsdWithdrawParams
-  networks: Record<number, NetworkConfig>
   form: UseFormReturn<ScrvUsdWithdrawForm>
 }
 
-export const ScrvUsdWithdrawInfoList = ({ params, networks, form }: ScrvUsdWithdrawInfoListProps) => {
+export const ScrvUsdWithdrawInfoList = ({ params, form }: ScrvUsdWithdrawInfoListProps) => {
   const isOpen = form.isTouched('withdrawAmount')
   const expectedCrvUsd = useScrvUsdPreviewWithdraw(params, isOpen)
   return (
@@ -32,7 +30,7 @@ export const ScrvUsdWithdrawInfoList = ({ params, networks, form }: ScrvUsdWithd
           testId="scrvusd-withdraw-receive"
         />
         <ScrvUsdExchangeRateActionInfo chainId={params.chainId} enabled={isOpen} />
-        <ActionInfoGasEstimate gas={q(useScrvUsdWithdrawEstimateGas(networks, params, isOpen))} />
+        <ActionInfoGasEstimate gas={q(useScrvUsdWithdrawEstimateGas(params, isOpen))} />
       </Stack>
     </ActionInfoCollapse>
   )

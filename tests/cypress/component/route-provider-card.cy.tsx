@@ -5,7 +5,6 @@ import type { RouteResponse } from '@evm-ui/entities/router-api'
 import { lightTheme } from '@evm-ui/themes'
 import { constQ, q, type QueryProp } from '@evm-ui/types/util'
 import { RouteProviderCard } from '@evm-ui/widgets/RouteProvider/RouteProviderCard'
-import type { BaseConfig } from '@legacy-ui/utils'
 import type { RouteProvider } from '@primitives/router.utils'
 
 const { design } = lightTheme()
@@ -64,7 +63,6 @@ const mountRouteProviderCard = ({
           enabled,
           ...q<RouteResponse | null>({ error: null, isLoading, data: route }),
         }}
-        networks={{ 1: {} as BaseConfig }}
         chainId={1}
         tokenOut={{ symbol: 'crvUSD', decimals: 18, usdRate }}
         isSelected={isSelected}

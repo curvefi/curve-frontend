@@ -10,7 +10,7 @@ export function DaoLayout() {
   const chainId = networksIdMapper[network]
 
   useRedirectToEth(networks[chainId], network)
-  useGasInfoAndUpdateLib({ chainId, networks })
+  useGasInfoAndUpdateLib({ chainId })
 
   return <Outlet />
 }

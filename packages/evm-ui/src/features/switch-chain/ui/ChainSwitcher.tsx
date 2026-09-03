@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { useEffect, useMemo } from 'react'
-import { getBlockchainId } from '@curvefi/prices-api'
+import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
 import { isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
@@ -35,18 +35,18 @@ const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
 
 const getTvl =
   (tvls: Record<string, number> | undefined) =>
-  ({ id, chainId, isLite }: NetworkDef) =>
+  ({ blockchainId: id, chainId, isLite }: NetworkDef) =>
     isChainTestnet(chainId) || isLite
       ? 0 // ignore lite chains tvl, it's only available for downgraded chains and messes with sorting
-      : (maybes([getBlockchainId(id), tvls], (id, tvls) => tvls[id]) ?? 0)
+      : (maybes([getPricesApiBlockchainId(id), tvls], (id, tvls) => tvls[id]) ?? 0)
 
 export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherProps) => {
-  const networkId = getCurrentNetwork(usePathname())
+  const blockchainId = getCurrentNetwork(usePathname())
 
   const [isOpen, , close, toggle] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
   const [showTestnets, setShowTestnets] = useShowTestNets()
-  useEffect(() => () => close(), [networkId, close]) // close on chain change
+  useEffect(() => () => close(), [blockchainId, close]) // close on chain change
   const tvls = useNetworksTVL(TVL_SOURCES[currentMenu])
 
   const options = useMemo(
@@ -71,7 +71,7 @@ export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherP
   return (
     <>
       <IconButton size="small" onClick={onClick} data-testid="btn-change-chain">
-        {networkId && <ChainSwitcherIcon networkId={networkId} />}
+        {blockchainId && <ChainSwitcherIcon blockchainId={blockchainId} />}
         {Object.values(options).length > 1 && <KeyboardArrowDownIcon />}
       </IconButton>
       {isOpen != null && (
@@ -91,7 +91,7 @@ export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherP
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
           ) : (
-            <ChainList showTestnets={showTestnets} options={options} tvls={tvls} selectedNetworkId={networkId} />
+            <ChainList showTestnets={showTestnets} options={options} tvls={tvls} selectedNetworkId={blockchainId} />
           )}
         </ModalDialog>
       )}

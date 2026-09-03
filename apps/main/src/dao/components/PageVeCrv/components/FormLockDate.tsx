@@ -2,7 +2,6 @@ import { FieldDatePicker } from '@/dao/components/PageVeCrv/components/FieldDate
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useExtendLockForm } from '@/dao/components/PageVeCrv/hooks/useExtendLockForm'
 import { useExtendLockGasEstimate } from '@/dao/components/PageVeCrv/queries/extend-lock-estimate-gas.query'
-import { networks } from '@/dao/networks'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
@@ -41,7 +40,7 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
         <VeCrvActionInfo
           currentVeCrv={q(currentVeCrv)}
           futureVeCrv={futureVeCrv}
-          gas={q(useExtendLockGasEstimate(networks, params, isOpen))}
+          gas={q(useExtendLockGasEstimate(params, isOpen))}
           isOpen={isOpen}
         />
       }

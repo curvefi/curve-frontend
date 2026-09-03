@@ -29,7 +29,6 @@ import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
-import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { invalidateUserPoolInfo } from '../queries/invalidation'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
@@ -229,10 +228,8 @@ export const createPoolSwapSlice = (
       // stored values
       const userPoolBalances = await fetchPoolTokenBalances(config, curve, pool.id)
       const walletFromBalance = userPoolBalances[formValues.fromAddress]
-      const networks = await fetchNetworks()
       const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
         chainId: curve.chainId,
-        networks,
       })
 
       let fromAmount: string = walletFromBalance ?? '0'

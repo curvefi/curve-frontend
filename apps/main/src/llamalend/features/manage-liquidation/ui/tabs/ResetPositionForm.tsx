@@ -43,7 +43,6 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
           tokens={{ collateralToken, borrowToken }}
           controllerAddress={controllerAddress}
           marketType={marketType}
-          networks={networks}
         />
       }
     >
@@ -51,7 +50,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         <LoanFormTokenInput
           label={t`Converted collateral`}
           token={borrowToken}
-          blockchainId={network.id}
+          blockchainId={network.blockchainId}
           name="convertedBorrowed"
           form={form}
           message={t`Amount of converted collateral used to reset the position`}
@@ -64,7 +63,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         <LoanFormTokenInput
           label={t`Add from wallet`}
           token={borrowToken}
-          blockchainId={network.id}
+          blockchainId={network.blockchainId}
           name="userBorrowed"
           form={form}
           message={t`Increase amount to push future liquidation threshold lower${requiredWalletAmount ? `\nMinimum from wallet: ${requiredWalletAmount} ${borrowToken?.symbol ?? ''}` : ''}`}

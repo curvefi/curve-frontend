@@ -41,7 +41,7 @@ export const { networks, networksIdMapper } = Object.entries(networksConfig).red
       chainId,
     }
     mapper.networks[chainId] = networkConfig
-    mapper.networksIdMapper[networkConfig.id] = chainId
+    mapper.networksIdMapper[networkConfig.blockchainId] = chainId
     return mapper
   },
   {

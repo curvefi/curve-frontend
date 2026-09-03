@@ -9,7 +9,7 @@ import { q } from '@evm-ui/types/util'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
 import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
-import type { BaseConfig } from '@legacy-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 
@@ -31,7 +31,7 @@ const routes: MarketRoutes = {
       },
     ]),
   ),
-  networks: { 1: {} as BaseConfig },
+  networks: { 1: {} as NetworkDef },
   chainId: 1,
   selectedRoute: mockRoutes[0],
   selectedRouter: mockRoutes[0].router,

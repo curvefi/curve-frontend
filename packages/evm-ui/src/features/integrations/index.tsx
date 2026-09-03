@@ -67,7 +67,7 @@ export const Integrations = () => {
           </InlineLink>
         </Trans>
       </Typography>
-      <IntegrationsList networkId={network} searchText={searchText} />
+      <IntegrationsList blockchainId={network} searchText={searchText} />
     </Stack>
   )
 }

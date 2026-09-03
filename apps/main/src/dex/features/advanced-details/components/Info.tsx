@@ -47,9 +47,8 @@ export const Info = ({
   const { pool } = poolDataCacheOrApi
   const poolAddress = pool.address as Address
   const { data: network } = useNetworkByChain({ chainId })
-  const chain = network.networkId as BlockchainId
   const { data: basePools } = useBasePools({ chainId })
-  const { data: metadata } = usePoolMetadata({ chain, poolAddress })
+  const { data: metadata } = usePoolMetadata({ chain: network.blockchainId as BlockchainId, poolAddress })
   const isFxSwap = metadata?.hasDonations ?? false
   const poolType =
     getPoolType({ pool, isFxSwap, tokenCount: metadata?.coins.length ?? poolDataCacheOrApi.tokens.length }) ||

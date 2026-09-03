@@ -22,14 +22,12 @@
     "@curvefi/legacy-ui": "workspace:^",
     "@curvefi/ui": "workspace:^",
     "fuse.js": "7.5.0",
-    "merkl-api": "workspace:^",
-    "router-api": "workspace:^",
     "vest": "5.4.6",
     "vite-plugin-vercel": "9.1.1"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
-    "@types/lodash": "4.17.24",
+    "@types/lodash": "4.17.25",
     "@vitejs/plugin-react": "5.1.2",
     "pinst": "3.0.0",
     "vite": "7.3.5",

@@ -16,7 +16,7 @@ import { type Address, type Hex } from '@primitives/address.utils'
 
 type StakeOptions = {
   marketId: string | undefined
-  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
 }

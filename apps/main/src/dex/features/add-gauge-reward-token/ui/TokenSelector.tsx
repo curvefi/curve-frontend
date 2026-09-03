@@ -56,8 +56,8 @@ export const TokenSelector = ({
               crvAddress,
             ].some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
         )
-        .map(toTokenOption(network?.networkId)),
-    [gaugeRewardsDistributors, tokensMapper, crvAddress, network.networkId],
+        .map(toTokenOption(network?.blockchainId)),
+    [gaugeRewardsDistributors, tokensMapper, crvAddress, network.blockchainId],
   )
 
   const rewardTokenId = watchValue('rewardTokenId')

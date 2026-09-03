@@ -31,7 +31,7 @@ const getDefaultAddresses = (market: MarketTemplate) => {
  * and user event tracking.
  */
 export function useMarketMutation<TVariables extends object>({
-  network: { chainId, id: networkId },
+  network: { chainId, blockchainId },
   marketId,
   onSuccess,
   mutationTokenAddresses,
@@ -40,7 +40,7 @@ export function useMarketMutation<TVariables extends object>({
   /** The market id */
   marketId: string | null | undefined
   /** The current network config */
-  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
   /** Token balances affected by the mutation that should be refetched after success. Defaults to market collateral + borrow tokens. */
   mutationTokenAddresses?: (variables: TVariables, context: MarketContext) => Address[] | undefined
 }) {
@@ -62,13 +62,13 @@ export function useMarketMutation<TVariables extends object>({
       const tokenAddresses = mutationTokenAddresses?.(variables, context) ?? getDefaultAddresses(market)
 
       await Promise.allSettled([
-        updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash),
+        updateUserEventsApi(wallet, { blockchainId }, market, receipt.transactionHash),
         invalidateAllUserMarketDetails({
           chainId,
           marketId: market.id,
           userAddress,
           contractAddress: getControllerAddress(market),
-          blockchainId: networkId,
+          blockchainId,
         }),
         invalidateTokenBalances(config, {
           chainId,

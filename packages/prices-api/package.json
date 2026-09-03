@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@curvefi/primitives": "workspace:^",
-    "zod": "4.4.3"
+    "zod": "4.5.2"
   },
   "publishConfig": {
     "access": "public"
