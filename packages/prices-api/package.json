@@ -61,6 +61,7 @@
     }
   },
   "dependencies": {
+    "@curvefi/primitives": "workspace:^",
     "zod": "4.4.3"
   }
 }

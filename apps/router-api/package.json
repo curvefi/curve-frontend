@@ -15,6 +15,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@curvefi/api-server": "workspace:^",
     "fastify": "*"
   },
   "peerDependencies": {

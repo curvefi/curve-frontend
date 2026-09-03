@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-import { builtinModules, createRequire } from 'node:module'
+import { builtinModules, findPackageJSON } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -80,14 +80,13 @@ const resolvePackageAlias = source => [...packageAliases].find(([alias]) => matc
 const resolveImportName = (importer, source) =>
   resolveTsAlias(importer, source) ?? resolvePackageAlias(source) ?? getImportName(source)
 
-/** Reads dependencies declared by an installed package. */
+/** Reads dependencies without requiring the package to export its manifest. */
 const readDependencyDeps = (dir, dependency) => {
   try {
-    const requireFromPackage = createRequire(path.join(dir, 'package.json'))
-    const manifest = readJson(requireFromPackage.resolve(`${dependency}/package.json`))
-    return getDependencies(manifest)
+    const file = findPackageJSON(dependency, path.join(dir, 'package.json'))
+    return file && getDependencies(readJson(file))
   } catch (error) {
-    if (['ERR_PACKAGE_PATH_NOT_EXPORTED', 'MODULE_NOT_FOUND'].includes(error.code)) return null
+    if (error.code === 'ERR_MODULE_NOT_FOUND') return null
     throw error
   }
 }

@@ -29,6 +29,8 @@
     "legacy-ui": "*",
     "lightweight-charts": "5.2.0",
     "memoizee": "0.4.17",
+    "merkl-api": "workspace:^",
+    "router-api": "workspace:^",
     "ui": "*",
     "vest": "5.4.6",
     "vite-plugin-svgr": "*",

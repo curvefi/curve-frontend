@@ -30,6 +30,7 @@
     "cypress": "15.19.0",
     "eslint": "*",
     "ethers": "*",
+    "main": "workspace:^",
     "typescript": "*",
     "vite": "*",
     "vite-plugin-svgr": "*",

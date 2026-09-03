@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.3.7",
+    "@curvefi/prices-api": "workspace:^",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
     "@hookform/resolvers": "5.4.0",
@@ -38,8 +39,7 @@
     "lodash": "*",
     "react-hook-form": "7.77.0",
     "viem": "2.55.10",
-    "wagmi": "3.7.4",
-    "zustand": "5.0.14"
+    "wagmi": "3.7.4"
   },
   "peerDependencies": {
     "ethers": "*",
