@@ -18,7 +18,7 @@ import {
   getExtraRewards,
   getNetApy,
   getPointsCampaigns,
-  getRewardsApy,
+  getRewardsApr,
 } from './utils'
 
 const getIncentivesItems = (pool: PoolRow) => {
@@ -30,7 +30,7 @@ const getIncentivesItems = (pool: PoolRow) => {
   if (!hasCrvApy && !extraRewards.length && !campaigns.length) return null
   else
     return {
-      incentivesApy: getRewardsApy(pool) + (hasCrvApy ? unboostedCrvApy : 0),
+      incentivesApy: getRewardsApr(pool) + (hasCrvApy ? unboostedCrvApy : 0),
       extraRewards,
       campaigns,
       unboostedCrvApy,

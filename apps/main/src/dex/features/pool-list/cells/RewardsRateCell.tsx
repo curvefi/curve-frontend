@@ -8,29 +8,25 @@ import Typography from '@mui/material/Typography'
 import type { PoolRow } from '../types'
 import { RewardIcons } from './RewardIcons'
 import { RewardsRateTooltipContent } from './RewardsRateTooltipContent'
-import { formatCellValue, getRewardsApy } from './utils'
+import { formatCellValue, getRewardsApr } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
 export const RewardsRateCell = ({ pool }: { pool: PoolRow }) => {
-  const rewardsApy = getRewardsApy(pool)
+  const rewardsApr = getRewardsApr(pool)
 
   return (
-    <Stack data-testid="pool-rewards-apy" sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
+    <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
       <WithWrapper
-        shouldWrap={rewardsApy}
+        shouldWrap={rewardsApr}
         Wrapper={Tooltip}
         clickable
-        title={t`Rewards APY`}
+        title={t`Rewards APR`}
         body={<RewardsRateTooltipContent pool={pool} />}
         placement="top"
       >
-        <Box
-          component="span"
-          data-testid={rewardsApy ? 'pool-rewards-apy-tooltip-trigger' : undefined}
-          sx={{ display: 'inline-flex' }}
-        >
-          <Typography variant="tableCellMBold">{formatCellValue(getRewardsApy(pool), 'percent.rate')}</Typography>
+        <Box component="span" sx={{ display: 'inline-flex' }}>
+          <Typography variant="tableCellMBold">{formatCellValue(rewardsApr, 'percent.rate')}</Typography>
         </Box>
       </WithWrapper>
       <RewardIcons pool={pool} />
