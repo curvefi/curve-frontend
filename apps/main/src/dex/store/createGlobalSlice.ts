@@ -9,7 +9,6 @@ import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/mai
 import { log } from '@evm-ui/lib/logging'
 import { ReleaseChannel, formatTimeDiff } from '@evm-ui/utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { fetchNetworks } from '../entities/networks'
 import { refetchPoolTvls } from '../queries/pool-tvl.query'
 import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
@@ -97,7 +96,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
 
-    const networks = await fetchNetworks() // Pool ids have a dependency on networks
     const isLegacy = releaseChannel === ReleaseChannel.Legacy
     const poolIds = await fetchPoolIds(curveApi, { chainId })
 

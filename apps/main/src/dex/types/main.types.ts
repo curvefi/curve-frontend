@@ -25,7 +25,6 @@ export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlP
 
 export type NetworkConfig = {
   isCrvRewardsEnabled: boolean
-  useApi: boolean
   poolIsWrappedOnly: Record<string, boolean>
   poolFilters: string[]
   swap: Record<string, string>
