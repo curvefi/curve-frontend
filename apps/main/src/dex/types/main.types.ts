@@ -3,7 +3,7 @@ import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { BannerProps } from '@evm-ui/shared/ui/Banner'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
-import type { BaseConfig } from '@legacy-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
@@ -48,7 +48,7 @@ export type NetworkConfig = {
   fxswapFactory: boolean
   hasFactory: boolean
   pricesApi: boolean
-} & BaseConfig<NetworkEnum>
+} & NetworkDef<NetworkEnum>
 
 export type Networks = Record<ChainId, NetworkConfig>
 export type CurrencyReservesToken = {

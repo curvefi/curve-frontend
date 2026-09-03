@@ -43,7 +43,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
 
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
   const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId })
-  const gas = useDepositRewardEstimateGas(networks, { chainId, poolId, rewardTokenId, amount, epoch, userBalance })
+  const gas = useDepositRewardEstimateGas({ chainId, poolId, rewardTokenId, amount, epoch, userBalance })
   const {
     onSubmit,
     error: depositRewardError,

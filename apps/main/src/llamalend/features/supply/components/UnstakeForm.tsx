@@ -44,7 +44,6 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
         <UnstakeSupplyInfoList
           form={form}
           params={params}
-          networks={networks}
           borrowToken={borrowToken}
           controllerAddress={controllerAddress}
         />

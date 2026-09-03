@@ -10,11 +10,39 @@ import { combineQueries, useCombinedQueries } from '@evm-ui/lib/queries/combine'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib/validation'
 import { constQ, type Query as QueryResult } from '@evm-ui/types/util'
 import { Chain, formatNumber, formatToken, gweiToEther, gweiToWai, weiToGwei } from '@evm-ui/utils'
-import { type BaseConfig } from '@legacy-ui/utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { assert, maybe, maybes } from '@primitives/objects.utils'
+import { assert, maybe, maybes, type PartialRecord } from '@primitives/objects.utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { useTokenUsdRate } from './token-usd-rate'
+
+type ChainGasConfig = {
+  gasL2: boolean
+  gasPricesUnit: string
+  gasPricesUrl: string
+  gasPricesDefault: number
+}
+
+const BASE_CHAIN_GAS_CONFIG: ChainGasConfig = {
+  gasL2: false,
+  gasPricesUnit: 'GWEI',
+  gasPricesUrl: '',
+  gasPricesDefault: 0,
+}
+
+const CHAIN_GAS_CONFIGS: PartialRecord<Chain, Partial<ChainGasConfig>> = {
+  [Chain.Ethereum]: { gasPricesUrl: 'https://api.curve.finance/api/getGas', gasPricesDefault: 1 },
+  [Chain.Optimism]: { gasL2: true },
+  [Chain.Polygon]: { gasPricesUrl: 'https://gasstation.polygon.technology/v2', gasPricesDefault: 0 },
+  [Chain.Kava]: { gasPricesUnit: 'UKAVA' },
+  [Chain.Avalanche]: {
+    gasPricesUnit: 'nAVAX',
+    gasPricesUrl: 'https://api.avax.network/ext/bc/C/rpc',
+    gasPricesDefault: 0,
+  },
+  [Chain.Base]: { gasL2: true },
+} as const
+
+export const getGasConfig = (chainId: Chain) => ({ ...BASE_CHAIN_GAS_CONFIG, ...CHAIN_GAS_CONFIGS[chainId] })
 
 type GasInfoQuery<T = number> = ChainQuery<T> & {
   /** Network dependent url for fetching the latest gas prices */
@@ -290,25 +318,21 @@ async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: s
   }
 }
 
-type Network = { gasPricesUrl: string; gasL2: boolean }
-
 export type GasInfoQueryOptions<TChainId extends number = number> = {
   chainId?: TChainId | null
-  networks: Record<TChainId, Network>
 }
 
 /** Helper function to create required query options based on network configs. */
 function createGasInfoQueryOptions<TChainId extends number>({
   chainId,
-  networks,
 }: GasInfoQueryOptions<TChainId>): GasInfoParams<TChainId> {
-  const network = chainId && networks[chainId]
+  const { gasPricesUrl, gasL2 } = maybe(chainId, chainId => getGasConfig(chainId)) ?? {}
   return {
     chainId,
-    gasPricesUrl: network?.gasPricesUrl,
+    gasPricesUrl,
     // It seems that in the original code the Ethereum mainnet gas prices URL was used for L2 price fetching.
     // I do not question whether this is right or not. I just re-use what was already being used.
-    gasPricesUrlL2: network?.gasL2 ? networks?.[1 as TChainId]?.gasPricesUrl : undefined,
+    gasPricesUrlL2: gasL2 ? CHAIN_GAS_CONFIGS[Chain.Ethereum]!.gasPricesUrl : undefined,
   }
 }
 
@@ -316,28 +340,26 @@ function createGasInfoQueryOptions<TChainId extends number>({
  * Fetches gas info and updates the library. This wrapper exists as the base query requires query options
  * derived from network config objects. Having to import and use `createGasInfoQueryOptions` is cumbersome.
  */
-export const fetchGasInfoAndUpdateLib = <TChainId extends number>({
-  chainId,
-  networks,
-}: GasInfoQueryOptions<TChainId>) => fetchGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }))
+export const fetchGasInfoAndUpdateLib = <TChainId extends number>({ chainId }: GasInfoQueryOptions<TChainId>) =>
+  fetchGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId }))
 
 /**
  * Fetches gas info and updates the library. This wrapper exists as the base query requires query options
  * derived from network config objects. Having to import and use `createGasInfoQueryOptions` is cumbersome.
  */
 export const useGasInfoAndUpdateLib = <TChainId extends number>(
-  { chainId, networks }: GasInfoQueryOptions<TChainId>,
+  { chainId }: GasInfoQueryOptions<TChainId>,
   enabled?: boolean,
 ) => {
   const { provider } = useWallet() // validate provider manually because otherwise query won't get enabled when connected
-  return useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), !!provider && enabled)
+  return useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId }), !!provider && enabled)
 }
 
 /** Sets gas info query data directly in the query cache. */
 export const setGasInfoAndUpdateLib = <TChainId extends number>(
-  { chainId, networks }: GasInfoQueryOptions<TChainId>,
+  { chainId }: GasInfoQueryOptions<TChainId>,
   gasInfo: GasInfo,
-) => setGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), gasInfo)
+) => setGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId }), gasInfo)
 
 // calculates L1+L2 gas for optimistic rollups
 const calculateOptimisticRollupGas = (
@@ -352,17 +374,7 @@ export function calculateGas(
   estimatedGas: Amount | [Decimal, Decimal] | number[] | null | undefined,
   gasInfo: GasInfo | undefined,
   chainTokenUsdRate: number | undefined,
-  {
-    chainId,
-    gasPricesUnit,
-    gasL2: isL2Network,
-    gasPricesDefault = 0,
-  }: {
-    chainId: number
-    gasPricesUnit: string
-    gasL2: boolean
-    gasPricesDefault: number | undefined
-  },
+  chainId: number,
   networkSymbol: string,
 ): {
   estGasCost?: number
@@ -370,6 +382,7 @@ export function calculateGas(
   tooltip?: string
   gasCostInWei?: number
 } {
+  const { gasPricesUnit, gasL2, gasPricesDefault } = getGasConfig(chainId)
   const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
   if (!estimatedGas || !basePlusPriority) {
     return {}
@@ -379,7 +392,7 @@ export function calculateGas(
   const gasCostInWei =
     L2_NETWORKS_WITH_GAS_PRICE.includes(chainId) && l2GasPriceWei && !Array.isArray(estimatedGas)
       ? l2GasPriceWei * +estimatedGas
-      : isL2Network && Array.isArray(estimatedGas) && l2GasPriceWei && l1GasPriceWei
+      : gasL2 && Array.isArray(estimatedGas) && l2GasPriceWei && l1GasPriceWei
         ? calculateOptimisticRollupGas(estimatedGas, [l2GasPriceWei, l1GasPriceWei])
         : Array.isArray(estimatedGas)
           ? 0
@@ -395,24 +408,18 @@ export function calculateGas(
 type GasEstimate = Amount | [Decimal, Decimal] | number[] | null | undefined
 
 /** Converts an existing gas estimate query into native/USD gas cost info. */
-const useEstimateGas = (
-  networks: Record<number, BaseConfig>,
-  chainId: number | null | undefined,
-  estimate: QueryResult<GasEstimate>,
-  enabled?: boolean,
-) => {
+const useEstimateGas = (chainId: number | null | undefined, estimate: QueryResult<GasEstimate>, enabled?: boolean) => {
   const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
-  const gasInfo = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
-  const network = maybe(chainId, chainId => networks[chainId])
+  const gasInfo = useGasInfoAndUpdateLib({ chainId }, enabled)
   const networkSymbol = maybe(chainId, chainId => getChainNativeCurrency(chainId).symbol)
   return useCombinedQueries(
     [estimate, gasInfo, ethRate],
     useCallback(
       (estimate, gasInfo, ethRate) =>
-        maybes([network, networkSymbol], (network, networkSymbol) =>
-          calculateGas(estimate, gasInfo, ethRate, network, networkSymbol),
+        maybes([chainId, networkSymbol], (chainId, networkSymbol) =>
+          calculateGas(estimate, gasInfo, ethRate, chainId, networkSymbol),
         ),
-      [network, networkSymbol],
+      [chainId, networkSymbol],
     ),
   )
 }
@@ -421,14 +428,8 @@ const useEstimateGas = (
  * Converts a raw gas estimate value into native/USD gas cost info.
  * @deprecated Prefer `createEstimateGasHook`.
  */
-export const useEstimateGasValue = (
-  networks: Record<number, BaseConfig>,
-  chainId: number | null | undefined,
-  estimate: GasEstimate,
-  enabled?: boolean,
-) => useEstimateGas(networks, chainId, constQ(estimate), enabled)
-
-type NetworkDict = Record<number, BaseConfig>
+export const useEstimateGasValue = (chainId: number | null | undefined, estimate: GasEstimate, enabled?: boolean) =>
+  useEstimateGas(chainId, constQ(estimate), enabled)
 
 type EstimateValue = number | number[] | null | undefined
 
@@ -441,9 +442,9 @@ export const createEstimateGasHook =
   <Query extends WithOptionalChainId, Estimate extends EstimateValue>(
     useEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
   ) =>
-  (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled = true) => {
+  (query: Query & { chainId?: number | null | undefined }, enabled = true) => {
     const estimate = useEstimate(query, enabled)
-    const converted = useEstimateGas(networks, query.chainId, estimate, enabled)
+    const converted = useEstimateGas(query.chainId, estimate, enabled)
     return combineQueries([converted, estimate], data => data)
   }
 
@@ -458,11 +459,11 @@ export const createApprovedEstimateGasHook =
     useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
     useActionEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
   }) =>
-  (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled = true) => {
+  (query: Query & { chainId?: number | null | undefined }, enabled = true) => {
     const isApproved = useIsApproved(query, enabled)
     const approveEstimate = useApproveEstimate(query, enabled && isApproved.data === false)
     const actionEstimate = useActionEstimate(query, enabled && isApproved.data === true)
     const estimate = isApproved.data ? actionEstimate : approveEstimate
-    const gas = useEstimateGas(networks, query.chainId, estimate, enabled)
+    const gas = useEstimateGas(query.chainId, estimate, enabled)
     return combineQueries([isApproved, gas], (_, gas) => gas)
   }

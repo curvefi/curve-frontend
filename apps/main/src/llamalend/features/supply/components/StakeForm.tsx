@@ -49,7 +49,6 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         <StakeSupplyInfoList
           form={form}
           params={params}
-          networks={networks}
           tokens={{ borrowToken }}
           controllerAddress={controllerAddress}
         />

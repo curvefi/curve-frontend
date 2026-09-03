@@ -143,7 +143,6 @@ export const RepayForm = <ChainId extends IChainId>({
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}
-          networks={networks}
           showLeverage={showLeverage}
           prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
           prevPrices={q(useUserPrices(params))}

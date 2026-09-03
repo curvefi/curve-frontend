@@ -108,7 +108,7 @@ export const QuickSwap = ({
     { chainId, userAddress, searchedParams },
     !userAddress,
   )
-  const gas = useEstimateGasValue(networks, chainId, formEstGas?.estimatedGas, !!userAddress)
+  const gas = useEstimateGasValue(chainId, formEstGas?.estimatedGas, !!userAddress)
 
   const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
   const slippageType = routesAndOutput && getSlippageType(routesAndOutput)

@@ -1,5 +1,4 @@
 import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate'
-import { networks } from '@/dao/networks'
 import { CurveComponentTestWrapper } from '@cy/support/helpers/CurveComponentTestWrapper'
 import { createExtendLockScenario } from '@cy/support/helpers/dao/mocks/extend-lock.mocks'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
@@ -31,7 +30,7 @@ describe('FormLockDate (mocked)', () => {
 
   it('estimates and extends a lock', () => {
     const { assertPreSubmit, assertSubmit, curve } = createExtendLockScenario()
-    setGasInfo({ chainId: CHAIN_ID, networks })
+    setGasInfo({ chainId: CHAIN_ID })
 
     cy.mount(<ExtendLockForm curve={curve} />)
     cy.get('[data-testid="btn-adjust-date-date-picker-inline-quick-action-3"]').click()
@@ -47,7 +46,7 @@ describe('FormLockDate (mocked)', () => {
 
   it('shows the effective rounded unlock date for a typed non-Thursday date', () => {
     const { assertPreSubmit, curve } = createExtendLockScenario()
-    setGasInfo({ chainId: CHAIN_ID, networks })
+    setGasInfo({ chainId: CHAIN_ID })
 
     cy.mount(<ExtendLockForm curve={curve} />)
     typeExtendUnlockDate({ month: '8', day: '25', year: '2028' })

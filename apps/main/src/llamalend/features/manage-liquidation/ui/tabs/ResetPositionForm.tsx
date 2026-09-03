@@ -43,7 +43,6 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
           tokens={{ collateralToken, borrowToken }}
           controllerAddress={controllerAddress}
           marketType={marketType}
-          networks={networks}
         />
       }
     >

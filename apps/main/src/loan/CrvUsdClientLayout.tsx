@@ -8,7 +8,7 @@ import type { UrlParams } from './types/loan.types'
 export function CrvUsdClientLayout() {
   const { network: blockchainId = 'ethereum' } = useParams<Partial<UrlParams>>()
   const chainId = networksIdMapper[blockchainId]
-  useGasInfoAndUpdateLib({ chainId, networks })
+  useGasInfoAndUpdateLib({ chainId })
   useRedirectToEth(networks[chainId], blockchainId)
   return <Outlet />
 }

@@ -1,5 +1,4 @@
 import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
-import { networks } from '@/dao/networks'
 import { CurveComponentTestWrapper } from '@cy/support/helpers/CurveComponentTestWrapper'
 import { createLockMoreScenario } from '@cy/support/helpers/dao/mocks/lock-more.mocks'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
@@ -29,7 +28,7 @@ describe('FormLockCrv (mocked)', () => {
   testCases.forEach(({ isApproved, title }) => {
     it(title, () => {
       const { assertPreSubmit, assertSubmit, curve, lockedAmount } = createLockMoreScenario({ isApproved })
-      setGasInfo({ chainId: CHAIN_ID, networks })
+      setGasInfo({ chainId: CHAIN_ID })
 
       cy.mount(<LockMoreForm curve={curve} />)
       writeLockMoreForm(lockedAmount)

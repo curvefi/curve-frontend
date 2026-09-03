@@ -98,7 +98,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           values={values}
           collateralToken={collateralToken}
           borrowToken={borrowToken}
-          networks={networks}
         />
       }
       data-testid="create-loan-form"

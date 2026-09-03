@@ -2,40 +2,20 @@ import { getChainBlockExplorer } from '@evm-ui/features/connect-wallet/lib/wagmi
 import { Chain } from '@evm-ui/utils/network'
 import { maybe } from '@primitives/objects.utils'
 
-const NETWORK_BASE_CONFIG_DEFAULT = {
-  gasL2: false,
-  gasPricesUnit: 'GWEI',
-  gasPricesUrl: '',
-  gasPricesDefault: 0,
-}
-
 export const NETWORK_BASE_CONFIG = {
-  [Chain.Ethereum]: {
-    blockchainId: 'ethereum',
-    gasPricesUrl: 'https://api.curve.finance/api/getGas',
-    gasPricesDefault: 1,
-  },
-  [Chain.Optimism]: { blockchainId: 'optimism', gasL2: true },
+  [Chain.Ethereum]: { blockchainId: 'ethereum' },
+  [Chain.Optimism]: { blockchainId: 'optimism' },
   [Chain.Gnosis]: { blockchainId: 'xdai' },
   [Chain.Moonbeam]: { blockchainId: 'moonbeam' },
-  [Chain.Polygon]: {
-    blockchainId: 'polygon',
-    gasPricesUrl: 'https://gasstation.polygon.technology/v2',
-    gasPricesDefault: 0,
-  },
-  [Chain.Kava]: { blockchainId: 'kava', gasPricesUnit: 'UKAVA' },
+  [Chain.Polygon]: { blockchainId: 'polygon' },
+  [Chain.Kava]: { blockchainId: 'kava' },
   [Chain.Fantom]: { blockchainId: 'fantom' },
   [Chain.Arbitrum]: { blockchainId: 'arbitrum' },
-  [Chain.Avalanche]: {
-    blockchainId: 'avalanche',
-    gasPricesUnit: 'nAVAX',
-    gasPricesUrl: 'https://api.avax.network/ext/bc/C/rpc',
-    gasPricesDefault: 0,
-  },
+  [Chain.Avalanche]: { blockchainId: 'avalanche' },
   [Chain.Celo]: { blockchainId: 'celo' },
   [Chain.Aurora]: { blockchainId: 'aurora' },
   [Chain.ZkSync]: { blockchainId: 'zksync' },
-  [Chain.Base]: { blockchainId: 'base', gasL2: true },
+  [Chain.Base]: { blockchainId: 'base' },
   [Chain.Bsc]: { blockchainId: 'bsc' },
   [Chain.Fraxtal]: { blockchainId: 'fraxtal' },
   [Chain.XLayer]: { blockchainId: 'x-layer' },
@@ -57,20 +37,10 @@ export type NetworkMapping<TId extends string = string, TChainId extends number 
   NetworkDef<TId, TChainId>
 >
 
-export type BaseConfig<TId extends string = string, TChainId extends number = number> = NetworkDef<TId, TChainId> & {
-  gasL2: boolean
-  gasPricesUnit: string
-  gasPricesUrl: string
-  gasPricesDefault: number
-}
-
-export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
+export const getBaseNetworksConfig = <TId extends string, ChainId extends number>(
   chainId: ChainId,
   networkConfig: { blockchainId: TId },
-): Omit<BaseConfig<TId>, 'showInSelectNetwork' | 'showRouterSwap'> {
-  const { ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
-  return { ...rest, chainId }
-}
+): Omit<NetworkDef<TId>, 'showInSelectNetwork' | 'showRouterSwap'> => ({ ...networkConfig, chainId })
 
 export const scanAddressPath = (chainId: number, hash: string) =>
   maybe(getChainBlockExplorer(chainId), url => `${url}/address/${hash}`)

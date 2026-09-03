@@ -42,7 +42,6 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
         <WithdrawSupplyInfoList
           form={form}
           params={params}
-          networks={networks}
           tokens={{ borrowToken }}
           controllerAddress={controllerAddress}
         />

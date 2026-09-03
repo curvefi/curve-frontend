@@ -49,7 +49,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           values={values}
           collateralToken={collateralToken}
           borrowToken={borrowToken}
-          networks={networks}
           controllerAddress={controllerAddress}
           marketType={marketType}
         />

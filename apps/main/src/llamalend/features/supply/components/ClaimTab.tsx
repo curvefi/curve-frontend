@@ -44,9 +44,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
   } = useClaimTab({ network })
   return (
     <>
-      <FormContent
-        footer={<ClaimActionInfoList params={params} networks={networks} isOpen={!!claimableTokens.length} />}
-      >
+      <FormContent footer={<ClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}>
         <DataTable
           category="form"
           table={table}

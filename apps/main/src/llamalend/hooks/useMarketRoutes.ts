@@ -14,7 +14,7 @@ import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { q, type QueryProp } from '@evm-ui/types/util'
 import { decimalCompare, decimalMax, toWei, decimalDiv, decimalMinus, decimalMultiply, fromWei } from '@evm-ui/utils'
 import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
-import type { BaseConfig } from '@legacy-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { Decimal } from '@primitives/decimal.utils'
@@ -30,7 +30,7 @@ export type MarketRoutes = {
   onChange: (option: RouteProvider | undefined) => void
   onRefresh: () => Promise<unknown>
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
-  networks: Record<number, BaseConfig>
+  networks: Record<number, NetworkDef>
   chainId: number
   providers: readonly RouteProvider[]
 }
@@ -84,7 +84,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   amountIn: Decimal | undefined
   slippage: Decimal | undefined
   enabled: boolean
-  networks: Record<number, BaseConfig>
+  networks: Record<number, NetworkDef>
   getRouteGasOptions: GetGasCallback<TData, GasQueryKey>
   zapAddress: Address | undefined
   providers: readonly RouteProvider[] | undefined

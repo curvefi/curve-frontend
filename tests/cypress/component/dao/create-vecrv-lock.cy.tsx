@@ -1,5 +1,4 @@
 import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCreate'
-import { networks } from '@/dao/networks'
 import { CurveComponentTestWrapper } from '@cy/support/helpers/CurveComponentTestWrapper'
 import { createCreateVeCrvLockScenario } from '@cy/support/helpers/dao/mocks/create-vecrv-lock.mocks'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
@@ -43,7 +42,7 @@ describe('FormLockCreate (mocked)', () => {
   testCases.forEach(({ isApproved, title }) => {
     it(title, () => {
       const { assertPreSubmit, assertSubmit, curve, lockedAmount } = createCreateVeCrvLockScenario({ isApproved })
-      setGasInfo({ chainId: CHAIN_ID, networks })
+      setGasInfo({ chainId: CHAIN_ID })
 
       cy.mount(<CreateVeCrvLockForm curve={curve} />)
       fillCreateLockForm(lockedAmount)
@@ -63,7 +62,7 @@ describe('FormLockCreate (mocked)', () => {
 
   it('rounds quick action dates in the picker while submitting the selected duration', () => {
     const { assertPreSubmit, curve, lockedAmount } = createCreateVeCrvLockScenario({ isApproved: true })
-    setGasInfo({ chainId: CHAIN_ID, networks })
+    setGasInfo({ chainId: CHAIN_ID })
 
     cy.mount(<CreateVeCrvLockForm curve={curve} />)
     fillCreateLockForm(lockedAmount, 0)
@@ -75,7 +74,7 @@ describe('FormLockCreate (mocked)', () => {
 
   it('shows the effective rounded unlock date for a typed non-Thursday date', () => {
     const { assertPreSubmit, curve, lockedAmount } = createCreateVeCrvLockScenario({ isApproved: true })
-    setGasInfo({ chainId: CHAIN_ID, networks })
+    setGasInfo({ chainId: CHAIN_ID })
 
     cy.mount(<CreateVeCrvLockForm curve={curve} />)
     cy.get('input[name="lockedAmount"]').clear().type(lockedAmount)
