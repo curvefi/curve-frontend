@@ -2,7 +2,9 @@ import { ChainId, NetworkConfig, NetworkEnum } from '@/dao/types/dao.types'
 import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
 import { Chain } from '@evm-ui/utils'
 
-export const { networks, networksIdMapper } = Object.entries([CHAIN_BLOCKCHAIN_IDS[Chain.Ethereum]]).reduce(
+export const { networks, networksIdMapper } = Object.entries({
+  [Chain.Ethereum]: CHAIN_BLOCKCHAIN_IDS[Chain.Ethereum],
+}).reduce(
   (
     mapper,
     [key, blockchainId],
