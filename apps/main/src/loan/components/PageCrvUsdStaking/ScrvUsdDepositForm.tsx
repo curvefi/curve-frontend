@@ -46,7 +46,7 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
       <LoanFormTokenInput
         label={t`Amount to deposit`}
         token={{ address: CRVUSD_ADDRESS, symbol: 'crvUSD' }}
-        blockchainId={networkConfig.id}
+        blockchainId={networkConfig.blockchainId}
         name="depositAmount"
         form={form}
         max={{ ...q(max), fieldName: max.fieldName }}

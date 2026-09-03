@@ -21,7 +21,7 @@ const TEST_ID_PREFIX = 'supply-stake'
 export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps<ChainId>) => {
   const { chainId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
-  const blockchainId = network.id
+  const blockchainId = network.blockchainId
 
   const {
     form,

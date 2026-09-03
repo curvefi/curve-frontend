@@ -4,7 +4,7 @@ import { ChainId } from '@/lend/types/lend.types'
 import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
-import { getBlockchainId } from '@curvefi/prices-api'
+import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import type { Range } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -31,7 +31,7 @@ export const useOhlcChartState = ({
     endpoint: 'lending',
     chainKey: chainId,
     marketId,
-    network: getBlockchainId(networks[chainId].id),
+    network: getPricesApiBlockchainId(networks[chainId].blockchainId),
     controllerAddress,
     llammaAddress: ammAddress,
     oraclePrice,

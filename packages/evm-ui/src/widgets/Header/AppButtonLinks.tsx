@@ -5,11 +5,11 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { recordEntries } from '@primitives/objects.utils'
 
-type AppNavAppsProps = { currentMenu: AppMenuOption; networkId: string }
+type AppNavAppsProps = { currentMenu: AppMenuOption; blockchainId: string }
 
 const { Spacing } = SizesAndSpaces
 
-export const AppButtonLinks = ({ currentMenu, networkId }: AppNavAppsProps) => (
+export const AppButtonLinks = ({ currentMenu, blockchainId }: AppNavAppsProps) => (
   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginInline: Spacing.md }}>
     {recordEntries(APP_LINK).map(([menu, { label, routes }]) => (
       <Button
@@ -18,7 +18,7 @@ export const AppButtonLinks = ({ currentMenu, networkId }: AppNavAppsProps) => (
         size="small"
         className={currentMenu === menu ? 'current' : ''}
         component={RouterLink}
-        href={getInternalUrl(routes[0].app, networkId)}
+        href={getInternalUrl(routes[0].app, blockchainId)}
         data-testid={`app-link-${menu}`}
       >
         {label}

@@ -19,12 +19,12 @@ import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.u
 export const AmountTokenInput = ({
   chainId,
   poolId,
-  networkId,
+  blockchainId,
   disabled,
 }: {
   chainId: ChainId
   poolId: string
-  networkId: NetworkEnum
+  blockchainId: NetworkEnum
   disabled: boolean
 }) => {
   const { update: updateForm, formState, watchValues } = useFormContext<DepositRewardFormValues>()
@@ -51,12 +51,12 @@ export const AmountTokenInput = ({
       .map(([tokenId]) => tokenId)
 
     return activeRewardTokens.map(address => ({
-      chain: networkId,
+      chain: blockchainId,
       address,
       symbol: tokensMapper[address.toLowerCase()]?.symbol ?? shortenAddress(address),
       volume: tokensMapper[address.toLowerCase()]?.volume ?? 0,
     }))
-  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, networkId])
+  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, blockchainId])
 
   useEffect(() => {
     if (

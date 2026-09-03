@@ -34,7 +34,7 @@ export const useYieldBreakdown = ({
   const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId])
 
   const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network?.networkId,
+    blockchainId: network?.blockchainId,
     address: poolAddress,
   })
 
@@ -95,7 +95,7 @@ export const useYieldBreakdown = ({
       rows.push({
         source: {
           address: tokenAddress,
-          blockchainId: network?.id,
+          blockchainId: network?.blockchainId,
           iconPosition: 'left',
           primary: symbol,
         },
@@ -152,7 +152,7 @@ export const useYieldBreakdown = ({
     unboostedCrvApy,
     maxBoostCrvApy,
     crvApyRange,
-    network?.id,
+    network?.blockchainId,
     chainId,
     fallbackTokenRates,
   ])

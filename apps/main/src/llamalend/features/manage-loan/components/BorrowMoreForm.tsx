@@ -99,7 +99,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         <LoanFormTokenInput
           label={t`Collateral to add`}
           token={collateralToken}
-          blockchainId={network.id}
+          blockchainId={network.blockchainId}
           name="userCollateral"
           form={form}
           max={{ ...q(max.userCollateral), fieldName: max.userCollateral.field }}
@@ -110,7 +110,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           <LoanFormTokenInput
             label={t`Add borrowed from wallet`}
             token={borrowToken}
-            blockchainId={network.id}
+            blockchainId={network.blockchainId}
             name="userBorrowed"
             form={form}
             max={{ ...q(max.userBorrowed), fieldName: max.userBorrowed.field }}
@@ -122,7 +122,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         <LoanFormTokenInput
           label={t`Amount to borrow`}
           token={borrowToken}
-          blockchainId={network.id}
+          blockchainId={network.blockchainId}
           name="debt"
           form={form}
           max={{ ...maxDebt, fieldName: max.debt.field, onMax }}

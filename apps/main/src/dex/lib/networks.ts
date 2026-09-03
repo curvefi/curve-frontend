@@ -311,7 +311,7 @@ const fxSwapUpgradedChains = [Chain.Etherlink]
 
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
-  const liteNetworks = Object.values(resp).reduce((prev, { chainId, ...config }) => {
+  const liteNetworks = Object.values(resp).reduce((prev, { id: blockchainId, chainId, ...config }) => {
     const baseConfig = NETWORK_BASE_CONFIG[chainId]
     const isUpgraded = !!baseConfig // networks upgraded from lite to full
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
@@ -319,7 +319,11 @@ export async function getNetworks() {
     const showInSelectNetwork = chainId !== Number(Chain.Tac) // temporarily disabled as the chain's halted
     prev[chainId] = {
       ...DEFAULT_NETWORK_CONFIG,
-      ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
+      ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), {
+        ...config,
+        ...baseConfig,
+        blockchainId: baseConfig?.blockchainId ?? blockchainId,
+      }),
       ...(isUpgraded && {
         poolFilters: [
           'all',

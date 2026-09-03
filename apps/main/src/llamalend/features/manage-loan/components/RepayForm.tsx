@@ -96,7 +96,7 @@ export const RepayForm = <ChainId extends IChainId>({
   })
   const { token, onToken, tokens } = useRepayTokens({
     tokens: marketTokens,
-    networkId: network.id,
+    blockchainId: network.blockchainId,
     collateralEvents,
   })
 
@@ -153,7 +153,7 @@ export const RepayForm = <ChainId extends IChainId>({
       <LoanFormTokenInput
         label={t`Debt to repay`}
         token={selectedToken}
-        blockchainId={network.id}
+        blockchainId={network.blockchainId}
         name={selectedField}
         form={form}
         max={max[selectedField]}

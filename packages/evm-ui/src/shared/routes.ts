@@ -105,16 +105,16 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
 }
 
 /** Returns the full pathname for a given app and network */
-export const getInternalUrl = (app: AppName, networkId: string, route = '/') => `/${app}/${networkId}${route}`
+export const getInternalUrl = (app: AppName, blockchainId: string, route = '/') => `/${app}/${blockchainId}${route}`
 
 const removeTrailingSlash = (pathname: string) => pathname.replace(/\/$/, '')
 
 /** Converts a route to a page object, adding href and isActive properties */
 export const routeToPage = (
   { route, target, label, app, matchMode }: AppRoute,
-  { networkId, pathname }: { networkId: string; pathname: string },
+  { blockchainId, pathname }: { blockchainId: string; pathname: string },
 ): AppPage => {
-  const href = route.startsWith('http') ? route : getInternalUrl(app, networkId, route)
+  const href = route.startsWith('http') ? route : getInternalUrl(app, blockchainId, route)
   return {
     href,
     target,
@@ -125,10 +125,10 @@ export const routeToPage = (
   }
 }
 
-export const replaceNetworkInPath = (path: string, networkId: string) => {
+export const replaceNetworkInPath = (path: string, blockchainId: string) => {
   const [, app, _network, ...rest] = path.split('/')
   if (!app) return path // if no app, return original path
-  return ['', app, networkId, ...rest].join('/')
+  return ['', app, blockchainId, ...rest].join('/')
 }
 
 export const getCurrentApp = (path: string | null): AppName => {
@@ -142,6 +142,6 @@ export const getCurrentApp = (path: string | null): AppName => {
  * @returns The network ID if present, otherwise undefined (e.g., for the root path it's empty until redirected).
  */
 export const getCurrentNetwork = (path: string): string | undefined => {
-  const [, , networkId] = path?.split('/') ?? []
-  return networkId
+  const [, , blockchainId] = path?.split('/') ?? []
+  return blockchainId
 }

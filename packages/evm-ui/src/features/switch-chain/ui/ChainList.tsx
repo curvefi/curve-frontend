@@ -51,7 +51,7 @@ export function ChainList({
         o =>
           isChainTestnet(o.chainId)
             ? ChainType.test
-            : o.isLite || (tvls && tvls[o.id] === undefined) // flag chains not supported by prices API as lite
+            : o.isLite || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
               ? ChainType.lite
               : ChainType.main,
       ) as Record<ChainType, NetworkDef[]>,
@@ -66,7 +66,7 @@ export function ChainList({
         <Alert variant="filled" severity="error" data-testid="missing-wagmi-chain">
           <AlertTitle>{t`Missing wagmi chains`}</AlertTitle>
           {t`Missing wagmi chain configs in chains.ts for: `}
-          {missingWagmiChains.map(({ id }) => id).join(', ')}
+          {missingWagmiChains.map(({ blockchainId: id }) => id).join(', ')}
         </Alert>
       )}
       <SearchField
@@ -85,14 +85,14 @@ export function ChainList({
                 <MenuList>
                   {groupedOptions[key]?.map(network => (
                     <MenuItem<string, typeof Link>
-                      data-testid={`menu-item-chain-${network.id}`}
-                      key={network.id}
-                      value={network.id}
+                      data-testid={`menu-item-chain-${network.blockchainId}`}
+                      key={network.blockchainId}
+                      value={network.blockchainId}
                       component={Link}
                       // navigate to app root to avoid deep-linking to non-existing resources across chains
-                      href={getInternalUrl(getCurrentApp(pathname), network.id)}
-                      isSelected={network.id == selectedNetworkId}
-                      icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
+                      href={getInternalUrl(getCurrentApp(pathname), network.blockchainId)}
+                      isSelected={network.blockchainId == selectedNetworkId}
+                      icon={<ChainSwitcherIcon blockchainId={network.blockchainId} size={36} />}
                       label={getChainName(network.chainId)}
                       onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
                       isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}

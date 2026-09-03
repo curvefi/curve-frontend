@@ -14,7 +14,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 
 type ClosePositionOptions = {
   marketId: string | undefined
-  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
 }

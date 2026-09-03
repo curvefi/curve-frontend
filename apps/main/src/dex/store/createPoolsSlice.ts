@@ -98,7 +98,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         chainId === ChainEnum.Kava ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
       const networks = await fetchNetworks()
-      const { id } = networks[chainId]
+      const { blockchainId } = networks[chainId]
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
       try {
@@ -108,7 +108,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           }),
         )
 
-        const blacklist = await fetchPoolsBlacklist({ blockchainId: id as Chain })
+        const blacklist = await fetchPoolsBlacklist({ blockchainId: blockchainId as Chain })
         const { poolsMapper, poolsMapperCache } = await getPools(
           curve,
           poolIds,
