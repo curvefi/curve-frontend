@@ -55,9 +55,9 @@ export const useYieldBreakdown = ({
   const maxBoostCrvApy = maybe(crvAprs?.[1], apr => aprToApy(apr, COMPOUND_WINDOW))
   const crvApyRange = useMemo(
     () =>
-      maybes([unboostedCrvApy, maxBoostCrvApy], (unboostedApy, maximumApy) => ({
-        unboostedApy,
-        maximumApy,
+      maybes([unboostedCrvApy, maxBoostCrvApy], (unboostedRate, maximumRate) => ({
+        unboostedRate,
+        maximumRate,
       })),
     [maxBoostCrvApy, unboostedCrvApy],
   )
@@ -160,7 +160,11 @@ export const useYieldBreakdown = ({
   const total = useMemo(() => sum(rows.map(row => row.apy)), [rows])
 
   return {
-    maxBoostTotal: maybe(crvApyRange, ({ unboostedApy, maximumApy }) => total - unboostedApy + maximumApy) ?? 0,
+    maxBoostTotal:
+      maybe(
+        crvApyRange,
+        ({ unboostedRate: unboostedApy, maximumRate: maximumApy }) => total - unboostedApy + maximumApy,
+      ) ?? 0,
     total,
     rows,
   }
