@@ -1,4 +1,3 @@
-import { t } from '@evm-ui/lib/i18n'
 import { Query } from '@evm-ui/types/util'
 import { decimalGreaterThan } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -73,7 +72,6 @@ export const getPriceImpactInfo = (priceImpact: Query<PriceImpact | Decimal | nu
     priceImpact && !priceImpact.isLoading && !priceImpact.error ? getPriceImpactLevel(priceImpact.data) : null
   return {
     level,
-    label: t`Price impact`,
     valueColor: level ?? undefined,
     showIcon: level !== null,
   }

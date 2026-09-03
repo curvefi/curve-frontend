@@ -22,12 +22,12 @@ export type PriceImpactActionInfoProps = Omit<ActionInfoProps, 'label' | 'valueC
 
 /** Displays price impact with graduated emphasis while leaving alert and blocking thresholds independent. */
 export const PriceImpactActionInfo = ({ priceImpact, ...props }: PriceImpactActionInfoProps) => {
-  const { label, level, showIcon, valueColor } = getPriceImpactInfo(priceImpact)
+  const { level, showIcon, valueColor } = getPriceImpactInfo(priceImpact)
 
   return (
     <ActionInfo
       {...props}
-      label={label}
+      label={t`Price impact`}
       valueColor={valueColor}
       valueLeft={
         showIcon &&
