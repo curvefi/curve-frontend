@@ -26,7 +26,7 @@ function createLightSurfaces() {
       },
       Warning: {
         Primary: Grays[950],
-        Secondary: Grays[700],
+        Secondary: Grays[900],
       },
       Alert: {
         Primary: Grays[50],
@@ -131,7 +131,7 @@ function createDarkSurfaces() {
       },
       Warning: {
         Primary: Grays[975],
-        Secondary: Grays[700],
+        Secondary: Grays[900],
       },
       Alert: {
         Primary: Grays[50],
@@ -229,7 +229,7 @@ function createChadSurfaces() {
   const Text = {
     Feedback: {
       Caution: Yellows[700],
-      Warning: Oranges[500],
+      Warning: Oranges[600],
       Success: Greens[600],
       Danger: Oranges[500],
       Error: Reds[500],
@@ -246,7 +246,7 @@ function createChadSurfaces() {
       },
       Warning: {
         Primary: Grays[950],
-        Secondary: Grays[700],
+        Secondary: Grays[900],
       },
       Alert: {
         Primary: Grays[50],
@@ -582,7 +582,7 @@ function createChadInvertedSurfaces() {
       },
       Warning: {
         Primary: Grays[950],
-        Secondary: Grays[700],
+        Secondary: Grays[900],
       },
       Alert: {
         Primary: Grays[950],
