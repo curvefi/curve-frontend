@@ -22,7 +22,7 @@ export function selectRepayToken({
     return cy.get(`[data-testid="${tokenIconTestId}"]`, LOAD_TIMEOUT).should('be.visible')
   }
   cy.get('[data-testid^="repay-input-"] [aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
-  cy.get(`[data-testid="token-option-${symbol}"]`, LOAD_TIMEOUT)
+  cy.get(`[data-testid="token-option-${tokenAddress.toLowerCase()}"]`, LOAD_TIMEOUT)
     .filter(`:has([data-testid="${tokenIconTestId}"])`)
     .eq(optionIndex)
     .click()

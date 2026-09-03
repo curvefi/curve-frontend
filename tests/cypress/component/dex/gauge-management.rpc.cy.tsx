@@ -121,7 +121,7 @@ describe('Gauge Management (RPC)', () => {
 
     cy.get('[data-testid="add-reward-token-selector"]', LOAD_TIMEOUT).should('contain', 'DAI').click()
     cy.get('input[name="tokenName"]').type(REWARD_TOKEN_SYMBOL)
-    cy.get(`[data-testid="token-option-${REWARD_TOKEN_SYMBOL}"]`).click()
+    cy.get(`[data-testid="token-option-${REWARD_TOKEN_ADDRESS.toLowerCase()}"]`).click()
     cy.get('[data-testid="add-reward-distributor-input"]').clear()
     cy.get('[data-testid="add-reward-distributor-input"]').type(REWARD_DISTRIBUTOR_ADDRESS)
     cy.get('[data-testid="add-reward-submit-button"]', LOAD_TIMEOUT).click()
