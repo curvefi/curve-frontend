@@ -20,6 +20,7 @@ import { noMutableArrayMethodsRule } from './.eslint/no-mutable-array-methods.ru
 import { noRedundantTernaryRule } from './.eslint/no-redundant-ternary.rule.mjs'
 import { noRouterNavigateOnClickRule } from './.eslint/no-router-navigate-on-click.rule.mjs'
 import { noSingleLineNamedFunctionsRule } from './.eslint/no-single-line-named-functions.rule.mjs'
+import { isolatedPackagesRule } from './.eslint/isolated-packages.rule.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -67,6 +68,7 @@ const config = [
           'no-redundant-ternary': noRedundantTernaryRule,
           'no-router-navigate-on-click': noRouterNavigateOnClickRule,
           'no-single-line-named-functions': noSingleLineNamedFunctionsRule,
+          'isolated-packages': isolatedPackagesRule,
         },
       },
     },
@@ -96,6 +98,7 @@ const config = [
       'local/no-redundant-ternary': 'error',
       'local/no-router-navigate-on-click': 'error',
       'local/no-single-line-named-functions': 'error',
+      'local/isolated-packages': 'error',
       'local/use-not-falsy-pattern': 'error',
 
       'object-shorthand': 'warn',
