@@ -11,7 +11,7 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
-import { NetApyTooltipContent } from '../cells/NetApyTooltipContent'
+import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { RewardIcons } from '../cells/RewardIcons'
 import { getBaseApy, getNetApy, isVolatileApy } from '../cells/utils'
 import { POOL_TITLES, PoolColumnId } from '../columns'
@@ -91,7 +91,7 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
           valueTooltip={
             netApy
               ? {
-                  body: <NetApyTooltipContent pool={pool} volatile={volatileBaseApy} />,
+                  body: <NetRateTooltipContent pool={pool} volatile={volatileBaseApy} />,
                   clickable: true,
                   placement: 'top',
                   title: t`Net APY`,

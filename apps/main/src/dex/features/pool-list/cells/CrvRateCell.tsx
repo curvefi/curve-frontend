@@ -1,4 +1,4 @@
-import { CrvApyTooltipContent } from '@/dex/components/CrvApyTooltipContent'
+import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
 import { t } from '@evm-ui/lib/i18n'
 import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography'
 import type { PoolRow } from '../types'
 import { formatCellValue, getCrvApyRange } from './utils'
 
-export const CrvApyCell = ({ pool }: { pool: PoolRow }) => {
+export const CrvRateCell = ({ pool }: { pool: PoolRow }) => {
   const range = pool.gauge?.isKilled ? null : getCrvApyRange(pool)
 
   return (
@@ -19,7 +19,7 @@ export const CrvApyCell = ({ pool }: { pool: PoolRow }) => {
         Wrapper={Tooltip}
         clickable
         title={t`CRV APY`}
-        body={range && <CrvApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
+        body={range && <CrvRateTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
         placement="top"
       >
         <Box data-testid={range && 'pool-crv-apy-tooltip-trigger'}>

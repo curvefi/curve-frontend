@@ -1,7 +1,7 @@
 import { t } from '@evm-ui/lib/i18n'
 import { TooltipDescription, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
 
-export const CrvApyHeaderTooltipContent = () => (
+export const CrvRateHeaderTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription text={t`CRV gauge reward APY shown from the unboosted rate to the maximum boosted rate.`} />
     <TooltipDescription text={t`The maximum rate assumes the full 2.5x gauge boost.`} />

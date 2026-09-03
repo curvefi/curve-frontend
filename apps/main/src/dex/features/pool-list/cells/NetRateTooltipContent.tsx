@@ -9,7 +9,7 @@ import {
 import { AVERAGE_CATEGORIES, formatNumber, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { PoolRow } from '../types'
-import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './ApyTooltipItems'
+import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './RateTooltipItems'
 import {
   aprToPoolApy,
   getAprCampaigns,
@@ -37,7 +37,7 @@ const getIncentivesItems = (pool: PoolRow) => {
     }
 }
 
-export const NetApyIncentivesTooltipItems = ({
+export const NetRateIncentivesTooltipItems = ({
   items: { incentivesApy, extraRewards, campaigns, unboostedCrvApy },
   blockchainId,
 }: {
@@ -60,7 +60,7 @@ export const NetApyIncentivesTooltipItems = ({
   </TooltipItems>
 )
 
-export const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
+export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
   const baseApy = getBaseApy(pool, 'daily')
   const netApy = getNetApy(pool)
   const crvApyRange = pool.gauge && !pool.gauge.isKilled ? getCrvApyRange(pool) : null
@@ -77,7 +77,7 @@ export const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volati
         <TooltipItems secondary>
           <TooltipItem title={t`Base APY`}>{formatNumber(baseApy, 'percent.rate')}</TooltipItem>
         </TooltipItems>
-        {incentiveItems && <NetApyIncentivesTooltipItems items={incentiveItems} blockchainId={pool.blockchainId} />}
+        {incentiveItems && <NetRateIncentivesTooltipItems items={incentiveItems} blockchainId={pool.blockchainId} />}
         <TooltipItems borderTop>
           <TooltipItem variant="primary" title={t`Net total APY`}>
             {formatNumber(netApy, 'percent.rate')}

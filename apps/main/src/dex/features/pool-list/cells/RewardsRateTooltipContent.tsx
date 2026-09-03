@@ -3,10 +3,10 @@ import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@
 import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { PoolRow } from '../types'
-import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './ApyTooltipItems'
+import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './RateTooltipItems'
 import { getAprCampaigns, getCampaignRewardsApy, getExtraRewards, getExtraRewardsApy, getRewardsApy } from './utils'
 
-export const RewardsApyTooltipContent = ({ pool }: { pool: PoolRow }) => {
+export const RewardsRateTooltipContent = ({ pool }: { pool: PoolRow }) => {
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
 

@@ -2,7 +2,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
 import { formatNumber, MAINNET_CRV } from '@evm-ui/utils'
 
-export const CrvApyTooltipContent = ({
+export const CrvRateTooltipContent = ({
   maximumApy,
   unboostedApy,
 }: {

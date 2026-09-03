@@ -1,4 +1,4 @@
-import { BaseApyTooltipContent } from '@/dex/components/BaseApyTooltipContent'
+import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
 import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
 import { t } from '@evm-ui/lib/i18n'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
@@ -10,7 +10,7 @@ import type { CellContext } from '@tanstack/react-table'
 import type { PoolRow } from '../types'
 import { formatCellValue, getBaseApy, isVolatileApy } from './utils'
 
-const BaseApyTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: boolean }) => {
+const BaseRateTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: boolean }) => {
   const dailyApy = getBaseApy(pool, 'daily')
   const weeklyApy = getBaseApy(pool, 'weekly')
   const apy = weekly ? weeklyApy : dailyApy
@@ -27,7 +27,7 @@ const BaseApyTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: bo
         Wrapper={Tooltip}
         clickable
         title={weekly ? t`Weekly Base APY` : t`Base APY`}
-        body={<BaseApyTooltipContent dailyApy={dailyApy} weeklyApy={weeklyApy} weekly={weekly} />}
+        body={<BaseRateTooltipContent dailyApy={dailyApy} weeklyApy={weeklyApy} weekly={weekly} />}
         placement="top"
       >
         <Box
@@ -46,10 +46,10 @@ const BaseApyTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: bo
   )
 }
 
-export const BaseApyCell = ({
+export const BaseRateCell = ({
   row: { original: pool },
-}: CellContext<CurveTableFeatures, PoolRow, PoolRow['baseDailyApr']>) => <BaseApyTableCell pool={pool} />
+}: CellContext<CurveTableFeatures, PoolRow, PoolRow['baseDailyApr']>) => <BaseRateTableCell pool={pool} />
 
-export const WeeklyBaseApyCell = ({
+export const WeeklyBaseRateCell = ({
   row: { original: pool },
-}: CellContext<CurveTableFeatures, PoolRow, PoolRow['baseWeeklyApr']>) => <BaseApyTableCell pool={pool} weekly />
+}: CellContext<CurveTableFeatures, PoolRow, PoolRow['baseWeeklyApr']>) => <BaseRateTableCell pool={pool} weekly />

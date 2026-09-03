@@ -7,12 +7,12 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { PoolRow } from '../types'
 import { RewardIcons } from './RewardIcons'
-import { RewardsApyTooltipContent } from './RewardsApyTooltipContent'
+import { RewardsRateTooltipContent } from './RewardsRateTooltipContent'
 import { formatCellValue, getRewardsApy } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const RewardsApyCell = ({ pool }: { pool: PoolRow }) => {
+export const RewardsRateCell = ({ pool }: { pool: PoolRow }) => {
   const rewardsApy = getRewardsApy(pool)
 
   return (
@@ -22,7 +22,7 @@ export const RewardsApyCell = ({ pool }: { pool: PoolRow }) => {
         Wrapper={Tooltip}
         clickable
         title={t`Rewards APY`}
-        body={<RewardsApyTooltipContent pool={pool} />}
+        body={<RewardsRateTooltipContent pool={pool} />}
         placement="top"
       >
         <Box

@@ -7,13 +7,13 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { PoolRow } from '../types'
-import { NetApyTooltipContent } from './NetApyTooltipContent'
+import { NetRateTooltipContent } from './NetRateTooltipContent'
 import { RewardIcons } from './RewardIcons'
 import { formatCellValue, getNetApy, isVolatileApy } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const NetApyCell = ({ pool }: { pool: PoolRow }) => {
+export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
   const netApy = getNetApy(pool)
   const volatile = isVolatileApy(netApy)
 
@@ -24,7 +24,7 @@ export const NetApyCell = ({ pool }: { pool: PoolRow }) => {
         Wrapper={Tooltip}
         clickable
         title={t`Net APY`}
-        body={<NetApyTooltipContent pool={pool} volatile={volatile} />}
+        body={<NetRateTooltipContent pool={pool} volatile={volatile} />}
         placement="top"
       >
         <Box

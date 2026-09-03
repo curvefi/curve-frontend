@@ -1,8 +1,8 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { type Address } from 'viem'
-import { BaseApyTooltipContent } from '@/dex/components/BaseApyTooltipContent'
-import { CrvApyTooltipContent } from '@/dex/components/CrvApyTooltipContent'
+import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
+import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
@@ -83,7 +83,7 @@ export const useYieldBreakdown = ({
         ...maybe(crvApyRange, apyRange => ({
           apyTooltip: {
             title: t`Gauge APY`,
-            body: <CrvApyTooltipContent {...apyRange} />,
+            body: <CrvRateTooltipContent {...apyRange} />,
             clickable: true,
           },
         })),
@@ -136,7 +136,7 @@ export const useYieldBreakdown = ({
       apy: baseDailyApy,
       apyTooltip: {
         title: t`Base APY`,
-        body: <BaseApyTooltipContent dailyApy={baseDailyApy} weeklyApy={baseWeeklyApy} />,
+        body: <BaseRateTooltipContent dailyApy={baseDailyApy} weeklyApy={baseWeeklyApy} />,
         clickable: true,
       },
     })

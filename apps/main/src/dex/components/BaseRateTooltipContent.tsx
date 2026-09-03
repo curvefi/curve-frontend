@@ -3,7 +3,7 @@ import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@
 import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
 
-export const BaseApyTooltipContent = ({
+export const BaseRateTooltipContent = ({
   dailyApy,
   weeklyApy,
   weekly = false,
