@@ -6,7 +6,6 @@ import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@evm-ui/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@evm-ui/themes/typography'
-import { type MakeOptional, type QueryOrValue, type QueryProp, toQuery } from '@evm-ui/types/util'
 import {
   applySxProps,
   copyToClipboard,
@@ -23,6 +22,7 @@ import { type IconButtonProps } from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
+import { type MakeOptional, type QueryOrValue, type QueryProp, toQuery } from '@ui/features/queries/util'
 import { LabelTooltipIcon } from './LabelTooltipIcon'
 import { METRIC_CATEGORIES, type MetricCategory, type MetricLayout } from './metric-categories'
 import { WithSkeleton } from './WithSkeleton'

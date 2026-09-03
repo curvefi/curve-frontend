@@ -15,11 +15,11 @@ import {
   type TableActiveFilterGroup,
   type TableActiveFilterGroupChipsProps,
 } from '@evm-ui/shared/ui/DataTable/TableActiveFilterGroups'
-import { constQ } from '@evm-ui/types/util'
 import type { Unit } from '@evm-ui/utils/units'
 import { toArray } from '@primitives/array.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
 import type { ReactTable } from '@tanstack/react-table'
+import { constQ } from '@ui/features/queries/util'
 import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
 
 const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))

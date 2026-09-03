@@ -10,8 +10,8 @@ import type { ChainId } from '@/loan/types/loan.types'
 import { getBlockchainId } from '@curvefi/prices-api'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { useBandsChartVisible } from '@evm-ui/hooks/useLocalStorage'
-import type { Range } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Range } from '@ui/features/queries/util'
 import { useMarketContext } from '../../llamalend/features/market-context'
 
 type ChartAndActivityCompProps = {

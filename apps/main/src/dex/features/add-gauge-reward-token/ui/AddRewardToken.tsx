@@ -13,10 +13,10 @@ import { createValidationSuite } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { q } from '@evm-ui/types/util'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Stack from '@mui/material/Stack'
+import { q } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

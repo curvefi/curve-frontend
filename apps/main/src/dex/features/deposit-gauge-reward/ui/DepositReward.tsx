@@ -14,12 +14,12 @@ import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { createValidationSuite } from '@evm-ui/lib/validation'
 import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { q } from '@evm-ui/types/util'
 import { decimalMultiply, formatNumber, TIME_FRAMES } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Stack from '@mui/material/Stack'
 import { maybes } from '@primitives/objects.utils'
+import { q } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

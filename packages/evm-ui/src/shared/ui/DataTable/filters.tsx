@@ -1,7 +1,7 @@
-import { Range } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import type { Unit } from '@evm-ui/utils/units'
 import type { FilterFn } from '@tanstack/react-table'
+import { Range } from '@ui/features/queries/util'
 import type { CurveTableFeatures } from './data-table.utils'
 
 const RANGE_SEPARATOR = '~'

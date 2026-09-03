@@ -20,8 +20,9 @@
   "dependencies": {
     "@curvefi/llamalend-api": "2.5.2",
     "@supercharge/promise-pool": "3.3.0",
-    "@tanstack/react-router": "1.170.32",
-    "@tanstack/react-router-devtools": "1.167.1",
+    "@tanstack/react-router": "*",
+    "@tanstack/react-router-devtools": "*",
+    "@tanstack/router-core": "*",
     "@types/memoizee": "0.4.12",
     "evm-ui": "*",
     "external-rewards": "*",

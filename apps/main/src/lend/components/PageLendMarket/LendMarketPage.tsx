@@ -29,10 +29,10 @@ import {
 import { t } from '@evm-ui/lib/i18n'
 import { ErrorPage } from '@evm-ui/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
-import type { Range } from '@evm-ui/types/util'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Range } from '@ui/features/queries/util'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 

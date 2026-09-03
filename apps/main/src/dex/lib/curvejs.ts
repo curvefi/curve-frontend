@@ -35,8 +35,8 @@ import {
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
 import { t } from '@evm-ui/lib/i18n'
-import { log } from '@evm-ui/lib/logging'
 import { getErrorMessage } from '@evm-ui/utils'
+import { log } from '@ui/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 
 const helpers = { waitForTransaction, waitForTransactions }

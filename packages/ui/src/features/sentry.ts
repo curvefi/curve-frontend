@@ -1,4 +1,3 @@
-import { IS_CYPRESS, IS_PREVIEW_HOST } from '@evm-ui/utils/env'
 import { type Event, type Extras } from '@sentry/core'
 import {
   addBreadcrumb as addSentryBreadcrumb,
@@ -10,11 +9,10 @@ import {
   thirdPartyErrorFilterIntegration,
   withScope,
 } from '@sentry/react'
+import { IS_CYPRESS, IS_PREVIEW_HOST } from '@ui/utils/env'
 
 export const SENTRY_DSN =
   'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840'
-const SENTRY_APPLICATION_KEY = 'curve-frontend' // defined in vite.config.ts
-
 const TLD = 'curve.finance'
 const ENVIRONMENT = IS_CYPRESS
   ? 'cypress'
@@ -27,7 +25,7 @@ const ENVIRONMENT = IS_CYPRESS
         : window.location.hostname // e.g. localhost
 
 /** Initialize Sentry error reporting */
-export const initSentry = () =>
+export const initSentry = (applicationKey: string) =>
   ENVIRONMENT !== 'localhost' &&
   init({
     dsn: SENTRY_DSN,
@@ -35,7 +33,7 @@ export const initSentry = () =>
     integrations: integrations => [
       ...integrations.filter(i => i.name !== 'BrowserSession'), // we don't use session tracking
       thirdPartyErrorFilterIntegration({
-        filterKeys: [SENTRY_APPLICATION_KEY],
+        filterKeys: [applicationKey],
         behaviour: 'apply-tag-if-exclusively-contains-third-party-frames',
       }),
     ],

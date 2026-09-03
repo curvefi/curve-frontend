@@ -9,9 +9,9 @@ import {
 import { combineQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { fakeLoadingQ } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
+import { fakeLoadingQ } from '@ui/features/queries/util'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({

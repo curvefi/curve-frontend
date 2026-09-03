@@ -8,10 +8,10 @@ import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActi
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
-import { mapQuery, q } from '@evm-ui/types/util'
 import { decimalSum } from '@evm-ui/utils'
 import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type DepositSupplyInfoListProps<ChainId extends IChainId> = {

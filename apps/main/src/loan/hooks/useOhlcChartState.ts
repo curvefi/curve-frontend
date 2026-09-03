@@ -5,9 +5,9 @@ import { useUserPrices } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
 import { getBlockchainId } from '@curvefi/prices-api'
-import type { Range } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Range } from '@ui/features/queries/util'
 
 type OhlcChartStateProps = {
   chainId: ChainId

@@ -16,8 +16,8 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { constQ } from '@evm-ui/types/util'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
+import { constQ } from '@ui/features/queries/util'
 
 const CHAIN_ID = 1
 const testCases = [

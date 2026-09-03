@@ -2,10 +2,10 @@ import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import { t } from '@evm-ui/lib/i18n'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
-import type { QueryProp } from '@evm-ui/types/util'
 import { decimalDiv, decimalMinus, decimalMultiply, formatNumber, formatToken } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 import type { SupplyAsset } from '../SupplyPositionDetails'
 
 const formatAmount = (

@@ -7,12 +7,12 @@ import { networks } from '@/dao/networks'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
-import { q } from '@evm-ui/types/util'
 import { amount, formatNumber, MILLISECONDS_PER_SECOND } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
+import { q } from '@ui/features/queries/util'
 
 export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
   const { form, params, canUnlock, lockedAmountAndUnlockTime, isPending, isDisabled, error, onSubmit } =

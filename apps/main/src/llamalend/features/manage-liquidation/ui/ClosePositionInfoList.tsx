@@ -8,7 +8,7 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { constQ, q } from '@evm-ui/types/util'
+import { constQ, q } from '@ui/features/queries/util'
 
 type ClosePositionInfoListProps = {
   marketId: string | undefined

@@ -5,13 +5,13 @@ import { createTestWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { TestQueryProvider } from '@evm-ui/lib/queries/test-query.provider.test'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { constQ, q } from '@evm-ui/types/util'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
 import type { BaseConfig } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import { fromEntries, mapRecord } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { constQ, q } from '@ui/features/queries/util'
 import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
 const { MaxWidth } = SizesAndSpaces

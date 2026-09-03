@@ -11,6 +11,7 @@ export default defineConfig({
     alias: [
       { find: '@primitives', replacement: resolve(__dirname, '../packages/primitives/src') },
       { find: '@evm-ui', replacement: resolve(__dirname, '../packages/evm-ui/src') },
+      { find: '@ui', replacement: resolve(__dirname, '../packages/ui/src') },
     ],
   },
 })

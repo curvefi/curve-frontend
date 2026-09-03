@@ -8,9 +8,9 @@ import {
 } from '@evm-ui/features/activity-table'
 import { t } from '@evm-ui/lib/i18n'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { mapQuery, q } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
 export const useLlammaActivityTradesConfig = ({
