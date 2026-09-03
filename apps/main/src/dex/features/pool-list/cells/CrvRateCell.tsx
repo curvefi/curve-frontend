@@ -19,7 +19,7 @@ export const CrvRateCell = ({ pool }: { pool: PoolRow }) => {
         Wrapper={Tooltip}
         clickable
         title={t`CRV APR`}
-        body={range && <CrvRateTooltipContent unboostedApy={range.unboostedApr} maximumApy={range.boostedApr} />}
+        body={range && <CrvRateTooltipContent unboostedRate={range.unboostedRate} maximumRate={range.boostedRate} />}
         placement="top"
       >
         <Box data-testid={range && 'pool-crv-rate-tooltip-trigger'}>
@@ -31,10 +31,12 @@ export const CrvRateCell = ({ pool }: { pool: PoolRow }) => {
               iconPosition="right"
               iconAlignment="start"
               primary={
-                <span data-testid="pool-crv-rate-unboosted">{formatCellValue(range.unboostedApr, 'percent.rate')}</span>
+                <span data-testid="pool-crv-rate-unboosted">
+                  {formatCellValue(range.unboostedRate, 'percent.rate')}
+                </span>
               }
               secondary={
-                <span data-testid="pool-crv-rate-boosted">{formatCellValue(range.boostedApr, 'percent.rate')}</span>
+                <span data-testid="pool-crv-rate-boosted">{formatCellValue(range.boostedRate, 'percent.rate')}</span>
               }
               boldPrimary
               sx={{ justifyContent: 'end' }}

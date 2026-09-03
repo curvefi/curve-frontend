@@ -2,12 +2,11 @@ import { sum } from 'lodash'
 import { LARGE_RATE } from '@/dex/constants'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { t } from '@evm-ui/lib/i18n'
-import { aprToApy, AVERAGE_CATEGORIES, formatNumber, type NumberFormatCategory } from '@evm-ui/utils'
+import { formatNumber, type NumberFormatCategory } from '@evm-ui/utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import type { PoolRow } from '../types'
 
-const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 const MAX_CRV_BOOST = '2.5x'
 const MAX_POINTS_CAMPAIGNS = 4
 type MissingAmount = null | undefined | ''
@@ -19,7 +18,6 @@ type MissingAmount = null | undefined | ''
 export const formatCellValue = (value: Amount | MissingAmount, category: NumberFormatCategory) =>
   formatNumber(value != null && value !== '' && Number(value) === 0 ? null : value, category)
 
-export const aprToPoolApy = (apr: Parameters<typeof aprToApy>[0]) => aprToApy(apr, COMPOUND_WINDOW)
 export const getBaseApr = (pool: PoolRow, period: 'daily' | 'weekly') =>
   period === 'daily' ? pool.baseDailyApr : pool.baseWeeklyApr
 export const isVolatileRate = (rate: number | null | undefined) => rate != null && rate > LARGE_RATE
@@ -27,12 +25,13 @@ export const getCrvAprDescription = () =>
   t`CRV LP reward APR (max APR can be reached with max boost of ${MAX_CRV_BOOST})`
 
 export const getCrvAprRange = ({ crvApr, crvAprBoosted }: PoolRow) =>
-  maybes([crvApr, crvAprBoosted], (crvApr, crvAprBoosted) => ({ unboostedApr: crvApr, boostedApr: crvAprBoosted }))
+  maybes([crvApr, crvAprBoosted], (crvApr, crvAprBoosted) => ({ unboostedRate: crvApr, boostedRate: crvAprBoosted }))
 
 export const formatCrvAprRange = (range: ReturnType<typeof getCrvAprRange>) =>
   maybe(
     range,
-    range => `${formatNumber(range.unboostedApr, 'percent.rate')} → ${formatNumber(range.boostedApr, 'percent.rate')}`,
+    range =>
+      `${formatNumber(range.unboostedRate, 'percent.rate')} → ${formatNumber(range.boostedRate, 'percent.rate')}`,
   ) ?? formatNumber(null, 'percent.rate')
 
 export const isPointsCampaign = ({ reward, tags }: CampaignRewards) => reward?.type !== 'apr' || tags.includes('points')

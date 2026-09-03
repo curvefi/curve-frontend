@@ -63,7 +63,7 @@ export const POOL_COLUMNS = columnHelper.columns([
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(pool => (pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)?.unboostedApr), {
+  columnHelper.accessor(pool => (pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)?.unboostedRate), {
     id: PoolColumnId.CrvApy,
     header: POOL_TITLES[PoolColumnId.CrvApy],
     cell: ({ row }) => <CrvRateCell pool={row.original} />,

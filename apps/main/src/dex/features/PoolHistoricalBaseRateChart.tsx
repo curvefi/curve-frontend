@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { Address } from 'viem'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
-import { aprToPoolApy } from '@/dex/features/pool-list/cells/utils'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
 import { t } from '@evm-ui/lib/i18n'
@@ -21,7 +20,7 @@ import {
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { mapQuery } from '@evm-ui/types/util'
-import { decimal, formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
+import { aprToApy, AVERAGE_CATEGORIES, decimal, formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -45,6 +44,9 @@ const SERIES_CONFIG = [
   { key: 'dailyBaseApy', label: t`Daily Base APY` },
   { key: 'weeklyBaseApy', label: t`Weekly Base APY`, dash: CHART_LINE_DASH_PATTERNS.tight },
 ] as const
+
+const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
+const aprToPoolApy = (apr: Parameters<typeof aprToApy>[0]) => aprToApy(apr, COMPOUND_WINDOW)
 
 export const PoolHistoricalBaseRateChart = ({
   blockchainId,

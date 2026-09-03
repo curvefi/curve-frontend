@@ -76,9 +76,9 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
 export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
   const pool = row.original
   const currentDate = useCurrentDate()
-  const baseApr = getBaseApr(pool, 'daily')
-  const netApr = getNetApr(pool)
-  const volatileBaseApr = isVolatileRate(baseApr)
+  const baseRate = getBaseApr(pool, 'daily')
+  const netRate = getNetApr(pool)
+  const volatileBaseRate = isVolatileRate(baseRate)
 
   return (
     <Grid container spacing={Spacing.md}>
@@ -86,12 +86,12 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
         <Metric
           category={PRIMARY_METRIC_CATEGORY}
           label={POOL_TITLES[PoolColumnId.NetApy]}
-          value={netApr || null}
-          valueOptions={getRateValueOptions(netApr, { volatile: volatileBaseApr })}
+          value={netRate || null}
+          valueOptions={getRateValueOptions(netRate, { volatile: volatileBaseRate })}
           valueTooltip={
-            netApr
+            netRate
               ? {
-                  body: <NetRateTooltipContent pool={pool} volatile={volatileBaseApr} />,
+                  body: <NetRateTooltipContent pool={pool} volatile={volatileBaseRate} />,
                   clickable: true,
                   placement: 'top',
                   title: t`Net APR`,

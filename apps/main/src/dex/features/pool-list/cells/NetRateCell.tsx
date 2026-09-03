@@ -14,13 +14,13 @@ import { formatCellValue, getNetApr, isVolatileRate } from './utils'
 const { Spacing } = SizesAndSpaces
 
 export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
-  const netApr = getNetApr(pool)
-  const volatile = isVolatileRate(netApr)
+  const netRate = getNetApr(pool)
+  const volatile = isVolatileRate(netRate)
 
   return (
     <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
       <WithWrapper
-        shouldWrap={netApr}
+        shouldWrap={netRate}
         Wrapper={Tooltip}
         clickable
         title={t`Net APR`}
@@ -29,7 +29,7 @@ export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
       >
         <Box
           component="span"
-          data-testid={netApr ? 'pool-net-rate-tooltip-trigger' : undefined}
+          data-testid={netRate ? 'pool-net-rate-tooltip-trigger' : undefined}
           sx={{ display: 'inline-flex' }}
         >
           {volatile ? (
@@ -43,7 +43,7 @@ export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
               variant="tableCellMBold"
               sx={{ display: 'block', textAlign: 'end' }}
             >
-              {formatCellValue(netApr, 'percent.rate')}
+              {formatCellValue(netRate, 'percent.rate')}
             </Typography>
           )}
         </Box>

@@ -13,12 +13,12 @@ import { formatCellValue, getRewardsApr } from './utils'
 const { Spacing } = SizesAndSpaces
 
 export const RewardsRateCell = ({ pool }: { pool: PoolRow }) => {
-  const rewardsApr = getRewardsApr(pool)
+  const rewardsRate = getRewardsApr(pool)
 
   return (
     <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
       <WithWrapper
-        shouldWrap={rewardsApr}
+        shouldWrap={rewardsRate}
         Wrapper={Tooltip}
         clickable
         title={t`Rewards APR`}
@@ -26,7 +26,7 @@ export const RewardsRateCell = ({ pool }: { pool: PoolRow }) => {
         placement="top"
       >
         <Box component="span" sx={{ display: 'inline-flex' }}>
-          <Typography variant="tableCellMBold">{formatCellValue(rewardsApr, 'percent.rate')}</Typography>
+          <Typography variant="tableCellMBold">{formatCellValue(rewardsRate, 'percent.rate')}</Typography>
         </Box>
       </WithWrapper>
       <RewardIcons pool={pool} />

@@ -29,14 +29,14 @@ const ExtraRewardTooltipBody = ({ reward }: { reward: ExtraReward }) => (
     {(reward.symbol || reward.name) && <Typography variant="bodySRegular">{reward.symbol ?? reward.name}</Typography>}
     <Typography variant="bodySRegular">{t`APR from an extra reward for providing liquidity in this pool.`}</Typography>
     <Typography variant="bodySRegular">
-      {t`APY`}: {formatNumber(reward.apr, 'percent.rate')}
+      {t`APR`}: {formatNumber(reward.apr, 'percent.rate')}
     </Typography>
   </Stack>
 )
 
-export const CampaignTooltipContent = ({ campaign, showApy }: { campaign: CampaignRewards; showApy: boolean }) => (
+export const CampaignTooltipContent = ({ campaign, showRate }: { campaign: CampaignRewards; showRate: boolean }) => (
   <Stack sx={{ gap: Spacing.sm }}>
-    {showApy && campaign.reward?.type === 'apr' && (
+    {showRate && campaign.reward?.type === 'apr' && (
       <Typography variant="bodySRegular" sx={{ textAlign: 'start' }}>
         {t`APR`}: {formatNumber(campaign.reward.value, 'percent.rate')}
       </Typography>
@@ -104,7 +104,7 @@ const CampaignRewardIcon = ({
     clickable
     placement={placement}
     testId="pool-campaign-reward-badge"
-    title={<CampaignTooltipContent campaign={campaign} showApy />}
+    title={<CampaignTooltipContent campaign={campaign} showRate />}
   >
     <CampaignIcon campaign={campaign} />
   </RewardIconTooltip>
@@ -149,7 +149,7 @@ export const PointsRewardIcon = ({
     clickable
     placement={placement}
     testId="pool-points-badge"
-    title={<CampaignTooltipContent campaign={campaign} showApy={false} />}
+    title={<CampaignTooltipContent campaign={campaign} showRate={false} />}
   >
     <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
       {showLabel && (
@@ -178,9 +178,9 @@ export const RewardIcons = ({
   const pointsCampaigns = includePoints ? getCompactPointsCampaigns(pool) : []
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
-  const crvAprRange = includeCrv && !pool.gauge?.isKilled ? getCrvAprRange(pool) : null
+  const crvRateRange = includeCrv && !pool.gauge?.isKilled ? getCrvAprRange(pool) : null
 
-  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !crvAprRange) return null
+  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !crvRateRange) return null
 
   return (
     <IconStack iconSize="sm">
@@ -210,7 +210,7 @@ export const RewardIcons = ({
           placement={tooltipPlacement}
         />
       ))}
-      {crvAprRange && <CrvRewardIcon placement={tooltipPlacement} range={crvAprRange} />}
+      {crvRateRange && <CrvRewardIcon placement={tooltipPlacement} range={crvRateRange} />}
     </IconStack>
   )
 }

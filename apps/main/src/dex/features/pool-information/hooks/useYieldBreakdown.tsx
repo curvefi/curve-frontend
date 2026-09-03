@@ -136,7 +136,7 @@ export const useYieldBreakdown = ({
       apy: baseDailyApy,
       apyTooltip: {
         title: t`Base APY`,
-        body: <BaseRateTooltipContent dailyApy={baseDailyApy} weeklyApy={baseWeeklyApy} />,
+        body: <BaseRateTooltipContent dailyRate={baseDailyApy} weeklyRate={baseWeeklyApy} />,
         clickable: true,
       },
     })

@@ -11,11 +11,11 @@ import type { PoolRow } from '../types'
 import { formatCellValue, getBaseApr, isVolatileRate } from './utils'
 
 const BaseRateTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: boolean }) => {
-  const dailyApr = getBaseApr(pool, 'daily')
-  const weeklyApr = getBaseApr(pool, 'weekly')
-  const apr = weekly ? weeklyApr : dailyApr
-  const volatile = isVolatileRate(apr)
-  const hasTooltip = apr != null && !volatile
+  const dailyRate = getBaseApr(pool, 'daily')
+  const weeklyRate = getBaseApr(pool, 'weekly')
+  const rate = weekly ? weeklyRate : dailyRate
+  const volatile = isVolatileRate(rate)
+  const hasTooltip = rate != null && !volatile
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
@@ -24,14 +24,14 @@ const BaseRateTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: b
         Wrapper={Tooltip}
         clickable
         title={weekly ? t`Weekly Base APR` : t`Base APR`}
-        body={<BaseRateTooltipContent dailyApy={dailyApr} weeklyApy={weeklyApr} weekly={weekly} />}
+        body={<BaseRateTooltipContent dailyRate={dailyRate} weeklyRate={weeklyRate} weekly={weekly} />}
         placement="top"
       >
         <Box component="span" sx={{ display: 'inline-flex' }}>
           {volatile ? (
             <ChipVolatileBaseApy />
           ) : (
-            <Typography variant="tableCellMBold">{formatCellValue(apr, 'percent.rate')}</Typography>
+            <Typography variant="tableCellMBold">{formatCellValue(rate, 'percent.rate')}</Typography>
           )}
         </Box>
       </WithWrapper>
