@@ -1912,87 +1912,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:5.9.1":
-  version: 5.9.1
-  resolution: "@hookform/resolvers@npm:5.9.1"
+"@hookform/resolvers@npm:5.4.0":
+  version: 5.4.0
+  resolution: "@hookform/resolvers@npm:5.4.0"
   dependencies:
     "@standard-schema/utils": "npm:^0.3.0"
   peerDependencies:
-    "@sinclair/typebox": ">=0.25.24"
-    "@standard-schema/spec": ^1.0.0
-    "@typeschema/main": ">=0.13.7"
-    "@vinejs/vine": ^2.0.0 || ^3.0.0 || ^4.0.0
-    ajv: ^8.12.0
-    ajv-errors: ^3.0.0
-    ajv-formats: ^2.1.1
-    arktype: ^2.0.0
-    ata-validator: ^1.2.0
-    class-transformer: ">=0.4.0"
-    class-validator: ">=0.12.0"
-    computed-types: ^1.0.0
-    effect: ^3.10.3
-    fluentvalidation-ts: ^3.0.0
-    fp-ts: ^2.7.0
-    io-ts: ^2.0.0
-    joi: ^17.0.0 || ^18.0.0
-    nope-validator: ">=0.12.0"
     react-hook-form: ^7.55.0
-    superstruct: ">=0.12.0"
-    typanion: ^3.3.2
-    valibot: ">=0.31.0 || ^1.0.0-beta.4 || ^1.0.0-rc"
-    vest: ">=6.0.0"
-    yup: ^1.0.0
-    zod: ^3.25.0 || ^4.0.0
-  peerDependenciesMeta:
-    "@sinclair/typebox":
-      optional: true
-    "@standard-schema/spec":
-      optional: true
-    "@typeschema/main":
-      optional: true
-    "@vinejs/vine":
-      optional: true
-    ajv:
-      optional: true
-    ajv-errors:
-      optional: true
-    ajv-formats:
-      optional: true
-    arktype:
-      optional: true
-    ata-validator:
-      optional: true
-    class-transformer:
-      optional: true
-    class-validator:
-      optional: true
-    computed-types:
-      optional: true
-    effect:
-      optional: true
-    fluentvalidation-ts:
-      optional: true
-    fp-ts:
-      optional: true
-    io-ts:
-      optional: true
-    joi:
-      optional: true
-    nope-validator:
-      optional: true
-    superstruct:
-      optional: true
-    typanion:
-      optional: true
-    valibot:
-      optional: true
-    vest:
-      optional: true
-    yup:
-      optional: true
-    zod:
-      optional: true
-  checksum: 10c0/08d4e1455a072bea182468d878527e2e99c6d079fe56ffc5297e03a8219fe7544db092afcdf7a950e5421390d4dae3a21398c8ccd0b2c8639d0e0ff9e21410c2
+  checksum: 10c0/ea312948a8ee4dd711287295c95ddd4cefc69d3e01ecf196477aaf5179fbb28b10801486cb3e909abaea169ee7199ce9e725fcded8a98a539ba07aa278753a42
   languageName: node
   linkType: hard
 
@@ -9219,7 +9146,7 @@ __metadata:
     "@coinbase/wallet-sdk": "npm:4.3.7"
     "@emotion/react": "npm:11.14.0"
     "@emotion/styled": "npm:11.14.1"
-    "@hookform/resolvers": "npm:5.9.1"
+    "@hookform/resolvers": "npm:5.4.0"
     "@metamask/connect-evm": "npm:2.1.1"
     "@mui/icons-material": "npm:9.4.0"
     "@mui/material": "npm:9.4.0"

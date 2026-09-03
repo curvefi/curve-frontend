@@ -18,7 +18,7 @@
     "@coinbase/wallet-sdk": "4.3.7",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
-    "@hookform/resolvers": "5.9.1",
+    "@hookform/resolvers": "5.4.0",
     "@metamask/connect-evm": "2.1.1",
     "@mui/icons-material": "9.4.0",
     "@mui/material": "9.4.0",
