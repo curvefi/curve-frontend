@@ -1,5 +1,5 @@
 import { getChainBlockExplorer } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { Chain } from '@evm-ui/utils/network'
+import { Chain } from '@primitives/network.utils'
 import { maybe } from '@primitives/objects.utils'
 
 export const NETWORK_BASE_CONFIG = {

@@ -8,7 +8,7 @@ import { aprToPoolApy } from '@/dex/features/pool-list/cells/utils'
 import type { PoolRow } from '@/dex/features/pool-list/types'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
-import { Chain } from '@evm-ui/utils/network'
+import { Chain } from '@primitives/network.utils'
 
 const CONTENT = '[data-testid="pool-tooltip-content"]'
 const POOL_ADDRESS = '0xefc6516323fbd28e80b85a497b65a86243a54b3e'

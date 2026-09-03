@@ -13,7 +13,7 @@ import type { PoolType } from '@/dex/components/PageDeployGauge/types'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@evm-ui/lib/i18n'
-import { Chain } from '@evm-ui/utils/network'
+import { Chain } from '@primitives/network.utils'
 import { Box } from '@legacy-ui/Box'
 import { maybe } from '@primitives/objects.utils'
 

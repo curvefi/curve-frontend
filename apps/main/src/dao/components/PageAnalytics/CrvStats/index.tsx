@@ -10,7 +10,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
+import { Chain } from '@primitives/network.utils'
 import { Box } from '@legacy-ui/Box'
 import { constQ, mapQuery } from '@ui/features/queries/util'
 
