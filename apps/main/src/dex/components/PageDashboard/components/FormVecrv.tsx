@@ -5,7 +5,6 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { Title } from '@/dex/components/PageDashboard/styles'
 import type { FormStatus } from '@/dex/components/PageDashboard/types'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
-import { useNetworks } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
@@ -40,8 +39,7 @@ export const FormVecrv = () => {
   const formStatus = useStore(state => state.dashboard.formStatus)
   const setFormStatusVecrv = useStore(state => state.dashboard.setFormStatusVecrv)
   const fetchStepWithdraw = useStore(state => state.dashboard.fetchStepWithdrawVecrv)
-  const { data: networks } = useNetworks()
-  const network = (curve && networks[curve.chainId]) ?? null
+  const chainId = curve?.chainId
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -65,12 +63,12 @@ export const FormVecrv = () => {
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, walletAddress)
 
-      if (isSubscribedRef.current && resp?.hash && resp.walletAddress === walletAddress && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.walletAddress === walletAddress && chainId) {
         const txDescription = t`Withdraw Complete`
         setTxInfoBar(
           <TxInfoBar
             description={txDescription}
-            txHash={scanTxPath(network, resp.hash)}
+            txHash={scanTxPath(chainId, resp.hash)}
             onClose={() => {
               setTxInfoBar(null)
               setFormStatusVecrv(DEFAULT_FORM_STATUS)
@@ -80,7 +78,7 @@ export const FormVecrv = () => {
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, setFormStatusVecrv, walletAddress, network],
+    [fetchStepWithdraw, setFormStatusVecrv, walletAddress, chainId],
   )
 
   const getSteps = useCallback(

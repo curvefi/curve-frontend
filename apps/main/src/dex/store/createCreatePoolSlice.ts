@@ -833,7 +833,7 @@ export const createCreatePoolSlice = (
             produce((state: State) => {
               state.createPool.transactionState.txStatus = 'LOADING'
               state.createPool.transactionState.transaction = deployPoolTx
-              state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
+              state.createPool.transactionState.txLink = scanTxPath(chainId, deployPoolTx.hash)!
             }),
           )
 
@@ -911,7 +911,7 @@ export const createCreatePoolSlice = (
               produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
+                state.createPool.transactionState.txLink = scanTxPath(chainId, deployPoolTx.hash)!
               }),
             )
 
@@ -993,7 +993,7 @@ export const createCreatePoolSlice = (
               produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
+                state.createPool.transactionState.txLink = scanTxPath(chainId, deployPoolTx.hash)!
               }),
             )
 
@@ -1093,7 +1093,7 @@ export const createCreatePoolSlice = (
               produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
+                state.createPool.transactionState.txLink = scanTxPath(chainId, deployPoolTx.hash)!
               }),
             )
 
@@ -1186,7 +1186,7 @@ export const createCreatePoolSlice = (
               produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
+                state.createPool.transactionState.txLink = scanTxPath(chainId, deployPoolTx.hash)!
               }),
             )
 

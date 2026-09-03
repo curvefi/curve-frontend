@@ -54,19 +54,19 @@ export const Contracts = ({
         <Section>
           {poolAddress && (
             <AddressActionInfo
-              network={network}
+              chainId={chainId}
               address={poolAddress}
               title={isSameAddress ? t`Pool / Token` : t`Pool`}
             />
           )}
 
           {!isSameAddress && lpTokenAddress && (
-            <AddressActionInfo network={network} address={lpTokenAddress} title={t`Token`} />
+            <AddressActionInfo chainId={chainId} address={lpTokenAddress} title={t`Token`} />
           )}
 
           {!isAddressEqual(gaugeAddress, zeroAddress) && (
             <AddressActionInfo
-              network={network}
+              chainId={chainId}
               address={gaugeAddress}
               title={
                 <>
@@ -79,7 +79,7 @@ export const Contracts = ({
 
         <Section>
           {oracles.map(oracle => (
-            <AddressActionInfo key={oracle.address} network={network} {...oracle} />
+            <AddressActionInfo key={oracle.address} chainId={chainId} {...oracle} />
           ))}
         </Section>
       </CardContent>

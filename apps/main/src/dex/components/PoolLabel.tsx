@@ -41,7 +41,7 @@ export const PoolLabel = ({
   )
 
   const poolAlert = usePoolAlert({
-    network: blockchainId,
+    blockchainId,
     poolAddress: poolData?.pool.address,
     hasVyperVulnerability: poolData?.hasVyperVulnerability,
   })
@@ -80,7 +80,9 @@ export const PoolLabel = ({
               </>
             )}
             {/* isHighlightPoolName = default to true now, even if searched text is not same result */}
-            {pool && <ChipPool poolId={pool.id} poolAddress={pool.address} poolName={pool.name} />}
+            {pool && (
+              <ChipPool blockchainId={blockchainId} poolId={pool.id} poolAddress={pool.address} poolName={pool.name} />
+            )}
           </Box>
 
           <PoolLabelTokensWrapper>

@@ -11,7 +11,6 @@ import {
 } from 'react'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
-import { useNetworks } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
@@ -45,8 +44,6 @@ export const FormClaimFeesButtons = ({
   const setFormStatus = useStore(state => state.dashboard.setFormStatusClaimFees)
 
   const { chainId, signerAddress } = curve ?? {}
-  const { data: networks } = useNetworks()
-  const network = networks[chainId!] || null
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')
 
   const claimButtons = useMemo(() => {
@@ -70,7 +67,7 @@ export const FormClaimFeesButtons = ({
 
   const handleBtnClickClaimFees = useCallback(
     async (key: claimButtonsKey) => {
-      if (!network || !curve) return
+      if (!chainId || !curve) return
 
       const notifyMessage = t`Please approve claim veCRV rewards.`
       const { dismiss } = notify(notifyMessage, 'pending')
@@ -106,7 +103,7 @@ export const FormClaimFeesButtons = ({
       setTxInfoBar(
         <TxInfoBar
           description={successMessage}
-          txHash={scanTxPath(network, resp.hash)}
+          txHash={scanTxPath(chainId, resp.hash)}
           onClose={() => {
             setFormStatus(DEFAULT_FORM_STATUS)
             setSteps([])
@@ -115,7 +112,7 @@ export const FormClaimFeesButtons = ({
         />,
       )
     },
-    [activeKey, curve, fetchStepClaimFees, setFormStatus, setSteps, setTxInfoBar, walletAddress, network],
+    [activeKey, curve, fetchStepClaimFees, setFormStatus, setSteps, setTxInfoBar, walletAddress, chainId],
   )
 
   return (

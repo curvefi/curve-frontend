@@ -12,7 +12,7 @@ const { Spacing } = SizesAndSpaces
 
 export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> = ({
   row: {
-    original: { deposit, withdrawal, provider, network, collateralToken, borrowToken },
+    original: { deposit, withdrawal, provider, blockchainId, collateralToken, borrowToken },
   },
 }) => (
   <Stack>
@@ -23,7 +23,7 @@ export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> =
           <Typography variant="tableCellMBold" color="success">
             {formatNumber(deposit.amount, { abbreviate: false })} {collateralToken?.symbol}
           </Typography>
-          {collateralToken && <TokenIcon blockchainId={network} address={collateralToken.address} size="mui-sm" />}
+          {collateralToken && <TokenIcon blockchainId={blockchainId} address={collateralToken.address} size="mui-sm" />}
         </Stack>
       </Stack>
     )}
@@ -36,7 +36,9 @@ export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> =
               <Typography variant="tableCellMBold" color="error">
                 {formatNumber(withdrawal.amountCollateral, { abbreviate: false })} {collateralToken?.symbol}
               </Typography>
-              {collateralToken && <TokenIcon blockchainId={network} address={collateralToken.address} size="mui-sm" />}
+              {collateralToken && (
+                <TokenIcon blockchainId={blockchainId} address={collateralToken.address} size="mui-sm" />
+              )}
             </Stack>
           </Stack>
         )}
@@ -47,7 +49,7 @@ export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> =
               <Typography variant="tableCellMBold" color="error">
                 {formatNumber(withdrawal.amountBorrowed, { abbreviate: false })} {borrowToken?.symbol}
               </Typography>
-              {borrowToken && <TokenIcon blockchainId={network} address={borrowToken.address} size="mui-sm" />}
+              {borrowToken && <TokenIcon blockchainId={blockchainId} address={borrowToken.address} size="mui-sm" />}
             </Stack>
           </Stack>
         )}

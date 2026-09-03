@@ -8,7 +8,7 @@ import type { PoolRow } from '../types'
 
 export const PoolExpandedPanelActions: ExpandedPanelComponent<PoolRow> = ({ row }) => {
   const pool = row.original
-  const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
+  const path = getPath({ network: pool.blockchainId }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
 
   /** Pool form paths were removed; mobile expanded rows still need direct links to a specific pool form. */
   const actions = [

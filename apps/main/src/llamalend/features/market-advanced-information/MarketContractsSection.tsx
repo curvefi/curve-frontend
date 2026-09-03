@@ -21,7 +21,6 @@ import { TokenIcon, type TokenIconProps } from '@evm-ui/shared/ui/TokenIcon'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@evm-ui/types/util'
-import { type BaseConfig } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -43,12 +42,10 @@ type AddressItem = {
 
 type MarketContractsProps = {
   chainId: IChainId
+  blockchainId: string
   market: MarketTemplate | undefined
   apiMarket: QueryProp<LlamaMarket>
-  network: BaseConfig | undefined
 }
-
-type MarketDataProps = Pick<MarketContractsProps, 'market' | 'apiMarket' | 'network'>
 
 const GaugeLabel = () => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
@@ -67,13 +64,15 @@ const TokenLabel = ({ blockchainId, address, label, tooltip }: TokenIconProps & 
 )
 
 const AssetRow = ({
-  network,
   title,
+  chainId,
+  blockchainId,
   token,
   testId,
 }: {
-  network: BaseConfig | undefined
   title: ReactNode
+  chainId: number
+  blockchainId: string
   token: { symbol?: string; address?: string } | undefined
   testId: string
 }) => (
@@ -83,10 +82,10 @@ const AssetRow = ({
     </Typography>
     <AddressActionInfo
       testId={testId}
-      network={network}
+      chainId={chainId}
       title={
         <TokenLabel
-          blockchainId={network?.id}
+          blockchainId={blockchainId}
           tooltip={token?.symbol}
           address={token?.address}
           label={token?.symbol ?? ''}
@@ -100,31 +99,37 @@ const AssetRow = ({
 export const MarketOverviewSkeleton = ({
   market,
   apiMarket,
-  network,
   children,
-}: MarketDataProps & { children: ReactNode }) => (
-  <WithSkeleton loading={!network || (!market && !apiMarket.data)} variant="rectangular" height="4lh" width="100%">
+}: MarketContractsProps & { children: ReactNode }) => (
+  <WithSkeleton loading={!market && !apiMarket.data} variant="rectangular" height="4lh" width="100%">
     <Stack>{children}</Stack>
   </WithSkeleton>
 )
 
-export const MarketAssets = ({ market, apiMarket, network }: MarketDataProps) => {
+export const MarketAssets = ({ chainId, blockchainId, market, apiMarket }: MarketContractsProps) => {
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
 
   return (
-    <MarketOverviewSkeleton market={market} apiMarket={apiMarket} network={network}>
+    <MarketOverviewSkeleton chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket}>
       <AssetRow
         testId="market-contract-collateral-token"
-        network={network}
+        chainId={chainId}
+        blockchainId={blockchainId}
         title={t`Collateral`}
         token={collateralToken}
       />
-      <AssetRow testId="market-contract-borrow-token" network={network} title={t`Borrowed`} token={borrowToken} />
+      <AssetRow
+        testId="market-contract-borrow-token"
+        chainId={chainId}
+        blockchainId={blockchainId}
+        title={t`Borrowed`}
+        token={borrowToken}
+      />
     </MarketOverviewSkeleton>
   )
 }
 
-export const MarketContractsSection = ({ chainId, market, apiMarket, network }: MarketContractsProps) => {
+export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarket }: MarketContractsProps) => {
   const isMobile = useIsMobile()
   const { data: onChainOracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
     chainId,
@@ -132,7 +137,7 @@ export const MarketContractsSection = ({ chainId, market, apiMarket, network }: 
   })
 
   const hasContractData = !!market || !!apiMarket.data
-  const contractsLoading = !network || !hasContractData || (!!market && oracleAddressIsLoading)
+  const contractsLoading = !hasContractData || (!!market && oracleAddressIsLoading)
   const gaugeAddress = getGaugeAddress(market)
   const vaultAddress = getVaultAddress(market, apiMarket.data) ?? undefined
   const monetaryPolicyAddress = getMonetaryPolicy(market, apiMarket.data)
@@ -167,7 +172,7 @@ export const MarketContractsSection = ({ chainId, market, apiMarket, network }: 
         <Card size="inline" data-testid="market-assets-section">
           <CardHeader title={t`Assets`} />
           <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-            <MarketAssets market={market} apiMarket={apiMarket} network={network} />
+            <MarketAssets chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket} />
           </CardContent>
         </Card>
       )}
@@ -190,7 +195,7 @@ export const MarketContractsSection = ({ chainId, market, apiMarket, network }: 
                   <AddressActionInfo
                     key={key}
                     testId={`market-contract-${key}`}
-                    network={network}
+                    chainId={chainId}
                     title={label}
                     labelTooltip={labelTooltip}
                     address={address}

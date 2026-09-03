@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { Fragment, useMemo, useState } from 'react'
-import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { getChainName, isChainConfigured, isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
@@ -47,9 +47,9 @@ export function ChainList({
   const groupedOptions = useMemo(
     () =>
       lodash.groupBy(
-        options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
+        options.filter(o => getChainName(o.chainId).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
         o =>
-          o.isTestnet
+          isChainTestnet(o.chainId)
             ? ChainType.test
             : o.isLite || (tvls && tvls[o.id] === undefined) // flag chains not supported by prices API as lite
               ? ChainType.lite
@@ -58,7 +58,7 @@ export function ChainList({
     [options, searchValue, tvls],
   )
 
-  const missingWagmiChains = options.filter(({ isTestnet, chainId }) => !isTestnet && !wagmiChainsMap[chainId])
+  const missingWagmiChains = options.filter(({ chainId }) => !isChainTestnet(chainId) && !isChainConfigured(chainId))
 
   return (
     <>
@@ -93,7 +93,7 @@ export function ChainList({
                       href={getInternalUrl(getCurrentApp(pathname), network.id)}
                       isSelected={network.id == selectedNetworkId}
                       icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
-                      label={network.name}
+                      label={getChainName(network.chainId)}
                       onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
                       isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
                     />

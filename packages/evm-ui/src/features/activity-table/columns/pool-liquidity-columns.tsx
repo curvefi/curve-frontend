@@ -6,6 +6,7 @@ import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
 import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils'
+import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
 import { AddressCell, TimestampCell } from '../cells'
@@ -34,7 +35,9 @@ export const createPoolLiquidityColumns = ({ blockchainId, poolTokens }: CreateP
     columnHelper.accessor('provider', {
       id: PoolLiquidityColumnId.User,
       header: t`Address`,
-      cell: ({ getValue, row }) => <AddressCell address={getValue()} explorerUrl={row.original.providerUrl} />,
+      cell: ({ getValue, row }) => (
+        <AddressCell address={getValue()} explorerUrl={scanAddressPath(row.original.chainId, row.original.provider)} />
+      ),
     }),
     columnHelper.display({
       id: PoolLiquidityColumnId.Action,
@@ -75,7 +78,11 @@ export const createPoolLiquidityColumns = ({ blockchainId, poolTokens }: CreateP
       id: PoolLiquidityColumnId.Time,
       header: t`Time`,
       cell: ({ row }) => (
-        <TimestampCell timestamp={new Date(row.original.time)} txUrl={row.original.txUrl} align="end" />
+        <TimestampCell
+          timestamp={new Date(row.original.time)}
+          txUrl={scanTxPath(row.original.chainId, row.original.txHash)}
+          align="end"
+        />
       ),
       meta: { type: 'numeric' },
     }),

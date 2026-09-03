@@ -12,7 +12,7 @@ const { Spacing } = SizesAndSpaces
 
 export const PoolTradesExpandedPanel: ExpandedPanelComponent<PoolTradeRow> = ({
   row: {
-    original: { tokensSold, tokenSold, buyer, network },
+    original: { tokensSold, tokenSold, buyer, blockchainId },
   },
 }) => (
   <Stack>
@@ -22,7 +22,7 @@ export const PoolTradesExpandedPanel: ExpandedPanelComponent<PoolTradeRow> = ({
         <Typography variant="tableCellMBold" color="error">
           -{formatToken(tokensSold, tokenSold.symbol, 'amount')}
         </Typography>
-        <TokenIcon blockchainId={network} address={tokenSold.address} size="mui-sm" />
+        <TokenIcon blockchainId={blockchainId} address={tokenSold.address} size="mui-sm" />
       </Stack>
     </Stack>
     <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
