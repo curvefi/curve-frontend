@@ -37,8 +37,6 @@
     "@typescript-eslint/eslint-plugin": "8.65.0",
     "@typescript-eslint/parser": "8.65.0",
     "bignumber.js": "*",
-    "echarts": "*",
-    "echarts-for-react": "*",
     "eslint": "*",
     "eslint-config-prettier": "10.1.8",
     "eslint-import-resolver-typescript": "4.4.5",
@@ -49,7 +47,6 @@
     "eslint-plugin-unused-imports": "4.4.1",
     "ethers": "*",
     "husky": "9.1.7",
-    "immer": "*",
     "lint-staged": "17.2.0",
     "lodash": "*",
     "prettier": "3.9.6",
@@ -60,8 +57,7 @@
     "typescript-eslint": "8.65.0",
     "vite": "*",
     "vite-plugin-svgr": "*",
-    "vitest": "*",
-    "zustand": "*"
+    "vitest": "*"
   },
   "packageManager": "yarn@4.17.1",
   "lint-staged": {
@@ -77,12 +73,9 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.2",
     "bignumber.js": "9.3.1",
-    "echarts": "6.1.0",
-    "echarts-for-react": "3.0.6",
     "eslint": "10.8.0",
     "ethers": "6.17.0",
     "fastify": "5.8.5",
-    "immer": "11.1.15",
     "lodash": "4.18.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -90,7 +83,6 @@
     "typescript": "6.0.3",
     "vite": "7.3.5",
     "vite-plugin-svgr": "5.2.0",
-    "vitest": "4.1.10",
-    "zustand": "5.0.14"
+    "vitest": "4.1.10"
   }
 }

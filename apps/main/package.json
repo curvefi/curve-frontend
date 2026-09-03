@@ -37,15 +37,11 @@
   "peerDependencies": {
     "@curvefi/api": "*",
     "bignumber.js": "*",
-    "echarts": "*",
-    "echarts-for-react": "*",
     "ethers": "*",
-    "immer": "*",
     "lodash": "*",
     "react": "*",
     "react-dom": "*",
-    "styled-components": "*",
-    "zustand": "*"
+    "styled-components": "*"
   },
   "devDependencies": {
     "@curvefi/api": "*",

@@ -94,15 +94,22 @@ const readDependencyDeps = (dir, dependency) => {
 
 const allowedDepsByPackage = new Map()
 
-/** Builds a package's one-hop import allowlist. */
+/** Adds every reachable dependency to an import allowlist. */
+const addDependencies = (allowed, dir, dependencies) => {
+  dependencies.forEach(dependency => {
+    if (allowed.has(dependency)) return
+
+    allowed.add(dependency)
+    addDependencies(allowed, dir, readDependencyDeps(dir, dependency) ?? [])
+  })
+}
+
+/** Builds a package's transitive import allowlist. */
 const getAllowedDeps = ({ deps, dir, name }) => {
   if (allowedDepsByPackage.has(name)) return allowedDepsByPackage.get(name)
 
-  const allowed = new Set([name, ...deps])
-  deps.forEach(dependency => {
-    const inheritedDeps = readDependencyDeps(dir, dependency)
-    inheritedDeps?.forEach(inheritedDependency => allowed.add(inheritedDependency))
-  })
+  const allowed = new Set([name])
+  addDependencies(allowed, dir, deps)
   allowedDepsByPackage.set(name, allowed)
   return allowed
 }
@@ -117,7 +124,7 @@ const getImporter = filename => {
 const getSource = ({ argument, source }) => source?.value ?? argument?.value
 
 /**
- * Enforces one-hop package dependency boundaries.
+ * Enforces package dependency boundaries.
  * @type {eslint.Rule.Module}
  */
 export const isolatedPackagesRule = {
@@ -125,8 +132,7 @@ export const isolatedPackagesRule = {
     type: 'problem',
     docs: { description: 'Disallow imports outside a workspace package dependency boundary' },
     messages: {
-      undeclaredDependency:
-        '`{{importName}}` is not available to `{{packageName}}`; add it to dependencies/devDependencies or import it through a direct dependency.',
+      undeclaredDependency: '`{{importName}}` is not available to `{{packageName}}`; add it to its dependency tree.',
     },
   },
   /** Creates import visitors for one file. */
