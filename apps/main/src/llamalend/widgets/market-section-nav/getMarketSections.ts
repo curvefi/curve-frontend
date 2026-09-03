@@ -13,17 +13,28 @@ const PARAMETERS_SECTION = {
 } as const
 const FAQ_SECTION = { value: 'faqs', label: { default: t`FAQs` } } as const
 const OVERVIEW_SECTION = { value: 'market-overview', label: { default: t`Overview` } } as const
+const ACTIVITY_SECTION = {
+  value: 'market-activity',
+  label: { default: t`Market activity`, short: t`Activity` },
+} as const
 
 export const getMarketSections = ({ rateType }: { rateType: MarketRateType }): readonly MarketSectionOption[] =>
   (
     ({
-      [MarketRateType.Supply]: [POSITION_SECTION, OVERVIEW_SECTION, RATES_SECTION, PARAMETERS_SECTION, FAQ_SECTION],
+      [MarketRateType.Supply]: [
+        POSITION_SECTION,
+        OVERVIEW_SECTION,
+        RATES_SECTION,
+        ACTIVITY_SECTION,
+        PARAMETERS_SECTION,
+        FAQ_SECTION,
+      ],
       [MarketRateType.Borrow]: [
         POSITION_SECTION,
         OVERVIEW_SECTION,
         { value: 'price-chart', label: { default: t`Risk & Liquidation`, short: t`Risk` } },
         RATES_SECTION,
-        { value: 'market-activity', label: { default: t`Market activity`, short: t`Activity` } },
+        ACTIVITY_SECTION,
         PARAMETERS_SECTION,
         FAQ_SECTION,
       ],

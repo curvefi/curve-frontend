@@ -2,19 +2,15 @@ import type { ReactNode } from 'react'
 import type { LendingPosition } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarketRow, type MarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { TokenAmount } from '@/llamalend/widgets/TokenAmount'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { t } from '@evm-ui/lib/i18n'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
-import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { decimal, decimalMultiply, formatNumber } from '@evm-ui/utils'
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
@@ -107,47 +103,6 @@ const getTooltipBody = (
   return undefined
 }
 
-/** Displays an asset value with its token icon, wrapped in a tooltip. */
-const AssetValue = ({
-  asset,
-  value,
-  isValueLoading,
-  tooltipTitle,
-  tooltipBody,
-}: {
-  asset: AssetDetails
-  value: number | undefined
-  isValueLoading: boolean
-  tooltipTitle: string
-  tooltipBody: ReactNode
-}) => (
-  <WithSkeleton loading={isValueLoading}>
-    <Tooltip title={tooltipTitle} body={tooltipBody}>
-      <Stack direction="row" spacing={Spacing.xs} sx={{ alignItems: 'center' }}>
-        <Typography variant="tableCellMBold">{formatNumber(value, { abbreviate: true, fallback: '-' })}</Typography>
-        <TokenIcon blockchainId={asset.chain} address={asset.address} size="mui-md" />
-      </Stack>
-    </Tooltip>
-  </WithSkeleton>
-)
-
-/** Displays a USD value with a tooltip showing the full precision value. */
-const AssetUsdValue = ({
-  usdValue,
-  isPriceLoading,
-}: {
-  usdValue: number | null | undefined
-  isPriceLoading: boolean
-}) => (
-  <WithSkeleton loading={isPriceLoading}>
-    <Tooltip title={formatNumber(usdValue, { decimals: 5, unit: 'dollar', abbreviate: false, fallback: '-' })}>
-      <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
-        {formatNumber(usdValue, 'usd.notional')}
-      </Typography>
-    </Tooltip>
-  </WithSkeleton>
-)
-
 /**
  * Displays a price cell with primary and optional secondary asset values.
  * Helper functions use a 2-sized tuple as it's easier to work with than an object with named properties.
@@ -216,30 +171,21 @@ export const PriceCell = ({
   ]
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: hasSecondaryAsset ? '1fr 1fr' : '1fr',
-        rowGap: Spacing.xs,
-        columnGap: Spacing.md,
-        justifyItems: 'end',
-        alignItems: 'center',
-      }}
-    >
-      {gridAssets.flatMap(({ asset, value, usdValue, isPriceLoading }) => [
-        <Box key={`${asset.address}-usd`} sx={{ gridRow: hasSecondaryAsset ? 'auto' : 2 }}>
-          <AssetUsdValue usdValue={usdValue} isPriceLoading={isPriceLoading} />
-        </Box>,
-        <Box key={`${asset.address}-value`} sx={{ gridRow: hasSecondaryAsset ? 'auto' : 1 }}>
-          <AssetValue
-            asset={asset}
-            value={value}
-            isValueLoading={usesBorrowStats && isLoadingStats}
-            tooltipTitle={tooltipTitle}
-            tooltipBody={tooltipBody}
-          />
-        </Box>,
-      ])}
-    </Box>
+    <Stack sx={{ gap: hasSecondaryAsset ? Spacing.xs : 0 }}>
+      {gridAssets.map(({ asset, value, usdValue, isPriceLoading }) => (
+        <TokenAmount
+          key={asset.address}
+          amount={value}
+          amountUsd={usdValue}
+          blockchainId={asset.chain}
+          tokenAddress={asset.address}
+          amountLoading={usesBorrowStats && isLoadingStats}
+          usdLoading={isPriceLoading}
+          tooltipTitle={tooltipTitle}
+          tooltipBody={tooltipBody}
+          horizontal={!!hasSecondaryAsset}
+        />
+      ))}
+    </Stack>
   )
 }

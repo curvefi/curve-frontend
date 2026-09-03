@@ -3,6 +3,7 @@ import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { useMarketContext } from '@/llamalend/features/market-context'
+import { MarketParticipants } from '@/llamalend/features/market-participants/MarketParticipants'
 import {
   LegacyChartAndActivityLayout,
   MarketActivityLayout,
@@ -12,6 +13,8 @@ import { getBlockchainId } from '@curvefi/prices-api'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { useBandsChartVisible } from '@evm-ui/hooks/useLocalStorage'
 import type { Range } from '@evm-ui/types/util'
+import { PAGE_SPACING } from '@evm-ui/widgets/DetailPageLayout/constants'
+import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 
 type ChartAndActivityCompProps = {
@@ -95,20 +98,30 @@ export const MarketActivityComp = () => {
   const {
     chainId,
     ammAddress,
+    controllerAddress,
+    vaultToken,
     tokens: { collateralToken, borrowToken },
   } = useMarketContext<ChainId>()
   const networkConfig = networks[chainId]
 
   return (
-    <MarketActivityLayout
-      activity={{
-        network: getBlockchainId(networkConfig?.id),
-        ammAddress,
-        collateralToken,
-        borrowToken,
-        endpoint: 'lending',
-        networkConfig,
-      }}
-    />
+    <Stack sx={{ gap: PAGE_SPACING }}>
+      <MarketActivityLayout
+        activity={{
+          network: getBlockchainId(networkConfig?.id),
+          ammAddress,
+          collateralToken,
+          borrowToken,
+          endpoint: 'lending',
+          networkConfig,
+        }}
+      />
+      <MarketParticipants
+        // Remount when the market changes so both tables reset their local pagination to page one.
+        key={`${chainId}-${controllerAddress}-${vaultToken?.address}`}
+        chainId={chainId}
+        networkConfig={networkConfig}
+      />
+    </Stack>
   )
 }
