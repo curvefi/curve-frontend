@@ -1,4 +1,4 @@
-import { Query } from '@evm-ui/types/util'
+import type { Query } from '@evm-ui/types/util'
 import { decimalGreaterThan } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordEntries } from '@primitives/objects.utils'
@@ -66,13 +66,3 @@ export const shouldBlockTransaction = (
 ) =>
   (leverageEnabled == true && priceImpact.data == null && !priceImpact.error) ||
   (getPriceImpactSeverity(priceImpact.data) === 'error' && isPriceImpactSignificant(priceImpact.data))
-
-export const getPriceImpactInfo = (priceImpact: Query<PriceImpact | Decimal | null> | undefined) => {
-  const level =
-    priceImpact && !priceImpact.isLoading && !priceImpact.error ? getPriceImpactLevel(priceImpact.data) : null
-  return {
-    level,
-    valueColor: level ?? undefined,
-    showIcon: level !== null,
-  }
-}

@@ -5,7 +5,7 @@ import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@evm-ui/types/util'
 import type { Theme } from '@mui/material/styles'
 import type { Decimal } from '@primitives/decimal.utils'
-import { getPriceImpactInfo, type PriceImpact, type PriceImpactLevel } from './price-impact.util'
+import { getPriceImpactLevel, type PriceImpact, type PriceImpactLevel } from './price-impact.util'
 
 const { IconSize } = SizesAndSpaces
 
@@ -20,17 +20,16 @@ export type PriceImpactActionInfoProps = Omit<ActionInfoProps, 'label' | 'valueC
   priceImpact: QueryProp<PriceImpact | Decimal | null>
 }
 
-/** Displays price impact with graduated emphasis while leaving alert and blocking thresholds independent. */
+/** Displays price impact with graduated emphasis. */
 export const PriceImpactActionInfo = ({ priceImpact, ...props }: PriceImpactActionInfoProps) => {
-  const { level, showIcon, valueColor } = getPriceImpactInfo(priceImpact)
+  const level = !priceImpact.isLoading && !priceImpact.error ? getPriceImpactLevel(priceImpact.data) : null
 
   return (
     <ActionInfo
       {...props}
       label={t`Price impact`}
-      valueColor={valueColor}
+      valueColor={level ?? undefined}
       valueLeft={
-        showIcon &&
         level && (
           <ExclamationTriangleIcon
             titleAccess={t`Elevated price impact`}
