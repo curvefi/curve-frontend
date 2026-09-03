@@ -29,6 +29,8 @@
     "@vitest/ui": "4.1.10",
     "cypress": "15.19.0",
     "main": "workspace:^",
+    "vite": "7.3.5",
+    "vite-plugin-svgr": "5.2.0",
     "wait-on": "9.1.0"
   }
 }

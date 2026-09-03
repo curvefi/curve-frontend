@@ -605,6 +605,8 @@ __metadata:
 "@curvefi/primitives@workspace:^, @curvefi/primitives@workspace:packages/primitives":
   version: 0.0.0-use.local
   resolution: "@curvefi/primitives@workspace:packages/primitives"
+  dependencies:
+    vitest: "npm:4.1.10"
   languageName: unknown
   linkType: soft
 
@@ -618,6 +620,8 @@ __metadata:
     "@vitest/ui": "npm:4.1.10"
     cypress: "npm:15.19.0"
     main: "workspace:^"
+    vite: "npm:7.3.5"
+    vite-plugin-svgr: "npm:5.2.0"
     wait-on: "npm:9.1.0"
   languageName: unknown
   linkType: soft
@@ -10877,6 +10881,8 @@ __metadata:
     pinst: "npm:3.0.0"
     router-api: "workspace:^"
     vest: "npm:5.4.6"
+    vite: "npm:7.3.5"
+    vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:9.1.1"
   languageName: unknown
   linkType: soft
