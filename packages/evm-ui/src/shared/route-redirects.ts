@@ -47,7 +47,7 @@ const OldRoutes: Record<AppName, string[]> = {
  * This handles the old hash-based routing from react-router. We remove the hash and redirect to the new routes.
  * We also handle old redirects that were hardcoded in react-router.
  */
-export function getHashRedirectUrl({ pathname: path, search: query }: ParsedLocation, networkId: string) {
+export function getHashRedirectUrl({ pathname: path, search: query }: ParsedLocation, blockchainId: string) {
   const { host, hash } = window.location // host is not available in the tanstack router location
   const search = new URLSearchParams(query)
   const hashPath = hash.replace(/^#?\/?/, '') // note tanstack hash doesn't start with #, but window.location.hash does
@@ -56,14 +56,14 @@ export function getHashRedirectUrl({ pathname: path, search: query }: ParsedLoca
   const [, app, network, ...rest] = `${oldApp ? `/${oldApp}` : ''}${pathname}${hashPath}`.split('/')
   if ([app, network].includes('integrations')) {
     // old routes directly to integrations
-    return `/${app === 'integrations' ? 'dex' : app}/${networkId}/integrations/${search}`
+    return `/${app === 'integrations' ? 'dex' : app}/${blockchainId}/integrations/${search}`
   }
   const appName = AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
   const routes = OldRoutes[appName]
   if (network && routes?.find(r => r.startsWith(`/${network}`))) {
     // handle old routes without network (this code should only be called when network is not found)
-    return `/${appName}/${networkId}/${network}/${rest.join('/')}${search}`
+    return `/${appName}/${blockchainId}/${network}/${rest.join('/')}${search}`
   }
   const restPath = rest.filter(Boolean).length ? rest.join('/') : (defaultPages?.[appName] ?? '')
-  return `/${app || 'dex'}/${network || networkId}/${restPath}${search}`
+  return `/${app || 'dex'}/${network || blockchainId}/${restPath}${search}`
 }

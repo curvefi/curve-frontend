@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { fromDate } from '@curvefi/prices-api/timestamp'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { constQ, fakeLoadingQ, q } from '@evm-ui/types/util'
+import { Chain } from '@evm-ui/utils'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ActivityTable } from './ActivityTable'
@@ -88,8 +89,8 @@ const generatePoolTrades = (count: number): PoolTradeRow[] => {
       tokenSold,
       tokenBought,
       poolState: null,
-      txUrl: `https://etherscan.io/tx/${generateTxHash(1000 + i)}`,
-      network: 'ethereum',
+      blockchainId: 'ethereum',
+      chainId: Chain.Ethereum,
     }
   })
 }
@@ -115,8 +116,8 @@ const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
     time: fromDate(new Date(now - i * 7200000)), // 2 hours apart
     txHash: generateTxHash(3000 + i),
     provider: generateAddress(4000 + i),
-    txUrl: `https://etherscan.io/tx/${generateTxHash(3000 + i)}`,
-    network: 'ethereum',
+    blockchainId: 'ethereum',
+    chainId: Chain.Ethereum,
     poolTokens: POOL_TOKENS,
   }))
 }
@@ -144,8 +145,8 @@ const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken
       blockNumber: 19000000 + i * 75,
       timestamp: fromDate(new Date(now - i * 1800000)), // 30 minutes apart
       txHash: generateTxHash(5000 + i),
-      txUrl: `https://etherscan.io/tx/${generateTxHash(5000 + i)}`,
-      network: 'ethereum',
+      blockchainId: 'ethereum',
+      chainId: Chain.Ethereum,
     }
   })
 }
@@ -175,8 +176,8 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
       blockNumber: 19000000 + i * 60,
       timestamp: fromDate(new Date(now - i * 3600000)), // 1 hour apart
       txHash: generateTxHash(6000 + i),
-      txUrl: `https://etherscan.io/tx/${generateTxHash(6000 + i)}`,
-      network: 'ethereum',
+      blockchainId: 'ethereum',
+      chainId: Chain.Ethereum,
       collateralToken,
       borrowToken,
     }

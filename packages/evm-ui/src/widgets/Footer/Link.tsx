@@ -9,15 +9,15 @@ export type LinkProps = {
   href: string
   icon?: ReactNode
   target?: string
-  networkId: string
+  blockchainId: string
   appName: AppName
 }
 
-export const Link = ({ label, href, icon, target = '_blank', appName, networkId }: LinkProps) => (
+export const Link = ({ label, href, icon, target = '_blank', appName, blockchainId }: LinkProps) => (
   <Button
     {...(href.startsWith('http')
       ? { component: LinkMui, href, target, rel: 'noreferrer' }
-      : { component: RouterLink, href: `/${appName}/${networkId}/${href}` })}
+      : { component: RouterLink, href: `/${appName}/${blockchainId}/${href}` })}
     color="ghost"
     variant="link"
     startIcon={icon}

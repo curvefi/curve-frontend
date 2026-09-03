@@ -1,6 +1,6 @@
 import { useChainId, useConnection } from 'wagmi'
 import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
-import { DOWNGRADED_CHAINS } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { DOWNGRADED_CHAINS, getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { BackendMaintenanceBanner } from '@evm-ui/features/maintenance/components/BackendMaintenanceBanner'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
 import { usePathname } from '@evm-ui/hooks/router'
@@ -22,15 +22,15 @@ import { formatDate } from '@legacy-ui/utils'
 import { StackBanners } from './StackBanners'
 
 type GlobalBannerProps = {
-  networkId: string
+  blockchainId: string
   chainId: number
   backendMaintenance: Maintenance
 }
 
-export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalBannerProps) => {
+export const GlobalBanner = ({ blockchainId, chainId, backendMaintenance }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useConnection()
-  const { connectState, network } = useCurve()
+  const { connectState } = useCurve()
   const switchChain = useSwitchChain()
   const walletChainId = useChainId()
   const pathname = usePathname()
@@ -66,14 +66,14 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
         chainId &&
         walletChainId != chainId && (
           <Banner severity="warning" buttonText={t`Change network`} onClick={() => void switchChain({ chainId })}>
-            {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
-            <strong>{networkId}</strong>.{' '}
+            {t`Please switch your wallet's network to`} <strong>{blockchainId}</strong> {t`to use Curve on`}{' '}
+            <strong>{blockchainId}</strong>.{' '}
           </Banner>
         )
       )}
       {deprecationDate ? (
         <Banner severity="alert">
-          {`“${network?.name}”` +
+          {`“${getChainName(chainId)}”` +
             (deprecationDate > currentDate
               ? t` will be deprecated at ${formatDate(deprecationDate)}. `
               : t` is deprecated. `)}
@@ -88,7 +88,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
             subtitle={t`Advanced metrics won’t be available anymore, but all functions remain available. `}
             onClick={dismissDowngraded}
           >
-            {`“${network?.name}”` + t` has been moved to curve-lite due to low activity. `}
+            {`“${getChainName(chainId)}”` + t` has been moved to curve-lite due to low activity. `}
           </Banner>
         )
       )}

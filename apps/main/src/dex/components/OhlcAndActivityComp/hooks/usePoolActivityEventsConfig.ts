@@ -3,7 +3,7 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolLiquidityEvents } from '@/dex/entities/pool-liquidity.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
-import { getBlockchainId } from '@curvefi/prices-api'
+import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import {
   createPoolLiquidityColumns,
   usePoolActivityVisibility,
@@ -16,8 +16,8 @@ import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { fakeLoadingQ, mapQuery } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
-import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 
 type UsePoolActivityProps = {
   chainId: ChainId
@@ -31,7 +31,7 @@ type UsePoolActivityProps = {
 export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolActivityProps) => {
   const { isHydrated } = useCurve()
   const { data: networkConfig } = useNetworkByChain({ chainId })
-  const network = getBlockchainId(networkConfig?.id)
+  const network = getPricesApiBlockchainId(networkConfig?.blockchainId)
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
   const poolPriceApi = usePoolPricesApi({ blockchainId: network, poolAddress })
@@ -54,15 +54,10 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
     [poolLiquidityEvents, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
     useCallback(
       liquidityData =>
-        network &&
-        liquidityData.events.map(event => ({
-          ...event,
-          providerUrl: scanAddressPath(networkConfig, event.provider),
-          txUrl: scanTxPath(networkConfig, event.txHash),
-          network,
-          poolTokens,
-        })),
-      [network, networkConfig, poolTokens],
+        maybe(network, blockchainId =>
+          liquidityData.events.map(event => ({ ...event, chainId, blockchainId, poolTokens })),
+        ),
+      [network, chainId, poolTokens],
     ),
   )
 

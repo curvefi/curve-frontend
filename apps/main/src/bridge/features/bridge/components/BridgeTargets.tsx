@@ -43,7 +43,7 @@ const SelectNetworkLabel = ({ label, sx }: { label: string; sx?: SxProps }) => (
 /** Displays a chain icon and its human-readable name for the given {@link blockchainId}. */
 const SelectNetworkValue = ({ blockchainId, sx }: { blockchainId: string; sx?: SxProps }) => (
   <Stack direction="row" sx={applySxProps({ alignItems: 'center', gap: Spacing.sm }, sx)}>
-    <ChainSwitcherIcon networkId={blockchainId} size={20} />
+    <ChainSwitcherIcon blockchainId={blockchainId} size={20} />
     <Typography variant="bodyMBold" sx={{ textTransform: 'capitalize' }}>
       {blockchainId}
     </Typography>

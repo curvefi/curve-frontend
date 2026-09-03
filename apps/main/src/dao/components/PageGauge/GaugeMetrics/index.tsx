@@ -2,8 +2,6 @@ import { styled } from 'styled-components'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
-import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-import { networks } from '@/dao/networks'
 import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
@@ -40,7 +38,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                 <StyledMetricsColumnData>{shortenAddress(gaugeAddress)}</StyledMetricsColumnData>
                 <BigScreenButtonsWrapper>
                   <ExternalLinkIconButton
-                    href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeAddress)}
+                    href={scanAddressPath(Chain.Ethereum, gaugeAddress)}
                     tooltip={t`View on explorer`}
                   />
                   <CopyIconButton copyContent={gaugeAddress} tooltip={t`Copy address`} />
@@ -50,7 +48,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           />
           <SmallScreenButtonsWrapper>
             <ExternalLinkIconButton
-              href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeAddress)}
+              href={scanAddressPath(Chain.Ethereum, gaugeAddress)}
               tooltip={t`View on explorer`}
             />
             <CopyIconButton copyContent={gaugeAddress} tooltip={t`Copy address`} />
@@ -149,7 +147,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             />
             <SmallScreenButtonsWrapper>
               <ExternalLinkIconButton
-                href={scanAddressPath(networks[chainId], gaugeData?.pool?.address)}
+                href={scanAddressPath(chainId, gaugeData?.pool?.address)}
                 tooltip={t`View on explorer`}
               />
               <CopyIconButton copyContent={gaugeData?.pool?.address} tooltip={t`Copy address`} />

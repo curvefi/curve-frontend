@@ -3,7 +3,7 @@ import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelA
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { getTransactionActions } from './utils'
 
-type ActivityTableItem = { txUrl?: string | null }
+type ActivityTableItem = { chainId: number; txHash: string | null }
 
 type ActivityTableProps<TData extends ActivityTableItem> = Pick<
   DataTableProps<TData>,
@@ -12,9 +12,11 @@ type ActivityTableProps<TData extends ActivityTableItem> = Pick<
 
 const DefaultExpandedPanelActions = <TData extends ActivityTableItem>({
   row: {
-    original: { txUrl },
+    original: { chainId, txHash },
   },
-}: Parameters<ExpandedPanelComponent<TData>>[0]) => <ExpandedPanelActions actions={getTransactionActions(txUrl)} />
+}: Parameters<ExpandedPanelComponent<TData>>[0]) => (
+  <ExpandedPanelActions actions={getTransactionActions(chainId, txHash)} />
+)
 
 export const ActivityTable = <TData extends ActivityTableItem>({
   table,

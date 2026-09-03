@@ -33,11 +33,11 @@ const filterIntegrations = ({
 }): Partner[] => {
   // Revert back to the original name if there was a chain rename, it seems the integration list was never
   // updated to use the new blockchain names like 'xdai' rather than 'gnosis'.
-  const networkId = Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === network)?.[0] ?? network
+  const blockchainId = Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === network)?.[0] ?? network
 
   const list = [...integrations]
     .filter(app => tag === 'all' || app.tags?.includes(tag))
-    .filter(app => !networkId || app.networks?.[networkId])
+    .filter(app => !blockchainId || app.networks?.[blockchainId])
 
   if (!searchText) {
     return list
@@ -58,12 +58,12 @@ const getNetworks = (data: Partner[]) => [
     data.flatMap(({ networks = {} }) =>
       Object.entries(networks)
         .filter(([, enabled]) => enabled)
-        .map(([networkId]) => networkId),
+        .map(([blockchainId]) => blockchainId),
     ),
   ),
 ]
 
-export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
+export const IntegrationsList = ({ blockchainId, searchText }: { blockchainId?: string; searchText?: string }) => {
   const integrationsQuery = useIntegrations({})
   // to do: handle query error
   const { data: integrations = [], isLoading: integrationsLoading } = integrationsQuery
@@ -79,9 +79,9 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
   const filterNetwork = useMemo(
     () =>
-      (notFalsyArray(networksQuery.data).find(network => network === searchParams?.get('network')) || networkId) ??
+      (notFalsyArray(networksQuery.data).find(network => network === searchParams?.get('network')) || blockchainId) ??
       'ethereum',
-    [networkId, networksQuery.data, searchParams],
+    [blockchainId, networksQuery.data, searchParams],
   )
 
   const updateFilters = useCallback(

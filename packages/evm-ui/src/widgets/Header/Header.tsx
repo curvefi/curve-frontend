@@ -14,12 +14,12 @@ import { HeaderProps, NavigationSection } from './types'
 export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   const isDesktop = useIsDesktop()
   const pathname = usePathname()
-  const { networkId, currentMenu } = props
+  const { blockchainId, currentMenu } = props
   const pages = useMemo(
-    () => routes[currentMenu].map(props => routeToPage(props, { networkId, pathname })),
-    [currentMenu, networkId, pathname, routes],
+    () => routes[currentMenu].map(props => routeToPage(props, { blockchainId, pathname })),
+    [currentMenu, blockchainId, pathname, routes],
   )
-  const sections = useMemo(() => getSections(currentApp, props.networkId), [currentApp, props.networkId])
+  const sections = useMemo(() => getSections(currentApp, props.blockchainId), [currentApp, props.blockchainId])
   return (
     <>
       {isDesktop ? (
@@ -33,15 +33,15 @@ export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   )
 }
 
-const getSections = (currentApp: AppName, networkId: string): NavigationSection[] => [
+const getSections = (currentApp: AppName, blockchainId: string): NavigationSection[] => [
   {
     title: t`Documentation`,
     links: [
       { href: EXTERNAL_LINKS.curve.news, label: t`News` },
       { href: EXTERNAL_LINKS.docs.user.llamalend.overview, label: t`User Resources` },
       { href: EXTERNAL_LINKS.curve.docs, label: t`Developer Resources` },
-      { href: getInternalUrl(currentApp, networkId, PAGE_LEGAL), label: t`Legal` },
-      { href: getInternalUrl(currentApp, networkId, PAGE_INTEGRATIONS), label: t`Integrations` },
+      { href: getInternalUrl(currentApp, blockchainId, PAGE_LEGAL), label: t`Legal` },
+      { href: getInternalUrl(currentApp, blockchainId, PAGE_INTEGRATIONS), label: t`Integrations` },
       { href: EXTERNAL_LINKS.brand.assets, label: t`Branding` },
       ...notFalsy(isChinese() && { href: EXTERNAL_LINKS.curve.chinese.wiki, label: t`Wiki` }),
     ],

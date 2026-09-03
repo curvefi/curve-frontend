@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { Fragment, useMemo, useState } from 'react'
-import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { getChainName, isChainConfigured, isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
@@ -47,18 +47,18 @@ export function ChainList({
   const groupedOptions = useMemo(
     () =>
       lodash.groupBy(
-        options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
+        options.filter(o => getChainName(o.chainId).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
         o =>
-          o.isTestnet
+          isChainTestnet(o.chainId)
             ? ChainType.test
-            : o.isLite || (tvls && tvls[o.id] === undefined) // flag chains not supported by prices API as lite
+            : o.isLite || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
               ? ChainType.lite
               : ChainType.main,
       ) as Record<ChainType, NetworkDef[]>,
     [options, searchValue, tvls],
   )
 
-  const missingWagmiChains = options.filter(({ isTestnet, chainId }) => !isTestnet && !wagmiChainsMap[chainId])
+  const missingWagmiChains = options.filter(({ chainId }) => !isChainTestnet(chainId) && !isChainConfigured(chainId))
 
   return (
     <>
@@ -66,7 +66,7 @@ export function ChainList({
         <Alert variant="filled" severity="error" data-testid="missing-wagmi-chain">
           <AlertTitle>{t`Missing wagmi chains`}</AlertTitle>
           {t`Missing wagmi chain configs in chains.ts for: `}
-          {missingWagmiChains.map(({ id }) => id).join(', ')}
+          {missingWagmiChains.map(({ blockchainId: id }) => id).join(', ')}
         </Alert>
       )}
       <SearchField
@@ -85,15 +85,15 @@ export function ChainList({
                 <MenuList>
                   {groupedOptions[key]?.map(network => (
                     <MenuItem<string, typeof Link>
-                      data-testid={`menu-item-chain-${network.id}`}
-                      key={network.id}
-                      value={network.id}
+                      data-testid={`menu-item-chain-${network.blockchainId}`}
+                      key={network.blockchainId}
+                      value={network.blockchainId}
                       component={Link}
                       // navigate to app root to avoid deep-linking to non-existing resources across chains
-                      href={getInternalUrl(getCurrentApp(pathname), network.id)}
-                      isSelected={network.id == selectedNetworkId}
-                      icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
-                      label={network.name}
+                      href={getInternalUrl(getCurrentApp(pathname), network.blockchainId)}
+                      isSelected={network.blockchainId == selectedNetworkId}
+                      icon={<ChainSwitcherIcon blockchainId={network.blockchainId} size={36} />}
+                      label={getChainName(network.chainId)}
                       onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
                       isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
                     />

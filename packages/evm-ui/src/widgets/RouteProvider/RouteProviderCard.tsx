@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import type { RouteQuery } from '@evm-ui/entities/router-api'
+import { getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { useEstimateGasValue } from '@evm-ui/lib/model/entities/gas-info'
 import { FireIcon } from '@evm-ui/shared/icons/FireIcon'
@@ -15,7 +16,6 @@ import type { QueryProp } from '@evm-ui/types/util'
 import { formatNumber, fromWei, PLACEHOLDER, PLACEHOLDER_USD } from '@evm-ui/utils'
 import { RouteComparisonChip } from '@evm-ui/widgets/RouteProvider/RouteComparisonChip'
 import { RouteProviderIcons, RouteProviderLabels } from '@evm-ui/widgets/RouteProvider/RouteProviders'
-import type { BaseConfig } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -33,7 +33,6 @@ export type RouteProviderCardProps = {
   bestOutputAmount: Decimal | undefined
   router: RouteProvider
   onSelect: (provider: RouteProvider) => void
-  networks: Record<number, BaseConfig>
   chainId: number
 }
 
@@ -45,12 +44,11 @@ export const RouteProviderCard = ({
   onSelect,
   router,
   chainId,
-  networks,
 }: RouteProviderCardProps) => {
   const out = maybes([route, decimals], ({ amountOut }, decimals) => fromWei(amountOut[0], decimals))
-  const { data: gasEstimate } = useEstimateGasValue(networks, chainId, route?.gas)
+  const { data: gasEstimate } = useEstimateGasValue(chainId, route?.gas)
   const Icon = RouteProviderIcons[router]
-  const disabledTooltip = t`${RouteProviderLabels[router]} is unavailable on ${networks[chainId].name}.`
+  const disabledTooltip = t`${RouteProviderLabels[router]} is unavailable on ${getChainName(chainId)}.`
   const onClick = useCallback(() => (enabled ? onSelect(router) : undefined), [onSelect, router, enabled])
   return (
     <WithWrapper shouldWrap={!enabled} Wrapper={Tooltip} title={disabledTooltip}>
