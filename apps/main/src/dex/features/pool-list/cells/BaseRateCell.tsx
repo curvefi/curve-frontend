@@ -8,37 +8,30 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import type { PoolRow } from '../types'
-import { formatCellValue, getBaseApy, isVolatileApy } from './utils'
+import { formatCellValue, getBaseApr, isVolatileRate } from './utils'
 
 const BaseRateTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: boolean }) => {
-  const dailyApy = getBaseApy(pool, 'daily')
-  const weeklyApy = getBaseApy(pool, 'weekly')
-  const apy = weekly ? weeklyApy : dailyApy
-  const volatile = isVolatileApy(apy)
-  const hasTooltip = apy != null && !volatile
+  const dailyApr = getBaseApr(pool, 'daily')
+  const weeklyApr = getBaseApr(pool, 'weekly')
+  const apr = weekly ? weeklyApr : dailyApr
+  const volatile = isVolatileRate(apr)
+  const hasTooltip = apr != null && !volatile
 
   return (
-    <Box
-      data-testid={weekly ? 'pool-weekly-base-apy-value' : 'pool-base-apy-value'}
-      sx={{ display: 'flex', justifyContent: 'end' }}
-    >
+    <Box sx={{ display: 'flex', justifyContent: 'end' }}>
       <WithWrapper
         shouldWrap={hasTooltip}
         Wrapper={Tooltip}
         clickable
-        title={weekly ? t`Weekly Base APY` : t`Base APY`}
-        body={<BaseRateTooltipContent dailyApy={dailyApy} weeklyApy={weeklyApy} weekly={weekly} />}
+        title={weekly ? t`Weekly Base APR` : t`Base APR`}
+        body={<BaseRateTooltipContent dailyApy={dailyApr} weeklyApy={weeklyApr} weekly={weekly} />}
         placement="top"
       >
-        <Box
-          component="span"
-          data-testid={!weekly && hasTooltip ? 'pool-base-apy-tooltip-trigger' : undefined}
-          sx={{ display: 'inline-flex' }}
-        >
+        <Box component="span" sx={{ display: 'inline-flex' }}>
           {volatile ? (
             <ChipVolatileBaseApy />
           ) : (
-            <Typography variant="tableCellMBold">{formatCellValue(apy, 'percent.rate')}</Typography>
+            <Typography variant="tableCellMBold">{formatCellValue(apr, 'percent.rate')}</Typography>
           )}
         </Box>
       </WithWrapper>

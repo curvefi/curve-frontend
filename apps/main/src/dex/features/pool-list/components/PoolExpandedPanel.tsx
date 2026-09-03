@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
 import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { RewardIcons } from '../cells/RewardIcons'
-import { getBaseApy, getNetApy, isVolatileApy } from '../cells/utils'
+import { getBaseApr, getNetApy, isVolatileRate } from '../cells/utils'
 import { POOL_TITLES, PoolColumnId } from '../columns'
 import type { PoolColumnVariant } from '../hooks/usePoolsVisibility'
 import type { PoolRow } from '../types'
@@ -76,9 +76,9 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
 export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
   const pool = row.original
   const currentDate = useCurrentDate()
-  const baseApy = getBaseApy(pool, 'daily')
+  const baseApr = getBaseApr(pool, 'daily')
   const netApy = getNetApy(pool)
-  const volatileBaseApy = isVolatileApy(baseApy)
+  const volatileBaseApr = isVolatileRate(baseApr)
 
   return (
     <Grid container spacing={Spacing.md}>
@@ -87,11 +87,11 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
           category={PRIMARY_METRIC_CATEGORY}
           label={POOL_TITLES[PoolColumnId.NetApy]}
           value={netApy || null}
-          valueOptions={getRateValueOptions(netApy, { volatile: volatileBaseApy })}
+          valueOptions={getRateValueOptions(netApy, { volatile: volatileBaseApr })}
           valueTooltip={
             netApy
               ? {
-                  body: <NetRateTooltipContent pool={pool} volatile={volatileBaseApy} />,
+                  body: <NetRateTooltipContent pool={pool} volatile={volatileBaseApr} />,
                   clickable: true,
                   placement: 'top',
                   title: t`Net APY`,

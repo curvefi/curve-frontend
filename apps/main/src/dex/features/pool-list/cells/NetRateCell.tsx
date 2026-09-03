@@ -9,13 +9,13 @@ import Typography from '@mui/material/Typography'
 import type { PoolRow } from '../types'
 import { NetRateTooltipContent } from './NetRateTooltipContent'
 import { RewardIcons } from './RewardIcons'
-import { formatCellValue, getNetApy, isVolatileApy } from './utils'
+import { formatCellValue, getNetApy, isVolatileRate } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
 export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
   const netApy = getNetApy(pool)
-  const volatile = isVolatileApy(netApy)
+  const volatile = isVolatileRate(netApy)
 
   return (
     <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>

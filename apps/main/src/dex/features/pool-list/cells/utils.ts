@@ -1,5 +1,5 @@
 import { sum } from 'lodash'
-import { LARGE_APY } from '@/dex/constants'
+import { LARGE_RATE } from '@/dex/constants'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { t } from '@evm-ui/lib/i18n'
 import { aprToApy, AVERAGE_CATEGORIES, formatNumber, type NumberFormatCategory } from '@evm-ui/utils'
@@ -20,9 +20,9 @@ export const formatCellValue = (value: Amount | MissingAmount, category: NumberF
   formatNumber(value != null && value !== '' && Number(value) === 0 ? null : value, category)
 
 export const aprToPoolApy = (apr: Parameters<typeof aprToApy>[0]) => aprToApy(apr, COMPOUND_WINDOW)
-export const getBaseApy = (pool: PoolRow, period: 'daily' | 'weekly') =>
-  aprToPoolApy(period === 'daily' ? pool.baseDailyApr : pool.baseWeeklyApr)
-export const isVolatileApy = (apy: ReturnType<typeof aprToPoolApy>) => apy != null && apy > LARGE_APY
+export const getBaseApr = (pool: PoolRow, period: 'daily' | 'weekly') =>
+  period === 'daily' ? pool.baseDailyApr : pool.baseWeeklyApr
+export const isVolatileRate = (rate: number | null | undefined) => rate != null && rate > LARGE_RATE
 export const getCrvAprDescription = () =>
   t`CRV LP reward APR (max APR can be reached with max boost of ${MAX_CRV_BOOST})`
 

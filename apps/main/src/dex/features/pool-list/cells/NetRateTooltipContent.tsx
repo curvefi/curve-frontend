@@ -12,7 +12,7 @@ import type { PoolRow } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './RateTooltipItems'
 import {
   getAprCampaigns,
-  getBaseApy,
+  getBaseApr,
   getCrvAprRange,
   getExtraRewards,
   getNetApy,
@@ -60,7 +60,7 @@ export const NetRateIncentivesTooltipItems = ({
 )
 
 export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
-  const baseApy = getBaseApy(pool, 'daily')
+  const baseApr = getBaseApr(pool, 'daily')
   const netApy = getNetApy(pool)
   const crvAprRange = pool.gauge && !pool.gauge.isKilled ? getCrvAprRange(pool) : null
   const maxNetApy = crvAprRange ? netApy - crvAprRange.unboostedApr + crvAprRange.boostedApr : null
@@ -70,11 +70,11 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Estimated net annualized yield from Base APY, unboosted CRV gauge APY, and various reward APYs.`}
+        text={t`Estimated net yield from Base APR, unboosted CRV gauge APR, and various reward APRs.`}
       />
       <Stack>
         <TooltipItems secondary>
-          <TooltipItem title={t`Base APY`}>{formatNumber(baseApy, 'percent.rate')}</TooltipItem>
+          <TooltipItem title={t`Base APR`}>{formatNumber(baseApr, 'percent.rate')}</TooltipItem>
         </TooltipItems>
         {incentiveItems && <NetRateIncentivesTooltipItems items={incentiveItems} blockchainId={pool.blockchainId} />}
         <TooltipItems borderTop>
