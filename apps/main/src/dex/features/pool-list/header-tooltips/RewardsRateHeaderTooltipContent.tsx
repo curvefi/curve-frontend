@@ -3,7 +3,7 @@ import { TooltipDescription, TooltipWrapper } from '@evm-ui/shared/ui/TooltipCom
 
 export const RewardsRateHeaderTooltipContent = () => (
   <TooltipWrapper>
-    <TooltipDescription text={t`Annualized yield from extra token rewards and APR campaigns.`} />
+    <TooltipDescription text={t`Yield from extra token rewards and APR campaigns.`} />
     <TooltipDescription text={t`Points-only campaigns are shown separately and are not included.`} />
   </TooltipWrapper>
 )
