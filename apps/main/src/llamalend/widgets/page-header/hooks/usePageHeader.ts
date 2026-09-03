@@ -273,7 +273,7 @@ function useCampaigns({
   return marketType === MarketType.Lend ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
 }
 
-export const usePageHeader = () => {
+export const usePageHeaderRates = () => {
   const { chainId, blockchainId, market, marketQuery, apiMarket, marketType } = useMarketContext()
   const vaultAddress = getVaultAddress(market, apiMarket.data)
   const controllerAddress = getControllerAddress(market, apiMarket.data)
@@ -302,11 +302,20 @@ export const usePageHeader = () => {
       blockchainId,
       campaigns,
     }),
+  }
+}
+
+export const usePageHeader = () => {
+  const { chainId, marketQuery, apiMarket } = useMarketContext()
+
+  return {
+    ...usePageHeaderRates(),
     availableLiquidity: useAvailableLiquidity({ chainId, marketQuery, apiMarket }),
   }
 }
 
-type UsePageHeaderResult = ReturnType<typeof usePageHeader>
-export type BorrowRate = NonNullable<UsePageHeaderResult['borrowRate']['data']>
+type UsePageHeaderRatesResult = ReturnType<typeof usePageHeaderRates>
+export type BorrowRate = NonNullable<UsePageHeaderRatesResult['borrowRate']['data']>
 export type SupplyRate = ReturnType<typeof buildSupplyRate>
+type UsePageHeaderResult = ReturnType<typeof usePageHeader>
 export type AvailableLiquidity = UsePageHeaderResult['availableLiquidity']
