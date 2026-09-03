@@ -84,7 +84,7 @@ const config = [
       'import-x/resolver': {
         typescript: { alwaysTryTypes: true, project: ['./tsconfig.json'] },
       },
-      'import-x/internal-regex': '^@(legacy-ui|evm-ui|curvefi/prices-api|external-rewards)',
+      'import-x/internal-regex': '^@(ui|legacy-ui|evm-ui|curvefi/prices-api|external-rewards)',
     },
     rules: {
       'local/use-maybe-pattern': 'error',

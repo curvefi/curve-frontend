@@ -22,6 +22,29 @@ const flatten = <ColumnIds extends string>(visibilitySettings: VisibilityGroup<C
     {},
   )
 
+/** Preserve stored visibility choices for migrations. An optional resolver allows for migration-specific behavior. */
+export const preserveVisibilityChoices = <ColumnIds extends string>(
+  storedGroups: VisibilityGroup<ColumnIds>[] | undefined,
+  currentGroups: VisibilityGroup<ColumnIds>[],
+  resolveActive: (
+    preservedActive: boolean,
+    currentOption: VisibilityGroup<ColumnIds>['options'][number],
+  ) => boolean = preservedActive => preservedActive,
+): VisibilityGroup<ColumnIds>[] => {
+  const storedOptions = storedGroups?.flatMap(group => group.options) ?? []
+
+  return currentGroups.map(group => ({
+    ...group,
+    options: group.options.map(option => ({
+      ...option,
+      active: resolveActive(
+        storedOptions.find(storedOption => isEqual(storedOption.columns, option.columns))?.active ?? option.active,
+        option,
+      ),
+    })),
+  }))
+}
+
 /**
  * Hook to manage column and feature visibility settings. Currently saved in the state.
  *

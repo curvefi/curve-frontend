@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@ui": ["../../packages/ui/src/index.ts"],
+      "@ui/*": ["../../packages/ui/src/*"],
+      "@primitives/*": ["../../packages/primitives/src/*"]
+    }
+  },
+  "include": ["src", "../../packages/ui/src/**/*.d.ts"]
+}

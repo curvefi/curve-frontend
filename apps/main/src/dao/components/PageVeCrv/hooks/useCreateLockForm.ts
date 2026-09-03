@@ -2,24 +2,26 @@ import { useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useCreateLockMutation } from '@/dao/components/PageVeCrv/mutations/create-lock.mutation'
 import { useCreateLockIsApproved } from '@/dao/components/PageVeCrv/queries/create-lock-approved.query'
-import { useCreateLockGasEstimate } from '@/dao/components/PageVeCrv/queries/create-lock-estimate-gas.query'
 import type { CreateLockFormValues } from '@/dao/components/PageVeCrv/queries/create-lock.types'
 import { createLockFormValidationSuite } from '@/dao/components/PageVeCrv/queries/create-lock.validation'
 import {
   calcUnlockTime,
+  calculateVeCrv,
   getCreateLockDates,
   getCreateQuickDateUpdate,
+  getDateValueTimestamp,
   getEffectiveUnlockDateLabel,
   getUnlockDateUpdate,
 } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
 import { invalidateVeCrvQueries, useLockerCrv } from '@/dao/entities/locker-vecrv-info'
-import { networks } from '@/dao/networks'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { dayjs } from '@evm-ui/lib/dayjs'
+import { constQ } from '@evm-ui/types/util'
 import type { DateValue } from '@internationalized/date'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 
 const defaultValues: CreateLockFormValues = {
   lockedAmount: undefined,
@@ -43,7 +45,6 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     userDefaultValues,
   )
   const isApproved = useCreateLockIsApproved(params)
-  const gas = useCreateLockGasEstimate(networks, params)
   useFormSync(form, { maxLockedAmount: crv.data })
 
   const { currentUtcDate, currentUtcDay, minUtcDate, maxUtcDate } = getCreateLockDates(useCurrentDate())
@@ -68,19 +69,25 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
 
   return {
     form,
+    params,
     values,
     currentUtcDate,
     minUtcDate,
     maxUtcDate,
+    futureVeCrv: constQ(
+      calculateVeCrv({
+        lockedAmount: values.lockedAmount,
+        unlockTime: maybe(values.utcDate, getDateValueTimestamp),
+      }),
+    ),
     effectiveUnlockDateLabel: getEffectiveUnlockDateLabel({
       selectedDate: values.utcDate,
       unlockTime: calcUnlockTime({ days: values.days, unlockTime: undefined }),
     }),
-    gas,
     isApproved: isApproved.data,
     isPending,
     isDisabled: !form.formState.isValid || isPending || isDebouncing,
-    error: createError ?? isApproved.error ?? gas.error,
+    error: createError ?? isApproved.error,
     onSubmit: form.handleSubmit(onSubmitCreate),
     updateAmount: (lockedAmount: Decimal | undefined) => update({ lockedAmount }),
     updateUnlockDate,

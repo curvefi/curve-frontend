@@ -4909,7 +4909,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-router@npm:1.170.32":
+"@tanstack/react-router@npm:*, @tanstack/react-router@npm:1.170.32":
   version: 1.170.32
   resolution: "@tanstack/react-router@npm:1.170.32"
   dependencies:
@@ -10578,6 +10578,7 @@ __metadata:
     memoizee: "npm:0.4.17"
     pinst: "npm:3.0.0"
     typescript: "npm:*"
+    ui: "npm:*"
     vest: "npm:5.4.6"
     vite: "npm:*"
     vite-plugin-svgr: "npm:*"
@@ -12787,6 +12788,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"stellar@workspace:apps/stellar":
+  version: 0.0.0-use.local
+  resolution: "stellar@workspace:apps/stellar"
+  dependencies:
+    "@sentry/vite-plugin": "npm:5.4.0"
+    "@tanstack/react-router": "npm:*"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
+    "@vitejs/plugin-react": "npm:*"
+    eslint: "npm:*"
+    typescript: "npm:*"
+    ui: "npm:*"
+    vite: "npm:*"
+    vite-plugin-svgr: "npm:*"
+    vite-plugin-vercel: "npm:9.1.1"
+  peerDependencies:
+    "@curvefi/primitives": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
 "storybook@npm:10.5.5":
   version: 10.5.5
   resolution: "storybook@npm:10.5.5"
@@ -13385,6 +13408,21 @@ __metadata:
   checksum: 10c0/bf0e4ebff99e54da1b9c7182ac2f40475988b41faa881d579bc97bc2a0509672107b0a0e94c4b8d31a0ab8c4bf07f4aa0b469ac6da8536d56bda5b085ea2e953
   languageName: node
   linkType: hard
+
+"ui@npm:*, ui@workspace:packages/ui":
+  version: 0.0.0-use.local
+  resolution: "ui@workspace:packages/ui"
+  dependencies:
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
+    eslint: "npm:*"
+    typescript: "npm:*"
+  peerDependencies:
+    "@curvefi/primitives": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
 
 "uint8arrays@npm:3.1.1, uint8arrays@npm:^3.0.0":
   version: 3.1.1

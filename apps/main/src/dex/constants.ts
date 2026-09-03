@@ -16,16 +16,12 @@ export const ROUTE = {
   PAGE_LOCKER_CREATE: '/create',
   PAGE_LOCKER_ADJUST_CRV: '/adjust_crv',
   PAGE_LOCKER_ADJUST_DATE: '/adjust_date',
-  PAGE_POOL_DEPOSIT: '/deposit',
-  PAGE_POOL_WITHDRAW: '/withdraw',
-  PAGE_POOL_MANAGE: '/manage-gauge',
 } as const
 
 export const DEFAULT_NETWORK_CONFIG = {
   useApi: true, // default to true when calling fetchPools
   isLite: false,
   isActiveNetwork: true,
-  missingPools: [],
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
   poolIsWrappedOnly: {}, // show only wrapped pool data
   swap: { fromAddress: '', toAddress: '' },

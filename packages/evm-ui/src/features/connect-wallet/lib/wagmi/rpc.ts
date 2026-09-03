@@ -13,7 +13,7 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.Base]: ['https://base-rpc.publicnode.com'],
   [ChainId.Bsc]: ['https://rpc.nodeflare.app/bnb/public'],
   [ChainId.Celo]: ['https://forno.celo.org'],
-  [ChainId.Fantom]: ['https://250.rpc.thirdweb.com'],
+  [ChainId.Fantom]: ['https://250.rpc.thirdweb.com', 'https://rpc.ftm.tools/'],
   [ChainId.Fraxtal]: ['https://rpc.frax.com'],
   [ChainId.Gnosis]: ['https://rpc.gnosischain.com'],
   [ChainId.Kava]: ['https://evm.kava.io'],

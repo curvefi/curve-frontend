@@ -22,11 +22,5 @@
   "files": [
     "dist",
     "src"
-  ],
-  "exports": {
-    "./*": {
-      "types": "./src/*.ts",
-      "default": "./src/*.ts"
-    }
-  }
+  ]
 }

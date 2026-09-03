@@ -12,6 +12,7 @@ export default defineConfig({
       '@': resolve(__dirname, '../../apps/main/src'),
       '@legacy-ui': resolve(__dirname, '../legacy-ui/src'),
       '@evm-ui': resolve(__dirname, './src'),
+      '@ui': resolve(__dirname, '../ui/src'),
       '@external-rewards': resolve(__dirname, '../external-rewards/src/index.ts'),
       '@curvefi/prices-api': resolve(__dirname, '../prices-api/src'),
       '@primitives': resolve(__dirname, '../primitives/src'),

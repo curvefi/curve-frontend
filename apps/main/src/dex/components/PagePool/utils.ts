@@ -1,7 +1,9 @@
-import type { EstimatedGas, Slippage } from '@/dex/components/PagePool/types'
+import type { EstimatedGas, Slippage, TransferTabsParams } from '@/dex/components/PagePool/types'
+import type { PoolAlert } from '@/dex/types/main.types'
 import { PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import type { IDict } from '@curvefi/api/lib/interfaces'
+import { t } from '@evm-ui/lib/i18n'
 import type { SlippageType } from '@evm-ui/widgets/SlippageSettings'
 import { maybe } from '@primitives/objects.utils'
 
@@ -47,3 +49,15 @@ export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGa
 
 export const getSlippageType = <T extends PoolData | undefined>(poolData: T) =>
   maybe(poolData, ({ pool }): SlippageType => (pool.isCrypto ? 'crypto' : 'stable'))
+
+const GAUGE_KILLED_ALERT: PoolAlert = { alertType: 'warning', message: t`Staking is disabled due to inactive Gauge.` }
+
+export const getDepositTabAlert = ({ poolAlert }: TransferTabsParams) => poolAlert?.isDisableDeposit && poolAlert
+
+export const getStakeTabAlert = (props: TransferTabsParams) =>
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  getDepositTabAlert(props) || (props.poolDataCacheOrApi.gauge.isKilled && GAUGE_KILLED_ALERT)
+
+export const getWithdrawTabAlert = ({ poolAlert }: TransferTabsParams) => poolAlert?.isDisableWithdrawOnly && poolAlert
+
+export const getSwapTabAlert = ({ poolAlert }: TransferTabsParams) => poolAlert?.isDisableSwap && poolAlert

@@ -5,6 +5,8 @@
       "@legacy-ui": ["../legacy-ui/src/index.ts"],
       "@legacy-ui/*": ["../legacy-ui/src/*"],
       "@evm-ui/*": ["./src/*"],
+      "@ui": ["../ui/src/index.ts"],
+      "@ui/*": ["../ui/src/*"],
       "@external-rewards": ["../external-rewards/src/index.ts"],
       "@external-rewards/*": ["../external-rewards/src/*"],
       "@curvefi/prices-api": ["../prices-api/src/index.ts"],

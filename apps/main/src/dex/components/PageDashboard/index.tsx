@@ -105,7 +105,7 @@ export const Dashboard = ({
   const updatePath = useCallback(
     (poolId: string) => {
       const encodePoolId = encodeURIComponent(poolId)
-      push(getPath(params, `${ROUTE.PAGE_POOLS}/${encodePoolId}${ROUTE.PAGE_POOL_DEPOSIT}`))
+      push(getPath(params, `${ROUTE.PAGE_POOLS}/${encodePoolId}`))
     },
     [push, params],
   )
@@ -184,7 +184,7 @@ export const Dashboard = ({
           </tbody>
         </StyledTable>
       </TableWrapper>
-      <ClassicPoolsOnlyDescription />
+      <ClassicPoolsOnlyDescription chainId={rChainId} />
     </DashboardContextProvider>
   )
 }

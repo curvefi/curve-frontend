@@ -2,14 +2,21 @@ import { useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useIncreaseLockMutation } from '@/dao/components/PageVeCrv/mutations/increase-lock.mutation'
 import { useIncreaseLockIsApproved } from '@/dao/components/PageVeCrv/queries/increase-lock-approved.query'
-import { useIncreaseLockGasEstimate } from '@/dao/components/PageVeCrv/queries/increase-lock-estimate-gas.query'
 import type { IncreaseLockFormValues } from '@/dao/components/PageVeCrv/queries/increase-lock.types'
 import { increaseLockFormValidationSuite } from '@/dao/components/PageVeCrv/queries/increase-lock.validation'
-import { invalidateVeCrvQueries, useLockerCrv } from '@/dao/entities/locker-vecrv-info'
-import { networks } from '@/dao/networks'
+import {
+  invalidateVeCrvQueries,
+  useLockerCrv,
+  useLockerLockedAmountAndUnlockTime,
+  useLockerVeCrv,
+} from '@/dao/entities/locker-vecrv-info'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
+import { mapQuery } from '@evm-ui/types/util'
+import { MILLISECONDS_PER_SECOND, decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
+import { calculateVeCrv } from '../utils/vecrv-calculations'
 
 const defaultValues: IncreaseLockFormValues = { lockedAmount: undefined, maxLockedAmount: undefined }
 const userDefaultValues = { lockedAmount: undefined }
@@ -20,6 +27,8 @@ export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
   const values = form.watchValues()
   const { address: userAddress } = useConnection()
   const crv = useLockerCrv({ chainId, userAddress })
+  const currentLock = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })
+  const currentVeCrv = useLockerVeCrv({ chainId, userAddress })
 
   useFormSync(form, { maxLockedAmount: crv.data })
   const [params, isDebouncing] = useFormDebounce(
@@ -30,7 +39,6 @@ export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
     userDefaultValues,
   )
   const isApproved = useIncreaseLockIsApproved(params)
-  const gas = useIncreaseLockGasEstimate(networks, params)
 
   const {
     onSubmit: onSubmitIncrease,
@@ -46,14 +54,21 @@ export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
     ),
   })
 
-  const error = increaseError ?? isApproved.error ?? gas.error
+  const error = increaseError ?? isApproved.error
   const isPending = isIncreasing
   const isDisabled = !form.formState.isValid || isPending || isDebouncing
 
   return {
     form,
+    params,
     values,
-    gas,
+    currentVeCrv,
+    futureVeCrv: mapQuery(currentLock, ({ lockedAmount, unlockTime }) =>
+      calculateVeCrv({
+        lockedAmount: maybes([values.lockedAmount, lockedAmount], decimalSum),
+        unlockTime: Math.floor(unlockTime / MILLISECONDS_PER_SECOND),
+      }),
+    ),
     isApproved: isApproved.data,
     isPending,
     isDisabled,
