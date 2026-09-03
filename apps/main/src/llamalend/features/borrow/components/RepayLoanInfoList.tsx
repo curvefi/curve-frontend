@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayFutureLeverage } from '@/llamalend/queries/repay/repay-future-leverage.query'
@@ -15,7 +14,6 @@ import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import type { MarketType } from '@evm-ui/types/market'
@@ -81,13 +79,12 @@ function useReturnToWallet(
   return enabled ? { data, ...combineQueryState(userBorrowed, userState) } : undefined
 }
 
-export function RepayLoanInfoList<ChainId extends IChainId>({
+export function RepayLoanInfoList({
   controllerAddress,
   marketType,
   params,
   values: { stateCollateral, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
-  networks,
   showLeverage,
   form,
   prices,
@@ -98,7 +95,6 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   params: RepayParams
   values: RepayFormData
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
-  networks: NetworkDict<ChainId>
   showLeverage: boolean | undefined
   form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>
@@ -117,7 +113,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
-      gas={q(useRepayEstimateGas(networks, params, isOpen))}
+      gas={q(useRepayEstimateGas(params, isOpen))}
       health={q(useHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={prices}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}

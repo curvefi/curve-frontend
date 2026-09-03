@@ -46,7 +46,7 @@ export const TokenOption = ({
       <Tooltip title={disabled && 'This token is not available because of'} body={disabledReason} placement="top">
         <MenuItem
           ref={menuItemRef}
-          data-testid={`token-option-${symbol ?? address}`}
+          data-testid={`token-option-${address.toLowerCase()}`}
           // disabled={disabled} breaks `cursor: 'not-allowed'`
           onClick={disabled ? undefined : onToken}
           tabIndex={0}

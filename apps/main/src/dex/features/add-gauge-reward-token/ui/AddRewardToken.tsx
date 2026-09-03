@@ -4,7 +4,6 @@ import { useAddRewardTokenEstimateGas } from '@/dex/entities/gauge/model/gauge-g
 import { gaugeAddRewardValidationGroup } from '@/dex/entities/gauge/model/gauge-validation'
 import { useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge/model/gauge.query'
 import type { AddRewardParams } from '@/dex/entities/gauge/types'
-import { useNetworks } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { DistributorInput, TokenSelector } from '@/dex/features/add-gauge-reward-token/ui'
 import { ChainId } from '@/dex/types/main.types'
@@ -23,7 +22,6 @@ const { Spacing } = SizesAndSpaces
 const validation = createValidationSuite((data: AddRewardParams) => gaugeAddRewardValidationGroup(data))
 
 export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
-  const { data: networks } = useNetworks()
   const { address: userAddress } = useConnection()
   const { isLoading: isLoadingDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
   const { data: isRewardsAvailable, isLoading: isLoadingRewards } = useIsDepositRewardAvailable({ chainId, poolId })
@@ -37,7 +35,7 @@ export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: 
 
   useFormSync(form, { distributorId: userAddress }, !!userAddress && !form.isTouched('distributorId'))
 
-  const gas = useAddRewardTokenEstimateGas(networks, { chainId, poolId, ...form.watchValues() }, isValid)
+  const gas = useAddRewardTokenEstimateGas({ chainId, poolId, ...form.watchValues() }, isValid)
 
   const {
     onSubmit,

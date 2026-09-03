@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
@@ -26,7 +25,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   values: { userCollateral },
   collateralToken,
   borrowToken,
-  networks,
   form,
   controllerAddress,
   marketType,
@@ -35,7 +33,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   values: CollateralForm
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  networks: NetworkDict<ChainId>
   form: UseFormReturn<CollateralForm>
   controllerAddress: Address | undefined
   marketType: MarketType
@@ -46,7 +43,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
-      gas={q(useAddCollateralEstimateGas(networks, params, isOpen))}
+      gas={q(useAddCollateralEstimateGas(params, isOpen))}
       health={q(useHealthQueries(isFull => getAddCollateralHealthOptions({ ...params, isFull }, isOpen)))}
       debt={prevDebt}
       loanToValue={q(

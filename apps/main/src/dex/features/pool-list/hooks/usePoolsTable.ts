@@ -138,7 +138,7 @@ export const usePoolsTable = ({
   sortBy: PoolSortField
   sortDirection: PoolSortDirection
 }) => {
-  const { chainId, id: blockchainId, isLite } = network
+  const { chainId, blockchainId, isLite } = network
 
   /** Network support */
   const litePoolChainsQuery = useLitePoolChains({}, isLite)

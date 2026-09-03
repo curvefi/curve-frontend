@@ -98,7 +98,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           values={values}
           collateralToken={collateralToken}
           borrowToken={borrowToken}
-          networks={networks}
         />
       }
       data-testid="create-loan-form"
@@ -107,7 +106,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         <LoanFormTokenInput
           label={t`Collateral`}
           token={collateralToken}
-          blockchainId={network.id}
+          blockchainId={network.blockchainId}
           name="userCollateral"
           form={form}
           max={{ ...q(maxCollateral), fieldName: 'maxCollateral' }}
@@ -117,7 +116,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         <LoanFormTokenInput
           label={t`Borrow`}
           token={borrowToken}
-          blockchainId={network.id}
+          blockchainId={network.blockchainId}
           name="debt"
           form={form}
           max={{ ...maxDebtBalance, fieldName: 'maxDebt', onMax }}

@@ -3,7 +3,6 @@ import { Countdown } from '@/dao/components/Countdown'
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useWithdrawLockForm } from '@/dao/components/PageVeCrv/hooks/useWithdrawLockForm'
 import { useWithdrawLockGasEstimate } from '@/dao/components/PageVeCrv/queries/withdraw-lock-estimate-gas.query'
-import { networks } from '@/dao/networks'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
@@ -23,7 +22,7 @@ export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
     <Form
       {...form}
       onSubmit={onSubmit}
-      footer={<VeCrvActionInfo gas={q(useWithdrawLockGasEstimate(networks, params, isOpen))} isOpen={isOpen} />}
+      footer={<VeCrvActionInfo gas={q(useWithdrawLockGasEstimate(params, isOpen))} isOpen={isOpen} />}
     >
       <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">

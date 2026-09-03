@@ -18,11 +18,11 @@ const Llama = styled('img')({
 })
 
 type FooterProps = {
-  networkId: string
+  blockchainId: string
   appName: AppName
 }
 
-export const Footer = ({ appName, networkId }: FooterProps) => {
+export const Footer = ({ appName, blockchainId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const isTiny = useIsTiny()
   return (
@@ -61,7 +61,7 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
               desktop: 3,
             }}
           >
-            <Section {...section} networkId={networkId} appName={appName} isTiny={isTiny} />
+            <Section {...section} blockchainId={blockchainId} appName={appName} isTiny={isTiny} />
           </Grid>
         ))}
 

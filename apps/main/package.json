@@ -28,7 +28,7 @@
     "external-rewards": "*",
     "fuse.js": "7.5.0",
     "legacy-ui": "*",
-    "lightweight-charts": "5.2.0",
+    "lightweight-charts": "5.2.1",
     "memoizee": "0.4.17",
     "ui": "*",
     "vest": "5.4.6",
@@ -51,7 +51,7 @@
   "devDependencies": {
     "@curvefi/api": "*",
     "@sentry/vite-plugin": "5.4.0",
-    "@types/lodash": "4.17.24",
+    "@types/lodash": "4.17.25",
     "@types/memoizee": "0.4.12",
     "@types/node": "*",
     "@types/react": "*",

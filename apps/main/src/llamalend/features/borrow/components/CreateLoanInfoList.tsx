@@ -1,4 +1,3 @@
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -23,7 +22,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   values: { leverageEnabled, userCollateral, debt },
   collateralToken,
   borrowToken,
-  networks,
   form,
 }: {
   marketType: MarketType
@@ -32,7 +30,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   values: CreateLoanForm
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  networks: NetworkDict<ChainId>
   form: UseFormReturn<CreateLoanForm>
 }) => {
   const isOpen = form.isTouched('userCollateral', 'debt')
@@ -48,7 +45,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       loanToValue={q(useLoanToValue({ params, collateralToken, borrowToken }, isOpen))}
       prevLoanToValue={constQ('0')}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
-      gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
+      gas={q(useCreateLoanEstimateGas(params, isOpen))}
       leverageEnabled={leverageEnabled}
       prevCollateral={constQ('0')}
       debt={constQ(debt)}

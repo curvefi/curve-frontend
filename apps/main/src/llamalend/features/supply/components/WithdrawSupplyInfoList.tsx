@@ -1,4 +1,3 @@
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useWithdrawRemovableVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
 import { useWithdrawEstimateGas } from '@/llamalend/queries/supply/supply-withdraw-estimate-gas.query'
 import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
@@ -15,7 +14,6 @@ import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type WithdrawSupplyInfoListProps<ChainId extends IChainId> = {
   params: WithdrawParams<ChainId>
-  networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
   form: UseFormReturn<WithdrawForm>
   controllerAddress: Address | undefined
@@ -23,7 +21,6 @@ type WithdrawSupplyInfoListProps<ChainId extends IChainId> = {
 
 export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   params,
-  networks,
   tokens,
   form,
   controllerAddress,
@@ -55,7 +52,7 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
       supplyApy={mapQuery(rates, d => d.lendApy)}
       prevNetSupplyApy={prevNetSupplyApy}
       netSupplyApy={netSupplyApy}
-      gas={q(useWithdrawEstimateGas(networks, params, isOpen))}
+      gas={q(useWithdrawEstimateGas(params, isOpen))}
     />
   )
 }

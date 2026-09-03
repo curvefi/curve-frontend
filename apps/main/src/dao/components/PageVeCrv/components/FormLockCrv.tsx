@@ -2,7 +2,6 @@ import { FieldLockedAmount } from '@/dao/components/PageVeCrv/components/FieldLo
 import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActionInfo'
 import { useIncreaseLockForm } from '@/dao/components/PageVeCrv/hooks/useIncreaseLockForm'
 import { useIncreaseLockGasEstimate } from '@/dao/components/PageVeCrv/queries/increase-lock-estimate-gas.query'
-import { networks } from '@/dao/networks'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
@@ -37,7 +36,7 @@ export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
         <VeCrvActionInfo
           currentVeCrv={q(currentVeCrv)}
           futureVeCrv={futureVeCrv}
-          gas={q(useIncreaseLockGasEstimate(networks, params, isOpen))}
+          gas={q(useIncreaseLockGasEstimate(params, isOpen))}
           isApproved={isApproved}
           isOpen={isOpen}
         />

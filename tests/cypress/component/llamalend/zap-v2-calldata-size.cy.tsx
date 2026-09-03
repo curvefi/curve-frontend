@@ -44,7 +44,7 @@ describe('ZapV2 router calldata size', () => {
     })
 
     setLlamaApi(llamaApi)
-    setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+    setGasInfo({ chainId: CHAIN_ID })
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
         <CreateLoanForm networks={llamaNetworks} onPricesUpdated={cy.spy()} />
@@ -64,7 +64,7 @@ describe('ZapV2 router calldata size', () => {
     })
 
     setLlamaApi(llamaApi)
-    setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+    setGasInfo({ chainId: CHAIN_ID })
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
         <CreateLoanForm networks={llamaNetworks} onPricesUpdated={cy.spy()} />
@@ -86,7 +86,7 @@ describe('ZapV2 router calldata size', () => {
     })
 
     setLlamaApi(llamaApi)
-    setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+    setGasInfo({ chainId: CHAIN_ID })
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
         <BorrowMoreForm
@@ -111,7 +111,7 @@ describe('ZapV2 router calldata size', () => {
     const { collateralToken } = getTokens(market)
 
     setLlamaApi(llamaApi)
-    setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+    setGasInfo({ chainId: CHAIN_ID })
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
         <RepayForm

@@ -9,7 +9,7 @@ import Portal from '@mui/material/Portal'
 
 export const LendMarketSubNavMobile = () => {
   const isDesktop = useIsDesktop()
-  const { network: networkId } = useParams<UrlParams>()
+  const { network: blockchainId } = useParams<UrlParams>()
   const pathname = usePathname()
   const routes = useLlamalendMarketSubNavRoutes({ isMobile: true })
 
@@ -19,7 +19,7 @@ export const LendMarketSubNavMobile = () => {
       <Portal container={() => document.getElementsByTagName('header').item(0)}>
         <SubNav testId="lend-market-subnav">
           <PageTabsSwitcher
-            pages={routes.map(route => routeToPage(route, { networkId, pathname }))}
+            pages={routes.map(route => routeToPage(route, { blockchainId, pathname }))}
             overflow="fullWidth"
           />
         </SubNav>

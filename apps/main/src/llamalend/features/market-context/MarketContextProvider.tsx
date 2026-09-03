@@ -18,7 +18,7 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
   marketType,
 }: {
   children: ReactNode
-  network: { id: LlamaNetworkId; chainId: ChainId }
+  network: { blockchainId: LlamaNetworkId; chainId: ChainId }
   marketQuery: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
   marketType: MarketType
@@ -34,7 +34,7 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
         () =>
           createMarketContextValue({
             chainId: network.chainId,
-            blockchainId: network.id,
+            blockchainId: network.blockchainId,
             marketQuery: q({
               data: market,
               isLoading: isMarketLoading || (!market && !marketError && !!userAddress),
@@ -60,7 +60,7 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
           marketError,
           marketType,
           network.chainId,
-          network.id,
+          network.blockchainId,
           releaseChannel,
           userAddress,
         ],

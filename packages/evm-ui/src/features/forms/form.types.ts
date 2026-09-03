@@ -9,7 +9,7 @@ export type FieldPath<T extends FieldValues> = Path<T>
 type FieldPathValue<T extends FieldValues, TFieldPath extends FieldPath<T>> = PathValue<T, TFieldPath>
 export type ErrorKey<T extends FieldValues> = FieldPath<T> | 'root' | `root.serverError`
 export type FormErrors<T extends FieldValues = FieldValues> = PartialRecord<ErrorKey<T>, Error>
-export type PartialFields<T extends FieldValues> = PartialRecord<FieldPath<T>, true>
+export type PartialFields<T extends FieldValues> = PartialRecord<Extract<keyof T, string>, true>
 
 type FormState<T extends FieldValues> = {
   isSubmitting: boolean

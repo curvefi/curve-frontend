@@ -43,7 +43,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
 
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
   const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId })
-  const gas = useDepositRewardEstimateGas(networks, { chainId, poolId, rewardTokenId, amount, epoch, userBalance })
+  const gas = useDepositRewardEstimateGas({ chainId, poolId, rewardTokenId, amount, epoch, userBalance })
   const {
     onSubmit,
     error: depositRewardError,
@@ -78,7 +78,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
       }
     >
       <Stack sx={{ gap: Spacing.sm }}>
-        <AmountTokenInput chainId={chainId} poolId={poolId} networkId={network.id} disabled={isPending} />
+        <AmountTokenInput chainId={chainId} poolId={poolId} blockchainId={network.blockchainId} disabled={isPending} />
         <EpochInput disabled={isPending} />
         <FormButton
           pending={isPending}

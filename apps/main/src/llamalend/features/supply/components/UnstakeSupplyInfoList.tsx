@@ -1,4 +1,3 @@
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useUnstakeEstimateGas } from '@/llamalend/queries/supply/supply-unstake-estimate-gas.query'
 import type { UnstakeForm, UnstakeFormParams } from '@/llamalend/queries/validation/supply.validation'
 import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
@@ -14,7 +13,6 @@ import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type UnstakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: UnstakeFormParams<ChainId>
-  networks: NetworkDict<ChainId>
   borrowToken: Token | undefined
   form: UseFormReturn<UnstakeForm>
   controllerAddress: Address | undefined
@@ -22,7 +20,6 @@ type UnstakeSupplyInfoListProps<ChainId extends IChainId> = {
 
 export function UnstakeSupplyInfoList<ChainId extends IChainId>({
   params,
-  networks,
   borrowToken,
   form,
   controllerAddress,
@@ -46,7 +43,7 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
       suppliedAssets={mapQuery(userBalances, d => maybes([d.stakedSharesAmount, unstakeAssets], decimalMinus))}
       supplyApy={mapQuery(prevRates, d => d.lendApy)}
       netSupplyApy={prevNetSupplyApy}
-      gas={q(useUnstakeEstimateGas(networks, params, isOpen))}
+      gas={q(useUnstakeEstimateGas(params, isOpen))}
     />
   )
 }

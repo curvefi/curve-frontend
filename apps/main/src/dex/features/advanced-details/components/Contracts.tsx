@@ -28,8 +28,7 @@ export const Contracts = ({
   const gaugeIsKilled = !!poolDataCacheOrApi.gauge.isKilled
   const isSameAddress = isAddressEqual(poolAddress, lpTokenAddress)
 
-  const chain = network.networkId as BlockchainId
-  const { data: metadata } = usePoolMetadata({ chain, poolAddress })
+  const { data: metadata } = usePoolMetadata({ chain: network.blockchainId as BlockchainId, poolAddress })
   const oracles = notFalsy(
     ...(metadata?.assetTypes?.map((assetType, index) => {
       const oracleAddress = metadata.oracles?.[index]?.oracleAddress

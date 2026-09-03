@@ -46,7 +46,7 @@ const mountResetPositionForm = ({
   market,
 }: Pick<ReturnType<typeof createResetPositionScenario>, 'llamaApi' | 'market'>) => {
   setLlamaApi(llamaApi)
-  setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+  setGasInfo({ chainId: CHAIN_ID })
   cy.mount(
     <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
       <ResetPositionForm networks={llamaNetworks} />
@@ -66,7 +66,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         })
 
         setLlamaApi(llamaApi)
-        setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+        setGasInfo({ chainId: CHAIN_ID })
         seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: borrow })
 
         cy.mount(
@@ -122,7 +122,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         })
 
         setLlamaApi(llamaApi)
-        setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+        setGasInfo({ chainId: CHAIN_ID })
         seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: `${oneInt(15, 90)}` })
 
         cy.mount(

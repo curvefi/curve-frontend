@@ -4,7 +4,6 @@ import { allViewports } from '@cy/support/ui'
 import type { RouteResponse } from '@evm-ui/entities/router-api'
 import { lightTheme } from '@evm-ui/themes'
 import { RouteProviderCard } from '@evm-ui/widgets/RouteProvider/RouteProviderCard'
-import type { BaseConfig } from '@legacy-ui/utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { constQ, q, type QueryProp } from '@ui/features/queries/util'
 
@@ -64,7 +63,6 @@ const mountRouteProviderCard = ({
           enabled,
           ...q<RouteResponse | null>({ error: null, isLoading, data: route }),
         }}
-        networks={{ 1: {} as BaseConfig }}
         chainId={1}
         tokenOut={{ symbol: 'crvUSD', decimals: 18, usdRate }}
         isSelected={isSelected}

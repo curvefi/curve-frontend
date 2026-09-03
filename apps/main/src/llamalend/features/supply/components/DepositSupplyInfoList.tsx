@@ -1,4 +1,3 @@
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
@@ -16,7 +15,6 @@ import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type DepositSupplyInfoListProps<ChainId extends IChainId> = {
   params: DepositParams<ChainId>
-  networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
   form: UseFormReturn<DepositForm>
   controllerAddress: Address | undefined
@@ -24,7 +22,6 @@ type DepositSupplyInfoListProps<ChainId extends IChainId> = {
 
 export function DepositSupplyInfoList<ChainId extends IChainId>({
   params,
-  networks,
   tokens,
   form,
   controllerAddress,
@@ -57,7 +54,7 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
       supplyApy={mapQuery(rates, d => d.lendApy)}
       prevNetSupplyApy={prevNetSupplyApy}
       netSupplyApy={netSupplyApy}
-      gas={q(useDepositEstimateGas(networks, params, isOpen))}
+      gas={q(useDepositEstimateGas(params, isOpen))}
     />
   )
 }

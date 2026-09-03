@@ -25,7 +25,7 @@ export const DesktopHeader = ({
   supportedNetworks,
   pages,
   appStats,
-  networkId,
+  blockchainId,
 }: HeaderImplementationProps) => (
   <AppBar
     color="transparent"
@@ -33,7 +33,7 @@ export const DesktopHeader = ({
     data-testid="desktop-main-nav"
     sx={{ position: 'sticky', top: 0, boxShadow: 'none', borderBottom: getHeaderBorder }}
   >
-    <GlobalBanner networkId={networkId} chainId={chainId} backendMaintenance={backendMaintenance} />
+    <GlobalBanner blockchainId={blockchainId} chainId={chainId} backendMaintenance={backendMaintenance} />
 
     <Toolbar
       sx={{ backgroundColor: t => t.design.Layer[2].Fill, justifyContent: 'space-around', paddingY: 0 }}
@@ -41,7 +41,7 @@ export const DesktopHeader = ({
     >
       <Container sx={{ paddingInline: Spacing.md }}>
         <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
-        <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
+        <AppButtonLinks blockchainId={blockchainId} currentMenu={currentMenu} />
 
         <Box sx={{ flexGrow: 1 }} />
 

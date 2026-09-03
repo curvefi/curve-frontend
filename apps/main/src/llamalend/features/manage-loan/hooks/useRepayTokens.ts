@@ -22,20 +22,20 @@ export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userC
 const getRepayTokenOptions = ({
   borrowToken,
   collateralToken,
-  networkId,
+  blockchainId,
   market,
   hasLeverageProvider,
 }: {
   borrowToken: MarketToken | undefined
   collateralToken: MarketToken | undefined
-  networkId: string
+  blockchainId: string
   market: MarketTemplate | undefined
   hasLeverageProvider: boolean
 }) =>
   notFalsy<RepayTokenOption>(
     borrowToken && {
       address: borrowToken.address,
-      chain: networkId,
+      chain: blockchainId,
       symbol: borrowToken.symbol,
       field: 'userBorrowed',
     },
@@ -43,7 +43,7 @@ const getRepayTokenOptions = ({
       canRepayFromStateCollateral(market) &&
       (!hasZapV2(market) || hasLeverageProvider) && {
         address: collateralToken.address,
-        chain: networkId,
+        chain: blockchainId,
         symbol: collateralToken.symbol,
         field: 'stateCollateral',
       },
@@ -51,7 +51,7 @@ const getRepayTokenOptions = ({
       canRepayFromUserCollateral(market) &&
       hasLeverageProvider && {
         address: collateralToken.address,
-        chain: networkId,
+        chain: blockchainId,
         symbol: collateralToken.symbol,
         field: 'userCollateral',
       },
@@ -62,11 +62,11 @@ const getRepayTokenOptions = ({
  */
 export const useRepayTokens = ({
   tokens: { borrowToken, collateralToken },
-  networkId,
+  blockchainId,
   collateralEvents,
 }: {
   tokens: MarketTokensOrEmpty
-  networkId: string
+  blockchainId: string
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const { market, leverageProviders } = useMarketContext()
@@ -76,11 +76,11 @@ export const useRepayTokens = ({
       getRepayTokenOptions({
         borrowToken,
         collateralToken,
-        networkId,
+        blockchainId,
         market,
         hasLeverageProvider: !!leverageProviders?.length,
       }),
-    [borrowToken, collateralToken, networkId, market, leverageProviders?.length],
+    [borrowToken, collateralToken, blockchainId, market, leverageProviders?.length],
   )
   const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
   const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined

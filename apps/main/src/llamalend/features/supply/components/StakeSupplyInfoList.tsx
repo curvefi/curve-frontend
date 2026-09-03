@@ -1,4 +1,3 @@
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { useStakeEstimateGas } from '@/llamalend/queries/supply/supply-stake-estimate-gas.query'
 import type { StakeForm, StakeFormParams } from '@/llamalend/queries/validation/supply.validation'
@@ -15,7 +14,6 @@ import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type StakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: StakeFormParams<ChainId>
-  networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
   form: UseFormReturn<StakeForm>
   controllerAddress: Address | undefined
@@ -23,7 +21,6 @@ type StakeSupplyInfoListProps<ChainId extends IChainId> = {
 
 export function StakeSupplyInfoList<ChainId extends IChainId>({
   params,
-  networks,
   tokens,
   form,
   controllerAddress,
@@ -50,7 +47,7 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
       suppliedAssets={mapQuery(userBalances, d => maybes([d.stakedSharesAmount, stakeAssets], decimalSum))}
       supplyApy={mapQuery(prevRates, d => d.lendApy)}
       netSupplyApy={prevNetSupplyApy}
-      gas={q(useStakeEstimateGas(networks, params, isOpen))}
+      gas={q(useStakeEstimateGas(params, isOpen))}
     />
   )
 }

@@ -32,7 +32,7 @@ describe('StakeForm (mocked)', () => {
       const { input, market, llamaApi, expected, stubs } = createStakeScenario({ chainId, approved, hasGauge })
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks: llamaNetworks })
+      setGasInfo({ chainId })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>

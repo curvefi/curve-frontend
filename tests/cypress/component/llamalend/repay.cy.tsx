@@ -59,7 +59,7 @@ describe('RepayForm (mocked)', () => {
           : { symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, optionIndex: 0 }
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+      setGasInfo({ chainId: CHAIN_ID })
       seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: borrow })
 
       cy.mount(

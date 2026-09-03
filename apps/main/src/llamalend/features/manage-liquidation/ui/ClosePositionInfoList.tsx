@@ -1,6 +1,5 @@
 import { useConnection } from 'wagmi'
 import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { CloseLoanMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseEstimateGas } from '@/llamalend/queries/close-loan/close-loan-gas-estimate.query'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
@@ -14,7 +13,6 @@ type ClosePositionInfoListProps = {
   marketId: string | undefined
   tokens: MarketTokensOrEmpty
   chainId: LlamaChainId
-  networks: NetworkDict<LlamaChainId>
   values: CloseLoanMutation
 }
 
@@ -22,14 +20,13 @@ export function ClosePositionInfoList({
   chainId,
   marketId,
   tokens: { borrowToken, collateralToken },
-  networks,
   values: { slippage },
 }: ClosePositionInfoListProps) {
   const params = { chainId, marketId, userAddress: useConnection().address, slippage }
   return (
     <LoanActionInfoList
       isOpen
-      gas={q(useCloseEstimateGas(networks, params))}
+      gas={q(useCloseEstimateGas(params))}
       debt={constQ('0')}
       collateral={constQ('0')}
       isApproved={q(useCloseLoanIsApproved(params))}

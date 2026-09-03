@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { getBlockchainId } from '@curvefi/prices-api'
+import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { t } from '@evm-ui/lib/i18n'
 import { maybe } from '@primitives/objects.utils'
 import { useMappedQuery } from '@ui/features/queries/util'
@@ -15,7 +15,7 @@ export const useLlamaMarket = (
     markets,
     useCallback(
       ({ markets }) =>
-        maybe(getBlockchainId(network), chain =>
+        maybe(getPricesApiBlockchainId(network), chain =>
           markets.find(m => m.chain === chain && m.url.toLowerCase().endsWith(`/${rMarket.toLowerCase()}`)),
         ),
       [network, rMarket],
