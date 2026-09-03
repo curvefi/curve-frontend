@@ -48,6 +48,5 @@ export const getCampaignRewardsApr = (pool: PoolRow) =>
 
 export const getRewardsApr = (pool: PoolRow) => sum([getExtraRewardsApr(pool), getCampaignRewardsApr(pool)])
 
-/** Each APR is compounded individually rather as a whole as they're distinctive sources of yield */
-export const getNetApy = (pool: PoolRow) =>
-  sum([aprToPoolApy(pool.baseDailyApr), pool.gauge?.isKilled ? null : aprToPoolApy(pool.crvApr), getRewardsApr(pool)])
+export const getNetApr = (pool: PoolRow) =>
+  sum([pool.baseDailyApr, pool.gauge?.isKilled ? null : pool.crvApr, getRewardsApr(pool)])

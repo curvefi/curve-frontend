@@ -28,7 +28,7 @@ describe('V2 pool-list yields', () => {
     visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
     showV2PoolColumns(YIELD_COLUMNS)
 
-    getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-apy"]').should('have.text', '20.70%')
+    getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-rate"]').should('have.text', '20.70%')
     getV2PoolCell(address, PoolColumnId.BaseApy).should('contain.text', '10.51%')
     getV2PoolCell(address, PoolColumnId.WeeklyBaseApy).should('contain.text', '22.09%')
     getV2PoolCell(address, PoolColumnId.RewardsApy).should('contain.text', '5.06%')
@@ -108,7 +108,7 @@ describe('V2 pool-list yields', () => {
     visitV2PoolList({ network: 'taiko', viewport: DESKTOP_VIEWPORT })
     showV2PoolColumns([PoolColumnId.CrvApy, PoolColumnId.RewardsApy, PoolColumnId.Points])
 
-    getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-apy"]').should('have.text', '13.32%')
+    getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-rate"]').should('have.text', '13.32%')
     getV2PoolCell(address, PoolColumnId.RewardsApy).should('contain.text', '8.20%')
     getV2PoolCell(address, PoolColumnId.CrvApy).within(() => {
       cy.get('[data-testid="pool-crv-rate-unboosted"]').should('have.text', '5.12%')

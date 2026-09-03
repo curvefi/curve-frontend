@@ -9,41 +9,41 @@ import Typography from '@mui/material/Typography'
 import type { PoolRow } from '../types'
 import { NetRateTooltipContent } from './NetRateTooltipContent'
 import { RewardIcons } from './RewardIcons'
-import { formatCellValue, getNetApy, isVolatileRate } from './utils'
+import { formatCellValue, getNetApr, isVolatileRate } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
 export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
-  const netApy = getNetApy(pool)
-  const volatile = isVolatileRate(netApy)
+  const netApr = getNetApr(pool)
+  const volatile = isVolatileRate(netApr)
 
   return (
     <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
       <WithWrapper
-        shouldWrap={netApy}
+        shouldWrap={netApr}
         Wrapper={Tooltip}
         clickable
-        title={t`Net APY`}
+        title={t`Net APR`}
         body={<NetRateTooltipContent pool={pool} volatile={volatile} />}
         placement="top"
       >
         <Box
           component="span"
-          data-testid={netApy ? 'pool-net-apy-tooltip-trigger' : undefined}
+          data-testid={netApr ? 'pool-net-rate-tooltip-trigger' : undefined}
           sx={{ display: 'inline-flex' }}
         >
           {volatile ? (
-            <Box component="span" data-testid="pool-net-apy" sx={{ textAlign: 'end' }}>
+            <Box component="span" data-testid="pool-net-rate" sx={{ textAlign: 'end' }}>
               <ChipVolatileBaseApy isBold disableTooltip />
             </Box>
           ) : (
             <Typography
               component="span"
-              data-testid="pool-net-apy"
+              data-testid="pool-net-rate"
               variant="tableCellMBold"
               sx={{ display: 'block', textAlign: 'end' }}
             >
-              {formatCellValue(netApy, 'percent.rate')}
+              {formatCellValue(netApr, 'percent.rate')}
             </Typography>
           )}
         </Box>

@@ -1,12 +1,6 @@
 import { t } from '@evm-ui/lib/i18n'
-import {
-  TooltipDescription,
-  TooltipFooter,
-  TooltipItem,
-  TooltipItems,
-  TooltipWrapper,
-} from '@evm-ui/shared/ui/TooltipComponents'
-import { AVERAGE_CATEGORIES, formatNumber, MAINNET_CRV } from '@evm-ui/utils'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
+import { formatNumber, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { PoolRow } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './RateTooltipItems'
@@ -15,7 +9,7 @@ import {
   getBaseApr,
   getCrvAprRange,
   getExtraRewards,
-  getNetApy,
+  getNetApr,
   getPointsCampaigns,
   getRewardsApr,
 } from './utils'
@@ -61,9 +55,9 @@ export const NetRateIncentivesTooltipItems = ({
 
 export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
   const baseApr = getBaseApr(pool, 'daily')
-  const netApy = getNetApy(pool)
+  const netApr = getNetApr(pool)
   const crvAprRange = pool.gauge && !pool.gauge.isKilled ? getCrvAprRange(pool) : null
-  const maxNetApy = crvAprRange ? netApy - crvAprRange.unboostedApr + crvAprRange.boostedApr : null
+  const maxNetApr = crvAprRange ? netApr - crvAprRange.unboostedApr + crvAprRange.boostedApr : null
   const incentiveItems = getIncentivesItems(pool)
   const pointsCampaigns = getPointsCampaigns(pool)
 
@@ -78,8 +72,8 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
         </TooltipItems>
         {incentiveItems && <NetRateIncentivesTooltipItems items={incentiveItems} blockchainId={pool.blockchainId} />}
         <TooltipItems borderTop>
-          <TooltipItem variant="primary" title={t`Net total APY`}>
-            {formatNumber(netApy, 'percent.rate')}
+          <TooltipItem variant="primary" title={t`Net total APR`}>
+            {formatNumber(netApr, 'percent.rate')}
           </TooltipItem>
         </TooltipItems>
         {crvAprRange && (
@@ -95,7 +89,7 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
             </TooltipItems>
             <TooltipItems borderTop>
               <TooltipItem variant="primary" title={t`Total max veCRV APY`}>
-                {formatNumber(maxNetApy, 'percent.rate')}
+                {formatNumber(maxNetApr, 'percent.rate')}
               </TooltipItem>
             </TooltipItems>
           </>
@@ -107,12 +101,7 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
           </TooltipItems>
         )}
       </Stack>
-      {volatile && <TooltipDescription text={t`This net APY is volatile and is unlikely to persist.`} />}
-      {incentiveItems && (
-        <TooltipFooter>
-          {t`*Token incentive and yield bearing APY assume a ${AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].adjective} compounding rate.`}
-        </TooltipFooter>
-      )}
+      {volatile && <TooltipDescription text={t`This net APR is volatile and is unlikely to persist.`} />}
     </TooltipWrapper>
   )
 }
