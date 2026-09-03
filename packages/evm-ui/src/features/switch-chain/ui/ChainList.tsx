@@ -1,6 +1,11 @@
 import lodash from 'lodash'
 import { Fragment, useMemo, useState } from 'react'
-import { getChainName, isChainConfigured, isChainLite, isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import {
+  getChainName,
+  isChainConfigured,
+  isChainLite,
+  isChainTestnet,
+} from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
