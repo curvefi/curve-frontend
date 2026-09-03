@@ -15,18 +15,13 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-stellar.tsbuildinfo"
   },
   "dependencies": {
-    "@curvefi/ui": "*",
-    "@tanstack/react-router": "*",
-    "vite-plugin-svgr": "*",
+    "@curvefi/ui": "workspace:^",
+    "@tanstack/react-router": "1.170.32",
+    "vite-plugin-svgr": "5.2.0",
     "vite-plugin-vercel": "9.1.1"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "@vitejs/plugin-react": "*",
-    "eslint": "*",
-    "typescript": "*",
-    "vite": "*"
+    "@vitejs/plugin-react": "5.1.2"
   }
 }

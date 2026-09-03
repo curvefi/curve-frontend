@@ -13,6 +13,6 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "dependencies": {
-    "fastify": "*"
+    "fastify": "5.12.1"
   }
 }

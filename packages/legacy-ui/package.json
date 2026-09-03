@@ -11,17 +11,8 @@
   "dependencies": {
     "@carbon/icons-react": "11.84.0",
     "@curvefi/evm-ui": "workspace:^",
-    "ethers": "*",
-    "lodash": "*",
     "react-aria": "3.50.0",
-    "react-dom": "*",
     "react-stately": "3.48.0",
-    "styled-components": "*"
-  },
-  "devDependencies": {
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "eslint": "*",
-    "typescript": "*"
+    "styled-components": "6.4.4"
   }
 }

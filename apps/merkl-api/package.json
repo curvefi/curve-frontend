@@ -16,13 +16,9 @@
   },
   "dependencies": {
     "@curvefi/api-server": "workspace:^",
-    "fastify": "*"
+    "fastify": "5.12.1"
   },
   "devDependencies": {
-    "@types/node": "*",
-    "eslint": "*",
-    "tsx": "4.23.1",
-    "typescript": "*",
-    "vitest": "*"
+    "tsx": "4.23.1"
   }
 }

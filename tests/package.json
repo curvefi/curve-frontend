@@ -25,16 +25,10 @@
   "devDependencies": {
     "@cypress/react": "9.0.2",
     "@cypress/vite-dev-server": "7.3.4",
-    "@vitejs/plugin-react": "*",
+    "@vitejs/plugin-react": "5.1.2",
     "@vitest/ui": "4.1.10",
     "cypress": "15.19.0",
-    "eslint": "*",
-    "ethers": "*",
     "main": "workspace:^",
-    "typescript": "*",
-    "vite": "*",
-    "vite-plugin-svgr": "*",
-    "vitest": "*",
     "wait-on": "9.1.0"
   }
 }

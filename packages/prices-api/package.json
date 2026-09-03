@@ -16,14 +16,7 @@
   },
   "dependencies": {
     "@curvefi/primitives": "workspace:^",
-    "typescript": "*",
     "zod": "4.4.3"
-  },
-  "devDependencies": {
-    "@types/node": "*",
-    "eslint": "*",
-    "vite": "*",
-    "vitest": "*"
   },
   "publishConfig": {
     "access": "public"

@@ -18,14 +18,10 @@
     "@curvefi/api": "2.69.17",
     "@curvefi/api-server": "workspace:^",
     "@curvefi/prices-api": "workspace:^",
-    "bignumber.js": "*",
-    "fastify": "*"
+    "bignumber.js": "11.1.5",
+    "fastify": "5.12.1"
   },
   "devDependencies": {
-    "@types/node": "*",
-    "eslint": "*",
-    "tsx": "4.23.1",
-    "typescript": "*",
-    "vitest": "*"
+    "tsx": "4.23.1"
   }
 }
