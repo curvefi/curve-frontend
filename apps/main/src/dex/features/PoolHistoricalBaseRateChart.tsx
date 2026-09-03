@@ -20,7 +20,7 @@ import {
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { mapQuery } from '@evm-ui/types/util'
-import { aprToApy, AVERAGE_CATEGORIES, decimal, formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
+import { decimal, formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -33,20 +33,17 @@ const { Height, Spacing } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'dex.poolInformation'
 
-type BaseRateSeriesKey = 'dailyBaseApy' | 'weeklyBaseApy'
+type BaseRateSeriesKey = 'dailyBaseRate' | 'weeklyBaseRate'
 type BaseRateChartPoint = {
   timestamp: number
-  dailyBaseApy: number | undefined
-  weeklyBaseApy: number | undefined
+  dailyBaseRate: number | undefined
+  weeklyBaseRate: number | undefined
 }
 
 const SERIES_CONFIG = [
-  { key: 'dailyBaseApy', label: t`Daily Base APY` },
-  { key: 'weeklyBaseApy', label: t`Weekly Base APY`, dash: CHART_LINE_DASH_PATTERNS.tight },
+  { key: 'dailyBaseRate', label: t`Daily Base APR` },
+  { key: 'weeklyBaseRate', label: t`Weekly Base APR`, dash: CHART_LINE_DASH_PATTERNS.tight },
 ] as const
-
-const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
-const aprToPoolApy = (apr: Parameters<typeof aprToApy>[0]) => aprToApy(apr, COMPOUND_WINDOW)
 
 export const PoolHistoricalBaseRateChart = ({
   blockchainId,
@@ -71,8 +68,8 @@ export const PoolHistoricalBaseRateChart = ({
   const ratePoints = mapQuery(snapshots, snapshots =>
     snapshots.toReversed().map(snapshot => ({
       timestamp: snapshot.timestamp,
-      dailyBaseApy: maybe(snapshot.baseDailyApr, apr => aprToPoolApy(apr * 100)) ?? undefined,
-      weeklyBaseApy: maybe(snapshot.baseWeeklyApr, apr => aprToPoolApy(apr * 100)) ?? undefined,
+      dailyBaseRate: maybe(snapshot.baseDailyApr, apr => apr * 100) ?? undefined,
+      weeklyBaseRate: maybe(snapshot.baseWeeklyApr, apr => apr * 100) ?? undefined,
     })),
   )
 
@@ -84,7 +81,7 @@ export const PoolHistoricalBaseRateChart = ({
   } = useTheme()
 
   const seriesColors: Record<BaseRateSeriesKey, string> = useMemo(
-    () => ({ dailyBaseApy: Color.Primary[500], weeklyBaseApy: Color.Secondary[500] }),
+    () => ({ dailyBaseRate: Color.Primary[500], weeklyBaseRate: Color.Secondary[500] }),
     [Color.Primary, Color.Secondary],
   )
 
@@ -130,14 +127,14 @@ export const PoolHistoricalBaseRateChart = ({
         >
           <Metric
             category={METRIC_CATEGORY}
-            label={t`Current daily base APY`}
-            value={mapQuery(currentPool, pool => aprToPoolApy(pool.baseDailyApr * 100))}
+            label={t`Current daily base APR`}
+            value={mapQuery(currentPool, pool => pool.baseDailyApr * 100)}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             category={METRIC_CATEGORY}
-            label={t`Current weekly base APY`}
-            value={mapQuery(currentPool, pool => aprToPoolApy(pool.baseWeeklyApr * 100))}
+            label={t`Current weekly base APR`}
+            value={mapQuery(currentPool, pool => pool.baseWeeklyApr * 100)}
             valueOptions={{ unit: 'percentage' }}
           />
         </Stack>
