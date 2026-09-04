@@ -13,7 +13,7 @@ import type { PoolsSorting } from './usePoolsSorting'
 export type PoolColumnVariant = keyof typeof POOLS_COLUMN_OPTIONS
 
 const migration: MigrationOptions<Record<PoolColumnVariant, VisibilityGroup<PoolColumnId>[]>> = {
-  version: 4,
+  version: 5,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
 }
