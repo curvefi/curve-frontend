@@ -2,7 +2,7 @@ import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { MarketParticipants } from '@/llamalend/features/market-participants/MarketParticipants'
+import { BorrowersCard, SuppliersCard } from '@/llamalend/features/market-participants/MarketParticipantsCards'
 import {
   LegacyChartAndActivityLayout,
   MarketActivityLayout,
@@ -91,6 +91,13 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     />
   )
 }
+
+const MarketParticipants = () => (
+  <>
+    <BorrowersCard />
+    <SuppliersCard />
+  </>
+)
 
 export const MarketActivityComp = () => {
   const {
