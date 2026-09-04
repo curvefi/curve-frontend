@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import { useLayoutStore } from '@evm-ui/features/layout'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { notFalsy } from '@primitives/objects.utils'
+import { useLayoutStore } from '@ui/features/layout/layout'
 
 export const useBodyThemeClass = () => {
   const { document } = window
