@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
-    "@types/lodash": "4.17.24",
+    "@types/lodash": "4.17.25",
     "@vitejs/plugin-react": "5.1.2",
     "pinst": "3.0.0",
     "vite": "*",
