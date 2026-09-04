@@ -60,7 +60,7 @@ export const TokenAmount = ({
       <WithSkeleton loading={amountLoading}>
         <Tooltip title={tooltipTitle ?? ''} body={tooltipBody}>
           <Stack direction="row" spacing={Spacing.xs} sx={{ alignItems: 'center' }}>
-            <Typography variant="tableCellMBold">{formatNumber(amount, { abbreviate, fallback: '-' })}</Typography>
+            <Typography variant="tableCellMRegular">{formatNumber(amount, { abbreviate, fallback: '-' })}</Typography>
             {blockchainId && tokenAddress && (
               <TokenIcon blockchainId={blockchainId} address={tokenAddress} size={iconSize} />
             )}

@@ -7,6 +7,7 @@ import type { MarketBorrower, VaultDepositor } from '@curvefi/prices-api/llamale
 import { t } from '@evm-ui/lib/i18n'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
+import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
@@ -32,8 +33,23 @@ export type SupplierRow = VaultDepositor &
     borrowToken: MarketToken | undefined
   }
 
+export const TokenHeader = ({
+  label,
+  blockchainId,
+  tokenAddress,
+}: {
+  label: string
+  blockchainId: Chain | undefined
+  tokenAddress: string | undefined
+}) => (
+  <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+    {label}
+    <TokenIcon blockchainId={blockchainId} address={tokenAddress} size="mui-md" />
+  </Stack>
+)
+
 export const Percentage = ({ value }: { value: number | null | undefined }) => (
-  <Typography variant="tableCellMRegular">
+  <Typography variant="tableCellMBold">
     {value == null ? UNAVAILABLE_NOTATION : formatNumber(value, 'percent.value')}
   </Typography>
 )

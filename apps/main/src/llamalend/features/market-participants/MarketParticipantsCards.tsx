@@ -15,7 +15,7 @@ import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import { maybe } from '@primitives/objects.utils'
 import {
-  BORROWER_COLUMNS,
+  getBorrowerColumns,
   getSupplierColumns,
   mobileBorrowerVisibility,
   mobileSupplierVisibility,
@@ -50,7 +50,10 @@ export const BorrowersCard = ({ networkConfig }: { networkConfig: BaseConfig | u
   )
   const table = useCurveTable({
     query,
-    columns: BORROWER_COLUMNS,
+    columns: useMemo(
+      () => getBorrowerColumns(blockchainId, tokens.collateralToken?.address, tokens.borrowToken?.address),
+      [blockchainId, tokens.borrowToken?.address, tokens.collateralToken?.address],
+    ),
     state: { columnVisibility: isMobile ? mobileBorrowerVisibility : undefined, pagination },
     getRowId: row => row.address,
     manualPagination: true,
@@ -89,7 +92,6 @@ export const SuppliersCard = ({
   })
   const { data: borrowTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: tokens.borrowToken?.address })
   const isMobile = useIsMobile()
-  const columns = useMemo(() => getSupplierColumns(tokens.borrowToken?.symbol), [tokens.borrowToken?.symbol])
   const query = mapQuery(suppliersQuery, ({ depositors }) =>
     depositors.map(supplier => ({
       ...supplier,
@@ -101,7 +103,10 @@ export const SuppliersCard = ({
   )
   const table = useCurveTable({
     query,
-    columns,
+    columns: useMemo(
+      () => getSupplierColumns(blockchainId, tokens.borrowToken?.address),
+      [blockchainId, tokens.borrowToken?.address],
+    ),
     state: { columnVisibility: isMobile ? mobileSupplierVisibility : undefined, pagination },
     getRowId: row => row.address,
     manualPagination: true,
