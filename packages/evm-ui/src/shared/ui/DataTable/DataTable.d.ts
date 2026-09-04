@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars,@typescript-eslint/consistent-type-definitions */
 import '@tanstack/table-core'
-import type { TypographyVariantKey } from '@evm-ui/themes/typography'
 import type { Unit } from '@evm-ui/utils/units'
 import type { CellData, RowData, RowModel, Table, TableFeatures } from '@tanstack/table-core'
-import type { TooltipProps } from '../Tooltip'
+import type { TooltipProps } from '@ui/components/Tooltip'
+import type { TypographyVariantKey } from '@ui/features/themes/typography'
 
 /**
  * Extend TanStack's per-table metadata with Curve DataTable properties.

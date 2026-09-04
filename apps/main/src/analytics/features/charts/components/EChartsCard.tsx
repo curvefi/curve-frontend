@@ -2,14 +2,14 @@ import ReactECharts from 'echarts-for-react'
 import type { EChartsOption } from 'echarts-for-react/lib/types'
 import type { ReactNode } from 'react'
 import { DialogFullscreen } from '@/analytics/features/charts/components/DialogFullscreen'
-import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
+import { WithWrapper } from '@ui/components/WithWrapper'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

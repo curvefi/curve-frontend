@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
-import { t } from '@evm-ui/lib/i18n'
-import { FireIcon } from '@evm-ui/shared/icons/FireIcon'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { FireIcon } from '@ui/icons/FireIcon'
+import { t } from '@ui/lib/i18n'
 import { ActionInfo } from './ActionInfo'
 
 export type TxGasInfo = {

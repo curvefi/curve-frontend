@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useDismissMaintenanceBanner, useDismissMaintenanceModal } from '@evm-ui/hooks/useLocalStorage'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
-import { REFRESH_INTERVAL, TIME_OPTION_MS } from '@evm-ui/utils/time'
 import { formatDate, formatTime } from '@legacy-ui/utils/utilsDate'
 import { Falsy } from '@primitives/objects.utils'
+import { REFRESH_INTERVAL, TIME_OPTION_MS } from '@ui/utils/time'
 
 export type MaintenanceConfig = {
   // UTC ISO string date of the scheduled maintenance.

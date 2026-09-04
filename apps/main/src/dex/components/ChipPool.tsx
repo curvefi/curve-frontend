@@ -5,11 +5,11 @@ import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import { copyToClipboard, shortenAddress } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { breakpoints } from '@legacy-ui/utils/responsive'
+import { RouterLink } from '@ui/components/RouterLink'
 
 type ButtonProps = {
   className?: string

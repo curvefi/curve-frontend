@@ -1,0 +1,183 @@
+import { keyframes } from '@mui/material/styles'
+import { REFRESH_INTERVAL, TIME_FRAMES } from '@ui/utils/time'
+
+export const Grays = {
+  '10': '#fdfcfc',
+  '25': '#fafafa',
+  '50': '#f8f7f7',
+  '75': '#f0edeb',
+  '100': '#eeeceb',
+  '150': '#e6e4df',
+  '200': '#dcdad8',
+  '300': '#d4d0cc',
+  '400': '#bbb6af',
+  '500': '#968e84',
+  '600': '#746e66',
+  '700': '#5a554f',
+  '750': '#494540',
+  '800': '#3b3834',
+  '850': '#302e2a',
+  '900': '#252420',
+  '950': '#1f1e1b',
+  '975': '#12110f',
+} as const
+
+export const Greens = {
+  '50': '#f2fdf8',
+  '100': '#d4f7e3',
+  '200': '#a8efc6',
+  '300': '#32ce79',
+  '400': '#27b86c',
+  '500': '#1fa25e',
+  '600': '#167d4a',
+  '700': '#0f5c38',
+  '800': '#0b3d26',
+  '900': '#044121',
+  '950': '#02351b',
+} as const
+
+export const Reds = {
+  '50': '#fcdcde',
+  '100': '#fab0b4',
+  '200': '#f67178',
+  '300': '#f3565f',
+  '400': '#f03d47',
+  '500': '#ed242f',
+  '600': '#c91821',
+  '700': '#a60e16',
+  '800': '#82070d',
+  '900': '#5f0207',
+  '950': '#311615',
+} as const
+
+export const Blues = {
+  '50': '#f6f9ff',
+  '100': '#e0e8f7',
+  '200': '#acbef1',
+  '300': '#839ff2',
+  '400': '#5a81f3',
+  '500': '#3976ee',
+  '600': '#2c55d5',
+  '700': '#2747b5',
+  '800': '#223995',
+  '900': '#1d2c75',
+  '950': '#171e55',
+} as const
+
+export const Oranges = {
+  '50': '#f0ddd1',
+  '100': '#f3cfb9',
+  '200': '#f5bd98',
+  '300': '#f4ab7a',
+  '400': '#f49753',
+  '500': '#f77f00',
+  '600': '#d36c00',
+  '700': '#b15900',
+  '800': '#8f4700',
+  '900': '#6f3601',
+  '950': '#4e2708',
+} as const
+
+export const Yellows = {
+  '50': '#fffbf5',
+  '100': '#fff9f0',
+  '200': '#fff1db',
+  '300': '#ffe6bd',
+  '400': '#ffd88b',
+  '500': '#ffc300',
+  '600': '#e0ab00',
+  '700': '#c19300',
+  '800': '#a37c0c',
+  '900': '#84671d',
+  '950': '#665223',
+} as const
+
+export const Violets = {
+  '50': '#efedfc',
+  '100': '#dbd9f7',
+  '200': '#c6c4f2',
+  '300': '#b0aeee',
+  '400': '#9997e2',
+  '500': '#6a68b7',
+  '600': '#5f5cae',
+  '700': '#554fa5',
+  '800': '#4a4395',
+  '900': '#3e3684',
+  '950': '#2f2862',
+} as const
+
+export const TRANSPARENT = '#ffffff00' as const
+
+export const Spacing = {
+  '0': '0rem',
+  '75': '0.0625rem', // 1px
+  '100': '0.125rem', // 2px
+  '200': '0.25rem', // 4px
+  '300': '0.5rem', // 8px
+  '350': '0.875rem', // 14px
+  '400': '1rem', // 16px
+  '450': '1.25rem', // 20px
+  '500': '1.5rem', // 24px
+  '600': '2rem', // 32px
+  '700': '3rem', // 48px
+  '800': '4rem', // 64px
+} as const
+
+export const Sizing = {
+  '10': '0.0625rem', // 1px
+  '25': '0.125rem', // 2px
+  '50': '0.25rem', // 4px
+  '100': '0.5rem', // 8px
+  '125': '0.75rem', // 12px
+  '150': '0.875rem', // 14px
+  '200': '1rem', // 16px
+  '250': '1.25rem', // 20px
+  '300': '1.5rem', // 24px
+  '350': '1.75rem', // 28px
+  '400': '2rem', // 32px
+  '450': '2.25rem', // 36px
+  '500': '2.5rem', // 40px
+  '600': '3rem', // 48px
+  '650': '3.5rem', // 56px
+  '700': '4rem', // 64px
+  '800': '5.5rem', // 88px
+} as const
+
+export const Duration = {
+  ChartFrame: 16, // 16ms = ~60fps
+  Delay: 100,
+  Flicker: 1000,
+  Focus: 50,
+  FormDebounce: 350,
+  TransactionPollTimeout: 2 * 60 * 1000, // 2 minutes
+  Toast: { success: 5000, info: 5000, warning: 10000, error: 10000 },
+  Tooltip: { Enter: 500, Exit: 500 },
+  Transition: 256,
+  LoadingAnimation: 1000,
+  LoadingTimeout: 5000,
+  Banner: {
+    Daily: TIME_FRAMES.DAY_MS,
+    Weekly: TIME_FRAMES.DAY_MS * 7,
+    Monthly: TIME_FRAMES.MONTH_MS,
+  },
+  AverageRates: {
+    Weekly: 7,
+    Monthly: 30,
+  },
+  WagmiBatch: { Size: 3, Time: 50 },
+  DataRefresh: {
+    Urgent: REFRESH_INTERVAL['15s'],
+    Actionable: REFRESH_INTERVAL['1m'],
+    Informative: REFRESH_INTERVAL['5m'],
+    DontShowAfter: REFRESH_INTERVAL['10m'],
+    SemiStatic: REFRESH_INTERVAL['1h'],
+  },
+}
+
+export const TRANSITION = `ease-out`
+export const TRANSITION_FUNCTION = `${TRANSITION} ${Duration.Transition}ms`
+
+export const LoadingAnimation = {
+  animation: `${keyframes` 100% { transform: rotate(360deg); }`} ${TRANSITION} ${Duration.LoadingAnimation}ms infinite`,
+  transformOrigin: 'center',
+}

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { borderStyle } from '@evm-ui/utils'
 import type { Theme } from '@mui/material/styles'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { borderStyle } from '@ui/utils/mui'
 import { EXTRA_COLUMN_PADDING, getAlignment } from '../data-table.utils'
 
 const { Spacing } = SizesAndSpaces

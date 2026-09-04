@@ -22,7 +22,6 @@ import { useNetworks } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { t } from '@evm-ui/lib/i18n'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -31,6 +30,7 @@ import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
+import { t } from '@ui/lib/i18n'
 
 export const FormDeposit = ({
   curve,

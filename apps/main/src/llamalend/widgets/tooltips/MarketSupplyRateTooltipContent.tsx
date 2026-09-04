@@ -1,15 +1,15 @@
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
-import { t } from '@evm-ui/lib/i18n'
+import type { ExtraIncentive } from '@evm-ui/types/market'
+import { AVERAGE_CATEGORIES, formatCappedRatePercent, MAINNET_CRV } from '@evm-ui/utils'
+import Stack from '@mui/material/Stack'
 import {
   TooltipDescription,
   TooltipFooter,
   TooltipItem,
   TooltipItems,
   TooltipWrapper,
-} from '@evm-ui/shared/ui/TooltipComponents'
-import type { ExtraIncentive } from '@evm-ui/types/market'
-import { AVERAGE_CATEGORIES, formatCappedRatePercent, MAINNET_CRV } from '@evm-ui/utils'
-import Stack from '@mui/material/Stack'
+} from '@ui/components/TooltipComponents'
+import { t } from '@ui/lib/i18n'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 type SupplyBoostType = 'market' | 'user'

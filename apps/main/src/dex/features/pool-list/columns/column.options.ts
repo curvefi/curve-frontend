@@ -1,5 +1,5 @@
-import { t } from '@evm-ui/lib/i18n'
 import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
+import { t } from '@ui/lib/i18n'
 import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
 
@@ -14,32 +14,32 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
         enabled: true,
       },
       {
-        label: POOL_TITLES[PoolColumnId.NetApy],
-        columns: [PoolColumnId.NetApy],
+        label: POOL_TITLES[PoolColumnId.NetRate],
+        columns: [PoolColumnId.NetRate],
         active: true,
         enabled: true,
       },
       {
-        label: POOL_TITLES[PoolColumnId.BaseApy],
-        columns: [PoolColumnId.BaseApy],
+        label: POOL_TITLES[PoolColumnId.BaseRate],
+        columns: [PoolColumnId.BaseRate],
         active: false,
         enabled: !isLite,
       },
       {
-        label: POOL_TITLES[PoolColumnId.WeeklyBaseApy],
-        columns: [PoolColumnId.WeeklyBaseApy],
+        label: POOL_TITLES[PoolColumnId.WeeklyBaseRate],
+        columns: [PoolColumnId.WeeklyBaseRate],
         active: false,
         enabled: !isLite,
       },
       {
-        label: POOL_TITLES[PoolColumnId.CrvApy],
-        columns: [PoolColumnId.CrvApy],
+        label: POOL_TITLES[PoolColumnId.CrvRate],
+        columns: [PoolColumnId.CrvRate],
         active: false,
         enabled: true,
       },
       {
-        label: POOL_TITLES[PoolColumnId.RewardsApy],
-        columns: [PoolColumnId.RewardsApy],
+        label: POOL_TITLES[PoolColumnId.RewardsRate],
+        columns: [PoolColumnId.RewardsRate],
         active: false,
         enabled: true,
       },

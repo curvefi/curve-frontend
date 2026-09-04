@@ -10,7 +10,4 @@ export type NetworkUrlParams = { network: NetworkEnum }
 export type CollateralUrlParams = NetworkUrlParams & { collateralId: string }
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
-export type NetworkConfig = { isActiveNetwork: boolean; showInSelectNetwork: boolean } & NetworkDef<
-  NetworkEnum,
-  ChainId
->
+export type NetworkConfig = NetworkDef<NetworkEnum, ChainId>

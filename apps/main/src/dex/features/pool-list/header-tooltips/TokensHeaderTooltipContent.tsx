@@ -1,5 +1,5 @@
-import { t } from '@evm-ui/lib/i18n'
-import { TooltipDescription, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
+import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { t } from '@ui/lib/i18n'
 
 export const TokensHeaderTooltipContent = () => (
   <TooltipWrapper>

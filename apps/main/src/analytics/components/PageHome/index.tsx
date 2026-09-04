@@ -1,5 +1,5 @@
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Grid from '@mui/material/Grid'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ChartCrvUsdPrice } from './components/ChartCrvUsdPrice'
 import { ChartCrvUsdSupplyBreakdown } from './components/ChartCrvUsdSupplyBreakdown'
 import { ComingSoon } from './components/ComingSoon'

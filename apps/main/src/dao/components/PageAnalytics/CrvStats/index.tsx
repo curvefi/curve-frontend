@@ -6,13 +6,13 @@ import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
 import { useVeCrvHoldersQuery } from '@/dao/entities/vecrv-holders'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useCombinedQueries } from '@evm-ui/lib'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Chain } from '@primitives/network.utils'
 import { constQ, mapQuery } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 const WEEKS_PER_YEAR = 52
 const VECRV_APR_AVERAGE_WEEKS = 4

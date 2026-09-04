@@ -15,8 +15,8 @@ import {
 } from '@/dao/types/dao.types'
 import { getLib, notify, useWallet } from '@evm-ui/features/connect-wallet'
 import { waitForTransaction } from '@evm-ui/lib/ethers'
-import { t } from '@evm-ui/lib/i18n'
 import { Chain } from '@primitives/network.utils'
+import { t } from '@ui/lib/i18n'
 import { getGauges, type GaugeFormattedData, type GaugeMapper } from '../queries/gauges.query'
 
 type StateKey = keyof typeof DEFAULT_STATE

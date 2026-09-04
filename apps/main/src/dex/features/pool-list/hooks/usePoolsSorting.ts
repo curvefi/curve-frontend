@@ -8,11 +8,11 @@ import type { PoolsQueryUpdater } from '../filters/utils'
 
 const POOL_SORT_BY = {
   [PoolColumnId.PoolName]: 'name',
-  [PoolColumnId.NetApy]: 'aggregate_apr',
-  [PoolColumnId.BaseApy]: 'base_daily_apr',
-  [PoolColumnId.WeeklyBaseApy]: 'base_weekly_apr',
-  [PoolColumnId.CrvApy]: 'crv_apr',
-  [PoolColumnId.RewardsApy]: 'rewards_apr',
+  [PoolColumnId.NetRate]: 'aggregate_apr',
+  [PoolColumnId.BaseRate]: 'base_daily_apr',
+  [PoolColumnId.WeeklyBaseRate]: 'base_weekly_apr',
+  [PoolColumnId.CrvRate]: 'crv_apr',
+  [PoolColumnId.RewardsRate]: 'rewards_apr',
   [PoolColumnId.Volume]: 'volume',
   [PoolColumnId.Tvl]: 'tvl',
   [PoolColumnId.Age]: 'creation_date',
@@ -23,9 +23,9 @@ type PoolSortableColumn = keyof typeof POOL_SORT_BY
 const SORT_QUERY_FIELD = 'sort'
 const LITE_SORT_COLUMNS = new Set<PoolColumnId>([
   PoolColumnId.PoolName,
-  PoolColumnId.NetApy,
-  PoolColumnId.CrvApy,
-  PoolColumnId.RewardsApy,
+  PoolColumnId.NetRate,
+  PoolColumnId.CrvRate,
+  PoolColumnId.RewardsRate,
   PoolColumnId.Tvl,
 ])
 

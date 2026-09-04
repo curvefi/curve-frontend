@@ -1,11 +1,11 @@
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { useFormContext } from '@evm-ui/features/forms'
-import { t } from '@evm-ui/lib/i18n'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 

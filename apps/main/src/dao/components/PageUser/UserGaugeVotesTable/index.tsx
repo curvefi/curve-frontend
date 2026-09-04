@@ -7,11 +7,11 @@ import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { UserGaugeVote } from '@curvefi/prices-api/gauge'
-import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { formatNumber, shortenAddress } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
+import { t } from '@ui/lib/i18n'
 import { GAUGE_VOTES_LABELS } from '../constants'
 
 type UserGaugeVotesTableProps = {

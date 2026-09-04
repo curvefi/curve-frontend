@@ -1,4 +1,3 @@
-import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
@@ -11,7 +10,8 @@ import CardMedia from '@mui/material/CardMedia'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { SizesAndSpaces } from '../design/1_sizes_spaces'
+import { TokenIcons } from '@ui/components/TokenIcons'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

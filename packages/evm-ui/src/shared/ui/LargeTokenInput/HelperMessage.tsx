@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import { BalanceAmount } from '@evm-ui/shared/ui/LargeTokenInput/BalanceAmount'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { decimal } from '@evm-ui/utils'
 import type { Theme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { BalanceButton } from './BalanceButton'
 
 const { Spacing, Sizing } = SizesAndSpaces

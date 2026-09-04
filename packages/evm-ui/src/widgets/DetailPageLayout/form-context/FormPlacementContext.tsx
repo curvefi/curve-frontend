@@ -1,6 +1,6 @@
 import { createContext, use } from 'react'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { assert } from '@primitives/objects.utils'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import type { FormPlacement } from '../types'
 
 export const FormPlacementContext = createContext<FormPlacement | undefined>(undefined)

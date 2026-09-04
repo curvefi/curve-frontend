@@ -1,7 +1,7 @@
-import { t } from '@evm-ui/lib/i18n'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { AddressCell, TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import type { Address } from '@primitives/address.utils'
+import { t } from '@ui/lib/i18n'
 import { AmountCell } from '../cells/AmountCell'
 import { getTokenAmountColumnId, RecentRefuelsColumnId } from './columns.enum'
 

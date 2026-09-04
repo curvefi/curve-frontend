@@ -1,9 +1,9 @@
 import type { CallExceptionError } from 'ethers'
-import { t } from '@evm-ui/lib/i18n'
-import { ExclamationTriangleIcon } from '@evm-ui/shared/icons/ExclamationTriangleIcon'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
 import { type IconButtonProps } from '@mui/material/IconButton'
 import { notFalsy } from '@primitives/objects.utils'
+import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'
+import { t } from '@ui/lib/i18n'
 
 const getShortMessage = (error: Error | string | boolean) =>
   (error as Error).message || (error as CallExceptionError).reason || error.toString() || 'Unknown error'

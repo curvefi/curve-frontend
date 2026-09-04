@@ -1,12 +1,12 @@
 import { DetailInfoTradeRouteRoute } from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { type NetworkUrlParams, type PoolDataMapper, TokensNameMapper } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
-import { IndicatorIcon } from '@evm-ui/shared/icons/IndicatorIcon'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { IndicatorIcon } from '@ui/icons/IndicatorIcon'
+import { t } from '@ui/lib/i18n'
 
 export const RoutesActionInfo = ({
   params,

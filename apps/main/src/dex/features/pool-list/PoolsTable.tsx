@@ -1,8 +1,6 @@
 import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import { useIsMobile, useIsTablet } from '@evm-ui/hooks/useBreakpoints'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t } from '@evm-ui/lib/i18n'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
@@ -12,9 +10,12 @@ import { TableFiltersOverlay } from '@evm-ui/shared/ui/DataTable/TableFiltersOve
 import { TableHeader } from '@evm-ui/shared/ui/DataTable/TableHeader'
 import { TableSortDrawer } from '@evm-ui/shared/ui/DataTable/TableSortDrawer'
 import { TableVisibilitySettingsPopover } from '@evm-ui/shared/ui/DataTable/TableVisibilitySettingsPopover'
-import { CURVE_SOCIALS } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
+import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
+import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 import { POOL_COLUMNS, PoolColumnId } from './columns'
 import { PoolExpandedPanel } from './components/PoolExpandedPanel'
 import { PoolExpandedPanelActions } from './components/PoolExpandedPanelActions'
@@ -36,7 +37,7 @@ const POOL_EXPANDED_PANEL_BODIES = {
 } satisfies Record<PoolColumnVariant, ExpandedPanelComponent<PoolRow>>
 
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
-  const isLite = network.isLite
+  const isLite = isLiteChain(network.chainId)
   const isMobile = useIsMobile()
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)

@@ -1,16 +1,16 @@
 import { type ElementType, useCallback, useState } from 'react'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t } from '@evm-ui/lib/i18n'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { getBoundaryErrorSubtitle } from '@evm-ui/utils/errors'
-import { ERROR_IMAGE_URL } from '@legacy-ui/utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { RouterLink } from '@ui/components/RouterLink'
 import { persister, queryClient } from '@ui/features/queries/query-client'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
+import { ERROR_IMAGE_URL } from '@ui/lib/resource.constants'
 
 const { MinHeight, MaxWidth, Spacing } = SizesAndSpaces
 

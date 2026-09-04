@@ -4,24 +4,22 @@ import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPri
 import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { useCombinedQueries } from '@evm-ui/lib'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { timeOptions, type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
+import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
-  ChartStateWrapper,
-  ChartFooter,
-  type LegendItem,
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
+  ChartFooter,
+  type ChartLineDashPattern,
+  ChartStateWrapper,
   EChartsLineChart,
   formatChartAxisNumber,
-  type ChartLineDashPattern,
+  type LegendItem,
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { CRVUSD_ADDRESS, TIME_OPTION_MS } from '@evm-ui/utils'
+import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { formatDate } from '@legacy-ui/utils'
 import { CardContent, Stack } from '@mui/material'
@@ -31,6 +29,9 @@ import { useTheme } from '@mui/material/styles'
 import { Chain } from '@primitives/network.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
+import { TIME_OPTION_MS } from '@ui/utils/time'
 import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces

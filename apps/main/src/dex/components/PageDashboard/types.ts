@@ -65,7 +65,6 @@ export type FormStatus = {
 
 export type DashboardTableRowProps = {
   rChainId: ChainId
-  isLite: boolean
   blockchainId: string
   tableLabel: TableLabel
   formValues: FormValues

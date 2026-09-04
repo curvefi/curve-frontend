@@ -1,6 +1,6 @@
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { applySxProps, type SxProps } from '@evm-ui/utils'
 import { styled } from '@mui/material/styles'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { applySxProps, type SxProps } from '@ui/utils/mui'
 
 const { IconSize } = SizesAndSpaces
 

@@ -539,8 +539,6 @@ __metadata:
     "@curvefi/legacy-ui": "workspace:^"
     "@curvefi/llamalend-api": "npm:2.5.2"
     "@curvefi/ui": "workspace:^"
-    "@emotion/react": "npm:11.14.0"
-    "@emotion/styled": "npm:11.14.1"
     "@metamask/connect-evm": "npm:2.1.1"
     "@safe-global/safe-apps-provider": "npm:0.18.6"
     "@safe-global/safe-apps-sdk": "npm:9.1.0"
@@ -559,7 +557,6 @@ __metadata:
     echarts-for-react: "npm:3.0.6"
     external-rewards: "workspace:^"
     lightweight-charts: "npm:5.2.1"
-    lodash: "npm:4.18.1"
     storybook: "npm:10.5.10"
     viem: "npm:2.56.0"
     wagmi: "npm:3.7.7"
@@ -631,6 +628,8 @@ __metadata:
   dependencies:
     "@curvefi/prices-api": "workspace:^"
     "@curvefi/primitives": "workspace:^"
+    "@emotion/react": "npm:11.14.0"
+    "@emotion/styled": "npm:11.14.1"
     "@hookform/resolvers": "npm:5.4.0"
     "@mui/icons-material": "npm:9.4.0"
     "@mui/material": "npm:9.4.0"
@@ -647,6 +646,8 @@ __metadata:
     "@types/node": "npm:26.1.0"
     bignumber.js: "npm:9.3.1"
     immer: "npm:11.1.18"
+    lodash: "npm:*"
+    memoizee: "npm:*"
     react: "npm:19.2.8"
     react-dom: "npm:19.2.8"
     react-hook-form: "npm:7.86.0"
@@ -10614,7 +10615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.18.1, lodash@npm:^4.17.21, lodash@npm:^4.17.23, lodash@npm:^4.18.1":
+"lodash@npm:*, lodash@npm:^4.17.21, lodash@npm:^4.17.23, lodash@npm:^4.18.1":
   version: 4.18.1
   resolution: "lodash@npm:4.18.1"
   checksum: 10c0/757228fc68805c59789e82185135cf85f05d0b2d3d54631d680ca79ec21944ec8314d4533639a14b8bcfbd97a517e78960933041a5af17ecb693ec6eecb99a27
@@ -10791,7 +10792,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memoizee@npm:0.4.17, memoizee@npm:^0.4.17":
+"memoizee@npm:*, memoizee@npm:0.4.17, memoizee@npm:^0.4.17":
   version: 0.4.17
   resolution: "memoizee@npm:0.4.17"
   dependencies:

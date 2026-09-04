@@ -4,12 +4,12 @@ import { useChartLegendToggles, useChartTimeSettings, useLiquidationRange } from
 import type { OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '@evm-ui/features/candle-chart/types'
-import { t } from '@evm-ui/lib/i18n'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { QueryProp, Range } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { useLlammaOhlcChartData } from './useLlammaOhlcChartData'
 
 const { Height } = SizesAndSpaces

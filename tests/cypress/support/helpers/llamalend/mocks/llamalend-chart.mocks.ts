@@ -1,13 +1,13 @@
 import { oneAddress, oneFloat, oneInt, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
+import { range } from '@primitives/objects.utils'
 import {
   SECONDS_PER_DAY,
   SECONDS_PER_HOUR,
   SECONDS_PER_MINUTE,
   SECONDS_PER_MONTH,
   SECONDS_PER_WEEK,
-} from '@evm-ui/utils/time'
-import { range } from '@primitives/objects.utils'
+} from '@ui/utils/time'
 
 const MAX_OHLC_POINTS = 240
 const AGG_UNIT_SECONDS = {

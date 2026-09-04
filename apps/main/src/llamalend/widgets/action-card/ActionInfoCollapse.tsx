@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Collapse, { CollapseProps } from '@mui/material/Collapse'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ACTION_INFO_GROUP_SX } from './info-actions.helpers'
 
 const { Spacing } = SizesAndSpaces

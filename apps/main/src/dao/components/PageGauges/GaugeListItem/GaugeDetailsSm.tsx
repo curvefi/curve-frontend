@@ -2,12 +2,12 @@ import { styled } from 'styled-components'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
-import { t } from '@evm-ui/lib/i18n'
-import { shortenAddress, formatNumber } from '@evm-ui/utils'
+import { formatNumber, shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { ExternalLink } from '@legacy-ui/Link'
 import { formatDate, scanAddressPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
+import { t } from '@ui/lib/i18n'
 
 type GaugeDetailsSmProps = {
   gaugeData: GaugeFormattedData

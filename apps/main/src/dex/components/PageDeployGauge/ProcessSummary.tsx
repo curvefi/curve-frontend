@@ -2,8 +2,7 @@ import { styled } from 'styled-components'
 import { InfoBox } from '@/dex/components/PageDeployGauge/InfoBox'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
@@ -12,20 +11,19 @@ import { scanTxPath } from '@legacy-ui/utils'
 import Button from '@mui/material/Button'
 import { Chain } from '@primitives/network.utils'
 import { shortenString } from '@primitives/string.utils'
+import { RouterLink } from '@ui/components/RouterLink'
+import { t } from '@ui/lib/i18n'
 
-type Props = {
-  chainId: ChainId
-  isLite: boolean
-}
+type Props = { chainId: ChainId }
 
-export const ProcessSummary = ({ chainId, isLite }: Props) => {
+export const ProcessSummary = ({ chainId }: Props) => {
   const deploymentStatus = useStore(state => state.deployGauge.deploymentStatus)
   const linkPoolAddress = useStore(state => state.deployGauge.linkPoolAddress)
   const sideChainId = useStore(state => state.deployGauge.currentSidechain ?? Chain.Ethereum)
 
   return (
     <Box flex flexColumn>
-      {!isLite && (
+      {!isLiteChain(chainId) && (
         <Wrapper variant="secondary">
           <Content>
             <Step>

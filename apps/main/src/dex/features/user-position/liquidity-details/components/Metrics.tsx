@@ -1,11 +1,11 @@
 import type { ChainId } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { amount, formatToken } from '@evm-ui/utils'
 import Grid from '@mui/material/Grid'
 import { Chain } from '@primitives/network.utils'
 import { mapQuery } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 
 const { Spacing } = SizesAndSpaces

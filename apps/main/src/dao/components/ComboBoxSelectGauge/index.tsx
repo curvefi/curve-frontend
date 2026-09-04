@@ -11,10 +11,10 @@ import { useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { t } from '@evm-ui/lib/i18n'
 import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
 import { Chain } from '@primitives/network.utils'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { t } from '@ui/lib/i18n'
 
 export const ComboBoxGauges = ({
   disabled,

@@ -1,5 +1,5 @@
-import { t } from '@evm-ui/lib/i18n'
 import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { t } from '@ui/lib/i18n'
 
 export type Tab = 'web3' | 'native'
 

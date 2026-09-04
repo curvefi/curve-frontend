@@ -6,7 +6,6 @@ import { assert } from '@primitives/objects.utils'
 type DashboardContextType = {
   activeKey: string
   rChainId: ChainId
-  isLite: boolean
   curve: CurveApi | null
   chainId: ChainId | undefined
   signerAddress: string | undefined

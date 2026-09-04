@@ -1,6 +1,6 @@
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 
-export const LARGE_APY = 5000
+export const LARGE_RATE = 5000
 
 const MAIN_ROUTE = {
   ...DEX_ROUTES,
@@ -19,15 +19,10 @@ export const ROUTE = {
 } as const
 
 export const DEFAULT_NETWORK_CONFIG = {
-  useApi: true, // default to true when calling fetchPools
-  isLite: false,
-  isActiveNetwork: true,
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
   poolIsWrappedOnly: {}, // show only wrapped pool data
   swap: { fromAddress: '', toAddress: '' },
   swapCustomRouteRedirect: {},
-  showInSelectNetwork: true,
-  showRouterSwap: true,
   createQuickList: [],
   createDisabledTokens: [],
   stableswapFactory: false, // determines support in pool creation and gauge deployment
@@ -37,7 +32,6 @@ export const DEFAULT_NETWORK_CONFIG = {
   tricryptoFactory: false, // determines support in pool creation and gauge deployment
   fxswapFactory: false, // determines support in pool creation and gauge deployment
   hasFactory: false,
-  pricesApi: false,
 }
 
 // List of characters that are not allowed in pool names. See getPoolName() in @curvefi/api

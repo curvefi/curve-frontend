@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { TokenIcon } from '../TokenIcon'
+import { TokenIcon } from '@ui/components/TokenIcon'
 
 const meta: Meta<typeof TokenIcon> = {
   title: 'UI Kit/Widgets/TokenIcon',

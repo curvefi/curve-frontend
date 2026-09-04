@@ -1,11 +1,12 @@
-import { t } from '@evm-ui/lib/i18n'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
-import { formatNumber, type SxProps } from '@evm-ui/utils'
+import { formatNumber } from '@evm-ui/utils/number'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { t } from '@ui/lib/i18n'
+import type { SxProps } from '@ui/utils/mui'
 
 type NotionalCellData = {
   isLoading?: boolean // used for partial loading states e.g. notional rates

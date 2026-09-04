@@ -1,8 +1,8 @@
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
+import { Tooltip } from '@ui/components/Tooltip'
 import type { LegacyPoolRow } from '../types'
 
 export const LegacyUsdCell = ({ getValue }: CellContext<CurveTableFeatures, LegacyPoolRow, number | null>) => {

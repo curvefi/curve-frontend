@@ -10,9 +10,9 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useParams } from '@evm-ui/hooks/router'
-import { t } from '@evm-ui/lib/i18n'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import Button from '@mui/material/Button'
+import { RouterLink } from '@ui/components/RouterLink'
+import { t } from '@ui/lib/i18n'
 
 export const AddGaugeLink = ({
   chainId,

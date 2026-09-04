@@ -18,7 +18,7 @@ import {
   TABLET_BREAKPOINT,
 } from '@cy/support/ui'
 import { LEND_ROUTES } from '@evm-ui/shared/routes'
-import { TIME_FRAMES } from '@evm-ui/utils'
+import { TIME_FRAMES } from '@ui/utils/time'
 
 const BORDER = 1
 const EXPECTED_MAIN_NAV_HEIGHT = 40

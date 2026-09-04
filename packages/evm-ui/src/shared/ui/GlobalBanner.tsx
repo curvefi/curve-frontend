@@ -12,12 +12,12 @@ import {
   useDismissMoonbeamMigrationBanner,
   useReleaseChannel,
 } from '@evm-ui/hooks/useLocalStorage'
-import { t } from '@evm-ui/lib/i18n'
 import { getCurrentApp } from '@evm-ui/shared/routes'
 import { Banner } from '@evm-ui/shared/ui/Banner'
 import { PhishingWarningBanner } from '@evm-ui/widgets/Header/PhishingWarningBanner'
 import { formatDate } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
+import { t } from '@ui/lib/i18n'
 import { IS_CYPRESS, ReleaseChannel } from '@ui/utils/env'
 import { StackBanners } from './StackBanners'
 

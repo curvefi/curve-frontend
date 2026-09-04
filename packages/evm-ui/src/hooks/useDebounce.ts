@@ -1,7 +1,7 @@
 import { identity, isEqual, pick } from 'lodash'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Duration } from '@evm-ui/themes/design/0_primitives'
 import { objectKeys } from '@primitives/objects.utils'
+import { Duration } from '@ui/features/themes/design/0_primitives'
 
 type DebouncedValueOptions<T> = {
   defaultValue?: T

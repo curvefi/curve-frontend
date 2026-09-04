@@ -1,4 +1,4 @@
-import { LARGE_APY } from '@/dex/constants'
+import { LARGE_RATE } from '@/dex/constants'
 import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { formatNumber, amount } from '@evm-ui/utils'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
@@ -25,7 +25,7 @@ export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => 
       ) : (
         typeof base !== 'undefined' && (
           <>
-            {+base.day > LARGE_APY ? (
+            {+base.day > LARGE_RATE ? (
               <ChipVolatileBaseApy isBold={isHighlight} />
             ) : (
               <Chip

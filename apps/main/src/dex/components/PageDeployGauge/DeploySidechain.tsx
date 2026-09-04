@@ -3,19 +3,19 @@ import { styled } from 'styled-components'
 import { DialogSelect } from '@/dex/components/PageDeployGauge/components/DialogSelect'
 import { TextInput } from '@/dex/components/PageDeployGauge/components/TextInput'
 import {
-  TWOCOINCRYPTOSWAP,
-  THREECOINCRYPTOSWAP,
   STABLESWAP,
   STABLESWAPOLD,
+  THREECOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
 import type { PoolType } from '@/dex/components/PageDeployGauge/types'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
 import { Box } from '@legacy-ui/Box'
 import { Chain } from '@primitives/network.utils'
 import { maybe } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   chainId: ChainId

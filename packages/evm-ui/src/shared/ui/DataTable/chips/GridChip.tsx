@@ -1,7 +1,7 @@
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { getDefaultSelectableChipSize } from '@evm-ui/shared/ui/selectable-chip.utils'
-import { SelectableChip, type SelectableChipProps } from '@evm-ui/shared/ui/SelectableChip'
 import { type GridProps } from '@mui/material/Grid'
+import { SelectableChip, type SelectableChipProps } from '@ui/components/SelectableChip'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { ChipGridItem } from './ChipGridItem'
 
 /** A <GridItem> with a SelectableChip inside */

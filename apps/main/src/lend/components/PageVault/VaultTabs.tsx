@@ -4,8 +4,8 @@ import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
-import { t } from '@evm-ui/lib/i18n'
 import { FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import { t } from '@ui/lib/i18n'
 
 const VaultMenu = [
   {

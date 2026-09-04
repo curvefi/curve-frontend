@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 import { ethAddress } from 'viem'
-import { t } from '@evm-ui/lib/i18n'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
-import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
 import { decimal, shortenAddress } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { TokenLabel } from '@ui/components/TokenLabel'
 import { q, type QueryProp } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   idx: number

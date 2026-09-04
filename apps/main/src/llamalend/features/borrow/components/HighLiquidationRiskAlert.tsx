@@ -1,8 +1,8 @@
-import { t } from '@evm-ui/lib/i18n'
-import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
 import type { QueryProp } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 export const HighLiquidationRiskAlert = ({
   isHighLiquidationRisk: { data, isLoading, error },

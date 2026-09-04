@@ -1,9 +1,7 @@
 import { type ChangeEvent, type ComponentProps, useState } from 'react'
 import { fn } from 'storybook/test'
-import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { SliderInput } from '@evm-ui/shared/ui/SliderInput'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils/number'
 import { CheckboxField } from '@evm-ui/widgets/DetailPageLayout/CheckboxField'
 import { Typography } from '@mui/material'
@@ -11,6 +9,8 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 

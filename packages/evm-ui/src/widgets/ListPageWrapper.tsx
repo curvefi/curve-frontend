@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { useIsTiny } from '@evm-ui/hooks/useBreakpoints'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsTiny } from '@ui/hooks/useBreakpoints'
 
 const { Spacing, MaxWidth, MinHeight } = SizesAndSpaces
 

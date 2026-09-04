@@ -1,10 +1,10 @@
-import { ChainIcon } from '@evm-ui/shared/icons/ChainIcon'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { IconStack } from '../IconStack'
-import { TokenIcon } from '../TokenIcon'
+import { IconStack } from '@ui/components/IconStack'
+import { TokenIcon } from '@ui/components/TokenIcon'
+import { ChainIcon } from '@ui/icons/ChainIcon'
 
 const BLOCKCHAIN_IDS = [
   'ethereum',

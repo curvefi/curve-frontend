@@ -34,16 +34,17 @@ import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { useLocation } from '@evm-ui/hooks/router'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
-import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { isAddressEqual } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui/utils/time'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
@@ -155,7 +156,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const defaultTab = (state as PoolRouteState).defaultTab
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const { blockchainId, isLite, pricesApi } = network
+  const { blockchainId } = network
   const poolAddress = poolData?.pool.address as Address
   const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
@@ -242,10 +243,12 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           poolDataCacheOrApi={poolDataCacheOrApi}
           poolId={poolId}
         />
-        {!isLite && pricesApiPoolData && pricesApi && (
+        {!isLiteChain(network.chainId) && pricesApiPoolData && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
-        {pricesApi && <PoolHistoricalBaseRateChart blockchainId={network.blockchainId} poolAddress={poolAddress} />}
+        {!isLiteChain(network.chainId) && (
+          <PoolHistoricalBaseRateChart blockchainId={network.blockchainId} poolAddress={poolAddress} />
+        )}
         <PoolInformation
           curve={curve}
           routerParams={routerParams}

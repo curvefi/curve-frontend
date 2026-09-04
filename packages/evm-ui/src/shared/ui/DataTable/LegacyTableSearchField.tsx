@@ -1,12 +1,12 @@
 import { useCallback, useRef } from 'react'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { SearchIcon } from '@evm-ui/shared/icons/SearchIcon'
 import { SearchField } from '@evm-ui/shared/ui/SearchField'
-import { Duration, TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import { notFalsy } from '@primitives/objects.utils'
+import { Duration, TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { SearchIcon } from '@ui/icons/SearchIcon'
 import { LegacyTableButton } from './LegacyTableButton'
 
 const { ButtonSize } = SizesAndSpaces

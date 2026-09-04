@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
-import { t, Trans } from '@evm-ui/lib/i18n'
+import { t, Trans } from '@ui/lib/i18n'
 
 export type PositionStatusContent = {
   title: string

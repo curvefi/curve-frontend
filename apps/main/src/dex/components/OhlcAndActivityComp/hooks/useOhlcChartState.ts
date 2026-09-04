@@ -8,8 +8,8 @@ import { useChartTimeSettings } from '@evm-ui/features/candle-chart/hooks/useCha
 import { useDexChartList } from '@evm-ui/features/candle-chart/hooks/useDexChartList'
 import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
 import type { LpPriceOhlcDataFormatted } from '@evm-ui/features/candle-chart/types'
-import { t } from '@evm-ui/lib/i18n'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { Height } = SizesAndSpaces
 

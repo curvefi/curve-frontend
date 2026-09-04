@@ -1,6 +1,6 @@
-import { t } from '@evm-ui/lib/i18n'
 import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
 import { createRootRoute } from '@tanstack/react-router'
+import { t } from '@ui/lib/i18n'
 import { NetworkAwareLayout } from './RootLayout'
 
 export const rootRoute = createRootRoute({

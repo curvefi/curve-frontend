@@ -13,14 +13,15 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
-import { t } from '@evm-ui/lib/i18n'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { shortenAddress } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Button } from '@legacy-ui/Button'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { scanTxPath } from '@legacy-ui/utils'
 import MuiButton from '@mui/material/Button'
+import { RouterLink } from '@ui/components/RouterLink'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   disabled: boolean
@@ -32,7 +33,7 @@ type Props = {
 export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
   const { data: networks } = useNetworks()
   const { haveSigner } = curveProps(curve, networks)
-  const isLite = networks[chainId]?.isLite ?? false
+  const isLite = isLiteChain(chainId)
   const lpTokenAddress = useStore(state => state.deployGauge.lpTokenAddress)
   const currentPoolType = useStore(state => state.deployGauge.currentPoolType)
   const sidechainGauge = useStore(state => state.deployGauge.sidechainGauge)

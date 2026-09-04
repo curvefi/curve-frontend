@@ -1,19 +1,21 @@
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
-import { t } from '@evm-ui/lib/i18n'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { Metric, type MetricProps } from '@evm-ui/shared/ui/Metric'
-import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { decimal, formatCappedRateValue, relativeTime } from '@evm-ui/utils'
+import { decimal } from '@evm-ui/utils/decimal'
+import { formatCappedRateValue } from '@evm-ui/utils/rates'
 import { formatDate } from '@legacy-ui/utils'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
-import { NetApyTooltipContent } from '../cells/NetApyTooltipContent'
+import { TokenLabel } from '@ui/components/TokenLabel'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
+import { relativeTime } from '@ui/utils/time'
+import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { RewardIcons } from '../cells/RewardIcons'
-import { getBaseApy, getNetApy, isVolatileApy } from '../cells/utils'
+import { getBaseApr, getNetApr, isVolatileRate } from '../cells/utils'
 import { POOL_TITLES, PoolColumnId } from '../columns'
 import type { PoolColumnVariant } from '../hooks/usePoolsVisibility'
 import type { PoolRow } from '../types'
@@ -76,30 +78,30 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
 export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
   const pool = row.original
   const currentDate = useCurrentDate()
-  const baseApy = getBaseApy(pool, 'daily')
-  const netApy = getNetApy(pool)
-  const volatileBaseApy = isVolatileApy(baseApy)
+  const baseRate = getBaseApr(pool, 'daily')
+  const netRate = getNetApr(pool)
+  const volatileBaseRate = isVolatileRate(baseRate)
 
   return (
     <Grid container spacing={Spacing.md}>
       <Grid size={PRIMARY_METRIC_SIZE}>
         <Metric
           category={PRIMARY_METRIC_CATEGORY}
-          label={POOL_TITLES[PoolColumnId.NetApy]}
-          value={netApy || null}
-          valueOptions={getRateValueOptions(netApy, { volatile: volatileBaseApy })}
+          label={POOL_TITLES[PoolColumnId.NetRate]}
+          value={netRate || null}
+          valueOptions={getRateValueOptions(netRate, { volatile: volatileBaseRate })}
           valueTooltip={
-            netApy
+            netRate
               ? {
-                  body: <NetApyTooltipContent pool={pool} volatile={volatileBaseApy} />,
+                  body: <NetRateTooltipContent pool={pool} volatile={volatileBaseRate} />,
                   clickable: true,
                   placement: 'top',
-                  title: t`Net APY`,
+                  title: t`Net APR`,
                 }
               : undefined
           }
           icon={<RewardIcons pool={pool} includeCrv includePoints tooltipPlacement="top" />}
-          testId="pool-net-apy"
+          testId="pool-net-rate"
         />
       </Grid>
       {variant === 'full' && (

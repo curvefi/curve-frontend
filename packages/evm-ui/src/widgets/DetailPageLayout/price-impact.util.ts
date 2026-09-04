@@ -1,8 +1,8 @@
-import { t } from '@evm-ui/lib/i18n'
 import { decimalGreaterThan } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Query } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { SLIPPAGE, type SlippageType } from '../SlippageSettings/slippage.utils'
 
 /** Threshold above which price impact blocks the transaction (shown as red alert) */

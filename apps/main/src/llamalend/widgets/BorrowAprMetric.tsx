@@ -1,11 +1,11 @@
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
-import { t } from '@evm-ui/lib/i18n'
 import { Metric, type MetricProps } from '@evm-ui/shared/ui/Metric'
 import type { MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory, formatCappedRateValue } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips'
 

@@ -21,11 +21,11 @@ import {
 import type { TokenState } from '@/dex/components/PageCreatePool/types'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
 import { shortenAddress } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { isAddress } from '@primitives/address.utils'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   chainId: ChainId

@@ -12,6 +12,8 @@
   "dependencies": {
     "@curvefi/prices-api": "workspace:^",
     "@curvefi/primitives": "workspace:^",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
     "@hookform/resolvers": "5.4.0",
     "@mui/icons-material": "9.4.0",
     "@mui/material": "9.4.0",
@@ -27,6 +29,8 @@
     "@tanstack/react-table": "9.2.4",
     "bignumber.js": "9.3.1",
     "immer": "11.1.18",
+    "lodash": "*",
+    "memoizee": "*",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "7.86.0"

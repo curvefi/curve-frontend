@@ -9,17 +9,18 @@ import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-rewar
 import { ChainId } from '@/dex/types/main.types'
 import { FormButton, useForm, useFormSync } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { createValidationSuite } from '@evm-ui/lib/validation'
 import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { decimalMultiply, formatNumber, TIME_FRAMES } from '@evm-ui/utils'
+import { decimalMultiply, formatNumber } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Stack from '@mui/material/Stack'
 import { maybes } from '@primitives/objects.utils'
 import { q } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
+import { TIME_FRAMES } from '@ui/utils/time'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { useFormContext } from '@evm-ui/features/forms'
-import { t } from '@evm-ui/lib/i18n'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { TIME_FRAMES } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
+import { TIME_FRAMES } from '@ui/utils/time'
 
 const { Spacing } = SizesAndSpaces
 

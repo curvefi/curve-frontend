@@ -6,7 +6,6 @@ import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/ll
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { combineQueries } from '@evm-ui/lib'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import {
   CHART_LINE_DASH_PATTERNS,
@@ -18,7 +17,6 @@ import {
   type LineSeriesConfig,
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketType } from '@evm-ui/types/market'
 import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@evm-ui/utils'
 import { CardContent, Stack } from '@mui/material'
@@ -28,6 +26,8 @@ import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../features/market-context'
 import { MarketCardHeader } from './MarketCardHeader'
 

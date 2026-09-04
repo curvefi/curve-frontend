@@ -5,16 +5,17 @@ import { networks as lendNetworks } from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
 import { useLlamalendRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
 import { networks as crvusdNetworks } from '@/loan/networks'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
-import { t } from '@evm-ui/lib/i18n'
 import { APP_LINK, AppMenuOption, type AppName, LlamalendApps } from '@evm-ui/shared/routes'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
 import { Footer } from '@evm-ui/widgets/Footer'
 import { Header } from '@evm-ui/widgets/Header'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { MinHeight } = SizesAndSpaces
 
@@ -75,7 +76,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       blockchainId={network.blockchainId}
       currentMenu={getAppMenu(currentApp)}
       supportedNetworks={getSupportedNetworks(networks, currentApp)}
-      isLite={network.isLite}
+      isLite={isLiteChain(network.chainId)}
       appStats={useAppStats(currentApp, network)}
       routes={useAppRoutes(network)}
     />

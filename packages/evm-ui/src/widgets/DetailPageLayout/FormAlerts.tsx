@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { usePreviousValue } from '@evm-ui/hooks/usePreviousValue'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t } from '@evm-ui/lib/i18n'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
-import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber, getErrorMessage } from '@evm-ui/utils'
 import {
   getPriceImpactSeverity,
@@ -22,7 +18,11 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { type QueryProp } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
 
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 

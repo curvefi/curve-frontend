@@ -24,15 +24,10 @@ type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
 export type NetworkConfig = {
-  isLite: boolean
   isCrvRewardsEnabled: boolean
-  useApi: boolean
   poolIsWrappedOnly: Record<string, boolean>
   poolFilters: string[]
-  isActiveNetwork: boolean
   swap: Record<string, string>
-  showInSelectNetwork: boolean
-  showRouterSwap: boolean
   swapCustomRouteRedirect: Record<string, string>
   createQuickList: {
     address: string
@@ -47,7 +42,6 @@ export type NetworkConfig = {
   tricryptoFactory: boolean
   fxswapFactory: boolean
   hasFactory: boolean
-  pricesApi: boolean
 } & NetworkDef<NetworkEnum>
 
 export type Networks = Record<ChainId, NetworkConfig>

@@ -1,9 +1,9 @@
 import { Fragment } from 'react'
 import { styled } from 'styled-components'
-import { t } from '@evm-ui/lib/i18n'
 import { ExternalLink } from '@legacy-ui/Link'
 import { Chain } from '@primitives/network.utils'
 import { maybe, type PartialRecord } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 
 const MISSING_POOLS: PartialRecord<number, { name: string; url: string }[]> = {
   [Chain.Ethereum]: [

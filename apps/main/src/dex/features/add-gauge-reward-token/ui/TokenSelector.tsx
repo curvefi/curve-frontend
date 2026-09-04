@@ -9,14 +9,14 @@ import { toTokenOption } from '@/dex/utils'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useFormContext } from '@evm-ui/features/forms'
 import { TokenList, TokenSelector as TokenSelectorUIKit } from '@evm-ui/features/select-token'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t } from '@evm-ui/lib/i18n'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { isAddressEqual, ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import type { Address } from '@primitives/address.utils'
 import { notFalsy, objectKeys } from '@primitives/objects.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 

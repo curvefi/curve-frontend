@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { Sortable } from '@evm-ui/shared/ui/DataTable/Sortable'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { borderStyle } from '@evm-ui/utils'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
 import { flexRender, type Header, type RowData } from '@tanstack/react-table'
-import { Tooltip } from '../Tooltip'
+import { Tooltip } from '@ui/components/Tooltip'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { borderStyle } from '@ui/utils/mui'
 import { type CurveTableFeatures, getAlignment, type DataTableSize, EXTRA_COLUMN_PADDING } from './data-table.utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
