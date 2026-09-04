@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
-import type { Address } from 'viem'
-import { isAddress, isAddressEqual } from '@primitives/address.utils'
+import { type Address, isAddress, isAddressEqual } from '@primitives/address.utils'
 import { useStore } from '../store/useStore'
 
 /**
@@ -19,14 +18,14 @@ export function usePoolIdByAddressOrId({ chainId, poolIdOrAddress }: { chainId: 
 
     // Check current pool data first
     const currentMatch = Object.values(poolData ?? {}).find(({ pool: { address } }) =>
-      isAddressEqual(address as Address, poolIdOrAddress as Address),
+      isAddressEqual(address as Address, poolIdOrAddress),
     )
 
     if (currentMatch) return currentMatch.pool.id
 
     // Fallback to cached pool data
     const cachedMatch = Object.values(poolDataCache ?? {}).find(({ pool: { address } }) =>
-      isAddressEqual(address as Address, poolIdOrAddress as Address),
+      isAddressEqual(address as Address, poolIdOrAddress),
     )
 
     return cachedMatch?.pool?.id

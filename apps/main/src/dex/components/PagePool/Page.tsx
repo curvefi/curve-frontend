@@ -12,7 +12,7 @@ import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useNavigate, useParams } from '@evm-ui/hooks/router'
 import { ErrorPage } from '@evm-ui/pages/ErrorPage'
-import { type Address, isAddress, isAddressEqual } from '@primitives/address.utils'
+import { isAddress, isAddressEqual } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
 
 export const PagePool = () => {
@@ -56,8 +56,7 @@ export const PagePool = () => {
    */
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
-    () =>
-      isAddress(rPoolIdOrAddress) && blacklist?.some(badPool => isAddressEqual(badPool, rPoolIdOrAddress as Address)),
+    () => isAddress(rPoolIdOrAddress) && blacklist?.some(badPool => isAddressEqual(badPool, rPoolIdOrAddress)),
     [blacklist, rPoolIdOrAddress],
   )
 
