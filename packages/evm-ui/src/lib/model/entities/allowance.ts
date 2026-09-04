@@ -1,7 +1,7 @@
 import { erc20Abi, maxUint256 } from 'viem'
-import { queryClient } from '@evm-ui/lib/api'
 import type { ChainQuery, UserQuery } from '@evm-ui/lib/model'
 import type { Address } from '@primitives/address.utils'
+import { queryClient } from '@ui/features/queries/query-client'
 import type { Config } from '@wagmi/core'
 import { writeContract } from '@wagmi/core'
 import { readContractQueryOptions } from '@wagmi/core/query'

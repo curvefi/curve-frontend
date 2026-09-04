@@ -28,7 +28,6 @@ import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { q, toQuery } from '@evm-ui/types/util'
 import { decimal, formatNumber, REFRESH_INTERVAL } from '@evm-ui/utils'
 import { HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
@@ -45,6 +44,7 @@ import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { q, toQuery } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

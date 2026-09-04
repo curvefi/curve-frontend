@@ -2,10 +2,10 @@ import type { MarketToken } from '@/llamalend/llama.utils'
 import type { RouteResponse } from '@evm-ui/entities/router-api'
 import { combineQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { q, type QueryProp } from '@evm-ui/types/util'
 import { decimalMultiply, fromWei } from '@evm-ui/utils'
 import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { assert, maybe } from '@primitives/objects.utils'
+import { q, type QueryProp } from '@ui/features/queries/util'
 import { calculatePriceImpact } from './useMarketRoutes'
 
 export const usePriceImpact = (

@@ -6,9 +6,9 @@ import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptio
 import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { AVERAGE_CATEGORIES, formatCappedRateValue } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const METRIC_CATEGORY = 'llamalend.marketHeader'

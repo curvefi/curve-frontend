@@ -5,7 +5,7 @@ import type { DeploymentType, GaugeType, PoolType, PoolTypes } from '@/dex/compo
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { getChainName, isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { getChainName, isTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { shortenString } from '@primitives/string.utils'
 import { getNetworks } from '../entities/networks'
@@ -109,7 +109,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
               twoCryptoNg: chain.twocryptoFactory,
               threeCrypto: chain.tricryptoFactory,
             },
-            isTestnet: isChainTestnet(chain.chainId),
+            isTestnet: isTestnet(chain.chainId),
             isCrvRewardsEnabled: chain.isCrvRewardsEnabled,
           }
         }

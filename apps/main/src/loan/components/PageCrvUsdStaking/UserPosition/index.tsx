@@ -8,10 +8,10 @@ import { combineQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery } from '@evm-ui/types/util'
 import { decimal, decimalDiv, decimalPercent } from '@evm-ui/utils'
 import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
+import { mapQuery } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,10 +1,9 @@
 import { t } from '@evm-ui/lib/i18n'
-import type { QueryProp } from '@evm-ui/types/util'
-import { mapQuery } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import type { Decimal } from '@primitives/decimal.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 
 export const DetailInfoPriceImpact = ({ priceImpact }: { priceImpact: QueryProp<Decimal | null> }) => (
   <PriceImpactActionInfo

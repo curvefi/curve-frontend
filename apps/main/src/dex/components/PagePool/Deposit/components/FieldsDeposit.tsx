@@ -13,10 +13,10 @@ import type { CurrencyReserves } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { t } from '@evm-ui/lib/i18n'
-import { mapQuery } from '@evm-ui/types/util'
 import { decimal } from '@evm-ui/utils'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import type { Address } from '@primitives/address.utils'
+import { mapQuery } from '@ui/features/queries/util'
 import { Amount } from '../../utils'
 
 /**

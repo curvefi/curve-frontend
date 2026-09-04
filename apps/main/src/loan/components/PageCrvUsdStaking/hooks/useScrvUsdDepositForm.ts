@@ -7,7 +7,7 @@ import { type ScrvUsdDepositForm, scrvUsdDepositFormValidationSuite } from '@/lo
 import { type ChainId } from '@/loan/types/loan.types'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
-import { mapQuery } from '@evm-ui/types/util'
+import { mapQuery } from '@ui/features/queries/util'
 
 const userDefaultValues = { depositAmount: undefined, approveInfinite: false }
 

@@ -5,8 +5,8 @@ import { useFormSync } from '@evm-ui/features/forms'
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { queryMinimum } from '@evm-ui/lib'
-import { q } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
+import { q } from '@ui/features/queries/util'
 
 export function useMaxDepositTokenValues<ChainId extends LlamaChainId>({
   params,

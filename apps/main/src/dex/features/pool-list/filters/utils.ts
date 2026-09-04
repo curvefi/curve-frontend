@@ -1,8 +1,8 @@
 import type { ListPoolsParams, V2PoolFilterType } from '@curvefi/prices-api/pools'
 import { t } from '@evm-ui/lib/i18n'
 import { parseRangeFilter } from '@evm-ui/shared/ui/DataTable/filters'
-import type { Range } from '@evm-ui/types/util'
 import { maybe } from '@primitives/objects.utils'
+import type { Range } from '@ui/features/queries/util'
 
 // Omitted "main" and "factory" from available filters.
 export const POOL_TYPE_FILTERS = [

@@ -1,10 +1,10 @@
 import type { EChartsOption, SeriesOption } from 'echarts'
 import { createChartSeriesColorScale, createChartSeriesSurfaceColorScale } from '@evm-ui/shared/ui/Chart/chart.utils'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
-import type { DeepPartial } from '@evm-ui/types/util'
 import type { Theme } from '@mui/material/styles'
 import { toArray } from '@primitives/array.utils'
 import { mapRecord } from '@primitives/objects.utils'
+import type { DeepPartial } from '@ui/features/queries/util'
 
 /** Recursively merges objects, with source properties taking precedence over the target. */
 const deepMerge = <T>(target: T, source: DeepPartial<T>): T => ({

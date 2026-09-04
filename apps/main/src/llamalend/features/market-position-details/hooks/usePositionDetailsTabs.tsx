@@ -4,8 +4,8 @@ import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-positi
 import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { MarketRateType } from '@evm-ui/types/market'
-import type { QueryProp } from '@evm-ui/types/util'
 import Stack from '@mui/material/Stack'
+import type { QueryProp } from '@ui/features/queries/util'
 import { BorrowPositionDetails } from '../BorrowPositionDetails'
 import { MarketEmptyPosition } from '../MarketEmptyPosition'
 

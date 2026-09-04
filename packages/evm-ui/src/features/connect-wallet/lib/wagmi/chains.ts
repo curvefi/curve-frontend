@@ -38,7 +38,7 @@ import {
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
-import { CHAIN_NAMES } from './constants'
+import { CHAIN_BLOCKCHAIN_IDS, CHAIN_NAMES } from './constants'
 import { expchain, megaeth, strata } from './custom-chains'
 
 const wagmiChains = [
@@ -100,7 +100,9 @@ export const DOWNGRADED_CHAINS = new Set<number>(
 const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
 
 export const isChainConfigured = (chainId: number) => !!wagmiChainsMap[chainId]
-export const isChainTestnet = (chainId: number) => !!wagmiChainsMap[chainId]?.testnet
+export const isTestnet = (chainId: number) => !!wagmiChainsMap[chainId]?.testnet
+export const isLiteChain = (chainId: number) =>
+  !Object.hasOwn(CHAIN_BLOCKCHAIN_IDS, chainId) || DOWNGRADED_CHAINS.has(chainId)
 
 export const getChainName = (chainId: number) =>
   CHAIN_NAMES[chainId] ?? wagmiChainsMap[chainId]?.name ?? `Chain ${chainId}`

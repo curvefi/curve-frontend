@@ -2,9 +2,6 @@ import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { Chain } from '@primitives/network.utils'
 import { assert } from '@primitives/objects.utils'
 
-// TODO: remove this re-export after callers migrate to @primitives/network.utils
-export { Chain }
-
 /**
  * Maps numeric chain IDs to prices API blockchain identifiers.
  * Not all chains are supported by the prices API, so this is a partial mapping.

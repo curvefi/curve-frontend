@@ -5,9 +5,9 @@ import type { ChainId } from '@/loan/types/loan.types'
 import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery } from '@evm-ui/types/util'
 import { weiToEther } from '@evm-ui/utils'
 import Grid from '@mui/material/Grid'
+import { mapQuery } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

@@ -2,6 +2,7 @@ import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { Box } from '@legacy-ui/Box'
 import { Th, Thead, TheadSortButton } from '@legacy-ui/Table'
@@ -10,7 +11,7 @@ import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@legacy-ui/utils'
 
 export const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
-  const { isLite, isLoading, formValues, updateFormValues } = useDashboardContext()
+  const { rChainId: chainId, isLoading, formValues, updateFormValues } = useDashboardContext()
 
   const handleBtnClickSort = (sortBy: string, sortByOrder: Order) => {
     updateFormValues({ sortBy: sortBy as SORT_ID, sortByOrder })
@@ -44,7 +45,7 @@ export const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
           </Th>
 
           <Th className="right">
-            {isLite ? (
+            {isLiteChain(chainId) ? (
               <TheadSortButton sortIdKey={SORT_ID.rewardOthers} nowrap {...props}>
                 {t`Rewards tAPR`} <IconTooltip placement="top">{OTHERS_TOOLTIP}</IconTooltip>
               </TheadSortButton>

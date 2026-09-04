@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "types": ["node"],
     "paths": {
       "@/*": ["./src/*"],
       "@ui": ["../../packages/ui/src/index.ts"],

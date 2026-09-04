@@ -3,8 +3,8 @@ import { type CrvUsdSnapshot, useCrvUsdSnapshots } from '@evm-ui/entities/crvusd
 import { type LendingSnapshot, useLendingSnapshots } from '@evm-ui/entities/lending-snapshots'
 import type { SnapshotRange } from '@evm-ui/lib/model/query/time-option-validation'
 import { MarketType } from '@evm-ui/types/market'
-import type { Query } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
+import type { Query } from '@ui/features/queries/util'
 
 type SnapshotByMarketType = {
   [MarketType.Lend]: LendingSnapshot

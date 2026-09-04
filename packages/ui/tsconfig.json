@@ -1,9 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "types": ["node"],
     "paths": {
+      "@ui": ["./src/index.ts"],
+      "@ui/*": ["./src/*"],
       "@primitives/*": ["../primitives/src/*"]
     }
   },
-  "include": ["src/**/*.d.ts"]
+  "include": ["src"]
 }

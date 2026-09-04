@@ -14,10 +14,10 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
 import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { fakeLoadingQ, mapQuery } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
+import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
 
 type UsePoolActivityProps = {
   chainId: ChainId

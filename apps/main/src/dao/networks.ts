@@ -1,22 +1,19 @@
 import { ChainId, NetworkConfig, NetworkEnum } from '@/dao/types/dao.types'
-import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
+import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
+import { Chain } from '@primitives/network.utils'
 
-const DEFAULT_NETWORK_CONFIG = { isActiveNetwork: true, showInSelectNetwork: true }
-
-export const { networks, networksIdMapper } = Object.entries(NETWORK_BASE_CONFIG).reduce(
+export const { networks, networksIdMapper } = Object.entries({
+  [Chain.Ethereum]: CHAIN_BLOCKCHAIN_IDS[Chain.Ethereum],
+}).reduce(
   (
     mapper,
-    [key, config],
+    [key, blockchainId],
   ): {
     networks: Record<ChainId, NetworkConfig>
     networksIdMapper: Record<NetworkEnum, ChainId>
   } => {
     const chainId = +key
-    const networkConfig = {
-      ...getBaseNetworksConfig<NetworkEnum, ChainId>(chainId, config),
-      ...DEFAULT_NETWORK_CONFIG,
-      showInSelectNetwork: chainId === 1,
-    }
+    const networkConfig = { chainId, blockchainId }
     mapper.networks[chainId] = networkConfig
     mapper.networksIdMapper[networkConfig.blockchainId] = chainId
     return mapper

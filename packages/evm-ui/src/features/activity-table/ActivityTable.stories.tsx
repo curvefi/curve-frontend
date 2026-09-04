@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { fromDate } from '@curvefi/prices-api/timestamp'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { constQ, fakeLoadingQ, q } from '@evm-ui/types/util'
-import { Chain } from '@evm-ui/utils'
 import type { Address, Token } from '@primitives/address.utils'
+import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { constQ, fakeLoadingQ, q } from '@ui/features/queries/util'
 import { ActivityTable } from './ActivityTable'
 import {
   createPoolLiquidityColumns,

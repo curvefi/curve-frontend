@@ -22,11 +22,11 @@ type FooterCellProps = FooterRowProps & { columnId: YieldBreakdownColumnId }
 const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellProps) => ReactNode> = {
   [YieldBreakdownColumnId.Source]: ({ columnId }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md }}>
-      <Typography variant="tableCellMBold">{t`Total APY`}</Typography>
+      <Typography variant="tableCellMBold">{t`Total APR`}</Typography>
     </TableCell>
   ),
   [YieldBreakdownColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
-  [YieldBreakdownColumnId.Apy]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
+  [YieldBreakdownColumnId.Rate]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
       {!!maxBoostTotal && maxBoostTotal != total && (
