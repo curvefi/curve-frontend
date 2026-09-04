@@ -124,34 +124,6 @@ export type PoolData = {
 }
 
 export type PoolDataMapper = Record<string, PoolData>
-export type PoolDataCache = {
-  gauge: Gauge
-  hasWrapped: boolean
-  hasVyperVulnerability: boolean
-  tokenAddresses: string[]
-  tokenAddressesAll: string[]
-  tokenDecimalsAll: number[]
-  tokens: string[]
-  tokensCountBy: Record<string, number>
-  tokensAll: string[]
-  tokensLowercase: string[]
-  pool: {
-    id: string
-    name: string
-    address: string
-    gauge: { address: string }
-    lpToken: string
-    isCrypto: boolean
-    isNg: boolean
-    isFactory: boolean
-    isLending: boolean
-    implementation: string
-    referenceAsset: string
-  }
-}
-export type PoolDataCacheMapper = Record<string, PoolDataCache>
-export type PoolDataCacheOrApi = PoolData | PoolDataCache
-
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
 export type PoolAlert = {

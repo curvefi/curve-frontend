@@ -8,7 +8,6 @@ import { useStore } from '../store/useStore'
  */
 export function usePoolIdByAddressOrId({ chainId, poolIdOrAddress }: { chainId: number; poolIdOrAddress: string }) {
   const poolData = useStore(state => state.pools.poolsMapper[chainId])
-  const poolDataCache = useStore(state => state.storeCache.poolsMapper[chainId])
 
   return useMemo(() => {
     // If not an address format, assume it's already a pool ID
@@ -22,12 +21,5 @@ export function usePoolIdByAddressOrId({ chainId, poolIdOrAddress }: { chainId: 
     )
 
     if (currentMatch) return currentMatch.pool.id
-
-    // Fallback to cached pool data
-    const cachedMatch = Object.values(poolDataCache ?? {}).find(({ pool: { address } }) =>
-      isAddressEqual(address as Address, poolIdOrAddress),
-    )
-
-    return cachedMatch?.pool?.id
-  }, [poolIdOrAddress, poolData, poolDataCache])
+  }, [poolIdOrAddress, poolData])
 }

@@ -20,16 +20,14 @@ export const usePoolsUserHasPosition = (chainId: ChainId) => {
   const { curveApi, isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
   const poolDataMapper = useStore(state => state.pools.poolsMapper[chainId])
-  const poolDataCacheMapper = useStore(state => state.storeCache.poolsMapper[chainId])
-  const poolIdSource = poolDataMapper ?? poolDataCacheMapper
   const curveApiForChain = isHydrated && curveApi?.chainId === chainId ? curveApi : undefined
   const { data: userPools } = useUserPools({ chainId, userAddress }, curveApiForChain !== undefined)
   const poolIdByAddress = useMemo(
     () =>
       fromEntries(
-        curveApiForChain ? getCurvePoolIdByAddressEntries(curveApiForChain) : getPoolIdByAddressEntries(poolIdSource),
+        curveApiForChain ? getCurvePoolIdByAddressEntries(curveApiForChain) : getPoolIdByAddressEntries(poolDataMapper),
       ),
-    [curveApiForChain, poolIdSource],
+    [curveApiForChain, poolDataMapper],
   )
   const userPoolIds = useMemo(() => userPools && new Set(userPools.map(normalizeAddress)), [userPools])
 

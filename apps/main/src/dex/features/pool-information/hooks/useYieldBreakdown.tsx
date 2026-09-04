@@ -5,7 +5,7 @@ import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import type { ChainId, PoolData } from '@/dex/types/main.types'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
@@ -18,15 +18,15 @@ import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/co
 
 export const useYieldBreakdown = ({
   chainId,
-  poolDataCacheOrApi,
+  poolData,
   poolId,
 }: {
   chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
+  poolData: PoolData
   poolId: string
 }) => {
-  const poolAddress = poolDataCacheOrApi.pool.address as Address
-  const gaugeIsKilled = !!poolDataCacheOrApi.gauge.isKilled
+  const poolAddress = poolData.pool.address as Address
+  const gaugeIsKilled = !!poolData.gauge.isKilled
   const { data: network } = useNetworkByChain({ chainId })
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs

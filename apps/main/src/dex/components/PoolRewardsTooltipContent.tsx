@@ -1,12 +1,12 @@
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
-import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
+import { RewardsApy, PoolData } from '@/dex/types/main.types'
 import { TableCellRewardsOthers } from './TableCellRewardsOthers'
 
 type PoolRewardsTooltipContentProps = {
   isHighlightBase: boolean
   isHighlightCrv: boolean
   isHighlightOther: boolean
-  poolData: PoolDataCache | PoolData | undefined
+  poolData: PoolData | undefined
   rewardsApy: RewardsApy | undefined
 }
 

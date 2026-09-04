@@ -80,7 +80,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     ...DEFAULT_STATE,
 
     fetchPools: async (curve, poolIds, includeGaugeData) => {
-      const { pools, storeCache, tokens } = get()
+      const { pools, tokens } = get()
       const { chainId } = curve
 
       // if no pools found for network, set tvl, volume and pools state to empty object
@@ -107,7 +107,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         )
 
         const blacklist = await fetchPoolsBlacklist({ blockchainId: blockchainId as Chain })
-        const { poolsMapper, poolsMapperCache } = await getPools(
+        const { poolsMapper } = await getPools(
           curve,
           poolIds,
           new Set(blacklist),
@@ -134,9 +134,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
         // New pools mapper means new tokens that need their volumes fetched
         void invalidatePoolVolumesQuery({ chainId })
-
-        // update cache
-        void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
 
         const partialPoolDatas = Object.keys(poolsMapper).map(poolId => poolsMapper[poolId])
 

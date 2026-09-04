@@ -6,7 +6,6 @@ import { useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/
 import type { AddRewardParams } from '@/dex/entities/gauge/types'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { DistributorInput, TokenSelector } from '@/dex/features/add-gauge-reward-token/ui'
-import { ChainId } from '@/dex/types/main.types'
 import { FormButton, useForm, useFormSync } from '@evm-ui/features/forms'
 import { createValidationSuite } from '@evm-ui/lib'
 import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
@@ -16,12 +15,14 @@ import Stack from '@mui/material/Stack'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { usePoolContext } from '../../pool-context'
 
 const { Spacing } = SizesAndSpaces
 
 const validation = createValidationSuite((data: AddRewardParams) => gaugeAddRewardValidationGroup(data))
 
-export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
+export const AddRewardToken = () => {
+  const { chainId, poolId } = usePoolContext()
   const { address: userAddress } = useConnection()
   const { isLoading: isLoadingDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
   const { data: isRewardsAvailable, isLoading: isLoadingRewards } = useIsDepositRewardAvailable({ chainId, poolId })

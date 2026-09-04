@@ -6,7 +6,6 @@ import { useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge/model/gaug
 import { useNetworks } from '@/dex/entities/networks'
 import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
-import { ChainId } from '@/dex/types/main.types'
 import { FormButton, useForm, useFormSync } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -21,6 +20,7 @@ import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { TIME_FRAMES } from '@ui/utils/time'
+import { usePoolContext } from '../../pool-context'
 
 const { Spacing } = SizesAndSpaces
 
@@ -33,7 +33,8 @@ const defaultValues = {
   epoch: TIME_FRAMES.WEEK,
 } as const
 
-export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
+export const DepositReward = () => {
+  const { chainId, poolId } = usePoolContext()
   const { data: networks } = useNetworks()
   const network = networks[chainId]
   const { address: userAddress } = useConnection()

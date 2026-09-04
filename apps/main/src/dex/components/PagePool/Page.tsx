@@ -3,6 +3,7 @@ import { isAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { PoolContextProvider } from '@/dex/features/pool-context'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
@@ -26,12 +27,9 @@ export const PagePool = () => {
   const hasDepositAndStake = useStore(state => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
   const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
   const fetchNewPool = useStore(state => state.pools.fetchNewPool)
-  const poolDataCache = useStore(state => state.storeCache.poolsMapper[rChainId]?.[poolId ?? ''])
   const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[poolId ?? ''])
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const [poolNotFound, setPoolNotFound] = useState(false)
-
-  const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
 
   useEffect(() => {
     if (!rChainId || !poolId || curveApi?.chainId !== rChainId || !haveAllPools || poolData) return
@@ -65,15 +63,10 @@ export const PagePool = () => {
   return poolNotFound || isBlacklisted ? (
     <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
   ) : (
-    poolId && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
-      <Transfer
-        curve={curveApi}
-        params={props}
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        routerParams={{ rChainId, rPoolIdOrAddress }}
-        hasDepositAndStake={hasDepositAndStake}
-      />
+    poolId && poolData?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
+      <PoolContextProvider network={network} poolIdOrAddress={rPoolIdOrAddress}>
+        <Transfer params={props} hasDepositAndStake={hasDepositAndStake} />
+      </PoolContextProvider>
     )
   )
 }

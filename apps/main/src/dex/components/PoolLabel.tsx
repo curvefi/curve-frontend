@@ -5,7 +5,7 @@ import { ChipPool } from '@/dex/components/ChipPool'
 import { ChipToken } from '@/dex/components/ChipToken'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
-import { PoolData, PoolDataCache } from '@/dex/types/main.types'
+import { PoolData } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
@@ -18,7 +18,7 @@ type Props = {
   className?: string
   blockchainId: INetworkName
   isVisible?: boolean
-  poolData: PoolDataCache | PoolData | undefined
+  poolData: PoolData | undefined
   quickViewValue?: ReactNode
   onClick?: (target: EventTarget) => void
 }

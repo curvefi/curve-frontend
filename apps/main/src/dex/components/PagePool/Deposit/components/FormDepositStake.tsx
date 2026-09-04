@@ -20,6 +20,7 @@ import {
   getSlippageType,
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
@@ -33,21 +34,10 @@ import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
 
-export const FormDepositStake = ({
-  curve,
-  blockchainId,
-  poolAlert,
-  poolData,
-  poolDataCacheOrApi,
-  maxSlippage,
-  routerParams,
-  seed,
-  tokensMapper,
-}: TransferProps) => {
+export const FormDepositStake = ({ poolAlert, maxSlippage, seed, tokensMapper }: TransferProps) => {
+  const { chainId, blockchainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve ?? {}
-  const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formLpTokenExpected = useStore(
@@ -55,7 +45,7 @@ export const FormDepositStake = ({
   )
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
-  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
+  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolData.pool.id])
   const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
   const fetchStepDepositStake = useStore(state => state.poolDeposit.fetchStepDepositStake)
@@ -66,7 +56,6 @@ export const FormDepositStake = ({
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
-  const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
   const config = useConfig()
@@ -85,7 +74,7 @@ export const FormDepositStake = ({
         'DEPOSIT_STAKE',
         config,
         curve,
-        poolDataCacheOrApi.pool.id,
+        poolData.pool.id,
         poolData,
         updatedFormValues,
         loadMaxAmount,
@@ -93,7 +82,7 @@ export const FormDepositStake = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [config, curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, maxSlippage, poolData, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -267,9 +256,6 @@ export const FormDepositStake = ({
         haveSigner={haveSigner}
         blockchainId={blockchainId}
         isSeed={seed.isSeed}
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        routerParams={routerParams}
         tokensMapper={tokensMapper}
         updateFormValues={updateFormValues}
       />
@@ -278,12 +264,12 @@ export const FormDepositStake = ({
         <DetailInfoEstLpTokens
           formLpTokenExpected={formLpTokenExpected}
           maxSlippage={maxSlippage}
-          poolDataCacheOrApi={poolDataCacheOrApi}
+          poolData={poolData}
         />
 
         <DetailInfoExpectedApy
           lpTokenAmount={formLpTokenExpected.expected}
-          poolDataCacheOrApi={poolDataCacheOrApi}
+          poolData={poolData}
           crvApr={rewardsApy?.crv?.[0]}
         />
 
@@ -292,7 +278,7 @@ export const FormDepositStake = ({
         {haveSigner && (
           <DetailInfoEstGas
             isDivider
-            chainId={rChainId}
+            chainId={chainId}
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
@@ -304,13 +290,7 @@ export const FormDepositStake = ({
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}
 
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || !seed.loaded}
-        routerParams={routerParams}
-        seed={seed}
-      >
+      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estLpTokenReceivedUsdAmount} />
         {formStatus.error && (
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, null, null)} />

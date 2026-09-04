@@ -56,7 +56,7 @@ export const getDepositTabAlert = ({ poolAlert }: TransferTabsParams) => poolAle
 
 export const getStakeTabAlert = (props: TransferTabsParams) =>
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  getDepositTabAlert(props) || (props.poolDataCacheOrApi.gauge.isKilled && GAUGE_KILLED_ALERT)
+  getDepositTabAlert(props) || (props.isGaugeKilled && GAUGE_KILLED_ALERT)
 
 export const getWithdrawTabAlert = ({ poolAlert }: TransferTabsParams) => poolAlert?.isDisableWithdrawOnly && poolAlert
 

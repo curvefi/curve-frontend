@@ -7,6 +7,7 @@ import { TransferActions } from '@/dex/components/PagePool/components/TransferAc
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
@@ -19,11 +20,10 @@ import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
 
-export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
+export const FormUnstake = ({ seed }: TransferProps) => {
+  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve ?? {}
-  const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formStatus = useStore(state => state.poolWithdraw.formStatus)
@@ -35,7 +35,6 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
-  const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
   const config = useConfig()
@@ -44,19 +43,9 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
     (updatedFormValues: Partial<FormValues>) => {
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
-      void setFormValues(
-        'UNSTAKE',
-        config,
-        curve,
-        poolDataCacheOrApi.pool.id,
-        poolData,
-        updatedFormValues,
-        null,
-        seed.isSeed,
-        '',
-      )
+      void setFormValues('UNSTAKE', config, curve, poolId, poolData, updatedFormValues, null, seed.isSeed, '')
     },
-    [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, poolData, poolId, seed.isSeed, setFormValues],
   )
 
   const handleUnstakeClick = useCallback(
@@ -154,17 +143,11 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
 
       {haveSigner && (
         <div>
-          <DetailInfoEstGas chainId={rChainId} {...formEstGas} />
+          <DetailInfoEstGas chainId={chainId} {...formEstGas} />
         </div>
       )}
 
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || !seed.loaded}
-        routerParams={routerParams}
-        seed={seed}
-      >
+      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
         {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
         {txInfoBar}
         <Stepper steps={steps} />

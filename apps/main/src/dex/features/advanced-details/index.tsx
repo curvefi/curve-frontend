@@ -1,8 +1,6 @@
 import { isAddressEqual, zeroAddress, type Address } from 'viem'
 import { AddGaugeLink } from '@/dex/components/PagePool/components/AddGaugeLink'
 import { ManagePoolLink } from '@/dex/components/PagePool/components/ManagePoolLink'
-import type { PageTransferProps } from '@/dex/components/PagePool/types'
-import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { ViewMoreButton } from '@evm-ui/shared/ui/ViewMoreButton'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -13,6 +11,7 @@ import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
+import { usePoolContext } from '../pool-context'
 import { Contracts } from './components/Contracts'
 import { Info } from './components/Info'
 import { Parameters } from './components/Parameters'
@@ -23,13 +22,11 @@ const { Spacing } = SizesAndSpaces
 /** Two columns on desktop, one on mobile and desktop */
 const GRID_SIZE = { mobile: 12, desktop: 6 } as const
 
-type AdvancedDetailsProps = Pick<PageTransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
-
-export const AdvancedDetails = ({ routerParams, poolDataCacheOrApi }: AdvancedDetailsProps) => {
-  const { rChainId: chainId, rPoolIdOrAddress: poolIdOrAddress } = routerParams
-  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
-  const resolvedPoolId = poolId ?? poolDataCacheOrApi.pool.id
-  const { pool } = poolDataCacheOrApi
+export const AdvancedDetails = () => {
+  const {
+    chainId,
+    poolData: { pool },
+  } = usePoolContext()
   const gaugeAddress = pool.gauge.address as Address
 
   const [isOpen, , , toggleOpen] = useSwitch(false)
@@ -49,31 +46,24 @@ export const AdvancedDetails = ({ routerParams, poolDataCacheOrApi }: AdvancedDe
           <Grid container columnSpacing={Spacing.md}>
             <Grid size={GRID_SIZE}>
               <Stack>
-                <Contracts chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} />
-                {isAddressEqual(gaugeAddress, zeroAddress) && (
-                  <AddGaugeLink
-                    poolDataCacheOrApi={poolDataCacheOrApi}
-                    chainId={chainId}
-                    address={pool.address}
-                    lpToken={pool.lpToken}
-                  />
-                )}
+                <Contracts />
+                {isAddressEqual(gaugeAddress, zeroAddress) && <AddGaugeLink />}
               </Stack>
             </Grid>
 
             <Grid size={GRID_SIZE}>
-              <Info chainId={chainId} poolId={resolvedPoolId} poolDataCacheOrApi={poolDataCacheOrApi} />
+              <Info />
             </Grid>
           </Grid>
 
           <Collapse in={isOpen}>
             <Grid container columnSpacing={Spacing.md}>
               <Grid size={GRID_SIZE}>
-                <Parameters chainId={chainId} poolId={resolvedPoolId} poolDataCacheOrApi={poolDataCacheOrApi} />
+                <Parameters />
               </Grid>
 
               <Grid size={GRID_SIZE}>
-                <Prices chainId={chainId} poolId={resolvedPoolId} poolDataCacheOrApi={poolDataCacheOrApi} />
+                <Prices />
               </Grid>
             </Grid>
           </Collapse>

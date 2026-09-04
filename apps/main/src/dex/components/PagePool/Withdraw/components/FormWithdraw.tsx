@@ -17,6 +17,7 @@ import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Withdraw/types'
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { useNetworks } from '@/dex/entities/networks'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
@@ -37,20 +38,10 @@ import { constQ } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE, getSlippageType } from '../../utils'
 
-export const FormWithdraw = ({
-  curve,
-  blockchainId,
-  maxSlippage,
-  poolData,
-  poolDataCacheOrApi,
-  routerParams,
-  seed,
-  tokensMapper,
-}: TransferProps) => {
+export const FormWithdraw = ({ maxSlippage, seed, tokensMapper }: TransferProps) => {
+  const { chainId, blockchainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve ?? {}
-  const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formStatus = useStore(state => state.poolWithdraw.formStatus)
@@ -68,7 +59,6 @@ export const FormWithdraw = ({
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
-  const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
   const { address: userAddress } = useConnection()
@@ -86,7 +76,7 @@ export const FormWithdraw = ({
         'WITHDRAW',
         config,
         curve,
-        poolDataCacheOrApi.pool.id,
+        poolId,
         poolData,
         updatedFormValues,
         null,
@@ -94,7 +84,7 @@ export const FormWithdraw = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, poolData, poolId, seed.isSeed, maxSlippage],
   )
 
   const handleApproveClick = useCallback(
@@ -344,8 +334,8 @@ export const FormWithdraw = ({
                 updateFormValues(
                   {
                     selected,
-                    selectedToken: formValues.selectedToken || poolDataCacheOrApi.tokens[0],
-                    selectedTokenAddress: formValues.selectedTokenAddress || poolDataCacheOrApi.tokenAddresses[0],
+                    selectedToken: formValues.selectedToken || poolData.tokens[0],
+                    selectedTokenAddress: formValues.selectedTokenAddress || poolData.tokenAddresses[0],
                   },
 
                   null,
@@ -363,7 +353,7 @@ export const FormWithdraw = ({
             <Radio aria-label="Withdraw as balanced amounts" value="lpToken">
               {t`Balanced`}
             </Radio>
-            {!poolDataCacheOrApi.pool.isCrypto && (
+            {!poolData.pool.isCrypto && (
               <Radio aria-label="Custom withdraw" value="imbalance">
                 {t`Custom`}
               </Radio>
@@ -379,11 +369,11 @@ export const FormWithdraw = ({
                   haveSigner={haveSigner}
                   blockchainId={blockchainId}
                   loading={slippage.loading}
-                  poolDataCacheOrApi={poolDataCacheOrApi}
+                  poolData={poolData}
                   selectedTokenAddress={formValues.selectedTokenAddress}
-                  tokens={poolDataCacheOrApi.tokens}
+                  tokens={poolData.tokens}
                   tokensMapper={tokensMapper}
-                  tokenAddresses={poolDataCacheOrApi.tokenAddresses}
+                  tokenAddresses={poolData.tokenAddresses}
                   handleChanged={({ token, tokenAddress }) => {
                     updateFormValues(
                       {
@@ -403,18 +393,18 @@ export const FormWithdraw = ({
                   amounts={formValues.amounts}
                   blockchainId={blockchainId}
                   loading={slippage.loading}
-                  poolDataCacheOrApi={poolDataCacheOrApi}
-                  tokens={poolDataCacheOrApi.tokens}
+                  poolData={poolData}
+                  tokens={poolData.tokens}
                   tokensMapper={tokensMapper}
-                  tokenAddresses={poolDataCacheOrApi.tokenAddresses}
+                  tokenAddresses={poolData.tokenAddresses}
                 />
               )}
 
               {/* Custom */}
               <Box grid gridRowGap="narrow">
                 {formValues.selected === 'imbalance' &&
-                  poolDataCacheOrApi.tokens.map((token, idx) => {
-                    const tokenAddress = poolDataCacheOrApi.tokenAddresses[idx]
+                  poolData.tokens.map((token, idx) => {
+                    const tokenAddress = poolData.tokenAddresses[idx]
                     const amount = formValues.amounts[idx]
                     return (
                       <FieldToken
@@ -425,7 +415,7 @@ export const FormWithdraw = ({
                         isNotEnough={false}
                         disabled={isDisabled}
                         haveSigner={haveSigner}
-                        haveSameTokenName={poolDataCacheOrApi?.tokensCountBy[token] > 1}
+                        haveSameTokenName={poolData?.tokensCountBy[token] > 1}
                         isWithdraw
                         blockchainId={blockchainId}
                         token={token}
@@ -440,9 +430,9 @@ export const FormWithdraw = ({
           )}
         </TokensSelectorWrapper>
 
-        {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
+        {poolData.hasWrapped && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
+            isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly[poolData.pool.id]}
             isSelected={formValues.isWrapped}
             onChange={isWrapped => {
               if (poolData) {
@@ -468,7 +458,7 @@ export const FormWithdraw = ({
         {formValues.selected !== 'lpToken' && <DetailInfoSlippage {...slippage} />}
         {haveSigner && (
           <DetailInfoEstGas
-            chainId={rChainId}
+            chainId={chainId}
             isDivider={haveSlippage}
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
@@ -481,13 +471,7 @@ export const FormWithdraw = ({
         <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, null)} />
       )}
 
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || !seed.loaded}
-        routerParams={routerParams}
-        seed={seed}
-      >
+      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estUsdAmountTotalReceive} />
         {txInfoBar}
         <Stepper steps={steps} />
