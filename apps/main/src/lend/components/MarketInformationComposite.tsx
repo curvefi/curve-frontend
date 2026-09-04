@@ -2,7 +2,10 @@ import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/Char
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
-import { MarketRateBreakdowns } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
+import {
+  MarketBorrowRateBreakdown,
+  MarketSupplyRateBreakdown,
+} from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
@@ -45,8 +48,11 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       )}
       <MarketSection id="historical-rates">
         <Stack sx={{ gap: PAGE_SPACING }}>
-          {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
-          <MarketRateBreakdowns />
+          <Stack>
+            {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
+            <MarketBorrowRateBreakdown />
+          </Stack>
+          <MarketSupplyRateBreakdown />
           <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
           <MarketRateCurveChart />
         </Stack>

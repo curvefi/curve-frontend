@@ -4,66 +4,76 @@ import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePag
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { MarketRateType } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
-import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { buildBorrowRateBreakdown, buildSupplyRateBreakdown } from './market-rate-breakdown.utils'
 import { PointsCampaignsCard, RateBreakdownTable } from './MarketRateBreakdownCards'
+import Stack from '@mui/material/Stack'
 
-export const MarketRateBreakdowns = ({ hideSupply = false }: { hideSupply?: boolean }) => {
+export const MarketBorrowRateBreakdown = () => {
   const {
     chainId,
     blockchainId,
-    tokens: { collateralToken, borrowToken },
+    tokens: { collateralToken },
   } = useMarketContext()
-  const { borrowRate, supplyRate } = usePageHeaderRates()
+  const { borrowRate } = usePageHeaderRates()
   const addresses = useMemo(
     () =>
       notFalsy(
         collateralToken?.address,
         ...(borrowRate.data?.extraRewards.map(({ reward }) => reward?.type === 'apr' && reward.address) ?? []),
-        !hideSupply && borrowToken?.address,
-        ...(supplyRate?.data?.extraIncentives.map(
-          ({ address }) => !hideSupply && address.toLowerCase() !== MAINNET_CRV_ADDRESS && address,
-        ) ?? []),
-        ...(supplyRate?.data?.extraRewards.map(
-          ({ reward }) => !hideSupply && reward?.type === 'apr' && reward.address,
-        ) ?? []),
       ),
-    [borrowRate.data?.extraRewards, borrowToken, collateralToken, hideSupply, supplyRate?.data],
+    [borrowRate.data?.extraRewards, collateralToken?.address],
   )
   const { data: prices } = useTokenUsdRates({ chainId, tokenAddresses: addresses }, addresses.length > 0)
-  const { data: crvPrice } = useTokenUsdRate({
-    chainId: Chain.Ethereum,
-    tokenAddress: hideSupply ? undefined : MAINNET_CRV_ADDRESS,
-  })
   const borrowQuery = mapQuery(borrowRate, rate =>
     buildBorrowRateBreakdown({ rate, chainId, blockchainId, collateralToken, prices }),
   )
-  const supplyQuery =
-    !hideSupply && supplyRate
-      ? mapQuery(supplyRate, rate =>
-          buildSupplyRateBreakdown({ rate, chainId, blockchainId, borrowToken, prices, crvPrice }),
-        )
-      : undefined
 
   return (
     <>
-      <Stack>
-        <RateBreakdownTable rateType={MarketRateType.Borrow} query={borrowQuery} />
-        {!!borrowQuery.data?.points.length && (
-          <PointsCampaignsCard rateType={MarketRateType.Borrow} rows={borrowQuery.data.points} />
-        )}
-      </Stack>
-      {supplyQuery && (
-        <Stack>
-          <RateBreakdownTable rateType={MarketRateType.Supply} query={supplyQuery} />
-          {!!supplyQuery.data?.points.length && (
-            <PointsCampaignsCard rateType={MarketRateType.Supply} rows={supplyQuery.data.points} />
-          )}
-        </Stack>
+      <RateBreakdownTable rateType={MarketRateType.Borrow} query={borrowQuery} />
+      {!!borrowQuery.data?.points.length && (
+        <PointsCampaignsCard rateType={MarketRateType.Borrow} rows={borrowQuery.data.points} />
       )}
     </>
+  )
+}
+
+export const MarketSupplyRateBreakdown = () => {
+  const {
+    chainId,
+    blockchainId,
+    tokens: { borrowToken },
+  } = useMarketContext()
+  const { supplyRate } = usePageHeaderRates()
+  const addresses = useMemo(
+    () =>
+      notFalsy(
+        borrowToken?.address,
+        ...(supplyRate?.data?.extraIncentives.map(
+          ({ address }) => address.toLowerCase() !== MAINNET_CRV_ADDRESS && address,
+        ) ?? []),
+        ...(supplyRate?.data?.extraRewards.map(({ reward }) => reward?.type === 'apr' && reward.address) ?? []),
+      ),
+    [borrowToken?.address, supplyRate?.data],
+  )
+  const { data: prices } = useTokenUsdRates({ chainId, tokenAddresses: addresses }, addresses.length > 0)
+  const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
+
+  if (!supplyRate) return null
+
+  const supplyQuery = mapQuery(supplyRate, rate =>
+    buildSupplyRateBreakdown({ rate, chainId, blockchainId, borrowToken, prices, crvPrice }),
+  )
+
+  return (
+    <Stack>
+      <RateBreakdownTable rateType={MarketRateType.Supply} query={supplyQuery} />
+      {!!supplyQuery.data?.points.length && (
+        <PointsCampaignsCard rateType={MarketRateType.Supply} rows={supplyQuery.data.points} />
+      )}
+    </Stack>
   )
 }

@@ -1,7 +1,7 @@
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
-import { MarketRateBreakdowns } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
+import { MarketBorrowRateBreakdown } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
@@ -40,9 +40,9 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
         </Stack>
       </MarketSection>
       <MarketSection id="historical-rates">
-        <Stack sx={{ gap: PAGE_SPACING }}>
+        <Stack>
           <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
-          <MarketRateBreakdowns hideSupply />
+          <MarketBorrowRateBreakdown />
         </Stack>
       </MarketSection>
       {isNewLlamaMarketDetailPage && (
