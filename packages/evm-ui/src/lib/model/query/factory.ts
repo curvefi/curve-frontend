@@ -146,7 +146,7 @@ export function queryFactory<
         !dependencies?.(params).some(key => queryClient.getQueryData(key) === undefined),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
-        !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
+        !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @primitives)
         failureCount < 3,
       ...(shouldKeepPreviousData && { placeholderData: keepPreviousData }),
       ...options,
