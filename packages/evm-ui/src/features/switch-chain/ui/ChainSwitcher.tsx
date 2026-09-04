@@ -2,7 +2,7 @@ import lodash from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
-import { isChainLite, isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain, isTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
 import { useShowTestNets } from '@evm-ui/hooks/useLocalStorage'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
@@ -42,7 +42,7 @@ const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = {
 const getTvl =
   (tvls: Record<string, number> | undefined) =>
   ({ blockchainId: id, chainId }: NetworkDef) =>
-    isChainTestnet(chainId) || isChainLite(chainId)
+    isTestnet(chainId) || isLiteChain(chainId)
       ? 0 // ignore lite chains tvl, it's only available for downgraded chains and messes with sorting
       : (maybes([getPricesApiBlockchainId(id), tvls], (id, tvls) => tvls[id]) ?? 0)
 

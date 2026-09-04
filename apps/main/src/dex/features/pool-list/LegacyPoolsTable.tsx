@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { type NetworkConfig } from '@/dex/types/main.types'
-import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useIsTablet } from '@evm-ui/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@evm-ui/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
@@ -28,7 +28,7 @@ const PER_PAGE = 50
 
 export const LegacyPoolsTable = ({ network }: { network: NetworkConfig }) => {
   const { poolFilters } = network
-  const isLite = isChainLite(network.chainId)
+  const isLite = isLiteChain(network.chainId)
 
   const { data, isLoading, userHasPositions } = useLegacyPoolsTable(network)
 

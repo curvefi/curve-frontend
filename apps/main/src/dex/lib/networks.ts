@@ -2,7 +2,7 @@ import { ethAddress } from 'viem'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig, type Networks } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
-import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
@@ -309,7 +309,7 @@ const fxSwapUpgradedChains = [Chain.Etherlink]
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
   const liteNetworks = Object.values(resp).reduce((prev, { id: blockchainId, chainId, ...config }) => {
-    const isUpgraded = !isChainLite(chainId) // Upgraded means this is a lite network but is not classified as such any longer
+    const isUpgraded = !isLiteChain(chainId) // Upgraded means this is a lite network but is not classified as such any longer
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
     const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)
     prev[chainId] = {
