@@ -560,7 +560,7 @@ export const QuickSwap = ({
           />
           <PriceImpactActionInfo
             priceImpact={priceImpact}
-            value={mapQuery(priceImpact, priceImpact => formatNumber(priceImpact, 'percent.rate'))}
+            value={mapQuery(priceImpact, priceImpact => formatNumber(priceImpact, 'percent.price-impact'))}
             size="small"
             testId="price-impact"
           />

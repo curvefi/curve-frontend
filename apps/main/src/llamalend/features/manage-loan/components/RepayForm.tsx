@@ -16,7 +16,6 @@ import { FormButton } from '@evm-ui/features/forms'
 import { TokenSelector } from '@evm-ui/features/select-token'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
-import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
@@ -195,7 +194,7 @@ export const RepayForm = <ChainId extends IChainId>({
         collateralSymbol={collateralToken?.symbol}
         borrowSymbol={borrowToken?.symbol}
       />
-      <HighPriceImpactAlert priceImpact={{ ...priceImpact, ...combineQueryState(priceImpact, max.expected) }} />
+      <HighPriceImpactAlert priceImpact={priceImpact} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
       <FormButton
         pending={isPending}

@@ -10,7 +10,6 @@ import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolve
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
-import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import { AlertDisableForm } from '@evm-ui/shared/ui/AlertDisableForm'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
@@ -156,7 +155,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           />
         </Stack>
       )}
-      <HighPriceImpactAlert priceImpact={{ ...priceImpact, ...combineQueryState(priceImpact, max.maxLeverage) }} />
+      <HighPriceImpactAlert priceImpact={priceImpact} />
       <FormButton
         pending={isPending}
         loading={isLoading}

@@ -67,7 +67,7 @@ export const LoanActionSettings = ({
         {priceImpact && (
           <PriceImpactActionInfo
             priceImpact={priceImpact}
-            value={mapQuery(priceImpact, data => formatNumber(getPriceImpactPercent(data), 'percent.rate'))}
+            value={mapQuery(priceImpact, data => formatNumber(getPriceImpactPercent(data), 'percent.price-impact'))}
             size="small"
             testId="borrow-price-impact"
           />

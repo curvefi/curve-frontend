@@ -9,7 +9,6 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { FormButton } from '@evm-ui/features/forms'
 import { useCreateLoanPreset } from '@evm-ui/hooks/useLocalStorage'
 import { t } from '@evm-ui/lib/i18n'
-import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import { AlertDisableForm } from '@evm-ui/shared/ui/AlertDisableForm'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
@@ -56,7 +55,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     isDisabled,
-    maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
+    maxTokenValues: { collateral: maxCollateral, debt: maxDebt, setRange },
     onSubmit,
     disabledAlert,
     params,
@@ -163,12 +162,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           />
         </Collapse>
       </LoanPresetSelector>
-      <HighPriceImpactAlert priceImpact={{ ...priceImpact, ...combineQueryState(priceImpact, maxLeverage) }} />
+      <HighPriceImpactAlert priceImpact={priceImpact} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
       <FormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, { leverageEnabled: params.leverageEnabled })}
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
         label={[isApproved?.data === false && t`Approve`, t`Borrow`]}
         testId="create-loan-submit-button"
         connectWalletTestId="form-market-page"

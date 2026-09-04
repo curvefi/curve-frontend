@@ -9,7 +9,7 @@ import { getPriceImpactLevel, type PriceImpact, type PriceImpactLevel } from './
 
 const { IconSize } = SizesAndSpaces
 
-const getIconColor = (theme: Theme, level: Exclude<PriceImpactLevel, null>) =>
+const getIconColor = (theme: Theme, level: PriceImpactLevel) =>
   ({
     caution: theme.design.Text.TextColors.Feedback.Caution,
     warning: theme.design.Text.TextColors.Feedback.Warning,

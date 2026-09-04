@@ -10,7 +10,7 @@ export type PriceImpact = {
   tokenInUsd: Decimal | undefined
 }
 
-export type PriceImpactLevel = 'caution' | 'warning' | 'error' | null
+export type PriceImpactLevel = 'caution' | 'warning' | 'error'
 
 /** Thresholds shared by price-impact value emphasis, alerts, and blocking behavior. */
 const PRICE_IMPACT_THRESHOLDS = {
@@ -19,7 +19,7 @@ const PRICE_IMPACT_THRESHOLDS = {
   error: '1',
   warning: '0.75',
   caution: '0.5',
-} as const satisfies Record<'critical' | NonNullable<PriceImpactLevel>, Decimal>
+} as const satisfies Record<'critical' | PriceImpactLevel, Decimal>
 
 const isPriceImpactSignificant = (priceImpact: PriceImpact | Decimal | null | undefined) =>
   !(Number((priceImpact as PriceImpact)?.tokenInUsd) < MIN_USD_PRICE_IMPACT_WARN)
@@ -28,7 +28,7 @@ export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | null 
   typeof priceImpact === 'string' ? priceImpact : priceImpact?.priceImpact
 
 /** Returns a percentage-only emphasis level without applying the USD significance filter. */
-export const getPriceImpactLevel = (priceImpact: PriceImpact | Decimal | null | undefined): PriceImpactLevel => {
+export const getPriceImpactLevel = (priceImpact: PriceImpact | Decimal | null | undefined): PriceImpactLevel | null => {
   const level =
     recordEntries(PRICE_IMPACT_THRESHOLDS).find(([, threshold]) =>
       decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', threshold),
