@@ -18,6 +18,7 @@ import type {
   V2PoolSortField as PoolSortField,
 } from '@curvefi/prices-api/pools'
 import { useCampaigns, type CampaignRewards } from '@evm-ui/entities/campaigns'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { notFalsy } from '@primitives/objects.utils'
 import { q, useMappedQuery } from '@ui/features/queries/util'
@@ -138,7 +139,8 @@ export const usePoolsTable = ({
   sortBy: PoolSortField
   sortDirection: PoolSortDirection
 }) => {
-  const { chainId, blockchainId, isLite } = network
+  const { chainId, blockchainId } = network
+  const isLite = isLiteChain(chainId)
 
   /** Network support */
   const litePoolChainsQuery = useLitePoolChains({}, isLite)

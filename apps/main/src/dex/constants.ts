@@ -20,14 +20,10 @@ export const ROUTE = {
 
 export const DEFAULT_NETWORK_CONFIG = {
   useApi: true, // default to true when calling fetchPools
-  isLite: false,
-  isActiveNetwork: true,
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
   poolIsWrappedOnly: {}, // show only wrapped pool data
   swap: { fromAddress: '', toAddress: '' },
   swapCustomRouteRedirect: {},
-  showInSelectNetwork: true,
-  showRouterSwap: true,
   createQuickList: [],
   createDisabledTokens: [],
   stableswapFactory: false, // determines support in pool creation and gauge deployment

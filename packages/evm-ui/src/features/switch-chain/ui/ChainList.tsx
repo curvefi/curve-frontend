@@ -1,6 +1,11 @@
 import lodash from 'lodash'
 import { Fragment, useMemo, useState } from 'react'
-import { getChainName, isChainConfigured, isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import {
+  getChainName,
+  isChainConfigured,
+  isLiteChain,
+  isTestnet,
+} from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
@@ -49,16 +54,16 @@ export function ChainList({
       lodash.groupBy(
         options.filter(o => getChainName(o.chainId).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
         o =>
-          isChainTestnet(o.chainId)
+          isTestnet(o.chainId)
             ? ChainType.test
-            : o.isLite || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
+            : isLiteChain(o.chainId) || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
               ? ChainType.lite
               : ChainType.main,
       ) as Record<ChainType, NetworkDef[]>,
     [options, searchValue, tvls],
   )
 
-  const missingWagmiChains = options.filter(({ chainId }) => !isChainTestnet(chainId) && !isChainConfigured(chainId))
+  const missingWagmiChains = options.filter(({ chainId }) => !isTestnet(chainId) && !isChainConfigured(chainId))
 
   return (
     <>

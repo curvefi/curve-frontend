@@ -10,6 +10,7 @@ import { NetworkConfig, PoolData, PoolDataMapper } from '@/dex/types/main.types'
 import type { Pool } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useCurve } from '@evm-ui/features/connect-wallet'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { decimal, REFRESH_INTERVAL } from '@evm-ui/utils'
@@ -49,13 +50,14 @@ const getLegacyPoolTags = (hasPosition: boolean, { pool, pool: { address, id, na
     ['link', 'eur', 'xdai', 'other'].includes(referenceAsset.toLowerCase()) && 'others',
   )
 
-export function useLegacyPoolsTable({ blockchainId: network, chainId, isLite }: NetworkConfig) {
+export function useLegacyPoolsTable({ blockchainId: network, chainId }: NetworkConfig) {
   const { curveApi } = useCurve()
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[chainId])
   const fetchPoolsRewardsApy = useStore(state => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore(state => state.pools.fetchMissingPoolsRewardsApy)
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
+  const isLite = isLiteChain(chainId)
 
   const { address: userAddress } = useConnection()
   const { data: userPools } = useUserPools({ chainId, userAddress })

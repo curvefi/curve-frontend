@@ -2,7 +2,7 @@ import lodash from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
-import { isChainTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain, isTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
 import { useShowTestNets } from '@evm-ui/hooks/useLocalStorage'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
@@ -15,10 +15,11 @@ import { type NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import IconButton from '@mui/material/IconButton'
-import { maybes } from '@primitives/objects.utils'
+import { maybes, type PartialRecord } from '@primitives/objects.utils'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
+import { Chain } from '@primitives/network.utils'
 
 type ChainSwitcherProps = {
   supportedNetworks: NetworkMapping
@@ -33,10 +34,15 @@ const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
   analytics: 'pool', // only has crvUSD charts, but shows all networks in selector
 }
 
+// Sometimes a network has been defined and needs to be accessed for legacy purposes, but we want to hide it from the list for whatever reason.
+const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = {
+  dex: [Chain.ZkSync, Chain.Mantle, Chain.Tac /** Temporarily hidden as the chain's halted */],
+}
+
 const getTvl =
   (tvls: Record<string, number> | undefined) =>
-  ({ blockchainId: id, chainId, isLite }: NetworkDef) =>
-    isChainTestnet(chainId) || isLite
+  ({ blockchainId: id, chainId }: NetworkDef) =>
+    isTestnet(chainId) || isLiteChain(chainId)
       ? 0 // ignore lite chains tvl, it's only available for downgraded chains and messes with sorting
       : (maybes([getPricesApiBlockchainId(id), tvls], (id, tvls) => tvls[id]) ?? 0)
 
@@ -52,11 +58,13 @@ export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherP
   const options = useMemo(
     () =>
       lodash.orderBy(
-        Object.values(supportedNetworks).filter(networkConfig => networkConfig.showInSelectNetwork),
+        Object.values(supportedNetworks).filter(
+          networkConfig => !HIDE_CHAINS[currentMenu]?.includes(networkConfig.chainId),
+        ),
         [getTvl(tvls.data), 'name'],
         ['desc', 'asc'],
       ),
-    [supportedNetworks, tvls.data],
+    [currentMenu, supportedNetworks, tvls.data],
   )
 
   const onClick =

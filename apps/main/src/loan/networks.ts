@@ -1,45 +1,13 @@
 import { ChainId, NetworkConfig, NetworkEnum } from '@/loan/types/loan.types'
+import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
 import { Chain } from '@primitives/network.utils'
-import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
 
-const DEFAULT_NETWORK_CONFIG = {
-  isActiveNetwork: false,
-  showInSelectNetwork: false,
-}
-
-const networksConfig = {
-  [Chain.Ethereum]: {
-    isActiveNetwork: true,
-    showInSelectNetwork: true,
-  },
-  [Chain.Optimism]: {},
-  [Chain.Fraxtal]: {},
-  [Chain.Sonic]: {},
-  [Chain.Gnosis]: {},
-  [Chain.Moonbeam]: {},
-  [Chain.Polygon]: {},
-  [Chain.Kava]: {},
-  [Chain.Fantom]: {},
-  [Chain.Arbitrum]: {},
-  [Chain.Avalanche]: {},
-  [Chain.Celo]: {},
-  [Chain.Aurora]: {},
-  [Chain.ZkSync]: {},
-  [Chain.Base]: {},
-  [Chain.Bsc]: {},
-  [Chain.XLayer]: {},
-  [Chain.Mantle]: {},
-}
-
-export const { networks, networksIdMapper } = Object.entries(networksConfig).reduce(
-  (mapper, [key, config]) => {
+export const { networks, networksIdMapper } = Object.entries({
+  [Chain.Ethereum]: CHAIN_BLOCKCHAIN_IDS[Chain.Ethereum],
+}).reduce(
+  (mapper, [key, blockchainId]) => {
     const chainId = Number(key) as ChainId
-    const networkConfig = {
-      ...getBaseNetworksConfig<NetworkEnum, ChainId>(chainId, NETWORK_BASE_CONFIG[chainId]),
-      ...DEFAULT_NETWORK_CONFIG,
-      ...config,
-      chainId,
-    }
+    const networkConfig = { chainId, blockchainId }
     mapper.networks[chainId] = networkConfig
     mapper.networksIdMapper[networkConfig.blockchainId] = chainId
     return mapper

@@ -8,12 +8,13 @@ import { TableCellRewards } from '@/dex/components/PageDashboard/components/Tabl
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { PoolLabel } from '@/dex/components/PoolLabel'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useIntersectionObserver } from '@evm-ui/hooks/useIntersectionObserver'
 import { Tr, Td } from '@legacy-ui/Table'
 import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 export const TableRow = ({
-  isLite,
+  rChainId: chainId,
   blockchainId,
   formValues: { sortBy },
   fetchBoost,
@@ -32,7 +33,7 @@ export const TableRow = ({
       <Td>
         <PoolLabel blockchainId={blockchainId} isVisible={isVisible} poolData={poolData} />
       </Td>
-      {isLite ? (
+      {isLiteChain(chainId) ? (
         <Td className="right">
           {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
           <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={poolRewardsApy} />
