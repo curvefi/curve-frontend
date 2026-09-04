@@ -3,12 +3,7 @@ import { type Address } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { formatNumber } from '@evm-ui/utils'
-import Box from '@mui/material/Box'
-import type { PointsCampaignsRow } from '../components/points-campaigns/columns/columns.definitions'
-
-const { IconSize } = SizesAndSpaces
+import { getPointsCampaignRows } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 
 export const usePointsCampaigns = ({
   chainId,
@@ -24,28 +19,7 @@ export const usePointsCampaigns = ({
     address: poolAddress,
   })
 
-  const rows = useMemo(
-    () =>
-      campaigns
-        .filter(({ reward, symbol }) => reward?.type === 'points' || (!reward?.type && symbol))
-        .map(({ dashboardLink, reward, platform, platformImageId, symbol }): PointsCampaignsRow => ({
-          source: {
-            icon: (
-              <Box
-                component="img"
-                src={platformImageId}
-                alt={platform}
-                sx={{ borderRadius: '50%', width: IconSize.lg, height: IconSize.lg }}
-              />
-            ),
-            iconPosition: 'left',
-            primary: platform,
-          },
-          multiplier: reward?.value != null || symbol == null ? formatNumber(reward?.value, 'multiplier') : symbol,
-          campaignUrl: dashboardLink,
-        })),
-    [campaigns],
-  )
+  const rows = useMemo(() => getPointsCampaignRows(campaigns), [campaigns])
 
   return { rows }
 }

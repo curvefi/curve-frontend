@@ -1,11 +1,11 @@
 import type { MarketToken } from '@/llamalend/llama.utils'
 import { aprToApy } from '@/llamalend/rates.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import { getPointsCampaignRows, type PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 import { t } from '@evm-ui/lib/i18n'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import type { TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
-import { Chain, formatNumber, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { Chain, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { notFalsy } from '@primitives/objects.utils'
 
@@ -23,12 +23,6 @@ export type RateBreakdownRow = {
   maxBoostRate?: number | null
 }
 
-export type PointsCampaignRow = {
-  source: TokenInfoProps
-  multiplier: string
-  campaignUrl: string
-}
-
 export type RateBreakdownData = {
   rows: RateBreakdownRow[]
   points: PointsCampaignRow[]
@@ -40,19 +34,6 @@ export type RateBreakdownData = {
 type TokenPrices = Record<string, number> | undefined
 
 const tokenPrice = (prices: TokenPrices, address: string, fallback?: number) => prices?.[address] ?? fallback
-
-const pointsRows = (campaigns: CampaignRewards[]): PointsCampaignRow[] =>
-  campaigns
-    .filter(({ reward, symbol }) => reward?.type === 'points' || (!reward?.type && symbol))
-    .map(({ dashboardLink, reward, platform, platformImageId, symbol }) => ({
-      source: {
-        icon: <RewardIcon src={platformImageId} alt={platform} size="lg" />,
-        iconPosition: 'left',
-        primary: platform,
-      },
-      multiplier: reward?.value != null || symbol == null ? formatNumber(reward?.value, 'multiplier') : symbol,
-      campaignUrl: dashboardLink,
-    }))
 
 export const buildBorrowRateBreakdown = ({
   rate,
@@ -111,7 +92,7 @@ export const buildBorrowRateBreakdown = ({
         rate: rate.rate,
       },
     ],
-    points: pointsRows(rate.extraRewards),
+    points: getPointsCampaignRows(rate.extraRewards),
     total: rate.totalBorrowRate,
     hasAdjustments: incentives.length > 0 || rate.rebasingYield != null,
   }
@@ -205,7 +186,7 @@ export const buildSupplyRateBreakdown = ({
         rate: rate.supplyApy,
       },
     ],
-    points: pointsRows(rate.extraRewards),
+    points: getPointsCampaignRows(rate.extraRewards),
     total: rate.totalMinBoost,
     maxBoostTotal: rate.totalMaxBoost,
     hasAdjustments:

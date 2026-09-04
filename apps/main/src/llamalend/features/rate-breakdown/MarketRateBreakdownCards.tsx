@@ -1,24 +1,21 @@
 import type { ReactNode } from 'react'
+import type { PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
+import { PointsCampaignsTable } from '@evm-ui/features/points-campaigns/PointsCampaignsTable'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { t } from '@evm-ui/lib/i18n'
 import { type CurveTableFeatures, useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@evm-ui/types/market'
-import { constQ, mapQuery, type QueryProp } from '@evm-ui/types/util'
+import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import type { Column } from '@tanstack/react-table'
-import {
-  BORROW_COLUMNS,
-  MOBILE_COLUMN_VISIBILITY,
-  POINTS_COLUMNS,
-  SUPPLY_COLUMNS,
-} from './market-rate-breakdown.columns'
-import type { PointsCampaignRow, RateBreakdownData, RateBreakdownRow } from './market-rate-breakdown.utils'
+import { BORROW_COLUMNS, MOBILE_COLUMN_VISIBILITY, SUPPLY_COLUMNS } from './market-rate-breakdown.columns'
+import type { RateBreakdownData, RateBreakdownRow } from './market-rate-breakdown.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -96,16 +93,9 @@ export const RateBreakdownTable = ({
   )
 }
 
-export const PointsCampaignsTable = ({ rateType, rows }: { rateType: MarketRateType; rows: PointsCampaignRow[] }) => {
-  const table = useCurveTable({
-    query: constQ(rows),
-    columns: POINTS_COLUMNS,
-  })
-
-  return (
-    <Card size="small" data-testid={`${rateType.toLowerCase()}-points-campaigns`}>
-      <CardHeader title={POINTS_CAMPAIGN_TITLES[rateType]} size="small" />
-      <DataTable category="detail" table={table} emptyState={{ title: t`No points campaigns found` }} />
-    </Card>
-  )
-}
+export const PointsCampaignsCard = ({ rateType, rows }: { rateType: MarketRateType; rows: PointsCampaignRow[] }) => (
+  <Card size="small" data-testid={`${rateType.toLowerCase()}-points-campaigns`}>
+    <CardHeader title={POINTS_CAMPAIGN_TITLES[rateType]} size="small" />
+    <PointsCampaignsTable rows={rows} />
+  </Card>
+)

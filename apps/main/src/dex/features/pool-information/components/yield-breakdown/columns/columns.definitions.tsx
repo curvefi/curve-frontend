@@ -1,5 +1,6 @@
 import { t } from '@evm-ui/lib/i18n'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo, type TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
 import { Tooltip, type TooltipProps } from '@evm-ui/shared/ui/Tooltip'
@@ -8,7 +9,6 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
-import { TokenCell } from '../../TokenCell'
 import { YieldBreakdownColumnId } from './columns.enum'
 
 export type YieldBreakdownRow = {
