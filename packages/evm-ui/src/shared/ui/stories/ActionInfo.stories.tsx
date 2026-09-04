@@ -1,15 +1,15 @@
 import type { ComponentProps, ReactNode } from 'react'
-import { t } from '@evm-ui/lib/i18n'
 import { shortenAddress } from '@evm-ui/utils'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import WhatshotIcon from '@mui/icons-material/Whatshot'
 import { Stack } from '@mui/material'
 import Switch from '@mui/material/Switch'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { ExternalLink } from '@ui/components/ExternalLink'
 import { q } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { ActionInfo } from '../ActionInfo'
 import { ActionInfoSize } from '../ActionInfo/ActionInfo'
-import { ExternalLink } from '../ExternalLink'
 
 const SIZES: ActionInfoSize[] = ['small', 'medium']
 

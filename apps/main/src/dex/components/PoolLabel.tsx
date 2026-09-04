@@ -7,12 +7,12 @@ import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { TooltipAlert } from '@legacy-ui/Tooltip/TooltipAlert'
 import { Chip } from '@legacy-ui/Typography'
+import { TokenIcons } from '@ui/components/TokenIcons'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 
 type Props = {
   className?: string

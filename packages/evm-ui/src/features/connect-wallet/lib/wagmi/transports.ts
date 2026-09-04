@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { HttpTransportConfig } from 'viem'
-import { Duration } from '@evm-ui/themes/design/0_primitives'
+import { Duration } from '@ui/features/themes/design/0_primitives'
 import { injected } from '@wagmi/connectors'
 import { fallback, http, unstable_connector } from '@wagmi/core'
 import { getChainDefaultRpcUrls } from './chains'

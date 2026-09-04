@@ -4,13 +4,13 @@ import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { useMatchRoute } from '@evm-ui/hooks/router'
-import { useIsDesktop } from '@evm-ui/hooks/useBreakpoints'
 import { EmptyValidationSuite } from '@evm-ui/lib'
-import { t } from '@evm-ui/lib/i18n'
 import { queryFactory } from '@evm-ui/lib/model'
 import { type AppName, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
 import { formatNumber } from '@evm-ui/utils'
 import { fetchJson } from '@primitives/fetch.utils'
+import { useIsDesktop } from '@ui/hooks/useBreakpoints'
+import { t } from '@ui/lib/i18n'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
 const { useQuery: useAppStatsDailyVolume } = queryFactory({

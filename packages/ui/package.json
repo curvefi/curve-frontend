@@ -10,12 +10,18 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-ui.tsbuildinfo"
   },
   "dependencies": {
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
+    "@mui/material": "9.4.0",
     "@sentry/core": "10.72.0",
     "@sentry/react": "10.72.0",
     "@tanstack/query-async-storage-persister": "*",
     "@tanstack/query-persist-client-core": "*",
     "@tanstack/react-query": "*",
-    "@tanstack/react-query-persist-client": "*"
+    "@tanstack/react-query-persist-client": "*",
+    "@tanstack/react-router": "1.170.32",
+    "lodash": "*",
+    "memoizee": "*"
   },
   "peerDependencies": {
     "@curvefi/primitives": "*",

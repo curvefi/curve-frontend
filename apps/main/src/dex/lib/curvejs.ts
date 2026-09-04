@@ -34,9 +34,9 @@ import {
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
-import { t } from '@evm-ui/lib/i18n'
 import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
 import { getErrorMessage } from '@evm-ui/utils'
+import { t } from '@ui/lib/i18n'
 import { log } from '@ui/lib/logging'
 
 const helpers = { waitForTransaction, waitForTransactions }

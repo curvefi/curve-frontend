@@ -1,10 +1,10 @@
-import { t } from '@evm-ui/lib/i18n'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { copyToClipboard } from '@evm-ui/utils'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 

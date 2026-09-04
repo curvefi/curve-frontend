@@ -1,9 +1,9 @@
 import { enforce, skipWhen, test } from 'vest'
-import { t } from '@evm-ui/lib/i18n'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import { createValidationSuite } from '@evm-ui/lib/validation'
 import type { CalendarDate } from '@internationalized/date'
+import { t } from '@ui/lib/i18n'
 import type { ExtendLockQuery } from './extend-lock.types'
 
 export const validateExtendLockDays = (days: number) => {

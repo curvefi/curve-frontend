@@ -2,10 +2,10 @@ import { useMarketParameters } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { formatNumber } from '@evm-ui/utils'
 import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { getMaxLtv } from './market-risk-values'
 
 export const MarketLoanParameters = ({

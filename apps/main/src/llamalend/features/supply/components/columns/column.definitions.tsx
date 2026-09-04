@@ -1,9 +1,9 @@
 import { ClaimableReward } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
-import { t } from '@evm-ui/lib/i18n'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import { formatNumber } from '@evm-ui/utils'
+import { TokenInfo } from '@ui/components/TokenInfo'
+import { t } from '@ui/lib/i18n'
 import { ClaimTabColumnId } from './columns.enum'
 import { NotionalCell } from './notional-cells'
 

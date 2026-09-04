@@ -1,10 +1,10 @@
 import { createContext, type ReactElement, use, useState } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
-import { ThemeProvider } from '@evm-ui/shared/ui/ThemeProvider'
-import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
 import { Toast } from '@evm-ui/widgets/Toast'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
+import { ThemeProvider } from '@ui/components/ThemeProvider'
+import { WithWrapper } from '@ui/components/WithWrapper'
 import { QueryProvider } from '@ui/features/queries/provider'
 import { queryClient } from '@ui/features/queries/query-client'
 

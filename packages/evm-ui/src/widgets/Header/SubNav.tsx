@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { DEFAULT_BAR_SIZE } from '@evm-ui/themes/components'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
+import { DEFAULT_BAR_SIZE } from '@ui/features/themes/components'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { getHeaderBorder } from './utils'
 
 const { Spacing } = SizesAndSpaces

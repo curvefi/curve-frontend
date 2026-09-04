@@ -1,12 +1,12 @@
 import { useConnection } from 'wagmi'
 import { useLockerCrv, useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
-import { t } from '@evm-ui/lib/i18n'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
-import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { TokenLabel } from '@ui/components/TokenLabel'
 import { q } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 export const FieldLockedAmount = ({
   chainId,

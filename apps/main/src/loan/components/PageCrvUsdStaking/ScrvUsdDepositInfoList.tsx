@@ -4,11 +4,11 @@ import { useScrvUsdDepositEstimateGas } from '@/loan/entities/scrvusd-deposit-es
 import { useScrvUsdPreviewDeposit } from '@/loan/entities/scrvusd-preview.query'
 import type { ScrvUsdDepositParams } from '@/loan/entities/scrvusd.validation'
 import type { ChainId } from '@/loan/types/loan.types'
-import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { formatToken } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { InfiniteAllowanceActionInfo } from './InfiniteAllowanceActionInfo'
 import { ScrvUsdExchangeRateActionInfo } from './ScrvUsdExchangeRateActionInfo'
 

@@ -1,7 +1,7 @@
-import { t } from '@evm-ui/lib/i18n'
 import Box from '@mui/material/Box'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
+import { t } from '@ui/lib/i18n'
 
 export const ChainSettings = ({
   showTestnets,

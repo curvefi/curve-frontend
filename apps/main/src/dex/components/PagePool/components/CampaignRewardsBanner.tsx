@@ -1,9 +1,9 @@
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId } from '@/dex/types/main.types'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
-import { t } from '@evm-ui/lib/i18n'
 import { CampaignBannerComp } from '@legacy-ui/CampaignRewards/CampaignBannerComp'
 import type { Address } from '@primitives/address.utils'
+import { t } from '@ui/lib/i18n'
 
 type CampaignRewardsBannerProps = {
   chainId: ChainId

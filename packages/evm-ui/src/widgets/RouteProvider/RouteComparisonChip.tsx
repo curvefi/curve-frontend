@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-import { t } from '@evm-ui/lib/i18n'
 import { Badge } from '@evm-ui/shared/ui/Badge'
 import { formatNumber } from '@evm-ui/utils/number'
 import type { Decimal } from '@primitives/decimal.utils'
+import { t } from '@ui/lib/i18n'
 
 const showPercentage = (toAmountOutput: Decimal, bestOutputAmount: Decimal) =>
   formatNumber(

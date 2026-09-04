@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { useLocation, useNavigate } from '@evm-ui/hooks/router'
-import { useResizeObserver } from '@evm-ui/hooks/useResizeObserver'
 import { notFalsy } from '@primitives/objects.utils'
 import { useRouterState } from '@tanstack/react-router'
+import { useResizeObserver } from '@ui/hooks/useResizeObserver'
 
 /** Height in pixels of the viewport band used to determine the active section. */
 const ACTIVE_SECTION_HEIGHT = 100

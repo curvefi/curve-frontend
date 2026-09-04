@@ -1,11 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { t } from '@evm-ui/lib/i18n'
 import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
 import MuiLink from '@mui/material/Link'
 import { RouterProvider } from '@tanstack/react-router'
 import { initSentry } from '@ui/features/sentry'
+import { t } from '@ui/lib/i18n'
 import { router } from './routes'
 import { RootLayout } from './routes/RootLayout'
 

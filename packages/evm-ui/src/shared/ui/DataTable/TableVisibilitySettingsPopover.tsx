@@ -1,12 +1,12 @@
 import type { RefObject } from 'react'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { borderStyle } from '@evm-ui/utils'
 import { FormControlLabel } from '@mui/material'
 import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { borderStyle } from '@ui/utils/mui'
 import type { VisibilityGroup } from './visibility.types'
 
 const { Spacing } = SizesAndSpaces

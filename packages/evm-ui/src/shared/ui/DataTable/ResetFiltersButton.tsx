@@ -1,6 +1,6 @@
-import { t } from '@evm-ui/lib/i18n'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
+import { t } from '@ui/lib/i18n'
 
 export const ResetFiltersButton = ({ onClick, hidden }: { onClick: () => void; hidden: boolean }) => (
   <Collapse in={!hidden} orientation="horizontal">

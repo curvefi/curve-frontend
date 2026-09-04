@@ -1,0 +1,58 @@
+import { ReactNode } from 'react'
+import { Box, SxProps, Theme } from '@mui/material'
+import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
+import { applySxProps } from '@ui/utils/mui'
+type Props = {
+  button?: ReactNode
+  children: ReactNode
+  keepMounted?: boolean
+  open: boolean
+  setOpen: (open: boolean) => void
+  paperSx?: SxProps<Theme>
+}
+
+/**
+ * The following properties are advised for optimal usability: https://mui.com/material-ui/react-drawer/#swipeable
+ * iOS is hosted on high-end devices. The backdrop transition can be enabled without dropping frames. The performance will be good enough.
+ * iOS has a "swipe to go back" feature that interferes with the discovery feature, so discovery has to be disabled.
+ */
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator?.userAgent)
+
+/**
+ * A swipeable drawer component that can be used to display a list of items.
+ */
+export const SwipeableDrawer = ({ button, children, keepMounted = false, open, setOpen, paperSx }: Props) => (
+  <>
+    {button && <Box sx={{ height: '100%' }}>{button}</Box>}
+    <MuiSwipeableDrawer
+      disableBackdropTransition={!IS_IOS}
+      disableDiscovery={IS_IOS}
+      anchor="bottom"
+      open={open}
+      onClose={() => setOpen(false)}
+      onOpen={() => setOpen(true)}
+      // if false, add an invisible bottom hit area (~20px height) to swipe-open the drawer
+      disableSwipeToOpen={true}
+      keepMounted={keepMounted}
+      slotProps={{
+        paper: { sx: applySxProps({ backgroundColor: (t: Theme) => t.design.Layer.App.Background }, paperSx) },
+      }}
+    >
+      <Box sx={{ paddingBlockStart: 2 }}>
+        <Puller />
+      </Box>
+      {children}
+    </MuiSwipeableDrawer>
+  </>
+)
+
+const Puller = () => (
+  <Box
+    sx={{
+      width: 80,
+      height: 4,
+      backgroundColor: t => t.design.Color.Neutral[500],
+      margin: '0 auto',
+    }}
+  />
+)

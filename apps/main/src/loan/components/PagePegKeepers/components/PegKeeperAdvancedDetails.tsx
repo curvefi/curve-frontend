@@ -1,13 +1,13 @@
-import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { shortenAddress, formatNumber, amount } from '@evm-ui/utils'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Stack from '@mui/material/Stack'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import { Tooltip } from '@ui/components/Tooltip'
 import { mapQuery } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import type { PegKeeper, PegKeeperDetails, Pool } from '../types'
 
 const { Spacing, IconSize } = SizesAndSpaces

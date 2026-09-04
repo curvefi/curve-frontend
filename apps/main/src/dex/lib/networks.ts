@@ -5,8 +5,8 @@ import curve from '@curvefi/api'
 import { DOWNGRADED_CHAINS } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
-import { Chain } from '@primitives/network.utils'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG as NETWORKS } from '@legacy-ui/utils/utilsNetworks'
+import { Chain } from '@primitives/network.utils'
 
 const NETWORK_BASE_CONFIG = NETWORKS as Record<ChainId, (typeof NETWORKS)[keyof typeof NETWORKS]>
 export const defaultNetworks = Object.entries({

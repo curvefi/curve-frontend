@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useLayoutStore } from '@evm-ui/features/layout'
-import { Duration } from '@evm-ui/themes/design/0_primitives'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
+import { Duration } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { watchToasts, type ToastItem } from './toast.util'
 
 const { Spacing } = SizesAndSpaces

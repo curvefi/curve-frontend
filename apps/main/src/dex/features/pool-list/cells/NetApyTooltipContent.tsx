@@ -1,13 +1,13 @@
-import { t } from '@evm-ui/lib/i18n'
+import { AVERAGE_CATEGORIES, formatNumber, MAINNET_CRV } from '@evm-ui/utils'
+import Stack from '@mui/material/Stack'
 import {
   TooltipDescription,
   TooltipFooter,
   TooltipItem,
   TooltipItems,
   TooltipWrapper,
-} from '@evm-ui/shared/ui/TooltipComponents'
-import { AVERAGE_CATEGORIES, formatNumber, MAINNET_CRV } from '@evm-ui/utils'
-import Stack from '@mui/material/Stack'
+} from '@ui/components/TooltipComponents'
+import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './ApyTooltipItems'
 import {

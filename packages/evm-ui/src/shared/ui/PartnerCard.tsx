@@ -1,5 +1,3 @@
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { CURVE_ASSETS_URL } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -7,11 +5,13 @@ import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { ChainIcon } from '../icons/ChainIcon'
-import { GlobeIcon } from '../icons/GlobeIcon'
-import { XIcon } from '../icons/XIcon'
+import { IconStack } from '@ui/components/IconStack'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ChainIcon } from '@ui/icons/ChainIcon'
+import { GlobeIcon } from '@ui/icons/GlobeIcon'
+import { XIcon } from '@ui/icons/XIcon'
+import { CURVE_ASSETS_URL } from '@ui/lib/resource.constants'
 import { Badge } from './Badge'
-import { IconStack } from './IconStack'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

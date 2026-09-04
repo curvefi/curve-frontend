@@ -1,5 +1,5 @@
-import { t } from '@evm-ui/lib/i18n'
 import type { Partner } from '@evm-ui/shared/ui/PartnerCard'
+import { t } from '@ui/lib/i18n'
 
 export const WEB3_BRIDGES: Partner[] = [
   {

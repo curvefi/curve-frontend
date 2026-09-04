@@ -1,12 +1,12 @@
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { t } from '@evm-ui/lib/i18n'
-import { ArrowTopRightIcon } from '@evm-ui/shared/icons/ArrowTopRightIcon'
-import { BellRingingIcon } from '@evm-ui/shared/icons/BellIcon'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { CURVE_SOCIALS } from '@legacy-ui/utils'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
+import { BellRingingIcon } from '@ui/icons/BellIcon'
+import { t } from '@ui/lib/i18n'
+import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 
 const { Spacing } = SizesAndSpaces
 

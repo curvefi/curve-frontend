@@ -3,10 +3,10 @@ import { http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { WagmiProvider } from 'wagmi'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
-import { t } from '@evm-ui/lib/i18n'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { t } from '@ui/lib/i18n'
 import { createConfig } from '@wagmi/core'
 
 const wagmiConfig = createConfig({

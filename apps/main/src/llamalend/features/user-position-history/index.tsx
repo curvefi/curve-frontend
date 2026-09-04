@@ -1,10 +1,10 @@
-import { t } from '@evm-ui/lib/i18n'
 import { Accordion } from '@evm-ui/shared/ui/Accordion'
-import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { WithWrapper } from '@ui/components/WithWrapper'
 import type { QueryProp } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 import { UserEventsTable } from './UserEventsTable'
 

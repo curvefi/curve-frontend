@@ -1,6 +1,6 @@
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { PoolRow } from '../types'
 import { PointsRewardIcon } from './RewardIcons'
 import { getCompactPointsCampaigns } from './utils'

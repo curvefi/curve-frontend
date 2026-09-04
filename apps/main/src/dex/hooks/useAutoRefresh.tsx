@@ -5,7 +5,7 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
-import { REFRESH_INTERVAL } from '@evm-ui/utils'
+import { REFRESH_INTERVAL } from '@ui/utils/time'
 import { useNetworks } from '../entities/networks'
 import { refetchPoolVolumes } from '../queries/pool-volume.query'
 

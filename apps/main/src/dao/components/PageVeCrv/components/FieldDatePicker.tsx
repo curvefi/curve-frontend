@@ -5,7 +5,6 @@ import { isDateUnavailable, isQuickActionInRange } from '@/dao/components/PageVe
 import { useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { dayjs } from '@evm-ui/lib/dayjs'
-import { t } from '@evm-ui/lib/i18n'
 import { HelperMessage } from '@evm-ui/shared/ui/LargeTokenInput'
 import { VECRV_MAX_LOCK_YEARS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
@@ -13,6 +12,7 @@ import { Button } from '@legacy-ui/Button'
 import { DatePicker } from '@legacy-ui/DatePicker'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate } from '@legacy-ui/utils'
+import { t } from '@ui/lib/i18n'
 
 const QUICK_ACTIONS: { unit: dayjs.ManipulateType | undefined; value: number | undefined; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },

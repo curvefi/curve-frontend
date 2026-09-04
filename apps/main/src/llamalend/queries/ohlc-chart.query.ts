@@ -9,9 +9,9 @@ import {
 } from '@evm-ui/features/candle-chart/query-utils'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from '@evm-ui/features/candle-chart/types'
 import { formatCandleOhlcData, formatOraclePriceData } from '@evm-ui/features/candle-chart/utils'
-import { t } from '@evm-ui/lib/i18n'
 import type { Address, Token } from '@primitives/address.utils'
 import { assert, maybe } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 
 type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
 

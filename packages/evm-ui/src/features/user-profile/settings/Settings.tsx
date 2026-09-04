@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 import { ReleaseChannelToggleButtons } from '@evm-ui/features/user-profile/settings/ReleaseChannelToggleButtons'
-import { useIsDesktop } from '@evm-ui/hooks/useBreakpoints'
-import { t } from '@evm-ui/lib/i18n'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsDesktop } from '@ui/hooks/useBreakpoints'
+import { t } from '@ui/lib/i18n'
 import { ShowDeprecatedMarketsToggle } from './ShowDeprecatedMarketsToggle'
 import { ThemeToggleButtons } from './ThemeToggleButtons'
 

@@ -1,6 +1,6 @@
-import { t } from '@evm-ui/lib/i18n'
-import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
 import { formatNumber, MAINNET_CRV } from '@evm-ui/utils'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { t } from '@ui/lib/i18n'
 
 export const CrvApyTooltipContent = ({
   maximumApy,

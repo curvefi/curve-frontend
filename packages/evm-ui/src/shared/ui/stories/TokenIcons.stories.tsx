@@ -1,9 +1,9 @@
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { TokenIcons } from '../TokenIcons'
+import { TokenIcons } from '@ui/components/TokenIcons'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

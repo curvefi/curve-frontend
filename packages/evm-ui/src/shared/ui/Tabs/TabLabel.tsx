@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
-import { TAB_SUFFIX_CLASS, TAB_TEXT_VARIANTS } from '@evm-ui/themes/components/tabs'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
-import { WithWrapper } from '../WithWrapper'
+import { WithWrapper } from '@ui/components/WithWrapper'
+import { TAB_SUFFIX_CLASS, TAB_TEXT_VARIANTS } from '@ui/features/themes/components/tabs'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { TabOption, TabsSwitcherProps } from './TabsSwitcher'
 
 const { Spacing } = SizesAndSpaces

@@ -8,8 +8,8 @@ import {
   StyledCheckmark,
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import { useStore } from '@/dex/store/useStore'
-import { t } from '@evm-ui/lib/i18n'
 import { Box } from '@legacy-ui/Box'
+import { t } from '@ui/lib/i18n'
 
 export const PoolTypeSummary = () => {
   const swapType = useStore(state => state.createPool.swapType)

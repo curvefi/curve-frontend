@@ -1,5 +1,5 @@
-import { t } from '@evm-ui/lib/i18n'
 import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
+import { t } from '@ui/lib/i18n'
 import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
 

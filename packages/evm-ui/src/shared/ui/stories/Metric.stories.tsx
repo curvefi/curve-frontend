@@ -1,10 +1,10 @@
-import { FireIcon } from '@evm-ui/shared/icons/FireIcon'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { borderStyle } from '@evm-ui/utils/mui'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ, q } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { FireIcon } from '@ui/icons/FireIcon'
+import { borderStyle } from '@ui/utils/mui'
 import { ALIGNMENTS, Metric } from '../Metric'
 import { METRIC_CATEGORIES } from '../metric-categories'
 

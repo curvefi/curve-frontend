@@ -1,10 +1,10 @@
 import type { ChartLineDashPattern } from '@evm-ui/shared/ui/Chart/chart.utils'
-import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
-import { TRANSITION, Duration } from '@evm-ui/themes/design/0_primitives'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import ButtonBase from '@mui/material/ButtonBase'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { WithWrapper } from '@ui/components/WithWrapper'
+import { TRANSITION, Duration } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

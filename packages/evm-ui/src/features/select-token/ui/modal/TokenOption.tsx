@@ -1,13 +1,13 @@
 import { useRef } from 'react'
-import { InvertOnHover } from '@evm-ui/shared/ui/InvertOnHover'
-import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
-import { TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { shortenAddress, formatNumber, amount } from '@evm-ui/utils'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { InvertOnHover } from '@ui/components/InvertOnHover'
+import { TokenIcon } from '@ui/components/TokenIcon'
+import { Tooltip } from '@ui/components/Tooltip'
+import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TokenOption as Option } from '../../types'
 
 const { IconSize } = SizesAndSpaces

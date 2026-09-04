@@ -2,11 +2,11 @@ import { ReactNode, useRef } from 'react'
 import { useButton } from 'react-aria'
 import { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { Duration } from '@evm-ui/themes/design/0_primitives'
 import { Button } from '@legacy-ui/Button'
 import type { ButtonProps } from '@legacy-ui/Button/types'
 import { Icon } from '@legacy-ui/Icon/Icon'
+import { Duration } from '@ui/features/themes/design/0_primitives'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 
 type OpenDialogButtonProps = {
   children: ReactNode
