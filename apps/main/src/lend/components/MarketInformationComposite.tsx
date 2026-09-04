@@ -12,6 +12,7 @@ import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { t } from '@evm-ui/lib/i18n'
 import { MarketRateType } from '@evm-ui/types/market'
+import { stackedMarketCardHeadersSx } from '@evm-ui/utils/mui'
 import { PAGE_SPACING } from '@evm-ui/widgets/DetailPageLayout/constants'
 import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
 import Card from '@mui/material/Card'
@@ -48,7 +49,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       )}
       <MarketSection id="historical-rates">
         <Stack sx={{ gap: PAGE_SPACING }}>
-          <Stack>
+          <Stack sx={stackedMarketCardHeadersSx}>
             {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
             <MarketBorrowRateBreakdown />
           </Stack>

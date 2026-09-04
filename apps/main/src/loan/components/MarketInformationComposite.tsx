@@ -9,6 +9,7 @@ import { ChartAndActivityComp, MarketActivityComp } from '@/loan/components/Char
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { t } from '@evm-ui/lib/i18n'
 import { MarketRateType } from '@evm-ui/types/market'
+import { stackedMarketCardHeadersSx } from '@evm-ui/utils/mui'
 import { PAGE_SPACING } from '@evm-ui/widgets/DetailPageLayout/constants'
 import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
 import Card from '@mui/material/Card'
@@ -40,7 +41,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
         </Stack>
       </MarketSection>
       <MarketSection id="historical-rates">
-        <Stack>
+        <Stack sx={stackedMarketCardHeadersSx}>
           <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
           <MarketBorrowRateBreakdown />
         </Stack>
