@@ -5,7 +5,6 @@ import { useDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { REFRESH_INTERVAL } from '@ui/utils/time'
-import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
 export const useAutoRefresh = (chainId: number | undefined) => {
   const usePoolListV2 = useDexPoolListV2()
@@ -20,7 +19,6 @@ export const useAutoRefresh = (chainId: number | undefined) => {
 
   usePageVisibleInterval(async () => {
     if (!curveApi || !poolIds || !chainId) return
-    const poolVolumes = await refetchPoolVolumes({ chainId })
-    await fetchPools(curveApi, poolIds, poolVolumes, !usePoolListV2)
+    await fetchPools(curveApi, poolIds, !usePoolListV2)
   }, REFRESH_INTERVAL['15m'])
 }

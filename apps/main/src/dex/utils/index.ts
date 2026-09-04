@@ -1,7 +1,5 @@
 import { zeroAddress } from 'viem'
-import type { ChainId, Token } from '@/dex/types/main.types'
-import type { TokenOption } from '@evm-ui/features/select-token'
-import type { Address } from '@primitives/address.utils'
+import type { ChainId } from '@/dex/types/main.types'
 
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 
@@ -33,20 +31,3 @@ export const delayAction = <T extends () => unknown>(cb: T) => setTimeout(() => 
 
 export const getChainPoolIdActiveKey = (chainId: ChainId | null, poolId: string | undefined) =>
   chainId && poolId ? `${chainId}-${poolId}` : ''
-
-/**
- * Converts a Token object to a TokenOption object
- *
- * @param chain - Optional chain identifier
- * @returns A function that takes a Token and returns a TokenOption with the specified chain
- * @example
- * const tokens = tokensList.map(toTokenOption('ethereum'))
- */
-export const toTokenOption =
-  (chain?: string) =>
-  (token: Token): TokenOption => ({
-    chain,
-    address: token.address as Address,
-    symbol: token.symbol,
-    volume: token.volume,
-  })

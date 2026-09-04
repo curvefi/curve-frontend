@@ -1,5 +1,6 @@
 import { isEqual, noop } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { getAddress } from 'viem'
 import { useConfig } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
@@ -16,15 +17,15 @@ import type {
 import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
+import { useTokenVolumes } from '@/dex/hooks/useTokenVolumes'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper, TokensMapper } from '@/dex/types/main.types'
-import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
 import { notify } from '@evm-ui/features/connect-wallet'
 import { useLayoutStore } from '@evm-ui/features/layout'
-import { TokenList, TokenSelector, useTokenSelectorData } from '@evm-ui/features/select-token'
+import { TokenList, TokenSelector, useTokenSelectorData, type TokenOption } from '@evm-ui/features/select-token'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
@@ -137,10 +138,17 @@ export const QuickSwap = ({
     }
   }, [curve, blacklist, userAddress])
 
+  const tokenVolumes = useTokenVolumes({ chainId })
   const tokens = useMemo(
-    () => notFalsy(...Object.values(tokensMapper ?? {})).map(toTokenOption(network?.blockchainId)),
+    () =>
+      notFalsy(...Object.values(tokensMapper ?? {})).map<TokenOption>(token => ({
+        address: getAddress(token.address),
+        symbol: token.symbol,
+        chain: network?.blockchainId,
+        volume: tokenVolumes.data?.[token.address],
+      })),
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [tokensMapperStr, network?.blockchainId],
+    [tokensMapperStr, network?.blockchainId, tokenVolumes.data],
   )
 
   const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == fromAddress)

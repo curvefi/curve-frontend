@@ -12,7 +12,6 @@ import {
   CurveApi,
   PoolData,
   PoolDataMapper,
-  PoolVolumes,
   RewardsApyMapper,
   TokensMapper,
 } from '@/dex/types/main.types'
@@ -25,7 +24,7 @@ import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
-import { refetchPoolVolumes } from '../queries/pool-volume.query'
+import { invalidatePoolVolumesQuery } from '../queries/pool-volume.query'
 import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -49,7 +48,6 @@ export type PoolsSlice = {
     fetchPools: (
       curve: CurveApi,
       poolIds: string[],
-      poolVolumes: PoolVolumes,
       includeGaugeData: boolean,
     ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
@@ -81,7 +79,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    fetchPools: async (curve, poolIds, poolVolumes, includeGaugeData) => {
+    fetchPools: async (curve, poolIds, includeGaugeData) => {
       const { pools, storeCache, tokens } = get()
       const { chainId } = curve
 
@@ -134,6 +132,9 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           }),
         )
 
+        // New pools mapper means new tokens that need their volumes fetched
+        void invalidatePoolVolumesQuery({ chainId })
+
         // update cache
         void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
 
@@ -142,7 +143,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
         // fetch tokens
-        tokens.setTokensMapper(curve, partialPoolDatas, poolVolumes)
+        tokens.setTokensMapper(curve, partialPoolDatas)
 
         return { poolsMapper, poolDatas: partialPoolDatas }
       } catch (error) {
@@ -163,8 +164,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])
-      const poolVolumes = await refetchPoolVolumes({ chainId: curve.chainId })
-      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId], poolVolumes, true)
+      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId], true)
       return resp?.poolsMapper?.[poolId]
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {

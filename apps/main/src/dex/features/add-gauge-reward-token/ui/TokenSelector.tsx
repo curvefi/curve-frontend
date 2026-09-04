@@ -1,14 +1,13 @@
 import { useEffect, useMemo } from 'react'
-import { ethAddress, isAddressEqual, zeroAddress } from 'viem'
+import { ethAddress, isAddressEqual, zeroAddress, getAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { ChainId } from '@/dex/types/main.types'
-import { toTokenOption } from '@/dex/utils'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useFormContext } from '@evm-ui/features/forms'
-import { TokenList, TokenSelector as TokenSelectorUIKit } from '@evm-ui/features/select-token'
+import { TokenSelector as TokenSelectorUIKit, TokenList, TokenOption } from '@evm-ui/features/select-token'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
@@ -55,7 +54,11 @@ export const TokenSelector = ({
               crvAddress,
             ].some(rewardToken => isAddressEqual(rewardToken, token.address as Address)),
         )
-        .map(toTokenOption(network?.blockchainId)),
+        .map<TokenOption>(token => ({
+          address: getAddress(token.address),
+          symbol: token.symbol,
+          chain: network?.blockchainId,
+        })),
     [gaugeRewardsDistributors, tokensMapper, crvAddress, network.blockchainId],
   )
 

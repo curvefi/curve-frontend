@@ -23,6 +23,7 @@ import { CreateToken, TokenId, TokensInPoolState, type TokenState } from '@/dex/
 import { containsOracle } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useTokenVolumes } from '@/dex/hooks/useTokenVolumes'
 import { useBasePools } from '@/dex/queries/base-pools.query'
 import {
   DEFAULT_CREATE_POOL_STATE,
@@ -84,12 +85,15 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     [nativeToken, createDisabledTokens],
   )
 
+  const tokenVolumes = useTokenVolumes({ chainId })
+
   // prepares list of tokens
   const selTokens: CreateToken[] = useMemo(() => {
     const tokensArray = Object.entries(tokensMapper).map(token => ({
       ...token[1]!,
       userAddedToken: false,
       basePool: basePools.some(pool => pool.token.toLowerCase() === token[0].toLowerCase()),
+      volume: tokenVolumes.data?.[token[1]!.address],
     }))
 
     if (haveSigner && Object.keys(tokensArray ?? {}).length > 0) {
@@ -107,7 +111,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
     return lodash.uniqBy([...userAddedTokens, ...balanceSortedTokensArray], o => o.address)
-  }, [tokensMapper, haveSigner, userAddedTokens, basePools])
+  }, [tokensMapper, haveSigner, userAddedTokens, basePools, tokenVolumes.data])
 
   const findSymbol = useCallback(
     (address: string) => {
