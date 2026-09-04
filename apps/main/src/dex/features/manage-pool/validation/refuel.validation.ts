@@ -1,6 +1,6 @@
 import { enforce, skipWhen, test } from 'vest'
-import { t } from '@evm-ui/lib/i18n'
 import { createValidationSuite } from '@evm-ui/lib/validation'
+import { t } from '@ui/lib/i18n'
 import type { RefuelFormValues } from '../types'
 
 const hasAmount = ({ tokenAAmount, tokenBAmount }: RefuelFormValues) => !!tokenAAmount || !!tokenBAmount

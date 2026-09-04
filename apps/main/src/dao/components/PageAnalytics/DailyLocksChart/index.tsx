@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
 import { DAO_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import { useVeCrvLocksQuery } from '@/dao/entities/vecrv-locks'
-import { t } from '@evm-ui/lib/i18n'
 import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart'
 import Box from '@mui/material/Box'
+import { t } from '@ui/lib/i18n'
 import { PositiveAndNegativeBarChart } from './PositiveAndNegativeBarChart'
 
 const DAILY_LOCKS_DAYS = 100

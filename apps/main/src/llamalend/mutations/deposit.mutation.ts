@@ -10,11 +10,11 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { t } from '@evm-ui/lib/i18n'
 import { rootKeys } from '@evm-ui/lib/model'
 import type { OnTransactionSuccess } from '@evm-ui/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
+import { t } from '@ui/lib/i18n'
 import { formatTokenAmounts } from '../llama.utils'
 
 type DepositOptions = {

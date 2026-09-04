@@ -1,9 +1,6 @@
 import type { TokenOption as Option } from '@evm-ui/features/select-token'
 import { blacklist } from '@evm-ui/features/select-token/blacklist'
 import { TokenOption } from '@evm-ui/features/select-token/ui/modal/TokenOption'
-import { t } from '@evm-ui/lib/i18n'
-import { Spinner } from '@evm-ui/shared/ui/Spinner'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -11,6 +8,9 @@ import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
+import { Spinner } from '@ui/components/Spinner'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 

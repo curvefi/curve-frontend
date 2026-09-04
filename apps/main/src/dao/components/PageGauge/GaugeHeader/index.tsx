@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
 import { SmallLabel } from '@/dao/components/SmallLabel'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
-import { t } from '@evm-ui/lib/i18n'
-import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { Box } from '@legacy-ui/Box'
 import { Loader } from '@legacy-ui/Loader'
+import { TokenIcons } from '@ui/components/TokenIcons'
+import { t } from '@ui/lib/i18n'
 
 type GaugeHeaderProps = {
   gaugeData: GaugeFormattedData | undefined

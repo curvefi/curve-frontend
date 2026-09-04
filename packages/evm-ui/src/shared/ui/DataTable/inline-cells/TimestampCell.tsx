@@ -1,11 +1,11 @@
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { TABLE_SECONDARY_TEXT_CLASS } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatDate, formatTime } from '@legacy-ui/utils'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,7 +1,6 @@
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
 import { shortenAddress, formatNumber, amount } from '@evm-ui/utils'
 import { Loader } from '@legacy-ui/Loader'
 import { Radio, RadioGroup } from '@legacy-ui/Radio'
@@ -9,6 +8,7 @@ import { Spacer } from '@legacy-ui/Spacer'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { Chip } from '@legacy-ui/Typography'
+import { TokenIcon } from '@ui/components/TokenIcon'
 
 export const SelectedOneCoinExpected = ({
   amounts,

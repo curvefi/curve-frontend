@@ -1,11 +1,11 @@
-import { t } from '@evm-ui/lib/i18n'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
-import { Sizing } from '@evm-ui/themes/design/0_primitives'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { CURVE_LOGO_URL } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import { RouterLink } from '@ui/components/RouterLink'
+import { Sizing } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
+import { CURVE_LOGO_URL } from '@ui/lib/resource.constants'
 
 const { IconSize, Spacing } = SizesAndSpaces
 

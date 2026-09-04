@@ -7,14 +7,14 @@ import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
 import { useFormContext } from '@evm-ui/features/forms'
 import { TokenList, type TokenOption, TokenSelector } from '@evm-ui/features/select-token'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal, decimalMultiply, shortenAddress } from '@evm-ui/utils'
 import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
 
 export const AmountTokenInput = ({
   chainId,

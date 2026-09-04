@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useLayoutStore } from '@evm-ui/features/layout'
-import { useResizeObserver } from '@evm-ui/hooks/useResizeObserver'
+import { useResizeObserver } from '@ui/hooks/useResizeObserver'
 
 export function useMainNavRef() {
   const ref = useRef<HTMLDivElement>(null)

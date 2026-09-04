@@ -2,13 +2,13 @@ import type { MarketToken } from '@/llamalend/llama.utils'
 import { aprToApy } from '@/llamalend/rates.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { getPointsCampaignRows, type PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
-import { t } from '@evm-ui/lib/i18n'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
-import type { TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import type { TokenInfoProps } from '@ui/components/TokenInfo'
+import { t } from '@ui/lib/i18n'
 
 export type BreakdownSource = {
   tokenInfo: TokenInfoProps

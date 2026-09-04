@@ -3,8 +3,8 @@ import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { UserPositionIndicator, type ColorState } from '@evm-ui/shared/ui/DataTable/UserPositionIndicator'
-import { Duration } from '@evm-ui/themes/design/0_primitives'
 import { Typography } from '@mui/material'
+import { Duration } from '@ui/features/themes/design/0_primitives'
 
 /**
  * Creates a flicker effect by toggling between orange and red colors

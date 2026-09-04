@@ -1,12 +1,12 @@
-import { t } from '@evm-ui/lib/i18n'
 import { createAppColumnHelper, useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
-import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import { TokenInfo } from '@ui/components/TokenInfo'
 import { constQ } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import type { PointsCampaignRow } from './points-campaigns.utils'
 
 enum PointsCampaignColumnId {

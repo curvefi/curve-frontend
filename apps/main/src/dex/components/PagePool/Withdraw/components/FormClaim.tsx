@@ -10,7 +10,6 @@ import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Wit
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { t, Trans } from '@evm-ui/lib/i18n'
 import { amount as toAmount, formatNumber } from '@evm-ui/utils'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -22,6 +21,7 @@ import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
+import { t, Trans } from '@ui/lib/i18n'
 
 export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribedRef = useRef(false)

@@ -5,13 +5,13 @@ import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/Pagi
 import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import { formatHolderName, getEthPath } from '@/dao/utils'
-import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { formatNumber } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import { sortBy } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 
 type HoldersSort = {
   key: AllHoldersSortBy

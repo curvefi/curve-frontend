@@ -7,11 +7,7 @@ import {
   isTestnet,
 } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
-import { t } from '@evm-ui/lib/i18n'
 import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
-import { MenuItem } from '@evm-ui/shared/ui/MenuItem'
-import { MenuSectionHeader } from '@evm-ui/shared/ui/MenuSectionHeader'
-import { RouterLink as Link } from '@evm-ui/shared/ui/RouterLink'
 import { SearchField } from '@evm-ui/shared/ui/SearchField'
 import type { NetworkDef } from '@legacy-ui/utils'
 import Alert from '@mui/material/Alert'
@@ -19,7 +15,11 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import { recordEntries } from '@primitives/objects.utils'
+import { MenuItem } from '@ui/components/MenuItem'
+import { MenuSectionHeader } from '@ui/components/MenuSectionHeader'
+import { RouterLink as Link } from '@ui/components/RouterLink'
 import type { QueryProp } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
 enum ChainType {

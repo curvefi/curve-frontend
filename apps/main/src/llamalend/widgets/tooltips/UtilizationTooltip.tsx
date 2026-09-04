@@ -1,6 +1,6 @@
-import { t } from '@evm-ui/lib/i18n'
-import { TooltipWrapper, TooltipDescription } from '@evm-ui/shared/ui/TooltipComponents'
 import { MarketType } from '@evm-ui/types/market'
+import { TooltipWrapper, TooltipDescription } from '@ui/components/TooltipComponents'
+import { t } from '@ui/lib/i18n'
 
 const descriptions: Record<MarketType, string[]> = {
   [MarketType.Lend]: [

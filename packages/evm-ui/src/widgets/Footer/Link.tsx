@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import type { AppName } from '@evm-ui/shared/routes'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import Button from '@mui/material/Button'
 import LinkMui from '@mui/material/Link'
+import { RouterLink } from '@ui/components/RouterLink'
 
 export type LinkProps = {
   label: string

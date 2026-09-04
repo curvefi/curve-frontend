@@ -1,10 +1,10 @@
 import { ReactNode, useCallback, useState } from 'react'
 import { styled } from 'styled-components'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { Icon } from '@legacy-ui/Icon'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import { breakpoints } from '@legacy-ui/utils'
+import { Tooltip } from '@ui/components/Tooltip'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 
 export type IconStyles = { $svgTop?: string }
 

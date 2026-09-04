@@ -14,14 +14,14 @@ import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { t } from '@evm-ui/lib/i18n'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import { shortenAddress } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Button } from '@legacy-ui/Button'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { scanTxPath } from '@legacy-ui/utils'
 import MuiButton from '@mui/material/Button'
+import { RouterLink } from '@ui/components/RouterLink'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   disabled: boolean

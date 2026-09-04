@@ -21,11 +21,9 @@ import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import { useLendingSnapshots } from '@evm-ui/entities/lending-snapshots'
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
 import { combineQueries } from '@evm-ui/lib'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import {
   AVERAGE_CATEGORIES,
   type AverageCategory,
@@ -38,6 +36,8 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces

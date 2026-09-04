@@ -1,4 +1,4 @@
-import { t } from '@evm-ui/lib/i18n'
+import { t } from '@ui/lib/i18n'
 
 type CustomError = {
   data?: { message: string }

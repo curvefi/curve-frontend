@@ -1,7 +1,7 @@
-import { ReloadIcon } from '@evm-ui/shared/icons/ReloadIcon'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { TableButton } from './TableButton'
 
 const { Spacing } = SizesAndSpaces

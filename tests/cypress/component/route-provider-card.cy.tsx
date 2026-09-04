@@ -2,10 +2,10 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import type { RouteResponse } from '@evm-ui/entities/router-api'
-import { lightTheme } from '@evm-ui/themes'
 import { RouteProviderCard } from '@evm-ui/widgets/RouteProvider/RouteProviderCard'
 import type { RouteProvider } from '@primitives/router.utils'
 import { constQ, q, type QueryProp } from '@ui/features/queries/util'
+import { lightTheme } from '@ui/features/themes/themes'
 
 const { design } = lightTheme()
 

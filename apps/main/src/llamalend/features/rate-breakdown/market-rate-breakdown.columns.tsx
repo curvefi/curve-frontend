@@ -1,12 +1,12 @@
-import { t } from '@evm-ui/lib/i18n'
 import { Badge } from '@evm-ui/shared/ui/Badge'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
+import { TokenInfo } from '@ui/components/TokenInfo'
+import { t } from '@ui/lib/i18n'
 import type { RateBreakdownRow } from './market-rate-breakdown.utils'
 
 enum RateColumnId {

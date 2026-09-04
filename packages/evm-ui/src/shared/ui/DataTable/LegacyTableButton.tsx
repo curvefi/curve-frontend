@@ -1,8 +1,8 @@
 import { forwardRef } from 'react'
-import { LoadingAnimation, TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import IconButton from '@mui/material/IconButton'
 import SvgIcon from '@mui/material/SvgIcon'
+import { LoadingAnimation, TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 

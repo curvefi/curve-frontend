@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 import { useConnection } from 'wagmi'
-import { t } from '@evm-ui/lib/i18n'
 import Button, { type ButtonProps } from '@mui/material/Button'
+import { t } from '@ui/lib/i18n'
 import { useWallet } from '../lib'
 
 export const ConnectWalletButton = ({

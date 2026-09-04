@@ -1,8 +1,8 @@
 import type { MouseEvent } from 'react'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { notFalsy } from '@primitives/objects.utils'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { TableFilterItem } from './TableFilterItem'
 
 type TableFilterButtonOption<T extends string> = {

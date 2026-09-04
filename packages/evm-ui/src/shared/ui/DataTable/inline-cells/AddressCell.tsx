@@ -1,13 +1,13 @@
 import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
-import { t } from '@evm-ui/lib/i18n'
 import { TABLE_SECONDARY_TEXT_CLASS } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import { Tooltip } from '@ui/components/Tooltip'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 

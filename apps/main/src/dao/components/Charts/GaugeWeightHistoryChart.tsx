@@ -1,5 +1,4 @@
 import { useGaugeWeightHistoryQuery, type GaugeWeightHistoryData } from '@/dao/entities/gauge-weight-history'
-import { t } from '@evm-ui/lib/i18n'
 import {
   ChartFooter,
   ChartStateWrapper,
@@ -10,12 +9,13 @@ import {
   type LegendItem,
   type LineSeriesConfig,
 } from '@evm-ui/shared/ui/Chart'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import type { Address } from '@primitives/address.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { Height, Spacing } = SizesAndSpaces
 const SERIES_LABEL = t`Relative Gauge Weight`

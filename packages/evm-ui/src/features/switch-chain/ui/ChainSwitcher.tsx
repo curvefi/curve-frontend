@@ -5,8 +5,6 @@ import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks
 import { isLiteChain, isTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@evm-ui/hooks/router'
 import { useShowTestNets } from '@evm-ui/hooks/useLocalStorage'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t } from '@evm-ui/lib/i18n'
 import { type AppMenuOption, getCurrentNetwork } from '@evm-ui/shared/routes'
 import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import { ModalSettingsButton } from '@evm-ui/shared/ui/ModalSettingsButton'
@@ -15,11 +13,13 @@ import { type NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import IconButton from '@mui/material/IconButton'
+import { Chain } from '@primitives/network.utils'
 import { maybes, type PartialRecord } from '@primitives/objects.utils'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
-import { Chain } from '@primitives/network.utils'
 
 type ChainSwitcherProps = {
   supportedNetworks: NetworkMapping

@@ -1,8 +1,8 @@
 import type { RefObject } from 'react'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { t } from '@evm-ui/lib/i18n'
-import { FilterIcon } from '@evm-ui/shared/icons/FilterIcon'
-import { SelectableChip } from '@evm-ui/shared/ui/SelectableChip'
+import { SelectableChip } from '@ui/components/SelectableChip'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { FilterIcon } from '@ui/icons/FilterIcon'
+import { t } from '@ui/lib/i18n'
 import { GridChip } from './chips/GridChip'
 
 type TableFiltersChipProps = {

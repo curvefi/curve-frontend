@@ -4,8 +4,6 @@ import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
-import { t } from '@evm-ui/lib/i18n'
-import { Chain } from '@primitives/network.utils'
 import { shortenAddress, formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
@@ -13,6 +11,8 @@ import type { IconProps } from '@legacy-ui/Icon/Icon'
 import { ExternalLink } from '@legacy-ui/Link'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate, scanAddressPath } from '@legacy-ui/utils'
+import { Chain } from '@primitives/network.utils'
+import { t } from '@ui/lib/i18n'
 
 const StyledInformationSquare16: IStyledComponent<'web', IconProps> = styled(Icon)`
   opacity: 0.4;

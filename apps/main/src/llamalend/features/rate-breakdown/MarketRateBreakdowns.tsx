@@ -4,11 +4,11 @@ import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePag
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { MarketRateType } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
-import { stackedMarketCardHeadersSx } from '@evm-ui/utils/mui'
 import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
+import { stackedMarketCardHeadersSx } from '@ui/utils/mui'
 import { buildBorrowRateBreakdown, buildSupplyRateBreakdown } from './market-rate-breakdown.utils'
 import { PointsCampaignsCard, RateBreakdownTable } from './MarketRateBreakdownCards'
 

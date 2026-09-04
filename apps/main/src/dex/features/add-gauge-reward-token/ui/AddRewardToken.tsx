@@ -9,13 +9,13 @@ import { DistributorInput, TokenSelector } from '@/dex/features/add-gauge-reward
 import { ChainId } from '@/dex/types/main.types'
 import { FormButton, useForm, useFormSync } from '@evm-ui/features/forms'
 import { createValidationSuite } from '@evm-ui/lib'
-import { t } from '@evm-ui/lib/i18n'
 import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Stack from '@mui/material/Stack'
 import { q } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 

@@ -2,9 +2,9 @@ import { enforce, test } from 'vest'
 import { useForm } from '@evm-ui/features/forms'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { createValidationSuite } from '@evm-ui/lib'
-import { t } from '@evm-ui/lib/i18n'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 import { MAX_SLIPPAGE, MIN_SLIPPAGE, SLIPPAGE_TYPES, SlippageSettings, SlippageType } from './slippage.utils'
 
 function isSlippage(nr: Decimal) {

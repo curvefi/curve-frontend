@@ -1,7 +1,4 @@
 import type { ReactNode } from 'react'
-import { t } from '@evm-ui/lib/i18n'
-import { ArrowTopRightIcon } from '@evm-ui/shared/icons/ArrowTopRightIcon'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import CloseIcon from '@mui/icons-material/Close'
 import { type SxProps, type Theme } from '@mui/material'
 import Button from '@mui/material/Button'
@@ -10,9 +7,12 @@ import IconButton from '@mui/material/IconButton'
 import LinkMui from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { ExclamationTriangleIcon } from '../icons/ExclamationTriangleIcon'
-import { InfoCircledIcon } from '../icons/InfoCircledIcon'
-import { LlamaIcon } from '../icons/LlamaIcon'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
+import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'
+import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
+import { LlamaIcon } from '@ui/icons/LlamaIcon'
+import { t } from '@ui/lib/i18n'
 
 const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 

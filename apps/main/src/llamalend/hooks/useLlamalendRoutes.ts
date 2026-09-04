@@ -1,9 +1,9 @@
 import { useMatchRoute } from '@evm-ui/hooks/router'
-import { useIsDesktop } from '@evm-ui/hooks/useBreakpoints'
-import { t } from '@evm-ui/lib/i18n'
 import { LEND_MARKET_ROUTES } from '@evm-ui/shared/routes'
 import { APP_LINK, type AppName, LEND_ROUTES } from '@evm-ui/shared/routes'
 import type { AppRoute } from '@evm-ui/widgets/Header/types'
+import { useIsDesktop } from '@ui/hooks/useBreakpoints'
+import { t } from '@ui/lib/i18n'
 
 const LEND_APP: AppName = 'lend'
 const CRVUSD_APP: AppName = 'crvusd'

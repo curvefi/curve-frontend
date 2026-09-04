@@ -1,14 +1,14 @@
-import { t } from '@evm-ui/lib/i18n'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { TokenInfo, type TokenInfoTokenIconProps } from '@evm-ui/shared/ui/TokenInfo'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { formatNumber, formatToken } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
+import { TokenInfo, type TokenInfoTokenIconProps } from '@ui/components/TokenInfo'
+import { Tooltip } from '@ui/components/Tooltip'
+import { t } from '@ui/lib/i18n'
 import { PoolCompositionColumnId } from './columns.enum'
 
 export type PoolCompositionRow = {

@@ -1,5 +1,5 @@
-import { t } from '@evm-ui/lib/i18n'
 import { showToast } from '@evm-ui/widgets/Toast/toast.util'
+import { t } from '@ui/lib/i18n'
 import { ReleaseChannel } from '@ui/utils/env'
 
 export const showReleaseChannelSnackbar = ({

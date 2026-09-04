@@ -12,11 +12,11 @@ import { useStore } from '@/dex/store/useStore'
 import type { CurrencyReserves } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
-import { t } from '@evm-ui/lib/i18n'
 import { decimal } from '@evm-ui/utils'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import type { Address } from '@primitives/address.utils'
 import { mapQuery } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { Amount } from '../../utils'
 
 /**

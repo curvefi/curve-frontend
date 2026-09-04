@@ -1,6 +1,6 @@
-import { t } from '@evm-ui/lib/i18n'
-import { EXTERNAL_LINKS } from '@legacy-ui/utils'
 import Typography from '@mui/material/Typography'
+import { t } from '@ui/lib/i18n'
+import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 import { LegalExternalLink } from '../general/LegalExternalLink'
 import { List } from '../general/List'
 import { Section, Header, Title, Paragraph, Bold } from '../general/Section'

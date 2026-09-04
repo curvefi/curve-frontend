@@ -4,11 +4,11 @@ import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { SmallLabel } from '@/dao/components/SmallLabel'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import { t } from '@evm-ui/lib/i18n'
-import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { scanAddressPath } from '@legacy-ui/utils'
+import { TokenIcons } from '@ui/components/TokenIcons'
+import { t } from '@ui/lib/i18n'
 
 type TitleCompProps = {
   gaugeData: GaugeFormattedData

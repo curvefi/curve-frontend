@@ -2,12 +2,12 @@ import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import { useScrvUsdSupplies } from '@/loan/entities/scrvusd-supplies.query'
 import type { ChainId } from '@/loan/types/loan.types'
-import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { weiToEther } from '@evm-ui/utils'
 import Grid from '@mui/material/Grid'
 import { mapQuery } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 

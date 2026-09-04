@@ -12,8 +12,8 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useNavigate, useParams } from '@evm-ui/hooks/router'
-import { t } from '@evm-ui/lib/i18n'
 import { ErrorPage } from '@evm-ui/pages/ErrorPage'
+import { t } from '@ui/lib/i18n'
 
 export const PagePool = () => {
   const push = useNavigate()

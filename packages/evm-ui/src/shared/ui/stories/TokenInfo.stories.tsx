@@ -1,6 +1,6 @@
-import { LeverageIcon } from '@evm-ui/shared/icons/LeverageIcon'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { TokenInfo } from '../TokenInfo'
+import { TokenInfo } from '@ui/components/TokenInfo'
+import { LeverageIcon } from '@ui/icons/LeverageIcon'
 
 const meta: Meta<typeof TokenInfo> = {
   title: 'UI Kit/Widgets/TokenInfo',

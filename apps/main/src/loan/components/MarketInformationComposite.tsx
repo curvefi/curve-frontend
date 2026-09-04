@@ -7,9 +7,7 @@ import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp, MarketActivityComp } from '@/loan/components/ChartAndActivityComp'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { t } from '@evm-ui/lib/i18n'
 import { MarketRateType } from '@evm-ui/types/market'
-import { stackedMarketCardHeadersSx } from '@evm-ui/utils/mui'
 import { PAGE_SPACING } from '@evm-ui/widgets/DetailPageLayout/constants'
 import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
 import Card from '@mui/material/Card'
@@ -18,6 +16,8 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
+import { stackedMarketCardHeadersSx } from '@ui/utils/mui'
 
 type MarketInformationCompProps = {
   previewPrices: Range<Decimal> | undefined

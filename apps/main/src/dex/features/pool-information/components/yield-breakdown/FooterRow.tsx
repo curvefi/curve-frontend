@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
-import { t } from '@evm-ui/lib/i18n'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import type { Column } from '@tanstack/react-table'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import type { YieldBreakdownRow } from './columns/columns.definitions'
 import { YieldBreakdownColumnId } from './columns/columns.enum'
 

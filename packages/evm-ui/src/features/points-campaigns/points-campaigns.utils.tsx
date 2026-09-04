@@ -1,7 +1,7 @@
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
-import type { TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
 import { formatNumber } from '@evm-ui/utils'
+import type { TokenInfoProps } from '@ui/components/TokenInfo'
 
 export type PointsCampaignRow = {
   source: TokenInfoProps

@@ -1,6 +1,6 @@
 import { llama } from '@/analytics/llamadash'
-import { DownloadIcon } from '@evm-ui/shared/icons/DownloadIcon'
 import IconButton from '@mui/material/IconButton'
+import { DownloadIcon } from '@ui/icons/DownloadIcon'
 
 /** Plain series data keyed by column name. `time` is a UTC timestamp. */
 type SeriesData = Record<string, { time: number; value: number }[]>

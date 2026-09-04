@@ -4,11 +4,11 @@ import { useIncreaseLockForm } from '@/dao/components/PageVeCrv/hooks/useIncreas
 import { useIncreaseLockGasEstimate } from '@/dao/components/PageVeCrv/queries/increase-lock-estimate-gas.query'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
-import { t } from '@evm-ui/lib/i18n'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { fromEntries } from '@primitives/objects.utils'
 import { q } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
   const {

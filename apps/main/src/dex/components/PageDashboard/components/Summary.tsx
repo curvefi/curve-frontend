@@ -10,13 +10,13 @@ import { SummaryTotal } from '@/dex/components/PageDashboard/components/SummaryT
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { useStore } from '@/dex/store/useStore'
 import { useLayoutStore } from '@evm-ui/features/layout'
-import { t } from '@evm-ui/lib/i18n'
 import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { Box } from '@legacy-ui/Box'
 import { SpinnerWrapper } from '@legacy-ui/Spinner'
 import { Stats } from '@legacy-ui/Stats'
 import { shortenAccount } from '@legacy-ui/utils'
 import { breakpoints } from '@legacy-ui/utils/responsive'
+import { t } from '@ui/lib/i18n'
 
 const menu = [
   { value: 'DAY_PROFITS', label: t`Daily Profits`, component: SummaryRecurrence },

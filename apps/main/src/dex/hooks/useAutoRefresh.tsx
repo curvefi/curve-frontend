@@ -4,7 +4,7 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
-import { REFRESH_INTERVAL } from '@evm-ui/utils'
+import { REFRESH_INTERVAL } from '@ui/utils/time'
 import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
 export const useAutoRefresh = (chainId: number | undefined) => {
