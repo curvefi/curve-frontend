@@ -1,10 +1,6 @@
-import { HeadContent, Outlet, createRootRoute } from '@tanstack/react-router'
+import { createRootRoute } from '@tanstack/react-router'
+import { StellarRootLayout } from './StellarRootLayout'
 
 export const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <HeadContent />
-      <Outlet />
-    </>
-  ),
+  component: StellarRootLayout,
 })

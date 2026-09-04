@@ -3,10 +3,10 @@ import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
 import { t, Trans } from '@evm-ui/lib/i18n'
 import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { ReleaseChannel } from '@evm-ui/utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { ReleaseChannel } from '@ui/utils/env'
 
 const { Spacing } = SizesAndSpaces
 

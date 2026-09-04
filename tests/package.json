@@ -22,6 +22,9 @@
     "cy:run:rpc": "cypress run --component --spec 'cypress/component/**/*.rpc.cy.{ts,tsx}'",
     "download:artifacts": "node --experimental-strip-types scripts/download-artifacts.ts"
   },
+  "dependencies": {
+    "ui": "*"
+  },
   "devDependencies": {
     "@cypress/react": "9.0.2",
     "@cypress/vite-dev-server": "7.3.4",

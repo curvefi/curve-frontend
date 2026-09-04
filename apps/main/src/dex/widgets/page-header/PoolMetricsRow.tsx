@@ -6,9 +6,9 @@ import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { constQ, fallbackQ, mapQuery } from '@evm-ui/types/util'
 import { amount } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
+import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

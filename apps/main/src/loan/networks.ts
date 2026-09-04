@@ -1,5 +1,5 @@
 import { ChainId, NetworkConfig, NetworkEnum } from '@/loan/types/loan.types'
-import { Chain } from '@evm-ui/utils'
+import { Chain } from '@primitives/network.utils'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
 
 const DEFAULT_NETWORK_CONFIG = {

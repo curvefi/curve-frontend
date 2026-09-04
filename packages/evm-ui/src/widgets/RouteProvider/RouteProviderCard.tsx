@@ -12,7 +12,6 @@ import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
 import { LoadingAnimation } from '@evm-ui/themes/design/0_primitives'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import type { QueryProp } from '@evm-ui/types/util'
 import { formatNumber, fromWei, PLACEHOLDER, PLACEHOLDER_USD } from '@evm-ui/utils'
 import { RouteComparisonChip } from '@evm-ui/widgets/RouteProvider/RouteComparisonChip'
 import { RouteProviderIcons, RouteProviderLabels } from '@evm-ui/widgets/RouteProvider/RouteProviders'
@@ -23,6 +22,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

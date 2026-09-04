@@ -13,8 +13,8 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { useCallbackSync, useForm, useFormSync, useOnChangeCallback } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import type { Range } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Range } from '@ui/features/queries/util'
 import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { userCollateral: undefined }

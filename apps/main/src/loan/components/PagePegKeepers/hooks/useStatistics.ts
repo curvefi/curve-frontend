@@ -1,7 +1,7 @@
 import { formatEther } from 'viem'
 import { useReadContracts, type UseReadContractsReturnType } from 'wagmi'
-import { mapQuery } from '@evm-ui/types/util'
 import { type Decimal } from '@primitives/decimal.utils'
+import { mapQuery } from '@ui/features/queries/util'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, PEG_KEEPERS } from '../constants'

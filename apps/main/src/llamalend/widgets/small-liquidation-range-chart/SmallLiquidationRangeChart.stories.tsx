@@ -1,8 +1,8 @@
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { constQ, q, type Range } from '@evm-ui/types/util'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { constQ, q, type Range } from '@ui/features/queries/util'
 import type { SmallLiquidationRangeChartProps as SmallLiquidationRangeChartComponentProps } from './small-liquidation-range-chart.types'
 import { SmallLiquidationRangeChart as SmallLiquidationRangeChartComponent } from './SmallLiquidationRangeChart'
 

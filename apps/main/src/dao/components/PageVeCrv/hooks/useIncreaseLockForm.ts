@@ -12,10 +12,10 @@ import {
 } from '@/dao/entities/locker-vecrv-info'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
-import { mapQuery } from '@evm-ui/types/util'
 import { MILLISECONDS_PER_SECOND, decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
+import { mapQuery } from '@ui/features/queries/util'
 import { calculateVeCrv } from '../utils/vecrv-calculations'
 
 const defaultValues: IncreaseLockFormValues = { lockedAmount: undefined, maxLockedAmount: undefined }

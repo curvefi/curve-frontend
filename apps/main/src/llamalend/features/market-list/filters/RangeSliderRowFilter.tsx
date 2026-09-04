@@ -3,8 +3,8 @@ import { type FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { useRangeFilter } from '@evm-ui/shared/ui/DataTable/hooks/useRangeFilter'
 import { type NumericTextFieldProps } from '@evm-ui/shared/ui/NumericTextField'
 import { type DecimalRangeValue, SliderInput } from '@evm-ui/shared/ui/SliderInput'
-import { Range } from '@evm-ui/types/util'
 import { decimal, formatNumber } from '@evm-ui/utils'
+import { Range } from '@ui/features/queries/util'
 
 type RangeSliderRowFilterProps<TColumnId extends string> = FilterProps<TColumnId> & {
   id: TColumnId

@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { styled } from 'styled-components'
 import { t } from '@evm-ui/lib/i18n'
-import { Chain } from '@evm-ui/utils'
+import { Chain } from '@primitives/network.utils'
 import { ExternalLink } from '@legacy-ui/Link'
 import { maybe, type PartialRecord } from '@primitives/objects.utils'
 

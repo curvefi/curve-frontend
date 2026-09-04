@@ -3,7 +3,7 @@ import type { StoreApi } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
 import { Token, TokensMapper, TokensNameMapper, PoolData, PoolVolumes, type CurveApi } from '@/dex/types/main.types'
-import { log } from '@evm-ui/lib/logging'
+import { log } from '@ui/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
