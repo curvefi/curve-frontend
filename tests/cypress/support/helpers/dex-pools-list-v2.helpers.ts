@@ -32,7 +32,7 @@ export const visitV2PoolList = ({
   cy.get('[data-testid="data-table"]', API_LOAD_TIMEOUT).should('be.visible')
 
   if (!isMobile && network === 'ethereum') {
-    cy.get(`[data-testid="data-table-header-${PoolColumnId.NetApy}"]`, API_LOAD_TIMEOUT).should('be.visible')
+    cy.get(`[data-testid="data-table-header-${PoolColumnId.NetRate}"]`, API_LOAD_TIMEOUT).should('be.visible')
   } else {
     const { address } = network === 'taiko' ? V2_POOL_FIXTURES.lite : V2_POOL_FIXTURES.showcase
     const row = getV2PoolRow(address).should('be.visible')

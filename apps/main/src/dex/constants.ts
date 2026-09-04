@@ -1,6 +1,6 @@
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 
-export const LARGE_APY = 5000
+export const LARGE_RATE = 5000
 
 const MAIN_ROUTE = {
   ...DEX_ROUTES,
