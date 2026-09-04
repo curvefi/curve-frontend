@@ -8,8 +8,8 @@ import { curveApiValidationSuite } from '@evm-ui/lib/model/query/curve-api-valid
 
 export const { useQuery: useAppStatsVolume } = queryFactory({
   queryKey: (params: ChainParams<ChainId>) => ['appStatsVolume', { chainId: params.chainId }] as const,
-  queryFn: ({ chainId }: ChainQuery<ChainId>) =>
-    isChainLite(chainId) ? Promise.resolve(null) : curvejsApi.network.getVolume(requireLib('curveApi')),
+  queryFn: async ({ chainId }: ChainQuery<ChainId>) =>
+    isChainLite(chainId) ? null : await curvejsApi.network.getVolume(requireLib('curveApi')),
   validationSuite: curveApiValidationSuite,
   category: 'dex.appStats',
 })
