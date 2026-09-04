@@ -18,11 +18,11 @@ import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
 import type { UserMarketParams } from '@evm-ui/lib/model'
 import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import { MarketType } from '@evm-ui/types/market'
-import { q, type Query, type QueryProp, type Range } from '@evm-ui/types/util'
 import { BlockchainIds, decimal } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
 
 type SupplyRewards = {
   crvRates?: Range<number> | null

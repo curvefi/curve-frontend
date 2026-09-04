@@ -5,11 +5,11 @@ import { UserCollateralEvent as CrvUsdUserCollateralEvent } from '@curvefi/price
 import { UserCollateralEvent as LendingUserCollateralEvent } from '@curvefi/prices-api/lending'
 import type { UserContractQuery } from '@evm-ui/lib/model'
 import { MarketType } from '@evm-ui/types/market'
-import { q, type QueryProp } from '@evm-ui/types/util'
 import { decimalDiv } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
+import { q, type QueryProp } from '@ui/features/queries/util'
 import {
   invalidateUserCrvUsdCollateralEventsQuery,
   useUserCrvUsdCollateralEventsQuery,

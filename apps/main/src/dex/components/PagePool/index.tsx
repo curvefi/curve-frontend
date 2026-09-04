@@ -34,7 +34,7 @@ import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
-import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { useLocation } from '@evm-ui/hooks/router'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
@@ -242,10 +242,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           poolDataCacheOrApi={poolDataCacheOrApi}
           poolId={poolId}
         />
-        {!isChainLite(network.chainId) && pricesApiPoolData && (
+        {!isLiteChain(network.chainId) && pricesApiPoolData && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
-        {!isChainLite(network.chainId) && (
+        {!isLiteChain(network.chainId) && (
           <PoolHistoricalBaseRateChart blockchainId={network.blockchainId} poolAddress={poolAddress} />
         )}
         <PoolInformation

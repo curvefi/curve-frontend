@@ -6,7 +6,6 @@ import { t } from '@evm-ui/lib/i18n'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { type QueryProp } from '@evm-ui/types/util'
 import { formatNumber, getErrorMessage } from '@evm-ui/utils'
 import {
   getPriceImpactSeverity,
@@ -23,6 +22,7 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { type QueryProp } from '@ui/features/queries/util'
 
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
@@ -134,7 +134,7 @@ export const HighPriceImpactAlert = ({
     (severity || (prevSeverity && isLoading)) && (
       <WithSkeleton loading={isLoading}>
         <Alert severity={severity ?? 'warning'} data-testid="high-price-impact-alert" variant="outlined">
-          <AlertTitle sx={{ color: { warning: 'warning.main', error: 'error.main' }[severity!] }}>
+          <AlertTitle>
             {t`High price impact:`} -{formatNumber(getPriceImpactPercent(data), 'percent.rate')}
           </AlertTitle>
           {t`Consider reducing the amount or waiting for better market conditions.`}

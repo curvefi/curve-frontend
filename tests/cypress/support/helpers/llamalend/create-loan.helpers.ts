@@ -3,9 +3,9 @@ import { oneOf, oneValueOf } from '@cy/support/generators'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { MarketType } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
 import { DEFAULT_DECIMALS } from '@evm-ui/utils/units'
 import type { Decimal } from '@primitives/decimal.utils'
+import { Chain } from '@primitives/network.utils'
 import {
   checkEstimatedTxCost,
   DECIMAL_RANGE_REGEX,

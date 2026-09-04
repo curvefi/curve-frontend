@@ -2,7 +2,6 @@ import { type ElementType, useCallback, useState } from 'react'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { persister, queryClient } from '@evm-ui/lib/api'
 import { t } from '@evm-ui/lib/i18n'
 import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
@@ -11,6 +10,7 @@ import { ERROR_IMAGE_URL } from '@legacy-ui/utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { persister, queryClient } from '@ui/features/queries/query-client'
 
 const { MinHeight, MaxWidth, Spacing } = SizesAndSpaces
 

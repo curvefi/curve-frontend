@@ -9,9 +9,9 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
 import { t } from '@evm-ui/lib/i18n'
-import { type QueryProp, type Range } from '@evm-ui/types/util'
 import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { Decimal } from '@primitives/decimal.utils'
+import { type QueryProp, type Range } from '@ui/features/queries/util'
 
 type LendManageLoanProps = {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void

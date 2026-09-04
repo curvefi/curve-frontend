@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { useForm } from '@evm-ui/features/forms'
-import { captureError, captureString } from '@evm-ui/features/sentry'
+import { captureError, captureString } from '@ui/features/sentry'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 

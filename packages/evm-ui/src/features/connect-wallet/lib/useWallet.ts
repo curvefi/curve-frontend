@@ -3,7 +3,7 @@ import { useConnect, useConnectors, useDisconnect, type Connector } from 'wagmi'
 import { ConnectorAlreadyConnectedError } from 'wagmi'
 import { useGlobalState } from '@evm-ui/hooks/useGlobalState'
 import type { Provider } from '@evm-ui/lib/ethers'
-import { IS_CYPRESS } from '@evm-ui/utils/env'
+import { IS_CYPRESS } from '@ui/utils/env'
 import { useCurve } from './CurveContext'
 import type { Wallet } from './types'
 

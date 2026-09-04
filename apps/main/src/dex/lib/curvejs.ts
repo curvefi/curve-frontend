@@ -33,12 +33,12 @@ import {
   routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
-import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
 import { t } from '@evm-ui/lib/i18n'
-import { log } from '@evm-ui/lib/logging'
 import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
 import { getErrorMessage } from '@evm-ui/utils'
+import { log } from '@ui/lib/logging'
 
 const helpers = { waitForTransaction, waitForTransactions }
 
@@ -105,7 +105,7 @@ const pool = {
     const { chainId, isCrvRewardsEnabled } = network
 
     // get base vAPY
-    if (!isChainLite(chainId)) {
+    if (!isLiteChain(chainId)) {
       const DEFAULT_BASE = { day: '0', week: '0' }
       const [baseApyResult] = await Promise.allSettled([p.stats.baseApy()])
       resp.base = fulfilledValue(baseApyResult) ?? DEFAULT_BASE

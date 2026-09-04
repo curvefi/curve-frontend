@@ -1,5 +1,5 @@
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { createValidationSuite } from '@evm-ui/lib'
 import {
   type ChainParams,
@@ -29,7 +29,7 @@ const { useQuery: usePoolVolumeQuery } = queryFactory({
 /** Hook to fetch the trading volume for a single pool. Disabled on lite networks. */
 export function usePoolVolume({ chainId, poolId }: PoolParams) {
   const { isHydrated } = useCurve()
-  return usePoolVolumeQuery({ chainId, poolId }, isHydrated && chainId != null && !isChainLite(chainId))
+  return usePoolVolumeQuery({ chainId, poolId }, isHydrated && chainId != null && !isLiteChain(chainId))
 }
 
 const { useQuery: usePoolVolumesQuery, refetchQuery: refetchPoolVolumesQuery } = queryFactory({
@@ -65,7 +65,7 @@ const { useQuery: usePoolVolumesQuery, refetchQuery: refetchPoolVolumesQuery } =
  */
 export function usePoolVolumes({ chainId }: ChainParams) {
   const { isHydrated } = useCurve()
-  return usePoolVolumesQuery({ chainId }, isHydrated && chainId != null && !isChainLite(chainId))
+  return usePoolVolumesQuery({ chainId }, isHydrated && chainId != null && !isLiteChain(chainId))
 }
 
 /**
@@ -74,4 +74,4 @@ export function usePoolVolumes({ chainId }: ChainParams) {
  * @remarks Skips fetching on lite networks. Assumes the api is hydrated.
  */
 export const refetchPoolVolumes = async ({ chainId }: ChainParams) =>
-  chainId == null || isChainLite(chainId) ? {} : refetchPoolVolumesQuery({ chainId })
+  chainId == null || isLiteChain(chainId) ? {} : refetchPoolVolumesQuery({ chainId })

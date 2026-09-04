@@ -4,13 +4,14 @@ import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import { useStore } from '@/dex/store/useStore'
-import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { APP_LINK } from '@evm-ui/shared/routes'
-import { Chain, formatNumber } from '@evm-ui/utils'
+import { formatNumber } from '@evm-ui/utils'
 import { type NetworkDef } from '@legacy-ui/utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { useNetworkByChain } from '../entities/networks'
+import { Chain } from '@primitives/network.utils'
 
 export const useDexAppStats = ({ chainId }: NetworkDef, enabled: boolean) => {
   const { data: tvlTotal } = useAppStatsTvl({ chainId }, enabled)
@@ -22,7 +23,7 @@ export const useDexAppStats = ({ chainId }: NetworkDef, enabled: boolean) => {
         value: formatNumber(tvlTotal, 'usd.notional'),
       },
       ...notFalsyArray(
-        !isChainLite(chainId) && [
+        !isLiteChain(chainId) && [
           // only show total deposits on curve-lite networks
           {
             label: t`Daily Volume`,

@@ -4,10 +4,10 @@ import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } f
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 import type { QueryData } from '@evm-ui/lib/queries/types'
 import { createValidationSuite } from '@evm-ui/lib/validation'
-import type { QueryProp } from '@evm-ui/types/util'
 import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 import { useUserDiscounts } from './user-discounts.query'
 

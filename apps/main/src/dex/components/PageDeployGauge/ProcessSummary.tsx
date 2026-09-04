@@ -2,10 +2,10 @@ import { styled } from 'styled-components'
 import { InfoBox } from '@/dex/components/PageDeployGauge/InfoBox'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
-import { Chain } from '@evm-ui/utils'
+import { Chain } from '@primitives/network.utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
@@ -23,7 +23,7 @@ export const ProcessSummary = ({ chainId }: Props) => {
 
   return (
     <Box flex flexColumn>
-      {!isChainLite(chainId) && (
+      {!isLiteChain(chainId) && (
         <Wrapper variant="secondary">
           <Content>
             <Step>

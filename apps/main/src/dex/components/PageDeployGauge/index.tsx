@@ -10,7 +10,7 @@ import { useChainId } from '@/dex/hooks/useChainId'
 import { useStore } from '@/dex/store/useStore'
 import { type NetworkUrlParams } from '@/dex/types/main.types'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
-import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { BoxHeader, Box } from '@legacy-ui/Box'
 import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
@@ -22,7 +22,7 @@ import { Switch } from '@legacy-ui/Switch/Switch'
 export const DeployGauge = (props: NetworkUrlParams) => {
   const { curveApi = null, connectState } = useCurve()
   const chainId = useChainId(props.network)
-  const isLite = isChainLite(chainId)
+  const isLite = isLiteChain(chainId)
 
   const curveNetworks = useStore(state => state.deployGauge.curveNetworks)
   const setCurveNetworks = useStore(state => state.deployGauge.setCurveNetworks)

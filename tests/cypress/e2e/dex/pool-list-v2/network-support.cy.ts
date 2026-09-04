@@ -1,7 +1,7 @@
 import { setupDexPoolListV2Mocks } from '@cy/support/helpers/dex-pool-list-v2-mocks'
 import { DESKTOP_VIEWPORT } from '@cy/support/helpers/dex-pools-list-v2.helpers'
 import { API_LOAD_TIMEOUT, UnexpectedApiRequest } from '@cy/support/ui'
-import { Chain } from '@evm-ui/utils/network'
+import { Chain } from '@primitives/network.utils'
 
 const visitPoolList = (network: string, supportAlias: `@${string}`) => {
   cy.viewport(...DESKTOP_VIEWPORT)

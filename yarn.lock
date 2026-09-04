@@ -4940,7 +4940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-router@npm:*, @tanstack/react-router@npm:1.170.32":
+"@tanstack/react-router@npm:1.170.32":
   version: 1.170.32
   resolution: "@tanstack/react-router@npm:1.170.32"
   dependencies:
@@ -7719,6 +7719,14 @@ __metadata:
     "@eslint-react/eslint-plugin": "npm:5.18.6"
     "@eslint/js": "npm:10.0.1"
     "@tanstack/eslint-plugin-query": "npm:5.102.8"
+    "@tanstack/query-async-storage-persister": "npm:*"
+    "@tanstack/query-persist-client-core": "npm:*"
+    "@tanstack/react-query": "npm:*"
+    "@tanstack/react-query-devtools": "npm:*"
+    "@tanstack/react-query-persist-client": "npm:*"
+    "@tanstack/react-router": "npm:*"
+    "@tanstack/react-router-devtools": "npm:*"
+    "@tanstack/router-core": "npm:*"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     "@typescript-eslint/eslint-plugin": "npm:8.68.0"
@@ -9432,9 +9440,9 @@ __metadata:
   linkType: hard
 
 "fflate@npm:^0.8.2":
-  version: 0.8.2
-  resolution: "fflate@npm:0.8.2"
-  checksum: 10c0/03448d630c0a583abea594835a9fdb2aaf7d67787055a761515bf4ed862913cfd693b4c4ffd5c3f3b355a70cf1e19033e9ae5aedcca103188aaff91b8bd6e293
+  version: 0.8.3
+  resolution: "fflate@npm:0.8.3"
+  checksum: 10c0/eab181ca37f5348ae76d4b6f840e0026e30220e33153289ac942222d8b9638237d486507dbcc09878d724095bd354993a2ee48bbee99c8f2c6440d4448719aa7
   languageName: node
   linkType: hard
 
@@ -10721,8 +10729,9 @@ __metadata:
     "@curvefi/llamalend-api": "npm:2.5.2"
     "@sentry/vite-plugin": "npm:5.4.0"
     "@supercharge/promise-pool": "npm:3.3.0"
-    "@tanstack/react-router": "npm:1.170.32"
-    "@tanstack/react-router-devtools": "npm:1.167.1"
+    "@tanstack/react-router": "npm:*"
+    "@tanstack/react-router-devtools": "npm:*"
+    "@tanstack/router-core": "npm:*"
     "@types/lodash": "npm:4.17.25"
     "@types/memoizee": "npm:0.4.12"
     "@types/node": "npm:*"
@@ -12961,7 +12970,12 @@ __metadata:
   resolution: "stellar@workspace:apps/stellar"
   dependencies:
     "@sentry/vite-plugin": "npm:5.4.0"
+    "@tanstack/react-query": "npm:*"
+    "@tanstack/react-query-devtools": "npm:*"
     "@tanstack/react-router": "npm:*"
+    "@tanstack/react-router-devtools": "npm:*"
+    "@tanstack/router-core": "npm:*"
+    "@types/node": "npm:*"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     "@vitejs/plugin-react": "npm:*"
@@ -13238,6 +13252,7 @@ __metadata:
     eslint: "npm:*"
     ethers: "npm:*"
     typescript: "npm:*"
+    ui: "npm:*"
     vite: "npm:*"
     vite-plugin-svgr: "npm:*"
     vitest: "npm:*"
@@ -13581,6 +13596,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ui@workspace:packages/ui"
   dependencies:
+    "@sentry/core": "npm:10.72.0"
+    "@sentry/react": "npm:10.72.0"
+    "@tanstack/query-async-storage-persister": "npm:*"
+    "@tanstack/query-persist-client-core": "npm:*"
+    "@tanstack/react-query": "npm:*"
+    "@tanstack/react-query-persist-client": "npm:*"
+    "@types/node": "npm:*"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     eslint: "npm:*"

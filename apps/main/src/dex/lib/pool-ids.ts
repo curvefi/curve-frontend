@@ -1,5 +1,5 @@
-import { log } from '@evm-ui/lib/logging'
 import type { ChainQuery } from '@evm-ui/lib/model'
+import { log } from '@ui/lib/logging'
 import type { CurveApi } from '../types/main.types'
 
 const USE_API = true

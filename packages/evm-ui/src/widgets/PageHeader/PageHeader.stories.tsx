@@ -4,11 +4,11 @@ import { Metric } from '@evm-ui/shared/ui/Metric'
 import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { constQ, q } from '@evm-ui/types/util'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { constQ, q } from '@ui/features/queries/util'
 import { PageHeader } from './PageHeader'
 
 const { Spacing } = SizesAndSpaces

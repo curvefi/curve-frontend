@@ -5,9 +5,9 @@ import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } f
 import { loanExistsValidationGroup } from '@evm-ui/lib/model/query/loan-exists-validation'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
 import { createValidationSuite } from '@evm-ui/lib/validation'
-import { constQ, q, type Range } from '@evm-ui/types/util'
 import { decimalDiv, decimalMinus, decimalMultiply } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { constQ, q, type Range } from '@ui/features/queries/util'
 import { useLoanExists } from './user-loan-exists.query'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }

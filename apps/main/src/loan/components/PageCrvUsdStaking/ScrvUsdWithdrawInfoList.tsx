@@ -7,9 +7,9 @@ import type { ScrvUsdWithdrawForm, ScrvUsdWithdrawParams } from '@/loan/entities
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
-import { mapQuery, q } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
+import { mapQuery, q } from '@ui/features/queries/util'
 
 type ScrvUsdWithdrawInfoListProps = {
   params: ScrvUsdWithdrawParams

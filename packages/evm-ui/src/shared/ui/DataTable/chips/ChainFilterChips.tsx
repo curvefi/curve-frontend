@@ -10,11 +10,11 @@ import { type SelectableChipProps } from '@evm-ui/shared/ui/SelectableChip'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { chipSizeClickable } from '@evm-ui/themes/components/chip/mui-chip'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { QueryProp } from '@evm-ui/types/util'
-import { Chain } from '@evm-ui/utils'
 import { capitalize, Skeleton, Typography, TypographyProps } from '@mui/material'
 import Grid from '@mui/material/Grid'
+import { Chain } from '@primitives/network.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { QueryProp } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,6 +1,6 @@
 import { ChainId, NetworkConfig, NetworkEnum } from '@/loan/types/loan.types'
 import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
-import { Chain } from '@evm-ui/utils'
+import { Chain } from '@primitives/network.utils'
 
 export const { networks, networksIdMapper } = Object.entries({
   [Chain.Ethereum]: CHAIN_BLOCKCHAIN_IDS[Chain.Ethereum],

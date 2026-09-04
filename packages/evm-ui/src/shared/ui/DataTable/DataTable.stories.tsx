@@ -1,12 +1,12 @@
 import { type ReactNode, useMemo } from 'react'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { q } from '@evm-ui/types/util'
 import { formatNumber, formatToken } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { q } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from './data-table.utils'
 import { DataTable, DataTableProps } from './DataTable'
 

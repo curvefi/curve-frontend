@@ -7,7 +7,7 @@ import { TableCellRewards } from '@/dex/components/PageDashboard/components/Tabl
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { PoolLabel } from '@/dex/components/PoolLabel'
-import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useIntersectionObserver } from '@evm-ui/hooks/useIntersectionObserver'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
@@ -56,7 +56,7 @@ export const TableRowMobile = ({
         <TableContentWrapper className={showDetail ? 'show' : ''}>
           <TableContent>
             <Box grid gridRowGap={2}>
-              {isChainLite(chainId) ? (
+              {isLiteChain(chainId) ? (
                 <div>
                   <TableTitle>{tableLabel.rewardBase.name}</TableTitle>
                   <Td className="right">

@@ -7,10 +7,10 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
-import type { MakeOptional } from '@evm-ui/types/util'
 import { decimalGreaterThan } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import type { MakeOptional } from '@ui/features/queries/util'
 
 type ResetInputs = {
   /** The amount of borrow tokens already converted from collateral in the user's band */

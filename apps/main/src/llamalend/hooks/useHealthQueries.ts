@@ -1,9 +1,9 @@
 import { combineQueryState } from '@evm-ui/lib/queries/combine'
-import type { Query } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { UseQueryOptions } from '@tanstack/react-query'
+import type { Query } from '@ui/features/queries/util'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type QueryKey = any // disable typecheck for this as we accept any query key
