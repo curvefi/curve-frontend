@@ -126,6 +126,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     loading: crvUsdBalanceLoading || capacityLoading, // Primarily to make sure validation setup is done
     walletBalance,
     supportedNetworks,
+    userAddress,
 
     // Bridge mutation
     isPending: formState.isSubmitting || isBridging || isApproving,

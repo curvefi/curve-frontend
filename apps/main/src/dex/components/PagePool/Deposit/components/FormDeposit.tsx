@@ -23,7 +23,7 @@ import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { EvmSlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
@@ -299,7 +299,7 @@ export const FormDeposit = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
+        <EvmSlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
       </div>
 
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (

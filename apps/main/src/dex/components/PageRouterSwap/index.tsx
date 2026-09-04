@@ -34,7 +34,7 @@ import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal, formatNumber } from '@evm-ui/utils'
 import { getPriceImpactDisplay } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
-import { SlippageToleranceActionInfo, type SlippageType } from '@evm-ui/widgets/SlippageSettings'
+import { EvmSlippageToleranceActionInfo, type SlippageType } from '@evm-ui/widgets/SlippageSettings'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -569,7 +569,7 @@ export const QuickSwap = ({
       {/* detail info */}
       <Stack sx={{ gap: Spacing.xs }}>
         <Stack>
-          <SlippageToleranceActionInfo
+          <EvmSlippageToleranceActionInfo
             maxSlippage={maxSlippage}
             type={['stable', 'crypto']}
             active={slippageType}

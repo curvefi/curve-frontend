@@ -26,6 +26,7 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
     isPending,
     onSubmit,
     isDisabled,
+    userAddress,
     borrowToken,
     withdrawError,
     formErrors,
@@ -74,7 +75,12 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
         testId={`${TEST_ID_PREFIX}-submit-button`}
       />
 
-      <FormAlerts error={withdrawError} formErrors={formErrors} handledErrors={['withdrawAmount']} />
+      <FormAlerts
+        error={withdrawError}
+        formErrors={formErrors}
+        handledErrors={['withdrawAmount']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

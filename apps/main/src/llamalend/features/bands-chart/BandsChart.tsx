@@ -10,7 +10,7 @@ import type {
   UserBandsPriceRange,
 } from '@/llamalend/features/bands-chart/types'
 import type { LlammaLiquididationRange } from '@evm-ui/features/candle-chart/types'
-import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
 import { Box, useTheme } from '@mui/material'
 import { notFalsy } from '@primitives/objects.utils'
@@ -177,7 +177,7 @@ const BandsChartComponent = ({
         minWidth: 0,
       }}
     >
-      <ChartStateWrapper
+      <EvmChartStateWrapper
         height={height}
         isLoading={isLoading || isChartDataPending}
         isEmpty={chartData?.length === 0}
@@ -198,7 +198,7 @@ const BandsChartComponent = ({
             priceRange={priceRange}
           />
         )}
-      </ChartStateWrapper>
+      </EvmChartStateWrapper>
     </Box>
   )
 }

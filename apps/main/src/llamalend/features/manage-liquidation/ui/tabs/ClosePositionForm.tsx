@@ -34,6 +34,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
     isPending,
     closeError,
     isApproved,
+    userAddress,
     onSubmit,
     formErrors,
   } = useClosePositionForm({ network })
@@ -85,6 +86,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         error={closeError ?? table.error ?? null}
         formErrors={formErrors}
         handledErrors={[]}
+        userAddress={userAddress}
       />
     </Form>
   )

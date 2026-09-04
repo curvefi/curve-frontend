@@ -35,6 +35,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
     isRewardsDisabled,
     isCrvPending,
     isRewardsPending,
+    userAddress,
     totalNotionals,
     usdRateLoading: isNotionalLoading,
     table,
@@ -90,7 +91,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
           <ConnectWalletButton />
         )}
 
-        <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} />
+        <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} userAddress={userAddress} />
       </FormContent>
     </>
   )

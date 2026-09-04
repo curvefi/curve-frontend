@@ -31,6 +31,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
     isLoading,
     onSubmit,
     isDisabled,
+    userAddress,
     borrowToken,
     error,
     formErrors,
@@ -85,7 +86,12 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         tokenSymbol={borrowToken?.symbol}
       />
 
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAssets', 'stakeShares']} />
+      <FormAlerts
+        error={error}
+        formErrors={formErrors}
+        handledErrors={['stakeAssets', 'stakeShares']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

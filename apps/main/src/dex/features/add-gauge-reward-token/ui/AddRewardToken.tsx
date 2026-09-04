@@ -68,6 +68,7 @@ export const AddRewardToken = ({ chainId, poolId }: { chainId: ChainId; poolId: 
           error={errors['root.serverError'] ?? addRewardTokenError}
           formErrors={visibleErrors}
           handledErrors={['distributorId']}
+          userAddress={userAddress}
         />
       </Stack>
     </Form>

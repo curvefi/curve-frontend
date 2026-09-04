@@ -116,6 +116,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     isLoading: isPending || !marketId || isSolvencyLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
+    userAddress,
     borrowToken,
     collateralToken,
     error: stakeError ?? solvencyError,

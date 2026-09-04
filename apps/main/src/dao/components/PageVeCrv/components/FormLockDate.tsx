@@ -24,6 +24,7 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
     futureVeCrv,
     isPending,
     isDisabled,
+    userAddress,
     error,
     onSubmit,
     updateUnlockDate,
@@ -60,7 +61,12 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
         handleQuickActionClick={selectQuickDate}
       />
       {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
-      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={['utcDate', 'days']} />
+      <FormAlerts
+        error={error}
+        formErrors={form.formState.visibleErrors}
+        handledErrors={['utcDate', 'days']}
+        userAddress={userAddress}
+      />
       <FormButton
         pending={isPending}
         loading={isPending}

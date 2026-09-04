@@ -10,7 +10,7 @@ import {
   type PriceImpact,
 } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { EvmSlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -57,7 +57,7 @@ export const LoanActionSettings = ({
       >
         {routes && <RouteProvidersAccordion isExpanded={isRoutesOpen} onToggle={toggleRoutes} {...routes} />}
         {slippage && (
-          <SlippageToleranceActionInfo
+          <EvmSlippageToleranceActionInfo
             maxSlippage={slippage}
             type={LEVERAGE}
             onChanged={({ leverage }) => onSlippageChange(leverage)}

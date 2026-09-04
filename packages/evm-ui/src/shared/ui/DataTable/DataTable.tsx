@@ -16,7 +16,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 import { EmptyStateCard, EmptyStateCardProps } from '../EmptyStateCard'
-import { ErrorMessage } from '../ErrorMessage'
+import { EvmErrorMessage } from '../ErrorMessage'
 import { DATA_TABLE_CATEGORIES, type DataTableCategory, type DataTableCategoryConfig } from './categories'
 import { DataTableHeaderHeight, type useCurveTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
@@ -151,7 +151,7 @@ export const DataTable = <TData extends RowData>({
               ))}
               {error ? (
                 <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>
-                  <ErrorMessage
+                  <EvmErrorMessage
                     title={errorState?.title ?? t`Could not load data`}
                     subtitle={errorState?.description ?? error.message}
                     error={error}

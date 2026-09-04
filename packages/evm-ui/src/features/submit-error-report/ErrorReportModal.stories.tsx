@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { http } from 'viem'
+import { http, zeroAddress } from 'viem'
 import { mainnet } from 'viem/chains'
 import { WagmiProvider } from 'wagmi'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
@@ -28,6 +28,7 @@ const ErrorReportModalStory = ({ initialOpen = true }: { initialOpen?: boolean }
           {t`Open modal`}
         </Button>
         <ErrorReportModal
+          userAddress={zeroAddress}
           isOpen={open}
           onClose={() => setOpen(false)}
           context={{ error: 'Story', title: 'Storybook test', subtitle: '' }}

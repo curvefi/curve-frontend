@@ -49,6 +49,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     collateralToken,
     error,
     isApproved,
+    userAddress,
     formErrors,
     routes,
     max,
@@ -188,6 +189,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           'debt',
           max.debt.field,
         )}
+        userAddress={userAddress}
       />
     </Form>
   )

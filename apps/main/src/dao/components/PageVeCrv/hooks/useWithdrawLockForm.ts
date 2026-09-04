@@ -37,6 +37,7 @@ export const useWithdrawLockForm = ({ chainId }: { chainId: number }) => {
     lockedAmountAndUnlockTime,
     isPending,
     isDisabled: !canUnlock || isPending,
+    userAddress,
     error,
     onSubmit: form.handleSubmit(onSubmitWithdraw),
   }

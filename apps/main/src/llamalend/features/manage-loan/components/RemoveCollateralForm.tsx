@@ -28,6 +28,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     params,
     isPending,
     isDisabled,
+    userAddress,
     onSubmit,
     action,
     values,
@@ -78,7 +79,12 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <FormAlerts error={action.error} formErrors={formErrors} handledErrors={['userCollateral']} />
+      <FormAlerts
+        error={action.error}
+        formErrors={formErrors}
+        handledErrors={['userCollateral']}
+        userAddress={userAddress}
+      />
 
       <FormButton
         pending={isPending}

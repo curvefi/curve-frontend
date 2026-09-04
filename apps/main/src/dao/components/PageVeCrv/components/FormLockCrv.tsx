@@ -20,6 +20,7 @@ export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
     isApproved,
     isPending,
     isDisabled,
+    userAddress,
     error,
     onSubmit,
     updateAmount,
@@ -53,6 +54,7 @@ export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
         error={error}
         formErrors={form.formState.visibleErrors}
         handledErrors={['lockedAmount', 'maxLockedAmount']}
+        userAddress={userAddress}
       />
       <FormButton
         pending={isPending}

@@ -32,9 +32,8 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
     unstakeError,
     formErrors,
     max,
-  } = useUnstakeForm({
-    network,
-  })
+    userAddress,
+  } = useUnstakeForm({ network })
 
   return (
     <Form
@@ -71,7 +70,12 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
         testId={`${TEST_ID_PREFIX}-submit-button`}
       />
 
-      <FormAlerts error={unstakeError} formErrors={formErrors} handledErrors={['unstakeAssets', 'unstakeShares']} />
+      <FormAlerts
+        error={unstakeError}
+        formErrors={formErrors}
+        handledErrors={['unstakeAssets', 'unstakeShares']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

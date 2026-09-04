@@ -103,6 +103,7 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
     }),
     isPending,
     isDisabled: !form.formState.isValid || isPending || isDebouncing,
+    userAddress,
     error: extendError,
     validationErrors: fromEntries(form.formState.visibleErrors),
     onSubmit: form.handleSubmit(onSubmitExtend),

@@ -23,7 +23,7 @@ import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { EvmSlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import { Box } from '@legacy-ui/Box'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { Radio, RadioGroup } from '@legacy-ui/Radio'
@@ -474,7 +474,7 @@ export const FormWithdraw = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
+        <EvmSlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
       </div>
 
       {formStatus.error && (

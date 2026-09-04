@@ -14,10 +14,8 @@ import { ScrvUsdWithdrawInfoList } from './ScrvUsdWithdrawInfoList'
 export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
   const { isConnected } = useConnection()
   const chainId = networksIdMapper[network]
-  const { form, params, isPending, isDisabled, error, formErrors, max, positionBalance, onSubmit } =
-    useScrvUsdWithdrawForm({
-      chainId,
-    })
+  const { form, params, isPending, isDisabled, userAddress, error, formErrors, max, positionBalance, onSubmit } =
+    useScrvUsdWithdrawForm({ chainId })
   const networkConfig = networks[chainId]
 
   return (
@@ -42,7 +40,7 @@ export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
         label={params.isFull ? t`Redeem` : t`Withdraw`}
         testId="scrvusd-withdraw-submit-button"
       />
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['withdrawAmount']} />
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['withdrawAmount']} userAddress={userAddress} />
     </Form>
   )
 }

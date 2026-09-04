@@ -31,6 +31,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     action,
     values,
     isApproved,
+    userAddress,
     formErrors,
     collateralToken,
     borrowToken,
@@ -66,7 +67,12 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <FormAlerts error={action.error} formErrors={formErrors} handledErrors={['userCollateral']} />
+      <FormAlerts
+        error={action.error}
+        formErrors={formErrors}
+        handledErrors={['userCollateral']}
+        userAddress={userAddress}
+      />
 
       <FormButton
         pending={isPending}

@@ -52,6 +52,7 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
     params,
     isPending,
     isDisabled: !userAddress || !form.formState.isValid || isPending || isDebouncing,
+    userAddress,
     error,
     formErrors: form.formState.visibleErrors,
     max,

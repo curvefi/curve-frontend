@@ -77,7 +77,7 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
         onConfirm={onConfirm}
         tokenSymbol={borrowToken?.symbol}
       />
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} />
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} userAddress={userAddress} />
     </Form>
   )
 }

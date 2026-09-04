@@ -180,7 +180,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         onConfirm={onConfirm}
         tokenSymbol={collateralToken?.symbol}
       />
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['userCollateral', 'debt', 'maxDebt']} />
+      <FormAlerts
+        error={error}
+        formErrors={formErrors}
+        handledErrors={['userCollateral', 'debt', 'maxDebt']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

@@ -1,3 +1,4 @@
+import { useConnection } from 'wagmi'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { usePinataJwt } from '@evm-ui/hooks/useLocalStorage'
 import type { FieldsOf } from '@evm-ui/lib'
@@ -40,12 +41,12 @@ export const useCreateVoteForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const { formState } = form
   const formErrors = formState.visibleErrors
-
   const isPending = formState.isSubmitting || isCreatingVote
 
   return {
     form,
     values: form.watchValues(),
+    userAddress: useConnection().address,
     isPending,
     isDisabled: !formState.isValid || isPending,
 

@@ -32,6 +32,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
   const {
     form,
     values: { gaugeAddress, description, pinataJwt },
+    userAddress,
     isPending,
     isDisabled,
     onSubmit,
@@ -139,6 +140,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
             error={createVoteError}
             formErrors={formErrors}
             handledErrors={['gaugeAddress', 'description', 'pinataJwt']}
+            userAddress={userAddress}
           />
         </Stack>
       </FormProvider>

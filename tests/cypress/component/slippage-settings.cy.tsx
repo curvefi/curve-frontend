@@ -1,6 +1,6 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { EvmSlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/EvmSlippageToleranceActionInfo'
 import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 
 describe('Slippage settings', () => {
   it('does not submit an enclosing form when saving', () => {
@@ -14,7 +14,7 @@ describe('Slippage settings', () => {
             onSubmit()
           }}
         >
-          <SlippageToleranceActionInfo maxSlippage="0.5" type="leverage" />
+          <EvmSlippageToleranceActionInfo maxSlippage="0.5" type="leverage" />
         </form>
       </ComponentTestWrapper>,
     )

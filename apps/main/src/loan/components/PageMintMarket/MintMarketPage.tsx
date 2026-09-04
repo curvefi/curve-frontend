@@ -21,7 +21,7 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { useParams } from '@evm-ui/hooks/router'
 import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { ErrorPage } from '@evm-ui/pages/ErrorPage'
+import { EvmErrorPage } from '@evm-ui/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
@@ -74,7 +74,7 @@ export const MintMarketPage = () => {
 
   const error = marketError ?? apiMarket.error
   return error ? (
-    <ErrorPage
+    <EvmErrorPage
       title={t`Error`}
       subtitle={error.message}
       error={error}

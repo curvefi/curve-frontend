@@ -21,6 +21,7 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
     isApproved,
     isPending,
     isDisabled,
+    userAddress,
     error,
     formErrors,
     max,
@@ -62,7 +63,7 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
         label={[isApproved.data === false && t`Approve`, t`Deposit`]}
         testId="scrvusd-deposit-submit-button"
       />
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} />
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} userAddress={userAddress} />
     </Form>
   )
 }

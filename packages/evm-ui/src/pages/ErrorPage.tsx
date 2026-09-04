@@ -1,10 +1,12 @@
-import { type ElementType, useCallback, useState } from 'react'
+import { type ComponentProps, type ElementType, useCallback, useState } from 'react'
+import { useConnection } from 'wagmi'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { getBoundaryErrorSubtitle } from '@evm-ui/utils/errors'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Address } from '@primitives/address.utils'
 import { RouterLink } from '@ui/components/RouterLink'
 import { persister, queryClient } from '@ui/features/queries/query-client'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -16,6 +18,10 @@ const { MinHeight, MaxWidth, Spacing } = SizesAndSpaces
 
 const [IMAGE_WIDTH, IMAGE_HEIGHT] = [1280, 720]
 
+export const EvmErrorPage = (props: Omit<ComponentProps<typeof ErrorPage>, 'userAddress'>) => (
+  <ErrorPage {...props} userAddress={useConnection().address} />
+)
+
 export const ErrorPage = ({
   title,
   subtitle,
@@ -23,6 +29,7 @@ export const ErrorPage = ({
   continueUrl,
   error,
   LinkComponent: Link = RouterLink,
+  userAddress,
 }: {
   title: string
   subtitle: string
@@ -30,6 +37,7 @@ export const ErrorPage = ({
   continueUrl?: string
   error?: Error | string
   LinkComponent?: ElementType
+  userAddress?: Address
 }) => {
   const navHeight = useLayoutStore(state => state.navHeight)
   const [resetClicked, setResetClicked] = useState(false)
@@ -95,7 +103,12 @@ export const ErrorPage = ({
         </Button>
       </Stack>
       <img src={ERROR_IMAGE_URL} alt={title} width={IMAGE_WIDTH} height={IMAGE_HEIGHT} />
-      <ErrorReportModal isOpen={isReportOpen} onClose={closeReportModal} context={{ error, title, subtitle }} />
+      <ErrorReportModal
+        isOpen={isReportOpen}
+        onClose={closeReportModal}
+        userAddress={userAddress}
+        context={{ error, title, subtitle }}
+      />
     </Stack>
   )
 }

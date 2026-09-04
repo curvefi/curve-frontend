@@ -85,6 +85,7 @@ export const RepayForm = <ChainId extends IChainId>({
     collateralToken,
     repayError,
     isApproved,
+    userAddress,
     routes,
     formErrors,
     max,
@@ -221,6 +222,7 @@ export const RepayForm = <ChainId extends IChainId>({
         error={repayError}
         formErrors={formErrors}
         handledErrors={notFalsy(selectedField, max[selectedField]?.fieldName)}
+        userAddress={userAddress}
       />
     </Form>
   )

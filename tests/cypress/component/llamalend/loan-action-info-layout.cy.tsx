@@ -6,7 +6,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { EvmSlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
@@ -104,7 +104,7 @@ describe('market slippage settings', () => {
     const onChanged = cy.spy().as('onChanged')
     cy.mount(
       <ComponentTestWrapper>
-        <SlippageToleranceActionInfo maxSlippage="0.03" type="leverage" onChanged={onChanged} />
+        <EvmSlippageToleranceActionInfo maxSlippage="0.03" type="leverage" onChanged={onChanged} />
       </ComponentTestWrapper>,
     )
 
