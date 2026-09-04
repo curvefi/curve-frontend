@@ -1,7 +1,7 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import type { Range } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Range } from '@ui/features/queries/util'
 import { type CollateralParams, type CollateralQuery } from '../validation/manage-loan.types'
 import { collateralValidationSuite } from '../validation/manage-loan.validation'
 import { maxRemovableCollateralKey } from './remove-collateral-max-removable.query'

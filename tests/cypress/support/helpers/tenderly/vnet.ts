@@ -1,7 +1,7 @@
 import { generatePrivateKey } from 'viem/accounts'
 import { resetWagmiConfigForTests } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
-import { DeepPartial } from '@evm-ui/types/util'
 import type { Hex } from '@primitives/address.utils'
+import { DeepPartial } from '@ui/features/queries/util'
 import { getTenderlyAccount, loadTenderlyAccount } from './account'
 import {
   createVirtualTestnet as createVirtualTestnetRequest,

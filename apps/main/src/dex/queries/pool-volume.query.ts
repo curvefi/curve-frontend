@@ -1,4 +1,5 @@
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { createValidationSuite } from '@evm-ui/lib'
 import {
   type ChainParams,
@@ -13,7 +14,6 @@ import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-valid
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fetchNetworks, useNetworks } from '../entities/networks'
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({
   category: 'dex.pools',
@@ -29,10 +29,7 @@ const { useQuery: usePoolVolumeQuery } = queryFactory({
 /** Hook to fetch the trading volume for a single pool. Disabled on lite networks. */
 export function usePoolVolume({ chainId, poolId }: PoolParams) {
   const { isHydrated } = useCurve()
-  const { data: networks } = useNetworks()
-  const network = chainId != null && networks[chainId]
-
-  return usePoolVolumeQuery({ chainId, poolId }, isHydrated && network && !network.isLite)
+  return usePoolVolumeQuery({ chainId, poolId }, isHydrated && chainId != null && !isLiteChain(chainId))
 }
 
 const { useQuery: usePoolVolumesQuery, refetchQuery: refetchPoolVolumesQuery } = queryFactory({
@@ -68,10 +65,7 @@ const { useQuery: usePoolVolumesQuery, refetchQuery: refetchPoolVolumesQuery } =
  */
 export function usePoolVolumes({ chainId }: ChainParams) {
   const { isHydrated } = useCurve()
-  const { data: networks } = useNetworks()
-  const network = chainId != null && networks[chainId]
-
-  return usePoolVolumesQuery({ chainId }, isHydrated && network && !network.isLite)
+  return usePoolVolumesQuery({ chainId }, isHydrated && chainId != null && !isLiteChain(chainId))
 }
 
 /**
@@ -79,9 +73,5 @@ export function usePoolVolumes({ chainId }: ChainParams) {
  *
  * @remarks Skips fetching on lite networks. Assumes the api is hydrated.
  */
-export async function refetchPoolVolumes({ chainId }: ChainParams) {
-  const networks = await fetchNetworks()
-  const network = networks?.[chainId ?? 0]
-  if (!network || network.isLite) return {}
-  return refetchPoolVolumesQuery({ chainId })
-}
+export const refetchPoolVolumes = async ({ chainId }: ChainParams) =>
+  chainId == null || isLiteChain(chainId) ? {} : refetchPoolVolumesQuery({ chainId })

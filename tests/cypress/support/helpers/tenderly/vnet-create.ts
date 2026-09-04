@@ -1,5 +1,5 @@
 import { LOAD_TIMEOUT } from '@cy/support/ui'
-import type { MakeOptional } from '@evm-ui/types/util'
+import type { MakeOptional } from '@ui/features/queries/util'
 import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
 

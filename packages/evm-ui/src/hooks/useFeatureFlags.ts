@@ -3,7 +3,7 @@
  * These return booleans indicating whether a new experience is enabled.
  */
 
-import { defaultReleaseChannel, ReleaseChannel } from '@evm-ui/utils'
+import { defaultReleaseChannel, ReleaseChannel } from '@ui/utils/env'
 import { useReleaseChannel } from './useLocalStorage'
 
 const isBetaChannel = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
@@ -32,5 +32,4 @@ export const useMarketMobileFormDrawer = useBetaChannel
 
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useStableChannel
-
-export const isDexPoolListV2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
+export const isDexPoolListV2 = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Legacy

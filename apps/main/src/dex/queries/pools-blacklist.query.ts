@@ -4,7 +4,7 @@ import type { Chain } from '@curvefi/prices-api'
 import { getPoolFilters } from '@curvefi/prices-api/chains'
 import { EmptyValidationSuite, type QueryData } from '@evm-ui/lib'
 import { queryFactory, type ChainNameParams } from '@evm-ui/lib/model'
-import { useMappedQuery } from '@evm-ui/types/util'
+import { useMappedQuery } from '@ui/features/queries/util'
 
 // List from api.curve.finance: https://raw.githubusercontent.com/curvefi/curve-api/eed5dd84492b3e5611a34504a98bc1fa256defa5/routes/v1/getHiddenPools.js
 // List for core api https://github.com/curvefi/curve-api-core/blob/ab4080c816438c9c97d0baab82ad939aabb9bc85/routes/v1/getHiddenPools.js

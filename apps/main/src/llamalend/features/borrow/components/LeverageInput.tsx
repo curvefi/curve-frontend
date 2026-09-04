@@ -1,11 +1,11 @@
 import { type ChangeEvent } from 'react'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import { CheckboxField } from '@evm-ui/widgets/DetailPageLayout/CheckboxField'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 
 const TEST_ID_PREFIX = 'leverage'
 

@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { ThemeKey } from '@evm-ui/themes/basic-theme'
-import type { DotPathByValue } from '@evm-ui/types/util'
 import { assert } from '@primitives/objects.utils'
+import type { DotPathByValue } from '@ui/features/queries/util'
 
 const CDN_ROOT_URL = 'https://cdn.jsdelivr.net'
 export const CURVE_CDN_URL = `${CDN_ROOT_URL}/gh/curvefi`

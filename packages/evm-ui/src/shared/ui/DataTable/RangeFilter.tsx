@@ -3,10 +3,10 @@ import { useCallback } from 'react'
 import { t } from '@evm-ui/lib/i18n'
 import { NumericTextField, type NumericTextFieldProps } from '@evm-ui/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import type { Range } from '@evm-ui/types/util'
 import { amount, decimal, formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Range } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

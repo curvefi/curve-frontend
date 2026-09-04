@@ -5,8 +5,9 @@ import { getPointsCampaignRows, type PointsCampaignRow } from '@evm-ui/features/
 import { t } from '@evm-ui/lib/i18n'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import type { TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
-import { Chain, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
+import { Chain } from '@primitives/network.utils'
 import { notFalsy } from '@primitives/objects.utils'
 
 export type BreakdownSource = {

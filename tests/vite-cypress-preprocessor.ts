@@ -21,7 +21,10 @@ export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
   const viteConfig = {
     logLevel: 'error' as const,
     resolve: {
-      alias: [{ find: '@primitives', replacement: path.resolve(__dirname, '../packages/primitives/src') }],
+      alias: [
+        { find: '@primitives', replacement: path.resolve(__dirname, '../packages/primitives/src') },
+        { find: '@ui', replacement: path.resolve(__dirname, '../packages/ui/src') },
+      ],
     },
     define: {
       // Shim process for browser-only bundles; some deps expect it to exist.

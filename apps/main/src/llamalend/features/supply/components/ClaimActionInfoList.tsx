@@ -8,8 +8,8 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@evm-ui/lib/i18n'
 import { UserMarketParams } from '@evm-ui/lib/model'
 import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
-import { q } from '@evm-ui/types/util'
 import Stack from '@mui/material/Stack'
+import { q } from '@ui/features/queries/util'
 
 type ClaimActionInfoListProps<ChainId extends IChainId> = {
   params: UserMarketParams<ChainId>

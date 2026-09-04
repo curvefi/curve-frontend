@@ -3,9 +3,9 @@ import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.help
 import { allViewports } from '@cy/support/ui'
 import type { RouteResponse } from '@evm-ui/entities/router-api'
 import { lightTheme } from '@evm-ui/themes'
-import { constQ, q, type QueryProp } from '@evm-ui/types/util'
 import { RouteProviderCard } from '@evm-ui/widgets/RouteProvider/RouteProviderCard'
 import type { RouteProvider } from '@primitives/router.utils'
+import { constQ, q, type QueryProp } from '@ui/features/queries/util'
 
 const { design } = lightTheme()
 

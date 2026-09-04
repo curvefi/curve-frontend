@@ -1,13 +1,13 @@
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery } from '@evm-ui/types/util'
 import { amount, formatNumber } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { maybe } from '@primitives/objects.utils'
+import { mapQuery } from '@ui/features/queries/util'
 import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 
 const { Spacing } = SizesAndSpaces

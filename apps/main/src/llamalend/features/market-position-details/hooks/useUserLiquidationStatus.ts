@@ -3,7 +3,7 @@ import { useMarketLiquidationBand, useMarketOraclePriceBand } from '@/llamalend/
 import { useUserBands, useUserHealth, useUserState } from '@/llamalend/queries/user'
 import { combineQueries } from '@evm-ui/lib'
 import type { UserMarketParams } from '@evm-ui/lib/model'
-import { mapQuery } from '@evm-ui/types/util'
+import { mapQuery } from '@ui/features/queries/util'
 
 export const useLiquidationStatus = (params: UserMarketParams, enabled?: boolean) =>
   combineQueries(
