@@ -18,11 +18,11 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { RouteResponse } from '@evm-ui/entities/router-api'
 import { useCallbackSync, useForm } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
-import { t } from '@evm-ui/lib/i18n'
 import { decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import { type AllowUndefined, q, type Range } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../../market-context'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const

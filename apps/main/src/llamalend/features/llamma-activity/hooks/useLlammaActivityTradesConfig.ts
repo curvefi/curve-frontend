@@ -6,11 +6,11 @@ import {
   useManualPagination,
   DEFAULT_PAGE_SIZE,
 } from '@evm-ui/features/activity-table'
-import { t } from '@evm-ui/lib/i18n'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { getPageCount } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
 export const useLlammaActivityTradesConfig = ({

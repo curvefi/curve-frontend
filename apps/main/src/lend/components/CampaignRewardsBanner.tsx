@@ -5,9 +5,9 @@ import { getControllerAddress, getVaultAddress } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
-import { t } from '@evm-ui/lib/i18n'
 import { CampaignBannerComp } from '@legacy-ui/CampaignRewards/CampaignBannerComp'
 import { notFalsy } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 
 type CampaignRewardsBannerProps = {
   chainId: ChainId

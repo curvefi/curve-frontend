@@ -9,11 +9,11 @@ import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
 import { useNavigate, useSearchParams, useParams } from '@evm-ui/hooks/router'
-import { t } from '@evm-ui/lib/i18n'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { MaxWidth } = SizesAndSpaces
 

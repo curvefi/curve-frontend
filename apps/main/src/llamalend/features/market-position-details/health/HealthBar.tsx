@@ -1,8 +1,8 @@
-import { t } from '@evm-ui/lib/i18n'
-import { LinearProgress } from '@evm-ui/shared/ui/LinearProgress'
-import { TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
+import { LinearProgress } from '@ui/components/LinearProgress'
+import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { HEALTH_THRESHOLDS, getHealthTrackColor } from '..'
 import { clampPercentage } from './utils'
 

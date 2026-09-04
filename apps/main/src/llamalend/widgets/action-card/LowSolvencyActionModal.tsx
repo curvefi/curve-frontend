@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t } from '@evm-ui/lib/i18n'
 import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { CheckboxField } from '@evm-ui/widgets/DetailPageLayout/CheckboxField'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 

@@ -9,11 +9,11 @@ import {
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { formatNumber } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils/'
 import Box from '@mui/material/Box'
+import { t } from '@ui/lib/i18n'
 import { VOTES_LABELS } from '../constants'
 
 type UserProposalVotesTableProps = {

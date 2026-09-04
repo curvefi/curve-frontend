@@ -3,9 +3,9 @@ import { CONTRACT_VECRV } from '@/dao/constants'
 import { getWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
 import { queryFactory } from '@evm-ui/lib/model/query'
 import { EmptyValidationSuite } from '@evm-ui/lib/validation'
-import { Chain } from '@primitives/network.utils'
 import { decimalPercent, fromWei, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { Chain } from '@primitives/network.utils'
 import { multicall } from '@wagmi/core'
 
 export type VeCrvStats = {

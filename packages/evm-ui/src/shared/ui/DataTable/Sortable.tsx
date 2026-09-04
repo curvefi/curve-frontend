@@ -1,7 +1,7 @@
 import { forwardRef, type ReactNode, type MouseEvent } from 'react'
-import { ArrowDownIcon } from '@evm-ui/shared/icons/ArrowDownIcon'
 import Stack from '@mui/material/Stack'
 import type { Column, ColumnMeta, RowData, StockFeatures } from '@tanstack/react-table'
+import { ArrowDownIcon } from '@ui/icons/ArrowDownIcon'
 import type { DataTableSize } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 

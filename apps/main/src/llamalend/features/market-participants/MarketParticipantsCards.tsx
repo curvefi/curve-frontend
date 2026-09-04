@@ -3,8 +3,6 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketBorrowers, useMarketSuppliers } from '@/llamalend/queries/market'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { useManualPagination } from '@evm-ui/features/activity-table'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
@@ -13,6 +11,8 @@ import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { t } from '@ui/lib/i18n'
 import {
   getBorrowerColumns,
   getSupplierColumns,

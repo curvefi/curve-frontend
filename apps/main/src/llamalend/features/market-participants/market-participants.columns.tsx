@@ -1,9 +1,9 @@
 import { TokenAmount } from '@/llamalend/widgets/TokenAmount'
-import { t } from '@evm-ui/lib/i18n'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
+import { t } from '@ui/lib/i18n'
 import { Health, Percentage, TokenHeader, type BorrowerRow, type SupplierRow } from './market-participants.utils'
 
 enum BorrowerColumnId {

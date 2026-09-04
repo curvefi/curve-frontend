@@ -1,14 +1,14 @@
-import { ChainIcon } from '@evm-ui/shared/icons/ChainIcon'
 import { Badge } from '@evm-ui/shared/ui/Badge'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
-import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { TokenIcon } from '@ui/components/TokenIcon'
+import { TokenIcons } from '@ui/components/TokenIcons'
 import { constQ, q } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ChainIcon } from '@ui/icons/ChainIcon'
 import { PageHeader } from './PageHeader'
 
 const { Spacing } = SizesAndSpaces

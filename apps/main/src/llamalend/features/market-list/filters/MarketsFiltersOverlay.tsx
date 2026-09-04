@@ -1,11 +1,11 @@
 import { type RefObject } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { t } from '@evm-ui/lib/i18n'
 import type { CurveTableFeatures, FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TableFiltersOverlay } from '@evm-ui/shared/ui/DataTable/TableFiltersOverlay'
 import type { ReactTable } from '@tanstack/react-table'
 import type { QueryProp } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { MarketColumnId } from '../columns'
 import { MarketsFilters } from './MarketsFilters'
 

@@ -1,8 +1,8 @@
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
 import { FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import { t } from '@ui/lib/i18n'
 
 type ManageGaugeProps = {
   chainId: ChainId

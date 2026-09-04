@@ -1,11 +1,11 @@
 import { type ReactNode, useMemo } from 'react'
 import { getSearchString, useSearchParams } from '@evm-ui/hooks/router'
 import { useTabFromSearchParam } from '@evm-ui/hooks/useTabs'
-import { t } from '@evm-ui/lib/i18n'
 import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { TabPanel } from '@evm-ui/widgets/Legal/components/general/TabPanel'
 import Stack from '@mui/material/Stack'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { NATIVE_BRIDGES, WEB3_BRIDGES } from './bridges'
 import { BridgeOverview } from './components/BridgeOverview'
 

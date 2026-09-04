@@ -1,5 +1,5 @@
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useMarketContext } from '../market-context'
 import { MarketContractsSection } from './MarketContractsSection'
 import { MarketParametersSection } from './MarketParametersSection'

@@ -11,13 +11,13 @@ import { useStore } from '@/dex/store/useStore'
 import { type NetworkUrlParams } from '@/dex/types/main.types'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { t } from '@evm-ui/lib/i18n'
 import { BoxHeader, Box } from '@legacy-ui/Box'
 import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
 import { Icon } from '@legacy-ui/Icon/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Switch } from '@legacy-ui/Switch/Switch'
+import { t } from '@ui/lib/i18n'
 
 export const DeployGauge = (props: NetworkUrlParams) => {
   const { curveApi = null, connectState } = useCurve()

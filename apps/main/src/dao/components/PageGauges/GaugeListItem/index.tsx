@@ -14,14 +14,14 @@ import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-ne
 import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
-import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { Chain } from '@primitives/network.utils'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import type { Address } from '@primitives/address.utils'
+import { Chain } from '@primitives/network.utils'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   gaugeData: GaugeFormattedData

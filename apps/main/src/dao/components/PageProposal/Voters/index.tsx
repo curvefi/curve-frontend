@@ -2,14 +2,14 @@ import { styled } from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
-import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { formatNumber, formatToken, shortenAddress } from '@evm-ui/utils'
-import { Chain } from '@primitives/network.utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink, InternalLink } from '@legacy-ui/Link'
 import { scanTxPath } from '@legacy-ui/utils'
+import { Chain } from '@primitives/network.utils'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   totalVotes: number

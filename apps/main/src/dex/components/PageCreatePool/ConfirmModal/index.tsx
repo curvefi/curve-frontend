@@ -15,8 +15,6 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useParams } from '@evm-ui/hooks/router'
-import { t } from '@evm-ui/lib/i18n'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
@@ -24,6 +22,8 @@ import { ModalPendingTx } from '@legacy-ui/ModalPendingTx'
 import { Spinner } from '@legacy-ui/Spinner/Spinner'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 import MuiButton from '@mui/material/Button'
+import { RouterLink } from '@ui/components/RouterLink'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   disabled?: boolean

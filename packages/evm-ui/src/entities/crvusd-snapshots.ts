@@ -3,7 +3,7 @@ import { type FieldsOf } from '@evm-ui/lib'
 import { ContractQuery, NoRetryError, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
 import { contractValidationSuite } from '@evm-ui/lib/model/query/contract-validation'
 import type { TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
-import { TIME_OPTION_MS } from '@evm-ui/utils/time'
+import { TIME_OPTION_MS } from '@ui/utils/time'
 import { fetchDailySnapshotHistory } from './time-series-history'
 
 export type CrvUsdSnapshot = Snapshot

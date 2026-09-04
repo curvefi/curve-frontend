@@ -22,11 +22,11 @@ import { curveProps } from '@/dex/lib/utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { useLayoutStore } from '@evm-ui/features/layout/store'
-import { t } from '@evm-ui/lib/i18n'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
 import { Spinner } from '@legacy-ui/Spinner'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   curve: CurveApi

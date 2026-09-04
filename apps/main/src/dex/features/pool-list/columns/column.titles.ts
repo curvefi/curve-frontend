@@ -1,4 +1,4 @@
-import { t } from '@evm-ui/lib/i18n'
+import { t } from '@ui/lib/i18n'
 import { PoolColumnId } from './columns.enum'
 
 export const POOL_TITLES: Record<PoolColumnId, string> = {

@@ -1,7 +1,7 @@
 import type { UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import { t } from '@evm-ui/lib/i18n'
 import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
 import { formatNumber, formatToken } from '@evm-ui/utils'
+import { t } from '@ui/lib/i18n'
 
 export const GaugeVotingBarChartCustomTooltip = ({ datum }: { datum: UserGaugeVoteWeight }) => (
   <ChartTooltipShell title={datum.title}>

@@ -9,8 +9,8 @@ import {
 } from '@evm-ui/features/candle-chart/query-utils'
 import type { ChartSelection, LpPriceOhlcDataFormatted, TimeOption } from '@evm-ui/features/candle-chart/types'
 import { formatCandleOhlcData } from '@evm-ui/features/candle-chart/utils'
-import { t } from '@evm-ui/lib/i18n'
 import { assert } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 
 type DexOhlcQueryParams = {
   anchorEnd: number

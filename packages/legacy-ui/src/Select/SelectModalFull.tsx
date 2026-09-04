@@ -1,6 +1,6 @@
 import type { SelectProps as ReactStatelySelectProps, SelectState } from 'react-stately'
 import { styled } from 'styled-components'
-import { Duration } from '@evm-ui/themes/design/0_primitives'
+import { Duration } from '@ui/features/themes/design/0_primitives'
 import { DelayRender } from '../DelayRender'
 import { ModalDialog } from '../Dialog/ModalDialog'
 import { Radio } from '../Radio/Radio'

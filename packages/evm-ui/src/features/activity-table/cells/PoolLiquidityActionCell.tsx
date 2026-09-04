@@ -1,11 +1,11 @@
 import type { PoolLiquidityEventType } from '@curvefi/prices-api/pools'
-import { t } from '@evm-ui/lib/i18n'
-import { DownloadIcon } from '@evm-ui/shared/icons/DownloadIcon'
-import { UploadIcon } from '@evm-ui/shared/icons/UploadIcon'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { DownloadIcon } from '@ui/icons/DownloadIcon'
+import { UploadIcon } from '@ui/icons/UploadIcon'
+import { t } from '@ui/lib/i18n'
 import type { PoolLiquidityRow } from '../types'
 
 const { Spacing } = SizesAndSpaces

@@ -1,6 +1,6 @@
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
-import { Select } from '../Select'
+import { Select } from '@ui/components/Select'
 
 export type TimeOption<TTimeOption extends string = string> = {
   options: readonly TTimeOption[]

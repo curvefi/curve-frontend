@@ -9,12 +9,12 @@ import { useStore } from '@/dex/store/useStore'
 import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useParams } from '@evm-ui/hooks/router'
-import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { ExternalLink } from '@legacy-ui/Link'
 import { breakpoints } from '@legacy-ui/utils/responsive'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   setStableFeeValue: Dispatch<SetStateAction<string>>

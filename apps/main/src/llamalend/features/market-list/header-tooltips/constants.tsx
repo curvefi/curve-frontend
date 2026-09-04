@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
-import { Trans } from '@evm-ui/lib/i18n'
 import { MarketType } from '@evm-ui/types/market'
+import { Trans } from '@ui/lib/i18n'
 
 export const BORROW_APR_DESCRIPTION: Record<MarketType, ReactNode> = {
   [MarketType.Lend]: (

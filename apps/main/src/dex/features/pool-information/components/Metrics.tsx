@@ -1,12 +1,12 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
-import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber, fromWei } from '@evm-ui/utils'
 import Grid from '@mui/material/Grid'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { useMetrics } from '../hooks/useMetrics'
 
 const { Spacing } = SizesAndSpaces

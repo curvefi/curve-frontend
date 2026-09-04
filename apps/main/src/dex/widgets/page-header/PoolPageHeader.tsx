@@ -3,10 +3,10 @@ import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
-import { t } from '@evm-ui/lib/i18n'
-import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
-import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { PageHeader } from '@evm-ui/widgets/PageHeader'
+import { TokenIcons } from '@ui/components/TokenIcons'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { t } from '@ui/lib/i18n'
 import { PoolMetricsRow } from './PoolMetricsRow'
 
 const ICON_SIZE = 35

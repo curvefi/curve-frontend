@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { decimal } from '@evm-ui/utils/decimal'
-import { TIME_FRAMES } from '@evm-ui/utils/time'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { range, recordValues } from '@primitives/objects.utils'
+import { TIME_FRAMES } from '@ui/utils/time'
 import { createSeededRandom, getTestSeed } from './seed'
 
 export const MAX_USD_VALUE = 400_000_000

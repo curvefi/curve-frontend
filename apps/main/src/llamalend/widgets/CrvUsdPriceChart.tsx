@@ -4,7 +4,6 @@ import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPri
 import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { useCombinedQueries } from '@evm-ui/lib'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
 import {
@@ -20,17 +19,19 @@ import {
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { Chain } from '@primitives/network.utils'
-import { CRVUSD_ADDRESS, TIME_OPTION_MS } from '@evm-ui/utils'
+import { CRVUSD_ADDRESS } from '@evm-ui/utils/address'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { formatDate } from '@legacy-ui/utils'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
+import { Chain } from '@primitives/network.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
+import { TIME_OPTION_MS } from '@ui/utils/time'
 import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces

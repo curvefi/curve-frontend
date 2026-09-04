@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { getExternalLink, type ExternalLinkKey } from '@legacy-ui/utils/utilsConstants'
 import Link from '@mui/material/Link'
+import { getExternalLink, type ExternalLinkKey } from '@ui/lib/resource.constants'
 
 type LegalExternalLinkProps = {
   link: ExternalLinkKey

@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
-import { TokenIcon, type Size } from '@evm-ui/shared/ui/TokenIcon'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
-import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { TokenIcon, type Size } from '@ui/components/TokenIcon'
+import { Tooltip } from '@ui/components/Tooltip'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

@@ -7,9 +7,9 @@ import {
   requireVault,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { t } from '@evm-ui/lib/i18n'
 import { rootKeys } from '@evm-ui/lib/model'
 import { type Address, type Hex } from '@primitives/address.utils'
+import { t } from '@ui/lib/i18n'
 import { formatTokenAmounts } from '../llama.utils'
 
 type WithdrawOptions = {

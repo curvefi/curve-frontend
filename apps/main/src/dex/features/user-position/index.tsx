@@ -2,9 +2,9 @@ import { type ReactNode, useMemo } from 'react'
 import { LiquidityDetails } from '@/dex/features/user-position/liquidity-details'
 import { useLiquidityDetails } from '@/dex/features/user-position/liquidity-details/hooks/useLiquidityDetails'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
 import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import Stack from '@mui/material/Stack'
+import { t } from '@ui/lib/i18n'
 
 type UserPositionProps = {
   blockchainId: string

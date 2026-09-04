@@ -10,7 +10,7 @@ import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   chainId: ChainId

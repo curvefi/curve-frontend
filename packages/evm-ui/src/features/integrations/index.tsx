@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useParams } from '@evm-ui/hooks/router'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t, Trans } from '@evm-ui/lib/i18n'
 import { LegacyTableSearchField } from '@evm-ui/shared/ui/DataTable/LegacyTableSearchField'
-import { InlineLink } from '@evm-ui/shared/ui/InlineLink'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { InlineLink } from '@ui/components/InlineLink'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t, Trans } from '@ui/lib/i18n'
 import { IntegrationsList } from './components/IntegrationsList'
 
 const { Spacing, Sizing } = SizesAndSpaces

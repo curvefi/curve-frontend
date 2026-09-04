@@ -1,9 +1,9 @@
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { t } from '@evm-ui/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+import { Tooltip } from '@ui/components/Tooltip'
+import { t } from '@ui/lib/i18n'
 
 const TooltipContent = () => (
   <Typography variant="bodySRegular">

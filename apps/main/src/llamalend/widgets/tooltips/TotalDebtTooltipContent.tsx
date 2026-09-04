@@ -1,5 +1,5 @@
-import { t } from '@evm-ui/lib/i18n'
-import { TooltipWrapper, TooltipDescription } from '@evm-ui/shared/ui/TooltipComponents'
+import { TooltipWrapper, TooltipDescription } from '@ui/components/TooltipComponents'
+import { t } from '@ui/lib/i18n'
 
 export const TotalDebtTooltipContent = () => (
   <TooltipWrapper>

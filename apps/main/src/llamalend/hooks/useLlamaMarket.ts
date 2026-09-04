@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
-import { t } from '@evm-ui/lib/i18n'
 import { maybe } from '@primitives/objects.utils'
 import { useMappedQuery } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { type LlamaMarketParams, useLlamaMarkets } from '../queries/market-list/llama-markets'
 
 export const useLlamaMarket = (

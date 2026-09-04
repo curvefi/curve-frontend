@@ -1,16 +1,16 @@
 import type { ReactNode } from 'react'
-import { t } from '@evm-ui/lib/i18n'
-import { ArbitrageIcon } from '@evm-ui/shared/icons/ArbitrageIcon'
-import { RebalancingIcon } from '@evm-ui/shared/icons/RebalancingIcon'
-import { SecurityIcon } from '@evm-ui/shared/icons/SecurityIcon'
-import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ArbitrageIcon } from '@ui/icons/ArbitrageIcon'
+import { RebalancingIcon } from '@ui/icons/RebalancingIcon'
+import { SecurityIcon } from '@ui/icons/SecurityIcon'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

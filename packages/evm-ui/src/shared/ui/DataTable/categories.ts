@@ -1,5 +1,5 @@
 import type { IncreasingLengthCategory } from '@evm-ui/hooks/useIncreasingLength'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { EmptyStateCardProps } from '../EmptyStateCard'
 import type { DataTableSize } from './data-table.utils'
 import { EmptyStateRowSize } from './EmptyStateRow'

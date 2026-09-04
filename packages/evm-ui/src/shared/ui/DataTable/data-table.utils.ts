@@ -1,5 +1,3 @@
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import type { TypographyVariantKey } from '@evm-ui/themes/typography'
 import { maybe, type PartialRecord } from '@primitives/objects.utils'
 import {
   columnFacetingFeature,
@@ -30,6 +28,8 @@ import {
 } from '@tanstack/react-table'
 import { column_getIsSorted } from '@tanstack/react-table/static-functions'
 import { QueryProp } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { TypographyVariantKey } from '@ui/features/themes/typography'
 
 const { Sizing, Spacing } = SizesAndSpaces
 

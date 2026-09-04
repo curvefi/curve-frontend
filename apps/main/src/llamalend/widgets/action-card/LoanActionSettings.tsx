@@ -1,10 +1,9 @@
 import { LEVERAGE } from '@/llamalend/constants'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { borderStyle, decimal, formatNumber, formatToken } from '@evm-ui/utils'
+import { decimal } from '@evm-ui/utils/decimal'
+import { formatNumber } from '@evm-ui/utils/number'
+import { formatToken } from '@evm-ui/utils/tokens'
 import {
   getPriceImpactDisplay,
   getPriceImpactPercent,
@@ -17,6 +16,10 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
+import { borderStyle } from '@ui/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 
