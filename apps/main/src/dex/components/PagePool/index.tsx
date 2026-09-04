@@ -245,7 +245,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         {!isChainLite(network.chainId) && pricesApiPoolData && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
-        {!isChainLite(network.chainId) && <PoolHistoricalBaseRateChart blockchainId={network.blockchainId} poolAddress={poolAddress} />}
+        {!isChainLite(network.chainId) && (
+          <PoolHistoricalBaseRateChart blockchainId={network.blockchainId} poolAddress={poolAddress} />
+        )}
         <PoolInformation
           curve={curve}
           routerParams={routerParams}
