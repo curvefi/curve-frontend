@@ -5,6 +5,7 @@ import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { useTokenVolumes } from '@/dex/hooks/useTokenVolumes'
 import { useBasePools } from '@/dex/queries/base-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
@@ -19,8 +20,9 @@ import { Checkbox } from '@legacy-ui/Checkbox'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Chip } from '@legacy-ui/Typography'
 import type { Address } from '@primitives/address.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { mapKeys, notFalsy } from '@primitives/objects.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
+import { useMappedQuery } from '@ui/features/queries/util'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 
@@ -75,6 +77,12 @@ export const SelectTokenButton = ({
     visibleTokensRef.current = {}
   }
 
+  // We have to map the token addresses to lower case because this page is absolutely scuffed.
+  const tokenVolumes = useMappedQuery(
+    useTokenVolumes({ chainId }),
+    useCallback(volumes => mapKeys(volumes, key => key.toLowerCase()), []),
+  )
+
   // handles search/filtering
   const allTokens = useMemo(
     () =>
@@ -90,10 +98,9 @@ export const SelectTokenButton = ({
     () =>
       filteredResults.map(token => ({
         chain: blockchainId,
-        address: token.address as Address,
+        address: token.address as Address, // not checksummed though
         symbol: token.symbol,
         label: notFalsy(token.basePool && 'Base pool', token.userAddedToken && 'User added').join(' - '),
-        volume: token.volume,
       })),
     [filteredResults, blockchainId],
   )
@@ -175,10 +182,10 @@ export const SelectTokenButton = ({
         <TokenSelectorModal isOpen compact={false} onClose={handleClose}>
           <TokenList
             tokens={options}
+            volumes={tokenVolumes.data}
             favorites={favorites}
             error={error}
             disabledTokens={disabledKeys}
-            disableSorting
             onToken={({ address }) => {
               onSelectionChange(address)
               setFilterBasepools(false)

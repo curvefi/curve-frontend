@@ -9,9 +9,8 @@ import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/mai
 import { isDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
 import { notFalsy } from '@primitives/objects.utils'
 import { log } from '@ui/lib/logging'
-import { formatTimeDiff } from '@ui/utils/time'
 import type { ReleaseChannel } from '@ui/utils/env'
-import { fetchNetworks } from '../entities/networks'
+import { formatTimeDiff } from '@ui/utils/time'
 import { refetchPoolTvls } from '../queries/pool-tvl.query'
 
 export type SliceKey = keyof State | ''

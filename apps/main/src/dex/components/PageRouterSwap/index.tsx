@@ -138,17 +138,15 @@ export const QuickSwap = ({
     }
   }, [curve, blacklist, userAddress])
 
-  const tokenVolumes = useTokenVolumes({ chainId })
   const tokens = useMemo(
     () =>
       notFalsy(...Object.values(tokensMapper ?? {})).map<TokenOption>(token => ({
         address: getAddress(token.address),
         symbol: token.symbol,
         chain: network?.blockchainId,
-        volume: tokenVolumes.data?.[token.address],
       })),
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [tokensMapperStr, network?.blockchainId, tokenVolumes.data],
+    [tokensMapperStr, network?.blockchainId],
   )
 
   const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == fromAddress)
@@ -185,6 +183,8 @@ export const QuickSwap = ({
     { chainId, userAddress, tokens },
     { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: userFromBalanceFetched && userToBalanceFetched },
   )
+
+  const tokenVolumes = useTokenVolumes({ chainId })
 
   const config = useConfig()
   const updateFormValues = useCallback(
@@ -516,6 +516,7 @@ export const QuickSwap = ({
               tokens={tokens}
               balances={balances}
               tokenPrices={tokenPrices}
+              volumes={tokenVolumes.data}
               isLoading={tokenSelectorLoading}
               onToken={({ address: fromAddress }) => {
                 const toAddress =

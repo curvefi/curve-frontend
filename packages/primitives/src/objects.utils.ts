@@ -24,6 +24,20 @@ export function mapRecord<K extends string, V, R>(obj: Record<K, V>, mapper: (ke
   return Object.fromEntries(entries) as Record<K, R>
 }
 
+/**
+ * Receives an object and a function to convert each key while preserving its value.
+ * @param obj The object to map.
+ * @param mapper The function to convert each key.
+ * @return a new object with converted keys and the same values.
+ */
+export function mapKeys<K extends string, V, R extends PropertyKey>(
+  obj: Record<K, V>,
+  mapper: (key: K) => R,
+): Record<R, V> {
+  const entries = Object.entries(obj).map(([key, value]) => [mapper(key as K), value as V])
+  return Object.fromEntries(entries) as Record<R, V>
+}
+
 /** Object.entries with better type inference for records */
 export const recordEntries = <K extends string, T>(obj: Record<K, T> | PartialRecord<K, T>): [K, T][] =>
   Object.entries(obj) as [K, T][]
