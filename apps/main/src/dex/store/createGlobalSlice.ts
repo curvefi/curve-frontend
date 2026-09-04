@@ -6,6 +6,7 @@ import { curvejsApi } from '@/dex/lib/curvejs'
 import { fetchPoolIds } from '@/dex/lib/pool-ids'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
+import { isDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
 import { formatTimeDiff } from '@evm-ui/utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { log } from '@ui/lib/logging'
@@ -97,7 +98,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
 
-    const isLegacy = releaseChannel === ReleaseChannel.Legacy
+    const isLegacy = isDexPoolListV2(releaseChannel)
     const poolIds = await fetchPoolIds(curveApi, { chainId })
 
     // After pool bootstrap is completed above, any future query refactored
