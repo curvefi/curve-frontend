@@ -1,5 +1,6 @@
 import { isEqual, noop } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { getAddress } from 'viem'
 import { useConfig } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
@@ -16,15 +17,15 @@ import type {
 import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
+import { useTokenVolumes } from '@/dex/hooks/useTokenVolumes'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper, TokensMapper } from '@/dex/types/main.types'
-import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
 import { notify } from '@evm-ui/features/connect-wallet'
 import { useLayoutStore } from '@evm-ui/features/layout'
-import { TokenList, TokenSelector, useTokenSelectorData } from '@evm-ui/features/select-token'
+import { TokenList, TokenSelector, useTokenSelectorData, type TokenOption } from '@evm-ui/features/select-token'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
@@ -138,7 +139,12 @@ export const QuickSwap = ({
   }, [curve, blacklist, userAddress])
 
   const tokens = useMemo(
-    () => notFalsy(...Object.values(tokensMapper ?? {})).map(toTokenOption(network?.blockchainId)),
+    () =>
+      notFalsy(...Object.values(tokensMapper ?? {})).map<TokenOption>(token => ({
+        address: getAddress(token.address),
+        symbol: token.symbol,
+        chain: network?.blockchainId,
+      })),
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [tokensMapperStr, network?.blockchainId],
   )
@@ -177,6 +183,8 @@ export const QuickSwap = ({
     { chainId, userAddress, tokens },
     { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: userFromBalanceFetched && userToBalanceFetched },
   )
+
+  const tokenVolumes = useTokenVolumes({ chainId })
 
   const config = useConfig()
   const updateFormValues = useCallback(
@@ -508,6 +516,7 @@ export const QuickSwap = ({
               tokens={tokens}
               balances={balances}
               tokenPrices={tokenPrices}
+              volumes={tokenVolumes.data}
               isLoading={tokenSelectorLoading}
               onToken={({ address: fromAddress }) => {
                 const toAddress =
@@ -555,6 +564,7 @@ export const QuickSwap = ({
               tokens={tokens}
               balances={balances}
               tokenPrices={tokenPrices}
+              volumes={tokenVolumes.data}
               disableMyTokens
               onToken={({ address: toAddress }) => {
                 const fromAddress =

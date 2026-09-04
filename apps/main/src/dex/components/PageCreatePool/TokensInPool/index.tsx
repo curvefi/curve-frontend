@@ -86,28 +86,16 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
 
   // prepares list of tokens
   const selTokens: CreateToken[] = useMemo(() => {
-    const tokensArray = Object.entries(tokensMapper).map(token => ({
-      ...token[1]!,
-      userAddedToken: false,
-      basePool: basePools.some(pool => pool.token.toLowerCase() === token[0].toLowerCase()),
-    }))
-
-    if (haveSigner && Object.keys(tokensArray ?? {}).length > 0) {
-      const volumeSortedTokensArray = tokensArray
-        .filter(token => token.symbol !== '' && token.address !== '')
-        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-        .sort((a, b) => Number(b.volume) - Number(a.volume))
-
-      // adds userAddedTokens at the top of the list
-      return lodash.uniqBy([...userAddedTokens, ...volumeSortedTokensArray], o => o.address)
-    }
-    const balanceSortedTokensArray = tokensArray
+    const tokensArray = Object.entries(tokensMapper)
+      .map(token => ({
+        ...token[1]!,
+        userAddedToken: false,
+        basePool: basePools.some(pool => pool.token.toLowerCase() === token[0].toLowerCase()),
+      }))
       .filter(token => token.symbol !== '' && token.address !== '')
-      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-      .sort((a, b) => Number(b.volume) - Number(a.volume))
 
-    return lodash.uniqBy([...userAddedTokens, ...balanceSortedTokensArray], o => o.address)
-  }, [tokensMapper, haveSigner, userAddedTokens, basePools])
+    return lodash.uniqBy([...userAddedTokens, ...tokensArray], o => o.address)
+  }, [tokensMapper, userAddedTokens, basePools])
 
   const findSymbol = useCallback(
     (address: string) => {

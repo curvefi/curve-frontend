@@ -21,7 +21,6 @@ export type CreateToken = {
   ethAddress?: string
   haveSameTokenName: boolean
   balance?: string
-  volume?: number
   userAddedToken: boolean
   basePool?: boolean
 }
