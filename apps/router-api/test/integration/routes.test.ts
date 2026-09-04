@@ -1,9 +1,9 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it, type TestOptions } from 'vitest'
 import { ADDRESS_PATTERN } from '@primitives/address.utils'
-import { toWei } from '@primitives/decimal.utils'
 import { assert, type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
+import { toWei } from '../../src/router.utils'
 import type { RoutesQuery } from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
 
