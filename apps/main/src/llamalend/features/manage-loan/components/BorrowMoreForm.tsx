@@ -1,5 +1,4 @@
 import { type ChangeEvent, useCallback } from 'react'
-import { LEVERAGE } from '@/llamalend/constants'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
@@ -155,16 +154,11 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           />
         </Stack>
       )}
-      <HighPriceImpactAlert
-        priceImpact={priceImpact}
-        values={values}
-        max={q(max.maxLeverage)}
-        slippageType={LEVERAGE}
-      />
+      <HighPriceImpactAlert priceImpact={priceImpact} />
       <FormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, { leverageEnabled: params.leverageEnabled })}
         label={[Number(values.userCollateral) && t`Add`, isApproved?.data === false && t`Approve`, t`Borrow More`]}
         testId="borrow-more-submit-button"
       >
