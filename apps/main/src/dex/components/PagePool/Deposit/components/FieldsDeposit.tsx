@@ -7,7 +7,7 @@ import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposi
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
 import type { CurrencyReserves } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
@@ -59,15 +59,10 @@ function calculateBalancedValues(
 }
 
 export const FieldsDeposit = ({
-  chainId,
   formProcessing,
   formValues,
   haveSigner,
   isSeed,
-  blockchainId,
-  poolData,
-  poolDataCacheOrApi,
-  routerParams: { rChainId, rPoolIdOrAddress },
   tokensMapper,
   updateFormValues,
 }: {
@@ -82,12 +77,12 @@ export const FieldsDeposit = ({
     loadMaxAmount: LoadMaxAmount | null,
     updatedMaxSlippage: string | null,
   ) => void
-} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper'>) => {
-  const { data: network } = useNetworkByChain({ chainId: rChainId })
+} & Pick<TransferProps, 'tokensMapper'>) => {
+  const { chainId, blockchainId, poolId, poolData } = usePoolContext()
+  const { data: network } = useNetworkByChain({ chainId })
   const maxLoading = useStore(state => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
-  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
-  const reserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
+  const reserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(chainId, poolId)])
   const isBalancedAmounts = formValues.isBalancedAmounts
 
   const handleFormAmountChange = useCallback(
@@ -96,12 +91,7 @@ export const FieldsDeposit = ({
       updateFormValues(
         isBalancedAmounts && reserves
           ? {
-              amounts: calculateBalancedValues(
-                [value, changedIndex],
-                amounts,
-                poolDataCacheOrApi.tokenAddresses,
-                reserves,
-              ),
+              amounts: calculateBalancedValues([value, changedIndex], amounts, poolData.tokenAddresses, reserves),
               isBalancedAmounts: 'by-form',
             }
           : {
@@ -111,45 +101,45 @@ export const FieldsDeposit = ({
         null,
       )
     },
-    [updateFormValues, isBalancedAmounts, reserves, poolDataCacheOrApi.tokenAddresses],
+    [updateFormValues, isBalancedAmounts, reserves, poolData.tokenAddresses],
   )
 
   const amountsInput = useMemo(() => {
     if (formValues.amounts.length > 0) {
       return formValues.amounts
     }
-    return poolDataCacheOrApi.tokens.map((token, idx) => ({
+    return poolData.tokens.map((token, idx) => ({
       token,
-      tokenAddress: poolDataCacheOrApi.tokenAddresses[idx],
+      tokenAddress: poolData.tokenAddresses[idx],
       value: '',
     }))
-  }, [poolDataCacheOrApi, formValues.amounts])
+  }, [poolData, formValues.amounts])
 
   const isDisabled = isSeed === null || isSeed || formProcessing
 
   const afterMaxClick = useCallback(
     (idx: number) => {
-      const tokenAddress = poolDataCacheOrApi.tokenAddresses[idx]
+      const tokenAddress = poolData.tokenAddresses[idx]
       updateFormValues({ isBalancedAmounts: false }, { tokenAddress, idx }, null)
     },
-    [poolDataCacheOrApi.tokenAddresses, updateFormValues],
+    [poolData.tokenAddresses, updateFormValues],
   )
 
   const { address: userAddress } = useConnection()
   const userPoolBalances = useTokenBalances({
     chainId,
     userAddress,
-    tokenAddresses: poolDataCacheOrApi.tokenAddresses as Address[],
+    tokenAddresses: poolData.tokenAddresses as Address[],
   })
 
   return (
     <FieldsWrapper>
-      {poolDataCacheOrApi.tokens.length === amountsInput.length &&
-        poolDataCacheOrApi.tokens.map((token, idx) => {
-          const tokenAddress = poolDataCacheOrApi.tokenAddresses[idx]
+      {poolData.tokens.length === amountsInput.length &&
+        poolData.tokens.map((token, idx) => {
+          const tokenAddress = poolData.tokenAddresses[idx]
           const addressBalanceAmount = userPoolBalances.data?.[tokenAddress] ?? '0'
           const { ethAddress = tokenAddress } = tokensMapper[tokenAddress] ?? {}
-          const haveSameTokenName = poolDataCacheOrApi.tokensCountBy[token] > 1
+          const haveSameTokenName = poolData.tokensCountBy[token] > 1
           const { value } = amountsInput[idx]
           const isDisableInput = isSeed === null || formProcessing || (isSeed && idx !== 0)
 
@@ -188,10 +178,10 @@ export const FieldsDeposit = ({
         </FieldsWrapper>
       )}
 
-      {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
+      {poolData.hasWrapped && formValues.isWrapped !== null && (
         <FieldsWrapper>
           <Checkbox
-            isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly?.[poolDataCacheOrApi.pool.id]}
+            isDisabled={isDisabled || network?.poolIsWrappedOnly?.[poolId]}
             isSelected={formValues.isWrapped}
             onChange={isWrapped => {
               if (poolData) {

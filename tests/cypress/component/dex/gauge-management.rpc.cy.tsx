@@ -3,6 +3,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
+import { PoolContextProvider } from '@/dex/features/pool-context'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import { Loading } from '@/routes/Loading'
@@ -22,7 +23,7 @@ import {
 } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
-import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
+import { CurveProvider, useCurve } from '@evm-ui/features/connect-wallet'
 import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import { Chain } from '@primitives/network.utils'
 
@@ -44,8 +45,16 @@ type GaugeManagementForm = keyof typeof gaugeManagementForms
 
 function GaugeManagementFormTest({ form }: { form: GaugeManagementForm }) {
   const { isPending } = useNetworksQuery()
+  const { isHydrated } = useCurve()
   const Form = gaugeManagementForms[form]
-  return isPending ? <Loading /> : <Form chainId={CHAIN_ID} poolId={POOL_ADDRESS} />
+
+  return isPending || !isHydrated ? (
+    <Loading />
+  ) : (
+    <PoolContextProvider network={defaultNetworks[CHAIN_ID]} poolIdOrAddress={POOL_ADDRESS}>
+      <Form />
+    </PoolContextProvider>
+  )
 }
 
 const GaugeManagementTestCase = ({

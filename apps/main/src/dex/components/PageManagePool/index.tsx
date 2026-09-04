@@ -53,7 +53,11 @@ export const ManagePool = () => {
             chainId={chainId}
             blockchainId={blockchainId}
             poolIdOrAddress={poolAddress}
+            title={pool.data?.name}
+            tokenList={pool.data?.coins ?? []}
+            isLoading={pool.isLoading}
             backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
+            pricesApiPoolData={pool.data}
           />
         }
         formTabs={{

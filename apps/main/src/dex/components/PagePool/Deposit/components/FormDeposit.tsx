@@ -19,6 +19,7 @@ import {
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
 import { useNetworks } from '@/dex/entities/networks'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
@@ -32,20 +33,10 @@ import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
 
-export const FormDeposit = ({
-  curve,
-  maxSlippage,
-  poolAlert,
-  poolData,
-  poolDataCacheOrApi,
-  routerParams,
-  seed,
-  tokensMapper,
-}: TransferProps) => {
+export const FormDeposit = ({ maxSlippage, poolAlert, seed, tokensMapper }: TransferProps) => {
+  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve ?? {}
-  const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formLpTokenExpected = useStore(
@@ -59,13 +50,12 @@ export const FormDeposit = ({
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
   const resetState = useStore(state => state.poolDeposit.resetState)
   const { data: networks } = useNetworks()
-  const network = networks[chainId!] || null
+  const network = networks[chainId] || null
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
-  const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
   const config = useConfig()
@@ -84,7 +74,7 @@ export const FormDeposit = ({
         'DEPOSIT',
         config,
         curve,
-        poolDataCacheOrApi.pool.id,
+        poolData?.pool.id,
         poolData,
         updatedFormValues,
         loadMaxAmount,
@@ -92,7 +82,7 @@ export const FormDeposit = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [config, curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, maxSlippage, poolData, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -275,9 +265,6 @@ export const FormDeposit = ({
         haveSigner={haveSigner}
         blockchainId={network?.blockchainId ?? ''}
         isSeed={seed.isSeed}
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        routerParams={routerParams}
         tokensMapper={tokensMapper}
         updateFormValues={updateFormValues}
       />
@@ -286,7 +273,7 @@ export const FormDeposit = ({
         <DetailInfoEstLpTokens
           formLpTokenExpected={formLpTokenExpected}
           maxSlippage={maxSlippage}
-          poolDataCacheOrApi={poolDataCacheOrApi}
+          poolData={poolData}
         />
 
         <DetailInfoSlippage {...slippage} />
@@ -294,7 +281,7 @@ export const FormDeposit = ({
         {haveSigner && (
           <DetailInfoEstGas
             isDivider
-            chainId={rChainId}
+            chainId={chainId}
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
@@ -306,13 +293,7 @@ export const FormDeposit = ({
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}
 
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || !seed.loaded}
-        routerParams={routerParams}
-        seed={seed}
-      >
+      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estLpTokenReceivedUsdAmount} />
         {formStatus.error && (
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, null, null)} />

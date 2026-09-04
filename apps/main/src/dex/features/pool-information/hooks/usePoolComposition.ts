@@ -1,7 +1,7 @@
 import { sum } from 'lodash'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import type { ChainId, PoolData } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
@@ -11,12 +11,12 @@ import type { PoolCompositionRow } from '../components/pool-composition/columns/
 
 export const usePoolComposition = ({
   chainId,
-  poolDataCacheOrApi,
+  poolData,
   poolId,
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
+  poolData: PoolData
   poolId: string
   pricesApiPoolData?: PricesApiPool
 }) => {
@@ -29,7 +29,7 @@ export const usePoolComposition = ({
 
   // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
   const reserves = usePricesApiReserves
-    ? poolDataCacheOrApi.tokenAddresses.map((tokenAddress, index) => {
+    ? poolData.tokenAddresses.map((tokenAddress, index) => {
         const balance = pricesApiPoolData?.balances[index]
         const balanceUsd = pricesApiPoolData?.balancesUsd[index]
 
@@ -43,8 +43,8 @@ export const usePoolComposition = ({
       })
     : currencyReserves?.tokens
 
-  const rows: PoolCompositionRow[] = poolDataCacheOrApi.tokens.map((symbol, index) => {
-    const tokenAddress = poolDataCacheOrApi.tokenAddresses[index]
+  const rows: PoolCompositionRow[] = poolData.tokens.map((symbol, index) => {
+    const tokenAddress = poolData.tokenAddresses[index]
     const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
     return {

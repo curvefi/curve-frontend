@@ -1,7 +1,7 @@
 import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
 import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import type { ChainId, PoolData } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { combineQueries } from '@evm-ui/lib'
 import { decimal, decimalPercent } from '@evm-ui/utils'
@@ -10,16 +10,16 @@ import { constQ, fallbackQ } from '@ui/features/queries/util'
 
 export const useMetrics = ({
   chainId,
-  poolDataCacheOrApi,
+  poolData,
   poolId,
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
+  poolData: PoolData
   poolId: string
   pricesApiPoolData?: PricesApiPool
 }) => {
-  const staked = usePoolTotalStaked(poolDataCacheOrApi)
+  const staked = usePoolTotalStaked(poolData)
   return {
     gaugeTotalSupply: constQ(decimal(staked?.gaugeTotalSupply)),
     totalStakedPercent: constQ(decimal(staked?.totalStakedPercent)),

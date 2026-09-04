@@ -1,14 +1,5 @@
-import {
-  CurveApi,
-  ChainId,
-  TokensMapper,
-  PoolData,
-  PoolDataCache,
-  PoolAlert,
-  type PoolUrlParams,
-} from '@/dex/types/main.types'
+import { TokensMapper, PoolAlert, type PoolUrlParams } from '@/dex/types/main.types'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { MakeRequired } from '@ui/features/queries/util'
 
 export type EstimatedGas = {
   loading: boolean
@@ -30,23 +21,19 @@ export type Seed = {
 }
 
 export type PageTransferProps = {
-  curve: CurveApi | null
   params: PoolUrlParams
-  routerParams: { rChainId: ChainId; rPoolIdOrAddress: string }
   hasDepositAndStake: boolean
-  poolData: PoolData | undefined
-  poolDataCacheOrApi: PoolData | PoolDataCache
 }
 
 export type TransferProps = {
-  blockchainId: string
   poolAlert: PoolAlert | null
   maxSlippage: Decimal
   seed: Seed
   tokensMapper: TokensMapper
 } & PageTransferProps
 
-export type TransferTabsParams = MakeRequired<TransferProps, 'poolData'> & {
+export type TransferTabsParams = TransferProps & {
+  isGaugeKilled: boolean | undefined
   isGaugeManager: boolean | undefined
   isRewardsDistributor: boolean | undefined
 }

@@ -3,7 +3,7 @@ import { useConnection } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { AlertSeedAmounts } from '@/dex/components/PagePool/components/AlertSeedAmounts'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { useStore } from '@/dex/store/useStore'
@@ -15,22 +15,19 @@ export const TransferActions = ({
   children,
   seed,
   loading,
-  poolData,
-  routerParams,
 }: {
   loading?: boolean
   children: ReactNode
-} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'seed'>) => {
-  const { address: signerAddress } = useConnection()
-  const { rChainId, rPoolIdOrAddress } = routerParams
-  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
+} & Pick<TransferProps, 'seed'>) => {
+  const { chainId, userAddress: signerAddress, poolId, poolData } = usePoolContext()
+
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { isHydrated } = useCurve()
-  const currencyReserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
+  const currencyReserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(chainId, poolId)])
 
   const { address: userAddress } = useConnection()
   const { isLoading: walletBalancesLoading, error: walletBalancesError } = usePoolTokenBalances({
-    chainId: rChainId,
+    chainId,
     userAddress,
     poolId,
   })
@@ -47,7 +44,7 @@ export const TransferActions = ({
   return (
     <>
       {alert && !alert.isInformationOnly ? <AlertBox alertType={alert.alertType}>{alert.message}</AlertBox> : null}
-      <AlertSeedAmounts seed={seed} poolData={poolData} />
+      <AlertSeedAmounts seed={seed} />
       {signerAddress && walletBalancesError && <AlertBox alertType="error">{walletBalancesError.message}</AlertBox>}
       <FormConnectWallet loading={isLoading}>{children}</FormConnectWallet>
     </>

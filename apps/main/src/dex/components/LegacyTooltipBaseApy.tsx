@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
+import { RewardBase, PoolData } from '@/dex/types/main.types'
 import { formatNumber, amount } from '@evm-ui/utils'
 import { Chip } from '@legacy-ui/Typography'
 import Box from '@mui/material/Box'
@@ -10,7 +10,7 @@ export const LegacyTooltipBaseApy = ({
   poolData,
 }: {
   baseApy: RewardBase | undefined
-  poolData: PoolDataCache | PoolData | undefined
+  poolData: PoolData | undefined
 }) => {
   let label = t`Pool APY`
 
