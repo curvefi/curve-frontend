@@ -18,7 +18,7 @@ export const { networks, networksIdMapper } = Object.entries(NETWORK_BASE_CONFIG
       showInSelectNetwork: chainId === 1,
     }
     mapper.networks[chainId] = networkConfig
-    mapper.networksIdMapper[networkConfig.networkId] = chainId
+    mapper.networksIdMapper[networkConfig.blockchainId] = chainId
     return mapper
   },
   {

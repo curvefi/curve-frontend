@@ -3,7 +3,6 @@ import { Countdown } from '@/dao/components/Countdown'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { SmallLabel } from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
-import { networks } from '@/dao/networks'
 import { t } from '@evm-ui/lib/i18n'
 import { Chain } from '@evm-ui/utils/network'
 import { ExternalLink } from '@legacy-ui/Link'
@@ -42,7 +41,7 @@ export const ProposalHeader = ({ proposal, loading, voteId, proposalType }: Prop
         <MetricsComp
           title={t`Executed On`}
           data={
-            <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], executionTx)}>
+            <StyledExternalLink href={scanTxPath(Chain.Ethereum, executionTx)}>
               <MetricsColumnData>{formatDate(executionDate)}</MetricsColumnData>
             </StyledExternalLink>
           }

@@ -44,7 +44,6 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
         <DepositSupplyInfoList
           form={form}
           params={params}
-          networks={networks}
           tokens={{ borrowToken }}
           controllerAddress={controllerAddress}
         />
@@ -53,7 +52,7 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
       <LoanFormTokenInput
         label={t`Amount to deposit`}
         token={borrowToken}
-        blockchainId={network.id}
+        blockchainId={network.blockchainId}
         name="depositAmount"
         form={form}
         max={max}

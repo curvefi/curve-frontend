@@ -37,7 +37,7 @@ function QuickSwapTest({
     <QuickSwap
       curve={curveApi}
       pageLoaded={!!(curveApi && tokensMapper[fromAddress] && tokensMapper[toAddress])}
-      params={{ network: defaultNetworks[chainId].networkId }}
+      params={{ network: defaultNetworks[chainId].blockchainId }}
       searchedParams={{ fromAddress, toAddress }}
       rChainId={chainId}
       tokensMapper={tokensMapper}

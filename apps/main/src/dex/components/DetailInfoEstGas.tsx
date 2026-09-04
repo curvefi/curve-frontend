@@ -3,14 +3,13 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import { ChainId, EstimatedGas } from '@/dex/types/main.types'
-import { wagmiChainsMap } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { t } from '@evm-ui/lib/i18n'
 import { calculateGas, useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@evm-ui/utils'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
-import { useNetworkByChain, useNetworks } from '../entities/networks'
 
 type StepProgress = {
   active: number
@@ -31,15 +30,13 @@ export const DetailInfoEstGas = ({
   activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
-  const { data: networks } = useNetworks()
-  const { data: network } = useNetworkByChain({ chainId })
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
-  const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
-  const nativeSymbol = wagmiChainsMap[chainId]?.nativeCurrency.name
+  const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId })
+  const nativeSymbol = getChainNativeCurrency(chainId).symbol
 
   const { estGasCostUsd, tooltip } = useMemo(
-    () => calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network, nativeSymbol),
-    [estimatedGas, chainTokenUsdRate, network, gasInfo, nativeSymbol],
+    () => calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, chainId, nativeSymbol),
+    [estimatedGas, chainTokenUsdRate, chainId, gasInfo, nativeSymbol],
   )
 
   const labelText = t`Estimated TX cost:`

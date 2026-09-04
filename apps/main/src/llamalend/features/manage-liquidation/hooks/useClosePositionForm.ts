@@ -27,7 +27,7 @@ const userDefaultValues = {}
 export function useClosePositionForm({
   network,
 }: {
-  network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
+  network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
 }) {
   const { marketId, controllerAddress, tokens, userAddress } = useMarketContext<LlamaChainId>()
   const { chainId } = network

@@ -16,7 +16,7 @@ import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { networks } from '@/loan/networks'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
-import { getBlockchainId } from '@curvefi/prices-api'
+import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { useParams } from '@evm-ui/hooks/router'
@@ -64,10 +64,10 @@ export const MintMarketPage = () => {
 
   const collateralEvents = useUserCollateralEvents({
     app: MarketType.Mint,
-    chain: getBlockchainId(network.id),
+    chainId,
+    blockchainId: getPricesApiBlockchainId(network.blockchainId),
     controllerAddress,
     userAddress: address,
-    network,
     tokens,
   })
   const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists)

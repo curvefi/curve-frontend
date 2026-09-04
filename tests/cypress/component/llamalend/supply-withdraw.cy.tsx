@@ -29,7 +29,7 @@ describe('WithdrawForm (mocked)', () => {
       const { input, market, llamaApi, expected, stubs } = createWithdrawScenario({ chainId, isFull })
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks: llamaNetworks })
+      setGasInfo({ chainId })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>

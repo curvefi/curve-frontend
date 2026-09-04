@@ -1,5 +1,4 @@
 import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw'
-import { networks } from '@/dao/networks'
 import { CurveComponentTestWrapper } from '@cy/support/helpers/CurveComponentTestWrapper'
 import { createWithdrawLockScenario } from '@cy/support/helpers/dao/mocks/withdraw-lock.mocks'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
@@ -20,7 +19,7 @@ describe('FormWithdraw (mocked)', () => {
 
   it('estimates and withdraws an expired lock', () => {
     const { assertPreSubmit, assertSubmit, curve } = createWithdrawLockScenario()
-    setGasInfo({ chainId: CHAIN_ID, networks })
+    setGasInfo({ chainId: CHAIN_ID })
 
     cy.mount(<WithdrawLockForm curve={curve} />)
     cy.get('[data-testid="withdraw-lock-submit-button"]').should('be.enabled')

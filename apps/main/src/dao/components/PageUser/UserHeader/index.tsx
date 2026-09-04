@@ -1,8 +1,7 @@
 import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
-import { networks } from '@/dao/networks'
-import { copyToClipboard } from '@evm-ui/utils'
+import { Chain, copyToClipboard } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -21,7 +20,7 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
               <StyledCopyButton size="small" onClick={() => void copyToClipboard(userAddress)}>
                 <Icon name="Copy" size={16} />
               </StyledCopyButton>
-              <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
+              <StyledExternalLink size="small" href={scanAddressPath(Chain.Ethereum, userAddress)}>
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
             </Box>
@@ -33,7 +32,7 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
           <StyledCopyButton size="small" onClick={() => void copyToClipboard(userAddress)}>
             <Icon name="Copy" size={16} />
           </StyledCopyButton>
-          <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
+          <StyledExternalLink size="small" href={scanAddressPath(Chain.Ethereum, userAddress)}>
             <Icon name="Launch" size={16} />
           </StyledExternalLink>
         </Box>

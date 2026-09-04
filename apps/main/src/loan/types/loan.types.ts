@@ -1,5 +1,5 @@
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { BaseConfig } from '@legacy-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 
 export type ChainId = 1 // note lend also has other chains, but we only use eth in this app
 
@@ -10,7 +10,7 @@ export type NetworkUrlParams = { network: NetworkEnum }
 export type CollateralUrlParams = NetworkUrlParams & { collateralId: string }
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
-export type NetworkConfig = { isActiveNetwork: boolean; showInSelectNetwork: boolean } & BaseConfig<
+export type NetworkConfig = { isActiveNetwork: boolean; showInSelectNetwork: boolean } & NetworkDef<
   NetworkEnum,
   ChainId
 >

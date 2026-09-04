@@ -10,6 +10,9 @@ import { DesignSystem } from '../design'
 const { Spacing, IconSize, OutlineWidth: OUTLINE_WIDTH } = SizesAndSpaces
 
 const TITLE_AND_ICON_SELECTOR = '.MuiAlertTitle-root, .MuiAlert-icon'
+const ICON_SELECTOR = '& .MuiAlert-icon'
+const FILLED_ACTION_SELECTOR =
+  '& .MuiAlert-action, & .MuiAlert-action .MuiButton-root, & .MuiAlert-action .MuiIconButton-root'
 
 export const defineMuiAlert = (
   { Layer: { 1: Layer1, Feedback, Highlight }, Text: { TextColors } }: DesignSystem,
@@ -45,6 +48,7 @@ export const defineMuiAlert = (
     outlined: {
       backgroundColor: Layer1.Fill,
       color: TextColors.Secondary,
+      [ICON_SELECTOR]: { opacity: 1 },
       '&.MuiAlert-colorInfo': {
         [TITLE_AND_ICON_SELECTOR]: { color: TextColors.Highlight },
         borderColor: Highlight.Outline,
@@ -63,25 +67,30 @@ export const defineMuiAlert = (
       },
     },
     filled: {
+      [ICON_SELECTOR]: { opacity: 1 },
       '&.MuiAlert-colorInfo': {
         backgroundColor: Feedback.Info,
         color: TextColors.FilledFeedback.Highlight.Secondary,
-        '& .MuiAlertTitle-root': { color: TextColors.FilledFeedback.Highlight.Primary },
+        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.FilledFeedback.Highlight.Primary },
+        [FILLED_ACTION_SELECTOR]: { color: TextColors.Feedback.Inverted },
       },
       '&.MuiAlert-colorSuccess': {
         backgroundColor: Feedback.Success,
         color: TextColors.FilledFeedback.Success.Secondary,
-        '& .MuiAlertTitle-root': { color: TextColors.FilledFeedback.Success.Primary },
+        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.FilledFeedback.Success.Primary },
+        [FILLED_ACTION_SELECTOR]: { color: TextColors.Feedback.Inverted },
       },
       '&.MuiAlert-colorWarning': {
         backgroundColor: Feedback.Warning,
         color: TextColors.FilledFeedback.Warning.Secondary,
-        '& .MuiAlertTitle-root': { color: TextColors.FilledFeedback.Warning.Primary },
+        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.FilledFeedback.Warning.Primary },
+        [FILLED_ACTION_SELECTOR]: { color: TextColors.FilledFeedback.Warning.Primary },
       },
       '&.MuiAlert-colorError': {
         backgroundColor: Feedback.Error,
         color: TextColors.FilledFeedback.Alert.Secondary,
-        '& .MuiAlertTitle-root': { color: TextColors.FilledFeedback.Alert.Primary },
+        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.FilledFeedback.Alert.Primary },
+        [FILLED_ACTION_SELECTOR]: { color: TextColors.Feedback.Inverted },
       },
     },
     icon: {

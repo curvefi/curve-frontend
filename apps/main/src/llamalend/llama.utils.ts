@@ -326,7 +326,7 @@ export const calculateMintMarketTvlUsd = ({ collateralAmountUsd }: { collateralA
  */
 export const updateUserEventsApi = async (
   wallet: Wallet,
-  { id: networkId }: { id: LlamaNetworkId },
+  { blockchainId }: { blockchainId: LlamaNetworkId },
   market: MarketTemplate,
   txHash: string,
 ) => {
@@ -334,7 +334,7 @@ export const updateUserEventsApi = async (
     market instanceof LendMarketTemplate
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
-  return await updateEvents(wallet.address, networkId, address as Address, txHash as Hex)
+  return await updateEvents(wallet.address, blockchainId, address as Address, txHash as Hex)
 }
 
 /**

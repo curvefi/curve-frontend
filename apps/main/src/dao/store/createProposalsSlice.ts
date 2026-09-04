@@ -2,7 +2,6 @@ import { produce } from 'immer'
 import type { StoreApi } from 'zustand'
 import { invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { invalidateUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
-import { networks } from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
   ProposalListFilter,
@@ -15,6 +14,7 @@ import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { notify, useWallet, getLib } from '@evm-ui/features/connect-wallet'
 import { waitForTransaction } from '@evm-ui/lib/ethers'
 import { t } from '@evm-ui/lib/i18n'
+import { Chain } from '@evm-ui/utils'
 import { scanTxPath } from '@legacy-ui/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -135,7 +135,7 @@ export const createProposalsSlice = (
             [voteIdKey]: {
               status: 'LOADING',
               hash: voteResponseHash,
-              txLink: scanTxPath(networks[1], voteResponseHash),
+              txLink: scanTxPath(Chain.Ethereum, voteResponseHash),
             },
           })
 
@@ -146,7 +146,7 @@ export const createProposalsSlice = (
             [voteIdKey]: {
               status: 'SUCCESS',
               hash: voteResponseHash,
-              txLink: scanTxPath(networks[1], voteResponseHash),
+              txLink: scanTxPath(Chain.Ethereum, voteResponseHash),
             },
           })
 
@@ -225,7 +225,7 @@ export const createProposalsSlice = (
             [voteIdKey]: {
               status: 'LOADING',
               hash: transactionHash,
-              txLink: scanTxPath(networks[1], transactionHash),
+              txLink: scanTxPath(Chain.Ethereum, transactionHash),
               error: null,
             },
           })
@@ -244,7 +244,7 @@ export const createProposalsSlice = (
               state[SLICE_KEY].executeTxMapper[voteIdKey] = {
                 status: 'SUCCESS',
                 hash: transactionHash,
-                txLink: scanTxPath(networks[1], transactionHash) ?? null,
+                txLink: scanTxPath(Chain.Ethereum, transactionHash) ?? null,
                 error: null,
               }
             }),

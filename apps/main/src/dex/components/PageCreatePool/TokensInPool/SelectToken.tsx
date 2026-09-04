@@ -118,7 +118,7 @@ export const SelectToken = ({
         haveSigner={haveSigner}
         disabledKeys={disabledTokens}
         chainId={chainId}
-        blockchainId={network?.networkId}
+        blockchainId={network?.blockchainId}
         tokens={selTokens}
         selectedAddress={token.address}
         onSelectionChange={(value: Key) => handleInpChange(tokenId, value as string, tokensInPool)}

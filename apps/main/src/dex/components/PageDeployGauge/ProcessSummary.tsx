@@ -1,6 +1,5 @@
 import { styled } from 'styled-components'
 import { InfoBox } from '@/dex/components/PageDeployGauge/InfoBox'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@evm-ui/lib/i18n'
@@ -22,9 +21,7 @@ type Props = {
 export const ProcessSummary = ({ chainId, isLite }: Props) => {
   const deploymentStatus = useStore(state => state.deployGauge.deploymentStatus)
   const linkPoolAddress = useStore(state => state.deployGauge.linkPoolAddress)
-  const currentSidechain = useStore(state => state.deployGauge.currentSidechain)
-  const { data: network } = useNetworkByChain({ chainId })
-  const { data: networkSidechain } = useNetworkByChain({ chainId: currentSidechain ?? Chain.Ethereum })
+  const sideChainId = useStore(state => state.deployGauge.currentSidechain ?? Chain.Ethereum)
 
   return (
     <Box flex flexColumn>
@@ -52,7 +49,7 @@ export const ProcessSummary = ({ chainId, isLite }: Props) => {
                   </Box>
                   <Transaction
                     variant="contained"
-                    href={scanTxPath(networkSidechain, deploymentStatus.sidechain.transaction.hash)}
+                    href={scanTxPath(sideChainId, deploymentStatus.sidechain.transaction.hash)}
                   >
                     <p>{t`Transaction:`}</p>
                     {shortenString(deploymentStatus.sidechain.transaction.hash)}
@@ -82,7 +79,7 @@ export const ProcessSummary = ({ chainId, isLite }: Props) => {
                     <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
                     <SuccessMessage>{t`Mirror gauge successfully deployed`}</SuccessMessage>
                   </Box>
-                  <Transaction variant="contained" href={scanTxPath(network, deploymentStatus.mirror.transaction.hash)}>
+                  <Transaction variant="contained" href={scanTxPath(chainId, deploymentStatus.mirror.transaction.hash)}>
                     <p>{t`Transaction:`}</p>
                     {shortenString(deploymentStatus.mirror.transaction.hash)}
                     <StyledIcon name="Launch" size={16} />

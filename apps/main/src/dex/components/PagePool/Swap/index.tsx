@@ -117,8 +117,8 @@ export const Swap = ({
 
   const { selectList, swapTokensMapper } = useMemo(() => {
     const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
-    return { selectList: selectList.map(toTokenOption(network?.networkId)), swapTokensMapper }
-  }, [poolDataCacheOrApi, tokensMapper, network?.networkId])
+    return { selectList: selectList.map(toTokenOption(network?.blockchainId)), swapTokensMapper }
+  }, [poolDataCacheOrApi, tokensMapper, network?.blockchainId])
 
   const fromToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
   const toToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.toAddress)
@@ -160,13 +160,13 @@ export const Swap = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         setTxInfoBar(
           <TxInfoBar
             description={`Swapped ${fromAmount} ${fromToken}.`}
-            txHash={scanTxPath(network, resp.hash)}
+            txHash={scanTxPath(chainId, resp.hash)}
             onClose={() => {
               updateFormValues({}, null, null)
             }}
@@ -175,7 +175,7 @@ export const Swap = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepSwap, activeKey, network, refetchUserFromBalance, refetchUserToBalance, updateFormValues],
+    [fetchStepSwap, activeKey, chainId, refetchUserFromBalance, refetchUserToBalance, updateFormValues],
   )
 
   const getSteps = useCallback(

@@ -1,7 +1,7 @@
 import type { PoolRow } from '../../types'
 
 type PoolType = NonNullable<PoolRow['poolType']>
-export type PoolClassification = 'stable' | 'volatile'
+export type PoolClassification = 'stable' | 'volatile' | 'fxswap'
 
 export const poolTypeClassifications: Record<PoolType, PoolClassification> = {
   main: 'stable',
@@ -12,4 +12,5 @@ export const poolTypeClassifications: Record<PoolType, PoolClassification> = {
   factory_crypto: 'volatile',
   factory_tricrypto: 'volatile',
   twocryptong: 'volatile',
+  fxswap: 'fxswap',
 }

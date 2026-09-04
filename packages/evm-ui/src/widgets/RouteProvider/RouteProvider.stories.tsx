@@ -7,7 +7,6 @@ import { TestQueryProvider } from '@evm-ui/lib/queries/test-query.provider.test'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { constQ, q } from '@evm-ui/types/util'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
-import type { BaseConfig } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import { fromEntries, mapRecord } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
@@ -76,7 +75,6 @@ const meta: Meta<typeof RouteProviderStory> = {
   component: RouteProviderStory,
   args: {
     chainId: 1,
-    networks: { 1: { name: 'Ethereum' } as BaseConfig },
     queries: fromEntries(
       RouteProviders.map(router => [
         router,
@@ -116,15 +114,6 @@ export const Expanded: Story = {
 export const GasEstimate: Story = {
   args: {
     isExpanded: true,
-    networks: {
-      1: {
-        name: 'Ethereum',
-        gasL2: false,
-        gasPricesDefault: 0,
-        gasPricesUnit: 'GWEI',
-        gasPricesUrl: 'https://api.curve.finance/api/getGas',
-      } as BaseConfig,
-    },
     queryData: [
       [['chain', { chainId: 1 }, 'token', { tokenAddress: ethAddress }, 'usdRate'], 3_000],
       [

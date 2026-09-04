@@ -15,7 +15,7 @@ type CampaignRewardsBannerProps = {
 }
 
 export const CampaignRewardsBanner = ({ chainId, market }: CampaignRewardsBannerProps) => {
-  const blockchainId = networks[chainId].id as Chain
+  const blockchainId = networks[chainId].blockchainId as Chain
   const { data: supplyCampaigns } = useCampaignsByAddress({ blockchainId, address: getVaultAddress(market) })
   const { data: borrowCampaigns } = useCampaignsByAddress({ blockchainId, address: getControllerAddress(market) })
 
