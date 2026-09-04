@@ -1,5 +1,5 @@
 /** This file contains various custom chain specific constants and overrides */
-import { Chain } from '@evm-ui/utils'
+import { Chain } from '@primitives/network.utils'
 import type { PartialRecord } from '@primitives/objects.utils'
 
 export const CHAIN_NAMES: PartialRecord<number, string> = {

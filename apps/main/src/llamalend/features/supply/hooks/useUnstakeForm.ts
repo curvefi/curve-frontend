@@ -14,8 +14,8 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { useFormSync, useForm } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { mapQuery } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
+import { mapQuery } from '@ui/features/queries/util'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 

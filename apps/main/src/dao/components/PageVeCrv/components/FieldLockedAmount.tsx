@@ -3,10 +3,10 @@ import { useLockerCrv, useLockerLockedAmountAndUnlockTime } from '@/dao/entities
 import { t } from '@evm-ui/lib/i18n'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
-import { q } from '@evm-ui/types/util'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { q } from '@ui/features/queries/util'
 
 export const FieldLockedAmount = ({
   chainId,

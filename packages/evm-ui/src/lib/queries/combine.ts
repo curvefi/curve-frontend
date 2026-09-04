@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { DISABLED_Q, fallbackQ, q, Query, QueryProp } from '@evm-ui/types/util'
 import { decimalMin } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
+import { DISABLED_Q, fallbackQ, q, Query, QueryProp } from '@ui/features/queries/util'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
   ({

@@ -7,11 +7,11 @@ import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
-import { fakeLoadingQ } from '@evm-ui/types/util'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import { maybe, notFalsy } from '@primitives/objects.utils'
+import { fakeLoadingQ } from '@ui/features/queries/util'
 import { Section } from './Section'
 
 const getPoolType = ({

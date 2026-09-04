@@ -19,7 +19,7 @@ import {
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
-import { constQ } from '@evm-ui/types/util'
+import { constQ } from '@ui/features/queries/util'
 
 const routerCalldataOfSize = (bytes: number): Hex => `0x${'00'.repeat(bytes)}`
 const CHAIN_ID = 1

@@ -20,7 +20,6 @@ import {
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery } from '@evm-ui/types/util'
 import { decimal, formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
@@ -29,6 +28,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { maybe } from '@primitives/objects.utils'
+import { mapQuery } from '@ui/features/queries/util'
 
 const { Height, Spacing } = SizesAndSpaces
 

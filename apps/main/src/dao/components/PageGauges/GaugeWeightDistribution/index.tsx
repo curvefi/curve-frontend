@@ -14,7 +14,7 @@ import {
   EChartsBarChart,
   formatChartAxisNumber,
 } from '@evm-ui/shared/ui/Chart'
-import { Chain } from '@evm-ui/utils/network'
+import { Chain } from '@primitives/network.utils'
 import { Box } from '@legacy-ui/Box'
 import { useTheme } from '@mui/material/styles'
 import { sortBy, toArray } from '@primitives/array.utils'

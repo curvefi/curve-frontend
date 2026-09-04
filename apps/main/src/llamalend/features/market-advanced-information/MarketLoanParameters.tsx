@@ -4,8 +4,8 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { fallbackQ, mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
+import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { getMaxLtv } from './market-risk-values'
 
 export const MarketLoanParameters = ({

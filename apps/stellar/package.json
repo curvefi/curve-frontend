@@ -15,7 +15,11 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-stellar.tsbuildinfo"
   },
   "dependencies": {
+    "@tanstack/react-query": "*",
+    "@tanstack/react-query-devtools": "*",
     "@tanstack/react-router": "*",
+    "@tanstack/react-router-devtools": "*",
+    "@tanstack/router-core": "*",
     "ui": "*",
     "vite-plugin-svgr": "*",
     "vite-plugin-vercel": "9.1.1"
@@ -27,6 +31,7 @@
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
+    "@types/node": "*",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@vitejs/plugin-react": "*",

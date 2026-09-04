@@ -1,10 +1,10 @@
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 
 export const VeCrvActionInfo = ({
   currentVeCrv,

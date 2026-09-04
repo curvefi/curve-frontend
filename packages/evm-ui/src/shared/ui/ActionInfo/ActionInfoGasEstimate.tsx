@@ -2,11 +2,11 @@ import type { ReactNode } from 'react'
 import { t } from '@evm-ui/lib/i18n'
 import { FireIcon } from '@evm-ui/shared/icons/FireIcon'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { ActionInfo } from './ActionInfo'
 
 export type TxGasInfo = {

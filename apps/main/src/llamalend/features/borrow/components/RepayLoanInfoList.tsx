@@ -17,11 +17,11 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import type { MarketType } from '@evm-ui/types/market'
-import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@evm-ui/types/util'
 import { decimal, decimalMinus, decimalNegate } from '@evm-ui/utils'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
+import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
