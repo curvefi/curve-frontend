@@ -41,7 +41,6 @@ export const defaultNetworks = Object.entries({
     tricryptoFactory: true,
     fxswapFactory: true,
     hasFactory: true,
-    pricesApi: true,
   },
   [Chain.Optimism]: {
     swap: {
@@ -61,7 +60,6 @@ export const defaultNetworks = Object.entries({
     twocryptoFactory: true,
     tricryptoFactory: true,
     hasFactory: true,
-    pricesApi: true,
   },
   [Chain.Gnosis]: {
     poolFilters: ['all', 'usd', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
@@ -83,7 +81,6 @@ export const defaultNetworks = Object.entries({
     tricryptoFactory: true,
     fxswapFactory: true,
     hasFactory: true,
-    pricesApi: true,
   },
   [Chain.Moonbeam]: {
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
@@ -115,7 +112,6 @@ export const defaultNetworks = Object.entries({
     tricryptoFactory: true,
     fxswapFactory: true,
     hasFactory: true,
-    pricesApi: true,
   },
   [Chain.Kava]: {
     poolFilters: ['all', 'usd', 'btc', 'kava', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
@@ -141,7 +137,6 @@ export const defaultNetworks = Object.entries({
     twocryptoFactory: true,
     tricryptoFactory: true,
     hasFactory: true,
-    pricesApi: true,
   },
   [Chain.Arbitrum]: {
     swap: {
@@ -161,7 +156,6 @@ export const defaultNetworks = Object.entries({
     tricryptoFactory: true,
     fxswapFactory: true,
     hasFactory: true,
-    pricesApi: true,
   },
   [Chain.Avalanche]: {
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
@@ -220,7 +214,6 @@ export const defaultNetworks = Object.entries({
     tricryptoFactory: true,
     fxswapFactory: true,
     hasFactory: true,
-    pricesApi: true,
   },
   [Chain.Bsc]: {
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
@@ -242,7 +235,6 @@ export const defaultNetworks = Object.entries({
     tricryptoFactory: true,
     fxswapFactory: true,
     hasFactory: true,
-    pricesApi: true,
   },
   [Chain.Fraxtal]: {
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'others', 'stableng', 'user'],
@@ -258,7 +250,6 @@ export const defaultNetworks = Object.entries({
         symbol: 'crvUSD',
       },
     ],
-    pricesApi: true,
     stableswapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
@@ -337,7 +328,6 @@ export async function getNetworks() {
       twocryptoFactory: true,
       tricryptoFactory: true,
       fxswapFactory: isLiteFxswapEnabled,
-      pricesApi: isUpgraded,
       isCrvRewardsEnabled: isUpgraded,
       ...(isOnlyPoolRewardsUpgraded && {
         isCrvRewardsEnabled: true,

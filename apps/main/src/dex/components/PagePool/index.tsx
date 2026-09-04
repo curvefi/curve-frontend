@@ -155,7 +155,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const defaultTab = (state as PoolRouteState).defaultTab
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const { blockchainId, pricesApi } = network
+  const { blockchainId } = network
   const poolAddress = poolData?.pool.address as Address
   const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
@@ -242,10 +242,12 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           poolDataCacheOrApi={poolDataCacheOrApi}
           poolId={poolId}
         />
-        {!isLiteChain(network.chainId) && pricesApiPoolData && pricesApi && (
+        {!isLiteChain(network.chainId) && pricesApiPoolData && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
-        {pricesApi && <PoolHistoricalBaseRateChart blockchainId={network.blockchainId} poolAddress={poolAddress} />}
+        {!isLiteChain(network.chainId) && (
+          <PoolHistoricalBaseRateChart blockchainId={network.blockchainId} poolAddress={poolAddress} />
+        )}
         <PoolInformation
           curve={curve}
           routerParams={routerParams}

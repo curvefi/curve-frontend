@@ -6,12 +6,11 @@ import { curvejsApi } from '@/dex/lib/curvejs'
 import { fetchPoolIds } from '@/dex/lib/pool-ids'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
-import { isLegacyList } from '@/dex/utils'
+import { isDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
 import { formatTimeDiff } from '@evm-ui/utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { log } from '@ui/lib/logging'
-import type { ReleaseChannel } from '@ui/utils/env'
-import { fetchNetworks } from '../entities/networks'
+import { ReleaseChannel } from '@ui/utils/env'
 import { refetchPoolTvls } from '../queries/pool-tvl.query'
 import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
@@ -99,9 +98,8 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
 
-    const networks = await fetchNetworks() // Pool ids have a dependency on networks
-    const isLegacy = isLegacyList(releaseChannel, networks[chainId])
-    const poolIds = await fetchPoolIds(curveApi, { chainId })
+    const isLegacy = isDexPoolListV2(releaseChannel)
+    const poolIds = await fetchPoolIds(curveApi)
 
     // After pool bootstrap is completed above, any future query refactored
     // out of `fetchPools` that depends on all pool ids should be manually invalidated.

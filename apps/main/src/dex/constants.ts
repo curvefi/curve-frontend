@@ -19,7 +19,6 @@ export const ROUTE = {
 } as const
 
 export const DEFAULT_NETWORK_CONFIG = {
-  useApi: true, // default to true when calling fetchPools
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
   poolIsWrappedOnly: {}, // show only wrapped pool data
   swap: { fromAddress: '', toAddress: '' },
@@ -33,7 +32,6 @@ export const DEFAULT_NETWORK_CONFIG = {
   tricryptoFactory: false, // determines support in pool creation and gauge deployment
   fxswapFactory: false, // determines support in pool creation and gauge deployment
   hasFactory: false,
-  pricesApi: false,
 }
 
 // List of characters that are not allowed in pool names. See getPoolName() in @curvefi/api
