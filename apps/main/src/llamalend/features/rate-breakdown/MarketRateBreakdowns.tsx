@@ -3,6 +3,7 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { MarketRateType } from '@evm-ui/types/market'
 import { mapQuery } from '@evm-ui/types/util'
 import { Chain, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
@@ -51,15 +52,19 @@ export const MarketRateBreakdowns = ({ hideSupply = false }: { hideSupply?: bool
 
   return (
     <Stack sx={{ gap: Spacing.md }}>
-      <RateBreakdownTable rateType="borrow" query={borrowQuery} />
-      {!!borrowQuery.data?.points.length && <PointsCampaignsTable rateType="borrow" rows={borrowQuery.data.points} />}
+      <Stack>
+        <RateBreakdownTable rateType={MarketRateType.Borrow} query={borrowQuery} />
+        {!!borrowQuery.data?.points.length && (
+          <PointsCampaignsTable rateType={MarketRateType.Borrow} rows={borrowQuery.data.points} />
+        )}
+      </Stack>
       {supplyQuery && (
-        <>
-          <RateBreakdownTable rateType="supply" query={supplyQuery} />
+        <Stack>
+          <RateBreakdownTable rateType={MarketRateType.Supply} query={supplyQuery} />
           {!!supplyQuery.data?.points.length && (
-            <PointsCampaignsTable rateType="supply" rows={supplyQuery.data.points} />
+            <PointsCampaignsTable rateType={MarketRateType.Supply} rows={supplyQuery.data.points} />
           )}
-        </>
+        </Stack>
       )}
     </Stack>
   )

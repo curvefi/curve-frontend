@@ -4,6 +4,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { type CurveTableFeatures, useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { MarketRateType } from '@evm-ui/types/market'
 import { constQ, mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
@@ -20,6 +21,11 @@ import {
 import type { PointsCampaignRow, RateBreakdownData, RateBreakdownRow } from './market-rate-breakdown.utils'
 
 const { Spacing } = SizesAndSpaces
+
+const POINTS_CAMPAIGN_TITLES = {
+  [MarketRateType.Borrow]: t`Borrow Points Campaigns`,
+  [MarketRateType.Supply]: t`Supply Points Campaigns`,
+} satisfies Record<MarketRateType, string>
 
 const FooterRow = ({
   visibleColumns,
@@ -56,19 +62,19 @@ export const RateBreakdownTable = ({
   rateType,
   query,
 }: {
-  rateType: 'borrow' | 'supply'
+  rateType: MarketRateType
   query: QueryProp<RateBreakdownData>
 }) => {
-  const isBorrow = rateType === 'borrow'
+  const isBorrow = rateType === MarketRateType.Borrow
   const table = useCurveTable({
     query: mapQuery(query, ({ rows }) => rows),
     columns: isBorrow ? BORROW_COLUMNS : SUPPLY_COLUMNS,
     state: { columnVisibility: useIsMobile() ? MOBILE_COLUMN_VISIBILITY : undefined },
   })
-  const showFooter = query.data && (!isBorrow || query.data.hasAdjustments)
+  const showFooter = query.data?.hasAdjustments
 
   return (
-    <Card size="small" data-testid={`${rateType}-rate-breakdown`}>
+    <Card size="small" data-testid={`${rateType.toLowerCase()}-rate-breakdown`}>
       <CardHeader title={isBorrow ? t`Borrow Cost Breakdown` : t`Yield Breakdown`} size="small" />
       <DataTable
         category="detail"
@@ -90,21 +96,15 @@ export const RateBreakdownTable = ({
   )
 }
 
-export const PointsCampaignsTable = ({
-  rateType,
-  rows,
-}: {
-  rateType: 'borrow' | 'supply'
-  rows: PointsCampaignRow[]
-}) => {
+export const PointsCampaignsTable = ({ rateType, rows }: { rateType: MarketRateType; rows: PointsCampaignRow[] }) => {
   const table = useCurveTable({
     query: constQ(rows),
     columns: POINTS_COLUMNS,
   })
 
   return (
-    <Card size="small" data-testid={`${rateType}-points-campaigns`}>
-      <CardHeader title={t`Points Campaigns`} size="small" />
+    <Card size="small" data-testid={`${rateType.toLowerCase()}-points-campaigns`}>
+      <CardHeader title={POINTS_CAMPAIGN_TITLES[rateType]} size="small" />
       <DataTable category="detail" table={table} emptyState={{ title: t`No points campaigns found` }} />
     </Card>
   )
