@@ -36,7 +36,7 @@ const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
 
 // Sometimes a network has been defined and needs to be accessed for legacy purposes, but we want to hide it from the list for whatever reason.
 const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = {
-  dex: [Chain.ZkSync, Chain.Mantle, Chain.Tac /** Temporarily hidden as the chain's halted */],
+  dex: [Chain.ZkSync, Chain.Mantle],
 }
 
 const getTvl =
