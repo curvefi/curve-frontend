@@ -9,6 +9,11 @@ export type * from './schema'
 export const USER_MARKETS_FIRST_PAGE = 1
 export const USER_MARKETS_DEFAULT_PER_PAGE = 100
 
+export type PaginatedOptions = Options & {
+  page?: number
+  perPage?: number
+}
+
 type GetUserMarketsParams = {
   page?: number
   per_page?: number
@@ -147,9 +152,24 @@ export async function getUserMarketEarnings(userAddr: string, chain: Chain, vaul
   return Schema.getUserMarketEarningsResponse.parse(response)
 }
 
-export async function getVaultDepositors(chain: Chain, vaultAddress: string, options?: Options) {
-  const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/vaults/${chain}/${vaultAddress}/depositors`)
+export async function getMarketBorrowers(chain: Chain, controller: string, options: PaginatedOptions = {}) {
+  const { page = 1, perPage = 10, ...requestOptions } = options
+  const host = getHost(requestOptions)
+  const response = await fetch(
+    `${host}/v1/lending/markets/${chain}/${controller}/borrowers${addQueryString({ page, per_page: perPage })}`,
+    { signal: requestOptions.signal },
+  )
+
+  return Schema.getMarketBorrowersResponse.parse(response)
+}
+
+export async function getVaultDepositors(chain: Chain, vaultAddress: string, options: PaginatedOptions = {}) {
+  const { page = 1, perPage = 10, ...requestOptions } = options
+  const host = getHost(requestOptions)
+  const response = await fetch(
+    `${host}/v1/lending/vaults/${chain}/${vaultAddress}/depositors${addQueryString({ page, per_page: perPage })}`,
+    { signal: requestOptions.signal },
+  )
 
   return Schema.getVaultDepositorsResponse.parse(response)
 }

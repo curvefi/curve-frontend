@@ -49,7 +49,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
           <MarketRateCurveChart />
         </Stack>
       </MarketSection>
-      {isBorrow && isNewLlamaMarketDetailPage && (
+      {isNewLlamaMarketDetailPage && (
         <MarketSection id="market-activity">
           <MarketActivityComp />
         </MarketSection>

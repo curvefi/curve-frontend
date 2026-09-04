@@ -62,6 +62,9 @@ runEndpointCases('llamalend', [
       requestOptions,
     ),
   ),
+  endpointCase('getMarketBorrowers', () =>
+    llamalend.getMarketBorrowers(llamalendMarketSeed().chain, llamalendMarketSeed().controller, requestOptions),
+  ),
   endpointCase('getVaultDepositors', () =>
     llamalend.getVaultDepositors(llamalendMarketSeed().chain, llamalendMarketSeed().vault, requestOptions),
   ),

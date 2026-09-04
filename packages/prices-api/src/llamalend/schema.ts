@@ -270,12 +270,24 @@ const userMarketEarnings = z
 
 const vaultDepositor = z
   .object({
-    rank: z.number(),
     address,
     category: z.string(),
     shares: z.number(),
     assets: z.number(),
-    percent_of_total_shares: z.number(),
+    percent_of_total_shares: z.number().nullish(),
+  })
+  .transform(camelizeKeys)
+
+const marketBorrower = z
+  .object({
+    address,
+    debt: z.number(),
+    debt_usd: z.number(),
+    collateral: z.number(),
+    collateral_usd: z.number(),
+    health: z.number(),
+    soft_liquidation: z.boolean(),
+    percent_of_total_debt: z.number().nullish(),
   })
   .transform(camelizeKeys)
 
@@ -444,6 +456,20 @@ export const getAllUserLendingPositionsResponse = z
 export const getUserMarketStatsResponse = userMarketStats
 export const getUserMarketEarningsResponse = userMarketEarnings
 
+export const getMarketBorrowersResponse = z
+  .object({
+    chain,
+    controller_address: address,
+    vault_address: address,
+    total_debt: z.number(),
+    total_debt_usd: z.number(),
+    total_borrowers: z.number(),
+    page: z.number(),
+    per_page: z.number(),
+    borrowers: z.array(marketBorrower),
+  })
+  .transform(camelizeKeys)
+
 export const getVaultDepositorsResponse = z
   .object({
     chain,
@@ -518,6 +544,9 @@ export type UserMarket = z.infer<typeof userMarket>
 export type UserLendingPosition = z.infer<typeof userLendingPosition>
 export type UserMarketStats = z.infer<typeof userMarketStats>
 export type UserMarketEarnings = z.infer<typeof userMarketEarnings>
+export type MarketBorrower = z.infer<typeof marketBorrower>
+export type MarketBorrowers = z.infer<typeof getMarketBorrowersResponse>
+export type VaultDepositor = z.infer<typeof vaultDepositor>
 export type VaultDepositors = z.infer<typeof getVaultDepositorsResponse>
 export type UserMarketSnapshots = z.infer<typeof getUserMarketSnapshotsResponse>
 export type MarketUser = z.infer<typeof marketUser>
