@@ -1,4 +1,3 @@
-import type { ChainQuery } from '@evm-ui/lib/model'
 import { log } from '@ui/lib/logging'
 import type { CurveApi } from '../types/main.types'
 
@@ -17,7 +16,7 @@ const USE_API = true
  * The pool ids are intentionally returned before app-level blacklist filtering. The blacklist
  * depends on pool addresses, so we still apply it later while building `poolsMapper`.
  */
-export async function fetchPoolIds(curve: CurveApi, { chainId }: ChainQuery): Promise<string[]> {
+export async function fetchPoolIds(curve: CurveApi): Promise<string[]> {
   log(`Hydrating DEX - Fetching pool ids { hasRpc: ${!curve.isNoRPC} }`)
 
   await Promise.all([

@@ -99,7 +99,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     state.setNetworkConfigFromApi(curveApi)
 
     const isLegacy = isDexPoolListV2(releaseChannel)
-    const poolIds = await fetchPoolIds(curveApi, { chainId })
+    const poolIds = await fetchPoolIds(curveApi)
 
     // After pool bootstrap is completed above, any future query refactored
     // out of `fetchPools` that depends on all pool ids should be manually invalidated.
