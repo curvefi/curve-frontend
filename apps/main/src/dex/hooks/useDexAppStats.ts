@@ -4,14 +4,17 @@ import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import { useStore } from '@/dex/store/useStore'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { APP_LINK } from '@evm-ui/shared/routes'
 import { formatNumber } from '@evm-ui/utils'
 import { type NetworkDef } from '@legacy-ui/utils'
 import { notFalsyArray } from '@primitives/objects.utils'
-import { t } from '@ui/lib/i18n'
 import { useNetworkByChain } from '../entities/networks'
+import { Chain } from '@primitives/network.utils'
+import { t } from '@ui/lib/i18n'
+import { formatTimeDiff } from '@ui/utils/time'
 
-export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean) => {
+export const useDexAppStats = ({ chainId }: NetworkDef, enabled: boolean) => {
   const { data: tvlTotal } = useAppStatsTvl({ chainId }, enabled)
   const { data: volumeTotal } = useAppStatsVolume({ chainId }, enabled)
   return notFalsyArray(
@@ -21,7 +24,7 @@ export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean
         value: formatNumber(tvlTotal, 'usd.notional'),
       },
       ...notFalsyArray(
-        !isLite && [
+        !isLiteChain(chainId) && [
           // only show total deposits on curve-lite networks
           {
             label: t`Daily Volume`,
@@ -39,13 +42,17 @@ export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean
 
 const [swapRoute, ...dexRoutes] = APP_LINK.dex.routes
 
-export function useDexRoutes({ chainId, showRouterSwap }: NetworkDef) {
+/** For whatever reason, some chains might not be supported on the swap page */
+const HIDE_ROUTER_SWAP = [Chain.Mantle]
+
+export function useDexRoutes({ chainId }: NetworkDef) {
   const routerCached = useStore(state => state.storeCache.routerFormValues[chainId])
   const { data: network } = useNetworkByChain({ chainId })
   return useMemo(
     () => [
-      ...(showRouterSwap
-        ? routerCached && network
+      ...(HIDE_ROUTER_SWAP.includes(chainId)
+        ? []
+        : routerCached && network
           ? [
               {
                 app: 'dex' as const,
@@ -53,11 +60,10 @@ export function useDexRoutes({ chainId, showRouterSwap }: NetworkDef) {
                 label: () => t`Swap`,
               },
             ]
-          : [swapRoute]
-        : []),
+          : [swapRoute]),
       ...dexRoutes.filter(page => page.route !== ROUTE.PAGE_SWAP),
     ],
-    [showRouterSwap, network, routerCached],
+    [chainId, network, routerCached],
   )
 }
 

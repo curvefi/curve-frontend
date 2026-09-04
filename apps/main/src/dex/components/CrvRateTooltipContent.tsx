@@ -2,15 +2,15 @@ import { formatNumber, MAINNET_CRV } from '@evm-ui/utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 
-export const CrvApyTooltipContent = ({
-  maximumApy,
-  unboostedApy,
+export const CrvRateTooltipContent = ({
+  maximumRate,
+  unboostedRate,
 }: {
-  maximumApy: number | null | undefined
-  unboostedApy: number | null | undefined
+  maximumRate: number | null | undefined
+  unboostedRate: number | null | undefined
 }) => (
   <TooltipWrapper>
-    <TooltipDescription text={t`CRV gauge reward APY ranges from the unboosted rate to the maximum boosted rate.`} />
+    <TooltipDescription text={t`CRV gauge reward APR ranges from the unboosted rate to the maximum boosted rate.`} />
     <TooltipDescription text={t`The maximum rate assumes the full 2.5x gauge boost.`} />
     <TooltipItems secondary>
       <TooltipItem
@@ -18,14 +18,14 @@ export const CrvApyTooltipContent = ({
         titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
         variant="independent"
       >
-        {formatNumber(unboostedApy, 'percent.rate')}
+        {formatNumber(unboostedRate, 'percent.rate')}
       </TooltipItem>
       <TooltipItem
         title={t`Max boost`}
         titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
         variant="independent"
       >
-        {formatNumber(maximumApy, 'percent.rate')}
+        {formatNumber(maximumRate, 'percent.rate')}
       </TooltipItem>
     </TooltipItems>
   </TooltipWrapper>

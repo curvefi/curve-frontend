@@ -1,6 +1,6 @@
 import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
 import { LegacyTooltipBaseApy } from '@/dex/components/LegacyTooltipBaseApy'
-import { LARGE_APY } from '@/dex/constants'
+import { LARGE_RATE } from '@/dex/constants'
 import { isSortedBy, type CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { formatNumber } from '@evm-ui/utils'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
@@ -26,7 +26,7 @@ export const LegacyRewardsBaseCell = ({
     </span>
   ) : (
     day != null &&
-      (day > LARGE_APY ? (
+      (day > LARGE_RATE ? (
         <ChipVolatileBaseApy isBold={isHighlight} />
       ) : (
         <Tooltip title={rewards?.base && <LegacyTooltipBaseApy poolData={poolData} baseApy={rewards.base} />}>

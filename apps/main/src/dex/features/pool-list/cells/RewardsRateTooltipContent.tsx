@@ -3,23 +3,21 @@ import Stack from '@mui/material/Stack'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
-import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './ApyTooltipItems'
-import { getAprCampaigns, getCampaignRewardsApy, getExtraRewards, getExtraRewardsApy, getRewardsApy } from './utils'
+import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './RateTooltipItems'
+import { getAprCampaigns, getCampaignRewardsApr, getExtraRewards, getExtraRewardsApr, getRewardsApr } from './utils'
 
-export const RewardsApyTooltipContent = ({ pool }: { pool: PoolRow }) => {
+export const RewardsRateTooltipContent = ({ pool }: { pool: PoolRow }) => {
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
 
   return (
     <TooltipWrapper>
-      <TooltipDescription
-        text={t`Annualized yield from extra token rewards and APR campaigns. Points are not included.`}
-      />
+      <TooltipDescription text={t`Yield from extra token rewards and APR campaigns. Points are not included.`} />
       <Stack>
         {extraRewards.length > 0 && (
           <TooltipItems secondary>
             <TooltipItem title={t`Liquidity incentives`}>
-              {formatNumber(getExtraRewardsApy(pool), 'percent.rate')}
+              {formatNumber(getExtraRewardsApr(pool), 'percent.rate')}
             </TooltipItem>
             <ExtraRewardTooltipItems blockchainId={pool.blockchainId} rewards={extraRewards} />
           </TooltipItems>
@@ -27,14 +25,14 @@ export const RewardsApyTooltipContent = ({ pool }: { pool: PoolRow }) => {
         {campaigns.length > 0 && (
           <TooltipItems secondary>
             <TooltipItem title={t`Campaign rewards`}>
-              {formatNumber(getCampaignRewardsApy(pool), 'percent.rate')}
+              {formatNumber(getCampaignRewardsApr(pool), 'percent.rate')}
             </TooltipItem>
             <CampaignRewardTooltipItems campaigns={campaigns} />
           </TooltipItems>
         )}
         <TooltipItems borderTop>
-          <TooltipItem variant="primary" title={t`Rewards APY`}>
-            {formatNumber(getRewardsApy(pool), 'percent.rate')}
+          <TooltipItem variant="primary" title={t`Rewards APR`}>
+            {formatNumber(getRewardsApr(pool), 'percent.rate')}
           </TooltipItem>
         </TooltipItems>
       </Stack>

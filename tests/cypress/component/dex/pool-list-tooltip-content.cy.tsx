@@ -1,10 +1,9 @@
 import type { ReactElement } from 'react'
-import { BaseApyTooltipContent } from '@/dex/components/BaseApyTooltipContent'
-import { CrvApyTooltipContent } from '@/dex/components/CrvApyTooltipContent'
-import { NetApyTooltipContent } from '@/dex/features/pool-list/cells/NetApyTooltipContent'
+import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
+import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
+import { NetRateTooltipContent } from '@/dex/features/pool-list/cells/NetRateTooltipContent'
 import { CampaignTooltipContent } from '@/dex/features/pool-list/cells/RewardIcons'
-import { RewardsApyTooltipContent } from '@/dex/features/pool-list/cells/RewardsApyTooltipContent'
-import { aprToPoolApy } from '@/dex/features/pool-list/cells/utils'
+import { RewardsRateTooltipContent } from '@/dex/features/pool-list/cells/RewardsRateTooltipContent'
 import type { PoolRow } from '@/dex/features/pool-list/types'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
@@ -101,54 +100,54 @@ const expectLink = (href: string, text: string) =>
   cy.get(`${CONTENT} a[href="${href}"]`).should('have.text', text).and('have.attr', 'target', '_blank')
 
 describe('V2 pool-list tooltip content', () => {
-  it('renders Base and CRV APY breakdowns without a tooltip wrapper', () => {
-    mountContent(<BaseApyTooltipContent dailyApy={aprToPoolApy(10)} weeklyApy={aprToPoolApy(20)} />)
+  it('renders Base and CRV APR breakdowns without a tooltip wrapper', () => {
+    mountContent(<BaseRateTooltipContent dailyRate={10} weeklyRate={20} />)
     cy.get(CONTENT).should('contain.text', 'past 24 hours')
-    expectContent(['Daily10.51%', 'Weekly22.09%'])
+    expectContent(['Daily10%', 'Weekly20%'])
 
-    mountContent(<BaseApyTooltipContent dailyApy={0} weeklyApy={null} weekly />)
+    mountContent(<BaseRateTooltipContent dailyRate={0} weeklyRate={null} weekly />)
     cy.get(CONTENT).should('contain.text', 'past 7 days')
     expectContent(['Daily0%', 'Weekly-'])
 
-    mountContent(<BaseApyTooltipContent dailyApy={aprToPoolApy(10)} weeklyApy={aprToPoolApy(-10)} />)
-    cy.get(CONTENT).should('contain.text', 'Base APY can temporarily be negative')
+    mountContent(<BaseRateTooltipContent dailyRate={10} weeklyRate={-10} />)
+    cy.get(CONTENT).should('contain.text', 'Base APR can temporarily be negative')
 
-    mountContent(<CrvApyTooltipContent unboostedApy={aprToPoolApy(5)} maximumApy={aprToPoolApy(12.5)} />)
-    expectContent(['Unboosted5.12%', 'Max boost13.30%'])
+    mountContent(<CrvRateTooltipContent unboostedRate={5} maximumRate={12.5} />)
+    expectContent(['Unboosted5%', 'Max boost12.50%'])
   })
 
-  it('renders the complete Net APY breakdown and BOLD campaign links', () => {
-    mountContent(<NetApyTooltipContent pool={createPool()} volatile={false} />)
+  it('renders the complete Net APR breakdown and BOLD campaign links', () => {
+    mountContent(<NetRateTooltipContent pool={createPool()} volatile={false} />)
 
     expectContent([
-      'Base APY10.51%',
-      'Liquidity incentives10.19%',
-      'CRV5.12%',
-      'BOLD2.02%',
-      'BOLD3.04%',
-      'Net total APY20.70%',
-      'Max veCRV Boost (2.5x)13.30%',
-      'Total max veCRV APY28.87%',
+      'Base APR10%',
+      'Liquidity incentives10%',
+      'CRV5%',
+      'BOLD2%',
+      'BOLD3%',
+      'Net total APR20%',
+      'Max veCRV Boost (2.5x)12.50%',
+      'Total max veCRV APR27.50%',
       'Points15+',
     ])
-    cy.get(CONTENT).should('contain.text', 'weekly compounding rate').and('not.contain.text', 'unlikely to persist')
-    expectLink(APR_CAMPAIGN_LINK, '3.04%')
+    cy.get(CONTENT).and('not.contain.text', 'unlikely to persist')
+    expectLink(APR_CAMPAIGN_LINK, '3%')
     expectLink(POINTS_CAMPAIGN_LINK, '15+')
   })
 
-  it('renders the volatile Net APY warning', () => {
-    mountContent(<NetApyTooltipContent pool={createPool()} volatile />)
-    cy.get(CONTENT).should('contain.text', 'This net APY is volatile and is unlikely to persist.')
+  it('renders the volatile Net rate warning', () => {
+    mountContent(<NetRateTooltipContent pool={createPool()} volatile />)
+    cy.get(CONTENT).should('contain.text', 'This net rate is volatile and is unlikely to persist.')
   })
 
-  it('renders the Rewards APY breakdown', () => {
-    mountContent(<RewardsApyTooltipContent pool={createPool()} />)
-    expectContent(['Liquidity incentives2.02%', 'BOLD2.02%', 'Campaign rewards3.04%', 'BOLD3.04%', 'Rewards APY5.06%'])
-    expectLink(APR_CAMPAIGN_LINK, '3.04%')
+  it('renders the Rewards APR breakdown', () => {
+    mountContent(<RewardsRateTooltipContent pool={createPool()} />)
+    expectContent(['Liquidity incentives2%', 'BOLD2%', 'Campaign rewards3%', 'BOLD3%', 'Rewards APR5%'])
+    expectLink(APR_CAMPAIGN_LINK, '3%')
   })
 
   it('renders points and APR campaign details directly', () => {
-    mountContent(<CampaignTooltipContent campaign={BOLD_CAMPAIGN} showApy={false} />)
+    mountContent(<CampaignTooltipContent campaign={BOLD_CAMPAIGN} showRate={false} />)
 
     cy.get(CONTENT)
       .should('contain.text', 'Friendly Fork Program')
@@ -157,11 +156,11 @@ describe('V2 pool-list tooltip content', () => {
         'contain.text',
         'Providing liquidity earns you additional rewards from 15+ friendly forks. For more information please visit issuer.',
       )
-      .and('not.contain.text', 'APY:')
+      .and('not.contain.text', 'APR:')
     expectLink(POINTS_CAMPAIGN_LINK, 'Go to issuer')
 
-    mountContent(<CampaignTooltipContent campaign={BOLD_APR_CAMPAIGN} showApy />)
-    expectContent(['APY: 3.04%', 'BOLD liquidity rewards', 'Earn BOLD by providing liquidity.'])
+    mountContent(<CampaignTooltipContent campaign={BOLD_APR_CAMPAIGN} showRate />)
+    expectContent(['APR: 3%', 'BOLD liquidity rewards', 'Earn BOLD by providing liquidity.'])
     expectLink(APR_CAMPAIGN_LINK, 'Go to issuer')
   })
 })

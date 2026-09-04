@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
@@ -36,7 +37,7 @@ const POOL_EXPANDED_PANEL_BODIES = {
 } satisfies Record<PoolColumnVariant, ExpandedPanelComponent<PoolRow>>
 
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
-  const isLite = network.isLite
+  const isLite = isLiteChain(network.chainId)
   const isMobile = useIsMobile()
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)

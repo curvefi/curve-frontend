@@ -12,11 +12,10 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 import {
-  aprToPoolApy,
-  formatCrvApyRange,
+  formatCrvAprRange,
   getCompactPointsCampaigns,
-  getCrvApyDescription,
-  getCrvApyRange,
+  getCrvAprDescription,
+  getCrvAprRange,
   getExtraRewards,
   getAprCampaigns,
 } from './utils'
@@ -28,18 +27,18 @@ type ExtraReward = PoolRow['extraRewardsApr'][number]
 const ExtraRewardTooltipBody = ({ reward }: { reward: ExtraReward }) => (
   <Stack sx={{ gap: Spacing.xs, textAlign: 'start' }}>
     {(reward.symbol || reward.name) && <Typography variant="bodySRegular">{reward.symbol ?? reward.name}</Typography>}
-    <Typography variant="bodySRegular">{t`APY from an extra reward for providing liquidity in this pool.`}</Typography>
+    <Typography variant="bodySRegular">{t`APR from an extra reward for providing liquidity in this pool.`}</Typography>
     <Typography variant="bodySRegular">
-      {t`APY`}: {formatNumber(aprToPoolApy(reward.apr), 'percent.rate')}
+      {t`APR`}: {formatNumber(reward.apr, 'percent.rate')}
     </Typography>
   </Stack>
 )
 
-export const CampaignTooltipContent = ({ campaign, showApy }: { campaign: CampaignRewards; showApy: boolean }) => (
+export const CampaignTooltipContent = ({ campaign, showRate }: { campaign: CampaignRewards; showRate: boolean }) => (
   <Stack sx={{ gap: Spacing.sm }}>
-    {showApy && campaign.reward?.type === 'apr' && (
+    {showRate && campaign.reward?.type === 'apr' && (
       <Typography variant="bodySRegular" sx={{ textAlign: 'start' }}>
-        {t`APY`}: {formatNumber(aprToPoolApy(campaign.reward.value), 'percent.rate')}
+        {t`APR`}: {formatNumber(campaign.reward.value, 'percent.rate')}
       </Typography>
     )}
     <TooltipMessage rewardsPool={campaign} />
@@ -105,7 +104,7 @@ const CampaignRewardIcon = ({
     clickable
     placement={placement}
     testId="pool-campaign-reward-badge"
-    title={<CampaignTooltipContent campaign={campaign} showApy />}
+    title={<CampaignTooltipContent campaign={campaign} showRate />}
   >
     <CampaignIcon campaign={campaign} />
   </RewardIconTooltip>
@@ -116,15 +115,15 @@ const CrvRewardIcon = ({
   range,
 }: {
   placement?: TooltipProps['placement']
-  range: NonNullable<ReturnType<typeof getCrvApyRange>>
+  range: NonNullable<ReturnType<typeof getCrvAprRange>>
 }) => (
   <RewardIconTooltip
     body={
       <Stack sx={{ gap: Spacing.xs, textAlign: 'start' }}>
         <Typography variant="bodySRegular">
-          {t`APY`}: {formatCrvApyRange(range)}
+          {t`APR`}: {formatCrvAprRange(range)}
         </Typography>
-        <Typography variant="bodySRegular">{getCrvApyDescription()}</Typography>
+        <Typography variant="bodySRegular">{getCrvAprDescription()}</Typography>
       </Stack>
     }
     placement={placement}
@@ -150,7 +149,7 @@ export const PointsRewardIcon = ({
     clickable
     placement={placement}
     testId="pool-points-badge"
-    title={<CampaignTooltipContent campaign={campaign} showApy={false} />}
+    title={<CampaignTooltipContent campaign={campaign} showRate={false} />}
   >
     <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
       {showLabel && (
@@ -179,9 +178,9 @@ export const RewardIcons = ({
   const pointsCampaigns = includePoints ? getCompactPointsCampaigns(pool) : []
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
-  const crvApyRange = includeCrv && !pool.gauge?.isKilled ? getCrvApyRange(pool) : null
+  const crvRateRange = includeCrv && !pool.gauge?.isKilled ? getCrvAprRange(pool) : null
 
-  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !crvApyRange) return null
+  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !crvRateRange) return null
 
   return (
     <IconStack iconSize="sm">
@@ -211,7 +210,7 @@ export const RewardIcons = ({
           placement={tooltipPlacement}
         />
       ))}
-      {crvApyRange && <CrvRewardIcon placement={tooltipPlacement} range={crvApyRange} />}
+      {crvRateRange && <CrvRewardIcon placement={tooltipPlacement} range={crvRateRange} />}
     </IconStack>
   )
 }

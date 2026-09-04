@@ -6,11 +6,11 @@ import { DeployGaugeButton } from '@/dex/components/PageDeployGauge/components/D
 import { DeployMainnet } from '@/dex/components/PageDeployGauge/DeployMainnet'
 import { DeploySidechain } from '@/dex/components/PageDeployGauge/DeploySidechain'
 import { ProcessSummary } from '@/dex/components/PageDeployGauge/ProcessSummary'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { useStore } from '@/dex/store/useStore'
 import { type NetworkUrlParams } from '@/dex/types/main.types'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { BoxHeader, Box } from '@legacy-ui/Box'
 import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
 import { Icon } from '@legacy-ui/Icon/Icon'
@@ -22,9 +22,7 @@ import { t } from '@ui/lib/i18n'
 export const DeployGauge = (props: NetworkUrlParams) => {
   const { curveApi = null, connectState } = useCurve()
   const chainId = useChainId(props.network)
-  const {
-    data: { isLite = false },
-  } = useNetworkByChain({ chainId })
+  const isLite = isLiteChain(chainId)
 
   const curveNetworks = useStore(state => state.deployGauge.curveNetworks)
   const setCurveNetworks = useStore(state => state.deployGauge.setCurveNetworks)
@@ -147,11 +145,11 @@ export const DeployGauge = (props: NetworkUrlParams) => {
               noContentPadding
               state={overlayTriggerState}
             >
-              <ProcessSummary chainId={chainId} isLite={isLite} />
+              <ProcessSummary chainId={chainId} />
             </ModalDialog>
           )}
           <ProcessSummaryWrapper>
-            <ProcessSummary chainId={chainId} isLite={isLite} />
+            <ProcessSummary chainId={chainId} />
           </ProcessSummaryWrapper>
         </>
       )}
