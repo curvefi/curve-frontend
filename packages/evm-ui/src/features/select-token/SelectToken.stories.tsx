@@ -1,6 +1,6 @@
 import { type ComponentProps, type ReactNode, useState } from 'react'
 import { action } from 'storybook/actions'
-import { ethAddress } from 'viem'
+import { ethAddress, type Address } from 'viem'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { Button, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -13,131 +13,30 @@ import { TokenSelector } from './'
 const { Spacing } = SizesAndSpaces
 
 const defaultTokens: TokenOption[] = [
-  {
-    chain: 'ethereum',
-    address: ethAddress,
-    symbol: 'ETH',
-    volume: 17,
-  },
-  {
-    chain: 'ethereum',
-    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    symbol: 'USDC',
-    volume: 16,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    symbol: 'WBTC',
-    volume: 15,
-  },
-  {
-    chain: 'ethereum',
-    address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-    symbol: 'USDT',
-    volume: 14,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    symbol: 'DAI',
-    volume: 13,
-  },
-  {
-    chain: 'ethereum',
-    address: MAINNET_CRV_ADDRESS,
-    symbol: 'CRV',
-    volume: 12,
-  },
-  {
-    chain: 'ethereum',
-    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-    symbol: 'WETH',
-    volume: 11,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
-    symbol: 'LINK',
-    volume: 10,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
-    symbol: 'AAVE',
-    volume: 9,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
-    symbol: 'UNI',
-    volume: 8,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x853d955aCEf822Db058eb8505911ED77F175b99e',
-    symbol: 'FRAX',
-    volume: 7,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
-    symbol: 'YFI',
-    volume: 6,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0',
-    symbol: 'FXS',
-    volume: 5,
-  },
-  {
-    chain: 'ethereum',
-    address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
-    symbol: 'stETH',
-    volume: 4,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B',
-    symbol: 'CVX',
-    volume: 3,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32',
-    symbol: 'LDO',
-    volume: 2,
-  },
-  {
-    chain: 'ethereum',
-    address: '0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF',
-    symbol: 'ALCX',
-    volume: 1,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x3231Cb76718CDeF2155FC47b5286d82e6eDA273f',
-    symbol: 'EURE',
-    volume: 0.9,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x365AccFCa291e7D3914637ABf1F7635dB165Bb09',
-    symbol: 'FXN',
-    volume: 0.8,
-  },
-  {
-    chain: 'ethereum',
-    address: '0x0D57436F2d39c0664C6f0f2E349229483f87EA38',
-    symbol: 'A7A5',
-    volume: 2.5,
-  },
+  { chain: 'ethereum', address: ethAddress, symbol: 'ETH' },
+  { chain: 'ethereum', address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', symbol: 'USDC' },
+  { chain: 'ethereum', address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', symbol: 'WBTC' },
+  { chain: 'ethereum', address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', symbol: 'USDT' },
+  { chain: 'ethereum', address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', symbol: 'DAI' },
+  { chain: 'ethereum', address: MAINNET_CRV_ADDRESS, symbol: 'CRV' },
+  { chain: 'ethereum', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', symbol: 'WETH' },
+  { chain: 'ethereum', address: '0x514910771AF9Ca656af840dff83E8264EcF986CA', symbol: 'LINK' },
+  { chain: 'ethereum', address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9', symbol: 'AAVE' },
+  { chain: 'ethereum', address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', symbol: 'UNI' },
+  { chain: 'ethereum', address: '0x853d955aCEf822Db058eb8505911ED77F175b99e', symbol: 'FRAX' },
+  { chain: 'ethereum', address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e', symbol: 'YFI' },
+  { chain: 'ethereum', address: '0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0', symbol: 'FXS' },
+  { chain: 'ethereum', address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', symbol: 'stETH' },
+  { chain: 'ethereum', address: '0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B', symbol: 'CVX' },
+  { chain: 'ethereum', address: '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32', symbol: 'LDO' },
+  { chain: 'ethereum', address: '0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF', symbol: 'ALCX' },
+  { chain: 'ethereum', address: '0x3231Cb76718CDeF2155FC47b5286d82e6eDA273f', symbol: 'EURE' },
+  { chain: 'ethereum', address: '0x365AccFCa291e7D3914637ABf1F7635dB165Bb09', symbol: 'FXN' },
+  { chain: 'ethereum', address: '0x0D57436F2d39c0664C6f0f2E349229483f87EA38', symbol: 'A7A5' },
   {
     chain: 'ethereum',
     address: MAINNET_CRV_ADDRESS,
     symbol: 'CRV with a very superlong name that should be truncated',
-    volume: 11.5,
   },
 ]
 
@@ -155,6 +54,11 @@ const defaultTokenPrices = {
   [defaultTokens[1].address]: 0.996,
   [defaultTokens[2].address]: 1.01,
 }
+
+const volumes = [17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0.9, 0.8, 2.5, 11.5]
+const defaultVolumes = Object.fromEntries(
+  Object.keys(defaultTokens).map((address, i) => [address, volumes[i]]),
+) as Record<Address, number>
 
 const defaultFavorites = [defaultTokens[0], defaultTokens[1]]
 
@@ -189,6 +93,7 @@ const TokenSelectorComponent = ({
         tokens={tokens}
         balances={balances}
         tokenPrices={tokenPrices}
+        volumes={defaultVolumes}
         favorites={favorites}
         disableSearch={disableSearch}
         error={error}
