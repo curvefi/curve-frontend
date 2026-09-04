@@ -49,11 +49,11 @@ export const usePoolComposition = ({
     return {
       source: {
         address: tokenAddress,
-        blockchainId: network.id,
+        blockchainId: network.blockchainId,
         iconPosition: 'left' as const,
         primary: symbol,
       },
-      explorerUrl: scanTokenPath(network, tokenAddress),
+      explorerUrl: scanTokenPath(chainId, tokenAddress),
       marketShare: maybe(reserve?.percentShareInPool, x => +x),
       amount: reserve?.balance,
       amountUsd: reserve?.balanceUsd,

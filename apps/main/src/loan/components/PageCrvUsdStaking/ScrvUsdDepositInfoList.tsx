@@ -3,7 +3,6 @@ import { ACTION_INFO_GROUP_SX } from '@/llamalend/widgets/action-card/info-actio
 import { useScrvUsdDepositEstimateGas } from '@/loan/entities/scrvusd-deposit-estimate-gas.query'
 import { useScrvUsdPreviewDeposit } from '@/loan/entities/scrvusd-preview.query'
 import type { ScrvUsdDepositParams } from '@/loan/entities/scrvusd.validation'
-import { networks } from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
@@ -31,7 +30,7 @@ export const ScrvUsdDepositInfoList = ({
   onApproveInfiniteToggle,
 }: ScrvUsdDepositInfoListProps) => {
   const expectedScrvUsd = useScrvUsdPreviewDeposit(params, isOpen)
-  const gas = useScrvUsdDepositEstimateGas(networks, params, isOpen)
+  const gas = useScrvUsdDepositEstimateGas(params, isOpen)
 
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="scrvusd-deposit-action-info-list">

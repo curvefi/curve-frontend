@@ -8,7 +8,7 @@ import { ClaimTabColumnId } from './columns.enum'
 import { NotionalCell } from './notional-cells'
 
 export type ClaimableToken = ClaimableReward & {
-  networkId: string
+  blockchainId: string
   notional?: number
   isLoading?: boolean // used for partial loading states e.g. notional rates
 }
@@ -28,7 +28,7 @@ export const CLAIM_TAB_COLUMNS = columnHelper.columns([
       <InlineTableCell>
         <TokenInfo
           address={row.original.token}
-          blockchainId={row.original.networkId}
+          blockchainId={row.original.blockchainId}
           iconPosition="left"
           primary={formatNumber(getValue(), { abbreviate: false })}
           secondary={row.original.symbol}

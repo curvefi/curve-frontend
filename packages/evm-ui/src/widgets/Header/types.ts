@@ -30,7 +30,7 @@ export type NavigationSection = {
 type HeaderBaseProps = {
   currentMenu: AppMenuOption
   isLite: boolean | undefined
-  networkId: string // ID of the network as displayed in the URL
+  blockchainId: string // ID of the network as displayed in the URL
   chainId: number
   backendMaintenance: Maintenance
   supportedNetworks: NetworkMapping

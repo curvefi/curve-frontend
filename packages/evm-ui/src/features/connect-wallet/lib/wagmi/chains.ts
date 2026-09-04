@@ -1,6 +1,5 @@
 import { defineChain, type Chain } from 'viem'
 import { defaultGetRpcUrls } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
-import type { NetworkDef } from '@legacy-ui/utils'
 import {
   arbitrum,
   arbitrumSepolia,
@@ -9,6 +8,7 @@ import {
   avalanche,
   base,
   bsc,
+  bscTestnet,
   celo,
   corn,
   etherlink,
@@ -22,6 +22,7 @@ import {
   mantle,
   monad,
   moonbeam,
+  neonDevnet,
   neonMainnet,
   optimism,
   plasma,
@@ -37,6 +38,7 @@ import {
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
+import { CHAIN_NAMES } from './constants'
 import { expchain, megaeth, strata } from './custom-chains'
 
 const wagmiChains = [
@@ -47,6 +49,7 @@ const wagmiChains = [
   avalanche,
   base,
   bsc,
+  bscTestnet,
   celo,
   corn,
   etherlink,
@@ -63,6 +66,7 @@ const wagmiChains = [
   monad,
   moonbeam,
   neonMainnet,
+  neonDevnet,
   optimism,
   plasma,
   plumeMainnet,
@@ -88,28 +92,23 @@ export const DOWNGRADED_CHAINS = new Set<number>(
   [aurora, avalanche, celo, fantom, kava, mantle, moonbeam, sonic, xLayer, zksync].map(c => c.id),
 )
 
-/** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
-export const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
-
 /**
- * Creates a Viem chain configuration from a Curve network definition.
- *
- * Uses existing Wagmi chain data when available, falling back to network-specific
- * configuration for custom chains.
- *
- * @param network - The network definition containing chain ID, name, RPC URL, etc.
- * @param getRpcUrls - Function to resolve RPC URLs for the chain
- * @returns A Viem Chain configuration ready for use with wagmi
+ * Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup
+ * Note that this mapping is explicitly *not* exported, because we do a little massaging,
+ * like custom names and such. Please use the exported helper functions below instead.
  */
-export const createChainFromNetwork = (network: NetworkDef, getRpcUrls: typeof defaultGetRpcUrls): Chain =>
-  // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
-  defineChain({
-    ...wagmiChainsMap[network.chainId],
-    id: network.chainId,
-    testnet: network.isTestnet,
-    name: network.name,
-    rpcUrls: { default: { http: getRpcUrls(network.chainId) } },
-    ...(network.explorerUrl && {
-      blockExplorers: { default: { name: new URL(network.explorerUrl).host, url: network.explorerUrl } },
-    }),
-  })
+const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
+
+export const isChainConfigured = (chainId: number) => !!wagmiChainsMap[chainId]
+export const isChainTestnet = (chainId: number) => !!wagmiChainsMap[chainId]?.testnet
+
+export const getChainName = (chainId: number) =>
+  CHAIN_NAMES[chainId] ?? wagmiChainsMap[chainId]?.name ?? `Chain ${chainId}`
+
+export const getChainNativeCurrency = (chainId: number) => wagmiChainsMap[chainId]?.nativeCurrency
+export const getChainBlockExplorer = (chainId: number) => wagmiChainsMap[chainId]?.blockExplorers?.default.url
+export const getChainDefaultRpcUrls = (chainId: number) => wagmiChainsMap[chainId]?.rpcUrls.default.http
+
+/** Creates a Wagmi / Viem chain configuration with potential custom overrides. */
+export const createChain = (chainId: number, getRpcUrls: typeof defaultGetRpcUrls): Chain =>
+  defineChain({ ...wagmiChainsMap[chainId], rpcUrls: { default: { http: getRpcUrls(chainId) } } })

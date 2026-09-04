@@ -1,5 +1,4 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
@@ -26,7 +25,6 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
   values: { userCollateral, debt },
   tokens: { collateralToken, borrowToken },
-  networks,
   leverageEnabled,
   form,
   controllerAddress,
@@ -35,7 +33,6 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
-  networks: NetworkDict<ChainId>
   controllerAddress: Address | undefined
   marketType: MarketType
   leverageEnabled: boolean | undefined
@@ -52,7 +49,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
-      gas={q(useBorrowMoreEstimateGas(networks, params, isOpen))}
+      gas={q(useBorrowMoreEstimateGas(params, isOpen))}
       health={q(useBorrowMoreHealth(params, isOpen))}
       prices={q(useBorrowMorePrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}

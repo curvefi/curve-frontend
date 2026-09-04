@@ -24,7 +24,7 @@ const borrowerColumnHelper = createAppColumnHelper<BorrowerRow>()
 const supplierColumnHelper = createAppColumnHelper<SupplierRow>()
 
 export const getBorrowerColumns = (
-  blockchainId: BorrowerRow['network'],
+  blockchainId: BorrowerRow['blockchainId'],
   collateralTokenAddress: string | undefined,
   borrowTokenAddress: string | undefined,
 ) =>
@@ -79,7 +79,7 @@ export const getBorrowerColumns = (
     }),
   ])
 
-export const getSupplierColumns = (blockchainId: SupplierRow['network'], borrowTokenAddress: string | undefined) =>
+export const getSupplierColumns = (blockchainId: SupplierRow['blockchainId'], borrowTokenAddress: string | undefined) =>
   supplierColumnHelper.columns([
     supplierColumnHelper.accessor('address', {
       id: SupplierColumnId.Address,

@@ -12,7 +12,7 @@ const { Spacing } = SizesAndSpaces
 
 export const PoolLiquidityExpandedPanel: ExpandedPanelComponent<PoolLiquidityRow> = ({
   row: {
-    original: { tokenAmounts, poolTokens, provider, network, eventType },
+    original: { tokenAmounts, poolTokens, provider, blockchainId, eventType },
   },
 }) => {
   const isAdd = eventType === 'AddLiquidity'
@@ -33,7 +33,7 @@ export const PoolLiquidityExpandedPanel: ExpandedPanelComponent<PoolLiquidityRow
             <Typography variant="tableCellMBold" color={isAdd ? 'success' : 'error'}>
               {formatNumber(amount, { abbreviate: false })}
             </Typography>
-            <TokenIcon blockchainId={network} address={token?.address} size="mui-sm" />
+            <TokenIcon blockchainId={blockchainId} address={token?.address} size="mui-sm" />
           </Stack>
         </Stack>
       ))}

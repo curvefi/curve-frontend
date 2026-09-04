@@ -40,7 +40,6 @@ import { fetchTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { t } from '@evm-ui/lib/i18n'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
-import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 import { invalidateUserPoolInfo } from '../queries/invalidation'
@@ -147,8 +146,7 @@ export const createPoolDepositSlice = (
           parseAmountsForAPI(cFormValues.amounts),
           maxSlippage,
         )
-        const networks = await fetchNetworks()
-        const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId, networks })
+        const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId })
 
         if (!resp.error && resp.estimatedGas && basePlusPriority?.[0]) {
           cFormValues.amounts[idx].value = getMaxAmountMinusGas(resp.estimatedGas, basePlusPriority[0], userBalance)

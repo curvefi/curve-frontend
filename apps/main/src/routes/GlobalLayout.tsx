@@ -72,7 +72,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       currentApp={currentApp}
       backendMaintenance={backendMaintenance}
       chainId={network.chainId}
-      networkId={network.id}
+      blockchainId={network.blockchainId}
       currentMenu={getAppMenu(currentApp)}
       supportedNetworks={getSupportedNetworks(networks, currentApp)}
       isLite={network.isLite}
@@ -85,6 +85,6 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
     >
       <ErrorBoundary title={t`Page error`}>{children}</ErrorBoundary>
     </Box>
-    <Footer appName={currentApp} networkId={network.id} />
+    <Footer appName={currentApp} blockchainId={network.blockchainId} />
   </Stack>
 )

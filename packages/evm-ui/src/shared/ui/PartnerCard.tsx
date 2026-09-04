@@ -61,8 +61,8 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
             <IconStack iconSize="md">
               {Object.entries(networks)
                 .filter(([, enabled]) => enabled)
-                .map(([networkId]) => (
-                  <ChainIcon key={networkId} blockchainId={networkId} size="md" border />
+                .map(([blockchainId]) => (
+                  <ChainIcon key={blockchainId} blockchainId={blockchainId} size="md" border />
                 ))}
             </IconStack>
           )}

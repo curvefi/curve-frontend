@@ -4,7 +4,6 @@ import { type Address } from 'viem'
 import { BaseApyTooltipContent } from '@/dex/components/BaseApyTooltipContent'
 import { CrvApyTooltipContent } from '@/dex/components/CrvApyTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
@@ -35,7 +34,7 @@ export const useYieldBreakdown = ({
   const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId])
 
   const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network?.networkId,
+    blockchainId: network?.blockchainId,
     address: poolAddress,
   })
 
@@ -77,7 +76,7 @@ export const useYieldBreakdown = ({
           primary: 'CRV',
         },
         address: MAINNET_CRV_ADDRESS,
-        explorerUrl: scanTokenPath(defaultNetworks[Chain.Ethereum], MAINNET_CRV_ADDRESS),
+        explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
         price: crvPrice,
         apy: unboostedCrvApy,
         maxBoostApy: maxBoostCrvApy,
@@ -96,12 +95,12 @@ export const useYieldBreakdown = ({
       rows.push({
         source: {
           address: tokenAddress,
-          blockchainId: network?.id,
+          blockchainId: network?.blockchainId,
           iconPosition: 'left',
           primary: symbol,
         },
         address: tokenAddress,
-        explorerUrl: scanTokenPath(network, tokenAddress),
+        explorerUrl: scanTokenPath(chainId, tokenAddress),
         price: tokenPrice ?? fallbackTokenRates?.[tokenAddress],
         apy: aprToApy(apy, COMPOUND_WINDOW),
       })
@@ -118,7 +117,7 @@ export const useYieldBreakdown = ({
           primary: symbol,
         },
         address: reward.address,
-        explorerUrl: scanAddressPath(network, reward.address),
+        explorerUrl: scanAddressPath(chainId, reward.address),
         price: reward.price,
         apy: aprToApy(reward.value, COMPOUND_WINDOW),
       })
@@ -143,7 +142,20 @@ export const useYieldBreakdown = ({
     })
 
     return rows
-  }, [campaigns, crvPrice, fallbackTokenRates, crvApyRange, maxBoostCrvApy, network, rewardsApy, unboostedCrvApy])
+  }, [
+    rewardsApy?.crv,
+    rewardsApy?.other,
+    rewardsApy?.base?.day,
+    rewardsApy?.base?.week,
+    campaigns,
+    crvPrice,
+    unboostedCrvApy,
+    maxBoostCrvApy,
+    crvApyRange,
+    network?.blockchainId,
+    chainId,
+    fallbackTokenRates,
+  ])
 
   const total = useMemo(() => sum(rows.map(row => row.apy)), [rows])
 

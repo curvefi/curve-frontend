@@ -10,7 +10,6 @@ import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { mapQuery } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
-import type { BaseConfig } from '@legacy-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import { maybe } from '@primitives/objects.utils'
@@ -29,8 +28,8 @@ import {
 
 const PAGE_SIZE = 10
 
-export const BorrowersCard = ({ networkConfig }: { networkConfig: BaseConfig | undefined }) => {
-  const { blockchainId, controllerAddress, tokens } = useMarketContext()
+export const BorrowersCard = () => {
+  const { chainId, blockchainId, controllerAddress, tokens } = useMarketContext()
   const { pagination, onPaginationChange, apiPage } = useManualPagination(PAGE_SIZE)
   const borrowersQuery = useMarketBorrowers({
     blockchainId,
@@ -44,8 +43,8 @@ export const BorrowersCard = ({ networkConfig }: { networkConfig: BaseConfig | u
       ...borrower,
       borrowToken: tokens.borrowToken,
       collateralToken: tokens.collateralToken,
-      explorerUrl: scanAddressPath(networkConfig, borrower.address),
-      network: blockchainId,
+      explorerUrl: scanAddressPath(chainId, borrower.address),
+      blockchainId,
     })),
   )
   const table = useCurveTable({
@@ -75,14 +74,8 @@ export const BorrowersCard = ({ networkConfig }: { networkConfig: BaseConfig | u
   )
 }
 
-export const SuppliersCard = ({
-  chainId,
-  networkConfig,
-}: {
-  chainId: number
-  networkConfig: BaseConfig | undefined
-}) => {
-  const { blockchainId, vaultToken, tokens } = useMarketContext()
+export const SuppliersCard = () => {
+  const { chainId, blockchainId, vaultToken, tokens } = useMarketContext()
   const { pagination, onPaginationChange, apiPage } = useManualPagination(PAGE_SIZE)
   const suppliersQuery = useMarketSuppliers({
     blockchainId,
@@ -97,8 +90,8 @@ export const SuppliersCard = ({
       ...supplier,
       assetsUsd: maybe(borrowTokenUsdRate, rate => supplier.assets * rate),
       borrowToken: tokens.borrowToken,
-      explorerUrl: scanAddressPath(networkConfig, supplier.address),
-      network: blockchainId,
+      explorerUrl: scanAddressPath(chainId, supplier.address),
+      blockchainId,
     })),
   )
   const table = useCurveTable({

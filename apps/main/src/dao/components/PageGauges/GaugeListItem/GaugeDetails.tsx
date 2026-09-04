@@ -1,8 +1,6 @@
 import { styled, type IStyledComponent } from 'styled-components'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
-import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-import { networks } from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
@@ -41,11 +39,11 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
             <StatsRow>
               {gaugeData.pool?.address && (
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                  <StyledExternalLink href={scanAddressPath(networks[chainId], gaugeData.pool.address)}>
+                  <StyledExternalLink href={scanAddressPath(chainId, gaugeData.pool.address)}>
                     {shortenAddress(gaugeData.pool.address)}
                   </StyledExternalLink>
                   <ExternalLinkIconButton
-                    href={scanAddressPath(networks[chainId], gaugeData.pool.address)}
+                    href={scanAddressPath(chainId, gaugeData.pool.address)}
                     tooltip={t`View on explorer`}
                   />
                   <CopyIconButton tooltip={t`Copy Pool Address`} copyContent={gaugeData.pool.address} />
@@ -81,13 +79,10 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
         </StatsTitleRow>
         <StatsRow>
           <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-            <StyledExternalLink href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.address)}>
+            <StyledExternalLink href={scanAddressPath(chainId, gaugeData.address)}>
               {shortenAddress(gaugeData.address)}
             </StyledExternalLink>
-            <ExternalLinkIconButton
-              href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.address)}
-              tooltip={t`View on explorer`}
-            />
+            <ExternalLinkIconButton href={scanAddressPath(chainId, gaugeData.address)} tooltip={t`View on explorer`} />
             <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
           </Box>
           <Chip

@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useEffect, useState, type ComponentProps } from
 import { css, styled, type IStyledComponent } from 'styled-components'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
@@ -18,7 +17,7 @@ import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import { Hex } from '@primitives/address.utils'
 
 export const Compensation = ({
-  rChainId,
+  rChainId: chainId,
   activeKey,
   curve,
   contract,
@@ -40,8 +39,6 @@ export const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const { data: network } = useNetworkByChain({ chainId: rChainId })
-
   const [error, setError] = useState('')
   const [step, setStep] = useState('')
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -63,7 +60,7 @@ export const Compensation = ({
         await curvejsApi.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
         const txDescription = t`Claimed ${balance}`
-        const txHash = scanTxPath(network, hash)
+        const txHash = scanTxPath(chainId, hash)
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={txHash} />)
         if (typeof dismiss === 'function') dismiss()
       } catch (error) {
@@ -73,7 +70,7 @@ export const Compensation = ({
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [curve, network, provider],
+    [curve, chainId, provider],
   )
 
   // reset
@@ -99,12 +96,10 @@ export const Compensation = ({
         <Box grid margin="0 1rem 0 0" gridRowGap={1}>
           <div>
             <strong>{token}</strong>{' '}
-            {network && (
-              <StyledExternalLink href={scanAddressPath(network, contractAddress)}>
-                {shortenAddress(contractAddress)}
-                <Icon name="Launch" size={16} />
-              </StyledExternalLink>
-            )}
+            <StyledExternalLink href={scanAddressPath(chainId, contractAddress)}>
+              {shortenAddress(contractAddress)}
+              <Icon name="Launch" size={16} />
+            </StyledExternalLink>
             <StyledIconButton size="medium" onClick={() => void copyToClipboard(contractAddress)}>
               <Icon name="Copy" size={16} />
             </StyledIconButton>

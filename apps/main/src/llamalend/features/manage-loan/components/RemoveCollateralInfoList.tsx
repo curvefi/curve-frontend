@@ -1,6 +1,5 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
@@ -25,7 +24,6 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   values: { userCollateral },
   collateralToken,
   borrowToken,
-  networks,
   form,
   controllerAddress,
   marketType,
@@ -34,7 +32,6 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   values: CollateralForm
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  networks: NetworkDict<ChainId>
   form: UseFormReturn<CollateralForm>
   controllerAddress: Address | undefined
   marketType: MarketType
@@ -45,7 +42,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
-      gas={q(useRemoveCollateralEstimateGas(networks, params, isOpen))}
+      gas={q(useRemoveCollateralEstimateGas(params, isOpen))}
       health={q(useHealthQueries(isFull => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen)))}
       debt={prevDebt}
       loanToValue={q(

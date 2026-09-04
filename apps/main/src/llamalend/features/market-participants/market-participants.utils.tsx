@@ -18,7 +18,7 @@ const { Spacing } = SizesAndSpaces
 
 type ParticipantRow = {
   explorerUrl?: string
-  network: Chain | undefined
+  blockchainId: Chain
 }
 
 export type BorrowerRow = MarketBorrower &
@@ -39,7 +39,7 @@ export const TokenHeader = ({
   tokenAddress,
 }: {
   label: string
-  blockchainId: Chain | undefined
+  blockchainId: Chain
   tokenAddress: string | undefined
 }) => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
@@ -73,7 +73,7 @@ export const BorrowerExpandedPanel: ExpandedPanelComponent<BorrowerRow> = ({ row
       <TokenAmount
         amount={borrower.collateral}
         amountUsd={borrower.collateralUsd}
-        blockchainId={borrower.network}
+        blockchainId={borrower.blockchainId}
         tokenAddress={borrower.collateralToken?.address}
         abbreviate={false}
         iconSize="mui-sm"
@@ -83,7 +83,7 @@ export const BorrowerExpandedPanel: ExpandedPanelComponent<BorrowerRow> = ({ row
       <TokenAmount
         amount={borrower.debt}
         amountUsd={borrower.debtUsd}
-        blockchainId={borrower.network}
+        blockchainId={borrower.blockchainId}
         tokenAddress={borrower.borrowToken?.address}
         abbreviate={false}
         iconSize="mui-sm"
@@ -100,7 +100,7 @@ export const SupplierExpandedPanel: ExpandedPanelComponent<SupplierRow> = ({ row
     <TokenAmount
       amount={supplier.assets}
       amountUsd={supplier.assetsUsd}
-      blockchainId={supplier.network}
+      blockchainId={supplier.blockchainId}
       tokenAddress={supplier.borrowToken?.address}
       abbreviate={false}
       iconSize="mui-sm"

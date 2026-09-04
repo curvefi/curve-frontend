@@ -1,4 +1,4 @@
-import type { PoolData, RewardsApy, NetworkConfig } from '@/dex/types/main.types'
+import type { PoolData, RewardsApy } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { Address } from '@primitives/address.utils'
@@ -22,7 +22,15 @@ type PoolRowExtraReward = {
 }
 
 type PoolRowType =
-  'main' | 'crypto' | 'factory' | 'factory_crypto' | 'crvusd' | 'factory_tricrypto' | 'stableswapng' | 'twocryptong'
+  | 'main'
+  | 'crypto'
+  | 'factory'
+  | 'factory_crypto'
+  | 'crvusd'
+  | 'factory_tricrypto'
+  | 'stableswapng'
+  | 'twocryptong'
+  | 'fxswap'
 
 /** Normalized pool data shared by all pool-list API adapters. */
 export type PoolRowData = {
@@ -46,10 +54,11 @@ export type PoolRowData = {
 
 /** Additional pool context not in the main pool data (contextual information sourced with external sources) */
 type PoolRowContext = {
+  chainId: number
+  blockchainId: string
   campaigns: CampaignRewards[]
   hasPosition: boolean | undefined
   hasVyperVulnerability: boolean | undefined
-  network: NetworkConfig['id']
   url: string
 }
 

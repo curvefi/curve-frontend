@@ -16,6 +16,7 @@ const { Spacing } = SizesAndSpaces
 const poolTypeLabels = {
   stable: t`Stable`,
   volatile: t`Volatile`,
+  fxswap: t`FXSwap`,
 } satisfies Record<PoolClassification, string>
 
 const alertTypeToBadgeColor: Record<AlertType, BadgeProps['color']> = {
@@ -42,7 +43,7 @@ const AlertBadge = ({ alert, source }: { alert: PoolAlert; source: 'pool' | 'tok
 export const PoolBadges = ({ pool }: { pool: PoolRow }) => {
   const tokenAddresses = useMemo(() => pool.coins.map(({ address }) => address), [pool.coins])
   const poolAlert = usePoolAlert({
-    network: pool.network,
+    blockchainId: pool.blockchainId,
     poolAddress: pool.address,
     hasVyperVulnerability: pool.hasVyperVulnerability,
   })
