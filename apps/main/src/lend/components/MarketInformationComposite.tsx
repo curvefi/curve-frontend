@@ -46,7 +46,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       <MarketSection id="historical-rates">
         <Stack sx={{ gap: PAGE_SPACING }}>
           {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
-          <MarketRateBreakdowns showBorrow showSupply />
+          <MarketRateBreakdowns />
           <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
           <MarketRateCurveChart />
         </Stack>

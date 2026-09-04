@@ -42,7 +42,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
       <MarketSection id="historical-rates">
         <Stack sx={{ gap: PAGE_SPACING }}>
           <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
-          <MarketRateBreakdowns showBorrow />
+          <MarketRateBreakdowns hideSupply />
         </Stack>
       </MarketSection>
       {isNewLlamaMarketDetailPage && (
