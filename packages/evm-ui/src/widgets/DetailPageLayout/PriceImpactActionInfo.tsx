@@ -22,6 +22,7 @@ export type PriceImpactActionInfoProps = Omit<ActionInfoProps, 'label' | 'valueC
 
 /** Displays price impact with graduated emphasis. */
 export const PriceImpactActionInfo = ({ priceImpact, ...props }: PriceImpactActionInfoProps) => {
+  // ActionInfo handles query state for `value`, but not the `valueLeft` icon or `valueColor`.
   const level = !priceImpact.isLoading && !priceImpact.error ? getPriceImpactLevel(priceImpact.data) : null
 
   return (
