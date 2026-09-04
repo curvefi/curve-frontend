@@ -3,7 +3,6 @@ import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import { TooltipItem, TooltipValueLink } from '@evm-ui/shared/ui/TooltipComponents'
 import { formatNumber } from '@evm-ui/utils'
 import type { PoolRow } from '../types'
-import { aprToPoolApy } from './utils'
 
 type ExtraReward = PoolRow['extraRewardsApr'][number]
 type Campaign = PoolRow['campaigns'][number]
@@ -17,7 +16,7 @@ export const ExtraRewardTooltipItems = ({ blockchainId, rewards }: { blockchainI
       title={reward.symbol || reward.name || t`Extra reward`}
       titleIcon={reward.address ? { blockchainId, address: reward.address, size: 'mui-sm' } : undefined}
     >
-      {formatNumber(aprToPoolApy(reward.apr), 'percent.rate')}
+      {formatNumber(reward.apr, 'percent.rate')}
     </TooltipItem>
   ))
 
@@ -31,7 +30,7 @@ export const CampaignRewardTooltipItems = ({ campaigns }: { campaigns: Campaign[
       titleAdornment={<RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" />}
     >
       <TooltipValueLink href={campaign.dashboardLink}>
-        {formatNumber(campaign.reward?.type === 'apr' ? aprToPoolApy(campaign.reward.value) : null, 'percent.rate')}
+        {formatNumber(campaign.reward?.type === 'apr' ? campaign.reward.value : null, 'percent.rate')}
       </TooltipValueLink>
     </TooltipItem>
   ))

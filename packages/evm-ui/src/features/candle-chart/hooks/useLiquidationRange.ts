@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
-import { type QueryProp, type Range, useMappedQuery } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { type QueryProp, type Range, useMappedQuery } from '@ui/features/queries/util'
 import type { LiquidationRanges, LlammaLiquididationRange, LpPriceOhlcDataFormatted, OraclePriceData } from '../types'
 
 type TimeSeriesData = LpPriceOhlcDataFormatted[] | OraclePriceData[]

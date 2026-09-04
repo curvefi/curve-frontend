@@ -28,12 +28,13 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { RouteResponse } from '@evm-ui/entities/router-api'
 import { useCallbackSync, useForm } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
-import { mapQuery, q, type QueryProp, type Range } from '@evm-ui/types/util'
-import { decimalSum, IS_DEVELOPMENT } from '@evm-ui/utils'
+import { decimalSum } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
+import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
+import { IS_DEVELOPMENT } from '@ui/utils/env'
 import { useMarketContext } from '../../market-context'
 
 const useBorrowMoreParams = <ChainId extends LlamaChainId>({

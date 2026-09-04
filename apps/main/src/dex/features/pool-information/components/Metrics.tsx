@@ -3,10 +3,10 @@ import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery } from '@evm-ui/types/util'
 import { formatNumber, fromWei } from '@evm-ui/utils'
 import Grid from '@mui/material/Grid'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
+import { mapQuery } from '@ui/features/queries/util'
 import { useMetrics } from '../hooks/useMetrics'
 
 const { Spacing } = SizesAndSpaces

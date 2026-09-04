@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
 import { t } from '@evm-ui/lib/i18n'
-import { ReleaseChannel } from '@evm-ui/utils'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { objectKeys } from '@primitives/objects.utils'
+import { ReleaseChannel } from '@ui/utils/env'
 import { ReleaseChannelDialog } from './ReleaseChannelDialog'
 
 export const ReleaseChannelToggleButtons = () => {

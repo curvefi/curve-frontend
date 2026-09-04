@@ -4,7 +4,8 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { oneAddress, oneDecimal, oneOf } from '@cy/support/generators'
 import { blockUnmockedApis, mockNewHashCollateralEvents } from '@cy/support/helpers/llamalend/market-list-mocks'
-import { Chain, CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { Chain } from '@primitives/network.utils'
 import { recordEntries } from '@primitives/objects.utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

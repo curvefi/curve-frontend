@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { type NetworkConfig } from '@/dex/types/main.types'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useIsTablet } from '@evm-ui/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@evm-ui/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
@@ -10,8 +11,8 @@ import { useFilters } from '@evm-ui/shared/ui/DataTable/hooks/useFilters'
 import { LegacyDataTable } from '@evm-ui/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@evm-ui/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@evm-ui/shared/ui/DataTable/LegacyTableFiltersTitles'
-import { q } from '@evm-ui/types/util'
 import type { ExpandedState } from '@tanstack/react-table'
+import { q } from '@ui/features/queries/util'
 import { LEGACY_POOL_COLUMNS, LegacyPoolColumnId, getDefaultLegacyPoolsSort } from './columns'
 import { LegacyPoolExpandedPanel } from './components/LegacyPoolExpandedPanel'
 import { LegacyPoolExpandedPanelActions } from './components/LegacyPoolExpandedPanelActions'
@@ -26,7 +27,8 @@ const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const PER_PAGE = 50
 
 export const LegacyPoolsTable = ({ network }: { network: NetworkConfig }) => {
-  const { isLite, poolFilters } = network
+  const { poolFilters } = network
+  const isLite = isLiteChain(network.chainId)
 
   const { data, isLoading, userHasPositions } = useLegacyPoolsTable(network)
 

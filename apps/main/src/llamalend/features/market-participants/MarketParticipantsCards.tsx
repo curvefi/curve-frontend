@@ -8,11 +8,11 @@ import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
-import { mapQuery } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import { maybe } from '@primitives/objects.utils'
+import { mapQuery } from '@ui/features/queries/util'
 import {
   getBorrowerColumns,
   getSupplierColumns,

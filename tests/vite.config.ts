@@ -12,6 +12,7 @@ export default defineConfig({
       { find: '@', replacement: resolve(__dirname, '../apps/main/src/') },
       { find: '@legacy-ui', replacement: resolve(__dirname, '../packages/legacy-ui/src/') },
       { find: '@evm-ui', replacement: resolve(__dirname, '../packages/evm-ui/src') },
+      { find: '@ui', replacement: resolve(__dirname, '../packages/ui/src') },
       { find: '@external-rewards', replacement: resolve(__dirname, '../packages/external-rewards/src/index.ts') },
       { find: '@primitives', replacement: resolve(__dirname, '../packages/primitives/src') },
       { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../packages/prices-api/src') },

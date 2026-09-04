@@ -6,10 +6,10 @@ import { useCreateLockGasEstimate } from '@/dao/components/PageVeCrv/queries/cre
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
-import { q } from '@evm-ui/types/util'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { fromEntries } from '@primitives/objects.utils'
+import { q } from '@ui/features/queries/util'
 
 export const FormLockCreate = ({ chainId }: { chainId: ChainId }) => {
   const {

@@ -5,8 +5,8 @@ import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider
 import { usePathname } from '@evm-ui/hooks/router'
 import { useNetworkFromUrl } from '@evm-ui/hooks/useNetworkFromUrl'
 import { useOnChainUnavailable } from '@evm-ui/hooks/useOnChainUnavailable'
-import { Chain } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
+import { Chain } from '@primitives/network.utils'
 
 function Test() {
   const { data: networks } = useNetworksQuery()

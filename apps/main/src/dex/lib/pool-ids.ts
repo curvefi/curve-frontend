@@ -1,7 +1,7 @@
-import { log } from '@evm-ui/lib/logging'
-import type { ChainQuery } from '@evm-ui/lib/model'
-import { getNetworks } from '../entities/networks'
+import { log } from '@ui/lib/logging'
 import type { CurveApi } from '../types/main.types'
+
+const USE_API = true
 
 /**
  * Hydrates the passed `curve` instance with all DEX pool registries and returns the
@@ -16,18 +16,16 @@ import type { CurveApi } from '../types/main.types'
  * The pool ids are intentionally returned before app-level blacklist filtering. The blacklist
  * depends on pool addresses, so we still apply it later while building `poolsMapper`.
  */
-export async function fetchPoolIds(curve: CurveApi, { chainId }: ChainQuery): Promise<string[]> {
-  const { useApi } = getNetworks()[chainId]
-
-  log(`Hydrating DEX - Fetching pool ids { useApi: ${useApi}, hasRpc: ${!curve.isNoRPC} }`)
+export async function fetchPoolIds(curve: CurveApi): Promise<string[]> {
+  log(`Hydrating DEX - Fetching pool ids { hasRpc: ${!curve.isNoRPC} }`)
 
   await Promise.all([
-    curve.factory.fetchPools(useApi),
-    curve.cryptoFactory.fetchPools(useApi),
-    curve.twocryptoFactory.fetchPools(useApi),
-    curve.crvUSDFactory.fetchPools(useApi),
-    curve.tricryptoFactory.fetchPools(useApi),
-    curve.stableNgFactory.fetchPools(useApi),
+    curve.factory.fetchPools(USE_API),
+    curve.cryptoFactory.fetchPools(USE_API),
+    curve.twocryptoFactory.fetchPools(USE_API),
+    curve.crvUSDFactory.fetchPools(USE_API),
+    curve.tricryptoFactory.fetchPools(USE_API),
+    curve.stableNgFactory.fetchPools(USE_API),
   ])
 
   if (!curve.isNoRPC) {

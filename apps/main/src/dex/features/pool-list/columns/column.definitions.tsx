@@ -1,21 +1,21 @@
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { AgeCell } from '../cells/AgeCell'
-import { BaseApyCell, WeeklyBaseApyCell } from '../cells/BaseApyCell'
-import { CrvApyCell } from '../cells/CrvApyCell'
-import { NetApyCell } from '../cells/NetApyCell'
+import { BaseRateCell, WeeklyBaseRateCell } from '../cells/BaseRateCell'
+import { CrvRateCell } from '../cells/CrvRateCell'
+import { NetRateCell } from '../cells/NetRateCell'
 import { PointsCell } from '../cells/PointsCell'
 import { PoolTitleCell } from '../cells/PoolTitleCell'
-import { RewardsApyCell } from '../cells/RewardsApyCell'
+import { RewardsRateCell } from '../cells/RewardsRateCell'
 import { TokensCell } from '../cells/TokensCell'
 import { UsdCell } from '../cells/UsdCell'
-import { getCrvApyRange, getNetApy, getRewardsApy } from '../cells/utils'
+import { getCrvAprRange, getNetApr, getRewardsApr } from '../cells/utils'
 import { AgeHeaderTooltipContent } from '../header-tooltips/AgeHeaderTooltipContent'
-import { BaseApyHeaderTooltipContent } from '../header-tooltips/BaseApyHeaderTooltipContent'
-import { CrvApyHeaderTooltipContent } from '../header-tooltips/CrvApyHeaderTooltipContent'
-import { NetApyHeaderTooltipContent } from '../header-tooltips/NetApyHeaderTooltipContent'
+import { BaseRateHeaderTooltipContent } from '../header-tooltips/BaseRateHeaderTooltipContent'
+import { CrvRateHeaderTooltipContent } from '../header-tooltips/CrvRateHeaderTooltipContent'
+import { NetRateHeaderTooltipContent } from '../header-tooltips/NetRateHeaderTooltipContent'
 import { PointsHeaderTooltipContent } from '../header-tooltips/PointsHeaderTooltipContent'
 import { PoolHeaderTooltipContent } from '../header-tooltips/PoolHeaderTooltipContent'
-import { RewardsApyHeaderTooltipContent } from '../header-tooltips/RewardsApyHeaderTooltipContent'
+import { RewardsRateHeaderTooltipContent } from '../header-tooltips/RewardsRateHeaderTooltipContent'
 import { TokensHeaderTooltipContent } from '../header-tooltips/TokensHeaderTooltipContent'
 import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
 import { VolumeHeaderTooltipContent } from '../header-tooltips/VolumeHeaderTooltipContent'
@@ -34,52 +34,52 @@ export const POOL_COLUMNS = columnHelper.columns([
       tooltip: { title: POOL_TITLES[PoolColumnId.PoolName], body: <PoolHeaderTooltipContent /> },
     },
   }),
-  columnHelper.accessor(getNetApy, {
-    id: PoolColumnId.NetApy,
-    header: POOL_TITLES[PoolColumnId.NetApy],
-    cell: ({ row }) => <NetApyCell pool={row.original} />,
+  columnHelper.accessor(getNetApr, {
+    id: PoolColumnId.NetRate,
+    header: POOL_TITLES[PoolColumnId.NetRate],
+    cell: ({ row }) => <NetRateCell pool={row.original} />,
     meta: {
       type: 'numeric',
-      tooltip: { title: POOL_TITLES[PoolColumnId.NetApy], body: <NetApyHeaderTooltipContent /> },
+      tooltip: { title: POOL_TITLES[PoolColumnId.NetRate], body: <NetRateHeaderTooltipContent /> },
     },
   }),
   columnHelper.accessor('baseDailyApr', {
-    id: PoolColumnId.BaseApy,
-    header: POOL_TITLES[PoolColumnId.BaseApy],
-    cell: BaseApyCell,
+    id: PoolColumnId.BaseRate,
+    header: POOL_TITLES[PoolColumnId.BaseRate],
+    cell: BaseRateCell,
     meta: {
       type: 'numeric',
-      tooltip: { title: POOL_TITLES[PoolColumnId.BaseApy], body: <BaseApyHeaderTooltipContent /> },
+      tooltip: { title: POOL_TITLES[PoolColumnId.BaseRate], body: <BaseRateHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('baseWeeklyApr', {
-    id: PoolColumnId.WeeklyBaseApy,
-    header: POOL_TITLES[PoolColumnId.WeeklyBaseApy],
-    cell: WeeklyBaseApyCell,
+    id: PoolColumnId.WeeklyBaseRate,
+    header: POOL_TITLES[PoolColumnId.WeeklyBaseRate],
+    cell: WeeklyBaseRateCell,
     meta: {
       type: 'numeric',
-      tooltip: { title: POOL_TITLES[PoolColumnId.WeeklyBaseApy], body: <BaseApyHeaderTooltipContent weekly /> },
+      tooltip: { title: POOL_TITLES[PoolColumnId.WeeklyBaseRate], body: <BaseRateHeaderTooltipContent weekly /> },
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(pool => (pool.gauge?.isKilled ? undefined : getCrvApyRange(pool)?.unboostedApy), {
-    id: PoolColumnId.CrvApy,
-    header: POOL_TITLES[PoolColumnId.CrvApy],
-    cell: ({ row }) => <CrvApyCell pool={row.original} />,
+  columnHelper.accessor(pool => (pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)?.unboostedRate), {
+    id: PoolColumnId.CrvRate,
+    header: POOL_TITLES[PoolColumnId.CrvRate],
+    cell: ({ row }) => <CrvRateCell pool={row.original} />,
     meta: {
       type: 'numeric',
-      tooltip: { title: POOL_TITLES[PoolColumnId.CrvApy], body: <CrvApyHeaderTooltipContent /> },
+      tooltip: { title: POOL_TITLES[PoolColumnId.CrvRate], body: <CrvRateHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(getRewardsApy, {
-    id: PoolColumnId.RewardsApy,
-    header: POOL_TITLES[PoolColumnId.RewardsApy],
-    cell: ({ row }) => <RewardsApyCell pool={row.original} />,
+  columnHelper.accessor(getRewardsApr, {
+    id: PoolColumnId.RewardsRate,
+    header: POOL_TITLES[PoolColumnId.RewardsRate],
+    cell: ({ row }) => <RewardsRateCell pool={row.original} />,
     meta: {
       type: 'numeric',
-      tooltip: { title: POOL_TITLES[PoolColumnId.RewardsApy], body: <RewardsApyHeaderTooltipContent /> },
+      tooltip: { title: POOL_TITLES[PoolColumnId.RewardsRate], body: <RewardsRateHeaderTooltipContent /> },
     },
   }),
   columnHelper.display({

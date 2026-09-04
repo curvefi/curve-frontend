@@ -1,8 +1,8 @@
 import { orderBy } from 'lodash'
 import type { PoolType } from '@curvefi/prices-api/pools'
 import { UnexpectedApiRequest } from '@cy/support/ui'
-import { Chain } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
+import { Chain } from '@primitives/network.utils'
 
 type V2PoolNetwork = 'ethereum' | 'taiko'
 
@@ -276,7 +276,7 @@ const FULL_V2_POOL_FIXTURES = {
     address: address('1005'),
     name: 'V2 Volatile Base',
     pool_type: 'crypto',
-    base_daily_apr: 500,
+    base_daily_apr: 6000,
     base_weekly_apr: -10,
     creation_date: V2_POOL_FIXTURE_NOW_SECONDS - 7 * DAY_SECONDS,
     trading_volume_24h: 2_000_000,
@@ -284,7 +284,7 @@ const FULL_V2_POOL_FIXTURES = {
   highRewards: createPoolFixture({
     address: address('1006'),
     name: 'V2 High Rewards',
-    extra_rewards_apr: [extraReward(500, 'HIGH')],
+    extra_rewards_apr: [extraReward(6000, 'HIGH')],
     creation_date: V2_POOL_FIXTURE_NOW_SECONDS - 2 * YEAR_SECONDS,
     trading_volume_24h: 0,
     tvl_usd: 0,

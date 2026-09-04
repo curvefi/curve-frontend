@@ -8,12 +8,12 @@ import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtT
 import { t } from '@evm-ui/lib/i18n'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { decimal, decimalMultiply, formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { MarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 

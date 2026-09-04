@@ -6,10 +6,10 @@ import { useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useO
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '@evm-ui/features/candle-chart/types'
 import { t } from '@evm-ui/lib/i18n'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import type { QueryProp, Range } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import type { QueryProp, Range } from '@ui/features/queries/util'
 import { useLlammaOhlcChartData } from './useLlammaOhlcChartData'
 
 const { Height } = SizesAndSpaces

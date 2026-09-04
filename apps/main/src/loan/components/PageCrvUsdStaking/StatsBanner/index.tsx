@@ -4,11 +4,11 @@ import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { Sizing } from '@evm-ui/themes/design/0_primitives'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery } from '@evm-ui/types/util'
 import { decimal } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import { mapQuery } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

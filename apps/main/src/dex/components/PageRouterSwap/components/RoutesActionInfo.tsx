@@ -4,9 +4,9 @@ import { type NetworkUrlParams, type PoolDataMapper, TokensNameMapper } from '@/
 import { t } from '@evm-ui/lib/i18n'
 import { IndicatorIcon } from '@evm-ui/shared/icons/IndicatorIcon'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 
 export const RoutesActionInfo = ({
   params,
