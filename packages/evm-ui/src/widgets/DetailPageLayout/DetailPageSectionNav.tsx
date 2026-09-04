@@ -1,9 +1,9 @@
 import { useActiveSection } from '@evm-ui/hooks/useActiveSection'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { borderStyle } from '@evm-ui/utils/mui'
 import Box from '@mui/material/Box'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { borderStyle } from '@ui/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 const DETAIL_PAGE_SECTION_NAV_TEST_ID = 'detail-page-section-nav'

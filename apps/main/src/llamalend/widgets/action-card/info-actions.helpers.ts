@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { decimal, formatNumber } from '@evm-ui/utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy, maybes } from '@primitives/objects.utils'
 import type { QueryProp } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

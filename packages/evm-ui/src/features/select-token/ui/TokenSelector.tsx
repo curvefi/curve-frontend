@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 import { cloneElement, type ReactElement } from 'react'
-import type { SelectProps } from '@evm-ui/shared/ui/Select'
+import type { SelectProps } from '@ui/components/Select'
 import { type TokenOption } from '../types'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
 import { TokenSelectButton } from './TokenSelectButton'

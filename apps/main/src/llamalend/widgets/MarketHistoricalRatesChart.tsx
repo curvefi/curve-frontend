@@ -6,7 +6,6 @@ import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/Histo
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { t } from '@evm-ui/lib/i18n'
 import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
   addMovingAverages,
@@ -20,10 +19,10 @@ import {
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@evm-ui/types/market'
-import { decimal, formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
+import { decimal } from '@evm-ui/utils/decimal'
+import { formatNumber } from '@evm-ui/utils/number'
 import { formatDate } from '@legacy-ui/utils'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
@@ -32,6 +31,9 @@ import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
+import { TIME_OPTION_MS } from '@ui/utils/time'
 import { useMarketContext } from '../features/market-context'
 import { MarketCardHeader } from './MarketCardHeader'
 

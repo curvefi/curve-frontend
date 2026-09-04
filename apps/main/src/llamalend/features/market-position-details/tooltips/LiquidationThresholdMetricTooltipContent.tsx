@@ -1,11 +1,11 @@
 import { useUserBands } from '@/llamalend/queries/user'
 import { UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
-import { t } from '@evm-ui/lib/i18n'
 import type { UserMarketParams } from '@evm-ui/lib/model'
-import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@evm-ui/shared/ui/TooltipComponents'
 import { formatNumber } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui/components/TooltipComponents'
 import type { QueryProp, Range } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 type LiquidationThresholdTooltipContentProps = {
   userPrices: QueryProp<Range<Decimal> | null>

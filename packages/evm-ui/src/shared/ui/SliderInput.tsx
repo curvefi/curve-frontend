@@ -1,15 +1,15 @@
 import { sortBy } from 'lodash'
 import { ReactNode, useCallback, useMemo } from 'react'
 import { useDebounce } from '@evm-ui/hooks/useDebounce'
-import { SliderSize } from '@evm-ui/themes/components/slider/types'
-import { Duration } from '@evm-ui/themes/design/0_primitives'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { decimal } from '@evm-ui/utils'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { Slider, type SliderProps } from '@ui/components/Slider'
+import { SliderSize } from '@ui/features/themes/components/slider/types'
+import { Duration } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { NumericTextField, NumericTextFieldProps } from './NumericTextField'
-import { Slider, type SliderProps } from './Slider'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 

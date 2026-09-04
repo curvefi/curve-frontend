@@ -2,10 +2,10 @@ import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/use
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getBorrowRateTooltipTitle } from '@/llamalend/llama.utils'
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, AverageCategory } from '@evm-ui/utils'
+import { Tooltip } from '@ui/components/Tooltip'
+import { useSwitch } from '@ui/hooks/useSwitch'
 import { RateTooltipProps } from './RateCell'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.marketList.rate'

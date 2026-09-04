@@ -1,6 +1,6 @@
-import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
+import { TokenInfo } from '@ui/components/TokenInfo'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { PoolRow } from '../types'
 
 const { Spacing } = SizesAndSpaces

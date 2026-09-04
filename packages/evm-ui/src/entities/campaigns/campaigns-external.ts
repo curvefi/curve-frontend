@@ -1,8 +1,8 @@
 import { groupBy, inRange } from 'lodash'
 import { EmptyValidationSuite } from '@evm-ui/lib'
 import { queryFactory } from '@evm-ui/lib/model'
-import { CURVE_ASSETS_URL } from '@legacy-ui/utils'
 import { mapRecord } from '@primitives/objects.utils'
+import { CURVE_ASSETS_URL } from '@ui/lib/resource.constants'
 import { campaigns } from '@external-rewards'
 import type { CampaignRewards } from './types'
 

@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { t } from '@evm-ui/lib/i18n'
 import { SpinnerWrapper } from '@legacy-ui/Spinner'
 import { shortenAccount } from '@legacy-ui/utils'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   colSpan: number

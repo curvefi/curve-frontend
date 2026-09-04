@@ -21,7 +21,6 @@ import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBala
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
@@ -35,6 +34,7 @@ import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { mediaQueries } from '@legacy-ui/utils/responsive'
 import { constQ } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE, getSlippageType } from '../../utils'
 
 export const FormWithdraw = ({

@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react'
-import { t } from '@evm-ui/lib/i18n'
-import { EnsoIcon } from '@evm-ui/shared/icons/EnsoIcon'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { CURVE_LOGO_GRAYSCALE_URL, CURVE_LOGO_URL } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import type { RouteProvider } from '@primitives/router.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { EnsoIcon } from '@ui/icons/EnsoIcon'
+import { t } from '@ui/lib/i18n'
+import { CURVE_LOGO_GRAYSCALE_URL, CURVE_LOGO_URL } from '@ui/lib/resource.constants'
 
 const { IconSize } = SizesAndSpaces
 

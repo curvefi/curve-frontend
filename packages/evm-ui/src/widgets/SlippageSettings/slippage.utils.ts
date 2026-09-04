@@ -1,5 +1,5 @@
-import { t } from '@evm-ui/lib/i18n'
 import type { Decimal } from '@primitives/decimal.utils'
+import { t } from '@ui/lib/i18n'
 
 export const SLIPPAGE_TYPES = ['stable', 'crypto', 'leverage'] as const
 export type SlippageType = (typeof SLIPPAGE_TYPES)[number]

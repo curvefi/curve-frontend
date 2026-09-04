@@ -5,13 +5,14 @@ import { useWithdrawLockForm } from '@/dao/components/PageVeCrv/hooks/useWithdra
 import { useWithdrawLockGasEstimate } from '@/dao/components/PageVeCrv/queries/withdraw-lock-estimate-gas.query'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
-import { t } from '@evm-ui/lib/i18n'
-import { amount, formatNumber, MILLISECONDS_PER_SECOND } from '@evm-ui/utils'
+import { amount, formatNumber } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { q } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
+import { MILLISECONDS_PER_SECOND } from '@ui/utils/time'
 
 export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
   const { form, params, canUnlock, lockedAmountAndUnlockTime, isPending, isDisabled, error, onSubmit } =

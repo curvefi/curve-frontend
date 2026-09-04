@@ -1,10 +1,10 @@
 import { enforce, skipWhen, test } from 'vest'
-import { t } from '@evm-ui/lib/i18n'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import { createValidationSuite } from '@evm-ui/lib/validation'
 import type { CalendarDate } from '@internationalized/date'
 import type { Decimal } from '@primitives/decimal.utils'
+import { t } from '@ui/lib/i18n'
 import type { CreateLockQuery } from './create-lock.types'
 
 export const validateCreateLockAmount = (lockedAmount: Decimal | undefined) => {

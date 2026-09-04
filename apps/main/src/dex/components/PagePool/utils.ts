@@ -3,9 +3,9 @@ import type { PoolAlert } from '@/dex/types/main.types'
 import { PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import type { IDict } from '@curvefi/api/lib/interfaces'
-import { t } from '@evm-ui/lib/i18n'
 import type { SlippageType } from '@evm-ui/widgets/SlippageSettings'
 import { maybe } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 
 export type Amount = {
   value: string

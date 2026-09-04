@@ -6,8 +6,8 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
 import { getChainName, isTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { t } from '@evm-ui/lib/i18n'
 import { shortenString } from '@primitives/string.utils'
+import { t } from '@ui/lib/i18n'
 import { getNetworks } from '../entities/networks'
 
 type NetworkWithFactory = {

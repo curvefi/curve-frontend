@@ -1,4 +1,4 @@
-import { Duration } from '@evm-ui/themes/design/0_primitives'
+import { Duration } from '@ui/features/themes/design/0_primitives'
 
 /**
  * First level, we try to pick only a few different intervals for all queries.

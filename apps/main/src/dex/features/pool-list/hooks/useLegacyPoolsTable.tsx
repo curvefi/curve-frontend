@@ -13,9 +13,10 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
-import { decimal, REFRESH_INTERVAL } from '@evm-ui/utils'
+import { decimal } from '@evm-ui/utils/decimal'
 import { notFalsy, recordValues } from '@primitives/objects.utils'
 import type { DeepKeys } from '@tanstack/table-core'
+import { REFRESH_INTERVAL } from '@ui/utils/time'
 import type { LegacyPoolRow, LegacyPoolTag } from '../types'
 
 const POOL_TEXT_FIELDS = [

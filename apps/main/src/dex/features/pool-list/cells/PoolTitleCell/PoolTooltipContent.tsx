@@ -1,9 +1,9 @@
-import { t } from '@evm-ui/lib/i18n'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
-import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
-import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
 import Stack from '@mui/material/Stack'
 import { maybe, notFalsy } from '@primitives/objects.utils'
+import { TokenLabel } from '@ui/components/TokenLabel'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../../types'
 import { poolTypeClassifications, type PoolClassification } from './classifications'
 

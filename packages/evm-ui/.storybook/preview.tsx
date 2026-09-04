@@ -6,7 +6,7 @@ import { DocsContainer, type DocsContainerProps } from '@storybook/addon-docs/bl
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import type { Decorator, Preview, ReactRenderer } from '@storybook/react-vite'
 import { createRouter, createRootRoute, RouterProvider, createMemoryHistory } from '@tanstack/react-router'
-import { chadTheme, darkTheme, lightTheme } from '../src/themes'
+import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
 import { Toast } from '../src/widgets/Toast'
 
 const themes = {

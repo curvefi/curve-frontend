@@ -15,12 +15,12 @@ import {
 import { llama } from '@/analytics/llamadash'
 import type { Chain } from '@curvefi/prices-api'
 import { getTimeRange } from '@curvefi/prices-api/timestamp'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t } from '@evm-ui/lib/i18n'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { formatNumber } from '@evm-ui/utils'
 import { useTheme } from '@mui/material/styles'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
 import { useRefuelDailyRefuels } from '../queries/daily-refuels.query'
 
 const REFUELS_LABEL = t`Daily refuels`

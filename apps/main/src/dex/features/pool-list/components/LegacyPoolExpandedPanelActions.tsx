@@ -1,8 +1,8 @@
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { t } from '@evm-ui/lib/i18n'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
+import { t } from '@ui/lib/i18n'
 import type { LegacyPoolRow } from '../types'
 
 export const LegacyPoolExpandedPanelActions: ExpandedPanelComponent<LegacyPoolRow> = ({ row }) => {

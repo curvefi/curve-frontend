@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { LlammaEventsColumnId } from '../columns/llamma-events-columns'
 import { LlammaTradesColumnId } from '../columns/llamma-trades-columns'
 

@@ -1,10 +1,10 @@
-import { t } from '@evm-ui/lib/i18n'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
-import { TokenInfo, type TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import { TokenInfo, type TokenInfoProps } from '@ui/components/TokenInfo'
+import { t } from '@ui/lib/i18n'
 import { PointsCampaignsColumnId } from './columns.enum'
 
 export type PointsCampaignsRow = {

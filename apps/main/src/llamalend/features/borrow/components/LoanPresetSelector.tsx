@@ -1,12 +1,12 @@
 import { type ReactNode, type MouseEvent, useCallback } from 'react'
-import { t } from '@evm-ui/lib/i18n'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
-import { TooltipDescription, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
+import { Tooltip } from '@ui/components/Tooltip'
+import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { PRESET_RANGES, LoanPreset } from '../../../constants'
 
 const PRESETS_DESCRIPTIONS = {

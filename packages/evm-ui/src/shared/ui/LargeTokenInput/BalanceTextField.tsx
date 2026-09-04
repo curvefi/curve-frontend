@@ -1,6 +1,6 @@
-import { TRANSPARENT } from '@evm-ui/themes/design/0_primitives'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { Decimal } from '@primitives/decimal.utils'
+import { TRANSPARENT } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { NumericTextField } from '../NumericTextField'
 
 const { AmountHeight: AMOUNT_HEIGHT } = SizesAndSpaces.LargeTokenInput

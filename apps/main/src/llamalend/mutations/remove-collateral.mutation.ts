@@ -4,10 +4,10 @@ import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { t } from '@evm-ui/lib/i18n'
 import { rootKeys } from '@evm-ui/lib/model'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { t } from '@ui/lib/i18n'
 
 type RemoveCollateralMutation = { userCollateral: Decimal }
 

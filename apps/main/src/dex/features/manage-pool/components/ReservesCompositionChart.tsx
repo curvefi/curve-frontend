@@ -15,13 +15,13 @@ import {
 import { llama } from '@/analytics/llamadash'
 import type { Chain } from '@curvefi/prices-api'
 import { getTimeRange } from '@curvefi/prices-api/timestamp'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { t } from '@evm-ui/lib/i18n'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { formatNumber } from '@evm-ui/utils'
 import { useTheme } from '@mui/material/styles'
 import { mapRecord } from '@primitives/objects.utils'
+import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
 import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/timeseries.query'
 
 const PERIODS = ['7d', '1m', '3m', '6m', '1y'] as const satisfies Period[]

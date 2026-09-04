@@ -3,9 +3,9 @@ import { useMemo, type ReactNode } from 'react'
 import { useLatestValueRef } from '@evm-ui/hooks/useLatestValueRef'
 import type { ChartLineDashPattern } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import { maybe } from '@primitives/objects.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { FontSize } = SizesAndSpaces
 

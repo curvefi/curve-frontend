@@ -1,6 +1,6 @@
-import { t } from '@evm-ui/lib/i18n'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { HeaderContext } from '@tanstack/react-table'
+import { t } from '@ui/lib/i18n'
 import { LegacyPoolColumnId } from '../columns'
 import type { LegacyPoolRow } from '../types'
 

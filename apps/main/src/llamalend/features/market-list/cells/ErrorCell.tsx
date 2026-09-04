@@ -1,6 +1,6 @@
-import { ExclamationTriangleIcon } from '@evm-ui/shared/icons/ExclamationTriangleIcon'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { Tooltip } from '@ui/components/Tooltip'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'
 
 const { IconSize } = SizesAndSpaces
 

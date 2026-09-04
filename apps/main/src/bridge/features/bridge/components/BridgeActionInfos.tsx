@@ -1,8 +1,8 @@
-import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type EstimatedTxCostProps } from '@evm-ui/shared/ui/ActionInfo'
 import { formatToken } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 type BridgeActionInfosProps = EstimatedTxCostProps & {
   /** Query returning the estimated bridge cost in the chain's native token. */

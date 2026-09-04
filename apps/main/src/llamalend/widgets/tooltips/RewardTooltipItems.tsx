@@ -1,9 +1,9 @@
 import { CampaignRewards } from '@evm-ui/entities/campaigns'
-import { t } from '@evm-ui/lib/i18n'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
-import { TooltipItem, TooltipValueLink } from '@evm-ui/shared/ui/TooltipComponents'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { aprToApy, formatNumber } from '@evm-ui/utils'
+import { TooltipItem, TooltipValueLink } from '@ui/components/TooltipComponents'
+import { t } from '@ui/lib/i18n'
 import type { RewardsAction } from '@external-rewards'
 
 type RewardsTooltipItemsProps = {

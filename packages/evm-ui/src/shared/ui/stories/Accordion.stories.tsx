@@ -1,4 +1,3 @@
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -7,8 +6,9 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { useSwitch } from '@ui/hooks/useSwitch'
 import { Accordion } from '../Accordion'
-import { WithSkeleton } from '../WithSkeleton'
 
 const meta: Meta<typeof Accordion> = {
   title: 'UI Kit/Widgets/Accordion',

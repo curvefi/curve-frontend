@@ -14,11 +14,11 @@ import type { AddRewardMutation, DepositRewardMutation } from '@/dex/entities/ga
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { t } from '@evm-ui/lib/i18n'
 import { useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactionMutation'
 import { type GaugeQuery, rootKeys } from '@evm-ui/lib/model/query'
 import { waitForApproval } from '@evm-ui/utils'
 import type { Hex } from '@primitives/address.utils'
+import { t } from '@ui/lib/i18n'
 
 type GaugeRewardMutationOptions = GaugeQuery & {
   onReset: () => void

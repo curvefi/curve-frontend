@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Height, Spacing } = SizesAndSpaces
 

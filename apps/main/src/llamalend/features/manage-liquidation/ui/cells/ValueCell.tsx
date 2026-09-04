@@ -1,11 +1,11 @@
 import { sumBy } from 'lodash'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber, formatToken } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import type { CellContext } from '@tanstack/react-table'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { ClosePositionRow } from '../columns/columns.definitions'
 
 const { Spacing } = SizesAndSpaces

@@ -1,8 +1,8 @@
-import { t } from '@evm-ui/lib/i18n'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { t } from '@ui/lib/i18n'
 import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
 export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent> = ({ row: { original: event } }) => {
