@@ -120,7 +120,7 @@ export const Swap = ({
     const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
     return {
       selectList: selectList.map<TokenOption>(token => ({
-        address: getAddress(token.address),
+        address: token.address as Address, // not checksummed!
         symbol: token.symbol,
         chain: network?.blockchainId,
       })),
