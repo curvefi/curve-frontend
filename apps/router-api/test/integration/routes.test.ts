@@ -9,8 +9,6 @@ import { createRouterApiServer } from '../../src/server'
 
 process.loadEnvFile()
 
-const ADDRESS_REGEX = ADDRESS_PATTERN
-
 const CHAIN_ID_ETHEREUM = '1'
 const CHAIN_ID_OPTIMISM = '10'
 const ETHEREUM_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
@@ -262,8 +260,8 @@ describe('GET routes integration', () => {
 
           steps.forEach(step => {
             if (router.startsWith('curve')) expect(step.protocol).toBe(router)
-            expect(step.tokenIn.join(',')).toMatch(ADDRESS_REGEX)
-            expect(step.tokenOut.join(',')).toMatch(ADDRESS_REGEX)
+            expect(step.tokenIn.join(',')).toMatch(ADDRESS_PATTERN)
+            expect(step.tokenOut.join(',')).toMatch(ADDRESS_PATTERN)
           })
 
           const [expectedTokenIn] = query.tokenIn ?? []

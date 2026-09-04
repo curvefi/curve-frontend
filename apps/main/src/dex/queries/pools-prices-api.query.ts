@@ -20,6 +20,6 @@ export const usePoolPricesApi = ({
   blockchainId,
   poolAddress,
 }: ChainNameParams & { poolAddress: string | undefined }) =>
-  mapQuery(usePoolsPricesApi({ blockchainId }, isAddress(poolAddress)), pools =>
+  mapQuery(usePoolsPricesApi({ blockchainId }, isAddress(poolAddress ?? '')), pools =>
     maybe(poolAddress, poolAddress => pools[poolAddress.toLowerCase()]),
   )
