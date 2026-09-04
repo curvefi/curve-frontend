@@ -1,12 +1,12 @@
 import { t } from '@evm-ui/lib/i18n'
 import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
-import type { BaseConfig } from '@legacy-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import { BridgeForm } from './components/BridgeForm'
 import { useBridgeAlert } from './hooks/useBridgeAlert'
 
 export type BridgeFormParams = {
   chainId: number
-  networks: Record<number, BaseConfig>
+  networks: Record<number, NetworkDef>
 }
 
 const BridgeTab = (params: BridgeFormParams) => {

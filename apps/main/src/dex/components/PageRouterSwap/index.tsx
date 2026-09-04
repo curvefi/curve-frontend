@@ -102,13 +102,13 @@ export const QuickSwap = ({
     data: blacklist,
     isLoading: isBlacklistLoading,
     error: blacklistError,
-  } = usePoolsBlacklist({ blockchainId: network?.id as Chain })
+  } = usePoolsBlacklist({ blockchainId: network?.blockchainId as Chain })
 
   const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
     { chainId, userAddress, searchedParams },
     !userAddress,
   )
-  const gas = useEstimateGasValue(networks, chainId, formEstGas?.estimatedGas, !!userAddress)
+  const gas = useEstimateGasValue(chainId, formEstGas?.estimatedGas, !!userAddress)
 
   const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
   const slippageType = routesAndOutput && getSlippageType(routesAndOutput)
@@ -137,9 +137,9 @@ export const QuickSwap = ({
   }, [curve, blacklist, userAddress])
 
   const tokens = useMemo(
-    () => notFalsy(...Object.values(tokensMapper ?? {})).map(toTokenOption(network?.networkId)),
+    () => notFalsy(...Object.values(tokensMapper ?? {})).map(toTokenOption(network?.blockchainId)),
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [tokensMapperStr, network?.networkId],
+    [tokensMapperStr, network?.blockchainId],
   )
 
   const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == fromAddress)

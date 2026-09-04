@@ -48,7 +48,7 @@ describe('FormSkeleton', () => {
     })
 
     setLlamaApi(llamaApi)
-    setGasInfo({ chainId: 1, networks: llamaNetworks })
+    setGasInfo({ chainId: 1 })
 
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi} market={market}>

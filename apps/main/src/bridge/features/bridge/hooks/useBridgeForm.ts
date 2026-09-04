@@ -6,7 +6,7 @@ import { useFormSync, useForm } from '@evm-ui/features/forms'
 import { useDebouncedValue } from '@evm-ui/hooks/useDebounce'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
-import type { BaseConfig } from '@legacy-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
@@ -53,7 +53,7 @@ const formProps = {
   defaultValues: emptyBridgeForm(),
 }
 
-export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, BaseConfig> }) => {
+export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, NetworkDef> }) => {
   const form = useForm<BridgeForm>(formProps)
 
   const values = form.watchValues()
@@ -137,7 +137,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
       useIsApproved: useBridgeIsApproved,
       useApproveEstimate: useBridgeApproveGasEstimate,
       useActionEstimate: useBridgeGasEstimate,
-    })(networks, params),
+    })(params),
 
     // Errors
     amountError,

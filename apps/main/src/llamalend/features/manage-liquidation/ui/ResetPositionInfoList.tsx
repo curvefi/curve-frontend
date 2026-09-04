@@ -1,6 +1,5 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useResetEstimateGas } from '@/llamalend/queries/reset/reset-gas-estimate.query'
 import { getResetHealthOptions } from '@/llamalend/queries/reset/reset-health.query'
@@ -24,14 +23,12 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
   tokens: { collateralToken, borrowToken },
   controllerAddress,
   marketType,
-  networks,
 }: {
   params: ResetParams<ChainId>
   values: ResetForm
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   controllerAddress: Address | undefined
   marketType: MarketType
-  networks: NetworkDict<ChainId>
 }) {
   const debtReduction = getResetDebtReduction(values)
   const isOpen = +debtReduction > 0
@@ -43,7 +40,7 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useResetIsApproved(params, isOpen))}
-      gas={q(useResetEstimateGas(networks, params, isOpen))}
+      gas={q(useResetEstimateGas(params, isOpen))}
       health={q(useHealthQueries(isHealthFull => getResetHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={q(useResetPrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}

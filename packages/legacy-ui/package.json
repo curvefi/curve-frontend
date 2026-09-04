@@ -9,9 +9,9 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-legacy-ui.tsbuildinfo"
   },
   "dependencies": {
-    "@carbon/icons-react": "11.84.0",
-    "react-aria": "3.50.0",
-    "react-stately": "3.48.0"
+    "@carbon/icons-react": "11.87.0",
+    "react-aria": "3.51.0",
+    "react-stately": "3.49.0"
   },
   "devDependencies": {
     "@types/react": "*",

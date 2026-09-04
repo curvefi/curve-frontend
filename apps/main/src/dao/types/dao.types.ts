@@ -1,5 +1,5 @@
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
-import type { BaseConfig } from '@legacy-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 
 export type { CurveApi } from '@evm-ui/features/connect-wallet'
@@ -18,7 +18,7 @@ export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParam
 export type NetworkConfig = {
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
-} & BaseConfig<NetworkEnum, ChainId>
+} & NetworkDef<NetworkEnum, ChainId>
 
 export type EstimatedGas = number | number[] | null
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'

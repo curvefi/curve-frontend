@@ -13,7 +13,7 @@ type CampaignRewardsBannerProps = {
 export const CampaignRewardsBanner = ({ chainId, address }: CampaignRewardsBannerProps) => {
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network.networkId,
+    blockchainId: network.blockchainId,
     address: address as Address,
   })
   const message = campaigns.some(campaign => campaign.tags.includes('points'))

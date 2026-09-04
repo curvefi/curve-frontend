@@ -23,9 +23,8 @@ export const Prices = ({
 }) => {
   const poolAddress = poolDataCacheOrApi.pool.address as Address
   const { data: network } = useNetworkByChain({ chainId })
-  const chain = network.networkId as BlockchainId
   const { data: parameters } = usePoolParameters({ chainId, poolId })
-  const { data: snapshots } = usePoolSnapshots({ chain, poolAddress })
+  const { data: snapshots } = usePoolSnapshots({ chain: network.blockchainId as BlockchainId, poolAddress })
   const { priceOracle, priceScale } = parameters ?? {}
   const snapshotData = snapshots?.[0]
   // Prices API snapshot values are 1e18-scaled, while pool parameters are already human-scale.

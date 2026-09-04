@@ -47,7 +47,7 @@ describe('CreateLoanForm (mocked)', () => {
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+      setGasInfo({ chainId: CHAIN_ID })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
@@ -72,7 +72,7 @@ describe('CreateLoanForm (mocked)', () => {
     })
     Object.assign((market as LendMarketTemplate).addresses, { controller: zeroAddress })
     setLlamaApi(llamaApi)
-    setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+    setGasInfo({ chainId: CHAIN_ID })
     cy.intercept('GET', '**/api/router/v1/routes*').as('routerRoutes')
 
     cy.mount(
