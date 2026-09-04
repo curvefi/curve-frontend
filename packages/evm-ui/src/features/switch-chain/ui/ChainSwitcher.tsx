@@ -10,7 +10,6 @@ import { t } from '@evm-ui/lib/i18n'
 import { type AppMenuOption, getCurrentNetwork } from '@evm-ui/shared/routes'
 import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import { ModalSettingsButton } from '@evm-ui/shared/ui/ModalSettingsButton'
-import { Chain } from '@evm-ui/utils'
 import { showToast } from '@evm-ui/widgets/Toast/toast.util'
 import { type NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -20,6 +19,7 @@ import { maybes, type PartialRecord } from '@primitives/objects.utils'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
+import { Chain } from '@primitives/network.utils'
 
 type ChainSwitcherProps = {
   supportedNetworks: NetworkMapping
