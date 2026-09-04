@@ -6,11 +6,12 @@ import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { amount, Chain, formatToken, shortenAddress } from '@evm-ui/utils'
+import { amount, formatToken, shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { InternalLink } from '@legacy-ui/Link/InternalLink'
 import { Loader } from '@legacy-ui/Loader/Loader'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
+import { Chain } from '@primitives/network.utils'
 
 type Props = {
   noLink?: boolean

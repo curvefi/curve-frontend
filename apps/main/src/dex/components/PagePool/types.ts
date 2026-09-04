@@ -7,8 +7,8 @@ import {
   PoolAlert,
   type PoolUrlParams,
 } from '@/dex/types/main.types'
-import type { MakeRequired } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { MakeRequired } from '@ui/features/queries/util'
 
 export type EstimatedGas = {
   loading: boolean

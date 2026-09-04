@@ -20,7 +20,6 @@ import { Badge } from '@evm-ui/shared/ui/Badge'
 import { TokenIcon, type TokenIconProps } from '@evm-ui/shared/ui/TokenIcon'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import type { QueryProp } from '@evm-ui/types/util'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -28,6 +27,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

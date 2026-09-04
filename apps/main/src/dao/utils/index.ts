@@ -1,8 +1,9 @@
 import lodash from 'lodash'
 import { TOP_HOLDERS } from '@/dao/constants'
 import { GaugeFormattedData, GaugeMapper } from '@/dao/types/dao.types'
-import { Chain, shortenAddress } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { isAddress, ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
+import { Chain } from '@primitives/network.utils'
 
 export * from './utilsRouter'
 export * from './utilsDates'

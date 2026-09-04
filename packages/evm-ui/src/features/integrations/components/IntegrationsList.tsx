@@ -9,12 +9,12 @@ import { getDefaultSelectableChipSize } from '@evm-ui/shared/ui/selectable-chip.
 import { SelectableChip } from '@evm-ui/shared/ui/SelectableChip'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { useMappedQuery } from '@evm-ui/types/util'
 import { BLOCKCHAIN_LEGACY_NAMES } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
+import { useMappedQuery } from '@ui/features/queries/util'
 import { useIntegrations } from '../queries/integrations'
 import { useIntegrationsTags } from '../queries/integrations-tags'
 

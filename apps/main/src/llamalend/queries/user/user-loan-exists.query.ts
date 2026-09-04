@@ -5,7 +5,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { combineQueries } from '@evm-ui/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
-import { QueryProp } from '@evm-ui/types/util'
+import { QueryProp } from '@ui/features/queries/util'
 
 export const { useQuery: useLoanExists } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'loanExists'] as const,

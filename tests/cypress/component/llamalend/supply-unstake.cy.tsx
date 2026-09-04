@@ -17,7 +17,7 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { Chain } from '@evm-ui/utils'
+import { Chain } from '@primitives/network.utils'
 
 const chainId = Chain.Ethereum
 

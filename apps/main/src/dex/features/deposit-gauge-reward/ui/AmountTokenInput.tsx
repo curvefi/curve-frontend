@@ -11,10 +11,10 @@ import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
-import { mapQuery, q, useMappedQuery } from '@evm-ui/types/util'
 import { decimal, decimalMultiply, shortenAddress } from '@evm-ui/utils'
 import { isAddressEqual, ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
+import { mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 
 export const AmountTokenInput = ({
   chainId,

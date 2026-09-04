@@ -1,12 +1,13 @@
 import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
-import { Chain, copyToClipboard } from '@evm-ui/utils'
+import { copyToClipboard } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { ExternalLink } from '@legacy-ui/Link'
 import { scanAddressPath } from '@legacy-ui/utils'
+import { Chain } from '@primitives/network.utils'
 
 export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; userEnsName?: string | null }) => (
   <Wrapper variant="secondary">

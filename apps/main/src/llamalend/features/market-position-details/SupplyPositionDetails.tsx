@@ -25,7 +25,6 @@ import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery, q } from '@evm-ui/types/util'
 import {
   AVERAGE_CATEGORIES,
   type AverageCategory,
@@ -38,6 +37,7 @@ import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces

@@ -612,6 +612,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@curvefi/tests@workspace:tests"
   dependencies:
+    "@curvefi/ui": "workspace:^"
     "@cypress/react": "npm:9.0.2"
     "@cypress/vite-dev-server": "npm:7.3.4"
     "@vitejs/plugin-react": "npm:5.1.2"
@@ -633,13 +634,17 @@ __metadata:
     "@hookform/resolvers": "npm:5.4.0"
     "@mui/icons-material": "npm:9.4.0"
     "@mui/material": "npm:9.4.0"
+    "@sentry/core": "npm:10.72.0"
+    "@sentry/react": "npm:10.72.0"
     "@tanstack/query-async-storage-persister": "npm:5.102.8"
+    "@tanstack/query-persist-client-core": "npm:5.102.8"
     "@tanstack/react-query": "npm:5.102.8"
     "@tanstack/react-query-devtools": "npm:5.102.8"
     "@tanstack/react-query-persist-client": "npm:5.102.8"
     "@tanstack/react-router": "npm:1.170.32"
     "@tanstack/react-router-devtools": "npm:1.167.1"
     "@tanstack/react-table": "npm:9.2.4"
+    "@types/node": "npm:26.1.0"
     bignumber.js: "npm:9.3.1"
     immer: "npm:11.1.18"
     react: "npm:19.2.8"
@@ -12944,11 +12949,20 @@ __metadata:
   dependencies:
     "@curvefi/ui": "workspace:^"
     "@sentry/vite-plugin": "npm:5.4.0"
+    "@tanstack/react-query": "npm:5.102.8"
+    "@tanstack/react-query-devtools": "npm:5.102.8"
     "@tanstack/react-router": "npm:1.170.32"
+    "@tanstack/react-router-devtools": "npm:1.167.1"
+    "@tanstack/router-core": "npm:1.171.27"
+    "@types/node": "npm:26.1.0"
     "@vitejs/plugin-react": "npm:5.1.2"
     vite: "npm:*"
     vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:9.1.1"
+  peerDependencies:
+    "@curvefi/primitives": "*"
+    react: "*"
+    react-dom: "*"
   languageName: unknown
   linkType: soft
 

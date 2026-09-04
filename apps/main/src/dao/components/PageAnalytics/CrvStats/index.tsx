@@ -9,10 +9,10 @@ import { useCombinedQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { constQ, mapQuery } from '@evm-ui/types/util'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
 import { Box } from '@legacy-ui/Box'
+import { Chain } from '@primitives/network.utils'
+import { constQ, mapQuery } from '@ui/features/queries/util'
 
 const WEEKS_PER_YEAR = 52
 const VECRV_APR_AVERAGE_WEEKS = 4

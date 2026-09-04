@@ -21,11 +21,11 @@ import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { useMappedQuery } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import { DEFAULT_DECIMALS, maybe, notFalsy } from '@primitives/objects.utils'
+import { useMappedQuery } from '@ui/features/queries/util'
 import { REFUEL_TIMESERIES_PAGE_SIZE, RefuelTimeSeriesData, useRefuelTimeseries } from '../queries/timeseries.query'
 
 const { Spacing } = SizesAndSpaces

@@ -11,7 +11,6 @@ import { notify } from '@evm-ui/features/connect-wallet'
 import { t, Trans } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { formatNumber, amount } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Button } from '@legacy-ui/Button'
@@ -24,6 +23,7 @@ import { Chip } from '@legacy-ui/Typography'
 import { formatDate } from '@legacy-ui/utils'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 import { NETWORK_BASE_CONFIG, scanTxPath } from '@legacy-ui/utils/utilsNetworks'
+import { Chain } from '@primitives/network.utils'
 
 // TODO uncomment locker link code once it is ready
 export const FormVecrv = () => {

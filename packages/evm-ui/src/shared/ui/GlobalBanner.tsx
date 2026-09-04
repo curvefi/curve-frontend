@@ -15,10 +15,10 @@ import {
 import { t } from '@evm-ui/lib/i18n'
 import { getCurrentApp } from '@evm-ui/shared/routes'
 import { Banner } from '@evm-ui/shared/ui/Banner'
-import { IS_CYPRESS, ReleaseChannel } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
 import { PhishingWarningBanner } from '@evm-ui/widgets/Header/PhishingWarningBanner'
 import { formatDate } from '@legacy-ui/utils'
+import { Chain } from '@primitives/network.utils'
+import { IS_CYPRESS, ReleaseChannel } from '@ui/utils/env'
 import { StackBanners } from './StackBanners'
 
 type GlobalBannerProps = {

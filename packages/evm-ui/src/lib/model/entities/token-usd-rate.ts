@@ -15,9 +15,10 @@ import {
   type TokenQuery,
 } from '@evm-ui/lib/model/query'
 import { tokenValidationGroup } from '@evm-ui/lib/model/query/token-validation'
-import { BlockchainIds, Chain, REUSD_ADDRESS, SREUSD_ADDRESS } from '@evm-ui/utils'
+import { BlockchainIds, REUSD_ADDRESS, SREUSD_ADDRESS } from '@evm-ui/utils'
 import { isAddressEqual } from '@primitives/address.utils'
 import { FetchError } from '@primitives/fetch.utils'
+import { Chain } from '@primitives/network.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { readContract } from '@wagmi/core'
 

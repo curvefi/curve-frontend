@@ -5,11 +5,11 @@ import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { formatNumber, formatToken, shortenAddress } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink, InternalLink } from '@legacy-ui/Link'
 import { scanTxPath } from '@legacy-ui/utils'
+import { Chain } from '@primitives/network.utils'
 
 type Props = {
   totalVotes: number

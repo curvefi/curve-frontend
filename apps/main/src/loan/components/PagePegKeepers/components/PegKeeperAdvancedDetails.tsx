@@ -4,10 +4,10 @@ import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery } from '@evm-ui/types/util'
 import { shortenAddress, formatNumber, amount } from '@evm-ui/utils'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Stack from '@mui/material/Stack'
+import { mapQuery } from '@ui/features/queries/util'
 import type { PegKeeper, PegKeeperDetails, Pool } from '../types'
 
 const { Spacing, IconSize } = SizesAndSpaces

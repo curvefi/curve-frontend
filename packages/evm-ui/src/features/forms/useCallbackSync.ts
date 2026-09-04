@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import type { Query } from '@evm-ui/types/util'
+import type { Query } from '@ui/features/queries/util'
 
 /**
  * Syncs `data` to `callback` whenever it changes to a resolved value. Keeps the previous value while loading, and

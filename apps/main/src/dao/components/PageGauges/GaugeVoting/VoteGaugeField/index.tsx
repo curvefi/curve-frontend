@@ -8,11 +8,11 @@ import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { t } from '@evm-ui/lib/i18n'
 import { formatNumber } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
 import { formatDate } from '@legacy-ui/utils'
+import { Chain } from '@primitives/network.utils'
 import { NumberField } from './NumberField'
 
 type VoteGaugeFieldProps = {

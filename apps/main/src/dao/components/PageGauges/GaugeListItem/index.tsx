@@ -16,12 +16,12 @@ import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { Chain } from '@evm-ui/utils/network'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import type { Address } from '@primitives/address.utils'
+import { Chain } from '@primitives/network.utils'
 
 type Props = {
   gaugeData: GaugeFormattedData

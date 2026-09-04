@@ -1,7 +1,7 @@
 import { formatEther } from 'viem'
 import { useConnection, useReadContract, useSimulateContract, useWriteContract } from 'wagmi'
-import { fallbackQ, mapQuery } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
+import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { abi as priceOracleAbi, abiFallback as priceOracleFallbackAbi } from '../abi/priceOracle'

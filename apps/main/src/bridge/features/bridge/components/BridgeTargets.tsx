@@ -10,13 +10,14 @@ import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import { Select } from '@evm-ui/shared/ui/Select'
 import { Spinner } from '@evm-ui/shared/ui/Spinner'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { applySxProps, Chain, requireBlockchainId, type SxProps } from '@evm-ui/utils'
+import { applySxProps, requireBlockchainId, type SxProps } from '@evm-ui/utils'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { ArrowRight } from '@mui/icons-material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Chain } from '@primitives/network.utils'
 
 const { Spacing } = SizesAndSpaces
 

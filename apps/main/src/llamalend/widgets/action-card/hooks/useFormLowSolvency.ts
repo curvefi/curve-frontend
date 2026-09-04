@@ -4,9 +4,9 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { FieldValues, UseFormHandleSubmit } from '@evm-ui/features/forms'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { MarketType } from '@evm-ui/types/market'
-import { q } from '@evm-ui/types/util'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
+import { q } from '@ui/features/queries/util'
 
 type Props<T extends FieldValues, ChainId extends IChainId> = {
   controllerAddress: Address | undefined

@@ -18,10 +18,10 @@ import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { dayjs } from '@evm-ui/lib/dayjs'
-import { constQ } from '@evm-ui/types/util'
 import type { DateValue } from '@internationalized/date'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { constQ } from '@ui/features/queries/util'
 
 const defaultValues: CreateLockFormValues = {
   lockedAmount: undefined,
