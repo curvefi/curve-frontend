@@ -1,13 +1,13 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
-import { t } from '@evm-ui/lib/i18n'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { formatNumber } from '@evm-ui/utils'
 import { Box } from '@mui/material'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
+import { Tooltip } from '@ui/components/Tooltip'
+import { t } from '@ui/lib/i18n'
 
 export const LtvCell = ({ getValue, row }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const { stats, prices } = row.original.positionQueries

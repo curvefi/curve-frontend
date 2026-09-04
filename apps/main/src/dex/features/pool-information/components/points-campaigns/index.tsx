@@ -1,10 +1,10 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { constQ } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { usePointsCampaigns } from '../../hooks/usePointsCampaigns'
 import { POINTS_CAMPAIGNS_COLUMNS } from './columns/columns.definitions'
 

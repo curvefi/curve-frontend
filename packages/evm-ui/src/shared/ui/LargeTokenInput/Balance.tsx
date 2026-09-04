@@ -1,18 +1,18 @@
-import { t } from '@evm-ui/lib/i18n'
 import { BalanceAmount } from '@evm-ui/shared/ui/LargeTokenInput/BalanceAmount'
 import { BalanceButton } from '@evm-ui/shared/ui/LargeTokenInput/BalanceButton'
 import { VERTICAL_CENTER_TEXT } from '@evm-ui/shared/ui/LargeTokenInput/large-token-input.utils'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils'
 import type { SvgIcon } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
+import { Tooltip } from '@ui/components/Tooltip'
+import { WithWrapper } from '@ui/components/WithWrapper'
 import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
-import { WalletIcon } from '../../icons/WalletIcon'
-import { WithWrapper } from '../WithWrapper'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { WalletIcon } from '@ui/icons/WalletIcon'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing, LargeTokenInput } = SizesAndSpaces
 

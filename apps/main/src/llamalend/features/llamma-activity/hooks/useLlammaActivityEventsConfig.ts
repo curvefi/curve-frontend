@@ -7,10 +7,10 @@ import {
   DEFAULT_PAGE_SIZE,
 } from '@evm-ui/features/activity-table'
 import { combineQueries } from '@evm-ui/lib'
-import { t } from '@evm-ui/lib/i18n'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { getPageCount } from '@evm-ui/utils'
 import { fakeLoadingQ } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({

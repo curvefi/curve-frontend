@@ -6,7 +6,6 @@ import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { t } from '@evm-ui/lib/i18n'
 import { MarketRateType } from '@evm-ui/types/market'
 import { PAGE_SPACING } from '@evm-ui/widgets/DetailPageLayout/constants'
 import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
@@ -16,6 +15,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 type MarketInformationCompProps = {
   rateType: MarketRateType

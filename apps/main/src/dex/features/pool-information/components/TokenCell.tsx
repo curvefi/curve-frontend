@@ -1,13 +1,13 @@
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
-import { t } from '@evm-ui/lib/i18n'
 import { CLICKABLE_IN_ROW_CLASS } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
-import { TokenInfo, type TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { shortenAddress } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import { TokenInfo, type TokenInfoProps } from '@ui/components/TokenInfo'
+import { Tooltip } from '@ui/components/Tooltip'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { t } from '@ui/lib/i18n'
 
 export const TokenCell = ({
   source,

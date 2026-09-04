@@ -3,7 +3,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { BackendMaintenanceBanner } from '@evm-ui/features/maintenance/components/BackendMaintenanceBanner'
 import { BackendMaintenanceModal } from '@evm-ui/features/maintenance/components/BackendMaintenanceModal'
 import { useMaintenance, type MaintenanceConfig } from '@evm-ui/features/maintenance/hooks/useMaintenance'
-import { TIME_FRAMES, TIME_OPTION_MS } from '@evm-ui/utils'
+import { TIME_FRAMES, TIME_OPTION_MS } from '@ui/utils/time'
 
 const MODAL_TEST_ID = 'backend-maintenance-modal'
 const BANNER_TEST_ID = 'backend-maintenance-banner'

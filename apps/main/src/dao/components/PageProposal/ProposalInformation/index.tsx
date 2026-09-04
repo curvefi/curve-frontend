@@ -3,12 +3,13 @@ import { styled } from 'styled-components'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { getEthPath } from '@/dao/utils'
-import { t } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { shortenAddress, TIME_FRAMES } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils/address'
 import { Box } from '@legacy-ui/Box'
 import { InternalLink } from '@legacy-ui/Link'
 import { formatDateFromTimestamp } from '@legacy-ui/utils'
+import { t } from '@ui/lib/i18n'
+import { TIME_FRAMES } from '@ui/utils/time'
 
 type ProposalInformationProps = {
   proposal: ProposalData | null

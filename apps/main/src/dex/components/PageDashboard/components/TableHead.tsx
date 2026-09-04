@@ -3,12 +3,12 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { t } from '@evm-ui/lib/i18n'
 import { Box } from '@legacy-ui/Box'
 import { Th, Thead, TheadSortButton } from '@legacy-ui/Table'
 import type { TheadSortButtonProps } from '@legacy-ui/Table/TheadSortButton'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@legacy-ui/utils'
+import { t } from '@ui/lib/i18n'
 
 export const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
   const { rChainId: chainId, isLoading, formValues, updateFormValues } = useDashboardContext()

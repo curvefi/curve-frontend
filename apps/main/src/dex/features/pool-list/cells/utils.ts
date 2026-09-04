@@ -1,10 +1,10 @@
 import { sum } from 'lodash'
 import { LARGE_RATE } from '@/dex/constants'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
-import { t } from '@evm-ui/lib/i18n'
 import { formatNumber, type NumberFormatCategory } from '@evm-ui/utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 
 const MAX_CRV_BOOST = '2.5x'

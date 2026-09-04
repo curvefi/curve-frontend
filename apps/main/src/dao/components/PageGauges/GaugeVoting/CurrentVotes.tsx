@@ -19,9 +19,9 @@ import {
   SortDirection,
 } from '@/dao/types/dao.types'
 import { findRootGauge } from '@/dao/utils'
-import { t } from '@evm-ui/lib/i18n'
-import { Chain } from '@primitives/network.utils'
 import { Box } from '@legacy-ui/Box'
+import { Chain } from '@primitives/network.utils'
+import { t } from '@ui/lib/i18n'
 import { USER_VOTES_TABLE_LABELS } from './constants'
 
 const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy: UserGaugeVoteWeightSortBy) =>

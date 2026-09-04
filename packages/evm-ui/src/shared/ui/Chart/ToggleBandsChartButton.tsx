@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
-import { EyeClosed } from '@evm-ui/shared/icons/EyeClosed'
-import { EyeOpen } from '@evm-ui/shared/icons/EyeOpen'
-import { SelectableChip } from '@evm-ui/shared/ui/SelectableChip'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
-import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
+import { SelectableChip } from '@ui/components/SelectableChip'
+import { Tooltip } from '@ui/components/Tooltip'
+import { WithWrapper } from '@ui/components/WithWrapper'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { EyeClosed } from '@ui/icons/EyeClosed'
+import { EyeOpen } from '@ui/icons/EyeOpen'
 
 const { Spacing } = SizesAndSpaces
 

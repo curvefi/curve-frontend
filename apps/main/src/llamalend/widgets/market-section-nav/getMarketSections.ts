@@ -1,5 +1,5 @@
-import { t } from '@evm-ui/lib/i18n'
 import { MarketRateType } from '@evm-ui/types/market'
+import { t } from '@ui/lib/i18n'
 import type { MarketSectionOption } from './types'
 
 const POSITION_SECTION = {

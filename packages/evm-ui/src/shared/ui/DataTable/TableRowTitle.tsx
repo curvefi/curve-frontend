@@ -1,8 +1,8 @@
 import { MouseEvent, type ReactNode } from 'react'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { RouterLink } from '../RouterLink'
+import { RouterLink } from '@ui/components/RouterLink'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { responsiveTitleEllipsisSx } from '../titleTruncate'
 import { CLICKABLE_IN_ROW_CLASS } from './data-table.utils'
 

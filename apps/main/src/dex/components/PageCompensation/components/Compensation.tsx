@@ -5,7 +5,6 @@ import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { t } from '@evm-ui/lib/i18n'
 import { copyToClipboard, getErrorMessage, shortenAddress, formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
@@ -15,6 +14,7 @@ import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import { Hex } from '@primitives/address.utils'
+import { t } from '@ui/lib/i18n'
 
 export const Compensation = ({
   rChainId: chainId,

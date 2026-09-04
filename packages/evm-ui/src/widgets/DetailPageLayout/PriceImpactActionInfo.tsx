@@ -1,10 +1,10 @@
-import { t } from '@evm-ui/lib/i18n'
-import { ExclamationTriangleIcon } from '@evm-ui/shared/icons/ExclamationTriangleIcon'
 import { ActionInfo, type ActionInfoProps } from '@evm-ui/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { Theme } from '@mui/material/styles'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { QueryProp } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'
+import { t } from '@ui/lib/i18n'
 import { getPriceImpactLevel, type PriceImpact, type PriceImpactLevel } from './price-impact.util'
 
 const { IconSize } = SizesAndSpaces

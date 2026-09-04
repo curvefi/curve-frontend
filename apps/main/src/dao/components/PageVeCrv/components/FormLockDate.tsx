@@ -4,11 +4,11 @@ import { useExtendLockForm } from '@/dao/components/PageVeCrv/hooks/useExtendLoc
 import { useExtendLockGasEstimate } from '@/dao/components/PageVeCrv/queries/extend-lock-estimate-gas.query'
 import type { ChainId } from '@/dao/types/dao.types'
 import { FormButton } from '@evm-ui/features/forms'
-import { t } from '@evm-ui/lib/i18n'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { q } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
   const {

@@ -1,8 +1,8 @@
 import { useGoBack } from '@evm-ui/hooks/router'
-import { ArrowLeft } from '@evm-ui/shared/icons/ArrowLeft'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Button from '@mui/material/Button'
+import { RouterLink } from '@ui/components/RouterLink'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ArrowLeft } from '@ui/icons/ArrowLeft'
 
 const { IconSize } = SizesAndSpaces
 

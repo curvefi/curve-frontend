@@ -1,4 +1,3 @@
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { shortenAddress } from '@evm-ui/utils'
 import { LlamaImg } from '@legacy-ui/images'
 import CloseIcon from '@mui/icons-material/Close'
@@ -7,6 +6,7 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

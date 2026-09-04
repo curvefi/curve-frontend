@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react'
 import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
-import { CopyIcon } from '@evm-ui/shared/icons/CopyIcon'
-import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
+import { Tooltip } from '@ui/components/Tooltip'
+import { CopyIcon } from '@ui/icons/CopyIcon'
 
 type CopyIconButtonProps = {
   copyText: string | undefined

@@ -1,6 +1,6 @@
-import { t } from '@evm-ui/lib/i18n'
 import type { AppName } from '@evm-ui/shared/routes'
 import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { t } from '@ui/lib/i18n'
 import type { Tab, DisclaimerTab } from './types/tabs'
 
 export const TABS: TabOption<Tab>[] = [

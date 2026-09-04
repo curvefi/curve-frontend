@@ -1,11 +1,11 @@
 import { useConnection } from 'wagmi'
 import { NetworkConfig } from '@/dex/types/main.types'
-import { t } from '@evm-ui/lib/i18n'
 import { GridChip } from '@evm-ui/shared/ui/DataTable/chips/GridChip'
 import type { FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Grid from '@mui/material/Grid'
 import { notFalsy } from '@primitives/objects.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { LegacyPoolColumnId } from '../columns'
 import type { LegacyPoolTag } from '../types'
 

@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
 import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
-import { t } from '@evm-ui/lib/i18n'
-import { applySxProps } from '@evm-ui/utils'
 import { useIsMobileFormDrawer } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementContext'
 import Button, { type ButtonProps } from '@mui/material/Button'
 import type { Falsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
+import { t } from '@ui/lib/i18n'
+import { applySxProps } from '@ui/utils/mui'
 import { BUTTON_FORM_SIZE } from './constants'
 
 type FormButtonLabelPart = string | Exclude<Falsy, ''>

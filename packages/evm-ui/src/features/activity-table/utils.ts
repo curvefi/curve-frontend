@@ -1,6 +1,6 @@
-import { t } from '@evm-ui/lib/i18n'
 import { scanTxPath } from '@legacy-ui/utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
+import { t } from '@ui/lib/i18n'
 
 export const DEFAULT_PAGE_SIZE = 50
 export const DEFAULT_PAGE_START_INDEX = 1

@@ -1,19 +1,19 @@
 import type { UrlObject } from 'url'
 import { type ReactNode, useMemo } from 'react'
-import { RouterLink as Link } from '@evm-ui/shared/ui/RouterLink'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { applySxProps } from '@evm-ui/utils/mui'
 import Stack from '@mui/material/Stack'
 import Tab, { type TabProps } from '@mui/material/Tab'
 // eslint-disable-next-line no-restricted-imports
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
-import { useTabsOverflow } from '../../../hooks/useTabsOverflow'
+import { RouterLink as Link } from '@ui/components/RouterLink'
 import {
   TABS_SIZES_CLASSES,
   HIDE_INACTIVE_BORDERS_CLASS,
   TABS_VARIANT_CLASSES,
   TabSwitcherVariants,
-} from '../../../themes/components/tabs'
+} from '@ui/features/themes/components/tabs'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui/utils/mui'
+import { useTabsOverflow } from '../../../hooks/useTabsOverflow'
 import { TabLabel } from './TabLabel'
 import { KEBAB_TAB_VALUE, KebabMenu, KebabTab } from './tabs-kebab'
 

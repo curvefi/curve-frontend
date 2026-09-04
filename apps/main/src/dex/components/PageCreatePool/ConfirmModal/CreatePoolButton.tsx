@@ -5,10 +5,10 @@ import { curveProps } from '@/dex/lib/utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
-import { t } from '@evm-ui/lib/i18n'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Button } from '@legacy-ui/Button'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
+import { t } from '@ui/lib/i18n'
 
 type Props = {
   disabled: boolean

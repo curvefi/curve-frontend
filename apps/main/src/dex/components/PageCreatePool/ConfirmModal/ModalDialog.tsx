@@ -4,11 +4,11 @@ import type { AriaDialogProps, AriaOverlayProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { useLayoutStore } from '@evm-ui/features/layout'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { breakpoints } from '@legacy-ui/utils/responsive'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 
 type Props = {
   footerContent?: ReactNode

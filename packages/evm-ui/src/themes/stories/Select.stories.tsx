@@ -1,10 +1,4 @@
 import { useState, useRef, useCallback, type MouseEvent, type ReactNode } from 'react'
-import { useResizeObserver } from '@evm-ui/hooks/useResizeObserver'
-import { useSwitch } from '@evm-ui/hooks/useSwitch'
-import { InvertOnHover } from '@evm-ui/shared/ui/InvertOnHover'
-import { Select, type SelectProps } from '@evm-ui/shared/ui/Select'
-import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -12,6 +6,12 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { InvertOnHover } from '@ui/components/InvertOnHover'
+import { Select, type SelectProps } from '@ui/components/Select'
+import { TokenLabel } from '@ui/components/TokenLabel'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useResizeObserver } from '@ui/hooks/useResizeObserver'
+import { useSwitch } from '@ui/hooks/useSwitch'
 
 const { Spacing } = SizesAndSpaces
 const sizes = ['tiny', 'small', 'medium', 'extraLarge'] satisfies NonNullable<SelectProps['size']>[]

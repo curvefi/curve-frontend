@@ -6,11 +6,11 @@ import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
-import { t } from '@evm-ui/lib/i18n'
-import { Chain } from '@primitives/network.utils'
 import { shortenAddress, formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { formatDate, scanAddressPath } from '@legacy-ui/utils/'
+import { Chain } from '@primitives/network.utils'
+import { t } from '@ui/lib/i18n'
 
 type GaugeMetricsProps = {
   gaugeData: GaugeFormattedData | undefined

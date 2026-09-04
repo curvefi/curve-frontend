@@ -1,12 +1,12 @@
 import type { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import type { QueryData } from '@evm-ui/lib/queries/types'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { decimalDiv, decimalMultiply, decimalSum } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ, q } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { HealthDetails } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces

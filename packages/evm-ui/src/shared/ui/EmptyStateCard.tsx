@@ -1,13 +1,13 @@
 import { ReactNode } from 'react'
 import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
-import { LlamaIcon } from '@evm-ui/shared/icons/LlamaIcon'
-import { Responsive } from '@evm-ui/themes/basic-theme'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { applySxProps } from '@evm-ui/utils'
 import { Box, Button, ButtonProps, Skeleton } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { ExternalLink } from './ExternalLink'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import { Responsive } from '@ui/features/themes/basic-theme'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { LlamaIcon } from '@ui/icons/LlamaIcon'
+import { applySxProps } from '@ui/utils/mui'
 
 const { Spacing, IconSize, MaxWidth, LineHeight } = SizesAndSpaces
 

@@ -1,12 +1,12 @@
 import { ReactNode } from 'react'
-import { t } from '@evm-ui/lib/i18n'
-import type { TypographyVariantKey } from '@evm-ui/themes/typography'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { Typography } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import type { TypographyVariantKey } from '@ui/features/themes/typography'
+import { t } from '@ui/lib/i18n'
 import { shortenAddress } from '../../utils'
 import { ActionInfo, type ActionInfoProps } from './ActionInfo'
-import { ExternalLink } from './ExternalLink'
 
 type AddressActionInfoProps = {
   chainId: number

@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test'
-import { ReloadIcon } from '@evm-ui/shared/icons/ReloadIcon'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { EmptyStateCard } from '../EmptyStateCard'
 
 const meta: Meta<typeof EmptyStateCard> = {

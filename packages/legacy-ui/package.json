@@ -22,7 +22,6 @@
   "peerDependencies": {
     "bignumber.js": "*",
     "ethers": "*",
-    "lodash": "*",
     "react": "*",
     "react-dom": "*",
     "styled-components": "*"

@@ -2,13 +2,13 @@ import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
-import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
-import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { amount } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 

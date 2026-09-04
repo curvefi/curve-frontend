@@ -1,10 +1,10 @@
-import { t } from '@evm-ui/lib/i18n'
-import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 

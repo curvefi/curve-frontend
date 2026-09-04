@@ -1,5 +1,5 @@
 import { createElement } from 'react'
-import { t } from '@evm-ui/lib/i18n'
+import { t } from '@ui/lib/i18n'
 import { HealthTooltipContent } from './HealthTooltipContent'
 import { LegacyHealthTooltipContent } from './LegacyHealthTooltipContent'
 import { LiquidationBufferTooltipContent } from './LiquidationBufferTooltipContent'

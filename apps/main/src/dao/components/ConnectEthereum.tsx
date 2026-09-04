@@ -1,9 +1,9 @@
 import { getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
 import { isLoading, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
-import { t } from '@evm-ui/lib/i18n'
-import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
-import { Chain } from '@primitives/network.utils'
 import Button from '@mui/material/Button'
+import { Chain } from '@primitives/network.utils'
+import { RouterLink } from '@ui/components/RouterLink'
+import { t } from '@ui/lib/i18n'
 
 export const ConnectEthereum = () => {
   const { connectState } = useCurve()

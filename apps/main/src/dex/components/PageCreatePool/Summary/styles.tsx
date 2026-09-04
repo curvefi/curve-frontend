@@ -1,10 +1,10 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { TokenIcon, type TokenIconProps } from '@evm-ui/shared/ui/TokenIcon'
 import { Icon } from '@legacy-ui/Icon'
 import type { IconProps } from '@legacy-ui/Icon/Icon'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import type { ExternalLinkProps } from '@legacy-ui/Link/ExternalLink'
+import { TokenIcon, type TokenIconProps } from '@ui/components/TokenIcon'
 
 type DivProps = ComponentPropsWithRef<'div'>
 type PProps = ComponentPropsWithRef<'p'>

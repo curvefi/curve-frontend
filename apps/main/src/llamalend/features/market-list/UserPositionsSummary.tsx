@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { parseListFilter } from '@evm-ui/shared/ui/DataTable/filters'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Grid, { GridProps } from '@mui/material/Grid'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { getUserPositionsSummary, UserPositionSummaryMetric } from './user-position.utils'
 
 const { Spacing } = SizesAndSpaces

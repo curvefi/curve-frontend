@@ -1,8 +1,5 @@
 import { type FormHTMLAttributes, ReactNode } from 'react'
 import type { FormSubmitHandler } from '@evm-ui/features/forms'
-import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
-import { Responsive } from '@evm-ui/themes/basic-theme'
-import type { SxProps } from '@evm-ui/utils'
 import CloseIcon from '@mui/icons-material/Close'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -11,7 +8,10 @@ import CardHeader from '@mui/material/CardHeader'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
+import { WithWrapper } from '@ui/components/WithWrapper'
+import { Responsive } from '@ui/features/themes/basic-theme'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { SxProps } from '@ui/utils/mui'
 
 const {
   Spacing,

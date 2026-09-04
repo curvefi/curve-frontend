@@ -1,6 +1,6 @@
-import { t } from '@evm-ui/lib/i18n'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { t } from '@ui/lib/i18n'
 import { LabelCell } from '../cells/LabelCell'
 import { ValueCell } from '../cells/ValueCell'
 import { ClosePositionRowColumnId } from './columns.enum'

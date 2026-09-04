@@ -9,13 +9,13 @@ import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.que
 import { networksIdMapper } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useParams } from '@evm-ui/hooks/router'
-import { t } from '@evm-ui/lib/i18n'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { PageHeader } from '@evm-ui/widgets/PageHeader'
 import { RCScrvUSDLogoSM } from '@legacy-ui/images'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 
 const { IconSize } = SizesAndSpaces
 

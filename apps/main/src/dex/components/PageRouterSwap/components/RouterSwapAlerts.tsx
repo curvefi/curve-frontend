@@ -4,12 +4,12 @@ import { useChainId } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { AlertSlippage } from '@/dex/components/AlertSlippage'
 import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { QueryProp } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 
 export const RouterSwapAlerts = ({
   formStatus,

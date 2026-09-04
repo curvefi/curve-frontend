@@ -1,6 +1,6 @@
 import { meanBy } from 'lodash'
-import { Duration } from '@evm-ui/themes/design/0_primitives'
-import { TIME_FRAMES } from '@evm-ui/utils/time'
+import { Duration } from '@ui/features/themes/design/0_primitives'
+import { TIME_FRAMES } from '@ui/utils/time'
 
 const { Weekly: WEEKLY, Monthly: MONTHLY } = Duration.AverageRates
 
