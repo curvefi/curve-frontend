@@ -4,7 +4,7 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
 import type { MarketType } from '@evm-ui/types/market'
-import { q, type QueryProp } from '@evm-ui/types/util'
+import { q, type QueryProp } from '@ui/features/queries/util'
 import type { MarketTemplate } from '../../llamalend.types'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { MarketContext } from './MarketContext'

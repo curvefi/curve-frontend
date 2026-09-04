@@ -6,7 +6,7 @@ import {
   parseRangeFilter,
   serializeRangeFilter,
 } from '@evm-ui/shared/ui/DataTable/filters'
-import { Range } from '@evm-ui/types/util'
+import { Range } from '@ui/features/queries/util'
 
 export const useRangeFilter = <TColumnId extends string>({
   isLoading = false,

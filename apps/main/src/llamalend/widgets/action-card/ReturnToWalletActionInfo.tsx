@@ -1,8 +1,8 @@
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber, formatToken } from '@evm-ui/utils'
 import { Decimal } from '@primitives/decimal.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 
 export function ReturnToWalletActionInfo({
   returnToWallet,

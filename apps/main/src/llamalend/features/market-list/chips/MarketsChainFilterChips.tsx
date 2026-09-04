@@ -3,8 +3,8 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { ChainFilterChips } from '@evm-ui/shared/ui/DataTable/chips/ChainFilterChips'
 import { type FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@evm-ui/shared/ui/DataTable/filters'
-import { useMappedQuery, type QueryProp } from '@evm-ui/types/util'
 import { getUniqueSortedStrings } from '@evm-ui/utils/sorting'
+import { useMappedQuery, type QueryProp } from '@ui/features/queries/util'
 import { MarketColumnId } from '../columns'
 
 const getChains = (data: LlamaMarket[]) =>

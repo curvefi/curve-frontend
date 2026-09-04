@@ -33,7 +33,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
-import { constQ } from '@evm-ui/types/util'
+import { constQ } from '@ui/features/queries/util'
 
 const CHAIN_ID = 1
 const testCases = [

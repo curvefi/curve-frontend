@@ -6,7 +6,7 @@ import { isChainLite } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
+import { Chain } from '@primitives/network.utils'
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {

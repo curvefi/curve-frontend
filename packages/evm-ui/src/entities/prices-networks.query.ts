@@ -3,8 +3,8 @@ import type { Chain } from '@curvefi/prices-api'
 import { getSupportedChains } from '@curvefi/prices-api/chains'
 import { EmptyValidationSuite } from '@evm-ui/lib'
 import { queryFactory } from '@evm-ui/lib/model'
-import { type QueryProp, useMappedQuery } from '@evm-ui/types/util'
 import { fromEntries } from '@primitives/objects.utils'
+import { type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 
 export const { useQuery: usePricesNetworks } = queryFactory({
   queryKey: () => ['prices', 'networks'] as const,

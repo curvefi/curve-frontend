@@ -27,10 +27,11 @@ import { createVirtualTestnet, createTenderlyWagmiConfigFromVNet } from '@cy/sup
 import { getRpcUrls, type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
-import { Chain, decimalGreaterThan, decimalMultiply, decimalSum } from '@evm-ui/utils'
+import { decimalGreaterThan, decimalMultiply, decimalSum } from '@evm-ui/utils'
 import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { Chain } from '@primitives/network.utils'
 
 type ScrvUsdForm = 'deposit' | 'withdraw'
 

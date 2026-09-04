@@ -1,15 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { initSentry } from '@evm-ui/features/sentry'
 import { t } from '@evm-ui/lib/i18n'
 import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
 import MuiLink from '@mui/material/Link'
 import { RouterProvider } from '@tanstack/react-router'
+import { initSentry } from '@ui/features/sentry'
 import { router } from './routes'
 import { RootLayout } from './routes/RootLayout'
 
-initSentry()
+initSentry('curve-frontend')
 
 // prettier-ignore
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.

@@ -12,7 +12,7 @@ import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/
 import { t, Trans } from '@evm-ui/lib/i18n'
 import { DAO_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { formatNumber, amount } from '@evm-ui/utils'
-import { Chain } from '@evm-ui/utils/network'
+import { Chain } from '@primitives/network.utils'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Button } from '@legacy-ui/Button'

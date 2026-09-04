@@ -13,9 +13,9 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import { useFormSync, useOnChangeCallback } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 
 export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   params,

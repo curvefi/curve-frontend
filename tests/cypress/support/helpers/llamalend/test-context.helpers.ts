@@ -3,9 +3,9 @@ import { networks as lendNetworks } from '@/lend/networks'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
-import { queryClient } from '@evm-ui/lib/api'
 import { type GasInfo, type GasInfoQueryOptions, setGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { getTokenUsdRateKey } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { queryClient } from '@ui/features/queries/query-client'
 import { blockUnmockedApis, mockNewHashCollateralEvents } from './market-list-mocks'
 
 export const llamaNetworks: NetworkDict<LlamaChainId> = lendNetworks

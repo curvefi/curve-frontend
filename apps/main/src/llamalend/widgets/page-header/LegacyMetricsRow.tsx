@@ -6,10 +6,10 @@ import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketType } from '@evm-ui/types/market'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { maybe } from '@primitives/objects.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces

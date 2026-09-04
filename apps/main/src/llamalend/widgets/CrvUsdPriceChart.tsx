@@ -21,8 +21,8 @@ import {
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery, q } from '@evm-ui/types/util'
-import { Chain, CRVUSD_ADDRESS, TIME_OPTION_MS } from '@evm-ui/utils'
+import { Chain } from '@primitives/network.utils'
+import { CRVUSD_ADDRESS, TIME_OPTION_MS } from '@evm-ui/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { formatDate } from '@legacy-ui/utils'
 import { CardContent, Stack } from '@mui/material'
@@ -30,6 +30,7 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import { notFalsyArray } from '@primitives/objects.utils'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces

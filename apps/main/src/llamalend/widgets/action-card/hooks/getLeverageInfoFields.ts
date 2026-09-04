@@ -2,10 +2,10 @@ import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { combineQueryState } from '@evm-ui/lib'
-import { mapQuery, q, type Query, type QueryProp } from '@evm-ui/types/util'
 import { decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
+import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 
 type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined

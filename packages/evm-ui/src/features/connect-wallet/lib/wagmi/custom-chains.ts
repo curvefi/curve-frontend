@@ -1,6 +1,6 @@
 import { chainConfig } from 'viem/op-stack'
 import { defineChain } from 'viem/utils'
-import { Chain as ChainId } from '@evm-ui/utils/network'
+import { Chain as ChainId } from '@primitives/network.utils'
 import { mainnet } from '@wagmi/core/chains'
 import { RPC } from './rpc'
 

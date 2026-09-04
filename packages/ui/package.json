@@ -9,12 +9,21 @@
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-ui.tsbuildinfo"
   },
+  "dependencies": {
+    "@sentry/core": "10.72.0",
+    "@sentry/react": "10.72.0",
+    "@tanstack/query-async-storage-persister": "*",
+    "@tanstack/query-persist-client-core": "*",
+    "@tanstack/react-query": "*",
+    "@tanstack/react-query-persist-client": "*"
+  },
   "peerDependencies": {
     "@curvefi/primitives": "*",
     "react": "*",
     "react-dom": "*"
   },
   "devDependencies": {
+    "@types/node": "*",
     "@types/react": "*",
     "@types/react-dom": "*",
     "eslint": "*",

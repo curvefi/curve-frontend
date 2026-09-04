@@ -4,7 +4,6 @@ import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { borderStyle, decimal, formatNumber, formatToken } from '@evm-ui/utils'
 import {
   getPriceImpactDisplay,
@@ -17,6 +16,7 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 
 const { Spacing } = SizesAndSpaces
 

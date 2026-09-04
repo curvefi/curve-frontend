@@ -6,8 +6,8 @@ import {
   resetValidationSuite,
 } from '@/llamalend/queries/validation/reset.validation'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import type { Range } from '@evm-ui/types/util'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Range } from '@ui/features/queries/util'
 
 export const { useQuery: useResetPrices } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) =>

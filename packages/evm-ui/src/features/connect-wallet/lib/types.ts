@@ -6,7 +6,7 @@ import type { IChainId as CurveChainId, INetworkName as CurveNetworkId } from '@
 import { type default as llamaApi } from '@curvefi/llamalend-api'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { AppName } from '@evm-ui/shared/routes'
-import { ReleaseChannel } from '@evm-ui/utils'
+import { ReleaseChannel } from '@ui/utils/env'
 
 export type Wallet = {
   readonly provider?: Eip1193Provider
