@@ -564,6 +564,7 @@ export const QuickSwap = ({
               tokens={tokens}
               balances={balances}
               tokenPrices={tokenPrices}
+              volumes={tokenVolumes.data}
               disableMyTokens
               onToken={({ address: toAddress }) => {
                 const fromAddress =
