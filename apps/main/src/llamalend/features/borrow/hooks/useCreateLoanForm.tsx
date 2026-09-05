@@ -172,6 +172,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isPending,
     isLoading: isPending || isSolvencyLoading,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
+    userAddress,
     onSubmit,
     maxTokenValues,
     borrowToken,

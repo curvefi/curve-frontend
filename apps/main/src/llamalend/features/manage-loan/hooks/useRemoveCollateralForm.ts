@@ -86,6 +86,7 @@ export const useRemoveCollateralForm = <
     params,
     isPending,
     isDisabled: !formState.isValid || isPending || isDebouncing,
+    userAddress,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     maxRemovable,

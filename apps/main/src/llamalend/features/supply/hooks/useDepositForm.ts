@@ -78,6 +78,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
     isLoading: isPending || !marketId || isSolvencyLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
+    userAddress,
     borrowToken,
     error: depositError ?? solvencyError,
     max: useMaxDepositTokenValues({ params, borrowToken: borrowToken?.address, form }),

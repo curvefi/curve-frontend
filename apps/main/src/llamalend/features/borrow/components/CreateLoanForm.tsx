@@ -55,6 +55,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     isDisabled,
+    userAddress,
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     disabledAlert,
