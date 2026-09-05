@@ -12,7 +12,7 @@ import {
   CHART_LINE_DASH_PATTERNS,
   ChartFooter,
   type ChartLineDashPattern,
-  ChartStateWrapper,
+  EvmChartStateWrapper,
   EChartsLineChart,
   type LegendItem,
   type LineSeriesConfig,
@@ -253,7 +253,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
             />
           )}
         </Stack>
-        <ChartStateWrapper
+        <EvmChartStateWrapper
           height={Height.shortChart}
           isLoading={snapshots.isLoading || !controllerAddress}
           error={snapshots.error}
@@ -270,7 +270,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
             yPaddingRatio={0.05}
             renderTooltip={HistoricalRatesTooltip}
           />
-        </ChartStateWrapper>
+        </EvmChartStateWrapper>
         <ChartFooter legendSets={legendSets} />
       </CardContent>
     </Card>

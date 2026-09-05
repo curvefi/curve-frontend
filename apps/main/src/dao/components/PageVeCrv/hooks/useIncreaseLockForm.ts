@@ -73,6 +73,7 @@ export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
     isApproved: isApproved.data,
     isPending,
     isDisabled,
+    userAddress,
     error,
     onSubmit: form.handleSubmit(onSubmitIncrease),
     updateAmount: (lockedAmount: Decimal | undefined) => update({ lockedAmount }),

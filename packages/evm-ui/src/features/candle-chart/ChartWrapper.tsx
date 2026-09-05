@@ -1,6 +1,6 @@
 import { CandleChart } from '@evm-ui/features/candle-chart/CandleChart'
 import { useChartPalette } from '@evm-ui/features/candle-chart/hooks/useChartPalette'
-import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart'
 import type { ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui/lib/i18n'
@@ -61,7 +61,7 @@ export const ChartWrapper = ({
 
   return (
     <Stack direction="column" sx={{ width: '100%', minWidth: 0 }}>
-      <ChartStateWrapper
+      <EvmChartStateWrapper
         height={chartHeight}
         isLoading={isLoading}
         error={error}
@@ -85,7 +85,7 @@ export const ChartWrapper = ({
           latestOraclePrice={latestOraclePrice}
           onVisiblePriceRangeChange={onVisiblePriceRangeChange}
         />
-      </ChartStateWrapper>
+      </EvmChartStateWrapper>
     </Stack>
   )
 }

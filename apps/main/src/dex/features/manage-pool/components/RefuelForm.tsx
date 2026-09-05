@@ -23,12 +23,19 @@ export type RefuelFormParams = {
 }
 
 export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormParams) => {
-  const { form, values, tokenA, tokenB, poolTvl, refuelError, formErrors, isPending, isDisabled, onSubmit } =
-    useRefuelForm({
-      chainId,
-      blockchainId,
-      poolAddress,
-    })
+  const {
+    form,
+    values,
+    tokenA,
+    tokenB,
+    poolTvl,
+    refuelError,
+    formErrors,
+    isPending,
+    isDisabled,
+    userAddress,
+    onSubmit,
+  } = useRefuelForm({ chainId, blockchainId, poolAddress })
 
   return (
     <Form
@@ -100,7 +107,12 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
         testId="refuel-submit-button"
       />
 
-      <FormAlerts error={refuelError} formErrors={formErrors} handledErrors={['tokenAAmount', 'tokenBAmount']} />
+      <FormAlerts
+        error={refuelError}
+        formErrors={formErrors}
+        handledErrors={['tokenAAmount', 'tokenBAmount']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

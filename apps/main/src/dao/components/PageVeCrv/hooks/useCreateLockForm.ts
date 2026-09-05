@@ -87,6 +87,7 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     isApproved: isApproved.data,
     isPending,
     isDisabled: !form.formState.isValid || isPending || isDebouncing,
+    userAddress,
     error: createError ?? isApproved.error,
     onSubmit: form.handleSubmit(onSubmitCreate),
     updateAmount: (lockedAmount: Decimal | undefined) => update({ lockedAmount }),

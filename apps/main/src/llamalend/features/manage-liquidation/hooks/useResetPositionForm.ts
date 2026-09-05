@@ -126,6 +126,7 @@ export const useResetPositionForm = <ChainId extends LlamaChainId>({
     isPending,
     isLoading: !market || resetAvailable.isLoading,
     isDisabled: !userAddress || !resetAvailable.data || !formState.isValid || isPending || isDebouncing,
+    userAddress,
     onSubmit: form.handleSubmit(onSubmit),
     error,
     formErrors: formState.visibleErrors,

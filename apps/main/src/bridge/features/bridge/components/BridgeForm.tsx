@@ -40,6 +40,7 @@ export const BridgeForm = ({
     approveError,
     bridgeError,
     formErrors,
+    userAddress,
     onSubmit,
   } = useBridgeForm({ chainId, networks })
 
@@ -84,7 +85,12 @@ export const BridgeForm = ({
         }
       />
 
-      <FormAlerts error={approveError ?? bridgeError} formErrors={formErrors} handledErrors={['amount']} />
+      <FormAlerts
+        error={approveError ?? bridgeError}
+        formErrors={formErrors}
+        handledErrors={['amount']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

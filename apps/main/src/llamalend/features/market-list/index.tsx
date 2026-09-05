@@ -12,7 +12,7 @@ export const MarketsList = () => {
 
   return (
     <ListPageWrapper footer={<MarketsTableFooter />}>
-      <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
+      <UserPositionsTables onReload={onReload} tableQuery={tableQuery} userAddress={address} />
       <MarketsTable onReload={onReload} tableQuery={tableQuery} />
     </ListPageWrapper>
   )

@@ -192,6 +192,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isLoading: isPending || !market || isSolvencyLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
+    userAddress,
     borrowToken,
     collateralToken,
     error: borrowError ?? solvencyError,

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { Stack, SxProps } from '@mui/material'
+import type { Address } from '@primitives/address.utils'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { t } from '@ui/lib/i18n'
@@ -14,6 +15,7 @@ export const ErrorMessage = ({
   refreshData,
   sx,
   size,
+  userAddress,
 }: {
   title: ReactNode
   subtitle?: ReactNode
@@ -21,6 +23,7 @@ export const ErrorMessage = ({
   refreshData?: () => Promise<unknown> | void
   sx?: SxProps
   size?: EmptyStateCardProps['size']
+  userAddress?: Address
 }) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
 
@@ -41,7 +44,12 @@ export const ErrorMessage = ({
           },
         })}
       />
-      <ErrorReportModal isOpen={isReportOpen} onClose={closeReportModal} context={{ error, title, subtitle }} />
+      <ErrorReportModal
+        isOpen={isReportOpen}
+        onClose={closeReportModal}
+        context={{ error, title, subtitle }}
+        userAddress={userAddress}
+      />
     </Stack>
   )
 }

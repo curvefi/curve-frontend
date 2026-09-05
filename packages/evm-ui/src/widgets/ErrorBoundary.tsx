@@ -2,6 +2,7 @@ import { type ElementType, type ReactNode, useEffect } from 'react'
 import { ErrorPage } from '@evm-ui/pages/ErrorPage'
 import { ErrorMessage } from '@evm-ui/shared/ui/ErrorMessage'
 import { Box } from '@mui/material'
+import type { Address } from '@primitives/address.utils'
 import { captureException } from '@sentry/react'
 import { CatchBoundary } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/router-core'
@@ -11,16 +12,21 @@ const ErrorComponent = ({
   reset,
   title,
   LinkComponent,
-}: ErrorComponentProps & { title: string; LinkComponent?: ElementType }) => {
+  userAddress,
+}: ErrorComponentProps & { title: string; LinkComponent?: ElementType; userAddress?: Address }) => {
   useEffect(() => {
-    captureException(error, {
-      tags: { boundary: title },
-      extra: { message: error.message, stack: error.stack },
-    })
+    captureException(error, { tags: { boundary: title }, extra: { message: error.message, stack: error.stack } })
   }, [error, title])
 
   return (
-    <ErrorPage title={title} subtitle={error.message} resetError={reset} error={error} LinkComponent={LinkComponent} />
+    <ErrorPage
+      title={title}
+      subtitle={error.message}
+      resetError={reset}
+      error={error}
+      LinkComponent={LinkComponent}
+      userAddress={userAddress}
+    />
   )
 }
 
@@ -31,6 +37,7 @@ export const ErrorBoundary = ({
   refreshData,
   inline,
   LinkComponent,
+  userAddress,
 }: {
   children: ReactNode
   title: string
@@ -38,6 +45,7 @@ export const ErrorBoundary = ({
   refreshData?: () => Promise<unknown> | void
   inline?: boolean
   LinkComponent?: ElementType
+  userAddress?: Address
 }) => (
   <CatchBoundary
     getResetKey={() => 'reset'}
@@ -57,11 +65,18 @@ export const ErrorBoundary = ({
             subtitle={subtitle}
             error={error}
             refreshData={refreshData}
+            userAddress={userAddress}
             sx={{ alignSelf: 'center' }}
           />
         </Box>
       ) : (
-        <ErrorComponent error={error} reset={reset} title={title} LinkComponent={LinkComponent} />
+        <ErrorComponent
+          error={error}
+          reset={reset}
+          title={title}
+          LinkComponent={LinkComponent}
+          userAddress={userAddress}
+        />
       )
     }
   >

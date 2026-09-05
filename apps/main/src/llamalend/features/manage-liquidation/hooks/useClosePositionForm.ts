@@ -202,6 +202,7 @@ export function useClosePositionForm({
     values,
     isPending,
     isDisabled: isPending || !!table.error || Number(missing) > 0,
+    userAddress,
     table,
     debtTokenSymbol: borrowToken?.symbol,
     collateralToRecover: closePositionData?.collateralToRecover,

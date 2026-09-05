@@ -15,7 +15,7 @@ import { t } from '@ui/lib/i18n'
 import { MILLISECONDS_PER_SECOND } from '@ui/utils/time'
 
 export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
-  const { form, params, canUnlock, lockedAmountAndUnlockTime, isPending, isDisabled, error, onSubmit } =
+  const { form, params, canUnlock, lockedAmountAndUnlockTime, isPending, isDisabled, userAddress, error, onSubmit } =
     useWithdrawLockForm({ chainId })
   const lock = lockedAmountAndUnlockTime.data
   const isOpen = !!canUnlock
@@ -47,7 +47,12 @@ export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
           {lock?.unlockTime && <StyledCountdown endDate={lock.unlockTime / MILLISECONDS_PER_SECOND} />}
         </AlertBox>
       )}
-      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={[]} />
+      <FormAlerts
+        error={error}
+        formErrors={form.formState.visibleErrors}
+        handledErrors={[]}
+        userAddress={userAddress}
+      />
       <FormButton
         pending={isPending}
         loading={isPending}

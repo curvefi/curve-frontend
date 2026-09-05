@@ -63,7 +63,12 @@ export const PagePool = () => {
   )
 
   return poolNotFound || isBlacklisted ? (
-    <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
+    <ErrorPage
+      title="404"
+      subtitle={t`Pool Not Found`}
+      continueUrl={getPath(props, ROUTE.PAGE_POOLS)}
+      userAddress={curveApi?.signerAddress}
+    />
   ) : (
     poolId && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
       <Transfer

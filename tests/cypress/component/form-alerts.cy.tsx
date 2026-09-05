@@ -1,3 +1,4 @@
+import { zeroAddress } from 'viem'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 
@@ -8,7 +9,7 @@ describe('FormAlerts', () => {
     cy.window().then(({ navigator }) => cy.stub(navigator.clipboard, 'writeText').as('writeText'))
     cy.mount(
       <ComponentTestWrapper>
-        <FormAlerts error={new Error(ERROR_MESSAGE)} formErrors={[]} handledErrors={[]} />
+        <FormAlerts error={new Error(ERROR_MESSAGE)} formErrors={[]} handledErrors={[]} userAddress={zeroAddress} />
       </ComponentTestWrapper>,
     )
   })

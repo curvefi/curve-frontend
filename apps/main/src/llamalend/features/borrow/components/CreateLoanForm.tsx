@@ -55,6 +55,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     isDisabled,
+    userAddress,
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     disabledAlert,
@@ -148,6 +149,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             priceImpact={priceImpact}
             collateralSymbol={collateralToken?.symbol}
             borrowSymbol={borrowToken?.symbol}
+            userAddress={userAddress}
           />
         </Stack>
       )}
@@ -180,7 +182,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         onConfirm={onConfirm}
         tokenSymbol={collateralToken?.symbol}
       />
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['userCollateral', 'debt', 'maxDebt']} />
+      <FormAlerts
+        error={error}
+        formErrors={formErrors}
+        handledErrors={['userCollateral', 'debt', 'maxDebt']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

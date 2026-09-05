@@ -79,6 +79,7 @@ export const MintMarketPage = () => {
       subtitle={error.message}
       error={error}
       continueUrl={getCollateralListPathname(params)}
+      userAddress={address}
     />
   ) : (
     <MarketContextProvider

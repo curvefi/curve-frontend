@@ -1,5 +1,4 @@
 import { type MouseEvent, useEffect } from 'react'
-import { WagmiProviderNotFoundError, useConnection } from 'wagmi'
 import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
@@ -10,6 +9,7 @@ import TextField from '@mui/material/TextField'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
+import type { Address } from '@primitives/address.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { type ContactMethod, type ErrorContext, useErrorReportForm } from './useErrorReportForm'
@@ -25,22 +25,15 @@ type ErrorReportModalProps = {
   isOpen: boolean
   onClose: () => void
   context: ErrorContext
+  userAddress: Address | undefined
 }
 
-/*** Returns the connected wallet address when wagmi context is available. */
-const useTryConnection = () => {
-  try {
-    return useConnection()
-  } catch (error) {
-    // Error boundaries can render before the WagmiProvider mounts. In that case, wagmi throws WagmiProviderNotFoundError,
-    // which we swallow so the modal can still render and users can submit reports without a prefilled address.
-    if (error instanceof WagmiProviderNotFoundError) return
-    throw error
-  }
-}
-
-export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalProps) => {
-  const { address: userAddress } = useTryConnection() ?? {}
+export const ErrorReportModal = ({
+  isOpen,
+  onClose,
+  context,
+  userAddress,
+}: ErrorReportModalProps & { userAddress?: Address }) => {
   const {
     form,
     values: { address, contact, contactMethod, description },

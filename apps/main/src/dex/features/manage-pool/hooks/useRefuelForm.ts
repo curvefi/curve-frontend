@@ -90,6 +90,7 @@ export const useRefuelForm = ({
     poolTvl: mapQuery(pool, p => p.tvlUsd),
     isPending,
     isDisabled: tokens == null || !formState.isValid || isPending,
+    userAddress,
     refuelError,
     formErrors,
     onSubmit: form.handleSubmit(onSubmitRefuel),

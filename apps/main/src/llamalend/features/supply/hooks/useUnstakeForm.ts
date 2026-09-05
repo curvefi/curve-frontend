@@ -103,6 +103,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
     isDisabled: !formState.isValid || isPending || isDebouncing,
+    userAddress,
     borrowToken,
     collateralToken,
     unstakeError,

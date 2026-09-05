@@ -93,6 +93,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
           error={errors['root.serverError'] ?? depositRewardError}
           formErrors={visibleErrors}
           handledErrors={['rewardTokenId', 'amount', 'epoch']}
+          userAddress={userAddress}
         />
       </Stack>
     </Form>

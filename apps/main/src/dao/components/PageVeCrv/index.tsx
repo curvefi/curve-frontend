@@ -27,7 +27,7 @@ export const VeCrv = () => {
       >
         {data && <FormCrvLocker chainId={chainId} {...data} />}
         {isLoading && <FormSkeleton />}
-        {error && <ErrorMessage title={t`Locker Error`} error={error} />}
+        {error && <ErrorMessage title={t`Locker Error`} error={error} userAddress={userAddress} />}
         {!userAddress && <ConnectWalletPrompt description={t`Please connect your wallet to view your locked CRV.`} />}
       </Box>
     </FormPlacementProvider>

@@ -8,6 +8,7 @@ import { EmptyStateCard } from '@evm-ui/shared/ui/EmptyStateCard'
 import { ErrorMessage } from '@evm-ui/shared/ui/ErrorMessage'
 import { MarketRateType } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
 import { mapQuery, QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -21,6 +22,7 @@ const { Spacing } = SizesAndSpaces
 type UserPositionsTableProps = {
   onReload: () => void
   tableQuery: QueryProp<LlamaMarketsTableResult>
+  userAddress: Address | undefined
 }
 
 const buildVaultUrl = (market: LlamaMarket) =>
@@ -46,6 +48,7 @@ export const UserPositionsTables = ({
   onReload,
   tableQuery,
   tableQuery: { data: queryData, isLoading, error },
+  userAddress,
 }: UserPositionsTableProps) => {
   const { address } = useConnection()
   // Tracks whether the user has any positions for each market rate type.
@@ -97,6 +100,7 @@ export const UserPositionsTables = ({
                   subtitle={error.message}
                   error={error}
                   refreshData={onReload}
+                  userAddress={userAddress}
                 />
               ) : (
                 <EmptyStateCard

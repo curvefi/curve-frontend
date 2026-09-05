@@ -49,6 +49,7 @@ export const useScrvUsdDepositForm = ({ chainId }: { chainId: ChainId }) => {
     isApproved,
     isPending,
     isDisabled: !userAddress || !form.formState.isValid || isPending || isDebouncing || isApproved.isLoading,
+    userAddress,
     error,
     formErrors: form.formState.visibleErrors,
     max,

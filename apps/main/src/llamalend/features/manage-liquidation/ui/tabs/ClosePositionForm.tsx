@@ -34,6 +34,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
     isPending,
     closeError,
     isApproved,
+    userAddress,
     onSubmit,
     formErrors,
   } = useClosePositionForm({ network })
@@ -64,7 +65,11 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
           )
         }
       />
-      <LoanActionSettings slippage={values.slippage} onSlippageChange={slippage => form.update({ slippage })} />
+      <LoanActionSettings
+        slippage={values.slippage}
+        onSlippageChange={slippage => form.update({ slippage })}
+        userAddress={userAddress}
+      />
       {missing != null && borrowedBalance != null && +missing > 0 ? (
         <AlertAdditionalDebtToken debtTokenSymbol={debtTokenSymbol} missing={missing} balance={borrowedBalance} />
       ) : (
@@ -85,6 +90,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         error={closeError ?? table.error ?? null}
         formErrors={formErrors}
         handledErrors={[]}
+        userAddress={userAddress}
       />
     </Form>
   )

@@ -85,6 +85,7 @@ export const RepayForm = <ChainId extends IChainId>({
     collateralToken,
     repayError,
     isApproved,
+    userAddress,
     routes,
     formErrors,
     max,
@@ -193,6 +194,7 @@ export const RepayForm = <ChainId extends IChainId>({
         priceImpact={priceImpact}
         collateralSymbol={collateralToken?.symbol}
         borrowSymbol={borrowToken?.symbol}
+        userAddress={userAddress}
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
@@ -221,6 +223,7 @@ export const RepayForm = <ChainId extends IChainId>({
         error={repayError}
         formErrors={formErrors}
         handledErrors={notFalsy(selectedField, max[selectedField]?.fieldName)}
+        userAddress={userAddress}
       />
     </Form>
   )

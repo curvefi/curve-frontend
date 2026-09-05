@@ -3,6 +3,7 @@ import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -20,6 +21,7 @@ export const SlippageSettingsModal = ({
   type,
   active,
   maxSlippage,
+  userAddress,
 }: {
   isOpen: boolean
   onClose: () => void
@@ -27,15 +29,13 @@ export const SlippageSettingsModal = ({
   type: SlippageType | SlippageType[] | undefined
   active?: SlippageType
   maxSlippage?: Decimal
+  userAddress?: Address
 }) => {
   const types = toArray(type)
   const currentType = active ?? (typeof type === 'string' ? type : undefined)
   const currentSlippage =
     currentType && maxSlippage !== undefined ? { type: currentType, value: maxSlippage } : undefined
-  const { onSubmit, form, reset } = useSlippageSettingsForm({
-    onChanged,
-    current: currentSlippage,
-  })
+  const { onSubmit, form, reset } = useSlippageSettingsForm({ onChanged, current: currentSlippage })
   return (
     <FormProvider {...form} hideFormState>
       <ModalDialog
@@ -52,7 +52,11 @@ export const SlippageSettingsModal = ({
               data-testid="slippage-save-button"
               {...(!form.formState.isDirty && { onClick: onClose })}
             >{t`Save`}</Button>
-            <FormAlerts formErrors={form.formState.visibleErrors} handledErrors={SLIPPAGE_TYPES} />
+            <FormAlerts
+              formErrors={form.formState.visibleErrors}
+              handledErrors={SLIPPAGE_TYPES}
+              userAddress={userAddress}
+            />
           </Stack>
         }
         formProps={{ onSubmit }}
