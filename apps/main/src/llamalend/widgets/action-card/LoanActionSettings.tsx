@@ -10,7 +10,7 @@ import {
   type PriceImpact,
 } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
-import { EvmSlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { EvmSlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/EvmSlippageToleranceActionInfo'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
