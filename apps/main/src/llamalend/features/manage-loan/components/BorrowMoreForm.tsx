@@ -9,7 +9,7 @@ import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSe
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { AlertDisableForm } from '@evm-ui/shared/ui/AlertDisableForm'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
@@ -163,7 +163,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         max={q(max.maxLeverage)}
         slippageType={LEVERAGE}
       />
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
@@ -171,7 +171,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         testId="borrow-more-submit-button"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
-      </FormButton>
+      </EvmFormButton>
       <LowSolvencyActionModal
         action="borrow"
         open={isOpen}

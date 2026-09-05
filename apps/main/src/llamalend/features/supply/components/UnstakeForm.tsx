@@ -1,7 +1,7 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { t } from '@ui/lib/i18n'
@@ -62,7 +62,7 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
       />
       {Number(max.data) > 0 && <AlertUnstakeOnly />}
 
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         loading={!marketId}
         disabled={isDisabled}

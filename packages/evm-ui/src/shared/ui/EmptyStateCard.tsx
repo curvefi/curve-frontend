@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
+import { ConnectEvmWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectEvmWalletButton'
 import { Box, Button, ButtonProps, Skeleton } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -58,7 +58,7 @@ const EmptyStateButton = ({
     ...(testId && { 'data-testid': testId }),
   } as const
   return type === 'connect-wallet' ? (
-    <ConnectWalletButton {...sharedProps} label={label} />
+    <ConnectEvmWalletButton {...sharedProps} label={label} />
   ) : href?.startsWith('https') ? (
     <ExternalLink {...sharedProps} href={href} label={label} wide />
   ) : (

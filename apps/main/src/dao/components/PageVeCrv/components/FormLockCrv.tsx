@@ -3,7 +3,7 @@ import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActi
 import { useIncreaseLockForm } from '@/dao/components/PageVeCrv/hooks/useIncreaseLockForm'
 import { useIncreaseLockGasEstimate } from '@/dao/components/PageVeCrv/queries/increase-lock-estimate-gas.query'
 import type { ChainId } from '@/dao/types/dao.types'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { fromEntries } from '@primitives/objects.utils'
@@ -56,7 +56,7 @@ export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
         handledErrors={['lockedAmount', 'maxLockedAmount']}
         userAddress={userAddress}
       />
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         loading={isPending}
         disabled={isDisabled}
