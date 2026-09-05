@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
+import { ConnectEvmWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectEvmWalletButton'
 import Button from '@mui/material/Button'
 import { t } from '@ui/lib/i18n'
 
@@ -24,6 +24,6 @@ export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebala
       {isRebalancing ? t`Rebalancing...` : t`Rebalance`}
     </Button>
   ) : (
-    <ConnectWalletButton testId="pegkeeper-connect-wallet" fullWidth />
+    <ConnectEvmWalletButton testId="pegkeeper-connect-wallet" fullWidth />
   )
 }

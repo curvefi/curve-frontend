@@ -7,7 +7,8 @@ import { useNetworks } from '@/dex/entities/networks'
 import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
-import { FormButton, useForm, useFormSync } from '@evm-ui/features/forms'
+import { useForm, useFormSync } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { createValidationSuite } from '@evm-ui/lib/validation'
@@ -81,7 +82,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
       <Stack sx={{ gap: Spacing.sm }}>
         <AmountTokenInput chainId={chainId} poolId={poolId} blockchainId={network.blockchainId} disabled={isPending} />
         <EpochInput disabled={isPending} />
-        <FormButton
+        <EvmFormButton
           pending={isPending}
           loading={isLoading}
           disabled={!isValid || isLoading}

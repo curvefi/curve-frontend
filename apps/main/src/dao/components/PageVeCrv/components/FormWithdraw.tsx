@@ -4,7 +4,7 @@ import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActi
 import { useWithdrawLockForm } from '@/dao/components/PageVeCrv/hooks/useWithdrawLockForm'
 import { useWithdrawLockGasEstimate } from '@/dao/components/PageVeCrv/queries/withdraw-lock-estimate-gas.query'
 import type { ChainId } from '@/dao/types/dao.types'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { amount, formatNumber } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
@@ -53,7 +53,7 @@ export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
         handledErrors={[]}
         userAddress={userAddress}
       />
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         loading={isPending}
         disabled={isDisabled}

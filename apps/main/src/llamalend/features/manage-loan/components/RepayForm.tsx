@@ -13,7 +13,7 @@ import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { TokenSelector } from '@evm-ui/features/select-token'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { CRVUSD } from '@evm-ui/utils'
@@ -198,7 +198,7 @@ export const RepayForm = <ChainId extends IChainId>({
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         loading={isLoading}
         disabled={

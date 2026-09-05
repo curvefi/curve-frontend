@@ -23,7 +23,7 @@ export const ErrorMessage = ({
   refreshData?: () => Promise<unknown> | void
   sx?: SxProps
   size?: EmptyStateCardProps['size']
-  userAddress?: Address
+  userAddress: Address | undefined
 }) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
 

@@ -1,4 +1,4 @@
-import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
+import { ConnectEvmWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectEvmWalletButton'
 import Button from '@mui/material/Button'
 import { t } from '@ui/lib/i18n'
 
@@ -46,5 +46,5 @@ export const BridgeButton = ({
       </Button>
     )
   ) : (
-    <ConnectWalletButton />
+    <ConnectEvmWalletButton />
   )

@@ -1,6 +1,6 @@
 import type { Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
@@ -99,7 +99,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
         </LargeTokenInput>
       </Stack>
 
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         disabled={isDisabled}
         connectWalletTestId="refuel-connect-wallet-button"

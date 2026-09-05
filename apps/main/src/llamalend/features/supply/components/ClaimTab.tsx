@@ -1,7 +1,7 @@
 import { useConnection } from 'wagmi'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
+import { ConnectEvmWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectEvmWalletButton'
 import { BUTTON_FORM_SIZE } from '@evm-ui/features/forms/constants'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
@@ -88,7 +88,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
             </Button>
           </Stack>
         ) : (
-          <ConnectWalletButton />
+          <ConnectEvmWalletButton />
         )}
 
         <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} userAddress={userAddress} />
