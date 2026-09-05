@@ -12,7 +12,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useNavigate, useParams } from '@evm-ui/hooks/router'
-import { EvmErrorPage } from '@evm-ui/pages/ErrorPage'
+import { ErrorPage } from '@evm-ui/pages/ErrorPage'
 import { t } from '@ui/lib/i18n'
 
 export const PagePool = () => {
@@ -63,7 +63,12 @@ export const PagePool = () => {
   )
 
   return poolNotFound || isBlacklisted ? (
-    <EvmErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
+    <ErrorPage
+      title="404"
+      subtitle={t`Pool Not Found`}
+      continueUrl={getPath(props, ROUTE.PAGE_POOLS)}
+      userAddress={curveApi?.signerAddress}
+    />
   ) : (
     poolId && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
       <Transfer

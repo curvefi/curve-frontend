@@ -79,7 +79,12 @@ export const LendMarketPage = () => {
 
   const error = marketError ?? apiMarket.error
   return error ? (
-    <ErrorPage title={t`Error`} subtitle={error.message} continueUrl={getCollateralListPathname(params)} />
+    <ErrorPage
+      title={t`Error`}
+      subtitle={error.message}
+      continueUrl={getCollateralListPathname(params)}
+      userAddress={userAddress}
+    />
   ) : (
     <MarketContextProvider
       network={network}

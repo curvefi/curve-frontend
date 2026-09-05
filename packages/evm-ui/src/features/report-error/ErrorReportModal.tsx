@@ -1,5 +1,4 @@
 import { type MouseEvent, useEffect } from 'react'
-import { WagmiProviderNotFoundError, useConnection } from 'wagmi'
 import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
@@ -27,23 +26,6 @@ type ErrorReportModalProps = {
   onClose: () => void
   context: ErrorContext
   userAddress?: Address
-}
-
-/*** Returns the connected wallet address when wagmi context is available. */
-const useTryConnection = () => {
-  try {
-    return useConnection()
-  } catch (error) {
-    // Error boundaries can render before the WagmiProvider mounts. In that case, wagmi throws WagmiProviderNotFoundError,
-    // which we swallow so the modal can still render and users can submit reports without a prefilled address.
-    if (error instanceof WagmiProviderNotFoundError) return
-    throw error
-  }
-}
-
-export const EvmErrorReportModal = (props: ErrorReportModalProps & { address?: Address }) => {
-  const { address: userAddress } = useTryConnection() ?? {}
-  return <ErrorReportModal {...props} userAddress={userAddress} />
 }
 
 export const ErrorReportModal = ({

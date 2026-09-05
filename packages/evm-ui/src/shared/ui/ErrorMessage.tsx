@@ -1,5 +1,4 @@
-import { type ComponentProps, ReactNode } from 'react'
-import { useConnection } from 'wagmi'
+import { ReactNode } from 'react'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { Stack, SxProps } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
@@ -8,10 +7,6 @@ import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { t } from '@ui/lib/i18n'
 import { applySxProps } from '@ui/utils/mui'
 import { EmptyStateCard, EmptyStateCardProps } from './EmptyStateCard'
-
-export const EvmErrorMessage = (props: Omit<ComponentProps<typeof ErrorMessage>, 'userAddress'>) => (
-  <ErrorMessage {...props} userAddress={useConnection().address} />
-)
 
 export const ErrorMessage = ({
   title,

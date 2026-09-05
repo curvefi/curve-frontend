@@ -1,5 +1,4 @@
-import { type ComponentProps, type ElementType, useCallback, useState } from 'react'
-import { useConnection } from 'wagmi'
+import { type ElementType, useCallback, useState } from 'react'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { getBoundaryErrorSubtitle } from '@evm-ui/utils/errors'
@@ -17,10 +16,6 @@ import { ERROR_IMAGE_URL } from '@ui/lib/resource.constants'
 const { MinHeight, MaxWidth, Spacing } = SizesAndSpaces
 
 const [IMAGE_WIDTH, IMAGE_HEIGHT] = [1280, 720]
-
-export const EvmErrorPage = (props: Omit<ComponentProps<typeof ErrorPage>, 'userAddress'>) => (
-  <ErrorPage {...props} userAddress={useConnection().address} />
-)
 
 export const ErrorPage = ({
   title,

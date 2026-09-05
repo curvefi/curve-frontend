@@ -15,10 +15,7 @@ const ErrorComponent = ({
   userAddress,
 }: ErrorComponentProps & { title: string; LinkComponent?: ElementType; userAddress?: Address }) => {
   useEffect(() => {
-    captureException(error, {
-      tags: { boundary: title },
-      extra: { message: error.message, stack: error.stack },
-    })
+    captureException(error, { tags: { boundary: title }, extra: { message: error.message, stack: error.stack } })
   }, [error, title])
 
   return (

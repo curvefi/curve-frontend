@@ -1,5 +1,5 @@
 import '@/global-extensions'
-import { ErrorPage } from '@evm-ui/pages/ErrorPage'
+import { EvmErrorPage } from '@evm-ui/pages/EvmErrorPage'
 import { createRoute, createRouter } from '@tanstack/react-router'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { t } from '@ui/lib/i18n'
@@ -49,7 +49,7 @@ export const router = createRouter({
       <head>
         <title>{t`Error` + ' - Curve'}</title>
       </head>
-      <ErrorPage
+      <EvmErrorPage
         title={t`Unexpected Error`}
         subtitle={error.message || t`An unexpected error occurred`}
         error={error}
@@ -61,7 +61,7 @@ export const router = createRouter({
       <head>
         <title>{t`Error 404` + ' - Curve'}</title>
       </head>
-      <ErrorPage title="404" subtitle={t`Page Not Found`} continueUrl="/" />
+      <EvmErrorPage title="404" subtitle={t`Page Not Found`} continueUrl="/" />
     </>
   ),
 })

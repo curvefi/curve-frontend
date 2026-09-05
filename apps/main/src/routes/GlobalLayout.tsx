@@ -8,7 +8,7 @@ import { networks as crvusdNetworks } from '@/loan/networks'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
 import { APP_LINK, AppMenuOption, type AppName, LlamalendApps } from '@evm-ui/shared/routes'
-import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
+import { EvmErrorBoundary } from '@evm-ui/widgets/EvmErrorBoundary'
 import { Footer } from '@evm-ui/widgets/Footer'
 import { Header } from '@evm-ui/widgets/Header'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
@@ -84,7 +84,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       component="main"
       sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: MinHeight.pageContent, width: '100%' }}
     >
-      <ErrorBoundary title={t`Page error`}>{children}</ErrorBoundary>
+      <EvmErrorBoundary title={t`Page error`}>{children}</EvmErrorBoundary>
     </Box>
     <Footer appName={currentApp} blockchainId={network.blockchainId} />
   </Stack>
