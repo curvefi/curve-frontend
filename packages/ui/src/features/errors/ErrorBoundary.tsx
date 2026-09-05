@@ -1,11 +1,11 @@
 import { type ElementType, type ReactNode, useEffect } from 'react'
-import { ErrorPage } from '@evm-ui/pages/ErrorPage'
-import { ErrorMessage } from '@evm-ui/shared/ui/ErrorMessage'
 import { Box } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import { captureException } from '@sentry/react'
 import { CatchBoundary } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/router-core'
+import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
+import { ErrorPage } from '@ui/features/errors/ErrorPage'
 
 const ErrorComponent = ({
   error,

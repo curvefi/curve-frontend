@@ -12,7 +12,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useNavigate, useParams } from '@evm-ui/hooks/router'
-import { ErrorPage } from '@evm-ui/pages/ErrorPage'
+import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { t } from '@ui/lib/i18n'
 
 export const PagePool = () => {

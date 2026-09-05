@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react'
 import { useConnection, WagmiProviderNotFoundError } from 'wagmi'
-import { ErrorPage } from '@evm-ui/pages/ErrorPage'
+import { ErrorPage } from '@ui/features/errors/ErrorPage'
 
 /*** Returns the connected wallet address when wagmi context is available. */
 const useTryConnection = () => {

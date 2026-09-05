@@ -1,6 +1,6 @@
-import { ErrorMessage } from '@evm-ui/shared/ui/ErrorMessage'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
+import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
 import { t } from '@ui/lib/i18n'
 
 /** Error message component centered and wrapped in a container that takes a height prop and uses full width.
