@@ -2,6 +2,10 @@ import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/Char
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
+import {
+  MarketBorrowRateBreakdown,
+  MarketSupplyRateBreakdown,
+} from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
@@ -16,6 +20,7 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
+import { stackedMarketCardHeadersSx } from '@ui/utils/mui'
 
 type MarketInformationCompProps = {
   rateType: MarketRateType
@@ -44,7 +49,11 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       )}
       <MarketSection id="historical-rates">
         <Stack sx={{ gap: PAGE_SPACING }}>
-          {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
+          <Stack sx={stackedMarketCardHeadersSx}>
+            {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
+            <MarketBorrowRateBreakdown />
+          </Stack>
+          <MarketSupplyRateBreakdown />
           <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
           <MarketRateCurveChart />
         </Stack>

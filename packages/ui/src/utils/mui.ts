@@ -22,5 +22,13 @@ export const applySxProps = (...sx: (SxProps | false | null | undefined)[]): SxP
 export const directChildrenAfterFirst = (css: SxStyleObject): SxProps => ({
   '& > * + *': css,
 })
+
+/** Gives every direct sibling card after the first a full-width card-header background. */
+export const stackedMarketCardHeadersSx: SxProps = theme => ({
+  '& > .MuiCard-root + .MuiCard-root > .MuiCardHeader-root': {
+    backgroundColor: theme.design.Layer[1].Fill,
+  },
+})
+
 /** Consistent border style for MUI components */
 export const borderStyle = (t: Theme) => `${BorderWidth.thin} solid ${t.design.Layer[1].Outline}`
