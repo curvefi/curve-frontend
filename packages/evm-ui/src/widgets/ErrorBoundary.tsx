@@ -70,7 +70,13 @@ export const ErrorBoundary = ({
           />
         </Box>
       ) : (
-        <ErrorComponent error={error} reset={reset} title={title} LinkComponent={LinkComponent} />
+        <ErrorComponent
+          error={error}
+          reset={reset}
+          title={title}
+          LinkComponent={LinkComponent}
+          userAddress={userAddress}
+        />
       )
     }
   >
