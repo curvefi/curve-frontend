@@ -153,6 +153,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             priceImpact={priceImpact}
             collateralSymbol={collateralToken?.symbol}
             borrowSymbol={borrowToken?.symbol}
+            userAddress={userAddress}
           />
         </Stack>
       )}

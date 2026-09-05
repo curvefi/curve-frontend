@@ -25,7 +25,7 @@ type ErrorReportModalProps = {
   isOpen: boolean
   onClose: () => void
   context: ErrorContext
-  userAddress?: Address
+  userAddress: Address | undefined
 }
 
 export const ErrorReportModal = ({

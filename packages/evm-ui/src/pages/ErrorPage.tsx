@@ -32,7 +32,7 @@ export const ErrorPage = ({
   continueUrl?: string
   error?: Error | string
   LinkComponent?: ElementType
-  userAddress?: Address
+  userAddress: Address | undefined
 }) => {
   const navHeight = useLayoutStore(state => state.navHeight)
   const [resetClicked, setResetClicked] = useState(false)

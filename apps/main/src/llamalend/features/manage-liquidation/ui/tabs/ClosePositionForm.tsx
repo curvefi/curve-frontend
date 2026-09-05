@@ -65,7 +65,11 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
           )
         }
       />
-      <LoanActionSettings slippage={values.slippage} onSlippageChange={slippage => form.update({ slippage })} />
+      <LoanActionSettings
+        slippage={values.slippage}
+        onSlippageChange={slippage => form.update({ slippage })}
+        userAddress={userAddress}
+      />
       {missing != null && borrowedBalance != null && +missing > 0 ? (
         <AlertAdditionalDebtToken debtTokenSymbol={debtTokenSymbol} missing={missing} balance={borrowedBalance} />
       ) : (

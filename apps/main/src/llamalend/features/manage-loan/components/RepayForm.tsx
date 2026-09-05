@@ -194,6 +194,7 @@ export const RepayForm = <ChainId extends IChainId>({
         priceImpact={priceImpact}
         collateralSymbol={collateralToken?.symbol}
         borrowSymbol={borrowToken?.symbol}
+        userAddress={userAddress}
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}

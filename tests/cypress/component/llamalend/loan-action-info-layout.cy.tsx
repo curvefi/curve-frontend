@@ -70,6 +70,7 @@ allViewports().forEach(([width, height, viewport]) => {
                 exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
                 collateralSymbol="wstETH"
                 borrowSymbol="crvUSD"
+                userAddress={zeroAddress}
               />
               <LoanActionInfoList
                 isOpen
@@ -133,6 +134,7 @@ describe('route provider allowlist', () => {
         <LoanActionSettings
           onSlippageChange={noop}
           routes={{ ...routes, providers: ['enso'], selectedRoute: undefined, selectedRouter: undefined }}
+          userAddress={zeroAddress}
         />
       </ComponentTestWrapper>,
     )
