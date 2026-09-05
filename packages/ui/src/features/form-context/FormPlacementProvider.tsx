@@ -1,5 +1,5 @@
+import type { FormPlacement } from 'evm-ui/src/widgets/DetailPageLayout/types'
 import type { ReactNode } from 'react'
-import type { FormPlacement } from '../types'
 import { FormPlacementContext } from './FormPlacementContext'
 
 export const FormPlacementProvider = ({ children, placement }: { children: ReactNode; placement: FormPlacement }) => (

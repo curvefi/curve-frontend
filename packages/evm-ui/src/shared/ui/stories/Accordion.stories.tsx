@@ -6,9 +6,9 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Accordion } from '@ui/components/Accordion'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { useSwitch } from '@ui/hooks/useSwitch'
-import { Accordion } from '../Accordion'
 
 const meta: Meta<typeof Accordion> = {
   title: 'UI Kit/Widgets/Accordion',

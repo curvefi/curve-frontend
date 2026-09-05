@@ -5,8 +5,8 @@ import { useScrvUsdDepositMutation } from '@/loan/entities/scrvusd-deposit.mutat
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
 import { type ScrvUsdDepositForm, scrvUsdDepositFormValidationSuite } from '@/loan/entities/scrvusd.validation'
 import { type ChainId } from '@/loan/types/loan.types'
-import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
+import { useForm, useFormSync } from '@ui/features/forms'
 import { mapQuery } from '@ui/features/queries/util'
 
 const userDefaultValues = { depositAmount: undefined, approveInfinite: false }

@@ -1,5 +1,4 @@
 import { type ReactNode, useId } from 'react'
-import { RotatableIcon } from '@evm-ui/shared/ui/DataTable/RotatableIcon'
 import AddIcon from '@mui/icons-material/Add'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import RemoveIcon from '@mui/icons-material/Remove'
@@ -9,6 +8,7 @@ import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import { applySxProps, borderStyle, type SxProps } from '@ui/utils/mui'
 
 const { Spacing, IconSize } = SizesAndSpaces

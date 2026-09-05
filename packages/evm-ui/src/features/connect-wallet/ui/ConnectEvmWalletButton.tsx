@@ -1,6 +1,10 @@
 import { useConnection } from 'wagmi'
+import {
+  type ConnectionProps,
+  ConnectWalletButton,
+  type ConnectWalletButtonProps,
+} from '@ui/components/ConnectWalletButton'
 import { useWallet } from '../lib'
-import { type ConnectionProps, ConnectWalletButton, type ConnectWalletButtonProps } from './ConnectWalletButton'
 
 export const ConnectEvmWalletButton = (props: Omit<ConnectWalletButtonProps, keyof ConnectionProps>) => {
   const { isConnecting, isConnected } = useConnection()
