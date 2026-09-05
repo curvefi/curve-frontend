@@ -18,12 +18,12 @@ import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useLayoutStore } from '@evm-ui/features/layout'
 import { useNavigate } from '@evm-ui/hooks/router'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Table } from '@legacy-ui/Table'
 import { breakpoints } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import { useLayoutStore } from '@ui/features/layout/layout'
 import { t } from '@ui/lib/i18n'
 
 export const Dashboard = ({
