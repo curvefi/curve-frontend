@@ -1,9 +1,9 @@
-import { zeroAddress } from 'viem'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { queryFactory } from '@evm-ui/lib/model/query/factory'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
 import { rootKeys } from '@evm-ui/lib/model/query/root-keys'
 import type { MarketQuery, MarketParams } from '@evm-ui/lib/model/query/root-keys'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { type Range } from '@ui/features/queries/util'
 import { USE_API } from './market.constants'
 

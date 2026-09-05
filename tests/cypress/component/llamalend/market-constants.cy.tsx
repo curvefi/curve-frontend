@@ -1,4 +1,4 @@
-import { zeroAddress, getAddress } from 'viem'
+import { getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { getMarketLeverageProviders, getMarketLeverageSlippage } from '@/llamalend/llama.utils'
 import {
@@ -11,6 +11,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { MarketType } from '@evm-ui/types/market'
 import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'

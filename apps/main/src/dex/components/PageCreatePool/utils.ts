@@ -1,6 +1,6 @@
-import { isAddress } from 'viem'
 import { STABLESWAP, CRYPTOSWAP, FXSWAP, NG_ASSET_TYPE } from '@/dex/components/PageCreatePool/constants'
 import type { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
+import { isAddress } from '@primitives/address.utils'
 
 export const checkSwapType = (swapType: SwapType) => swapType !== ''
 

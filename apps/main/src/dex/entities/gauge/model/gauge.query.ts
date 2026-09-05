@@ -1,8 +1,9 @@
-import { type Address, zeroAddress } from 'viem'
+import type { Address } from 'viem'
 import { getGauge } from '@/dex/entities/gauge/lib/gauge-info'
 import { GaugeParams, GaugeQuery, rootKeys } from '@evm-ui/lib/model/query'
 import { queryFactory } from '@evm-ui/lib/model/query/factory'
 import { poolValidationSuite } from '@evm-ui/lib/model/query/pool-validation'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import {
   type DepositRewardApproveParams,
   DepositRewardApproveQuery,

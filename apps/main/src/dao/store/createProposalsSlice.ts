@@ -4,14 +4,14 @@ import { invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { invalidateUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import type { State } from '@/dao/store/useStore'
 import {
-  ProposalListFilter,
   CurveJsProposalType,
+  ProposalListFilter,
   SortByFilterProposals,
   SortDirection,
   TransactionState,
 } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
-import { notify, useWallet, getLib } from '@evm-ui/features/connect-wallet'
+import { getLib, notify, useWallet } from '@evm-ui/features/connect-wallet'
 import { waitForTransaction } from '@evm-ui/lib/ethers'
 import { scanTxPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'

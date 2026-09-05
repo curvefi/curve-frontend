@@ -5,21 +5,21 @@ import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { useCombinedQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { timeOptions, type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
+import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
-  ChartStateWrapper,
-  ChartFooter,
-  type LegendItem,
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
+  ChartFooter,
+  type ChartLineDashPattern,
+  ChartStateWrapper,
   EChartsLineChart,
   formatChartAxisNumber,
-  type ChartLineDashPattern,
+  type LegendItem,
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { CRVUSD_ADDRESS } from '@evm-ui/utils/address'
+import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { formatDate } from '@legacy-ui/utils'
 import { CardContent, Stack } from '@mui/material'

@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { FastifyBaseLogger } from 'fastify'
-import { Address } from 'viem'
+import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { FetchError, fetchJson } from '@primitives/fetch.utils'

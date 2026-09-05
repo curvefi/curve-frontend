@@ -1,9 +1,10 @@
-import { ethAddress, zeroAddress } from 'viem'
+import { ethAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
 import { decimalDiv } from '@evm-ui/utils'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui/lib/i18n'
 

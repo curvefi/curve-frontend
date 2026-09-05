@@ -15,13 +15,13 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-stellar.tsbuildinfo"
   },
   "dependencies": {
-    "@tanstack/react-query": "*",
-    "@tanstack/react-query-devtools": "*",
-    "@tanstack/react-router": "*",
-    "@tanstack/react-router-devtools": "*",
-    "@tanstack/router-core": "*",
-    "ui": "*",
-    "vite-plugin-svgr": "*",
+    "@curvefi/ui": "workspace:^",
+    "@tanstack/react-query": "5.102.8",
+    "@tanstack/react-query-devtools": "5.102.8",
+    "@tanstack/react-router": "1.170.32",
+    "@tanstack/react-router-devtools": "1.167.1",
+    "@tanstack/router-core": "1.171.27",
+    "vite-plugin-svgr": "5.2.0",
     "vite-plugin-vercel": "9.1.1"
   },
   "peerDependencies": {
@@ -31,12 +31,8 @@
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
-    "@types/node": "*",
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "@vitejs/plugin-react": "*",
-    "eslint": "*",
-    "typescript": "*",
+    "@types/node": "26.1.0",
+    "@vitejs/plugin-react": "5.1.2",
     "vite": "*"
   }
 }

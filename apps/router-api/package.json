@@ -15,19 +15,13 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "fastify": "*"
-  },
-  "peerDependencies": {
-    "@curvefi/api": "*",
-    "@curvefi/prices-api": "*"
+    "@curvefi/api": "2.69.17",
+    "@curvefi/api-server": "workspace:^",
+    "@curvefi/prices-api": "workspace:^",
+    "bignumber.js": "9.3.1",
+    "fastify": "5.12.1"
   },
   "devDependencies": {
-    "@curvefi/api": "*",
-    "@curvefi/prices-api": "*",
-    "@types/node": "*",
-    "eslint": "*",
-    "tsx": "4.23.12",
-    "typescript": "*",
-    "vitest": "*"
+    "tsx": "4.23.12"
   }
 }

@@ -14,15 +14,12 @@
     "test:endpoints": "vitest run --config vitest.endpoints.config.ts",
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-prices-api.tsbuildinfo"
   },
-  "peerDependencies": {
-    "typescript": "*"
+  "dependencies": {
+    "@curvefi/primitives": "workspace:^",
+    "zod": "4.5.2"
   },
   "devDependencies": {
-    "@types/node": "*",
-    "eslint": "*",
-    "typescript": "*",
-    "vite": "*",
-    "vitest": "*"
+    "vite": "*"
   },
   "publishConfig": {
     "access": "public"
@@ -59,8 +56,5 @@
       "types": "./dist/*/index.d.ts",
       "default": "./dist/*/index.js"
     }
-  },
-  "dependencies": {
-    "zod": "4.5.2"
   }
 }

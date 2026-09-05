@@ -1,5 +1,4 @@
 import { styled } from 'styled-components'
-import { isAddress } from 'viem'
 import {
   NG_ASSET_TYPE,
   TOKEN_A,
@@ -25,6 +24,7 @@ import { ChainId } from '@/dex/types/main.types'
 import { shortenAddress } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { scanAddressPath } from '@legacy-ui/utils'
+import { isAddress } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
 
 type Props = {

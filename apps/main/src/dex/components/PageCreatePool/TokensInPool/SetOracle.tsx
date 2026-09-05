@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { isAddress, formatEther } from 'viem'
+import { formatEther } from 'viem'
 import { TextInput } from '@/dex/components/PageCreatePool/components/TextInput'
 import { WarningBox } from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -25,6 +25,7 @@ import { Box } from '@legacy-ui/Box'
 import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { isAddress } from '@primitives/address.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 

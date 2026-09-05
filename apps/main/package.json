@@ -18,48 +18,21 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "@curvefi/llamalend-api": "2.5.2",
-    "@supercharge/promise-pool": "3.3.0",
-    "@tanstack/react-router": "*",
-    "@tanstack/react-router-devtools": "*",
-    "@tanstack/router-core": "*",
-    "@types/memoizee": "0.4.12",
-    "evm-ui": "*",
-    "external-rewards": "*",
+    "@curvefi/evm-ui": "workspace:^",
+    "@curvefi/legacy-ui": "workspace:^",
+    "@curvefi/ui": "workspace:^",
     "fuse.js": "7.5.0",
-    "legacy-ui": "*",
-    "lightweight-charts": "5.2.1",
-    "memoizee": "0.4.17",
-    "ui": "*",
+    "merkl-api": "workspace:^",
+    "router-api": "workspace:^",
     "vest": "5.4.6",
-    "vite-plugin-svgr": "*",
     "vite-plugin-vercel": "9.1.1"
   },
-  "peerDependencies": {
-    "@curvefi/api": "*",
-    "bignumber.js": "*",
-    "echarts": "*",
-    "echarts-for-react": "*",
-    "ethers": "*",
-    "immer": "*",
-    "lodash": "*",
-    "react": "*",
-    "react-dom": "*",
-    "styled-components": "*",
-    "zustand": "*"
-  },
   "devDependencies": {
-    "@curvefi/api": "*",
     "@sentry/vite-plugin": "5.4.0",
     "@types/lodash": "4.17.25",
-    "@types/memoizee": "0.4.12",
-    "@types/node": "*",
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "@vitejs/plugin-react": "*",
-    "eslint": "*",
+    "@vitejs/plugin-react": "5.1.2",
     "pinst": "3.0.0",
-    "typescript": "*",
-    "vite": "*"
+    "vite": "*",
+    "vite-plugin-svgr": "5.2.0"
   }
 }

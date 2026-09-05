@@ -5,10 +5,9 @@ import {
   getMetricValue,
 } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
+import { ADDRESS_PATTERN } from '@primitives/address.utils'
 
 type MarketDetailsOptions = { breakpoint: Breakpoint; hasWallet: boolean; hasApi?: boolean }
-
-const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 
 const shouldShowCanvas = (testId: string) =>
   cy.get(`[data-testid="${testId}"] canvas`, API_LOAD_TIMEOUT).should('be.visible')

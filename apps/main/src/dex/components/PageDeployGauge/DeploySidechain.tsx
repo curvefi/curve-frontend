@@ -3,10 +3,10 @@ import { styled } from 'styled-components'
 import { DialogSelect } from '@/dex/components/PageDeployGauge/components/DialogSelect'
 import { TextInput } from '@/dex/components/PageDeployGauge/components/TextInput'
 import {
-  TWOCOINCRYPTOSWAP,
-  THREECOINCRYPTOSWAP,
   STABLESWAP,
   STABLESWAPOLD,
+  THREECOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
 import type { PoolType } from '@/dex/components/PageDeployGauge/types'

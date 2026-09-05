@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
@@ -32,6 +31,7 @@ import {
   formatNumber,
 } from '@evm-ui/utils'
 import { Grid, Stack } from '@mui/material'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'

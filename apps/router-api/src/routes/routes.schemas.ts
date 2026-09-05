@@ -1,14 +1,13 @@
-import type { Address } from '@primitives/address.utils'
+import { ADDRESS_PATTERN, type Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { RouteProviders, type RouteProvider } from '@primitives/router.utils'
 
-export const ADDRESS_HEX_PATTERN = '^0x[a-fA-F0-9]{40}$'
 const DECIMAL_PATTERN = '^-?\\d+(\\.\\d+)?$'
 const WEI_AMOUNT_PATTERN = '^\\d+$'
 
 export const ROUTES_PATH = '/api/router/v1/routes'
 
-const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
+const AddressSchema = { type: 'string', pattern: ADDRESS_PATTERN.source } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
 const AddressListSchema = { type: 'array', items: AddressSchema, minItems: 1 } as const
 const DecimalSchema = { type: 'string', pattern: DECIMAL_PATTERN }

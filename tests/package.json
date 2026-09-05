@@ -1,5 +1,5 @@
 {
-  "name": "tests",
+  "name": "@curvefi/tests",
   "version": "0.1.0",
   "description": "Curve DApp tests",
   "license": "MIT",
@@ -23,20 +23,17 @@
     "download:artifacts": "node --experimental-strip-types scripts/download-artifacts.ts"
   },
   "dependencies": {
-    "ui": "*"
+    "@curvefi/ui": "workspace:^"
   },
   "devDependencies": {
     "@cypress/react": "9.0.2",
     "@cypress/vite-dev-server": "7.3.4",
-    "@vitejs/plugin-react": "*",
+    "@vitejs/plugin-react": "5.1.2",
     "@vitest/ui": "4.1.11",
     "cypress": "15.21.1",
-    "eslint": "*",
-    "ethers": "*",
-    "typescript": "*",
+    "main": "workspace:^",
     "vite": "*",
-    "vite-plugin-svgr": "*",
-    "vitest": "*",
+    "vite-plugin-svgr": "5.2.0",
     "wait-on": "9.1.0"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "evm-ui",
+  "name": "@curvefi/evm-ui",
   "version": "0.1.0",
   "type": "module",
   "main": "src/index.ts",
@@ -16,43 +16,35 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.3.7",
-    "@hookform/resolvers": "5.4.0",
+    "@curvefi/legacy-ui": "workspace:^",
+    "@curvefi/llamalend-api": "2.5.2",
+    "@curvefi/ui": "workspace:^",
     "@metamask/connect-evm": "2.1.1",
-    "@mui/icons-material": "9.4.0",
     "@safe-global/safe-apps-provider": "0.18.6",
     "@safe-global/safe-apps-sdk": "9.1.0",
     "@sentry/react": "10.72.0",
-    "@tanstack/react-query": "5.102.8",
-    "@tanstack/react-table": "9.2.4",
+    "@supercharge/promise-pool": "3.3.0",
     "@walletconnect/ethereum-provider": "2.24.0",
     "dayjs": "1.11.23",
-    "react-hook-form": "7.86.0",
+    "echarts": "6.1.0",
+    "echarts-for-react": "3.0.6",
+    "ethers": "6.17.0",
+    "external-rewards": "workspace:^",
+    "lightweight-charts": "5.2.1",
     "viem": "2.56.0",
-    "wagmi": "3.7.7"
-  },
-  "peerDependencies": {
-    "echarts": "*",
-    "echarts-for-react": "*",
-    "ethers": "*",
-    "immer": "*",
-    "react": "*",
-    "react-dom": "*",
-    "zustand": "*"
+    "wagmi": "3.7.7",
+    "zustand": "5.0.15"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "5.3.0",
+    "@curvefi/api": "2.69.17",
     "@storybook/addon-a11y": "10.5.10",
     "@storybook/addon-docs": "10.5.10",
     "@storybook/addon-themes": "10.5.10",
     "@storybook/react-vite": "10.5.10",
-    "@types/lodash": "*",
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "@vitejs/plugin-react": "*",
-    "eslint": "*",
-    "storybook": "10.5.10",
-    "typescript": "*",
-    "vite": "*",
-    "vitest": "*"
+    "@types/lodash": "4.17.25",
+    "@types/memoizee": "0.4.12",
+    "@vitejs/plugin-react": "5.1.2",
+    "storybook": "10.5.10"
   }
 }

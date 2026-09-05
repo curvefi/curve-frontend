@@ -9,12 +9,8 @@
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/primitives --cache-strategy content . --fix",
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-primitives.tsbuildinfo"
   },
-  "peerDependencies": {
-    "typescript": "*"
-  },
   "devDependencies": {
-    "eslint": "*",
-    "typescript": "*"
+    "vitest": "4.1.11"
   },
   "publishConfig": {
     "access": "public"

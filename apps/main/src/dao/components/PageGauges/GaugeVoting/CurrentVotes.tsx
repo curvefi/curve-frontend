@@ -14,9 +14,9 @@ import { useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
 import {
   GaugeFormattedData,
+  SortDirection,
   UserGaugeVoteWeight,
   UserGaugeVoteWeightSortBy,
-  SortDirection,
 } from '@/dao/types/dao.types'
 import { findRootGauge } from '@/dao/utils'
 import { Box } from '@legacy-ui/Box'

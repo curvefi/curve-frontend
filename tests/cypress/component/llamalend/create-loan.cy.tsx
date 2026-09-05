@@ -1,4 +1,3 @@
-import { zeroAddress } from 'viem'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import {
@@ -14,6 +13,7 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 
 const CHAIN_ID = 1
 const testCases = [

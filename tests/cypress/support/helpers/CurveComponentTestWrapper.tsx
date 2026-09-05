@@ -1,11 +1,11 @@
 import { type ReactElement } from 'react'
-import { zeroAddress } from 'viem'
 import type { CurveApi } from '@/dao/types/dao.types'
 import { CurveContext } from '@evm-ui/features/connect-wallet/lib/CurveContext'
 import { ConnectState } from '@evm-ui/features/connect-wallet/lib/types'
 import { useWallet } from '@evm-ui/features/connect-wallet/lib/useWallet'
 import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
 import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { ComponentTestWrapper } from './ComponentTestWrapper'
 import { mockedWagmiConfig } from './llamalend/test-wagmi.helpers'
 

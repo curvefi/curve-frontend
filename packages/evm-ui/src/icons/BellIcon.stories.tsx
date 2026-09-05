@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { BellIcon, BellRingingIcon } from './BellIcon'
+import { BellIcon, BellRingingIcon } from '@ui/icons/BellIcon'
 
 const meta: Meta<typeof BellRingingIcon> = {
   title: 'UI Kit/Icons/BellRingingIcon',

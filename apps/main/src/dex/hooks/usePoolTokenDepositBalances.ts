@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
-import { type Address, isAddressEqual, zeroAddress } from 'viem'
+import type { Address } from 'viem'
 import type { Config } from 'wagmi'
 import { type CurveApi, useCurve } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { FieldsOf } from '@evm-ui/lib'
 import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/lib/model'
+import { isAddressEqual, ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { q } from '@ui/features/queries/util'
 
 type Query = ChainQuery & UserQuery & PoolQuery

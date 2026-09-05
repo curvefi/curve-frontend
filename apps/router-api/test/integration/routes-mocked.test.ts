@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
-import { zeroAddress } from 'viem'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 
 describe('GET routes mocked unit tests', () => {
   let server: FastifyInstance
