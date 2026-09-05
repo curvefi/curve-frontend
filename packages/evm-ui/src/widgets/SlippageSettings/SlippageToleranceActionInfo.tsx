@@ -26,7 +26,7 @@ export const SlippageToleranceActionInfo = ({
   size?: ActionInfoSize
   type: SlippageType | SlippageType[] | undefined
   active?: SlippageType
-  userAddress?: Address
+  userAddress: Address | undefined
 }) => {
   const [isOpen, openModal, closeModal] = useSwitch()
   return (

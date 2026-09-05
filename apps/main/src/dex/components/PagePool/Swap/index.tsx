@@ -28,7 +28,6 @@ import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal, formatNumber } from '@evm-ui/utils'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
-import { EvmSlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/EvmSlippageToleranceActionInfo'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { Icon } from '@legacy-ui/Icon'
@@ -536,7 +535,11 @@ export const Swap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <EvmSlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
+        <SlippageToleranceActionInfo
+          maxSlippage={maxSlippage}
+          type={getSlippageType(poolData)}
+          userAddress={userAddress}
+        />
       </Stack>
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>

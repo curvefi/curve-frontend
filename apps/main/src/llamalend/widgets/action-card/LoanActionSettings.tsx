@@ -10,9 +10,10 @@ import {
   type PriceImpact,
 } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
-import { EvmSlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/EvmSlippageToleranceActionInfo'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -33,6 +34,7 @@ export const LoanActionSettings = ({
   priceImpact,
   collateralSymbol,
   borrowSymbol,
+  userAddress,
 }: {
   slippage?: Decimal
   onSlippageChange: (newSlippage: Decimal) => void
@@ -42,6 +44,7 @@ export const LoanActionSettings = ({
   priceImpact?: QueryProp<PriceImpact | Decimal | null>
   collateralSymbol?: string
   borrowSymbol?: string
+  userAddress: Address | undefined
 }) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact, {
@@ -57,11 +60,12 @@ export const LoanActionSettings = ({
       >
         {routes && <RouteProvidersAccordion isExpanded={isRoutesOpen} onToggle={toggleRoutes} {...routes} />}
         {slippage && (
-          <EvmSlippageToleranceActionInfo
+          <SlippageToleranceActionInfo
             maxSlippage={slippage}
             type={LEVERAGE}
             onChanged={({ leverage }) => onSlippageChange(leverage)}
             size="small"
+            userAddress={userAddress}
           />
         )}
         {exchangeRate && collateralSymbol && borrowSymbol && (
