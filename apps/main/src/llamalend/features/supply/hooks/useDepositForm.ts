@@ -11,8 +11,8 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useForm } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
+import { useForm } from '@ui/features/forms'
 import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { depositAmount: undefined }

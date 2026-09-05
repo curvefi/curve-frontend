@@ -1,6 +1,6 @@
-import type { FieldValues } from '@evm-ui/features/forms'
 import { Address } from '@primitives/address.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
+import type { FieldValues } from '@ui/features/forms'
 import type { LoanFormTokenInputProps } from './LoanFormTokenInput'
 
 type LoanTokenLabelProps = Pick<LoanFormTokenInputProps<FieldValues, never, never>, 'token' | 'blockchainId'>

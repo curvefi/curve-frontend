@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo } from 'react'
-import { Accordion } from '@evm-ui/shared/ui/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
+import { Accordion } from '@ui/components/Accordion'
 import { t } from '@ui/lib/i18n'
 import { IS_DEVELOPMENT } from '@ui/utils/env'
 import type { FieldValues, UseFormReturn } from './form.types'

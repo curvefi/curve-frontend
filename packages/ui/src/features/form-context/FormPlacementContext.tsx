@@ -1,7 +1,7 @@
+import type { FormPlacement } from 'evm-ui/src/widgets/DetailPageLayout/types'
 import { createContext, use } from 'react'
 import { assert } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import type { FormPlacement } from '../types'
 
 export const FormPlacementContext = createContext<FormPlacement | undefined>(undefined)
 
