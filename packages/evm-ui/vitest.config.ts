@@ -9,12 +9,10 @@ export default defineConfig({
     alias: {
       '@curvefi/prices-api': resolve(rootDir, '../prices-api/src/index.ts'),
       '@curvefi/prices-api/': `${resolve(rootDir, '../prices-api/src')}/`,
-      '@primitives': resolve(rootDir, '../primitives/src'),
       '@evm-ui': resolve(rootDir, 'src'),
+      '@primitives': resolve(rootDir, '../primitives/src'),
+      '@ui': resolve(rootDir, '../ui/src'),
     },
   },
-  test: {
-    environment: 'node',
-    include: ['src/**/*.spec.{ts,tsx}'],
-  },
+  test: { environment: 'node', include: ['src/**/*.spec.{ts,tsx}'] },
 })

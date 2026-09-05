@@ -7,6 +7,7 @@
   "scripts": {
     "lint": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content . --fix",
+    "test": "vitest run --config vitest.config.ts",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-ui.tsbuildinfo"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "eslint": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "vitest": "*"
   }
 }

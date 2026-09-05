@@ -1,6 +1,6 @@
 import { noop } from 'lodash'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { setTimeoutInterval } from '@ui/lib/timers'
+import { setTimeoutInterval } from './timers'
 
 const createDeferred = <T = void>() => {
   let resolve!: (value: T | PromiseLike<T>) => void
