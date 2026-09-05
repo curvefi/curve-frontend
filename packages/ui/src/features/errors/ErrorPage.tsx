@@ -1,6 +1,4 @@
 import { type ElementType, useCallback, useState } from 'react'
-import { ErrorReportModal } from '@evm-ui/features/report-error'
-import { getBoundaryErrorSubtitle } from '@evm-ui/utils/errors'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -8,10 +6,12 @@ import type { Address } from '@primitives/address.utils'
 import { RouterLink } from '@ui/components/RouterLink'
 import { useLayoutStore } from '@ui/features/layout/layout'
 import { persister, queryClient } from '@ui/features/queries/query-client'
+import { ErrorReportModal } from '@ui/features/report-error'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { ERROR_IMAGE_URL } from '@ui/lib/resource.constants'
+import { getBoundaryErrorSubtitle } from './errors.util'
 
 const { MinHeight, MaxWidth, Spacing } = SizesAndSpaces
 

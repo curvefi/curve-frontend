@@ -1,7 +1,7 @@
 import { useConnection } from 'wagmi'
-import { EmptyStateCard } from '@evm-ui/shared/ui/EmptyStateCard'
 import { MarketRateType } from '@evm-ui/types/market'
 import { Stack } from '@mui/material'
+import { EmptyStateCard } from '@ui/components/EmptyStateCard'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 

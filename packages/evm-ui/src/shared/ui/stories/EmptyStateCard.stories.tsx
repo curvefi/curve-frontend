@@ -1,7 +1,7 @@
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { EmptyStateCard } from '@ui/components/EmptyStateCard'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
-import { EmptyStateCard } from '../EmptyStateCard'
 
 const meta: Meta<typeof EmptyStateCard> = {
   title: 'UI Kit/Widgets/EmptyStateCard',

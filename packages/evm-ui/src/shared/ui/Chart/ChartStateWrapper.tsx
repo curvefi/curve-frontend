@@ -2,8 +2,8 @@ import type { ReactNode } from 'react'
 import { ChartEmpty } from '@evm-ui/shared/ui/Chart/ChartEmpty'
 import { ChartError } from '@evm-ui/shared/ui/Chart/ChartError'
 import { ChartLoading } from '@evm-ui/shared/ui/Chart/ChartLoading'
-import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
 import type { Address } from '@primitives/address.utils'
+import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
 
 type ChartStateWrapperProps = {
   height: number

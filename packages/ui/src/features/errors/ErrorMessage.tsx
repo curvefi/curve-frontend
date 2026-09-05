@@ -1,12 +1,12 @@
 import { ReactNode } from 'react'
-import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { Stack, SxProps } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
+import { EmptyStateCard, EmptyStateCardProps } from '@ui/components/EmptyStateCard'
+import { ErrorReportModal } from '@ui/features/report-error'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { t } from '@ui/lib/i18n'
 import { applySxProps } from '@ui/utils/mui'
-import { EmptyStateCard, EmptyStateCardProps } from './EmptyStateCard'
 
 export const ErrorMessage = ({
   title,

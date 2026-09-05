@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
+import { ModalDialog } from '@ui/components/ModalDialog'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
