@@ -18,7 +18,7 @@ import { useLayoutStoreResponsive } from '@evm-ui/hooks/useLayoutStoreResponsive
 import { useNetworkFromUrl } from '@evm-ui/hooks/useNetworkFromUrl'
 import { useOnChainUnavailable } from '@evm-ui/hooks/useOnChainUnavailable'
 import { getCurrentApp } from '@evm-ui/shared/routes'
-import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
+import { EvmErrorBoundary } from '@evm-ui/widgets/EvmErrorBoundary'
 import MuiLink from '@mui/material/Link'
 import { maybe, recordValues } from '@primitives/objects.utils'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -105,14 +105,14 @@ export const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>
-        <ErrorBoundary title={t`Root layout error`} LinkComponent={MuiLink}>
+        <EvmErrorBoundary title={t`Root layout error`} LinkComponent={MuiLink}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <WagmiConfigProvider>{children}</WagmiConfigProvider>
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>
-        </ErrorBoundary>
+        </EvmErrorBoundary>
       </ThemeProvider>
     </StyleSheetManager>
   )

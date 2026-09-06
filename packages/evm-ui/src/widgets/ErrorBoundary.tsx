@@ -6,6 +6,7 @@ import type { Address } from '@primitives/address.utils'
 import { captureException } from '@sentry/react'
 import { CatchBoundary } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/router-core'
+import type { ConnectionProps } from '@ui/components/ConnectWalletButton'
 
 const ErrorComponent = ({
   error,
@@ -38,7 +39,8 @@ export const ErrorBoundary = ({
   inline,
   LinkComponent,
   userAddress,
-}: {
+  ...connectionProps
+}: ConnectionProps & {
   children: ReactNode
   title: string
   subtitle?: string
@@ -67,6 +69,7 @@ export const ErrorBoundary = ({
             refreshData={refreshData}
             userAddress={userAddress}
             sx={{ alignSelf: 'center' }}
+            {...connectionProps}
           />
         </Box>
       ) : (

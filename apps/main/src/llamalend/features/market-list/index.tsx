@@ -9,10 +9,9 @@ import { UserPositionsTables } from './UserPositionsTables'
 export const MarketsList = () => {
   const { address } = useConnection()
   const { tableQuery, onReload } = useMarketsTable(address)
-
   return (
     <ListPageWrapper footer={<MarketsTableFooter />}>
-      <UserPositionsTables onReload={onReload} tableQuery={tableQuery} userAddress={address} />
+      <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
       <MarketsTable onReload={onReload} tableQuery={tableQuery} />
     </ListPageWrapper>
   )

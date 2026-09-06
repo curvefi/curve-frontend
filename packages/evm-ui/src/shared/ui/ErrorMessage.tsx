@@ -2,11 +2,12 @@ import { ReactNode } from 'react'
 import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { Stack, SxProps } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
+import type { ConnectionProps } from '@ui/components/ConnectWalletButton'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { t } from '@ui/lib/i18n'
 import { applySxProps } from '@ui/utils/mui'
-import { EmptyStateCard, EmptyStateCardProps } from './EmptyStateCard'
+import { EmptyStateCard, type EmptyStateCardProps } from './EmptyStateCard'
 
 export const ErrorMessage = ({
   title,
@@ -16,6 +17,7 @@ export const ErrorMessage = ({
   sx,
   size,
   userAddress,
+  ...connectionProps
 }: {
   title: ReactNode
   subtitle?: ReactNode
@@ -24,7 +26,7 @@ export const ErrorMessage = ({
   sx?: SxProps
   size?: EmptyStateCardProps['size']
   userAddress: Address | undefined
-}) => {
+} & ConnectionProps) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
 
   return (
@@ -43,6 +45,7 @@ export const ErrorMessage = ({
             },
           },
         })}
+        {...connectionProps}
       />
       <ErrorReportModal
         isOpen={isReportOpen}

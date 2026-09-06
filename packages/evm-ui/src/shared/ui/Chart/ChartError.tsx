@@ -1,6 +1,7 @@
 import { ErrorMessage } from '@evm-ui/shared/ui/ErrorMessage'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
+import type { ConnectionProps } from '@ui/components/ConnectWalletButton'
 import { t } from '@ui/lib/i18n'
 
 /** Error message component centered and wrapped in a container that takes a height prop and uses full width.
@@ -11,7 +12,8 @@ export const ChartError = ({
   errorMessage,
   refreshData,
   userAddress,
-}: {
+  ...connectionProps
+}: ConnectionProps & {
   height: number
   error: Error
   errorMessage: string
@@ -33,6 +35,7 @@ export const ChartError = ({
       error={error}
       refreshData={refreshData}
       userAddress={userAddress}
+      {...connectionProps}
     />
   </Box>
 )
