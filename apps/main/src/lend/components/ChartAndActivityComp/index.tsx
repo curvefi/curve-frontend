@@ -92,20 +92,11 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
   )
 }
 
-const MarketParticipants = () => (
-  <>
-    <BorrowersCard />
-    <SuppliersCard />
-  </>
-)
-
 export const MarketActivityComp = () => {
   const {
     chainId,
     blockchainId,
     ammAddress,
-    controllerAddress,
-    vaultToken,
     tokens: { collateralToken, borrowToken },
   } = useMarketContext<ChainId>()
   return (
@@ -120,10 +111,8 @@ export const MarketActivityComp = () => {
           endpoint: 'lending',
         }}
       />
-      <MarketParticipants
-        // Remount when the market changes so both tables reset their local pagination to page one.
-        key={`${chainId}-${controllerAddress}-${vaultToken?.address}`}
-      />
+      <BorrowersCard />
+      <SuppliersCard />
     </Stack>
   )
 }

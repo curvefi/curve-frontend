@@ -3,6 +3,7 @@ import { formatNumber } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Address } from '@primitives/address.utils'
 import { TokenIcon, type Size } from '@ui/components/TokenIcon'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
@@ -14,7 +15,8 @@ type TokenAmountProps = {
   amount: number | undefined
   amountUsd: number | null | undefined
   blockchainId?: string
-  tokenAddress?: string
+  /** Token contract address used to render the token icon. */
+  tokenAddress?: Address
   amountLoading?: boolean
   usdLoading?: boolean
   tooltipTitle?: ReactNode

@@ -1,22 +1,19 @@
 import type { ReactNode } from 'react'
 import type { MarketToken } from '@/llamalend/llama.utils'
-import { TokenAmount } from '@/llamalend/widgets/TokenAmount'
-import { UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { MarketBorrower, VaultDepositor } from '@curvefi/prices-api/llamalend'
-import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
+import { TokenAmount } from '@evm-ui/shared/ui/TokenAmount'
 import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { notFalsy } from '@primitives/objects.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-type ParticipantRow = {
+export type ParticipantRow = {
   explorerUrl?: string
   blockchainId: Chain
 }
@@ -49,9 +46,7 @@ export const TokenHeader = ({
 )
 
 export const Percentage = ({ value }: { value: number | null | undefined }) => (
-  <Typography variant="tableCellMBold">
-    {value == null ? UNAVAILABLE_NOTATION : formatNumber(value, 'percent.value')}
-  </Typography>
+  <Typography variant="tableCellMBold">{formatNumber(value, 'percent.value')}</Typography>
 )
 
 export const Health = ({ health }: Pick<BorrowerRow, 'health'>) => (
@@ -106,26 +101,4 @@ export const SupplierExpandedPanel: ExpandedPanelComponent<SupplierRow> = ({ row
       iconSize="mui-sm"
     />
   </ExpandedMetric>
-)
-
-const ParticipantActions = ({ explorerUrl }: ParticipantRow) => (
-  <ExpandedPanelActions
-    actions={notFalsy(
-      explorerUrl && {
-        id: 'view-on-explorer',
-        label: t`View on explorer`,
-        href: explorerUrl,
-        size: 'extraSmall',
-        color: 'ghost',
-      },
-    )}
-  />
-)
-
-export const BorrowerExpandedPanelActions: ExpandedPanelComponent<BorrowerRow> = ({ row: { original } }) => (
-  <ParticipantActions {...original} />
-)
-
-export const SupplierExpandedPanelActions: ExpandedPanelComponent<SupplierRow> = ({ row: { original } }) => (
-  <ParticipantActions {...original} />
 )

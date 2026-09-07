@@ -6,10 +6,11 @@ import { useManualPagination } from '@evm-ui/features/activity-table'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
@@ -19,14 +20,29 @@ import {
   mobileBorrowerVisibility,
   mobileSupplierVisibility,
 } from './market-participants.columns'
-import {
-  BorrowerExpandedPanel,
-  BorrowerExpandedPanelActions,
-  SupplierExpandedPanel,
-  SupplierExpandedPanelActions,
-} from './market-participants.utils'
+import { BorrowerExpandedPanel, ParticipantRow, SupplierExpandedPanel } from './market-participants.utils'
 
 const PAGE_SIZE = 10
+
+const ParticipantExpandedPanelActions = ({
+  row: {
+    original: { explorerUrl },
+  },
+}: {
+  row: { original: ParticipantRow }
+}) => (
+  <ExpandedPanelActions
+    actions={notFalsy(
+      explorerUrl && {
+        id: 'view-on-explorer',
+        label: t`View on explorer`,
+        href: explorerUrl,
+        size: 'extraSmall',
+        color: 'ghost',
+      },
+    )}
+  />
+)
 
 export const BorrowersCard = () => {
   const { chainId, blockchainId, controllerAddress, tokens } = useMarketContext()
@@ -68,7 +84,7 @@ export const BorrowersCard = () => {
         table={table}
         emptyState={{ title: t`No borrowers found.` }}
         errorState={{ title: t`Could not load borrowers.` }}
-        expandedPanel={{ Body: BorrowerExpandedPanel, Actions: BorrowerExpandedPanelActions }}
+        expandedPanel={{ Body: BorrowerExpandedPanel, Actions: ParticipantExpandedPanelActions }}
       />
     </Card>
   )
@@ -115,7 +131,7 @@ export const SuppliersCard = () => {
         table={table}
         emptyState={{ title: t`No suppliers found.` }}
         errorState={{ title: t`Could not load suppliers.` }}
-        expandedPanel={{ Body: SupplierExpandedPanel, Actions: SupplierExpandedPanelActions }}
+        expandedPanel={{ Body: SupplierExpandedPanel, Actions: ParticipantExpandedPanelActions }}
       />
     </Card>
   )
