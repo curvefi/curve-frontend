@@ -17,7 +17,6 @@ import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawFor
 import { useLoanExists } from '@/llamalend/queries/user'
 import { useMintMarket } from '@/loan/hooks/useMintMarket'
 import { ChainId as MintChain } from '@/loan/types/loan.types'
-import { Loading } from '@/routes/Loading'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
@@ -27,9 +26,10 @@ import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/v
 import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@evm-ui/lib/model'
 import { MarketType } from '@evm-ui/types/market'
-import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
+import { Loading } from '@ui/components/Loading'
+import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 import { constQ, type Range } from '@ui/features/queries/util'
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.

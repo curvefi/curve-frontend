@@ -239,6 +239,12 @@ const NUMBER_FORMAT_CATEGORIES = {
   'usd.precise': { unit: 'dollar', abbreviate: false, fallback: '-', formatter: preciseFormatter },
   'usd.notional': { unit: 'dollar', abbreviate: true, fallback: '-' },
   'percent.value': { unit: 'percentage', abbreviate: false, fallback: '-' },
+  'percent.price-impact': {
+    unit: 'percentage',
+    abbreviate: false,
+    fallback: '-',
+    formatter: value => defaultNumberFormatter(value, getFractionDigitsOptions(value, 5)),
+  },
   'percent.rate': {
     unit: 'percentage',
     abbreviate: true,

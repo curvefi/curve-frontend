@@ -36,7 +36,7 @@ import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
 import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
-import { getErrorMessage } from '@evm-ui/utils'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { t } from '@ui/lib/i18n'
 import { log } from '@ui/lib/logging'
 

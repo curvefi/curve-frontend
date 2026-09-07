@@ -1,7 +1,7 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Stack from '@mui/material/Stack'
@@ -31,6 +31,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     action,
     values,
     isApproved,
+    userAddress,
     formErrors,
     collateralToken,
     borrowToken,
@@ -66,9 +67,14 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <FormAlerts error={action.error} formErrors={formErrors} handledErrors={['userCollateral']} />
+      <FormAlerts
+        error={action.error}
+        formErrors={formErrors}
+        handledErrors={['userCollateral']}
+        userAddress={userAddress}
+      />
 
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         loading={!marketId}
         disabled={isDisabled}

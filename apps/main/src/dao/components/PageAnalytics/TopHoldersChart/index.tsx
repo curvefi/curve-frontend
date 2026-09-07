@@ -6,7 +6,7 @@ import { TopHoldersBarChart as TopHoldersBarChartComponent } from '@/dao/compone
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
-import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart'
 import { decimalMinus, decimalSum } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { SelectSortingMethod } from '@legacy-ui/Select/SelectSortingMethod'
@@ -75,7 +75,7 @@ export const TopLockers = () => {
         </Box>
       </TitleRow>
       <Content>
-        <ChartStateWrapper
+        <EvmChartStateWrapper
           height={DAO_COMPACT_CHART_HEIGHT}
           isLoading={isLoading}
           isEmpty={chartData?.length === 0}
@@ -88,7 +88,7 @@ export const TopLockers = () => {
             data={chartData ?? []}
             filter={topHoldersSortBy}
           />
-        </ChartStateWrapper>
+        </EvmChartStateWrapper>
       </Content>
     </MuiBox>
   )
