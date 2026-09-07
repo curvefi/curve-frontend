@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { usePreviousValue } from '@evm-ui/hooks/usePreviousValue'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
-import { formatNumber, getErrorMessage } from '@evm-ui/utils'
+import { formatNumber } from '@evm-ui/utils'
 import {
   getPriceImpactSeverity,
   getPriceImpactPercent,
@@ -18,6 +18,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { type QueryProp } from '@ui/features/queries/util'
 import { ErrorReportModal } from '@ui/features/report-error'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
