@@ -1,6 +1,5 @@
 import type { Address, Hex } from '@primitives/address.utils'
 import { addQueryString, fetchJson as fetch } from '@primitives/fetch.utils'
-import { maybe } from '@primitives/objects.utils'
 import { getHost, type Chain, type Options } from '..'
 import { getTimeRange } from '../timestamp'
 import * as Schema from './schema'
@@ -118,7 +117,7 @@ export async function getUserPoolPositions(
   options?: Options,
 ) {
   const host = getHost(options)
-  const query = maybe(newTx, newTx => addQueryString({ new_tx: newTx })) ?? ''
+  const query = addQueryString({ new_tx: newTx })
   const response = await fetch(`${host}/v2/pools/${chainId}/users/${userAddress}/positions${query}`, {
     signal: options?.signal,
   })
