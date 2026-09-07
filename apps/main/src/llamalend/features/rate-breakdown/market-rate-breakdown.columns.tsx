@@ -4,6 +4,7 @@ import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
+import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { t } from '@ui/lib/i18n'
@@ -56,11 +57,9 @@ const rateColumns = (rateHeader: string) =>
             icon={null}
             iconPosition="right"
             primary={formatNumber(getValue(), 'percent.rate')}
-            secondary={
-              row.original.maxBoostRate != null && row.original.maxBoostRate !== getValue()
-                ? t`Max boost ${formatNumber(row.original.maxBoostRate, 'percent.rate')}`
-                : undefined
-            }
+            secondary={maybe(row.original.maxBoostRate, maxBoostRate =>
+              maxBoostRate !== getValue() ? t`Max boost ${formatNumber(maxBoostRate, 'percent.rate')}` : undefined,
+            )}
           />
         </InlineTableCell>
       ),

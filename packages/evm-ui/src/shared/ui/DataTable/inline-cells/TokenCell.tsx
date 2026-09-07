@@ -36,7 +36,7 @@ export const TokenCell = ({ source, address, explorerUrl, endAdornment }: TokenC
         clickable={!!explorerUrl}
       >
         {/** Needed for the tooltip to work with the cell contents. */}
-        <Box sx={endAdornment ? { display: 'flex', alignItems: 'center', gap: Spacing.xs } : undefined}>
+        <Box sx={{ ...(endAdornment && { display: 'flex', alignItems: 'center', gap: Spacing.xs }) }}>
           <TokenInfo
             {...source}
             boldPrimary
