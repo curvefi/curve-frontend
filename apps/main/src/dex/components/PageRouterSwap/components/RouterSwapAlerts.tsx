@@ -5,7 +5,10 @@ import { AlertFormError } from '@/dex/components/AlertFormError'
 import { AlertSlippage } from '@/dex/components/AlertSlippage'
 import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
+import type { Decimal } from '@primitives/decimal.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
 export const RouterSwapAlerts = ({
@@ -14,7 +17,7 @@ export const RouterSwapAlerts = ({
   maxSlippage,
   toAmountOutput,
   isExchangeRateLow,
-  isHighImpact,
+  priceImpact,
   isExpectedToAmount,
   searchedParams,
   onClose,
@@ -24,7 +27,7 @@ export const RouterSwapAlerts = ({
   maxSlippage: string | undefined
   toAmountOutput: string | undefined
   isExchangeRateLow: boolean | undefined
-  isHighImpact?: boolean
+  priceImpact: QueryProp<Decimal | null>
   isExpectedToAmount?: boolean
   searchedParams: SearchedParams
   onClose: () => void
@@ -43,7 +46,7 @@ export const RouterSwapAlerts = ({
 
   return (
     <>
-      {isHighImpact && <AlertBox alertType="error">{t`Warning! High price impact!`}</AlertBox>}
+      <HighPriceImpactAlert priceImpact={priceImpact} />
       {isExchangeRateLow && <AlertBox alertType="error">{t`Warning! Exchange rate is too low!`}</AlertBox>}
       {isExpectedToAmount && (
         <AlertBox alertType="warning">{t`The expected amount you would like to receive, ${formValues.toAmount}, will actually be ${toAmountOutput}.`}</AlertBox>

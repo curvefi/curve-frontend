@@ -26,7 +26,6 @@ import { isVyperVulnerablePool } from '../alerts'
 import type { PoolsApiParams } from '../filters/utils'
 import type { PoolRow, PoolRowData } from '../types'
 import { POOLS_PAGE_SIZE } from './usePoolsPagination'
-import { usePoolsUserHasPosition } from './usePoolsUserHasPosition'
 
 class UnsupportedPoolListError extends Error {
   constructor(readonly chainId: number) {
@@ -152,7 +151,7 @@ export const usePoolsTable = ({
   const isSupported = poolListSupportQuery.data ?? false
 
   // Preferable we'd only enable these queries when the network is supported, but that in itself is not yet supported.
-  const hasUserPoolPosition = usePoolsUserHasPosition(chainId)
+  const hasUserPoolPosition = useCallback((_: string) => false, [])
   const { data: campaignsByAddress } = useCampaigns({ blockchainId })
 
   const toPoolRow = useCallback(
