@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { usePathname } from '@evm-ui/hooks/router'
-import { APP_LINK, routeToPage } from '@evm-ui/shared/routes'
+import { routeToPage } from '@evm-ui/shared/routes'
 import { GlobalBanner } from '@evm-ui/shared/ui/GlobalBanner'
 import AppBar from '@mui/material/AppBar'
 import Drawer from '@mui/material/Drawer'
@@ -29,32 +29,37 @@ const HIDE_SCROLLBAR = {
 
 const PADDING_BLOCK = 3
 
-export const MobileHeader = ({
+export const MobileHeader = <TApp extends string, TMenuApp extends TApp, TId extends string, TChainId extends number>({
   currentMenu,
   pages,
   appStats,
   sections,
-  chainId,
   backendMaintenance,
   supportedNetworks,
-  blockchainId,
-}: HeaderImplementationProps) => {
+  urlFactory,
+  tvls,
+  hideChains,
+  links,
+  currentNetwork,
+  connectWalletProps,
+}: HeaderImplementationProps<TApp, TMenuApp, TId, TChainId>) => {
   const [isSidebarOpen, , closeSidebar, toggleSidebar] = useSwitch(false)
   const pathname = usePathname()
   const top = useLayoutStore(state => state.navHeight)
+  const { blockchainId, chainId } = currentNetwork
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
   const otherAppSections = useMemo(
     () =>
-      recordEntries(APP_LINK)
+      recordEntries(links)
         .filter(([appName]) => appName != currentMenu)
         .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
-          pages: routes.map(p => routeToPage(p, { blockchainId, pathname })),
+          pages: routes.map(p => routeToPage(p, { blockchainId, pathname, urlFactory })),
         })),
-    [currentMenu, blockchainId, pathname],
+    [currentMenu, blockchainId, links, pathname, urlFactory],
   )
   return (
     <AppBar
@@ -76,6 +81,9 @@ export const MobileHeader = ({
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
           currentMenu={currentMenu}
+          currentNetwork={currentNetwork}
+          hideChains={hideChains}
+          tvls={tvls}
         />
 
         <Drawer
@@ -102,7 +110,7 @@ export const MobileHeader = ({
               <HeaderStats appStats={appStats} />
             </Stack>
 
-            <SidebarSection title={APP_LINK[currentMenu].label} pages={pages} />
+            <SidebarSection title={links[currentMenu].label} pages={pages} />
 
             {otherAppSections.map(({ appName, ...props }) => (
               <SidebarSection key={appName} {...props} />
@@ -115,7 +123,7 @@ export const MobileHeader = ({
             <SocialSidebarSection title={t`Community`} />
           </Stack>
 
-          <SideBarFooter onConnect={closeSidebar} />
+          <SideBarFooter onConnect={closeSidebar} connectWalletProps={connectWalletProps} />
         </Drawer>
       </Toolbar>
     </AppBar>

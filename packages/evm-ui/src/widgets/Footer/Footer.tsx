@@ -1,4 +1,3 @@
-import { AppName } from '@evm-ui/shared/routes'
 import { LlamaImg } from '@legacy-ui/images'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -19,7 +18,7 @@ const Llama = styled('img')({
 
 type FooterProps = {
   blockchainId: string
-  appName: AppName
+  appName: string
 }
 
 export const Footer = ({ appName, blockchainId }: FooterProps) => {

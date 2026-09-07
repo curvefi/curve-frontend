@@ -252,7 +252,7 @@ describe('Header', () => {
     it('should have no missing wagmi chains alert', () => {
       cy.get(`[data-testid='chain-icon-ethereum']`, LOAD_TIMEOUT).should('be.visible')
       cy.get(`[data-testid='btn-change-chain']`).click()
-      cy.get(`[data-testid='missing-wagmi-chain']`).should('not.exist')
+      cy.get(`[data-testid='missing-chain-config']`).should('not.exist')
     })
   })
 

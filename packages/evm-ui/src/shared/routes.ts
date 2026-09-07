@@ -1,4 +1,13 @@
-import { AppPage, AppRoute, AppRoutes } from '@evm-ui/widgets/Header/types'
+import {
+  getChainName,
+  isChainConfigured,
+  isLiteChain,
+  isTestnet,
+} from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import type { ChainListOption } from '@evm-ui/features/switch-chain/ui/ChainList'
+import { type AppLinks, AppPage, AppRoute } from '@evm-ui/widgets/Header/types'
+import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
+import { recordValues } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 
@@ -66,7 +75,7 @@ export type AppMenuOption = 'dex' | 'llamalend' | 'dao' | 'bridge' | 'analytics'
 
 export const LlamalendApps: AppName[] = ['crvusd', 'lend', 'llamalend']
 
-export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
+export const APP_LINK: AppLinks<AppName, AppMenuOption> = {
   dex: {
     label: 'DEX',
     routes: [
@@ -110,11 +119,19 @@ export const getInternalUrl = (app: AppName, blockchainId: string, route = '/') 
 const removeTrailingSlash = (pathname: string) => pathname.replace(/\/$/, '')
 
 /** Converts a route to a page object, adding href and isActive properties */
-export const routeToPage = (
-  { route, target, label, app, matchMode }: AppRoute,
-  { blockchainId, pathname }: { blockchainId: string; pathname: string },
+export const routeToPage = <TApp extends string>(
+  { route, target, label, app, matchMode }: AppRoute<TApp>,
+  {
+    blockchainId,
+    pathname,
+    urlFactory,
+  }: {
+    blockchainId: string
+    pathname: string
+    urlFactory: (app: TApp, blockchainId: string, route: string) => string
+  },
 ): AppPage => {
-  const href = route.startsWith('http') ? route : getInternalUrl(app, blockchainId, route)
+  const href = route.startsWith('http') ? route : urlFactory(app, blockchainId, route)
   return {
     href,
     target,
@@ -145,3 +162,21 @@ export const getCurrentNetwork = (path: string): string | undefined => {
   const [, , blockchainId] = path?.split('/') ?? []
   return blockchainId
 }
+
+export const createChainOption = <TId extends string = string, TChainId extends number = number>(
+  network: NetworkDef<TId, TChainId>,
+  currentApp: AppName,
+): ChainListOption<TId, TChainId> => ({
+  ...network,
+  name: getChainName(network.chainId),
+  isConfigured: isChainConfigured(network.chainId),
+  isLite: isLiteChain(network.chainId),
+  isTestnet: isTestnet(network.chainId),
+  href: getInternalUrl(currentApp, network.blockchainId),
+})
+
+export const createChainOptions = <TId extends string = string, TChainId extends number = number>(
+  supportedNetworks: NetworkMapping<TId, TChainId>,
+  currentApp: AppName,
+): ChainListOption<TId, TChainId>[] =>
+  recordValues(supportedNetworks).map(network => createChainOption(network, currentApp))

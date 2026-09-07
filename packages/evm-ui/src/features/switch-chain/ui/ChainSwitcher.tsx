@@ -1,70 +1,56 @@
 import lodash from 'lodash'
 import { useEffect, useMemo } from 'react'
-import { getPricesApiBlockchainId } from '@curvefi/prices-api'
-import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
-import { isLiteChain, isTestnet } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { usePathname } from '@evm-ui/hooks/router'
 import { useShowTestNets } from '@evm-ui/hooks/useLocalStorage'
-import { type AppMenuOption, getCurrentNetwork } from '@evm-ui/shared/routes'
 import { ModalSettingsButton } from '@evm-ui/shared/ui/ModalSettingsButton'
 import { showToast } from '@evm-ui/widgets/Toast/toast.util'
-import { type NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import IconButton from '@mui/material/IconButton'
-import { Chain } from '@primitives/network.utils'
-import { maybes, type PartialRecord } from '@primitives/objects.utils'
+import { maybe, type PartialRecord } from '@primitives/objects.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
+import type { QueryProp } from '@ui/features/queries/util'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { ChainList } from './ChainList'
+import { ChainList, type ChainListOption } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
-type ChainSwitcherProps = {
-  supportedNetworks: NetworkMapping
-  currentMenu: AppMenuOption
-}
-
-const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
-  dex: 'pool',
-  llamalend: 'lending',
-  dao: 'pool', // kind of irrelevant for tvl, since it only supports mainnet
-  bridge: 'pool', // only shows lending chains in the form but shows all networks in selector
-  analytics: 'pool', // only has crvUSD charts, but shows all networks in selector
-}
-
-// Sometimes a network has been defined and needs to be accessed for legacy purposes, but we want to hide it from the list for whatever reason.
-const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = {
-  dex: [Chain.ZkSync, Chain.Mantle],
+export type ChainSwitcherProps<TId extends string, TChainId extends number, TMenuApp extends string> = {
+  supportedNetworks: ChainListOption<TId, TChainId>[]
+  currentMenu: TMenuApp
+  currentNetwork: ChainListOption<TId, TChainId> | undefined
+  hideChains: PartialRecord<TMenuApp, number[]>
+  tvls: QueryProp<Record<string, number>>
 }
 
 const getTvl =
-  (tvls: Record<string, number> | undefined) =>
-  ({ blockchainId: id, chainId }: NetworkDef) =>
-    isTestnet(chainId) || isLiteChain(chainId)
+  <TId extends string, TChainId extends number>(tvls: Record<TId, number> | undefined) =>
+  ({ blockchainId: id, isLite, isTestnet }: ChainListOption<TId, TChainId>) =>
+    isTestnet || isLite
       ? 0 // ignore lite chains tvl, it's only available for downgraded chains and messes with sorting
-      : (maybes([getPricesApiBlockchainId(id), tvls], (id, tvls) => tvls[id]) ?? 0)
+      : (maybe(tvls, tvls => tvls[id]) ?? 0)
 
-export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherProps) => {
-  const blockchainId = getCurrentNetwork(usePathname())
-
+export const ChainSwitcher = <TId extends string, TChainId extends number, TMenuApp extends string>({
+  supportedNetworks,
+  currentMenu,
+  currentNetwork,
+  tvls,
+  hideChains,
+}: ChainSwitcherProps<TId, TChainId, TMenuApp>) => {
+  const blockchainId = currentNetwork?.blockchainId
   const [isOpen, , close, toggle] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
   const [showTestnets, setShowTestnets] = useShowTestNets()
   useEffect(() => () => close(), [blockchainId, close]) // close on chain change
-  const tvls = useNetworksTVL(TVL_SOURCES[currentMenu])
 
-  const options = useMemo(
+  const options: ChainListOption<TId, TChainId>[] = useMemo(
     () =>
       lodash.orderBy(
-        Object.values(supportedNetworks).filter(
-          networkConfig => !HIDE_CHAINS[currentMenu]?.includes(networkConfig.chainId),
-        ),
+        supportedNetworks.filter(n => !hideChains[currentMenu]?.includes(n.chainId)),
         [getTvl(tvls.data), 'name'],
         ['desc', 'asc'],
       ),
-    [currentMenu, supportedNetworks, tvls.data],
+    [currentMenu, hideChains, supportedNetworks, tvls.data],
   )
 
   const onClick =
@@ -99,7 +85,12 @@ export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherP
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
           ) : (
-            <ChainList showTestnets={showTestnets} options={options} tvls={tvls} selectedNetworkId={blockchainId} />
+            <ChainList<TId, TChainId>
+              showTestnets={showTestnets}
+              options={options}
+              tvls={tvls}
+              selectedNetworkId={blockchainId}
+            />
           )}
         </ModalDialog>
       )}

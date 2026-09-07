@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useMemo } from 'react'
 import { OverlayProvider } from 'react-aria'
 import { StyleSheetManager } from 'styled-components'
-import { WagmiProvider } from 'wagmi'
+import { useConnection, WagmiProvider } from 'wagmi'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
 import { BACKEND_MAINTENANCE } from '@/maintenances'
@@ -65,10 +65,11 @@ export const NetworkAwareLayout = () => {
   const onChainUnavailable = useOnChainUnavailable(networks)
   const { hydrate: dex } = useDexStore()
   const hydrate = useMemo(() => ({ dex }), [dex])
+  const { address: userAddress } = useConnection()
   useBreadcrumbs(pathname)
 
   return (
-    <>
+    <ErrorBoundary title={t`Root route error`} userAddress={userAddress}>
       {backendMaintenance.isMaintenanceMode ? (
         <MaintenancePage />
       ) : (
@@ -80,6 +81,7 @@ export const NetworkAwareLayout = () => {
                 currentApp={currentApp}
                 network={network}
                 networks={networks}
+                userAddress={userAddress}
               >
                 <HeadContent />
                 <Outlet />
@@ -92,7 +94,7 @@ export const NetworkAwareLayout = () => {
         )
       )}
       {!IS_CYPRESS && <BackendMaintenanceModal {...backendMaintenance} />}
-    </>
+    </ErrorBoundary>
   )
 }
 

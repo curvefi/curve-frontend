@@ -18,7 +18,7 @@ const buildLendMarketPath = ({ marketId, action }: { marketId: string; action: s
  * For the lend app it's the "Borrow" and "Supply" routes
  * For the crvusd app it's empty array (default to Borrow page, no need for the subnav)
  */
-export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean }): AppRoute[] => {
+export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean }): AppRoute<AppName>[] => {
   const params = useMatchRoute<{ app: AppName; marketId: string }>({
     to: `$app/$network${LEND_ROUTES.PAGE_MARKETS}/$marketId`,
     fuzzy: true, // allows to match longer routes like .../vault
@@ -54,7 +54,7 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
   return APP_LINK.llamalend.routes
 }
 
-export const useLlamalendRoutes = (): AppRoute[] => {
+export const useLlamalendRoutes = (): AppRoute<AppName>[] => {
   const isDesktop = useIsDesktop()
   const llamalendMarketRoutes = useLlamalendMarketSubNavRoutes({ isMobile: false })
 

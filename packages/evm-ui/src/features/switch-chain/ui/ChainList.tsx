@@ -1,15 +1,6 @@
 import lodash from 'lodash'
 import { Fragment, useMemo, useState } from 'react'
-import {
-  getChainName,
-  isChainConfigured,
-  isLiteChain,
-  isTestnet,
-} from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { usePathname } from '@evm-ui/hooks/router'
-import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
 import { SearchField } from '@evm-ui/shared/ui/SearchField'
-import type { NetworkDef } from '@legacy-ui/utils'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
@@ -34,44 +25,53 @@ const CHAIN_TYPE_NAMES: Record<ChainType, string> = {
   [ChainType.test]: t`Testnets`,
 }
 
-export function ChainList({
+export type ChainListOption<TId extends string, TChainId extends number> = {
+  blockchainId: TId
+  chainId: TChainId
+  name: string
+  isConfigured: boolean
+  isTestnet: boolean
+  isLite: boolean
+  href: string
+}
+
+export function ChainList<TId extends string, TChainId extends number>({
   options,
   showTestnets,
   selectedNetworkId,
   onNetwork,
   tvls: { data: tvls, isLoading: tvlsLoading },
 }: {
-  options: NetworkDef[]
+  options: ChainListOption<TId, TChainId>[]
   showTestnets: boolean
-  selectedNetworkId: string | undefined
-  onNetwork?: (network: NetworkDef) => void
+  selectedNetworkId: TId | undefined
+  onNetwork?: (network: ChainListOption<TId, TChainId>) => void
   tvls: QueryProp<Record<string, number>>
 }) {
-  const pathname = usePathname()
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>
       lodash.groupBy(
-        options.filter(o => getChainName(o.chainId).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
+        options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
         o =>
-          isTestnet(o.chainId)
+          o.isTestnet
             ? ChainType.test
-            : isLiteChain(o.chainId) || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
+            : o.isLite || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
               ? ChainType.lite
               : ChainType.main,
-      ) as Record<ChainType, NetworkDef[]>,
+      ) as Record<ChainType, ChainListOption<TId, TChainId>[]>,
     [options, searchValue, tvls],
   )
 
-  const missingWagmiChains = options.filter(({ chainId }) => !isTestnet(chainId) && !isChainConfigured(chainId))
+  const unconfiguredChains = options.filter(({ isTestnet, isConfigured }) => !isTestnet && !isConfigured)
 
   return (
     <>
-      {missingWagmiChains.length > 0 && (
-        <Alert variant="filled" severity="error" data-testid="missing-wagmi-chain">
-          <AlertTitle>{t`Missing wagmi chains`}</AlertTitle>
-          {t`Missing wagmi chain configs in chains.ts for: `}
-          {missingWagmiChains.map(({ blockchainId: id }) => id).join(', ')}
+      {unconfiguredChains.length > 0 && (
+        <Alert variant="filled" severity="error" data-testid="missing-chain-config">
+          <AlertTitle>{t`Missing chains`}</AlertTitle>
+          {t`Missing chain configs in for: `}
+          {unconfiguredChains.map(({ blockchainId: id }) => id).join(', ')}
         </Alert>
       )}
       <SearchField
@@ -95,10 +95,10 @@ export function ChainList({
                       value={network.blockchainId}
                       component={Link}
                       // navigate to app root to avoid deep-linking to non-existing resources across chains
-                      href={getInternalUrl(getCurrentApp(pathname), network.blockchainId)}
+                      href={network.href}
                       isSelected={network.blockchainId == selectedNetworkId}
                       icon={<ChainSwitcherIcon blockchainId={network.blockchainId} size={36} />}
-                      label={getChainName(network.chainId)}
+                      label={network.name}
                       onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
                       isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
                     />

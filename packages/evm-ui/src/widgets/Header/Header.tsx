@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
-import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConnectModal'
 import { usePathname } from '@evm-ui/hooks/router'
-import { type AppName, getInternalUrl, PAGE_INTEGRATIONS, PAGE_LEGAL, routeToPage } from '@evm-ui/shared/routes'
+import { PAGE_INTEGRATIONS, PAGE_LEGAL, routeToPage } from '@evm-ui/shared/routes'
 import { Toast } from '@evm-ui/widgets/Toast'
 import { notFalsy } from '@primitives/objects.utils'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
@@ -11,15 +10,23 @@ import { DesktopHeader } from './DesktopHeader'
 import { MobileHeader } from './MobileHeader'
 import { HeaderProps, NavigationSection } from './types'
 
-export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
+export const Header = <TApp extends string, TMenuApp extends TApp, TId extends string, TChainId extends number>({
+  routes,
+  currentApp,
+  ...props
+}: HeaderProps<TApp, TMenuApp, TId, TChainId>) => {
   const isDesktop = useIsDesktop()
   const pathname = usePathname()
-  const { blockchainId, currentMenu } = props
+  const { currentMenu, currentNetwork, urlFactory } = props
+  const { blockchainId } = currentNetwork
   const pages = useMemo(
-    () => routes[currentMenu].map(props => routeToPage(props, { blockchainId, pathname })),
-    [currentMenu, blockchainId, pathname, routes],
+    () => routes[currentMenu].map(route => routeToPage(route, { blockchainId, pathname, urlFactory })),
+    [currentMenu, blockchainId, pathname, routes, urlFactory],
   )
-  const sections = useMemo(() => getSections(currentApp, props.blockchainId), [currentApp, props.blockchainId])
+  const sections = useMemo(
+    () => getSections(currentApp, blockchainId, urlFactory),
+    [currentApp, blockchainId, urlFactory],
+  )
   return (
     <>
       {isDesktop ? (
@@ -28,20 +35,23 @@ export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
         <MobileHeader pages={pages} sections={sections} {...props} />
       )}
       <Toast />
-      <WagmiConnectModal />
     </>
   )
 }
 
-const getSections = (currentApp: AppName, blockchainId: string): NavigationSection[] => [
+const getSections = <TApp extends string>(
+  currentApp: TApp,
+  blockchainId: string,
+  urlFactory: (app: TApp, blockchainId: string, route?: string) => string,
+): NavigationSection[] => [
   {
     title: t`Documentation`,
     links: [
       { href: EXTERNAL_LINKS.curve.news, label: t`News` },
       { href: EXTERNAL_LINKS.docs.user.llamalend.overview, label: t`User Resources` },
       { href: EXTERNAL_LINKS.curve.docs, label: t`Developer Resources` },
-      { href: getInternalUrl(currentApp, blockchainId, PAGE_LEGAL), label: t`Legal` },
-      { href: getInternalUrl(currentApp, blockchainId, PAGE_INTEGRATIONS), label: t`Integrations` },
+      { href: urlFactory(currentApp, blockchainId, PAGE_LEGAL), label: t`Legal` },
+      { href: urlFactory(currentApp, blockchainId, PAGE_INTEGRATIONS), label: t`Integrations` },
       { href: EXTERNAL_LINKS.brand.assets, label: t`Branding` },
       ...notFalsy(isChinese() && { href: EXTERNAL_LINKS.curve.chinese.wiki, label: t`Wiki` }),
     ],

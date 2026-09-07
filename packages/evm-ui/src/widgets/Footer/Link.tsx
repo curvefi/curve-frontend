@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import type { AppName } from '@evm-ui/shared/routes'
 import Button from '@mui/material/Button'
 import LinkMui from '@mui/material/Link'
 import { RouterLink } from '@ui/components/RouterLink'
@@ -10,7 +9,7 @@ export type LinkProps = {
   icon?: ReactNode
   target?: string
   blockchainId: string
-  appName: AppName
+  appName: string
 }
 
 export const Link = ({ label, href, icon, target = '_blank', appName, blockchainId }: LinkProps) => (

@@ -1,4 +1,3 @@
-import type { AppName } from '@evm-ui/shared/routes'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -8,7 +7,7 @@ type SectionProps = {
   title: string
   links: Omit<LinkProps, 'blockchainId' | 'appName'>[]
   blockchainId: string
-  appName: AppName
+  appName: string
   isTiny: boolean
 }
 

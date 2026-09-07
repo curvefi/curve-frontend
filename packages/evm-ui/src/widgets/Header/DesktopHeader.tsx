@@ -18,22 +18,30 @@ import { getHeaderBorder } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const DesktopHeader = ({
+export const DesktopHeader = <TApp extends string, TMenuApp extends TApp, TId extends string, TChainId extends number>({
   currentMenu,
-  chainId,
+  currentNetwork,
   backendMaintenance,
   supportedNetworks,
   pages,
   appStats,
-  blockchainId,
-}: HeaderImplementationProps) => (
+  hideChains,
+  tvls,
+  urlFactory,
+  links,
+  connectWalletProps,
+}: HeaderImplementationProps<TApp, TMenuApp, TId, TChainId>) => (
   <AppBar
     color="transparent"
     ref={useMainNavRef()}
     data-testid="desktop-main-nav"
     sx={{ position: 'sticky', top: 0, boxShadow: 'none', borderBottom: getHeaderBorder }}
   >
-    <GlobalBanner blockchainId={blockchainId} chainId={chainId} backendMaintenance={backendMaintenance} />
+    <GlobalBanner
+      blockchainId={currentNetwork.blockchainId}
+      chainId={currentNetwork.chainId}
+      backendMaintenance={backendMaintenance}
+    />
 
     <Toolbar
       sx={{ backgroundColor: t => t.design.Layer[2].Fill, justifyContent: 'space-around', paddingY: 0 }}
@@ -41,14 +49,25 @@ export const DesktopHeader = ({
     >
       <Container sx={{ paddingInline: Spacing.md }}>
         <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
-        <AppButtonLinks blockchainId={blockchainId} currentMenu={currentMenu} />
+        <AppButtonLinks<TApp, TMenuApp>
+          blockchainId={currentNetwork.blockchainId}
+          currentMenu={currentMenu}
+          links={links}
+          urlFactory={urlFactory}
+        />
 
         <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', marginLeft: 2, justifyContent: 'flex-end', gap: 3, alignItems: 'center' }}>
           <UserProfile />
-          <ChainSwitcher supportedNetworks={supportedNetworks} currentMenu={currentMenu} />
-          <ConnectWalletIndicator />
+          <ChainSwitcher<TId, TChainId, TMenuApp>
+            supportedNetworks={supportedNetworks}
+            currentNetwork={currentNetwork}
+            currentMenu={currentMenu}
+            hideChains={hideChains}
+            tvls={tvls}
+          />
+          <ConnectWalletIndicator {...connectWalletProps} />
         </Box>
       </Container>
     </Toolbar>
