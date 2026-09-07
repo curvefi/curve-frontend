@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { fn } from 'storybook/test'
 import CheckIcon from '@mui/icons-material/Check'
 import Grid from '@mui/material/Grid'
@@ -102,6 +103,18 @@ const meta: Meta<typeof SelectableChip> = {
 }
 
 export const Chip: Story = {
+  render: args => {
+    // eslint-disable-next-line @eslint-react/rules-of-hooks
+    const [selected, setSelected] = useState(args.selected)
+
+    return (
+      <SelectableChip
+        {...args}
+        selected={selected}
+        toggle={() => setSelected(previouslySelected => !previouslySelected)}
+      />
+    )
+  },
   parameters: {
     docs: {
       description: {
