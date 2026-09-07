@@ -1,14 +1,10 @@
 import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import { BorrowPositionDetails } from '@/llamalend/features/market-position-details'
-import { getLiquidationStatus } from '@/llamalend/llama.utils'
+import { getIsUserCloseToSoftLiquidation, getLiquidationStatus } from '@/llamalend/llama.utils'
 import type { MarketTemplate, UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
-import {
-  getMarketLiquidationBandKey,
-  getMarketOraclePriceBandKey,
-  getMarketOraclePriceKey,
-} from '@/llamalend/queries/market'
+import { getMarketOraclePriceBandKey, getMarketOraclePriceKey } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
@@ -44,7 +40,6 @@ const baseProps = {
   borrowSymbol: 'crvUSD',
   borrowUsdPrice: 1,
   borrowAddress: CRVUSD_ADDRESS,
-  marketLiquidationBand: null as number | null,
   oraclePrice: -5,
   userBands: [69, 118] as Range<number>,
 }
@@ -64,7 +59,6 @@ const PositionDetailsTest = ({
   userPrices,
   userBands,
   totalDebt,
-  marketLiquidationBand,
   leverage,
   params,
 }: typeof baseProps) => (
@@ -97,7 +91,6 @@ const PositionDetailsTest = ({
           [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
           [getUserHealthKey({ ...params, isFull: false }), maybe(healthNotFull, h => `${h}`) ?? null],
           [getMarketOraclePriceKey(params), `${oraclePrice}`],
-          [getMarketLiquidationBandKey(params), marketLiquidationBand],
           [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
           [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
           [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
@@ -148,6 +141,14 @@ const expectedSeverityClass = (severity: 'info' | 'warning' | 'error') =>
   new RegExp(`MuiAlert-(?:outlined|color)${({ info: 'Info', warning: 'Warning', error: 'Error' } as const)[severity]}`)
 
 describe('Position status logic', () => {
+  describe('getIsUserCloseToSoftLiquidation', () => {
+    it('uses only the distance between the user and oracle bands', () => {
+      expect(getIsUserCloseToSoftLiquidation(10, 7)).to.eq(false)
+      expect(getIsUserCloseToSoftLiquidation(10, 8)).to.eq(true)
+      expect(getIsUserCloseToSoftLiquidation(10, null)).to.eq(false)
+    })
+  })
+
   describe('getLiquidationStatus', () => {
     it('returns undefined when required values are missing', () => {
       expect(getLiquidationStatus(undefined, false, false, '1', '0')).to.eq(undefined)

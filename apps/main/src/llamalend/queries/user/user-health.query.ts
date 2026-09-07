@@ -55,10 +55,10 @@ export const useLegacyUserHealthValue = (params: UserMarketParams) =>
     (full, notFull) => (+notFull < 0 ? notFull : full),
   )
 
-export const useUserHealthValues = (params: UserMarketParams) => {
-  const healthFull = useUserHealth({ ...params, isFull: true })
-  const healthNotFull = useUserHealth({ ...params, isFull: false })
-  const discounts = useUserDiscounts(params)
+export const useUserHealthValues = (params: UserMarketParams, enabled = true) => {
+  const healthFull = useUserHealth({ ...params, isFull: true }, enabled)
+  const healthNotFull = useUserHealth({ ...params, isFull: false }, enabled)
+  const discounts = useUserDiscounts(params, enabled)
 
   return {
     data: maybes(

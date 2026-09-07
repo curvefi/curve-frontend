@@ -17,12 +17,12 @@ export const BorrowPositionDetails = () => {
   const { collateralToken, borrowToken } = tokens
   const params = { chainId, marketId, userAddress }
   const liquidationStatus = useLiquidationStatus(params)
-  const healthQuery = useUserHealthValues(params)
+  const useNewHealth = useNewLlamalendHealth()
+  const healthQuery = useUserHealthValues(params, useNewHealth)
   const statusContent =
     liquidationStatus.data &&
     getPositionStatusContent(collateralToken?.symbol, borrowToken?.symbol)[liquidationStatus.data]
   const softLiquidation = mapQuery(liquidationStatus, positionStatus => positionStatus === 'softLiquidation')
-  const useNewHealth = useNewLlamalendHealth()
   return (
     <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
       <Stack sx={{ gap: Spacing.sm }}>
