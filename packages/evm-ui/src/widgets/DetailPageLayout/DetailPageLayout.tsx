@@ -46,11 +46,14 @@ const stickyHeaderSx = (navHeight: number): StackProps['sx'] => ({
 })
 
 /** CSS rules for making the section navigation sticky */
-const stickySectionNavSx = (navHeight: number): StackProps['sx'] => ({
+const stickySectionNavSx = (navHeight: number, isMobile: boolean): StackProps['sx'] => ({
   position: { tablet: 'sticky' },
   // -1 to hide the top border behind the page headers and not have two borders when sticky
   top: { tablet: `calc(${navHeight}px - ${BorderWidth.thin})` },
   zIndex: theme => theme.zIndex.appBar - 1,
+  // Can't use gap for spacing because it requires a wrapper, which prevents sticky positioning from working.
+  paddingBlockEnd: isMobile ? undefined : PAGE_SPACING,
+  marginBlockStart: Spacing.sm,
 })
 
 /** CSS rules for making the form tabs sticky */
@@ -90,14 +93,14 @@ export const DetailPageLayout = ({
   const hasSections = !!sections?.length
 
   const headerStack = (
-    <Stack sx={{ gap: Spacing.sm }}>
+    <>
       {header && <Stack sx={hasSections ? undefined : stickyHeaderSx(navHeight)}>{header}</Stack>}
       {hasSections && (
-        <Stack sx={stickySectionNavSx(navHeight)}>
+        <Stack sx={stickySectionNavSx(navHeight, isMobile)}>
           <DetailPageSectionNav sections={sections} />
         </Stack>
       )}
-    </Stack>
+    </>
   )
   return (
     <WithWrapper shouldWrap={showMobileDrawer} Wrapper={MobileDrawerBoundary}>
@@ -121,11 +124,7 @@ export const DetailPageLayout = ({
         // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
         {...(!showMobileDrawer && { direction: 'row-reverse' })}
       >
-        {isMobile && (
-          <Grid size={12}>
-            <Stack sx={{ gap: PAGE_SPACING }}>{headerStack}</Stack>
-          </Grid>
-        )}
+        {isMobile && <Grid size={12}>{headerStack}</Grid>}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
             Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
         {formTabs !== null && !showMobileDrawer && (
@@ -140,10 +139,8 @@ export const DetailPageLayout = ({
           </Grid>
         )}
         <Grid size="grow">
-          <Stack sx={{ gap: PAGE_SPACING }}>
-            {!isMobile && headerStack}
-            <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
-          </Stack>
+          {!isMobile && headerStack}
+          <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
         </Grid>
         {footer && <Grid size={12}>{footer}</Grid>}
       </Grid>
