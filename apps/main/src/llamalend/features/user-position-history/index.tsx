@@ -1,6 +1,6 @@
-import { Accordion } from '@evm-ui/shared/ui/Accordion'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Accordion } from '@ui/components/Accordion'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'

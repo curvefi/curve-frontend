@@ -2,11 +2,11 @@ import { useMemo } from 'react'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import type { Chain } from '@curvefi/prices-api'
-import { useForm } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenDecimals } from '@evm-ui/hooks/useTokenDecimals'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { maybes } from '@primitives/objects.utils'
+import { useForm } from '@ui/features/forms'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useRefuelMutation } from '../mutations/refuel.mutation'
 import { useRefuelPool } from '../queries/pools.query'
@@ -90,6 +90,7 @@ export const useRefuelForm = ({
     poolTvl: mapQuery(pool, p => p.tvlUsd),
     isPending,
     isDisabled: tokens == null || !formState.isValid || isPending,
+    userAddress,
     refuelError,
     formErrors,
     onSubmit: form.handleSubmit(onSubmitRefuel),

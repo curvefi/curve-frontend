@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import { EmptyStateCard } from '@evm-ui/shared/ui/EmptyStateCard'
+import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import { MarketRateType } from '@evm-ui/types/market'
 import { Stack } from '@mui/material'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -33,7 +33,7 @@ export const MarketEmptyPosition = ({ type }: NoPositionProps) => {
   const { title, description } = EMPTY_MARKET_CONFIG[emptyType]
   return (
     <Stack sx={{ alignItems: 'center', padding: Spacing.md }} data-testid={`no-position-${emptyType.toLowerCase()}`}>
-      <EmptyStateCard
+      <EmptyStateEvmCard
         size="sm"
         title={title}
         description={description}

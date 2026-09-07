@@ -20,10 +20,10 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { useParams } from '@evm-ui/hooks/router'
 import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { ErrorPage } from '@evm-ui/pages/ErrorPage'
-import { MarketType, MarketRateType } from '@evm-ui/types/market'
+import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
+import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { t } from '@ui/lib/i18n'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -63,6 +63,7 @@ export const Page = () => {
       subtitle={error.message}
       error={error}
       continueUrl={getCollateralListPathname(params)}
+      userAddress={userAddress}
     />
   ) : (
     <MarketContextProvider

@@ -5,8 +5,8 @@ import { useScrvUsdDepositMutation } from '@/loan/entities/scrvusd-deposit.mutat
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
 import { type ScrvUsdDepositForm, scrvUsdDepositFormValidationSuite } from '@/loan/entities/scrvusd.validation'
 import { type ChainId } from '@/loan/types/loan.types'
-import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
+import { useForm, useFormSync } from '@ui/features/forms'
 import { mapQuery } from '@ui/features/queries/util'
 
 const userDefaultValues = { depositAmount: undefined, approveInfinite: false }
@@ -49,6 +49,7 @@ export const useScrvUsdDepositForm = ({ chainId }: { chainId: ChainId }) => {
     isApproved,
     isPending,
     isDisabled: !userAddress || !form.formState.isValid || isPending || isDebouncing || isApproved.isLoading,
+    userAddress,
     error,
     formErrors: form.formState.visibleErrors,
     max,

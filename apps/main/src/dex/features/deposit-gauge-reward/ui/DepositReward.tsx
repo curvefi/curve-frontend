@@ -6,7 +6,7 @@ import { useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge/model/gaug
 import { useNetworks } from '@/dex/entities/networks'
 import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
-import { FormButton, useForm, useFormSync } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { createValidationSuite } from '@evm-ui/lib/validation'
@@ -16,6 +16,7 @@ import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Stack from '@mui/material/Stack'
 import { maybes } from '@primitives/objects.utils'
+import { useForm, useFormSync } from '@ui/features/forms'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -82,7 +83,7 @@ export const DepositReward = () => {
       <Stack sx={{ gap: Spacing.sm }}>
         <AmountTokenInput chainId={chainId} poolId={poolId} blockchainId={network.blockchainId} disabled={isPending} />
         <EpochInput disabled={isPending} />
-        <FormButton
+        <EvmFormButton
           pending={isPending}
           loading={isLoading}
           disabled={!isValid || isLoading}
@@ -94,6 +95,7 @@ export const DepositReward = () => {
           error={errors['root.serverError'] ?? depositRewardError}
           formErrors={visibleErrors}
           handledErrors={['rewardTokenId', 'amount', 'epoch']}
+          userAddress={userAddress}
         />
       </Stack>
     </Form>

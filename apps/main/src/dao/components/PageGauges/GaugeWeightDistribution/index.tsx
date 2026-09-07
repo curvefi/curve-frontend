@@ -8,7 +8,7 @@ import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { truncateToShortenedAddressLength } from '@/dao/utils'
 import {
   CHART_X_AXIS_LABEL_ROTATION,
-  ChartStateWrapper,
+  EvmChartStateWrapper,
   createChartSeriesColorScale,
   EChartsBarChart,
   formatChartAxisNumber,
@@ -91,7 +91,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
     <Wrapper variant="secondary">
       <Box flex flexColumn padding="var(--spacing-3) 0 0">
         <ChartTitle>{isUserVotes ? t`User Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
-        <ChartStateWrapper
+        <EvmChartStateWrapper
           height={DAO_COMPACT_CHART_HEIGHT}
           isLoading={isLoading}
           isEmpty={!isLoading && !error && dataLength === 0}
@@ -127,7 +127,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
               yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'percentage' })}
             />
           )}
-        </ChartStateWrapper>
+        </EvmChartStateWrapper>
       </Box>
       {!isUserVotes && <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>}
     </Wrapper>

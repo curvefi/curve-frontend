@@ -5,13 +5,13 @@ import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
-import { Loading } from '@/routes/Loading'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import type { TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
 import type { Address } from '@primitives/address.utils'
+import { Loading } from '@ui/components/Loading'
 
 export type SwapTestCaseProps = {
   chainId: ChainId

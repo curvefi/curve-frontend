@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useLayoutStore } from '@evm-ui/features/layout'
+import { useLayoutStore } from '@ui/features/layout/layout'
 import { useResizeObserver } from '@ui/hooks/useResizeObserver'
 
 export function useMainNavRef() {
