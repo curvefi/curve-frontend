@@ -594,7 +594,7 @@ __metadata:
   resolution: "@curvefi/prices-api@workspace:packages/prices-api"
   dependencies:
     "@curvefi/primitives": "workspace:^"
-    vite: "npm:*"
+    vite: "npm:7.3.5"
     zod: "npm:4.5.2"
   languageName: unknown
   linkType: soft
@@ -618,7 +618,7 @@ __metadata:
     "@vitest/ui": "npm:4.1.11"
     cypress: "npm:15.21.1"
     main: "workspace:^"
-    vite: "npm:*"
+    vite: "npm:7.3.5"
     vite-plugin-svgr: "npm:5.2.0"
     wait-on: "npm:9.1.0"
   languageName: unknown
@@ -10736,7 +10736,7 @@ __metadata:
     pinst: "npm:3.0.0"
     router-api: "workspace:^"
     vest: "npm:5.4.6"
-    vite: "npm:*"
+    vite: "npm:7.3.5"
     vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:9.1.1"
   languageName: unknown
@@ -12498,6 +12498,7 @@ __metadata:
     bignumber.js: "npm:9.3.1"
     fastify: "npm:5.12.1"
     tsx: "npm:4.23.12"
+    viem: "npm:2.56.0"
   languageName: unknown
   linkType: soft
 
@@ -12945,13 +12946,9 @@ __metadata:
     "@tanstack/router-core": "npm:1.171.27"
     "@types/node": "npm:26.1.0"
     "@vitejs/plugin-react": "npm:5.1.2"
-    vite: "npm:*"
+    vite: "npm:7.3.5"
     vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:9.1.1"
-  peerDependencies:
-    "@curvefi/primitives": "*"
-    react: "*"
-    react-dom: "*"
   languageName: unknown
   linkType: soft
 

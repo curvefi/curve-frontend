@@ -32,7 +32,7 @@
     "@types/lodash": "4.17.25",
     "@vitejs/plugin-react": "5.1.2",
     "pinst": "3.0.0",
-    "vite": "*",
+    "vite": "7.3.5",
     "vite-plugin-svgr": "5.2.0"
   }
 }
