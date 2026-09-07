@@ -3,8 +3,9 @@ import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
-import { decimalDiv } from '@evm-ui/utils'
+import { decimal, decimalDiv } from '@evm-ui/utils'
 import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
+import { isHighPriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui/lib/i18n'
 
@@ -147,7 +148,7 @@ type GetSlippageImpactParams = {
  *
  * @param {GetSlippageImpactParams} params - Parameters for slippage calculation
  * @returns {Object} Object containing:
- *   - isHighImpact: true if price impact exceeds max slippage
+ *   - isHighImpact: true if price impact exceeds the high price impact threshold
  *   - isExpectedToAmount: true if difference between desired and actual amount exceeds max slippage
  */
 export const getSlippageImpact = ({
@@ -156,7 +157,7 @@ export const getSlippageImpact = ({
   priceImpact,
   fetchedToAmount,
 }: GetSlippageImpactParams) => ({
-  isHighImpact: priceImpact !== null && priceImpact > +maxSlippage,
+  isHighImpact: isHighPriceImpact(decimal(priceImpact)),
   // if input toAmount and fetchedToAmount differ is more than slippage, inform user they will get expected not desired
   ...(fetchedToAmount ? { isExpectedToAmount: +toAmount - +(fetchedToAmount ?? 0) > +maxSlippage } : {}),
 })

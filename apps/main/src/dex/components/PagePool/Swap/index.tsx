@@ -18,7 +18,6 @@ import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
-import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import { notify } from '@evm-ui/features/connect-wallet'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { TokenList, TokenSelector } from '@evm-ui/features/select-token'
@@ -27,6 +26,7 @@ import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal, formatNumber } from '@evm-ui/utils'
+import { HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -41,7 +41,7 @@ import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { q } from '@ui/features/queries/util'
+import { q, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
@@ -84,7 +84,7 @@ export const Swap = ({
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
-  const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
+  const priceImpact = toQuery(decimal(exchangeOutput.priceImpact), { isLoading: exchangeOutput.loading })
 
   const [steps, setSteps] = useState<Step[]>([])
   const [confirmedLoss, setConfirmedLoss] = useState(false)
@@ -522,11 +522,7 @@ export const Swap = ({
       <Stack>
         <DetailInfoExchangeRate exchangeRates={exchangeOutput.exchangeRates} loading={exchangeOutput.loading} />
 
-        <DetailInfoPriceImpact
-          loading={exchangeOutput.loading}
-          priceImpact={exchangeOutput.priceImpact}
-          isHighImpact={slippageImpact?.isHighImpact}
-        />
+        <DetailInfoPriceImpact priceImpact={priceImpact} />
 
         {haveSigner && (
           <DetailInfoEstGas
@@ -538,6 +534,7 @@ export const Swap = ({
         )}
         <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
       </Stack>
+      <HighPriceImpactAlert priceImpact={priceImpact} />
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}
