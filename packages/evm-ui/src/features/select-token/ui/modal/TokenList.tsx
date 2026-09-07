@@ -24,6 +24,8 @@ export type TokenListProps = Pick<
   onSearch?: (search: string) => void
   /** List of favorite token options to display at the top */
   favorites?: Option[]
+  /** Token volumes in USD mapped by token address */
+  volumes?: Record<string, number>
   /** Custom error message to display (e.g., when tokens failed to load) */
   error?: string
   /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */
@@ -41,6 +43,7 @@ export const TokenList = ({
   favorites,
   balances,
   tokenPrices,
+  volumes = {},
   error,
   disabledTokens,
   isLoading = false,
@@ -143,9 +146,10 @@ export const TokenList = ({
     ).flat()
     return disableSorting
       ? allTokensBase
-      : // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-        allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
-  }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy])
+      : allTokensBase.toSorted(
+          (a, b) => (volumes[b.address] ?? 0) - (volumes[a.address] ?? 0) || a.symbol.localeCompare(b.symbol),
+        )
+  }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy, volumes])
 
   /**
    * Filters tokens to show in the preview of "All tokens" section.

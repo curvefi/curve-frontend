@@ -3,7 +3,7 @@ import { ExpectedExchangeRate } from '@cy/support/helpers/swap/swap.helpers'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('DEX Swap', () => {
-  const FROM_USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7'
+  const FROM_USDT = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
   const TO_ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
   it('shows quotes via router API when disconnected', () => {
