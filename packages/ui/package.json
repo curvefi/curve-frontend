@@ -34,7 +34,8 @@
     "memoizee": "0.4.17",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "react-hook-form": "7.86.0"
+    "react-hook-form": "7.86.0",
+    "zustand": "5.0.15"
   },
   "devDependencies": {
     "@types/node": "26.1.0"

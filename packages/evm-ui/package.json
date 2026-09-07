@@ -32,8 +32,7 @@
     "external-rewards": "workspace:^",
     "lightweight-charts": "5.2.1",
     "viem": "2.56.0",
-    "wagmi": "3.7.7",
-    "zustand": "5.0.15"
+    "wagmi": "3.7.7"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "5.3.0",
