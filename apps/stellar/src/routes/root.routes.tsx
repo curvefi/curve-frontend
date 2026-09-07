@@ -1,6 +1,12 @@
+import { StellarNetworkAwareLayout } from '@/routes/StellarNetworkAwareLayout'
 import { createRootRoute } from '@tanstack/react-router'
-import { StellarRootLayout } from './StellarRootLayout'
+import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
+import { t } from '@ui/lib/i18n'
 
 export const rootRoute = createRootRoute({
-  component: StellarRootLayout,
+  component: () => (
+    <ErrorBoundary title={t`Root route error`}>
+      <StellarNetworkAwareLayout />
+    </ErrorBoundary>
+  ),
 })

@@ -1,13 +1,13 @@
 import { useConnection } from 'wagmi'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
-import { BUTTON_FORM_SIZE } from '@evm-ui/features/forms/constants'
+import { ConnectEvmWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectEvmWalletButton'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import { BUTTON_FORM_SIZE } from '@ui/features/forms/constants'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../../market-context'
@@ -35,6 +35,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
     isRewardsDisabled,
     isCrvPending,
     isRewardsPending,
+    userAddress,
     totalNotionals,
     usdRateLoading: isNotionalLoading,
     table,
@@ -87,10 +88,10 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
             </Button>
           </Stack>
         ) : (
-          <ConnectWalletButton />
+          <ConnectEvmWalletButton />
         )}
 
-        <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} />
+        <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} userAddress={userAddress} />
       </FormContent>
     </>
   )

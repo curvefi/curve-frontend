@@ -26,13 +26,13 @@ import {
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/entities/router-api'
-import { useCallbackSync, useForm } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { decimalSum } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
+import { useCallbackSync, useForm } from '@ui/features/forms'
 import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
 import { IS_DEVELOPMENT } from '@ui/utils/env'
 import { useMarketContext } from '../../market-context'
@@ -192,6 +192,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isLoading: isPending || !market || isSolvencyLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
+    userAddress,
     borrowToken,
     collateralToken,
     error: borrowError ?? solvencyError,

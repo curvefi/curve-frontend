@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { DAO_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import { useVeCrvLocksQuery } from '@/dao/entities/vecrv-locks'
-import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart'
 import Box from '@mui/material/Box'
 import { t } from '@ui/lib/i18n'
 import { PositiveAndNegativeBarChart } from './PositiveAndNegativeBarChart'
@@ -15,7 +15,7 @@ export const DailyLocks = () => {
     <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <BoxTitle>{t`Daily veCRV Locks Last ${DAILY_LOCKS_DAYS} Days`}</BoxTitle>
       <Content>
-        <ChartStateWrapper
+        <EvmChartStateWrapper
           height={DAO_CHART_HEIGHT}
           isLoading={isLoading}
           isEmpty={locks?.length === 0}
@@ -24,7 +24,7 @@ export const DailyLocks = () => {
           refreshData={refetch}
         >
           {locks && <PositiveAndNegativeBarChart height={DAO_CHART_HEIGHT} data={locks} />}
-        </ChartStateWrapper>
+        </EvmChartStateWrapper>
       </Content>
     </Box>
   )

@@ -8,8 +8,8 @@ import {
   WithdrawParams,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useForm } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
+import { useForm } from '@ui/features/forms'
 import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { withdrawAmount: undefined }
@@ -24,7 +24,6 @@ const emptyWithdrawForm = (): WithdrawForm => ({
 export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
   const { marketId, tokens, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
-
   const { borrowToken } = tokens
 
   const form = useForm<WithdrawForm>({
@@ -67,6 +66,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { net
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
     isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
+    userAddress,
     borrowToken,
     withdrawError,
     max,

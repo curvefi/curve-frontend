@@ -7,7 +7,7 @@ import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-optio
 import {
   CHART_LINE_DASH_PATTERNS,
   ChartFooter,
-  ChartStateWrapper,
+  EvmChartStateWrapper,
   ChartTooltipSeriesGroup,
   ChartTooltipSeriesRow,
   ChartTooltipShell,
@@ -139,7 +139,7 @@ export const PoolHistoricalBaseRateChart = ({
             valueOptions={{ unit: 'percentage' }}
           />
         </Stack>
-        <ChartStateWrapper
+        <EvmChartStateWrapper
           height={Height.shortChart}
           isLoading={ratePoints.isLoading}
           error={ratePoints.error}
@@ -170,7 +170,7 @@ export const PoolHistoricalBaseRateChart = ({
               </ChartTooltipShell>
             )}
           />
-        </ChartStateWrapper>
+        </EvmChartStateWrapper>
         <ChartFooter legendSets={legendSets} />
       </CardContent>
     </Card>

@@ -4,8 +4,8 @@ import type { LlamaMarketsTableResult } from '@/llamalend/queries/market-list/ll
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@evm-ui/shared/routes'
 import { TableHeader } from '@evm-ui/shared/ui/DataTable/TableHeader'
-import { EmptyStateCard } from '@evm-ui/shared/ui/EmptyStateCard'
-import { ErrorMessage } from '@evm-ui/shared/ui/ErrorMessage'
+import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
+import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import { MarketRateType } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
@@ -92,14 +92,14 @@ export const UserPositionsTables = ({
           ) : (
             <CenteredEmptyState>
               {error ? (
-                <ErrorMessage
+                <EvmErrorMessage
                   title={t`Could not load positions`}
                   subtitle={error.message}
                   error={error}
                   refreshData={onReload}
                 />
               ) : (
-                <EmptyStateCard
+                <EmptyStateEvmCard
                   isLoading={isLoading}
                   title={t`No active positions`}
                   description={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
@@ -109,7 +109,7 @@ export const UserPositionsTables = ({
           )
         ) : (
           <CenteredEmptyState>
-            <EmptyStateCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
+            <EmptyStateEvmCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
           </CenteredEmptyState>
         )}
       </Stack>

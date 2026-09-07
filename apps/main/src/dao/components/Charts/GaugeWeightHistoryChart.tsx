@@ -1,7 +1,7 @@
 import { useGaugeWeightHistoryQuery, type GaugeWeightHistoryData } from '@/dao/entities/gauge-weight-history'
 import {
   ChartFooter,
-  ChartStateWrapper,
+  EvmChartStateWrapper,
   ChartTooltipDataRow,
   ChartTooltipSeriesGroup,
   ChartTooltipShell,
@@ -47,7 +47,7 @@ export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }:
 
   return (
     <Stack sx={{ flexGrow: 1, gap: Spacing.md }}>
-      <ChartStateWrapper
+      <EvmChartStateWrapper
         height={height}
         isLoading={isLoading}
         isEmpty={isSuccess && data.length === 0}
@@ -89,7 +89,7 @@ export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }:
             </ChartTooltipShell>
           )}
         />
-      </ChartStateWrapper>
+      </EvmChartStateWrapper>
       <ChartFooter legendSets={legendSets} />
     </Stack>
   )

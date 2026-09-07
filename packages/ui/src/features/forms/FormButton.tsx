@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react'
-import { useConnection } from 'wagmi'
-import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
-import { useIsMobileFormDrawer } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementContext'
 import Button, { type ButtonProps } from '@mui/material/Button'
 import type { Falsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
+import { type ConnectionProps, ConnectWalletButton } from '@ui/components/ConnectWalletButton'
 import { t } from '@ui/lib/i18n'
 import { applySxProps } from '@ui/utils/mui'
+import { useIsMobileFormDrawer } from '../form-context/FormPlacementContext'
 import { BUTTON_FORM_SIZE } from './constants'
 
 type FormButtonLabelPart = string | Exclude<Falsy, ''>
@@ -17,7 +16,7 @@ export type FormButtonProps = Pick<ButtonProps, 'disabled' | 'fullWidth' | 'load
   label?: string | FormButtonLabelPart[]
   pending?: boolean
   testId?: string
-}
+} & ConnectionProps
 
 const fixedBottomSx = { position: 'fixed', bottom: 0, left: 0, right: 0 } as const
 
@@ -31,10 +30,12 @@ export const FormButton = ({
   pending = false,
   sx,
   testId,
+  isConnecting,
+  isConnected,
+  connect,
 }: FormButtonProps) => {
   const isMobileDrawer = useIsMobileFormDrawer()
-
-  return useConnection().isConnected ? (
+  return isConnected ? (
     children || (
       <Button
         type="submit"
@@ -50,6 +51,9 @@ export const FormButton = ({
     )
   ) : (
     <ConnectWalletButton
+      isConnecting={isConnecting}
+      isConnected={isConnected}
+      connect={connect}
       size={BUTTON_FORM_SIZE}
       fullWidth={isMobileDrawer || fullWidth}
       sx={applySxProps(sx, isMobileDrawer && fixedBottomSx)}

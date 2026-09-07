@@ -1,8 +1,8 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { closeDrawer } from '@cy/support/helpers/data-table.helpers'
 import { LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
-import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import { FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 
 type EmptyParams = Record<string, never>
 

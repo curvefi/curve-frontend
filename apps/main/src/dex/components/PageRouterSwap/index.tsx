@@ -23,7 +23,6 @@ import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { useLayoutStore } from '@evm-ui/features/layout'
 import { TokenList, TokenSelector, useTokenSelectorData } from '@evm-ui/features/select-token'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
@@ -33,8 +32,9 @@ import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal, formatNumber } from '@evm-ui/utils'
-import { getPriceImpactDisplay } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
-import { SlippageToleranceActionInfo, type SlippageType } from '@evm-ui/widgets/SlippageSettings'
+import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
+import { type SlippageType } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -48,6 +48,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
+import { useLayoutStore } from '@ui/features/layout/layout'
 import { mapQuery, q, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -464,16 +465,9 @@ export const QuickSwap = ({
     (toAmount?: Decimal) => updateFormValues({ isFrom: false, toAmount: toAmount ?? '', fromAmount: '' }),
     [updateFormValues],
   )
-  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(
-    {
-      data: decimal(routesAndOutput?.priceImpact),
-      error: null,
-      isLoading: routesAndOutputLoading,
-    },
-    { slippage: maxSlippage, slippageType },
-  )
 
   const routes = toQuery(routesAndOutput, { isLoading: routesAndOutputLoading })
+  const priceImpact = mapQuery(routes, ({ priceImpact }) => decimal(priceImpact))
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       {/* SWAP FROM */}
@@ -574,11 +568,11 @@ export const QuickSwap = ({
             type={['stable', 'crypto']}
             active={slippageType}
             size="small"
+            userAddress={userAddress}
           />
-          <ActionInfo
-            label={priceImpactLabel}
-            value={mapQuery(routes, ({ priceImpact }) => formatNumber(priceImpact, 'percent.rate'))}
-            valueColor={priceImpactColor}
+          <PriceImpactActionInfo
+            priceImpact={priceImpact}
+            value={mapQuery(priceImpact, priceImpact => formatNumber(priceImpact, 'percent.price-impact'))}
             size="small"
             testId="price-impact"
           />
@@ -607,7 +601,7 @@ export const QuickSwap = ({
         }
         formValues={formValues}
         maxSlippage={maxSlippage}
-        isHighImpact={slippageImpact?.isHighImpact}
+        priceImpact={priceImpact}
         isExpectedToAmount={slippageImpact?.isExpectedToAmount}
         toAmountOutput={routesAndOutput?.toAmountOutput}
         isExchangeRateLow={routesAndOutput?.isExchangeRateLow}
