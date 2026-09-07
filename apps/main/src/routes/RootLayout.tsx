@@ -23,6 +23,7 @@ import { maybe, recordValues } from '@primitives/objects.utils'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { Loading } from '@ui/components/Loading'
 import { ThemeProvider } from '@ui/components/ThemeProvider'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
 import { QueryProvider } from '@ui/features/queries/provider'
@@ -31,7 +32,6 @@ import { addBreadcrumb } from '@ui/features/sentry'
 import { t } from '@ui/lib/i18n'
 import { IS_CYPRESS } from '@ui/utils/env'
 import { GlobalLayout } from './GlobalLayout'
-import { Loading } from './Loading'
 
 /**
  * This implements the default behavior from styled-components v5
