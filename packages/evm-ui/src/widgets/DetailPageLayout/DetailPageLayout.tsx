@@ -45,6 +45,14 @@ const stickyHeaderSx = (navHeight: number): StackProps['sx'] => ({
   },
 })
 
+/** CSS rules for making the section navigation sticky */
+const stickySectionNavSx = (navHeight: number): StackProps['sx'] => ({
+  position: { tablet: 'sticky' },
+  // -1 to hide the top border behind the page headers and not have two borders when sticky
+  top: { tablet: `calc(${navHeight}px - ${BorderWidth.thin})` },
+  zIndex: theme => theme.zIndex.appBar - 1,
+})
+
 /** CSS rules for making the form tabs sticky */
 const stickyFormTabsSx = (navHeight: number) => ({
   alignSelf: { tablet: 'flex-start' },
@@ -82,29 +90,22 @@ export const DetailPageLayout = ({
   const hasSections = !!sections?.length
 
   const headerStack = (
-    <>
+    <Stack sx={{ gap: Spacing.sm }}>
       {header && <Stack sx={hasSections ? undefined : stickyHeaderSx(navHeight)}>{header}</Stack>}
       {hasSections && (
-        <Stack
-          sx={{
-            backgroundColor: theme => theme.palette.background.default,
-            position: { tablet: 'sticky' },
-            // -1 to hide the top border behind the page headers and not have two borders when sticky
-            top: { tablet: `calc(${navHeight}px - ${BorderWidth.thin})` },
-            zIndex: theme => theme.zIndex.appBar - 1,
-          }}
-        >
+        <Stack sx={stickySectionNavSx(navHeight)}>
           <DetailPageSectionNav sections={sections} />
         </Stack>
       )}
-    </>
+    </Stack>
   )
   return (
     <WithWrapper shouldWrap={showMobileDrawer} Wrapper={MobileDrawerBoundary}>
       <Grid
         container
         data-testid={testId ?? 'detail-page-layout'}
-        spacing={PAGE_SPACING}
+        columnSpacing={Spacing.md}
+        rowSpacing={PAGE_SPACING}
         sx={{
           ...PAGE_MARGIN,
           ...(hasSections && {
