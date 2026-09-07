@@ -98,6 +98,7 @@ export const createLightDesign = (
       Warning: Light.Layer.Feedback.Warning,
       Danger: Light.Layer.Feedback.Danger,
       Error: Light.Layer.Feedback.Error,
+      Alert: Light.Layer.Feedback.Alert,
     },
     TypeAction: {
       Selected: Light.Layer.TypeAction.Selected,
@@ -653,6 +654,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Caution: Dark.Layer.Feedback.Caution,
       Warning: Dark.Layer.Feedback.Warning,
       Error: Dark.Layer.Feedback.Error,
+      Alert: Dark.Layer.Feedback.Alert,
       Danger: Dark.Layer.Feedback.Danger,
     },
     TypeAction: {
@@ -1171,6 +1173,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Warning: Chad.Layer.Feedback.Warning,
       Danger: Chad.Layer.Feedback.Danger,
       Error: Chad.Layer.Feedback.Error,
+      Alert: Chad.Layer.Feedback.Alert,
     },
     TypeAction: {
       Selected: Chad.Layer.TypeAction.Selected,
