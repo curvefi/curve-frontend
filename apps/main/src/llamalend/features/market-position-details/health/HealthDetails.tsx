@@ -1,3 +1,4 @@
+import type { UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { formatNumber } from '@evm-ui/utils'
@@ -18,7 +19,13 @@ const PRIMARY_METRIC_SIZE = 2.5
 
 const HEALTH_PRECISION_THRESHOLD = 1.1
 
-export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => {
+export const HealthDetails = ({
+  healthQuery,
+  positionStatus,
+}: {
+  healthQuery: HealthQuery
+  positionStatus: UserPositionStatus
+}) => {
   const theme = useTheme()
   const { state, healthState, type } = getHealthDetailsState(healthQuery.data)
 
@@ -42,7 +49,7 @@ export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => 
           />
         </Grid>
         <Grid size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => size - PRIMARY_METRIC_SIZE)}>
-          <HealthAndBufferBar query={healthQuery} state={state} type="health" />
+          <HealthAndBufferBar query={healthQuery} positionStatus={positionStatus} type="health" />
         </Grid>
         <Grid size={PRIMARY_METRIC_SIZE}>
           <Metric
@@ -62,7 +69,7 @@ export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => 
           // Liquidation buffer size is the half of the health bar
           size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => (size - PRIMARY_METRIC_SIZE) / 2)}
         >
-          <HealthAndBufferBar query={healthQuery} state={state} type="liquidationBuffer" />
+          <HealthAndBufferBar query={healthQuery} positionStatus={positionStatus} type="liquidationBuffer" />
         </Grid>
       </Grid>
     </>

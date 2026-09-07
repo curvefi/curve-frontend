@@ -27,7 +27,7 @@ export const BorrowPositionDetails = () => {
     <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
       <Stack sx={{ gap: Spacing.sm }}>
         {useNewHealth ? (
-          <HealthDetails healthQuery={q(healthQuery)} />
+          <HealthDetails healthQuery={q(healthQuery)} positionStatus={liquidationStatus.data} />
         ) : (
           <LegacyHealthDetails params={params} softLiquidation={softLiquidation} />
         )}

@@ -1,3 +1,4 @@
+import type { UserPositionStatus, UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { type HealthQuery, useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { QueryData } from '@evm-ui/lib/queries/types'
 import { Accordion } from '@evm-ui/shared/ui/Accordion'
@@ -28,13 +29,12 @@ import {
 
 const { Height, MinWidth, Spacing } = SizesAndSpaces
 
-const SOFT_LIQUIDATION_LABEL = t`Soft Liquidation`
+const LIQUIDATION_PROTECTION_LABEL = t`Liquidation Protection`
 
-const HEALTH_LABEL: Partial<Record<HealthAndBufferState, string>> = {
-  softLiquidation: SOFT_LIQUIDATION_LABEL,
-  light: SOFT_LIQUIDATION_LABEL,
-  risky: SOFT_LIQUIDATION_LABEL,
-  critical: SOFT_LIQUIDATION_LABEL,
+const POSITION_STATUS_LABEL: Partial<Record<UserPositionStatusKey, string>> = {
+  softLiquidation: t`Soft Liquidation`,
+  fullyConverted: LIQUIDATION_PROTECTION_LABEL,
+  incompleteConversion: LIQUIDATION_PROTECTION_LABEL,
   hardLiquidation: t`Hard Liquidation`,
 }
 
@@ -70,18 +70,18 @@ const BADGE_SIZE_BY_BAR_SIZE = {
 } as const
 
 export const HealthAndBufferBar = ({
-  state,
+  positionStatus,
   type,
   query,
 }: {
-  state: HealthAndBufferState | undefined
+  positionStatus: UserPositionStatus
   type: HealthType
   query: HealthQuery
 }) => {
   const { size, tooltip, getValue, getColor, getPercentage } = SEGMENT_CONFIG[type]
   const { data, isLoading } = mapQuery(query, getValue)
   const percentage = getPercentage(data)
-  const label = type === 'health' ? maybe(state, state => HEALTH_LABEL[state]) : undefined
+  const label = type === 'health' ? maybe(positionStatus, status => POSITION_STATUS_LABEL[status]) : undefined
   const testId = `health-details-${type === 'liquidationBuffer' ? 'liquidation-buffer' : type}-bar`
 
   return (
@@ -110,7 +110,7 @@ export const HealthAndBufferBar = ({
             <Badge
               data-testid={`${testId}-badge`}
               size={BADGE_SIZE_BY_BAR_SIZE[size]}
-              color={state === 'hardLiquidation' ? 'alert' : 'warning'}
+              color={positionStatus === 'hardLiquidation' ? 'alert' : 'warning'}
               label={label}
               sx={{ position: 'absolute', left: Spacing['3xs'] }}
             />
