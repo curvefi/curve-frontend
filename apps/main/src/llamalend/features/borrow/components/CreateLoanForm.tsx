@@ -1,5 +1,5 @@
 import { type ChangeEvent, useCallback } from 'react'
-import { LEVERAGE, LoanPreset } from '@/llamalend/constants'
+import { LoanPreset } from '@/llamalend/constants'
 import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
@@ -56,7 +56,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isLoading,
     isDisabled,
     userAddress,
-    maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
+    maxTokenValues: { collateral: maxCollateral, debt: maxDebt, setRange },
     onSubmit,
     disabledAlert,
     params,
@@ -163,7 +163,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           />
         </Collapse>
       </LoanPresetSelector>
-      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} slippageType={LEVERAGE} />
+      <HighPriceImpactAlert priceImpact={priceImpact} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
       <EvmFormButton
         pending={isPending}
