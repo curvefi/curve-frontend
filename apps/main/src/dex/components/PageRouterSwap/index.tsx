@@ -33,7 +33,7 @@ import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal, formatNumber } from '@evm-ui/utils'
-import { getPriceImpactDisplay } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
 import { SlippageToleranceActionInfo, type SlippageType } from '@evm-ui/widgets/SlippageSettings'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Icon } from '@legacy-ui/Icon'
@@ -464,16 +464,9 @@ export const QuickSwap = ({
     (toAmount?: Decimal) => updateFormValues({ isFrom: false, toAmount: toAmount ?? '', fromAmount: '' }),
     [updateFormValues],
   )
-  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(
-    {
-      data: decimal(routesAndOutput?.priceImpact),
-      error: null,
-      isLoading: routesAndOutputLoading,
-    },
-    { slippage: maxSlippage, slippageType },
-  )
 
   const routes = toQuery(routesAndOutput, { isLoading: routesAndOutputLoading })
+  const priceImpact = mapQuery(routes, ({ priceImpact }) => decimal(priceImpact))
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       {/* SWAP FROM */}
@@ -575,10 +568,9 @@ export const QuickSwap = ({
             active={slippageType}
             size="small"
           />
-          <ActionInfo
-            label={priceImpactLabel}
-            value={mapQuery(routes, ({ priceImpact }) => formatNumber(priceImpact, 'percent.rate'))}
-            valueColor={priceImpactColor}
+          <PriceImpactActionInfo
+            priceImpact={priceImpact}
+            value={mapQuery(priceImpact, priceImpact => formatNumber(priceImpact, 'percent.price-impact'))}
             size="small"
             testId="price-impact"
           />
@@ -607,7 +599,7 @@ export const QuickSwap = ({
         }
         formValues={formValues}
         maxSlippage={maxSlippage}
-        isHighImpact={slippageImpact?.isHighImpact}
+        priceImpact={priceImpact}
         isExpectedToAmount={slippageImpact?.isExpectedToAmount}
         toAmountOutput={routesAndOutput?.toAmountOutput}
         isExchangeRateLow={routesAndOutput?.isExchangeRateLow}
