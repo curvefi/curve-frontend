@@ -1,4 +1,6 @@
 import { useCallback } from 'react'
+import { isAddressEqual } from 'viem'
+import { useConnection } from 'wagmi'
 import {
   resetLitePoolChains,
   resetLitePoolList,
@@ -9,6 +11,7 @@ import {
   usePoolChains,
   usePoolList,
 } from '@/dex/queries/pool-list.query'
+import { resetUserPoolPositions, useUserPoolPositions } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type {
@@ -26,7 +29,6 @@ import { isVyperVulnerablePool } from '../alerts'
 import type { PoolsApiParams } from '../filters/utils'
 import type { PoolRow, PoolRowData } from '../types'
 import { POOLS_PAGE_SIZE } from './usePoolsPagination'
-import { usePoolsUserHasPosition } from './usePoolsUserHasPosition'
 
 class UnsupportedPoolListError extends Error {
   constructor(readonly chainId: number) {
@@ -140,6 +142,7 @@ export const usePoolsTable = ({
   sortDirection: PoolSortDirection
 }) => {
   const { chainId, blockchainId } = network
+  const { address: userAddress } = useConnection()
   const isLite = isLiteChain(chainId)
 
   /** Network support */
@@ -151,8 +154,11 @@ export const usePoolsTable = ({
   )
   const isSupported = poolListSupportQuery.data ?? false
 
-  // Preferable we'd only enable these queries when the network is supported, but that in itself is not yet supported.
-  const hasUserPoolPosition = usePoolsUserHasPosition(chainId)
+  const userPoolPositionsParams = { chainId, userAddress }
+  const { data: userPoolPositions, isFetching: isFetchingUserPoolPositions } = useUserPoolPositions(
+    userPoolPositionsParams,
+    isSupported,
+  )
   const { data: campaignsByAddress } = useCampaigns({ blockchainId })
 
   const toPoolRow = useCallback(
@@ -160,10 +166,12 @@ export const usePoolsTable = ({
       enrichPoolRow(poolData, {
         chainId,
         blockchainId,
-        hasPosition: hasUserPoolPosition(poolData.address),
+        hasPosition: userPoolPositions?.positions.some(({ poolAddress }) =>
+          isAddressEqual(poolAddress, poolData.address),
+        ),
         campaignsByAddress,
       }),
-    [chainId, blockchainId, campaignsByAddress, hasUserPoolPosition],
+    [chainId, blockchainId, campaignsByAddress, userPoolPositions],
   )
 
   /** Lite pools */
@@ -201,15 +209,18 @@ export const usePoolsTable = ({
       })
 
   return {
-    isFetching: isLite
-      ? litePoolChainsQuery.isFetching || litePoolListQuery.isFetching
-      : fullPoolChainsQuery.isFetching || poolListQuery.isFetching,
+    isFetching:
+      isFetchingUserPoolPositions ||
+      (isLite
+        ? litePoolChainsQuery.isFetching || litePoolListQuery.isFetching
+        : fullPoolChainsQuery.isFetching || poolListQuery.isFetching),
     onReload: () =>
       Promise.all([
         resetPoolChains({}),
         resetLitePoolChains({}),
         resetLitePoolList(litePoolListParams),
         resetPoolList(poolListParams),
+        resetUserPoolPositions(userPoolPositionsParams),
       ]),
     pageCount: isLite ? 1 : (poolListQuery.data?.pageCount ?? -1),
     userHasPositions: tableQuery.data?.some(({ hasPosition }) => hasPosition),

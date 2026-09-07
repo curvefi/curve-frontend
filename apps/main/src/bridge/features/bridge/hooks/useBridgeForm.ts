@@ -2,13 +2,13 @@ import { noop } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useFormSync, useForm } from '@evm-ui/features/forms'
 import { useDebouncedValue } from '@evm-ui/hooks/useDebounce'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useFormSync, useForm } from '@ui/features/forms'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -126,6 +126,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     loading: crvUsdBalanceLoading || capacityLoading, // Primarily to make sure validation setup is done
     walletBalance,
     supportedNetworks,
+    userAddress,
 
     // Bridge mutation
     isPending: formState.isSubmitting || isBridging || isApproving,

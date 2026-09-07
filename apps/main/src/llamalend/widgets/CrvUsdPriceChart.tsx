@@ -7,7 +7,7 @@ import { useCombinedQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
 import {
-  ChartStateWrapper,
+  EvmChartStateWrapper,
   ChartFooter,
   type LegendItem,
   addMovingAverages,
@@ -178,7 +178,7 @@ export const CrvUsdPriceChart = () => {
             />
           )}
         </Stack>
-        <ChartStateWrapper
+        <EvmChartStateWrapper
           height={Height.shortChart}
           isLoading={showLoading}
           error={priceHistory.error}
@@ -195,7 +195,7 @@ export const CrvUsdPriceChart = () => {
             yPaddingRatio={0.25}
             renderTooltip={CrvUsdPriceTooltip}
           />
-        </ChartStateWrapper>
+        </EvmChartStateWrapper>
         <ChartFooter
           legendSets={legendSets}
           description={t`This chart shows crvUSD's historical peg to $1. For mint market interest rates, the rate is a function of crvUSD's peg. When the price dips below $1, rates increase to incentivize loan repayment and reduce supply; when the price rises above $1, rates decrease to encourage borrowing — restoring balance to the system.`}

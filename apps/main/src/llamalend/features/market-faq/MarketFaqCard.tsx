@@ -1,34 +1,25 @@
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { Accordion } from '@evm-ui/shared/ui/Accordion'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Accordion } from '@ui/components/Accordion'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
-import { borderStyle } from '@ui/utils/mui'
 import { FAQ_GROUPS } from './faq-groups'
 
 const { Spacing } = SizesAndSpaces
 
 const FaqContent = () => (
-  <Stack sx={{ gap: Spacing.md }}>
-    <Stack>
-      {FAQ_GROUPS.map(group => (
-        <Stack key={group.title} sx={{ gap: Spacing.xs }}>
-          <Typography
-            component="h3"
-            color="textSecondary"
-            variant="bodyMBold"
-            sx={{ borderBottom: borderStyle, paddingBlockStart: Spacing.md, paddingBlockEnd: Spacing.xs }}
-          >
-            {group.title}
-          </Typography>
-
+  <Stack>
+    {FAQ_GROUPS.map(group => (
+      <Card key={group.title} size="inline">
+        <CardHeader title={group.title} />
+        <CardContent sx={{ marginBlock: Spacing.sm }}>
           <Stack sx={{ gap: Spacing.xs, paddingInlineStart: Spacing.md }}>
             {group.items.map(item => (
               <Accordion
@@ -42,19 +33,16 @@ const FaqContent = () => (
               </Accordion>
             ))}
           </Stack>
-        </Stack>
-      ))}
-    </Stack>
+        </CardContent>
+      </Card>
+    ))}
 
     <Stack sx={{ alignItems: 'center', gap: Spacing.sm }}>
-      <Typography color="textPrimary" variant="bodyMRegular">
-        {t`Want to know even more?`}
-      </Typography>
-
       <ExternalLink
         href={EXTERNAL_LINKS.docs.user.llamalend.overview}
         label={t`Go to knowledge base`}
         variant="outlined"
+        size="small"
         color="secondary"
       />
     </Stack>
@@ -65,15 +53,9 @@ export const MarketFaqCard = () => {
   const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
 
   return (
-    <Card
-      size="small"
-      data-testid="llamalend-market-faq"
-      sx={{
-        '& .MuiCardContent-root': { paddingBlockStart: 0 }, // The FAQ content title handles the block-start padding.
-      }}
-    >
+    <Card size="small" data-testid="llamalend-market-faq">
       <Header title={t`FAQs`} />
-      <CardContent component={Stack} sx={{ backgroundColor: theme => theme.design.Layer[1].Fill }}>
+      <CardContent>
         <FaqContent />
       </CardContent>
     </Card>

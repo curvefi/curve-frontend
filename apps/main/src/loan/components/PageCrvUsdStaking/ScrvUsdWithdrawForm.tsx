@@ -3,7 +3,7 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormToke
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { networks, networksIdMapper } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { q } from '@ui/features/queries/util'
@@ -14,10 +14,8 @@ import { ScrvUsdWithdrawInfoList } from './ScrvUsdWithdrawInfoList'
 export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
   const { isConnected } = useConnection()
   const chainId = networksIdMapper[network]
-  const { form, params, isPending, isDisabled, error, formErrors, max, positionBalance, onSubmit } =
-    useScrvUsdWithdrawForm({
-      chainId,
-    })
+  const { form, params, isPending, isDisabled, userAddress, error, formErrors, max, positionBalance, onSubmit } =
+    useScrvUsdWithdrawForm({ chainId })
   const networkConfig = networks[chainId]
 
   return (
@@ -35,14 +33,14 @@ export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
         hideBalance={!isConnected}
         disabled={!isConnected}
       />
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         disabled={isDisabled}
         connectWalletTestId="scrvusd-withdraw-connect-wallet-button"
         label={params.isFull ? t`Redeem` : t`Withdraw`}
         testId="scrvusd-withdraw-submit-button"
       />
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['withdrawAmount']} />
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['withdrawAmount']} userAddress={userAddress} />
     </Form>
   )
 }

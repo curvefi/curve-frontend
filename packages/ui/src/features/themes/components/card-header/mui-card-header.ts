@@ -15,7 +15,7 @@ export const cardHeaderInlineStyles = (design: DesignSystem, typography: Typogra
   ...cardHeaderSmallStyles(typography),
   borderBottom: `${BorderWidth.thin} solid ${design.Layer[3].Outline}`,
   ...handleBreakpoints({
-    minHeight: Sizing.md,
+    minHeight: Sizing.sm,
     paddingInline: 0,
   }),
 })

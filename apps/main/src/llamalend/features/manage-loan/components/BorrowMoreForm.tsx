@@ -1,5 +1,4 @@
 import { type ChangeEvent, useCallback } from 'react'
-import { LEVERAGE } from '@/llamalend/constants'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
@@ -9,7 +8,7 @@ import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSe
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { AlertDisableForm } from '@evm-ui/shared/ui/AlertDisableForm'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
@@ -49,6 +48,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     collateralToken,
     error,
     isApproved,
+    userAddress,
     formErrors,
     routes,
     max,
@@ -152,24 +152,20 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             priceImpact={priceImpact}
             collateralSymbol={collateralToken?.symbol}
             borrowSymbol={borrowToken?.symbol}
+            userAddress={userAddress}
           />
         </Stack>
       )}
-      <HighPriceImpactAlert
-        priceImpact={priceImpact}
-        values={values}
-        max={q(max.maxLeverage)}
-        slippageType={LEVERAGE}
-      />
-      <FormButton
+      <HighPriceImpactAlert priceImpact={priceImpact} />
+      <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, { leverageEnabled: params.leverageEnabled })}
         label={[Number(values.userCollateral) && t`Add`, isApproved?.data === false && t`Approve`, t`Borrow More`]}
         testId="borrow-more-submit-button"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
-      </FormButton>
+      </EvmFormButton>
       <LowSolvencyActionModal
         action="borrow"
         open={isOpen}
@@ -188,6 +184,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           'debt',
           max.debt.field,
         )}
+        userAddress={userAddress}
       />
     </Form>
   )

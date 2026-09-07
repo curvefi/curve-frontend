@@ -10,8 +10,9 @@ type StackBannersProps = {
 const SEVERITY_ORDER: Record<NonNullable<BannerProps['severity']>, number> = {
   alert: 0,
   warning: 1,
-  highlight: 2,
-  info: 3,
+  caution: 2,
+  highlight: 3,
+  info: 4,
 }
 
 const compareBanners = (a: ReactElement<BannerProps>, b: ReactElement<BannerProps>) =>

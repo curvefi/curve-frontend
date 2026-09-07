@@ -17,18 +17,16 @@ import { useNetworks } from '@/dex/entities/networks'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
-import { toTokenOption } from '@/dex/utils'
-import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { useLayoutStore } from '@evm-ui/features/layout'
-import { TokenList, TokenSelector } from '@evm-ui/features/select-token'
+import { TokenList, TokenSelector, type TokenOption } from '@evm-ui/features/select-token'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal, formatNumber } from '@evm-ui/utils'
+import { HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { Icon } from '@legacy-ui/Icon'
@@ -41,7 +39,8 @@ import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { q } from '@ui/features/queries/util'
+import { useLayoutStore } from '@ui/features/layout/layout'
+import { q, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
@@ -84,7 +83,7 @@ export const Swap = ({
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
-  const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
+  const priceImpact = toQuery(decimal(exchangeOutput.priceImpact), { isLoading: exchangeOutput.loading })
 
   const [steps, setSteps] = useState<Step[]>([])
   const [confirmedLoss, setConfirmedLoss] = useState(false)
@@ -118,7 +117,14 @@ export const Swap = ({
 
   const { selectList, swapTokensMapper } = useMemo(() => {
     const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
-    return { selectList: selectList.map(toTokenOption(network?.blockchainId)), swapTokensMapper }
+    return {
+      selectList: selectList.map<TokenOption>(token => ({
+        address: token.address as Address, // not checksummed!
+        symbol: token.symbol,
+        chain: network?.blockchainId,
+      })),
+      swapTokensMapper,
+    }
   }, [poolDataCacheOrApi, tokensMapper, network?.blockchainId])
 
   const fromToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
@@ -522,11 +528,7 @@ export const Swap = ({
       <Stack>
         <DetailInfoExchangeRate exchangeRates={exchangeOutput.exchangeRates} loading={exchangeOutput.loading} />
 
-        <DetailInfoPriceImpact
-          loading={exchangeOutput.loading}
-          priceImpact={exchangeOutput.priceImpact}
-          isHighImpact={slippageImpact?.isHighImpact}
-        />
+        <DetailInfoPriceImpact priceImpact={priceImpact} />
 
         {haveSigner && (
           <DetailInfoEstGas
@@ -536,8 +538,13 @@ export const Swap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
+        <SlippageToleranceActionInfo
+          maxSlippage={maxSlippage}
+          type={getSlippageType(poolData)}
+          userAddress={userAddress}
+        />
       </Stack>
+      <HighPriceImpactAlert priceImpact={priceImpact} />
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}

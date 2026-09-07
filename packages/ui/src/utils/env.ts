@@ -1,6 +1,6 @@
 import { Chain } from '@primitives/network.utils'
 
-const { NODE_ENV } = process.env
+const NODE_ENV = process.env.NODE_ENV
 
 export enum ReleaseChannel {
   Beta = 'Beta',

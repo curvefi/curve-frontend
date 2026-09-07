@@ -1,6 +1,7 @@
 import '@/global-extensions'
-import { ErrorPage } from '@evm-ui/pages/ErrorPage'
+import { EvmErrorPage } from '@evm-ui/pages/EvmErrorPage'
 import { createRoute, createRouter } from '@tanstack/react-router'
+import { Loading } from '@ui/components/Loading'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { t } from '@ui/lib/i18n'
 import { analyticsRoutes } from './analytics.routes'
@@ -10,7 +11,6 @@ import { daoRoutes } from './dao.routes'
 import { dexRoutes } from './dex.routes'
 import { lendRoutes } from './lend.routes'
 import { llamalendRoutes } from './llamalend.routes'
-import { Loading } from './Loading'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
 
@@ -49,7 +49,7 @@ export const router = createRouter({
       <head>
         <title>{t`Error` + ' - Curve'}</title>
       </head>
-      <ErrorPage
+      <EvmErrorPage
         title={t`Unexpected Error`}
         subtitle={error.message || t`An unexpected error occurred`}
         error={error}
@@ -61,7 +61,7 @@ export const router = createRouter({
       <head>
         <title>{t`Error 404` + ' - Curve'}</title>
       </head>
-      <ErrorPage title="404" subtitle={t`Page Not Found`} continueUrl="/" />
+      <EvmErrorPage title="404" subtitle={t`Page Not Found`} continueUrl="/" />
     </>
   ),
 })

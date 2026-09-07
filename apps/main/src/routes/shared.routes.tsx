@@ -1,6 +1,6 @@
 import type { AppName } from '@evm-ui/shared/routes'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
-import { Loading } from './Loading'
+import { Loading } from '@ui/components/Loading'
 import { redirectTo } from './util'
 
 const LegalPage = lazyRouteComponent(() => import('@evm-ui/widgets/Legal'), 'LegalPage')

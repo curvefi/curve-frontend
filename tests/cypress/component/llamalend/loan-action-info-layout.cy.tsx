@@ -1,4 +1,5 @@
 import { noop } from 'lodash'
+import { zeroAddress } from 'viem'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
@@ -6,8 +7,8 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
@@ -69,6 +70,7 @@ allViewports().forEach(([width, height, viewport]) => {
                 exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
                 collateralSymbol="wstETH"
                 borrowSymbol="crvUSD"
+                userAddress={zeroAddress}
               />
               <LoanActionInfoList
                 isOpen
@@ -104,7 +106,12 @@ describe('market slippage settings', () => {
     const onChanged = cy.spy().as('onChanged')
     cy.mount(
       <ComponentTestWrapper>
-        <SlippageToleranceActionInfo maxSlippage="0.03" type="leverage" onChanged={onChanged} />
+        <SlippageToleranceActionInfo
+          maxSlippage="0.03"
+          type="leverage"
+          onChanged={onChanged}
+          userAddress={zeroAddress}
+        />
       </ComponentTestWrapper>,
     )
 
@@ -127,6 +134,7 @@ describe('route provider allowlist', () => {
         <LoanActionSettings
           onSlippageChange={noop}
           routes={{ ...routes, providers: ['enso'], selectedRoute: undefined, selectedRouter: undefined }}
+          userAddress={zeroAddress}
         />
       </ComponentTestWrapper>,
     )

@@ -11,7 +11,7 @@ import {
   CHART_LINE_DASH_PATTERNS,
   ChartFooter,
   type ChartLineDashPattern,
-  ChartStateWrapper,
+  EvmChartStateWrapper,
   EChartsLineChart,
   type LegendItem,
   type LineSeriesConfig,
@@ -231,7 +231,7 @@ export const MarketRateCurveChart = () => {
             }}
           />
         </Stack>
-        <ChartStateWrapper
+        <EvmChartStateWrapper
           height={Height.shortChart}
           isLoading={chartData.isLoading}
           error={chartData.error}
@@ -250,7 +250,7 @@ export const MarketRateCurveChart = () => {
             yPaddingRatio={0.05}
             renderTooltip={RateCurveTooltip}
           />
-        </ChartStateWrapper>
+        </EvmChartStateWrapper>
         <ChartFooter
           legendSets={legendSets}
           description={t`This chart illustrates the relationship between utilization and interest rates in this market. It reflects the market’s monetary policy—how rates adjust based on supply and demand dynamics.`}

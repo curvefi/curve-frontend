@@ -1,12 +1,12 @@
 import { type ChangeEvent, useCallback } from 'react'
-import { LEVERAGE, LoanPreset } from '@/llamalend/constants'
+import { LoanPreset } from '@/llamalend/constants'
 import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { useCreateLoanPreset } from '@evm-ui/hooks/useLocalStorage'
 import { AlertDisableForm } from '@evm-ui/shared/ui/AlertDisableForm'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
@@ -55,7 +55,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     isDisabled,
-    maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
+    userAddress,
+    maxTokenValues: { collateral: maxCollateral, debt: maxDebt, setRange },
     onSubmit,
     disabledAlert,
     params,
@@ -148,6 +149,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             priceImpact={priceImpact}
             collateralSymbol={collateralToken?.symbol}
             borrowSymbol={borrowToken?.symbol}
+            userAddress={userAddress}
           />
         </Stack>
       )}
@@ -161,9 +163,9 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           />
         </Collapse>
       </LoanPresetSelector>
-      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} slippageType={LEVERAGE} />
+      <HighPriceImpactAlert priceImpact={priceImpact} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
@@ -172,7 +174,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         connectWalletTestId="form-market-page"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
-      </FormButton>
+      </EvmFormButton>
       <LowSolvencyActionModal
         action="borrow"
         open={isOpen}
@@ -180,7 +182,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         onConfirm={onConfirm}
         tokenSymbol={collateralToken?.symbol}
       />
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['userCollateral', 'debt', 'maxDebt']} />
+      <FormAlerts
+        error={error}
+        formErrors={formErrors}
+        handledErrors={['userCollateral', 'debt', 'maxDebt']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

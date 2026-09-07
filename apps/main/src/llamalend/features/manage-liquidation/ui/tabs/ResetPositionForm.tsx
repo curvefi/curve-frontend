@@ -4,7 +4,7 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Stack from '@mui/material/Stack'
@@ -22,6 +22,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
     params,
     isPending,
     isDisabled,
+    userAddress,
     onSubmit,
     error,
     formErrors,
@@ -72,7 +73,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         />
       </Stack>
 
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled}
@@ -84,6 +85,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         error={error}
         formErrors={formErrors}
         handledErrors={['convertedBorrowed', 'userBorrowed', 'maxBorrowed', 'maxTotalBorrowed', 'minBorrowed']}
+        userAddress={userAddress}
       />
     </Form>
   )
