@@ -6,6 +6,7 @@ import { ConnectedWalletLabel } from './ConnectedWalletLabel'
 export type ConnectWalletProps = {
   disconnect: () => void
   address: Address | undefined
+  addressLabel: string | undefined
   isConnecting: boolean
   isConnected: boolean
   connect: () => Promise<void>
@@ -16,12 +17,19 @@ export const ConnectWalletIndicator = ({
   onConnect,
   disconnect,
   address,
+  addressLabel,
   isConnecting,
   isConnected,
   connect,
 }: { sx?: SxProps; onConnect?: () => void } & ConnectWalletProps) =>
   address ? (
-    <ConnectedWalletLabel address={address} onClick={() => disconnect()} loading={isConnecting} sx={sx} />
+    <ConnectedWalletLabel
+      address={address}
+      addressLabel={addressLabel}
+      onClick={() => disconnect()}
+      loading={isConnecting}
+      sx={sx}
+    />
   ) : (
     <ConnectWalletButton
       isConnecting={isConnecting}

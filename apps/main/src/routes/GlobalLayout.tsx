@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { useConnection } from 'wagmi'
+import { useConnection, useEnsName } from 'wagmi'
 import { networks as daoNetworks } from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import { networks as lendNetworks } from '@/lend/networks'
@@ -100,6 +100,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   const currentMenu = getAppMenu(currentApp)
   const { connect, disconnect } = useWallet()
   const { address, isConnecting, isConnected } = useConnection()
+  const { data: ensName } = useEnsName({ address })
   return (
     <Stack>
       <Header
@@ -114,7 +115,14 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
         urlFactory={getInternalUrl}
         hideChains={HIDE_CHAINS}
         tvls={useNetworksTVL(TVL_SOURCES[currentMenu])}
-        connectWalletProps={{ disconnect, address, isConnecting, isConnected, connect }}
+        connectWalletProps={{
+          disconnect,
+          address,
+          addressLabel: ensName ?? undefined,
+          isConnecting,
+          isConnected,
+          connect,
+        }}
       />
       <Box
         component="main"

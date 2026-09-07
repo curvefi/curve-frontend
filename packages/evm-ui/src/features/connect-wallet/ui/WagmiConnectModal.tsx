@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import type { BaseError } from 'viem'
 import { ConnectWalletModal } from '@evm-ui/features/connect-wallet/ui/ConnectWalletModal'
 import Box from '@mui/material/Box'
 import { createSvgIcon } from '@mui/material/utils'
@@ -46,7 +47,7 @@ const WalletIcon = ({ connector }: { connector: Connector }) =>
  */
 export const WagmiConnectModal = () => {
   const { connectors, connect, showModal, closeModal } = useWallet()
-  const [error, setError] = useState<unknown>(null)
+  const [error, setError] = useState<Error | null>(null)
   const [connectingToId, setConnectingToId] = useState<string | null>(null)
   const isSafeApp = typeof window !== 'undefined' && window !== window.parent
 
@@ -78,7 +79,13 @@ export const WagmiConnectModal = () => {
         await connect(connector)
       } catch (e) {
         console.info(e) // e.g. user rejected
-        setError(e)
+        if (e instanceof Error) {
+          const error = new Error((e as BaseError).shortMessage ?? e.message)
+          error.stack = e.stack
+          setError(error)
+        } else {
+          setError(new Error(String(e)))
+        }
       } finally {
         setConnectingToId(null)
       }

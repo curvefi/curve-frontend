@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import type { BaseError } from 'viem'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import MenuList from '@mui/material/MenuList'
@@ -44,7 +43,7 @@ export const ConnectWalletModal = <T extends WalletConnector>({
   connectingToId,
   WalletIcon,
 }: {
-  error: unknown
+  error: Error | null
   showModal: boolean
   closeModal: () => void
   sx?: SxProps
@@ -64,7 +63,7 @@ export const ConnectWalletModal = <T extends WalletConnector>({
     {error ? (
       <Alert variant="filled" severity="error">
         <AlertTitle>{t`Error connecting wallet`}</AlertTitle>
-        {(error as BaseError).shortMessage ?? (error as Error).message ?? (error as string)}
+        {error.message}
       </Alert>
     ) : null}
     <MenuList>
