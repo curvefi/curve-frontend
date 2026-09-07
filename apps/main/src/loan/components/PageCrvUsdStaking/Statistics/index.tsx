@@ -9,7 +9,7 @@ import {
   ChartFooter,
   ChartHeader,
   type ChartSelections,
-  ChartStateWrapper,
+  EvmChartStateWrapper,
   type LegendItem,
 } from '@evm-ui/shared/ui/Chart'
 import { Card, CardHeader, Stack } from '@mui/material'
@@ -90,7 +90,7 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
 
         {selectedStatisticsChart === 'savingsRate' && (
           <Stack sx={{ gap: Spacing.md }}>
-            <ChartStateWrapper
+            <EvmChartStateWrapper
               height={Height.chart}
               isLoading={isScrvUsdYieldLoading}
               error={scrvUsdYieldError}
@@ -101,7 +101,7 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
                 data={yieldData ?? EMPTY_YIELD_DATA}
                 visibleSeries={visibleSeries}
               />
-            </ChartStateWrapper>
+            </EvmChartStateWrapper>
             <ChartFooter
               legendSets={legendSets}
               toggleOptions={timeOptions}
@@ -112,14 +112,14 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
         )}
 
         {selectedStatisticsChart === 'distributions' && (
-          <ChartStateWrapper
+          <EvmChartStateWrapper
             height={Height.chart}
             isLoading={isRevenueLoading}
             error={revenueError}
             errorMessage={t`Unable to fetch distributions data.`}
           >
             <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
-          </ChartStateWrapper>
+          </EvmChartStateWrapper>
         )}
 
         {maybe(chainId, chainId => (

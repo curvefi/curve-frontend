@@ -1,5 +1,5 @@
 import { MIN_HEIGHT } from '@/analytics/features/charts/components/EChartsCard'
-import { EmptyStateCard } from '@evm-ui/shared/ui/EmptyStateCard'
+import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -19,7 +19,7 @@ export const ComingSoon = () => (
       component={Stack}
       sx={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center', minHeight: MIN_HEIGHT, gap: Spacing.sm }}
     >
-      <EmptyStateCard
+      <EmptyStateEvmCard
         title={t`Analytics v2 in progress`}
         description={
           <Trans>

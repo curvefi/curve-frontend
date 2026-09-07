@@ -23,7 +23,6 @@ import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { useLayoutStore } from '@evm-ui/features/layout'
 import { TokenList, TokenSelector, useTokenSelectorData } from '@evm-ui/features/select-token'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
@@ -34,7 +33,8 @@ import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal, formatNumber } from '@evm-ui/utils'
 import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
-import { SlippageToleranceActionInfo, type SlippageType } from '@evm-ui/widgets/SlippageSettings'
+import { type SlippageType } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -48,6 +48,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
+import { useLayoutStore } from '@ui/features/layout/layout'
 import { mapQuery, q, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -567,6 +568,7 @@ export const QuickSwap = ({
             type={['stable', 'crypto']}
             active={slippageType}
             size="small"
+            userAddress={userAddress}
           />
           <PriceImpactActionInfo
             priceImpact={priceImpact}

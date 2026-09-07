@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
-import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
 import { Box, Button, ButtonProps, Skeleton } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { type AllOrNone } from '@primitives/objects.utils'
+import { type ConnectionProps, ConnectWalletButton } from '@ui/components/ConnectWalletButton'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { Responsive } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -17,7 +18,7 @@ type EmptyStateButtonProps = Omit<ButtonProps, 'type'> & {
   testId?: string
 }
 
-export type EmptyStateCardProps = {
+export type EmptyStateCardProps = AllOrNone<ConnectionProps> & {
   title?: ReactNode
   description?: ReactNode
   isLoading?: boolean
@@ -41,10 +42,17 @@ const Skeletons = () => (
     <Skeleton variant="rectangular" sx={{ height: LineHeight.xl }} />
   </Stack>
 )
+
+const getConnectionProps = (connectionProps: AllOrNone<ConnectionProps>): ConnectionProps => {
+  if (!connectionProps.connect) throw new Error('Missing connectionProps for connect-wallet')
+  return connectionProps
+}
+
 const EmptyStateButton = ({
   button,
   size,
-}: {
+  ...connectionProps
+}: AllOrNone<ConnectionProps> & {
   button: NonNullable<EmptyStateCardProps['button']>
   size: NonNullable<EmptyStateCardProps['size']>
 }) => {
@@ -57,8 +65,9 @@ const EmptyStateButton = ({
     sx: applySxProps({ alignSelf: 'center' }, buttonSx),
     ...(testId && { 'data-testid': testId }),
   } as const
+
   return type === 'connect-wallet' ? (
-    <ConnectWalletButton {...sharedProps} label={label} />
+    <ConnectWalletButton {...sharedProps} {...getConnectionProps(connectionProps)} label={label} />
   ) : href?.startsWith('https') ? (
     <ExternalLink {...sharedProps} href={href} label={label} wide />
   ) : (
@@ -74,6 +83,7 @@ export const EmptyStateCard = ({
   isLoading,
   size = 'md',
   testId,
+  ...connectionProps
 }: EmptyStateCardProps) => (
   <Stack
     sx={{
@@ -110,8 +120,8 @@ export const EmptyStateCard = ({
               justifyContent: 'center',
             }}
           >
-            {button && <EmptyStateButton button={button} size={size} />}
-            {secondaryButton && <EmptyStateButton button={secondaryButton} size={size} />}
+            {button && <EmptyStateButton button={button} size={size} {...connectionProps} />}
+            {secondaryButton && <EmptyStateButton button={secondaryButton} size={size} {...connectionProps} />}
           </Box>
         )}
       </Stack>

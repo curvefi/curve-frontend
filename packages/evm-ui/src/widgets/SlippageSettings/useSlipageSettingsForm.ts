@@ -1,9 +1,9 @@
 import { enforce, test } from 'vest'
-import { useForm } from '@evm-ui/features/forms'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { createValidationSuite } from '@evm-ui/lib'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
+import { useForm } from '@ui/features/forms'
 import { t } from '@ui/lib/i18n'
 import { MAX_SLIPPAGE, MIN_SLIPPAGE, SLIPPAGE_TYPES, SlippageSettings, SlippageType } from './slippage.utils'
 
