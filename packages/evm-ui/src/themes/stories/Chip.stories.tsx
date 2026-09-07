@@ -1,6 +1,7 @@
 import { fn } from 'storybook/test'
 import CheckIcon from '@mui/icons-material/Check'
 import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { type SelectableChipProps, SelectableChip } from '@ui/components/SelectableChip'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -16,6 +17,18 @@ const PROPS_ROWS = [
   { id: 'with-icon', label: 'Label', icon: <CheckIcon />, toggle: fn() },
   { id: 'icon-only', label: undefined, icon: <CheckIcon />, toggle: fn() },
 ] as const
+
+const COLOR_STATES = [
+  { id: 'outlined-default', title: 'Outlined / Default', selected: false, variant: 'outlined' },
+  { id: 'outlined-current', title: 'Outlined / Current', selected: true, variant: 'outlined' },
+  { id: 'ghost-default', title: 'Ghost / Default', selected: false, variant: 'ghost' },
+  { id: 'ghost-current', title: 'Ghost / Current', selected: true, variant: 'ghost' },
+] as const satisfies {
+  id: string
+  title: string
+  selected: boolean
+  variant: SelectableChipProps['variant']
+}[]
 
 const VariantStory = ({
   selected = false,
@@ -143,6 +156,33 @@ export const SelectedGhost: Story = {
     docs: {
       description: {
         story: 'Displays the selected ghost chip variant across all available sizes.',
+      },
+    },
+  },
+}
+
+export const FigmaColorStates: Story = {
+  render: () => (
+    <Grid container spacing={Spacing.lg.desktop}>
+      {COLOR_STATES.map(({ id, title, selected, variant }) => (
+        <Grid key={id} size={3}>
+          <Typography>{title}</Typography>
+          <Grid container spacing={Spacing.sm.desktop}>
+            {PROPS_ROWS.map(({ id: propsId, ...props }) => (
+              <Grid key={propsId} size={12}>
+                <SelectableChip selected={selected} variant={variant} {...props} />
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      ))}
+    </Grid>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Figma color comparison for default and current outlined and ghost chips. Hover or Tab through each chip to inspect hover and focus-visible colors.',
       },
     },
   },

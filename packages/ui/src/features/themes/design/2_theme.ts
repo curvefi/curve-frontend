@@ -411,7 +411,7 @@ export const createLightDesign = (
     },
     Current: {
       Label: Text.TextColors.Highlight,
-      Fill: Layer[2].Fill,
+      Fill: Layer.Highlight.Fill,
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
@@ -967,8 +967,8 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Fill: Color.Neutral[900],
     },
     Current: {
-      Label: Color.Primary[500],
-      Fill: Layer[2].Fill,
+      Label: Text.TextColors.Primary,
+      Fill: Layer.Highlight.Fill,
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
@@ -1486,7 +1486,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     },
     Current: {
       Label: Text.TextColors.Highlight,
-      Fill: Layer[2].Fill,
+      Fill: Layer.Highlight.Fill,
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
