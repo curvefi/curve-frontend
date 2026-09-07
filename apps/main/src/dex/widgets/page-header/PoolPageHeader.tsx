@@ -39,7 +39,7 @@ export const PoolPageHeader = ({
       icon={
         (isLoading || (tokenList && tokenList.length > 0)) && (
           <WithSkeleton loading={isLoading} variant="rectangular" width={ICON_SIZE} height={ICON_SIZE}>
-            <TokenIcons blockchainId={blockchainId} tokens={tokenList ?? []} overflowMode="stack" />
+            <TokenIcons blockchainId={blockchainId} tokens={tokenList} overflowMode="stack" />
           </WithSkeleton>
         )
       }
