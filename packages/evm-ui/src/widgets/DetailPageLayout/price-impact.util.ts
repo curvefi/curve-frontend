@@ -1,12 +1,7 @@
 import { decimalGreaterThan } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
-import { Query } from '@ui/features/queries/util'
-import { t } from '@ui/lib/i18n'
-import { SLIPPAGE, type SlippageType } from '../SlippageSettings/slippage.utils'
-
-/** Threshold above which price impact blocks the transaction (shown as red alert) */
-const HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD = '25' satisfies Decimal
+import { recordEntries } from '@primitives/objects.utils'
+import type { Query } from '@ui/features/queries/util'
 
 const MIN_USD_PRICE_IMPACT_WARN = 1000
 
@@ -15,28 +10,49 @@ export type PriceImpact = {
   tokenInUsd: Decimal | undefined
 }
 
+export type PriceImpactLevel = 'caution' | 'warning' | 'error'
+
+/** Thresholds shared by price-impact value emphasis, alerts, and blocking behavior. */
+const PRICE_IMPACT_THRESHOLDS = {
+  /** Blocks leveraged LlamaLend actions above this price impact. */
+  critical: '25',
+  error: '1',
+  warning: '0.75',
+  caution: '0.5',
+} as const satisfies Record<'critical' | PriceImpactLevel, Decimal>
+
 const isPriceImpactSignificant = (priceImpact: PriceImpact | Decimal | null | undefined) =>
   !(Number((priceImpact as PriceImpact)?.tokenInUsd) < MIN_USD_PRICE_IMPACT_WARN)
 
 export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | null | undefined) =>
   typeof priceImpact === 'string' ? priceImpact : priceImpact?.priceImpact
 
+/** Returns a percentage-only emphasis level without applying the USD significance filter. */
+export const getPriceImpactLevel = (priceImpact: PriceImpact | Decimal | null | undefined): PriceImpactLevel | null => {
+  const level =
+    recordEntries(PRICE_IMPACT_THRESHOLDS).find(([, threshold]) =>
+      decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', threshold),
+    )?.[0] ?? null
+  return level === 'critical' ? 'error' : level
+}
+
+export const isHighPriceImpact = (priceImpact: PriceImpact | Decimal | null | undefined) =>
+  isPriceImpactSignificant(priceImpact) &&
+  decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', PRICE_IMPACT_THRESHOLDS.error)
+
 /**
- * Returns the alert severity based on price impact vs. slippage tolerance and critical threshold:
- * - 'error' if price impact exceeds HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD (blocks the transaction)
- * - 'warning' if price impact exceeds the slippage tolerance
+ * Returns the alert severity based on the warning and critical price impact thresholds:
+ * - 'error' if price impact exceeds the critical threshold (blocks the transaction)
+ * - 'warning' if price impact exceeds the warning threshold
  * - null if no alert is needed
  */
 export const getPriceImpactSeverity = (
   priceImpact: PriceImpact | Decimal | null | undefined,
-  { slippage, slippageType }: { slippage: Decimal | null | undefined; slippageType: SlippageType },
 ): 'error' | 'warning' | null =>
-  isPriceImpactSignificant(priceImpact)
-    ? decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD)
+  isHighPriceImpact(priceImpact)
+    ? decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', PRICE_IMPACT_THRESHOLDS.critical)
       ? 'error'
-      : decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', slippage ?? SLIPPAGE[slippageType].default)
-        ? 'warning'
-        : null
+      : 'warning'
     : null
 
 /**
@@ -46,27 +62,7 @@ export const getPriceImpactSeverity = (
  */
 export const shouldBlockTransaction = (
   priceImpact: Query<PriceImpact | Decimal | null>,
-  {
-    slippage,
-    leverageEnabled,
-    slippageType,
-  }: {
-    slippage: Decimal | null | undefined
-    leverageEnabled: boolean | undefined
-    slippageType: SlippageType
-  },
+  { leverageEnabled }: { leverageEnabled: boolean | undefined },
 ) =>
   (leverageEnabled == true && priceImpact.data == null && !priceImpact.error) ||
-  (getPriceImpactSeverity(priceImpact.data, { slippage, slippageType }) === 'error' &&
-    isPriceImpactSignificant(priceImpact.data))
-
-export const getPriceImpactDisplay = (
-  priceImpact: Query<PriceImpact | Decimal | null> | undefined,
-  { slippage, slippageType }: { slippage: Decimal | null | undefined; slippageType: SlippageType | undefined },
-) => {
-  const severity = priceImpact && slippageType && getPriceImpactSeverity(priceImpact.data, { slippage, slippageType })
-  return {
-    label: severity ? t`High price impact` : t`Price impact`,
-    color: maybe(severity, s => ({ error: 'error', warning: 'warning.main' })[s]),
-  }
-}
+  (getPriceImpactSeverity(priceImpact.data) === 'error' && isPriceImpactSignificant(priceImpact.data))
