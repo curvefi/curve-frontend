@@ -1,10 +1,8 @@
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { formatNumber } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
-import { TokenInfo } from '@ui/components/TokenInfo'
 import { t } from '@ui/lib/i18n'
-import { TimestampCell, AddressCell } from '../cells'
+import { TimestampCell, AddressCell, LlammaTokenAmount } from '../cells'
 import type { MarketTradeRow } from '../types'
 
 export enum LlammaTradesColumnId {
@@ -32,11 +30,10 @@ export const LLAMMA_TRADES_COLUMNS = columnHelper.columns([
     header: t`Buy`,
     cell: ({ row }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        <TokenInfo
-          address={row.original.tokenBought.address}
+        <LlammaTokenAmount
+          amount={row.original.amountBought}
           blockchainId={row.original.blockchainId}
-          iconPosition="right"
-          primary={formatNumber(row.original.amountBought, { abbreviate: false })}
+          token={row.original.tokenBought}
         />
       </InlineTableCell>
     ),
@@ -47,11 +44,10 @@ export const LLAMMA_TRADES_COLUMNS = columnHelper.columns([
     header: t`Sell`,
     cell: ({ row }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        <TokenInfo
-          address={row.original.tokenSold.address}
+        <LlammaTokenAmount
+          amount={-row.original.amountSold}
           blockchainId={row.original.blockchainId}
-          iconPosition="right"
-          primary={formatNumber(-row.original.amountSold, { abbreviate: false })}
+          token={row.original.tokenSold}
         />
       </InlineTableCell>
     ),
