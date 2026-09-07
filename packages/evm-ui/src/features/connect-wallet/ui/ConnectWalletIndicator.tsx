@@ -2,7 +2,7 @@ import { useConnection } from 'wagmi'
 import type { SxProps } from '@ui/utils/mui'
 import { useWallet } from '../lib'
 import { ConnectedWalletLabel } from './ConnectedWalletLabel'
-import { ConnectWalletButton } from './ConnectWalletButton'
+import { ConnectEvmWalletButton } from './ConnectEvmWalletButton'
 
 export const ConnectWalletIndicator = ({ sx, onConnect }: { sx?: SxProps; onConnect?: () => void }) => {
   const { address, isConnecting } = useConnection()
@@ -10,6 +10,6 @@ export const ConnectWalletIndicator = ({ sx, onConnect }: { sx?: SxProps; onConn
   return address ? (
     <ConnectedWalletLabel address={address} onClick={() => disconnect()} loading={isConnecting} sx={sx} />
   ) : (
-    <ConnectWalletButton onConnect={onConnect} sx={sx} testId="navigation-connect-wallet" />
+    <ConnectEvmWalletButton onConnect={onConnect} sx={sx} testId="navigation-connect-wallet" />
   )
 }

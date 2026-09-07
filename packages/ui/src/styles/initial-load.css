@@ -1,3 +1,35 @@
+@font-face {
+  font-family: 'Mona Sans';
+  src:
+    local('Mona Sans'),
+    url('../../public/fonts/Mona-Sans.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ioskeley Mono';
+  src:
+    local('Ioskeley Mono Regular'),
+    local('Ioskeley Mono'),
+    url('../../public/fonts/Ioskeley-Mono.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ioskeley Mono';
+  src:
+    local('Ioskeley Mono Bold'),
+    local('Ioskeley-Mono-Bold'),
+    url('../../public/fonts/Ioskeley-Mono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 .initial-load {
   height: 100dvh;
   width: 100%;

@@ -1,6 +1,6 @@
 import type { Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
@@ -23,12 +23,19 @@ export type RefuelFormParams = {
 }
 
 export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormParams) => {
-  const { form, values, tokenA, tokenB, poolTvl, refuelError, formErrors, isPending, isDisabled, onSubmit } =
-    useRefuelForm({
-      chainId,
-      blockchainId,
-      poolAddress,
-    })
+  const {
+    form,
+    values,
+    tokenA,
+    tokenB,
+    poolTvl,
+    refuelError,
+    formErrors,
+    isPending,
+    isDisabled,
+    userAddress,
+    onSubmit,
+  } = useRefuelForm({ chainId, blockchainId, poolAddress })
 
   return (
     <Form
@@ -92,7 +99,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
         </LargeTokenInput>
       </Stack>
 
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         disabled={isDisabled}
         connectWalletTestId="refuel-connect-wallet-button"
@@ -100,7 +107,12 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
         testId="refuel-submit-button"
       />
 
-      <FormAlerts error={refuelError} formErrors={formErrors} handledErrors={['tokenAAmount', 'tokenBAmount']} />
+      <FormAlerts
+        error={refuelError}
+        formErrors={formErrors}
+        handledErrors={['tokenAAmount', 'tokenBAmount']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

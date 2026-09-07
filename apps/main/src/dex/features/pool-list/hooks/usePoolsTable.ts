@@ -26,7 +26,6 @@ import { isVyperVulnerablePool } from '../alerts'
 import type { PoolsApiParams } from '../filters/utils'
 import type { PoolRow, PoolRowData } from '../types'
 import { POOLS_PAGE_SIZE } from './usePoolsPagination'
-import { usePoolsUserHasPosition } from './usePoolsUserHasPosition'
 
 class UnsupportedPoolListError extends Error {
   constructor(readonly chainId: number) {

@@ -1,7 +1,7 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { t } from '@ui/lib/i18n'
@@ -26,6 +26,7 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
     isPending,
     onSubmit,
     isDisabled,
+    userAddress,
     borrowToken,
     withdrawError,
     formErrors,
@@ -66,7 +67,7 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
         <AlertUnstakeFirst />
       )}
 
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         loading={!marketId}
         disabled={isDisabled}
@@ -74,7 +75,12 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
         testId={`${TEST_ID_PREFIX}-submit-button`}
       />
 
-      <FormAlerts error={withdrawError} formErrors={formErrors} handledErrors={['withdrawAmount']} />
+      <FormAlerts
+        error={withdrawError}
+        formErrors={formErrors}
+        handledErrors={['withdrawAmount']}
+        userAddress={userAddress}
+      />
     </Form>
   )
 }

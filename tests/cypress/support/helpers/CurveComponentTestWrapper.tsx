@@ -5,7 +5,7 @@ import { CurveContext } from '@evm-ui/features/connect-wallet/lib/CurveContext'
 import { ConnectState } from '@evm-ui/features/connect-wallet/lib/types'
 import { useWallet } from '@evm-ui/features/connect-wallet/lib/useWallet'
 import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
-import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
+import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 import { ComponentTestWrapper } from './ComponentTestWrapper'
 import { mockedWagmiConfig } from './llamalend/test-wagmi.helpers'
 

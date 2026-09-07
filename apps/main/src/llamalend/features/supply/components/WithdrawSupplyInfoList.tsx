@@ -4,11 +4,11 @@ import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validatio
 import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { UseFormReturn } from '@evm-ui/features/forms'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
 import { decimalMinus, decimalNegate } from '@evm-ui/utils'
 import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
+import type { UseFormReturn } from '@ui/features/forms'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
