@@ -7,6 +7,26 @@ import { t } from '@ui/lib/i18n'
 import { TimestampCell, AddressCell } from '../cells'
 import type { MarketTradeRow } from '../types'
 
+const LlammaTradeTokenCell = ({
+  address,
+  amount,
+  blockchainId,
+}: {
+  address: MarketTradeRow['tokenBought']['address']
+  amount: number
+  blockchainId: MarketTradeRow['blockchainId']
+}) => (
+  <InlineTableCell sx={{ alignItems: 'end' }}>
+    <TokenInfo
+      address={address}
+      blockchainId={blockchainId}
+      iconPosition="right"
+      iconSize="mui-md"
+      primary={formatNumber(amount, { abbreviate: false })}
+    />
+  </InlineTableCell>
+)
+
 export enum LlammaTradesColumnId {
   User = 'buyer',
   Bought = 'amountBought',
@@ -31,14 +51,11 @@ export const LLAMMA_TRADES_COLUMNS = columnHelper.columns([
     id: LlammaTradesColumnId.Bought,
     header: t`Buy`,
     cell: ({ row }) => (
-      <InlineTableCell sx={{ alignItems: 'end' }}>
-        <TokenInfo
-          address={row.original.tokenBought.address}
-          blockchainId={row.original.blockchainId}
-          iconPosition="right"
-          primary={formatNumber(row.original.amountBought, { abbreviate: false })}
-        />
-      </InlineTableCell>
+      <LlammaTradeTokenCell
+        address={row.original.tokenBought.address}
+        amount={row.original.amountBought}
+        blockchainId={row.original.blockchainId}
+      />
     ),
     meta: { type: 'numeric' },
   }),
@@ -46,14 +63,11 @@ export const LLAMMA_TRADES_COLUMNS = columnHelper.columns([
     id: LlammaTradesColumnId.Sold,
     header: t`Sell`,
     cell: ({ row }) => (
-      <InlineTableCell sx={{ alignItems: 'end' }}>
-        <TokenInfo
-          address={row.original.tokenSold.address}
-          blockchainId={row.original.blockchainId}
-          iconPosition="right"
-          primary={formatNumber(-row.original.amountSold, { abbreviate: false })}
-        />
-      </InlineTableCell>
+      <LlammaTradeTokenCell
+        address={row.original.tokenSold.address}
+        amount={-row.original.amountSold}
+        blockchainId={row.original.blockchainId}
+      />
     ),
     meta: { type: 'numeric' },
   }),
