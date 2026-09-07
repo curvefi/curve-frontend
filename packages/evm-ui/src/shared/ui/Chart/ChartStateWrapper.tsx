@@ -4,9 +4,8 @@ import { ChartError } from '@evm-ui/shared/ui/Chart/ChartError'
 import { ChartLoading } from '@evm-ui/shared/ui/Chart/ChartLoading'
 import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
 import type { Address } from '@primitives/address.utils'
-import type { ConnectionProps } from '@ui/components/ConnectWalletButton'
 
-type ChartStateWrapperProps = ConnectionProps & {
+type ChartStateWrapperProps = {
   height: number
   isLoading: boolean
   isEmpty?: boolean
@@ -30,7 +29,6 @@ export const ChartStateWrapper = ({
   refreshData,
   children,
   userAddress,
-  ...connectionProps
 }: ChartStateWrapperProps) => {
   if (isLoading) return <ChartLoading height={height} />
   if (error)
@@ -41,7 +39,6 @@ export const ChartStateWrapper = ({
         errorMessage={errorMessage}
         refreshData={refreshData}
         userAddress={userAddress}
-        {...connectionProps}
       />
     )
   if (isEmpty) return <ChartEmpty height={height} message={emptyMessage} />
@@ -53,7 +50,6 @@ export const ChartStateWrapper = ({
       subtitle="Something went wrong when rendering the chart."
       refreshData={refreshData}
       userAddress={userAddress}
-      {...connectionProps}
     >
       {children}
     </ErrorBoundary>

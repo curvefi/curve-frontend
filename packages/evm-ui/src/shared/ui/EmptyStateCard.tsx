@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { Box, Button, ButtonProps, Skeleton } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { type AllOrNone } from '@primitives/objects.utils'
 import { type ConnectionProps, ConnectWalletButton } from '@ui/components/ConnectWalletButton'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { Responsive } from '@ui/features/themes/basic-theme'
@@ -17,7 +18,7 @@ type EmptyStateButtonProps = Omit<ButtonProps, 'type'> & {
   testId?: string
 }
 
-export type EmptyStateCardProps = ConnectionProps & {
+export type EmptyStateCardProps = AllOrNone<ConnectionProps> & {
   title?: ReactNode
   description?: ReactNode
   isLoading?: boolean
@@ -41,11 +42,17 @@ const Skeletons = () => (
     <Skeleton variant="rectangular" sx={{ height: LineHeight.xl }} />
   </Stack>
 )
+
+const getConnectionProps = (connectionProps: AllOrNone<ConnectionProps>): ConnectionProps => {
+  if (!connectionProps.connect) throw new Error('Missing connectionProps for connect-wallet')
+  return connectionProps
+}
+
 const EmptyStateButton = ({
   button,
   size,
   ...connectionProps
-}: ConnectionProps & {
+}: AllOrNone<ConnectionProps> & {
   button: NonNullable<EmptyStateCardProps['button']>
   size: NonNullable<EmptyStateCardProps['size']>
 }) => {
@@ -58,8 +65,9 @@ const EmptyStateButton = ({
     sx: applySxProps({ alignSelf: 'center' }, buttonSx),
     ...(testId && { 'data-testid': testId }),
   } as const
+
   return type === 'connect-wallet' ? (
-    <ConnectWalletButton {...sharedProps} {...connectionProps} label={label} />
+    <ConnectWalletButton {...sharedProps} {...getConnectionProps(connectionProps)} label={label} />
   ) : href?.startsWith('https') ? (
     <ExternalLink {...sharedProps} href={href} label={label} wide />
   ) : (
