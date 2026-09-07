@@ -233,14 +233,13 @@ export const defineMuiChip = (
       style: {
         borderRadius: Chips.BorderRadius.Clickable,
         cursor: 'pointer',
-        transition: `background-color ${CHIP_TRANSITION}, border-color ${CHIP_TRANSITION}, color ${CHIP_TRANSITION}, transform ${CHIP_TRANSITION}`,
         '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': {
           ...handleBreakpoints({ gap: Spacing.xxs }),
         },
         '& .MuiChip-icon': { marginInline: 0, color: 'inherit', transition: `color ${CHIP_TRANSITION}` },
         '& .MuiChip-deleteIcon': { margin: 0, color: 'inherit', transition: `color ${CHIP_TRANSITION}` },
         '@media (prefers-reduced-motion: no-preference)': {
-          '&:active': { transform: 'scale(0.98)' },
+          '&:active:not(:focus-visible)': { transform: 'scale(0.98)' },
         },
         '&:hover, &:focus-visible': {
           borderColor: 'transparent',
@@ -306,7 +305,11 @@ export const defineMuiChip = (
           clickable: true,
         },
         style: {
-          ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
+          ...handleBreakpoints({
+            ...(font && typography[font]),
+            ...rest,
+            transition: `background-color ${CHIP_TRANSITION}, border-color ${CHIP_TRANSITION}, color ${CHIP_TRANSITION}, transform ${CHIP_TRANSITION}`,
+          }),
           ...(heightOverride && {
             height: heightOverride, // constant height override for clickable chips
             '& .MuiChip-icon': handleBreakpoints({ width: iconSize.desktop, height: iconSize.desktop }),

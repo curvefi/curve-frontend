@@ -49,12 +49,6 @@ const VariantStory = ({
   </Grid>
 )
 
-const ChipStory = () => {
-  const [{ selected, ...props }, updateArgs] = useArgs<SelectableChipProps>()
-
-  return <SelectableChip {...props} selected={selected} toggle={() => updateArgs({ selected: !selected })} />
-}
-
 const meta: Meta<typeof SelectableChip> = {
   title: 'UI Kit/Primitives/Chip',
   component: SelectableChip,
@@ -109,7 +103,14 @@ const meta: Meta<typeof SelectableChip> = {
 }
 
 export const Chip: Story = {
-  render: ChipStory,
+  render: args => <SelectableChip {...args} />,
+  decorators: [
+    function WithSelectableArgs(Story) {
+      const [args, updateArgs] = useArgs<SelectableChipProps>()
+
+      return <Story args={{ ...args, toggle: () => updateArgs({ selected: !args.selected }) }} />
+    },
+  ],
   parameters: {
     docs: {
       description: {
