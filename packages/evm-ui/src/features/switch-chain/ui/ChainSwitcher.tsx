@@ -6,7 +6,6 @@ import { isLiteChain, isTestnet } from '@evm-ui/features/connect-wallet/lib/wagm
 import { usePathname } from '@evm-ui/hooks/router'
 import { useShowTestNets } from '@evm-ui/hooks/useLocalStorage'
 import { type AppMenuOption, getCurrentNetwork } from '@evm-ui/shared/routes'
-import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import { ModalSettingsButton } from '@evm-ui/shared/ui/ModalSettingsButton'
 import { showToast } from '@evm-ui/widgets/Toast/toast.util'
 import { type NetworkDef, NetworkMapping } from '@legacy-ui/utils'
@@ -15,6 +14,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import IconButton from '@mui/material/IconButton'
 import { Chain } from '@primitives/network.utils'
 import { maybes, type PartialRecord } from '@primitives/objects.utils'
+import { ModalDialog } from '@ui/components/ModalDialog'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { ChainList } from './ChainList'
@@ -36,7 +36,7 @@ const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
 
 // Sometimes a network has been defined and needs to be accessed for legacy purposes, but we want to hide it from the list for whatever reason.
 const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = {
-  dex: [Chain.ZkSync, Chain.Mantle, Chain.Tac /** Temporarily hidden as the chain's halted */],
+  dex: [Chain.ZkSync, Chain.Mantle],
 }
 
 const getTvl =

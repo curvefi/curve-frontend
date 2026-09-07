@@ -65,6 +65,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({ network }: { network
     isCrvDisabled: [!hasClaimableCrv, !!claimableCrvError, claimableTokens.length === 0].some(Boolean),
     isRewardsDisabled: [!hasClaimableRewards, !!claimableRewardsError, claimableTokens.length === 0].some(Boolean),
     isLoading: isClaimablesLoading,
+    userAddress,
     table,
     onSubmitCrv,
     onSubmitRewards,

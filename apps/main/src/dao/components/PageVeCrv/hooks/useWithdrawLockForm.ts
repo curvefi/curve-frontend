@@ -3,9 +3,9 @@ import { useConnection } from 'wagmi'
 import { useWithdrawLockMutation } from '@/dao/components/PageVeCrv/mutations/withdraw-lock.mutation'
 import type { WithdrawLockFormValues } from '@/dao/components/PageVeCrv/queries/withdraw-lock.types'
 import { invalidateVeCrvQueries, useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
-import { useForm } from '@evm-ui/features/forms'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { maybe } from '@primitives/objects.utils'
+import { useForm } from '@ui/features/forms'
 
 const defaultValues: WithdrawLockFormValues = {}
 
@@ -37,6 +37,7 @@ export const useWithdrawLockForm = ({ chainId }: { chainId: number }) => {
     lockedAmountAndUnlockTime,
     isPending,
     isDisabled: !canUnlock || isPending,
+    userAddress,
     error,
     onSubmit: form.handleSubmit(onSubmitWithdraw),
   }

@@ -2,8 +2,8 @@ import { forwardRef, type ReactNode, type MouseEvent } from 'react'
 import Stack from '@mui/material/Stack'
 import type { Column, ColumnMeta, RowData, StockFeatures } from '@tanstack/react-table'
 import { ArrowDownIcon } from '@ui/icons/ArrowDownIcon'
+import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import type { DataTableSize } from './data-table.utils'
-import { RotatableIcon } from './RotatableIcon'
 
 type SortingFeatures = Pick<StockFeatures, 'rowSortingFeature'>
 type SortableColumn = Pick<Column<SortingFeatures, RowData>, 'id' | 'getIsSorted' | 'getToggleSortingHandler'> & {

@@ -3,7 +3,7 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormToke
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { networks, networksIdMapper } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { q } from '@ui/features/queries/util'
@@ -21,6 +21,7 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
     isApproved,
     isPending,
     isDisabled,
+    userAddress,
     error,
     formErrors,
     max,
@@ -55,14 +56,14 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
         hideBalance={!isConnected}
         disabled={!isConnected}
       />
-      <FormButton
+      <EvmFormButton
         pending={isPending}
         disabled={isDisabled}
         connectWalletTestId="scrvusd-deposit-connect-wallet-button"
         label={[isApproved.data === false && t`Approve`, t`Deposit`]}
         testId="scrvusd-deposit-submit-button"
       />
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} />
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} userAddress={userAddress} />
     </Form>
   )
 }

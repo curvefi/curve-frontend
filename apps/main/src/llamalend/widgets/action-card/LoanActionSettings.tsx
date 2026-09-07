@@ -4,15 +4,13 @@ import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { decimal } from '@evm-ui/utils/decimal'
 import { formatNumber } from '@evm-ui/utils/number'
 import { formatToken } from '@evm-ui/utils/tokens'
-import {
-  getPriceImpactDisplay,
-  getPriceImpactPercent,
-  type PriceImpact,
-} from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { getPriceImpactPercent, type PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
 import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -33,6 +31,7 @@ export const LoanActionSettings = ({
   priceImpact,
   collateralSymbol,
   borrowSymbol,
+  userAddress,
 }: {
   slippage?: Decimal
   onSlippageChange: (newSlippage: Decimal) => void
@@ -42,12 +41,9 @@ export const LoanActionSettings = ({
   priceImpact?: QueryProp<PriceImpact | Decimal | null>
   collateralSymbol?: string
   borrowSymbol?: string
+  userAddress: Address | undefined
 }) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact, {
-    slippage,
-    slippageType: LEVERAGE,
-  })
 
   return (
     <Collapse in={show}>
@@ -62,6 +58,7 @@ export const LoanActionSettings = ({
             type={LEVERAGE}
             onChanged={({ leverage }) => onSlippageChange(leverage)}
             size="small"
+            userAddress={userAddress}
           />
         )}
         {exchangeRate && collateralSymbol && borrowSymbol && (
@@ -75,10 +72,9 @@ export const LoanActionSettings = ({
           />
         )}
         {priceImpact && (
-          <ActionInfo
-            label={priceImpactLabel}
-            value={mapQuery(priceImpact, data => formatNumber(getPriceImpactPercent(data), 'percent.rate'))}
-            valueColor={priceImpactColor}
+          <PriceImpactActionInfo
+            priceImpact={priceImpact}
+            value={mapQuery(priceImpact, data => formatNumber(getPriceImpactPercent(data), 'percent.price-impact'))}
             size="small"
             testId="borrow-price-impact"
           />

@@ -1,3 +1,4 @@
+import { zeroAddress } from 'viem'
 import { range } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FormAlerts } from './FormAlerts'
@@ -11,7 +12,7 @@ const LONG_ERROR = new Error(
 const meta: Meta<typeof FormAlerts> = {
   title: 'UI Kit/Widgets/Detail Page/Form Alerts',
   component: FormAlerts,
-  args: { formErrors: [], handledErrors: [] },
+  args: { formErrors: [], handledErrors: [], userAddress: zeroAddress },
   decorators: [Story => <div style={{ width: 'min(480px, 100vw)' }}>{Story()}</div>],
 }
 
