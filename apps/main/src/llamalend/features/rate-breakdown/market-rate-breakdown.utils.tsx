@@ -5,6 +5,7 @@ import { getPointsCampaignRows, type PointsCampaignRow } from '@evm-ui/features/
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
+import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
@@ -12,7 +13,7 @@ import { t } from '@ui/lib/i18n'
 
 export type BreakdownSource = {
   tokenInfo: TokenInfoProps
-  address?: string
+  address?: Address
   explorerUrl?: string
   yieldBearing?: boolean
 }
@@ -53,23 +54,22 @@ export const buildBorrowRateBreakdown = ({
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
   const rebasingRow = notFalsy(
-    rate.rebasingYield != null && collateralToken
-      ? {
-          source: {
-            tokenInfo: {
-              address: collateralToken.address,
-              blockchainId,
-              iconPosition: 'left' as const,
-              primary: collateralToken.symbol,
-            },
+    rate.rebasingYield != null &&
+      collateralToken && {
+        source: {
+          tokenInfo: {
             address: collateralToken.address,
-            explorerUrl: scanTokenPath(chainId, collateralToken.address),
-            yieldBearing: true,
+            blockchainId,
+            iconPosition: 'left' as const,
+            primary: collateralToken.symbol,
           },
-          price: tokenPrice(prices, collateralToken.address),
-          rate: -rate.rebasingYield,
-        }
-      : false,
+          address: collateralToken.address,
+          explorerUrl: scanTokenPath(chainId, collateralToken.address),
+          yieldBearing: true,
+        },
+        price: tokenPrice(prices, collateralToken.address),
+        rate: -rate.rebasingYield,
+      },
   )
 
   return {
@@ -137,23 +137,22 @@ export const buildSupplyRateBreakdown = ({
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
   const rebasingRow = notFalsy(
-    rate.rebasingYield != null && borrowToken
-      ? {
-          source: {
-            tokenInfo: {
-              address: borrowToken.address,
-              blockchainId,
-              iconPosition: 'left' as const,
-              primary: borrowToken.symbol,
-            },
+    rate.rebasingYield != null &&
+      borrowToken && {
+        source: {
+          tokenInfo: {
             address: borrowToken.address,
-            explorerUrl: scanTokenPath(chainId, borrowToken.address),
-            yieldBearing: true,
+            blockchainId,
+            iconPosition: 'left' as const,
+            primary: borrowToken.symbol,
           },
-          price: tokenPrice(prices, borrowToken.address),
-          rate: rate.rebasingYield,
-        }
-      : false,
+          address: borrowToken.address,
+          explorerUrl: scanTokenPath(chainId, borrowToken.address),
+          yieldBearing: true,
+        },
+        price: tokenPrice(prices, borrowToken.address),
+        rate: rate.rebasingYield,
+      },
   )
 
   return {
@@ -162,7 +161,7 @@ export const buildSupplyRateBreakdown = ({
       ...directIncentives.map(({ address, blockchainId, percentage, title }) => ({
         source: {
           tokenInfo: { address, blockchainId, iconPosition: 'left' as const, primary: title },
-          address,
+          address: address as Address,
           explorerUrl: scanTokenPath(chainId, address),
         },
         price: tokenPrice(prices, address),

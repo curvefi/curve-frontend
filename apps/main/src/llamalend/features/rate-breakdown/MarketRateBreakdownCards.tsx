@@ -35,15 +35,14 @@ const FooterRow = ({
   total: number | null
   maxBoostTotal?: number | null
 }) =>
-  visibleColumns.map(({ id }) => {
-    if (id === 'source')
-      return (
-        <TableCell key={id} sx={{ paddingInline: Spacing.md }}>
-          <Typography variant="tableCellMBold">{title}</Typography>
-        </TableCell>
-      )
-    if (id === 'price') return <TableCell key={id} />
-    return (
+  visibleColumns.map(({ id }) =>
+    id === 'source' ? (
+      <TableCell key={id} sx={{ paddingInline: Spacing.md }}>
+        <Typography variant="tableCellMBold">{title}</Typography>
+      </TableCell>
+    ) : id === 'price' ? (
+      <TableCell key={id} />
+    ) : (
       <TableCell key={id} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
         <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
         {maxBoostTotal != null && maxBoostTotal !== total && (
@@ -52,8 +51,8 @@ const FooterRow = ({
           </Typography>
         )}
       </TableCell>
-    )
-  })
+    ),
+  )
 
 export const RateBreakdownTable = ({
   rateType,
