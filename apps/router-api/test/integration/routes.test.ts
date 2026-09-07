@@ -1,13 +1,14 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it, type TestOptions } from 'vitest'
-import { ADDRESS_PATTERN } from '@primitives/address.utils'
 import { assert, type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
 import { toWei } from '../../src/router.utils'
-import type { RoutesQuery } from '../../src/routes/routes.schemas'
+import { ADDRESS_HEX_PATTERN, type RoutesQuery } from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
 
 process.loadEnvFile()
+
+const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
 
 const CHAIN_ID_ETHEREUM = '1'
 const CHAIN_ID_OPTIMISM = '10'
@@ -210,7 +211,7 @@ const failureCases: Record<string, FailureCase> = {
       statusCode: 400,
       code: 'FST_ERR_VALIDATION',
       error: 'Bad Request',
-      message: `querystring/tokenIn/0 must match pattern "${ADDRESS_PATTERN.source}"`,
+      message: `querystring/tokenIn/0 must match pattern "${ADDRESS_HEX_PATTERN}"`,
     },
   },
   'invalid chainId': {
@@ -260,8 +261,8 @@ describe('GET routes integration', () => {
 
           steps.forEach(step => {
             if (router.startsWith('curve')) expect(step.protocol).toBe(router)
-            expect(step.tokenIn.join(',')).toMatch(ADDRESS_PATTERN)
-            expect(step.tokenOut.join(',')).toMatch(ADDRESS_PATTERN)
+            expect(step.tokenIn.join(',')).toMatch(ADDRESS_REGEX)
+            expect(step.tokenOut.join(',')).toMatch(ADDRESS_REGEX)
           })
 
           const [expectedTokenIn] = query.tokenIn ?? []

@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
+import { isAddressEqual } from 'viem'
 import { DEPRECATED_LLAMAS } from '@/llamalend/markets.constants'
 import type { Chain } from '@curvefi/prices-api'
 import type { MarketType } from '@evm-ui/types/market'
-import { isAddressEqual, type Address } from '@primitives/address.utils'
+import type { Address } from '@primitives/address.utils'
 import { maybes, recordEntries } from '@primitives/objects.utils'
 
 export const useDeprecatedMarket = ({

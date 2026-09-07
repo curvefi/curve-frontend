@@ -1,4 +1,5 @@
-import { createMarketContextValue, MarketContext } from '@/llamalend/features/market-context'
+import { zeroAddress } from 'viem'
+import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import { BorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { getLiquidationStatus } from '@/llamalend/llama.utils'
 import type { MarketTemplate, UserPositionStatusKey } from '@/llamalend/llamalend.types'
@@ -16,23 +17,20 @@ import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import type { UserMarketQuery } from '@evm-ui/lib/model'
 import { getTokenUsdRateKey } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@evm-ui/lib/queries/test-query.provider.test'
 import { MarketType } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
-import { type Address, ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { DEFAULT_DECIMALS, maybe } from '@primitives/objects.utils'
+import { maybe, DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { constQ, type Range } from '@ui/features/queries/util'
 import { ReleaseChannel } from '@ui/utils/env'
 
 const ALERT_TEST_ID = '[data-testid="borrow-position-status-alert"]'
 
-const params: UserMarketQuery = { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress }
-
 const baseProps = {
-  params,
+  params: { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress },
   healthNotFull: 1.56 as number | null,
   healthFull: 96,
   userPrices: [`0.47`, `0.69`] as Range<Decimal>,

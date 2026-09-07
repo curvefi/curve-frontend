@@ -19,7 +19,8 @@
     "@curvefi/api-server": "workspace:^",
     "@curvefi/prices-api": "workspace:^",
     "bignumber.js": "9.3.1",
-    "fastify": "5.12.1"
+    "fastify": "5.12.1",
+    "viem": "2.56.0"
   },
   "devDependencies": {
     "tsx": "4.23.12"

@@ -1,4 +1,5 @@
 import { orderBy } from 'lodash'
+import { isAddress } from 'viem'
 import { StoreApi } from 'zustand'
 import type {
   DashboardDataMapper,
@@ -19,7 +20,6 @@ import { useWallet } from '@evm-ui/features/connect-wallet'
 import { getErrorMessage } from '@evm-ui/utils'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { shortenAccount } from '@legacy-ui/utils'
-import { isAddress } from '@primitives/address.utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { sleep } from '@primitives/promise.utils'

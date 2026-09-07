@@ -1,6 +1,7 @@
+import { zeroAddress } from 'viem'
 import type { ChainId, Token } from '@/dex/types/main.types'
 import type { TokenOption } from '@evm-ui/features/select-token'
-import { ZERO_ADDRESS as zeroAddress, type Address } from '@primitives/address.utils'
+import type { Address } from '@primitives/address.utils'
 
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 

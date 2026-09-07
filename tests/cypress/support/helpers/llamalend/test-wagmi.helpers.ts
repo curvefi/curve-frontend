@@ -1,9 +1,8 @@
-import { custom, fallback, http, type RpcTransactionReceipt } from 'viem'
+import { custom, fallback, http, type RpcTransactionReceipt, zeroAddress } from 'viem'
 import { createChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { defaultGetRpcUrls, WAGMI_HTTP_OPTIONS } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
 import { createWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
 import { createTestConnector } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test'
-import { ZERO_ADDRESS as zeroAddress } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { TEST_PRIVATE_KEY, TEST_TX_HASH } from './mock-loan-test-data'
 

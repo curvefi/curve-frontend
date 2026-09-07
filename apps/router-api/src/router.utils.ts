@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-// eslint-disable-next-line local/isolated-packages
 import { formatUnits, parseUnits } from 'viem'
 import type { Decimal } from '@primitives/decimal.utils'
 
