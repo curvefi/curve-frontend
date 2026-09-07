@@ -1,6 +1,6 @@
 export * from './ChartEmpty'
 export * from './ChartError'
-export * from './ChartStateWrapper'
+export * from './EvmChartStateWrapper'
 export * from './ChartFooter'
 export * from './ChartHeader'
 export * from './ChartLoading'

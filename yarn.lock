@@ -13605,6 +13605,7 @@ __metadata:
     lodash: "npm:*"
     memoizee: "npm:*"
     typescript: "npm:*"
+    vitest: "npm:*"
   peerDependencies:
     "@curvefi/primitives": "*"
     react: "*"

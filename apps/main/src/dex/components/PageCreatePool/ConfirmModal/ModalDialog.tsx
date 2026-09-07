@@ -3,11 +3,11 @@ import { FocusScope, Overlay, useButton, useDialog, useModalOverlay, usePreventS
 import type { AriaDialogProps, AriaOverlayProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
-import { useLayoutStore } from '@evm-ui/features/layout'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { breakpoints } from '@legacy-ui/utils/responsive'
+import { useLayoutStore } from '@ui/features/layout/layout'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 
 type Props = {

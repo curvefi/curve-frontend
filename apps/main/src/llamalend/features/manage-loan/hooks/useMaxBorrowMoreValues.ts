@@ -10,11 +10,11 @@ import {
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { BorrowMoreForm } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { UseFormReturn } from '@evm-ui/features/forms'
-import { useFormSync, useOnChangeCallback } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
+import { useFormSync, useOnChangeCallback } from '@ui/features/forms'
+import type { UseFormReturn } from '@ui/features/forms'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 
 export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({

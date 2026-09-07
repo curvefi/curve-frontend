@@ -3,8 +3,8 @@ import { TabsSwitcher, TabsSwitcherProps } from '@evm-ui/shared/ui/Tabs/TabsSwit
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { WithWrapper } from '@ui/components/WithWrapper'
+import { useIsMobileFormDrawer } from '@ui/features/form-context/FormPlacementContext'
 import { applySxProps } from '@ui/utils/mui'
-import { useIsMobileFormDrawer } from './form-context/FormPlacementContext'
 import { FormContent } from './FormContent'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 

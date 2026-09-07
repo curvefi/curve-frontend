@@ -1,6 +1,7 @@
-import { useForm, useFormSync } from '@evm-ui/features/forms'
+import { useConnection } from 'wagmi'
 import { usePinataJwt } from '@evm-ui/hooks/useLocalStorage'
 import type { FieldsOf } from '@evm-ui/lib'
+import { useForm, useFormSync } from '@ui/features/forms'
 import { t } from '@ui/lib/i18n'
 import { useCreateVoteMutation } from './create-vote.mutation'
 import { createVoteFormValidationSuite } from './create-vote.validation'
@@ -40,12 +41,12 @@ export const useCreateVoteForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const { formState } = form
   const formErrors = formState.visibleErrors
-
   const isPending = formState.isSubmitting || isCreatingVote
 
   return {
     form,
     values: form.watchValues(),
+    userAddress: useConnection().address,
     isPending,
     isDisabled: !formState.isValid || isPending,
 

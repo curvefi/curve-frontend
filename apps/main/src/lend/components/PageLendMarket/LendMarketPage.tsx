@@ -26,11 +26,11 @@ import {
   useMarketMobileFormDrawer,
   useNewLlamaMarketDetailPage,
 } from '@evm-ui/hooks/useFeatureFlags'
-import { ErrorPage } from '@evm-ui/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
 import type { Decimal } from '@primitives/decimal.utils'
+import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { useLendMarket } from '../../hooks/useLendMarket'
@@ -79,7 +79,12 @@ export const LendMarketPage = () => {
 
   const error = marketError ?? apiMarket.error
   return error ? (
-    <ErrorPage title={t`Error`} subtitle={error.message} continueUrl={getCollateralListPathname(params)} />
+    <ErrorPage
+      title={t`Error`}
+      subtitle={error.message}
+      continueUrl={getCollateralListPathname(params)}
+      userAddress={userAddress}
+    />
   ) : (
     <MarketContextProvider
       network={network}

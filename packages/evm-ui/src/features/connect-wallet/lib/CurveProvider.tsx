@@ -9,10 +9,10 @@ import {
   ConnectState,
   HydratorMap,
 } from '@evm-ui/features/connect-wallet/lib/types'
-import { useIsDocumentFocused } from '@evm-ui/features/layout/utils'
 import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
 import type { AppName } from '@evm-ui/shared/routes'
 import type { NetworkDef } from '@legacy-ui/utils'
+import { useIsDocumentFocused } from '@ui/features/layout/layout/utils'
 import { useSwitchChain } from './useSwitchChain'
 import { globalLibs, isWalletMatching } from './utils'
 import { getChainName } from './wagmi/chains'
