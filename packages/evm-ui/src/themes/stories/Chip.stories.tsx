@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useArgs } from 'storybook/preview-api'
 import { fn } from 'storybook/test'
 import CheckIcon from '@mui/icons-material/Check'
 import Grid from '@mui/material/Grid'
@@ -48,6 +48,12 @@ const VariantStory = ({
     )}
   </Grid>
 )
+
+const ChipStory = () => {
+  const [{ selected, ...props }, updateArgs] = useArgs<SelectableChipProps>()
+
+  return <SelectableChip {...props} selected={selected} toggle={() => updateArgs({ selected: !selected })} />
+}
 
 const meta: Meta<typeof SelectableChip> = {
   title: 'UI Kit/Primitives/Chip',
@@ -103,18 +109,7 @@ const meta: Meta<typeof SelectableChip> = {
 }
 
 export const Chip: Story = {
-  render: args => {
-    // eslint-disable-next-line @eslint-react/rules-of-hooks
-    const [selected, setSelected] = useState(args.selected)
-
-    return (
-      <SelectableChip
-        {...args}
-        selected={selected}
-        toggle={() => setSelected(previouslySelected => !previouslySelected)}
-      />
-    )
-  },
+  render: ChipStory,
   parameters: {
     docs: {
       description: {

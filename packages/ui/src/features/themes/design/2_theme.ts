@@ -410,7 +410,7 @@ export const createLightDesign = (
       Fill: Color.Neutral[900],
     },
     Current: {
-      Label: Text.TextColors.Highlight,
+      Label: Text.TextColors.Primary,
       Fill: Layer.Highlight.Fill,
       Outline: Layer.Highlight.Outline,
     },

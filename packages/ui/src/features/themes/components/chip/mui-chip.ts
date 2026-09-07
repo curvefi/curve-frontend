@@ -10,6 +10,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 
 const { Spacing, IconSize, LineHeight, ButtonSize, Badge } = SizesAndSpaces
+const CHIP_TRANSITION = '140ms cubic-bezier(0.23, 1, 0.32, 1)'
 
 type ChipSizeDefinition = {
   font: TypographyVariantKey
@@ -232,11 +233,15 @@ export const defineMuiChip = (
       style: {
         borderRadius: Chips.BorderRadius.Clickable,
         cursor: 'pointer',
+        transition: `background-color ${CHIP_TRANSITION}, border-color ${CHIP_TRANSITION}, color ${CHIP_TRANSITION}, transform ${CHIP_TRANSITION}`,
         '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': {
           ...handleBreakpoints({ gap: Spacing.xxs }),
         },
-        '& .MuiChip-icon': { marginInline: 0, color: 'inherit' },
-        '& .MuiChip-deleteIcon': { margin: 0, color: 'inherit' },
+        '& .MuiChip-icon': { marginInline: 0, color: 'inherit', transition: `color ${CHIP_TRANSITION}` },
+        '& .MuiChip-deleteIcon': { margin: 0, color: 'inherit', transition: `color ${CHIP_TRANSITION}` },
+        '@media (prefers-reduced-motion: no-preference)': {
+          '&:active': { transform: 'scale(0.98)' },
+        },
         '&:hover, &:focus-visible': {
           borderColor: 'transparent',
           backgroundColor: Chips.Hover.Fill,
