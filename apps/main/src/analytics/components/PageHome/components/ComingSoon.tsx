@@ -1,9 +1,9 @@
 import { MIN_HEIGHT } from '@/analytics/features/charts/components/EChartsCard'
+import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { EmptyStateCard } from '@ui/components/EmptyStateCard'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { CrvHubIcon } from '@ui/icons/CrvHubIcon'
 import { LAFIcon } from '@ui/icons/LAFIcon'
@@ -19,7 +19,7 @@ export const ComingSoon = () => (
       component={Stack}
       sx={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center', minHeight: MIN_HEIGHT, gap: Spacing.sm }}
     >
-      <EmptyStateCard
+      <EmptyStateEvmCard
         title={t`Analytics v2 in progress`}
         description={
           <Trans>

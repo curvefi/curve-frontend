@@ -11,12 +11,12 @@ import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import type { RowData } from '@tanstack/react-table'
-import { EmptyStateCard, type EmptyStateCardProps } from '@ui/components/EmptyStateCard'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { useLayoutStore } from '@ui/features/layout/layout'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
+import { EmptyStateEvmCard, type EmptyStateEvmCardProps } from '../EmptyStateEvmCard'
 import { DATA_TABLE_CATEGORIES, type DataTableCategory, type DataTableCategoryConfig } from './categories'
 import { DataTableHeaderHeight, type useCurveTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
@@ -34,10 +34,15 @@ const TABLE_FILTERS_TEST_ID = 'table-filters'
 
 const { Height } = SizesAndSpaces
 
-type TableEmptyState = {
-  testId?: string
-} & Pick<EmptyStateCardProps, 'title' | 'description' | 'button' | 'secondaryButton'>
-type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
+type TableEmptyState = { testId?: string } & Pick<
+  EmptyStateEvmCardProps,
+  'title' | 'description' | 'button' | 'secondaryButton'
+>
+
+type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<
+  EmptyStateEvmCardProps,
+  'title' | 'description'
+>
 
 export type DataTableProps<TData extends RowData> = {
   category?: DataTableCategory
@@ -168,7 +173,7 @@ export const DataTable = <TData extends RowData>({
               ) : (
                 !rows.length && (
                   <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>
-                    <EmptyStateCard
+                    <EmptyStateEvmCard
                       title={emptyState?.title ?? t`No results found`}
                       description={emptyState?.description}
                       button={emptyState?.button}

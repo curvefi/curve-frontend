@@ -4,12 +4,11 @@ import type { LlamaMarketsTableResult } from '@/llamalend/queries/market-list/ll
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@evm-ui/shared/routes'
 import { TableHeader } from '@evm-ui/shared/ui/DataTable/TableHeader'
+import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
+import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import { MarketRateType } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
-import { EmptyStateCard } from '@ui/components/EmptyStateCard'
-import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
 import { mapQuery, QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -22,7 +21,6 @@ const { Spacing } = SizesAndSpaces
 type UserPositionsTableProps = {
   onReload: () => void
   tableQuery: QueryProp<LlamaMarketsTableResult>
-  userAddress: Address | undefined
 }
 
 const buildVaultUrl = (market: LlamaMarket) =>
@@ -48,7 +46,6 @@ export const UserPositionsTables = ({
   onReload,
   tableQuery,
   tableQuery: { data: queryData, isLoading, error },
-  userAddress,
 }: UserPositionsTableProps) => {
   const { address } = useConnection()
   // Tracks whether the user has any positions for each market rate type.
@@ -95,15 +92,14 @@ export const UserPositionsTables = ({
           ) : (
             <CenteredEmptyState>
               {error ? (
-                <ErrorMessage
+                <EvmErrorMessage
                   title={t`Could not load positions`}
                   subtitle={error.message}
                   error={error}
                   refreshData={onReload}
-                  userAddress={userAddress}
                 />
               ) : (
-                <EmptyStateCard
+                <EmptyStateEvmCard
                   isLoading={isLoading}
                   title={t`No active positions`}
                   description={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
@@ -113,7 +109,7 @@ export const UserPositionsTables = ({
           )
         ) : (
           <CenteredEmptyState>
-            <EmptyStateCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
+            <EmptyStateEvmCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
           </CenteredEmptyState>
         )}
       </Stack>

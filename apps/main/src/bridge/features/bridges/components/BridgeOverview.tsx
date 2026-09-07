@@ -1,10 +1,10 @@
 import Fuse from 'fuse.js'
 import { useMemo, useState } from 'react'
 import { LegacyTableSearchField } from '@evm-ui/shared/ui/DataTable/LegacyTableSearchField'
+import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import type { Partner } from '@evm-ui/shared/ui/PartnerCard'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { EmptyStateCard } from '@ui/components/EmptyStateCard'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -63,7 +63,7 @@ export const BridgeOverview = ({ bridges, title }: { bridges: Partner[]; title: 
         <BridgeGrid bridges={filteredBridges} sx={{ paddingBlock: Spacing.md }} />
       ) : (
         <Stack sx={{ paddingBlock: Spacing.md, alignItems: 'center' }}>
-          <EmptyStateCard
+          <EmptyStateEvmCard
             title={t`No bridges found`}
             description={t`Try adjusting your search query`}
             button={{ label: t`Clear search`, onClick: () => setSearchText('') }}

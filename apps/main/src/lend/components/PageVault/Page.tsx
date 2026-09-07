@@ -23,10 +23,10 @@ import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
+import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { t } from '@ui/lib/i18n'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
-import { ErrorPage } from '@ui/features/errors/ErrorPage'
 
 const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
 
