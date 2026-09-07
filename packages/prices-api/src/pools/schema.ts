@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 import { notFalsy } from '@primitives/objects.utils'
-import { address, camelizeKeys, chain, sortDirection, timestamp } from '../schemas'
+import { address, camelizeKeys, chain, decimal, sortDirection, timestamp } from '../schemas'
 
 const rawCoin = z.object({
   pool_index: z.number(),
@@ -51,6 +51,17 @@ const poolTotals = z
   })
   .transform(camelizeKeys)
   .transform(({ totalTvl, ...data }) => ({ ...data, tvl: totalTvl }))
+
+const userPoolPosition = z
+  .object({
+    chain_id: z.number(),
+    pool_name: z.string(),
+    pool_address: address,
+    lp_token_address: address,
+    lp_balance: decimal,
+    gauge_balance: decimal,
+  })
+  .transform(camelizeKeys)
 
 const volume = z.object({
   timestamp,
@@ -470,6 +481,14 @@ export const listLitePoolsResponse = z
     generatedTimeMs,
   }))
 
+export const getUserPoolPositionsResponse = z
+  .object({
+    chain_id: z.number(),
+    user: address,
+    positions: z.array(userPoolPosition).default([]),
+  })
+  .transform(camelizeKeys)
+
 export const getVolumeResponse = z.object({ data: z.array(volume) }).transform(({ data }) => data)
 export const getTvlResponse = z.object({ data: z.array(tvl) }).transform(({ data }) => data)
 
@@ -572,6 +591,7 @@ export type LitePoolGaugeExtraReward = z.infer<typeof litePoolGaugeExtraReward>
 export type LitePoolGaugeData = z.infer<typeof litePoolGaugeData>
 export type LitePool = z.infer<typeof litePool>
 export type ListLitePoolsResponse = z.infer<typeof listLitePoolsResponse>
+export type UserPoolPositionsResponse = z.infer<typeof getUserPoolPositionsResponse>
 export type Volume = z.infer<typeof volume>
 export type Tvl = z.infer<typeof tvl>
 export type TradeToken = z.infer<typeof tradeToken>
