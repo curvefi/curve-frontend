@@ -5,7 +5,6 @@ import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
-import { Loading } from '@/routes/Loading'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import {
   addGaugeReward,
@@ -23,8 +22,9 @@ import {
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
-import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import { Chain } from '@primitives/network.utils'
+import { Loading } from '@ui/components/Loading'
+import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 
 const POOL_ADDRESS = '0x159a866f13f3931e256946ad7d921d18acbc599f'
 const GAUGE_ADDRESS = '0x456ba8aa2aa07c26a6b5d5a6a029ab754fb851c2'

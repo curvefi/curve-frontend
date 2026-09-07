@@ -4,7 +4,7 @@ import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActi
 import { useWithdrawLockForm } from '@/dao/components/PageVeCrv/hooks/useWithdrawLockForm'
 import { useWithdrawLockGasEstimate } from '@/dao/components/PageVeCrv/queries/withdraw-lock-estimate-gas.query'
 import type { ChainId } from '@/dao/types/dao.types'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { amount, formatNumber } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
@@ -15,7 +15,7 @@ import { t } from '@ui/lib/i18n'
 import { MILLISECONDS_PER_SECOND } from '@ui/utils/time'
 
 export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
-  const { form, params, canUnlock, lockedAmountAndUnlockTime, isPending, isDisabled, error, onSubmit } =
+  const { form, params, canUnlock, lockedAmountAndUnlockTime, isPending, isDisabled, userAddress, error, onSubmit } =
     useWithdrawLockForm({ chainId })
   const lock = lockedAmountAndUnlockTime.data
   const isOpen = !!canUnlock
@@ -47,8 +47,13 @@ export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
           {lock?.unlockTime && <StyledCountdown endDate={lock.unlockTime / MILLISECONDS_PER_SECOND} />}
         </AlertBox>
       )}
-      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={[]} />
-      <FormButton
+      <FormAlerts
+        error={error}
+        formErrors={form.formState.visibleErrors}
+        handledErrors={[]}
+        userAddress={userAddress}
+      />
+      <EvmFormButton
         pending={isPending}
         loading={isPending}
         disabled={isDisabled}

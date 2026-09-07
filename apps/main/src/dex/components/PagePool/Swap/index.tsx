@@ -19,7 +19,6 @@ import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { useLayoutStore } from '@evm-ui/features/layout'
 import { TokenList, TokenSelector } from '@evm-ui/features/select-token'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
@@ -28,7 +27,7 @@ import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { decimal, formatNumber } from '@evm-ui/utils'
 import { HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { Icon } from '@legacy-ui/Icon'
@@ -41,6 +40,7 @@ import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useLayoutStore } from '@ui/features/layout/layout'
 import { q, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -532,7 +532,11 @@ export const Swap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
+        <SlippageToleranceActionInfo
+          maxSlippage={maxSlippage}
+          type={getSlippageType(poolData)}
+          userAddress={userAddress}
+        />
       </Stack>
       <HighPriceImpactAlert priceImpact={priceImpact} />
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (

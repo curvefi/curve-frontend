@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { zeroAddress } from 'viem'
-import { FormProvider } from '@evm-ui/features/forms'
 import { usePinataJwt } from '@evm-ui/hooks/useLocalStorage'
-import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
@@ -16,6 +14,8 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { InlineLink } from '@ui/components/InlineLink'
+import { ModalDialog } from '@ui/components/ModalDialog'
+import { FormProvider } from '@ui/features/forms'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
@@ -32,6 +32,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
   const {
     form,
     values: { gaugeAddress, description, pinataJwt },
+    userAddress,
     isPending,
     isDisabled,
     onSubmit,
@@ -139,6 +140,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
             error={createVoteError}
             formErrors={formErrors}
             handledErrors={['gaugeAddress', 'description', 'pinataJwt']}
+            userAddress={userAddress}
           />
         </Stack>
       </FormProvider>

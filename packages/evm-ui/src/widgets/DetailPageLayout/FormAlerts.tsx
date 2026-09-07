@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { ErrorReportModal } from '@evm-ui/features/report-error'
 import { usePreviousValue } from '@evm-ui/hooks/usePreviousValue'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
-import { formatNumber, getErrorMessage } from '@evm-ui/utils'
+import { formatNumber } from '@evm-ui/utils'
 import {
   getPriceImpactSeverity,
   getPriceImpactPercent,
@@ -15,10 +14,13 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { type QueryProp } from '@ui/features/queries/util'
+import { ErrorReportModal } from '@ui/features/report-error'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
@@ -32,11 +34,17 @@ type FormAlertProps<Field extends string> = {
   formErrors: FormErrors<Field>
   /** List of fields that have their errors already displayed elsewhere */
   handledErrors: readonly Field[]
+  userAddress: Address | undefined
 }
 
 const { Spacing } = SizesAndSpaces
 
-export const FormAlerts = <Field extends string>({ error, formErrors, handledErrors }: FormAlertProps<Field>) => {
+export const FormAlerts = <Field extends string>({
+  error,
+  formErrors,
+  handledErrors,
+  userAddress,
+}: FormAlertProps<Field>) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
   const [dismissedError, setDismissedError] = useState<Error | null>(null)
   const unhandledErrors = formErrors.filter(([field]) => !handledErrors.includes(field))
@@ -101,6 +109,7 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
         context={{ error, title: 'LoanFormError', subtitle: error && getErrorMessage(error) }}
         isOpen={isReportOpen}
         onClose={closeReportModal}
+        userAddress={userAddress}
       />
     </>
   )

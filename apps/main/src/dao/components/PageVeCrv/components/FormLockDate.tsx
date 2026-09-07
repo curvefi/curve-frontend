@@ -3,7 +3,7 @@ import { VeCrvActionInfo } from '@/dao/components/PageVeCrv/components/VeCrvActi
 import { useExtendLockForm } from '@/dao/components/PageVeCrv/hooks/useExtendLockForm'
 import { useExtendLockGasEstimate } from '@/dao/components/PageVeCrv/queries/extend-lock-estimate-gas.query'
 import type { ChainId } from '@/dao/types/dao.types'
-import { FormButton } from '@evm-ui/features/forms'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -24,6 +24,7 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
     futureVeCrv,
     isPending,
     isDisabled,
+    userAddress,
     error,
     onSubmit,
     updateUnlockDate,
@@ -60,8 +61,13 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
         handleQuickActionClick={selectQuickDate}
       />
       {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
-      <FormAlerts error={error} formErrors={form.formState.visibleErrors} handledErrors={['utcDate', 'days']} />
-      <FormButton
+      <FormAlerts
+        error={error}
+        formErrors={form.formState.visibleErrors}
+        handledErrors={['utcDate', 'days']}
+        userAddress={userAddress}
+      />
+      <EvmFormButton
         pending={isPending}
         loading={isPending}
         disabled={isDisabled}

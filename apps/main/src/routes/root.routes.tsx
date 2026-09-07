@@ -1,13 +1,13 @@
-import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
+import { EvmErrorBoundary } from '@evm-ui/widgets/EvmErrorBoundary'
 import { createRootRoute } from '@tanstack/react-router'
 import { t } from '@ui/lib/i18n'
 import { NetworkAwareLayout } from './RootLayout'
 
 export const rootRoute = createRootRoute({
   component: () => (
-    <ErrorBoundary title={t`Root route error`}>
+    <EvmErrorBoundary title={t`Root route error`}>
       <NetworkAwareLayout />
-    </ErrorBoundary>
+    </EvmErrorBoundary>
   ),
   // todo: head: () => ({meta: [{'og:image': CURVE_LOGO_URL, 'twitter:image': CURVE_LOGO_URL}]}),
 })

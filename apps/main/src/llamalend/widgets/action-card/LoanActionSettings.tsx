@@ -7,9 +7,10 @@ import { formatToken } from '@evm-ui/utils/tokens'
 import { getPriceImpactPercent, type PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
 import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -30,6 +31,7 @@ export const LoanActionSettings = ({
   priceImpact,
   collateralSymbol,
   borrowSymbol,
+  userAddress,
 }: {
   slippage?: Decimal
   onSlippageChange: (newSlippage: Decimal) => void
@@ -39,6 +41,7 @@ export const LoanActionSettings = ({
   priceImpact?: QueryProp<PriceImpact | Decimal | null>
   collateralSymbol?: string
   borrowSymbol?: string
+  userAddress: Address | undefined
 }) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
 
@@ -55,6 +58,7 @@ export const LoanActionSettings = ({
             type={LEVERAGE}
             onChanged={({ leverage }) => onSlippageChange(leverage)}
             size="small"
+            userAddress={userAddress}
           />
         )}
         {exchangeRate && collateralSymbol && borrowSymbol && (
