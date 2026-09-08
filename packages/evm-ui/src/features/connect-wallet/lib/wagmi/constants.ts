@@ -19,7 +19,6 @@ export const CHAIN_BLOCKCHAIN_IDS = {
   [Chain.Ethereum]: 'ethereum',
   [Chain.Optimism]: 'optimism',
   [Chain.Gnosis]: 'xdai',
-  [Chain.Moonbeam]: 'moonbeam',
   [Chain.Polygon]: 'polygon',
   [Chain.Kava]: 'kava',
   [Chain.Fantom]: 'fantom',
