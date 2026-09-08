@@ -9,7 +9,6 @@ import {
   useDismissAaveBanner,
   useDismissCurveLiteBanner,
   useDismissFantomRetirementBanner,
-  useDismissMoonbeamMigrationBanner,
   useReleaseChannel,
 } from '@evm-ui/hooks/useLocalStorage'
 import { getCurrentApp } from '@evm-ui/shared/routes'
@@ -41,7 +40,6 @@ export const GlobalBanner = ({ blockchainId, chainId, backendMaintenance }: Glob
 
   const [showAaveBanner, dismissAaveBanner] = useDismissAaveBanner()
   const [showFantomRetirementBanner, dismissFantomRetirementBanner] = useDismissFantomRetirementBanner()
-  const [showMoonbeamMigrationBanner, dismissMoonbeamMigrationBanner] = useDismissMoonbeamMigrationBanner()
   const [showDowngraded, dismissDowngraded] = useDismissCurveLiteBanner(chainId)
 
   return (
@@ -110,16 +108,6 @@ export const GlobalBanner = ({ blockchainId, chainId, backendMaintenance }: Glob
           learnMoreUrl="https://x.com/SonicLabs/status/2041551455254097988"
         >
           {t`Fantom Retirement`}
-        </Banner>
-      )}
-      {showMoonbeamMigrationBanner && chainId === +Chain.Moonbeam && (
-        <Banner
-          severity="alert"
-          subtitle={t`Withdraw your assets from Curve before July 31, 2026. Funds left in Moonbeam protocols may become inaccessible when the chain winds down.`}
-          onClick={dismissMoonbeamMigrationBanner}
-          learnMoreUrl="https://x.com/MoonbeamNetwork/status/2073046476557623592"
-        >
-          {t`Moonbeam GLMR Migration`}
         </Banner>
       )}
     </StackBanners>

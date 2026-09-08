@@ -1,8 +1,6 @@
-import { type Address } from 'viem'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
 import { useBasePools } from '@/dex/queries/base-pools.query'
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import type { PoolData } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
@@ -12,6 +10,7 @@ import CardHeader from '@mui/material/CardHeader'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { fakeLoadingQ } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
+import { usePoolContext } from '../../pool-context'
 import { Section } from './Section'
 
 const getPoolType = ({
@@ -21,7 +20,7 @@ const getPoolType = ({
 }: {
   isFxSwap: boolean
   tokenCount: number
-  pool: PoolDataCacheOrApi['pool']
+  pool: PoolData['pool']
 }) => {
   if (isFxSwap) return t`FXSwap`
   if ('isLlamma' in pool && pool.isLlamma) return 'Llamma'
@@ -35,25 +34,19 @@ const getPoolType = ({
   return pool.implementation
 }
 
-export const Info = ({
-  chainId,
-  poolId,
-  poolDataCacheOrApi,
-}: {
-  chainId: ChainId
-  poolId: string
-  poolDataCacheOrApi: PoolDataCacheOrApi
-}) => {
-  const { pool } = poolDataCacheOrApi
-  const poolAddress = pool.address as Address
-  const { data: network } = useNetworkByChain({ chainId })
+export const Info = () => {
+  const {
+    chainId,
+    blockchainId,
+    poolId,
+    poolAddress,
+    poolData: { pool, tokens },
+  } = usePoolContext()
   const { data: basePools } = useBasePools({ chainId })
-  const { data: metadata } = usePoolMetadata({ chain: network.blockchainId as BlockchainId, poolAddress })
+  const { data: metadata } = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
   const isFxSwap = metadata?.hasDonations ?? false
   const poolType =
-    getPoolType({ pool, isFxSwap, tokenCount: metadata?.coins.length ?? poolDataCacheOrApi.tokens.length }) ||
-    metadata?.poolType ||
-    '-'
+    getPoolType({ pool, isFxSwap, tokenCount: metadata?.coins.length ?? tokens.length }) || metadata?.poolType || '-'
 
   return (
     <Card size="inline">

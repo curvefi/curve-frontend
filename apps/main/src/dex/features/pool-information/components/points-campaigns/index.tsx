@@ -1,21 +1,13 @@
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { PointsCampaignsTable } from '@evm-ui/features/points-campaigns/PointsCampaignsTable'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui/lib/i18n'
 import { usePointsCampaigns } from '../../hooks/usePointsCampaigns'
 
-export const PointsCampaigns = ({
-  chainId,
-  poolDataCacheOrApi,
-}: {
-  chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-}) => {
-  const { rows } = usePointsCampaigns({
-    chainId,
-    poolDataCacheOrApi,
-  })
+export const PointsCampaigns = () => {
+  const { chainId, poolData } = usePoolContext()
+  const { rows } = usePointsCampaigns({ chainId, poolData })
 
   return (
     rows.length > 0 && (
