@@ -116,6 +116,14 @@ function createLightSurfaces() {
         Accent: Blues[500],
       },
     },
+    Snackbar: {
+      Border: {
+        Info: Blues[500],
+        Success: Greens[300],
+        Warning: Yellows[500],
+        Error: Reds[500],
+      },
+    },
   } as const
 }
 
@@ -232,6 +240,14 @@ function createDarkSurfaces() {
         Highlight: Grays[950],
         Warning: Yellows[500],
         Accent: Blues[400],
+      },
+    },
+    Snackbar: {
+      Border: {
+        Info: Blues[500],
+        Success: Greens[400],
+        Warning: Yellows[500],
+        Error: Reds[500],
       },
     },
   } as const
@@ -352,6 +368,14 @@ function createChadSurfaces() {
         Accent: Violets[800],
       },
     },
+    Snackbar: {
+      Border: {
+        Info: Violets[500],
+        Success: Greens[400],
+        Warning: Yellows[500],
+        Error: Reds[500],
+      },
+    },
   } as const
 }
 
@@ -468,6 +492,14 @@ function createLightInvertedSurfaces() {
         Highlight: Grays[10],
         Warning: Yellows[500],
         Accent: Blues[400],
+      },
+    },
+    Snackbar: {
+      Border: {
+        Info: Blues[500],
+        Success: Greens[300],
+        Warning: Yellows[500],
+        Error: Reds[500],
       },
     },
   } as const
@@ -588,6 +620,14 @@ function createDarkInvertedSurfaces() {
         Accent: Blues[500],
       },
     },
+    Snackbar: {
+      Border: {
+        Info: Blues[500],
+        Success: Greens[400],
+        Warning: Yellows[500],
+        Error: Reds[500],
+      },
+    },
   } as const
 }
 
@@ -704,6 +744,14 @@ function createChadInvertedSurfaces() {
         Highlight: Violets[950],
         Warning: Yellows[500],
         Accent: Violets[400],
+      },
+    },
+    Snackbar: {
+      Border: {
+        Info: Violets[500],
+        Success: Greens[400],
+        Warning: Yellows[500],
+        Error: Reds[500],
       },
     },
   } as const

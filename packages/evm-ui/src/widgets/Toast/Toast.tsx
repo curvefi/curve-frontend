@@ -10,6 +10,13 @@ import { watchToasts, type ToastItem } from './toast.util'
 
 const { Spacing } = SizesAndSpaces
 
+const snackbarBorderBySeverity = {
+  info: 'Info',
+  success: 'Success',
+  warning: 'Warning',
+  error: 'Error',
+} as const satisfies Record<NonNullable<ToastItem['severity']>, string>
+
 /** Get toast duration based on severity */
 const getDuration = ({ severity = 'info' }: Pick<ToastItem, 'severity'>) => Duration.Toast[severity]
 
@@ -68,26 +75,30 @@ export const Toast = () => {
           flexDirection: 'column',
         }}
       >
-        {items.map(({ id, severity, title, message, testId = `toast-${severity}`, keepAlive }) => (
-          <Alert
-            key={id}
-            variant="filled"
-            severity={severity}
-            data-testid={testId}
-            {...(!keepAlive && {
-              sx: {
-                animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
-                '@keyframes toastFadeOut': {
-                  [getDurationPercent({ severity })]: { opacity: 1 },
-                  '100%': { opacity: 0 },
-                },
-              },
-            })}
-          >
-            {title && <AlertTitle>{title}</AlertTitle>}
-            {message}
-          </Alert>
-        ))}
+        {items.map(({ id, severity, title, message, testId = `toast-${severity}`, keepAlive }) => {
+          const snackbarBorder = snackbarBorderBySeverity[severity ?? 'info']
+          return (
+            <Alert
+              key={id}
+              variant="outlined"
+              severity={severity}
+              data-testid={testId}
+              sx={{
+                borderColor: theme => theme.design?.Snackbar.Border[snackbarBorder] ?? theme.palette[severity ?? 'info'].main,
+                ...(!keepAlive && {
+                  animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
+                  '@keyframes toastFadeOut': {
+                    [getDurationPercent({ severity })]: { opacity: 1 },
+                    '100%': { opacity: 0 },
+                  },
+                }),
+              }}
+            >
+              {title && <AlertTitle>{title}</AlertTitle>}
+              {message}
+            </Alert>
+          )
+        })}
       </Stack>
     </Snackbar>
   )
