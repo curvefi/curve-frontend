@@ -21,7 +21,6 @@ import {
   mainnet,
   mantle,
   monad,
-  moonbeam,
   neonDevnet,
   neonMainnet,
   optimism,
@@ -64,7 +63,6 @@ const wagmiChains = [
   mantle,
   megaeth,
   monad,
-  moonbeam,
   neonMainnet,
   neonDevnet,
   optimism,
@@ -89,7 +87,7 @@ export const DEPRECATED_CHAINS: Record<number, Date> = {
   [kava.id]: deprecateDate,
 }
 export const DOWNGRADED_CHAINS = new Set<number>(
-  [aurora, avalanche, celo, fantom, kava, mantle, moonbeam, sonic, xLayer, zksync].map(c => c.id),
+  [aurora, avalanche, celo, fantom, kava, mantle, sonic, xLayer, zksync].map(c => c.id),
 )
 
 /**
