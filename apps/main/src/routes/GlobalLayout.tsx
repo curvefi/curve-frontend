@@ -81,7 +81,7 @@ const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = {
 }
 
 /** Resolves the given links based on current network and pathname */
-const resolveLinks = <TId extends string>({ blockchainId, pathname }: { blockchainId: TId; pathname: string }) =>
+const resolveLinks = ({ blockchainId, pathname }: { blockchainId: string; pathname: string }) =>
   mapRecord(APP_LINK, (_menu, { label, routes }) => ({
     label,
     href: getInternalUrl(routes[0].app, blockchainId),

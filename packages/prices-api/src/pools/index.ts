@@ -1,4 +1,4 @@
-import type { Address } from '@primitives/address.utils'
+import type { Address, Hex } from '@primitives/address.utils'
 import { addQueryString, fetchJson as fetch } from '@primitives/fetch.utils'
 import { getHost, type Chain, type Options } from '..'
 import { getTimeRange } from '../timestamp'
@@ -110,6 +110,19 @@ export async function listPoolRegistries({ chainId }: { chainId: number }, optio
   const response = await fetch(`${host}/v2/pools/registries/${query}`)
 
   return Schema.listPoolRegistriesResponse.parse(response)
+}
+
+export async function getUserPoolPositions(
+  { chainId, userAddress, newTx }: { chainId: number; userAddress: Address; newTx?: Hex },
+  options?: Options,
+) {
+  const host = getHost(options)
+  const query = addQueryString({ new_tx: newTx })
+  const response = await fetch(`${host}/v2/pools/${chainId}/users/${userAddress}/positions${query}`, {
+    signal: options?.signal,
+  })
+
+  return Schema.getUserPoolPositionsResponse.parse(response)
 }
 
 export async function getVolume(chain: Chain, poolAddr: string, options?: Options) {

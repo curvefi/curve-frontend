@@ -15,35 +15,35 @@ import { ChainList, type ChainListOption } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
-export type ChainSwitcherProps<TId extends string, TChainId extends number, TApp extends string> = {
-  supportedNetworks: ChainListOption<TId, TChainId>[]
+export type ChainSwitcherProps<TApp extends string> = {
+  supportedNetworks: ChainListOption[]
   currentMenu: TApp
-  currentNetwork: ChainListOption<TId, TChainId> | undefined
+  currentNetwork: ChainListOption | undefined
   hideChains: PartialRecord<TApp, number[]>
   tvls: QueryProp<Record<string, number>>
 }
 
 const getTvl =
-  <TId extends string, TChainId extends number>(tvls: Record<TId, number> | undefined) =>
-  ({ blockchainId: id, isLite, isTestnet }: ChainListOption<TId, TChainId>) =>
+  (tvls: Record<string, number> | undefined) =>
+  ({ blockchainId: id, isLite, isTestnet }: ChainListOption) =>
     isTestnet || isLite
       ? 0 // ignore lite chains tvl, it's only available for downgraded chains and messes with sorting
       : (maybe(tvls, tvls => tvls[id]) ?? 0)
 
-export const ChainSwitcher = <TId extends string, TChainId extends number, TApp extends string>({
+export const ChainSwitcher = <TApp extends string>({
   supportedNetworks,
   currentMenu,
   currentNetwork,
   tvls,
   hideChains,
-}: ChainSwitcherProps<TId, TChainId, TApp>) => {
+}: ChainSwitcherProps<TApp>) => {
   const blockchainId = currentNetwork?.blockchainId
   const [isOpen, , close, toggle] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
   const [showTestnets, setShowTestnets] = useShowTestNets()
   useEffect(() => () => close(), [blockchainId, close]) // close on chain change
 
-  const options: ChainListOption<TId, TChainId>[] = useMemo(
+  const options: ChainListOption[] = useMemo(
     () =>
       lodash.orderBy(
         supportedNetworks.filter(n => !hideChains[currentMenu]?.includes(n.chainId)),
@@ -85,12 +85,7 @@ export const ChainSwitcher = <TId extends string, TChainId extends number, TApp 
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
           ) : (
-            <ChainList<TId, TChainId>
-              showTestnets={showTestnets}
-              options={options}
-              tvls={tvls}
-              selectedNetworkId={blockchainId}
-            />
+            <ChainList showTestnets={showTestnets} options={options} tvls={tvls} selectedNetworkId={blockchainId} />
           )}
         </ModalDialog>
       )}

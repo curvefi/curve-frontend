@@ -7,6 +7,7 @@ import { TransferActions } from '@/dex/components/PagePool/components/TransferAc
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Withdraw/utils'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { notify } from '@evm-ui/features/connect-wallet'
@@ -23,10 +24,10 @@ import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { t, Trans } from '@ui/lib/i18n'
 
-export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
+export const FormClaim = ({ seed }: TransferProps) => {
+  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve ?? {}
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formStatus = useStore(state => state.poolWithdraw.formStatus)
   const formValues = useStore(state => state.poolWithdraw.formValues)
@@ -40,7 +41,6 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
-  const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
   const { rewardsNeedNudging } = poolData?.gauge.status ?? {}
   const haveClaimableCrv = +formValues.claimableCrv > 0
@@ -53,8 +53,8 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
     setTxInfoBar(null)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSlippageConfirmed(false)
-    void setFormValues('CLAIM', config, curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
-  }, [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues])
+    void setFormValues('CLAIM', config, curve, poolData?.pool.id, poolData, {}, null, seed.isSeed, '')
+  }, [config, curve, poolData, seed.isSeed, setFormValues])
 
   const handleClaimClick = useCallback(
     async (
@@ -184,13 +184,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   return (
     <FormContent>
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || seed.isSeed === null}
-        routerParams={routerParams}
-        seed={seed}
-      >
+      <TransferActions loading={!chainId || !steps.length || seed.isSeed === null} seed={seed}>
         <ClaimableTokensWrapper>
           {haveClaimableCrv || haveClaimableRewards ? (
             <>

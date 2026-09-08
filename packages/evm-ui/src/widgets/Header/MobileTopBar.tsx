@@ -4,20 +4,16 @@ import Stack from '@mui/material/Stack'
 import { HeaderLogo } from './HeaderLogo'
 import { MenuToggleButton } from './MenuToggleButton'
 
-type MobileTopBarProps<TApp extends string, TId extends string, TChainId extends number> = ChainSwitcherProps<
-  TId,
-  TChainId,
-  TApp
-> & {
+type MobileTopBarProps<TApp extends string> = ChainSwitcherProps<TApp> & {
   toggleSidebar: () => void
   isSidebarOpen: boolean
 }
 
-export const MobileTopBar = <TApp extends string, TId extends string, TChainId extends number>({
+export const MobileTopBar = <TApp extends string>({
   isSidebarOpen,
   toggleSidebar,
   ...chainSwitcherProps
-}: MobileTopBarProps<TApp, TId, TChainId>) => (
+}: MobileTopBarProps<TApp>) => (
   <Stack direction="row" sx={{ width: '100%', paddingX: 2 }}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
     <HeaderLogo />

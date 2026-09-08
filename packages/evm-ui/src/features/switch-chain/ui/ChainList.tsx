@@ -25,9 +25,9 @@ const CHAIN_TYPE_NAMES: Record<ChainType, string> = {
   [ChainType.test]: t`Testnets`,
 }
 
-export type ChainListOption<TId extends string, TChainId extends number> = {
-  blockchainId: TId
-  chainId: TChainId
+export type ChainListOption = {
+  blockchainId: string
+  chainId: number
   name: string
   isConfigured: boolean
   isTestnet: boolean
@@ -35,17 +35,17 @@ export type ChainListOption<TId extends string, TChainId extends number> = {
   href: string
 }
 
-export function ChainList<TId extends string, TChainId extends number>({
+export function ChainList({
   options,
   showTestnets,
   selectedNetworkId,
   onNetwork,
   tvls: { data: tvls, isLoading: tvlsLoading },
 }: {
-  options: ChainListOption<TId, TChainId>[]
+  options: ChainListOption[]
   showTestnets: boolean
-  selectedNetworkId: TId | undefined
-  onNetwork?: (network: ChainListOption<TId, TChainId>) => void
+  selectedNetworkId: string | undefined
+  onNetwork?: (network: ChainListOption) => void
   tvls: QueryProp<Record<string, number>>
 }) {
   const [searchValue, setSearchValue] = useState('')
@@ -59,7 +59,7 @@ export function ChainList<TId extends string, TChainId extends number>({
             : o.isLite || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
               ? ChainType.lite
               : ChainType.main,
-      ) as Record<ChainType, ChainListOption<TId, TChainId>[]>,
+      ) as Record<ChainType, ChainListOption[]>,
     [options, searchValue, tvls],
   )
 

@@ -1,17 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import type { Seed } from '@/dex/components/PagePool/types'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolData } from '@/dex/types/main.types'
 import { formatNumber, amount } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  seed: Seed
-  poolData: PoolData | undefined
-}
-
-export const AlertSeedAmounts = ({ seed, poolData }: Props) => {
+export const AlertSeedAmounts = ({ seed }: { seed: Seed }) => {
+  const { poolData } = usePoolContext()
   const [seedAmounts, setSeedAmounts] = useState<string[]>([])
 
   const { isSeed, loaded } = seed

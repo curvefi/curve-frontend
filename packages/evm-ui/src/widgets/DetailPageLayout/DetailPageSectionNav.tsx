@@ -35,7 +35,11 @@ export const DetailPageSectionNav = <T extends string>({
         component="nav"
         data-detail-page-section-nav=""
         data-testid={DETAIL_PAGE_SECTION_NAV_TEST_ID}
-        sx={{ borderBlock: borderStyle, paddingBlockStart: Spacing.sm }}
+        sx={{
+          backgroundColor: theme => theme.palette.background.default,
+          borderBlock: borderStyle,
+          paddingBlockStart: Spacing.sm,
+        }}
       >
         <TabsSwitcher
           hideInactiveBorders
@@ -44,7 +48,7 @@ export const DetailPageSectionNav = <T extends string>({
             label: isMobile ? (label.short ?? label.default) : label.default,
             href: `#${value}`,
           }))}
-          size="extraSmall"
+          size="small"
           testIdPrefix={DETAIL_PAGE_SECTION_NAV_TEST_ID}
           value={activeSection}
           variant="underlined"

@@ -1,11 +1,7 @@
 import { useChainId } from 'wagmi'
 import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import {
-  useDismissAaveBanner,
-  useDismissFantomRetirementBanner,
-  useDismissMoonbeamMigrationBanner,
-} from '@evm-ui/hooks/useLocalStorage'
+import { useDismissAaveBanner, useDismissFantomRetirementBanner } from '@evm-ui/hooks/useLocalStorage'
 import { type AppName } from '@evm-ui/shared/routes'
 import { Banner } from '@evm-ui/shared/ui/Banner'
 import { GlobalBanner, type GlobalBannerProps } from '@evm-ui/shared/ui/GlobalBanner'
@@ -23,7 +19,6 @@ export const EvmBanners = ({
   const { connectState } = useCurve()
   const [showAaveBanner, dismissAaveBanner] = useDismissAaveBanner()
   const [showFantomRetirementBanner, dismissFantomRetirementBanner] = useDismissFantomRetirementBanner()
-  const [showMoonbeamMigrationBanner, dismissMoonbeamMigrationBanner] = useDismissMoonbeamMigrationBanner()
 
   return (
     <GlobalBanner
@@ -52,16 +47,6 @@ export const EvmBanners = ({
           learnMoreUrl="https://x.com/SonicLabs/status/2041551455254097988"
         >
           {t`Fantom Retirement`}
-        </Banner>
-      )}
-      {showMoonbeamMigrationBanner && chainId === +Chain.Moonbeam && (
-        <Banner
-          severity="alert"
-          subtitle={t`Withdraw your assets from Curve before July 31, 2026. Funds left in Moonbeam protocols may become inaccessible when the chain winds down.`}
-          onClick={dismissMoonbeamMigrationBanner}
-          learnMoreUrl="https://x.com/MoonbeamNetwork/status/2073046476557623592"
-        >
-          {t`Moonbeam GLMR Migration`}
         </Banner>
       )}
     </GlobalBanner>

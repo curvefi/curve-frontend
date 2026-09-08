@@ -13,11 +13,11 @@ export type HeaderLink = {
 
 export type HeaderAppLinks<TApp extends string> = Record<TApp, { label: string; href: string; pages: HeaderLink[] }>
 
-export type HeaderProps<TApp extends string, TId extends string, TChainId extends number> = {
+export type HeaderProps<TApp extends string> = {
   currentMenu: TApp
-  currentNetwork: ChainListOption<TId, TChainId>
+  currentNetwork: ChainListOption
   banners: ReactNode
-  supportedNetworks: ChainListOption<TId, TChainId>[]
+  supportedNetworks: ChainListOption[]
   appStats?: { label: string; value: string }[]
   links: HeaderAppLinks<TApp>
   hideChains: PartialRecord<TApp, number[]>

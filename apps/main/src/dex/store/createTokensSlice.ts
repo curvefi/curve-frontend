@@ -2,7 +2,7 @@ import { countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
-import { Token, TokensMapper, TokensNameMapper, PoolData, PoolVolumes, type CurveApi } from '@/dex/types/main.types'
+import { Token, TokensMapper, TokensNameMapper, PoolData, type CurveApi } from '@/dex/types/main.types'
 import { log } from '@ui/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -18,7 +18,7 @@ const SLICE_KEY = 'tokens'
 // prettier-ignore
 export type TokensSlice = {
   [SLICE_KEY]: SliceState & {
-    setTokensMapper: (curve: CurveApi, poolDatas: PoolData[], poolVolumes: PoolVolumes) => string[]
+    setTokensMapper: (curve: CurveApi, poolDatas: PoolData[]) => string[]
     setEmptyPoolListDefault: (curve: CurveApi) => void
 
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
@@ -33,7 +33,6 @@ const DEFAULT_TOKEN: Token = {
   symbol: '',
   decimals: 0,
   haveSameTokenName: false,
-  volume: 0,
 }
 
 const DEFAULT_STATE: SliceState = {
@@ -49,7 +48,7 @@ export const createTokensSlice = (
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    setTokensMapper: (curve, poolDatas, poolVolumes) => {
+    setTokensMapper: (curve, poolDatas) => {
       const { tokensMapper, ...sliceState } = get()[SLICE_KEY]
 
       sliceState.setStateByKey('loading', true)
@@ -60,16 +59,13 @@ export const createTokensSlice = (
       const partialTokensMapper: TokensMapper = {}
 
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
-        const volume = +poolVolumes[pool.id] || 0
         const counted = countBy(tokensAll)
 
         for (const [idx, address] of tokenAddressesAll.entries()) {
-          const tokenMappedVolume = cTokensMapper[address]?.volume ?? 0
           const token = tokensAll[idx] // ignore token name with empty string
 
           if (token) {
             counted[token] = counted[token] - 1
-            const tokenVolume = counted[token] === 0 ? tokenMappedVolume + volume : tokenMappedVolume
 
             const obj: Token = {
               ...(cTokensMapper[address] ?? DEFAULT_TOKEN),
@@ -77,7 +73,6 @@ export const createTokensSlice = (
               symbol: token,
               decimals: tokenDecimalsAll[idx],
               haveSameTokenName: false,
-              volume: tokenVolume,
             }
 
             cTokensMapper[address] = obj

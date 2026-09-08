@@ -14,12 +14,12 @@ import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { useNetworks } from '@/dex/entities/networks'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
-import { toTokenOption } from '@/dex/utils'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { TokenList, TokenSelector } from '@evm-ui/features/select-token'
+import { TokenList, TokenSelector, type TokenOption } from '@evm-ui/features/select-token'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -50,24 +50,19 @@ import { REFRESH_INTERVAL } from '@ui/utils/time'
 const { Spacing } = SizesAndSpaces
 
 export const Swap = ({
-  curve,
   maxSlippage,
   poolAlert,
-  poolData,
-  poolDataCacheOrApi,
-  routerParams,
   seed,
   tokensMapper,
-}: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
+}: Pick<PageTransferProps, 'params'> & {
   poolAlert: PoolAlert | null
   maxSlippage: Decimal
   seed: Seed
   tokensMapper: TokensMapper
 }) => {
+  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve ?? {}
-  const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolSwap.activeKey)
   const exchangeOutput = useStore(state => state.poolSwap.exchangeOutput[activeKey] ?? DEFAULT_EXCHANGE_OUTPUT)
   const formEstGas = useStore(state => state.poolSwap.formEstGas[activeKey] ?? DEFAULT_EST_GAS)
@@ -90,7 +85,6 @@ export const Swap = ({
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
-  const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
   const config = useConfig()
@@ -117,9 +111,16 @@ export const Swap = ({
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: formValues.toAddress }, !!formValues.toAddress)
 
   const { selectList, swapTokensMapper } = useMemo(() => {
-    const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
-    return { selectList: selectList.map(toTokenOption(network?.blockchainId)), swapTokensMapper }
-  }, [poolDataCacheOrApi, tokensMapper, network?.blockchainId])
+    const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolData)
+    return {
+      selectList: selectList.map<TokenOption>(token => ({
+        address: token.address as Address, // not checksummed!
+        symbol: token.symbol,
+        chain: network?.blockchainId,
+      })),
+      swapTokensMapper,
+    }
+  }, [poolData, tokensMapper, network?.blockchainId])
 
   const fromToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
   const toToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.toAddress)
@@ -137,7 +138,7 @@ export const Swap = ({
       void setFormValues(
         config,
         curve,
-        poolDataCacheOrApi.pool.id,
+        poolData.pool.id,
         poolData,
         updatedFormValues,
         isGetMaxFrom,
@@ -145,7 +146,7 @@ export const Swap = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, poolData, seed.isSeed, maxSlippage],
   )
 
   const handleSwapClick = useCallback(
@@ -487,10 +488,10 @@ export const Swap = ({
           walletBalance={{ balance: q(userToBalance), symbol: toToken?.symbol, usdRate: toUsdRate }}
         />
 
-        {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
+        {poolData?.hasWrapped && formValues.isWrapped !== null && (
           <div>
             <Checkbox
-              isDisabled={isDisabled || !poolData || network?.poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
+              isDisabled={isDisabled || !poolData || network?.poolIsWrappedOnly[poolData?.pool.id]}
               isSelected={formValues.isWrapped}
               onChange={isWrapped => {
                 if (poolData) {
@@ -527,7 +528,7 @@ export const Swap = ({
         {haveSigner && (
           <DetailInfoEstGas
             isDivider
-            chainId={rChainId}
+            chainId={chainId}
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
@@ -561,13 +562,7 @@ export const Swap = ({
         <AlertBox alertType="error">{t`The entered amount exceeds the available currency reserves.`}</AlertBox>
       ) : null}
       {/* actions*/}
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || !seed.loaded}
-        routerParams={routerParams}
-        seed={seed}
-      >
+      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>

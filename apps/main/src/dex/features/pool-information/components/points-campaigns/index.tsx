@@ -1,4 +1,4 @@
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
 import CardHeader from '@mui/material/CardHeader'
@@ -8,17 +8,9 @@ import { t } from '@ui/lib/i18n'
 import { usePointsCampaigns } from '../../hooks/usePointsCampaigns'
 import { POINTS_CAMPAIGNS_COLUMNS } from './columns/columns.definitions'
 
-export const PointsCampaigns = ({
-  chainId,
-  poolDataCacheOrApi,
-}: {
-  chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-}) => {
-  const { rows } = usePointsCampaigns({
-    chainId,
-    poolDataCacheOrApi,
-  })
+export const PointsCampaigns = () => {
+  const { chainId, poolData } = usePoolContext()
+  const { rows } = usePointsCampaigns({ chainId, poolData })
   const table = useCurveTable({
     query: constQ(rows), // TODO: get error and loading state properly
     columns: POINTS_CAMPAIGNS_COLUMNS,

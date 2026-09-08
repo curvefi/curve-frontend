@@ -167,10 +167,7 @@ export const getCurrentNetwork = (path: string): string | undefined => {
   return blockchainId
 }
 
-export const createChainOption = <TId extends string = string, TChainId extends number = number>(
-  network: NetworkDef<TId, TChainId>,
-  currentApp: AppName,
-): ChainListOption<TId, TChainId> => ({
+export const createChainOption = (network: NetworkDef, currentApp: AppName): ChainListOption => ({
   ...network,
   name: getChainName(network.chainId),
   isConfigured: isChainConfigured(network.chainId),
@@ -179,8 +176,5 @@ export const createChainOption = <TId extends string = string, TChainId extends 
   href: getInternalUrl(currentApp, network.blockchainId),
 })
 
-export const createChainOptions = <TId extends string = string, TChainId extends number = number>(
-  supportedNetworks: NetworkMapping<TId, TChainId>,
-  currentApp: AppName,
-): ChainListOption<TId, TChainId>[] =>
+export const createChainOptions = (supportedNetworks: NetworkMapping, currentApp: AppName): ChainListOption[] =>
   recordValues(supportedNetworks).map(network => createChainOption(network, currentApp))

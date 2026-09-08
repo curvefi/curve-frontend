@@ -82,15 +82,6 @@ export const defaultNetworks = Object.entries({
     fxswapFactory: true,
     hasFactory: true,
   },
-  [Chain.Moonbeam]: {
-    poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
-    swap: {
-      fromAddress: '0xffffffff1fcacbd218edc0eba20fc2308c778080',
-      toAddress: '0xfa36fe1da08c89ec72ea1f0143a35bfd5daea108',
-    },
-    stableswapFactoryOld: true,
-    hasFactory: true,
-  },
   [Chain.Polygon]: {
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     swap: {

@@ -14,7 +14,7 @@ Blacklists are hard restrictions. Blacklisted pools are hidden from the front-en
 Pools can be blacklisted in two ways:
 
 1. **Prices API blacklist** — A remote list maintained at `https://prices.curve.finance`. This is fetched at runtime and combined with the local list. This currently includes pools without a verified oracle.
-2. **Local hardcoded blacklist** — A local list in the file above, used in addition to the Prices API blacklist. Supported chains extend beyond the Prices API and include `avalanche`, `moonbeam`, and `kava`.
+2. **Local hardcoded blacklist** — A local list in the file above, used in addition to the Prices API blacklist. Supported chains extend beyond the Prices API and include `avalanche` and `kava`.
 
 ### Token Blacklist
 
