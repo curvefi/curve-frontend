@@ -18,7 +18,7 @@ import { getHeaderBorder } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const DesktopHeader = <TApp extends string, TId extends string, TChainId extends number>({
+export const DesktopHeader = <TApp extends string>({
   currentMenu,
   currentNetwork,
   backendMaintenance,
@@ -29,7 +29,7 @@ export const DesktopHeader = <TApp extends string, TId extends string, TChainId 
   tvls,
   links,
   connectWalletProps,
-}: HeaderProps<TApp, TId, TChainId>) => (
+}: HeaderProps<TApp>) => (
   <AppBar
     color="transparent"
     ref={useMainNavRef()}
@@ -54,7 +54,7 @@ export const DesktopHeader = <TApp extends string, TId extends string, TChainId 
 
         <Box sx={{ display: 'flex', marginLeft: 2, justifyContent: 'flex-end', gap: 3, alignItems: 'center' }}>
           <UserProfile />
-          <ChainSwitcher<TId, TChainId, TApp>
+          <ChainSwitcher
             supportedNetworks={supportedNetworks}
             currentNetwork={currentNetwork}
             currentMenu={currentMenu}
