@@ -1,5 +1,5 @@
-import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@evm-ui/shared/routes'
 import { notFalsy } from '@primitives/objects.utils'
+import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
 import { isChinese, t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 

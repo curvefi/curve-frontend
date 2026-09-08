@@ -1,6 +1,7 @@
-import { type AppName, getInternalUrl, PAGE_INTEGRATIONS } from '@evm-ui/shared/routes'
+import { type AppName, getInternalUrl } from '@evm-ui/shared/routes'
 import Typography from '@mui/material/Typography'
 import { RouterLink } from '@ui/components/RouterLink'
+import { PAGE_INTEGRATIONS } from '@ui/features/layout/routes'
 import { getSearchString } from '@ui/hooks/router'
 import { t, Trans } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'

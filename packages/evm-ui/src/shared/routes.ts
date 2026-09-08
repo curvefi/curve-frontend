@@ -4,14 +4,12 @@ import {
   isLiteChain,
   isTestnet,
 } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import type { ChainListOption } from '@evm-ui/features/switch-chain/ui/ChainList'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import { recordValues } from '@primitives/objects.utils'
+import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
+import type { ChainListOption } from '@ui/features/layout/switch-chain/ui/ChainList'
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
-
-export const PAGE_INTEGRATIONS = '/integrations' as const
-export const PAGE_LEGAL = '/legal' as const
 
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',

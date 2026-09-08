@@ -1,8 +1,8 @@
-import type { HeaderAppLinks } from '@evm-ui/widgets/Header/types'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { recordEntries } from '@primitives/objects.utils'
 import { RouterLink } from '@ui/components/RouterLink'
+import type { HeaderAppLinks } from '@ui/features/layout/Header/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 type AppNavAppsProps<TApp extends string> = {

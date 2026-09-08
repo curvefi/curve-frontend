@@ -1,4 +1,3 @@
-import { ConnectWalletIndicator } from '@evm-ui/features/connect-wallet'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 // eslint-disable-next-line no-restricted-imports
 import Accordion from '@mui/material/Accordion'
@@ -7,6 +6,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Stack from '@mui/material/Stack'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import { ConnectWalletIndicator } from '@ui/features/connect-wallet/ConnectWalletIndicator'
 import type { ConnectWalletProps } from '@ui/features/connect-wallet/ConnectWalletIndicator'
 import { MOBILE_SIDEBAR_WIDTH } from '@ui/features/themes/components'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'

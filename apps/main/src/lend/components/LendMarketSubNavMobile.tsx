@@ -1,9 +1,9 @@
 import type { UrlParams } from '@/lend/types/lend.types'
 import { useLlamalendMarketSubNavRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
 import { routeToPage } from '@evm-ui/shared/routes'
-import { PageTabsSwitcher } from '@evm-ui/widgets/Header/PageTabsSwitcher'
-import { SubNav } from '@evm-ui/widgets/Header/SubNav'
 import Portal from '@mui/material/Portal'
+import { PageTabsSwitcher } from '@ui/features/layout/Header/PageTabsSwitcher'
+import { SubNav } from '@ui/features/layout/Header/SubNav'
 import { usePathname, useParams } from '@ui/hooks/router'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 

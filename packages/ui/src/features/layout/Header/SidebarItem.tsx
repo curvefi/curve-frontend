@@ -1,8 +1,8 @@
-import type { HeaderLink } from '@evm-ui/widgets/Header/types'
 import { ListItem } from '@mui/material'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import { RouterLink } from '@ui/components/RouterLink'
+import type { HeaderLink } from '@ui/features/layout/Header/types'
 
 type SidebarItemProps = {
   page: HeaderLink
