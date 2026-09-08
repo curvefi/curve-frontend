@@ -5,7 +5,6 @@ import { BannerProps } from '@evm-ui/shared/ui/Banner'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 
 export type { Provider } from '@evm-ui/lib/ethers'
 export type { CurveApi, Wallet } from '@evm-ui/features/connect-wallet'
@@ -96,11 +95,9 @@ export type Token = {
   symbol: string
   decimals: number
   haveSameTokenName: boolean // use to display token address if duplicated token names
-  volume?: number
 }
 export type TokensMapper = Record<string, Token | undefined>
 export type TokensNameMapper = Record<string, string>
-export type PoolVolumes = Record<string, Decimal>
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
 type Gauge = {

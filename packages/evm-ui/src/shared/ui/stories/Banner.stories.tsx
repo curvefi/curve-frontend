@@ -1,10 +1,11 @@
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import { Banner, type BannerProps } from '../Banner'
 import { StackBanners } from '../StackBanners'
 
-const SEVERITIES: NonNullable<BannerProps['severity']>[] = ['alert', 'warning', 'highlight', 'info']
+const SEVERITIES: NonNullable<BannerProps['severity']>[] = ['alert', 'warning', 'caution', 'highlight', 'info']
 
 const meta: Meta<typeof Banner> = {
   title: 'UI Kit/Primitives/Banner',
@@ -25,7 +26,7 @@ const meta: Meta<typeof Banner> = {
   argTypes: {
     severity: {
       control: 'select',
-      options: ['alert', 'warning', 'info', 'highlight'],
+      options: ['alert', 'warning', 'caution', 'info', 'highlight'],
       description: 'The severity level of the banner message',
     },
     learnMoreUrl: {
@@ -38,7 +39,7 @@ const meta: Meta<typeof Banner> = {
     },
     icon: {
       control: 'select',
-      options: ['llama', 'info', 'highlight', 'warning', 'alert'],
+      options: ['llama', 'info', 'highlight', 'warning', 'caution', 'alert'],
       description: 'The icon to display before the title',
     },
     onClick: {
@@ -74,6 +75,13 @@ export const Warning: Story = {
     severity: 'warning',
     children: 'This is a warning message',
     subtitle: 'This is a subtitle for the warning message',
+  },
+}
+export const Caution: Story = {
+  args: {
+    severity: 'caution',
+    children: 'This is a caution message',
+    subtitle: 'This is a subtitle for the caution message',
   },
 }
 export const Error: Story = {
@@ -145,4 +153,22 @@ export const GroupedAndSorted: Story = {
       },
     },
   },
+}
+
+export const FigmaVariants: Story = {
+  render: () => (
+    <Stack spacing={4} sx={{ minWidth: 600 }}>
+      {SEVERITIES.map(severity => (
+        <Banner
+          key={severity}
+          severity={severity}
+          learnMoreUrl="https://www.curve.finance"
+          onClick={fn()}
+          subtitle="Notification subtitle"
+        >
+          Notification title
+        </Banner>
+      ))}
+    </Stack>
+  ),
 }

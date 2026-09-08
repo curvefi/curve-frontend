@@ -17,9 +17,8 @@ import { useNetworks } from '@/dex/entities/networks'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
-import { toTokenOption } from '@/dex/utils'
 import { notify } from '@evm-ui/features/connect-wallet'
-import { TokenList, TokenSelector } from '@evm-ui/features/select-token'
+import { TokenList, TokenSelector, type TokenOption } from '@evm-ui/features/select-token'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -118,7 +117,14 @@ export const Swap = ({
 
   const { selectList, swapTokensMapper } = useMemo(() => {
     const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
-    return { selectList: selectList.map(toTokenOption(network?.blockchainId)), swapTokensMapper }
+    return {
+      selectList: selectList.map<TokenOption>(token => ({
+        address: token.address as Address, // not checksummed!
+        symbol: token.symbol,
+        chain: network?.blockchainId,
+      })),
+      swapTokensMapper,
+    }
   }, [poolDataCacheOrApi, tokensMapper, network?.blockchainId])
 
   const fromToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
