@@ -48,7 +48,7 @@ export const DesktopHeader = <TApp extends string>({
         <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', marginLeft: 2, justifyContent: 'flex-end', gap: 3, alignItems: 'center' }}>
-          <UserProfile userAddress={connectWalletProps.address} />
+          <UserProfile {...connectWalletProps} />
           <ChainSwitcher
             supportedNetworks={supportedNetworks}
             currentNetwork={currentNetwork}
