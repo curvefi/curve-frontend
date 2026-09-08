@@ -1,4 +1,4 @@
-import { Blues, Grays, Greens, LegacyReds, Reds, Violets, Yellows, Oranges } from './0_primitives'
+import { Blues, Grays, Greens, Reds, Violets, Yellows, Oranges } from './0_primitives'
 
 function createLightSurfaces() {
   const Text = {
@@ -58,7 +58,7 @@ function createLightSurfaces() {
       Warning: Oranges[500],
       Danger: Oranges[500],
       Error: Reds[500],
-      Alert: LegacyReds[600],
+      Alert: Reds[400],
     },
     Highlight: Blues[100],
     TypeAction: {
@@ -172,7 +172,7 @@ function createDarkSurfaces() {
       Warning: Oranges[500],
       Danger: Oranges[500],
       Error: Reds[500],
-      Alert: LegacyReds[500],
+      Alert: Reds[200],
     },
     Highlight: Grays[850],
     TypeAction: {
@@ -285,7 +285,7 @@ function createChadSurfaces() {
       Warning: Oranges[500],
       Danger: Oranges[500],
       Error: Reds[500],
-      Alert: LegacyReds[600],
+      Alert: Reds[400],
     },
     TypeAction: {
       Selected: Violets[50],
@@ -398,7 +398,7 @@ function createLightInvertedSurfaces() {
       Warning: Oranges[500],
       Danger: Oranges[500],
       Error: Reds[500],
-      Alert: LegacyReds[600],
+      Alert: Reds[400],
     },
     Highlight: Blues[100],
     TypeAction: {
@@ -510,7 +510,7 @@ function createDarkInvertedSurfaces() {
       Caution: Yellows[500],
       Warning: Oranges[500],
       Danger: Oranges[500],
-      Alert: LegacyReds[500],
+      Alert: Reds[200],
       Error: Reds[500],
     },
     Highlight: Grays[850],
@@ -624,7 +624,7 @@ function createChadInvertedSurfaces() {
       Warning: Oranges[500],
       Error: Reds[500],
       Danger: Oranges[500],
-      Alert: LegacyReds[600],
+      Alert: Reds[400],
     },
     TypeAction: {
       Selected: Violets[900],

@@ -50,12 +50,6 @@ export const Reds = {
   '950': '#311615',
 } as const
 
-// Figma's older Primitives collection reuses these numeric names with different values.
-export const LegacyReds = {
-  '500': '#ff6644',
-  '600': '#ff0606',
-} as const
-
 export const Blues = {
   '50': '#f6f9ff',
   '100': '#e0e8f7',
