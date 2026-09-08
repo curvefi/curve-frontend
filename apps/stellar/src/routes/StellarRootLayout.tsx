@@ -5,6 +5,7 @@ import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
 import { QueryProvider } from '@ui/features/queries/provider'
 import { persister, queryClient } from '@ui/features/queries/query-client'
 import { ThemeProvider } from '@ui/features/themes/ThemeProvider'
+import { useLayoutStoreResponsive } from '@ui/hooks/useLayoutStoreResponsive'
 import { IS_CYPRESS } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 
@@ -12,6 +13,7 @@ const DEV_TOOLS = !IS_CYPRESS
 
 export const StellarRootLayout = ({ children }: { children: ReactNode }) => {
   const theme = 'chad' as const
+  useLayoutStoreResponsive()
   return (
     <ThemeProvider theme={theme}>
       <ErrorBoundary title={t`Root layout error`} LinkComponent={MuiLink}>
