@@ -87,10 +87,4 @@ export const isRepayLeveraged = ({ marketId, ...fields }: FieldsOf<RepayFormFiel
  * in when the user state query was called before (usually checked in the validation).
  */
 export const getUserDebtFromQueryCache = ({ chainId, userAddress, marketId }: UserMarketQuery) =>
-  +(
-    getUserState({
-      chainId,
-      marketId,
-      userAddress,
-    })?.debt ?? 0
-  )
+  +(getUserState({ chainId, marketId, userAddress })?.debt ?? 0)

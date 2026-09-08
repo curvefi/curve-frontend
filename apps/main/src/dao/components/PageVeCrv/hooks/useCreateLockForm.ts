@@ -75,10 +75,7 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     minUtcDate,
     maxUtcDate,
     futureVeCrv: constQ(
-      calculateVeCrv({
-        lockedAmount: values.lockedAmount,
-        unlockTime: maybe(values.utcDate, getDateValueTimestamp),
-      }),
+      calculateVeCrv({ lockedAmount: values.lockedAmount, unlockTime: maybe(values.utcDate, getDateValueTimestamp) }),
     ),
     effectiveUnlockDateLabel: getEffectiveUnlockDateLabel({
       selectedDate: values.utcDate,
@@ -94,12 +91,7 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     updateUnlockDate,
     selectQuickDate: useCallback(
       (value: number | undefined, unit: dayjs.ManipulateType | undefined) => {
-        const { utcDate, quickActionValue, days } = getCreateQuickDateUpdate({
-          currentUtcDay,
-          maxUtcDate,
-          value,
-          unit,
-        })
+        const { utcDate, quickActionValue, days } = getCreateQuickDateUpdate({ currentUtcDay, maxUtcDate, value, unit })
         update({ utcDate, days })
         return quickActionValue
       },

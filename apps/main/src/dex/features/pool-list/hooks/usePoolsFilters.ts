@@ -16,9 +16,7 @@ export type { PoolsApiParams } from '../filters/utils'
 
 const POOL_LIST_SEARCH_QUERY_FIELD = 'search'
 
-export type PoolsFiltersProps = FilterProps<PoolFilterId> & {
-  poolTypeFilters: typeof POOL_TYPE_FILTERS
-}
+export type PoolsFiltersProps = FilterProps<PoolFilterId> & { poolTypeFilters: typeof POOL_TYPE_FILTERS }
 
 type PoolsColumnFilters = PartialRecord<PoolFilterId, string>
 
@@ -44,19 +42,11 @@ export const getPoolsApiParams = (columnFiltersById: PoolsColumnFilters): PoolsA
  */
 export const usePoolsFilters = () => {
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
-    {
-      columns: PoolFilterId,
-      resetPageOnChange: true,
-      searchKey: POOL_LIST_SEARCH_QUERY_FIELD,
-    },
+    { columns: PoolFilterId, resetPageOnChange: true, searchKey: POOL_LIST_SEARCH_QUERY_FIELD },
   )
 
   const filterProps: PoolsFiltersProps = useMemo(
-    () => ({
-      columnFiltersById,
-      poolTypeFilters: POOL_TYPE_FILTERS,
-      setColumnFilter,
-    }),
+    () => ({ columnFiltersById, poolTypeFilters: POOL_TYPE_FILTERS, setColumnFilter }),
     [columnFiltersById, setColumnFilter],
   )
 

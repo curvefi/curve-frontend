@@ -92,10 +92,7 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
     isMax: maybe(maxDays, maxDays => maxDays <= MAX_LOCK_REMAINDER_DAYS),
     currentVeCrv,
     futureVeCrv: mapQuery(lockedAmountAndUnlockTime, ({ lockedAmount }) =>
-      calculateVeCrv({
-        lockedAmount,
-        unlockTime: maybe(values.utcDate, getDateValueTimestamp),
-      }),
+      calculateVeCrv({ lockedAmount, unlockTime: maybe(values.utcDate, getDateValueTimestamp) }),
     ),
     effectiveUnlockDateLabel: getEffectiveUnlockDateLabel({
       selectedDate: values.utcDate,

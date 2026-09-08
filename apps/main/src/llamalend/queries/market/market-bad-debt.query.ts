@@ -4,9 +4,7 @@ import { EmptyValidationSuite } from '@evm-ui/lib/validation'
 import { MarketType } from '@evm-ui/types/market'
 import { recordValues } from '@primitives/objects.utils'
 
-type BadDebtParams = {
-  type: MarketType
-}
+type BadDebtParams = { type: MarketType }
 
 const endpointFromMarketType: Record<MarketType, Endpoint> = {
   [MarketType.Lend]: 'lending',

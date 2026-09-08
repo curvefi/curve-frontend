@@ -14,9 +14,7 @@ const { Spacing } = SizesAndSpaces
 const CRVUSD_OPTION = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 const METRIC_CATEGORY = 'loan.scrvusdStats'
 
-type StatsStackProps = {
-  chainId: ChainId | undefined
-}
+type StatsStackProps = { chainId: ChainId | undefined }
 
 export const StatsStack = ({ chainId }: StatsStackProps) => {
   const supplies = useScrvUsdSupplies({ chainId })

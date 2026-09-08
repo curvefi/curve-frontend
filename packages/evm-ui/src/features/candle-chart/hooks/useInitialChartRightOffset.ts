@@ -1,10 +1,7 @@
 import type { IChartApi } from 'lightweight-charts'
 import { useEffect, useRef, type RefObject } from 'react'
 
-type Params = {
-  chartRef: RefObject<IChartApi | null>
-  hasSeriesData: boolean
-}
+type Params = { chartRef: RefObject<IChartApi | null>; hasSeriesData: boolean }
 
 export const useInitialChartRightOffset = ({ chartRef, hasSeriesData }: Params) => {
   const hasAppliedInitialOffsetRef = useRef(false)

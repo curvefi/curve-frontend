@@ -16,12 +16,7 @@ import { constQ, type Query as QueryResult } from '@ui/features/queries/util'
 import { chainValidationGroup } from '../query/chain-validation'
 import { useTokenUsdRate } from './token-usd-rate'
 
-type ChainGasConfig = {
-  gasL2: boolean
-  gasPricesUnit: string
-  gasPricesUrl: string
-  gasPricesDefault: number
-}
+type ChainGasConfig = { gasL2: boolean; gasPricesUnit: string; gasPricesUrl: string; gasPricesDefault: number }
 
 const BASE_CHAIN_GAS_CONFIG: ChainGasConfig = {
   gasL2: false,
@@ -158,20 +153,14 @@ const {
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
 
       if (parsedGasInfo) {
-        curve.setCustomFeeData({
-          maxFeePerGas: 0.1,
-          maxPriorityFeePerGas: 0.001,
-        })
+        curve.setCustomFeeData({ maxFeePerGas: 0.1, maxPriorityFeePerGas: 0.001 })
       }
     } else if (chainId === Chain.Optimism) {
       // TODO: remove this hardcode value once it api is fixed
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
 
       if (parsedGasInfo) {
-        curve.setCustomFeeData({
-          maxFeePerGas: 0.2,
-          maxPriorityFeePerGas: 0.001,
-        })
+        curve.setCustomFeeData({ maxFeePerGas: 0.2, maxPriorityFeePerGas: 0.001 })
       }
     }
 
@@ -264,13 +253,7 @@ function parsePolygonGasInfo(gasInfo: PolygonGasInfo) {
     const priority = [fast.maxPriorityFee, standard.maxPriorityFee, safeLow.maxPriorityFee].map(gweiToWai)
 
     return {
-      gasInfo: {
-        gasPrice: null,
-        base,
-        max,
-        priority,
-        basePlusPriority: priority.map(p => base + p),
-      },
+      gasInfo: { gasPrice: null, base, max, priority, basePlusPriority: priority.map(p => base + p) },
       label: ['fast', 'medium', 'slow'],
     }
   }
@@ -310,18 +293,10 @@ async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: s
     baseInfo.basePlusPriority = [+gasFeeDataWei.gasPrice]
   }
 
-  return {
-    gasInfo: {
-      ...gasFeeDataWei,
-      ...baseInfo,
-    },
-    label: ['fast'],
-  }
+  return { gasInfo: { ...gasFeeDataWei, ...baseInfo }, label: ['fast'] }
 }
 
-export type GasInfoQueryOptions<TChainId extends number = number> = {
-  chainId?: TChainId | null
-}
+export type GasInfoQueryOptions<TChainId extends number = number> = { chainId?: TChainId | null }
 
 /** Helper function to create required query options based on network configs. */
 function createGasInfoQueryOptions<TChainId extends number>({
@@ -377,12 +352,7 @@ export function calculateGas(
   chainTokenUsdRate: number | undefined,
   chainId: number,
   networkSymbol: string,
-): {
-  estGasCost?: number
-  estGasCostUsd?: number
-  tooltip?: string
-  gasCostInWei?: number
-} {
+): { estGasCost?: number; estGasCostUsd?: number; tooltip?: string; gasCostInWei?: number } {
   const { gasPricesUnit, gasL2, gasPricesDefault } = getGasConfig(chainId)
   const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
   if (!estimatedGas || !basePlusPriority) {
@@ -434,9 +404,7 @@ export const useEstimateGasValue = (chainId: number | null | undefined, estimate
 
 type EstimateValue = number | number[] | null | undefined
 
-type WithOptionalChainId = {
-  chainId?: number | null | undefined
-}
+type WithOptionalChainId = { chainId?: number | null | undefined }
 
 /** Builds a reusable gas-cost hook from a single estimate-gas query hook. */
 export const createEstimateGasHook =

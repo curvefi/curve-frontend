@@ -39,13 +39,7 @@ export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
       write: true, // emit to disk for Cypress to load
       watch: shouldWatch ? {} : null, // enable watch when interactive runner is used
       ...(isHtml
-        ? {
-            rollupOptions: {
-              input: {
-                [filenameBase]: filePath,
-              },
-            },
-          }
+        ? { rollupOptions: { input: { [filenameBase]: filePath } } }
         : {
             rollupOptions: {
               input: filePath,

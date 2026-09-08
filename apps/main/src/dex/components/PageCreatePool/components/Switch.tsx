@@ -4,9 +4,7 @@ import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
 import { useToggleState } from 'react-stately'
 import { styled } from 'styled-components'
 
-type Props = {
-  isActive: boolean
-} & AriaSwitchProps
+type Props = { isActive: boolean } & AriaSwitchProps
 
 export function Switch({ isActive, ...props }: Props) {
   const state = useToggleState(props)

@@ -145,25 +145,23 @@ describe('Gauge Management (RPC)', () => {
   })
 
   it('deposits a gauge reward token', () => {
-    getErc20Balance({
-      publicRpcUrl,
-      tokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,
-      accountAddress: GAUGE_ADDRESS,
-    }).then(initialBalance => {
-      cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} privateKey={privateKey} form="depositReward" />)
+    getErc20Balance({ publicRpcUrl, tokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS, accountAddress: GAUGE_ADDRESS }).then(
+      initialBalance => {
+        cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} privateKey={privateKey} form="depositReward" />)
 
-      cy.get('[data-testid="deposit-amount"]', LOAD_TIMEOUT).should('be.visible')
-      cy.get('[data-testid="deposit-amount"] input[type="text"]').type(DEPOSIT_REWARD_AMOUNT)
-      cy.get('[data-testid="deposit-reward-submit-button"]', LOAD_TIMEOUT).click()
+        cy.get('[data-testid="deposit-amount"]', LOAD_TIMEOUT).should('be.visible')
+        cy.get('[data-testid="deposit-amount"] input[type="text"]').type(DEPOSIT_REWARD_AMOUNT)
+        cy.get('[data-testid="deposit-reward-submit-button"]', LOAD_TIMEOUT).click()
 
-      cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('be.visible')
-      expectErc20BalanceChange({
-        publicRpcUrl,
-        tokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,
-        accountAddress: GAUGE_ADDRESS,
-        initialBalance,
-        expectedChange: DEPOSIT_REWARD_AMOUNT_WEI,
-      })
-    })
+        cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('be.visible')
+        expectErc20BalanceChange({
+          publicRpcUrl,
+          tokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,
+          accountAddress: GAUGE_ADDRESS,
+          initialBalance,
+          expectedChange: DEPOSIT_REWARD_AMOUNT_WEI,
+        })
+      },
+    )
   })
 })

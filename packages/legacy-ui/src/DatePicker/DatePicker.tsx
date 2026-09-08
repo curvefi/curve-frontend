@@ -82,11 +82,7 @@ function DateSegment({ segment, state }: { state: DateFieldState; segment: Param
 
 function Calendar<T extends DateValue>(props: AriaCalendarProps<T>) {
   const { locale } = useLocale()
-  const state = useCalendarState({
-    ...props,
-    locale,
-    createCalendar,
-  })
+  const state = useCalendarState({ ...props, locale, createCalendar })
 
   const ref = useRef<HTMLDivElement>(null)
   const { calendarProps, prevButtonProps, nextButtonProps, title } = useCalendar(props, state)
@@ -174,11 +170,7 @@ export function DatePicker<T extends DateValue>(
   const { groupProps, labelProps, fieldProps, buttonProps, calendarProps } = useDatePicker(props, state, ref)
   const dateFieldProps: AriaDateFieldOptions<T> = { ...fieldProps, ...props.dateFieldProps }
 
-  const dateFieldState = useDateFieldState({
-    ...dateFieldProps,
-    locale,
-    createCalendar,
-  })
+  const dateFieldState = useDateFieldState({ ...dateFieldProps, locale, createCalendar })
 
   // close modal after clicking on quick actions btn
   useEffect(() => {

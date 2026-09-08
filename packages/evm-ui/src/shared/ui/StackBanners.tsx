@@ -3,9 +3,7 @@ import { useMemo, type ReactNode, type ReactElement, Children, isValidElement } 
 import { DEFAULT_SEVERITY, type BannerProps } from '@evm-ui/shared/ui/Banner'
 import Box from '@mui/material/Box'
 
-type StackBannersProps = {
-  children: ReactNode
-}
+type StackBannersProps = { children: ReactNode }
 
 const SEVERITY_ORDER: Record<NonNullable<BannerProps['severity']>, number> = {
   alert: 0,

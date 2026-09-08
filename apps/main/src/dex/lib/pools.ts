@@ -39,10 +39,7 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
     tokensAll,
     tokensLowercase,
     failedFetching24hOldVprice: false,
-    gauge: {
-      status: null,
-      isKilled: null,
-    },
+    gauge: { status: null, isKilled: null },
   }
 
   return poolData
@@ -59,12 +56,7 @@ export async function getPools(
   const { getPool } = curve
 
   const resp = poolList.reduce(
-    (
-      prev,
-      poolId,
-    ): {
-      poolsMapper: Record<string, PoolData>
-    } => {
+    (prev, poolId): { poolsMapper: Record<string, PoolData> } => {
       const pool = getPool(poolId)
 
       if (blacklist.has(getAddress(pool.address))) {

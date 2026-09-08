@@ -9,16 +9,9 @@ export type * from './schema'
 export const USER_MARKETS_FIRST_PAGE = 1
 export const USER_MARKETS_DEFAULT_PER_PAGE = 100
 
-export type PaginatedOptions = Options & {
-  page?: number
-  perPage?: number
-}
+export type PaginatedOptions = Options & { page?: number; perPage?: number }
 
-type GetUserMarketsParams = {
-  page?: number
-  per_page?: number
-  include_closed?: boolean
-}
+type GetUserMarketsParams = { page?: number; per_page?: number; include_closed?: boolean }
 
 export async function getChains(options?: Options): Promise<Chain[]> {
   const host = getHost(options)
@@ -26,27 +19,14 @@ export async function getChains(options?: Options): Promise<Chain[]> {
   return fetch(`${host}/v1/lending/chains`).then(resp => Schema.getChainsResponse.parse(resp))
 }
 
-export async function getAllMarkets(
-  params: {
-    page?: number
-    per_page?: number
-  } = {},
-  options?: Options,
-) {
+export async function getAllMarkets(params: { page?: number; per_page?: number } = {}, options?: Options) {
   const host = getHost(options)
   const response = await fetch(`${host}/v1/lending/markets${addQueryString(params)}`)
 
   return Schema.getAllMarketsResponse.parse(response)
 }
 
-export async function getMarkets(
-  chain: Chain,
-  params: {
-    page?: number
-    per_page?: number
-  } = {},
-  options?: Options,
-) {
+export async function getMarkets(chain: Chain, params: { page?: number; per_page?: number } = {}, options?: Options) {
   const host = getHost(options)
   const response = await fetch(`${host}/v1/lending/markets/${chain}${addQueryString(params)}`)
 
@@ -56,13 +36,11 @@ export async function getMarkets(
 export async function getSnapshots(
   chain: Chain,
   marketController: string,
-  params: {
-    agg?: string
-    fetch_on_chain?: boolean
-    limit?: number
-    start?: number
-    end?: number
-  } = { fetch_on_chain: true, agg: 'day', limit: 100 },
+  params: { agg?: string; fetch_on_chain?: boolean; limit?: number; start?: number; end?: number } = {
+    fetch_on_chain: true,
+    agg: 'day',
+    limit: 100,
+  },
   options?: Options,
 ) {
   const host = getHost(options)

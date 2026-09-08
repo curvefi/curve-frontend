@@ -2,11 +2,7 @@ import { ReactNode } from 'react'
 import { type Query, type QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type Persister, PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 
-type QueryProviderWrapperProps = {
-  children: ReactNode
-  persister: Persister | null
-  queryClient: QueryClient
-}
+type QueryProviderWrapperProps = { children: ReactNode; persister: Persister | null; queryClient: QueryClient }
 
 const shouldDehydrateQuery = (query: Query) => query.state.status === 'success' && query.meta?.persist !== false
 

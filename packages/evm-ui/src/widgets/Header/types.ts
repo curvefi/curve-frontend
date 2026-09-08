@@ -17,15 +17,9 @@ export type AppRoute = {
   matchMode?: 'prefix' | 'exact' // some pages have "../marketId" and "../marketId/vault" as routes, so we need to match the exact route
 }
 
-export type AppRoutes = {
-  label: string
-  routes: AppRoute[]
-}
+export type AppRoutes = { label: string; routes: AppRoute[] }
 
-export type NavigationSection = {
-  title: string
-  links: AppPage[]
-}
+export type NavigationSection = { title: string; links: AppPage[] }
 
 type HeaderBaseProps = {
   currentMenu: AppMenuOption
@@ -37,12 +31,6 @@ type HeaderBaseProps = {
   appStats?: { label: string; value: string }[]
 }
 
-export type HeaderImplementationProps = HeaderBaseProps & {
-  pages: AppPage[]
-  sections: NavigationSection[]
-}
+export type HeaderImplementationProps = HeaderBaseProps & { pages: AppPage[]; sections: NavigationSection[] }
 
-export type HeaderProps = HeaderBaseProps & {
-  currentApp: AppName
-  routes: Record<AppMenuOption, AppRoute[]>
-}
+export type HeaderProps = HeaderBaseProps & { currentApp: AppName; routes: Record<AppMenuOption, AppRoute[]> }

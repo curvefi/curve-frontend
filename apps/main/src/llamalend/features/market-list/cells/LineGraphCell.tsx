@@ -35,11 +35,7 @@ const calculateDomain = <T extends Record<string, unknown>>(data: T[], snapshotK
   return [first - diff, first + diff]
 }
 
-type RateCellProps = {
-  market: LlamaMarket
-  type: MarketRateType
-  graphSize?: typeof defaultGraphSize
-}
+type RateCellProps = { market: LlamaMarket; type: MarketRateType; graphSize?: typeof defaultGraphSize }
 
 /**
  * Line graph cell that displays the average historical rate for a vault and a given type (borrow APR or lend APR).
@@ -62,18 +58,8 @@ export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: Ra
     return {
       animation: false,
       grid: { left: 0, top: 0, right: 0, bottom: 0 },
-      xAxis: {
-        type: 'category',
-        show: false,
-        boundaryGap: false,
-        data: snapshots.map((_, index) => index),
-      },
-      yAxis: {
-        type: 'value',
-        show: false,
-        min,
-        max,
-      },
+      xAxis: { type: 'category', show: false, boundaryGap: false, data: snapshots.map((_, index) => index) },
+      yAxis: { type: 'value', show: false, min, max },
       series: [
         {
           type: 'line',
@@ -81,10 +67,7 @@ export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: Ra
           showSymbol: false,
           smooth: true,
           silent: true,
-          lineStyle: {
-            color: lineColor,
-            width: 1,
-          },
+          lineStyle: { color: lineColor, width: 1 },
         },
       ],
     }

@@ -22,14 +22,8 @@ const votesOverview = z
   }))
 
 const locksDaily = z
-  .object({
-    day: timestamp,
-    amount: z.string(),
-  })
-  .transform(({ amount, ...data }) => ({
-    ...data,
-    amount: BigInt(amount),
-  }))
+  .object({ day: timestamp, amount: z.string() })
+  .transform(({ amount, ...data }) => ({ ...data, amount: BigInt(amount) }))
 
 const userLock = z
   .object({
@@ -55,13 +49,7 @@ const supply = z
     escrowed_crv: z.string(),
     crv_supply: z.string(),
     circulating_supply: z.string(),
-    locked_supply_details: z.array(
-      z.object({
-        address,
-        label: z.string(),
-        locked: z.string(),
-      }),
-    ),
+    locked_supply_details: z.array(z.object({ address, label: z.string(), locked: z.string() })),
     block_number: z.number(),
     dt: timestamp,
     transaction_hash: address,
