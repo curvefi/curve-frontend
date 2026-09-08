@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { BackendMaintenanceBanner } from '@evm-ui/features/maintenance/components/BackendMaintenanceBanner'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
@@ -13,6 +12,7 @@ import { StackBanners } from './StackBanners'
 
 export type GlobalBannerProps = {
   blockchainId: string
+  chainName: string
   chainId: number
   backendMaintenance: Maintenance
   deprecationDate: Date
@@ -26,6 +26,7 @@ export type GlobalBannerProps = {
 
 export const GlobalBanner = ({
   blockchainId,
+  chainName,
   chainId,
   backendMaintenance,
   deprecationDate,
@@ -69,10 +70,11 @@ export const GlobalBanner = ({
       )}
       {deprecationDate ? (
         <Banner severity="alert">
-          {`“${getChainName(chainId)}”` +
-            (deprecationDate > currentDate
+          {`“${chainName}”${
+            deprecationDate > currentDate
               ? t` will be deprecated at ${formatDate(deprecationDate)}. `
-              : t` is deprecated. `)}
+              : t` is deprecated. `
+          }`}
           {t`Future management of positions will only be possible via the chain explorer. `}
           {t`Manage your positions accordingly. `}
         </Banner>
@@ -84,7 +86,7 @@ export const GlobalBanner = ({
             subtitle={t`Advanced metrics won’t be available anymore, but all functions remain available. `}
             onClick={dismissDowngraded}
           >
-            {`“${getChainName(chainId)}”` + t` has been moved to curve-lite due to low activity. `}
+            {`“${chainName}”${t` has been moved to curve-lite due to low activity. `}`}
           </Banner>
         )
       )}

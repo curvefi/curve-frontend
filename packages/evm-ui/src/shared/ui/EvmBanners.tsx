@@ -1,6 +1,6 @@
 import { useChainId } from 'wagmi'
 import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
-import { DOWNGRADED_CHAINS } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { DOWNGRADED_CHAINS, getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useDismissAaveBanner, useDismissFantomRetirementBanner } from '@evm-ui/hooks/useLocalStorage'
 import { type AppName } from '@evm-ui/shared/routes'
 import { Banner } from '@evm-ui/shared/ui/Banner'
@@ -27,6 +27,7 @@ export const EvmBanners = ({
       connectError={isFailure(connectState) ? new Error(t`There is an issue connecting to the API.`) : undefined}
       switchChain={useSwitchChain()}
       walletChainId={useChainId()}
+      chainName={getChainName(chainId)}
       {...bannerProps}
     >
       {showAaveBanner && currentApp === 'dex' && [Chain.Polygon, Chain.Avalanche].includes(chainId) && (
