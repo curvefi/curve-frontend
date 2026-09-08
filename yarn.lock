@@ -466,15 +466,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api-server@workspace:packages/api-server":
+"@curvefi/api-server@workspace:^, @curvefi/api-server@workspace:packages/api-server":
   version: 0.0.0-use.local
   resolution: "@curvefi/api-server@workspace:packages/api-server"
   dependencies:
-    "@types/node": "npm:*"
-    eslint: "npm:*"
-    fastify: "npm:*"
-    typescript: "npm:*"
-    vitest: "npm:*"
+    fastify: "npm:5.12.1"
   languageName: unknown
   linkType: soft
 
@@ -490,6 +486,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@curvefi/curve-frontend@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/curve-frontend@workspace:."
+  dependencies:
+    "@commitlint/config-conventional": "npm:21.2.2"
+    "@eslint-react/eslint-plugin": "npm:5.18.6"
+    "@eslint/js": "npm:10.0.1"
+    "@tanstack/eslint-plugin-query": "npm:5.102.8"
+    "@types/node": "npm:26.1.0"
+    "@types/react": "npm:19.2.18"
+    "@types/react-dom": "npm:19.2.5"
+    "@typescript-eslint/eslint-plugin": "npm:8.68.0"
+    "@typescript-eslint/parser": "npm:8.68.0"
+    eslint: "npm:10.9.1"
+    eslint-config-prettier: "npm:10.1.8"
+    eslint-import-resolver-typescript: "npm:4.4.5"
+    eslint-plugin-import-x: "npm:4.17.1"
+    eslint-plugin-no-only-tests: "npm:3.4.0"
+    eslint-plugin-react-refresh: "npm:0.5.5"
+    eslint-plugin-storybook: "npm:10.5.10"
+    eslint-plugin-unused-imports: "npm:4.4.1"
+    husky: "npm:9.1.7"
+    lint-staged: "npm:17.4.1"
+    prettier: "npm:3.9.6"
+    typescript: "npm:6.0.3"
+    typescript-eslint: "npm:8.68.0"
+    vite-plugin-svgr: "npm:5.2.0"
+    vitest: "npm:4.1.11"
+  languageName: unknown
+  linkType: soft
+
 "@curvefi/ethcall@npm:6.0.20":
   version: 6.0.20
   resolution: "@curvefi/ethcall@npm:6.0.20"
@@ -501,6 +528,53 @@ __metadata:
   checksum: 10c0/59a255ec9b4139cce840c114eae3decbc24319dbf7d41829357d6ab17a87aa8b5f2a34749649e86b961a3b0100e134c874c1e3138909463020876589a769b2b4
   languageName: node
   linkType: hard
+
+"@curvefi/evm-ui@workspace:^, @curvefi/evm-ui@workspace:packages/evm-ui":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/evm-ui@workspace:packages/evm-ui"
+  dependencies:
+    "@chromatic-com/storybook": "npm:5.3.0"
+    "@coinbase/wallet-sdk": "npm:4.3.7"
+    "@curvefi/api": "npm:2.69.17"
+    "@curvefi/legacy-ui": "workspace:^"
+    "@curvefi/llamalend-api": "npm:2.5.2"
+    "@curvefi/ui": "workspace:^"
+    "@metamask/connect-evm": "npm:2.1.1"
+    "@safe-global/safe-apps-provider": "npm:0.18.6"
+    "@safe-global/safe-apps-sdk": "npm:9.1.0"
+    "@sentry/react": "npm:10.72.0"
+    "@storybook/addon-a11y": "npm:10.5.10"
+    "@storybook/addon-docs": "npm:10.5.10"
+    "@storybook/addon-themes": "npm:10.5.10"
+    "@storybook/react-vite": "npm:10.5.10"
+    "@supercharge/promise-pool": "npm:3.3.0"
+    "@types/lodash": "npm:4.17.25"
+    "@types/memoizee": "npm:0.4.12"
+    "@vitejs/plugin-react": "npm:5.1.2"
+    "@walletconnect/ethereum-provider": "npm:2.24.0"
+    dayjs: "npm:1.11.23"
+    echarts: "npm:6.1.0"
+    echarts-for-react: "npm:3.0.6"
+    ethers: "npm:6.17.0"
+    external-rewards: "workspace:^"
+    lightweight-charts: "npm:5.2.1"
+    storybook: "npm:10.5.10"
+    viem: "npm:2.56.0"
+    wagmi: "npm:3.7.7"
+  languageName: unknown
+  linkType: soft
+
+"@curvefi/legacy-ui@workspace:^, @curvefi/legacy-ui@workspace:packages/legacy-ui":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/legacy-ui@workspace:packages/legacy-ui"
+  dependencies:
+    "@carbon/icons-react": "npm:11.87.0"
+    "@curvefi/evm-ui": "workspace:^"
+    react-aria: "npm:3.51.0"
+    react-stately: "npm:3.49.0"
+    styled-components: "npm:6.5.3"
+  languageName: unknown
+  linkType: soft
 
 "@curvefi/llamalend-api@npm:2.5.2":
   version: 2.5.2
@@ -514,29 +588,71 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/prices-api@npm:*, @curvefi/prices-api@workspace:packages/prices-api":
+"@curvefi/prices-api@workspace:^, @curvefi/prices-api@workspace:packages/prices-api":
   version: 0.0.0-use.local
   resolution: "@curvefi/prices-api@workspace:packages/prices-api"
   dependencies:
-    "@types/node": "npm:*"
-    eslint: "npm:*"
-    typescript: "npm:*"
-    vite: "npm:*"
-    vitest: "npm:*"
+    "@curvefi/primitives": "workspace:^"
+    vite: "npm:7.3.5"
     zod: "npm:4.5.2"
-  peerDependencies:
-    typescript: "*"
   languageName: unknown
   linkType: soft
 
-"@curvefi/primitives@workspace:packages/primitives":
+"@curvefi/primitives@workspace:^, @curvefi/primitives@workspace:packages/primitives":
   version: 0.0.0-use.local
   resolution: "@curvefi/primitives@workspace:packages/primitives"
   dependencies:
-    eslint: "npm:*"
-    typescript: "npm:*"
-  peerDependencies:
-    typescript: "*"
+    vitest: "npm:4.1.11"
+  languageName: unknown
+  linkType: soft
+
+"@curvefi/tests@workspace:tests":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/tests@workspace:tests"
+  dependencies:
+    "@curvefi/ui": "workspace:^"
+    "@cypress/react": "npm:9.0.2"
+    "@cypress/vite-dev-server": "npm:7.3.4"
+    "@vitejs/plugin-react": "npm:5.1.2"
+    "@vitest/ui": "npm:4.1.11"
+    cypress: "npm:15.21.1"
+    main: "workspace:^"
+    vite: "npm:7.3.5"
+    vite-plugin-svgr: "npm:5.2.0"
+    wait-on: "npm:9.1.0"
+  languageName: unknown
+  linkType: soft
+
+"@curvefi/ui@workspace:^, @curvefi/ui@workspace:packages/ui":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/ui@workspace:packages/ui"
+  dependencies:
+    "@curvefi/prices-api": "workspace:^"
+    "@curvefi/primitives": "workspace:^"
+    "@emotion/react": "npm:11.14.0"
+    "@emotion/styled": "npm:11.14.1"
+    "@hookform/resolvers": "npm:5.4.0"
+    "@mui/icons-material": "npm:9.4.0"
+    "@mui/material": "npm:9.4.0"
+    "@sentry/core": "npm:10.72.0"
+    "@sentry/react": "npm:10.72.0"
+    "@tanstack/query-async-storage-persister": "npm:5.102.8"
+    "@tanstack/query-persist-client-core": "npm:5.102.8"
+    "@tanstack/react-query": "npm:5.102.8"
+    "@tanstack/react-query-devtools": "npm:5.102.8"
+    "@tanstack/react-query-persist-client": "npm:5.102.8"
+    "@tanstack/react-router": "npm:1.170.32"
+    "@tanstack/react-router-devtools": "npm:1.167.1"
+    "@tanstack/react-table": "npm:9.2.4"
+    "@types/node": "npm:26.1.0"
+    bignumber.js: "npm:9.3.1"
+    immer: "npm:11.1.18"
+    lodash: "npm:4.18.1"
+    memoizee: "npm:0.4.17"
+    react: "npm:19.2.8"
+    react-dom: "npm:19.2.8"
+    react-hook-form: "npm:7.86.0"
+    zustand: "npm:5.0.15"
   languageName: unknown
   linkType: soft
 
@@ -5221,7 +5337,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:*, @types/lodash@npm:4.17.25, @types/lodash@npm:^4.17.20":
+"@types/lodash@npm:4.17.25, @types/lodash@npm:^4.17.20":
   version: 4.17.25
   resolution: "@types/lodash@npm:4.17.25"
   checksum: 10c0/ca2049f16bf527e04d6e27702e3912a484faaff587de77a5c58e0d243b9292a655e1d7f7e5bdf2ffdf49a76da10673097f8dd4901990679058d47ccd99051877
@@ -6963,6 +7079,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bignumber.js@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "bignumber.js@npm:10.0.2"
+  checksum: 10c0/471a17d851d275e458156d090c028b8851c84389dc41db79b08dd584b4df1e4d24f70b1684705a5974aec6c59dc8511337007e01bd78d8ed8d93e1a541356a7f
+  languageName: node
+  linkType: hard
+
 "bindings@npm:^1.4.0":
   version: 1.5.0
   resolution: "bindings@npm:1.5.0"
@@ -7710,55 +7833,6 @@ __metadata:
   checksum: 10c0/cd29c51e70fa822f1cecd8641a1445bed7063697469d35633b516e60fe8c1bde04b08f6c5b6022136bb669b64c63d4173af54864510fbb4ee23281801841a3ce
   languageName: node
   linkType: hard
-
-"curve-frontend@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "curve-frontend@workspace:."
-  dependencies:
-    "@commitlint/config-conventional": "npm:21.2.2"
-    "@eslint-react/eslint-plugin": "npm:5.18.6"
-    "@eslint/js": "npm:10.0.1"
-    "@tanstack/eslint-plugin-query": "npm:5.102.8"
-    "@tanstack/query-async-storage-persister": "npm:*"
-    "@tanstack/query-persist-client-core": "npm:*"
-    "@tanstack/react-query": "npm:*"
-    "@tanstack/react-query-devtools": "npm:*"
-    "@tanstack/react-query-persist-client": "npm:*"
-    "@tanstack/react-router": "npm:*"
-    "@tanstack/react-router-devtools": "npm:*"
-    "@tanstack/router-core": "npm:*"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    "@typescript-eslint/eslint-plugin": "npm:8.68.0"
-    "@typescript-eslint/parser": "npm:8.68.0"
-    bignumber.js: "npm:*"
-    echarts: "npm:*"
-    echarts-for-react: "npm:*"
-    eslint: "npm:*"
-    eslint-config-prettier: "npm:10.1.8"
-    eslint-import-resolver-typescript: "npm:4.4.5"
-    eslint-plugin-import-x: "npm:4.17.1"
-    eslint-plugin-no-only-tests: "npm:3.4.0"
-    eslint-plugin-react-refresh: "npm:0.5.5"
-    eslint-plugin-storybook: "npm:10.5.10"
-    eslint-plugin-unused-imports: "npm:4.4.1"
-    ethers: "npm:*"
-    husky: "npm:9.1.7"
-    immer: "npm:*"
-    lint-staged: "npm:17.4.1"
-    lodash: "npm:*"
-    prettier: "npm:3.9.6"
-    react: "npm:*"
-    react-dom: "npm:*"
-    styled-components: "npm:*"
-    typescript: "npm:*"
-    typescript-eslint: "npm:8.68.0"
-    vite: "npm:*"
-    vite-plugin-svgr: "npm:*"
-    vitest: "npm:*"
-    zustand: "npm:*"
-  languageName: unknown
-  linkType: soft
 
 "cypress@npm:15.21.1":
   version: 15.21.1
@@ -9093,7 +9167,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:6.17.0":
+"ethers@npm:6.17.0, ethers@npm:^6.16.0":
   version: 6.17.0
   resolution: "ethers@npm:6.17.0"
   dependencies:
@@ -9145,49 +9219,6 @@ __metadata:
   checksum: 10c0/d6b6f2adbccbcda74ddbab52ed07db727ef52e31a61ed26db9feb7dc62af7fc8e060defa65e5f8af9449b86b52cc1a1f6a79f2eafcf4e62add2b7a1fa4a432f6
   languageName: node
   linkType: hard
-
-"evm-ui@npm:*, evm-ui@workspace:packages/evm-ui":
-  version: 0.0.0-use.local
-  resolution: "evm-ui@workspace:packages/evm-ui"
-  dependencies:
-    "@chromatic-com/storybook": "npm:5.3.0"
-    "@coinbase/wallet-sdk": "npm:4.3.7"
-    "@hookform/resolvers": "npm:5.4.0"
-    "@metamask/connect-evm": "npm:2.1.1"
-    "@mui/icons-material": "npm:9.4.0"
-    "@safe-global/safe-apps-provider": "npm:0.18.6"
-    "@safe-global/safe-apps-sdk": "npm:9.1.0"
-    "@sentry/react": "npm:10.72.0"
-    "@storybook/addon-a11y": "npm:10.5.10"
-    "@storybook/addon-docs": "npm:10.5.10"
-    "@storybook/addon-themes": "npm:10.5.10"
-    "@storybook/react-vite": "npm:10.5.10"
-    "@tanstack/react-query": "npm:5.102.8"
-    "@tanstack/react-table": "npm:9.2.4"
-    "@types/lodash": "npm:*"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    "@vitejs/plugin-react": "npm:*"
-    "@walletconnect/ethereum-provider": "npm:2.24.0"
-    dayjs: "npm:1.11.23"
-    eslint: "npm:*"
-    react-hook-form: "npm:7.86.0"
-    storybook: "npm:10.5.10"
-    typescript: "npm:*"
-    viem: "npm:2.56.0"
-    vite: "npm:*"
-    vitest: "npm:*"
-    wagmi: "npm:3.7.7"
-  peerDependencies:
-    echarts: "*"
-    echarts-for-react: "*"
-    ethers: "*"
-    immer: "*"
-    react: "*"
-    react-dom: "*"
-    zustand: "*"
-  languageName: unknown
-  linkType: soft
 
 "execa@npm:4.1.0":
   version: 4.1.0
@@ -9245,12 +9276,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"external-rewards@npm:*, external-rewards@workspace:packages/external-rewards":
+"external-rewards@workspace:^, external-rewards@workspace:packages/external-rewards":
   version: 0.0.0-use.local
   resolution: "external-rewards@workspace:packages/external-rewards"
-  dependencies:
-    eslint: "npm:*"
-    typescript: "npm:*"
   languageName: unknown
   linkType: soft
 
@@ -10431,26 +10459,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"legacy-ui@npm:*, legacy-ui@workspace:packages/legacy-ui":
-  version: 0.0.0-use.local
-  resolution: "legacy-ui@workspace:packages/legacy-ui"
-  dependencies:
-    "@carbon/icons-react": "npm:11.87.0"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    eslint: "npm:*"
-    react-aria: "npm:3.51.0"
-    react-stately: "npm:3.49.0"
-    typescript: "npm:*"
-  peerDependencies:
-    bignumber.js: "*"
-    ethers: "*"
-    react: "*"
-    react-dom: "*"
-    styled-components: "*"
-  languageName: unknown
-  linkType: soft
-
 "levn@npm:^0.4.1":
   version: 0.4.1
   resolution: "levn@npm:0.4.1"
@@ -10595,7 +10603,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.18.1":
+"lodash@npm:4.18.1, lodash@npm:^4.17.21, lodash@npm:^4.17.23, lodash@npm:^4.18.1":
   version: 4.18.1
   resolution: "lodash@npm:4.18.1"
   checksum: 10c0/757228fc68805c59789e82185135cf85f05d0b2d3d54631d680ca79ec21944ec8314d4533639a14b8bcfbd97a517e78960933041a5af17ecb693ec6eecb99a27
@@ -10713,49 +10721,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"main@workspace:apps/main":
+"main@workspace:^, main@workspace:apps/main":
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:*"
-    "@curvefi/llamalend-api": "npm:2.5.2"
+    "@curvefi/evm-ui": "workspace:^"
+    "@curvefi/legacy-ui": "workspace:^"
+    "@curvefi/ui": "workspace:^"
     "@sentry/vite-plugin": "npm:5.4.0"
-    "@supercharge/promise-pool": "npm:3.3.0"
-    "@tanstack/react-router": "npm:*"
-    "@tanstack/react-router-devtools": "npm:*"
-    "@tanstack/router-core": "npm:*"
     "@types/lodash": "npm:4.17.25"
-    "@types/memoizee": "npm:0.4.12"
-    "@types/node": "npm:*"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    "@vitejs/plugin-react": "npm:*"
-    eslint: "npm:*"
-    evm-ui: "npm:*"
-    external-rewards: "npm:*"
+    "@vitejs/plugin-react": "npm:5.1.2"
     fuse.js: "npm:7.5.0"
-    legacy-ui: "npm:*"
-    lightweight-charts: "npm:5.2.1"
-    memoizee: "npm:0.4.17"
+    merkl-api: "workspace:^"
     pinst: "npm:3.0.0"
-    typescript: "npm:*"
-    ui: "npm:*"
+    router-api: "workspace:^"
     vest: "npm:5.4.6"
-    vite: "npm:*"
-    vite-plugin-svgr: "npm:*"
+    vite: "npm:7.3.5"
+    vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:9.1.1"
-  peerDependencies:
-    "@curvefi/api": "*"
-    bignumber.js: "*"
-    echarts: "*"
-    echarts-for-react: "*"
-    ethers: "*"
-    immer: "*"
-    lodash: "*"
-    react: "*"
-    react-dom: "*"
-    styled-components: "*"
-    zustand: "*"
   languageName: unknown
   linkType: soft
 
@@ -10797,7 +10780,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memoizee@npm:*, memoizee@npm:0.4.17, memoizee@npm:^0.4.17":
+"memoizee@npm:0.4.17, memoizee@npm:^0.4.17":
   version: 0.4.17
   resolution: "memoizee@npm:0.4.17"
   dependencies:
@@ -10834,16 +10817,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"merkl-api@workspace:apps/merkl-api":
+"merkl-api@workspace:^, merkl-api@workspace:apps/merkl-api":
   version: 0.0.0-use.local
   resolution: "merkl-api@workspace:apps/merkl-api"
   dependencies:
-    "@types/node": "npm:*"
-    eslint: "npm:*"
-    fastify: "npm:*"
+    "@curvefi/api-server": "workspace:^"
+    fastify: "npm:5.12.1"
     tsx: "npm:4.23.12"
-    typescript: "npm:*"
-    vitest: "npm:*"
   languageName: unknown
   linkType: soft
 
@@ -12180,7 +12160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:19.2.8":
+"react-dom@npm:19.2.8, react-dom@npm:^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0":
   version: 19.2.8
   resolution: "react-dom@npm:19.2.8"
   dependencies:
@@ -12259,7 +12239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:19.2.8":
+"react@npm:19.2.8, react@npm:^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0":
   version: 19.2.8
   resolution: "react@npm:19.2.8"
   checksum: 10c0/5f86bdb56426652fd6d989d30a6f2e603c057272c47c9ca3a3fbe190a3a39ee9ccce937d63cfc039717abed1b8891d6a499134bc35311acc07eafdacd86537cd
@@ -12508,21 +12488,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"router-api@workspace:apps/router-api":
+"router-api@workspace:^, router-api@workspace:apps/router-api":
   version: 0.0.0-use.local
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
-    "@curvefi/api": "npm:*"
-    "@curvefi/prices-api": "npm:*"
-    "@types/node": "npm:*"
-    eslint: "npm:*"
-    fastify: "npm:*"
+    "@curvefi/api": "npm:2.69.17"
+    "@curvefi/api-server": "workspace:^"
+    "@curvefi/prices-api": "workspace:^"
+    bignumber.js: "npm:9.3.1"
+    fastify: "npm:5.12.1"
     tsx: "npm:4.23.12"
-    typescript: "npm:*"
-    vitest: "npm:*"
-  peerDependencies:
-    "@curvefi/api": "*"
-    "@curvefi/prices-api": "*"
+    viem: "npm:2.56.0"
   languageName: unknown
   linkType: soft
 
@@ -12961,26 +12937,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "stellar@workspace:apps/stellar"
   dependencies:
+    "@curvefi/ui": "workspace:^"
     "@sentry/vite-plugin": "npm:5.4.0"
-    "@tanstack/react-query": "npm:*"
-    "@tanstack/react-query-devtools": "npm:*"
-    "@tanstack/react-router": "npm:*"
-    "@tanstack/react-router-devtools": "npm:*"
-    "@tanstack/router-core": "npm:*"
-    "@types/node": "npm:*"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    "@vitejs/plugin-react": "npm:*"
-    eslint: "npm:*"
-    typescript: "npm:*"
-    ui: "npm:*"
-    vite: "npm:*"
-    vite-plugin-svgr: "npm:*"
+    "@tanstack/react-query": "npm:5.102.8"
+    "@tanstack/react-query-devtools": "npm:5.102.8"
+    "@tanstack/react-router": "npm:1.170.32"
+    "@tanstack/react-router-devtools": "npm:1.167.1"
+    "@tanstack/router-core": "npm:1.171.27"
+    "@types/node": "npm:26.1.0"
+    "@vitejs/plugin-react": "npm:5.1.2"
+    vite: "npm:7.3.5"
+    vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:9.1.1"
-  peerDependencies:
-    "@curvefi/primitives": "*"
-    react: "*"
-    react-dom: "*"
   languageName: unknown
   linkType: soft
 
@@ -13231,26 +13199,6 @@ __metadata:
   checksum: 10c0/1311f6be85a8157ac4c9147bae43e13923d2a1aae15e4aa1bd5239e4e03d2cf53cfe103dde7f35832fbb4c938b042856bc8e9a0afd29abd05e2d1608788c4fea
   languageName: node
   linkType: hard
-
-"tests@workspace:tests":
-  version: 0.0.0-use.local
-  resolution: "tests@workspace:tests"
-  dependencies:
-    "@cypress/react": "npm:9.0.2"
-    "@cypress/vite-dev-server": "npm:7.3.4"
-    "@vitejs/plugin-react": "npm:*"
-    "@vitest/ui": "npm:4.1.11"
-    cypress: "npm:15.21.1"
-    eslint: "npm:*"
-    ethers: "npm:*"
-    typescript: "npm:*"
-    ui: "npm:*"
-    vite: "npm:*"
-    vite-plugin-svgr: "npm:*"
-    vitest: "npm:*"
-    wait-on: "npm:9.1.0"
-  languageName: unknown
-  linkType: soft
 
 "text-encoding-utf-8@npm:^1.0.2":
   version: 1.0.2
@@ -13583,35 +13531,6 @@ __metadata:
   checksum: 10c0/bf0e4ebff99e54da1b9c7182ac2f40475988b41faa881d579bc97bc2a0509672107b0a0e94c4b8d31a0ab8c4bf07f4aa0b469ac6da8536d56bda5b085ea2e953
   languageName: node
   linkType: hard
-
-"ui@npm:*, ui@workspace:packages/ui":
-  version: 0.0.0-use.local
-  resolution: "ui@workspace:packages/ui"
-  dependencies:
-    "@emotion/react": "npm:11.14.0"
-    "@emotion/styled": "npm:11.14.1"
-    "@mui/material": "npm:9.4.0"
-    "@sentry/core": "npm:10.72.0"
-    "@sentry/react": "npm:10.72.0"
-    "@tanstack/query-async-storage-persister": "npm:*"
-    "@tanstack/query-persist-client-core": "npm:*"
-    "@tanstack/react-query": "npm:*"
-    "@tanstack/react-query-persist-client": "npm:*"
-    "@tanstack/react-router": "npm:1.170.32"
-    "@types/node": "npm:*"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    eslint: "npm:*"
-    lodash: "npm:*"
-    memoizee: "npm:*"
-    typescript: "npm:*"
-    vitest: "npm:*"
-  peerDependencies:
-    "@curvefi/primitives": "*"
-    react: "*"
-    react-dom: "*"
-  languageName: unknown
-  linkType: soft
 
 "uint8arrays@npm:3.1.1, uint8arrays@npm:^3.0.0":
   version: 3.1.1
@@ -14536,6 +14455,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"zustand@npm:5.0.0":
+  version: 5.0.0
+  resolution: "zustand@npm:5.0.0"
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+    immer: ">=9.0.6"
+    react: ">=18.0.0"
+    use-sync-external-store: ">=1.2.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    immer:
+      optional: true
+    react:
+      optional: true
+    use-sync-external-store:
+      optional: true
+  checksum: 10c0/7546df78aa512f1d2271e238c44699c0ac4bc57f12ae46fcfe8ba1e8a97686fc690596e654101acfabcd706099aa5d3519fc3f22d32b3082baa60699bb333e9a
+  languageName: node
+  linkType: hard
+
 "zustand@npm:5.0.15":
   version: 5.0.15
   resolution: "zustand@npm:5.0.15"
@@ -14554,5 +14494,26 @@ __metadata:
     use-sync-external-store:
       optional: true
   checksum: 10c0/ed3a883950a8c22d98e8c72cef103af18043ce66b45faf218ad20ccc8ee29716aacfc6b0a3e783b2152ea38b7663f3982bb6bf2b13ce3df692b05276446afa04
+  languageName: node
+  linkType: hard
+
+"zustand@npm:5.0.3":
+  version: 5.0.3
+  resolution: "zustand@npm:5.0.3"
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+    immer: ">=9.0.6"
+    react: ">=18.0.0"
+    use-sync-external-store: ">=1.2.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    immer:
+      optional: true
+    react:
+      optional: true
+    use-sync-external-store:
+      optional: true
+  checksum: 10c0/dad96c6c123fda088c583d5df6692e9245cd207583078dc15f93d255a67b0f346bad4535545c98852ecde93d254812a0c799579dfde2ab595016b99fbe20e4d5
   languageName: node
   linkType: hard
