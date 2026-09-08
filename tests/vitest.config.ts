@@ -2,7 +2,14 @@ import { defineConfig } from 'vitest/config'
 import { resolve } from 'path'
 
 export default defineConfig({
-  test: { environment: 'node', globals: true, include: ['../packages/*/src/**/*.{test,spec}.{js,ts}'] },
+  test: {
+    environment: 'node',
+    globals: true,
+    include: [
+      '../packages/*/src/**/*.{test,spec}.{js,ts}',
+      '../apps/main/src/llamalend/features/market-list/max-roe.utils.spec.ts',
+    ],
+  },
   resolve: {
     alias: [
       { find: '@primitives', replacement: resolve(__dirname, '../packages/primitives/src') },

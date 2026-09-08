@@ -13,6 +13,8 @@ import {
   LtvCell,
   MarketTitleCell,
   MaxLeverageCell,
+  MaxRoeCell,
+  MaxRoeTooltipContent,
   PercentCell,
   PriceCell,
   RateCell,
@@ -28,6 +30,7 @@ import {
   TvlHeaderTooltipContent,
   UtilizationHeaderTooltipContent,
 } from '../header-tooltips'
+import { getMaxRoe } from '../max-roe.utils'
 import {
   getUserBorrowedUsd,
   getUserCollateralUsd,
@@ -149,12 +152,24 @@ export const MARKET_COLUMNS = columnHelper.columns([
       sortUndefined: 'last',
     },
   ),
-  columnHelper.accessor('maxLtv', {
+  columnHelper.accessor(getMaxRoe, {
+    id: MarketColumnId.MaxRoe,
+    header: MARKET_TITLES[MarketColumnId.MaxRoe],
+    cell: MaxRoeCell,
+    meta: {
+      type: 'numeric',
+      unit: 'percentage',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.MaxRoe], body: <MaxRoeTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(({ maxLtv }) => maxLtv ?? undefined, {
     id: MarketColumnId.MaxLtv,
     header: MARKET_TITLES[MarketColumnId.MaxLtv],
     cell: PercentCell,
     meta: { type: 'numeric', unit: 'percentage' },
     filterFn: rangeFilterFn,
+    sortUndefined: 'last',
   }),
   columnHelper.accessor('utilizationPercent', {
     id: MarketColumnId.UtilizationPercent,

@@ -27,7 +27,7 @@ const market = z
     oracle: address,
     oracle_pools: z.array(address),
     rate: z.number(),
-    borrow_apy: z.number(),
+    borrow_apy: z.number().nullable(),
     borrow_total_apy: z.number(),
     borrow_apr: z.number(),
     borrow_total_apr: z.number(),
@@ -47,7 +47,7 @@ const market = z
     redeemed: z.number(),
     debt_ceiling: z.number(),
     borrowable: z.number(),
-    leverage: z.number(),
+    leverage: z.number().nullable(),
     pending_fees: z.number(),
     collected_fees: z.number(),
     collateral_amount: z.number(),
@@ -58,7 +58,7 @@ const market = z
     collateral_token: token,
     stablecoin_token: token,
     created_at: timestamp,
-    max_ltv: z.number(),
+    max_ltv: z.number().nullable(),
   })
   .transform(camelizeKeys)
   .transform(({ collateralToken, totalDebt, totalDebtUsd, nLoans, pendingFees, collectedFees, ...data }) => ({

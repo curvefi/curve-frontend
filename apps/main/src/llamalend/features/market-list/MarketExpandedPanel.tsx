@@ -18,10 +18,11 @@ import { useIsTiny } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 import { borderStyle } from '@ui/utils/mui'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
-import { LineGraphCell, RateTooltipProps } from './cells'
+import { LineGraphCell, MaxRoeTooltip, RateTooltipProps } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
+import { getMaxRoe } from './max-roe.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -96,6 +97,19 @@ export const MarketExpandedPanel = ({
       <GridSection>
         <RateItem market={market} type={MarketRateType.Borrow} />
         <RateItem market={market} type={MarketRateType.Supply} />
+        <Grid size={6}>
+          <MaxRoeTooltip market={market}>
+            <Stack>
+              <Metric
+                category="llamalend.marketListRates"
+                label={t`Max ROE`}
+                value={getMaxRoe(market)}
+                valueOptions={{ unit: 'percentage', abbreviate: false, disableTooltip: true, fallback: '-' }}
+                testId="metric-maxRoe"
+              />
+            </Stack>
+          </MaxRoeTooltip>
+        </Grid>
         <Grid size={12} data-testid="llama-market-graph">
           <Stack direction="column" sx={{ alignItems: 'center' }}>
             <Typography variant="bodyXsRegular" color="textTertiary" sx={{ alignSelf: 'start' }}>

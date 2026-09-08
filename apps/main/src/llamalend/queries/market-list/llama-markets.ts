@@ -20,7 +20,7 @@ import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '
 import { decimal, decimalDiv } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
+import { assert, maybe } from '@primitives/objects.utils'
 import { aprToApy } from '@primitives/rates.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { QueriesResults } from '@tanstack/react-query'
@@ -54,7 +54,7 @@ export type LlamaMarket = {
   version: MarketVersion
   minBand?: number
   maxBand?: number
-  maxLtv: number
+  maxLtv: number | null
   loans: number
   oraclePrice?: number
   monetaryPolicyAddress?: Address
@@ -75,8 +75,8 @@ export type LlamaMarket = {
     lendCrvAprBoosted: number | null
     lendTotalApyMinBoosted: number | null
     lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
-    borrowApy: number // base borrow APY %
-    borrowTotalApy: number // borrow APY - yield from collateral
+    borrowApy: number | null // base borrow APY %
+    borrowTotalApy: number | null // borrow APY - yield from collateral
     borrowApr: number
     borrowTotalApr: number // borrow APR - yield from collateral
     // extra lending incentives, like OP rewards (so non CRV)
@@ -204,7 +204,9 @@ const convertLendingVault = (
       lendTotalApyMinBoosted: totalMinBoost,
       lendTotalApyMaxBoosted: totalMaxBoost,
       borrowApy,
-      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
+      borrowTotalApy:
+        maybe(borrowApy, apy => computeTotalRate(apy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0)) ??
+        null,
       borrowApr,
       borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
       incentives: extraRewardApr
@@ -340,7 +342,9 @@ const convertMintMarket = (
       lendTotalApyMinBoosted: null,
       lendTotalApyMaxBoosted: null,
       borrowApy,
-      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
+      borrowTotalApy:
+        maybe(borrowApy, apy => computeTotalRate(apy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0)) ??
+        null,
       borrowApr,
       borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
       incentives: [],
