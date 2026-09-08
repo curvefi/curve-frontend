@@ -15,7 +15,7 @@ import { SpinnerWrapper } from '@legacy-ui/Spinner'
 import { Stats } from '@legacy-ui/Stats'
 import { shortenAccount } from '@legacy-ui/utils'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { useLayoutStore } from '@ui/features/layout/layout'
+import { useLayoutStore } from '@ui/features/layout/store'
 import { t } from '@ui/lib/i18n'
 
 const menu = [

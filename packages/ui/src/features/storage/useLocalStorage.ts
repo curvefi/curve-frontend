@@ -1,10 +1,10 @@
 import { kebabCase } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import type { VisibilityVariants } from '@evm-ui/shared/ui/DataTable/visibility.types'
 import type { Address } from '@primitives/address.utils'
+import { getStorageKey, type MigrationOptions, useStoredState } from '@ui/features/storage/useStoredState'
+import type { VisibilityVariants } from '@ui/features/tables/visibility.types'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui/utils/env'
-import { getStorageKey, type MigrationOptions, useStoredState } from './useStoredState'
 
 function getFromLocalStorage<T>(storageKey: string) {
   const item = window.localStorage.getItem(storageKey)

@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
-import { useLayoutStore } from '@ui/features/layout/layout/store'
-import { getPageWidthClassName } from '@ui/features/layout/layout/utils'
+import { useLayoutStore } from '@ui/features/layout/store'
+import { getPageWidthClassName } from '@ui/features/layout/utils'
 
 export const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window

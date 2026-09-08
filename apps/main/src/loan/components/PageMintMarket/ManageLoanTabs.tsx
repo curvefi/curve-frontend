@@ -8,10 +8,10 @@ import type { UserCollateralEvents } from '@/llamalend/features/user-position-hi
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
 import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { QueryProp, Range } from '@ui/features/queries/util'
+import { useReleaseChannel } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
 
 // casting the networks for the loan app so we don't need to make the whole form generic

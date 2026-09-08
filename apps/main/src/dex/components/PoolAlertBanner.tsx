@@ -1,6 +1,6 @@
-import { useDismissPoolBanner } from '@evm-ui/hooks/useLocalStorage'
 import { Banner, BannerProps } from '@evm-ui/shared/ui/Banner'
 import Portal from '@mui/material/Portal'
+import { useDismissPoolBanner } from '@ui/features/storage/useLocalStorage'
 import { AlertType, PoolAlert } from '../types/main.types'
 
 /** Maps AlertType to BannerSeverity  */

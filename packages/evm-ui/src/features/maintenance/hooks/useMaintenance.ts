@@ -1,7 +1,7 @@
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
-import { useDismissMaintenanceBanner, useDismissMaintenanceModal } from '@evm-ui/hooks/useLocalStorage'
 import { formatDate, formatTime } from '@legacy-ui/utils/utilsDate'
 import { Falsy } from '@primitives/objects.utils'
+import { useDismissMaintenanceBanner, useDismissMaintenanceModal } from '@ui/features/storage/useLocalStorage'
 import { TIME_OPTION_MS } from '@ui/utils/time'
 
 export type MaintenanceConfig = {

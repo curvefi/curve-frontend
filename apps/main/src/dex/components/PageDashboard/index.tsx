@@ -23,7 +23,7 @@ import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Table } from '@legacy-ui/Table'
 import { breakpoints } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { useLayoutStore } from '@ui/features/layout/layout'
+import { useLayoutStore } from '@ui/features/layout/store'
 import { t } from '@ui/lib/i18n'
 
 export const Dashboard = ({

@@ -1,11 +1,11 @@
 import { useChainId } from 'wagmi'
 import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
 import { DOWNGRADED_CHAINS, getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { useDismissAaveBanner, useDismissFantomRetirementBanner } from '@evm-ui/hooks/useLocalStorage'
 import { type AppName } from '@evm-ui/shared/routes'
 import { Banner } from '@evm-ui/shared/ui/Banner'
 import { GlobalBanner, type GlobalBannerProps } from '@evm-ui/shared/ui/GlobalBanner'
 import { Chain } from '@primitives/network.utils'
+import { useDismissAaveBanner, useDismissFantomRetirementBanner } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
 
 export const EvmBanners = ({

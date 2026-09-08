@@ -1,5 +1,5 @@
-import { useDismissPhishingWarn } from '@evm-ui/hooks/useLocalStorage'
 import { Banner } from '@evm-ui/shared/ui/Banner'
+import { useDismissPhishingWarn } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
 import { IS_PREVIEW_HOST } from '@ui/utils/env'
 

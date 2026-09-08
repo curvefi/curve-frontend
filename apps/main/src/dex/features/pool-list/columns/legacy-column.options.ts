@@ -1,4 +1,4 @@
-import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
+import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { t } from '@ui/lib/i18n'
 import { LegacyPoolColumnId } from './legacy-columns.enum'
 

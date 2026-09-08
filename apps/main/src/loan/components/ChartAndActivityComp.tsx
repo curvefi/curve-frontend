@@ -7,9 +7,9 @@ import {
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import type { ChainId } from '@/loan/types/loan.types'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { useBandsChartVisible } from '@evm-ui/hooks/useLocalStorage'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui/features/queries/util'
+import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 import { useMarketContext } from '../../llamalend/features/market-context'
 
 type ChartAndActivityCompProps = {
