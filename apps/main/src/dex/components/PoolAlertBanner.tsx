@@ -1,5 +1,5 @@
-import { Banner, BannerProps } from '@evm-ui/shared/ui/Banner'
 import Portal from '@mui/material/Portal'
+import { Banner, BannerProps } from '@ui/features/banners/Banner'
 import { useDismissPoolBanner } from '@ui/features/storage/useLocalStorage'
 import { AlertType, PoolAlert } from '../types/main.types'
 

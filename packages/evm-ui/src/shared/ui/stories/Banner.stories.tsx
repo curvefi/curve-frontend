@@ -2,8 +2,8 @@ import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { Meta, StoryObj } from '@storybook/react-vite'
-import { Banner, type BannerProps } from '../Banner'
-import { StackBanners } from '../StackBanners'
+import { Banner, type BannerProps } from '@ui/features/banners/Banner'
+import { StackBanners } from '@ui/features/banners/StackBanners'
 
 const SEVERITIES: NonNullable<BannerProps['severity']>[] = ['alert', 'warning', 'caution', 'highlight', 'info']
 

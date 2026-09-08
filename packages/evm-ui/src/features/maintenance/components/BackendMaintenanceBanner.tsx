@@ -1,5 +1,5 @@
-import { Banner } from '@evm-ui/shared/ui/Banner'
 import { notFalsy } from '@primitives/objects.utils'
+import { Banner } from '@ui/features/banners/Banner'
 import { t } from '@ui/lib/i18n'
 import { Maintenance } from '../hooks/useMaintenance'
 

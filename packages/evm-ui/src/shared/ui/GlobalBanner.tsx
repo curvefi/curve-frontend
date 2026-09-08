@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react'
 import { BackendMaintenanceBanner } from '@evm-ui/features/maintenance/components/BackendMaintenanceBanner'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
-import { Banner } from '@evm-ui/shared/ui/Banner'
 import { PhishingWarningBanner } from '@evm-ui/widgets/Header/PhishingWarningBanner'
 import { formatDate } from '@legacy-ui/utils'
+import { Banner } from '@ui/features/banners/Banner'
+import { StackBanners } from '@ui/features/banners/StackBanners'
 import { useDismissCurveLiteBanner, useReleaseChannel } from '@ui/features/storage/useLocalStorage'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { IS_CYPRESS, ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { StackBanners } from './StackBanners'
 
 export type GlobalBannerProps = {
   blockchainId: string

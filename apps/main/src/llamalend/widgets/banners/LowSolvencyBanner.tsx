@@ -1,6 +1,6 @@
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
-import { Banner } from '@evm-ui/shared/ui/Banner'
 import { formatNumber } from '@primitives/number.utils'
+import { Banner } from '@ui/features/banners/Banner'
 import { t } from '@ui/lib/i18n'
 
 type Props = {

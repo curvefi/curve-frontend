@@ -1,4 +1,4 @@
-import { Banner } from '@evm-ui/shared/ui/Banner'
+import { Banner } from '@ui/features/banners/Banner'
 import { useDismissPhishingWarn } from '@ui/features/storage/useLocalStorage'
 import { IS_PREVIEW_HOST } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
