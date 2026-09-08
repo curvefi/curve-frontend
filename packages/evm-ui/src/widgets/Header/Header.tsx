@@ -1,4 +1,4 @@
-import { Toast } from '@evm-ui/widgets/Toast'
+import { Toast } from '@ui/features/toast/Toast/Toast'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 import { DesktopHeader } from './DesktopHeader'
 import { MobileHeader } from './MobileHeader'

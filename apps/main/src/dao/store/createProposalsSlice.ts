@@ -11,10 +11,11 @@ import {
   TransactionState,
 } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
-import { notify, useWallet, getLib } from '@evm-ui/features/connect-wallet'
+import { useWallet, getLib } from '@evm-ui/features/connect-wallet'
 import { waitForTransaction } from '@evm-ui/lib/ethers'
 import { scanTxPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
+import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE

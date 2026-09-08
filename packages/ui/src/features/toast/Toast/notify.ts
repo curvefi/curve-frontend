@@ -1,4 +1,4 @@
-import { showToast } from '@evm-ui/widgets/Toast/toast.util'
+import { showToast } from '@ui/features/toast/Toast/toast.util'
 import { t } from '@ui/lib/i18n'
 
 /**

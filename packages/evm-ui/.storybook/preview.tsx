@@ -8,7 +8,7 @@ import type { Decorator, Preview, ReactRenderer } from '@storybook/react-vite'
 import { createRouter, createRootRoute, RouterProvider, createMemoryHistory } from '@tanstack/react-router'
 import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
 import '@ui/styles/initial-load.css'
-import { Toast } from '../src/widgets/Toast'
+import { Toast } from '@ui/features/toast/Toast/Toast'
 
 const themes = {
   light: lightTheme(),
