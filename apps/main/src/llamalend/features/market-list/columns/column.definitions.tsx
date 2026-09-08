@@ -1,3 +1,4 @@
+import { getMaxRoe } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
@@ -30,7 +31,6 @@ import {
   TvlHeaderTooltipContent,
   UtilizationHeaderTooltipContent,
 } from '../header-tooltips'
-import { getMaxRoe } from '../max-roe.utils'
 import {
   getUserBorrowedUsd,
   getUserCollateralUsd,

@@ -305,6 +305,29 @@ export const calculateLtv = (
   return (debtValue / collateralValue) * 100
 }
 
+/** Annualized return on own capital at maximum leverage; input APYs and output are percentage points. */
+export const getMaxRoe = ({
+  leverage,
+  assets: {
+    collateral: { rebasingYield },
+  },
+  rates: { borrowApy },
+}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => {
+  if (
+    leverage == null ||
+    leverage < 1 ||
+    rebasingYield == null ||
+    borrowApy == null ||
+    ![leverage, rebasingYield, borrowApy].every(Number.isFinite)
+  ) {
+    return undefined
+  }
+
+  // Total collateral / equity = leverage, so debt / equity = leverage - 1.
+  const roe = leverage * rebasingYield - (leverage - 1) * borrowApy
+  return Number.isFinite(roe) ? roe : undefined
+}
+
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,
   collateralBalanceUsd,

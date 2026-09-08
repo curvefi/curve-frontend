@@ -5,10 +5,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
-    include: [
-      '../packages/*/src/**/*.{test,spec}.{js,ts}',
-      '../apps/main/src/llamalend/features/market-list/max-roe.utils.spec.ts',
-    ],
+    include: ['../packages/*/src/**/*.{test,spec}.{js,ts}'],
   },
   resolve: {
     alias: [

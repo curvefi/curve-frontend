@@ -1,3 +1,4 @@
+import { getMaxRoe } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
@@ -8,7 +9,6 @@ import type { CellContext } from '@tanstack/react-table'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
-import { getMaxRoe } from '../max-roe.utils'
 
 export const MaxRoeTooltipContent = ({ market }: { market?: LlamaMarket }) => (
   <TooltipWrapper>
