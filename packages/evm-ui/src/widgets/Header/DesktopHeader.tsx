@@ -12,13 +12,13 @@ import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabsSwitcher } from './PageTabsSwitcher'
 import { SubNav } from './SubNav'
-import { HeaderImplementationProps } from './types'
+import { HeaderProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
 import { getHeaderBorder } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const DesktopHeader = <TApp extends string, TMenuApp extends TApp, TId extends string, TChainId extends number>({
+export const DesktopHeader = <TMenuApp extends string, TId extends string, TChainId extends number>({
   currentMenu,
   currentNetwork,
   backendMaintenance,
@@ -27,10 +27,9 @@ export const DesktopHeader = <TApp extends string, TMenuApp extends TApp, TId ex
   appStats,
   hideChains,
   tvls,
-  urlFactory,
   links,
   connectWalletProps,
-}: HeaderImplementationProps<TApp, TMenuApp, TId, TChainId>) => (
+}: HeaderProps<TMenuApp, TId, TChainId>) => (
   <AppBar
     color="transparent"
     ref={useMainNavRef()}
@@ -49,12 +48,7 @@ export const DesktopHeader = <TApp extends string, TMenuApp extends TApp, TId ex
     >
       <Container sx={{ paddingInline: Spacing.md }}>
         <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
-        <AppButtonLinks<TApp, TMenuApp>
-          blockchainId={currentNetwork.blockchainId}
-          currentMenu={currentMenu}
-          links={links}
-          urlFactory={urlFactory}
-        />
+        <AppButtonLinks currentMenu={currentMenu} links={links} />
 
         <Box sx={{ flexGrow: 1 }} />
 

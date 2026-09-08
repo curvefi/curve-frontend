@@ -11,55 +11,18 @@ export type AppPage = {
   target?: '_self' | '_blank'
 }
 
-export type AppRoute<T extends string> = {
-  app: T
-  route: string // this is a route inside the app, with leading slash, does not include the app name and the network
-  label: () => string // lazy evaluation for translations
-  target?: '_self' | '_blank'
-  matchMode?: 'prefix' | 'exact' // some pages have "../marketId" and "../marketId/vault" as routes, so we need to match the exact route
-}
+export type AppLinks<TMenuApp extends string> = Record<TMenuApp, { label: string; href: string; pages: AppPage[] }>
 
-export type AppRoutes<TApp extends string> = {
-  label: string
-  routes: AppRoute<TApp>[]
-}
+export type NavigationSection = { title: string; links: AppPage[] }
 
-export type NavigationSection = {
-  title: string
-  links: AppPage[]
-}
-
-type HeaderBaseProps<TApp extends string, TMenuApp extends TApp, TId extends string, TChainId extends number> = {
-  currentMenu: TMenuApp
+export type HeaderProps<TApp extends string, TId extends string, TChainId extends number> = {
+  currentMenu: TApp
   currentNetwork: ChainListOption<TId, TChainId>
   backendMaintenance: Maintenance
   supportedNetworks: ChainListOption<TId, TChainId>[]
   appStats?: { label: string; value: string }[]
-  links: AppLinks<TApp, TMenuApp>
-  urlFactory: (app: TApp, blockchainId: string, route?: string) => string
-  hideChains: PartialRecord<TMenuApp, number[]>
+  links: AppLinks<TApp>
+  hideChains: PartialRecord<TApp, number[]>
   tvls: QueryProp<Record<string, number>>
   connectWalletProps: ConnectWalletProps
-}
-
-export type HeaderImplementationProps<
-  TApp extends string,
-  TMenuApp extends TApp,
-  TId extends string,
-  TChainId extends number,
-> = HeaderBaseProps<TApp, TMenuApp, TId, TChainId> & {
-  pages: AppPage[]
-  sections: NavigationSection[]
-}
-
-export type HeaderProps<
-  TApp extends string,
-  TMenuApp extends TApp,
-  TId extends string,
-  TChainId extends number,
-> = HeaderBaseProps<TApp, TMenuApp, TId, TChainId> & {
-  currentApp: TApp
-  routes: Record<TMenuApp, AppRoute<TApp>[]>
-}
-
-export type AppLinks<TApp extends string, TMenuApp extends TApp> = Record<TMenuApp, AppRoutes<TApp>>
+} & { pages: AppPage[]; sections: NavigationSection[] }

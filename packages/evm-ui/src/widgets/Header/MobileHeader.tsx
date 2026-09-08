@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { usePathname } from '@evm-ui/hooks/router'
-import { routeToPage } from '@evm-ui/shared/routes'
 import { GlobalBanner } from '@evm-ui/shared/ui/GlobalBanner'
 import AppBar from '@mui/material/AppBar'
 import Drawer from '@mui/material/Drawer'
@@ -16,7 +15,7 @@ import { MobileTopBar } from './MobileTopBar'
 import { SideBarFooter } from './SideBarFooter'
 import { SidebarSection } from './SidebarSection'
 import { SocialSidebarSection } from './SocialSidebarSection'
-import { HeaderImplementationProps } from './types'
+import { HeaderProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
 import { getHeaderBorder } from './utils'
 
@@ -29,20 +28,19 @@ const HIDE_SCROLLBAR = {
 
 const PADDING_BLOCK = 3
 
-export const MobileHeader = <TApp extends string, TMenuApp extends TApp, TId extends string, TChainId extends number>({
+export const MobileHeader = <TMenuApp extends string, TId extends string, TChainId extends number>({
   currentMenu,
   pages,
   appStats,
   sections,
   backendMaintenance,
   supportedNetworks,
-  urlFactory,
   tvls,
   hideChains,
   links,
   currentNetwork,
   connectWalletProps,
-}: HeaderImplementationProps<TApp, TMenuApp, TId, TChainId>) => {
+}: HeaderProps<TMenuApp, TId, TChainId>) => {
   const [isSidebarOpen, , closeSidebar, toggleSidebar] = useSwitch(false)
   const pathname = usePathname()
   const top = useLayoutStore(state => state.navHeight)
@@ -54,12 +52,12 @@ export const MobileHeader = <TApp extends string, TMenuApp extends TApp, TId ext
     () =>
       recordEntries(links)
         .filter(([appName]) => appName != currentMenu)
-        .map(([appName, { label, routes }]) => ({
+        .map(([appName, { label, pages }]) => ({
           appName,
           title: label,
-          pages: routes.map(p => routeToPage(p, { blockchainId, pathname, urlFactory })),
+          pages,
         })),
-    [currentMenu, blockchainId, links, pathname, urlFactory],
+    [currentMenu, links],
   )
   return (
     <AppBar

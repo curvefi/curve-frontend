@@ -1,7 +1,5 @@
 import { useMatchRoute } from '@evm-ui/hooks/router'
-import { LEND_MARKET_ROUTES } from '@evm-ui/shared/routes'
-import { APP_LINK, type AppName, LEND_ROUTES } from '@evm-ui/shared/routes'
-import type { AppRoute } from '@evm-ui/widgets/Header/types'
+import { APP_LINK, type AppName, type NavigationItem, LEND_MARKET_ROUTES, LEND_ROUTES } from '@evm-ui/shared/routes'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 
@@ -18,7 +16,7 @@ const buildLendMarketPath = ({ marketId, action }: { marketId: string; action: s
  * For the lend app it's the "Borrow" and "Supply" routes
  * For the crvusd app it's empty array (default to Borrow page, no need for the subnav)
  */
-export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean }): AppRoute<AppName>[] => {
+export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean }): NavigationItem[] => {
   const params = useMatchRoute<{ app: AppName; marketId: string }>({
     to: `$app/$network${LEND_ROUTES.PAGE_MARKETS}/$marketId`,
     fuzzy: true, // allows to match longer routes like .../vault
@@ -54,9 +52,7 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
   return APP_LINK.llamalend.routes
 }
 
-export const useLlamalendRoutes = (): AppRoute<AppName>[] => {
-  const isDesktop = useIsDesktop()
-  const llamalendMarketRoutes = useLlamalendMarketSubNavRoutes({ isMobile: false })
-
-  return isDesktop ? llamalendMarketRoutes : APP_LINK.llamalend.routes
+export const useLlamalendRoutes = () => {
+  const llamalendDesktopItems = useLlamalendMarketSubNavRoutes({ isMobile: false })
+  return useIsDesktop() ? llamalendDesktopItems : APP_LINK.llamalend.routes
 }

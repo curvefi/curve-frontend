@@ -5,7 +5,6 @@ import {
   isTestnet,
 } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import type { ChainListOption } from '@evm-ui/features/switch-chain/ui/ChainList'
-import { type AppLinks, AppPage, AppRoute } from '@evm-ui/widgets/Header/types'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import { recordValues } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
@@ -73,9 +72,22 @@ export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'bridge', 
 export type AppName = (typeof AppNames)[number]
 export type AppMenuOption = 'dex' | 'llamalend' | 'dao' | 'bridge' | 'analytics'
 
+export type NavigationItem = {
+  app: AppName
+  route: string // this is a route inside the app, with leading slash, does not include the app name and the network
+  label: () => string // lazy evaluation for translations
+  target?: '_self' | '_blank'
+  matchMode?: 'prefix' | 'exact' // some pages have "../marketId" and "../marketId/vault" as routes, so we need to match the exact route
+}
+
+type AppNavigation = {
+  label: string
+  routes: NavigationItem[]
+}
+
 export const LlamalendApps: AppName[] = ['crvusd', 'lend', 'llamalend']
 
-export const APP_LINK: AppLinks<AppName, AppMenuOption> = {
+export const APP_LINK: Record<AppMenuOption, AppNavigation> = {
   dex: {
     label: 'DEX',
     routes: [
@@ -119,19 +131,11 @@ export const getInternalUrl = (app: AppName, blockchainId: string, route = '/') 
 const removeTrailingSlash = (pathname: string) => pathname.replace(/\/$/, '')
 
 /** Converts a route to a page object, adding href and isActive properties */
-export const routeToPage = <TApp extends string>(
-  { route, target, label, app, matchMode }: AppRoute<TApp>,
-  {
-    blockchainId,
-    pathname,
-    urlFactory,
-  }: {
-    blockchainId: string
-    pathname: string
-    urlFactory: (app: TApp, blockchainId: string, route: string) => string
-  },
-): AppPage => {
-  const href = route.startsWith('http') ? route : urlFactory(app, blockchainId, route)
+export const routeToPage = (
+  { route, target, label, app, matchMode }: NavigationItem,
+  { blockchainId, pathname }: { blockchainId: string; pathname: string },
+) => {
+  const href = route.startsWith('http') ? route : getInternalUrl(app, blockchainId, route)
   return {
     href,
     target,

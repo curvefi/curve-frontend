@@ -4,7 +4,7 @@ import type { Address } from '@primitives/address.utils'
 
 export type ConnectedWalletLabelProps = ButtonProps & {
   address: Address
-  addressLabel: string | undefined
+  addressLabel: string | null | undefined
 }
 
 export const ConnectedWalletLabel = ({ address, addressLabel, ...props }: ConnectedWalletLabelProps) => (

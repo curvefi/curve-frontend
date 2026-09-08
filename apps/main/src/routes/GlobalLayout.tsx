@@ -10,6 +10,7 @@ import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConnectModal'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
+import { usePathname } from '@evm-ui/hooks/router'
 import {
   APP_LINK,
   AppMenuOption,
@@ -18,20 +19,16 @@ import {
   createChainOptions,
   getInternalUrl,
   LlamalendApps,
+  routeToPage,
 } from '@evm-ui/shared/routes'
 import { Footer } from '@evm-ui/widgets/Footer'
 import { Header } from '@evm-ui/widgets/Header'
+import { getHeaderSections } from '@evm-ui/widgets/Header/header-sections.util'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
-import { type PartialRecord } from '@primitives/objects.utils'
-import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { t } from '@ui/lib/i18n'
-
-const { MinHeight } = SizesAndSpaces
+import { mapRecord, type PartialRecord } from '@primitives/objects.utils'
+import { PageLayout } from '@ui/features/layout/PageLayout'
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) =>
   [
@@ -98,42 +95,43 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   userAddress: Address | undefined
 }) => {
   const currentMenu = getAppMenu(currentApp)
+  const routeContext = { blockchainId: network.blockchainId, pathname: usePathname() }
   const { connect, disconnect } = useWallet()
   const { address, isConnecting, isConnected } = useConnection()
-  const { data: ensName } = useEnsName({ address })
+
   return (
-    <Stack>
-      <Header
-        currentApp={currentApp}
-        backendMaintenance={backendMaintenance}
-        currentNetwork={createChainOption(network, currentApp)}
-        currentMenu={currentMenu}
-        supportedNetworks={createChainOptions(getSupportedNetworks(networks, currentApp), currentApp)}
-        appStats={useAppStats(currentApp, network)}
-        routes={useAppRoutes(network)}
-        links={APP_LINK}
-        urlFactory={getInternalUrl}
-        hideChains={HIDE_CHAINS}
-        tvls={useNetworksTVL(TVL_SOURCES[currentMenu])}
-        connectWalletProps={{
-          disconnect,
-          address,
-          addressLabel: ensName ?? undefined,
-          isConnecting,
-          isConnected,
-          connect,
-        }}
-      />
-      <Box
-        component="main"
-        sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: MinHeight.pageContent, width: '100%' }}
-      >
-        <ErrorBoundary title={t`Page error`} userAddress={userAddress}>
-          {children}
-        </ErrorBoundary>
-        <WagmiConnectModal />
-      </Box>
-      <Footer appName={currentApp} blockchainId={network.blockchainId} />
-    </Stack>
+    <PageLayout
+      header={
+        <Header
+          backendMaintenance={backendMaintenance}
+          currentNetwork={createChainOption(network, currentApp)}
+          currentMenu={currentMenu}
+          supportedNetworks={createChainOptions(getSupportedNetworks(networks, currentApp), currentApp)}
+          appStats={useAppStats(currentApp, network)}
+          pages={useAppRoutes(network)[currentMenu].map(route => routeToPage(route, routeContext))}
+          links={mapRecord(APP_LINK, (_menu, { label, routes }) => ({
+            label,
+            href: getInternalUrl(routes[0].app, network.blockchainId),
+            pages: routes.map(route => routeToPage(route, routeContext)),
+          }))}
+          sections={getHeaderSections(page => getInternalUrl(currentApp, network.blockchainId, page))}
+          hideChains={HIDE_CHAINS}
+          tvls={useNetworksTVL(TVL_SOURCES[currentMenu])}
+          connectWalletProps={{
+            disconnect,
+            address,
+            addressLabel: useEnsName({ address }).data,
+            isConnecting,
+            isConnected,
+            connect,
+          }}
+        />
+      }
+      userAddress={userAddress}
+      connectModal={<WagmiConnectModal />}
+      footer={<Footer appName={currentApp} blockchainId={network.blockchainId} />}
+    >
+      {children}
+    </PageLayout>
   )
 }
