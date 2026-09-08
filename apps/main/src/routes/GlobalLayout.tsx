@@ -21,6 +21,7 @@ import {
   LlamalendApps,
   routeToPage,
 } from '@evm-ui/shared/routes'
+import { EvmBanners } from '@evm-ui/shared/ui/EvmBanners'
 import { shortenAddress } from '@evm-ui/utils'
 import { Footer } from '@evm-ui/widgets/Footer'
 import { getFooterSections } from '@evm-ui/widgets/Footer/footer-sections.util'
@@ -103,16 +104,25 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   const { connect, disconnect } = useWallet()
   const { address, isConnecting, isConnected } = useConnection()
   const addressLabel = useEnsName({ address }).data ?? maybe(address, shortenAddress)
+  const { blockchainId, chainId } = network
 
   const currentMenu = APP_TO_MENU[currentApp]
-  const routeContext = { blockchainId: network.blockchainId, pathname: usePathname() }
-  const formatUrl = (page: string) => getInternalUrl(currentApp, network.blockchainId, page)
+  const routeContext = { blockchainId, pathname: usePathname() }
+  const formatUrl = (page: string) => getInternalUrl(currentApp, blockchainId, page)
 
   return (
     <PageLayout
       header={
         <Header
-          backendMaintenance={backendMaintenance}
+          banners={
+            <EvmBanners
+              chainId={chainId}
+              blockchainId={blockchainId}
+              currentApp={currentApp}
+              backendMaintenance={backendMaintenance}
+              isConnected={isConnected}
+            />
+          }
           currentNetwork={createChainOption(network, currentApp)}
           currentMenu={currentMenu}
           supportedNetworks={createChainOptions(getSupportedNetworks(networks, currentApp), currentApp)}

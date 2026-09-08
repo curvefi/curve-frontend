@@ -1,7 +1,6 @@
 import { ConnectWalletIndicator } from '@evm-ui/features/connect-wallet'
 import { ChainSwitcher } from '@evm-ui/features/switch-chain'
 import { UserProfile } from '@evm-ui/features/user-profile'
-import { GlobalBanner } from '@evm-ui/shared/ui/GlobalBanner'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
@@ -21,13 +20,13 @@ const { Spacing } = SizesAndSpaces
 export const DesktopHeader = <TApp extends string, TId extends string, TChainId extends number>({
   currentMenu,
   currentNetwork,
-  backendMaintenance,
   supportedNetworks,
   pages,
   appStats,
   hideChains,
   tvls,
   links,
+  banners,
   connectWalletProps,
 }: HeaderProps<TApp, TId, TChainId>) => (
   <AppBar
@@ -36,11 +35,7 @@ export const DesktopHeader = <TApp extends string, TId extends string, TChainId 
     data-testid="desktop-main-nav"
     sx={{ position: 'sticky', top: 0, boxShadow: 'none', borderBottom: getHeaderBorder }}
   >
-    <GlobalBanner
-      blockchainId={currentNetwork.blockchainId}
-      chainId={currentNetwork.chainId}
-      backendMaintenance={backendMaintenance}
-    />
+    {banners}
 
     <Toolbar
       sx={{ backgroundColor: t => t.design.Layer[2].Fill, justifyContent: 'space-around', paddingY: 0 }}
