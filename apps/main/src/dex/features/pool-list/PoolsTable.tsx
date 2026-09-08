@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { TableFilters } from '@evm-ui/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@evm-ui/shared/ui/DataTable/TableFiltersChip'
@@ -97,7 +97,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   return (
     <Stack>
       <TableHeader title={t`Pools`} onReload={() => void onReload()} isLoading={isFetching} />
-      <DataTable
+      <EvmDataTable
         table={table}
         emptyState={{
           title: t`Can't find what you're looking for?`,
@@ -158,7 +158,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
             )
           }
         />
-      </DataTable>
+      </EvmDataTable>
       <TableVisibilitySettingsPopover<PoolColumnId>
         anchorRef={visibilitySettingsRef}
         visibilityGroups={columnSettings}

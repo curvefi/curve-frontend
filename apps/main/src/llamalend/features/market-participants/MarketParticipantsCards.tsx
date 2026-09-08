@@ -5,7 +5,7 @@ import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { useManualPagination } from '@evm-ui/features/activity-table'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
@@ -79,7 +79,7 @@ export const BorrowersCard = () => {
   return (
     <Card size="small" data-testid="top-borrowers-card">
       <MarketCardHeader title={t`Top Borrowers`} />
-      <DataTable
+      <EvmDataTable
         category="detail"
         table={table}
         emptyState={{ title: t`No borrowers found.` }}
@@ -126,7 +126,7 @@ export const SuppliersCard = () => {
   return (
     <Card size="small" data-testid="top-suppliers-card">
       <MarketCardHeader title={t`Top Suppliers`} />
-      <DataTable
+      <EvmDataTable
         category="detail"
         table={table}
         emptyState={{ title: t`No suppliers found.` }}

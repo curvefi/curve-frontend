@@ -1,7 +1,6 @@
 /// <reference types="./DataTable.d.ts" />
 import { type ReactNode, useMemo, useRef } from 'react'
 import { TablePagination } from '@evm-ui/shared/ui/DataTable/TablePagination'
-import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -10,13 +9,17 @@ import TableCell from '@mui/material/TableCell'
 import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import type { Address } from '@primitives/address.utils'
+import type { AllOrNone } from '@primitives/objects.utils'
 import type { RowData } from '@tanstack/react-table'
+import { EmptyStateCard, type EmptyStateCardProps } from '@ui/components/EmptyStateCard'
 import { WithWrapper } from '@ui/components/WithWrapper'
+import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
+import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
 import { useLayoutStore } from '@ui/features/layout/store'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
-import { EmptyStateEvmCard, type EmptyStateEvmCardProps } from '../EmptyStateEvmCard'
 import { DATA_TABLE_CATEGORIES, type DataTableCategory, type DataTableCategoryConfig } from './categories'
 import { DataTableHeaderHeight, type useCurveTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
@@ -35,16 +38,14 @@ const TABLE_FILTERS_TEST_ID = 'table-filters'
 const { Height } = SizesAndSpaces
 
 type TableEmptyState = { testId?: string } & Pick<
-  EmptyStateEvmCardProps,
+  EmptyStateCardProps,
   'title' | 'description' | 'button' | 'secondaryButton'
 >
 
-type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<
-  EmptyStateEvmCardProps,
-  'title' | 'description'
->
+type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
 
 export type DataTableProps<TData extends RowData> = {
+  userAddress: Address | undefined
   category?: DataTableCategory
   table: ReturnType<typeof useCurveTable<TData>>
   emptyState?: TableEmptyState // optional overrides for the built-in empty state
@@ -52,7 +53,8 @@ export type DataTableProps<TData extends RowData> = {
   children?: ReactNode // passed to <FilterRow />
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
-} & Omit<DataRowProps<TData>, 'table' | 'row'>
+} & AllOrNone<ConnectionProps> &
+  Omit<DataRowProps<TData>, 'table' | 'row'>
 
 /**
  * DataTable component to render the table with headers and rows.
@@ -67,8 +69,13 @@ export const DataTable = <TData extends RowData>({
   shouldStickFirstColumn = false,
   footerRow,
   viewAllLabel,
+  userAddress,
+  isConnecting,
+  isConnected,
+  connect,
   ...rowProps
 }: DataTableProps<TData>) => {
+  const connectionProps: AllOrNone<ConnectionProps> = connect ? { connect, isConnecting, isConnected } : {}
   const {
     size = 'small',
     height,
@@ -156,7 +163,8 @@ export const DataTable = <TData extends RowData>({
               ))}
               {error ? (
                 <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>
-                  <EvmErrorMessage
+                  <ErrorMessage
+                    userAddress={userAddress}
                     title={errorState?.title ?? t`Could not load data`}
                     subtitle={errorState?.description ?? error.message}
                     error={error}
@@ -173,7 +181,8 @@ export const DataTable = <TData extends RowData>({
               ) : (
                 !rows.length && (
                   <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>
-                    <EmptyStateEvmCard
+                    <EmptyStateCard
+                      {...connectionProps}
                       title={emptyState?.title ?? t`No results found`}
                       description={emptyState?.description}
                       button={emptyState?.button}

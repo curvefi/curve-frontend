@@ -1,4 +1,4 @@
-import { DataTable, DataTableProps } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable, type EvmDataTableProps } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { getTransactionActions } from './utils'
@@ -6,7 +6,7 @@ import { getTransactionActions } from './utils'
 type ActivityTableItem = { chainId: number; txHash: string | null }
 
 type ActivityTableProps<TData extends ActivityTableItem> = Pick<
-  DataTableProps<TData>,
+  EvmDataTableProps<TData>,
   'table' | 'emptyState' | 'errorState' | 'expandedPanel'
 >
 
@@ -24,7 +24,7 @@ export const ActivityTable = <TData extends ActivityTableItem>({
   errorState,
   expandedPanel,
 }: ActivityTableProps<TData>) => (
-  <DataTable
+  <EvmDataTable
     category="scrollable"
     table={table}
     emptyState={emptyState}
