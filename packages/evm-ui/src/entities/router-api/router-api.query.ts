@@ -189,7 +189,10 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
   getRouteGasOptions: GetGasCallback<TData, TKey>,
   providers: readonly RouteProvider[] | undefined,
   enabled?: boolean,
-): { queries: RouteQueries; onRefresh: () => Promise<RouteResponse[][]> } => ({
+): {
+  queries: RouteQueries
+  onRefresh: () => Promise<RouteResponse[][]>
+} => ({
   queries: {
     curve: useCurveRouterQuery(params, getRouteGasOptions, !!providers?.includes('curve') && enabled),
     'curve-solver': useRouterQuery(params, 'curve-solver', !!providers?.includes('curve-solver') && enabled),

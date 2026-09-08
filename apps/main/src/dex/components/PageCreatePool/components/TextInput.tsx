@@ -4,7 +4,9 @@ import { useTextField } from 'react-aria'
 import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box'
 
-type Props = { row?: boolean } & AriaTextFieldProps
+type Props = {
+  row?: boolean
+} & AriaTextFieldProps
 
 export const TextInput = (props: Props) => {
   const { label } = props

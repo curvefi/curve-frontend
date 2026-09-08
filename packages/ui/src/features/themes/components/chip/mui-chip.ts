@@ -57,8 +57,12 @@ const clickableChipColorStyle = (color: string, backgroundColor: string, borderC
   color,
   backgroundColor,
   borderColor,
-  '& .MuiChip-icon': { color },
-  '& .MuiChip-deleteIcon': { color },
+  '& .MuiChip-icon': {
+    color,
+  },
+  '& .MuiChip-deleteIcon': {
+    color,
+  },
 })
 
 // Returns the base and per-color styles for each clickable chip variant
@@ -214,7 +218,10 @@ export const defineMuiChip = (
         '& .MuiChip-deleteIcon': { marginInline: 0 },
       },
       // Mui has default paddings set this to 12px, override with our custom paddingInline per size
-      '& .MuiChip-label': { paddingLeft: 'unset', paddingRight: 'unset' },
+      '& .MuiChip-label': {
+        paddingLeft: 'unset',
+        paddingRight: 'unset',
+      },
       '& .MuiChip-label:empty': { display: 'none' },
     },
   },
@@ -225,15 +232,21 @@ export const defineMuiChip = (
       style: {
         borderRadius: Chips.BorderRadius.Clickable,
         cursor: 'pointer',
-        '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': { ...handleBreakpoints({ gap: Spacing.xxs }) },
+        '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': {
+          ...handleBreakpoints({ gap: Spacing.xxs }),
+        },
         '& .MuiChip-icon': { marginInline: 0, color: 'inherit' },
         '& .MuiChip-deleteIcon': { margin: 0, color: 'inherit' },
         '&:hover, &:focus-visible': {
           borderColor: 'transparent',
           backgroundColor: Chips.Hover.Fill,
           color: Chips.Hover.Label,
-          '& .MuiChip-icon': { color: Chips.Hover.Label },
-          '& .MuiChip-deleteIcon': { color: Chips.Hover.Label },
+          '& .MuiChip-icon': {
+            color: Chips.Hover.Label,
+          },
+          '& .MuiChip-deleteIcon': {
+            color: Chips.Hover.Label,
+          },
         },
       },
     },
@@ -247,7 +260,10 @@ export const defineMuiChip = (
     createColor({ color: 'Accent', Badges, borderWidth: 0 }),
 
     ...buildClickableChipVariantStyle({ TextColors, Chips }).flatMap(({ variant, base, colors }) => [
-      { props: { clickable: true, variant }, style: base },
+      {
+        props: { clickable: true, variant },
+        style: base,
+      },
       ...Object.entries(colors).map(([color, style]) => ({ props: { clickable: true, variant, color }, style })),
     ]),
 
@@ -260,7 +276,11 @@ export const defineMuiChip = (
           height,
           '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
           '& .MuiChip-label': handleBreakpoints({ lineHeight }),
-          '&:has(.MuiChip-icon)': { ...handleBreakpoints({ gap: iconGap }) },
+          '&:has(.MuiChip-icon)': {
+            ...handleBreakpoints({
+              gap: iconGap,
+            }),
+          },
           // Target chips with empty labels (icon-only badges)
           '&:has(.MuiChip-label:empty)': {
             width: height,
@@ -276,7 +296,10 @@ export const defineMuiChip = (
     ),
     ...Object.entries(chipSizeClickable).map(
       ([size, { font, deleteIconSize, height: heightOverride, iconSize, ...rest }]) => ({
-        props: { size: size as ChipSizes, clickable: true },
+        props: {
+          size: size as ChipSizes,
+          clickable: true,
+        },
         style: {
           ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
           ...(heightOverride && {

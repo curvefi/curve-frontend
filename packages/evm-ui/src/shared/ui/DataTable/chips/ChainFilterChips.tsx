@@ -49,7 +49,10 @@ const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps
       // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       key={`skeleton-chain-chip-${i}`}
       variant="rectangular"
-      sx={{ height: chipSizeClickable[chipSize].height, width: chipSizeClickable[chipSize].height }}
+      sx={{
+        height: chipSizeClickable[chipSize].height,
+        width: chipSizeClickable[chipSize].height,
+      }}
     />
   ))
 
@@ -89,7 +92,10 @@ export const ChainFilterChips = (props: ChainFilterChipsProps) => {
       container
       spacing={Spacing.xs}
       size={{ mobile: 12, tablet: 'auto' }}
-      sx={{ flexWrap: { mobile: 'nowrap', tablet: 'wrap' }, overflowX: { mobile: 'auto', tablet: 'visible' } }}
+      sx={{
+        flexWrap: { mobile: 'nowrap', tablet: 'wrap' },
+        overflowX: { mobile: 'auto', tablet: 'visible' },
+      }}
     >
       {isLoading ? (
         <SkeletonChips chipSize={chipSize} />

@@ -5,7 +5,10 @@ import { formatDate } from '@legacy-ui/utils'
 import { useTheme } from '@mui/material/styles'
 import { FeesBarChartTooltip } from './FeesBarChartTooltip'
 
-type FeesBarChartProps = { data: VeCrvFee[]; height: number }
+type FeesBarChartProps = {
+  data: VeCrvFee[]
+  height: number
+}
 
 export const FeesBarChart = ({ data, height }: FeesBarChartProps) => {
   const currentDate = useCurrentDate()

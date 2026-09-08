@@ -109,5 +109,8 @@ export const useCampaignsByAddress = ({
   )
 
   // TODO: Temporarily map undefined data to [], needs a proper fix
-  return { ...query, data: query.data ?? [] }
+  return {
+    ...query,
+    data: query.data ?? [],
+  }
 }

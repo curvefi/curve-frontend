@@ -40,7 +40,10 @@ export const RecentRefuels = ({
   const table = useCurveTable({
     columns,
     query: mapQuery(recentRefuels, ({ data: events }) =>
-      events.map(event => ({ ...event, donorUrl: event.donor ? scanAddressPath(chainId, event.donor) : undefined })),
+      events.map(event => ({
+        ...event,
+        donorUrl: event.donor ? scanAddressPath(chainId, event.donor) : undefined,
+      })),
     ),
     state: { pagination },
     manualPagination: true,

@@ -14,9 +14,18 @@ const meta: Meta<typeof Accordion> = {
   title: 'UI Kit/Widgets/Accordion',
   component: Accordion,
   argTypes: {
-    title: { control: { disable: true }, description: 'Title displayed in the accordion header (string or ReactNode)' },
-    icon: { control: { disable: true }, description: 'Optional icon to display before the title (ReactNode)' },
-    ghost: { control: 'boolean', description: 'Whether to render without a border' },
+    title: {
+      control: { disable: true },
+      description: 'Title displayed in the accordion header (string or ReactNode)',
+    },
+    icon: {
+      control: { disable: true },
+      description: 'Optional icon to display before the title (ReactNode)',
+    },
+    ghost: {
+      control: 'boolean',
+      description: 'Whether to render without a border',
+    },
     size: {
       control: 'select',
       options: ['extraSmall', 'small', 'medium'],
@@ -27,8 +36,14 @@ const meta: Meta<typeof Accordion> = {
       options: ['chevron', 'plusMinus'],
       description: 'The visual indicator displayed at the end of the header',
     },
-    info: { control: { disable: true }, description: 'Optional information to display in the header (ReactNode)' },
-    defaultExpanded: { control: 'boolean', description: 'Control initial expanded state' },
+    info: {
+      control: { disable: true },
+      description: 'Optional information to display in the header (ReactNode)',
+    },
+    defaultExpanded: {
+      control: 'boolean',
+      description: 'Control initial expanded state',
+    },
     children: {
       control: { disable: true },
       description: 'Content to display when the accordion is expanded (ReactNode)',
@@ -110,7 +125,13 @@ export const WithReactNodeTitle: Story = {
       </WithSkeleton>
     ),
   },
-  parameters: { docs: { description: { story: 'Accordion with a ReactNode title containing custom typography' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Accordion with a ReactNode title containing custom typography',
+      },
+    },
+  },
 }
 
 export const WithLoadingTitle: Story = {
@@ -123,7 +144,13 @@ export const WithLoadingTitle: Story = {
       </WithSkeleton>
     ),
   },
-  parameters: { docs: { description: { story: 'Accordion with a loading state in the title' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Accordion with a loading state in the title',
+      },
+    },
+  },
 }
 
 export const ComplexContent: Story = {
@@ -147,7 +174,13 @@ export const ComplexContent: Story = {
       </Box>
     ),
   },
-  parameters: { docs: { description: { story: 'Accordion with complex nested content' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Accordion with complex nested content',
+      },
+    },
+  },
 }
 
 export const Controlled: Story = {

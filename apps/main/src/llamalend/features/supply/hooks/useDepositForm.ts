@@ -19,7 +19,10 @@ const userDefaultValues = { depositAmount: undefined }
 
 const emptyDepositForm = (): DepositForm => ({ ...userDefaultValues, maxDepositAmount: undefined })
 
-const formOptions = { validation: depositFormValidationSuite, defaultValues: emptyDepositForm() }
+const formOptions = {
+  validation: depositFormValidationSuite,
+  defaultValues: emptyDepositForm(),
+}
 export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
   const { marketId, controllerAddress, tokens, marketType, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
@@ -42,7 +45,12 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
     onSubmit: onMutationSubmit,
     isPending: isDepositing,
     error: depositError,
-  } = useDepositMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
+  } = useDepositMutation({
+    marketId,
+    network,
+    onReset: () => form.reset(userDefaultValues),
+    userAddress,
+  })
 
   const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },

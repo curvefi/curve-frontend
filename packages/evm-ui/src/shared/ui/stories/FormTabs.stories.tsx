@@ -9,7 +9,12 @@ import { TabsSwitcherProps } from '../Tabs/TabsSwitcher'
 
 const { MaxWidth } = SizesAndSpaces
 
-type DemoParams = { availableBalance: number; canWithdraw: boolean; showAdvanced: boolean; userAddress: string }
+type DemoParams = {
+  availableBalance: number
+  canWithdraw: boolean
+  showAdvanced: boolean
+  userAddress: string
+}
 
 const Panel = ({ title, body }: { title: string; body: string }) => (
   <Stack sx={{ gap: 1, padding: 3, borderRadius: 2, border: t => `1px solid ${t.palette.divider}` }}>
@@ -57,7 +62,13 @@ const numberedTabs = (length: number): FormTab<DemoParams>[] =>
   }))
 
 const baseMenu: FormTab<DemoParams>[] = [
-  { value: 'overview', label: 'Overview', visible: () => true, component: OverviewTab, alwaysInKebab: () => false },
+  {
+    value: 'overview',
+    label: 'Overview',
+    visible: () => true,
+    component: OverviewTab,
+    alwaysInKebab: () => false,
+  },
   {
     value: 'manage',
     label: 'Manage',
@@ -84,7 +95,13 @@ const baseMenu: FormTab<DemoParams>[] = [
 ]
 
 const alwaysInMenu: FormTab<DemoParams>[] = [
-  { value: 'settings', label: 'Settings', alwaysInKebab: () => true, visible: () => true, component: AlwaysInMenuTab },
+  {
+    value: 'settings',
+    label: 'Settings',
+    alwaysInKebab: () => true,
+    visible: () => true,
+    component: AlwaysInMenuTab,
+  },
 ]
 
 type StoryArgs = DemoParams & {
@@ -114,11 +131,26 @@ const meta: Meta<typeof FormTabsStory> = {
     menu: baseMenu,
   },
   argTypes: {
-    availableBalance: { control: { type: 'number', min: 0 }, description: 'Value forwarded to tab content.' },
-    canWithdraw: { control: 'boolean', description: 'Toggles the disabled state of the Withdraw sub-tab.' },
-    showAdvanced: { control: 'boolean', description: 'Controls visibility of the Advanced tab.' },
-    userAddress: { control: 'text', description: 'Sample address injected into tab content.' },
-    shouldWrap: { control: 'boolean', description: 'Renders content with the legacy AppForm wrapper background.' },
+    availableBalance: {
+      control: { type: 'number', min: 0 },
+      description: 'Value forwarded to tab content.',
+    },
+    canWithdraw: {
+      control: 'boolean',
+      description: 'Toggles the disabled state of the Withdraw sub-tab.',
+    },
+    showAdvanced: {
+      control: 'boolean',
+      description: 'Controls visibility of the Advanced tab.',
+    },
+    userAddress: {
+      control: 'text',
+      description: 'Sample address injected into tab content.',
+    },
+    shouldWrap: {
+      control: 'boolean',
+      description: 'Renders content with the legacy AppForm wrapper background.',
+    },
     overflow: {
       control: 'select',
       options: ['standard', 'kebab', 'fullWidth'],
@@ -138,33 +170,64 @@ const meta: Meta<typeof FormTabsStory> = {
 type Story = StoryObj<typeof FormTabsStory>
 
 export const BasicTabs: Story = {
-  parameters: { docs: { description: { story: 'Default layout with nested Manage sub-tabs.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Default layout with nested Manage sub-tabs.',
+      },
+    },
+  },
 }
 
 export const WithConditionalTab: Story = {
   args: { showAdvanced: true },
-  parameters: { docs: { description: { story: 'Advanced tab appears when visibility is enabled.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Advanced tab appears when visibility is enabled.',
+      },
+    },
+  },
 }
 
 export const WithDisabledSubTab: Story = {
   args: { canWithdraw: false },
   parameters: {
-    docs: { description: { story: 'Withdraw sub-tab rendered disabled to highlight the disabled state handling.' } },
+    docs: {
+      description: {
+        story: 'Withdraw sub-tab rendered disabled to highlight the disabled state handling.',
+      },
+    },
   },
 }
 
 export const LegacyWrapped: Story = {
   args: { shouldWrap: true },
-  parameters: { docs: { description: { story: 'Illustrates the legacy AppForm background applied via shouldWrap.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Illustrates the legacy AppForm background applied via shouldWrap.',
+      },
+    },
+  },
 }
 
 export const ForcedKebabMenu: Story = {
   args: { overflow: 'kebab', menu: [...baseMenu, ...alwaysInMenu] },
-  parameters: { docs: { description: { story: 'Kebab mode with a tab that is always in the kebab menu.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Kebab mode with a tab that is always in the kebab menu.',
+      },
+    },
+  },
 }
 
 export const KebabMenuAutoOverflow: Story = {
-  args: { overflow: 'kebab', menu: numberedTabs(10) },
+  args: {
+    overflow: 'kebab',
+    menu: numberedTabs(10),
+  },
   render: ({ shouldWrap, overflow, menu, ...params }) => (
     <Stack sx={{ gap: 4 }}>
       {['40rem', '30rem', '20rem'].map(width => (
@@ -178,7 +241,11 @@ export const KebabMenuAutoOverflow: Story = {
   ),
 
   parameters: {
-    docs: { description: { story: 'Kebab mode that triggers automatic overflow at different container widths.' } },
+    docs: {
+      description: {
+        story: 'Kebab mode that triggers automatic overflow at different container widths.',
+      },
+    },
   },
 }
 

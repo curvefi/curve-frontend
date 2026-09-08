@@ -4,7 +4,11 @@ import { createMerklServer } from '../src/server'
 const MERKL_API_URL = 'https://api.merkl.xyz'
 
 const jsonResponse = (payload: unknown, init: ResponseInit = {}) =>
-  new Response(JSON.stringify(payload), { status: 200, headers: { 'content-type': 'application/json' }, ...init })
+  new Response(JSON.stringify(payload), {
+    status: 200,
+    headers: { 'content-type': 'application/json' },
+    ...init,
+  })
 
 const getFetchCall = (fetchMock: ReturnType<typeof vi.fn<typeof fetch>>) => {
   expect(fetchMock).toHaveBeenCalled()
@@ -34,7 +38,14 @@ describe('GET opportunities', () => {
     try {
       const { statusCode, json } = await server.inject({
         url: '/api/merkl/v1/opportunities',
-        query: { mainProtocolId: 'curve', test: 'false', status: 'LIVE', action: 'POOL', items: '100', page: '0' },
+        query: {
+          mainProtocolId: 'curve',
+          test: 'false',
+          status: 'LIVE',
+          action: 'POOL',
+          items: '100',
+          page: '0',
+        },
       })
 
       expect(statusCode).toBe(200)

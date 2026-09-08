@@ -20,7 +20,9 @@ import { waitForApproval } from '@evm-ui/utils'
 import type { Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
 
-type GaugeRewardMutationOptions = GaugeQuery & { onReset: () => void }
+type GaugeRewardMutationOptions = GaugeQuery & {
+  onReset: () => void
+}
 
 export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutationOptions) => {
   const { tokensMapper } = useTokensMapper(chainId)
@@ -66,7 +68,9 @@ export const useDepositReward = ({ chainId, poolId, onReset }: GaugeRewardMutati
         message: t`Approved deposit reward`,
         config,
       })
-      return { hash: (await getGauge(poolId).depositReward(rewardTokenId, amount, epoch)) as Hex }
+      return {
+        hash: (await getGauge(poolId).depositReward(rewardTokenId, amount, epoch)) as Hex,
+      }
     },
     validationSuite: gaugeDepositRewardValidationSuite,
     validationParams: { chainId, poolId },

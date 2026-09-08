@@ -85,7 +85,15 @@ export const FormClaimFeesButtons = ({
 
       if (resp?.error) return
 
-      setSteps([{ key: 'CLAIM', status: 'succeeded', type: 'action', content: t`Claimed ${key}`, onClick: noop }])
+      setSteps([
+        {
+          key: 'CLAIM',
+          status: 'succeeded',
+          type: 'action',
+          content: t`Claimed ${key}`,
+          onClick: noop,
+        },
+      ])
 
       const successMessage =
         key === claimButtonsKey['3CRV']

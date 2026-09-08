@@ -65,7 +65,9 @@ const defaultFavorites = [defaultTokens[0], defaultTokens[1]]
 const defaultDisabledTokens = [defaultTokens[2].address]
 
 type TokenSelectorStoryProps = Omit<ComponentProps<typeof TokenSelector>, 'children'> &
-  Omit<TokenListProps, 'onToken' | 'children'> & { listChildren?: ReactNode }
+  Omit<TokenListProps, 'onToken' | 'children'> & {
+    listChildren?: ReactNode
+  }
 
 const TokenSelectorComponent = ({
   selectedToken: selectedTokenInit,
@@ -126,15 +128,42 @@ const meta: Meta<typeof TokenSelectorComponent> = {
     disabledTokens: defaultDisabledTokens,
   },
   argTypes: {
-    tokens: { control: 'object', description: 'Array of token options to display in selector' },
-    favorites: { control: 'object', description: 'Array of favorite token options to display in selector' },
-    balances: { control: 'object', description: 'Record of token balances by address' },
-    tokenPrices: { control: 'object', description: 'Record of token prices in USD by address' },
-    disabled: { control: 'boolean', description: 'Disables the token selector button and modal' },
-    disableSearch: { control: 'boolean', description: 'Disables search input in token selector modal' },
-    compact: { control: 'boolean', description: 'Renders the modal in a compact size' },
-    selectedToken: { control: 'object', description: 'Currently selected token' },
-    error: { control: 'text', description: 'Custom error message to display in the token selector modal' },
+    tokens: {
+      control: 'object',
+      description: 'Array of token options to display in selector',
+    },
+    favorites: {
+      control: 'object',
+      description: 'Array of favorite token options to display in selector',
+    },
+    balances: {
+      control: 'object',
+      description: 'Record of token balances by address',
+    },
+    tokenPrices: {
+      control: 'object',
+      description: 'Record of token prices in USD by address',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disables the token selector button and modal',
+    },
+    disableSearch: {
+      control: 'boolean',
+      description: 'Disables search input in token selector modal',
+    },
+    compact: {
+      control: 'boolean',
+      description: 'Renders the modal in a compact size',
+    },
+    selectedToken: {
+      control: 'object',
+      description: 'Currently selected token',
+    },
+    error: {
+      control: 'text',
+      description: 'Custom error message to display in the token selector modal',
+    },
     disabledTokens: {
       control: 'object',
       description: 'Array of token addresses that should be disabled in the selector',
@@ -143,9 +172,18 @@ const meta: Meta<typeof TokenSelectorComponent> = {
       control: 'boolean',
       description: 'Disable automatic sorting so you can apply your own in the tokens property',
     },
-    listChildren: { control: false, description: 'Adds extra custom options to the modal, below the favorites' },
-    disableMyTokens: { control: 'boolean', description: 'Disables the "My Tokens" tab in the token selector modal' },
-    onSearch: { action: 'search updated', description: 'Callback when user enters text in the search input' },
+    listChildren: {
+      control: false,
+      description: 'Adds extra custom options to the modal, below the favorites',
+    },
+    disableMyTokens: {
+      control: 'boolean',
+      description: 'Disables the "My Tokens" tab in the token selector modal',
+    },
+    onSearch: {
+      action: 'search updated',
+      description: 'Callback when user enters text in the search input',
+    },
   },
 }
 
@@ -163,18 +201,46 @@ export const Default: Story = {
 }
 
 export const NoSelectedToken: Story = {
-  args: { selectedToken: undefined, disabled: true },
-  parameters: { docs: { description: { story: 'Token selector with no token selected initially' } } },
+  args: {
+    selectedToken: undefined,
+    disabled: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token selector with no token selected initially',
+      },
+    },
+  },
 }
 
 export const WithError: Story = {
-  args: { error: 'Failed to load tokens. Please try again later.' },
-  parameters: { docs: { description: { story: 'Token selector displaying an error message' } } },
+  args: {
+    error: 'Failed to load tokens. Please try again later.',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token selector displaying an error message',
+      },
+    },
+  },
 }
 
 export const CompactMode: Story = {
-  args: { compact: true, favorites: [], tokens: defaultTokens.slice(0, 3), disableMyTokens: true },
-  parameters: { docs: { description: { story: 'Token selector in compact mode with reduced size modal' } } },
+  args: {
+    compact: true,
+    favorites: [],
+    tokens: defaultTokens.slice(0, 3),
+    disableMyTokens: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token selector in compact mode with reduced size modal',
+      },
+    },
+  },
 }
 
 export const WithCustomOptions: Story = {
@@ -188,7 +254,13 @@ export const WithCustomOptions: Story = {
       </Stack>
     ),
   },
-  parameters: { docs: { description: { story: 'Token selector with custom options displayed below favorites' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token selector with custom options displayed below favorites',
+      },
+    },
+  },
 }
 
 export default meta

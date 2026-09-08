@@ -7,7 +7,11 @@ import { NoTableData } from './NoTableData'
 import { Pagination } from './Pagination'
 import { TableHeader } from './TableHeader'
 
-export type Column<T> = { key: keyof T; label: string; disabled?: boolean }
+export type Column<T> = {
+  key: keyof T
+  label: string
+  disabled?: boolean
+}
 
 type PaginatedTableProps<T> = {
   sortBy: { key: keyof T; order: 'asc' | 'desc' }

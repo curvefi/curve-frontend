@@ -13,7 +13,11 @@ const positiveIntegerFromEnv = (name: string, fallback: number) => {
 const endpointConcurrency = positiveIntegerFromEnv('PRICES_API_TEST_CONCURRENCY', 6)
 
 export default defineConfig({
-  resolve: { alias: { '@primitives': resolve(rootDir, '../primitives/src') } },
+  resolve: {
+    alias: {
+      '@primitives': resolve(rootDir, '../primitives/src'),
+    },
+  },
   test: {
     environment: 'node',
     exclude: ['dist/**'],

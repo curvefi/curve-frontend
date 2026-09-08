@@ -7,7 +7,11 @@ import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 export type EndpointModule = string
 export type EndpointId = `${EndpointModule}.${string}`
 
-type EndpointCatalogStatus = { missing: EndpointId[]; staleCases: EndpointId[]; staleExclusions: EndpointId[] }
+type EndpointCatalogStatus = {
+  missing: EndpointId[]
+  staleCases: EndpointId[]
+  staleExclusions: EndpointId[]
+}
 
 const DIRNAME_CURRENT = dirname(fileURLToPath(import.meta.url))
 const ENDPOINT_TESTS_DIR = resolve(DIRNAME_CURRENT, 'endpoints')

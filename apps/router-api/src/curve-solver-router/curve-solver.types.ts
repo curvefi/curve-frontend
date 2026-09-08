@@ -28,7 +28,11 @@ type RouteDebug = {
 
 type ExecutionSummary = { ops: number; slots_used: number; final_slots: number[] }
 
-type OptimizationDebug = { method: string; legs: LegDebug[]; total_gas: number }
+type OptimizationDebug = {
+  method: string
+  legs: LegDebug[]
+  total_gas: number
+}
 
 type LegDebug = {
   route_id: number

@@ -23,11 +23,22 @@ const ERROR_MESSAGE = t`Unable to fetch historical gauge weights data.`
 
 type GaugeWeightSeriesKey = 'weightRelative'
 
-type GaugeWeightHistoryChartProps = { gaugeAddress: Address; height?: number }
+type GaugeWeightHistoryChartProps = {
+  gaugeAddress: Address
+  height?: number
+}
 
 export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }: GaugeWeightHistoryChartProps) => {
   const lineColor = useTheme().design.Chart.Lines[1]
-  const { data = [], isLoading, isSuccess, error, refetch } = useGaugeWeightHistoryQuery({ gaugeAddress })
+  const {
+    data = [],
+    isLoading,
+    isSuccess,
+    error,
+    refetch,
+  } = useGaugeWeightHistoryQuery({
+    gaugeAddress,
+  })
 
   const series: LineSeriesConfig<GaugeWeightSeriesKey>[] = [
     { key: 'weightRelative', label: SERIES_LABEL, color: lineColor },

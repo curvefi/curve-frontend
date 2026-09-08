@@ -39,7 +39,12 @@ type PRESETS = Record<
 
 export const ORACLE_DECIMALS = 18
 
-export const NG_ASSET_TYPE: Record<string, NgAssetType> = { STANDARD: 0, ORACLE: 1, REBASING: 2, ERC4626: 3 }
+export const NG_ASSET_TYPE: Record<string, NgAssetType> = {
+  STANDARD: 0,
+  ORACLE: 1,
+  REBASING: 2,
+  ERC4626: 3,
+}
 
 const fillerParams = {
   stableSwapFee: '',
@@ -214,9 +219,18 @@ export const POOL_PRESETS: PRESETS = {
 // MIN-MAX PARAMS
 
 export const stableswapMinMaxParameters = (swapFee: number) => ({
-  swapFee: { min: 0, max: 1 },
-  a: { min: 1, max: 20000 },
-  maExpTime: { min: 60, max: 3600 },
+  swapFee: {
+    min: 0,
+    max: 1,
+  },
+  a: {
+    min: 1,
+    max: 20000,
+  },
+  maExpTime: {
+    min: 60,
+    max: 3600,
+  },
   offpegFeeMultiplier: {
     min: 0,
     max:
@@ -228,35 +242,80 @@ export const stableswapMinMaxParameters = (swapFee: number) => ({
             .dividedBy(new BigNumber(10).pow(10))
             .toNumber(), // (5 * 10 ** 19) / (swapFee * 10 ** 10) / 10 ** 10
   },
-  initialPrice: { min: 0.000000000001, max: 1000000000000 },
+  initialPrice: {
+    min: 0.000000000001,
+    max: 1000000000000,
+  },
 })
 
 export const TRICRYPTO_MIN_MAX_PARAMETERS = {
-  midFee: { min: 0.005, max: 3 },
+  midFee: {
+    min: 0.005,
+    max: 3,
+  },
   outFee: {
     // min: midFee
     max: 3,
   },
-  a: { min: (2 ** 2 * 10000) / 10, max: 2 ** 2 * 1000 * 100000 },
-  gamma: { min: 10 ** 10 / 1e18, max: (5 * 10 ** 16) / 1e18 },
-  allowedExtraProfit: { min: 0, max: 0.01 },
-  feeGamma: { min: 0, max: 1 },
-  adjustmentStep: { min: 0, max: 1 },
-  maHalfTime: { min: 60, max: 7 * 86400 },
+  a: {
+    min: (2 ** 2 * 10000) / 10,
+    max: 2 ** 2 * 1000 * 100000,
+  },
+  gamma: {
+    min: 10 ** 10 / 1e18,
+    max: (5 * 10 ** 16) / 1e18,
+  },
+  allowedExtraProfit: {
+    min: 0,
+    max: 0.01,
+  },
+  feeGamma: {
+    min: 0,
+    max: 1,
+  },
+  adjustmentStep: {
+    min: 0,
+    max: 1,
+  },
+  maHalfTime: {
+    min: 60,
+    max: 7 * 86400,
+  },
 }
 
 export const TWOCRYPTO_MIN_MAX_PARAMETERS = {
-  midFee: { min: 0.005, max: 3 },
+  midFee: {
+    min: 0.005,
+    max: 3,
+  },
   outFee: {
     // min: midFee
     max: 3,
   },
-  a: { min: (2 ** 2 * 10000) / 10, max: 2 ** 2 * 1000 * 10000 },
-  gamma: { min: 10 ** 10 / 1e18, max: (199 * 10 ** 15) / 1e18 },
-  allowedExtraProfit: { min: 0, max: 0.01 },
-  feeGamma: { min: 0, max: 1 },
-  adjustmentStep: { min: 0, max: 1 },
-  maHalfTime: { min: 60, max: 7 * 86400 },
+  a: {
+    min: (2 ** 2 * 10000) / 10,
+    max: 2 ** 2 * 1000 * 10000,
+  },
+  gamma: {
+    min: 10 ** 10 / 1e18,
+    max: (199 * 10 ** 15) / 1e18,
+  },
+  allowedExtraProfit: {
+    min: 0,
+    max: 0.01,
+  },
+  feeGamma: {
+    min: 0,
+    max: 1,
+  },
+  adjustmentStep: {
+    min: 0,
+    max: 1,
+  },
+  maHalfTime: {
+    min: 60,
+    max: 7 * 86400,
+  },
 }
 
 // FXSwap A is stored in native contract units.

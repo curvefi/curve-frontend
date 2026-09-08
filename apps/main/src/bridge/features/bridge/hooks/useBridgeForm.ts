@@ -33,15 +33,25 @@ const useBridgeParams = ({
   chainId,
   userAddress,
   amount,
-}: BridgeForm & { chainId: number | undefined; userAddress: Address | undefined }) =>
-  useDebouncedValue(useMemo(() => ({ chainId, userAddress, amount }), [chainId, userAddress, amount]))
+}: BridgeForm & {
+  chainId: number | undefined
+  userAddress: Address | undefined
+}) => useDebouncedValue(useMemo(() => ({ chainId, userAddress, amount }), [chainId, userAddress, amount]))
 
 const userDefaultValues = { fromChainId: undefined, amount: undefined }
 
 const emptyBridgeForm = () =>
-  ({ ...userDefaultValues, min: undefined, max: undefined, walletBalance: undefined }) satisfies BridgeForm
+  ({
+    ...userDefaultValues,
+    min: undefined,
+    max: undefined,
+    walletBalance: undefined,
+  }) satisfies BridgeForm
 
-const formProps = { validation: bridgeFormValidationSuite, defaultValues: emptyBridgeForm() }
+const formProps = {
+  validation: bridgeFormValidationSuite,
+  defaultValues: emptyBridgeForm(),
+}
 
 export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, NetworkDef> }) => {
   const form = useForm<BridgeForm>(formProps)

@@ -53,7 +53,11 @@ const meta: Meta<typeof SmallLiquidationRangeChartComponent> = {
     },
   },
   tags: ['autodocs'],
-  argTypes: { prices: { control: false }, prevPrices: { control: false }, oraclePrice: { control: false } },
+  argTypes: {
+    prices: { control: false },
+    prevPrices: { control: false },
+    oraclePrice: { control: false },
+  },
 }
 
 export default meta
@@ -61,14 +65,22 @@ type Story = StoryObj<typeof SmallLiquidationRangeChartComponent>
 
 export const HealthyPosition: Story = {
   args: args({ prices: constQ(newOnlyRange), oraclePrice: constQ('1950') }),
-  parameters: { docs: { description: { story: 'Healthy position: oracle price sits above the liquidation range.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Healthy position: oracle price sits above the liquidation range.',
+      },
+    },
+  },
 }
 
 export const NewRangeOnly: Story = {
   args: args({ prices: constQ(newOnlyRange), oraclePrice: constQ('1950') }),
   parameters: {
     docs: {
-      description: { story: 'Shows the proposed liquidation range for a position that has not been opened yet.' },
+      description: {
+        story: 'Shows the proposed liquidation range for a position that has not been opened yet.',
+      },
     },
   },
 }
@@ -76,7 +88,11 @@ export const NewRangeOnly: Story = {
 export const CurrentRangeOnly: Story = {
   args: args({ prevPrices: constQ(currentOnlyRange), oraclePrice: constQ('1975') }),
   parameters: {
-    docs: { description: { story: 'Shows the existing liquidation range when there is no pending range change.' } },
+    docs: {
+      description: {
+        story: 'Shows the existing liquidation range when there is no pending range change.',
+      },
+    },
   },
 }
 
@@ -117,13 +133,23 @@ export const FarAboveOracleBreak: Story = {
 export const FarBelowOracleBreak: Story = {
   args: args({ prevPrices: constQ(farOracleRange), oraclePrice: constQ('42') }),
   parameters: {
-    docs: { description: { story: 'Distant oracle price below the range is kept visible on a compact split rail.' } },
+    docs: {
+      description: {
+        story: 'Distant oracle price below the range is kept visible on a compact split rail.',
+      },
+    },
   },
 }
 
 export const EmptyState: Story = {
   args: args(),
-  parameters: { docs: { description: { story: 'Fallback state with no liquidation range and no oracle value.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Fallback state with no liquidation range and no oracle value.',
+      },
+    },
+  },
 }
 
 export const Loading: Story = {

@@ -14,4 +14,8 @@ export type MarketEventRow = LlammaEvent & {
 
 // Pool Types (for DEX pools)
 export type PoolTradeRow = AllPoolTrade & { chainId: number; blockchainId: Chain }
-export type PoolLiquidityRow = PoolLiquidityEvent & { chainId: number; blockchainId: Chain; poolTokens: Token[] }
+export type PoolLiquidityRow = PoolLiquidityEvent & {
+  chainId: number
+  blockchainId: Chain
+  poolTokens: Token[]
+}

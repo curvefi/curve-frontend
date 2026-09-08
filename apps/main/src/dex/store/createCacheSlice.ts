@@ -2,7 +2,12 @@ import { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import { sleep } from '@primitives/promise.utils'
 
-export type SwapFormValuesCache = { fromAddress: string; fromToken: string; toAddress: string; toToken: string }
+export type SwapFormValuesCache = {
+  fromAddress: string
+  fromToken: string
+  toAddress: string
+  toToken: string
+}
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -23,7 +28,11 @@ export type CacheSlice = {
   }
 }
 
-const DEFAULT_STATE: SliceState = { hasDepositAndStake: {}, hasRouter: {}, routerFormValues: {} }
+const DEFAULT_STATE: SliceState = {
+  hasDepositAndStake: {},
+  hasRouter: {},
+  routerFormValues: {},
+}
 
 const TIMEOUT_MS = 4000
 

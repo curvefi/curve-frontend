@@ -97,5 +97,10 @@ export function setUser(user: { address?: string; chainId?: number }) {
  * Add breadcrumb for debugging.
  */
 export const addBreadcrumb = (message: string, category: 'mutation' | 'navigation', data?: Record<string, unknown>) => {
-  addSentryBreadcrumb({ message, category, data, level: 'info' })
+  addSentryBreadcrumb({
+    message,
+    category,
+    data,
+    level: 'info',
+  })
 }

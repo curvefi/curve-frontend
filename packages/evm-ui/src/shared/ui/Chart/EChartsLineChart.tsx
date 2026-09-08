@@ -99,12 +99,24 @@ export const EChartsLineChart = <
   const option: EChartsOption = useMemo(
     () => ({
       animation: false,
-      grid: { left: 0, top: 0, right: 0, bottom: markLines?.some(ml => ml.label) ? 24 : 0 },
+      grid: {
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: markLines?.some(ml => ml.label) ? 24 : 0,
+      },
       xAxis: {
         type: xAxisType ?? 'time',
         axisLine: { show: false },
         axisTick: { show: true, lineStyle: { color: gridLineColor, width: 0.5 } },
-        splitLine: { show: true, lineStyle: { color: gridLineColor, width: 0.5, type: 'solid' } },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: gridLineColor,
+            width: 0.5,
+            type: 'solid',
+          },
+        },
         axisLabel: {
           color: gridTextColor,
           fontSize: FontSize.xs.desktop,
@@ -125,7 +137,14 @@ export const EChartsLineChart = <
         max: yMax,
         axisLine: { show: false },
         axisTick: { show: true, lineStyle: { color: gridLineColor, width: 0.5 } },
-        splitLine: { show: true, lineStyle: { color: gridLineColor, width: 0.5, type: 'solid' } },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: gridLineColor,
+            width: 0.5,
+            type: 'solid',
+          },
+        },
         axisLabel: {
           color: gridTextColor,
           fontSize: FontSize.xs.desktop,
@@ -137,7 +156,13 @@ export const EChartsLineChart = <
       tooltip: {
         trigger: 'axis',
         appendToBody: true,
-        axisPointer: { type: 'line', lineStyle: { width: 1, color: gridTextColor } },
+        axisPointer: {
+          type: 'line',
+          lineStyle: {
+            width: 1,
+            color: gridTextColor,
+          },
+        },
         formatter: tooltipFormatter,
         backgroundColor: 'transparent',
         borderWidth: 0,
@@ -150,14 +175,22 @@ export const EChartsLineChart = <
         showSymbol: false,
         symbol: 'circle',
         symbolSize: 4,
-        itemStyle: { color: line.color },
-        lineStyle: { color: line.color, width: line.strokeWidth ?? 2, ...(line.dash && { type: line.dash }) },
+        itemStyle: {
+          color: line.color,
+        },
+        lineStyle: {
+          color: line.color,
+          width: line.strokeWidth ?? 2,
+          ...(line.dash && { type: line.dash }),
+        },
         ...(index === 0 &&
           markLines?.length && {
             markLine: {
               silent: true,
               symbol: ['none', 'none'],
-              lineStyle: { width: 1 },
+              lineStyle: {
+                width: 1,
+              },
               data: markLines
                 .filter(markLine => Number.isFinite(markLine.value))
                 .map(markLine => ({

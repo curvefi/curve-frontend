@@ -5,21 +5,44 @@ import { DesignSystem } from '@ui/features/themes/design'
 export type SliderSize = NonNullable<SliderProps['size']>
 export type SliderRailBackground = NonNullable<SliderProps['data-rail-background']>
 
-export type SliderSizeDefinition = { height: Responsive; thumbWidth: Responsive }
+export type SliderSizeDefinition = {
+  height: Responsive
+  thumbWidth: Responsive
+}
 
 export type GradientStopsDefinition = Readonly<Record<number | `${number}`, string>>
 
 export type OrientationConfig = {
   gradientDirection: 'to right' | 'to top'
-  extensionOffsets: { start: Record<string, string>; end: Record<string, string> }
+  extensionOffsets: {
+    start: Record<string, string>
+    end: Record<string, string>
+  }
   root: {
-    size: { height: string; width: string }
-    margins: { marginInline: string | number; marginBlock: string | number }
+    size: {
+      height: string
+      width: string
+    }
+    margins: {
+      marginInline: string | number
+      marginBlock: string | number
+    }
   }
   thumb: {
-    size: { width: string; height: string }
+    size: {
+      width: string
+      height: string
+    }
     getImages: (design: DesignSystem) => { default: string; hover: string }
   }
-  track: { size: Record<string, string>; beforePosition: Record<string, string>; beforeSize: Record<string, string> }
-  rail: { startOffset: Record<string, string>; endOffset: Record<string, string>; size: Record<string, string> }
+  track: {
+    size: Record<string, string>
+    beforePosition: Record<string, string>
+    beforeSize: Record<string, string>
+  }
+  rail: {
+    startOffset: Record<string, string>
+    endOffset: Record<string, string>
+    size: Record<string, string>
+  }
 }

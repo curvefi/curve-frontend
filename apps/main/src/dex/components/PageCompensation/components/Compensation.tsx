@@ -109,7 +109,11 @@ export const Compensation = ({
             <div>
               <strong>Remaining vested:</strong>{' '}
               {vestedTotal > 0
-                ? formatNumber(vestedTotal, { minimumFractionDigits: 5, maximumFractionDigits: 5, abbreviate: false })
+                ? formatNumber(vestedTotal, {
+                    minimumFractionDigits: 5,
+                    maximumFractionDigits: 5,
+                    abbreviate: false,
+                  })
                 : '-'}
             </div>
           )}

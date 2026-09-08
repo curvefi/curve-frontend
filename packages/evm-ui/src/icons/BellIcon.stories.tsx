@@ -19,7 +19,10 @@ const meta: Meta<typeof BellRingingIcon> = {
       description: 'The color of the icon',
     },
   },
-  args: { fontSize: 'medium', color: 'inherit' },
+  args: {
+    fontSize: 'medium',
+    color: 'inherit',
+  },
 }
 
 type Story = StoryObj<typeof BellRingingIcon>
@@ -53,7 +56,11 @@ export const Comparison: Story = {
     </Stack>
   ),
   parameters: {
-    docs: { description: { story: 'Comparison between regular BellIcon and BellRingingIcon with hover animation' } },
+    docs: {
+      description: {
+        story: 'Comparison between regular BellIcon and BellRingingIcon with hover animation',
+      },
+    },
   },
 }
 
@@ -81,7 +88,11 @@ export const DifferentSizes: Story = {
     </Stack>
   ),
   parameters: {
-    docs: { description: { story: 'BellRingingIcon in different sizes - hover over any bell to see the animation' } },
+    docs: {
+      description: {
+        story: 'BellRingingIcon in different sizes - hover over any bell to see the animation',
+      },
+    },
   },
 }
 
@@ -121,7 +132,11 @@ export const DifferentColors: Story = {
     </Stack>
   ),
   parameters: {
-    docs: { description: { story: 'BellRingingIcon in different colors - hover over any bell to see the animation' } },
+    docs: {
+      description: {
+        story: 'BellRingingIcon in different colors - hover over any bell to see the animation',
+      },
+    },
   },
 }
 
@@ -146,7 +161,13 @@ export const AnimationDetails: Story = {
       </Box>
     </Box>
   ),
-  parameters: { docs: { description: { story: 'Technical details of the bell ringing animation' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Technical details of the bell ringing animation',
+      },
+    },
+  },
 }
 
 export default meta

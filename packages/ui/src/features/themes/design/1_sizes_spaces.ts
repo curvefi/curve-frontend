@@ -57,9 +57,15 @@ const MappedButtonSize = {
   lg: Sizing[650], // 56px
 }
 
-const MappedBorderWidth = { thin: Sizing[10] } as const
+const MappedBorderWidth = {
+  thin: Sizing[10],
+} as const
 
-const MappedCardPadding = { sm: Spacing[400], md: Spacing[500], lg: Spacing[600] }
+const MappedCardPadding = {
+  sm: Spacing[400],
+  md: Spacing[500],
+  lg: Spacing[600],
+}
 
 const MappedTabPadding = {
   extraSmall: { inline: Spacing[300] },
@@ -84,7 +90,12 @@ const MappedInputSize = {
 } as const
 
 const MappedInputSpacing = {
-  PaddingX: { tiny: Spacing[200], small: Spacing[300], medium: Spacing[300], extraLarge: Spacing[300] },
+  PaddingX: {
+    tiny: Spacing[200],
+    small: Spacing[300],
+    medium: Spacing[300],
+    extraLarge: Spacing[300],
+  },
   ContentPaddingRight: Spacing[300],
   HelperPaddingTop: Spacing[200],
   LabelGap: Spacing[100],
@@ -107,14 +118,25 @@ const MappedSelectPaddingX = {
 
 const MappedSelectSpacing = {
   PaddingX: MappedSelectPaddingX,
-  ContentPaddingY: { tiny: Spacing[100], small: Spacing[300], medium: Spacing[300], extraLarge: Spacing[300] },
+  ContentPaddingY: {
+    tiny: Spacing[100],
+    small: Spacing[300],
+    medium: Spacing[300],
+    extraLarge: Spacing[300],
+  },
   IconGap: Spacing[300],
   IconPaddingRight: MappedSelectPaddingX,
 } as const
 
 const MappedSelectListItem = {
-  Height: { small: Sizing[450], medium: MappedButtonSize.sm },
-  PaddingX: { small: Spacing[200], medium: Spacing[200] },
+  Height: {
+    small: Sizing[450],
+    medium: MappedButtonSize.sm,
+  },
+  PaddingX: {
+    small: Spacing[200],
+    medium: Spacing[200],
+  },
   PaddingY: Spacing[200],
   Gap: Spacing[200],
 } as const
@@ -225,7 +247,10 @@ const MappedModalWidth = {
   xl: '36rem', // 576px
 }
 
-const MappedModalHeight = { sm: '100dvh', md: '80dvh' }
+const MappedModalHeight = {
+  sm: '100dvh',
+  md: '80dvh',
+}
 const MappedColumnWidth = { sm: 125, md: 200, lg: 350 }
 
 export const SizesAndSpaces = {

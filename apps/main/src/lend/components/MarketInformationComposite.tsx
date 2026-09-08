@@ -22,7 +22,10 @@ import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { stackedMarketCardHeadersSx } from '@ui/utils/mui'
 
-type MarketInformationCompProps = { rateType: MarketRateType; previewPrices?: Range<Decimal> | undefined }
+type MarketInformationCompProps = {
+  rateType: MarketRateType
+  previewPrices?: Range<Decimal> | undefined
+}
 
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.

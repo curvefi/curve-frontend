@@ -57,11 +57,18 @@ type SentryPayload = {
   extra: { body: ErrorReportBody }
 }
 
-type ErrorReportBody = { formData: ErrorReportFormValues; url: string; context: { title: string; subtitle: string } }
+type ErrorReportBody = {
+  formData: ErrorReportFormValues
+  url: string
+  context: { title: string; subtitle: string }
+}
 
 function check500Error({ context }: ErrorReportBody, exception: SentryException | undefined) {
   const [expectedName, expectedMessage] = ['TypeError', 'toLowerCase is not a function']
-  expect(exception).to.deep.include({ type: expectedName, value: expectedMessage })
+  expect(exception).to.deep.include({
+    type: expectedName,
+    value: expectedMessage,
+  })
   expect(exception?.stacktrace?.frames ?? []).not.to.have.length(0)
   expect(Object.keys(context)).to.have.members(['title', 'subtitle', 'error'])
   const { subtitle, error, title } = context as Record<keyof ErrorContext, string>
@@ -126,7 +133,10 @@ describe('Error Boundary', () => {
         reply({
           statusCode: 200,
           body: {},
-          headers: { 'access-control-allow-origin': '*', 'access-control-allow-credentials': 'true' },
+          headers: {
+            'access-control-allow-origin': '*',
+            'access-control-allow-credentials': 'true',
+          },
         })
       },
     ).as('sentryReport')

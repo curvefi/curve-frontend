@@ -12,12 +12,21 @@ import { HealthDetails } from './HealthDetails'
 const { Spacing } = SizesAndSpaces
 const DISCOUNT_GAP: Decimal = '3'
 
-type HealthDetailsStoryProps = { health?: Decimal | null; liquidationBuffer?: Decimal | null; isLoading?: boolean }
+type HealthDetailsStoryProps = {
+  health?: Decimal | null
+  liquidationBuffer?: Decimal | null
+  isLoading?: boolean
+}
 
 const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthDetailsStoryProps) => {
   const data = maybes([health, liquidationBuffer], (h, lb) => {
     const healthNotFull = decimalMultiply(decimalDiv(lb, '100'), DISCOUNT_GAP)
-    return { health: h, healthFactor: decimalSum('1', decimalDiv(h, '100')), healthNotFull, liquidationBuffer: lb }
+    return {
+      health: h,
+      healthFactor: decimalSum('1', decimalDiv(h, '100')),
+      healthNotFull,
+      liquidationBuffer: lb,
+    }
   }) satisfies QueryData<typeof useUserHealthValues> | undefined
 
   return isLoading ? q({ data, isLoading: true, error: null }) : constQ(data)
@@ -30,17 +39,29 @@ const meta: Meta<typeof HealthDetailsStory> = {
   component: HealthDetailsStory,
   parameters: {
     layout: 'padded',
-    docs: { description: { component: 'Health details with controlled Health and Liquidation Buffer values.' } },
+    docs: {
+      description: {
+        component: 'Health details with controlled Health and Liquidation Buffer values.',
+      },
+    },
   },
-  argTypes: { health: { control: 'text' }, liquidationBuffer: { control: 'text' }, isLoading: { control: 'boolean' } },
+  argTypes: {
+    health: { control: 'text' },
+    liquidationBuffer: { control: 'text' },
+    isLoading: { control: 'boolean' },
+  },
 }
 
 export default meta
 type Story = StoryObj<typeof HealthDetailsStory>
 
-export const Pristine: Story = { args: { health: '426.9', liquidationBuffer: '108' } }
+export const Pristine: Story = {
+  args: { health: '426.9', liquidationBuffer: '108' },
+}
 
-export const Loading: Story = { args: { isLoading: true } }
+export const Loading: Story = {
+  args: { isLoading: true },
+}
 
 const allStates = [
   { name: 'Undefined', args: {} },

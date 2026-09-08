@@ -49,4 +49,7 @@ export type TokenType = ReturnType<typeof oneTokenType>
 export const oneDate = ({
   minDate = new Date(Date.now() - TIME_FRAMES.YEAR_MS), // 1 year ago
   maxDate = new Date(Date.now()),
-}: { minDate?: Date; maxDate?: Date } = {}): Date => new Date(oneFloat(minDate.getTime(), maxDate.getTime()))
+}: {
+  minDate?: Date
+  maxDate?: Date
+} = {}): Date => new Date(oneFloat(minDate.getTime(), maxDate.getTime()))

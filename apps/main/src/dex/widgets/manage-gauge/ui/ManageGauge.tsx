@@ -4,7 +4,12 @@ import { ChainId } from '@/dex/types/main.types'
 import { FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { t } from '@ui/lib/i18n'
 
-type ManageGaugeProps = { chainId: ChainId; poolId: string; isGaugeManager: boolean; isRewardsDistributor: boolean }
+type ManageGaugeProps = {
+  chainId: ChainId
+  poolId: string
+  isGaugeManager: boolean
+  isRewardsDistributor: boolean
+}
 
 // todo: these should be subtabs defined in the pool page
 const menu = [

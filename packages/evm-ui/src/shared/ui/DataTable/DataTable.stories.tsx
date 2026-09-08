@@ -221,9 +221,18 @@ const meta: Meta<typeof DemoDataTable> = {
       control: { type: 'number', min: 0, max: 12, step: 1 },
       description: 'Additional generated metric columns used to force horizontal overflow.',
     },
-    isLoading: { control: 'boolean', description: 'Shows skeleton rows instead of data.' },
-    isError: { control: 'boolean', description: 'Shows the error empty state.' },
-    shouldStickFirstColumn: { control: 'boolean', description: 'Makes the first visible column sticky.' },
+    isLoading: {
+      control: 'boolean',
+      description: 'Shows skeleton rows instead of data.',
+    },
+    isError: {
+      control: 'boolean',
+      description: 'Shows the error empty state.',
+    },
+    shouldStickFirstColumn: {
+      control: 'boolean',
+      description: 'Makes the first visible column sticky.',
+    },
     category: {
       control: 'select',
       options: ['list', 'limited', 'scrollable', 'detail', 'form'],
@@ -234,18 +243,30 @@ const meta: Meta<typeof DemoDataTable> = {
       options: ['top', 'middle', 'bottom'],
       description: 'Vertical alignment passed to body rows.',
     },
-    viewAllLabel: { control: 'text', description: 'Optional label for the limited-list view-all row.' },
+    viewAllLabel: {
+      control: 'text',
+      description: 'Optional label for the limited-list view-all row.',
+    },
     wrapperWidth: {
       control: 'text',
       description: 'Optional outer wrapper width, for example 44rem, used to test horizontal overflow.',
     },
-    showFooterRow: { control: 'boolean', description: 'Adds a generated footer row.' },
+    showFooterRow: {
+      control: 'boolean',
+      description: 'Adds a generated footer row.',
+    },
     showFilterRow: {
       control: 'boolean',
       description: 'Adds sample children content to render in the table filter row.',
     },
-    emptyTitle: { control: 'text', description: 'Title for the non-error empty state.' },
-    emptyMessage: { control: 'text', description: 'Subtitle for the non-error empty state.' },
+    emptyTitle: {
+      control: 'text',
+      description: 'Title for the non-error empty state.',
+    },
+    emptyMessage: {
+      control: 'text',
+      description: 'Subtitle for the non-error empty state.',
+    },
   },
   parameters: {
     layout: 'padded',
@@ -261,11 +282,23 @@ const meta: Meta<typeof DemoDataTable> = {
 export default meta
 type Story = StoryObj<typeof DemoDataTable>
 
-export const Default: Story = { args: {} }
+export const Default: Story = {
+  args: {},
+}
 
-export const LimitedRows: Story = { args: { rowCount: 40, category: 'limited', viewAllLabel: 'View all markets' } }
+export const LimitedRows: Story = {
+  args: {
+    rowCount: 40,
+    category: 'limited',
+    viewAllLabel: 'View all markets',
+  },
+}
 
-export const Loading: Story = { args: { isLoading: true } }
+export const Loading: Story = {
+  args: {
+    isLoading: true,
+  },
+}
 
 export const Empty: Story = {
   args: {
@@ -275,20 +308,58 @@ export const Empty: Story = {
   },
 }
 
-export const WithError: Story = { args: { isError: true } }
-
-export const StickyHeader: Story = { args: { rowCount: 40, category: 'scrollable' } }
-
-export const HeaderNotSticky: Story = { args: { rowCount: 40, category: 'detail' } }
-
-export const HiddenHeader: Story = { args: { category: 'form' } }
-
-export const StickyFirstColumn: Story = {
-  args: { rowCount: 18, extraColumnCount: 8, shouldStickFirstColumn: true, wrapperWidth: '44rem' },
+export const WithError: Story = {
+  args: {
+    isError: true,
+  },
 }
 
-export const HorizontalOverflow: Story = { args: { rowCount: 18, extraColumnCount: 10, wrapperWidth: '44rem' } }
+export const StickyHeader: Story = {
+  args: {
+    rowCount: 40,
+    category: 'scrollable',
+  },
+}
 
-export const WithFilterRow: Story = { args: { showFilterRow: true, category: 'scrollable' } }
+export const HeaderNotSticky: Story = {
+  args: {
+    rowCount: 40,
+    category: 'detail',
+  },
+}
 
-export const WithFooterRow: Story = { args: { showFooterRow: true } }
+export const HiddenHeader: Story = {
+  args: {
+    category: 'form',
+  },
+}
+
+export const StickyFirstColumn: Story = {
+  args: {
+    rowCount: 18,
+    extraColumnCount: 8,
+    shouldStickFirstColumn: true,
+    wrapperWidth: '44rem',
+  },
+}
+
+export const HorizontalOverflow: Story = {
+  args: {
+    rowCount: 18,
+    extraColumnCount: 10,
+    wrapperWidth: '44rem',
+  },
+}
+
+export const WithFilterRow: Story = {
+  args: {
+    showFilterRow: true,
+    category: 'scrollable',
+  },
+}
+
+export const WithFooterRow: Story = {
+  args: {
+    showFooterRow: true,
+  },
+}

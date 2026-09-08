@@ -144,7 +144,11 @@ export const defaultNumberFormatter = (
    * - formatNumber(1.0001, { decimals: 0 }) would show "1" but we want "1.0001"
    */
   if (value !== 0 && /^-?[01](?:\.0+)?$/.test(formatted)) {
-    return value.toLocaleString(LOCALE, { maximumSignificantDigits: 6, ...options, ...formatterReset })
+    return value.toLocaleString(LOCALE, {
+      maximumSignificantDigits: 6,
+      ...options,
+      ...formatterReset,
+    })
   }
 
   return formatted
@@ -226,7 +230,11 @@ const NUMBER_FORMAT_CATEGORIES = {
   },
   'token.amount': { abbreviate: false, fallback: '-' },
   'token.compact': { abbreviate: true, fallback: '-' },
-  'token.balance': { abbreviate: false, fallback: '-', formatter: preciseFormatter },
+  'token.balance': {
+    abbreviate: false,
+    fallback: '-',
+    formatter: preciseFormatter,
+  },
   'usd.amount': { unit: 'dollar', abbreviate: false, fallback: '-' },
   'usd.precise': { unit: 'dollar', abbreviate: false, fallback: '-', formatter: preciseFormatter },
   'usd.notional': { unit: 'dollar', abbreviate: true, fallback: '-' },
@@ -285,7 +293,12 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
   if (hasOverflowError) {
     console.warn(`USD value is too large: ${value}`)
 
-    return { prefix: '', mainValue: '?', suffix: '', scaleSuffix: '' }
+    return {
+      prefix: '',
+      mainValue: '?',
+      suffix: '',
+      scaleSuffix: '',
+    }
   }
 
   const abbreviatedValue = abbreviate ? abbreviateNumber(value) : value

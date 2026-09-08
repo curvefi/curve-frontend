@@ -4,7 +4,9 @@ import { MaintenancePage } from './MaintenancePage'
 const meta: Meta<typeof MaintenancePage> = {
   title: 'UI Kit/Features/MaintenancePage',
   component: MaintenancePage,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+  },
 }
 
 export default meta

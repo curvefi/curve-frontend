@@ -5,7 +5,11 @@ import MuiThemeProvider from '@mui/system/ThemeProvider'
 import type { ThemeKey } from '@ui/features/themes/basic-theme'
 import { chadTheme, darkTheme, lightTheme } from '../features/themes/themes'
 
-const themes = { light: lightTheme, dark: darkTheme, chad: chadTheme }
+const themes = {
+  light: lightTheme,
+  dark: darkTheme,
+  chad: chadTheme,
+}
 
 const createTheme = memoizee((theme: ThemeKey, inverted?: boolean) => themes[theme]({ inverted }))
 

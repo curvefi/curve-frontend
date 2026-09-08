@@ -15,9 +15,15 @@ type FormTabBase<Props extends object> = Omit<TabItem<string, Props>, 'subTabs'>
 
 type FormSubTab<Props extends object> = FormTabBase<Props>
 
-export type FormTab<Props extends object> = FormTabBase<Props> & { subTabs?: readonly FormSubTab<Props>[] }
+export type FormTab<Props extends object> = FormTabBase<Props> & {
+  subTabs?: readonly FormSubTab<Props>[]
+}
 
-type UseFormTabOptions<T extends object> = { menu: readonly FormTab<T>[]; params: T; defaultValue?: string }
+type UseFormTabOptions<T extends object> = {
+  menu: readonly FormTab<T>[]
+  params: T
+  defaultValue?: string
+}
 
 /** Hook to manage form tabs and sub-tabs. */
 const useFormTabs = <T extends object>(options: UseFormTabOptions<T>) => ({

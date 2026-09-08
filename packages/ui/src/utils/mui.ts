@@ -19,7 +19,9 @@ export const applySxProps = (...sx: (SxProps | false | null | undefined)[]): SxP
  * Selects every direct child that has a previous sibling. This is useful for applying styles between children, such as
  * borders, spacing, or dividers, without affecting the first child.
  */
-export const directChildrenAfterFirst = (css: SxStyleObject): SxProps => ({ '& > * + *': css })
+export const directChildrenAfterFirst = (css: SxStyleObject): SxProps => ({
+  '& > * + *': css,
+})
 
 /**
  * Makes stacked cards feel like sections of one card: the first keeps its normal header, while each subsequent
@@ -28,7 +30,9 @@ export const directChildrenAfterFirst = (css: SxStyleObject): SxProps => ({ '& >
  * The selector follows the rendered order instead, styling each card header that immediately follows another card.
  */
 export const stackedMarketCardHeadersSx: SxProps = theme => ({
-  '& > .MuiCard-root + .MuiCard-root > .MuiCardHeader-root': { backgroundColor: theme.design.Layer[1].Fill },
+  '& > .MuiCard-root + .MuiCard-root > .MuiCardHeader-root': {
+    backgroundColor: theme.design.Layer[1].Fill,
+  },
 })
 
 /** Consistent border style for MUI components */

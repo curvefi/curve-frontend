@@ -6,7 +6,9 @@ import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/sup
 const getVirtualNetwork = createVirtualTestnet(uuid => ({
   slug: `pegkeepers-${uuid}`,
   display_name: `Pegkeepers (${uuid})`,
-  fork_config: { block_number: '23039344' },
+  fork_config: {
+    block_number: '23039344',
+  },
 }))
 
 const TestComponent = ({ config }: { config: Config }) => (

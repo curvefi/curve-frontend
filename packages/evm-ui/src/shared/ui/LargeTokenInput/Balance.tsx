@@ -91,7 +91,10 @@ export const Balance = <T extends Amount>({
           </BalanceAmount>{' '}
           <Typography
             variant="highlightXs"
-            sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text[disabled ? 'Disabled' : 'Unit'] }}
+            sx={{
+              ...VERTICAL_CENTER_TEXT,
+              color: t => t.design.Inputs.Text[disabled ? 'Disabled' : 'Unit'],
+            }}
             {...(inline && { component: 'span' })}
           >
             {symbol}

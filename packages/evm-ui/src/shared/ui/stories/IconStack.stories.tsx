@@ -41,9 +41,14 @@ const meta: Meta<typeof IconStack> = {
       options: ICON_SIZE_OPTIONS,
       description: 'Responsive icon size token used for overlap calculations',
     },
-    overlap: { control: 'number', description: 'Percentage of icon width used for the overlap offset' },
+    overlap: {
+      control: 'number',
+      description: 'Percentage of icon width used for the overlap offset',
+    },
   },
-  args: { iconSize: 'md' },
+  args: {
+    iconSize: 'md',
+  },
 }
 
 type Story = StoryObj<typeof IconStack>
@@ -59,7 +64,9 @@ export const ChainIcons: Story = {
 }
 
 export const TokenIcons: Story = {
-  args: { iconSize: 'lg' },
+  args: {
+    iconSize: 'lg',
+  },
   render: args => (
     <IconStack {...args}>
       {TOKENS.map(({ address, symbol }) => (

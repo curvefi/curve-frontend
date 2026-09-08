@@ -32,7 +32,10 @@ export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
 }
 
 export const submitClosePositionForm = () =>
-  submitLoanForm({ form: 'close-position', message: 'Position closed successfully!' })
+  submitLoanForm({
+    form: 'close-position',
+    message: 'Position closed successfully!',
+  })
 
 export function checkResetPositionInputsLoaded({ convertedBorrowed }: { convertedBorrowed: Decimal }) {
   getResetPositionConvertedInput().should('have.value', convertedBorrowed)

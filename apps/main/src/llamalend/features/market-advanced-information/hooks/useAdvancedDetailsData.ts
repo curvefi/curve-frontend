@@ -42,15 +42,32 @@ export const useAdvancedDetailsData = ({
   const vaultAddress = getVaultAddress(market, apiMarket.data)
   const isControllerLoading = !controllerAddress && (marketQuery.isLoading || apiMarket.isLoading)
   const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
-  const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
+  const marketOverview = q({
+    ...marketOverviewQuery,
+    isLoading: marketOverviewQuery.isLoading || isControllerLoading,
+  })
 
-  const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: market?.minBands ?? 0 })
+  const maxLeverage = useMarketMaxLeverage({
+    chainId,
+    marketId,
+    range: market?.minBands ?? 0,
+  })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
   const totalSuppliers = useMarketTotalSuppliers({ blockchainId, contractAddress: vaultAddress })
-  const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
-  const borrowedUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address })
-  const solvency = useSolvencyMarket({ blockchainId, controllerAddress, marketType })
+  const collateralUsdRate = useTokenUsdRate({
+    chainId,
+    tokenAddress: collateralToken?.address,
+  })
+  const borrowedUsdRate = useTokenUsdRate({
+    chainId,
+    tokenAddress: borrowToken?.address,
+  })
+  const solvency = useSolvencyMarket({
+    blockchainId,
+    controllerAddress,
+    marketType,
+  })
   const tvl = fallbackQ(
     marketType === MarketType.Lend
       ? combineQueries(

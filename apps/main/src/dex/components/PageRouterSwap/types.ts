@@ -5,15 +5,37 @@ import { Decimal } from '@primitives/decimal.utils'
 
 export type StepKey = 'APPROVAL' | 'SWAP'
 
-export type Route = { name: string; routeUrlId: string } & IRouteStep
+export type Route = {
+  name: string
+  routeUrlId: string
+} & IRouteStep
 
-export type ExchangeRate = { from: string; to: string; fromAddress: string; value: Decimal; label: string }
+export type ExchangeRate = {
+  from: string
+  to: string
+  fromAddress: string
+  value: Decimal
+  label: string
+}
 
 export type RoutesAndOutputModal = Record<
   string,
-  | { lowExchangeRate: boolean; title: string; exchangeRate: string }
-  | { priceImpact: boolean; title: string; value: string }
-  | { priceImpactLowExchangeRate: boolean; title: string; value: string; exchangeRate: string }
+  | {
+      lowExchangeRate: boolean
+      title: string
+      exchangeRate: string
+    }
+  | {
+      priceImpact: boolean
+      title: string
+      value: string
+    }
+  | {
+      priceImpactLowExchangeRate: boolean
+      title: string
+      value: string
+      exchangeRate: string
+    }
 >
 
 export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
@@ -30,7 +52,10 @@ export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
   modal: RoutesAndOutputModal | null
 }
 
-export type FormEstGas = { estimatedGas: number; loading: boolean }
+export type FormEstGas = {
+  estimatedGas: number
+  loading: boolean
+}
 
 export type FormStatus = {
   isApproved: boolean
@@ -42,6 +67,14 @@ export type FormStatus = {
   swapError: string
 }
 
-export type FormValues = { isFrom: boolean | null; fromAmount: string; fromError: 'too-much' | ''; toAmount: string }
+export type FormValues = {
+  isFrom: boolean | null
+  fromAmount: string
+  fromError: 'too-much' | ''
+  toAmount: string
+}
 
-export type SearchedParams = { fromAddress: string; toAddress: string }
+export type SearchedParams = {
+  fromAddress: string
+  toAddress: string
+}

@@ -59,8 +59,14 @@ export const useUserLlamaPositions = ({ userAddress }: { userAddress: Address | 
       const userHasPositions =
         hasBorrowed || hasMinted || hasSupplied
           ? {
-              [MarketType.Mint]: { [MarketRateType.Borrow]: hasMinted, [MarketRateType.Supply]: false },
-              [MarketType.Lend]: { [MarketRateType.Borrow]: hasBorrowed, [MarketRateType.Supply]: hasSupplied },
+              [MarketType.Mint]: {
+                [MarketRateType.Borrow]: hasMinted,
+                [MarketRateType.Supply]: false,
+              },
+              [MarketType.Lend]: {
+                [MarketRateType.Borrow]: hasBorrowed,
+                [MarketRateType.Supply]: hasSupplied,
+              },
             }
           : null
       const data: LlamaMarketPositions = { userBorrows, userMints, userSuppliesByChain, userHasPositions }

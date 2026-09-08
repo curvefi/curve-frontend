@@ -53,7 +53,11 @@ export const useSolvencyMarket = (
 
         const badDebtUsd = solvencyMarket && getLendMarketBadDebt(solvencyMarket.chain, solvencyMarket.controller)
         const solvencyPercent =
-          solvencyMarket && calculateMarketSolvency({ totalAssetsUsd: solvencyMarket.totalAssetsUsd, badDebtUsd })
+          solvencyMarket &&
+          calculateMarketSolvency({
+            totalAssetsUsd: solvencyMarket.totalAssetsUsd,
+            badDebtUsd,
+          })
 
         return {
           ...combineQueryState(...results),

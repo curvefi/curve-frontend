@@ -82,7 +82,10 @@ const wagmiChains = [
 ] as const
 
 const deprecateDate = new Date('2026-07-01')
-export const DEPRECATED_CHAINS: Record<number, Date> = { [aurora.id]: deprecateDate, [kava.id]: deprecateDate }
+export const DEPRECATED_CHAINS: Record<number, Date> = {
+  [aurora.id]: deprecateDate,
+  [kava.id]: deprecateDate,
+}
 export const DOWNGRADED_CHAINS = new Set<number>(
   [aurora, avalanche, celo, fantom, kava, mantle, sonic, xLayer, zksync].map(c => c.id),
 )

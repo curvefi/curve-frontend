@@ -41,20 +41,31 @@ const { Spacing, Height } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'llamalend.marketCharts'
 
-export type RateChartPoint = { timestamp: number; rate: number; movingAverage: number; totalAverage: number }
+export type RateChartPoint = {
+  timestamp: number
+  rate: number
+  movingAverage: number
+  totalAverage: number
+}
 
 type RateSeriesKey = 'rate' | 'movingAverage' | 'totalAverage'
 
 type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
 type RateValue = Amount | null | undefined
 
-type MarketHistoricalRatesChartProps = { rateMode: MarketRateType }
+type MarketHistoricalRatesChartProps = {
+  rateMode: MarketRateType
+}
 
 type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
 type RateModeConfig = {
   chartTitle: string
   currentRateLabel: string
-  averageRateLabels: { week: string; month: string; year: string }
+  averageRateLabels: {
+    week: string
+    month: string
+    year: string
+  }
   series: RateSeriesConfig[]
   getLiveRate: (marketRates: MarketRates | undefined) => RateValue
   getApiRate: (market: LlamaMarket) => RateValue
@@ -79,7 +90,11 @@ const RATE_MODE_CONFIG = {
   [MarketRateType.Borrow]: {
     chartTitle: t`Historical Borrow Rate`,
     currentRateLabel: t`Current APR`,
-    averageRateLabels: { week: t`1W average APR`, month: t`1M average APR`, year: t`1Y average APR` },
+    averageRateLabels: {
+      week: t`1W average APR`,
+      month: t`1M average APR`,
+      year: t`1Y average APR`,
+    },
     series: [
       { key: 'rate', label: t`Borrow APR` },
       { key: 'movingAverage', label: t`7-day MA APR`, dash: CHART_LINE_DASH_PATTERNS.tight },
@@ -92,7 +107,11 @@ const RATE_MODE_CONFIG = {
   [MarketRateType.Supply]: {
     chartTitle: t`Historical Supply Rate`,
     currentRateLabel: t`Current APY`,
-    averageRateLabels: { week: t`1W average APY`, month: t`1M average APY`, year: t`1Y average APY` },
+    averageRateLabels: {
+      week: t`1W average APY`,
+      month: t`1M average APY`,
+      year: t`1Y average APY`,
+    },
     series: [
       { key: 'rate', label: t`Supply APY` },
       { key: 'movingAverage', label: t`7-day MA APY`, dash: CHART_LINE_DASH_PATTERNS.tight },

@@ -21,14 +21,24 @@ import { constQ } from '@ui/features/queries/util'
 const chainId = Chain.Ethereum
 
 const testCases = [
-  { approved: true, title: 'fills and submits (already approved)', withCollateral: false, buttonText: 'Borrow More' },
+  {
+    approved: true,
+    title: 'fills and submits (already approved)',
+    withCollateral: false,
+    buttonText: 'Borrow More',
+  },
   {
     approved: false,
     title: 'fills, approves, and submits',
     withCollateral: false,
     buttonText: 'Approve & Borrow More',
   },
-  { approved: true, title: 'fills with collateral and submits', withCollateral: true, buttonText: 'Add & Borrow More' },
+  {
+    approved: true,
+    title: 'fills with collateral and submits',
+    withCollateral: true,
+    buttonText: 'Add & Borrow More',
+  },
   {
     approved: false,
     title: 'fills with collateral, approves and submits',
@@ -36,7 +46,12 @@ const testCases = [
     buttonText: 'Add, Approve & Borrow More',
   },
 ].flatMap(testCase => [
-  { ...testCase, hasLeverageManagement: false, leverageEnabled: false, leverageImplementation: undefined },
+  {
+    ...testCase,
+    hasLeverageManagement: false,
+    leverageEnabled: false,
+    leverageImplementation: undefined,
+  },
   {
     ...testCase,
     title: `${testCase.title} with zapV2 leverage`,

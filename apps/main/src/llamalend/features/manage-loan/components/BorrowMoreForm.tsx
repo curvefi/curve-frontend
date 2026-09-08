@@ -59,7 +59,11 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     priceImpact,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useBorrowMoreForm({ networks, onPricesUpdated, collateralEvents })
+  } = useBorrowMoreForm({
+    networks,
+    onPricesUpdated,
+    collateralEvents,
+  })
 
   const { update: updateForm } = form
 

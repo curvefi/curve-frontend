@@ -4,7 +4,10 @@ import { t } from '@ui/lib/i18n'
 import { BridgeForm } from './components/BridgeForm'
 import { useBridgeAlert } from './hooks/useBridgeAlert'
 
-export type BridgeFormParams = { chainId: number; networks: Record<number, NetworkDef> }
+export type BridgeFormParams = {
+  chainId: number
+  networks: Record<number, NetworkDef>
+}
 
 const BridgeTab = (params: BridgeFormParams) => {
   const bridgeAlert = useBridgeAlert(params.chainId)
@@ -16,7 +19,11 @@ const BridgeTab = (params: BridgeFormParams) => {
 }
 
 const BridgeMenu = [
-  { value: 'bridge', label: t`Bridge crvUSD`, component: BridgeTab },
+  {
+    value: 'bridge',
+    label: t`Bridge crvUSD`,
+    component: BridgeTab,
+  },
 ] satisfies FormTab<BridgeFormParams>[]
 
 export const BridgeFormTabs = ({ ...params }: BridgeFormParams) => <FormTabs params={params} menu={BridgeMenu} />

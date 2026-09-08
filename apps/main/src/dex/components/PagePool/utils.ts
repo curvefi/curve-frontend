@@ -7,7 +7,12 @@ import type { SlippageType } from '@evm-ui/widgets/SlippageSettings'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 
-export type Amount = { value: string; touched?: boolean; token: string; tokenAddress: string }
+export type Amount = {
+  value: string
+  touched?: boolean
+  token: string
+  tokenAddress: string
+}
 
 export const parseAmountsForAPI = (amounts: Amount[]) => amounts.map(a => (Number(a.value) > 0 ? a.value : '0'))
 

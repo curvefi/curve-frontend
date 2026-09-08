@@ -27,9 +27,11 @@ export const Prices = () => {
   const priceScaleData = priceScale?.length ? priceScale : snapshotData?.priceScale?.map(price => price / 10 ** 18)
 
   // Curve price oracle/scale arrays omit the base token, so value index 0 belongs to token index 1.
-  const priceRows = tokens
-    .slice(1)
-    .map((label, index) => ({ key: tokenAddresses[index + 1] ?? `${label}-${index + 1}`, label, index }))
+  const priceRows = tokens.slice(1).map((label, index) => ({
+    key: tokenAddresses[index + 1] ?? `${label}-${index + 1}`,
+    label,
+    index,
+  }))
 
   return (
     <>

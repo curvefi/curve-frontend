@@ -28,7 +28,13 @@ export const useLlammaActivityEventsConfig = ({
 
   // Transform events data with block explorer URLs
   const query = combineQueries([eventsQuery, fakeLoadingQ(llamma)], ({ events }) =>
-    events.map((event: LlammaEvent) => ({ ...event, chainId, blockchainId, collateralToken, borrowToken })),
+    events.map((event: LlammaEvent) => ({
+      ...event,
+      chainId,
+      blockchainId,
+      collateralToken,
+      borrowToken,
+    })),
   )
 
   return {

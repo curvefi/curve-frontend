@@ -26,6 +26,14 @@ export type FormValues = {
   lpToken: string
 }
 
-export type FormLpTokenExpected = { expected: string; virtualPrice: string; loading: boolean; error: string }
+export type FormLpTokenExpected = {
+  expected: string
+  virtualPrice: string
+  loading: boolean
+  error: string
+}
 
-export type LoadMaxAmount = { tokenAddress: string; idx: number }
+export type LoadMaxAmount = {
+  tokenAddress: string
+  idx: number
+}

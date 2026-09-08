@@ -26,11 +26,26 @@ const meta: Meta<typeof Switch> = {
       options: ['primary', 'secondary', 'error', 'info', 'success', 'warning', 'default'],
       description: 'The color of the component',
     },
-    size: { control: 'select', options: ['small', 'medium'], description: 'The size of the component' },
-    checked: { control: 'boolean', description: 'The checked state of the component' },
-    disabled: { control: 'boolean', description: 'The disabled state of the component' },
+    size: {
+      control: 'select',
+      options: ['small', 'medium'],
+      description: 'The size of the component',
+    },
+    checked: {
+      control: 'boolean',
+      description: 'The checked state of the component',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'The disabled state of the component',
+    },
   },
-  args: { checked: true, size: 'medium', disabled: false, onClick: fn() },
+  args: {
+    checked: true,
+    size: 'medium',
+    disabled: false,
+    onClick: fn(),
+  },
 }
 
 type Story = StoryObj<typeof Switch>

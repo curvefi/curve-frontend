@@ -10,7 +10,9 @@ import type { PoolLiquidityRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-type PoolLiquidityActionCellProps = { event: PoolLiquidityRow }
+type PoolLiquidityActionCellProps = {
+  event: PoolLiquidityRow
+}
 
 const isAddLiquidity = (eventType: PoolLiquidityEventType): boolean => eventType === 'AddLiquidity'
 

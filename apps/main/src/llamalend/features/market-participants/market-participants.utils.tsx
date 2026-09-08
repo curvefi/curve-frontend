@@ -13,13 +13,22 @@ import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-export type ParticipantRow = { explorerUrl?: string; blockchainId: Chain }
+export type ParticipantRow = {
+  explorerUrl?: string
+  blockchainId: Chain
+}
 
 export type BorrowerRow = MarketBorrower &
-  ParticipantRow & { borrowToken: MarketToken | undefined; collateralToken: MarketToken | undefined }
+  ParticipantRow & {
+    borrowToken: MarketToken | undefined
+    collateralToken: MarketToken | undefined
+  }
 
 export type SupplierRow = VaultDepositor &
-  ParticipantRow & { assetsUsd: number | undefined; borrowToken: MarketToken | undefined }
+  ParticipantRow & {
+    assetsUsd: number | undefined
+    borrowToken: MarketToken | undefined
+  }
 
 export const TokenHeader = ({
   label,

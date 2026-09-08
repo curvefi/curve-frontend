@@ -122,7 +122,11 @@ export const useRepayMutation = ({
   const onSubmit = useCallback(
     // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     async ({ userBorrowed = '0', isFull, ...form }: RepayFormData) =>
-      mutate({ ...form, isFull, userBorrowed } as RepayMutation),
+      mutate({
+        ...form,
+        isFull,
+        userBorrowed,
+      } as RepayMutation),
     [mutate],
   )
 

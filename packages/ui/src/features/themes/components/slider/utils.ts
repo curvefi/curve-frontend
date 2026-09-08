@@ -15,8 +15,14 @@ const {
 } = SizesAndSpaces
 
 export const sliderSizes: Record<SliderSize, SliderSizeDefinition> = {
-  small: { height: SliderHeight.small, thumbWidth: SliderThumbWidth.small },
-  medium: { height: SliderHeight.medium, thumbWidth: SliderThumbWidth.medium },
+  small: {
+    height: SliderHeight.small,
+    thumbWidth: SliderThumbWidth.small,
+  },
+  medium: {
+    height: SliderHeight.medium,
+    thumbWidth: SliderThumbWidth.medium,
+  },
 }
 
 export const DEFAULT_SLIDER_SIZE = sliderSizes.small
@@ -48,13 +54,25 @@ const SLIDER_FULL_WIDTH_PLUS_THUMB_WIDTH = `calc(100% + var(${SLIDER_THUMB_WIDTH
 const orientationConfigMap: Record<string, OrientationConfig> = {
   horizontal: {
     gradientDirection: 'to right',
-    extensionOffsets: { start: { left: SLIDER_THUMB_WIDTH_HALF_NEG }, end: { right: SLIDER_THUMB_WIDTH_HALF_NEG } },
+    extensionOffsets: {
+      start: { left: SLIDER_THUMB_WIDTH_HALF_NEG },
+      end: { right: SLIDER_THUMB_WIDTH_HALF_NEG },
+    },
     root: {
-      size: { height: `var(${SLIDER_HEIGHT_VAR})`, width: '100%' },
-      margins: { marginInline: SLIDER_THUMB_WIDTH_HALF_POS, marginBlock: 0 },
+      size: {
+        height: `var(${SLIDER_HEIGHT_VAR})`,
+        width: '100%',
+      },
+      margins: {
+        marginInline: SLIDER_THUMB_WIDTH_HALF_POS,
+        marginBlock: 0,
+      },
     },
     thumb: {
-      size: { width: SLIDER_THUMB_WIDTH_PLUS_BORDERS, height: SLIDER_HEIGHT_PLUS_BORDERS },
+      size: {
+        width: SLIDER_THUMB_WIDTH_PLUS_BORDERS,
+        height: SLIDER_HEIGHT_PLUS_BORDERS,
+      },
       getImages: design => ({
         default: design.Sliders.default.SliderThumbImage,
         hover: design.Sliders.hover.SliderThumbImage,
@@ -63,7 +81,10 @@ const orientationConfigMap: Record<string, OrientationConfig> = {
     track: {
       size: { height: `var(${SLIDER_HEIGHT_VAR})` },
       beforePosition: { left: SLIDER_THUMB_WIDTH_HALF_NEG },
-      beforeSize: { width: SLIDER_THUMB_WIDTH_HALF_POS, height: '100%' },
+      beforeSize: {
+        width: SLIDER_THUMB_WIDTH_HALF_POS,
+        height: '100%',
+      },
     },
     rail: {
       startOffset: { left: SLIDER_THUMB_WIDTH_HALF_NEG },
@@ -73,13 +94,25 @@ const orientationConfigMap: Record<string, OrientationConfig> = {
   },
   vertical: {
     gradientDirection: 'to top',
-    extensionOffsets: { start: { bottom: SLIDER_THUMB_WIDTH_HALF_NEG }, end: { top: SLIDER_THUMB_WIDTH_HALF_NEG } },
+    extensionOffsets: {
+      start: { bottom: SLIDER_THUMB_WIDTH_HALF_NEG },
+      end: { top: SLIDER_THUMB_WIDTH_HALF_NEG },
+    },
     root: {
-      size: { height: `calc(100% - var(${SLIDER_THUMB_WIDTH_VAR}))`, width: `var(${SLIDER_HEIGHT_VAR})` },
-      margins: { marginInline: 0, marginBlock: SLIDER_THUMB_WIDTH_HALF_POS },
+      size: {
+        height: `calc(100% - var(${SLIDER_THUMB_WIDTH_VAR}))`,
+        width: `var(${SLIDER_HEIGHT_VAR})`,
+      },
+      margins: {
+        marginInline: 0,
+        marginBlock: SLIDER_THUMB_WIDTH_HALF_POS,
+      },
     },
     thumb: {
-      size: { width: SLIDER_HEIGHT_PLUS_BORDERS, height: SLIDER_THUMB_WIDTH_PLUS_BORDERS },
+      size: {
+        width: SLIDER_HEIGHT_PLUS_BORDERS,
+        height: SLIDER_THUMB_WIDTH_PLUS_BORDERS,
+      },
       getImages: design => ({
         default: design.Sliders.default.SliderThumbImageVertical,
         hover: design.Sliders.hover.SliderThumbImageVertical,
@@ -88,7 +121,10 @@ const orientationConfigMap: Record<string, OrientationConfig> = {
     track: {
       size: { width: `var(${SLIDER_HEIGHT_VAR})` },
       beforePosition: { bottom: SLIDER_THUMB_WIDTH_HALF_NEG },
-      beforeSize: { width: '100%', height: `calc(var(${SLIDER_HEIGHT_VAR}) / 2)` },
+      beforeSize: {
+        width: '100%',
+        height: `calc(var(${SLIDER_HEIGHT_VAR}) / 2)`,
+      },
     },
     rail: {
       startOffset: { top: SLIDER_THUMB_WIDTH_HALF_NEG },
@@ -130,7 +166,11 @@ export const borderedRailBackground = (
     return `linear-gradient(${direction}, transparent 0%, transparent calc(${position}% - 0.5px), ${line} calc(${position}% - 0.5px), ${line} calc(${position}% + 0.5px), transparent calc(${position}% + 0.5px), transparent 100%)`
   }).join(', ')
 
-  return { backgroundImage: `${borderGradients}, ${segments}`, opacity: 1, border: 0 }
+  return {
+    backgroundImage: `${borderGradients}, ${segments}`,
+    opacity: 1,
+    border: 0,
+  }
 }
 
 export const getGradientStopsForBackground = (

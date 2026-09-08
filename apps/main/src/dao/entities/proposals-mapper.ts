@@ -41,7 +41,13 @@ const parseProposalData = (proposal: Proposal) => {
 
   const status = getProposalStatus(timestamp, quorumVeCrv, proposal.votesFor, proposal.votesAgainst, proposal.support)
 
-  return { ...proposal, status, quorumVeCrv, currentQuorumPercentage, timestamp }
+  return {
+    ...proposal,
+    status,
+    quorumVeCrv,
+    currentQuorumPercentage,
+    timestamp,
+  }
 }
 
 const _fetchProposals = async (): Promise<ProposalsMapper> => {

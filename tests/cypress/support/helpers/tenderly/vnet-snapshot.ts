@@ -5,7 +5,10 @@ import { getRpcUrls } from './vnet'
 
 type VirtualNetwork = Parameters<typeof getRpcUrls>[0]
 
-type JsonRpcResponse = { error?: unknown; result?: unknown }
+type JsonRpcResponse = {
+  error?: unknown
+  result?: unknown
+}
 
 const requestVirtualNetworkState = ({
   method,
@@ -20,7 +23,13 @@ const requestVirtualNetworkState = ({
   const body = { jsonrpc: '2.0', method, params, id: oneInt() }
 
   return cy
-    .request<JsonRpcResponse>({ method: 'POST', url: adminRpcUrl, body, failOnStatusCode: false, ...LOAD_TIMEOUT })
+    .request<JsonRpcResponse>({
+      method: 'POST',
+      url: adminRpcUrl,
+      body,
+      failOnStatusCode: false,
+      ...LOAD_TIMEOUT,
+    })
     .then(({ body: response, status, statusText }) => {
       assert(
         status >= 200 && status < 300 && !response.error,

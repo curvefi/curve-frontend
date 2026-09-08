@@ -30,7 +30,9 @@ export const POOL_COLUMNS = columnHelper.columns([
     id: PoolColumnId.PoolName,
     header: POOL_TITLES[PoolColumnId.PoolName],
     cell: PoolTitleCell,
-    meta: { tooltip: { title: POOL_TITLES[PoolColumnId.PoolName], body: <PoolHeaderTooltipContent /> } },
+    meta: {
+      tooltip: { title: POOL_TITLES[PoolColumnId.PoolName], body: <PoolHeaderTooltipContent /> },
+    },
   }),
   columnHelper.accessor(getNetApr, {
     id: PoolColumnId.NetRate,
@@ -114,14 +116,20 @@ export const POOL_COLUMNS = columnHelper.columns([
     id: PoolColumnId.Tvl,
     header: POOL_TITLES[PoolColumnId.Tvl],
     cell: UsdCell,
-    meta: { type: 'numeric', tooltip: { title: POOL_TITLES[PoolColumnId.Tvl], body: <TvlHeaderTooltipContent /> } },
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.Tvl], body: <TvlHeaderTooltipContent /> },
+    },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('creationDate', {
     id: PoolColumnId.Age,
     header: POOL_TITLES[PoolColumnId.Age],
     cell: AgeCell,
-    meta: { type: 'numeric', tooltip: { title: POOL_TITLES[PoolColumnId.Age], body: <AgeHeaderTooltipContent /> } },
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.Age], body: <AgeHeaderTooltipContent /> },
+    },
     sortUndefined: 'last',
   }),
 ])

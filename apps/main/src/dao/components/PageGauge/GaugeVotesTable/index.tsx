@@ -11,7 +11,10 @@ import { formatDate } from '@legacy-ui/utils/'
 import { t } from '@ui/lib/i18n'
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
 
-type GaugeVotesTableProps = { gaugeAddress: string; tableMinWidth: number }
+type GaugeVotesTableProps = {
+  gaugeAddress: string
+  tableMinWidth: number
+}
 
 // weight is recieved in bps, 10000 = 100%
 const weightBpsToPercentage = (weight: number) => weight / 100

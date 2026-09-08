@@ -7,7 +7,9 @@ import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-type NoPositionProps = { type: MarketRateType }
+type NoPositionProps = {
+  type: MarketRateType
+}
 
 type EmptyMarketType = MarketRateType | 'disconnected'
 
@@ -20,7 +22,10 @@ const EMPTY_MARKET_CONFIG: Record<EmptyMarketType, { title: string; description:
     title: t`You're not earning yet`,
     description: t`Lend assets to earn yield and support deep liquidity across Curve.`,
   },
-  disconnected: { title: t`Disconnected`, description: t`Please connect your wallet to view your positions.` },
+  disconnected: {
+    title: t`Disconnected`,
+    description: t`Please connect your wallet to view your positions.`,
+  },
 }
 
 export const MarketEmptyPosition = ({ type }: NoPositionProps) => {

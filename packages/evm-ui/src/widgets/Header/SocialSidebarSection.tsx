@@ -12,7 +12,11 @@ import { isChinese } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 import { SidebarSection } from './SidebarSection'
 
-type SocialButtonProps = { label: string; href: string; icon: typeof SvgIcon }
+type SocialButtonProps = {
+  label: string
+  href: string
+  icon: typeof SvgIcon
+}
 
 const SocialButton = ({ icon: Icon, href, label }: SocialButtonProps) => (
   <IconButton component={Link} href={href} target="_blank" rel="noopener noreferrer" size="small">

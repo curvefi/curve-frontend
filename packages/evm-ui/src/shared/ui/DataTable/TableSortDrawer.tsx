@@ -15,7 +15,10 @@ import { t } from '@ui/lib/i18n'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-type TableSortDrawerOption<TSortId extends string> = { id: TSortId; label: string }
+type TableSortDrawerOption<TSortId extends string> = {
+  id: TSortId
+  label: string
+}
 
 type TableSortDrawerProps<TSortId extends string> = {
   buttonTestId: string

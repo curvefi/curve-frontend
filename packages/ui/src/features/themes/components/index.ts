@@ -40,7 +40,11 @@ export const createComponents = (
   MuiAlert: defineMuiAlert(design, typography),
   MuiAlertTitle: defineMuiAlertTitle(typography),
   MuiButton: defineMuiButton(design),
-  MuiButtonBase: { defaultProps: { disableRipple: true } },
+  MuiButtonBase: {
+    defaultProps: {
+      disableRipple: true,
+    },
+  },
   MuiCard: defineMuiCard(design, typography),
   MuiCardContent: defineMuiCardContent(design),
   MuiCardHeader: defineMuiCardHeader(design, typography),
@@ -56,16 +60,29 @@ export const createComponents = (
   },
   MuiCheckbox: defineMuiCheckbox(),
   MuiChip: defineMuiChip(design, typography),
-  MuiContainer: { styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } } },
-  MuiDialog: {
-    styleOverrides: { paper: { maxHeight: '100dvh', [basicMuiTheme.breakpoints.down('tablet')]: { margin: 0 } } },
+  MuiContainer: {
+    styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
   },
-  MuiDivider: { styleOverrides: { root: { borderColor: design.Layer[2].Outline } } },
+  MuiDialog: {
+    styleOverrides: {
+      paper: { maxHeight: '100dvh', [basicMuiTheme.breakpoints.down('tablet')]: { margin: 0 } },
+    },
+  },
+  MuiDivider: {
+    styleOverrides: {
+      root: {
+        borderColor: design.Layer[2].Outline,
+      },
+    },
+  },
   MuiFormControlLabel: {
     styleOverrides: {
       // MUI offsets labels with inline margins; inside Grids they overflow. Let the grid define the position instead.
       root: { '.MuiGrid-root > &': { marginInline: 0 } },
-      label: { marginLeft: SizesAndSpaces.Spacing.xs.desktop, ...typography.headingXsBold },
+      label: {
+        marginLeft: SizesAndSpaces.Spacing.xs.desktop,
+        ...typography.headingXsBold,
+      },
     },
   },
   MuiFormHelperText: {
@@ -75,7 +92,9 @@ export const createComponents = (
         paddingTop: SizesAndSpaces.InputSpacing.HelperPaddingTop,
         color: design.Inputs.Text.Helper,
         ...typography.bodyXsRegular,
-        '&.Mui-error': { color: design.Inputs.Text.Error },
+        '&.Mui-error': {
+          color: design.Inputs.Text.Error,
+        },
       },
     },
   },
@@ -85,8 +104,12 @@ export const createComponents = (
         marginBottom: SizesAndSpaces.InputSpacing.LabelGap,
         color: design.Inputs.Text.Label,
         ...typography.bodyXsRegular,
-        '&.Mui-error': { color: design.Inputs.Text.Error },
-        '&.Mui-disabled': { color: design.Inputs.Text.Disabled },
+        '&.Mui-error': {
+          color: design.Inputs.Text.Error,
+        },
+        '&.Mui-disabled': {
+          color: design.Inputs.Text.Disabled,
+        },
       },
     },
   },
@@ -99,7 +122,13 @@ export const createComponents = (
   },
   MuiLink: {
     styleOverrides: {
-      root: { color: 'currentColor', '&:hover': { color: design.Button.Ghost.Default.Label, textDecoration: 'none' } },
+      root: {
+        color: 'currentColor',
+        '&:hover': {
+          color: design.Button.Ghost.Default.Label,
+          textDecoration: 'none',
+        },
+      },
     },
   },
   MuiMenu: { defaultProps: { disableScrollLock: DISABLE_SCROLL_LOCK } },
@@ -125,12 +154,18 @@ export const createComponents = (
   MuiSkeleton: { styleOverrides: { root: { backgroundColor: alpha(design.Text.TextColors.Primary, 0.13) } } },
   MuiTab: defineMuiTab(design),
   MuiTabs: defineMuiTabs(design),
-  MuiTableCell: { styleOverrides: { root: { borderBlockEnd: 'none' } } },
+  MuiTableCell: {
+    styleOverrides: {
+      root: { borderBlockEnd: 'none' },
+    },
+  },
   MuiTableRow: {
     styleOverrides: {
       root: {
         backgroundColor: design.Table.Row.Default,
-        '&.Mui-selected': { backgroundColor: design.Table.Row.Selected },
+        '&.Mui-selected': {
+          backgroundColor: design.Table.Row.Selected,
+        },
       },
       hover: { backgroundColor: design.Table.Row.Hover },
       head: { backgroundColor: design.Table.Header.Fill },
@@ -142,7 +177,11 @@ export const createComponents = (
     },
   },
   MuiTableFooter: { styleOverrides: { root: ({ theme }) => ({ '& td': { borderBlockStart: borderStyle(theme) } }) } },
-  MuiToolbar: { styleOverrides: { root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 } } },
+  MuiToolbar: {
+    styleOverrides: {
+      root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },
+    },
+  },
   MuiTooltip: defineMuiTooltip(design, typography),
   MuiPaper: {
     styleOverrides: {
@@ -167,14 +206,22 @@ export const createComponents = (
     styleOverrides: {
       paper: {
         backgroundColor: design.Layer[2].Fill,
-        '& .MuiMenu-list': { maxHeight: SizesAndSpaces.MaxHeight.popover },
+        '& .MuiMenu-list': {
+          maxHeight: SizesAndSpaces.MaxHeight.popover,
+        },
       },
     },
   },
   MuiRadio: defineMuiRadio(),
   MuiSwitch: defineMuiSwitch(design),
   MuiDrawer: {
-    styleOverrides: { paper: { backgroundColor: design.Layer[1].Fill, display: 'flex', flexDirection: 'column' } },
+    styleOverrides: {
+      paper: {
+        backgroundColor: design.Layer[1].Fill,
+        display: 'flex',
+        flexDirection: 'column',
+      },
+    },
   },
   MuiTypography: defineMuiTypography(design),
 })

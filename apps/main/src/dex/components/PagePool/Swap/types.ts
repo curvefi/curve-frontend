@@ -20,7 +20,13 @@ export type RouterSwapOutput = {
   toAmountOutput: string
   fromAmount: string
   error: string
-  exchangeRates: { from: string; to: string; fromAddress: string; value: string; label: string }[]
+  exchangeRates: {
+    from: string
+    to: string
+    fromAddress: string
+    value: string
+    label: string
+  }[]
   isApproved: boolean
 }
 

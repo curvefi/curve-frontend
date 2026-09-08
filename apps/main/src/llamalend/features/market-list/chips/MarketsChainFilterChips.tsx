@@ -17,7 +17,9 @@ export const MarketsChainFilterChips = ({
   marketsQuery,
   columnFiltersById,
   setColumnFilter,
-}: { marketsQuery: QueryProp<LlamaMarket[]> } & FilterProps<MarketColumnId>) => {
+}: {
+  marketsQuery: QueryProp<LlamaMarket[]>
+} & FilterProps<MarketColumnId>) => {
   const selectedChains = useMemo(() => parseListFilter(columnFiltersById[MarketColumnId.Chain]), [columnFiltersById])
 
   const toggleChain = useCallback(

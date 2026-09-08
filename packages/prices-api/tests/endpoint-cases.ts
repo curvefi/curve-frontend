@@ -6,7 +6,11 @@ import { ENDPOINT_TEST_SEED } from './seeds'
 
 export { endpointId, type EndpointId, type EndpointModule }
 
-type EndpointCase = { functionName: string; labelSuffix?: string; run: () => Promise<unknown> }
+type EndpointCase = {
+  functionName: string
+  labelSuffix?: string
+  run: () => Promise<unknown>
+}
 
 /** Registers a wrapper invocation; use the optional suffix for multiple cases of one function. */
 export function endpointCase(functionName: string, run: () => Promise<unknown>): EndpointCase

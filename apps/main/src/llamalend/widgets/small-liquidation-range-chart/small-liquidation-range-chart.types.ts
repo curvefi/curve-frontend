@@ -14,7 +14,10 @@ export type SmallLiquidationRangeChartProps = {
 }
 
 export type SmallLiquidationRangeChartOptionProps = {
-  liquidationRanges: { newRange?: LiquidationRange; currentRange?: LiquidationRange }
+  liquidationRanges: {
+    newRange?: LiquidationRange
+    currentRange?: LiquidationRange
+  }
   oraclePrice: Amount | undefined
 }
 
@@ -60,7 +63,10 @@ export type ChartColors = {
   newRangeLine: string
 }
 
-export type RangeSeriesParams = { rangeMarkAreas: RangeMarkArea[]; seriesData: number[][] }
+export type RangeSeriesParams = {
+  rangeMarkAreas: RangeMarkArea[]
+  seriesData: number[][]
+}
 
 export type BuildOptionContext = RangeSeriesParams & {
   chartTextStyle: ChartTextStyle

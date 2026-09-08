@@ -10,7 +10,10 @@ type V2PoolListNetwork = 'ethereum' | 'taiko'
 export const visitV2PoolList = ({
   network = 'ethereum',
   viewport = DESKTOP_VIEWPORT,
-}: { network?: V2PoolListNetwork; viewport?: readonly [number, number] } = {}) => {
+}: {
+  network?: V2PoolListNetwork
+  viewport?: readonly [number, number]
+} = {}) => {
   const isMobile = viewport[0] < 600
 
   cy.viewport(viewport[0], viewport[1])

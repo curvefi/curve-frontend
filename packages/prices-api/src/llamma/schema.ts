@@ -1,14 +1,26 @@
 import { z } from 'zod/v4'
 import { address, camelizeKeys, timestamp } from '../schemas'
 
-const token = z.object({ symbol: z.string(), address }).transform(({ symbol, address }) => ({ symbol, address }))
+const token = z.object({ symbol: z.string(), address }).transform(({ symbol, address }) => ({
+  symbol,
+  address,
+}))
 
 export const endpoint = z.enum(['crvusd', 'lending'])
 export type Endpoint = z.infer<typeof endpoint>
 
-const deposit = z.object({ amount: z.number(), n1: z.number(), n2: z.number() })
+const deposit = z.object({
+  amount: z.number(),
+  n1: z.number(),
+  n2: z.number(),
+})
 
-const withdrawal = z.object({ amount_borrowed: z.number(), amount_collateral: z.number() }).transform(camelizeKeys)
+const withdrawal = z
+  .object({
+    amount_borrowed: z.number(),
+    amount_collateral: z.number(),
+  })
+  .transform(camelizeKeys)
 
 const llammaEvent = z
   .object({
@@ -22,7 +34,13 @@ const llammaEvent = z
   .transform(camelizeKeys)
   .transform(({ deposit, withdrawal, transactionHash, ...data }) => ({
     ...data,
-    deposit: deposit ? { amount: deposit.amount, n1: deposit.n1, n2: deposit.n2 } : null,
+    deposit: deposit
+      ? {
+          amount: deposit.amount,
+          n1: deposit.n1,
+          n2: deposit.n2,
+        }
+      : null,
     withdrawal: withdrawal ?? null,
     txHash: transactionHash,
   }))
@@ -48,8 +66,14 @@ const llammaTrade = z
     ...data,
     idSold: soldId,
     idBought: boughtId,
-    tokenSold: { symbol: tokenSold.symbol, address: tokenSold.address },
-    tokenBought: { symbol: tokenBought.symbol, address: tokenBought.address },
+    tokenSold: {
+      symbol: tokenSold.symbol,
+      address: tokenSold.address,
+    },
+    tokenBought: {
+      symbol: tokenBought.symbol,
+      address: tokenBought.address,
+    },
     feeX: feeX ?? 0,
     feeY: feeY ?? 0,
     txHash: transactionHash,

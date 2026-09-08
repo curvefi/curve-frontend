@@ -30,5 +30,8 @@ const sumSuccess = (results: NonNullable<UseReadContractsReturnType<typeof pegke
 export const useStatistics = () => {
   const totalDebtQuery = useReadContracts({ contracts: pegkeeperDebtContracts })
   const totalCeilingQuery = useReadContracts({ contracts: pegkeeperDebtCeilingContracts })
-  return { totalDebt: mapQuery(totalDebtQuery, sumSuccess), totalCeiling: mapQuery(totalCeilingQuery, sumSuccess) }
+  return {
+    totalDebt: mapQuery(totalDebtQuery, sumSuccess),
+    totalCeiling: mapQuery(totalCeilingQuery, sumSuccess),
+  }
 }

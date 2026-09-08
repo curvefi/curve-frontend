@@ -8,7 +8,12 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { multicall } from '@wagmi/core'
 
-export type VeCrvStats = { totalVeCrv: Decimal; totalLockedCrv: Decimal; totalCrv: Decimal; lockedPercentage: Decimal }
+export type VeCrvStats = {
+  totalVeCrv: Decimal
+  totalLockedCrv: Decimal
+  totalCrv: Decimal
+  lockedPercentage: Decimal
+}
 
 export const { useQuery: useStatsVecrvQuery } = queryFactory({
   queryKey: () => ['stats-vecrv'] as const,
@@ -20,9 +25,21 @@ export const { useQuery: useStatsVecrvQuery } = queryFactory({
       allowFailure: false,
       chainId: Chain.Ethereum,
       contracts: [
-        { address: CONTRACT_VECRV, abi: ABI_VECRV, functionName: 'supply' },
-        { address: MAINNET_CRV_ADDRESS, abi: ABI_VECRV, functionName: 'totalSupply' },
-        { address: CONTRACT_VECRV, abi: ABI_VECRV, functionName: 'totalSupply' },
+        {
+          address: CONTRACT_VECRV,
+          abi: ABI_VECRV,
+          functionName: 'supply',
+        },
+        {
+          address: MAINNET_CRV_ADDRESS,
+          abi: ABI_VECRV,
+          functionName: 'totalSupply',
+        },
+        {
+          address: CONTRACT_VECRV,
+          abi: ABI_VECRV,
+          functionName: 'totalSupply',
+        },
       ],
     })
     const totalLockedCrvDecimal = fromWei(totalLockedCrv.toString(), 18)

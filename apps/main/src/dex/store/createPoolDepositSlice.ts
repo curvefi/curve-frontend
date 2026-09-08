@@ -113,7 +113,11 @@ export const createPoolDepositSlice = (
       ])
 
       get()[SLICE_KEY].setStateByKey('formLpTokenExpected', {
-        [activeKey]: { ...fetchedExpected, loading: false, virtualPrice: fetchedParameters?.virtualPrice },
+        [activeKey]: {
+          ...fetchedExpected,
+          loading: false,
+          virtualPrice: fetchedParameters?.virtualPrice,
+        },
       })
     },
     fetchMaxAmount: async (config, activeKey, chainId, userAddress, pool, { tokenAddress, idx }, maxSlippage) => {
@@ -127,7 +131,10 @@ export const createPoolDepositSlice = (
       if (tokenAddress.toLowerCase() === ethAddress) {
         // set loading
         cFormValues.amounts[idx].value = ''
-        get()[SLICE_KEY].setStateByKeys({ formValues: cloneDeep(cFormValues), maxLoading: idx })
+        get()[SLICE_KEY].setStateByKeys({
+          formValues: cloneDeep(cFormValues),
+          maxLoading: idx,
+        })
 
         // fetch est gas
         cFormValues.amounts[idx].value = userBalance
@@ -254,13 +261,20 @@ export const createPoolDepositSlice = (
             maxSlippage,
           )
           activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
-          get()[SLICE_KEY].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues), maxLoading: null })
+          get()[SLICE_KEY].setStateByKeys({
+            activeKey,
+            formValues: cloneDeep(cFormValues),
+            maxLoading: null,
+          })
         } else if (cFormValues.isBalancedAmounts === 'by-wallet') {
           // get balanced amounts
           const resp = await curvejsApi.poolDeposit.depositBalancedAmounts(activeKey, pool, cFormValues.isWrapped)
 
           if (resp.error) {
-            get()[SLICE_KEY].setStateByKey('formStatus', { ...get()[SLICE_KEY].formStatus, error: resp.error })
+            get()[SLICE_KEY].setStateByKey('formStatus', {
+              ...get()[SLICE_KEY].formStatus,
+              error: resp.error,
+            })
           } else {
             cFormValues.amounts = get().pools.poolsMapper[chainId][poolId].tokenAddresses.map((address, idx) => ({
               value: resp.amounts[idx],
@@ -368,7 +382,10 @@ export const createPoolDepositSlice = (
             : await curvejsApi.poolDeposit.stakeEstGasApproval(activeKey, chainId, pool, lpToken)
 
       // set estimate gas state
-      get()[SLICE_KEY].setStateByActiveKey('formEstGas', activeKey, { estimatedGas: resp.estimatedGas, loading: false })
+      get()[SLICE_KEY].setStateByActiveKey('formEstGas', activeKey, {
+        estimatedGas: resp.estimatedGas,
+        loading: false,
+      })
 
       // set form status
       const storedFormStatus = get()[SLICE_KEY].formStatus
@@ -448,10 +465,17 @@ export const createPoolDepositSlice = (
           get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'DEPOSIT'
-          get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
+          get()[SLICE_KEY].setStateByKeys({
+            formStatus: cFormStatus,
+            formValues: resetFormValues(formValues),
+          })
 
           // re-fetch data
-          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
+          await invalidateUserPoolInfo({
+            chainId: curve.chainId,
+            poolId: pool.id,
+            userAddress: curve.signerAddress,
+          })
           await get().pools.fetchPoolStats(curve, poolData)
           await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
@@ -489,10 +513,17 @@ export const createPoolDepositSlice = (
           get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'DEPOSIT_STAKE'
-          get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
+          get()[SLICE_KEY].setStateByKeys({
+            formStatus: cFormStatus,
+            formValues: resetFormValues(formValues),
+          })
 
           // re-fetch data
-          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
+          await invalidateUserPoolInfo({
+            chainId: curve.chainId,
+            poolId: pool.id,
+            userAddress: curve.signerAddress,
+          })
           await get().pools.fetchPoolStats(curve, poolData)
           await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
@@ -556,10 +587,17 @@ export const createPoolDepositSlice = (
           get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'STAKE'
-          get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
+          get()[SLICE_KEY].setStateByKeys({
+            formStatus: cFormStatus,
+            formValues: resetFormValues(formValues),
+          })
 
           // re-fetch data
-          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
+          await invalidateUserPoolInfo({
+            chainId: curve.chainId,
+            poolId: pool.id,
+            userAddress: curve.signerAddress,
+          })
           await get().pools.fetchPoolStats(curve, poolData)
           await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }

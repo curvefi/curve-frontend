@@ -5,7 +5,10 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type AmountCellProps = { amount: number | null | undefined; usdAmount: number | null | undefined }
+type AmountCellProps = {
+  amount: number | null | undefined
+  usdAmount: number | null | undefined
+}
 
 export const AmountCell = ({ amount, usdAmount }: AmountCellProps) => {
   const formattedUsd = formatNumber(usdAmount, 'usd.amount')

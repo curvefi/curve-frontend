@@ -5,10 +5,10 @@ import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { DISABLED_Q, fallbackQ, q, Query, QueryProp } from '@ui/features/queries/util'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
-  ({ error: queries.find(x => x?.error)?.error ?? null, isLoading: queries.some(x => x?.isLoading) }) as Omit<
-    QueryProp<unknown>,
-    'data'
-  >
+  ({
+    error: queries.find(x => x?.error)?.error ?? null,
+    isLoading: queries.some(x => x?.isLoading),
+  }) as Omit<QueryProp<unknown>, 'data'>
 
 type Queries = readonly Query<unknown>[]
 type QueriesData<TQueries extends Queries> = {

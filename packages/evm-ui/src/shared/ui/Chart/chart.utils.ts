@@ -20,7 +20,10 @@ export const CHART_LINE_DASH_PATTERNS = {
   wide: [8, 8],
 } satisfies Record<string, ChartLineDashPattern>
 
-export const CHART_LINE_WIDTHS = { defaultPriceLine: 1, referenceLine: 2 } as const
+export const CHART_LINE_WIDTHS = {
+  defaultPriceLine: 1,
+  referenceLine: 2,
+} as const
 
 export const createChartSeriesColorScale = (theme: Theme) => CHART_COLOR_INDICES.map(i => theme.design.Chart.Lines[i])
 

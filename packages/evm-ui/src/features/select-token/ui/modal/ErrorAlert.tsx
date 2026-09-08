@@ -8,7 +8,9 @@ import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-type Props = { error: string }
+type Props = {
+  error: string
+}
 
 export const ErrorAlert = ({ error }: Props) => (
   <Alert
@@ -21,7 +23,12 @@ export const ErrorAlert = ({ error }: Props) => (
     }
     sx={{
       position: 'relative',
-      '& .MuiAlert-action': { position: 'absolute', right: Spacing.xs, padding: 0, margin: 0 },
+      '& .MuiAlert-action': {
+        position: 'absolute',
+        right: Spacing.xs,
+        padding: 0,
+        margin: 0,
+      },
     }}
   >
     <AlertTitle>{t`Could not create token list`}</AlertTitle>

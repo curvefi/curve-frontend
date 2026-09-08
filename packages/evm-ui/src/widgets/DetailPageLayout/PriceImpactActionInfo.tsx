@@ -33,7 +33,11 @@ export const PriceImpactActionInfo = ({ priceImpact, ...props }: PriceImpactActi
         level && (
           <ExclamationTriangleIcon
             titleAccess={t`Elevated price impact`}
-            sx={{ color: theme => getIconColor(theme, level), width: IconSize.xs, height: IconSize.xs }}
+            sx={{
+              color: theme => getIconColor(theme, level),
+              width: IconSize.xs,
+              height: IconSize.xs,
+            }}
           />
         )
       }

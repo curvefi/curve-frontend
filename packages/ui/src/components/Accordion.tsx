@@ -28,10 +28,11 @@ const ghostTitleVariants = {
   medium: 'headingSBold',
 } as const satisfies Record<Size, TypographyVariantKey>
 
-const headerPaddingBlock = { extraSmall: 0, small: Spacing.xs, medium: Spacing.xs } as const satisfies Record<
-  Size,
-  number | Responsive
->
+const headerPaddingBlock = {
+  extraSmall: 0,
+  small: Spacing.xs,
+  medium: Spacing.xs,
+} as const satisfies Record<Size, number | Responsive>
 
 const headerIconSize = {
   extraSmall: IconSize.xs.mobile,
@@ -39,7 +40,11 @@ const headerIconSize = {
   medium: IconSize.md.mobile,
 } as const satisfies Record<Size, string>
 
-const headerIconFontSize = { extraSmall: 12, small: 20, medium: 20 } as const satisfies Record<Size, number>
+const headerIconFontSize = {
+  extraSmall: 12,
+  small: 20,
+  medium: 20,
+} as const satisfies Record<Size, number>
 
 type AccordionBaseProps = {
   /** The title displayed in the accordion header */
@@ -131,7 +136,10 @@ export const Accordion = ({
     ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
   }
 
-  const indicatorIconSx = { width: headerIconSize[size], height: headerIconSize[size] }
+  const indicatorIconSx = {
+    width: headerIconSize[size],
+    height: headerIconSize[size],
+  }
 
   return (
     <Stack data-testid={testId}>

@@ -3,7 +3,10 @@ import { type FieldsOf } from '@evm-ui/lib'
 import type { UserMarketQuery } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
 
-export type CollateralQuery<T = IChainId> = UserMarketQuery<T> & { userCollateral: Decimal; maxCollateral?: Decimal }
+export type CollateralQuery<T = IChainId> = UserMarketQuery<T> & {
+  userCollateral: Decimal
+  maxCollateral?: Decimal
+}
 
 export type CollateralHealthQuery<T = IChainId> = CollateralQuery<T> & { isFull: boolean }
 

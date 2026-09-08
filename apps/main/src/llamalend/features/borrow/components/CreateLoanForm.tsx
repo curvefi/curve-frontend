@@ -68,7 +68,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     solvencyModal: { onConfirm, onClose, isOpen },
     isHighLiquidationRisk,
     isLeverageSupported,
-  } = useCreateLoanForm({ networks, preset, onPricesUpdated })
+  } = useCreateLoanForm({
+    networks,
+    preset,
+    onPricesUpdated,
+  })
 
   const { update: updateForm } = form
   const toggleLeverage = useCallback(

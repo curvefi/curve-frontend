@@ -90,12 +90,30 @@ const meta: Meta<typeof LargeTokenInputWithTokenSelector> = {
       control: 'object',
       description: 'Configuration for max balance behavior, including slider and chips',
     },
-    message: { control: 'object', description: 'Optional message to display below the input (can be a React node)' },
-    label: { control: 'text', description: 'Optional label explaining what the input is all about' },
-    isError: { control: 'boolean', description: 'Whether to display the input in an error state' },
-    tokenSelector: { control: 'object', description: 'React component to use for token selection' },
-    inputBalanceUsd: { control: 'number', description: 'Optional dollar value of the given input balance' },
-    children: { control: 'object', description: 'Optional children to be rendered below the input' },
+    message: {
+      control: 'object',
+      description: 'Optional message to display below the input (can be a React node)',
+    },
+    label: {
+      control: 'text',
+      description: 'Optional label explaining what the input is all about',
+    },
+    isError: {
+      control: 'boolean',
+      description: 'Whether to display the input in an error state',
+    },
+    tokenSelector: {
+      control: 'object',
+      description: 'React component to use for token selection',
+    },
+    inputBalanceUsd: {
+      control: 'number',
+      description: 'Optional dollar value of the given input balance',
+    },
+    children: {
+      control: 'object',
+      description: 'Optional children to be rendered below the input',
+    },
   },
   args: {
     walletBalance: TOKEN_OPTIONS[0].walletBalance,
@@ -123,33 +141,80 @@ export const Default: Story = {
 }
 
 export const WithoutWalletBalance: Story = {
-  args: { walletBalance: undefined },
+  args: {
+    walletBalance: undefined,
+  },
   render: args => <LargeTokenInputWithTokenSelector {...args} />,
-  parameters: { docs: { description: { story: 'Large token input without a wallet balance' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large token input without a wallet balance',
+      },
+    },
+  },
 }
 
 export const WithoutMaxBalanceSlider: Story = {
-  args: { maxBalance: { ...DEFAULT_MAX_BALANCE, showSlider: false } },
+  args: {
+    maxBalance: {
+      ...DEFAULT_MAX_BALANCE,
+      showSlider: false,
+    },
+  },
   render: args => <LargeTokenInputWithTokenSelector {...args} />,
-  parameters: { docs: { description: { story: 'Large token input without the max balance percentage slider' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large token input without the max balance percentage slider',
+      },
+    },
+  },
 }
 
 export const WithChipsCustom: Story = {
-  args: { maxBalance: { ...DEFAULT_MAX_BALANCE, chips: [{ label: 'Yolo', newBalance: () => '1337.42' }] } },
+  args: {
+    maxBalance: {
+      ...DEFAULT_MAX_BALANCE,
+      chips: [{ label: 'Yolo', newBalance: () => '1337.42' }],
+    },
+  },
   render: args => <LargeTokenInputWithTokenSelector {...args} />,
-  parameters: { docs: { description: { story: 'Large token input with a custom input chip' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large token input with a custom input chip',
+      },
+    },
+  },
 }
 
 export const WithoutMessage: Story = {
-  args: { message: undefined },
+  args: {
+    message: undefined,
+  },
   render: args => <LargeTokenInputWithTokenSelector {...args} />,
-  parameters: { docs: { description: { story: 'Large token input without an informational message' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large token input without an informational message',
+      },
+    },
+  },
 }
 
 export const WithError: Story = {
-  args: { message: 'This is an error message', isError: true },
+  args: {
+    message: 'This is an error message',
+    isError: true,
+  },
   render: args => <LargeTokenInputWithTokenSelector {...args} />,
-  parameters: { docs: { description: { story: 'Large token input in an error state with an error message' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large token input in an error state with an error message',
+      },
+    },
+  },
 }
 
 export const WithReactNodeMessage: Story = {
@@ -169,7 +234,9 @@ export const WithReactNodeMessage: Story = {
   render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
-      description: { story: 'Large token input with a complex message composed of multiple typography elements' },
+      description: {
+        story: 'Large token input with a complex message composed of multiple typography elements',
+      },
     },
   },
 }
@@ -188,7 +255,11 @@ export const WithChildren: Story = {
   },
   render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
-    docs: { description: { story: 'Large token input with custom children content rendered below the input' } },
+    docs: {
+      description: {
+        story: 'Large token input with custom children content rendered below the input',
+      },
+    },
   },
 }
 

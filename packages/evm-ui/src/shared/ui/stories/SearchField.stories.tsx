@@ -17,21 +17,38 @@ const meta: Meta<typeof SearchField> = {
   },
   argTypes: {
     onSearch: { action: 'searched' },
-    size: { control: 'select', options: ['small', 'medium'] },
-    placeholder: { control: 'text' },
+    size: {
+      control: 'select',
+      options: ['small', 'medium'],
+    },
+    placeholder: {
+      control: 'text',
+    },
   },
 }
 
 export default meta
 type Story = StoryObj<typeof SearchField>
 
-export const Default: Story = { args: { onSearch: (value: string) => console.info('Search:', value) } }
-
-export const WithCustomPlaceholder: Story = {
-  args: { onSearch: (value: string) => console.info('Search:', value), placeholder: 'Search networks' },
+export const Default: Story = {
+  args: {
+    onSearch: (value: string) => console.info('Search:', value),
+  },
 }
 
-export const Small: Story = { args: { onSearch: (value: string) => console.info('Search:', value), size: 'small' } }
+export const WithCustomPlaceholder: Story = {
+  args: {
+    onSearch: (value: string) => console.info('Search:', value),
+    placeholder: 'Search networks',
+  },
+}
+
+export const Small: Story = {
+  args: {
+    onSearch: (value: string) => console.info('Search:', value),
+    size: 'small',
+  },
+}
 
 // Example with input reference
 export const WithInputRef = () => {
@@ -54,6 +71,12 @@ export const WithInputRef = () => {
 export const CustomStyled: Story = {
   args: {
     onSearch: (value: string) => console.info('Search:', value),
-    sx: { width: '300px', backgroundColor: '#f5f5f5', '& .MuiOutlinedInput-root': { borderRadius: '8px' } },
+    sx: {
+      width: '300px',
+      backgroundColor: '#f5f5f5',
+      '& .MuiOutlinedInput-root': {
+        borderRadius: '8px',
+      },
+    },
   },
 }

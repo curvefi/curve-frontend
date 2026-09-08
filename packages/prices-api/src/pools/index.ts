@@ -163,7 +163,12 @@ export async function getPoolTrades(
   options?: Options,
 ) {
   const host = getHost(options)
-  const query = addQueryString({ main_token: mainToken, reference_token: referenceToken, page, per_page: perPage })
+  const query = addQueryString({
+    main_token: mainToken,
+    reference_token: referenceToken,
+    page,
+    per_page: perPage,
+  })
 
   const response = await fetch(`${host}/v1/trades/${chain}/${poolAddress}${query}`)
 
@@ -183,28 +188,43 @@ export async function getAllPoolTrades(
   options?: Options,
 ) {
   const host = getHost(options)
-  const query = addQueryString({ page, per_page: perPage, include_state: includeState })
+  const query = addQueryString({
+    page,
+    per_page: perPage,
+    include_state: includeState,
+  })
 
   const response = await fetch(`${host}/v1/trades/all/${chain}/${poolAddress}${query}`)
 
   return Schema.getAllPoolTradesResponse.parse(response)
 }
 
-export type GetPoolLiquidityEventsParams = { chain: Chain; poolAddress: Address; page?: number; perPage?: number }
+export type GetPoolLiquidityEventsParams = {
+  chain: Chain
+  poolAddress: Address
+  page?: number
+  perPage?: number
+}
 
 export async function getPoolLiquidityEvents(
   { chain, poolAddress, page = 1, perPage = 100 }: GetPoolLiquidityEventsParams,
   options?: Options,
 ) {
   const host = getHost(options)
-  const query = addQueryString({ page, per_page: perPage })
+  const query = addQueryString({
+    page,
+    per_page: perPage,
+  })
 
   const response = await fetch(`${host}/v1/liquidity/${chain}/${poolAddress}${query}`)
 
   return Schema.getPoolLiquidityEventsResponse.parse(response)
 }
 
-export type GetPoolMetadataParams = { chain: Chain; poolAddress: Address }
+export type GetPoolMetadataParams = {
+  chain: Chain
+  poolAddress: Address
+}
 
 export async function getPoolMetadata({ chain, poolAddress }: GetPoolMetadataParams, options?: Options) {
   const host = getHost(options)

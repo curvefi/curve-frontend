@@ -111,7 +111,10 @@ export const ErrorReportModal = ({
             value={contact}
             onChange={event => updateForm({ contact: event.target.value })}
             slotProps={{
-              htmlInput: { 'data-testid': 'submit-error-report-contact', 'aria-label': label || t`Contact` },
+              htmlInput: {
+                'data-testid': 'submit-error-report-contact',
+                'aria-label': label || t`Contact`,
+              },
             }}
           />
           <FormHelperText>{t`We will only reach out if needed`}</FormHelperText>

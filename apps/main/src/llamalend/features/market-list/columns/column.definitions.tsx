@@ -41,7 +41,12 @@ const columnHelper = createAppColumnHelper<LlamaMarketRow>()
 
 /** Define a hidden column. */
 const hidden = (id: MarketColumnId, field: DeepKeys<LlamaMarketRow>, filterFn: typeof multiFilterFn) =>
-  columnHelper.accessor(field, { id, header: MARKET_TITLES[id], filterFn, meta: { hidden: true } })
+  columnHelper.accessor(field, {
+    id,
+    header: MARKET_TITLES[id],
+    filterFn,
+    meta: { hidden: true },
+  })
 
 /** Columns for the lending markets table. */
 export const MARKET_COLUMNS = columnHelper.columns([
@@ -96,7 +101,10 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.BorrowRate,
     header: MARKET_TITLES[MarketColumnId.BorrowRate],
     cell: RateCell,
-    meta: { type: 'numeric', unit: 'percentage' },
+    meta: {
+      type: 'numeric',
+      unit: 'percentage',
+    },
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),

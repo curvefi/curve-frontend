@@ -19,7 +19,9 @@ const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbrevia
 const PRIMARY_METRIC_CATEGORY = 'loan.scrvusdUserPositionPrimary'
 const SECONDARY_METRIC_CATEGORY = 'loan.scrvusdUserPositionSecondary'
 
-type UserPositionProps = { chainId: ChainId | undefined }
+type UserPositionProps = {
+  chainId: ChainId | undefined
+}
 
 export const UserPosition = ({ chainId }: UserPositionProps) => {
   const { address } = useConnection()

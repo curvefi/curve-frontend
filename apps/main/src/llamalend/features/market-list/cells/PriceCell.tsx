@@ -57,9 +57,10 @@ const getAssetValues = (
 /** Gets the tooltip title for a given column. */
 const getTooltipTitle = (columnId: MarketColumnId) =>
   (
-    ({ [MarketColumnId.UserBorrowed]: t`Borrowed`, [MarketColumnId.UserCollateral]: t`Collateral` }) as Partial<
-      Record<MarketColumnId, string>
-    >
+    ({
+      [MarketColumnId.UserBorrowed]: t`Borrowed`,
+      [MarketColumnId.UserCollateral]: t`Collateral`,
+    }) as Partial<Record<MarketColumnId, string>>
   )[columnId]
 
 /**
@@ -88,7 +89,10 @@ const getTooltipBody = (
             conversionRate: market.oraclePrice,
             symbol: market.assets.collateral.symbol,
           },
-          borrow: { value: decimal(stats?.borrowToken), symbol: market.assets.borrowed.symbol },
+          borrow: {
+            value: decimal(stats?.borrowToken),
+            symbol: market.assets.borrowed.symbol,
+          },
           totalValue,
           totalValueUsd,
         }}

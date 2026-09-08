@@ -21,7 +21,9 @@ import type { DisclaimerTab, Tab } from './types/tabs'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
-type LegalPageProps = { currentApp: AppName }
+type LegalPageProps = {
+  currentApp: AppName
+}
 
 type LegalTab = Tab | DisclaimerTab
 type LegalTabsParams = { currentApp: AppName; network: string; searchParams: URLSearchParams }

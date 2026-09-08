@@ -20,7 +20,10 @@ import {
 
 type OhlcTimeUnit = Parameters<typeof useLlammaOhlcQuery>[0]['units']
 type Endpoint = Parameters<typeof useLlammaOhlcQuery>[0]['endpoint']
-type HistoricalSelection = { oraclePool: boolean; llamma: boolean }
+type HistoricalSelection = {
+  oraclePool: boolean
+  llamma: boolean
+}
 
 type UseLlammaOhlcChartDataParams = {
   anchorEnd: number
@@ -65,7 +68,10 @@ export const useLlammaOhlcChartData = ({
     anchorEnd,
     enabled,
   })
-  const oraclePoolsChartAdapter = useOhlcPagesAdapter({ query: oraclePoolQuery, selectData: selectOraclePoolChartData })
+  const oraclePoolsChartAdapter = useOhlcPagesAdapter({
+    query: oraclePoolQuery,
+    selectData: selectOraclePoolChartData,
+  })
   const oraclePoolIsSettled = oraclePoolQuery.isSuccess || oraclePoolQuery.isError
   const oraclePoolsHaveOraclePriceData = !!oraclePoolsChartAdapter.data.oraclePriceData?.length
   const oraclePoolsHaveChartData = !!oraclePoolsChartAdapter.data.ohlcData?.length || oraclePoolsHaveOraclePriceData
@@ -80,7 +86,10 @@ export const useLlammaOhlcChartData = ({
     anchorEnd,
     enabled: shouldFetchLlammaQuery,
   })
-  const rawOraclePriceFallback = useOhlcQueryAdapter({ query: llammaQuery, selectItems: selectLlammaOraclePriceData })
+  const rawOraclePriceFallback = useOhlcQueryAdapter({
+    query: llammaQuery,
+    selectItems: selectLlammaOraclePriceData,
+  })
   const isWaitingForFallbackChartData =
     !oraclePoolsHaveChartData && shouldFetchLlammaQuery && rawOraclePriceFallback.isLoading
   const oraclePriceFallbackQuery = useMappedQuery(

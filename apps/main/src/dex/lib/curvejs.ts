@@ -94,7 +94,13 @@ const pool = {
     }
   },
   poolAllRewardsApy: async (network: NetworkConfig, p: Pool, useApi: boolean) => {
-    const resp: RewardsApy = { poolId: p.id, base: { day: '0', week: '0' }, other: [], crv: [0, 0], error: {} }
+    const resp: RewardsApy = {
+      poolId: p.id,
+      base: { day: '0', week: '0' },
+      other: [],
+      crv: [0, 0],
+      error: {},
+    }
 
     const { chainId, isCrvRewardsEnabled } = network
 
@@ -657,7 +663,13 @@ const poolSwap = {
         : getExchangeRates(toAmount, swapRequired)
 
       resp.exchangeRates = [
-        { from: fromToken, to: toToken, fromAddress, value: exchangeRates[0] || '', label: `${fromToken}/${toToken}` },
+        {
+          from: fromToken,
+          to: toToken,
+          fromAddress,
+          value: exchangeRates[0] || '',
+          label: `${fromToken}/${toToken}`,
+        },
         {
           from: toToken,
           to: fromToken,
@@ -1174,8 +1186,21 @@ const wallet = {
   },
   userPoolRewardProfit: async (p: Pool, signerAddress: string, chainId: ChainId) => {
     const profit = {
-      baseProfit: { day: '0', week: '0', month: '0', year: '0' },
-      crvProfit: { day: '0', price: 0, token: '', symbol: '', week: '0', month: '0', year: '0' },
+      baseProfit: {
+        day: '0',
+        week: '0',
+        month: '0',
+        year: '0',
+      },
+      crvProfit: {
+        day: '0',
+        price: 0,
+        token: '',
+        symbol: '',
+        week: '0',
+        month: '0',
+        year: '0',
+      },
       tokensProfit: [] as IProfit[],
     }
 
@@ -1216,7 +1241,12 @@ const lockCrv = {
     log('vecrvInfo', curve.chainId, walletAddress)
     const resp = {
       activeKey,
-      resp: { crv: '', lockedAmountAndUnlockTime: { lockedAmount: '', unlockTime: 0 }, veCrv: '', veCrvPct: '' },
+      resp: {
+        crv: '',
+        lockedAmountAndUnlockTime: { lockedAmount: '', unlockTime: 0 },
+        veCrv: '',
+        veCrvPct: '',
+      },
       error: '',
     }
 
@@ -1276,4 +1306,14 @@ function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
   }
 }
 
-export const curvejsApi = { helpers, network, router, pool, poolDeposit, poolWithdraw, poolSwap, wallet, lockCrv }
+export const curvejsApi = {
+  helpers,
+  network,
+  router,
+  pool,
+  poolDeposit,
+  poolWithdraw,
+  poolSwap,
+  wallet,
+  lockCrv,
+}

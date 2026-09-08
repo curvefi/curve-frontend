@@ -22,11 +22,21 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   voteTxMapper: Record<
     string,
-    { hash: string | null; txLink: string | null; error: string | null; status: TransactionState }
+    {
+      hash: string | null
+      txLink: string | null
+      error: string | null
+      status: TransactionState
+    }
   >
   executeTxMapper: Record<
     string,
-    { hash: string | null; txLink: string | null; error: string | null; status: TransactionState }
+    {
+      hash: string | null
+      txLink: string | null
+      error: string | null
+      status: TransactionState
+    }
   >
   searchValue: string
   activeFilter: ProposalListFilter
@@ -87,7 +97,12 @@ export const createProposalsSlice = (
       const { dismiss: dismissConfirm } = notify(t`Please confirm to cast vote.`, 'pending')
       get()[SLICE_KEY].setStateByKey('voteTxMapper', {
         ...get()[SLICE_KEY].voteTxMapper,
-        [voteIdKey]: { status: 'CONFIRMING', hash: null, txLink: null, error: null },
+        [voteIdKey]: {
+          status: 'CONFIRMING',
+          hash: null,
+          txLink: null,
+          error: null,
+        },
       })
 
       let dismissNotificationHandler = dismissConfirm
@@ -102,7 +117,12 @@ export const createProposalsSlice = (
         if (voteResponseHash) {
           get()[SLICE_KEY].setStateByKey('voteTxMapper', {
             ...get()[SLICE_KEY].voteTxMapper,
-            [voteIdKey]: { status: 'LOADING', hash: null, txLink: null, error: null },
+            [voteIdKey]: {
+              status: 'LOADING',
+              hash: null,
+              txLink: null,
+              error: null,
+            },
           })
 
           dismissConfirm()
@@ -171,7 +191,12 @@ export const createProposalsSlice = (
       const { dismiss: dismissConfirm } = notify(t`Please confirm to execute proposal.`, 'pending')
       get()[SLICE_KEY].setStateByKey('executeTxMapper', {
         ...get()[SLICE_KEY].executeTxMapper,
-        [voteIdKey]: { status: 'CONFIRMING', hash: null, txLink: null, error: null },
+        [voteIdKey]: {
+          status: 'CONFIRMING',
+          hash: null,
+          txLink: null,
+          error: null,
+        },
       })
 
       let dismissNotificationHandler = dismissConfirm
@@ -182,7 +207,12 @@ export const createProposalsSlice = (
         if (transactionHash) {
           get()[SLICE_KEY].setStateByKey('executeTxMapper', {
             ...get()[SLICE_KEY].executeTxMapper,
-            [voteIdKey]: { status: 'LOADING', hash: null, txLink: null, error: null },
+            [voteIdKey]: {
+              status: 'LOADING',
+              hash: null,
+              txLink: null,
+              error: null,
+            },
           })
 
           dismissConfirm()

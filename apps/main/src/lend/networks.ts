@@ -20,7 +20,12 @@ const networksConfig = {
 export const { networks, networksIdMapper } = Object.entries(networksConfig).reduce(
   (mapper, [key, config]) => {
     const chainId = Number(key) as ChainId
-    const networkConfig = { ...DEFAULT_NETWORK_CONFIG, ...config, chainId, blockchainId: CHAIN_BLOCKCHAIN_IDS[chainId] }
+    const networkConfig = {
+      ...DEFAULT_NETWORK_CONFIG,
+      ...config,
+      chainId,
+      blockchainId: CHAIN_BLOCKCHAIN_IDS[chainId],
+    }
 
     mapper.networks[chainId] = networkConfig
     mapper.networksIdMapper[networkConfig.blockchainId] = chainId

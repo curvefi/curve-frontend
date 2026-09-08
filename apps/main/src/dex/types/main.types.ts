@@ -11,7 +11,10 @@ export type { CurveApi, Wallet } from '@evm-ui/features/connect-wallet'
 
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName
-export type NetworkConfigFromApi = { hasDepositAndStake: boolean | undefined; hasRouter: boolean | undefined }
+export type NetworkConfigFromApi = {
+  hasDepositAndStake: boolean | undefined
+  hasRouter: boolean | undefined
+}
 
 export type NetworkUrlParams = { network: INetworkName }
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
@@ -25,7 +28,11 @@ export type NetworkConfig = {
   poolFilters: string[]
   swap: Record<string, string>
   swapCustomRouteRedirect: Record<string, string>
-  createQuickList: { address: string; haveSameTokenName: boolean; symbol: string }[]
+  createQuickList: {
+    address: string
+    haveSameTokenName: boolean
+    symbol: string
+  }[]
   createDisabledTokens: string[]
   stableswapFactoryOld: boolean
   stableswapFactory: boolean
@@ -45,12 +52,25 @@ export type CurrencyReservesToken = {
   usdRate: number
   percentShareInPool: string
 }
-export type CurrencyReserves = { poolId: string; tokens: CurrencyReservesToken[]; total: string; totalUsd: string }
+export type CurrencyReserves = {
+  poolId: string
+  tokens: CurrencyReservesToken[]
+  total: string
+  totalUsd: string
+}
 export type CurrencyReservesMapper = Record<string, CurrencyReserves>
 export type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
 export type Pool = PoolTemplate
-export type ClaimableReward = { token: string; symbol: string; amount: string; price: number }
-export type RewardBase = { day: string; week: string }
+export type ClaimableReward = {
+  token: string
+  symbol: string
+  amount: string
+  price: number
+}
+export type RewardBase = {
+  day: string
+  week: string
+}
 export type RewardCrv = number
 export type RewardOther = {
   apy: number
@@ -80,7 +100,10 @@ export type TokensMapper = Record<string, Token | undefined>
 export type TokensNameMapper = Record<string, string>
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
-type Gauge = { status: GaugeStatus | null; isKilled: boolean | null }
+type Gauge = {
+  status: GaugeStatus | null
+  isKilled: boolean | null
+}
 
 export type PoolData = {
   idx?: number
@@ -129,9 +152,17 @@ export type FnStepEstGasApprovalResponse = {
   error: string
 }
 
-export type FnStepApproveResponse = { activeKey: string; hashes: string[]; error: string }
+export type FnStepApproveResponse = {
+  activeKey: string
+  hashes: string[]
+  error: string
+}
 
-export type FnStepResponse = { activeKey: string; hash: string; error: string }
+export type FnStepResponse = {
+  activeKey: string
+  hash: string
+  error: string
+}
 
 export enum claimButtonsKey {
   '3CRV' = '3CRV',

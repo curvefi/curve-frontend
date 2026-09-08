@@ -85,7 +85,13 @@ export async function getLiqHealthDeciles(
 }
 
 export async function getTotalOverview(
-  { endpoint: endpointParam, ...params }: { endpoint: Schema.Endpoint; fetch_on_chain?: boolean },
+  {
+    endpoint: endpointParam,
+    ...params
+  }: {
+    endpoint: Schema.Endpoint
+    fetch_on_chain?: boolean
+  },
   options?: Options,
 ) {
   params.fetch_on_chain ??= true
@@ -98,7 +104,13 @@ export async function getTotalOverview(
 }
 
 export async function getBadDebt(
-  { endpoint: endpointParam, ...params }: { endpoint: Schema.Endpoint; fetch_on_chain?: boolean },
+  {
+    endpoint: endpointParam,
+    ...params
+  }: {
+    endpoint: Schema.Endpoint
+    fetch_on_chain?: boolean
+  },
   options?: Options,
 ) {
   params.fetch_on_chain ??= true

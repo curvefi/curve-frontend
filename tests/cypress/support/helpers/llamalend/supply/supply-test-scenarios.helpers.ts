@@ -71,8 +71,15 @@ const createBaseSupplyMarket = ({
   controller = SUPPLY_MARKET_ADDRESSES.controller,
 }: {
   chainId: number
-  walletBalances: { collateral: Decimal; borrowed: Decimal; vaultShares: Decimal; gauge: Decimal }
-  vaultOverrides: Partial<Omit<MockLendVault, 'estimateGas'>> & { estimateGas?: Partial<MockLendEstimateGas> }
+  walletBalances: {
+    collateral: Decimal
+    borrowed: Decimal
+    vaultShares: Decimal
+    gauge: Decimal
+  }
+  vaultOverrides: Partial<Omit<MockLendVault, 'estimateGas'>> & {
+    estimateGas?: Partial<MockLendEstimateGas>
+  }
   currentApy: Decimal
   futureApy: Decimal
   hasGauge?: boolean
@@ -102,22 +109,40 @@ const createBaseSupplyMarket = ({
       address: SUPPLY_MARKET_ADDRESSES.collateral,
       decimals: 18,
     },
-    borrowed_token: { symbol: 'crvUSD', address: SUPPLY_MARKET_ADDRESSES.borrowed, decimals: 18 },
+    borrowed_token: {
+      symbol: 'crvUSD',
+      address: SUPPLY_MARKET_ADDRESSES.borrowed,
+      decimals: 18,
+    },
     addresses: { ...SUPPLY_MARKET_ADDRESSES, controller, ...(!hasGauge && { gauge: zeroAddress }) },
-    stats: { rates: statsRates, futureRates: statsFutureRates },
-    wallet: { balances: walletBalancesStub },
+    stats: {
+      rates: statsRates,
+      futureRates: statsFutureRates,
+    },
+    wallet: {
+      balances: walletBalancesStub,
+    },
     vault: {
       ...defaultVault,
       ...otherVaultOverrides,
       convertToAssets,
       convertToShares,
-      estimateGas: { ...defaultVault.estimateGas, ...estimateGasOverrides },
+      estimateGas: {
+        ...defaultVault.estimateGas,
+        ...estimateGasOverrides,
+      },
     },
   })
 
   return {
     market,
-    sharedStubs: { statsRates, statsFutureRates, walletBalances: walletBalancesStub, convertToAssets, convertToShares },
+    sharedStubs: {
+      statsRates,
+      statsFutureRates,
+      walletBalances: walletBalancesStub,
+      convertToAssets,
+      convertToShares,
+    },
   }
 }
 
@@ -137,7 +162,12 @@ export const createDepositScenario = ({
   const input = { amount: '12.5' as const, maxDeposit }
   const amount = input.amount
   const amountArgs = [amount] as const
-  const balances = { collateral: '0', borrowed: '0', vaultShares: '100.00', gauge: '25.00' } as const
+  const balances = {
+    collateral: '0',
+    borrowed: '0',
+    vaultShares: '100.00',
+    gauge: '25.00',
+  } as const
   const currentApy = '0.0456'
   const futureApy = '0.0412'
   const depositApprove = createTransactionStub([TEST_TX_HASH])
@@ -161,7 +191,10 @@ export const createDepositScenario = ({
       depositIsApproved,
       depositApprove,
       deposit,
-      estimateGas: { deposit: estimateGasDeposit, depositApprove: estimateGasDepositApprove },
+      estimateGas: {
+        deposit: estimateGasDeposit,
+        depositApprove: estimateGasDepositApprove,
+      },
     },
   })
 
@@ -217,7 +250,12 @@ export const createStakeScenario = ({
   const input = { amount: '15' as const }
   const assets = input.amount
   const stakeShares = decimalMultiply(assets, 2)
-  const balances = { collateral: '0', borrowed: '0', vaultShares: '80.00', gauge: '20.00' } as const
+  const balances = {
+    collateral: '0',
+    borrowed: '0',
+    vaultShares: '80.00',
+    gauge: '20.00',
+  } as const
   const currentApy = '0.0375'
   const futureApy = currentApy
   const stakeApprove = createTransactionStub([TEST_TX_HASH])
@@ -246,7 +284,10 @@ export const createStakeScenario = ({
       stakeIsApproved,
       stakeApprove,
       stake,
-      estimateGas: { stake: estimateGasStake, stakeApprove: estimateGasStakeApprove },
+      estimateGas: {
+        stake: estimateGasStake,
+        stakeApprove: estimateGasStakeApprove,
+      },
     },
   })
 
@@ -295,10 +336,18 @@ export const createWithdrawScenario = ({
   depositedShares?: Decimal
   stakedShares?: Decimal
 }) => {
-  const input = { amount: isFull ? depositedShares : '22.5', isFull }
+  const input = {
+    amount: isFull ? depositedShares : '22.5',
+    isFull,
+  }
   const amount = input.amount
   const submitAmount = isFull ? depositedShares : amount
-  const balances = { collateral: '0', borrowed: '0', vaultShares: depositedShares, gauge: stakedShares } as const
+  const balances = {
+    collateral: '0',
+    borrowed: '0',
+    vaultShares: depositedShares,
+    gauge: stakedShares,
+  } as const
   const currentApy = '0.0510'
   const futureApy = isFull ? '0.0540' : '0.0531'
   const maxWithdraw = createStub(depositedShares)
@@ -321,7 +370,10 @@ export const createWithdrawScenario = ({
       previewWithdraw,
       withdraw,
       redeem,
-      estimateGas: { withdraw: estimateGasWithdraw, redeem: estimateGasRedeem },
+      estimateGas: {
+        withdraw: estimateGasWithdraw,
+        redeem: estimateGasRedeem,
+      },
     },
   })
 
@@ -365,7 +417,12 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
   const input = { amount: '12.5' as const }
   const assets = input.amount
   const unstakeShares = decimalMultiply(assets, 2)
-  const balances = { collateral: '0', borrowed: '0', vaultShares: '0', gauge: '40.00' } as const
+  const balances = {
+    collateral: '0',
+    borrowed: '0',
+    vaultShares: '0',
+    gauge: '40.00',
+  } as const
   const currentApy = '0.0440'
   const futureApy = currentApy
   const estimateGasUnstake = createStub(`${121_000}`)
@@ -384,7 +441,14 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
     walletBalances: balances,
     currentApy,
     futureApy,
-    vaultOverrides: { convertToAssets, convertToShares, unstake, estimateGas: { unstake: estimateGasUnstake } },
+    vaultOverrides: {
+      convertToAssets,
+      convertToShares,
+      unstake,
+      estimateGas: {
+        unstake: estimateGasUnstake,
+      },
+    },
   })
 
   return {
@@ -407,7 +471,12 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
       },
       alert: 'alert-unstake-only',
     },
-    stubs: { ...sharedStubs, convertToShares, estimateGasUnstake, unstake },
+    stubs: {
+      ...sharedStubs,
+      convertToShares,
+      estimateGasUnstake,
+      unstake,
+    },
   }
 }
 
@@ -429,7 +498,12 @@ export const createClaimScenario = ({
 
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
-    walletBalances: { collateral: '0', borrowed: '0', vaultShares: '0', gauge: '0' },
+    walletBalances: {
+      collateral: '0',
+      borrowed: '0',
+      vaultShares: '0',
+      gauge: '0',
+    },
     currentApy: '0.0400',
     futureApy: '0.0400',
     vaultOverrides: {
@@ -437,7 +511,10 @@ export const createClaimScenario = ({
       claimableRewards: claimableRewardsStub,
       claimCrv,
       claimRewards,
-      estimateGas: { claimCrv: estimateGasClaimCrv, claimRewards: estimateGasClaimRewards },
+      estimateGas: {
+        claimCrv: estimateGasClaimCrv,
+        claimRewards: estimateGasClaimRewards,
+      },
     },
   })
 

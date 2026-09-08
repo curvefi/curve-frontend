@@ -12,7 +12,11 @@ export enum LoanPreset {
   Custom = 'Custom',
 }
 
-export const PRESET_RANGES = { [LoanPreset.Safe]: 50, [LoanPreset.MaxLtv]: 4, [LoanPreset.Custom]: 10 }
+export const PRESET_RANGES = {
+  [LoanPreset.Safe]: 50,
+  [LoanPreset.MaxLtv]: 4,
+  [LoanPreset.Custom]: 10,
+}
 
 export const MarketTypeSuffix: Record<MarketType, string> = {
   [MarketType.Lend]: t`(Lending Markets)`,

@@ -6,7 +6,10 @@ import { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import type { Query } from '@ui/features/queries/util'
 
-type SnapshotByMarketType = { [MarketType.Lend]: LendingSnapshot; [MarketType.Mint]: CrvUsdSnapshot }
+type SnapshotByMarketType = {
+  [MarketType.Lend]: LendingSnapshot
+  [MarketType.Mint]: CrvUsdSnapshot
+}
 
 type SnapshotsByMarketType<TMarketType extends MarketType> = TMarketType extends MarketType
   ? SnapshotByMarketType[TMarketType][]

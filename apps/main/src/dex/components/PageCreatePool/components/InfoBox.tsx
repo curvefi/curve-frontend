@@ -3,9 +3,20 @@ import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { t } from '@ui/lib/i18n'
 
-type Props = { link1?: { title: string; link: string }; link2?: { title: string; link: string } }
+type Props = {
+  link1?: {
+    title: string
+    link: string
+  }
+  link2?: {
+    title: string
+    link: string
+  }
+}
 
-type StylesProps = { link2?: boolean }
+type StylesProps = {
+  link2?: boolean
+}
 
 export const InfoBox = ({ link1, link2 }: Props) => (
   <BoxStyles>

@@ -136,7 +136,15 @@ export const validateRouteProvider = (
 
 export const validateMaxBorrowed = (
   userBorrowed: Decimal | undefined | null,
-  { maxBorrowed, label, required }: { label: string; maxBorrowed: Decimal | undefined | null; required: boolean },
+  {
+    maxBorrowed,
+    label,
+    required,
+  }: {
+    label: string
+    maxBorrowed: Decimal | undefined | null
+    required: boolean
+  },
 ) => {
   skipWhen(!required || !userBorrowed, () => {
     test('maxBorrowed', 'Maximum borrow must be calculated before it can be validated', () => {

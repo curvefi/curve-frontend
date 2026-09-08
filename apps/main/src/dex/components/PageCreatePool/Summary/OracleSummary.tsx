@@ -27,9 +27,15 @@ import { Icon } from '@legacy-ui/Icon'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
 
-type Props = { chainId: ChainId }
+type Props = {
+  chainId: ChainId
+}
 
-type OracleTokenSummaryProps = { chainId: ChainId; token: TokenState; title: string }
+type OracleTokenSummaryProps = {
+  chainId: ChainId
+  token: TokenState
+  title: string
+}
 
 export const OracleSummary = ({ chainId }: Props) => {
   const tokens = useStore(state => state.createPool.tokensInPool)

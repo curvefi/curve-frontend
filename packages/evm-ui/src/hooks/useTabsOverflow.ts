@@ -72,7 +72,11 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
       }
     }
 
-    return { renderedOptions: standardOptions, visibleOptions: standardOptions, hiddenOptions: alwaysInKebabOptions }
+    return {
+      renderedOptions: standardOptions,
+      visibleOptions: standardOptions,
+      hiddenOptions: alwaysInKebabOptions,
+    }
   }, [isKebabMode, options, tabWidths, tabsContainerWidth])
 
   return {

@@ -160,7 +160,11 @@ testCases.forEach(
       })
 
       it('claims rewards', () => {
-        prepareClaimRewards({ vnet: getVirtualNetwork(), userAddress: address, gaugeAddress })
+        prepareClaimRewards({
+          vnet: getVirtualNetwork(),
+          userAddress: address,
+          gaugeAddress,
+        })
 
         cy.mount(<SupplyTestWrapper tab="claim" />)
         if (!hasClaimableRewards) {

@@ -4,7 +4,10 @@ import { formatDate } from '@legacy-ui/utils'
 import { useTheme } from '@mui/material/styles'
 import { PositiveAndNegativeBarChartTooltip } from './PositiveAndNegativeBarChartTooltip'
 
-type PositiveAndNegativeBarChartProps = { data: VeCrvLock[]; height: number }
+type PositiveAndNegativeBarChartProps = {
+  data: VeCrvLock[]
+  height: number
+}
 
 export const PositiveAndNegativeBarChart = ({ data, height }: PositiveAndNegativeBarChartProps) => {
   const theme = useTheme()

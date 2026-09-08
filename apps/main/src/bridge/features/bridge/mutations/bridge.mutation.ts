@@ -10,9 +10,14 @@ import type { BridgeForm } from '../hooks/useBridgeForm'
 import { fetchBridgeCost } from '../queries/bridge-cost.query'
 import { bridgeFormValidationSuite } from '../validation/bridge.validation'
 
-type BridgeMutation = { amount: Decimal }
+type BridgeMutation = {
+  amount: Decimal
+}
 
-type BridgeOptions = { chainId: number; onReset: () => void }
+type BridgeOptions = {
+  chainId: number
+  onReset: () => void
+}
 
 export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
   const { mutate, error, isPending } = useTransactionMutation<BridgeMutation>({

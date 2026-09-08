@@ -38,7 +38,10 @@ const buttonSize = (
     lineHeight: LineHeight[lineHeight],
   })
 
-type ButtonSizeSquare = BaseButtonSize & { size: keyof typeof ButtonSize; padding: keyof typeof Spacing }
+type ButtonSizeSquare = BaseButtonSize & {
+  size: keyof typeof ButtonSize
+  padding: keyof typeof Spacing
+}
 
 const buttonSizeSquare = (
   fontWeightTokens: DesignSystem['Text']['FontWeight'],
@@ -67,7 +70,9 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
         '&:hover': toggleStyle(Hover),
         '&.Mui-selected': toggleStyle(Current),
         '&.Mui-selected:hover': toggleStyle(Current),
-        '&&': { margin: 0 },
+        '&&': {
+          margin: 0,
+        },
 
         border: `${OUTLINE_WIDTH} solid transparent !important`, // Not even '&&' works, hence the !important
         borderRadius: 0,
@@ -88,7 +93,12 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
       },
 
       sizeExtraSmallSquare: {
-        ...buttonSizeSquare(Text.FontWeight, { size: 'xs', padding: 'xs', fontSize: 'sm', lineHeight: 'sm' }),
+        ...buttonSizeSquare(Text.FontWeight, {
+          size: 'xs',
+          padding: 'xs',
+          fontSize: 'sm',
+          lineHeight: 'sm',
+        }),
         textTransform: 'none',
       },
 

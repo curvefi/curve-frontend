@@ -7,7 +7,11 @@ import { RCExternal } from '@legacy-ui/images'
 import { ExternalLink } from '@legacy-ui/Link'
 import { toArray } from '@primitives/array.utils'
 
-type Props = { description: ReactNode; txHash: string | string[] | undefined; onClose?: () => void }
+type Props = {
+  description: ReactNode
+  txHash: string | string[] | undefined
+  onClose?: () => void
+}
 
 export const TxInfoBar = ({ description, txHash, onClose }: Props) => (
   <StyledInfoBar grid gridTemplateColumns="1fr auto" gridColumnGap="3" flexAlignItems="center" fillWidth>

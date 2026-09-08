@@ -3,20 +3,41 @@ import type { Chain } from '..'
 import { address, camelizeKeys, timestamp } from '../schemas'
 
 const coin = z
-  .object({ lp_token: z.boolean(), symbol: z.string(), address, precision: z.number() })
+  .object({
+    lp_token: z.boolean(),
+    symbol: z.string(),
+    address,
+    precision: z.number(),
+  })
   .transform(camelizeKeys)
 
-const chainRevenue = z.object({ chain: z.string(), totalDailyFeesUSD: z.number() })
+const chainRevenue = z.object({
+  chain: z.string(),
+  totalDailyFeesUSD: z.number(),
+})
 
 const currentChainRevenue = z
-  .object({ chain: z.string(), total_fees: z.number() })
+  .object({
+    chain: z.string(),
+    total_fees: z.number(),
+  })
   .transform(camelizeKeys)
-  .transform(({ chain, totalFees }) => ({ chain, totalDailyFeesUSD: totalFees }))
+  .transform(({ chain, totalFees }) => ({
+    chain,
+    totalDailyFeesUSD: totalFees,
+  }))
 
-const chainTopPoolRevenue = z.object({ name: z.string(), totalDailyFeesUSD: z.number() })
+const chainTopPoolRevenue = z.object({
+  name: z.string(),
+  totalDailyFeesUSD: z.number(),
+})
 
 const currentChainTopPoolRevenue = z
-  .object({ name: z.string(), trading_fee_24h: z.number(), liquidity_fee_24h: z.number() })
+  .object({
+    name: z.string(),
+    trading_fee_24h: z.number(),
+    liquidity_fee_24h: z.number(),
+  })
   .transform(camelizeKeys)
   .transform(({ name, tradingFee24h, liquidityFee24h }) => ({
     name,
@@ -24,19 +45,42 @@ const currentChainTopPoolRevenue = z
   }))
 
 const crvUsdWeekly = z
-  .object({ controller: address, collateral: z.string(), fees_usd: z.number(), timestamp })
+  .object({
+    controller: address,
+    collateral: z.string(),
+    fees_usd: z.number(),
+    timestamp,
+  })
   .transform(camelizeKeys)
 
 const poolsWeekly = z
-  .object({ chain: z.string(), fees_usd: z.number(), timestamp })
+  .object({
+    chain: z.string(),
+    fees_usd: z.number(),
+    timestamp,
+  })
   .transform(camelizeKeys)
-  .transform(({ timestamp, ...fees }) => ({ ...fees, chain: fees.chain as Chain, timestamp }))
+  .transform(({ timestamp, ...fees }) => ({
+    ...fees,
+    chain: fees.chain as Chain,
+    timestamp,
+  }))
 
 const cushion = z
-  .object({ pool: address, name: z.string(), admin_fees: z.array(z.number()), usd_value: z.number() })
+  .object({
+    pool: address,
+    name: z.string(),
+    admin_fees: z.array(z.number()),
+    usd_value: z.number(),
+  })
   .transform(camelizeKeys)
 
-const distribution = z.object({ timestamp, fees_usd: z.number() }).transform(camelizeKeys)
+const distribution = z
+  .object({
+    timestamp,
+    fees_usd: z.number(),
+  })
+  .transform(camelizeKeys)
 
 const cowSwapSettlement = z
   .object({
@@ -59,10 +103,19 @@ const cowSwapSettlement = z
   }))
 
 const fees = z
-  .object({ coin, amount: z.string(), usd_amount: z.string() })
+  .object({
+    coin,
+    amount: z.string(),
+    usd_amount: z.string(),
+  })
   .transform(camelizeKeys)
   .transform(({ coin, amount, usdAmount }) => ({
-    coin: { lpToken: coin.lpToken, symbol: coin.symbol, address: coin.address, decimals: coin.precision },
+    coin: {
+      lpToken: coin.lpToken,
+      symbol: coin.symbol,
+      address: coin.address,
+      decimals: coin.precision,
+    },
     amount: parseFloat(amount),
     amountUsd: parseFloat(usdAmount),
   }))

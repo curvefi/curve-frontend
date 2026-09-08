@@ -18,7 +18,9 @@ const meta: Meta<typeof FormAlerts> = {
 
 type Story = StoryObj<typeof FormAlerts>
 
-export const Default: Story = { args: { error: new Error('Transaction reverted') } }
+export const Default: Story = {
+  args: { error: new Error('Transaction reverted') },
+}
 
 export const ValidationErrors: Story = {
   args: {
@@ -29,12 +31,19 @@ export const ValidationErrors: Story = {
   },
 }
 
-export const RejectedTransaction: Story = { args: { error: new Error('User rejected the request') } }
+export const RejectedTransaction: Story = {
+  args: { error: new Error('User rejected the request') },
+}
 
-export const LongSubmissionError: Story = { args: { error: LONG_ERROR } }
+export const LongSubmissionError: Story = {
+  args: { error: LONG_ERROR },
+}
 
 export const ValidationAndSubmissionErrors: Story = {
-  args: { error: new Error('Unable to estimate gas'), formErrors: [['debt', 'Enter a valid debt amount']] },
+  args: {
+    error: new Error('Unable to estimate gas'),
+    formErrors: [['debt', 'Enter a valid debt amount']],
+  },
 }
 
 export default meta

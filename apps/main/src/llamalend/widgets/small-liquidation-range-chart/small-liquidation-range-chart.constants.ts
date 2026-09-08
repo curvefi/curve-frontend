@@ -8,7 +8,10 @@ export const CHART_LAYOUT = {
   trackHeight: 24,
   axisHeight: 24,
   rangeBorderGutter: CHART_LINE_WIDTHS.referenceLine,
-  priceMarker: { tickHeight: 6, labelGap: 6 },
+  priceMarker: {
+    tickHeight: 6,
+    labelGap: 6,
+  },
 } as const
 
 const ORACLE_MARKER_ARROW = {
@@ -32,7 +35,10 @@ export const ORACLE_MARKER_LAYOUT = {
 export const SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX =
   CHART_LAYOUT.trackHeight + CHART_LAYOUT.axisHeight + CHART_LAYOUT.rangeBorderGutter * 2
 
-export const SMALL_LIQUIDATION_RANGE_CHART_LOADER = { height: CHART_LAYOUT.trackHeight, padding: Spacing.sm } as const
+export const SMALL_LIQUIDATION_RANGE_CHART_LOADER = {
+  height: CHART_LAYOUT.trackHeight,
+  padding: Spacing.sm,
+} as const
 
 export const DEFAULT_SMALL_LIQUIDATION_RANGE_CHART_DOMAIN = [0, 10000] as const
 export const FULL_RANGE_Y_AXIS = [0, 1] as const
@@ -41,7 +47,11 @@ export const NEW_RANGE_BORDER_DASH = CHART_LINE_DASH_PATTERNS.regular
 export const RANGE_LABEL = t`LR`
 
 // Rail coordinates, not prices: edge of chart, "..." break label, rounded terminal tick.
-export const SMALL_LIQUIDATION_RANGE_CHART_ORACLE_RAIL_AXIS = { min: 0, breakTick: 1, max: 2 } as const
+export const SMALL_LIQUIDATION_RANGE_CHART_ORACLE_RAIL_AXIS = {
+  min: 0,
+  breakTick: 1,
+  max: 2,
+} as const
 
 // Split mode deliberately reserves a small, fixed-width rail for distant oracle prices.
 // The rail is schematic, not a real price scale, so the liquidation range keeps almost all

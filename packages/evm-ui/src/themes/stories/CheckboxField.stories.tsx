@@ -49,7 +49,10 @@ const SliderContent = () => {
         max={100}
         step={1}
         onChange={setValue}
-        inputProps={{ format: value => formatNumber(Number(value), { abbreviate: true }), adornment: 'percentage' }}
+        inputProps={{
+          format: value => formatNumber(Number(value), { abbreviate: true }),
+          adornment: 'percentage',
+        }}
       />
     </Stack>
   )
@@ -58,11 +61,25 @@ const SliderContent = () => {
 const meta: Meta<typeof CheckboxFieldStory> = {
   title: 'UI Kit/Widgets/CheckboxField',
   component: CheckboxFieldStory,
-  args: { checked: true, label: `Enable leverage`, disabled: false, onChange: fn() },
+  args: {
+    checked: true,
+    label: `Enable leverage`,
+    disabled: false,
+    onChange: fn(),
+  },
   argTypes: {
-    checked: { control: 'boolean', description: 'Controls the checked state of the checkbox.' },
-    label: { control: 'text', description: 'Primary label shown next to the checkbox.' },
-    disabled: { control: 'boolean', description: 'Disables the checkbox input.' },
+    checked: {
+      control: 'boolean',
+      description: 'Controls the checked state of the checkbox.',
+    },
+    label: {
+      control: 'text',
+      description: 'Primary label shown next to the checkbox.',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disables the checkbox input.',
+    },
     endContent: {
       control: { disable: true },
       description: 'Supplementary content (e.g., preview value, settings) displayed at the end of the checkbox row.',
@@ -71,7 +88,10 @@ const meta: Meta<typeof CheckboxFieldStory> = {
       control: { disable: true },
       description: 'Collapsible content rendered when the checkbox is checked.',
     },
-    onChange: { control: { disable: true }, description: 'Callback fired when the checkbox changes.' },
+    onChange: {
+      control: { disable: true },
+      description: 'Callback fired when the checkbox changes.',
+    },
   },
   parameters: {
     docs: {
@@ -85,16 +105,41 @@ const meta: Meta<typeof CheckboxFieldStory> = {
 
 type Story = StoryObj<typeof CheckboxFieldStory>
 
-export const Basic: Story = { parameters: { docs: { description: { story: 'Simple checkbox with label.' } } } }
+export const Basic: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'Simple checkbox with label.',
+      },
+    },
+  },
+}
 
 export const WithEndContent: Story = {
-  args: { endContent: <ActionInfo label={t`Leverage`} value={formatNumber(2.42, 'multiplier')} size="medium" /> },
-  parameters: { docs: { description: { story: 'Checkbox with supplementary end content.' } } },
+  args: {
+    endContent: <ActionInfo label={t`Leverage`} value={formatNumber(2.42, 'multiplier')} size="medium" />,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Checkbox with supplementary end content.',
+      },
+    },
+  },
 }
 
 export const WithCollapsibleChildren: Story = {
-  args: { label: 'Deposit and stake', collapsible: <SliderContent /> },
-  parameters: { docs: { description: { story: 'Checkbox with collapsible children when checked.' } } },
+  args: {
+    label: 'Deposit and stake',
+    collapsible: <SliderContent />,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Checkbox with collapsible children when checked.',
+      },
+    },
+  },
 }
 
 export default meta

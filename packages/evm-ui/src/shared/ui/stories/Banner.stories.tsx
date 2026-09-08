@@ -29,15 +29,27 @@ const meta: Meta<typeof Banner> = {
       options: ['alert', 'warning', 'caution', 'info', 'highlight'],
       description: 'The severity level of the banner message',
     },
-    learnMoreUrl: { control: 'text', description: 'The URL to navigate to when clicking the learn more button' },
-    buttonText: { control: 'text', description: 'Text for the action button (optional)' },
+    learnMoreUrl: {
+      control: 'text',
+      description: 'The URL to navigate to when clicking the learn more button',
+    },
+    buttonText: {
+      control: 'text',
+      description: 'Text for the action button (optional)',
+    },
     icon: {
       control: 'select',
       options: ['llama', 'info', 'highlight', 'warning', 'caution', 'alert'],
       description: 'The icon to display before the title',
     },
-    onClick: { action: 'clicked', description: 'Function called when the button is clicked' },
-    subtitle: { control: 'text', description: 'Subtitle for the banner message (optional)' },
+    onClick: {
+      action: 'clicked',
+      description: 'Function called when the button is clicked',
+    },
+    subtitle: {
+      control: 'text',
+      description: 'Subtitle for the banner message (optional)',
+    },
   },
 }
 
@@ -97,7 +109,11 @@ export const WithLearnMoreUrl: Story = {
 }
 
 export const WithCustomIcon: Story = {
-  args: { buttonText: 'Disable Beta Mode', children: 'BETA MODE ENABLED', icon: 'llama' },
+  args: {
+    buttonText: 'Disable Beta Mode',
+    children: 'BETA MODE ENABLED',
+    icon: 'llama',
+  },
 }
 
 export const MaintenanceExample: Story = {

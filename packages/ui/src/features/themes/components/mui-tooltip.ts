@@ -22,7 +22,10 @@ export const defineMuiTooltip = (
   styleOverrides: {
     arrow: {
       color: design.Layer[3].Fill,
-      '&::before': { backgroundColor: design.Layer[3].Fill, boxShadow: getShadow(design, 2) },
+      '&::before': {
+        backgroundColor: design.Layer[3].Fill,
+        boxShadow: getShadow(design, 2),
+      },
     },
     tooltip: {
       color: design.Text.TextColors.Secondary,
@@ -31,7 +34,10 @@ export const defineMuiTooltip = (
       maxWidth: MaxWidth.tooltip,
       display: 'flex',
       alignItems: 'center',
-      ...handleBreakpoints({ padding: Spacing.md, ...typography.bodyMBold }),
+      ...handleBreakpoints({
+        padding: Spacing.md,
+        ...typography.bodyMBold,
+      }),
     },
   },
 })

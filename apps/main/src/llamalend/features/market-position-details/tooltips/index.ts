@@ -11,7 +11,10 @@ export * from './LiquidationBufferTooltipContent'
 export * from './LiquidationThresholdMetricTooltipContent'
 export * from './VaultSharesTooltipContent'
 
-export const LEGACY_HEALTH_TOOLTIP = { title: t`Health`, body: createElement(LegacyHealthTooltipContent) } as const
+export const LEGACY_HEALTH_TOOLTIP = {
+  title: t`Health`,
+  body: createElement(LegacyHealthTooltipContent),
+} as const
 
 export const HEALTH_TOOLTIP = {
   title: t`Health`,

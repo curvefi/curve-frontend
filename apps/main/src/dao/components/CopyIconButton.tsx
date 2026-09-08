@@ -2,7 +2,10 @@ import { copyToClipboard } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipButton } from '@legacy-ui/Tooltip/TooltipButton'
 
-type CopyIconButtonProps = { copyContent: string; tooltip: string }
+type CopyIconButtonProps = {
+  copyContent: string
+  tooltip: string
+}
 
 export const CopyIconButton = ({ copyContent, tooltip }: CopyIconButtonProps) => (
   <TooltipButton

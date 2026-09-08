@@ -59,7 +59,10 @@ export type SliderInputProps<T extends Decimal | DecimalRangeValue> = {
 /**
  * Mapping between the slider sizes and correspoding input sizes
  */
-const sliderInputSizeMap: Record<SliderSize, TextFieldProps['size']> = { small: 'tiny', medium: 'tiny' }
+const sliderInputSizeMap: Record<SliderSize, TextFieldProps['size']> = {
+  small: 'tiny',
+  medium: 'tiny',
+}
 
 /**
  * Mapping between the layout direction and correspoding max width of the input

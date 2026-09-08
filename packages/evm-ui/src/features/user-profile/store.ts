@@ -5,7 +5,11 @@ import { SLIPPAGE, type SlippageSettings } from '@evm-ui/widgets/SlippageSetting
 import { mapRecord } from '@primitives/objects.utils'
 import type { ThemeKey } from '@ui/features/themes/basic-theme'
 
-type UserProfileState = { theme: ThemeKey; maxSlippage: SlippageSettings; showDeprecatedMarkets: boolean }
+type UserProfileState = {
+  theme: ThemeKey
+  maxSlippage: SlippageSettings
+  showDeprecatedMarkets: boolean
+}
 
 type Action = {
   reset: () => void

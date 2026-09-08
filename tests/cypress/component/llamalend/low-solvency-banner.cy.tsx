@@ -11,8 +11,16 @@ const mountBanner = ({ solvencyPercent }: { solvencyPercent: number }) =>
   )
 
 const visibleCases = [
-  { name: 'renders low market solvency banner', range: [90, 99.9], id: 'low' },
-  { name: 'renders very low market solvency banner', range: [0, 90], id: 'insolvent' },
+  {
+    name: 'renders low market solvency banner',
+    range: [90, 99.9],
+    id: 'low',
+  },
+  {
+    name: 'renders very low market solvency banner',
+    range: [0, 90],
+    id: 'insolvent',
+  },
 ]
 
 const BANNER_PREFIX_ID = 'bad-debt-banner-'

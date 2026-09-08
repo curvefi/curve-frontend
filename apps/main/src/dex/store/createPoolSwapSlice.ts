@@ -153,7 +153,10 @@ export const createPoolSwapSlice = (
         sliceState.setStateByKeys({
           activeKey,
           formValues: cloneDeep(cFormValues),
-          formStatus: { ...cFormStatus, warning: resp.isExchangeRateLow ? 'warning-exchange-rate-low' : '' },
+          formStatus: {
+            ...cFormStatus,
+            warning: resp.isExchangeRateLow ? 'warning-exchange-rate-low' : '',
+          },
           exchangeOutput: {
             [activeKey]: {
               ...resp,
@@ -225,7 +228,9 @@ export const createPoolSwapSlice = (
       // stored values
       const userPoolBalances = await fetchPoolTokenBalances(config, curve, pool.id)
       const walletFromBalance = userPoolBalances[formValues.fromAddress]
-      const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId: curve.chainId })
+      const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
+        chainId: curve.chainId,
+      })
 
       let fromAmount: string = walletFromBalance ?? '0'
 
@@ -514,8 +519,18 @@ function getRouterWarningModal(
   const exchangeRate = (+toAmount / +fromAmount).toString()
   const exchangeValues = { toAmount, toToken }
   const modalType = {
-    lowExchangeRate: { lowExchangeRate: true, title: swapModalProps.title, exchangeRate, ...exchangeValues },
-    priceImpact: { priceImpact: true, title: swapModalProps.title, value: priceImpact, ...exchangeValues },
+    lowExchangeRate: {
+      lowExchangeRate: true,
+      title: swapModalProps.title,
+      exchangeRate,
+      ...exchangeValues,
+    },
+    priceImpact: {
+      priceImpact: true,
+      title: swapModalProps.title,
+      value: priceImpact,
+      ...exchangeValues,
+    },
     priceImpactLowExchangeRate: {
       priceImpactLowExchangeRate: true,
       title: swapModalProps.title,

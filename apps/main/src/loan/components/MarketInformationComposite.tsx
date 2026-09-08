@@ -19,7 +19,9 @@ import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { stackedMarketCardHeadersSx } from '@ui/utils/mui'
 
-type MarketInformationCompProps = { previewPrices: Range<Decimal> | undefined }
+type MarketInformationCompProps = {
+  previewPrices: Range<Decimal> | undefined
+}
 
 export const MarketInformationComposite = ({ previewPrices }: MarketInformationCompProps) => {
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()

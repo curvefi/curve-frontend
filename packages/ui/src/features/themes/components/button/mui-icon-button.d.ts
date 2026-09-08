@@ -4,7 +4,9 @@ import { DesignSystem } from '../../design'
 
 declare module '@mui/material/IconButton' {
   type Buttons = Omit<DesignSystem['Button'], 'Focus_Outline' | 'Transition'>
-  type ButtonColors = { [K in keyof Buttons as Lowercase<string & K>]: true }
+  type ButtonColors = {
+    [K in keyof Buttons as Lowercase<string & K>]: true
+  }
 
   export interface IconButtonPropsColorOverrides extends ButtonColors {}
 

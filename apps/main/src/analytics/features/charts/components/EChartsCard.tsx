@@ -68,7 +68,11 @@ export const EChartsCard = ({
             notMerge
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
             option={option}
-            style={{ height: '100%', ...(!fullscreen && { minHeight: MIN_HEIGHT }), ...(loading && { opacity: 0.5 }) }}
+            style={{
+              height: '100%',
+              ...(!fullscreen && { minHeight: MIN_HEIGHT }),
+              ...(loading && { opacity: 0.5 }),
+            }}
           />
         </Box>
 

@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 import MuiLinearProgress from '@mui/material/LinearProgress'
 import { type Theme } from '@mui/material/styles'
 
-const SIZE_MAPPING = { small: 4, medium: 8, large: 16 }
+const SIZE_MAPPING = {
+  small: 4,
+  medium: 8,
+  large: 16,
+}
 
 export const LinearProgress = ({
   percent,

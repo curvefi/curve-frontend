@@ -23,7 +23,9 @@ type DexOhlcQueryParams = {
   units: 'minute' | 'hour' | 'day'
 }
 
-type DexOhlcPage = OhlcPageResult & { ohlcData: LpPriceOhlcDataFormatted[] }
+type DexOhlcPage = OhlcPageResult & {
+  ohlcData: LpPriceOhlcDataFormatted[]
+}
 
 type LpChartSelectionType = Exclude<ChartSelection['type'], 'pair'>
 type LpPriceUnits = NonNullable<GetLpOHLCParams['priceUnits']>
@@ -127,7 +129,10 @@ export const useDexOhlcQuery = ({
       )
       const ohlcData = formatCandleOhlcData(responseData)
 
-      return { ohlcData, ...createOhlcPageResult(responseData) }
+      return {
+        ohlcData,
+        ...createOhlcPageResult(responseData),
+      }
     },
   })
 }

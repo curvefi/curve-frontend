@@ -30,7 +30,11 @@ export const useFormLowSolvency = <T extends FieldValues, ChainId extends IChain
   handleFormSubmit,
 }: Props<T, ChainId>) => {
   const [isOpen, openModal, closeModal] = useSwitch(false)
-  const solvency = useSolvencyMarket({ blockchainId: BlockchainIds[chainId], controllerAddress, marketType })
+  const solvency = useSolvencyMarket({
+    blockchainId: BlockchainIds[chainId],
+    controllerAddress,
+    marketType,
+  })
 
   return {
     solvency: q(solvency),

@@ -17,7 +17,12 @@ type SortableProps = {
   isEnabled?: boolean
 }
 
-const HeaderCellSortableAlign = { extraSmall: 'center', small: 'center', medium: 'end', large: 'end' }
+const HeaderCellSortableAlign = {
+  extraSmall: 'center',
+  small: 'center',
+  medium: 'end',
+  large: 'end',
+}
 
 // forwardRef needed to pass ref to Tooltip for it to work
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.

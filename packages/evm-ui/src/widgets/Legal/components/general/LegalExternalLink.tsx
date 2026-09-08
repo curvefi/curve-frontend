@@ -2,7 +2,10 @@ import type { ReactNode } from 'react'
 import Link from '@mui/material/Link'
 import { getExternalLink, type ExternalLinkKey } from '@ui/lib/resource.constants'
 
-type LegalExternalLinkProps = { link: ExternalLinkKey; children?: ReactNode }
+type LegalExternalLinkProps = {
+  link: ExternalLinkKey
+  children?: ReactNode
+}
 
 /** Legal-page external link that accepts an EXTERNAL_LINKS key and defaults its label to the URL. */
 export const LegalExternalLink = ({ link, children }: LegalExternalLinkProps) => {

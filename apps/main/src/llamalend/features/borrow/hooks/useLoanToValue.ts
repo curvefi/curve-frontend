@@ -19,7 +19,11 @@ export const useLoanToValue = <ChainId extends IChainId>(
     params,
     collateralToken,
     borrowToken,
-  }: { params: CreateLoanFormQueryParams<ChainId>; collateralToken: Token | undefined; borrowToken: Token | undefined },
+  }: {
+    params: CreateLoanFormQueryParams<ChainId>
+    collateralToken: Token | undefined
+    borrowToken: Token | undefined
+  },
   enabled: boolean,
 ) => {
   const { debt, userCollateral, leverageEnabled, chainId } = params
@@ -37,7 +41,13 @@ export const useLoanToValue = <ChainId extends IChainId>(
     data: borrowUsdRate = 1,
     isLoading: isBorrowUsdRateLoading,
     error: borrowUsdRateError,
-  } = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address }, enabled)
+  } = useTokenUsdRate(
+    {
+      chainId,
+      tokenAddress: borrowToken?.address,
+    },
+    enabled,
+  )
   const collateral = leverageEnabled ? expectedCollateral?.totalCollateral : userCollateral
   return {
     data:

@@ -12,10 +12,22 @@ import {
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  userLocksSortBy: { key: UserLocksSortBy; order: SortDirection }
-  userProposalVotesSortBy: { key: UserProposalVotesSortBy; order: SortDirection }
-  userGaugeVotesSortBy: { key: UserGaugeVotesSortBy; order: SortDirection }
-  userGaugeVoteWeightsSortBy: { key: UserGaugeVoteWeightSortBy; order: SortDirection }
+  userLocksSortBy: {
+    key: UserLocksSortBy
+    order: SortDirection
+  }
+  userProposalVotesSortBy: {
+    key: UserProposalVotesSortBy
+    order: SortDirection
+  }
+  userGaugeVotesSortBy: {
+    key: UserGaugeVotesSortBy
+    order: SortDirection
+  }
+  userGaugeVoteWeightsSortBy: {
+    key: UserGaugeVoteWeightSortBy
+    order: SortDirection
+  }
 }
 
 const SLICE_KEY = 'user'
@@ -36,10 +48,22 @@ export type UserSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  userLocksSortBy: { key: 'timestamp', order: 'desc' },
-  userProposalVotesSortBy: { key: 'voteId', order: 'desc' },
-  userGaugeVotesSortBy: { key: 'timestamp', order: 'desc' },
-  userGaugeVoteWeightsSortBy: { key: 'userPower', order: 'desc' },
+  userLocksSortBy: {
+    key: 'timestamp',
+    order: 'desc',
+  },
+  userProposalVotesSortBy: {
+    key: 'voteId',
+    order: 'desc',
+  },
+  userGaugeVotesSortBy: {
+    key: 'timestamp',
+    order: 'desc',
+  },
+  userGaugeVoteWeightsSortBy: {
+    key: 'userPower',
+    order: 'desc',
+  },
 }
 
 // key user address for user specific snapshots, votes, mappers

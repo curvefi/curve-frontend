@@ -42,7 +42,10 @@ describe('FormSkeleton', () => {
   beforeEach(resetLlamaTestContext)
 
   it('matches the layout heights of a one-input deposit form', () => {
-    const { llamaApi, market } = createDepositScenario({ chainId: 1, approved: true })
+    const { llamaApi, market } = createDepositScenario({
+      chainId: 1,
+      approved: true,
+    })
 
     setLlamaApi(llamaApi)
     setGasInfo({ chainId: 1 })

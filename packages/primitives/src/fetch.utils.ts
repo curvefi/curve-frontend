@@ -38,7 +38,13 @@ async function requestJson<T>(url: string, { body, headers, signal }: RequestOpt
   const resp = await fetch(url, {
     method: body ? 'POST' : 'GET',
     ...{
-      headers: { ...headers, ...(body && { Accept: 'application/json', 'Content-Type': 'application/json' }) },
+      headers: {
+        ...headers,
+        ...(body && {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      },
       body: JSON.stringify(body),
     },
     ...(body && { body: JSON.stringify(body) }),

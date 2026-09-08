@@ -32,8 +32,14 @@ export const LegendBox = ({ outline, fill, opacity = 1 }: { outline: string; fil
 
 export type LegendItem = {
   label: string
-  line?: { lineStroke: string; dash?: ChartLineDashPattern }
-  box?: { outlineStroke?: string; fill: string }
+  line?: {
+    lineStroke: string
+    dash?: ChartLineDashPattern
+  }
+  box?: {
+    outlineStroke?: string
+    fill: string
+  }
   toggled?: boolean
   onToggle?: (label: string) => void
 }

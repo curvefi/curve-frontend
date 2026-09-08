@@ -15,7 +15,10 @@ export const TransferActions = ({
   children,
   seed,
   loading,
-}: { loading?: boolean; children: ReactNode } & Pick<TransferProps, 'seed'>) => {
+}: {
+  loading?: boolean
+  children: ReactNode
+} & Pick<TransferProps, 'seed'>) => {
   const { chainId, userAddress: signerAddress, poolId, poolData } = usePoolContext()
 
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])

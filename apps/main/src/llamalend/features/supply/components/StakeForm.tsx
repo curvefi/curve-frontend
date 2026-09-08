@@ -12,7 +12,9 @@ import { useStakeForm } from '../hooks/useStakeForm'
 import { AlertNoGauge } from './alerts/AlertNoGauge'
 import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
-type StakeFormProps<ChainId extends IChainId> = { networks: NetworkDict<ChainId> }
+type StakeFormProps<ChainId extends IChainId> = {
+  networks: NetworkDict<ChainId>
+}
 
 const TEST_ID_PREFIX = 'supply-stake'
 

@@ -27,9 +27,16 @@ export const { useQuery: useCrvUsdSnapshots } = queryFactory({
       limit
         ? getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: true, limit })
         : fetchDailySnapshotHistory({
-            range: { start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000), end: Math.floor(now / 1000) },
+            range: {
+              start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000),
+              end: Math.floor(now / 1000),
+            },
             fetchSnapshots: (range, fetchOnChain) =>
-              getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: fetchOnChain, ...range }),
+              getSnapshots(blockchainId, contractAddress, {
+                agg: 'day',
+                fetch_on_chain: fetchOnChain,
+                ...range,
+              }),
           }),
     )
   },

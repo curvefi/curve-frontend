@@ -19,7 +19,10 @@ import { maybe } from '@primitives/objects.utils'
 import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
-type UsePoolActivityProps = { chainId: ChainId; poolAddress: Address }
+type UsePoolActivityProps = {
+  chainId: ChainId
+  poolAddress: Address
+}
 
 /**
  * Hook to manage pool activity data for the ActivityTable component.
@@ -36,7 +39,12 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
   const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
-  const poolTrades = usePoolTrades({ chain: network, poolAddress, page: apiPage, perPage: DEFAULT_PAGE_SIZE })
+  const poolTrades = usePoolTrades({
+    chain: network,
+    poolAddress,
+    page: apiPage,
+    perPage: DEFAULT_PAGE_SIZE,
+  })
   const { data: tradesData } = poolTrades
 
   const pageCount = getPageCount(tradesData?.count, DEFAULT_PAGE_SIZE)
@@ -60,5 +68,9 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
     onPaginationChange,
   })
 
-  return { table, emptyState: { title: t`No swap data found.` }, errorState: { title: t`Could not load swap data.` } }
+  return {
+    table,
+    emptyState: { title: t`No swap data found.` },
+    errorState: { title: t`Could not load swap data.` },
+  }
 }

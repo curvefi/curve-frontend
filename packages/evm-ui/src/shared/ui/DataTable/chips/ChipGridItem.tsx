@@ -19,7 +19,13 @@ export const ChipGridItem = ({
   size?: GridProps['size']
   alignRight?: boolean
 }) => (
-  <Grid size={size} sx={{ alignContent: 'center', ...(alignRight && { textAlign: 'right', '&': { flexGrow: '1' } }) }}>
+  <Grid
+    size={size}
+    sx={{
+      alignContent: 'center',
+      ...(alignRight && { textAlign: 'right', '&': { flexGrow: '1' } }),
+    }}
+  >
     {children}
   </Grid>
 )

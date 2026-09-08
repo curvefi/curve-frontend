@@ -8,7 +8,10 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { AppName } from '@evm-ui/shared/routes'
 import { ReleaseChannel } from '@ui/utils/env'
 
-export type Wallet = { readonly provider?: Eip1193Provider; readonly address: Address }
+export type Wallet = {
+  readonly provider?: Eip1193Provider
+  readonly address: Address
+}
 
 export enum ConnectState {
   LOADING = 'loading',
@@ -21,11 +24,20 @@ export type CurveApi = typeof curveApi & { chainId: CurveChainId; signerAddress?
 export type LlamaApi = typeof llamaApi & { chainId: LlamaChainId; signerAddress: Address }
 export type AnyCurveApi = CurveApi | LlamaApi
 
-export type LibChainId = { curveApi: CurveChainId; llamaApi: LlamaChainId }
+export type LibChainId = {
+  curveApi: CurveChainId
+  llamaApi: LlamaChainId
+}
 
-export type LibNetworkId = { curveApi: CurveNetworkId; llamaApi: LlamaNetworkId }
+export type LibNetworkId = {
+  curveApi: CurveNetworkId
+  llamaApi: LlamaNetworkId
+}
 
-export type Libs = { llamaApi?: LlamaApi; curveApi?: CurveApi }
+export type Libs = {
+  llamaApi?: LlamaApi
+  curveApi?: CurveApi
+}
 
 export type LibKey = keyof Libs
 

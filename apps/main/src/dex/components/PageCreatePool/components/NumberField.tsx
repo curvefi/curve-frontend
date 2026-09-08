@@ -7,7 +7,11 @@ import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 
-type Props = { row?: boolean; description?: string; className?: string } & AriaNumberFieldProps
+type Props = {
+  row?: boolean
+  description?: string
+  className?: string
+} & AriaNumberFieldProps
 
 export const NumberField = (props: Props) => {
   const { label, minValue = 0, maxValue = Infinity } = props

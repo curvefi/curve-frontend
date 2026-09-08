@@ -42,7 +42,12 @@ export const DailyRefuelsChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   const toggleVisibility = (key: string) => setVisibility(prev => ({ ...prev, [key]: !(prev[key] ?? true) }))
 
-  const { data, isFetching: loading } = useRefuelDailyRefuels({ blockchainId, poolAddress, start, end })
+  const { data, isFetching: loading } = useRefuelDailyRefuels({
+    blockchainId,
+    poolAddress,
+    start,
+    end,
+  })
 
   const theme = useTheme()
   const palette = createPalette({ theme })
@@ -95,11 +100,25 @@ export const DailyRefuelsChart = ({ blockchainId, poolAddress }: { blockchainId:
             splitLine: { lineStyle: { color: palette.gridLinesColor } },
             axisLabel: { ...yAxisBase.axisLabel, formatter: (value: number) => formatNumber(value, 'usd.notional') },
           },
-          { type: 'value', show: false, splitLine: { show: false } },
+          {
+            type: 'value',
+            show: false,
+            splitLine: { show: false },
+          },
         ],
         series: [
-          { name: REFUELS_LABEL, data: chartData.map(point => point.totalUsd), type: 'line', z: 2 },
-          { name: REFUELS_COUNT_LABEL, data: chartData.map(point => point.count), type: 'bar', yAxisIndex: 1 },
+          {
+            name: REFUELS_LABEL,
+            data: chartData.map(point => point.totalUsd),
+            type: 'line',
+            z: 2,
+          },
+          {
+            name: REFUELS_COUNT_LABEL,
+            data: chartData.map(point => point.count),
+            type: 'bar',
+            yAxisIndex: 1,
+          },
         ],
       },
       palette,

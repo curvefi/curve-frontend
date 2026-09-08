@@ -22,7 +22,13 @@ const METRIC_CATEGORY = 'llamalend.marketAdvancedDetails'
 export const MarketAdvancedDetails = () => {
   const { chainId, marketId, marketQuery, marketType, apiMarket } = useMarketContext()
   const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
-    useAdvancedDetailsData({ chainId, marketQuery, marketId, marketType, apiMarket })
+    useAdvancedDetailsData({
+      chainId,
+      marketQuery,
+      marketId,
+      marketType,
+      apiMarket,
+    })
   const isLendMarket = marketType === MarketType.Lend
 
   return (
@@ -91,7 +97,11 @@ export const MarketAdvancedDetails = () => {
           label={t`Solvency`}
           value={mapQuery(solvency, ({ value }) => value)}
           valueOptions={{ unit: 'percentage' }}
-          valueTooltip={{ title: t`Solvency`, body: <SolvencyTooltip type={marketType} />, ...TooltipOptions }}
+          valueTooltip={{
+            title: t`Solvency`,
+            body: <SolvencyTooltip type={marketType} />,
+            ...TooltipOptions,
+          }}
         />
       )}
       {maxLeverage && (
@@ -100,7 +110,11 @@ export const MarketAdvancedDetails = () => {
           label={t`Max leverage`}
           value={mapQuery(maxLeverage, ({ value }) => value)}
           valueOptions={{ unit: 'multiplier' }}
-          valueTooltip={{ title: t`Maximum Leverage`, body: <MaxLeverageTooltip />, ...TooltipOptions }}
+          valueTooltip={{
+            title: t`Maximum Leverage`,
+            body: <MaxLeverageTooltip />,
+            ...TooltipOptions,
+          }}
         />
       )}
     </Box>

@@ -14,7 +14,12 @@ export const createLockMoreScenario = ({
   isApproved: approved,
 }: {
   isApproved: boolean
-}): { assertPreSubmit: () => void; assertSubmit: () => void; curve: CurveApi; lockedAmount: string } => {
+}): {
+  assertPreSubmit: () => void
+  assertSubmit: () => void
+  curve: CurveApi
+  lockedAmount: string
+} => {
   const lockedAmount = oneDecimal(1, 999, 2).toString()
   const approve = createTransactionStub([TEST_TX_HASH])
   const isApproved = approved ? createStub(true) : createIsApprovedStub(approve)

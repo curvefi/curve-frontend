@@ -11,4 +11,9 @@ export type InputProps = {
   inputProps?: InputHTMLAttributes<HTMLInputElement>
 } & InputHTMLAttributes<HTMLInputElement>
 
-export type InputLabelProps = { className?: string; label: string; descriptionLoading?: boolean; description?: string }
+export type InputLabelProps = {
+  className?: string
+  label: string
+  descriptionLoading?: boolean
+  description?: string
+}

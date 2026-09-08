@@ -17,7 +17,9 @@ import { Chain } from '@primitives/network.utils'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 
-type Props = { chainId: ChainId }
+type Props = {
+  chainId: ChainId
+}
 
 export const DeploySidechain = ({ chainId }: Props) => {
   const curveNetworks = useStore(state => state.deployGauge.curveNetworks)

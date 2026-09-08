@@ -1,9 +1,15 @@
 import { z } from 'zod/v4'
 import { address, camelizeKeys, chain, hex, timestamp } from '../schemas'
 
-const adjacentPool = z.object({ address, name: z.string() })
+const adjacentPool = z.object({
+  address,
+  name: z.string(),
+})
 
-const yieldBasisPool = z.object({ name: z.string(), address })
+const yieldBasisPool = z.object({
+  name: z.string(),
+  address,
+})
 
 const transaction = z
   .object({
@@ -72,17 +78,30 @@ const yieldBasisHistoryItem = z
   }))
 
 export const ybPoolsResponse = z
-  .object({ count: z.number(), data: z.array(yieldBasisPool) })
+  .object({
+    count: z.number(),
+    data: z.array(yieldBasisPool),
+  })
   .transform(({ data }) => data)
 
 export const ybPoolVolumeResponse = z
-  .object({ pool_address: address, pool_name: z.string(), transactions: z.array(transaction) })
+  .object({
+    pool_address: address,
+    pool_name: z.string(),
+    transactions: z.array(transaction),
+  })
   .transform(camelizeKeys)
 
-export const ybAggregatedVolumeResponse = z.object({ chain, stats: aggregatedStats })
+export const ybAggregatedVolumeResponse = z.object({
+  chain,
+  stats: aggregatedStats,
+})
 
 export const yieldBasisSupplyResponse = z
-  .object({ cached_at: timestamp.nullable().optional(), data: yieldBasisSupplyWithMint })
+  .object({
+    cached_at: timestamp.nullable().optional(),
+    data: yieldBasisSupplyWithMint,
+  })
   .transform(camelizeKeys)
   .transform(({ cachedAt, data }) => ({
     cachedAt: cachedAt ?? undefined,
@@ -96,7 +115,10 @@ export const yieldBasisSupplyResponse = z
     totalSupply: parseFloat(data.totalSupply),
   }))
 
-export const yieldBasisHistoryResponse = z.object({ chain, data: z.array(yieldBasisHistoryItem) })
+export const yieldBasisHistoryResponse = z.object({
+  chain,
+  data: z.array(yieldBasisHistoryItem),
+})
 
 export type YieldBasisPool = z.infer<typeof yieldBasisPool>
 export type AdjacentPool = z.infer<typeof adjacentPool>

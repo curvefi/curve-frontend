@@ -8,7 +8,10 @@ import { getPointsCampaignRows } from '@evm-ui/features/points-campaigns/points-
 export const usePointsCampaigns = ({ chainId, poolData }: { chainId: ChainId; poolData: PoolData }) => {
   const poolAddress = poolData.pool.address as Address
   const { data: network } = useNetworkByChain({ chainId })
-  const { data: campaigns } = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
+  const { data: campaigns } = useCampaignsByAddress({
+    blockchainId: network?.blockchainId,
+    address: poolAddress,
+  })
 
   const rows = useMemo(() => getPointsCampaignRows(campaigns), [campaigns])
 

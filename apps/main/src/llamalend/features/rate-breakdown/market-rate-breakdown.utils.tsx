@@ -87,7 +87,10 @@ export const buildBorrowRateBreakdown = ({
         rate: -reward.value,
       })),
       ...rebasingRow,
-      { source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Borrow APR` } }, rate: rate.rate },
+      {
+        source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Borrow APR` } },
+        rate: rate.rate,
+      },
     ],
     points: getPointsCampaignRows(rate.extraRewards),
     total: rate.totalBorrowRate,
@@ -114,7 +117,12 @@ export const buildSupplyRateBreakdown = ({
   const crvRow: RateBreakdownRow[] = notFalsy(
     crvRates.some(Boolean) && {
       source: {
-        tokenInfo: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
+        tokenInfo: {
+          address: MAINNET_CRV_ADDRESS,
+          blockchainId: 'ethereum',
+          iconPosition: 'left',
+          primary: 'CRV',
+        },
         address: MAINNET_CRV_ADDRESS,
         explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
       },
@@ -171,7 +179,10 @@ export const buildSupplyRateBreakdown = ({
         rate: aprToApy(reward.value),
       })),
       ...rebasingRow,
-      { source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Supply APY` } }, rate: rate.supplyApy },
+      {
+        source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Supply APY` } },
+        rate: rate.supplyApy,
+      },
     ],
     points: getPointsCampaignRows(rate.extraRewards),
     total: rate.totalMinBoost,

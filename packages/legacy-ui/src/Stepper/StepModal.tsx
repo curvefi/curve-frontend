@@ -5,7 +5,9 @@ import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
 import type { StepActionModal } from '@legacy-ui/Stepper/types'
 import Button from '@mui/material/Button'
 
-type StepModalProps = { overlayTriggerState: OverlayTriggerState } & Pick<StepActionModal, 'modal'>
+type StepModalProps = {
+  overlayTriggerState: OverlayTriggerState
+} & Pick<StepActionModal, 'modal'>
 
 export const StepModal = ({ modal, overlayTriggerState }: StepModalProps) => {
   const { title, testId, content, cancelBtnProps, primaryBtnProps, primaryBtnLabel } = modal

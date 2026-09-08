@@ -7,7 +7,10 @@ import { t } from '@ui/lib/i18n'
 
 type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>
 
-type RateCurveTooltipProps = { datum: RateCurveChartPoint; visibleSeries: LineSeriesConfig<RateCurveSeriesKey>[] }
+type RateCurveTooltipProps = {
+  datum: RateCurveChartPoint
+  visibleSeries: LineSeriesConfig<RateCurveSeriesKey>[]
+}
 
 export const RateCurveTooltip = ({ datum, visibleSeries }: RateCurveTooltipProps) => (
   <ChartTooltipShell title={`${formatNumber(datum.utilization, 'percent.rate')} ${t`Utilization`}`}>

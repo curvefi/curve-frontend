@@ -10,7 +10,11 @@ import { queryClient } from '@ui/features/queries/query-client'
 
 export type Config = ResolvedRegister['config']
 
-type Props = { config?: Config; children: ReactElement; autoConnect?: boolean }
+type Props = {
+  config?: Config
+  children: ReactElement
+  autoConnect?: boolean
+}
 
 const ComponentTestChildrenContext = createContext<ReactElement | null>(null)
 const ComponentTestRoute = () => use(ComponentTestChildrenContext)

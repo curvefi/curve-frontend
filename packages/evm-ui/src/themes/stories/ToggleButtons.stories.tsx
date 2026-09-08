@@ -22,9 +22,15 @@ const meta: Meta<typeof ToggleButtonGroup> = {
       options: ['extraSmall', 'small', 'medium', 'extraSmallSquare', 'smallSquare', 'mediumSquare'],
       description: 'The size of the component',
     },
-    compact: { control: 'boolean', description: 'If there should be spacing between the buttons in a group' },
+    compact: {
+      control: 'boolean',
+      description: 'If there should be spacing between the buttons in a group',
+    },
   },
-  args: { size: 'small', compact: false },
+  args: {
+    size: 'small',
+    compact: false,
+  },
 }
 
 type Story = StoryObj<typeof ToggleButtonGroup>
@@ -91,7 +97,10 @@ export const Multiple: Story = {
       </ToggleButtonGroup>
     )
   },
-  args: { size: 'smallSquare', compact: true },
+  args: {
+    size: 'smallSquare',
+    compact: true,
+  },
 }
 
 export const Standalone: Story = {

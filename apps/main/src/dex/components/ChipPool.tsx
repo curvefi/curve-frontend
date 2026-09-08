@@ -11,7 +11,9 @@ import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 import { RouterLink } from '@ui/components/RouterLink'
 
-type ButtonProps = { className?: string } & AriaButtonProps
+type ButtonProps = {
+  className?: string
+} & AriaButtonProps
 
 const Button = ({ className, ...props }: ButtonProps) => {
   const ref = useRef(null)
@@ -36,7 +38,12 @@ const ChipPoolCopyButton = styled.button`
   }
 `
 
-type ChipPoolProps = { blockchainId: string; poolId: string; poolName: string; poolAddress: string }
+type ChipPoolProps = {
+  blockchainId: string
+  poolId: string
+  poolName: string
+  poolAddress: string
+}
 
 export const ChipPool = ({ blockchainId, poolId, poolName, poolAddress }: ChipPoolProps) => {
   const parsedPoolAddress = useMemo(() => {

@@ -50,5 +50,9 @@ export const useLlammaActivityTradesConfig = ({
     onPaginationChange,
   })
 
-  return { table, emptyState: { title: t`No swap data found.` }, errorState: { title: t`Could not load swap data.` } }
+  return {
+    table,
+    emptyState: { title: t`No swap data found.` },
+    errorState: { title: t`Could not load swap data.` },
+  }
 }

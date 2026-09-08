@@ -12,5 +12,7 @@ export const useTokenDecimals = ({ chainId, tokenAddress }: FieldsOf<TokenDecima
     address: tokenAddress ?? undefined,
     abi: erc20Abi,
     functionName: 'decimals',
-    query: { enabled: enabled && chainId != null && tokenAddress != null },
+    query: {
+      enabled: enabled && chainId != null && tokenAddress != null,
+    },
   })

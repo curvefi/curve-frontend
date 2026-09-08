@@ -23,7 +23,11 @@ export type RoutesParams = FieldsOf<RoutesQuery>
 /**
  * Route meta expected by the curve/llamalend.js libraries
  */
-export type RouteMeta = { router: string; calldata: string; quote: IQuote }
+export type RouteMeta = {
+  router: string
+  calldata: string
+  quote: IQuote
+}
 
 /**
  * Route meta with minRecv for execution methods that require slippage protection

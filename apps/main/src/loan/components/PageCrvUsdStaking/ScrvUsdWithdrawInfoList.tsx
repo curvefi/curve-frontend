@@ -11,7 +11,10 @@ import type { UseFormReturn } from '@ui/features/forms'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
-type ScrvUsdWithdrawInfoListProps = { params: ScrvUsdWithdrawParams; form: UseFormReturn<ScrvUsdWithdrawForm> }
+type ScrvUsdWithdrawInfoListProps = {
+  params: ScrvUsdWithdrawParams
+  form: UseFormReturn<ScrvUsdWithdrawForm>
+}
 
 export const ScrvUsdWithdrawInfoList = ({ params, form }: ScrvUsdWithdrawInfoListProps) => {
   const isOpen = form.isTouched('withdrawAmount')

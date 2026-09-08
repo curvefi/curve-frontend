@@ -21,7 +21,11 @@ type Account = { address: Address; capabilities: Record<string, unknown> }
 /** Default custom transport for Cypress E2E tests, read-only */
 const cypressTransport = (account: PrivateKeyAccount, chain: Chain) => {
   // Dedicated local-account writer so eth_sendTransaction is signed with the provided private key.
-  const writeClient = createWalletClient({ account, chain, transport: http(chain.rpcUrls.default.http[0]) })
+  const writeClient = createWalletClient({
+    account,
+    chain,
+    transport: http(chain.rpcUrls.default.http[0]),
+  })
   return custom({
     request: async ({ method, params: [param] }): Promise<unknown> => {
       if (method === 'eth_accounts') return [account.address]

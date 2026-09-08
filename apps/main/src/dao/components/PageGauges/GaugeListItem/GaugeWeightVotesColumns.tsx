@@ -6,7 +6,9 @@ import { Box } from '@legacy-ui/Box'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { t } from '@ui/lib/i18n'
 
-type GaugeWeightVotesColumnsProps = { userGaugeWeightVoteData: UserGaugeVoteWeight }
+type GaugeWeightVotesColumnsProps = {
+  userGaugeWeightVoteData: UserGaugeVoteWeight
+}
 
 const calculateStaleVeCrvPercentage = (usedVeCrv: number, futureVeCrv: number) =>
   ((futureVeCrv - usedVeCrv) / usedVeCrv) * 100
@@ -31,7 +33,11 @@ export const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeight
               <p>
                 {t`Updating gauge vote will update used veCRV from`}{' '}
                 <strong>
-                  {formatNumber(userVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2, abbreviate: false })}
+                  {formatNumber(userVeCrv, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                    abbreviate: false,
+                  })}
                 </strong>{' '}
                 {t`to`}{' '}
                 <strong>
@@ -46,7 +52,11 @@ export const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeight
             }
           >
             <GaugeData className={userGaugeVoteWeightsSortBy.key === 'userVeCrv' ? 'bold' : ''}>
-              {formatNumber(userVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2, abbreviate: false })}
+              {formatNumber(userVeCrv, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+                abbreviate: false,
+              })}
               {hasFutureVeCrv &&
                 ` → ${formatNumber(userFutureVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2, abbreviate: false })}`}
             </GaugeData>

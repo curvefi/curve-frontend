@@ -8,7 +8,10 @@ declare global {
     rdns: string // reverse DNS
     uuid: string
   }
-  type Eip6963Provider = { info: Eip6963ProviderInfo; provider: EIP1193Provider }
+  type Eip6963Provider = {
+    info: Eip6963ProviderInfo
+    provider: EIP1193Provider
+  }
 
   type DetectedEip6963Connector = {
     id: string

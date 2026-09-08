@@ -18,7 +18,9 @@ export type SelectProps<T extends object> = {
   mobileRightAlign?: boolean // right align dropdown list on small width
   selectedItemLabel?: ReactNode // selected button label that is different from list
   onSelectionDelete?: () => void
-  selectSearchOptions?: { searchFilterKeys: string[] }
+  selectSearchOptions?: {
+    searchFilterKeys: string[]
+  }
   children?: AriaSelectProps<T>['children'] // todo: children is excluded from AriaSelectOptions for some reason, does this even work?
 } & Omit<ReactStatelySelectProps<T>, 'children'> &
   AriaSelectOptions<T>

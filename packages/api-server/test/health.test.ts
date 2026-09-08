@@ -5,7 +5,11 @@ describe('health endpoint', () => {
   it('responds with service metadata', async () => {
     const server = createApiServer({
       serviceName: 'test-api',
-      env: { LOG_LEVEL: 'silent', NODE_ENV: 'test', npm_package_version: '1.2.3' },
+      env: {
+        LOG_LEVEL: 'silent',
+        NODE_ENV: 'test',
+        npm_package_version: '1.2.3',
+      },
     })
 
     try {
@@ -20,7 +24,12 @@ describe('health endpoint', () => {
         timestamp: string
         uptime: number
       }>()
-      expect(payload).toMatchObject({ status: 'ok', service: 'test-api', environment: 'test', version: '1.2.3' })
+      expect(payload).toMatchObject({
+        status: 'ok',
+        service: 'test-api',
+        environment: 'test',
+        version: '1.2.3',
+      })
       expect(typeof payload.timestamp).toBe('string')
       expect(typeof payload.uptime).toBe('number')
       expect(payload.timestamp).not.toHaveLength(0)
@@ -33,7 +42,11 @@ describe('health endpoint', () => {
   it('allows the environment to override the service name', async () => {
     const server = createApiServer({
       serviceName: 'test-api',
-      env: { LOG_LEVEL: 'silent', NODE_ENV: 'test', SERVICE_NAME: 'custom-api' },
+      env: {
+        LOG_LEVEL: 'silent',
+        NODE_ENV: 'test',
+        SERVICE_NAME: 'custom-api',
+      },
     })
 
     try {

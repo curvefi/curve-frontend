@@ -9,7 +9,22 @@ export function useIsErc4626({ address }: { address?: Address }) {
     isSuccess,
     error,
     refetch,
-  } = useReadContract({ abi: erc4626Abi, address, functionName: 'asset', query: { enabled: !!address, retry: false } })
+  } = useReadContract({
+    abi: erc4626Abi,
+    address,
+    functionName: 'asset',
+    query: {
+      enabled: !!address,
+      retry: false,
+    },
+  })
 
-  return { isErc4626: assetAddress && true, assetAddress, isLoading, isSuccess, error, refetch }
+  return {
+    isErc4626: assetAddress && true,
+    assetAddress,
+    isLoading,
+    isSuccess,
+    error,
+    refetch,
+  }
 }

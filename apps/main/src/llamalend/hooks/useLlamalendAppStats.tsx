@@ -26,7 +26,13 @@ const { useQuery: useAppStatsDailyVolume } = queryFactory({
 })
 
 export function useLlamalendAppStats(
-  { chainId, currentApp }: { chainId: number | undefined; currentApp: AppName },
+  {
+    chainId,
+    currentApp,
+  }: {
+    chainId: number | undefined
+    currentApp: AppName
+  },
   enabled: boolean,
 ) {
   const { address } = useConnection()
@@ -46,8 +52,14 @@ export function useLlamalendAppStats(
 
   return enabled
     ? [
-        { label: 'TVL', value: (tvl && formatNumber(tvl, 'usd.notional')) || '-' },
-        { label: t`Daily volume`, value: (dailyVolume && formatNumber(dailyVolume, 'usd.notional')) || '-' },
+        {
+          label: 'TVL',
+          value: (tvl && formatNumber(tvl, 'usd.notional')) || '-',
+        },
+        {
+          label: t`Daily volume`,
+          value: (dailyVolume && formatNumber(dailyVolume, 'usd.notional')) || '-',
+        },
       ]
     : []
 }

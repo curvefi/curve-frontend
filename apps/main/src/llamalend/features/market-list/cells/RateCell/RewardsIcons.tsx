@@ -24,7 +24,10 @@ export const RewardsIcons = ({
       <Stack
         direction="row"
         data-testid="rewards-icons"
-        sx={{ minWidth: IconSize.md, '& svg, & img': { '&:not(:last-child)': { marginInline: '-8px' } } }}
+        sx={{
+          minWidth: IconSize.md,
+          '& svg, & img': { '&:not(:last-child)': { marginInline: '-8px' } },
+        }}
       >
         {extraIncentives.map(({ title, address, blockchainId }) => (
           <TokenIcon key={title} blockchainId={blockchainId} address={address} size="mui-sm" />

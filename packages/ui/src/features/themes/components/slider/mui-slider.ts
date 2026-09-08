@@ -71,13 +71,19 @@ const baseRootStyle = (orientation: SliderProps['orientation']): Record<string, 
 }
 
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
-  defaultProps: { size: 'small', 'data-rail-background': 'default' },
+  defaultProps: {
+    size: 'small',
+    'data-rail-background': 'default',
+  },
   styleOverrides: {
     root: ({ ownerState }) => {
       const { orientation = 'horizontal', 'data-rail-background': railBackground = 'default' } = ownerState
       const borderColor = railBackground === 'default' ? design.Color.Neutral[500] : undefined
 
-      return { ...baseRootStyle(orientation), ...SliderExtension(orientation, borderColor) }
+      return {
+        ...baseRootStyle(orientation),
+        ...SliderExtension(orientation, borderColor),
+      }
     },
 
     thumb: ({ ownerState }) => {
@@ -103,14 +109,21 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         borderRadius: 0,
         zIndex: 1,
         '&.Mui-active': activeThumbStyles,
-        '&.Mui-focusVisible': { boxShadow: 'none' },
+        '&.Mui-focusVisible': {
+          boxShadow: 'none',
+        },
         // only target precise hover (not fingerprinting touch events) to prevent parasitic active thumb after touch events
-        '@media (hover: hover) and (pointer: fine)': { '&:hover': activeThumbStyles },
+        '@media (hover: hover) and (pointer: fine)': {
+          '&:hover': activeThumbStyles,
+        },
         '&.Mui-disabled': {
           background: `${SliderHandle.Disabled.Fill} url(${sliderThumbImage}) center no-repeat`,
           borderColor: SliderHandle.Disabled.Border,
         },
-        '&::after': { width: size.width, height: size.height },
+        '&::after': {
+          width: size.width,
+          height: size.height,
+        },
       }
     },
 
@@ -127,11 +140,20 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
          * Add pseudo-element to the track left side by half the thumb width and
          * fills it with the primary button color for single-thumb
          */
-        '&::before': { content: '""', position: 'absolute', ...beforePosition, ...beforeSize },
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          ...beforePosition,
+          ...beforeSize,
+        },
         // Only fill the left border gap if there's a single thumb
-        [`.MuiSlider-root${SINGLE_THUMB_SELECTOR} &::before`]: { backgroundColor: design.Color.Primary[500] },
+        [`.MuiSlider-root${SINGLE_THUMB_SELECTOR} &::before`]: {
+          backgroundColor: design.Color.Primary[500],
+        },
 
-        '.Mui-disabled &&::before': { backgroundColor: 'currentColor' },
+        '.Mui-disabled &&::before': {
+          backgroundColor: 'currentColor',
+        },
       }
     },
 
@@ -168,6 +190,9 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
   },
   variants: Object.entries(sliderSizes).map(([size, { height, thumbWidth }]) => ({
     props: { size: size as SliderSize },
-    style: handleBreakpoints({ [SLIDER_HEIGHT_VAR]: height, [SLIDER_THUMB_WIDTH_VAR]: thumbWidth }),
+    style: handleBreakpoints({
+      [SLIDER_HEIGHT_VAR]: height,
+      [SLIDER_THUMB_WIDTH_VAR]: thumbWidth,
+    }),
   })),
 })

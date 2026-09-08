@@ -21,10 +21,21 @@ const meta: Meta<typeof IconButton> = {
   title: 'UI Kit/Primitives/IconButton',
   component: IconButton,
   argTypes: {
-    size: { control: 'select', options: sizes, description: 'The size of the component' },
-    disabled: { control: 'boolean', description: 'The disabled state of the component' },
+    size: {
+      control: 'select',
+      options: sizes,
+      description: 'The size of the component',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'The disabled state of the component',
+    },
   },
-  args: { size: 'medium', disabled: false, onClick: fn() },
+  args: {
+    size: 'medium',
+    disabled: false,
+    onClick: fn(),
+  },
 }
 
 type Story = StoryObj<typeof IconButton>
@@ -38,7 +49,9 @@ export const Default: Story = {
       },
     },
   },
-  args: { children: <LlamaIcon /> },
+  args: {
+    children: <LlamaIcon />,
+  },
 }
 
 export const AllSizes: Story = {
@@ -51,7 +64,13 @@ export const AllSizes: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Comparison of all available sizes' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Comparison of all available sizes',
+      },
+    },
+  },
 }
 
 export const AllColors: Story = {
@@ -64,10 +83,21 @@ export const AllColors: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Comparison of all available colors' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Comparison of all available colors',
+      },
+    },
+  },
 }
 
-export const Disabled: Story = { args: { disabled: true, children: <LlamaIcon /> } }
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+    children: <LlamaIcon />,
+  },
+}
 
 export const RotatedIcon: Story = {
   render: () => (

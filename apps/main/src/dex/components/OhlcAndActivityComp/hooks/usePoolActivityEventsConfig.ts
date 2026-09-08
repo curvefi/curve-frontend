@@ -19,7 +19,10 @@ import { maybe } from '@primitives/objects.utils'
 import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
-type UsePoolActivityProps = { chainId: ChainId; poolAddress: Address }
+type UsePoolActivityProps = {
+  chainId: ChainId
+  poolAddress: Address
+}
 
 /**
  * Hook to manage pool activity events data for the ActivityTable component.

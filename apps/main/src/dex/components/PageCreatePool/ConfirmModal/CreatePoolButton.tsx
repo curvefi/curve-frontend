@@ -10,7 +10,10 @@ import { Button } from '@legacy-ui/Button'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { t } from '@ui/lib/i18n'
 
-type Props = { disabled: boolean; curve: CurveApi }
+type Props = {
+  disabled: boolean
+  curve: CurveApi
+}
 
 export const CreatePoolButton = ({ disabled, curve }: Props) => {
   const { data: networks } = useNetworks()

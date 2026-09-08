@@ -21,13 +21,19 @@ export function useTokenAmountConversion({
     data: tokenInUsdRate,
     isLoading: tokenInUsdRateLoading,
     error: tokenInUsdRateError,
-  } = useTokenUsdRate({ chainId, tokenAddress: tokenInAddress })
+  } = useTokenUsdRate({
+    chainId,
+    tokenAddress: tokenInAddress,
+  })
 
   const {
     data: tokenOutUsdRate,
     isLoading: tokenOutUsdRateLoading,
     error: tokenOutUsdRateError,
-  } = useTokenUsdRate({ chainId, tokenAddress: tokenOutAddress })
+  } = useTokenUsdRate({
+    chainId,
+    tokenAddress: tokenOutAddress,
+  })
 
   return {
     data: useMemo(

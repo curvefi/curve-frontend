@@ -3,7 +3,10 @@ import { styled } from 'styled-components'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 
-type Props = { message: string; onClick?: (e?: MouseEvent) => void }
+type Props = {
+  message: string
+  onClick?: (e?: MouseEvent) => void
+}
 
 export const ErrorMessage = ({ message, onClick }: Props) => (
   <>

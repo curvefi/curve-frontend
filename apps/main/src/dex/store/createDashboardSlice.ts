@@ -300,7 +300,10 @@ export const createDashboardSlice = (
       const poolIds = dashboardDatas.map(({ poolId }) => poolId)
 
       sliceState.setStateByKey('dashboardDataPoolIds', { [activeKey]: poolIds })
-      sliceState.setStateByKeys({ loading: false, noResult: poolIds.length === 0 })
+      sliceState.setStateByKeys({
+        loading: false,
+        noResult: poolIds.length === 0,
+      })
     },
     setFormStatusClaimFees: updatedFormStatus => {
       const { formStatus, ...sliceState } = get()[SLICE_KEY]
@@ -396,7 +399,10 @@ export const createDashboardSlice = (
     },
     resetState: () => {
       const { walletAddress } = get()[SLICE_KEY].formValues
-      get().resetAppState(SLICE_KEY, { ...DEFAULT_STATE, formValues: { ...DEFAULT_STATE.formValues, walletAddress } })
+      get().resetAppState(SLICE_KEY, {
+        ...DEFAULT_STATE,
+        formValues: { ...DEFAULT_STATE.formValues, walletAddress },
+      })
     },
   },
 })

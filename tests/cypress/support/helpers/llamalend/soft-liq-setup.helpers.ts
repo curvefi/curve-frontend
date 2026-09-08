@@ -78,7 +78,11 @@ type OracleState = {
   updatedAt: bigint
 }
 
-type OracleStorageLayout = { answerSlot?: bigint; storedObservationTimestampSlot?: bigint; storedPriceSlot: bigint }
+type OracleStorageLayout = {
+  answerSlot?: bigint
+  storedObservationTimestampSlot?: bigint
+  storedPriceSlot: bigint
+}
 
 const isSoftLiquidationState = ({ borrowed, debt }: SoftLiquidationState) => debt > 0n && borrowed > 0n
 
@@ -110,7 +114,10 @@ const getSoftLiquidationTargetPrice = async ({
     `Unable to choose soft liquidation target band: ${stringifySetupDetails({ state, targetBand })}`,
   )
 
-  return { targetBand, targetPrice: await getBandMidPrice({ ammAddress, band: targetBand, client }) }
+  return {
+    targetBand,
+    targetPrice: await getBandMidPrice({ ammAddress, band: targetBand, client }),
+  }
 }
 
 const readSoftLiquidationState = async ({
@@ -290,7 +297,12 @@ const moveAmmToOraclePrice = ({
   userAddress: Address
   vnet: CreateVirtualTestnetResponse
 }) => {
-  type Quote = { amount: bigint; inputUsed: bigint; isPump: boolean; outputAmount: bigint }
+  type Quote = {
+    amount: bigint
+    inputUsed: bigint
+    isPump: boolean
+    outputAmount: bigint
+  }
 
   return cy
     .then<Quote>(LOAD_TIMEOUT, async () => {
@@ -380,7 +392,11 @@ const runSoftLiquidationPriceMove = ({
     assert(state.health > 0n, `Loan health is negative before soft liq price move: ${stringifySetupDetails({ state })}`)
     assert(!isSoftLiquidationState(state), `Loan is already in soft liquidation: ${stringifySetupDetails({ state })}`)
 
-    const { targetBand, targetPrice } = await getSoftLiquidationTargetPrice({ ammAddress, client, state })
+    const { targetBand, targetPrice } = await getSoftLiquidationTargetPrice({
+      ammAddress,
+      client,
+      state,
+    })
     const oracleBefore = await readOracleState({ client, ammAddress })
     const oracleStorageLayout = await findOracleStorageLayout({ client, oracleState: oracleBefore })
     const block = await client.getBlock()
@@ -400,7 +416,11 @@ const runSoftLiquidationPriceMove = ({
         const oracle = await readOracleState({ client, ammAddress })
         assert(
           oracle.answer === targetPrice && oracle.storedPrice === targetPrice,
-          `Oracle storage override did not reach target: ${stringifySetupDetails({ oracle, targetBand, targetPrice })}`,
+          `Oracle storage override did not reach target: ${stringifySetupDetails({
+            oracle,
+            targetBand,
+            targetPrice,
+          })}`,
         )
       })
       .then(() =>
@@ -453,7 +473,10 @@ const runSoftLiquidationPriceMove = ({
 export const setupTenderlySoftLiquidation = ({
   ammAddress,
   ...loanProps
-}: Parameters<typeof setupTenderlyLoan>[0] & { ammAddress: Address; borrowedAddress: Address }) => {
+}: Parameters<typeof setupTenderlyLoan>[0] & {
+  ammAddress: Address
+  borrowedAddress: Address
+}) => {
   const { vnet, borrowedAddress, collateralAddress, controllerAddress, userAddress } = loanProps
   const { publicRpcUrl } = getRpcUrls(vnet)
   const client = createPublicClient({ transport: http(publicRpcUrl) })

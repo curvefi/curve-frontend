@@ -13,4 +13,9 @@ export enum MarketRateType {
   Supply = 'Supply',
 }
 
-export type ExtraIncentive = { title: string; percentage: number; address: string; blockchainId: string }
+export type ExtraIncentive = {
+  title: string
+  percentage: number
+  address: string
+  blockchainId: string
+}

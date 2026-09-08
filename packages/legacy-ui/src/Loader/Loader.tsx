@@ -1,6 +1,10 @@
 import { styled, keyframes } from 'styled-components'
 
-type Props = { className?: string; isLightBg?: boolean; skeleton?: [number, number] }
+type Props = {
+  className?: string
+  isLightBg?: boolean
+  skeleton?: [number, number]
+}
 
 export const Loader = ({ className, isLightBg = false, skeleton = [12, 12], ...props }: Props) => (
   <TextSkeleton className={className} isLightBg={isLightBg} skeleton={skeleton} {...props} />

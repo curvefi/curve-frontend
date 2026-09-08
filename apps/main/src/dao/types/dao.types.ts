@@ -20,14 +20,41 @@ export type NetworkConfig = NetworkDef<NetworkEnum, ChainId>
 export type EstimatedGas = number | number[] | null
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 
-export type GaugeVotesResponse = { votes: GaugeVoteData[] }
-type GaugeVoteData = { user: string; weight: number; block_number: number; timestamp: string; transaction: string }
-export type GaugeVote = { user: string; weight: number; block_number: number; timestamp: number; transaction: string }
+export type GaugeVotesResponse = {
+  votes: GaugeVoteData[]
+}
+type GaugeVoteData = {
+  user: string
+  weight: number
+  block_number: number
+  timestamp: string
+  transaction: string
+}
+export type GaugeVote = {
+  user: string
+  weight: number
+  block_number: number
+  timestamp: number
+  transaction: string
+}
 
-export type GaugeVotesMapper = Record<string, { fetchingState: FetchingState; votes: GaugeVote[] }>
+export type GaugeVotesMapper = Record<
+  string,
+  {
+    fetchingState: FetchingState
+    votes: GaugeVote[]
+  }
+>
 
-export type SnapshotVotingPower = { value: number; blockNumber: number }
-export type ActiveProposal = { active: boolean; startTimestamp: number; endTimestamp: number }
+export type SnapshotVotingPower = {
+  value: number
+  blockNumber: number
+}
+export type ActiveProposal = {
+  active: boolean
+  startTimestamp: number
+  endTimestamp: number
+}
 
 export type UserGaugeVoteWeight = {
   title?: string
@@ -54,7 +81,10 @@ export type ProposalListFilterItem = { key: ProposalListFilter; label: string }
 export type SortByFilterProposals = 'timeCreated' | 'endingSoon'
 export type SortByFilterGaugesKeys =
   'gauge_relative_weight' | 'gauge_relative_weight_7d_delta' | 'gauge_relative_weight_60d_delta'
-export type SortByFilterGauges = { key: SortByFilterGaugesKeys; order: SortDirection }
+export type SortByFilterGauges = {
+  key: SortByFilterGaugesKeys
+  order: SortDirection
+}
 export type SortDirection = 'asc' | 'desc'
 export type TopHoldersSortBy = 'weight' | 'locked' | 'weightRatio'
 export type AllHoldersSortBy = 'weight' | 'locked' | 'weightRatio' | 'unlockTime'

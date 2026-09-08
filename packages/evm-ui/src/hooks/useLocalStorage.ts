@@ -51,7 +51,10 @@ type RateType = 'borrow' | 'supply'
 
 export const useShowNetRate = (type: RateType) =>
   useLocalStorage<Record<string, boolean>>(
-    { borrow: 'showNetApr', supply: 'showNetApy' }[type],
+    {
+      borrow: 'showNetApr',
+      supply: 'showNetApy',
+    }[type],
     useMemo(() => ({}), []),
   )
 

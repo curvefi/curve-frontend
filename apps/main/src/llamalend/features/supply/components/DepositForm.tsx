@@ -11,7 +11,9 @@ import { useMarketContext } from '../../market-context'
 import { useDepositForm } from '../hooks/useDepositForm'
 import { DepositSupplyInfoList } from './DepositSupplyInfoList'
 
-type DepositFormProps<ChainId extends IChainId> = { networks: NetworkDict<ChainId> }
+type DepositFormProps<ChainId extends IChainId> = {
+  networks: NetworkDict<ChainId>
+}
 
 const TEST_ID_PREFIX = 'supply-deposit'
 

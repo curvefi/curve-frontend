@@ -78,8 +78,16 @@ const menu = [
         label: t`Withdraw`,
         component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={FormWithdraw} {...props} />,
       },
-      { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },
-      { value: 'CLAIM', label: t`Claim Rewards`, component: FormClaim },
+      {
+        value: 'UNSTAKE',
+        label: t`Unstake`,
+        component: FormUnstake,
+      },
+      {
+        value: 'CLAIM',
+        label: t`Claim Rewards`,
+        component: FormClaim,
+      },
     ],
   } satisfies FormTab<TransferTabsParams>,
   {
@@ -109,7 +117,9 @@ const menu = [
 ] satisfies FormTab<TransferTabsParams>[]
 
 /** Replaces old form-specific pool URLs for expanded-row links that should open a specific form tab. */
-type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }
+type PoolRouteState = {
+  defaultTab?: (typeof menu)[number]['value']
+}
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, hasDepositAndStake } = pageTransferProps
@@ -206,7 +216,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
           />
         }
-        formTabs={{ content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} /> }}
+        formTabs={{
+          content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} />,
+        }}
       >
         <CampaignRewardsBanner />
         <UserPosition />

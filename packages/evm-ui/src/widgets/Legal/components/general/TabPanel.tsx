@@ -5,7 +5,10 @@ import type { SxProps } from '@ui/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 
-type Props = { children?: ReactNode; sx?: SxProps }
+type Props = {
+  children?: ReactNode
+  sx?: SxProps
+}
 
 // Not a generic separate component yet in evm-ui until it's used
 // in more places and we have a better idea what to generalize.

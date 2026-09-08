@@ -12,7 +12,13 @@ const { IconSize } = SizesAndSpaces
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 export const LegacyTableButton = forwardRef<
   HTMLButtonElement,
-  { onClick: () => void; active?: boolean; rotateIcon?: boolean; testId?: string; icon: typeof SvgIcon }
+  {
+    onClick: () => void
+    active?: boolean
+    rotateIcon?: boolean
+    testId?: string
+    icon: typeof SvgIcon
+  }
 >(function LegacyTableButton({ active, icon: Icon, rotateIcon, testId, ...rest }, ref) {
   const iconProps = rotateIcon && { sx: LoadingAnimation }
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
@@ -30,8 +36,15 @@ export const LegacyTableButton = forwardRef<
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Chips.Default.Stroke}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : t.design.Chips.Default.Fill,
         color: active ? t.design.Chips.Current.Label : t.design.Chips.Default.Label,
-        '&:hover': { backgroundColor: t.design.Chips.Hover.Fill, color: t.design.Chips.Hover.Label, border: `none` },
-        '& svg': { width: IconSize.md, height: IconSize.md },
+        '&:hover': {
+          backgroundColor: t.design.Chips.Hover.Fill,
+          color: t.design.Chips.Hover.Label,
+          border: `none`,
+        },
+        '& svg': {
+          width: IconSize.md,
+          height: IconSize.md,
+        },
       })}
       {...rest}
     >

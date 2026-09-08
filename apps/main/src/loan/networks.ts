@@ -12,5 +12,8 @@ export const { networks, networksIdMapper } = Object.entries({
     mapper.networksIdMapper[networkConfig.blockchainId] = chainId
     return mapper
   },
-  { networks: {} as Record<ChainId, NetworkConfig>, networksIdMapper: {} as Record<NetworkEnum, ChainId> },
+  {
+    networks: {} as Record<ChainId, NetworkConfig>,
+    networksIdMapper: {} as Record<NetworkEnum, ChainId>,
+  },
 )

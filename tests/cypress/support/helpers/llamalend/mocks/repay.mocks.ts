@@ -86,7 +86,10 @@ export const createRepayScenario = ({
     repayExpectedBorrowed: leverageStubs.repayExpectedBorrowed,
     repayFutureLeverage: leverageStubs.repayFutureLeverage,
     calcMinRecv: leverageStubs.calcMinRecv,
-    estimateGas: { repay: leverageStubs.estimateGasRepay, repayApprove: leverageStubs.estimateGasRepayApprove },
+    estimateGas: {
+      repay: leverageStubs.estimateGasRepay,
+      repayApprove: leverageStubs.estimateGasRepayApprove,
+    },
   }
 
   const leverageExpected = {
@@ -98,12 +101,28 @@ export const createRepayScenario = ({
       ...routeMeta,
     },
     isApproved: { userCollateral: DEFAULT_USER_BORROWED },
-    estimateGas: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
+    estimateGas: {
+      stateCollateral: collateral,
+      userCollateral: DEFAULT_USER_BORROWED,
+      ...routeMutationMeta,
+    },
     estimateGasApprove: { userCollateral: DEFAULT_USER_BORROWED },
     approve: { userCollateral: DEFAULT_USER_BORROWED },
-    submit: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
-    expectedBorrowed: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
-    futureLeverage: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
+    submit: {
+      stateCollateral: collateral,
+      userCollateral: DEFAULT_USER_BORROWED,
+      ...routeMutationMeta,
+    },
+    expectedBorrowed: {
+      stateCollateral: collateral,
+      userCollateral: DEFAULT_USER_BORROWED,
+      ...routeMutationMeta,
+    },
+    futureLeverage: {
+      stateCollateral: collateral,
+      userCollateral: DEFAULT_USER_BORROWED,
+      ...routeMutationMeta,
+    },
   } as const
   const normalExpected = {
     health: [borrow, false] as const,

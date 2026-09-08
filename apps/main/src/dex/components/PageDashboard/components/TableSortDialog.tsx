@@ -14,7 +14,10 @@ const sortOrder = {
   desc: { label: 'Descending', icon: <Icon name="ArrowDown" size={24} /> },
 }
 
-type Props = { className?: string; tableLabel: TableLabel }
+type Props = {
+  className?: string
+  tableLabel: TableLabel
+}
 
 export const TableSortDialog = ({ className = '', tableLabel }: Props) => {
   const overlayTriggerState = useOverlayTriggerState({})

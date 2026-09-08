@@ -11,7 +11,10 @@ import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { t } from '@ui/lib/i18n'
 
-type StepProgress = { active: number; total: number }
+type StepProgress = {
+  active: number
+  total: number
+}
 
 export const DetailInfoEstGas = ({
   chainId,

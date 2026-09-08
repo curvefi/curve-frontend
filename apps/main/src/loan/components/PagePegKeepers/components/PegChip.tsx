@@ -10,7 +10,9 @@ const pegChipLabels = {
   error: t`Error`,
 } as const satisfies Record<PegStatus['label'], string>
 
-type Props = { status: PegStatus }
+type Props = {
+  status: PegStatus
+}
 
 /**
  * Displays a chip showing the current peg status with appropriate color coding

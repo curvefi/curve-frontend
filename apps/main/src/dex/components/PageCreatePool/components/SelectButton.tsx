@@ -10,7 +10,10 @@ type Props = {
   name: string
   descriptionName: string
   description: string
-  subData?: { name: string; description: string }[]
+  subData?: {
+    name: string
+    description: string
+  }[]
   handleClick: () => void
 }
 

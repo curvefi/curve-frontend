@@ -22,7 +22,12 @@ export const sendAdminTransaction = ({
     .request<{ result?: Hex; error?: unknown }>({
       method: 'POST',
       url: adminRpcUrl,
-      body: { jsonrpc: '2.0', method: 'eth_sendTransaction', params: [{ from, to, data }], id: 2 },
+      body: {
+        jsonrpc: '2.0',
+        method: 'eth_sendTransaction',
+        params: [{ from, to, data }],
+        id: 2,
+      },
       ...LOAD_TIMEOUT,
     })
     .then(({ body }) =>

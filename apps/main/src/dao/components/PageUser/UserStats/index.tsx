@@ -10,7 +10,10 @@ import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-type UserStatsProps = { veCrvHolder?: VeCrvHolder; holdersLoading: boolean }
+type UserStatsProps = {
+  veCrvHolder?: VeCrvHolder
+  holdersLoading: boolean
+}
 
 export const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
   <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>

@@ -1,6 +1,10 @@
 import { styled, keyframes } from 'styled-components'
 
-type SpinnerProps = { className?: string; isDisabled?: boolean; size?: number }
+type SpinnerProps = {
+  className?: string
+  isDisabled?: boolean
+  size?: number
+}
 
 export const Spinner = ({ isDisabled = false, size, ...props }: SpinnerProps) => (
   <StyledSpinner {...props} isDisabled={isDisabled} size={size}>
@@ -20,7 +24,10 @@ const spin = keyframes`
   }
 `
 
-type StyledSpinnerProps = { isDisabled: boolean; size?: number }
+type StyledSpinnerProps = {
+  isDisabled: boolean
+  size?: number
+}
 
 const StyledSpinner = styled.div<StyledSpinnerProps>`
   display: inline-block;

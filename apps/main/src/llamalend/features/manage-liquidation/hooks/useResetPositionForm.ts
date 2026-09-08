@@ -18,7 +18,9 @@ import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { useMarketContext } from '../../market-context'
 
-const userDefaultValues = { userBorrowed: undefined } satisfies Partial<ResetForm>
+const userDefaultValues = {
+  userBorrowed: undefined,
+} satisfies Partial<ResetForm>
 
 const defaultValues = {
   ...userDefaultValues,
@@ -39,7 +41,11 @@ const useResetParams = <ChainId extends LlamaChainId>({
   maxTotalBorrowed,
   minBorrowed,
   resetAvailable,
-}: ResetForm & { chainId: ChainId; marketId: string | undefined; userAddress: Address | undefined }) =>
+}: ResetForm & {
+  chainId: ChainId
+  marketId: string | undefined
+  userAddress: Address | undefined
+}) =>
   useFormDebounce(
     useMemo(
       (): ResetParams<ChainId> => ({

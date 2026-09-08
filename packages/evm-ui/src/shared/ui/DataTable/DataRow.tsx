@@ -68,7 +68,9 @@ export const DataRow = <TData extends RowData>({
               cursor: isInteractive ? 'pointer' : 'default',
               verticalAlign,
               transition: `border-bottom ${TRANSITION_FUNCTION}`,
-              [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Default.Secondary },
+              [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: {
+                color: t => t.design.Table.Text.Default.Secondary,
+              },
               ...(isInteractive && {
                 [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
                   opacity: { mobile: 1, desktop: 0 },
@@ -80,7 +82,9 @@ export const DataRow = <TData extends RowData>({
                     backgroundColor: t => t.design.Table.Row.Hover,
                     color: t => t.design.Table.Text.Hover.Primary,
                   },
-                  [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Hover.Secondary },
+                  [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: {
+                    color: t => t.design.Table.Text.Hover.Secondary,
+                  },
                 },
               }),
             }),

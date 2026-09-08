@@ -24,7 +24,9 @@ export const useHasLoan = ({
   marketId,
   marketQuery,
   userAddress,
-}: UserMarketParams & { marketQuery: QueryProp<MarketTemplate> }) =>
+}: UserMarketParams & {
+  marketQuery: QueryProp<MarketTemplate>
+}) =>
   // todo: it's much simpler to add 'dependencies' to `useLoanExists` but that hook cannot access the loading code in the separate apps
   combineQueries(
     [

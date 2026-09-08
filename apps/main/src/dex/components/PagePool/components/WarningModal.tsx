@@ -5,9 +5,16 @@ import { AlertBox } from '@legacy-ui/AlertBox'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { t, Trans } from '@ui/lib/i18n'
 
-type SharedProps = { confirmed: boolean; setConfirmed: Dispatch<SetStateAction<boolean>> }
+type SharedProps = {
+  confirmed: boolean
+  setConfirmed: Dispatch<SetStateAction<boolean>>
+}
 
-type SlippageType = { slippage: boolean; value: number; transferType: 'Withdrawal' | 'Deposit' } & SharedProps
+type SlippageType = {
+  slippage: boolean
+  value: number
+  transferType: 'Withdrawal' | 'Deposit'
+} & SharedProps
 
 type LowExchangeRateType = {
   lowExchangeRate: boolean
@@ -16,7 +23,12 @@ type LowExchangeRateType = {
   toToken: string
 } & SharedProps
 
-type PriceImpactType = { priceImpact: boolean; value: string; toAmount: string; toToken: string } & SharedProps
+type PriceImpactType = {
+  priceImpact: boolean
+  value: string
+  toAmount: string
+  toToken: string
+} & SharedProps
 
 type PriceImpactLowExchangeRateType = {
   priceImpactLowExchangeRate: boolean

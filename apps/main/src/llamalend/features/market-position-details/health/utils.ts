@@ -96,5 +96,10 @@ export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealth
       }) satisfies Record<HealthType, HealthAndBufferState>,
   )
 
-  return { state: states?.[type], healthState: states?.health, liquidationBufferState: states?.liquidationBuffer, type }
+  return {
+    state: states?.[type],
+    healthState: states?.health,
+    liquidationBufferState: states?.liquidationBuffer,
+    type,
+  }
 }

@@ -18,7 +18,10 @@ export const deleteVirtualTestnet = ({
     .request({
       method: 'DELETE',
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets/${vnetId}`,
-      headers: { 'Content-Type': 'application/json', 'X-Access-Key': accessKey },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Key': accessKey,
+      },
       failOnStatusCode: false,
       ...LOAD_TIMEOUT,
     })

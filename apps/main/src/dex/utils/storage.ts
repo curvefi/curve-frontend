@@ -2,7 +2,9 @@ import { merge } from 'lodash'
 import { setLocalStorageItem } from '@evm-ui/hooks/useLocalStorage'
 import { toArray } from '@primitives/array.utils'
 
-const APP_STORAGE = { APP_DASHBOARD: 'curve-app-dashboard' }
+const APP_STORAGE = {
+  APP_DASHBOARD: 'curve-app-dashboard',
+}
 
 type Key = keyof typeof APP_STORAGE
 

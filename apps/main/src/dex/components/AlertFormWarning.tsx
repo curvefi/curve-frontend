@@ -4,7 +4,9 @@ import { AlertBox } from '@legacy-ui/AlertBox'
 import type { AlertBoxProps } from '@legacy-ui/AlertBox/types'
 import { t } from '@ui/lib/i18n'
 
-const ALERT_FORM_WARNING_KEYS = { 'warning-exchange-rate-low': 'warning-exchange-rate-low' } as const
+const ALERT_FORM_WARNING_KEYS = {
+  'warning-exchange-rate-low': 'warning-exchange-rate-low',
+} as const
 
 type AlertFormWarningKey = keyof typeof ALERT_FORM_WARNING_KEYS
 

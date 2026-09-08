@@ -6,25 +6,50 @@ const meta: Meta<typeof TokenInfo> = {
   title: 'UI Kit/Widgets/TokenInfo',
   component: TokenInfo,
   argTypes: {
-    address: { control: 'text', description: 'Token contract address' },
-    blockchainId: { control: 'text', description: 'Network the token is on' },
-    icon: { control: false, description: 'Custom icon node. Mutually exclusive with address and blockchainId.' },
+    address: {
+      control: 'text',
+      description: 'Token contract address',
+    },
+    blockchainId: {
+      control: 'text',
+      description: 'Network the token is on',
+    },
+    icon: {
+      control: false,
+      description: 'Custom icon node. Mutually exclusive with address and blockchainId.',
+    },
     iconPosition: {
       control: 'select',
       options: ['left', 'right'],
       description: 'Whether the token icon renders before or after the labels',
     },
-    primary: { control: 'text', description: 'Primary label, such as the token symbol or formatted token amount' },
-    secondary: { control: 'text', description: 'Optional secondary label, such as notional value or token symbol' },
-    showChainIcon: { control: 'boolean', description: 'Whether to show the blockchain chain badge icon' },
+    primary: {
+      control: 'text',
+      description: 'Primary label, such as the token symbol or formatted token amount',
+    },
+    secondary: {
+      control: 'text',
+      description: 'Optional secondary label, such as notional value or token symbol',
+    },
+    showChainIcon: {
+      control: 'boolean',
+      description: 'Whether to show the blockchain chain badge icon',
+    },
   },
-  args: { iconPosition: 'left', primary: 'USDC', secondary: '$1.0001' },
+  args: {
+    iconPosition: 'left',
+    primary: 'USDC',
+    secondary: '$1.0001',
+  },
 }
 
 type Story = StoryObj<typeof TokenInfo>
 
 export const AssetCellUsage: Story = {
-  args: { blockchainId: 'ethereum', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
+  args: {
+    blockchainId: 'ethereum',
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  },
   parameters: {
     docs: {
       description: {
@@ -79,16 +104,35 @@ export const NoSecondary: Story = {
     primary: 'USDC',
     secondary: undefined,
   },
-  parameters: { docs: { description: { story: 'Token info with only the primary label.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token info with only the primary label.',
+      },
+    },
+  },
 }
 
 export const CustomIcon: Story = {
-  args: { icon: <LeverageIcon />, primary: 'Trading fees', secondary: undefined },
-  parameters: { docs: { description: { story: 'Token info with a custom icon node instead of a token icon.' } } },
+  args: {
+    icon: <LeverageIcon />,
+    primary: 'Trading fees',
+    secondary: undefined,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token info with a custom icon node instead of a token icon.',
+      },
+    },
+  },
 }
 
 export const NoIcon: Story = {
-  args: { primary: '4.19%', secondary: 'Base 2.98%' },
+  args: {
+    primary: '4.19%',
+    secondary: 'Base 2.98%',
+  },
   parameters: {
     docs: {
       description: {

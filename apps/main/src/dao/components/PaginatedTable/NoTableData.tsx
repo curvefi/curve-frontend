@@ -2,7 +2,11 @@ import { styled } from 'styled-components'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { Box } from '@legacy-ui/Box'
 
-type NoTableDataProps = { height: string; noDataMessage: string; refetchData: () => void }
+type NoTableDataProps = {
+  height: string
+  noDataMessage: string
+  refetchData: () => void
+}
 
 export const NoTableData = ({ height, noDataMessage, refetchData }: NoTableDataProps) => (
   <Wrapper height={height}>

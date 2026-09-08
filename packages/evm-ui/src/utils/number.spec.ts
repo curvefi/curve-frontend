@@ -13,11 +13,17 @@ import {
 
 describe('getFractionDigitsOptions', () => {
   it('uses the source value decimal count when it is below the default cap', () => {
-    expect(getFractionDigitsOptions('1.23', 5)).toEqual({ minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    expect(getFractionDigitsOptions('1.23', 5)).toEqual({
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
   })
 
   it('caps the fraction digits at the default decimal count', () => {
-    expect(getFractionDigitsOptions('1.234567', 5)).toEqual({ minimumFractionDigits: 5, maximumFractionDigits: 5 })
+    expect(getFractionDigitsOptions('1.234567', 5)).toEqual({
+      minimumFractionDigits: 5,
+      maximumFractionDigits: 5,
+    })
   })
 
   it('keeps formatter defaults for empty, zero, nullish, or negative values', () => {
@@ -326,22 +332,42 @@ describe('decomposeNumber', () => {
   describe('basic functionality', () => {
     it('decomposes number with default options', () => {
       const result = decomposeNumber(1500, { abbreviate: true })
-      expect(result).toEqual({ prefix: '', mainValue: '1.50', suffix: '', scaleSuffix: 'k' })
+      expect(result).toEqual({
+        prefix: '',
+        mainValue: '1.50',
+        suffix: '',
+        scaleSuffix: 'k',
+      })
     })
 
     it('decomposes number without abbreviation', () => {
       const result = decomposeNumber(1500, { abbreviate: false })
-      expect(result).toEqual({ prefix: '', mainValue: '1,500', suffix: '', scaleSuffix: '' })
+      expect(result).toEqual({
+        prefix: '',
+        mainValue: '1,500',
+        suffix: '',
+        scaleSuffix: '',
+      })
     })
 
     it('decomposes number with prefix unit', () => {
       const result = decomposeNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })
-      expect(result).toEqual({ prefix: '$', mainValue: '1', suffix: '', scaleSuffix: 'm' })
+      expect(result).toEqual({
+        prefix: '$',
+        mainValue: '1',
+        suffix: '',
+        scaleSuffix: 'm',
+      })
     })
 
     it('decomposes number with suffix unit', () => {
       const result = decomposeNumber(50, { unit: { symbol: '%', position: 'suffix' }, abbreviate: false })
-      expect(result).toEqual({ prefix: '', mainValue: '50', suffix: '%', scaleSuffix: '' })
+      expect(result).toEqual({
+        prefix: '',
+        mainValue: '50',
+        suffix: '%',
+        scaleSuffix: '',
+      })
     })
 
     it('decomposes number with string unit types', () => {
@@ -369,7 +395,12 @@ describe('decomposeNumber', () => {
       const overflowValue = 200_000_000_000_000 // 200T
       const result = decomposeNumber(overflowValue, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })
 
-      expect(result).toEqual({ prefix: '', mainValue: '?', suffix: '', scaleSuffix: '' })
+      expect(result).toEqual({
+        prefix: '',
+        mainValue: '?',
+        suffix: '',
+        scaleSuffix: '',
+      })
       expect(consoleSpy).toHaveBeenCalledWith(`USD value is too large: ${overflowValue}`)
     })
 

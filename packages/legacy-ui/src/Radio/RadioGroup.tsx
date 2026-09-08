@@ -12,7 +12,12 @@ export const RadioGroup = ({
   className,
   testId,
   ...props
-}: RadioGroupProps & AriaRadioGroupProps & { children: ReactNode; className?: string; testId?: string }) => {
+}: RadioGroupProps &
+  AriaRadioGroupProps & {
+    children: ReactNode
+    className?: string
+    testId?: string
+  }) => {
   const state = useRadioGroupState(props)
   const { radioGroupProps } = useRadioGroup(props, state)
 

@@ -66,7 +66,9 @@ const variant = (
   letterSpacing,
   fontVariantNumeric,
   // Undo the letter spacing to the right of the last letter
-  ...(letterSpacing !== '0%' && { marginRight: `calc(${letterSpacing} * -1)` }),
+  ...(letterSpacing !== '0%' && {
+    marginRight: `calc(${letterSpacing} * -1)`,
+  }),
   textTransform: textCase ?? 'none',
   transition: `color ${TRANSITION_FUNCTION}, border ${TRANSITION_FUNCTION}`, // border is used in the chip, for example
   ...(!(fontSize in FontSize) && { fontSize }),

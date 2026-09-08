@@ -85,7 +85,12 @@ type SliceState = {
   }
   poolName: string
   poolSymbol: string
-  validation: { poolType: boolean; tokensInPool: boolean; parameters: boolean; poolInfo: boolean }
+  validation: {
+    poolType: boolean
+    tokensInPool: boolean
+    parameters: boolean
+    poolInfo: boolean
+  }
   transactionState: {
     txStatus: 'LOADING' | 'CONFIRMING' | 'ERROR' | 'SUCCESS' | ''
     txSuccess: boolean
@@ -153,7 +158,12 @@ export type CreatePoolSlice = {
 
 const ORACLE_FUNCTION_NULL_VALUE = '0x00000000'
 
-export const DEFAULT_ERC4626_STATUS: Erc4626Type = { isErc4626: false, isLoading: false, error: null, isSuccess: false }
+export const DEFAULT_ERC4626_STATUS: Erc4626Type = {
+  isErc4626: false,
+  isLoading: false,
+  error: null,
+  isSuccess: false,
+}
 export const DEFAULT_ORACLE_STATUS: OracleType = {
   isLoading: false,
   error: null,
@@ -181,14 +191,30 @@ export const DEFAULT_CREATE_POOL_STATE = {
   tokensInPool: {
     tokenAmount: 2,
     metaPoolToken: false,
-    [TOKEN_A]: { ...DEFAULT_TOKEN_STATE },
-    [TOKEN_B]: { ...DEFAULT_TOKEN_STATE },
-    [TOKEN_C]: { ...DEFAULT_TOKEN_STATE },
-    [TOKEN_D]: { ...DEFAULT_TOKEN_STATE },
-    [TOKEN_E]: { ...DEFAULT_TOKEN_STATE },
-    [TOKEN_F]: { ...DEFAULT_TOKEN_STATE },
-    [TOKEN_G]: { ...DEFAULT_TOKEN_STATE },
-    [TOKEN_H]: { ...DEFAULT_TOKEN_STATE },
+    [TOKEN_A]: {
+      ...DEFAULT_TOKEN_STATE,
+    },
+    [TOKEN_B]: {
+      ...DEFAULT_TOKEN_STATE,
+    },
+    [TOKEN_C]: {
+      ...DEFAULT_TOKEN_STATE,
+    },
+    [TOKEN_D]: {
+      ...DEFAULT_TOKEN_STATE,
+    },
+    [TOKEN_E]: {
+      ...DEFAULT_TOKEN_STATE,
+    },
+    [TOKEN_F]: {
+      ...DEFAULT_TOKEN_STATE,
+    },
+    [TOKEN_G]: {
+      ...DEFAULT_TOKEN_STATE,
+    },
+    [TOKEN_H]: {
+      ...DEFAULT_TOKEN_STATE,
+    },
   },
   initialPrice: {
     [TOKEN_A]: 0,
@@ -218,7 +244,12 @@ export const DEFAULT_CREATE_POOL_STATE = {
   poolName: '',
   poolSymbol: '',
   userAddedTokens: [],
-  validation: { poolType: false, tokensInPool: false, parameters: false, poolInfo: false },
+  validation: {
+    poolType: false,
+    tokensInPool: false,
+    parameters: false,
+    poolInfo: false,
+  },
   transactionState: {
     txStatus: '',
     txSuccess: false,
@@ -385,7 +416,17 @@ export const createCreatePoolSlice = (
       tokenH: TokenState,
     ) => {
       const currentTokens = get().createPool.tokensInPool
-      const tokensInPoolUpdates = { ...currentTokens, tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH }
+      const tokensInPoolUpdates = {
+        ...currentTokens,
+        tokenA,
+        tokenB,
+        tokenC,
+        tokenD,
+        tokenE,
+        tokenF,
+        tokenG,
+        tokenH,
+      }
 
       tokensInPoolUpdates.tokenAmount =
         (tokenA.basePool || tokenB.basePool) && get().createPool.swapType === STABLESWAP
@@ -393,8 +434,14 @@ export const createCreatePoolSlice = (
           : get().createPool.tokensInPool.tokenAmount
 
       tokensInPoolUpdates.metaPoolToken = tokenA.basePool || tokenB.basePool
-      tokensInPoolUpdates.tokenA = { ...tokenA, basePool: tokenA.basePool }
-      tokensInPoolUpdates.tokenB = { ...tokenB, basePool: tokenB.basePool }
+      tokensInPoolUpdates.tokenA = {
+        ...tokenA,
+        basePool: tokenA.basePool,
+      }
+      tokensInPoolUpdates.tokenB = {
+        ...tokenB,
+        basePool: tokenB.basePool,
+      }
 
       // Preserve erc4626 statuses and ngAssetType when tokens are rearranged. Status follows the address.
       const syncTokenStatuses = () => {
@@ -425,7 +472,9 @@ export const createCreatePoolSlice = (
         }
       }
 
-      const initialPriceUpdates = { ...get().createPool.initialPrice }
+      const initialPriceUpdates = {
+        ...get().createPool.initialPrice,
+      }
 
       const { chainId } = curve
 

@@ -11,9 +11,19 @@ import { type CurveTableFeatures, getAlignment, type DataTableSize, EXTRA_COLUMN
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-const HeaderCellPaddingBlockEnd = { extraSmall: 0, small: 0, medium: Spacing.sm, large: Spacing.sm }
+const HeaderCellPaddingBlockEnd = {
+  extraSmall: 0,
+  small: 0,
+  medium: Spacing.sm,
+  large: Spacing.sm,
+}
 
-const HeaderCellVerticalAlign = { extraSmall: 'middle', small: 'middle', medium: 'bottom', large: 'bottom' }
+const HeaderCellVerticalAlign = {
+  extraSmall: 'middle',
+  small: 'middle',
+  medium: 'bottom',
+  large: 'bottom',
+}
 
 function useHeaderSx({
   canSort,
@@ -40,7 +50,12 @@ function useHeaderSx({
       paddingBlockEnd: HeaderCellPaddingBlockEnd[size],
       paddingInline: Spacing.xs,
       ...EXTRA_COLUMN_PADDING,
-      ...(canSort && { cursor: 'pointer', '&:hover': { color: t => t.design.Table.Header['Label_&_icon'].Hover } }),
+      ...(canSort && {
+        cursor: 'pointer',
+        '&:hover': {
+          color: t => t.design.Table.Header['Label_&_icon'].Hover,
+        },
+      }),
       ...(isSticky && {
         position: 'sticky',
         left: 0,
@@ -73,7 +88,14 @@ export const HeaderCell = function <TData extends RowData>({
   return (
     <Typography
       component="th"
-      sx={useHeaderSx({ canSort, columnType: column.columnDef.meta?.type, isSorted, isSticky, width, size })}
+      sx={useHeaderSx({
+        canSort,
+        columnType: column.columnDef.meta?.type,
+        isSorted,
+        isSticky,
+        width,
+        size,
+      })}
       colSpan={header.colSpan}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}

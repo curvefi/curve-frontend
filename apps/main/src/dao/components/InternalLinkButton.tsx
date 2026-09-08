@@ -6,7 +6,11 @@ import { useParams } from '@evm-ui/hooks/router'
 import { Icon } from '@legacy-ui/Icon'
 import { InternalLink } from '@legacy-ui/Link'
 
-type InternalLinkButtonProps = { to: string; children: ReactNode; smallSize?: boolean }
+type InternalLinkButtonProps = {
+  to: string
+  children: ReactNode
+  smallSize?: boolean
+}
 
 export const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => {
   const params = useParams<UrlParams>()

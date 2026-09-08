@@ -11,7 +11,11 @@ const LendMarketPage = lazyRouteComponent(
 )
 const PageVault = lazyRouteComponent(() => import('@/lend/components/PageVault/Page'), 'Page')
 
-const lendLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'lend', component: LendLayout })
+const lendLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'lend',
+  component: LendLayout,
+})
 
 const layoutProps = { getParentRoute: () => lendLayoutRoute }
 

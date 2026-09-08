@@ -58,7 +58,14 @@ export function checkStakeDetailsLoaded({
   symbol?: string
   hasApi?: boolean
 }) {
-  checkSupplyActionInfoValues({ vaultShares, prevVaultShares, suppliedAssets, prevSuppliedAssets, symbol, hasApi })
+  checkSupplyActionInfoValues({
+    vaultShares,
+    prevVaultShares,
+    suppliedAssets,
+    prevSuppliedAssets,
+    symbol,
+    hasApi,
+  })
   checkSupplySubmitButtonText('stake', expectedButtonText)
 }
 

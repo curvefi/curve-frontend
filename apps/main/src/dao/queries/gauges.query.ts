@@ -14,9 +14,18 @@ type PricesGaugeOverviewData = {
   name: string | null
   version: string | null
   lp_token: string
-  pool: { address: string; name: string; chain: string; tvl_usd: number; trading_volume_24h: number } | null
+  pool: {
+    address: string
+    name: string
+    chain: string
+    tvl_usd: number
+    trading_volume_24h: number
+  } | null
   tokens: [{ symbol: string; address: string; precision: number }]
-  market: { name: string; chain: string } | null
+  market: {
+    name: string
+    chain: string
+  } | null
   is_killed: boolean | null
   emissions: number
   prev_epoch_emissions: number
@@ -32,7 +41,9 @@ type PricesGaugeOverviewData = {
   last_vote_tx: string
 }
 
-type PricesGaugeOverviewResponse = { gauges: PricesGaugeOverviewData[] }
+type PricesGaugeOverviewResponse = {
+  gauges: PricesGaugeOverviewData[]
+}
 
 export type GaugeFormattedData = Omit<PricesGaugeOverviewData, 'gauge_weight'> & {
   title: string

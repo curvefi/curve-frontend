@@ -1,6 +1,10 @@
 import { assert } from '@primitives/objects.utils'
 
-export type TenderlyAccount = { accountSlug: string; projectSlug: string; accessKey: string }
+export type TenderlyAccount = {
+  accountSlug: string
+  projectSlug: string
+  accessKey: string
+}
 
 export type TenderlyConfig = TenderlyAccount & { vnetId: string }
 

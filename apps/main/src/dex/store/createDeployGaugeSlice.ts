@@ -37,7 +37,11 @@ type SliceState = {
   lpTokenAddress: string
   linkPoolAddress: string
   sidechainNav: SidechainNav
-  deploymentStatus: { mainnet: DeploymentStatus; sidechain: DeploymentStatus; mirror: DeploymentStatus }
+  deploymentStatus: {
+    mainnet: DeploymentStatus
+    sidechain: DeploymentStatus
+    mirror: DeploymentStatus
+  }
 }
 
 const SLICE_KEY = 'deployGauge'
@@ -67,9 +71,21 @@ const DEFAULT_STATE: SliceState = {
   linkPoolAddress: '',
   sidechainNav: 0,
   deploymentStatus: {
-    mainnet: { status: '', transaction: null, errorMessage: '' },
-    sidechain: { status: '', transaction: null, errorMessage: '' },
-    mirror: { status: '', transaction: null, errorMessage: '' },
+    mainnet: {
+      status: '',
+      transaction: null,
+      errorMessage: '',
+    },
+    sidechain: {
+      status: '',
+      transaction: null,
+      errorMessage: '',
+    },
+    mirror: {
+      status: '',
+      transaction: null,
+      errorMessage: '',
+    },
   },
 }
 

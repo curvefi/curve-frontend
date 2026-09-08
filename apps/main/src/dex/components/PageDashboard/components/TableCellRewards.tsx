@@ -53,7 +53,10 @@ export const TableCellRewards = ({
                       fetchUserPoolBoost={fetchUserPoolBoost}
                     />
                   ),
-                  tooltipProps: { textAlign: 'left', minWidth: '300px' },
+                  tooltipProps: {
+                    textAlign: 'left',
+                    minWidth: '300px',
+                  },
                 }
               : {})}
             size="md"

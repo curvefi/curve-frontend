@@ -22,7 +22,12 @@ export function PoolTokens({
           // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           key={index}
           variant={isHighlighted(symbol, address, searchedTerms) ? 'bodyXsBold' : 'bodyXsRegular'}
-          sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '10ch' }}
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            maxWidth: '10ch',
+          }}
         >
           {symbol}
         </Typography>

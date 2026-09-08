@@ -80,11 +80,24 @@ const meta: Meta<typeof SliderStory> = {
       options: ['default', 'filled', 'bordered', 'safe', 'danger'],
       description: 'Background pattern applied to the rail background.',
     },
-    size: { control: 'select', options: ['small', 'medium'], description: 'Slider height and thumb sizing.' },
-    disabled: { control: 'boolean', description: 'Disable user interaction.' },
-    min: { control: 'number' },
-    max: { control: 'number' },
-    step: { control: 'number' },
+    size: {
+      control: 'select',
+      options: ['small', 'medium'],
+      description: 'Slider height and thumb sizing.',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disable user interaction.',
+    },
+    min: {
+      control: 'number',
+    },
+    max: {
+      control: 'number',
+    },
+    step: {
+      control: 'number',
+    },
     scaleType: {
       control: 'select',
       options: ['linear', 'power', 'geometric'],
@@ -100,29 +113,94 @@ const meta: Meta<typeof SliderStory> = {
       options: ['auto', 'on', 'off'],
       description: 'The display of the value label.',
     },
-    powerExponent: { control: 'number', description: 'The power exponent of the slider.' },
+    powerExponent: {
+      control: 'number',
+      description: 'The power exponent of the slider.',
+    },
   },
-  parameters: { layout: 'centered' },
+  parameters: {
+    layout: 'centered',
+  },
 }
 
 type Story = StoryObj<typeof SliderStory>
 
 export const Default: Story = {}
 
-export const RailBackgroundFilled: Story = { args: { 'data-rail-background': 'filled', defaultValue: 40 } }
-export const RailBackgroundBordered: Story = { args: { 'data-rail-background': 'bordered', defaultValue: 40 } }
-export const RailBackgroundSafe: Story = { args: { 'data-rail-background': 'safe', defaultValue: 15 } }
-export const RailBackgroundDanger: Story = { args: { 'data-rail-background': 'danger', defaultValue: 15 } }
-export const SmallSize: Story = { args: { size: 'small', defaultValue: 40 } }
-export const DisabledDefault: Story = { args: { disabled: true, defaultValue: 60 } }
-export const ZeroStep: Story = { args: { step: 0, defaultValue: 60 } }
-export const DisabledSafeRail: Story = { args: { disabled: true, 'data-rail-background': 'safe', defaultValue: 60 } }
-export const DisabledBorderedRail: Story = {
-  args: { disabled: true, 'data-rail-background': 'bordered', defaultValue: 60 },
+export const RailBackgroundFilled: Story = {
+  args: {
+    'data-rail-background': 'filled',
+    defaultValue: 40,
+  },
 }
-export const Range: Story = { args: { defaultValue: [25, 75], 'data-rail-background': 'default' } }
-export const RangeFilled: Story = { args: { defaultValue: [25, 75], 'data-rail-background': 'filled' } }
-export const ValueLabelDisplay: Story = { args: { valueLabelDisplay: 'auto', 'data-rail-background': 'default' } }
+export const RailBackgroundBordered: Story = {
+  args: {
+    'data-rail-background': 'bordered',
+    defaultValue: 40,
+  },
+}
+export const RailBackgroundSafe: Story = {
+  args: {
+    'data-rail-background': 'safe',
+    defaultValue: 15,
+  },
+}
+export const RailBackgroundDanger: Story = {
+  args: {
+    'data-rail-background': 'danger',
+    defaultValue: 15,
+  },
+}
+export const SmallSize: Story = {
+  args: {
+    size: 'small',
+    defaultValue: 40,
+  },
+}
+export const DisabledDefault: Story = {
+  args: {
+    disabled: true,
+    defaultValue: 60,
+  },
+}
+export const ZeroStep: Story = {
+  args: {
+    step: 0,
+    defaultValue: 60,
+  },
+}
+export const DisabledSafeRail: Story = {
+  args: {
+    disabled: true,
+    'data-rail-background': 'safe',
+    defaultValue: 60,
+  },
+}
+export const DisabledBorderedRail: Story = {
+  args: {
+    disabled: true,
+    'data-rail-background': 'bordered',
+    defaultValue: 60,
+  },
+}
+export const Range: Story = {
+  args: {
+    defaultValue: [25, 75],
+    'data-rail-background': 'default',
+  },
+}
+export const RangeFilled: Story = {
+  args: {
+    defaultValue: [25, 75],
+    'data-rail-background': 'filled',
+  },
+}
+export const ValueLabelDisplay: Story = {
+  args: {
+    valueLabelDisplay: 'auto',
+    'data-rail-background': 'default',
+  },
+}
 export const LinearScale: Story = {
   args: {
     min: POW_MIN_VALUE,
@@ -156,6 +234,11 @@ export const GeometricScale: Story = {
     'data-rail-background': 'bordered',
   },
 }
-export const DefaultVertical: Story = { args: { 'data-rail-background': 'default', orientation: 'vertical' } }
+export const DefaultVertical: Story = {
+  args: {
+    'data-rail-background': 'default',
+    orientation: 'vertical',
+  },
+}
 
 export default meta

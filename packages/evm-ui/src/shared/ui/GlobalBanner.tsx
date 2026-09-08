@@ -20,7 +20,11 @@ import { t } from '@ui/lib/i18n'
 import { IS_CYPRESS, ReleaseChannel } from '@ui/utils/env'
 import { StackBanners } from './StackBanners'
 
-type GlobalBannerProps = { blockchainId: string; chainId: number; backendMaintenance: Maintenance }
+type GlobalBannerProps = {
+  blockchainId: string
+  chainId: number
+  backendMaintenance: Maintenance
+}
 
 export const GlobalBanner = ({ blockchainId, chainId, backendMaintenance }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()

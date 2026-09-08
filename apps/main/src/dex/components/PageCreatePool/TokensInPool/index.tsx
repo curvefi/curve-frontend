@@ -55,7 +55,11 @@ const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenSta
   return basePoolCoins
 }
 
-type Props = { curve: CurveApi; haveSigner: boolean; chainId: ChainId }
+type Props = {
+  curve: CurveApi
+  haveSigner: boolean
+  chainId: ChainId
+}
 
 export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const userAddedTokens = useStore(state => state.createPool.userAddedTokens)
@@ -142,7 +146,11 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       const swapTokens = (tokenId1: TokenId, tokenId2: TokenId) => {
         updatedFormValues = {
           ...updatedFormValues,
-          [tokenId1]: { ...updatedFormValues[tokenId2], address: value, symbol: findSymbol(value) },
+          [tokenId1]: {
+            ...updatedFormValues[tokenId2],
+            address: value,
+            symbol: findSymbol(value),
+          },
           [tokenId2]:
             !tokensInPool[tokenId1].basePool && tokenId2 !== TOKEN_A && tokenId2 !== TOKEN_B
               ? tokensInPool[tokenId1]
@@ -161,7 +169,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               address: value,
               basePool: true,
             },
-            [TOKEN_B]: { ...updatedFormValues[TOKEN_B], address: '' },
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
+              address: '',
+            },
           }
           // value = basepool while token in basepool is selected
         } else if (
@@ -178,7 +189,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               address: value,
               basePool: true,
             },
-            [TOKEN_B]: { ...updatedFormValues[TOKEN_B], address: '' },
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
+              address: '',
+            },
           }
           // value = token in basepool that is already selected
         } else if (
@@ -188,8 +202,16 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         ) {
           updatedFormValues = {
             ...updatedFormValues,
-            [TOKEN_A]: { ...updatedFormValues[TOKEN_A], address: value, symbol: findSymbol(value) },
-            [TOKEN_B]: { ...updatedFormValues[TOKEN_B], address: '', basePool: false },
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              address: value,
+              symbol: findSymbol(value),
+            },
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
+              address: '',
+              basePool: false,
+            },
           }
         } else if (value === tokensInPoolState[TOKEN_B].address) {
           swapTokens(TOKEN_A, TOKEN_B)
@@ -221,7 +243,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               symbol: findSymbol(value),
               basePool: true,
             },
-            [TOKEN_A]: { ...updatedFormValues[TOKEN_A], address: '' },
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              address: '',
+            },
           }
           // value = basepool while token in basepool is selected
         } else if (
@@ -238,7 +263,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               symbol: findSymbol(value),
               basePool: true,
             },
-            [TOKEN_A]: { ...updatedFormValues[TOKEN_A], address: '' },
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              address: '',
+            },
           }
           // value = token in basepool (eg USDT in 3crv) that is already selected
         } else if (
@@ -248,8 +276,16 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         ) {
           updatedFormValues = {
             ...updatedFormValues,
-            [TOKEN_B]: { ...updatedFormValues[TOKEN_B], address: value, symbol: findSymbol(value) },
-            [TOKEN_A]: { ...updatedFormValues[TOKEN_A], address: '', basePool: false },
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
+              address: value,
+              symbol: findSymbol(value),
+            },
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              address: '',
+              basePool: false,
+            },
           }
         } else if (value === tokensInPoolState[TOKEN_A].address) {
           swapTokens(TOKEN_B, TOKEN_A)
@@ -281,7 +317,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               symbol: findSymbol(value),
               basePool: true,
             },
-            [TOKEN_C]: { ...updatedFormValues[TOKEN_C], address: '' },
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_C],
+              address: '',
+            },
           }
         } else if (value === tokensInPoolState[TOKEN_A].address) {
           swapTokens(TOKEN_C, TOKEN_A)
@@ -314,7 +353,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               symbol: findSymbol(value),
               basePool: true,
             },
-            [TOKEN_D]: { ...updatedFormValues[TOKEN_D], address: '' },
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_D],
+              address: '',
+            },
           }
         } else if (value === tokensInPoolState[TOKEN_A].address) {
           swapTokens(TOKEN_D, TOKEN_A)
@@ -347,7 +389,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               symbol: findSymbol(value),
               basePool: true,
             },
-            [TOKEN_E]: { ...updatedFormValues[TOKEN_E], address: '' },
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_E],
+              address: '',
+            },
           }
         } else if (value === tokensInPoolState[TOKEN_A].address) {
           swapTokens(TOKEN_E, TOKEN_A)
@@ -380,7 +425,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               symbol: findSymbol(value),
               basePool: true,
             },
-            [TOKEN_F]: { ...updatedFormValues[TOKEN_F], address: '' },
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_F],
+              address: '',
+            },
           }
         } else if (value === tokensInPoolState[TOKEN_A].address) {
           swapTokens(TOKEN_F, TOKEN_A)
@@ -413,7 +461,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               symbol: findSymbol(value),
               basePool: true,
             },
-            [TOKEN_G]: { ...updatedFormValues[TOKEN_G], address: '' },
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_G],
+              address: '',
+            },
           }
         } else if (value === tokensInPoolState[TOKEN_A].address) {
           swapTokens(TOKEN_G, TOKEN_A)
@@ -446,7 +497,10 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               symbol: findSymbol(value),
               basePool: true,
             },
-            [TOKEN_H]: { ...updatedFormValues[TOKEN_H], address: '' },
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_H],
+              address: '',
+            },
           }
         } else if (value === tokensInPoolState[TOKEN_A].address) {
           swapTokens(TOKEN_H, TOKEN_A)

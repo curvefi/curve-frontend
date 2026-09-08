@@ -50,7 +50,11 @@ const DEFAULT_OPTIONS: LiquidationRangeSeriesOptions = {
   showBottomLine: true,
 }
 
-type PreparedPoint = { x: number; upper: Coordinate; lower: Coordinate }
+type PreparedPoint = {
+  x: number
+  upper: Coordinate
+  lower: Coordinate
+}
 
 type RendererPayload = {
   data: PaneRendererCustomData<Time, LiquidationRangePoint> | null
@@ -64,7 +68,10 @@ const CANVAS_LINE_DASH_BY_STYLE = {
 
 // Tiny factory that keeps payload state outside the renderer object LW charts consumes.
 const createRenderer = () => {
-  const payload: RendererPayload = { data: null, options: DEFAULT_OPTIONS }
+  const payload: RendererPayload = {
+    data: null,
+    options: DEFAULT_OPTIONS,
+  }
 
   const renderer: ICustomSeriesPaneRenderer = {
     draw: (target, priceConverter) => drawSeries(payload, target, priceConverter),
@@ -131,7 +138,11 @@ const collectVisiblePoints = (
     if (upperCoord === null || lowerCoord === null) continue
 
     // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-    points.push({ x: bar.x, upper: upperCoord, lower: lowerCoord })
+    points.push({
+      x: bar.x,
+      upper: upperCoord,
+      lower: lowerCoord,
+    })
   }
 
   return points

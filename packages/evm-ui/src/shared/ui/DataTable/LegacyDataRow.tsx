@@ -71,14 +71,18 @@ export const LegacyDataRow = <TData extends RowData>({
                 opacity: { mobile: 1, desktop: 0 },
                 transition: `opacity ${TRANSITION_FUNCTION}`,
               },
-              [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Default.Secondary },
+              [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: {
+                color: t => t.design.Table.Text.Default.Secondary,
+              },
               '&:hover': {
                 [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: { opacity: { desktop: 1 } },
                 '& td, & th': {
                   backgroundColor: t => t.design.Table.Row.Hover,
                   color: t => t.design.Table.Text.Hover.Primary,
                 },
-                [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Hover.Secondary },
+                [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: {
+                  color: t => t.design.Table.Text.Hover.Secondary,
+                },
               },
               ...(shouldApplyStickyLastRow && {
                 // Keep the final row visible near the table end without covering the sticky header.

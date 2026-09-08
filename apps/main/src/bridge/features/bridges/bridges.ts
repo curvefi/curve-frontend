@@ -251,7 +251,11 @@ export const NATIVE_BRIDGES: Partner[] = [
     appUrl: 'https://bridge.etherlink.com/',
     twitterUrl: 'https://x.com/etherlink',
   },
-  { name: 'Fantom', imageId: 'chains/fantom.png', appUrl: 'https://portalbridge.com/' },
+  {
+    name: 'Fantom',
+    imageId: 'chains/fantom.png',
+    appUrl: 'https://portalbridge.com/',
+  },
   {
     name: 'Fraxtal',
     imageId: 'chains/fraxtal.png',
@@ -324,7 +328,11 @@ export const NATIVE_BRIDGES: Partner[] = [
     appUrl: 'https://bridge.taiko.xyz/',
     twitterUrl: 'https://x.com/taikoxyz',
   },
-  { name: 'Unichain', imageId: 'chains/unichain.png', twitterUrl: 'https://x.com/unichain' },
+  {
+    name: 'Unichain',
+    imageId: 'chains/unichain.png',
+    twitterUrl: 'https://x.com/unichain',
+  },
   {
     name: 'XDC Network',
     imageId: 'chains/xdc.png',

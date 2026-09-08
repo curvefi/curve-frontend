@@ -12,7 +12,9 @@ export const defineMuiMenuItem = (design: DesignSystem): Components['MuiMenuItem
       gap: SelectListItem.Gap,
       paddingBlock: SelectListItem.PaddingY,
       paddingInline: SelectListItem.PaddingX.medium,
-      '&:hover': { backgroundColor: design.Layer.TypeAction.Hover },
+      '&:hover': {
+        backgroundColor: design.Layer.TypeAction.Hover,
+      },
       // focus visible is used for keyboard navigation. This will usually be inverted theme via <InvertOnHover>
       '&.Mui-focusVisible': {
         backgroundColor: design.Layer.TypeAction.Hover,
@@ -25,6 +27,9 @@ export const defineMuiMenuItem = (design: DesignSystem): Components['MuiMenuItem
         },
       },
     },
-    dense: { height: SelectListItem.Height.small, paddingInline: SelectListItem.PaddingX.small },
+    dense: {
+      height: SelectListItem.Height.small,
+      paddingInline: SelectListItem.PaddingX.small,
+    },
   },
 })

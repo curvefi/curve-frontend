@@ -9,7 +9,9 @@ import { t } from '@ui/lib/i18n'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import { bridgeFormValidationSuite } from '../validation/bridge.validation'
 
-type BridgeApproveMutation = { amount: Decimal }
+type BridgeApproveMutation = {
+  amount: Decimal
+}
 
 type BridgeApproveOptions = {
   chainId: number

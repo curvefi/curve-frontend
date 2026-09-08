@@ -52,7 +52,13 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
       ...recordEntries(colors).map(([color, style]) => ({ props: { color }, style })),
       {
         props: { variant: 'link' },
-        style: { '&.MuiButton-link': { textTransform: 'none', padding: 0, height: Sizing[400] } },
+        style: {
+          '&.MuiButton-link': {
+            textTransform: 'none',
+            padding: 0,
+            height: Sizing[400],
+          },
+        },
       },
       {
         props: { variant: 'inline' },
@@ -110,7 +116,10 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         textTransform: 'uppercase',
         transition: Transition,
       },
-      sizeExtraSmall: { ...buttonSize(Text.FontWeight, MUI_BUTTON_SIZE.extraSmall), textTransform: 'none' },
+      sizeExtraSmall: {
+        ...buttonSize(Text.FontWeight, MUI_BUTTON_SIZE.extraSmall),
+        textTransform: 'none',
+      },
       sizeSmall: buttonSize(Text.FontWeight, MUI_BUTTON_SIZE.small),
       sizeMedium: buttonSize(Text.FontWeight, MUI_BUTTON_SIZE.medium),
       sizeLarge: buttonSize(Text.FontWeight, MUI_BUTTON_SIZE.large),

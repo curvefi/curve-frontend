@@ -5,7 +5,11 @@ import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import { decimal, formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 
-type Props = { crv?: RewardCrv[]; userCrvApy: number; fetchUserPoolBoost: () => Promise<string> }
+type Props = {
+  crv?: RewardCrv[]
+  userCrvApy: number
+  fetchUserPoolBoost: () => Promise<string>
+}
 
 export const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoost }: Props) => {
   const isSubscribedRef = useRef(false)

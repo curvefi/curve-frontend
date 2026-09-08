@@ -249,7 +249,10 @@ export const LegacyMarketPriceChartLayout = ({
     >
       <ChartHeader
         chartOptionVariant="select"
-        chartSelections={{ selections: chart.ohlcChartProps.selectChartList, activeSelection: chart.selectedChartKey }}
+        chartSelections={{
+          selections: chart.ohlcChartProps.selectChartList,
+          activeSelection: chart.selectedChartKey,
+        }}
         timeOption={{
           options: TIME_OPTIONS,
           activeOption: chart.ohlcChartProps.timeOption,

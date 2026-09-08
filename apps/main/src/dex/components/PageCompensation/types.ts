@@ -8,6 +8,18 @@ export type EtherContract = {
   token: string
 }
 
-export type Balances = Record<string, { poolId: string; balance: number }[]>
+export type Balances = Record<
+  string,
+  {
+    poolId: string
+    balance: number
+  }[]
+>
 
-export type VestedTotals = Record<string, { poolId: string; amount: number }[]>
+export type VestedTotals = Record<
+  string,
+  {
+    poolId: string
+    amount: number
+  }[]
+>

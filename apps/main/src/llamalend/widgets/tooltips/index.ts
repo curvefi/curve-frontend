@@ -13,4 +13,8 @@ export * from './TotalDebtTooltipContent'
 export * from './TvlTooltipContent'
 export * from './UtilizationTooltip'
 
-export const TooltipOptions = { placement: 'top', arrow: false, clickable: true } as const
+export const TooltipOptions = {
+  placement: 'top',
+  arrow: false,
+  clickable: true,
+} as const

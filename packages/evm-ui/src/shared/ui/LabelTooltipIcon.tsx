@@ -4,7 +4,9 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { IconSize, Spacing } = SizesAndSpaces
 
-type LabelTooltipIconProps = { tooltip?: Omit<TooltipProps, 'children'> }
+type LabelTooltipIconProps = {
+  tooltip?: Omit<TooltipProps, 'children'>
+}
 
 export const LabelTooltipIcon = ({ tooltip }: LabelTooltipIconProps) =>
   tooltip && (

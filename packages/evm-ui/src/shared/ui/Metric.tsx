@@ -318,7 +318,11 @@ export const Metric = ({
           direction="row"
           sx={applySxProps(
             { alignItems: 'baseline' },
-            isHorizontal && { flexWrap: 'wrap', gap: Spacing.xxs, justifyContent: 'flex-end' },
+            isHorizontal && {
+              flexWrap: 'wrap',
+              gap: Spacing.xxs,
+              justifyContent: 'flex-end',
+            },
           )}
         >
           {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}

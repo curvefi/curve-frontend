@@ -111,5 +111,8 @@ export const useHistoricalChartPagination = ({
     }
   }, [candlestickSeriesRef, chartRef, fetchHistoricalPage, ohlcDataRef, oraclePriceDataRef, oraclePriceSeriesRef])
 
-  return { handleVisibleLogicalRangeChange, restoreVisibleRangeAfterDataUpdate }
+  return {
+    handleVisibleLogicalRangeChange,
+    restoreVisibleRangeAfterDataUpdate,
+  }
 }

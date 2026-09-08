@@ -46,7 +46,9 @@ const getOptionsWithIconsOnly = (count: number, size: keyof typeof TABS_SIZES_CL
 const TabsSwitcherWrapper = ({
   options,
   ...props
-}: Omit<TabsSwitcherProps<TabValue>, 'value' | 'onChange' | 'options'> & { options: TabOption<TabValue>[] }) => {
+}: Omit<TabsSwitcherProps<TabValue>, 'value' | 'onChange' | 'options'> & {
+  options: TabOption<TabValue>[]
+}) => {
   const [value, setValue] = useState<TabValue | undefined>(options[0]?.value)
   return <TabsSwitcher {...props} options={options} value={value} onChange={setValue} />
 }
@@ -54,12 +56,26 @@ const TabsSwitcherWrapper = ({
 const meta: Meta<typeof TabsSwitcherWrapper> = {
   title: 'UI Kit/Primitives/Tabs',
   component: TabsSwitcherWrapper,
-  args: { overflow: 'standard' },
+  args: {
+    overflow: 'standard',
+  },
   argTypes: {
-    variant: { control: 'select', options: VARIANTS },
-    size: { control: 'select', options: TAB_SIZE_KEYS },
-    orientation: { control: 'select', options: ['horizontal', 'vertical'] },
-    overflow: { control: 'select', options: ['standard', 'kebab', 'fullWidth'] },
+    variant: {
+      control: 'select',
+      options: VARIANTS,
+    },
+    size: {
+      control: 'select',
+      options: TAB_SIZE_KEYS,
+    },
+    orientation: {
+      control: 'select',
+      options: ['horizontal', 'vertical'],
+    },
+    overflow: {
+      control: 'select',
+      options: ['standard', 'kebab', 'fullWidth'],
+    },
   },
 }
 
@@ -67,7 +83,9 @@ export default meta
 type Story = StoryObj<typeof TabsSwitcherWrapper>
 
 export const Contained: Story = {
-  args: { variant: 'contained' },
+  args: {
+    variant: 'contained',
+  },
   render: args => (
     <Stack sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
@@ -75,11 +93,19 @@ export const Contained: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Contained tabs with adornments and suffix for each size' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Contained tabs with adornments and suffix for each size',
+      },
+    },
+  },
 }
 
 export const Underlined: Story = {
-  args: { variant: 'underlined' },
+  args: {
+    variant: 'underlined',
+  },
   render: args => (
     <Stack sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
@@ -87,11 +113,19 @@ export const Underlined: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Underlined tabs with adornments and suffix for each size' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Underlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
 }
 
 export const Overlined: Story = {
-  args: { variant: 'overlined' },
+  args: {
+    variant: 'overlined',
+  },
   render: args => (
     <Stack sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
@@ -99,11 +133,20 @@ export const Overlined: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Overlined tabs with adornments and suffix for each size' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Overlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
 }
 
 export const VerticalContained: Story = {
-  args: { variant: 'contained', orientation: 'vertical' },
+  args: {
+    variant: 'contained',
+    orientation: 'vertical',
+  },
   render: args => (
     <Stack direction="row" sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
@@ -111,11 +154,20 @@ export const VerticalContained: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Vertical contained tabs with adornments and suffix for each size' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Vertical contained tabs with adornments and suffix for each size',
+      },
+    },
+  },
 }
 
 export const VerticalUnderlined: Story = {
-  args: { variant: 'underlined', orientation: 'vertical' },
+  args: {
+    variant: 'underlined',
+    orientation: 'vertical',
+  },
   render: args => (
     <Stack direction="row" sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
@@ -123,11 +175,20 @@ export const VerticalUnderlined: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Vertical underlined tabs with adornments and suffix for each size' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Vertical underlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
 }
 
 export const VerticalOverlined: Story = {
-  args: { variant: 'overlined', orientation: 'vertical' },
+  args: {
+    variant: 'overlined',
+    orientation: 'vertical',
+  },
   render: args => (
     <Stack direction="row" sx={{ gap: 4 }}>
       {TAB_SIZE_KEYS.map(size => (
@@ -135,13 +196,28 @@ export const VerticalOverlined: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Vertical overlined tabs with adornments and suffix for each size' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Vertical overlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
 }
 
 export const NoInactiveBorders: Story = {
-  args: { variant: 'underlined', hideInactiveBorders: true },
+  args: {
+    variant: 'underlined',
+    hideInactiveBorders: true,
+  },
   render: args => <TabsSwitcherWrapper {...args} options={getOptionsWithAdornments(3, args.size ?? 'small')} />,
-  parameters: { docs: { description: { story: 'Underlined tabs with inactive borders hidden' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Underlined tabs with inactive borders hidden',
+      },
+    },
+  },
 }
 
 export const IconsOnly: Story = {
@@ -162,11 +238,20 @@ export const IconsOnly: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Icon-only tabs for each variant and size' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Icon-only tabs for each variant and size',
+      },
+    },
+  },
 }
 
 export const OverflowFullWidth: Story = {
-  args: { variant: 'contained', overflow: 'fullWidth' },
+  args: {
+    variant: 'contained',
+    overflow: 'fullWidth',
+  },
   render: args => (
     <Stack sx={{ gap: 4, width: '40rem' }}>
       {VARIANTS.map(variant => (
@@ -174,11 +259,20 @@ export const OverflowFullWidth: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Contained tabs with fullWidth variant for each size' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Contained tabs with fullWidth variant for each size',
+      },
+    },
+  },
 }
 
 export const OverflowKebab: Story = {
-  args: { variant: 'contained', overflow: 'kebab' },
+  args: {
+    variant: 'contained',
+    overflow: 'kebab',
+  },
   render: args => (
     <Stack sx={{ gap: 4, width: '30rem' }}>
       {TAB_SIZE_KEYS.map(size => (
@@ -186,5 +280,11 @@ export const OverflowKebab: Story = {
       ))}
     </Stack>
   ),
-  parameters: { docs: { description: { story: 'Contained tabs with scrollable variant for each size' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Contained tabs with scrollable variant for each size',
+      },
+    },
+  },
 }

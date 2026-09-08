@@ -30,7 +30,11 @@ import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-type OracleInputProps = { token: TokenState; tokenId: TokenId; title: string }
+type OracleInputProps = {
+  token: TokenState
+  tokenId: TokenId
+  title: string
+}
 
 export const SetOracle = () => {
   const tokens = useStore(state => state.createPool.tokensInPool)
@@ -66,7 +70,9 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
 
   const formattedRate = useMemo(() => {
     if (!isSuccess || !rate) return null
-    return formatNumber(Number(formatEther(BigInt(rate))), { abbreviate: false })
+    return formatNumber(Number(formatEther(BigInt(rate))), {
+      abbreviate: false,
+    })
   }, [rate, isSuccess])
 
   const unableToValidateDecimals = !isLoading && isSuccess && decimals === undefined

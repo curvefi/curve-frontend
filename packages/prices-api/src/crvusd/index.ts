@@ -9,10 +9,21 @@ export type * from './schema'
 export const USER_MARKETS_FIRST_PAGE = 1
 export const USER_MARKETS_DEFAULT_PER_PAGE = 100
 
-type GetUserMarketsParams = { page?: number; per_page?: number; include_closed?: boolean }
+type GetUserMarketsParams = {
+  page?: number
+  per_page?: number
+  include_closed?: boolean
+}
 
 /** Retrieve all markets for a specific chain, sorted by date of creation. */
-export async function getMarkets(chain: Chain, params: { page?: number; per_page?: number } = {}, options?: Options) {
+export async function getMarkets(
+  chain: Chain,
+  params: {
+    page?: number
+    per_page?: number
+  } = {},
+  options?: Options,
+) {
   const host = getHost(options)
   const response = await fetch(`${host}/v1/crvusd/markets/${chain}${addQueryString(params)}`)
 
@@ -20,7 +31,13 @@ export async function getMarkets(chain: Chain, params: { page?: number; per_page
 }
 
 /** Retrieve all markets across all chains, sorted by date of creation descending. */
-export async function getAllMarkets(params: { page?: number; per_page?: number } = {}, options?: Options) {
+export async function getAllMarkets(
+  params: {
+    page?: number
+    per_page?: number
+  } = {},
+  options?: Options,
+) {
   const host = getHost(options)
   const response = await fetch(`${host}/v1/crvusd/markets${addQueryString(params)}`)
 
@@ -30,11 +47,13 @@ export async function getAllMarkets(params: { page?: number; per_page?: number }
 export async function getSnapshots(
   chain: Chain,
   marketAddr: string,
-  params: { agg?: string; fetch_on_chain?: boolean; limit?: number; start?: number; end?: number } = {
-    fetch_on_chain: true,
-    agg: 'day',
-    limit: 100,
-  },
+  params: {
+    agg?: string
+    fetch_on_chain?: boolean
+    limit?: number
+    start?: number
+    end?: number
+  } = { fetch_on_chain: true, agg: 'day', limit: 100 },
   options?: Options,
 ) {
   const host = getHost(options)

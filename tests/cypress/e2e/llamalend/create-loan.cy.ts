@@ -18,7 +18,9 @@ describe('Create loan', () => {
     const expectError = 'maximum collateral amount'
 
     it(label, () => {
-      cy.visit(path, { onBeforeLoad: win => (win.CypressTestConnectorChain = chainId) })
+      cy.visit(path, {
+        onBeforeLoad: win => (win.CypressTestConnectorChain = chainId),
+      })
       writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
       checkLoanDetailsLoaded({ leverageEnabled, expectError })
       checkLoanRangeSlider()

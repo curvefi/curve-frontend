@@ -11,10 +11,9 @@ export type InputProviderProps = {
   padding?: string
 } & Omit<BoxProps, 'padding'>
 
-type InputContextProps = { setIsFocusVisible: Dispatch<SetStateAction<boolean>> } & Pick<
-  InputProviderProps,
-  'disabled' | 'id' | 'inputVariant'
->
+type InputContextProps = {
+  setIsFocusVisible: Dispatch<SetStateAction<boolean>>
+} & Pick<InputProviderProps, 'disabled' | 'id' | 'inputVariant'>
 
 export const InputContext = createContext<InputContextProps>(undefined!)
 

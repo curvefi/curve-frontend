@@ -61,12 +61,23 @@ export function ChartCrvUsdPrice() {
           tooltip: createTooltip(value => formatNumber(value, 'usd.notional')),
           xAxis: { data: chartData.map(x => x.time).map(timeToCategory) },
           yAxis: {
-            axisLabel: { formatter: (v: number) => formatNumber(v, { unit: 'dollar', abbreviate: false, formatter }) },
+            axisLabel: {
+              formatter: (v: number) =>
+                formatNumber(v, {
+                  unit: 'dollar',
+                  abbreviate: false,
+                  formatter,
+                }),
+            },
             // 0.95 and 1.05 cover 99% of a stablecoin's price range. And you don't want spikes to cause the chart to become unreadable.
             min: Math.max(Math.min(...chartData.map(x => x.price)), 0.95),
             max: Math.min(Math.max(...chartData.map(x => x.price)), 1.05),
           },
-          series: { name: PRICE_LABEL, data: chartData.map(x => x.price), type: 'line' },
+          series: {
+            name: PRICE_LABEL,
+            data: chartData.map(x => x.price),
+            type: 'line',
+          },
         },
         palette,
       }),

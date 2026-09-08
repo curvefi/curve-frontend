@@ -27,7 +27,11 @@ const getClaimSubmitButton = (type: ClaimRewardType) =>
 
 export const submitClaimAndSettle = (
   type: ClaimRewardType,
-  { waitForEmptyState = false }: { waitForEmptyState?: boolean } = {},
+  {
+    waitForEmptyState = false,
+  }: {
+    waitForEmptyState?: boolean
+  } = {},
 ) => {
   const rewardTypeId: SupplyActionType = `claim-${type}-rewards`
   return submitClaimForm(rewardTypeId).then(() => {
@@ -43,7 +47,11 @@ const checkpointTenderlySupplyRewards = (
     vnet,
     userAddress,
     gaugeAddress,
-  }: { vnet: CreateVirtualTestnetResponse; userAddress: Address; gaugeAddress: Address }, // Some gauges expose freshly accrued rewards only after a user checkpoint updates internal reward accounting for that address.
+  }: {
+    vnet: CreateVirtualTestnetResponse
+    userAddress: Address
+    gaugeAddress: Address
+  }, // Some gauges expose freshly accrued rewards only after a user checkpoint updates internal reward accounting for that address.
 ) =>
   loadTenderlyAccount().then(LOAD_TIMEOUT, async tenderlyAccount => {
     await sendVnetTransaction({
@@ -51,7 +59,11 @@ const checkpointTenderlySupplyRewards = (
       tx: {
         from: userAddress,
         to: gaugeAddress,
-        data: encodeFunctionData({ abi: GAUGE_ABI, functionName: 'user_checkpoint', args: [userAddress] }),
+        data: encodeFunctionData({
+          abi: GAUGE_ABI,
+          functionName: 'user_checkpoint',
+          args: [userAddress],
+        }),
       },
     })
   })
@@ -86,7 +98,11 @@ export function validateClaimTabState({
   crvButtonDisabled = true,
   otherRewardsButtonDisabled = true,
   noRewards = crvButtonDisabled && otherRewardsButtonDisabled,
-}: { crvButtonDisabled?: boolean; otherRewardsButtonDisabled?: boolean; noRewards?: boolean } = {}) {
+}: {
+  crvButtonDisabled?: boolean
+  otherRewardsButtonDisabled?: boolean
+  noRewards?: boolean
+} = {}) {
   getClaimSubmitButton('crv').should(crvButtonDisabled ? 'be.disabled' : 'not.be.disabled')
   getClaimSubmitButton('other').should(otherRewardsButtonDisabled ? 'be.disabled' : 'not.be.disabled')
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')

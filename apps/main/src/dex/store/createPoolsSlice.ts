@@ -289,7 +289,13 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       const tokens = curvejsApi.pool.poolTokens(poolData.pool, isWrapped)
       const tokenAddresses = curvejsApi.pool.poolTokenAddresses(poolData.pool, isWrapped)
-      const cPoolData = { ...poolData, isWrapped, tokens, tokensCountBy: countBy(tokens), tokenAddresses }
+      const cPoolData = {
+        ...poolData,
+        isWrapped,
+        tokens,
+        tokensCountBy: countBy(tokens),
+        tokenAddresses,
+      }
 
       set(
         produce((state: State) => {

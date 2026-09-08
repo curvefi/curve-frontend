@@ -2,7 +2,11 @@ import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import { Icon } from '@legacy-ui/Icon'
 
-type Props = { message: string; children?: ReactNode; informational?: boolean }
+type Props = {
+  message: string
+  children?: ReactNode
+  informational?: boolean
+}
 
 export const WarningBox = ({ message, children, informational = false }: Props) => (
   <WarningBoxWrapper informational={informational}>

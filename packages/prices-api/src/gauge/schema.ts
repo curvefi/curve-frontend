@@ -12,10 +12,29 @@ const gauge = z
     version: z.string().nullable(),
     lp_token: address.nullable(),
     pool: z
-      .object({ address, name: z.string(), chain: z.string(), tvl_usd: z.number(), trading_volume_24h: z.number() })
+      .object({
+        address,
+        name: z.string(),
+        chain: z.string(),
+        tvl_usd: z.number(),
+        trading_volume_24h: z.number(),
+      })
       .nullable(),
-    tokens: z.array(z.object({ symbol: z.string(), address, precision: z.number() })).nullable(),
-    market: z.object({ name: z.string(), chain: z.string() }).nullable(),
+    tokens: z
+      .array(
+        z.object({
+          symbol: z.string(),
+          address,
+          precision: z.number(),
+        }),
+      )
+      .nullable(),
+    market: z
+      .object({
+        name: z.string(),
+        chain: z.string(),
+      })
+      .nullable(),
     is_killed: z.boolean(),
     emissions: z.number(),
     gauge_weight: z.string(),
@@ -45,8 +64,17 @@ const gauge = z
           tradingVolume24h: data.pool.tradingVolume24h,
         }
       : undefined,
-    tokens: data.tokens?.map(token => ({ symbol: token.symbol, address: token.address, precision: token.precision })),
-    market: data.market ? { name: data.market.name, chain: data.market.chain as Chain } : undefined,
+    tokens: data.tokens?.map(token => ({
+      symbol: token.symbol,
+      address: token.address,
+      precision: token.precision,
+    })),
+    market: data.market
+      ? {
+          name: data.market.name,
+          chain: data.market.chain as Chain,
+        }
+      : undefined,
     killed: data.isKilled,
     emissions: data.emissions,
     weight: BigInt(data.gaugeWeight),
@@ -62,7 +90,13 @@ const gauge = z
   }))
 
 const gaugeVote = z
-  .object({ user: address, weight: z.number(), block_number: z.number(), timestamp, transaction: address })
+  .object({
+    user: address,
+    weight: z.number(),
+    block_number: z.number(),
+    timestamp,
+    transaction: address,
+  })
   .transform(camelizeKeys)
   .transform(({ transaction, ...data }) => ({ ...data, tx: transaction }))
 

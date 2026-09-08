@@ -63,7 +63,10 @@ export const SelectToken = ({
   const clearToken = useStore(state => state.createPool.clearToken)
   const tokensInPool = useStore(state => state.createPool.tokensInPool)
   const { data: network } = useNetworkByChain({ chainId })
-  void useAutoDetectErc4626({ tokenId, address: token.address as Address })
+  void useAutoDetectErc4626({
+    tokenId,
+    address: token.address as Address,
+  })
 
   const getTokenName = (tokenId: TokenId) => {
     if (tokenId === TOKEN_D) return t`Token D`

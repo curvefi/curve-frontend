@@ -31,7 +31,10 @@ describe('RefuelFormList', () => {
   })
 
   it('calculates the pool share and yearly projections from token amounts', () => {
-    mountRefuelFormList({ ...baseProps, values: { tokenAAmount: '2', tokenBAmount: '3' } })
+    mountRefuelFormList({
+      ...baseProps,
+      values: { tokenAAmount: '2', tokenBAmount: '3' },
+    })
 
     getActionValue('refuel-size-action-info').should('equal', '0.80%')
     getActionValue('refuel-weekly-action-info').should('equal', '41.60%')

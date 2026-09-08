@@ -15,7 +15,10 @@ import { tooltipProps } from '../utils'
 
 type TotalOtherProfit = Record<string, { symbol: string; day: number; price: number }>
 
-type TotalAll = { tokens: TotalOtherProfit; totalUsd: number }
+type TotalAll = {
+  tokens: TotalOtherProfit
+  totalUsd: number
+}
 
 type Props = { title?: string }
 

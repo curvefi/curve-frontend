@@ -74,7 +74,13 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
     columns: POOL_COLUMNS,
     query: tableQuery,
     meta: { getRowHref: ({ url }) => url },
-    state: { expanded, sorting, columnVisibility, globalFilter, ...(!isLite && { pagination, columnFilters }) },
+    state: {
+      expanded,
+      sorting,
+      columnVisibility,
+      globalFilter,
+      ...(!isLite && { pagination, columnFilters }),
+    },
     getRowId: row => row.address,
     onExpandedChange: setExpanded,
     ...(!isLite && { onPaginationChange }),
@@ -99,7 +105,11 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
           button: { label: t`Show all pools`, onClick: resetFilters, testId: 'dex-pool-empty-state-reset' },
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
-        errorState={{ title: t`Unable to retrieve pool list`, description: tableQuery.error?.message, onReload }}
+        errorState={{
+          title: t`Unable to retrieve pool list`,
+          description: tableQuery.error?.message,
+          onReload,
+        }}
         expandedPanel={{ Body: POOL_EXPANDED_PANEL_BODIES[variant], Actions: PoolExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >

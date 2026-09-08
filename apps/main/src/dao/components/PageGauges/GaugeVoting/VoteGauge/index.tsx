@@ -13,7 +13,11 @@ import { GaugeDetails } from '../../GaugeListItem/GaugeDetails'
 import { TitleComp } from '../../GaugeListItem/TitleComp'
 import { VoteGaugeField } from '../VoteGaugeField'
 
-type VoteGaugeProps = { gaugeData: GaugeFormattedData; userGaugeVoteData: UserGaugeVoteWeight; powerUsed: number }
+type VoteGaugeProps = {
+  gaugeData: GaugeFormattedData
+  userGaugeVoteData: UserGaugeVoteWeight
+  powerUsed: number
+}
 
 export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
   const { address: userAddress } = useConnection()

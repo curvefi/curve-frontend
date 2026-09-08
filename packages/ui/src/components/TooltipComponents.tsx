@@ -121,7 +121,11 @@ export const TooltipItem = ({
         component="span"
         {...(variant === 'subItem' &&
           titleIcon == null &&
-          titleAdornment == null && { sx: { marginLeft: Spacing.md } })}
+          titleAdornment == null && {
+            sx: {
+              marginLeft: Spacing.md,
+            },
+          })}
       >
         {title}
       </Typography>

@@ -40,6 +40,14 @@ export type ZeroExVolumeFee = {
   type: 'volume' // identifies a trade-volume fee rather than a gas fee
 }
 
-type ZeroExRouteFill = { from: Address; to: Address; source: string; proportionBps: Decimal }
+type ZeroExRouteFill = {
+  from: Address
+  to: Address
+  source: string
+  proportionBps: Decimal
+}
 
-type ZeroExRouteToken = { address: Address; symbol: string }
+type ZeroExRouteToken = {
+  address: Address
+  symbol: string
+}

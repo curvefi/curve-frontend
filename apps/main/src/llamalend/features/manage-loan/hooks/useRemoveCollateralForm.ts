@@ -22,7 +22,10 @@ import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { userCollateral: undefined }
 const defaultValues = { ...userDefaultValues, maxCollateral: undefined }
-const formOptions = { validation: removeCollateralFormValidationSuite, defaultValues }
+const formOptions = {
+  validation: removeCollateralFormValidationSuite,
+  defaultValues,
+}
 
 export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,

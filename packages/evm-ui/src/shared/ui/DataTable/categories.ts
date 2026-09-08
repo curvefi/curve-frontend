@@ -21,13 +21,30 @@ export type DataTableCategory = keyof typeof DATA_TABLE_CATEGORIES
 
 export const DATA_TABLE_CATEGORIES = {
   // default full-list table, e.g. MarketsTable or PoolListTable.
-  list: { emptyStateRowSize: 'lg' },
+  list: {
+    emptyStateRowSize: 'lg',
+  },
   // preview table that starts with a few rows, e.g. UserPositionsMarketRateTable.
-  limited: { defaultVisibleRows: 3, increasingLength: 'limited', emptyStateSize: 'sm' },
+  limited: {
+    defaultVisibleRows: 3,
+    increasingLength: 'limited',
+    emptyStateSize: 'sm',
+  },
   // table with many rows constrained inside a scrollable viewport, e.g. ActivityTable or UserEventsTable.
-  scrollable: { height: Height.table.events, emptyStateRowSize: 'lg' },
+  scrollable: {
+    height: Height.table.events,
+    emptyStateRowSize: 'lg',
+  },
   // compact detail table inside a secondary card or advanced-details section, e.g. PoolComposition or YieldBreakdown.
-  detail: { disableStickyHeader: true, increasingLength: 'disabled' },
+  detail: {
+    disableStickyHeader: true,
+    increasingLength: 'disabled',
+  },
   // compact form table without visible column headers, e.g. ClaimTab or ClosePositionForm.
-  form: { disableStickyHeader: true, hideHeader: true, increasingLength: 'limited', emptyStateSize: 'sm' },
+  form: {
+    disableStickyHeader: true,
+    hideHeader: true,
+    increasingLength: 'limited',
+    emptyStateSize: 'sm',
+  },
 } as const satisfies Record<string, DataTableCategoryConfig>

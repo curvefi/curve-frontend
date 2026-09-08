@@ -15,7 +15,12 @@ import { Badge } from './Badge'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-const LinkProps = { component: Link, target: '_blank', rel: 'noopener noreferrer', size: 'extraSmall' } as const
+const LinkProps = {
+  component: Link,
+  target: '_blank',
+  rel: 'noopener noreferrer',
+  size: 'extraSmall',
+} as const
 
 /** Represents a partner organization or project displayed in the partner card component. */
 export type Partner = {

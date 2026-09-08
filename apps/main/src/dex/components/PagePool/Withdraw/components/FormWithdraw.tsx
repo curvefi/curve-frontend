@@ -376,7 +376,10 @@ export const FormWithdraw = ({ maxSlippage, seed, tokensMapper }: TransferProps)
                   tokenAddresses={poolData.tokenAddresses}
                   handleChanged={({ token, tokenAddress }) => {
                     updateFormValues(
-                      { selectedToken: token, selectedTokenAddress: tokenAddress },
+                      {
+                        selectedToken: token,
+                        selectedTokenAddress: tokenAddress,
+                      },
 
                       null,
                     )

@@ -1,7 +1,9 @@
 /** Captures fetch URLs per async test case so live endpoint failures show the exact request. */
 import { AsyncLocalStorage } from 'node:async_hooks'
 
-type FetchTrackerContext = { urls: string[] }
+type FetchTrackerContext = {
+  urls: string[]
+}
 
 const fetchTracker = new AsyncLocalStorage<FetchTrackerContext>()
 const originalFetch = globalThis.fetch.bind(globalThis)
@@ -20,7 +22,10 @@ globalThis.fetch = (input, init) => {
 export const createFetchTracker = () => {
   const context: FetchTrackerContext = { urls: [] }
 
-  return { urls: context.urls, run: <T>(run: () => Promise<T>) => fetchTracker.run(context, run) }
+  return {
+    urls: context.urls,
+    run: <T>(run: () => Promise<T>) => fetchTracker.run(context, run),
+  }
 }
 
 /** Formats captured URLs for Vitest failure annotations. */

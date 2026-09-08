@@ -26,7 +26,10 @@ import { StatsStack } from './StatsStack'
 const { Spacing, Height } = SizesAndSpaces
 const EMPTY_YIELD_DATA: never[] = []
 
-const chartLabels: Record<StatisticsChart, string> = { savingsRate: t`Savings Rate`, distributions: t`Distributions` }
+const chartLabels: Record<StatisticsChart, string> = {
+  savingsRate: t`Savings Rate`,
+  distributions: t`Distributions`,
+}
 
 const chartSelections: ChartSelections<StatisticsChart>[] = [
   { activeTitle: t`Historical Rate`, label: chartLabels.savingsRate, key: 'savingsRate' },
@@ -62,7 +65,10 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
 
   const legendSets: LegendItem[] = recordEntries(priceLineLabels).map(([key, { label, dash }]) => ({
     label,
-    line: { lineStroke: priceLineColors[key], dash },
+    line: {
+      lineStroke: priceLineColors[key],
+      dash,
+    },
     toggled: visibleSeries.includes(key),
     onToggle: () => setVisibleSeries(prev => (prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])),
   }))

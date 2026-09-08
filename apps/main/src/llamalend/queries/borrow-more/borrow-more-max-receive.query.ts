@@ -24,7 +24,9 @@ export type BorrowMoreMaxReceiveResult = {
   avgPrice?: Decimal
 }
 
-type BorrowMoreMaxReceiveQuery<ChainId = number> = BorrowMoreQuery<ChainId> & { router: RouteProvider | null }
+type BorrowMoreMaxReceiveQuery<ChainId = number> = BorrowMoreQuery<ChainId> & {
+  router: RouteProvider | null
+}
 export type BorrowMoreMaxReceiveQueryParams<ChainId = number> = FieldsOf<BorrowMoreMaxReceiveQuery<ChainId>>
 
 export type BorrowMoreMaxReceiveParams<ChainId = number> = Omit<BorrowMoreMaxReceiveQueryParams<ChainId>, 'router'> & {

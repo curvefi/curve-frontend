@@ -70,7 +70,13 @@ describe('GET routes mocked unit tests', () => {
   // TODO: test 0x slippage and fees
   it.each([
     { slippage: '0.5', expectedSlippage: '50', expectedFee: '0' },
-    { slippage: '0', expectedSlippage: '0', feeAmount: ['10000000'], ensoFeeAmount: ['5000000'], expectedFee: '1.5' },
+    {
+      slippage: '0',
+      expectedSlippage: '0',
+      feeAmount: ['10000000'],
+      ensoFeeAmount: ['5000000'],
+      expectedFee: '1.5',
+    },
   ])(
     'converts $slippage% slippage and normalizes Enso fees',
     async ({ slippage, expectedSlippage, feeAmount, ensoFeeAmount, expectedFee }) => {

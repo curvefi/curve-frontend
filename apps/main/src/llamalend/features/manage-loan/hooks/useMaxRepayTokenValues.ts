@@ -30,8 +30,16 @@ export function useMaxRepayTokenValues({
 }) {
   const { update: updateForm } = form
   const { chainId, userAddress } = params
-  const maxUserCollateral = useTokenBalance({ chainId, userAddress, tokenAddress: collateralTokenAddress })
-  const maxUserBorrowed = useTokenBalance({ chainId, userAddress, tokenAddress: borrowTokenAddress })
+  const maxUserCollateral = useTokenBalance({
+    chainId,
+    userAddress,
+    tokenAddress: collateralTokenAddress,
+  })
+  const maxUserBorrowed = useTokenBalance({
+    chainId,
+    userAddress,
+    tokenAddress: borrowTokenAddress,
+  })
   const userState = useUserState(params)
   // required for isFull query
   const isFull = useRepayIsFull(params)

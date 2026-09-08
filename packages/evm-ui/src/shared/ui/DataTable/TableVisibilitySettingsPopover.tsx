@@ -35,7 +35,12 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
       onClose={onClose}
       anchorEl={() => anchorRef.current}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      slotProps={{ paper: { sx: { padding: Spacing.md } }, transition: { onEntered: setReady, onExited: resetReady } }}
+      slotProps={{
+        paper: {
+          sx: { padding: Spacing.md },
+        },
+        transition: { onEntered: setReady, onExited: resetReady },
+      }}
     >
       <Stack data-testid={isReady ? 'visibility-settings-popover' : undefined} sx={{ gap: Spacing.md }}>
         {visibilityGroups

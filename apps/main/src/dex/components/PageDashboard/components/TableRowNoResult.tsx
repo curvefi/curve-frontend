@@ -4,7 +4,11 @@ import { SpinnerWrapper } from '@legacy-ui/Spinner'
 import { shortenAccount } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
 
-type Props = { colSpan: number; noResult: boolean; error: string }
+type Props = {
+  colSpan: number
+  noResult: boolean
+  error: string
+}
 
 export const TableRowNoResult = ({ colSpan, error, noResult }: Props) => {
   const {

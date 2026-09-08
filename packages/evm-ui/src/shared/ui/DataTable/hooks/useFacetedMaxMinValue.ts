@@ -15,5 +15,9 @@ export const useFacetedMaxMinValue = <TData extends RowData>({
 }) => {
   const [min, max] = table.getColumn(columnId)?.getFacetedMinMaxValues() ?? []
 
-  return { min, max, step: useMemo(() => maybes([max, min], (max, min) => Math.max((max - min) / 100, 0)), [min, max]) }
+  return {
+    min,
+    max,
+    step: useMemo(() => maybes([max, min], (max, min) => Math.max((max - min) / 100, 0)), [min, max]),
+  }
 }

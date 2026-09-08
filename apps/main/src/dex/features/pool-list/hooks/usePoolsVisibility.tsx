@@ -25,7 +25,16 @@ const migration: MigrationOptions<Record<PoolColumnVariant, VisibilityGroup<Pool
 const createMobileColumns = (sortBy: PoolColumnId) =>
   fromEntries(recordValues(PoolColumnId).map(key => [key, key === PoolColumnId.PoolName || key === sortBy]))
 
-export function usePoolsVisibility(title: string, { isLite, sorting }: { isLite: boolean; sorting: PoolsSorting }) {
+export function usePoolsVisibility(
+  title: string,
+  {
+    isLite,
+    sorting,
+  }: {
+    isLite: boolean
+    sorting: PoolsSorting
+  },
+) {
   const variant: PoolColumnVariant = isLite ? 'lite' : 'full'
   const [{ id: sortField }] = sorting
   const visibilitySettings = useVisibilitySettings(title, POOLS_COLUMN_OPTIONS, variant, POOL_COLUMNS, migration)

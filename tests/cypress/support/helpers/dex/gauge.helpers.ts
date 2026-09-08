@@ -13,7 +13,11 @@ const GAUGE_ABI = parseAbi([
 const getGaugeManager = ({ publicRpcUrl, gaugeAddress }: { publicRpcUrl: string; gaugeAddress: Address }) =>
   cy.then(LOAD_TIMEOUT, async () => {
     const client = createPublicClient({ transport: http(publicRpcUrl) })
-    return await client.readContract({ address: gaugeAddress, abi: GAUGE_ABI, functionName: 'manager' })
+    return await client.readContract({
+      address: gaugeAddress,
+      abi: GAUGE_ABI,
+      functionName: 'manager',
+    })
   })
 
 export const setGaugeManager = ({

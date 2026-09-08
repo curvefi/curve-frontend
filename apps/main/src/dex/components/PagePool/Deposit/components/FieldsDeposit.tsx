@@ -94,7 +94,9 @@ export const FieldsDeposit = ({
               amounts: calculateBalancedValues([value, changedIndex], amounts, poolData.tokenAddresses, reserves),
               isBalancedAmounts: 'by-form',
             }
-          : { amounts: amounts.map((amount, index) => (index === changedIndex ? { ...amount, value } : amount)) },
+          : {
+              amounts: amounts.map((amount, index) => (index === changedIndex ? { ...amount, value } : amount)),
+            },
         null,
         null,
       )
@@ -106,7 +108,11 @@ export const FieldsDeposit = ({
     if (formValues.amounts.length > 0) {
       return formValues.amounts
     }
-    return poolData.tokens.map((token, idx) => ({ token, tokenAddress: poolData.tokenAddresses[idx], value: '' }))
+    return poolData.tokens.map((token, idx) => ({
+      token,
+      tokenAddress: poolData.tokenAddresses[idx],
+      value: '',
+    }))
   }, [poolData, formValues.amounts])
 
   const isDisabled = isSeed === null || isSeed || formProcessing

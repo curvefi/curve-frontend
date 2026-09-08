@@ -10,7 +10,9 @@ export const PoolAlertMessage = ({ children }: { children: ReactNode }) => (
     sx={{
       alignItems: 'flex-start',
 
-      '& a': { wordBreak: 'break-word' },
+      '& a': {
+        wordBreak: 'break-word',
+      },
     }}
   >
     {children}

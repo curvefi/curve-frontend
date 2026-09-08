@@ -10,7 +10,9 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@ui/lib/i18n'
 
-type Props = { chainId: ChainId }
+type Props = {
+  chainId: ChainId
+}
 
 export const StableswapParameters = ({ chainId }: Props) => {
   const advanced = useStore(state => state.createPool.advanced)

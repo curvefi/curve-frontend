@@ -9,7 +9,12 @@ import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { t } from '@ui/lib/i18n'
 
-type LockerTabsParams = { chainId: ChainId } & { canUnlock: boolean; hasLockedCrv: boolean }
+type LockerTabsParams = {
+  chainId: ChainId
+} & {
+  canUnlock: boolean
+  hasLockedCrv: boolean
+}
 
 const menu = [
   {

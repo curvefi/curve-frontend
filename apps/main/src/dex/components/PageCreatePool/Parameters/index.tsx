@@ -24,7 +24,11 @@ import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { t } from '@ui/lib/i18n'
 
-type Props = { curve: CurveApi; chainId: ChainId; haveSigner: boolean }
+type Props = {
+  curve: CurveApi
+  chainId: ChainId
+  haveSigner: boolean
+}
 
 const FEE_FORMAT_OPTIONS = { maximumFractionDigits: 8 }
 const CRYPTO_FORMAT_OPTIONS = { maximumSignificantDigits: 21, maximumFractionDigits: 21 }

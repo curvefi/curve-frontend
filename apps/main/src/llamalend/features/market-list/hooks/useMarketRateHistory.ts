@@ -23,10 +23,10 @@ type UseRateHistoryResult<T> = {
   error: unknown
 }
 
-const RateKeys = { [MarketRateType.Borrow]: 'borrowApr', [MarketRateType.Supply]: 'lendApy' } as const satisfies Record<
-  MarketRateType,
-  'borrowApr' | 'lendApy'
->
+const RateKeys = {
+  [MarketRateType.Borrow]: 'borrowApr',
+  [MarketRateType.Supply]: 'lendApy',
+} as const satisfies Record<MarketRateType, 'borrowApr' | 'lendApy'>
 
 export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>(
   market: LlamaMarket | undefined,
@@ -38,7 +38,11 @@ export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>
   const showLendGraph = isLend && enabled
   const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled
   const { window: rateWindow } = AVERAGE_CATEGORIES[category]
-  const params = { blockchainId: chain, contractAddress: controllerAddress, limit: rateWindow }
+  const params = {
+    blockchainId: chain,
+    contractAddress: controllerAddress,
+    limit: rateWindow,
+  }
   const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
   const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
@@ -79,7 +83,10 @@ export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>
   const supplyRateMetrics = useMemo(
     () =>
       isLend && type === MarketRateType.Supply
-        ? getSupplyApyAverageMetrics({ snapshots: poolSnapshots, daysBack: rateWindow })
+        ? getSupplyApyAverageMetrics({
+            snapshots: poolSnapshots,
+            daysBack: rateWindow,
+          })
         : null,
     [rateWindow, isLend, poolSnapshots, type],
   )

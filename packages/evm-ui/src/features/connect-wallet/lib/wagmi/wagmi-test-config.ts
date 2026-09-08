@@ -5,7 +5,9 @@ import type { Hex } from '@primitives/address.utils'
 import { createWagmiConfig } from './wagmi-config'
 import { createTestConnector } from './wagmi-test'
 
-type CreateTestWagmiConfigOptions = { privateKey?: Hex }
+type CreateTestWagmiConfigOptions = {
+  privateKey?: Hex
+}
 
 export const createTestWagmiConfig = ({ privateKey = generatePrivateKey() }: CreateTestWagmiConfigOptions = {}) =>
   createWagmiConfig({

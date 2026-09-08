@@ -1,7 +1,10 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 
-type SpinnerWrapperProps = { vSpacing?: number; minHeight?: string }
+type SpinnerWrapperProps = {
+  vSpacing?: number
+  minHeight?: string
+}
 
 export const SpinnerWrapper: IStyledComponent<'web', SpinnerWrapperProps & ComponentPropsWithRef<'div'>> =
   styled.div<SpinnerWrapperProps>`

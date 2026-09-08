@@ -26,7 +26,10 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { net
   const { chainId } = network
   const { borrowToken } = tokens
 
-  const form = useForm<WithdrawForm>({ validation: withdrawFormValidationSuite, defaultValues: emptyWithdrawForm() })
+  const form = useForm<WithdrawForm>({
+    validation: withdrawFormValidationSuite,
+    defaultValues: emptyWithdrawForm(),
+  })
 
   const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(

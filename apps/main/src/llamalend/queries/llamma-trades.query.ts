@@ -16,7 +16,14 @@ export const { useQuery: useLlammaTrades } = queryFactory({
     endpoint,
     page = DEFAULT_PAGE_START_INDEX,
     perPage = DEFAULT_PAGE_SIZE,
-  }: GetTradesParams) => getTrades({ endpoint, chain, llamma, page, perPage }),
+  }: GetTradesParams) =>
+    getTrades({
+      endpoint,
+      chain,
+      llamma,
+      page,
+      perPage,
+    }),
   category: 'llamalend.user',
   validationSuite: createValidationSuite(({ chain, llamma, endpoint }: LlammaTradesParams) => {
     contractValidationGroup({ blockchainId: chain, contractAddress: llamma })

@@ -9,7 +9,9 @@ import { useToggleFilter } from '../hooks/useToggleFilter'
 
 const { Spacing } = SizesAndSpaces
 
-type MarketsTableChipsProps = { hasFavorites: boolean | undefined } & FilterProps<MarketColumnId>
+type MarketsTableChipsProps = {
+  hasFavorites: boolean | undefined
+} & FilterProps<MarketColumnId>
 
 export const MarketsChips = ({ hasFavorites, ...filterProps }: MarketsTableChipsProps) => {
   const [favorites, toggleFavorites] = useToggleFilter(MarketColumnId.IsFavorite, filterProps)

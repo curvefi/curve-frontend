@@ -23,7 +23,15 @@ export const TableRangeFilter = <TColumnId extends string>({
   max,
   ...filterProps
 }: TableRangeFilterProps<TColumnId>) => {
-  const [range, setRange] = useRangeFilter({ displayDefaultMin, defaultMin, isLoading, id, min, max, ...filterProps })
+  const [range, setRange] = useRangeFilter({
+    displayDefaultMin,
+    defaultMin,
+    isLoading,
+    id,
+    min,
+    max,
+    ...filterProps,
+  })
 
   return (
     <RangeFilter

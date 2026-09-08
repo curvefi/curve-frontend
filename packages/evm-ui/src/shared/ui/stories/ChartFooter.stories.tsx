@@ -27,8 +27,14 @@ const meta: Meta<typeof ChartFooter> = {
       control: { disable: true },
       description: 'Optional array of toggle button options (e.g., time ranges)',
     },
-    activeToggleOption: { control: { disable: true }, description: 'Currently selected toggle option' },
-    onToggleChange: { control: { disable: true }, description: 'Callback when toggle option changes' },
+    activeToggleOption: {
+      control: { disable: true },
+      description: 'Currently selected toggle option',
+    },
+    onToggleChange: {
+      control: { disable: true },
+      description: 'Callback when toggle option changes',
+    },
   },
 }
 
@@ -39,8 +45,14 @@ const BasicLegendsWrapper = () => {
   const theme = useTheme()
 
   const legendSets: LegendItem[] = [
-    { label: t`Oracle Price`, line: { lineStroke: theme.palette.primary.main } },
-    { label: t`Conversion zone`, box: { fill: theme.design.Chart.LiquidationZone.Current } },
+    {
+      label: t`Oracle Price`,
+      line: { lineStroke: theme.palette.primary.main },
+    },
+    {
+      label: t`Conversion zone`,
+      box: { fill: theme.design.Chart.LiquidationZone.Current },
+    },
   ]
 
   return (
@@ -67,7 +79,11 @@ export const Basic: Story = {
 const InteractiveLegendsWrapper = () => {
   const theme = useTheme()
 
-  const [visibility, setVisibility] = useState({ oraclePrice: true, conversionZone: true, newConversionZone: true })
+  const [visibility, setVisibility] = useState({
+    oraclePrice: true,
+    conversionZone: true,
+    newConversionZone: true,
+  })
 
   const toggleVisibility = (label: string) => {
     if (label === t`Oracle Price`) {
@@ -124,8 +140,14 @@ const WithSoftLiquidationWrapper = () => {
   const theme = useTheme()
 
   const legendSets: LegendItem[] = [
-    { label: t`Oracle Price`, line: { lineStroke: theme.palette.primary.main } },
-    { label: t`Conversion zone`, box: { fill: theme.design.Chart.LiquidationZone.Current } },
+    {
+      label: t`Oracle Price`,
+      line: { lineStroke: theme.palette.primary.main },
+    },
+    {
+      label: t`Conversion zone`,
+      box: { fill: theme.design.Chart.LiquidationZone.Current },
+    },
   ]
 
   return (
@@ -141,7 +163,11 @@ const WithSoftLiquidationWrapper = () => {
 export const WithSoftLiquidationText: Story = {
   render: () => <WithSoftLiquidationWrapper />,
   parameters: {
-    docs: { description: { story: 'Chart footer with soft liquidation warning text displayed below the legends' } },
+    docs: {
+      description: {
+        story: 'Chart footer with soft liquidation warning text displayed below the legends',
+      },
+    },
   },
 }
 
@@ -157,8 +183,14 @@ const WithToggleButtonsWrapper = () => {
   }
 
   const legendSets: LegendItem[] = [
-    { label: t`Oracle Price`, line: { lineStroke: theme.palette.primary.main } },
-    { label: t`Conversion zone`, box: { fill: theme.design.Chart.LiquidationZone.Current } },
+    {
+      label: t`Oracle Price`,
+      line: { lineStroke: theme.palette.primary.main },
+    },
+    {
+      label: t`Conversion zone`,
+      box: { fill: theme.design.Chart.LiquidationZone.Current },
+    },
   ]
 
   return (
@@ -175,14 +207,24 @@ const WithToggleButtonsWrapper = () => {
 
 export const WithToggleButtons: Story = {
   render: () => <WithToggleButtonsWrapper />,
-  parameters: { docs: { description: { story: 'Chart footer with time range toggle buttons' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Chart footer with time range toggle buttons',
+      },
+    },
+  },
 }
 
 /** Full featured example with all options */
 const FullFeaturedWrapper = () => {
   const theme = useTheme()
   const [activeTime, setActiveTime] = useState<TimeRange>('1M')
-  const [visibility, setVisibility] = useState({ oraclePrice: true, conversionZone: true, newConversionZone: true })
+  const [visibility, setVisibility] = useState({
+    oraclePrice: true,
+    conversionZone: true,
+    newConversionZone: true,
+  })
 
   const handleToggleChange = (_: MouseEvent<HTMLElement>, newValue: TimeRange) => {
     if (newValue) {
@@ -252,7 +294,10 @@ const LineLegendsWrapper = () => {
   const legendSets: LegendItem[] = [
     { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines[1] } },
     { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines[2], dash: CHART_LINE_DASH_PATTERNS.short } },
-    { label: 'Line 3', line: { lineStroke: theme.design.Chart.Lines[3], dash: CHART_LINE_DASH_PATTERNS.tight } },
+    {
+      label: 'Line 3',
+      line: { lineStroke: theme.design.Chart.Lines[3], dash: CHART_LINE_DASH_PATTERNS.tight },
+    },
   ]
 
   return (
@@ -265,7 +310,11 @@ const LineLegendsWrapper = () => {
 export const LineLegendsOnly: Story = {
   render: () => <LineLegendsWrapper />,
   parameters: {
-    docs: { description: { story: 'Chart footer showing line-style legends using theme chart line colors' } },
+    docs: {
+      description: {
+        story: 'Chart footer showing line-style legends using theme chart line colors',
+      },
+    },
   },
 }
 
@@ -282,8 +331,14 @@ const BoxLegendsWrapper = () => {
       label: 'Negative (Candle)',
       box: { outlineStroke: theme.design.Chart.Candles.Negative, fill: `${theme.design.Chart.Candles.Negative}33` },
     },
-    { label: 'Current Liq Zone', box: { fill: theme.design.Chart.LiquidationZone.Current } },
-    { label: 'Future Liq Zone', box: { fill: theme.design.Chart.LiquidationZone.Future } },
+    {
+      label: 'Current Liq Zone',
+      box: { fill: theme.design.Chart.LiquidationZone.Current },
+    },
+    {
+      label: 'Future Liq Zone',
+      box: { fill: theme.design.Chart.LiquidationZone.Future },
+    },
   ]
 
   return (
@@ -316,9 +371,18 @@ const NarrowContainerWrapper = () => {
   }
 
   const legendSets: LegendItem[] = [
-    { label: t`Oracle Price`, line: { lineStroke: theme.palette.primary.main } },
-    { label: t`Conversion zone`, box: { fill: theme.design.Chart.LiquidationZone.Current } },
-    { label: t`New conversion zone`, box: { fill: theme.design.Chart.LiquidationZone.Future } },
+    {
+      label: t`Oracle Price`,
+      line: { lineStroke: theme.palette.primary.main },
+    },
+    {
+      label: t`Conversion zone`,
+      box: { fill: theme.design.Chart.LiquidationZone.Current },
+    },
+    {
+      label: t`New conversion zone`,
+      box: { fill: theme.design.Chart.LiquidationZone.Future },
+    },
   ]
 
   return (
@@ -337,7 +401,11 @@ const NarrowContainerWrapper = () => {
 export const NarrowContainer: Story = {
   render: () => <NarrowContainerWrapper />,
   parameters: {
-    docs: { description: { story: 'Chart footer in a narrow container showing responsive wrapping behavior' } },
+    docs: {
+      description: {
+        story: 'Chart footer in a narrow container showing responsive wrapping behavior',
+      },
+    },
   },
 }
 

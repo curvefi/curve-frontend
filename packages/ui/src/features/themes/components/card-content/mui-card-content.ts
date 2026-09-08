@@ -7,12 +7,17 @@ import { handleBreakpoints } from '../../basic-theme'
 
 const { Padding } = SizesAndSpaces
 
-export const cardContentSmallStyles = { padding: Padding.Card.sm, '&:last-child': { paddingBlockEnd: Padding.Card.sm } }
+export const cardContentSmallStyles = {
+  padding: Padding.Card.sm,
+  '&:last-child': { paddingBlockEnd: Padding.Card.sm },
+}
 
 export const cardContentInlineStyles = {
   ...handleBreakpoints({ padding: 0 }),
   '&:last-child': handleBreakpoints({ paddingBlockEnd: 0 }),
-  '&.MuiCardContent-root': { backgroundColor: TRANSPARENT },
+  '&.MuiCardContent-root': {
+    backgroundColor: TRANSPARENT,
+  },
 }
 
 export const defineMuiCardContent = (design: DesignSystem): Components['MuiCardContent'] => ({
@@ -24,7 +29,13 @@ export const defineMuiCardContent = (design: DesignSystem): Components['MuiCardC
     },
   },
   variants: [
-    { props: { size: 'small' }, style: cardContentSmallStyles },
-    { props: { size: 'inline' }, style: cardContentInlineStyles },
+    {
+      props: { size: 'small' },
+      style: cardContentSmallStyles,
+    },
+    {
+      props: { size: 'inline' },
+      style: cardContentInlineStyles,
+    },
   ],
 })

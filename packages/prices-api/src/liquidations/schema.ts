@@ -5,8 +5,14 @@ export const endpoint = z.enum(['crvusd', 'lending'])
 export type Endpoint = z.infer<typeof endpoint>
 
 const softLiqRatio = z
-  .object({ timestamp, proportion: z.number() })
-  .transform(({ proportion, ...data }) => ({ ...data, proportion: proportion / 100 }))
+  .object({
+    timestamp,
+    proportion: z.number(),
+  })
+  .transform(({ proportion, ...data }) => ({
+    ...data,
+    proportion: proportion / 100,
+  }))
 
 const liquidationDetails = z
   .object({
@@ -25,7 +31,11 @@ const liquidationDetails = z
     block: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(({ dt, oraclePrice, ...data }) => ({ ...data, timestamp: dt, priceOracle: oraclePrice }))
+  .transform(({ dt, oraclePrice, ...data }) => ({
+    ...data,
+    timestamp: dt,
+    priceOracle: oraclePrice,
+  }))
 
 const liquidationAggregate = z
   .object({
@@ -108,7 +118,10 @@ const liqHealthDecile = z
     debt: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(({ stablecoin, borrowed, ...data }) => ({ ...data, borrowed: stablecoin ?? borrowed ?? 0 }))
+  .transform(({ stablecoin, borrowed, ...data }) => ({
+    ...data,
+    borrowed: stablecoin ?? borrowed ?? 0,
+  }))
 
 const totalOverview = z
   .object({

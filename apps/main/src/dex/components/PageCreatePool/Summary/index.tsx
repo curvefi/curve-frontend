@@ -10,7 +10,11 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
 import { t } from '@ui/lib/i18n'
 
-type Props = { blockchainId: string; chainId: ChainId; curve: CurveApi }
+type Props = {
+  blockchainId: string
+  chainId: ChainId
+  curve: CurveApi
+}
 
 export const Summary = ({ blockchainId, chainId, curve }: Props) => {
   const advanced = useStore(state => state.createPool.advanced)

@@ -31,14 +31,23 @@ const meta = {
   title: 'UI Kit/Widgets/TokenIcons',
   component: TokenIcons,
   argTypes: {
-    blockchainId: { control: 'text', description: 'Network the tokens are on' },
-    tokens: { control: 'object', description: 'Ordered array of token symbols and addresses' },
+    blockchainId: {
+      control: 'text',
+      description: 'Network the tokens are on',
+    },
+    tokens: {
+      control: 'object',
+      description: 'Ordered array of token symbols and addresses',
+    },
     size: {
       control: 'select',
       options: TOKEN_ICON_SIZE_OPTIONS,
       description: 'Responsive size of the complete icon group',
     },
-    showChainIcon: { control: 'boolean', description: 'Whether to show the blockchain badge' },
+    showChainIcon: {
+      control: 'boolean',
+      description: 'Whether to show the blockchain badge',
+    },
     overflowMode: {
       control: 'select',
       options: ['counter', 'stack'],
@@ -85,7 +94,14 @@ export const TokenCounts: Story = {
       ))}
     </Stack>
   ),
-  parameters: { controls: { exclude: ['tokens'] }, docs: { description: { story: 'Layouts for 0–5 and 9 tokens.' } } },
+  parameters: {
+    controls: { exclude: ['tokens'] },
+    docs: {
+      description: {
+        story: 'Layouts for 0–5 and 9 tokens.',
+      },
+    },
+  },
 }
 
 export const AllSizes: Story = {
@@ -101,7 +117,11 @@ export const AllSizes: Story = {
   ),
   parameters: {
     controls: { exclude: ['size'] },
-    docs: { description: { story: 'Every responsive IconSize design token, from xxs through 4xl.' } },
+    docs: {
+      description: {
+        story: 'Every responsive IconSize design token, from xxs through 4xl.',
+      },
+    },
   },
 }
 
@@ -118,23 +138,38 @@ export const WithChainIcon: Story = {
   ),
   parameters: {
     controls: { exclude: ['tokens'] },
-    docs: { description: { story: 'Chain badges on one through four tokens and an overflow stack.' } },
+    docs: {
+      description: {
+        story: 'Chain badges on one through four tokens and an overflow stack.',
+      },
+    },
   },
 }
 
 export const WithStackOverflow: Story = {
-  args: { tokens: TOKENS.slice(0, 9), overflowMode: 'stack' },
+  args: {
+    tokens: TOKENS.slice(0, 9),
+    overflowMode: 'stack',
+  },
   parameters: {
     docs: {
-      description: { story: 'Nine tokens using the stacked overflow treatment instead of the overflow counter.' },
+      description: {
+        story: 'Nine tokens using the stacked overflow treatment instead of the overflow counter.',
+      },
     },
   },
 }
 
 export const WithFallback: Story = {
-  args: { tokens: [{ symbol: 'UNKNOWN', address: '0x0' }, TOKENS[0]] },
+  args: {
+    tokens: [{ symbol: 'UNKNOWN', address: '0x0' }, TOKENS[0]],
+  },
   parameters: {
-    docs: { description: { story: 'An unavailable token image falls back while preserving its symbol as alt text.' } },
+    docs: {
+      description: {
+        story: 'An unavailable token image falls back while preserving its symbol as alt text.',
+      },
+    },
   },
 }
 

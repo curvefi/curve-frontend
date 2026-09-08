@@ -8,7 +8,9 @@ import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 type VeCrvLocksQuery = { days: number }
 type VeCrvLocksParams = FieldsOf<VeCrvLocksQuery>
 
-export type VeCrvLock = Omit<LocksDaily, 'amount'> & { amount: Decimal }
+export type VeCrvLock = Omit<LocksDaily, 'amount'> & {
+  amount: Decimal
+}
 
 export const { useQuery: useVeCrvLocksQuery } = queryFactory({
   queryKey: ({ days }: VeCrvLocksParams) => ['vecrv-locks', { days }] as const,

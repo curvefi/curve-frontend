@@ -3,7 +3,9 @@ import { shortenAddress } from '@evm-ui/utils/address'
 import Button, { type ButtonProps } from '@mui/material/Button'
 import type { Address } from '@primitives/address.utils'
 
-export type ConnectedWalletLabelProps = ButtonProps & { address: Address }
+export type ConnectedWalletLabelProps = ButtonProps & {
+  address: Address
+}
 
 export const ConnectedWalletLabel = ({ address, ...props }: ConnectedWalletLabelProps) => {
   const { data: ensName } = useEnsName({ address })

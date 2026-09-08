@@ -57,7 +57,10 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   }
   const maxStakeShares = mapQuery(userBalances, d => d.depositedShares)
 
-  const form = useForm<StakeForm>({ validation: stakeFormValidationSuite, defaultValues: emptyStakeForm() })
+  const form = useForm<StakeForm>({
+    validation: stakeFormValidationSuite,
+    defaultValues: emptyStakeForm(),
+  })
 
   const values = form.watchValues()
   const convertedStakeShares = useStakeAssetsToShares({ chainId, marketId, userAddress, assets: values.stakeAssets })

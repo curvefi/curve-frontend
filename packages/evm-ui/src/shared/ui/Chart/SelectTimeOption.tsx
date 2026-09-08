@@ -13,7 +13,9 @@ export const SelectTimeOption = <TTimeOption extends string = string>({
   activeOption,
   setActiveOption,
   isLoading = false,
-}: TimeOption<TTimeOption> & { isLoading: boolean }) => (
+}: TimeOption<TTimeOption> & {
+  isLoading: boolean
+}) => (
   <Select
     variant="ghost"
     value={activeOption}

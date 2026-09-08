@@ -20,8 +20,17 @@ const testCases = [
   { approved: false, title: 'fills, approves, and submits' },
   { approved: true, title: 'fills and submits' },
 ].flatMap(testCase => [
-  { ...testCase, hasLeverage: false, leverageEnabled: false },
-  { ...testCase, title: `${testCase.title} with leverage`, hasLeverage: true, leverageEnabled: true },
+  {
+    ...testCase,
+    hasLeverage: false,
+    leverageEnabled: false,
+  },
+  {
+    ...testCase,
+    title: `${testCase.title} with leverage`,
+    hasLeverage: true,
+    leverageEnabled: true,
+  },
 ])
 
 describe('CreateLoanForm (mocked)', () => {

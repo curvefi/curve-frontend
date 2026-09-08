@@ -106,7 +106,11 @@ export const ReservesCompositionChart = ({
         options: {
           tooltip: createTooltip(formatReserveShare),
           xAxis: { data: chartData.map(point => point.time).map(timeToCategory) },
-          yAxis: { axisLabel: { formatter: formatReserveShare }, min: 0, max: 100 },
+          yAxis: {
+            axisLabel: { formatter: formatReserveShare },
+            min: 0,
+            max: 100,
+          },
           series: tokens.map((token, index) => ({
             name: getTokenLabel(token.symbol, index),
             data: chartData.map(point => point.reserves[index] ?? 0),

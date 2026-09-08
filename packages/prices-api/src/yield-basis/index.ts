@@ -35,7 +35,10 @@ export async function getCrvUsdYieldBasisSupply(chain: Chain, options?: Options)
 
 export async function getCrvUsdYieldBasisHistory(
   chain: Chain,
-  params: { start?: number; end?: number } = {},
+  params: {
+    start?: number
+    end?: number
+  } = {},
   options?: Options,
 ) {
   const host = getHost(options)

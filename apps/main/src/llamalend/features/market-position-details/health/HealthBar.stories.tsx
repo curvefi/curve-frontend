@@ -57,17 +57,23 @@ type Story = StoryObj<typeof HealthBarStory>
 
 export const Pristine: Story = {
   args: { health: 75, softLiquidation: false },
-  parameters: { docs: { description: { story: 'Label: "Pristine" (health > 50). Green bar.' } } },
+  parameters: {
+    docs: { description: { story: 'Label: "Pristine" (health > 50). Green bar.' } },
+  },
 }
 
 export const Good: Story = {
   args: { health: 35, softLiquidation: false },
-  parameters: { docs: { description: { story: 'Label: "Good" (15 < health <= 50). Yellow bar.' } } },
+  parameters: {
+    docs: { description: { story: 'Label: "Good" (15 < health <= 50). Yellow bar.' } },
+  },
 }
 
 export const Risky: Story = {
   args: { health: 10, softLiquidation: false },
-  parameters: { docs: { description: { story: 'Label: "Risky" (0 < health <= 15). Orange bar.' } } },
+  parameters: {
+    docs: { description: { story: 'Label: "Risky" (0 < health <= 15). Orange bar.' } },
+  },
 }
 
 export const LiquidationProtection: Story = {

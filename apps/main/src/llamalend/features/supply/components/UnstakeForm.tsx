@@ -10,7 +10,9 @@ import { useUnstakeForm } from '../hooks/useUnstakeForm'
 import { AlertUnstakeOnly } from './alerts/AlertUnstakeOnly'
 import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 
-type UnstakeFormProps<ChainId extends IChainId> = { networks: NetworkDict<ChainId> }
+type UnstakeFormProps<ChainId extends IChainId> = {
+  networks: NetworkDict<ChainId>
+}
 
 const TEST_ID_PREFIX = 'supply-unstake'
 

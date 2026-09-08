@@ -7,7 +7,11 @@ import type { Address } from '@primitives/address.utils'
 
 export const RECENT_REFUELS_PAGE_SIZE = 10
 
-type RecentRefuelsQuery = ChainNameQuery & { poolAddress: Address; page?: number; pageSize?: number }
+type RecentRefuelsQuery = ChainNameQuery & {
+  poolAddress: Address
+  page?: number
+  pageSize?: number
+}
 
 type RecentRefuelsParams = FieldsOf<RecentRefuelsQuery>
 
@@ -25,7 +29,13 @@ export const { useQuery: useRecentRefuels } = queryFactory({
     poolAddress,
     page = DEFAULT_PAGE_START_INDEX,
     pageSize = RECENT_REFUELS_PAGE_SIZE,
-  }: RecentRefuelsQuery) => getRefuelDonationEvents({ chain: blockchainId, poolAddress, page, pageSize }),
+  }: RecentRefuelsQuery) =>
+    getRefuelDonationEvents({
+      chain: blockchainId,
+      poolAddress,
+      page,
+      pageSize,
+    }),
   validationSuite: createValidationSuite(({ blockchainId, poolAddress }: RecentRefuelsParams) => {
     contractValidationGroup({ blockchainId, contractAddress: poolAddress })
   }),

@@ -34,8 +34,16 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
 }) {
   const { chainId, userAddress, marketId } = params
 
-  const maxUserCollateral = useTokenBalance({ chainId, userAddress, tokenAddress: collateralTokenAddress })
-  const maxUserBorrowed = useTokenBalance({ chainId, userAddress, tokenAddress: borrowTokenAddress })
+  const maxUserCollateral = useTokenBalance({
+    chainId,
+    userAddress,
+    tokenAddress: collateralTokenAddress,
+  })
+  const maxUserBorrowed = useTokenBalance({
+    chainId,
+    userAddress,
+    tokenAddress: borrowTokenAddress,
+  })
 
   const maxReceive = useBorrowMoreMaxReceiveQueries(params)
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv })

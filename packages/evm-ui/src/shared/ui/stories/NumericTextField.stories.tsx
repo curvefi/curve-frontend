@@ -30,13 +30,36 @@ const meta: Meta<typeof NumericTextField> = {
   component: NumericTextField,
   render: args => <NumericTextFieldWrapper {...args} />,
   argTypes: {
-    value: { control: 'number', description: 'The numeric value of the input field' },
-    min: { control: 'number', description: 'Minimum allowed value (default: 0)' },
-    max: { control: 'number', description: 'Maximum allowed value (default: Infinity)' },
-    placeholder: { control: 'text', description: 'Placeholder text for the input field' },
-    disabled: { control: 'boolean', description: 'Whether the input is disabled' },
-    size: { control: 'select', options: sizes, description: 'Size of the input field' },
-    variant: { control: 'select', options: ['outlined', 'standard'], description: 'Variant of the input field' },
+    value: {
+      control: 'number',
+      description: 'The numeric value of the input field',
+    },
+    min: {
+      control: 'number',
+      description: 'Minimum allowed value (default: 0)',
+    },
+    max: {
+      control: 'number',
+      description: 'Maximum allowed value (default: Infinity)',
+    },
+    placeholder: {
+      control: 'text',
+      description: 'Placeholder text for the input field',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the input is disabled',
+    },
+    size: {
+      control: 'select',
+      options: sizes,
+      description: 'Size of the input field',
+    },
+    variant: {
+      control: 'select',
+      options: ['outlined', 'standard'],
+      description: 'Variant of the input field',
+    },
     adornment: {
       control: 'select',
       options: ['dollar', 'percentage', 'bands'],
@@ -68,8 +91,19 @@ export const Default: Story = {
 }
 
 export const WithMinMax: Story = {
-  args: { min: '10', max: '100', placeholder: 'Value (10-100)', helperText: 'Enter a value between 10 and 100' },
-  parameters: { docs: { description: { story: 'Numeric input with minimum and maximum value constraints' } } },
+  args: {
+    min: '10',
+    max: '100',
+    placeholder: 'Value (10-100)',
+    helperText: 'Enter a value between 10 and 100',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Numeric input with minimum and maximum value constraints',
+      },
+    },
+  },
 }
 
 export const NoMinimum: Story = {
@@ -79,22 +113,58 @@ export const NoMinimum: Story = {
     placeholder: 'Any Number',
     helperText: 'Enter any positive or negative number',
   },
-  parameters: { docs: { description: { story: 'Numeric input without minimum value constraint' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Numeric input without minimum value constraint',
+      },
+    },
+  },
 }
 
 export const WithDollarAdornment: Story = {
-  args: { value: '123456', placeholder: 'Amount in USD', adornment: 'dollar' },
-  parameters: { docs: { description: { story: 'Numeric input with a start adornment for dollar values' } } },
+  args: {
+    value: '123456',
+    placeholder: 'Amount in USD',
+    adornment: 'dollar',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Numeric input with a start adornment for dollar values',
+      },
+    },
+  },
 }
 
 export const WithPercentageAdornment: Story = {
-  args: { value: '42.5', placeholder: 'Utilization', adornment: 'percentage' },
-  parameters: { docs: { description: { story: 'Numeric input with an end adornment for percentage values' } } },
+  args: {
+    value: '42.5',
+    placeholder: 'Utilization',
+    adornment: 'percentage',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Numeric input with an end adornment for percentage values',
+      },
+    },
+  },
 }
 
 export const WithBandsAdornment: Story = {
-  args: { value: '12', placeholder: 'Bands', adornment: 'bands' },
-  parameters: { docs: { description: { story: 'Numeric input with the bands adornment variant' } } },
+  args: {
+    value: '12',
+    placeholder: 'Bands',
+    adornment: 'bands',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Numeric input with the bands adornment variant',
+      },
+    },
+  },
 }
 
 export const VariantsBySize: Story = {

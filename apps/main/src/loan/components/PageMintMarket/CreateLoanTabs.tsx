@@ -5,7 +5,9 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
-type CreateLoanTabsParams = { onPricesUpdated: (prices: Range<Decimal> | undefined) => void }
+type CreateLoanTabsParams = {
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+}
 
 const menu = [
   { value: 'create', label: t`Borrow`, component: props => <CreateLoanForm networks={networks} {...props} /> },

@@ -13,7 +13,15 @@ import type { TokenListProps } from './ui/modal/TokenList'
  * Only actively fetches when the modal is open (enabled being true).
  */
 export const useTokenSelectorData = (
-  { tokens, chainId, userAddress }: { tokens: TokenOption[]; chainId: number; userAddress?: Address },
+  {
+    tokens,
+    chainId,
+    userAddress,
+  }: {
+    tokens: TokenOption[]
+    chainId: number
+    userAddress?: Address
+  },
   { enabled, prefetch }: { enabled: boolean; prefetch: boolean },
 ): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> => {
   const config = useConfig()

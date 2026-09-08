@@ -155,8 +155,15 @@ export const Duration = {
   Transition: 256,
   LoadingAnimation: 1000,
   LoadingTimeout: 5000,
-  Banner: { Daily: TIME_FRAMES.DAY_MS, Weekly: TIME_FRAMES.DAY_MS * 7, Monthly: TIME_FRAMES.MONTH_MS },
-  AverageRates: { Weekly: 7, Monthly: 30 },
+  Banner: {
+    Daily: TIME_FRAMES.DAY_MS,
+    Weekly: TIME_FRAMES.DAY_MS * 7,
+    Monthly: TIME_FRAMES.MONTH_MS,
+  },
+  AverageRates: {
+    Weekly: 7,
+    Monthly: 30,
+  },
   WagmiBatch: { Size: 3, Time: 50 },
   DataRefresh: {
     Urgent: REFRESH_INTERVAL['15s'],

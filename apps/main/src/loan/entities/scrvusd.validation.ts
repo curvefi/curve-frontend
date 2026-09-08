@@ -8,9 +8,15 @@ import type { Decimal } from '@primitives/decimal.utils'
 
 export type ScrvUsdUserQuery = UserChainQuery<ChainId>
 
-export type ScrvUsdDepositQuery = ScrvUsdUserQuery & { depositAmount: Decimal; maxDepositAmount?: Decimal }
+export type ScrvUsdDepositQuery = ScrvUsdUserQuery & {
+  depositAmount: Decimal
+  maxDepositAmount?: Decimal
+}
 
-export type ScrvUsdDepositMutation = { depositAmount: Decimal; approveInfinite: boolean }
+export type ScrvUsdDepositMutation = {
+  depositAmount: Decimal
+  approveInfinite: boolean
+}
 
 export type ScrvUsdDepositForm = {
   depositAmount: Decimal | undefined
@@ -30,7 +36,9 @@ export type ScrvUsdWithdrawMutation = {
   maxWithdrawAmount: Decimal
 }
 
-export type ScrvUsdWithdrawForm = Partial<ScrvUsdWithdrawMutation> & { maxWithdrawAmount?: Decimal }
+export type ScrvUsdWithdrawForm = Partial<ScrvUsdWithdrawMutation> & {
+  maxWithdrawAmount?: Decimal
+}
 
 export type ScrvUsdUserParams = FieldsOf<ScrvUsdUserQuery>
 export type ScrvUsdDepositParams = FieldsOf<ScrvUsdDepositQuery>

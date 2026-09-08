@@ -5,7 +5,10 @@ import { address } from '../schemas'
 export const getSolverCompetitionResponse = z
   .object({
     auctionStartBlock: z.number(),
-    auction: z.object({ orders: z.array(address), prices: z.record(z.string(), z.string()) }),
+    auction: z.object({
+      orders: z.array(address),
+      prices: z.record(z.string(), z.string()),
+    }),
     solutions: z.array(
       z.object({
         solver: z.string(),
@@ -13,7 +16,13 @@ export const getSolverCompetitionResponse = z
         score: z.string(),
         ranking: z.number(),
         clearingPrices: z.record(z.string(), z.string()),
-        orders: z.array(z.object({ id: address, sellAmount: z.number(), buyAmount: z.number() })),
+        orders: z.array(
+          z.object({
+            id: address,
+            sellAmount: z.number(),
+            buyAmount: z.number(),
+          }),
+        ),
       }),
     ),
   })

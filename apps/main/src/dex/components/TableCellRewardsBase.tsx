@@ -6,7 +6,11 @@ import { Chip } from '@legacy-ui/Typography'
 import { ChipVolatileBaseApy } from './ChipVolatileBaseApy'
 import { LegacyTooltipBaseApy } from './LegacyTooltipBaseApy'
 
-type Props = { base: RewardBase | undefined; isHighlight: boolean; poolData: PoolData | undefined }
+type Props = {
+  base: RewardBase | undefined
+  isHighlight: boolean
+  poolData: PoolData | undefined
+}
 
 export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => {
   const failedFetching24hOldVprice =

@@ -45,11 +45,20 @@ type MerklOpportunity = {
   explorerAddress: Address
   /** Tags are usually protocols involved in the entire reward chain, so can be considerd the "platform" */
   tags: string[]
-  chain: { id: number; name: string }
-  rewardsRecord: { breakdowns: MerklReward[] }
+  chain: {
+    id: number
+    name: string
+  }
+  rewardsRecord: {
+    breakdowns: MerklReward[]
+  }
 }
 
-const ACTIONS: Record<MerklAction, RewardsAction> = { POOL: 'lp', BORROW: 'borrow', LEND: 'supply' }
+const ACTIONS: Record<MerklAction, RewardsAction> = {
+  POOL: 'lp',
+  BORROW: 'borrow',
+  LEND: 'supply',
+}
 
 /** New campaigns / markets might temporarily have a huge APR as things are being bootstrapped. This number has been copied from Merkl's own website. */
 const MAX_APR = 10000
@@ -96,7 +105,11 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity) => {
  */
 export const fetchMerklRewards = async (params: Record<string, string | number | boolean | null | undefined>) => {
   const fetchPage = async (page: number, items: number) => {
-    const url = `/api/merkl/v1/opportunities${addQueryString({ ...params, items, page })}`
+    const url = `/api/merkl/v1/opportunities${addQueryString({
+      ...params,
+      items,
+      page,
+    })}`
     const resp = await fetch(url, { method: 'GET' })
 
     if (!resp.ok) {

@@ -19,10 +19,10 @@ type AddressActionInfoProps = {
   testId?: string
 }
 
-const VALUE_SIZE = { small: 'bodyXsBold', medium: 'bodyMBold' } satisfies Record<
-  NonNullable<AddressActionInfoProps['size']>,
-  TypographyVariantKey
->
+const VALUE_SIZE = {
+  small: 'bodyXsBold',
+  medium: 'bodyMBold',
+} satisfies Record<NonNullable<AddressActionInfoProps['size']>, TypographyVariantKey>
 
 export const AddressActionInfo = ({
   chainId,
@@ -51,6 +51,11 @@ export const AddressActionInfo = ({
         <ExternalLink href={link} label={t`View on explorer`} />
       ))
     }
-    sx={{ alignItems: 'center', ...(isBorderBottom && { borderBottom: t => `1px solid ${t.palette.divider}` }) }}
+    sx={{
+      alignItems: 'center',
+      ...(isBorderBottom && {
+        borderBottom: t => `1px solid ${t.palette.divider}`,
+      }),
+    }}
   />
 )

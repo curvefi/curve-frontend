@@ -12,7 +12,9 @@ export const invalidateScrvUsdMutationQueries = async ({
   chainId,
   config,
   userAddress,
-}: { config: ReturnType<typeof useConfig> } & UserChainParams<ChainId>) =>
+}: {
+  config: ReturnType<typeof useConfig>
+} & UserChainParams<ChainId>) =>
   await Promise.all([
     invalidateScrvUsdUserBalances({ chainId, userAddress }),
     invalidateScrvUsdDepositIsApproved({ chainId, userAddress }),

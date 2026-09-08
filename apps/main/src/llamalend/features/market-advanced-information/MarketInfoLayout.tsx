@@ -17,7 +17,9 @@ export const MarketInfoLayout = () => {
         gridTemplateColumns: '1fr',
         gap: Spacing.lg,
         backgroundColor: t => t.design.Layer[1].Fill,
-        [`@media (min-width: ${MaxWidth.candleAndBandChart})`]: { gridTemplateColumns: '1fr 1fr' },
+        [`@media (min-width: ${MaxWidth.candleAndBandChart})`]: {
+          gridTemplateColumns: '1fr 1fr',
+        },
       }}
     >
       <MarketParametersSection chainId={chainId} marketId={market?.id} marketType={marketType} apiMarket={apiMarket} />

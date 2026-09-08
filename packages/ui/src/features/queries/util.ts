@@ -69,7 +69,12 @@ export type QueryOrValue<T> = QueryProp<T> | T
  * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
  * react trying to serialize the react-query proxy object.
  */
-export const q = <T>({ data, isLoading, error }: Query<T>) => ({ data, isLoading, error }) as QueryProp<T>
+export const q = <T>({ data, isLoading, error }: Query<T>) =>
+  ({
+    data,
+    isLoading,
+    error,
+  }) as QueryProp<T>
 
 type QueryData<TQuery> = TQuery extends Query<infer TData> ? TData : never
 

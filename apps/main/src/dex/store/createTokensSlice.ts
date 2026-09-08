@@ -28,9 +28,18 @@ export type TokensSlice = {
   }
 }
 
-const DEFAULT_TOKEN: Token = { address: '', symbol: '', decimals: 0, haveSameTokenName: false }
+const DEFAULT_TOKEN: Token = {
+  address: '',
+  symbol: '',
+  decimals: 0,
+  haveSameTokenName: false,
+}
 
-const DEFAULT_STATE: SliceState = { tokensNameMapper: {}, tokensMapper: {}, loading: true }
+const DEFAULT_STATE: SliceState = {
+  tokensNameMapper: {},
+  tokensMapper: {},
+  loading: true,
+}
 
 export const createTokensSlice = (
   _set: StoreApi<State>['setState'],
@@ -105,7 +114,11 @@ export const createTokensSlice = (
       sliceState.setStateByActiveKey('tokensNameMapper', strChainId, tokensNameMapper)
 
       const tokensMapper: Record<string, Token> = {
-        [nativeToken.address]: { ...DEFAULT_TOKEN, address: nativeToken.address, symbol: nativeToken.symbol },
+        [nativeToken.address]: {
+          ...DEFAULT_TOKEN,
+          address: nativeToken.address,
+          symbol: nativeToken.symbol,
+        },
         [nativeToken.wrappedAddress]: {
           ...DEFAULT_TOKEN,
           address: nativeToken.wrappedAddress,

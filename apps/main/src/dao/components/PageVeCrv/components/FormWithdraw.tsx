@@ -28,7 +28,12 @@ export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
       <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`CRV Locked`}:</p>
-          <RowParagraph>{formatNumber(amount(lock?.lockedAmount), { abbreviate: false, fallback: '-' })}</RowParagraph>
+          <RowParagraph>
+            {formatNumber(amount(lock?.lockedAmount), {
+              abbreviate: false,
+              fallback: '-',
+            })}
+          </RowParagraph>
         </Box>
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <p>{t`Unlock Time`}:</p>

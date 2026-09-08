@@ -10,7 +10,10 @@ import { scanAddressPath } from '@legacy-ui/utils'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { t } from '@ui/lib/i18n'
 
-type TitleCompProps = { gaugeData: GaugeFormattedData; gaugeAddress?: string }
+type TitleCompProps = {
+  gaugeData: GaugeFormattedData
+  gaugeAddress?: string
+}
 
 export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
   <Wrapper>

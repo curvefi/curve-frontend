@@ -23,7 +23,10 @@ import { useCreateVoteForm } from './useCreateVoteForm'
 
 const { Spacing } = SizesAndSpaces
 
-type CreateVoteModalProps = { isOpen: boolean; onClose: () => void }
+type CreateVoteModalProps = {
+  isOpen: boolean
+  onClose: () => void
+}
 
 export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
   const {

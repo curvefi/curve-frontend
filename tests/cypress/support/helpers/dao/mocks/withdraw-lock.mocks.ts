@@ -7,7 +7,12 @@ const CHAIN_ID = 1
 
 export const createWithdrawLockScenario = ({
   unlockTime = dayjs.utc().subtract(1, 'year').startOf('day').valueOf(),
-} = {}): { assertPreSubmit: () => void; assertSubmit: () => void; curve: CurveApi; unlockTime: number } => {
+} = {}): {
+  assertPreSubmit: () => void
+  assertSubmit: () => void
+  curve: CurveApi
+  unlockTime: number
+} => {
   const withdrawLockedCrv = createTransactionStub(TEST_TX_HASH)
   const estimateWithdrawLockedCrv = createStub(143_000)
   const curve = {

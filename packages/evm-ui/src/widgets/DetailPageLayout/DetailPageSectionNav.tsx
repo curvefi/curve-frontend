@@ -14,7 +14,10 @@ type SectionLabel = {
   short?: string
 }
 
-export type DetailPageSectionOption<T extends string> = { value: T; label: SectionLabel }
+export type DetailPageSectionOption<T extends string> = {
+  value: T
+  label: SectionLabel
+}
 
 /** Sticky section navigation for hash-addressable sections within a DetailPageLayout. */
 export const DetailPageSectionNav = <T extends string>({

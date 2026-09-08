@@ -21,7 +21,10 @@ import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
-type ChainSwitcherProps = { supportedNetworks: NetworkMapping; currentMenu: AppMenuOption }
+type ChainSwitcherProps = {
+  supportedNetworks: NetworkMapping
+  currentMenu: AppMenuOption
+}
 
 const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
   dex: 'pool',
@@ -32,7 +35,9 @@ const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
 }
 
 // Sometimes a network has been defined and needs to be accessed for legacy purposes, but we want to hide it from the list for whatever reason.
-const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = { dex: [Chain.ZkSync, Chain.Mantle] }
+const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = {
+  dex: [Chain.ZkSync, Chain.Mantle],
+}
 
 const getTvl =
   (tvls: Record<string, number> | undefined) =>

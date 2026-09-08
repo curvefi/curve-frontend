@@ -10,7 +10,10 @@ import { UserEventsTable } from './UserEventsTable'
 
 const { Spacing } = SizesAndSpaces
 
-type UserPositionHistoryProps = { eventsQuery: QueryProp<ParsedUserCollateralEvent[]>; variant: 'accordion' | 'flat' }
+type UserPositionHistoryProps = {
+  eventsQuery: QueryProp<ParsedUserCollateralEvent[]>
+  variant: 'accordion' | 'flat'
+}
 
 export const UserPositionHistory = ({ eventsQuery, variant }: UserPositionHistoryProps) => (
   <WithWrapper shouldWrap={variant === 'accordion'} Wrapper={Accordion} title={t`Activity`} ghost>

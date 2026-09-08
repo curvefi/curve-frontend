@@ -6,7 +6,12 @@ import { applySxProps } from '@ui/utils/mui'
 
 const { Sizing, Spacing } = SizesAndSpaces
 
-type InlineTableCellProps = { children: ReactNode; onClick?: () => void; sx?: SxProps<Theme>; className?: string }
+type InlineTableCellProps = {
+  children: ReactNode
+  onClick?: () => void
+  sx?: SxProps<Theme>
+  className?: string
+}
 
 /**
  * Base cell wrapper component for inline tables.

@@ -15,7 +15,9 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui/features/queries/util'
 
-type ChartAndActivityCompProps = { previewPrices: Range<Decimal> | undefined }
+type ChartAndActivityCompProps = {
+  previewPrices: Range<Decimal> | undefined
+}
 
 export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProps) => {
   const {
@@ -34,7 +36,13 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     setTimeOption,
     legendSets,
     ohlcChartProps,
-  } = useOhlcChartState({ chainId, marketId, previewPrices, controllerAddress, ammAddress })
+  } = useOhlcChartState({
+    chainId,
+    marketId,
+    previewPrices,
+    controllerAddress,
+    ammAddress,
+  })
 
   const {
     chartData,
@@ -42,9 +50,20 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     oraclePrice,
     isLoading: isBandsLoading,
     error: bandsError,
-  } = useBandsData({ chainId, marketId, enabled: isBandsVisible })
+  } = useBandsData({
+    chainId,
+    marketId,
+    enabled: isBandsVisible,
+  })
 
-  const chart = { chartMode, isLoading: isChartLoading, selectedChartKey, setTimeOption, legendSets, ohlcChartProps }
+  const chart = {
+    chartMode,
+    isLoading: isChartLoading,
+    selectedChartKey,
+    setTimeOption,
+    legendSets,
+    ohlcChartProps,
+  }
   const bands = {
     chartData,
     userBandsBalances: userBandsBalances ?? [],
@@ -61,7 +80,14 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     <LegacyChartAndActivityLayout
       chart={chart}
       bands={bands}
-      activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'lending' }}
+      activity={{
+        chainId,
+        blockchainId,
+        ammAddress,
+        collateralToken,
+        borrowToken,
+        endpoint: 'lending',
+      }}
     />
   )
 }
@@ -76,7 +102,14 @@ export const MarketActivityComp = () => {
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       <MarketActivityLayout
-        activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'lending' }}
+        activity={{
+          chainId,
+          blockchainId,
+          ammAddress,
+          collateralToken,
+          borrowToken,
+          endpoint: 'lending',
+        }}
       />
       <BorrowersCard />
       <SuppliersCard />

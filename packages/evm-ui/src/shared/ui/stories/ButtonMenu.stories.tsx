@@ -14,19 +14,43 @@ const meta: Meta<typeof ButtonMenu> = {
   component: ButtonMenu,
   render: ButtonMenuWrapper,
   argTypes: {
-    primary: { control: 'text', description: 'The primary button label' },
-    options: { control: 'object', description: 'Array of menu options' },
-    open: { control: 'boolean', description: 'Controls menu open state' },
-    disabled: { control: 'boolean', description: 'Disables the entire button menu' },
+    primary: {
+      control: 'text',
+      description: 'The primary button label',
+    },
+    options: {
+      control: 'object',
+      description: 'Array of menu options',
+    },
+    open: {
+      control: 'boolean',
+      description: 'Controls menu open state',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disables the entire button menu',
+    },
     executing: {
       control: 'select',
       options: [false, 'primary'],
       description: 'Shows loading state - false, "primary", or option id',
     },
-    onPrimary: { action: 'onPrimary', description: 'Callback when primary button is clicked' },
-    onOption: { action: 'onOption', description: 'Callback when menu option is clicked' },
-    onOpen: { action: 'onOpen', description: 'Callback when menu opens' },
-    onClose: { action: 'onClose', description: 'Callback when menu closes' },
+    onPrimary: {
+      action: 'onPrimary',
+      description: 'Callback when primary button is clicked',
+    },
+    onOption: {
+      action: 'onOption',
+      description: 'Callback when menu option is clicked',
+    },
+    onOpen: {
+      action: 'onOpen',
+      description: 'Callback when menu opens',
+    },
+    onClose: {
+      action: 'onClose',
+      description: 'Callback when menu closes',
+    },
   },
   args: {
     primary: 'Repay debt & increase health',
@@ -49,19 +73,44 @@ type Story = StoryObj<typeof ButtonMenu>
 
 export const Default: Story = {
   parameters: {
-    docs: { description: { component: 'ButtonMenu', story: 'Button with dropdown menu for additional options' } },
+    docs: {
+      description: {
+        component: 'ButtonMenu',
+        story: 'Button with dropdown menu for additional options',
+      },
+    },
   },
 }
 
-export const NoOptions: Story = { args: { options: [] } }
+export const NoOptions: Story = {
+  args: {
+    options: [],
+  },
+}
 
-export const SingleOption: Story = { args: { options: [{ id: 'single', label: 'Single Option' }] } }
+export const SingleOption: Story = {
+  args: {
+    options: [{ id: 'single', label: 'Single Option' }],
+  },
+}
 
-export const Disabled: Story = { args: { disabled: true } }
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+}
 
-export const ExecutingPrimary: Story = { args: { executing: 'primary' } }
+export const ExecutingPrimary: Story = {
+  args: {
+    executing: 'primary',
+  },
+}
 
-export const ExecutingOption: Story = { args: { executing: 'increase-collateral' } }
+export const ExecutingOption: Story = {
+  args: {
+    executing: 'increase-collateral',
+  },
+}
 
 export const ManyOptions: Story = {
   args: {

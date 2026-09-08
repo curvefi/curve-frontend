@@ -50,7 +50,15 @@ const createFuseInstance = (proposals: ProposalData[]) =>
     ignoreLocation: true,
     threshold: 0.3,
     includeScore: true,
-    keys: ['id', 'proposer', 'type', { name: 'metaData', getFn: proposal => (proposal.metadata || '').toLowerCase() }],
+    keys: [
+      'id',
+      'proposer',
+      'type',
+      {
+        name: 'metaData',
+        getFn: proposal => (proposal.metadata || '').toLowerCase(),
+      },
+    ],
   })
 
 export const useProposalsList = () => {

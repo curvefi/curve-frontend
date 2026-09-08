@@ -30,7 +30,12 @@ export const CheckboxField = ({
   <Stack>
     <Stack
       direction="row"
-      sx={{ justifyContent: 'space-between', gap: Spacing.sm, alignItems: 'center', flexWrap: 'wrap' }}
+      sx={{
+        justifyContent: 'space-between',
+        gap: Spacing.sm,
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      }}
     >
       <FormControlLabel
         sx={{ margin: 0 }} // with default margin, the checkbox overflows

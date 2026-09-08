@@ -154,13 +154,21 @@ export const QuickSwap = ({
   const toToken = tokens.find(x => x.address.toLocaleLowerCase() == toAddress)
 
   const userFromBalance = useTokenBalance(
-    { chainId, userAddress, tokenAddress: fromAddress ? (fromAddress as Address) : undefined },
+    {
+      chainId,
+      userAddress,
+      tokenAddress: fromAddress ? (fromAddress as Address) : undefined,
+    },
     !!userAddress && !!fromAddress,
   )
   const { isFetched: userFromBalanceFetched, refetch: refetchUserFromBalance } = userFromBalance
 
   const userToBalance = useTokenBalance(
-    { chainId, userAddress, tokenAddress: toAddress ? (toAddress as Address) : undefined },
+    {
+      chainId,
+      userAddress,
+      tokenAddress: toAddress ? (toAddress as Address) : undefined,
+    },
     !!userAddress && !!toAddress,
   )
   const { isFetched: userToBalanceFetched, refetch: refetchUserToBalance } = userToBalance

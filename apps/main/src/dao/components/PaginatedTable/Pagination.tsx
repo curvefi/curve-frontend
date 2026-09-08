@@ -4,7 +4,11 @@ import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
 import { t } from '@ui/lib/i18n'
 
-type PaginationProps = { currentPage: number; totalPages: number; onPageChange: (page: number) => void }
+type PaginationProps = {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+}
 
 export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
   const getPageNumbers = () => {

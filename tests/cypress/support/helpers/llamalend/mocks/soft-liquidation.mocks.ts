@@ -173,7 +173,10 @@ export const createResetPositionScenario = ({
       repayIsApproved: stubs.repayIsApproved,
       repayApprove: stubs.repayApprove,
       repay: stubs.repay,
-      estimateGas: { repay: stubs.estimateGasRepay, repayApprove: stubs.estimateGasRepayApprove },
+      estimateGas: {
+        repay: stubs.estimateGasRepay,
+        repayApprove: stubs.estimateGasRepayApprove,
+      },
     },
     prices: { oraclePrice: stubs.oraclePrice },
     userPosition: {

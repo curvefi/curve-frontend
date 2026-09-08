@@ -45,7 +45,9 @@ export function useClosePositionForm({
   const userStateQuery = useUserState({ chainId, marketId, userAddress })
 
   // Form state
-  const form = useForm<CloseLoanMutation>({ defaultValues: { ...userDefaultValues, slippage: defaultSlippage } })
+  const form = useForm<CloseLoanMutation>({
+    defaultValues: { ...userDefaultValues, slippage: defaultSlippage },
+  })
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
   const values = form.watchValues()
@@ -53,7 +55,12 @@ export function useClosePositionForm({
     onSubmit,
     isPending: isClosing,
     error: closeError,
-  } = useClosePositionMutation({ network, marketId, onReset: () => form.reset(userDefaultValues), userAddress })
+  } = useClosePositionMutation({
+    network,
+    marketId,
+    onReset: () => form.reset(userDefaultValues),
+    userAddress,
+  })
 
   const { isSubmitting, visibleErrors } = form.formState
   const isPending = isSubmitting || isClosing
@@ -131,7 +138,10 @@ export function useClosePositionForm({
       const rows: ClosePositionRow[] = notFalsy(
         { label: t`Collateral`, value: notFalsy(collateralAmount, stablecoinAmount) },
         { label: t`Outstanding debt`, value: notFalsy(debtAmount), testId: 'outstanding-debt' },
-        paidFromCollateralAmount && { label: t`Paid from collateral`, value: notFalsy(paidFromCollateralAmount) },
+        paidFromCollateralAmount && {
+          label: t`Paid from collateral`,
+          value: notFalsy(paidFromCollateralAmount),
+        },
         // If excess < 0, the AMM stablecoin doesn't fully cover the debt
         // and the user must pay the shortfall from their wallet
         Number(excessStablecoinAmount?.amount) < 0 && {
@@ -182,7 +192,10 @@ export function useClosePositionForm({
   const { data: closePositionData } = tableDataQuery
   const missing = closePositionData?.missing
 
-  const table = useCurveTable({ columns: CLOSE_POSITION_COLUMNS, query: mapQuery(tableDataQuery, ({ rows }) => rows) })
+  const table = useCurveTable({
+    columns: CLOSE_POSITION_COLUMNS,
+    query: mapQuery(tableDataQuery, ({ rows }) => rows),
+  })
 
   return {
     form,

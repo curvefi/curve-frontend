@@ -22,7 +22,10 @@ const getTimeRangeChunks = ({ start, end }: TimeRange, maxDays: number): TimeRan
 
   return Array.from({ length: chunkCount }, (_, index) => {
     const chunkStart = start + index * chunkSize
-    return { start: chunkStart, end: index === chunkCount - 1 ? end : chunkStart + chunkSize - 1 }
+    return {
+      start: chunkStart,
+      end: index === chunkCount - 1 ? end : chunkStart + chunkSize - 1,
+    }
   })
 }
 

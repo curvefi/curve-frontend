@@ -11,7 +11,10 @@ const { Spacing } = SizesAndSpaces
 
 export type TableActiveFilterGroupRemove = (labelOrLabels: string | string[]) => void
 
-export type TableActiveFilterGroupChipsProps = { labels: string[]; onRemove: TableActiveFilterGroupRemove }
+export type TableActiveFilterGroupChipsProps = {
+  labels: string[]
+  onRemove: TableActiveFilterGroupRemove
+}
 
 export type TableActiveFilterGroup = {
   Chips?: FunctionComponent<TableActiveFilterGroupChipsProps>

@@ -2,9 +2,16 @@ import { styled } from 'styled-components'
 import { RCExternal } from '@legacy-ui/images'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 
-type Props = { description: string; link?: string; theme?: 'plain'; className?: string }
+type Props = {
+  description: string
+  link?: string
+  theme?: 'plain'
+  className?: string
+}
 
-type StylesProps = { theme?: 'plain' }
+type StylesProps = {
+  theme?: 'plain'
+}
 
 /** Returns null when link is undefined, allowing concise usage without conditional checks at call sites. */
 export const InfoLinkBar = ({ description, link, theme, className }: Props) =>

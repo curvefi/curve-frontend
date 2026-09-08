@@ -2,7 +2,10 @@ import { styled } from 'styled-components'
 import { Icon } from '@legacy-ui/Icon/Icon'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 
-type SortIconProps = { className?: string; activeType: 'asc' | 'desc' | null }
+type SortIconProps = {
+  className?: string
+  activeType: 'asc' | 'desc' | null
+}
 
 export const SortIcon = ({ className, activeType }: SortIconProps) => (
   <Wrapper className={className}>

@@ -38,7 +38,9 @@ export const BadgeIcon = ({ border, size = 'sm', sx, testId, disabled = false, .
             borderRadius: '100%',
             backgroundColor: t => t.design.Badges.Fill.Highlight,
           }),
-          ...(disabled && { filter: 'saturate(0)' }),
+          ...(disabled && {
+            filter: 'saturate(0)',
+          }),
         },
         sx,
       )}

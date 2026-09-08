@@ -21,7 +21,12 @@ export const seedMarketBalances = (chainId: number, collateralAddress: Address) 
   balances.forEach(({ tokenAddress, rawBalance }) => {
     const tokenAddresses = new Set<Address>([tokenAddress, tokenAddress.toLowerCase() as Address])
     tokenAddresses.forEach(address =>
-      seedErc20BalanceForAddresses({ chainId, tokenAddress: address, addresses: [TEST_ADDRESS], rawBalance }),
+      seedErc20BalanceForAddresses({
+        chainId,
+        tokenAddress: address,
+        addresses: [TEST_ADDRESS],
+        rawBalance,
+      }),
     )
   })
 }
@@ -60,10 +65,16 @@ export const ROUTE_MIN_RECV = oneDecimal(0.01, 1, 3)
 export const routeMeta = {
   router: ROUTER_ADDRESS,
   calldata: ROUTER_CALLDATA,
-  quote: { outAmount: ROUTE_AMOUNT_OUT, priceImpact: ROUTE_PRICE_IMPACT },
+  quote: {
+    outAmount: ROUTE_AMOUNT_OUT,
+    priceImpact: ROUTE_PRICE_IMPACT,
+  },
 } as const
 
-export const routeMutationMeta = { ...routeMeta, minRecv: ROUTE_MIN_RECV } as const
+export const routeMutationMeta = {
+  ...routeMeta,
+  minRecv: ROUTE_MIN_RECV,
+} as const
 
 export const mockRouterRoutes = (chainId: number, calldata: Hex = ROUTER_CALLDATA) => {
   cy.intercept('GET', '**/api/router/v1/routes*', req => {
@@ -116,8 +127,16 @@ export const createMockLendLoanMarket = ({
   loanExists?: TestStub<readonly TestStubArg[], unknown>
 }) =>
   createMockLendMarket({
-    collateral_token: { symbol: 'wstETH', address: DEFAULT_COLLATERAL_ADDRESS, decimals: 18 },
-    borrowed_token: { symbol: 'crvUSD', address: CRVUSD_ADDRESS, decimals: 18 },
+    collateral_token: {
+      symbol: 'wstETH',
+      address: DEFAULT_COLLATERAL_ADDRESS,
+      decimals: 18,
+    },
+    borrowed_token: {
+      symbol: 'crvUSD',
+      address: CRVUSD_ADDRESS,
+      decimals: 18,
+    },
     coinDecimals: [18, 18],
     coinAddresses: [DEFAULT_COLLATERAL_ADDRESS, CRVUSD_ADDRESS],
     prices: {
@@ -125,7 +144,14 @@ export const createMockLendLoanMarket = ({
       oraclePriceBand: createStub(oneDecimal(10, 20, 30)),
       price: createStub(oneDecimal(1, 1.2, 3)),
     },
-    wallet: { balances: createStub({ collateral: '100', borrowed: '10000', vaultShares: '0', gauge: '0' }) },
+    wallet: {
+      balances: createStub({
+        collateral: '100',
+        borrowed: '10000',
+        vaultShares: '0',
+        gauge: '0',
+      }),
+    },
     stats: { ...createMockLendStats(), ...stats },
     loan,
     leverage: { hasLeverage: () => true, ...leverage },

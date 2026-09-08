@@ -13,7 +13,10 @@ import { useRefuelPool } from '../queries/pools.query'
 import type { RefuelFormValues, Tokens } from '../types'
 import { refuelFormValidationSuite } from '../validation/refuel.validation'
 
-const userDefaultValues = { tokenAAmount: undefined, tokenBAmount: undefined } as const satisfies RefuelFormValues
+const userDefaultValues = {
+  tokenAAmount: undefined,
+  tokenBAmount: undefined,
+} as const satisfies RefuelFormValues
 
 const maybeToken = (token: { address: Address; symbol: string } | undefined, decimals: number | undefined) =>
   maybes([token, decimals], ({ address, symbol }, decimals) => ({ address, symbol, decimals }))

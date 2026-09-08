@@ -79,7 +79,11 @@ const meta: Meta<typeof RouteProviderStory> = {
       RouteProviders.map(router => [
         router,
         {
-          ...q({ data: mockRoutes.find(route => route.router === router) ?? null, isLoading: false, error: null }),
+          ...q({
+            data: mockRoutes.find(route => route.router === router) ?? null,
+            isLoading: false,
+            error: null,
+          }),
           isFetching: false,
           enabled: true,
         },
@@ -103,7 +107,9 @@ type Story = StoryObj<typeof meta>
 
 export const Collapsed: Story = {}
 
-export const Expanded: Story = { args: { isExpanded: true } }
+export const Expanded: Story = {
+  args: { isExpanded: true },
+}
 
 export const GasEstimate: Story = {
   args: {
@@ -130,12 +136,24 @@ export const Disabled: Story = {
     queries: fromEntries(
       RouteProviders.map(router => [
         router,
-        { ...q({ data: null, isLoading: false, error: null }), isFetching: false, enabled: false },
+        {
+          ...q({
+            data: null,
+            isLoading: false,
+            error: null,
+          }),
+          isFetching: false,
+          enabled: false,
+        },
       ]),
     ),
   },
 }
 
-export const Fetching: Story = { args: { isExpanded: true, isFetching: true } }
+export const Fetching: Story = {
+  args: { isExpanded: true, isFetching: true },
+}
 
-export const Loading: Story = { args: { isLoading: true } }
+export const Loading: Story = {
+  args: { isLoading: true },
+}

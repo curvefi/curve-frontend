@@ -39,7 +39,10 @@ export const defineMuiAlert = (
       '& .MuiAlert-message': {
         flexGrow: 1,
         textWrapStyle: 'pretty',
-        ...handleBreakpoints({ paddingBlockStart: Spacing.sm, paddingBlockEnd: Spacing.xs }),
+        ...handleBreakpoints({
+          paddingBlockStart: Spacing.sm,
+          paddingBlockEnd: Spacing.xs,
+        }),
       },
     },
     outlined: {
@@ -97,7 +100,10 @@ export const defineMuiAlert = (
         paddingBlockEnd: Spacing.xs,
         marginRight: Spacing.xs,
       }),
-      '& svg': handleBreakpoints({ width: IconSize.sm, height: IconSize.sm }),
+      '& svg': handleBreakpoints({
+        width: IconSize.sm,
+        height: IconSize.sm,
+      }),
     },
     action: handleBreakpoints({
       marginInlineStart: Spacing.xs,

@@ -115,7 +115,9 @@ export const useFilters = <TColumnId extends string>({
   resetPageOnChange,
   searchKey = DEFAULT_SEARCH_KEY,
   ...columnFilterOptions
-}: Parameters<typeof useColumnFilters<TColumnId>>[0] & { searchKey?: string }) => {
+}: Parameters<typeof useColumnFilters<TColumnId>>[0] & {
+  searchKey?: string
+}) => {
   const globalFilter = useGlobalFilter(searchKey, resetPageOnChange)
   const columnFilters = useColumnFilters({ ...columnFilterOptions, resetPageOnChange })
 

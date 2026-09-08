@@ -20,7 +20,10 @@ export async function getEvents(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const params = new URLSearchParams({ page: page.toString(), per_page: perPage.toString() })
+  const params = new URLSearchParams({
+    page: page.toString(),
+    per_page: perPage.toString(),
+  })
 
   const response = await fetch(`${host}/v1/${endpointParam}/llamma_events/${chain}/${llamma}?${params}`)
 
@@ -41,7 +44,10 @@ export async function getTrades(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const params = new URLSearchParams({ page: page.toString(), per_page: perPage.toString() })
+  const params = new URLSearchParams({
+    page: page.toString(),
+    per_page: perPage.toString(),
+  })
 
   const response = await fetch(`${host}/v1/${endpointParam}/llamma_trades/${chain}/${llamma}?${params}`)
 

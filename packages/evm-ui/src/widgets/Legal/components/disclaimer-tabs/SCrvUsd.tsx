@@ -23,7 +23,13 @@ export const SCrvUsd = () => (
       <Paragraph>{t`There are, nonetheless, design mechanisms that introduce risks and trust assumptions. Users should familiarize themselves with these before interacting with scrvUSD.`}</Paragraph>
     </Section>
 
-    <Stack direction={{ mobile: 'column', tablet: 'row' }} sx={{ gap: Spacing.md, marginInline: Spacing.md }}>
+    <Stack
+      direction={{
+        mobile: 'column',
+        tablet: 'row',
+      }}
+      sx={{ gap: Spacing.md, marginInline: Spacing.md }}
+    >
       <ExternalLink href={EXTERNAL_LINKS.docs.scrvUsd.overview} label={t`scrvUSD protocol docs`} />
       <ExternalLink href={EXTERNAL_LINKS.docs.assets.scrvUsdAudit} label={t`scrvUSD smart contract audits`} />
     </Stack>

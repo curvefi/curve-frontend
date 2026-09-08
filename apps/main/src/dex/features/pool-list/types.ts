@@ -4,9 +4,15 @@ import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
-type PoolRowGauge = { address: Address; isKilled: boolean }
+type PoolRowGauge = {
+  address: Address
+  isKilled: boolean
+}
 
-type PoolRowToken = { address: Address; symbol: string }
+type PoolRowToken = {
+  address: Address
+  symbol: string
+}
 
 type PoolRowExtraReward = {
   address: Address | undefined

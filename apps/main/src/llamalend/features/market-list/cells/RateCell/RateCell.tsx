@@ -28,8 +28,14 @@ const RateTypes = {
 } as const
 
 const TooltipComponents: Record<MarketRateType, Record<MarketType, FunctionComponent<RateTooltipProps>>> = {
-  [MarketRateType.Supply]: { [MarketType.Lend]: SupplyRateLendTooltip, [MarketType.Mint]: SupplyRateMintTooltip },
-  [MarketRateType.Borrow]: { [MarketType.Lend]: BorrowRateTooltip, [MarketType.Mint]: BorrowRateTooltip },
+  [MarketRateType.Supply]: {
+    [MarketType.Lend]: SupplyRateLendTooltip,
+    [MarketType.Mint]: SupplyRateMintTooltip,
+  },
+  [MarketRateType.Borrow]: {
+    [MarketType.Lend]: BorrowRateTooltip,
+    [MarketType.Mint]: BorrowRateTooltip,
+  },
 } as const
 
 export const RateCell = <TValue extends number | null>({

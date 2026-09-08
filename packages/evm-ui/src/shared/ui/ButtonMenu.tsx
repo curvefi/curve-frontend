@@ -87,8 +87,14 @@ export const ButtonMenu = <T extends string>({
           open={open}
           onClose={onClose}
           // Modify anchor and transform to open upwards from the right
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
           slotProps={{
             paper: {
               sx: {

@@ -17,7 +17,10 @@ const getTvlFilterLabel = (serializedRange: string | undefined) => {
   return getRangeFilterLabel(getPoolsTvlLabelRange(range), 'dollar', { defaultMin: null })
 }
 
-type PoolsFiltersCollapsibleProps = { hasActiveFilters: boolean; resetFilters: () => void } & PoolsFiltersProps
+type PoolsFiltersCollapsibleProps = {
+  hasActiveFilters: boolean
+  resetFilters: () => void
+} & PoolsFiltersProps
 
 export const PoolsFiltersCollapsible = ({
   columnFiltersById,

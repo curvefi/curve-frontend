@@ -19,7 +19,10 @@ import { marketIdValidationGroup, marketIdValidationSuite } from '@evm-ui/lib/mo
 import type { UserMarketParams } from '@evm-ui/lib/model/query/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 
-export type CollateralForm = { userCollateral: Decimal | undefined; maxCollateral: Decimal | undefined }
+export type CollateralForm = {
+  userCollateral: Decimal | undefined
+  maxCollateral: Decimal | undefined
+}
 
 const collateralValidationGroup = ({
   chainId,

@@ -111,7 +111,10 @@ const adornments: Record<
     inputStartAdornment?: (size: NumericTextFieldProps['size']) => ReactNode
   }
 > = {
-  dollar: { textAlign: 'left', inputEndAdornment: size => <AdornmentTypography size={size}>$</AdornmentTypography> },
+  dollar: {
+    textAlign: 'left',
+    inputEndAdornment: size => <AdornmentTypography size={size}>$</AdornmentTypography>,
+  },
   percentage: {
     textAlign: 'left',
     inputEndAdornment: size => <AdornmentTypography size={size}>%</AdornmentTypography>,
@@ -199,11 +202,21 @@ export const NumericTextField = ({
       }}
       // the input is not wide enough for the "Bands" adornment
       // the width value chosen for the slider to match the width of the labels
-      sx={{ ...sx, ...(adornment === 'bands' && { flexShrink: 0, minWidth: MaxWidth.sliderInput.bands }) }}
+      sx={{
+        ...sx,
+        ...(adornment === 'bands' && {
+          flexShrink: 0,
+          minWidth: MaxWidth.sliderInput.bands,
+        }),
+      }}
       slotProps={{
         ...(adornment && {
           input: {
-            sx: { '& .MuiInputBase-input': { textAlign: adornments[adornment].textAlign } },
+            sx: {
+              '& .MuiInputBase-input': {
+                textAlign: adornments[adornment].textAlign,
+              },
+            },
             endAdornment: adornments[adornment].inputEndAdornment?.(size),
             startAdornment: adornments[adornment].inputStartAdornment?.(size),
           },
