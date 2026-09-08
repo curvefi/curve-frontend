@@ -27,7 +27,7 @@ import {
   HealthType,
 } from './utils'
 
-const { Height, MinWidth, Spacing } = SizesAndSpaces
+const { Badge: BadgeSizes, Height, MinWidth } = SizesAndSpaces
 
 const LIQUIDATION_PROTECTION_LABEL = t`Liquidation Protection`
 
@@ -63,11 +63,6 @@ const SEGMENT_CONFIG: Record<
     getPercentage: getHealthPercent,
   },
 }
-
-const BADGE_SIZE_BY_BAR_SIZE = {
-  lg: 'small',
-  sm: 'extraSmall',
-} as const
 
 export const HealthAndBufferBar = ({
   positionStatus,
@@ -109,10 +104,13 @@ export const HealthAndBufferBar = ({
           {label && (
             <Badge
               data-testid={`${testId}-badge`}
-              size={BADGE_SIZE_BY_BAR_SIZE[size]}
+              size="extraSmall"
               color={positionStatus === 'hardLiquidation' ? 'alert' : 'warning'}
               label={label}
-              sx={{ position: 'absolute', left: Spacing['3xs'] }}
+              sx={{
+                position: 'absolute',
+                insetInlineStart: `calc((${Height.healthBar[size]} - ${BadgeSizes.Size.extraSmall}) / 2)`,
+              }}
             />
           )}
         </Stack>
