@@ -1,6 +1,6 @@
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { formatDate } from '@legacy-ui/utils'
 import Typography from '@mui/material/Typography'
+import { formatDate } from '@primitives/date.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'

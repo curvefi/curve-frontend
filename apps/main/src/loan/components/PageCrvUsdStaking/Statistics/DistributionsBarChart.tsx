@@ -1,7 +1,7 @@
 import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { EChartsBarChart } from '@evm-ui/shared/ui/Chart'
-import { formatDate } from '@legacy-ui/utils'
 import { useTheme } from '@mui/material/styles'
+import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { DistributionsChartTooltip } from './DistributionsChartTooltip'
 

@@ -9,10 +9,10 @@ import {
   type LegendItem,
   type LineSeriesConfig,
 } from '@evm-ui/shared/ui/Chart'
-import { formatDate } from '@legacy-ui/utils'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import type { Address } from '@primitives/address.utils'
+import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
