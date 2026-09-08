@@ -11,24 +11,24 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 type Props = {
-  walletAddress: Address | undefined
+  userAddress: Address | undefined
   onClose: () => void
 }
 
 /** Gap deviates from Figma as personally 'xs' is too narrow. */
-export const UserProfileHeader = ({ walletAddress, onClose }: Props) => (
+export const UserProfileHeader = ({ userAddress, onClose }: Props) => (
   <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
-    {walletAddress && (
+    {userAddress && (
       <>
         <Box component="img" src={LlamaImg} sx={{ height: SizesAndSpaces.IconSize.xl }} alt="Llama Icon" />
 
         <Typography variant="headingMLight" sx={{ flexGrow: 1 }}>
-          {shortenAddress(walletAddress)}
+          {shortenAddress(userAddress)}
         </Typography>
       </>
     )}
 
-    <Stack direction="row" sx={{ flexGrow: walletAddress ? undefined : 1, justifyContent: 'end' }}>
+    <Stack direction="row" sx={{ ...(!userAddress && { flexGrow: 1 }), justifyContent: 'end' }}>
       <IconButton size="small" onClick={onClose}>
         <CloseIcon />
       </IconButton>

@@ -79,7 +79,6 @@ export const NetworkAwareLayout = () => {
                 currentApp={currentApp}
                 network={network}
                 networks={networks}
-                userAddress={userAddress}
               >
                 <Outlet />
               </GlobalLayout>

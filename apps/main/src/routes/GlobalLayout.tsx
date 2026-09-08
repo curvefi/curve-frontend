@@ -27,7 +27,6 @@ import { getFooterSections } from '@evm-ui/widgets/Footer/footer-sections.util'
 import { Header } from '@evm-ui/widgets/Header'
 import { getHeaderSections } from '@evm-ui/widgets/Header/header-sections.util'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
-import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { mapRecord, maybe, type PartialRecord } from '@primitives/objects.utils'
 import { PageLayout } from '@ui/features/layout/PageLayout'
@@ -94,14 +93,12 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   currentApp,
   network,
   networks,
-  userAddress,
 }: {
   children: ReactNode
   backendMaintenance: Maintenance
   currentApp: AppName
   network: NetworkDef<TId, TChainId>
   networks: NetworkMapping<TId, TChainId>
-  userAddress: Address | undefined
 }) => {
   const { connect, disconnect } = useWallet()
   const { address, isConnecting, isConnected } = useConnection()
@@ -128,7 +125,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
           connectWalletProps={{ disconnect, address, addressLabel, isConnecting, isConnected, connect }}
         />
       }
-      userAddress={userAddress}
+      userAddress={address}
       connectModal={<WagmiConnectModal />}
       footer={<Footer sections={getFooterSections(formatUrl)} />}
     >
