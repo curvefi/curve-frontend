@@ -24,6 +24,23 @@ const POINTS_CAMPAIGN_TITLES = {
   [MarketRateType.Supply]: t`Supply Points Campaigns`,
 } satisfies Record<MarketRateType, string>
 
+const RATE_BREAKDOWN_CONFIG = {
+  [MarketRateType.Borrow]: {
+    columns: BORROW_COLUMNS,
+    title: t`Borrow Cost Breakdown`,
+    emptyTitle: t`No borrow cost breakdown found`,
+    errorTitle: t`Could not load borrow cost breakdown`,
+    totalTitle: t`Net Borrow APR`,
+  },
+  [MarketRateType.Supply]: {
+    columns: SUPPLY_COLUMNS,
+    title: t`Yield Breakdown`,
+    emptyTitle: t`No yield breakdown found`,
+    errorTitle: t`Could not load yield breakdown`,
+    totalTitle: t`Total APY`,
+  },
+}
+
 const FooterRow = ({
   visibleColumns,
   title,
@@ -61,27 +78,27 @@ export const RateBreakdownTable = ({
   rateType: MarketRateType
   query: QueryProp<RateBreakdownData>
 }) => {
-  const isBorrow = rateType === MarketRateType.Borrow
+  const { columns, title, emptyTitle, errorTitle, totalTitle } = RATE_BREAKDOWN_CONFIG[rateType]
   const table = useCurveTable({
     query: mapQuery(query, ({ rows }) => rows),
-    columns: isBorrow ? BORROW_COLUMNS : SUPPLY_COLUMNS,
+    columns,
     state: { columnVisibility: useIsMobile() ? MOBILE_COLUMN_VISIBILITY : undefined },
   })
   const showFooter = query.data?.hasAdjustments
 
   return (
     <Card size="small" data-testid={`${rateType.toLowerCase()}-rate-breakdown`}>
-      <MarketCardHeader title={isBorrow ? t`Borrow Cost Breakdown` : t`Yield Breakdown`} />
+      <MarketCardHeader title={title} />
       <DataTable
         category="detail"
         table={table}
-        emptyState={{ title: isBorrow ? t`No borrow cost breakdown found` : t`No yield breakdown found` }}
-        errorState={{ title: isBorrow ? t`Could not load borrow cost breakdown` : t`Could not load yield breakdown` }}
+        emptyState={{ title: emptyTitle }}
+        errorState={{ title: errorTitle }}
         footerRow={
           showFooter && (
             <FooterRow
               visibleColumns={table.getVisibleLeafColumns()}
-              title={isBorrow ? t`Net Borrow APR` : t`Total APY`}
+              title={totalTitle}
               total={query.data!.total}
               maxBoostTotal={query.data!.maxBoostTotal}
             />

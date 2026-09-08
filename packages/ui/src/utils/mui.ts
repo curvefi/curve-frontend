@@ -23,7 +23,12 @@ export const directChildrenAfterFirst = (css: SxStyleObject): SxProps => ({
   '& > * + *': css,
 })
 
-/** Gives every direct sibling card after the first a full-width card-header background. */
+/**
+ * Makes stacked cards feel like sections of one card: the first keeps its normal header, while each subsequent
+ * card gets a header background spanning its full width. Cards render conditionally, so assigning header styles
+ * by a fixed section order would not reliably identify the first visible card.
+ * The selector follows the rendered order instead, styling each card header that immediately follows another card.
+ */
 export const stackedMarketCardHeadersSx: SxProps = theme => ({
   '& > .MuiCard-root + .MuiCard-root > .MuiCardHeader-root': {
     backgroundColor: theme.design.Layer[1].Fill,

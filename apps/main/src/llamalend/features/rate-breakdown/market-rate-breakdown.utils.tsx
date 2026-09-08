@@ -7,7 +7,7 @@ import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { maybes, notFalsy } from '@primitives/objects.utils'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
 import { t } from '@ui/lib/i18n'
 
@@ -21,7 +21,7 @@ export type BreakdownSource = {
 export type RateBreakdownRow = {
   source: BreakdownSource
   price?: number
-  rate?: number | null
+  rate: number | null | undefined
   maxBoostRate?: number | null
 }
 
@@ -48,28 +48,27 @@ export const buildBorrowRateBreakdown = ({
   chainId: number
   blockchainId: string
   collateralToken: MarketToken | undefined
-  prices?: Record<string, number>
+  prices: TokenPrices
 }): RateBreakdownData => {
   const incentives = notFalsy(
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
   const rebasingRow = notFalsy(
-    rate.rebasingYield != null &&
-      collateralToken && {
-        source: {
-          tokenInfo: {
-            address: collateralToken.address,
-            blockchainId,
-            iconPosition: 'left' as const,
-            primary: collateralToken.symbol,
-          },
+    maybes([rate.rebasingYield, collateralToken], (rebasingYield, collateralToken) => ({
+      source: {
+        tokenInfo: {
           address: collateralToken.address,
-          explorerUrl: scanTokenPath(chainId, collateralToken.address),
-          yieldBearing: true,
+          blockchainId,
+          iconPosition: 'left' as const,
+          primary: collateralToken.symbol,
         },
-        price: tokenPrice(prices, collateralToken.address),
-        rate: -rate.rebasingYield,
+        address: collateralToken.address,
+        explorerUrl: scanTokenPath(chainId, collateralToken.address),
+        yieldBearing: true,
       },
+      price: tokenPrice(prices, collateralToken.address),
+      rate: -rebasingYield,
+    })),
   )
 
   return {
@@ -111,7 +110,7 @@ export const buildSupplyRateBreakdown = ({
   chainId: number
   blockchainId: string
   borrowToken: MarketToken | undefined
-  prices?: Record<string, number>
+  prices: TokenPrices
   crvPrice?: number
 }): RateBreakdownData => {
   const crvRates = [rate.supplyApyCrvMinBoost, rate.supplyApyCrvMaxBoost]
@@ -137,22 +136,21 @@ export const buildSupplyRateBreakdown = ({
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
   const rebasingRow = notFalsy(
-    rate.rebasingYield != null &&
-      borrowToken && {
-        source: {
-          tokenInfo: {
-            address: borrowToken.address,
-            blockchainId,
-            iconPosition: 'left' as const,
-            primary: borrowToken.symbol,
-          },
+    maybes([rate.rebasingYield, borrowToken], (rebasingYield, borrowToken) => ({
+      source: {
+        tokenInfo: {
           address: borrowToken.address,
-          explorerUrl: scanTokenPath(chainId, borrowToken.address),
-          yieldBearing: true,
+          blockchainId,
+          iconPosition: 'left' as const,
+          primary: borrowToken.symbol,
         },
-        price: tokenPrice(prices, borrowToken.address),
-        rate: rate.rebasingYield,
+        address: borrowToken.address,
+        explorerUrl: scanTokenPath(chainId, borrowToken.address),
+        yieldBearing: true,
       },
+      price: tokenPrice(prices, borrowToken.address),
+      rate: rebasingYield,
+    })),
   )
 
   return {
