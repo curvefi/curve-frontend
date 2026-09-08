@@ -7,18 +7,9 @@ export type TimeOption = (typeof TIME_OPTIONS)[number]
 export type ChartSelection =
   { type: 'lp-usd' } | { type: 'lp-token'; symbol?: string } | { type: 'pair'; mainToken: PoolCoin; refToken: PoolCoin }
 
-export type LpPriceOhlcDataFormatted = {
-  time: UTCTimestamp
-  open: number
-  close: number
-  high: number
-  low: number
-}
+export type LpPriceOhlcDataFormatted = { time: UTCTimestamp; open: number; close: number; high: number; low: number }
 
-export type OraclePriceData = {
-  time: UTCTimestamp
-  value: number
-}
+export type OraclePriceData = { time: UTCTimestamp; value: number }
 
 type LiquidationRange = { value: number; time: UTCTimestamp }
 

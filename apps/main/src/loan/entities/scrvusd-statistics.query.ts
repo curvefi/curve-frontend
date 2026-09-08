@@ -43,10 +43,7 @@ async function _fetchSavingsStatistics(): Promise<Omit<Statistics, 'lastUpdated'
     const apr = supplyNum > 0 ? (profitUnlockingRateNum * UNLOCK_MULTIPLIER) / supplyNum : 0
     const apy = (1 + apr / 100 / 365.25) ** 365.25 - 1
 
-    return {
-      apyProjected: apy * 100,
-      supply: weiToEther(supplyNum),
-    }
+    return { apyProjected: apy * 100, supply: weiToEther(supplyNum) }
   }
 
   return getStatistics()

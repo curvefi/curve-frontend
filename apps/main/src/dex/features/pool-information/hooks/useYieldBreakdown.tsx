@@ -60,23 +60,14 @@ export const useYieldBreakdown = ({
     if (rewards?.crv?.some(Boolean)) {
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
-        source: {
-          address: MAINNET_CRV_ADDRESS,
-          blockchainId: 'ethereum',
-          iconPosition: 'left',
-          primary: 'CRV',
-        },
+        source: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
         address: MAINNET_CRV_ADDRESS,
         explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
         price: crvPrice,
         rate: unboostedCrvRate,
         maxBoostRate: maxBoostCrvRate,
         ...maybe(crvRateRange, range => ({
-          rateTooltip: {
-            title: t`Gauge APR`,
-            body: <CrvRateTooltipContent {...range} />,
-            clickable: true,
-          },
+          rateTooltip: { title: t`Gauge APR`, body: <CrvRateTooltipContent {...range} />, clickable: true },
         })),
       })
     }
@@ -84,12 +75,7 @@ export const useYieldBreakdown = ({
     rewards?.other?.forEach(({ apy: rate, symbol, tokenAddress, tokenPrice }) => {
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
-        source: {
-          address: tokenAddress,
-          blockchainId: network?.blockchainId,
-          iconPosition: 'left',
-          primary: symbol,
-        },
+        source: { address: tokenAddress, blockchainId: network?.blockchainId, iconPosition: 'left', primary: symbol },
         address: tokenAddress,
         explorerUrl: scanTokenPath(chainId, tokenAddress),
         price: tokenPrice ?? fallbackTokenRates?.[tokenAddress],
@@ -119,11 +105,7 @@ export const useYieldBreakdown = ({
 
     // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     rows.push({
-      source: {
-        icon: null,
-        iconPosition: 'left',
-        primary: t`Base APR`,
-      },
+      source: { icon: null, iconPosition: 'left', primary: t`Base APR` },
       rate: baseDailyRate,
       rateTooltip: {
         title: t`Base APR`,

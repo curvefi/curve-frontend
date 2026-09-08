@@ -4,14 +4,10 @@ import { EmptyValidationSuite, type FieldsOf } from '@evm-ui/lib/validation'
 import { decimal } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
-type VeCrvFeesQuery = {
-  weeks?: number
-}
+type VeCrvFeesQuery = { weeks?: number }
 type VeCrvFeesParams = FieldsOf<VeCrvFeesQuery>
 
-export type VeCrvFee = Omit<Distribution, 'feesUsd'> & {
-  feesUsd: Decimal
-}
+export type VeCrvFee = Omit<Distribution, 'feesUsd'> & { feesUsd: Decimal }
 
 export const { useQuery: useVeCrvFeesQuery } = queryFactory({
   queryKey: ({ weeks }: VeCrvFeesParams) => ['vecrv-fees', { weeks }] as const,

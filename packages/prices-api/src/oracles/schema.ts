@@ -28,10 +28,7 @@ const oracle = z
   }))
 
 export const getOraclesResponse = z
-  .object({
-    last_recorded_block: z.number(),
-    oracles: z.array(oracle),
-  })
+  .object({ last_recorded_block: z.number(), oracles: z.array(oracle) })
   .transform(camelizeKeys)
 
 export type Oracles = z.infer<typeof getOraclesResponse>

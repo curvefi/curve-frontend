@@ -22,11 +22,7 @@ export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, e
     isLoading: wrappedCoinsLoading,
     error: wrappedCoinsError,
   } = useTokenBalances(
-    {
-      chainId,
-      userAddress,
-      tokenAddresses: pool?.wrappedCoinAddresses as Address[],
-    },
+    { chainId, userAddress, tokenAddresses: pool?.wrappedCoinAddresses as Address[] },
     enabled && isHydrated,
   )
 
@@ -35,11 +31,7 @@ export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, e
     isLoading: underlyingCoinsLoading,
     error: underlyingCoinsError,
   } = useTokenBalances(
-    {
-      chainId,
-      userAddress,
-      tokenAddresses: pool?.underlyingCoinAddresses as Address[],
-    },
+    { chainId, userAddress, tokenAddresses: pool?.underlyingCoinAddresses as Address[] },
     enabled && isHydrated,
   )
 

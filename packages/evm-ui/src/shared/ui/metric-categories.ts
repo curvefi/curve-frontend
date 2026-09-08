@@ -25,11 +25,7 @@ const METRIC_EMPHASIS = {
   primary: breakpointValues('medium'),
   secondary: breakpointValues('small'),
   tertiary: breakpointValues('extraSmall'),
-  responsive: {
-    mobile: 'small',
-    tablet: 'medium',
-    desktop: 'medium',
-  },
+  responsive: { mobile: 'small', tablet: 'medium', desktop: 'medium' },
 } as const satisfies Record<string, Record<Breakpoint, MetricLayout['size']>>
 
 /**
@@ -40,11 +36,7 @@ const METRIC_EMPHASIS = {
  */
 const METRIC_PRESENTATION = {
   stack: breakpointValues('vertical'),
-  detail: {
-    mobile: 'horizontal',
-    tablet: 'vertical',
-    desktop: 'vertical',
-  },
+  detail: { mobile: 'horizontal', tablet: 'vertical', desktop: 'vertical' },
   inline: breakpointValues('horizontal'),
 } as const satisfies Record<string, Record<Breakpoint, MetricLayout['orientation']>>
 

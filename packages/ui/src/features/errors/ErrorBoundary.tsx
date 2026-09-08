@@ -51,15 +51,7 @@ export const ErrorBoundary = ({
     getResetKey={() => 'reset'}
     errorComponent={({ error, reset }: ErrorComponentProps) =>
       inline ? (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-            width: '100%',
-          }}
-        >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
           <ErrorMessage
             title={title}
             subtitle={subtitle}

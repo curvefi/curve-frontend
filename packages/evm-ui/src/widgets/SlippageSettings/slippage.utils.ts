@@ -11,14 +11,7 @@ const slippage = (
   slippage: Decimal,
   title: string,
   helper: string,
-): {
-  default: Decimal
-  presets: [Decimal, Decimal]
-  min: Decimal
-  max: Decimal
-  title: string
-  helper: string
-} => ({
+): { default: Decimal; presets: [Decimal, Decimal]; min: Decimal; max: Decimal; title: string; helper: string } => ({
   default: slippage,
   presets: [slippage, `${+slippage * 2}`],
   min: `${+slippage / 2}`,
@@ -29,14 +22,7 @@ const slippage = (
 
 export const SLIPPAGE: Record<
   SlippageType,
-  {
-    default: Decimal
-    presets: [Decimal, Decimal]
-    min: Decimal
-    max: Decimal
-    title: string
-    helper: string
-  }
+  { default: Decimal; presets: [Decimal, Decimal]; min: Decimal; max: Decimal; title: string; helper: string }
 > = {
   stable: slippage('0.03', t`Stableswap slippage`, t`Used when the route only goes through stableswap pools`),
   crypto: slippage('0.1', t`Cryptoswap slippage`, t`Used when the route goes through at least one cryptoswap pool`),

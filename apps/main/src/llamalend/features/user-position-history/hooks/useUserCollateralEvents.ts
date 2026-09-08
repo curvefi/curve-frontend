@@ -50,10 +50,7 @@ export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof
   type: UserCollateralEventType
 } & Partial<MarketTokens>
 
-export type UserCollateralEvents = {
-  events: ParsedUserCollateralEvent[]
-  originalLeverage: Decimal
-}
+export type UserCollateralEvents = { events: ParsedUserCollateralEvent[]; originalLeverage: Decimal }
 
 const parseEventType = (
   { type, loanChange, collateralChange, liquidation, user, isPositionClosed }: UserCollateralEventFromApi,

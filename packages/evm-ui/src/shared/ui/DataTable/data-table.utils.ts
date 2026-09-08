@@ -76,10 +76,7 @@ const features = tableFeatures({
   facetedUniqueValues: createFacetedUniqueValues(),
   facetedMinMaxValues: createFacetedMinMaxValues(),
   filterFns: { includesString: filterFn_includesString },
-  sortFns: {
-    alphanumeric: sortFn_alphanumeric,
-    text: sortFn_text,
-  },
+  sortFns: { alphanumeric: sortFn_alphanumeric, text: sortFn_text },
 })
 
 export type CurveTableFeatures = typeof features
@@ -101,9 +98,7 @@ const EMPTY_ARRAY: never[] = []
 export const useCurveTable = <TData extends RowData>({
   query: { data, isLoading, error },
   ...tableOptions
-}: Omit<TableOptions<CurveTableFeatures, TData>, 'data' | 'features'> & {
-  query: QueryProp<TData[]>
-}) => ({
+}: Omit<TableOptions<CurveTableFeatures, TData>, 'data' | 'features'> & { query: QueryProp<TData[]> }) => ({
   ...useAppTable({ ...tableOptions, data: data ?? EMPTY_ARRAY }),
   isLoading,
   error,

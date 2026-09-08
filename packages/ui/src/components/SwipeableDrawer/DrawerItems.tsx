@@ -9,13 +9,7 @@ export const DrawerItems = (props: StackProps) => (
     direction="column"
     {...props}
     sx={applySxProps(
-      {
-        gap: Spacing.sm,
-        paddingInline: Spacing.sm,
-        paddingBlockEnd: Spacing.md,
-        overflow: 'auto',
-        flex: 1,
-      },
+      { gap: Spacing.sm, paddingInline: Spacing.sm, paddingBlockEnd: Spacing.md, overflow: 'auto', flex: 1 },
       props.sx,
     )}
   />

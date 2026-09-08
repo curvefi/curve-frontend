@@ -28,11 +28,7 @@ export async function getRefuelIlTimeseries(
     end,
     initialLp,
     initialUsd,
-  }: PoolParams &
-    WindowParams & {
-      initialLp?: number
-      initialUsd?: number
-    },
+  }: PoolParams & WindowParams & { initialLp?: number; initialUsd?: number },
   options?: Options,
 ) {
   const host = getHost(options)

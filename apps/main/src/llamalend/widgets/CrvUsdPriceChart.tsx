@@ -38,12 +38,7 @@ const { Spacing, Height } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'llamalend.marketCharts'
 
-export type CrvUsdPriceChartPoint = {
-  timestamp: number
-  price: number
-  movingAverage: number
-  totalAverage: number
-}
+export type CrvUsdPriceChartPoint = { timestamp: number; price: number; movingAverage: number; totalAverage: number }
 
 type PriceSeriesKey = 'price' | 'movingAverage' | 'totalAverage'
 type PricePoint = { timestamp: number; price: number }
@@ -55,9 +50,7 @@ const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash?: ChartLineDashP
 ]
 
 const averageDeviation = (priceHistory: PricePoint[], days: number) =>
-  calculateAverageRates(priceHistory, days, {
-    deviation: ({ price }) => Math.abs(price - 1) * 100,
-  })?.deviation
+  calculateAverageRates(priceHistory, days, { deviation: ({ price }) => Math.abs(price - 1) * 100 })?.deviation
 
 const getDeviations = (priceHistory: PricePoint[], price: number, timestamp = Date.now()) => {
   const pricePoints = notFalsyArray(priceHistory, [{ timestamp, price }])
@@ -79,10 +72,7 @@ export const CrvUsdPriceChart = () => {
   } = useTheme()
 
   const priceHistory = useCrvUsdPriceHistory({ days: AVERAGE_WINDOW_DAYS.year })
-  const currentPrice = useTokenUsdRate({
-    chainId: Chain.Ethereum,
-    tokenAddress: CRVUSD_ADDRESS,
-  })
+  const currentPrice = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS })
   const showLoading = priceHistory.isLoading || priceHistory.isPlaceholderData
 
   const pricePoints = useMemo(

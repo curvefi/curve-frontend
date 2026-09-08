@@ -1,8 +1,6 @@
 import { styled } from 'styled-components'
 
-type Props = {
-  script: string
-}
+type Props = { script: string }
 
 export const Script = ({ script }: Props) => (
   <Wrapper>

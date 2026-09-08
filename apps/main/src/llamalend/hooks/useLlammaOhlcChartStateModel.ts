@@ -98,11 +98,7 @@ export const useLlammaOhlcChartStateModel = ({
   const oraclePoolOracleLine = oraclePoolsChartQuery.data?.oraclePriceData ?? []
   const llammaOracleLine = oraclePriceFallbackQuery.data ?? []
   const { hasAnySeries, isOracleLineOnly, liquidationFallbackData, ohlcData, oraclePriceData } =
-    resolveLlammaChartSeries({
-      oraclePoolCandles,
-      oraclePoolOracleLine,
-      llammaOracleLine,
-    })
+    resolveLlammaChartSeries({ oraclePoolCandles, oraclePoolOracleLine, llammaOracleLine })
 
   const isLoading = !enabled || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
   const chartMode = isLoading ? undefined : isOracleLineOnly ? ('oracle-price' as const) : ('oracle-pool' as const)
@@ -154,12 +150,5 @@ export const useLlammaOhlcChartStateModel = ({
     latestOraclePrice: maybe(oraclePrice, Number),
   }
 
-  return {
-    ohlcChartProps,
-    chartMode,
-    isLoading,
-    selectedChartKey,
-    setTimeOption,
-    legendSets,
-  }
+  return { ohlcChartProps, chartMode, isLoading, selectedChartKey, setTimeOption, legendSets }
 }

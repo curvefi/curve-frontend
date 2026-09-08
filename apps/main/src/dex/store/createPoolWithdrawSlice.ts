@@ -102,10 +102,7 @@ export const createPoolWithdrawSlice = (
         cFormValues.amounts = cFormValues.amounts.map(a => ({ ...a, value: '' }))
         get()[SLICE_KEY].setStateByKeys({ formValues: cloneDeep(cFormValues) })
         get()[SLICE_KEY].setStateByKey('slippage', {
-          [activeKey]: {
-            ...(get()[SLICE_KEY].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
-            loading: true,
-          },
+          [activeKey]: { ...(get()[SLICE_KEY].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE), loading: true },
         })
 
         // update amounts in form value
@@ -120,10 +117,7 @@ export const createPoolWithdrawSlice = (
           if (resp.error) {
             get()[SLICE_KEY].setStateByKeys({
               slippage: { [activeKey]: { ...DEFAULT_SLIPPAGE, loading: false } },
-              formStatus: {
-                ...get()[SLICE_KEY].formStatus,
-                error: resp.error,
-              },
+              formStatus: { ...get()[SLICE_KEY].formStatus, error: resp.error },
             })
           } else {
             cFormValues.amounts = cFormValues.amounts.map(a => ({
@@ -159,10 +153,7 @@ export const createPoolWithdrawSlice = (
       if (+cFormValues.lpToken > 0) {
         // set loading state
         get()[SLICE_KEY].setStateByKey('slippage', {
-          [activeKey]: {
-            ...(get()[SLICE_KEY].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
-            loading: true,
-          },
+          [activeKey]: { ...(get()[SLICE_KEY].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE), loading: true },
         })
 
         // get expected
@@ -173,12 +164,7 @@ export const createPoolWithdrawSlice = (
           cFormValues.lpToken,
         )
         if (resp.error) {
-          get()[SLICE_KEY].setStateByKeys({
-            formStatus: {
-              ...get()[SLICE_KEY].formStatus,
-              error: resp.error,
-            },
-          })
+          get()[SLICE_KEY].setStateByKeys({ formStatus: { ...get()[SLICE_KEY].formStatus, error: resp.error } })
         } else {
           cFormValues.amounts = cFormValues.amounts.map((a: Amount, idx) => ({
             ...a,
@@ -209,10 +195,7 @@ export const createPoolWithdrawSlice = (
       if (cFormValues.amounts.some(a => +a.value > 0)) {
         // set loading state
         get()[SLICE_KEY].setStateByKey('slippage', {
-          [activeKey]: {
-            ...(get()[SLICE_KEY].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
-            loading: true,
-          },
+          [activeKey]: { ...(get()[SLICE_KEY].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE), loading: true },
         })
 
         // update amounts in form value
@@ -227,10 +210,7 @@ export const createPoolWithdrawSlice = (
           if (resp.error) {
             get()[SLICE_KEY].setStateByKeys({
               slippage: { [activeKey]: { ...DEFAULT_SLIPPAGE, loading: false } },
-              formStatus: {
-                ...get()[SLICE_KEY].formStatus,
-                error: resp.error,
-              },
+              formStatus: { ...get()[SLICE_KEY].formStatus, error: resp.error },
             })
           } else {
             cFormValues.lpToken = resp.expected
@@ -249,10 +229,7 @@ export const createPoolWithdrawSlice = (
       } else if (+cFormValues.lpToken > 0) {
         // set loading state
         get()[SLICE_KEY].setStateByKey('slippage', {
-          [activeKey]: {
-            ...(get()[SLICE_KEY].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
-            loading: true,
-          },
+          [activeKey]: { ...(get()[SLICE_KEY].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE), loading: true },
         })
 
         // update amounts in form value
@@ -267,18 +244,13 @@ export const createPoolWithdrawSlice = (
           if (resp.error) {
             get()[SLICE_KEY].setStateByKeys({
               slippage: { [activeKey]: { ...DEFAULT_SLIPPAGE, loading: false } },
-              formStatus: {
-                ...get()[SLICE_KEY].formStatus,
-                error: resp.error,
-              },
+              formStatus: { ...get()[SLICE_KEY].formStatus, error: resp.error },
             })
           } else {
             cFormValues.amounts = cFormValues.amounts.map((a, idx) => ({ ...a, value: resp.expected[idx] }))
             activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
             get()[SLICE_KEY].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
-            get()[SLICE_KEY].setStateByKey('slippage', {
-              [activeKey]: { ...cloneDeep(DEFAULT_SLIPPAGE), slippage: 0 },
-            })
+            get()[SLICE_KEY].setStateByKey('slippage', { [activeKey]: { ...cloneDeep(DEFAULT_SLIPPAGE), slippage: 0 } })
           }
         }
       }
@@ -517,17 +489,10 @@ export const createPoolWithdrawSlice = (
           get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'WITHDRAW'
-          get()[SLICE_KEY].setStateByKeys({
-            formStatus: cFormStatus,
-            formValues: resetFormValues(formValues),
-          })
+          get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
           // re-fetch data
-          await invalidateUserPoolInfo({
-            chainId: curve.chainId,
-            poolId: pool.id,
-            userAddress: curve.signerAddress,
-          })
+          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
           await get().pools.fetchPoolStats(curve, poolData)
           await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
@@ -557,17 +522,10 @@ export const createPoolWithdrawSlice = (
           get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'UNSTAKE'
-          get()[SLICE_KEY].setStateByKeys({
-            formStatus: cFormStatus,
-            formValues: resetFormValues(formValues),
-          })
+          get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
           // re-fetch data
-          await invalidateUserPoolInfo({
-            chainId: curve.chainId,
-            poolId: pool.id,
-            userAddress: curve.signerAddress,
-          })
+          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
           await get().pools.fetchPoolStats(curve, poolData)
           await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
@@ -603,17 +561,10 @@ export const createPoolWithdrawSlice = (
         } else {
           cFormStatus.formTypeCompleted = isClaimCrv ? 'CLAIM_CRV' : 'CLAIM_REWARDS'
           const storedFormValues = get()[SLICE_KEY].formValues
-          get()[SLICE_KEY].setStateByKeys({
-            formStatus: cFormStatus,
-            formValues: resetFormValues(storedFormValues),
-          })
+          get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(storedFormValues) })
 
           // re-fetch data
-          await invalidateUserPoolInfo({
-            chainId: curve.chainId,
-            poolId: pool.id,
-            userAddress: curve.signerAddress,
-          })
+          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
           await get().pools.fetchPoolStats(curve, poolData)
           await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
