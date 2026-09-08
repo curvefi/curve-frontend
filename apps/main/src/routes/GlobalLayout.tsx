@@ -9,7 +9,6 @@ import { networks as crvusdNetworks } from '@/loan/networks'
 import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConnectModal'
-import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
 import {
   APP_LINK,
   AppMenuOption,
@@ -30,6 +29,7 @@ import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { mapRecord, maybe, type PartialRecord } from '@primitives/objects.utils'
 import { PageLayout } from '@ui/features/layout/PageLayout'
+import type { Maintenance } from '@ui/features/maintenance/hooks/useMaintenance'
 import { usePathname } from '@ui/hooks/router'
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) =>

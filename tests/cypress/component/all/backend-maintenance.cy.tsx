@@ -1,8 +1,8 @@
 import { BACKEND_MAINTENANCE } from '@/maintenances'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { BackendMaintenanceBanner } from '@evm-ui/features/maintenance/components/BackendMaintenanceBanner'
-import { BackendMaintenanceModal } from '@evm-ui/features/maintenance/components/BackendMaintenanceModal'
-import { useMaintenance, type MaintenanceConfig } from '@evm-ui/features/maintenance/hooks/useMaintenance'
+import { BackendMaintenanceBanner } from '@ui/features/maintenance/components/BackendMaintenanceBanner'
+import { BackendMaintenanceModal } from '@ui/features/maintenance/components/BackendMaintenanceModal'
+import { useMaintenance, type MaintenanceConfig } from '@ui/features/maintenance/hooks/useMaintenance'
 import { TIME_FRAMES, TIME_OPTION_MS } from '@ui/lib/time'
 
 const MODAL_TEST_ID = 'backend-maintenance-modal'

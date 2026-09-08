@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { MaintenancePage } from './MaintenancePage'
+import { MaintenancePage } from '@ui/features/maintenance/components/MaintenancePage'
 
 const meta: Meta<typeof MaintenancePage> = {
   title: 'UI Kit/Features/MaintenancePage',
