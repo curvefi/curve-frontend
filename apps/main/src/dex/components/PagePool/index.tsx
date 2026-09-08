@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { type Address, isAddressEqual } from 'viem'
+import { isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
@@ -19,15 +19,14 @@ import { FormClaim } from '@/dex/components/PagePool/Withdraw/components/FormCla
 import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormUnstake'
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { AdvancedDetails } from '@/dex/features/advanced-details'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
-import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
@@ -105,17 +104,13 @@ const menu = [
         value: 'add_reward',
         label: t`Add Reward`,
         visible: p => !!p.isGaugeManager,
-        component: ({ poolData, routerParams }) => (
-          <AddRewardToken poolId={poolData.pool.id} chainId={routerParams.rChainId} />
-        ),
+        component: () => <AddRewardToken />,
       },
       {
         value: 'deposit_reward',
         label: t`Deposit Reward`,
         visible: p => !!p.isRewardsDistributor,
-        component: ({ poolData, routerParams }) => (
-          <DepositReward poolId={poolData.pool.id} chainId={routerParams.rChainId} />
-        ),
+        component: () => <DepositReward />,
       },
     ],
   },
@@ -127,40 +122,29 @@ type PoolRouteState = {
 }
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
-  const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
-  const { rChainId, rPoolIdOrAddress } = routerParams
-  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
-  const { signerAddress } = curve ?? {}
-  const poolAlert = usePoolAlert({
-    blockchainId: params.network,
-    poolAddress: poolData?.pool.address,
-    hasVyperVulnerability: poolData?.hasVyperVulnerability,
-  })
-  const { tokensMapper } = useTokensMapper(rChainId)
-  const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
+  const { params, hasDepositAndStake } = pageTransferProps
+  const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
+
+  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.hasVyperVulnerability })
+  const { tokensMapper } = useTokensMapper(chainId)
+  const chainIdPoolId = getChainPoolIdActiveKey(chainId, poolId)
   const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(poolData) ?? 'stable'])
 
-  const { data: gaugeManager } = useGaugeManager({ chainId: rChainId, poolId: poolData?.pool.id })
-  const { data: rewardDistributors } = useGaugeRewardsDistributors({
-    chainId: rChainId,
-    poolId: poolData?.pool.id,
-    userAddress: signerAddress,
-  })
+  const { signerAddress } = curve ?? {}
+  const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
+  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress: signerAddress })
 
   const [seed, setSeed] = useState(DEFAULT_SEED)
   const { state } = useLocation()
   const defaultTab = (state as PoolRouteState).defaultTab
 
-  const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const { blockchainId } = network
-  const poolAddress = poolData?.pool.address as Address
   const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
   const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
-  usePageVisibleInterval(() => curve && poolData && void fetchPoolStats(curve, poolData), REFRESH_INTERVAL['5m'])
+  usePageVisibleInterval(() => curve && void fetchPoolStats(curve, poolData), REFRESH_INTERVAL['5m'])
 
   // is seed
   useEffect(() => {
@@ -177,37 +161,29 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const tabParams = useMemo(
     () =>
       poolData && {
-        curve,
         params,
-        routerParams,
         hasDepositAndStake,
-        poolData,
-        poolDataCacheOrApi,
-        blockchainId,
         poolAlert,
         maxSlippage,
         seed,
         tokensMapper,
+        isGaugeKilled: poolData.gauge.isKilled ?? undefined,
         isGaugeManager: maybes([gaugeManager, signerAddress], isAddressEqual),
         isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
           Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
         ),
       },
     [
-      curve,
-      params,
-      routerParams,
-      hasDepositAndStake,
       poolData,
-      poolDataCacheOrApi,
-      blockchainId,
+      params,
+      hasDepositAndStake,
       poolAlert,
       maxSlippage,
       seed,
       tokensMapper,
-      rewardDistributors,
-      signerAddress,
       gaugeManager,
+      signerAddress,
+      rewardDistributors,
     ],
   )
 
@@ -217,46 +193,41 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         <PoolAlertBanner
           alertType={poolAlert.alertType}
           banner={poolAlert.banner}
-          network={params.network}
-          poolId={params.poolIdOrAddress}
+          network={blockchainId}
+          poolId={poolId}
         />
       )}
       <DetailPageLayout
         header={
           <PoolPageHeader
-            chainId={rChainId}
-            blockchainId={network.blockchainId}
-            poolIdOrAddress={rPoolIdOrAddress}
+            chainId={chainId}
+            blockchainId={blockchainId}
+            poolIdOrAddress={poolId}
+            title={poolData.pool.name}
+            tokenList={useMemo(
+              () =>
+                poolData?.tokens
+                  .map((symbol, index) => ({ symbol, address: poolData.tokenAddresses[index] ?? '' }))
+                  .filter(({ address }) => address) ?? [],
+              [poolData.tokenAddresses, poolData?.tokens],
+            )}
+            isLoading={false} // for now the page only renders when pool data has already loaded, it's not lazy yet.
             pricesApiPoolData={pricesApiPoolData}
-            backHref={getInternalUrl('dex', network.blockchainId, DEX_ROUTES.PAGE_POOLS)}
+            backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
           />
         }
         formTabs={{
           content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} />,
         }}
       >
-        {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
-        <UserPosition
-          blockchainId={network.blockchainId}
-          chainId={rChainId}
-          poolDataCacheOrApi={poolDataCacheOrApi}
-          poolId={poolId}
-        />
-        {!isLiteChain(network.chainId) && pricesApiPoolData && (
-          <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
+        <CampaignRewardsBanner />
+        <UserPosition />
+        {!isLiteChain(chainId) && pricesApiPoolData && (
+          <OhlcAndActivityComp rChainId={chainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
-        {!isLiteChain(network.chainId) && (
-          <PoolHistoricalBaseRateChart blockchainId={network.blockchainId} poolAddress={poolAddress} />
-        )}
-        <PoolInformation
-          curve={curve}
-          routerParams={routerParams}
-          poolData={poolData}
-          poolDataCacheOrApi={poolDataCacheOrApi}
-          poolAlert={poolAlert}
-          pricesApiPoolData={pricesApiPoolData}
-        />
-        <AdvancedDetails routerParams={routerParams} poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} />
+        {!isLiteChain(chainId) && <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />}
+        <PoolInformation poolAlert={poolAlert} pricesApiPoolData={pricesApiPoolData} />
+        <AdvancedDetails />
       </DetailPageLayout>
     </>
   )

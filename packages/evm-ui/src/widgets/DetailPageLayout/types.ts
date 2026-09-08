@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
-
-export type FormPlacement = 'inline' | 'mobile-drawer'
+import type { FormPlacement } from '@ui/features/form-context/types'
 
 export type DetailPageLayoutFormTabs = {
   content: ReactNode

@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { type Address, getAddress } from 'viem'
-import { CurveApi, type GaugeStatus, NetworkConfig, Pool, PoolData, PoolDataCache } from '@/dex/types/main.types'
+import { CurveApi, type GaugeStatus, NetworkConfig, Pool, PoolData } from '@/dex/types/main.types'
 import { fulfilledValue } from '@/dex/utils'
 import { shortenAddress } from '@evm-ui/utils'
 import { PromisePool } from '@supercharge/promise-pool'
@@ -64,7 +64,6 @@ export async function getPools(
       poolId,
     ): {
       poolsMapper: Record<string, PoolData>
-      poolsMapperCache: Record<string, PoolDataCache>
     } => {
       const pool = getPool(poolId)
 
@@ -75,35 +74,11 @@ export async function getPools(
       const poolData = getPoolData(pool, network)
 
       poolData.failedFetching24hOldVprice = failedFetching24hOldVprice?.[pool.address] ?? false
-
       prev.poolsMapper[poolId] = poolData
-
-      prev.poolsMapperCache[poolId] = lodash.pick(poolData, [
-        'hasWrapped',
-        'gauge',
-        'tokens',
-        'tokensCountBy',
-        'tokensAll',
-        'tokensLowercase',
-        'tokenAddresses',
-        'tokenAddressesAll',
-        'tokenDecimalsAll',
-        'pool.id',
-        'pool.name',
-        'pool.address',
-        'pool.gauge.address',
-        'pool.lpToken',
-        'pool.implementation',
-        'pool.isCrypto',
-        'pool.isFactory',
-        'pool.isLending',
-        'pool.referenceAsset',
-        'pool.isNg',
-      ]) as PoolDataCache
 
       return prev
     },
-    { poolsMapper: {}, poolsMapperCache: {} },
+    { poolsMapper: {} },
   )
 
   if (!includeGaugeData) {
@@ -120,7 +95,6 @@ export async function getPools(
     const isGaugeKilled = fulfilledValue(isGaugeKilledResult) ?? null
 
     resp.poolsMapper[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
-    resp.poolsMapperCache[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
 
     if (gaugeStatus?.rewardsNeedNudging || gaugeStatus?.areCrvRewardsStuckInBridge) {
       log(

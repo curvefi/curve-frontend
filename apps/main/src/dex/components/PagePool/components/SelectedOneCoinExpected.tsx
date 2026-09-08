@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
-import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { TokensMapper, PoolData } from '@/dex/types/main.types'
 import { shortenAddress, formatNumber, amount } from '@evm-ui/utils'
 import { Loader } from '@legacy-ui/Loader'
 import { Radio, RadioGroup } from '@legacy-ui/Radio'
@@ -15,7 +15,7 @@ export const SelectedOneCoinExpected = ({
   haveSigner,
   blockchainId,
   loading,
-  poolDataCacheOrApi,
+  poolData,
   selectedTokenAddress,
   tokens,
   tokensMapper,
@@ -26,7 +26,7 @@ export const SelectedOneCoinExpected = ({
   haveSigner: boolean
   blockchainId: string
   loading: boolean
-  poolDataCacheOrApi: PoolDataCacheOrApi
+  poolData: PoolData
   selectedTokenAddress: string
   tokens: string[]
   tokensMapper: TokensMapper
@@ -43,7 +43,7 @@ export const SelectedOneCoinExpected = ({
       {selectedTokenAddress ? (
         tokenAddresses.map((tokenAddress, idx) => {
           const symbol = tokens[idx]
-          const haveSameTokenName = poolDataCacheOrApi?.tokensCountBy[symbol] > 1
+          const haveSameTokenName = poolData?.tokensCountBy[symbol] > 1
 
           return (
             <Radio
