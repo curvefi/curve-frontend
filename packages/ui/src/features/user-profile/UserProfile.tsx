@@ -1,5 +1,3 @@
-import { Settings } from '@evm-ui/features/user-profile/settings/Settings'
-import { UserProfileHeader } from '@evm-ui/features/user-profile/UserProfileHeader'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -7,6 +5,8 @@ import type { Address } from '@primitives/address.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
+import { Settings } from './settings/Settings'
+import { UserProfileHeader } from './UserProfileHeader'
 
 const { Spacing, Width } = SizesAndSpaces
 

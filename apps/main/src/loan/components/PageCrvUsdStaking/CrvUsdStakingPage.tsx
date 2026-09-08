@@ -10,11 +10,11 @@ import { networksIdMapper } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { PageHeader } from '@evm-ui/widgets/PageHeader'
-import { RCScrvUSDLogoSM } from '@legacy-ui/images'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useParams } from '@ui/hooks/router'
+import { RCScrvUSDLogoSM } from '@ui/images'
 import { t } from '@ui/lib/i18n'
 
 const { IconSize } = SizesAndSpaces

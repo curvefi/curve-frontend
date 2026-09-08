@@ -1,4 +1,3 @@
-import { LlamaImg } from '@legacy-ui/images'
 import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
@@ -6,6 +5,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { LlamaImg } from '@ui/images'
 
 const { Spacing } = SizesAndSpaces
 

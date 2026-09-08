@@ -19,7 +19,6 @@ import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import {
   useMarketResetPosition,
   useMarketMobileFormDrawer,
@@ -31,6 +30,7 @@ import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLa
 import type { Decimal } from '@primitives/decimal.utils'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import type { Range } from '@ui/features/queries/util'
+import { useUserProfileStore } from '@ui/features/user-profile'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { useLendMarket } from '../../hooks/useLendMarket'

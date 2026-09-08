@@ -1,4 +1,3 @@
-import { showReleaseChannelSnackbar } from '@evm-ui/features/user-profile/settings/settings.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -7,6 +6,7 @@ import { useReleaseChannel } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ReleaseChannel } from '@ui/lib/env'
 import { t, Trans } from '@ui/lib/i18n'
+import { showReleaseChannelSnackbar } from './settings.util'
 
 const { Spacing } = SizesAndSpaces
 

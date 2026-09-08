@@ -1,5 +1,4 @@
 import { enforce, test } from 'vest'
-import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { createValidationSuite } from '@evm-ui/lib'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
@@ -11,6 +10,7 @@ import {
   SlippageSettings,
   SlippageType,
 } from '@ui/features/slippage/slippage.utils'
+import { useUserProfileStore } from '@ui/features/user-profile'
 import { t } from '@ui/lib/i18n'
 
 function isSlippage(nr: Decimal) {

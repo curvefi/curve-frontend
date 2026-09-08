@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import type { ConnectWalletProps } from '@evm-ui/features/connect-wallet/ui/ConnectWalletIndicator'
 import type { ChainListOption } from '@evm-ui/features/switch-chain/ui/ChainList'
 import type { PartialRecord } from '@primitives/objects.utils'
+import type { ConnectWalletProps } from '@ui/features/connect-wallet/ConnectWalletIndicator'
 import type { QueryProp } from '@ui/features/queries/util'
 
 export type HeaderLink = {

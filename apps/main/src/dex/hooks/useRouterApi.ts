@@ -6,11 +6,11 @@ import { TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import { type RouteResponse, type RoutesQuery, useRouterApi as useRouterApiQuery } from '@evm-ui/entities/router-api'
-import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { fromWei, toWei } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { useUserProfileStore } from '@ui/features/user-profile'
 
 /** Calculate exchange rates for display */
 const calculateExchangeRate = (

@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react'
 import MuiLink from '@mui/material/Link'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { ThemeProvider } from '@ui/components/ThemeProvider'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
 import { QueryProvider } from '@ui/features/queries/provider'
 import { persister, queryClient } from '@ui/features/queries/query-client'
+import { ThemeProvider } from '@ui/features/themes/ThemeProvider'
 import { IS_CYPRESS } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 

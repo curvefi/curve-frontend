@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
 import MuiThemeProvider from '@mui/system/ThemeProvider'
 import type { ThemeKey } from '@ui/features/themes/basic-theme'
-import { chadTheme, darkTheme, lightTheme } from '../features/themes/themes'
+import { chadTheme, darkTheme, lightTheme } from './themes'
 
 const themes = {
   light: lightTheme,

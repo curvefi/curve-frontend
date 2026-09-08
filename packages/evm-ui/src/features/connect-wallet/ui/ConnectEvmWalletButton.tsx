@@ -3,7 +3,7 @@ import {
   type ConnectionProps,
   ConnectWalletButton,
   type ConnectWalletButtonProps,
-} from '@ui/components/ConnectWalletButton'
+} from '@ui/features/connect-wallet/ConnectWalletButton'
 import { useWallet } from '../lib'
 
 export const ConnectEvmWalletButton = (props: Omit<ConnectWalletButtonProps, keyof ConnectionProps>) => {
