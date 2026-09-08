@@ -9,6 +9,7 @@ import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
+import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
 export type BreakdownSource = {
@@ -20,7 +21,7 @@ export type BreakdownSource = {
 
 export type RateBreakdownRow = {
   source: BreakdownSource
-  price?: number
+  price: QueryProp<number | undefined>
   rate: number | null | undefined
   maxBoostRate?: number | null
 }
@@ -33,22 +34,18 @@ export type RateBreakdownData = {
   hasAdjustments: boolean
 }
 
-type TokenPrices = Record<string, number> | undefined
-
-const tokenPrice = (prices: TokenPrices, address: string, fallback?: number) => prices?.[address] ?? fallback
-
 export const buildBorrowRateBreakdown = ({
   rate,
   chainId,
   blockchainId,
   collateralToken,
-  prices,
+  collateralPrice,
 }: {
   rate: BorrowRate
   chainId: number
   blockchainId: string
   collateralToken: MarketToken | undefined
-  prices: TokenPrices
+  collateralPrice: QueryProp<number>
 }): RateBreakdownData => {
   const incentives = notFalsy(
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
@@ -66,7 +63,7 @@ export const buildBorrowRateBreakdown = ({
         explorerUrl: scanTokenPath(chainId, collateralToken.address),
         yieldBearing: true,
       },
-      price: tokenPrice(prices, collateralToken.address),
+      price: collateralPrice,
       rate: -rebasingYield,
     })),
   )
@@ -83,11 +80,15 @@ export const buildBorrowRateBreakdown = ({
           address: reward.address,
           explorerUrl: scanTokenPath(chainId, reward.address),
         },
-        price: tokenPrice(prices, reward.address, reward.price),
+        price: constQ(reward.price),
         rate: -reward.value,
       })),
       ...rebasingRow,
-      { source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Borrow APR` } }, rate: rate.rate },
+      {
+        source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Borrow APR` } },
+        price: constQ(undefined), // Base APR/APY rows have no token price.
+        rate: rate.rate,
+      },
     ],
     points: getPointsCampaignRows(rate.extraRewards),
     total: rate.totalBorrowRate,
@@ -107,8 +108,8 @@ export const buildSupplyRateBreakdown = ({
   chainId: number
   blockchainId: string
   borrowToken: MarketToken | undefined
-  prices: TokenPrices
-  crvPrice?: number
+  prices: QueryProp<Record<string, number>>
+  crvPrice: QueryProp<number>
 }): RateBreakdownData => {
   const crvRates = [rate.supplyApyCrvMinBoost, rate.supplyApyCrvMaxBoost]
   const crvRow: RateBreakdownRow[] = notFalsy(
@@ -140,7 +141,7 @@ export const buildSupplyRateBreakdown = ({
         explorerUrl: scanTokenPath(chainId, borrowToken.address),
         yieldBearing: true,
       },
-      price: tokenPrice(prices, borrowToken.address),
+      price: mapQuery(prices, prices => prices[borrowToken.address]),
       rate: rebasingYield,
     })),
   )
@@ -154,7 +155,7 @@ export const buildSupplyRateBreakdown = ({
           address: address as Address,
           explorerUrl: scanTokenPath(chainId, address),
         },
-        price: tokenPrice(prices, address),
+        price: mapQuery(prices, prices => prices[address]),
         rate: percentage,
       })),
       ...campaigns.map(({ platform, platformImageId, reward, symbol }) => ({
@@ -167,7 +168,7 @@ export const buildSupplyRateBreakdown = ({
           address: reward.address,
           explorerUrl: scanTokenPath(chainId, reward.address),
         },
-        price: tokenPrice(prices, reward.address, reward.price),
+        price: constQ(reward.price),
         rate: aprToApy(reward.value),
       })),
       ...rebasingRow,
