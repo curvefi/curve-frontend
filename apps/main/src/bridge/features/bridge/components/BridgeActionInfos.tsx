@@ -7,7 +7,7 @@ import { t } from '@ui/lib/i18n'
 type BridgeActionInfosProps = EstimatedTxCostProps & {
   /** Query returning the estimated bridge cost in the chain's native token. */
   bridgeCost: QueryProp<number>
-  nativeTokenSymbol: string
+  nativeTokenSymbol: string | undefined
 }
 
 export const BridgeActionInfos = ({ bridgeCost, gas, isApproved, nativeTokenSymbol }: BridgeActionInfosProps) => (

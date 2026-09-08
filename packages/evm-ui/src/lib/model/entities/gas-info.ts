@@ -351,7 +351,7 @@ export function calculateGas(
   gasInfo: GasInfo | undefined,
   chainTokenUsdRate: number | undefined,
   chainId: number,
-  networkSymbol: string,
+  networkSymbol: string | undefined,
 ): { estGasCost?: number; estGasCostUsd?: number; tooltip?: string; gasCostInWei?: number } {
   const { gasPricesUnit, gasL2, gasPricesDefault } = getGasConfig(chainId)
   const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
@@ -382,7 +382,7 @@ type GasEstimate = Amount | [Decimal, Decimal] | number[] | null | undefined
 const useEstimateGas = (chainId: number | null | undefined, estimate: QueryResult<GasEstimate>, enabled?: boolean) => {
   const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
   const gasInfo = useGasInfoAndUpdateLib({ chainId }, enabled)
-  const networkSymbol = maybe(chainId, chainId => getChainNativeCurrency(chainId).symbol)
+  const networkSymbol = maybe(chainId, chainId => getChainNativeCurrency(chainId)?.symbol)
   return useCombinedQueries(
     [estimate, gasInfo, ethRate],
     useCallback(
