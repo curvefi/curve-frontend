@@ -42,7 +42,7 @@ import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLay
 import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { maybes } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui/utils/time'
+import { REFRESH_INTERVAL } from '@ui/lib/time'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }

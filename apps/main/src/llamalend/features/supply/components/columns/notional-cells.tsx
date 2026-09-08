@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { t } from '@ui/lib/i18n'
-import type { SxProps } from '@ui/utils/mui'
+import type { SxProps } from '@ui/lib/mui'
 
 type NotionalCellData = {
   isLoading?: boolean // used for partial loading states e.g. notional rates

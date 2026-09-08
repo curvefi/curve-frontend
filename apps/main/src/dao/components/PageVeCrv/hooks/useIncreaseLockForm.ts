@@ -16,7 +16,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { mapQuery } from '@ui/features/queries/util'
-import { MILLISECONDS_PER_SECOND } from '@ui/utils/time'
+import { MILLISECONDS_PER_SECOND } from '@ui/lib/time'
 import { calculateVeCrv } from '../utils/vecrv-calculations'
 
 const defaultValues: IncreaseLockFormValues = { lockedAmount: undefined, maxLockedAmount: undefined }

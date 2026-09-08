@@ -23,7 +23,7 @@ import type { TypographyVariantKey } from '@ui/features/themes/typography'
 import { useBreakpoint, useIsMobile } from '@ui/hooks/useBreakpoints'
 import { CopyIcon } from '@ui/icons/CopyIcon'
 import { t } from '@ui/lib/i18n'
-import { applySxProps, type SxProps } from '@ui/utils/mui'
+import { applySxProps, type SxProps } from '@ui/lib/mui'
 import { LabelTooltipIcon } from './LabelTooltipIcon'
 import { METRIC_CATEGORIES, type MetricCategory, type MetricLayout } from './metric-categories'
 

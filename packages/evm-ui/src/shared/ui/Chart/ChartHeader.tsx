@@ -9,7 +9,7 @@ import { Select } from '@ui/components/Select'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ArrowsHorizontalIcon } from '@ui/icons/ArrowsHorizontalIcon'
 import { t } from '@ui/lib/i18n'
-import { applySxProps, type SxProps } from '@ui/utils/mui'
+import { applySxProps, type SxProps } from '@ui/lib/mui'
 import { SelectTimeOption, type TimeOption } from './SelectTimeOption'
 
 const { Spacing } = SizesAndSpaces

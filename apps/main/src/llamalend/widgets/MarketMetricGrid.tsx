@@ -1,6 +1,6 @@
 import Box, { type BoxProps } from '@mui/material/Box'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 
 const { Grid } = SizesAndSpaces
 

@@ -4,7 +4,7 @@ import type { Falsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { type ConnectionProps, ConnectWalletButton } from '@ui/components/ConnectWalletButton'
 import { t } from '@ui/lib/i18n'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 import { useIsMobileFormDrawer } from '../form-context/FormPlacementContext'
 import { BUTTON_FORM_SIZE } from './constants'
 

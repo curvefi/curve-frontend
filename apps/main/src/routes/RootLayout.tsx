@@ -28,8 +28,8 @@ import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
 import { QueryProvider } from '@ui/features/queries/provider'
 import { persister, queryClient } from '@ui/features/queries/query-client'
 import { addBreadcrumb } from '@ui/features/sentry'
+import { IS_CYPRESS } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { IS_CYPRESS } from '@ui/utils/env'
 import { GlobalLayout } from './GlobalLayout'
 
 /**

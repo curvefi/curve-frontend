@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
-import { borderStyle } from '@ui/utils/mui'
+import { borderStyle } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
 

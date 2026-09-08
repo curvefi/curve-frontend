@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles'
 import { RouterLink } from '@ui/components/RouterLink'
+import type { SxProps } from '@ui/lib/mui'
 import { CURVE_LOGO_URL } from '@ui/lib/resource.constants'
-import type { SxProps } from '@ui/utils/mui'
 
 const Image = styled('img')({
   width: 26,

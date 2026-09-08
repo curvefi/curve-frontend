@@ -2,7 +2,7 @@ import { meanBy } from 'lodash'
 import { formatNumber, type NumberFormatOptions } from '@evm-ui/utils'
 import type { Theme } from '@mui/material/styles'
 import { movingAverage } from '@primitives/array.utils'
-import { TIME_FRAMES } from '@ui/utils/time'
+import { TIME_FRAMES } from '@ui/lib/time'
 
 export type ChartLineDashPattern = number[]
 

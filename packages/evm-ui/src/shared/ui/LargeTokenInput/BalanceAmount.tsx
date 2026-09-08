@@ -3,7 +3,7 @@ import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
-import type { SxProps } from '@ui/utils/mui'
+import type { SxProps } from '@ui/lib/mui'
 
 /**
  * Displays a balance amount with optional loading and disabled states.

@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { ProposalData, useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import { useStore } from '@/dao/store/useStore'
 import { ProposalListFilter, SortByFilterProposals, SortDirection } from '@/dao/types/dao.types'
-import { TIME_FRAMES } from '@ui/utils/time'
+import { TIME_FRAMES } from '@ui/lib/time'
 
 const { WEEK } = TIME_FRAMES
 

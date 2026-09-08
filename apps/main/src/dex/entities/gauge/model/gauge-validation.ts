@@ -10,7 +10,7 @@ import {
 } from '@evm-ui/lib/validation'
 import { amount as toAmount, formatNumber } from '@evm-ui/utils'
 import { t } from '@ui/lib/i18n'
-import { TIME_FRAMES } from '@ui/utils/time'
+import { TIME_FRAMES } from '@ui/lib/time'
 import {
   AddRewardParams,
   DepositRewardApproveParams,

@@ -34,7 +34,7 @@ import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
 import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
-import { IS_DEVELOPMENT } from '@ui/utils/env'
+import { IS_DEVELOPMENT } from '@ui/lib/env'
 import { useMarketContext } from '../../market-context'
 
 const useBorrowMoreParams = <ChainId extends LlamaChainId>({

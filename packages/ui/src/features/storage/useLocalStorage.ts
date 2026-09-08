@@ -4,7 +4,7 @@ import type { Address } from '@primitives/address.utils'
 import { getStorageKey, type MigrationOptions, useStoredState } from '@ui/features/storage/useStoredState'
 import type { VisibilityVariants } from '@ui/features/tables/visibility.types'
 import { Duration } from '@ui/features/themes/design/0_primitives'
-import { defaultReleaseChannel, ReleaseChannel } from '@ui/utils/env'
+import { defaultReleaseChannel, ReleaseChannel } from '@ui/lib/env'
 
 function getFromLocalStorage<T>(storageKey: string) {
   const item = window.localStorage.getItem(storageKey)

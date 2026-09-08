@@ -3,8 +3,8 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { objectKeys } from '@primitives/objects.utils'
 import { useReleaseChannel } from '@ui/features/storage/useLocalStorage'
+import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { ReleaseChannel } from '@ui/utils/env'
 import { ReleaseChannelDialog } from './ReleaseChannelDialog'
 
 export const ReleaseChannelToggleButtons = () => {

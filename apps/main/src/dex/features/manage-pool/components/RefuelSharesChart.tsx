@@ -29,7 +29,7 @@ import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { TIME_FRAMES } from '@ui/utils/time'
+import { TIME_FRAMES } from '@ui/lib/time'
 import { refuelPoolAbi } from '../abi'
 import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/timeseries.query'
 

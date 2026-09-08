@@ -6,7 +6,7 @@ import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithWrapper } from '@ui/components/WithWrapper'
-import { relativeTime } from '@ui/utils/time'
+import { relativeTime } from '@ui/lib/time'
 import type { PoolRow } from '../types'
 
 export const AgeCell = ({ getValue }: CellContext<CurveTableFeatures, PoolRow, PoolRow['creationDate']>) => {

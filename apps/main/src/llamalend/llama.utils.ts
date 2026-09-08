@@ -22,8 +22,8 @@ import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { QueryProp, toQuery } from '@ui/features/queries/util'
+import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { ReleaseChannel } from '@ui/utils/env'
 import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 
 /**

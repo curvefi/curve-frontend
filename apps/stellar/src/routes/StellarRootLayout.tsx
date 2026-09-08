@@ -5,8 +5,8 @@ import { ThemeProvider } from '@ui/components/ThemeProvider'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
 import { QueryProvider } from '@ui/features/queries/provider'
 import { persister, queryClient } from '@ui/features/queries/query-client'
+import { IS_CYPRESS } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { IS_CYPRESS } from '@ui/utils/env'
 
 const DEV_TOOLS = !IS_CYPRESS
 

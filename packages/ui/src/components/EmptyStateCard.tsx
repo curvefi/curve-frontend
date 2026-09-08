@@ -8,7 +8,7 @@ import { ExternalLink } from '@ui/components/ExternalLink'
 import { Responsive } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 
 const { Spacing, IconSize, MaxWidth, LineHeight } = SizesAndSpaces
 

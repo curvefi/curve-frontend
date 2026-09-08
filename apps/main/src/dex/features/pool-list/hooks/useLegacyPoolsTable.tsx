@@ -16,7 +16,7 @@ import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { decimal } from '@evm-ui/utils/decimal'
 import { notFalsy, recordValues } from '@primitives/objects.utils'
 import type { DeepKeys } from '@tanstack/table-core'
-import { REFRESH_INTERVAL } from '@ui/utils/time'
+import { REFRESH_INTERVAL } from '@ui/lib/time'
 import type { LegacyPoolRow, LegacyPoolTag } from '../types'
 
 const POOL_TEXT_FIELDS = [

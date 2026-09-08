@@ -12,7 +12,7 @@ import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
 import { IconButtonIconSize } from '@ui/features/themes/components/button'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 import { LabelTooltipIcon } from '../LabelTooltipIcon'
 
 const { Spacing, ButtonSize, IconSize } = SizesAndSpaces

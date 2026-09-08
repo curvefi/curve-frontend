@@ -3,7 +3,7 @@ import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import Box from '@mui/material/Box'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { borderStyle } from '@ui/utils/mui'
+import { borderStyle } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
 const DETAIL_PAGE_SECTION_NAV_TEST_ID = 'detail-page-section-nav'

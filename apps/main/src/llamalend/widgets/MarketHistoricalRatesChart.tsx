@@ -33,7 +33,7 @@ import { maybe, notFalsy } from '@primitives/objects.utils'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { TIME_OPTION_MS } from '@ui/utils/time'
+import { TIME_OPTION_MS } from '@ui/lib/time'
 import { useMarketContext } from '../features/market-context'
 import { MarketCardHeader } from './MarketCardHeader'
 

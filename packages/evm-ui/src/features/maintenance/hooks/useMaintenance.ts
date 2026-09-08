@@ -2,7 +2,7 @@ import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { formatDate, formatTime } from '@legacy-ui/utils/utilsDate'
 import { Falsy } from '@primitives/objects.utils'
 import { useDismissMaintenanceBanner, useDismissMaintenanceModal } from '@ui/features/storage/useLocalStorage'
-import { TIME_OPTION_MS } from '@ui/utils/time'
+import { TIME_OPTION_MS } from '@ui/lib/time'
 
 export type MaintenanceConfig = {
   // UTC ISO string date of the scheduled maintenance.

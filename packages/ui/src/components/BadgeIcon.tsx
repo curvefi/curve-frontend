@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef } from 'react'
 import { styled } from '@mui/material/styles'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { applySxProps, type SxProps } from '@ui/utils/mui'
+import { applySxProps, type SxProps } from '@ui/lib/mui'
 
 const { IconSize } = SizesAndSpaces
 

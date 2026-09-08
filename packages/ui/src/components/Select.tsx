@@ -2,7 +2,7 @@
 import MuiSelect, { type SelectProps as MuiSelectProps } from '@mui/material/Select'
 import type { Theme } from '@mui/material/styles'
 import { TRANSPARENT } from '@ui/features/themes/design/0_primitives'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 
 const ghostSx = {
   '&.MuiInputBase-root': { backgroundColor: TRANSPARENT },

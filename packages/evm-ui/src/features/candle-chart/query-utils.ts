@@ -1,4 +1,4 @@
-import { TIME_OPTION_MS } from '@ui/utils/time'
+import { TIME_OPTION_MS } from '@ui/lib/time'
 import type { TimeOption } from './types'
 
 export type OhlcPageParam = {

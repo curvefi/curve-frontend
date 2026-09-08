@@ -6,7 +6,7 @@ import { SwipeableDrawer } from '@ui/components/SwipeableDrawer/SwipeableDrawer'
 import { BUTTON_FORM_SIZE } from '@ui/features/forms/constants'
 import { MUI_BUTTON_SIZE } from '@ui/features/themes/components/button'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 

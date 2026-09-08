@@ -15,7 +15,7 @@ import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
-import { ReleaseChannel } from '@ui/utils/env'
+import { ReleaseChannel } from '@ui/lib/env'
 
 function MarketAlertHookTest({
   chainId,

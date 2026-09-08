@@ -1,6 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import { ConnectWalletButton } from '@ui/components/ConnectWalletButton'
-import type { SxProps } from '@ui/utils/mui'
+import type { SxProps } from '@ui/lib/mui'
 import { ConnectedWalletLabel } from './ConnectedWalletLabel'
 
 export type ConnectWalletProps = {

@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { FireIcon } from '@ui/icons/FireIcon'
-import { borderStyle } from '@ui/utils/mui'
+import { borderStyle } from '@ui/lib/mui'
 import { ALIGNMENTS, Metric } from '../Metric'
 import { METRIC_CATEGORIES } from '../metric-categories'
 

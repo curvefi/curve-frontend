@@ -6,8 +6,8 @@ import { Banner } from '@evm-ui/shared/ui/Banner'
 import { PhishingWarningBanner } from '@evm-ui/widgets/Header/PhishingWarningBanner'
 import { formatDate } from '@legacy-ui/utils'
 import { useDismissCurveLiteBanner, useReleaseChannel } from '@ui/features/storage/useLocalStorage'
+import { IS_CYPRESS, ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { IS_CYPRESS, ReleaseChannel } from '@ui/utils/env'
 import { StackBanners } from './StackBanners'
 
 export type GlobalBannerProps = {

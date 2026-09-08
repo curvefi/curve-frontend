@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { BackendMaintenanceModal } from '@evm-ui/features/maintenance/components/BackendMaintenanceModal'
 import { MaintenancePage } from '@evm-ui/features/maintenance/components/MaintenancePage'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
-import { IS_CYPRESS } from '@ui/utils/env'
+import { IS_CYPRESS } from '@ui/lib/env'
 
 export const BackendMaintenanceGuard = ({
   maintenance,

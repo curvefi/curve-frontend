@@ -28,7 +28,7 @@ import { maybe } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { TIME_OPTION_MS } from '@ui/utils/time'
+import { TIME_OPTION_MS } from '@ui/lib/time'
 
 const { Height, Spacing } = SizesAndSpaces
 

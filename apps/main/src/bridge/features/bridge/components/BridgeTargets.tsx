@@ -18,7 +18,7 @@ import { Spinner } from '@ui/components/Spinner'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { applySxProps, type SxProps } from '@ui/utils/mui'
+import { applySxProps, type SxProps } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
 

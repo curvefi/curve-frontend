@@ -6,7 +6,7 @@ import { MenuItem } from '@ui/components/MenuItem'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { WalletIcon as DefaultWalletIcon } from '@ui/icons/WalletIcon'
 import { t } from '@ui/lib/i18n'
-import type { SxProps } from '@ui/utils/mui'
+import type { SxProps } from '@ui/lib/mui'
 
 type WalletConnector = { id: string; name: string }
 

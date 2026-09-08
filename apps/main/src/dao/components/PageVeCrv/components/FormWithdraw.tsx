@@ -12,7 +12,7 @@ import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { MILLISECONDS_PER_SECOND } from '@ui/utils/time'
+import { MILLISECONDS_PER_SECOND } from '@ui/lib/time'
 
 export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
   const { form, params, canUnlock, lockedAmountAndUnlockTime, isPending, isDisabled, userAddress, error, onSubmit } =

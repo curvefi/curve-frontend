@@ -55,7 +55,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { logSuccess } from '@ui/lib/logging'
-import { REFRESH_INTERVAL } from '@ui/utils/time'
+import { REFRESH_INTERVAL } from '@ui/lib/time'
 
 const { Spacing } = SizesAndSpaces
 

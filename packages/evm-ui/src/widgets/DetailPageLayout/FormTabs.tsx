@@ -4,7 +4,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { useIsMobileFormDrawer } from '@ui/features/form-context/FormPlacementContext'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 import { FormContent } from './FormContent'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 

@@ -23,7 +23,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ, type Range } from '@ui/features/queries/util'
-import { ReleaseChannel } from '@ui/utils/env'
+import { ReleaseChannel } from '@ui/lib/env'
 import { BorrowPositionDetails } from './'
 
 const baseProps = {

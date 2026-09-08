@@ -1,5 +1,5 @@
 import { keyframes } from '@mui/material/styles'
-import { REFRESH_INTERVAL, TIME_FRAMES } from '@ui/utils/time'
+import { REFRESH_INTERVAL, TIME_FRAMES } from '@ui/lib/time'
 
 export const Grays = {
   '10': '#fdfcfc',

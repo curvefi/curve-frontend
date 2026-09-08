@@ -5,8 +5,8 @@ import Typography from '@mui/material/Typography'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { useReleaseChannel } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@ui/lib/env'
 import { t, Trans } from '@ui/lib/i18n'
-import { ReleaseChannel } from '@ui/utils/env'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,7 +1,7 @@
 import ButtonBase, { type ButtonBaseProps } from '@mui/material/ButtonBase'
 import Card from '@mui/material/Card'
 import { Sizing, TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 
 export const SelectableCard = ({
   isSelected,
