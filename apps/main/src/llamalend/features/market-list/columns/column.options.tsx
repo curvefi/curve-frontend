@@ -38,7 +38,7 @@ const createMarketsColumnOptions = ({
       {
         label: MARKET_TITLES[MarketColumnId.MaxRoe],
         columns: [MarketColumnId.MaxRoe],
-        active: !onlyPositions,
+        active: false,
         enabled: true,
       },
       {
