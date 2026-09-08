@@ -9,7 +9,6 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import { useUniqueDebounce } from '@evm-ui/hooks/useDebounce'
 import { HelperMessage } from '@evm-ui/shared/ui/LargeTokenInput/HelperMessage'
 import { SliderInput, SliderInputProps } from '@evm-ui/shared/ui/SliderInput'
 import { decimal } from '@evm-ui/utils'
@@ -24,6 +23,7 @@ import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
 import { chipSizeClickable } from '@ui/features/themes/components/chip'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useUniqueDebounce } from '@ui/hooks/useDebounce'
 import { t } from '@ui/lib/i18n'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { BalanceTextField } from './BalanceTextField'

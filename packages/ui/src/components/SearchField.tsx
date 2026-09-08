@@ -1,8 +1,8 @@
 import { RefObject, useCallback, useRef } from 'react'
-import { useUniqueDebounce } from '@evm-ui/hooks/useDebounce'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import TextField, { type TextFieldProps } from '@mui/material/TextField'
+import { useUniqueDebounce } from '@ui/hooks/useDebounce'
 import { SearchIcon } from '@ui/icons/SearchIcon'
 import { t } from '@ui/lib/i18n'
 

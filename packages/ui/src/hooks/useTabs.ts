@@ -1,7 +1,7 @@
 import type { UrlObject } from 'url'
 import { type ComponentType, createElement, type ReactNode, useCallback, useMemo, useState } from 'react'
-import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { assert } from '@primitives/objects.utils'
+import type { TabOption } from '../components/Tabs/TabsSwitcher'
 import { useSearchParams } from './router'
 
 export type TabValue = string | number

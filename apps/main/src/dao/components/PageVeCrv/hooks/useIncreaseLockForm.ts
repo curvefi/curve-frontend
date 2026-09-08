@@ -10,12 +10,12 @@ import {
   useLockerLockedAmountAndUnlockTime,
   useLockerVeCrv,
 } from '@/dao/entities/locker-vecrv-info'
-import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { mapQuery } from '@ui/features/queries/util'
+import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { MILLISECONDS_PER_SECOND } from '@ui/lib/time'
 import { calculateVeCrv } from '../utils/vecrv-calculations'
 

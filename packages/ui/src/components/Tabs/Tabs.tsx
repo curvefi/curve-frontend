@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
-import { type TabItem, type TabValue, useTabs, type UseTabsOptions } from '@evm-ui/hooks/useTabs'
 import Box from '@mui/material/Box'
 import { WithWrapper } from '@ui/components/WithWrapper'
+import { type TabItem, type TabValue, useTabs, type UseTabsOptions } from '@ui/hooks/useTabs'
 import { TabsSwitcher, type TabsSwitcherProps } from './TabsSwitcher'
 
 /**

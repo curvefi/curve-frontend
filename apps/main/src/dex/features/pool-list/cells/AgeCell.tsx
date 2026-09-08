@@ -1,4 +1,3 @@
-import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { formatDate } from '@legacy-ui/utils'
 import Typography from '@mui/material/Typography'
@@ -6,6 +5,7 @@ import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithWrapper } from '@ui/components/WithWrapper'
+import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { relativeTime } from '@ui/lib/time'
 import type { PoolRow } from '../types'
 

@@ -1,10 +1,10 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react'
-import { useNavigate } from '@evm-ui/hooks/router'
 import { hasParentWithClass } from '@evm-ui/utils/dom'
 import TableRow from '@mui/material/TableRow'
 import type { ReactTable, Row, RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
+import { useNavigate } from '@ui/hooks/router'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import {
   CLICKABLE_IN_ROW_CLASS,

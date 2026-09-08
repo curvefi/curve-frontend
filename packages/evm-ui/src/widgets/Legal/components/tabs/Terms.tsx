@@ -1,7 +1,7 @@
-import { getSearchString } from '@evm-ui/hooks/router'
 import { type AppName, getInternalUrl, PAGE_INTEGRATIONS } from '@evm-ui/shared/routes'
 import Typography from '@mui/material/Typography'
 import { RouterLink } from '@ui/components/RouterLink'
+import { getSearchString } from '@ui/hooks/router'
 import { t, Trans } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 import { LegalExternalLink } from '../general/LegalExternalLink'

@@ -1,10 +1,10 @@
 import { partition, sumBy } from 'lodash'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { splitAtFirst } from '@primitives/array.utils'
+import type { TabOption } from '@ui/components/Tabs/TabsSwitcher'
 import { CONTAINED_TABS_MARGIN_RIGHT } from '@ui/features/themes/components/tabs/mui-tabs'
 import { useResizeObserver } from '@ui/hooks/useResizeObserver'
 import { useSwitch } from '@ui/hooks/useSwitch'
-import type { TabOption } from '../shared/ui/Tabs/TabsSwitcher'
 
 // threshold from when the tabs start to overflow
 const OVERFLOW_THRESHOLD = 0 // px

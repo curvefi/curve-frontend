@@ -1,6 +1,6 @@
 import { useActiveSection } from '@evm-ui/hooks/useActiveSection'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import Box from '@mui/material/Box'
+import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { borderStyle } from '@ui/lib/mui'

@@ -1,7 +1,7 @@
 import { type UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import Stack from '@mui/material/Stack'
+import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
 

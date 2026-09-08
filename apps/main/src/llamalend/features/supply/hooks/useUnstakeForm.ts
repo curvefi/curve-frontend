@@ -11,11 +11,11 @@ import {
   userSupplyVaultAssetsValidationSuite,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useFormSync, useForm } from '@ui/features/forms'
 import { mapQuery } from '@ui/features/queries/util'
+import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 

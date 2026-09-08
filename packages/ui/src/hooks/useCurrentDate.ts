@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
 
 export const useCurrentDate = (granularity: keyof typeof REFRESH_INTERVAL = '1m') => {

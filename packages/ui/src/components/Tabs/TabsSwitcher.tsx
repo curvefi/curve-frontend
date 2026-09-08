@@ -12,8 +12,8 @@ import {
   TabSwitcherVariants,
 } from '@ui/features/themes/components/tabs'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useTabsOverflow } from '@ui/hooks/useTabsOverflow'
 import { applySxProps } from '@ui/lib/mui'
-import { useTabsOverflow } from '../../../hooks/useTabsOverflow'
 import { TabLabel } from './TabLabel'
 import { KEBAB_TAB_VALUE, KebabMenu, KebabTab } from './tabs-kebab'
 

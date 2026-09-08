@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { useStore } from '@/dex/store/useStore'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
-import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
+import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
 
 export const useAutoRefresh = (chainId: number | undefined) => {

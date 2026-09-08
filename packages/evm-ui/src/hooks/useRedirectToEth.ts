@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { usePathname, useNavigate } from '@evm-ui/hooks/router'
 import { replaceNetworkInPath } from '@evm-ui/shared/routes'
+import { usePathname, useNavigate } from '@ui/hooks/router'
 
 export function useRedirectToEth(blockchainId: string, supportedBlockchainIds: string[]) {
   const push = useNavigate()
