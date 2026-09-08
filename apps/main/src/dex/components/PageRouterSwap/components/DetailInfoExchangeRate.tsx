@@ -1,8 +1,8 @@
 import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
-import { formatNumber, getFractionDigitsOptions } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { Chip } from '@legacy-ui/Typography/Chip'
+import { formatNumber, getFractionDigitsOptions } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 export const DetailInfoExchangeRate = ({

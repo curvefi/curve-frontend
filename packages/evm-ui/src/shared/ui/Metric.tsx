@@ -1,19 +1,19 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
-import {
-  copyToClipboard,
-  decomposeNumber,
-  defaultNumberFormatter,
-  formatNumber,
-  type NumberFormatOptions,
-  PLACEHOLDER_USD,
-} from '@evm-ui/utils'
+import { copyToClipboard } from '@evm-ui/utils'
 import { showToast } from '@evm-ui/widgets/Toast/toast.util'
 import Button from '@mui/material/Button'
 import { type IconButtonProps } from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
+import {
+  decomposeNumber,
+  defaultNumberFormatter,
+  formatNumber,
+  type NumberFormatOptions,
+  PLACEHOLDER_USD,
+} from '@primitives/number.utils'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'

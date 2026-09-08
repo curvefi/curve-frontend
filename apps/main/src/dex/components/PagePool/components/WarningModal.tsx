@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
-import { formatNumber, amount } from '@evm-ui/utils'
+import { amount } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Checkbox } from '@legacy-ui/Checkbox'
+import { formatNumber } from '@primitives/number.utils'
 import { t, Trans } from '@ui/lib/i18n'
 
 type SharedProps = {

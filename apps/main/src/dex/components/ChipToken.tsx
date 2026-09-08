@@ -4,9 +4,10 @@ import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
 import { useChainId } from 'wagmi'
 import { fetchTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { copyToClipboard, shortenAddress, formatNumber } from '@evm-ui/utils'
+import { copyToClipboard, shortenAddress } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { Spinner } from '@legacy-ui/Spinner'
+import { formatNumber } from '@primitives/number.utils'
 
 type ButtonProps = {
   className?: string

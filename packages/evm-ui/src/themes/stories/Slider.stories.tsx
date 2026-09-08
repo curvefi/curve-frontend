@@ -1,7 +1,7 @@
 import { ComponentProps, useState } from 'react'
 import { geometricMap, powerMap } from '@evm-ui/utils/interpolations'
-import { formatNumber } from '@evm-ui/utils/number'
 import Box from '@mui/material/Box'
+import { formatNumber } from '@primitives/number.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Slider } from '@ui/components/Slider'
 

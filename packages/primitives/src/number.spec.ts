@@ -1,6 +1,6 @@
 import { noop } from 'lodash'
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import type { Amount } from '@primitives/decimal.utils'
+import type { Amount } from './decimal.utils'
 import {
   defaultNumberFormatter,
   formatNumber,
@@ -9,7 +9,7 @@ import {
   scaleSuffix,
   log10Exp,
   getFractionDigitsOptions,
-} from './number'
+} from './number.utils'
 
 describe('getFractionDigitsOptions', () => {
   it('uses the source value decimal count when it is below the default cap', () => {

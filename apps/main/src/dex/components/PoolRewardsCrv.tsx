@@ -2,10 +2,10 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ChipInactive } from '@/dex/components/ChipInactive'
 import { PoolData, RewardsApy } from '@/dex/types/main.types'
-import { formatNumber } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { Chip } from '@legacy-ui/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { t, Trans } from '@ui/lib/i18n'
 
 export const PoolRewardsCrv = ({

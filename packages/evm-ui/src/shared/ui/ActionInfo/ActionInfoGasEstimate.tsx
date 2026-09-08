@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'

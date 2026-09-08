@@ -6,9 +6,9 @@ import { ChainId, EstimatedGas } from '@/dex/types/main.types'
 import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { calculateGas, useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { formatNumber } from '@evm-ui/utils'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 type StepProgress = {

@@ -1,7 +1,7 @@
 import type { VeCrvFee } from '@/dao/entities/vecrv-fees'
 import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
-import { formatNumber } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 export const FeesBarChartTooltip = ({ datum, currentDate }: { datum: VeCrvFee; currentDate: Date }) => (

@@ -1,6 +1,7 @@
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { formatNumber, formatToken } from '@evm-ui/utils'
+import { formatToken } from '@evm-ui/utils'
 import { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

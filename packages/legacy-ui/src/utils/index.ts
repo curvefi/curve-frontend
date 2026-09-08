@@ -1,5 +1,5 @@
 export * from './helpers'
 export * from './responsive'
 export * from './sharedStyles'
-export * from './utilsDate'
+export * from '@primitives/date.utils'
 export * from './utilsNetworks'

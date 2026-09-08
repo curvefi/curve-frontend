@@ -1,6 +1,6 @@
-import type { Amount } from '@primitives/decimal.utils'
-import { notFalsy } from '@primitives/objects.utils'
-import { getUnitOptions, type Unit } from './units'
+import type { Amount } from './decimal.utils'
+import { notFalsy } from './objects.utils'
+import { getUnitOptions, type Unit } from './units.util'
 
 // Sometimes API returns overflowed USD values. Don't show them!
 const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑

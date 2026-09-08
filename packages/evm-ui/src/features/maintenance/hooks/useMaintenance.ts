@@ -1,5 +1,5 @@
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
-import { formatDate, formatTime } from '@legacy-ui/utils/utilsDate'
+import { formatDate, formatTime } from '@primitives/date.utils'
 import { Falsy } from '@primitives/objects.utils'
 import { useDismissMaintenanceBanner, useDismissMaintenanceModal } from '@ui/features/storage/useLocalStorage'
 import { TIME_OPTION_MS } from '@ui/lib/time'

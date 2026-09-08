@@ -1,8 +1,9 @@
 import { LARGE_RATE } from '@/dex/constants'
 import { RewardBase, PoolData } from '@/dex/types/main.types'
-import { formatNumber, amount } from '@evm-ui/utils'
+import { amount } from '@evm-ui/utils'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { Chip } from '@legacy-ui/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { ChipVolatileBaseApy } from './ChipVolatileBaseApy'
 import { LegacyTooltipBaseApy } from './LegacyTooltipBaseApy'
 

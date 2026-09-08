@@ -20,11 +20,11 @@ import { useOracleValidation } from '@/dex/components/PageCreatePool/hooks/useOr
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
 import { useStore } from '@/dex/store/useStore'
-import { formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 

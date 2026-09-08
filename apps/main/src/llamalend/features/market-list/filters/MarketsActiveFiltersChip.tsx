@@ -15,9 +15,9 @@ import {
   type TableActiveFilterGroup,
   type TableActiveFilterGroupChipsProps,
 } from '@evm-ui/shared/ui/DataTable/TableActiveFilterGroups'
-import type { Unit } from '@evm-ui/utils/units'
 import { toArray } from '@primitives/array.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
+import type { Unit } from '@primitives/units.util'
 import type { ReactTable } from '@tanstack/react-table'
 import { constQ } from '@ui/features/queries/util'
 import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'

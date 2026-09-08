@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
 import { useStore } from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import { formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 type GaugeWeightVotesColumnsProps = {

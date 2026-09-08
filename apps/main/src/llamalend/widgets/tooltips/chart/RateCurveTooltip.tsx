@@ -1,8 +1,8 @@
 import type { RateCurveChartPoint } from '@/llamalend/widgets/MarketRateCurveChart'
 import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
 import type { LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
-import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>

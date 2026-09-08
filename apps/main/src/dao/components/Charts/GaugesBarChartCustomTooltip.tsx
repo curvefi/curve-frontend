@@ -5,8 +5,8 @@ import {
   ChartTooltipShell,
   getChartSignedValueColor,
 } from '@evm-ui/shared/ui/Chart'
-import { formatNumber } from '@evm-ui/utils'
 import { useTheme } from '@mui/material/styles'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 type GaugesBarChartCustomTooltipProps = {

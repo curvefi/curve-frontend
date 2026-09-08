@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
-import { formatNumber, amount } from '@evm-ui/utils'
+import { amount } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
+import { formatNumber } from '@primitives/number.utils'
 import { Trans } from '@ui/lib/i18n'
 
 type Props = {
