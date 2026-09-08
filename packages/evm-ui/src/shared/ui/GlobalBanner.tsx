@@ -2,15 +2,15 @@ import type { ReactNode } from 'react'
 import { BackendMaintenanceBanner } from '@evm-ui/features/maintenance/components/BackendMaintenanceBanner'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
-import { useDismissCurveLiteBanner, useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
+import { useDismissCurveLiteBanner, useDismissPhishingWarn, useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
 import { Banner } from '@evm-ui/shared/ui/Banner'
-import { PhishingWarningBanner } from '@evm-ui/widgets/Header/PhishingWarningBanner'
 import { formatDate } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
-import { IS_CYPRESS, ReleaseChannel } from '@ui/utils/env'
+import { IS_CYPRESS, IS_PREVIEW_HOST, ReleaseChannel } from '@ui/utils/env'
 import { StackBanners } from './StackBanners'
 
 export type GlobalBannerProps = {
+  rootUrl: string
   blockchainId: string
   chainName: string
   chainId: number
@@ -25,6 +25,7 @@ export type GlobalBannerProps = {
 }
 
 export const GlobalBanner = ({
+  rootUrl,
   blockchainId,
   chainName,
   chainId,
@@ -39,6 +40,7 @@ export const GlobalBanner = ({
 }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const [showDowngraded, dismissDowngraded] = useDismissCurveLiteBanner(chainId)
+  const [shouldShowPhishingBanner, dismissShowPhishingBanner] = useDismissPhishingWarn()
   const currentDate = useCurrentDate()
 
   return (
@@ -53,7 +55,16 @@ export const GlobalBanner = ({
         </Banner>
       )}
       {backendMaintenance.showBanner && !IS_CYPRESS && <BackendMaintenanceBanner {...backendMaintenance} />}
-      <PhishingWarningBanner />
+      {!IS_PREVIEW_HOST && shouldShowPhishingBanner && (
+        <Banner
+          subtitle={t`Always carefully check that your URL is ${rootUrl}.`}
+          severity="warning"
+          onClick={dismissShowPhishingBanner}
+          testId="phishing-warning-banner"
+        >
+          {t`Make sure you are on the right domain`}
+        </Banner>
+      )}
       {connectError ? (
         <Banner severity="alert">
           {[connectError.message, t`Please try to switch your RPC in your wallet settings.`].join(' ')}

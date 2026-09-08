@@ -7,6 +7,7 @@ import { Banner } from '@evm-ui/shared/ui/Banner'
 import { GlobalBanner, type GlobalBannerProps } from '@evm-ui/shared/ui/GlobalBanner'
 import { Chain } from '@primitives/network.utils'
 import { t } from '@ui/lib/i18n'
+import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 
 export const EvmBanners = ({
   currentApp,
@@ -22,6 +23,7 @@ export const EvmBanners = ({
 
   return (
     <GlobalBanner
+      rootUrl={EXTERNAL_LINKS.curve.root}
       deprecationDate={DEPRECATED_CHAINS[chainId]}
       isDowngraded={DOWNGRADED_CHAINS.has(chainId)}
       connectError={isFailure(connectState) ? new Error(t`There is an issue connecting to the API.`) : undefined}
