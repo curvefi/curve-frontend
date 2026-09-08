@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
-import { PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { PoolData } from '@/dex/types/main.types'
 import { weiToEther, formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
@@ -12,13 +12,13 @@ import { t } from '@ui/lib/i18n'
 export const DetailInfoExpectedApy = ({
   crvApr,
   lpTokenAmount,
-  poolDataCacheOrApi,
+  poolData,
 }: {
   crvApr: number | undefined
   lpTokenAmount: string
-  poolDataCacheOrApi: PoolDataCacheOrApi
+  poolData: PoolData
 }) => {
-  const staked = usePoolTotalStaked(poolDataCacheOrApi)
+  const staked = usePoolTotalStaked(poolData)
   const { gaugeTotalSupply } = staked ?? {}
 
   const [newCrvApr, setNewCrvApr] = useState<{ ratio: number; apr: number } | null>(null)

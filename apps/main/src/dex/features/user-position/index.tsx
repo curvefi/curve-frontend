@@ -1,17 +1,10 @@
 import { type ReactNode, useMemo } from 'react'
 import { LiquidityDetails } from '@/dex/features/user-position/liquidity-details'
 import { useLiquidityDetails } from '@/dex/features/user-position/liquidity-details/hooks/useLiquidityDetails'
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui/lib/i18n'
-
-type UserPositionProps = {
-  blockchainId: string
-  chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-  poolId: string | undefined
-}
+import { usePoolContext } from '../pool-context'
 
 const menu = [
   { value: 'liquidityDetails', label: t`Liquidity Details`, component: LiquidityDetails },
@@ -22,11 +15,9 @@ const Content = ({ children }: { children: ReactNode }) => (
   <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
 )
 
-export const UserPosition = ({ blockchainId, chainId, poolDataCacheOrApi, poolId }: UserPositionProps) => {
-  const params = useMemo(
-    () => ({ blockchainId, chainId, poolDataCacheOrApi, poolId }),
-    [blockchainId, chainId, poolDataCacheOrApi, poolId],
-  )
+export const UserPosition = () => {
+  const { chainId, blockchainId, poolId, poolData } = usePoolContext()
+  const params = useMemo(() => ({ blockchainId, chainId, poolData, poolId }), [blockchainId, chainId, poolData, poolId])
   const { hasPosition } = useLiquidityDetails(params)
   return (
     hasPosition && (

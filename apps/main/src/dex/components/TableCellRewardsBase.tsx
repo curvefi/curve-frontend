@@ -1,5 +1,5 @@
 import { LARGE_RATE } from '@/dex/constants'
-import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
+import { RewardBase, PoolData } from '@/dex/types/main.types'
 import { formatNumber, amount } from '@evm-ui/utils'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { Chip } from '@legacy-ui/Typography'
@@ -9,7 +9,7 @@ import { LegacyTooltipBaseApy } from './LegacyTooltipBaseApy'
 type Props = {
   base: RewardBase | undefined
   isHighlight: boolean
-  poolData: (PoolData | PoolDataCache) | undefined
+  poolData: PoolData | undefined
 }
 
 export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => {

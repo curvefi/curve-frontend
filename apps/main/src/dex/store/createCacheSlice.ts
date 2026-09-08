@@ -1,6 +1,5 @@
 import { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
-import { PoolDataCacheMapper } from '@/dex/types/main.types'
 import { sleep } from '@primitives/promise.utils'
 
 export type SwapFormValuesCache = {
@@ -15,7 +14,6 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   hasDepositAndStake: Record<string, boolean>
   hasRouter: Record<string, boolean>
-  poolsMapper: Record<string, PoolDataCacheMapper>
   routerFormValues: Record<string, SwapFormValuesCache>
 }
 
@@ -33,7 +31,6 @@ export type CacheSlice = {
 const DEFAULT_STATE: SliceState = {
   hasDepositAndStake: {},
   hasRouter: {},
-  poolsMapper: {},
   routerFormValues: {},
 }
 

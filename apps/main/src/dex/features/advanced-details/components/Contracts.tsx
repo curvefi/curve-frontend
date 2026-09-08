@@ -1,8 +1,6 @@
 import { isAddressEqual, zeroAddress, type Address } from 'viem'
 import { ChipInactive } from '@/dex/components/ChipInactive'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import Card from '@mui/material/Card'
@@ -11,24 +9,18 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
+import { usePoolContext } from '../../pool-context'
 import { Section } from './Section'
 
-export const Contracts = ({
-  chainId,
-  poolDataCacheOrApi,
-}: {
-  chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-}) => {
-  const { data: network } = useNetworkByChain({ chainId })
+export const Contracts = () => {
+  const { chainId, blockchainId, poolAddress, poolData } = usePoolContext()
 
-  const poolAddress = poolDataCacheOrApi.pool.address as Address
-  const lpTokenAddress = poolDataCacheOrApi.pool.lpToken as Address
-  const gaugeAddress = poolDataCacheOrApi.pool.gauge.address as Address
-  const gaugeIsKilled = !!poolDataCacheOrApi.gauge.isKilled
+  const lpTokenAddress = poolData.pool.lpToken as Address
+  const gaugeAddress = poolData.pool.gauge.address as Address
+  const gaugeIsKilled = !!poolData.gauge.isKilled
   const isSameAddress = isAddressEqual(poolAddress, lpTokenAddress)
 
-  const { data: metadata } = usePoolMetadata({ chain: network.blockchainId as BlockchainId, poolAddress })
+  const { data: metadata } = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
   const oracles = notFalsy(
     ...(metadata?.assetTypes?.map((assetType, index) => {
       const oracleAddress = metadata.oracles?.[index]?.oracleAddress
