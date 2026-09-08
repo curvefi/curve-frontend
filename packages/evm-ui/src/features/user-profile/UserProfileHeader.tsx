@@ -1,4 +1,3 @@
-import { shortenAddress } from '@evm-ui/utils'
 import { LlamaImg } from '@legacy-ui/images'
 import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
@@ -12,18 +11,19 @@ const { Spacing } = SizesAndSpaces
 
 type Props = {
   userAddress: Address | undefined
+  addressLabel: string | undefined
   onClose: () => void
 }
 
 /** Gap deviates from Figma as personally 'xs' is too narrow. */
-export const UserProfileHeader = ({ userAddress, onClose }: Props) => (
+export const UserProfileHeader = ({ userAddress, addressLabel, onClose }: Props) => (
   <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
     {userAddress && (
       <>
         <Box component="img" src={LlamaImg} sx={{ height: SizesAndSpaces.IconSize.xl }} alt="Llama Icon" />
 
         <Typography variant="headingMLight" sx={{ flexGrow: 1 }}>
-          {shortenAddress(userAddress)}
+          {addressLabel}
         </Typography>
       </>
     )}

@@ -10,7 +10,13 @@ import { LlamaIcon } from '@ui/icons/LlamaIcon'
 
 const { Spacing, Width } = SizesAndSpaces
 
-export const UserProfile = ({ userAddress }: { userAddress: Address | undefined }) => {
+export const UserProfile = ({
+  address,
+  addressLabel,
+}: {
+  address: Address | undefined
+  addressLabel: string | undefined
+}) => {
   const [isOpen, open, close] = useSwitch(false)
   return (
     <>
@@ -33,7 +39,7 @@ export const UserProfile = ({ userAddress }: { userAddress: Address | undefined 
         }}
       >
         <Stack sx={{ gap: Spacing.md }}>
-          <UserProfileHeader userAddress={userAddress} onClose={close} />
+          <UserProfileHeader userAddress={address} addressLabel={addressLabel} onClose={close} />
           <Settings />
         </Stack>
       </Drawer>

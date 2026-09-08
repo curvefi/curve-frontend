@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { HttpTransportConfig } from 'viem'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { injected } from '@wagmi/connectors'
 import { fallback, http, unstable_connector } from '@wagmi/core'
@@ -20,11 +21,10 @@ export const WAGMI_HTTP_OPTIONS = {
  * 2. Default Wagmi chain RPC URLs as fallbacks
  *
  * @param chainId - The chain ID to get RPC URLs for
- * @param networkRpcUrl - The primary RPC URL from the network configuration
  * @returns Array of unique RPC URLs in priority order
  */
 export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId) =>
-  lodash.uniq([...(RPC[chainId] ?? []), ...getChainDefaultRpcUrls(chainId)])
+  lodash.uniq(notFalsyArray(RPC[chainId], getChainDefaultRpcUrls(chainId)))
 
 /**
  * Transport configuration for Wagmi:

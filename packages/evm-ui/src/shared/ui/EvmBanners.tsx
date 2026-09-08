@@ -7,6 +7,7 @@ import { Chain } from '@primitives/network.utils'
 import { Banner } from '@ui/features/banners/Banner'
 import { useDismissAaveBanner, useDismissFantomRetirementBanner } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
+import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 
 export const EvmBanners = ({
   currentApp,
@@ -22,6 +23,7 @@ export const EvmBanners = ({
 
   return (
     <GlobalBanner
+      rootUrl={EXTERNAL_LINKS.curve.root}
       deprecationDate={DEPRECATED_CHAINS[chainId]}
       isDowngraded={DOWNGRADED_CHAINS.has(chainId)}
       connectError={isFailure(connectState) ? new Error(t`There is an issue connecting to the API.`) : undefined}
