@@ -1,22 +1,13 @@
-import { ReactNode } from 'react'
+import type { FooterLink } from '@evm-ui/widgets/Footer/footer-sections.util'
 import Button from '@mui/material/Button'
 import LinkMui from '@mui/material/Link'
 import { RouterLink } from '@ui/components/RouterLink'
 
-export type LinkProps = {
-  label: string
-  href: string
-  icon?: ReactNode
-  target?: string
-  blockchainId: string
-  appName: string
-}
-
-export const Link = ({ label, href, icon, target = '_blank', appName, blockchainId }: LinkProps) => (
+export const Link = ({ label, href, icon, target = '_blank' }: FooterLink) => (
   <Button
     {...(href.startsWith('http')
       ? { component: LinkMui, href, target, rel: 'noreferrer' }
-      : { component: RouterLink, href: `/${appName}/${blockchainId}/${href}` })}
+      : { component: RouterLink, href })}
     color="ghost"
     variant="link"
     startIcon={icon}

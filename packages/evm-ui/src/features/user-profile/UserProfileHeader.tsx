@@ -11,7 +11,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 type Props = {
-  walletAddress?: Address
+  walletAddress: Address | undefined
   onClose: () => void
 }
 

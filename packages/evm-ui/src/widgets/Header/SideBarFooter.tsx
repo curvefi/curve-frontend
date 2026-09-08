@@ -18,13 +18,9 @@ const { Spacing } = SizesAndSpaces
 
 const BACKGROUND_COLOR = 'background.paper'
 
-export const SideBarFooter = ({
-  onConnect,
-  connectWalletProps,
-}: {
-  onConnect: () => void
-  connectWalletProps: ConnectWalletProps
-}) => (
+type SideBarFooterProps = { onConnect: () => void; connectWalletProps: ConnectWalletProps }
+
+export const SideBarFooter = ({ onConnect, connectWalletProps }: SideBarFooterProps) => (
   <Stack sx={{ ...MOBILE_SIDEBAR_WIDTH, backgroundColor: BACKGROUND_COLOR }}>
     <ConnectWalletIndicator sx={{ flexGrow: 1, margin: Spacing.sm }} onConnect={onConnect} {...connectWalletProps} />
 

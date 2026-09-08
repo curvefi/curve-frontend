@@ -111,7 +111,6 @@ export type BridgeTargetsProps = {
 export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetworkSelected }: BridgeTargetsProps) => {
   const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
 
-  const currentNetwork = getCurrentNetwork(usePathname())
   return (
     <Box
       // Stack doesn't work because of the arrow icon alignment, and MUI's grid is to constraint wrt sizes, hence native grid.
@@ -138,7 +137,7 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
         <ChainList
           showTestnets={false}
           options={createChainOptions(networks, 'bridge')}
-          selectedNetworkId={currentNetwork}
+          selectedNetworkId={getCurrentNetwork(usePathname())}
           tvls={useNetworksTVL('lending')}
           onNetwork={useCallback(
             (network: NetworkDef) => {

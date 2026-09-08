@@ -1,11 +1,11 @@
-import type { AppPage } from '@evm-ui/widgets/Header/types'
+import type { HeaderLink } from '@evm-ui/widgets/Header/types'
 import { ListItem } from '@mui/material'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import { RouterLink } from '@ui/components/RouterLink'
 
 type SidebarItemProps = {
-  page: AppPage
+  page: HeaderLink
   child?: boolean
 }
 

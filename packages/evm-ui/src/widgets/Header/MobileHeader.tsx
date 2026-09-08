@@ -28,7 +28,7 @@ const HIDE_SCROLLBAR = {
 
 const PADDING_BLOCK = 3
 
-export const MobileHeader = <TMenuApp extends string, TId extends string, TChainId extends number>({
+export const MobileHeader = <TApp extends string, TId extends string, TChainId extends number>({
   currentMenu,
   pages,
   appStats,
@@ -40,7 +40,7 @@ export const MobileHeader = <TMenuApp extends string, TId extends string, TChain
   links,
   currentNetwork,
   connectWalletProps,
-}: HeaderProps<TMenuApp, TId, TChainId>) => {
+}: HeaderProps<TApp, TId, TChainId>) => {
   const [isSidebarOpen, , closeSidebar, toggleSidebar] = useSwitch(false)
   const pathname = usePathname()
   const top = useLayoutStore(state => state.navHeight)

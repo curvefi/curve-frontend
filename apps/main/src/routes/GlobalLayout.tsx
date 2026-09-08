@@ -21,13 +21,15 @@ import {
   LlamalendApps,
   routeToPage,
 } from '@evm-ui/shared/routes'
+import { shortenAddress } from '@evm-ui/utils'
 import { Footer } from '@evm-ui/widgets/Footer'
+import { getFooterSections } from '@evm-ui/widgets/Footer/footer-sections.util'
 import { Header } from '@evm-ui/widgets/Header'
 import { getHeaderSections } from '@evm-ui/widgets/Header/header-sections.util'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
-import { mapRecord, type PartialRecord } from '@primitives/objects.utils'
+import { mapRecord, maybe, type PartialRecord } from '@primitives/objects.utils'
 import { PageLayout } from '@ui/features/layout/PageLayout'
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) =>
@@ -44,16 +46,15 @@ const useAppRoutes = (network: NetworkDef) => ({
   analytics: APP_LINK.analytics.routes,
 })
 
-const getAppMenu = (app: AppName): AppMenuOption =>
-  ({
-    dao: 'dao' as const,
-    crvusd: 'llamalend' as const,
-    lend: 'llamalend' as const,
-    llamalend: 'llamalend' as const,
-    dex: 'dex' as const,
-    bridge: 'bridge' as const,
-    analytics: 'analytics' as const,
-  })[app]
+const APP_TO_MENU = {
+  dao: 'dao',
+  crvusd: 'llamalend',
+  lend: 'llamalend',
+  llamalend: 'llamalend',
+  dex: 'dex',
+  bridge: 'bridge',
+  analytics: 'analytics',
+} as const satisfies Record<AppName, AppMenuOption>
 
 const getSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
   ({
@@ -79,6 +80,14 @@ const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = {
   dex: [Chain.ZkSync, Chain.Mantle],
 }
 
+/** Resolves the given links based on current network and pathname */
+const resolveLinks = <TId extends string>({ blockchainId, pathname }: { blockchainId: TId; pathname: string }) =>
+  mapRecord(APP_LINK, (_menu, { label, routes }) => ({
+    label,
+    href: getInternalUrl(routes[0].app, blockchainId),
+    pages: routes.map(route => routeToPage(route, { blockchainId, pathname })),
+  }))
+
 export const GlobalLayout = <TId extends string, TChainId extends number>({
   children,
   backendMaintenance,
@@ -94,10 +103,13 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   networks: NetworkMapping<TId, TChainId>
   userAddress: Address | undefined
 }) => {
-  const currentMenu = getAppMenu(currentApp)
-  const routeContext = { blockchainId: network.blockchainId, pathname: usePathname() }
   const { connect, disconnect } = useWallet()
   const { address, isConnecting, isConnected } = useConnection()
+  const addressLabel = useEnsName({ address }).data ?? maybe(address, shortenAddress)
+
+  const currentMenu = APP_TO_MENU[currentApp]
+  const routeContext = { blockchainId: network.blockchainId, pathname: usePathname() }
+  const formatUrl = (page: string) => getInternalUrl(currentApp, network.blockchainId, page)
 
   return (
     <PageLayout
@@ -109,27 +121,16 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
           supportedNetworks={createChainOptions(getSupportedNetworks(networks, currentApp), currentApp)}
           appStats={useAppStats(currentApp, network)}
           pages={useAppRoutes(network)[currentMenu].map(route => routeToPage(route, routeContext))}
-          links={mapRecord(APP_LINK, (_menu, { label, routes }) => ({
-            label,
-            href: getInternalUrl(routes[0].app, network.blockchainId),
-            pages: routes.map(route => routeToPage(route, routeContext)),
-          }))}
-          sections={getHeaderSections(page => getInternalUrl(currentApp, network.blockchainId, page))}
+          links={resolveLinks(routeContext)}
+          sections={getHeaderSections(formatUrl)}
           hideChains={HIDE_CHAINS}
           tvls={useNetworksTVL(TVL_SOURCES[currentMenu])}
-          connectWalletProps={{
-            disconnect,
-            address,
-            addressLabel: useEnsName({ address }).data,
-            isConnecting,
-            isConnected,
-            connect,
-          }}
+          connectWalletProps={{ disconnect, address, addressLabel, isConnecting, isConnected, connect }}
         />
       }
       userAddress={userAddress}
       connectModal={<WagmiConnectModal />}
-      footer={<Footer appName={currentApp} blockchainId={network.blockchainId} />}
+      footer={<Footer sections={getFooterSections(formatUrl)} />}
     >
       {children}
     </PageLayout>

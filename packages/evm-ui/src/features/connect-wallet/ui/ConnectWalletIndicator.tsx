@@ -6,7 +6,7 @@ import { ConnectedWalletLabel } from './ConnectedWalletLabel'
 export type ConnectWalletProps = {
   disconnect: () => void
   address: Address | undefined
-  addressLabel: string | null | undefined
+  addressLabel: string | undefined
   isConnecting: boolean
   isConnected: boolean
   connect: () => Promise<void>

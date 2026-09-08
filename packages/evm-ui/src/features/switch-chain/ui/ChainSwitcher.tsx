@@ -15,11 +15,11 @@ import { ChainList, type ChainListOption } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
-export type ChainSwitcherProps<TId extends string, TChainId extends number, TMenuApp extends string> = {
+export type ChainSwitcherProps<TId extends string, TChainId extends number, TApp extends string> = {
   supportedNetworks: ChainListOption<TId, TChainId>[]
-  currentMenu: TMenuApp
+  currentMenu: TApp
   currentNetwork: ChainListOption<TId, TChainId> | undefined
-  hideChains: PartialRecord<TMenuApp, number[]>
+  hideChains: PartialRecord<TApp, number[]>
   tvls: QueryProp<Record<string, number>>
 }
 
@@ -30,13 +30,13 @@ const getTvl =
       ? 0 // ignore lite chains tvl, it's only available for downgraded chains and messes with sorting
       : (maybe(tvls, tvls => tvls[id]) ?? 0)
 
-export const ChainSwitcher = <TId extends string, TChainId extends number, TMenuApp extends string>({
+export const ChainSwitcher = <TId extends string, TChainId extends number, TApp extends string>({
   supportedNetworks,
   currentMenu,
   currentNetwork,
   tvls,
   hideChains,
-}: ChainSwitcherProps<TId, TChainId, TMenuApp>) => {
+}: ChainSwitcherProps<TId, TChainId, TApp>) => {
   const blockchainId = currentNetwork?.blockchainId
   const [isOpen, , close, toggle] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
