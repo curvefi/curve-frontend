@@ -7,7 +7,7 @@ import {
   useParams as useTanstackParams,
   useRouter as useTanstackRouter,
 } from '@tanstack/react-router'
-import type { ParsedLocation, RegisteredRouter } from '@tanstack/router-core'
+import { type ParsedLocation, type RegisteredRouter, redirect as routerRedirect } from '@tanstack/router-core'
 
 type NavigateOptions = {
   replace?: boolean
@@ -104,3 +104,5 @@ export const useGoBack = () => {
     [history],
   )
 }
+
+export const redirectTo = <T extends string>(to: T) => routerRedirect({ to, throw: true, replace: true })

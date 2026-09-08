@@ -1,8 +1,8 @@
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
-import { redirectTo } from './util'
 
 const CrvUsdClientLayout = lazyRouteComponent(() => import('@/loan/CrvUsdClientLayout'), 'CrvUsdClientLayout')
 const MintMarketPage = lazyRouteComponent(
