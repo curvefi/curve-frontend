@@ -1,7 +1,6 @@
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+import { TokenCell, TokenPriceCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
@@ -40,11 +39,7 @@ const rateColumns = (rateHeader: string) =>
     rateColumnHelper.accessor('price', {
       id: RateColumnId.Price,
       header: t`Price`,
-      cell: ({ getValue }) => (
-        <InlineTableCell>
-          <Typography>{formatNumber(getValue(), 'usd.precise')}</Typography>
-        </InlineTableCell>
-      ),
+      cell: ({ getValue }) => <TokenPriceCell query={getValue()} />,
       enableSorting: false,
       meta: { type: 'numeric' },
     }),
