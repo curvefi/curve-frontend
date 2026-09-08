@@ -12,13 +12,7 @@ export const PoolExpandedPanelActions: ExpandedPanelComponent<PoolRow> = ({ row 
 
   /** Pool form paths were removed; mobile expanded rows still need direct links to a specific pool form. */
   const actions = [
-    {
-      id: 'deposit',
-      label: t`Deposit`,
-      href: path,
-      state: { defaultTab: 'deposit' },
-      testId: 'pool-link-deposit',
-    },
+    { id: 'deposit', label: t`Deposit`, href: path, state: { defaultTab: 'deposit' }, testId: 'pool-link-deposit' },
     { id: 'withdraw', label: t`Withdraw`, href: path, state: { defaultTab: 'withdraw' } },
     { id: 'swap', label: t`Swap`, href: path, state: { defaultTab: 'swap' } },
     {

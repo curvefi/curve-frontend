@@ -6,11 +6,7 @@ import { t } from '@ui/lib/i18n'
 import { useCreateVoteMutation } from './create-vote.mutation'
 import { createVoteFormValidationSuite } from './create-vote.validation'
 
-export type CreateVoteMutation = {
-  gaugeAddress: string
-  description: string
-  pinataJwt: string
-}
+export type CreateVoteMutation = { gaugeAddress: string; description: string; pinataJwt: string }
 
 export type CreateVoteForm = FieldsOf<CreateVoteMutation>
 

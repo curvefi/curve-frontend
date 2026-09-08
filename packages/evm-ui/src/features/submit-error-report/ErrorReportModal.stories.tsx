@@ -12,9 +12,7 @@ import { createConfig } from '@wagmi/core'
 const wagmiConfig = createConfig({
   chains: [mainnet],
   connectors: [],
-  transports: {
-    [mainnet.id]: http(),
-  },
+  transports: { [mainnet.id]: http() },
   multiInjectedProviderDiscovery: false,
 })
 
@@ -41,15 +39,8 @@ const ErrorReportModalStory = ({ initialOpen = true }: { initialOpen?: boolean }
 const meta: Meta<typeof ErrorReportModalStory> = {
   title: 'UI Kit/Features/ErrorReportModal',
   component: ErrorReportModalStory,
-  args: {
-    initialOpen: false,
-  },
-  argTypes: {
-    initialOpen: {
-      control: 'boolean',
-      description: 'Whether the modal is open when the story loads',
-    },
-  },
+  args: { initialOpen: false },
+  argTypes: { initialOpen: { control: 'boolean', description: 'Whether the modal is open when the story loads' } },
 }
 
 export default meta
@@ -58,8 +49,4 @@ type Story = StoryObj<typeof ErrorReportModalStory>
 
 export const Default: Story = {}
 
-export const Closed: Story = {
-  args: {
-    initialOpen: false,
-  },
-}
+export const Closed: Story = { args: { initialOpen: false } }

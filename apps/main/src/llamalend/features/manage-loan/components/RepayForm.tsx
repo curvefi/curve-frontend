@@ -34,9 +34,7 @@ import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 function RepayTokenSelector<ChainId extends IChainId>({
   token,
   ...props
-}: RepayTokenListProps<ChainId> & {
-  token: RepayTokenOption | undefined
-}) {
+}: RepayTokenListProps<ChainId> & { token: RepayTokenOption | undefined }) {
   const [isOpen, onOpen, onClose] = useSwitch(false)
   if (props.tokens.length === 1) {
     const {
@@ -90,10 +88,7 @@ export const RepayForm = <ChainId extends IChainId>({
     max,
     isFull,
     priceImpact,
-  } = useRepayForm({
-    networks,
-    onPricesUpdated,
-  })
+  } = useRepayForm({ networks, onPricesUpdated })
   const { token, onToken, tokens } = useRepayTokens({
     tokens: marketTokens,
     blockchainId: network.blockchainId,

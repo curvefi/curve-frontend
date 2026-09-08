@@ -16,35 +16,17 @@ import * as yieldBasis from '../src/yield-basis'
 import { getEndpointCatalogSkipReason } from './catalog'
 import { createFetchTracker, formatTrackedFetchUrls } from './fetch-tracker'
 
-type PoolSeed = {
-  chain: Chain
-  mainToken: Address
-  poolAddress: Address
-  referenceToken: Address
-}
+type PoolSeed = { chain: Chain; mainToken: Address; poolAddress: Address; referenceToken: Address }
 
-type MarketSeed = {
-  chain: Chain
-  controller: Address
-  llamma: Address
-}
+type MarketSeed = { chain: Chain; controller: Address; llamma: Address }
 
-type LlamalendMarketSeed = MarketSeed & {
-  vault: Address
-}
+type LlamalendMarketSeed = MarketSeed & { vault: Address }
 
-type MarketUserSeed = MarketSeed & {
-  user: Address
-}
+type MarketUserSeed = MarketSeed & { user: Address }
 
-type LlamalendUserSeed = LlamalendMarketSeed & {
-  user: Address
-}
+type LlamalendUserSeed = LlamalendMarketSeed & { user: Address }
 
-type RefuelPoolSeed = {
-  chain: Chain
-  poolAddress: Address
-}
+type RefuelPoolSeed = { chain: Chain; poolAddress: Address }
 
 const PREFERRED_CHAIN: Chain = 'ethereum'
 const PRICES_API_HOST = process.env.PRICES_API_HOST

@@ -5,11 +5,7 @@ import { t } from '@ui/lib/i18n'
 import { AmountCell } from '../cells/AmountCell'
 import { getTokenAmountColumnId, RecentRefuelsColumnId } from './columns.enum'
 
-export type RecentRefuelsToken = {
-  symbol: string
-  address: Address
-  decimals: number
-}
+export type RecentRefuelsToken = { symbol: string; address: Address; decimals: number }
 
 export type RecentRefuelRow = {
   timestamp: number

@@ -58,11 +58,7 @@ const mountRouteProviderCard = ({
   cy.mount(
     <ComponentTestWrapper config={mockedWagmiConfig}>
       <RouteProviderCard
-        query={{
-          isFetching: false,
-          enabled,
-          ...q<RouteResponse | null>({ error: null, isLoading, data: route }),
-        }}
+        query={{ isFetching: false, enabled, ...q<RouteResponse | null>({ error: null, isLoading, data: route }) }}
         chainId={1}
         tokenOut={{ symbol: 'crvUSD', decimals: 18, usdRate }}
         isSelected={isSelected}

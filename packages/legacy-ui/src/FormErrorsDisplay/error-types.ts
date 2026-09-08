@@ -1,7 +1,4 @@
-type SimpleFormError = {
-  message: string
-  ref: undefined
-}
+type SimpleFormError = { message: string; ref: undefined }
 
 type ServerFormError = {
   code: string

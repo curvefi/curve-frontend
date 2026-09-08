@@ -36,19 +36,10 @@ const sortByReward =
 const hidden = (
   accessor: Parameters<typeof columnHelper.accessor>[0],
   options?: Parameters<typeof columnHelper.accessor>[1],
-) =>
-  columnHelper.accessor(accessor, {
-    ...options,
-    meta: { ...options?.meta, hidden: true },
-    sortUndefined: 'last',
-  })
+) => columnHelper.accessor(accessor, { ...options, meta: { ...options?.meta, hidden: true }, sortUndefined: 'last' })
 
 export const LEGACY_POOL_COLUMNS = columnHelper.columns([
-  columnHelper.accessor('pool.name', {
-    id: LegacyPoolColumnId.PoolName,
-    header: t`Pool`,
-    cell: LegacyPoolTitleCell,
-  }),
+  columnHelper.accessor('pool.name', { id: LegacyPoolColumnId.PoolName, header: t`Pool`, cell: LegacyPoolTitleCell }),
   columnHelper.accessor<(row: LegacyPoolRow) => number | null, number | null>(
     row => (row.rewards?.base ? +row.rewards.base.day : null),
     {

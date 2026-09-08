@@ -53,10 +53,7 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
   const totalRate =
     maybe(borrowRate, borrowRate => computeTotalRate(borrowRate, rebasingYield ?? 0, campaignsRate ?? 0)) ?? null
 
-  const averages = calculateAverageRates(snapshots, daysBack, {
-    rate: getBorrowRate,
-    rebasingYield: getRebasingYield,
-  })
+  const averages = calculateAverageRates(snapshots, daysBack, { rate: getBorrowRate, rebasingYield: getRebasingYield })
   const averageRate = averages?.rate ?? null
   const averageRebasingYield = averages?.rebasingYield ?? null
 
@@ -110,12 +107,7 @@ export const formatSupplyExtraIncentives = ({
   userBoost?: Decimal | null | undefined
 }): ExtraIncentive[] =>
   notFalsy(
-    baseRate && {
-      title: 'CRV',
-      percentage: baseRate,
-      address: MAINNET_CRV_ADDRESS,
-      blockchainId: 'ethereum',
-    },
+    baseRate && { title: 'CRV', percentage: baseRate, address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum' },
     userRate &&
       baseRate == null && {
         title: maybe(userBoost, b => `CRV (${formatNumber(b, 'multiplier')} veCRV Boost)`) ?? '',

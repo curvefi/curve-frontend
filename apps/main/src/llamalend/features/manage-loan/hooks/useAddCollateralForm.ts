@@ -18,14 +18,8 @@ import type { Range } from '@ui/features/queries/util'
 import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { userCollateral: undefined }
-const defaultValues = {
-  ...userDefaultValues,
-  maxCollateral: undefined,
-}
-const formOptions = {
-  validation: addCollateralFormValidationSuite,
-  defaultValues,
-}
+const defaultValues = { ...userDefaultValues, maxCollateral: undefined }
+const formOptions = { validation: addCollateralFormValidationSuite, defaultValues }
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   network,

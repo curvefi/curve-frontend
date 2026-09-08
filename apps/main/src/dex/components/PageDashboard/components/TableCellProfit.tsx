@@ -3,9 +3,7 @@ import { DetailText, Info } from '@/dex/components/PageDashboard/components/Tabl
 import type { SortId, WalletPoolData } from '@/dex/components/PageDashboard/types'
 import { amount, formatNumber, formatToken } from '@evm-ui/utils'
 
-type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 'profitsTotalUsd'> & {
-  sortBy: SortId
-}
+type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 'profitsTotalUsd'> & { sortBy: SortId }
 
 export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTotalUsd, sortBy }: Props) => {
   const formattedBaseProfit = useMemo(

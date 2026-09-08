@@ -45,10 +45,7 @@ const patchSeries = (series: BandsChartSeries, xMax: number): BandsChartSeries =
       return {
         ...series,
         ...(series.markLine && {
-          markLine: {
-            ...series.markLine,
-            data: patchNativeMarkLineData(series.markLine.data, xMax),
-          },
+          markLine: { ...series.markLine, data: patchNativeMarkLineData(series.markLine.data, xMax) },
         }),
       }
     case BANDS_CHART_SERIES_TYPE.band:
@@ -80,16 +77,7 @@ export const useBandsChartZoom = ({ option, priceRange, chartData, derived }: Pa
     return {
       ...option,
       series: patchedSeries,
-      yAxis: {
-        ...option.yAxis,
-        min: yMin,
-        max: yMax,
-      },
-      ...(xMax !== undefined && {
-        xAxis: {
-          ...option.xAxis,
-          max: xMax,
-        },
-      }),
+      yAxis: { ...option.yAxis, min: yMin, max: yMax },
+      ...(xMax !== undefined && { xAxis: { ...option.xAxis, max: xMax } }),
     }
   }, [option, priceRange, chartData, derived])

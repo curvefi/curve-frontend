@@ -3,10 +3,7 @@ import { DismissButton, FocusScope, useOverlay } from 'react-aria'
 import type { AriaOverlayProps } from 'react-aria'
 import { styled } from 'styled-components'
 
-type Props = {
-  popoverRef: RefObject<HTMLDivElement | null>
-  children: ReactNode
-} & AriaOverlayProps
+type Props = { popoverRef: RefObject<HTMLDivElement | null>; children: ReactNode } & AriaOverlayProps
 
 export const Popover = (props: Props) => {
   const ref = useRef<HTMLDivElement>(null)
@@ -14,15 +11,7 @@ export const Popover = (props: Props) => {
 
   // Handle events that should cause the popup to close,
   // e.g. blur, clicking outside, or pressing the escape key.
-  const { overlayProps } = useOverlay(
-    {
-      isOpen,
-      onClose,
-      shouldCloseOnBlur: true,
-      isDismissable: true,
-    },
-    popoverRef,
-  )
+  const { overlayProps } = useOverlay({ isOpen, onClose, shouldCloseOnBlur: true, isDismissable: true }, popoverRef)
 
   // Add a hidden <DismissButton> component at the end of the popover
   // to allow screen reader users to dismiss the popup easily.

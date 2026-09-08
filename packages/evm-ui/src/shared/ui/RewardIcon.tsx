@@ -8,12 +8,7 @@ const RewardImage = styled('img')({ borderRadius: '50%' })
 
 export type RewardIconSize = keyof typeof IconSize
 
-export type RewardIconProps = {
-  src: string
-  alt: string
-  size?: RewardIconSize
-  sx?: SxProps
-}
+export type RewardIconProps = { src: string; alt: string; size?: RewardIconSize; sx?: SxProps }
 
 const getSize = (size: RewardIconSize) => parseFloat(IconSize[size].mobile) * 16
 

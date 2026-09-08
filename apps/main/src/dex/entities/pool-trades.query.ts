@@ -15,14 +15,7 @@ export const { useQuery: usePoolTrades } = queryFactory({
     page = DEFAULT_PAGE_START_INDEX,
     perPage = DEFAULT_PAGE_SIZE,
     includeState = false,
-  }: GetAllPoolTradesParams) =>
-    getAllPoolTrades({
-      chain,
-      poolAddress,
-      page,
-      perPage,
-      includeState,
-    }),
+  }: GetAllPoolTradesParams) => getAllPoolTrades({ chain, poolAddress, page, perPage, includeState }),
   validationSuite: createValidationSuite(({ chain, poolAddress }: PoolTradesParams) => {
     contractValidationGroup({ blockchainId: chain, contractAddress: poolAddress })
   }),

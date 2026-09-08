@@ -34,11 +34,7 @@ export const ComingSoon = () => (
           href: EXTERNAL_LINKS.monitoring.curveMonitor,
           startIcon: <LAFIcon color="warning" />,
         }}
-        secondaryButton={{
-          label: t`CRVHub`,
-          href: EXTERNAL_LINKS.monitoring.crvHub,
-          startIcon: <CrvHubIcon />,
-        }}
+        secondaryButton={{ label: t`CRVHub`, href: EXTERNAL_LINKS.monitoring.crvHub, startIcon: <CrvHubIcon /> }}
       />
     </CardContent>
   </Card>

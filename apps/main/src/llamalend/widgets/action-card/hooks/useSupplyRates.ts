@@ -62,24 +62,12 @@ export function useSupplyRates<ChainId extends IChainId>(
     params: { chainId, marketId, userAddress },
     controllerAddress,
     reservesDelta,
-  }: {
-    params: UserMarketParams<ChainId>
-    reservesDelta?: Decimal | null
-    controllerAddress: Address | undefined
-  },
+  }: { params: UserMarketParams<ChainId>; reservesDelta?: Decimal | null; controllerAddress: Address | undefined },
   enabled: boolean,
 ) {
   const blockchainId = maybe(chainId, chainId => BlockchainIds[chainId])
-  const snapshotsQuery = useMarketSnapshots({
-    marketType: MarketType.Lend,
-    controllerAddress,
-    blockchainId,
-    enabled,
-  })
-  const lendingSnapshotsQuery = q({
-    ...snapshotsQuery,
-    data: snapshotsQuery.data,
-  })
+  const snapshotsQuery = useMarketSnapshots({ marketType: MarketType.Lend, controllerAddress, blockchainId, enabled })
+  const lendingSnapshotsQuery = q({ ...snapshotsQuery, data: snapshotsQuery.data })
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
   const userSupplyBoostQuery = useUserSupplyBoost({ chainId, marketId, userAddress }, enabled)
   const campaignsQuery = useCampaignsByAddress({ blockchainId, address: controllerAddress })

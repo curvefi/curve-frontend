@@ -5,9 +5,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-type BadgeStoryProps = {
-  color: BadgeProps['color']
-}
+type BadgeStoryProps = { color: BadgeProps['color'] }
 
 const sizes = ['extraSmall', 'small', 'medium', 'large', 'extraLarge'] satisfies BadgeProps['size'][]
 

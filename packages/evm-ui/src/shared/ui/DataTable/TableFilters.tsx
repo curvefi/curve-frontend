@@ -26,11 +26,7 @@ export const TableFilters = ({
   onSearch,
 }: {
   testIdPrefix: string
-  visibilitySettings?: {
-    anchorRef: RefObject<HTMLButtonElement | null>
-    open: boolean
-    onOpen: () => void
-  }
+  visibilitySettings?: { anchorRef: RefObject<HTMLButtonElement | null>; open: boolean; onOpen: () => void }
   // collapsible bar that displays the active filters
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)

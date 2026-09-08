@@ -62,13 +62,7 @@ export const seedErc20BalanceForAddresses = ({
   addresses.forEach(userAddress => {
     const userAddresses = new Set<Address>([userAddress, userAddress.toLowerCase() as Address])
     userAddresses.forEach(address =>
-      seedErc20BalanceQuery({
-        chainId,
-        tokenAddress,
-        userAddress: address,
-        rawBalance,
-        decimals,
-      }),
+      seedErc20BalanceQuery({ chainId, tokenAddress, userAddress: address, rawBalance, decimals }),
     )
   })
 

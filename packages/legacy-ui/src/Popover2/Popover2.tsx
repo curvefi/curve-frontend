@@ -4,21 +4,14 @@ import { DismissButton, Overlay, usePopover } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 
-export type PopoverProps = {
-  children: ReactElement<OverlayTriggerState>
-  state: OverlayTriggerState
-} & Omit<AriaPopoverProps, 'popoverRef'>
+export type PopoverProps = { children: ReactElement<OverlayTriggerState>; state: OverlayTriggerState } & Omit<
+  AriaPopoverProps,
+  'popoverRef'
+>
 
 export function Popover2({ children, state, offset = 8, ...props }: PopoverProps) {
   const popoverRef = useRef(null)
-  const { popoverProps, underlayProps } = usePopover(
-    {
-      ...props,
-      offset,
-      popoverRef,
-    },
-    state,
-  )
+  const { popoverProps, underlayProps } = usePopover({ ...props, offset, popoverRef }, state)
 
   return (
     <Overlay>
