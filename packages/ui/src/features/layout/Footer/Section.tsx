@@ -1,6 +1,6 @@
-import type { FooterLink } from '@evm-ui/widgets/Footer/footer-sections.util'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import type { FooterLink } from '@ui/features/layout/Footer/footer-sections.util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { Link } from './Link'
 

@@ -1,7 +1,7 @@
-import type { FooterLink } from '@evm-ui/widgets/Footer/footer-sections.util'
 import Button from '@mui/material/Button'
 import LinkMui from '@mui/material/Link'
 import { RouterLink } from '@ui/components/RouterLink'
+import type { FooterLink } from '@ui/features/layout/Footer/footer-sections.util'
 
 export const Link = ({ label, href, icon, target = '_blank' }: FooterLink) => (
   <Button

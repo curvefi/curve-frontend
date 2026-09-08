@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { formatDate } from '@legacy-ui/utils'
+import { formatDate } from '@primitives/date.utils'
 import { Banner } from '@ui/features/banners/Banner'
 import { StackBanners } from '@ui/features/banners/StackBanners'
 import { BackendMaintenanceBanner } from '@ui/features/maintenance/components/BackendMaintenanceBanner'
