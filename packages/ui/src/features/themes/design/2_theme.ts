@@ -401,18 +401,18 @@ export const createLightDesign = (
 
   const Chips = {
     Default: {
-      Label: Text.TextColors.Primary,
-      Fill: Layer[2].Fill,
-      Stroke: Inputs.Base.Default.Border.Default,
+      Label: Light.Chips.Default.LabelIcon,
+      Fill: Light.Chips.Default.Fill,
+      Stroke: Light.Chips.Default.Stroke,
     },
     Hover: {
-      Label: Color.Neutral[50],
-      Fill: Color.Neutral[900],
+      Label: Light.Chips.Hover.LabelIcon,
+      Fill: Light.Chips.Hover.Fill,
     },
     Current: {
-      Label: Text.TextColors.Primary,
-      Fill: Layer.Highlight.Fill,
-      Outline: Layer.Highlight.Outline,
+      Label: Light.Chips.Current.LabelIcon,
+      Fill: Light.Chips.Current.Fill,
+      Outline: Light.Chips.Current.Border,
     },
     BorderRadius: {
       Clickable: Radius.square,
@@ -958,18 +958,18 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
 
   const Chips = {
     Default: {
-      Label: Text.TextColors.Primary,
-      Fill: Layer[2].Fill,
-      Stroke: Inputs.Base.Default.Border.Default,
+      Label: Dark.Chips.Default.LabelIcon,
+      Fill: Dark.Chips.Default.Fill,
+      Stroke: Dark.Chips.Default.Stroke,
     },
     Hover: {
-      Label: Color.Neutral[50],
-      Fill: Color.Neutral[900],
+      Label: Dark.Chips.Hover.LabelIcon,
+      Fill: Dark.Chips.Hover.Fill,
     },
     Current: {
-      Label: Text.TextColors.Primary,
-      Fill: Layer.Highlight.Fill,
-      Outline: Layer.Highlight.Outline,
+      Label: Dark.Chips.Current.LabelIcon,
+      Fill: Dark.Chips.Current.Fill,
+      Outline: Dark.Chips.Current.Border,
     },
     BorderRadius: {
       Clickable: Radius.square,
@@ -1476,18 +1476,18 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
 
   const Chips = {
     Default: {
-      Label: Grays[950],
-      Fill: Layer[1].Fill,
-      Stroke: Inputs.Base.Default.Border.Default,
+      Label: Chad.Chips.Default.LabelIcon,
+      Fill: Chad.Chips.Default.Fill,
+      Stroke: Chad.Chips.Default.Stroke,
     },
     Hover: {
-      Label: Color.Neutral[50],
-      Fill: Color.Primary[950],
+      Label: Chad.Chips.Hover.LabelIcon,
+      Fill: Chad.Chips.Hover.Fill,
     },
     Current: {
-      Label: Text.TextColors.Highlight,
-      Fill: Layer.Highlight.Fill,
-      Outline: Layer.Highlight.Outline,
+      Label: Chad.Chips.Current.LabelIcon,
+      Fill: Chad.Chips.Current.Fill,
+      Outline: Chad.Chips.Current.Border,
     },
     BorderRadius: {
       Clickable: Radius.square,

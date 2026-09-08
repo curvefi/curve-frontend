@@ -69,6 +69,11 @@ function createLightSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[950], Fill: Grays[100], Stroke: Grays[200] },
+      Hover: { LabelIcon: Grays[50], Fill: Grays[900] },
+      Current: { LabelIcon: Grays[950], Fill: Blues[100], Border: Blues[500] },
+    },
     Tables: {
       Row: {
         Default: Grays[50],
@@ -183,6 +188,11 @@ function createDarkSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[50], Fill: Grays[900], Stroke: Grays[800] },
+      Hover: { LabelIcon: Grays[950], Fill: Grays[75] },
+      Current: { LabelIcon: Grays[50], Fill: Grays[850], Border: Blues[500] },
+    },
     Tables: {
       Row: {
         Default: Grays[950],
@@ -296,6 +306,11 @@ function createChadSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[950], Fill: Grays[150], Stroke: Grays[400] },
+      Hover: { LabelIcon: Grays[50], Fill: Violets[950] },
+      Current: { LabelIcon: Violets[600], Fill: Violets[50], Border: Violets[500] },
+    },
     Tables: {
       Row: {
         Default: Grays[150],
@@ -409,6 +424,11 @@ function createLightInvertedSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[50], Fill: Grays[900], Stroke: Grays[200] },
+      Hover: { LabelIcon: Grays[50], Fill: Grays[900] },
+      Current: { LabelIcon: Grays[50], Fill: Blues[100], Border: Blues[500] },
+    },
     Tables: {
       Row: {
         Default: Grays[950],
@@ -522,6 +542,11 @@ function createDarkInvertedSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[950], Fill: Grays[100], Stroke: Grays[800] },
+      Hover: { LabelIcon: Grays[950], Fill: Grays[75] },
+      Current: { LabelIcon: Grays[950], Fill: Grays[850], Border: Blues[500] },
+    },
     Tables: {
       Row: {
         Default: Grays[75],
@@ -635,6 +660,11 @@ function createChadInvertedSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[50], Fill: Violets[950], Stroke: Grays[400] },
+      Hover: { LabelIcon: Grays[50], Fill: Violets[950] },
+      Current: { LabelIcon: Violets[400], Fill: Violets[400], Border: Violets[500] },
+    },
     Tables: {
       Row: {
         Default: Violets[950],
