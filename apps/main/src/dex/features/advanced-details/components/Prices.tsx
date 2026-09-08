@@ -1,8 +1,5 @@
-import { type Address } from 'viem'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { amount, formatNumber } from '@evm-ui/utils'
@@ -11,20 +8,18 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui/lib/i18n'
+import { usePoolContext } from '../../pool-context'
 
-export const Prices = ({
-  chainId,
-  poolId,
-  poolDataCacheOrApi,
-}: {
-  chainId: ChainId
-  poolId: string
-  poolDataCacheOrApi: PoolDataCacheOrApi
-}) => {
-  const poolAddress = poolDataCacheOrApi.pool.address as Address
-  const { data: network } = useNetworkByChain({ chainId })
+export const Prices = () => {
+  const {
+    chainId,
+    blockchainId,
+    poolId,
+    poolAddress,
+    poolData: { tokens, tokenAddresses },
+  } = usePoolContext()
   const { data: parameters } = usePoolParameters({ chainId, poolId })
-  const { data: snapshots } = usePoolSnapshots({ chain: network.blockchainId as BlockchainId, poolAddress })
+  const { data: snapshots } = usePoolSnapshots({ chain: blockchainId as BlockchainId, poolAddress })
   const { priceOracle, priceScale } = parameters ?? {}
   const snapshotData = snapshots?.[0]
   // Prices API snapshot values are 1e18-scaled, while pool parameters are already human-scale.
@@ -32,8 +27,8 @@ export const Prices = ({
   const priceScaleData = priceScale?.length ? priceScale : snapshotData?.priceScale?.map(price => price / 10 ** 18)
 
   // Curve price oracle/scale arrays omit the base token, so value index 0 belongs to token index 1.
-  const priceRows = poolDataCacheOrApi.tokens.slice(1).map((label, index) => ({
-    key: poolDataCacheOrApi.tokenAddresses[index + 1] ?? `${label}-${index + 1}`,
+  const priceRows = tokens.slice(1).map((label, index) => ({
+    key: tokenAddresses[index + 1] ?? `${label}-${index + 1}`,
     label,
     index,
   }))

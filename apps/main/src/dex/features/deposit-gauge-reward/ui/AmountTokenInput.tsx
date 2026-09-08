@@ -54,7 +54,6 @@ export const AmountTokenInput = ({
       chain: blockchainId,
       address,
       symbol: tokensMapper[address.toLowerCase()]?.symbol ?? shortenAddress(address),
-      volume: tokensMapper[address.toLowerCase()]?.volume ?? 0,
     }))
   }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, blockchainId])
 

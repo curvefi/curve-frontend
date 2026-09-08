@@ -16,15 +16,19 @@ import { t } from '@ui/lib/i18n'
 
 const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 
-type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
+type BannerSeverity = 'info' | 'highlight' | 'warning' | 'caution' | 'alert'
 type BannerIcons = BannerSeverity | 'llama'
 
 export const DEFAULT_SEVERITY = 'info' as const
 
-const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme>; wrapper: SxProps<Theme> }> = {
+const BannerSx: Record<
+  BannerSeverity,
+  { title: SxProps<Theme>; subtitle: SxProps<Theme>; action: SxProps<Theme>; wrapper: SxProps<Theme> }
+> = {
   info: {
     title: { color: t => t.design.Text.TextColors.FilledFeedback.Info.Primary },
     subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Info.Secondary },
+    action: { color: t => t.design.Button.Ghost.Default.Label },
     wrapper: {
       border: t => `1px solid ${t.design.Layer.Highlight.Outline}`,
       backgroundColor: t => t.design.Layer[1].Fill,
@@ -33,17 +37,35 @@ const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProp
   highlight: {
     title: { color: t => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
     subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Highlight.Secondary },
+    action: { color: t => t.design.Color.Neutral[25] },
     wrapper: { backgroundColor: t => t.design.Layer.Feedback.Info },
   },
   warning: {
     title: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
     subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
-    wrapper: { backgroundColor: t => t.design.Layer.Feedback.Warning },
+    action: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
+    wrapper: {
+      backgroundColor: t => t.design.Layer.Feedback.Warning,
+      border: t => `1px solid ${t.design.Layer.Feedback.Warning}`,
+    },
+  },
+  caution: {
+    title: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
+    subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
+    action: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
+    wrapper: {
+      backgroundColor: t => t.design.Layer.Feedback.Caution,
+      border: t => `1px solid ${t.design.Layer.Feedback.Caution}`,
+    },
   },
   alert: {
     title: { color: t => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
     subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
-    wrapper: { backgroundColor: t => t.design.Layer.Feedback.Error },
+    action: { color: t => t.design.Color.Neutral[25] },
+    wrapper: {
+      backgroundColor: t => t.design.Layer.Feedback.Error,
+      border: t => `1px solid ${t.design.Layer.Feedback.Alert}`,
+    },
   },
 }
 
@@ -53,6 +75,7 @@ const BannerIcons: Record<BannerIcons, ReactNode> = {
   info: <InfoCircledIcon sx={IconSx} />,
   highlight: <InfoCircledIcon sx={IconSx} />,
   warning: <ExclamationTriangleIcon sx={IconSx} />,
+  caution: <ExclamationTriangleIcon sx={IconSx} />,
   alert: <ExclamationTriangleIcon sx={IconSx} />,
   llama: <LlamaIcon sx={IconSx} />,
 }
@@ -108,18 +131,18 @@ export const Banner = ({
               variant="link"
               endIcon={<ArrowTopRightIcon fontSize="small" />}
               size="extraSmall"
-              sx={{ ...BannerSx[severity].title }}
+              sx={{ ...BannerSx[severity].action }}
             >
               {t`Learn more`}
             </Button>
           )}
           {onClick &&
             (buttonText ? (
-              <Button color="ghost" onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].title }}>
+              <Button color="ghost" onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].action }}>
                 {buttonText}
               </Button>
             ) : (
-              <IconButton onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].title }}>
+              <IconButton onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].action }}>
                 <CloseIcon />
               </IconButton>
             ))}

@@ -1,10 +1,7 @@
-import { type Address } from 'viem'
 import { formatCryptoA, FXSWAP } from '@/dex/components/PageCreatePool/constants'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
@@ -19,22 +16,14 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { usePoolContext } from '../../pool-context'
 import { Section } from './Section'
 
 const { Spacing } = SizesAndSpaces
 
-export const Parameters = ({
-  chainId,
-  poolId,
-  poolDataCacheOrApi,
-}: {
-  chainId: ChainId
-  poolId: string
-  poolDataCacheOrApi: PoolDataCacheOrApi
-}) => {
-  const poolAddress = poolDataCacheOrApi.pool.address as Address
-  const { data: network } = useNetworkByChain({ chainId })
-  const chain = network.blockchainId as BlockchainId
+export const Parameters = () => {
+  const { chainId, blockchainId, poolId, poolAddress } = usePoolContext()
+  const chain = blockchainId as BlockchainId
   const metadata = usePoolMetadata({ chain, poolAddress })
   const parameters = usePoolParameters({ chainId, poolId })
   const snapshots = usePoolSnapshots({ chain, poolAddress })

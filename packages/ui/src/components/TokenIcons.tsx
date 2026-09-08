@@ -39,7 +39,7 @@ const STACK_ICON_SIZE = {
 
 export type TokenIconsProps = {
   blockchainId: string
-  tokens: { symbol: string; address: string }[]
+  tokens: { symbol: string; address: string }[] | undefined
   /** Size of the complete token group, not the individual token icons. */
   size?: TokenIconsSize
   showChainIcon?: boolean
@@ -63,7 +63,7 @@ export type TokenIconsProps = {
  */
 export function TokenIcons({
   blockchainId,
-  tokens,
+  tokens = [],
   size = 'xl',
   showChainIcon = false,
   showTooltips = true,
