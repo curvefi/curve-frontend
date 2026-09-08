@@ -1,8 +1,8 @@
 import lodash from 'lodash'
 import { create, type StateCreator } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
-import { SLIPPAGE, type SlippageSettings } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import { mapRecord } from '@primitives/objects.utils'
+import { SLIPPAGE, type SlippageSettings } from '@ui/features/slippage/slippage.utils'
 import type { ThemeKey } from '@ui/features/themes/basic-theme'
 
 type UserProfileState = {

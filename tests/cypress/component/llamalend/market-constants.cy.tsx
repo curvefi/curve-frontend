@@ -10,11 +10,11 @@ import {
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { MarketType } from '@evm-ui/types/market'
-import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
+import { SLIPPAGE } from '@ui/features/slippage/slippage.utils'
 import { ReleaseChannel } from '@ui/lib/env'
 
 function MarketAlertHookTest({

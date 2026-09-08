@@ -14,8 +14,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { Badge } from '@ui/components/Badge'
 import type { UseFormReturn } from '@ui/features/forms'
+import { SLIPPAGE, type SlippageType } from '@ui/features/slippage/slippage.utils'
 import { t } from '@ui/lib/i18n'
-import { SLIPPAGE, type SlippageType } from './slippage.utils'
 import { type SlippageSettingsFormData } from './useSlipageSettingsForm'
 
 export const SlippageFormField = ({
