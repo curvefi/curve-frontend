@@ -75,20 +75,21 @@ export const Toast = () => {
           flexDirection: 'column',
         }}
       >
-        {items.map(({ id, severity, title, message, testId = `toast-${severity}`, keepAlive }) => {
-          const snackbarBorder = snackbarBorderBySeverity[severity ?? 'info']
+        {items.map(({ id, severity, title, message, testId, keepAlive }) => {
+          const resolvedSeverity = severity ?? 'info'
+          const snackbarBorder = snackbarBorderBySeverity[resolvedSeverity]
           return (
             <Alert
               key={id}
               variant="outlined"
-              severity={severity}
-              data-testid={testId}
+              severity={resolvedSeverity}
+              data-testid={testId ?? `toast-${resolvedSeverity}`}
               sx={{
-                borderColor: theme => theme.design?.Snackbar.Border[snackbarBorder] ?? theme.palette[severity ?? 'info'].main,
+                borderColor: theme => theme.design.Snackbar.Border[snackbarBorder],
                 ...(!keepAlive && {
-                  animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
+                  animation: `toastFadeOut ${getDuration({ severity: resolvedSeverity }) + Duration.Transition}ms forwards`,
                   '@keyframes toastFadeOut': {
-                    [getDurationPercent({ severity })]: { opacity: 1 },
+                    [getDurationPercent({ severity: resolvedSeverity })]: { opacity: 1 },
                     '100%': { opacity: 0 },
                   },
                 }),
