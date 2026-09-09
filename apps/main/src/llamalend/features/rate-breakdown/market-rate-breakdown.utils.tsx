@@ -172,7 +172,11 @@ export const buildSupplyRateBreakdown = ({
         rate: aprToApy(reward.value),
       })),
       ...rebasingRow,
-      { source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Supply APY` } }, rate: rate.supplyApy },
+      {
+        source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Supply APY` } },
+        price: constQ(undefined),
+        rate: rate.supplyApy,
+      },
     ],
     points: getPointsCampaignRows(rate.extraRewards),
     total: rate.totalMinBoost,
