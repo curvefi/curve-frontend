@@ -29,9 +29,7 @@ const userChainNameValidationSuite = createValidationSuite((params: UserChainNam
   pricesApiChainNameValidationGroup(params)
 })
 
-export type MintMarket = MintMarketFromApi & {
-  chain: Chain
-}
+export type MintMarket = MintMarketFromApi & { chain: Chain }
 
 export const { getQueryOptions: getMintMarketOptions, reset: resetMintMarkets } = queryFactory({
   queryKey: () => ['mint-markets', 'v4'] as const,
@@ -82,11 +80,7 @@ export const invalidateAllUserMintMarkets = async (userAddress: Address | null |
 
   const invalidateContracts = MINT_CHAINS.flatMap(blockchainId =>
     (getCurrentUserMintMarkets({ userAddress, blockchainId }) ?? []).map(contractAddress =>
-      invalidateUserMintMarketStats({
-        userAddress,
-        blockchainId,
-        contractAddress,
-      }),
+      invalidateUserMintMarketStats({ userAddress, blockchainId, contractAddress }),
     ),
   )
   await Promise.all(invalidateContracts)
@@ -97,11 +91,7 @@ export const resetAllUserMintMarkets = async (userAddress: Address | null | unde
 
   const resetContracts = MINT_CHAINS.flatMap(blockchainId =>
     (getCurrentUserMintMarkets({ userAddress, blockchainId }) ?? []).map(contractAddress =>
-      resetUserMintMarketStats({
-        userAddress,
-        blockchainId,
-        contractAddress,
-      }),
+      resetUserMintMarketStats({ userAddress, blockchainId, contractAddress }),
     ),
   )
   await Promise.all(resetContracts)

@@ -13,11 +13,7 @@ export const TableViewAllCell = (
     onClick,
     isLoading = false,
     ...tableCellProps
-  }: {
-    children: ReactNode
-    onClick: () => void
-    isLoading?: boolean
-  } & TableCellProps, // constant padding block accross all breakpoints
+  }: { children: ReactNode; onClick: () => void; isLoading?: boolean } & TableCellProps, // constant padding block accross all breakpoints
 ) => (
   <TableCell {...tableCellProps} sx={{ paddingBlock: Spacing.xs }}>
     <Stack sx={{ alignSelf: 'center', alignItems: 'center' }}>

@@ -31,10 +31,7 @@ export type EmptyStateCardProps = AllOrNone<ConnectionProps> & {
 const SIZE_CONFIG: Record<
   NonNullable<EmptyStateCardProps['size']>,
   { icon: Responsive; button: ButtonProps['size'] }
-> = {
-  sm: { icon: IconSize.lg, button: 'small' },
-  md: { icon: IconSize.xxl, button: 'medium' },
-}
+> = { sm: { icon: IconSize.lg, button: 'small' }, md: { icon: IconSize.xxl, button: 'medium' } }
 
 const Skeletons = () => (
   <Stack sx={{ gap: Spacing.sm, width: MaxWidth.emptyStateCard }}>
@@ -86,12 +83,7 @@ export const EmptyStateCard = ({
   ...connectionProps
 }: EmptyStateCardProps) => (
   <Stack
-    sx={{
-      gap: Spacing.xs,
-      alignItems: 'center',
-      justifySelf: 'center',
-      maxWidth: MaxWidth.emptyStateCard,
-    }}
+    sx={{ gap: Spacing.xs, alignItems: 'center', justifySelf: 'center', maxWidth: MaxWidth.emptyStateCard }}
     data-testid={testId}
   >
     <LlamaIcon sx={{ width: SIZE_CONFIG[size].icon, height: SIZE_CONFIG[size].icon }} />

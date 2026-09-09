@@ -23,12 +23,7 @@ import MuiButton from '@mui/material/Button'
 import { RouterLink } from '@ui/components/RouterLink'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  disabled: boolean
-  chainId: ChainId
-  curve: CurveApi | null
-  pageLoaded: boolean
-}
+type Props = { disabled: boolean; chainId: ChainId; curve: CurveApi | null; pageLoaded: boolean }
 
 export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
   const { data: networks } = useNetworks()

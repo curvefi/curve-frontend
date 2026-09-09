@@ -139,10 +139,7 @@ export function useTokenBalance(
 /** Get query options for a token balance (handles both native and ERC-20) */
 const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =>
   isNative(query)
-    ? {
-        ...getNativeBalanceQueryOptions(config, query),
-        select: (data: GetBalanceReturnType) => convertBalance(data),
-      }
+    ? { ...getNativeBalanceQueryOptions(config, query), select: (data: GetBalanceReturnType) => convertBalance(data) }
     : {
         ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
         select: (data: ERC20ReadResult) => convertBalance(parseERC20Results(data)),

@@ -3,10 +3,7 @@ import { styled } from 'styled-components'
 import { Select } from '@legacy-ui/Select'
 import type { SelectProps } from '@legacy-ui/Select/Select'
 
-type ItemObj = {
-  label: string
-  key: string
-}
+type ItemObj = { label: string; key: string }
 
 export const SelectSortingMethod = (props: Omit<SelectProps<ItemObj>, 'children'>) => (
   <Select {...props} aria-label="Sort By">

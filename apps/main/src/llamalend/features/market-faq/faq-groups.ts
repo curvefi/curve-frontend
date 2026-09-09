@@ -1,14 +1,8 @@
 import { t } from '@ui/lib/i18n'
 
-type FaqItem = {
-  question: string
-  answer: string
-}
+type FaqItem = { question: string; answer: string }
 
-type FaqGroup = {
-  title: string
-  items: FaqItem[]
-}
+type FaqGroup = { title: string; items: FaqItem[] }
 
 export const FAQ_GROUPS: FaqGroup[] = [
   {

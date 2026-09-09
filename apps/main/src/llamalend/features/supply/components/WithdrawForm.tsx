@@ -10,9 +10,7 @@ import { useWithdrawForm } from '../hooks/useWithdrawForm'
 import { AlertUnstakeFirst } from './alerts/AlertUnstakeFirst'
 import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 
-type WithdrawFormProps<ChainId extends IChainId> = {
-  networks: NetworkDict<ChainId>
-}
+type WithdrawFormProps<ChainId extends IChainId> = { networks: NetworkDict<ChainId> }
 
 const TEST_ID_PREFIX = 'supply-withdraw'
 
@@ -57,10 +55,7 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
         max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
-        positionBalance={{
-          position: max,
-          tooltip: t`Vault shares value`,
-        }}
+        positionBalance={{ position: max, tooltip: t`Vault shares value` }}
       />
 
       {max.data && maxStakedShares.data && Number(max.data) === 0 && Number(maxStakedShares.data) > 0 && (

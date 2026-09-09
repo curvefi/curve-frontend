@@ -31,9 +31,7 @@ import type {
 
 const buildBaseOption = ({ chartTextStyle }: Pick<BuildOptionContext, 'chartTextStyle'>) => ({
   animation: false,
-  textStyle: {
-    fontFamily: chartTextStyle.fontFamily,
-  },
+  textStyle: { fontFamily: chartTextStyle.fontFamily },
 })
 
 const buildContinuousGrid = (): GridComponentOption => ({
@@ -59,10 +57,7 @@ const buildRangeSeries = ({ rangeMarkAreas, seriesData }: RangeSeriesParams) => 
   showSymbol: false,
   silent: true,
   lineStyle: { opacity: 0 },
-  markArea: {
-    silent: true,
-    data: rangeMarkAreas,
-  },
+  markArea: { silent: true, data: rangeMarkAreas },
 })
 
 // Shared real-price value axis used by continuous mode and by the main range axis in split mode.
@@ -91,14 +86,8 @@ const buildValueAxis = ({
   min: domain?.[0],
   max: domain?.[1],
   ...(gridIndex === undefined ? {} : { gridIndex }),
-  axisLine: {
-    onZero: false,
-    lineStyle: { color: colors.axisLine },
-  },
-  axisTick: {
-    length: CHART_LAYOUT.priceMarker.tickHeight,
-    lineStyle: { color: colors.axisLine },
-  },
+  axisLine: { onZero: false, lineStyle: { color: colors.axisLine } },
+  axisTick: { length: CHART_LAYOUT.priceMarker.tickHeight, lineStyle: { color: colors.axisLine } },
   splitLine: { show: false },
   axisLabel: {
     fontFamily: textStyle.fontFamily,
@@ -135,14 +124,8 @@ const buildOracleRailAxis = ({
   min: SMALL_LIQUIDATION_RANGE_CHART_ORACLE_RAIL_AXIS.min,
   max: SMALL_LIQUIDATION_RANGE_CHART_ORACLE_RAIL_AXIS.max,
   interval: 1,
-  axisLine: {
-    onZero: false,
-    lineStyle: { color: colors.axisLine },
-  },
-  axisTick: {
-    length: CHART_LAYOUT.priceMarker.tickHeight,
-    lineStyle: { color: colors.axisLine },
-  },
+  axisLine: { onZero: false, lineStyle: { color: colors.axisLine } },
+  axisTick: { length: CHART_LAYOUT.priceMarker.tickHeight, lineStyle: { color: colors.axisLine } },
   splitLine: { show: false },
   axisLabel: {
     fontFamily: textStyle.fontFamily,
@@ -268,17 +251,10 @@ export const buildContinuousOption = ({
   oraclePrice,
   rangeMarkAreas,
   seriesData,
-}: BuildOptionContext & {
-  chartLayout?: SmallLiquidationRangeChartLayout
-}): EChartsOption => ({
+}: BuildOptionContext & { chartLayout?: SmallLiquidationRangeChartLayout }): EChartsOption => ({
   ...buildBaseOption({ chartTextStyle }),
   grid: buildContinuousGrid(),
-  xAxis: buildValueAxis({
-    colors,
-    domain: chartLayout?.mainDomain,
-    hasChartData,
-    textStyle: chartTextStyle,
-  }),
+  xAxis: buildValueAxis({ colors, domain: chartLayout?.mainDomain, hasChartData, textStyle: chartTextStyle }),
   yAxis: buildHiddenYAxis(),
   series: notFalsy<SeriesOption>(
     buildRangeSeries({ rangeMarkAreas, seriesData }),
@@ -316,9 +292,7 @@ export const buildSplitOption = ({
   oraclePrice,
   rangeMarkAreas,
   seriesData,
-}: BuildOptionContext & {
-  chartLayout: SplitLayout
-}): EChartsOption => {
+}: BuildOptionContext & { chartLayout: SplitLayout }): EChartsOption => {
   const rangeSeries = buildRangeSeries({ rangeMarkAreas, seriesData })
   const terminalTickLabel = formatNumber(chartLayout.oracleRail.terminalTick, { abbreviate: true }) ?? ''
 
@@ -336,12 +310,7 @@ export const buildSplitOption = ({
           : { alignMaxLabel: 'center' as const }),
         textStyle: chartTextStyle,
       }),
-      buildOracleRailAxis({
-        colors,
-        layout: chartLayout,
-        terminalTickLabel,
-        textStyle: chartTextStyle,
-      }),
+      buildOracleRailAxis({ colors, layout: chartLayout, terminalTickLabel, textStyle: chartTextStyle }),
     ],
     yAxis: [buildHiddenYAxis(0), buildHiddenYAxis(1)],
     series: notFalsy<SeriesOption>(

@@ -406,9 +406,7 @@ const Alerts: Record<string, Record<string, PoolAlert>> = {
     '0x5c959d2c1a49b637fb988c40d663265f8bf6d289': vsdCRVPoolAlert(),
   },
 
-  avalanche: {
-    '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
-  },
+  avalanche: { '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert() },
 
   polygon: {
     '0xbeb90d2d165d010706aca022a85a3b2d6a49eaa1': misconfiguredPoolsAlert(),
@@ -421,7 +419,5 @@ const Alerts: Record<string, Record<string, PoolAlert>> = {
     '0xb446bf7b8d6d4276d0c75ec0e3ee8dd7fe15783a': eurtPoolsAlert(),
   },
 
-  monad: {
-    '0x2fd13b49f970e8c6d89283056c1c6281214b7eb6': monadEthConverterAlert(),
-  },
+  monad: { '0x2fd13b49f970e8c6d89283056c1c6281214b7eb6': monadEthConverterAlert() },
 }

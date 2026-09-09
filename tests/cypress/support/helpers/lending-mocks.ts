@@ -212,12 +212,7 @@ export const mockMerklCampaigns = () =>
         rewardsRecord: {
           breakdowns: [
             {
-              token: {
-                chainId: 1,
-                address: oneAddress(),
-                symbol: 'RWD',
-                icon: 'https://example.com/icon.png',
-              },
+              token: { chainId: 1, address: oneAddress(), symbol: 'RWD', icon: 'https://example.com/icon.png' },
               value: 100,
             },
           ],

@@ -116,12 +116,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
     debtRequired = false,
     maxDebtRequired = debtRequired,
     ignoreMaxDebt = !maxDebtRequired,
-  }: {
-    leverageRequired?: boolean
-    debtRequired?: boolean
-    maxDebtRequired?: boolean
-    ignoreMaxDebt?: boolean
-  } = {},
+  }: { leverageRequired?: boolean; debtRequired?: boolean; maxDebtRequired?: boolean; ignoreMaxDebt?: boolean } = {},
 ) => {
   chainValidationGroup({ chainId })
   llamaApiValidationGroup({ chainId })

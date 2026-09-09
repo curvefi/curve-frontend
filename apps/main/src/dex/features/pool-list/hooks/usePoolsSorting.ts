@@ -31,11 +31,7 @@ const LITE_SORT_COLUMNS = new Set<PoolColumnId>([
 
 type ColumnSort = { id: PoolSortableColumn; desc: boolean }
 export type PoolsSorting = [ColumnSort]
-type PoolsSortParams = {
-  sortBy: PoolSortField
-  sortDirection: PoolSortDirection
-  sortField: PoolSortableColumn
-}
+type PoolsSortParams = { sortBy: PoolSortField; sortDirection: PoolSortDirection; sortField: PoolSortableColumn }
 
 const SORT_OPTIONS = recordEntries(POOL_SORT_BY).map(([id]) => ({ id, label: POOL_TITLES[id] }))
 const LITE_SORT_OPTIONS = SORT_OPTIONS.filter(({ id }) => LITE_SORT_COLUMNS.has(id))
@@ -76,9 +72,7 @@ export const usePoolsSorting = (isLite: boolean, updateQueryAndResetPage: PoolsQ
         isLite,
       )
 
-      updateQueryAndResetPage({
-        [SORT_QUERY_FIELD]: nextSorting.map(({ id, desc }) => `${desc ? '-' : ''}${id}`),
-      })
+      updateQueryAndResetPage({ [SORT_QUERY_FIELD]: nextSorting.map(({ id, desc }) => `${desc ? '-' : ''}${id}`) })
     },
     [defaultSort, isLite, sorting, updateQueryAndResetPage],
   )

@@ -4,16 +4,9 @@ import { Spinner } from '@ui/components/Spinner'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import type { TokenOption } from '../types'
 
-type TokenSelectButtonCallbacks = {
-  onClick: () => void
-}
+type TokenSelectButtonCallbacks = { onClick: () => void }
 
-type TokenSelectButtonProps = {
-  token?: TokenOption
-  disabled: boolean
-  size?: SelectProps['size']
-  testId?: string
-}
+type TokenSelectButtonProps = { token?: TokenOption; disabled: boolean; size?: SelectProps['size']; testId?: string }
 
 /** The token selector is Select but acts like a button, so it's a bit unique */
 export const TokenSelectButton = ({

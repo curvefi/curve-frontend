@@ -36,17 +36,9 @@ import { Chip } from '@legacy-ui/Typography'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  blockchainId: string
-  chainId: ChainId
-}
+type Props = { blockchainId: string; chainId: ChainId }
 
-type TokenSummary = {
-  blockchainId: string
-  token: TokenState
-  chainId: ChainId
-  swapType: SwapType
-}
+type TokenSummary = { blockchainId: string; token: TokenState; chainId: ChainId; swapType: SwapType }
 
 export const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
   const tokensInPool = useStore(state => state.createPool.tokensInPool)

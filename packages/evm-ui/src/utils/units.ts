@@ -1,7 +1,4 @@
-type UnitOptions = {
-  symbol: string
-  position: 'prefix' | 'suffix'
-}
+type UnitOptions = { symbol: string; position: 'prefix' | 'suffix' }
 
 const none: UnitOptions = { symbol: '', position: 'suffix' }
 const dollar: UnitOptions = { symbol: '$', position: 'prefix' }

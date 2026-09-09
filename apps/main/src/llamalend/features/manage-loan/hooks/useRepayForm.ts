@@ -75,11 +75,7 @@ const useRepayParams = ({
     userDefaultValues,
   )
 
-const userDefaultValues = {
-  stateCollateral: undefined,
-  userCollateral: undefined,
-  userBorrowed: undefined,
-}
+const userDefaultValues = { stateCollateral: undefined, userCollateral: undefined, userBorrowed: undefined }
 
 const defaultValues = {
   ...userDefaultValues,

@@ -23,14 +23,7 @@ const getMarketData = ({
   addresses,
   borrowed_token,
   collateral_token,
-}: LendMarketTemplate): LendMarketData => ({
-  id,
-  name,
-  version,
-  addresses,
-  borrowed_token,
-  collateral_token,
-})
+}: LendMarketTemplate): LendMarketData => ({ id, name, version, addresses, borrowed_token, collateral_token })
 
 export const { useQuery: useLendMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'getLendMarkets'] as const,

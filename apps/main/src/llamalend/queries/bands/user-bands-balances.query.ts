@@ -11,10 +11,7 @@ import { createValidationSuite, FieldsOf } from '@evm-ui/lib/validation'
 const IS_MARKET = false
 const QUERY_KEY = 'userBandsBalances' as const
 
-type UserBandsBalancesQuery = UserMarketQuery & {
-  loanExists: boolean
-  liquidationBand: number
-}
+type UserBandsBalancesQuery = UserMarketQuery & { loanExists: boolean; liquidationBand: number }
 type UserBandsBalancesParams = FieldsOf<UserBandsBalancesQuery>
 
 const userBandsBalancesValidationSuite = createValidationSuite((params: UserBandsBalancesParams) => {

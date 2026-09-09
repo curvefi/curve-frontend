@@ -22,10 +22,7 @@ import { LiquidationThresholdTooltipContent } from './'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 
-type BorrowInformationProps = {
-  params: UserMarketParams
-  tokens: MarketTokensOrEmpty
-}
+type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const userState = useUserState(params)

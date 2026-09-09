@@ -5,10 +5,7 @@ import { redirectTo } from './util'
 
 const MarketsList = lazyRouteComponent(() => import('@/llamalend/features/market-list'), 'MarketsList')
 
-const llamalendLayoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'llamalend',
-})
+const llamalendLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'llamalend' })
 
 const layoutProps = { getParentRoute: () => llamalendLayoutRoute }
 

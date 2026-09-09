@@ -6,10 +6,7 @@ import { Loader } from '@legacy-ui/Loader'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { t } from '@ui/lib/i18n'
 
-type GaugeHeaderProps = {
-  gaugeData: GaugeFormattedData | undefined
-  dataLoading: boolean
-}
+type GaugeHeaderProps = { gaugeData: GaugeFormattedData | undefined; dataLoading: boolean }
 
 export const GaugeHeader = ({ gaugeData, dataLoading }: GaugeHeaderProps) => (
   <Wrapper variant="secondary">

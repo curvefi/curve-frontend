@@ -13,10 +13,7 @@ describe('calculateRobustPriceRange', () => {
   })
 
   it('keeps percentile boundaries in range', () => {
-    expect(calculateRobustPriceRange([1, 2], [], 1, 1, 0)).toEqual({
-      minValue: 2,
-      maxValue: 2,
-    })
+    expect(calculateRobustPriceRange([1, 2], [], 1, 1, 0)).toEqual({ minValue: 2, maxValue: 2 })
   })
 })
 
