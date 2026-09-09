@@ -2,6 +2,7 @@ import type { UserPositionStatus, UserPositionStatusKey } from '@/llamalend/llam
 import { type HealthQuery, useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { QueryData } from '@evm-ui/lib/queries/types'
 import { Badge } from '@evm-ui/shared/ui/Badge'
+import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
 import { Stack } from '@mui/material'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
@@ -11,7 +12,7 @@ import { maybe } from '@primitives/objects.utils'
 import { Accordion } from '@ui/components/Accordion'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { IS_DEVELOPMENT } from '@ui/utils/env'
@@ -27,7 +28,7 @@ import {
   HealthType,
 } from './utils'
 
-const { Badge: BadgeSizes, Height, MinWidth } = SizesAndSpaces
+const { Badge: BadgeSizes, Height, MinWidth, Spacing } = SizesAndSpaces
 
 const LIQUIDATION_PROTECTION_LABEL = t`Liquidation Protection`
 
@@ -65,22 +66,24 @@ const SEGMENT_CONFIG: Record<
 }
 
 export const HealthAndBufferBar = ({
-  positionStatus,
+  positionStatus: { data: positionStatus, isLoading: isStatusLoading, error: statusError },
   type,
-  query,
+  health,
 }: {
-  positionStatus: UserPositionStatus
+  positionStatus: QueryProp<UserPositionStatus>
   type: HealthType
-  query: HealthQuery
+  health: HealthQuery
 }) => {
   const { size, tooltip, getValue, getColor, getPercentage } = SEGMENT_CONFIG[type]
-  const { data, isLoading } = mapQuery(query, getValue)
+  // error already shown in the sibling Metric component
+  const { data, isLoading: isHealthLoading } = mapQuery(health, getValue)
+  const isHealth = type === 'health'
   const percentage = getPercentage(data)
-  const label = type === 'health' ? maybe(positionStatus, status => POSITION_STATUS_LABEL[status]) : undefined
-  const testId = `health-details-${type === 'liquidationBuffer' ? 'liquidation-buffer' : type}-bar`
+  const label = isHealth && maybe(positionStatus, status => POSITION_STATUS_LABEL[status])
+  const testId = `health-details-${isHealth ? 'health' : 'liquidation-buffer'}-bar`
 
   return (
-    <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
+    <WithSkeleton loading={isHealthLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
       <Tooltip title={tooltip.title} body={tooltip.body}>
         <Stack
           data-testid={testId}
@@ -101,17 +104,33 @@ export const HealthAndBufferBar = ({
               backgroundColor: getColor(data),
             }}
           />
-          {label && (
-            <Badge
-              data-testid={`${testId}-badge`}
-              size="extraSmall"
-              color={positionStatus === 'hardLiquidation' ? 'alert' : 'warning'}
-              label={label}
+          {isHealth && (label || statusError || isStatusLoading) && (
+            <Stack
+              direction="row"
               sx={{
                 position: 'absolute',
                 insetInlineStart: `calc((${Height.healthBar[size]} - ${BadgeSizes.Size.extraSmall}) / 2)`,
+                alignItems: 'center',
+                gap: Spacing.xs,
               }}
-            />
+            >
+              {statusError && <ErrorIconButton error={statusError} size="extraExtraSmall" />}
+              <WithSkeleton
+                loading={isStatusLoading}
+                variant="rectangular"
+                width="8rem"
+                height={BadgeSizes.Size.extraSmall}
+              >
+                {label && (
+                  <Badge
+                    data-testid={`${testId}-badge`}
+                    size="extraSmall"
+                    color={positionStatus === 'hardLiquidation' ? 'alert' : 'warning'}
+                    label={label}
+                  />
+                )}
+              </WithSkeleton>
+            </Stack>
           )}
         </Stack>
       </Tooltip>

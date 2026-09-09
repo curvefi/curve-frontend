@@ -30,7 +30,10 @@ const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthDetailsS
 }
 
 const HealthDetailsStory = (props: HealthDetailsStoryProps) => (
-  <HealthDetails healthQuery={getHealthQuery(props)} positionStatus={props.positionStatus} />
+  <HealthDetails
+    health={getHealthQuery(props)}
+    positionStatus={q({ data: props.positionStatus, isLoading: !!props.isLoading, error: null })}
+  />
 )
 
 const meta: Meta<typeof HealthDetailsStory> = {

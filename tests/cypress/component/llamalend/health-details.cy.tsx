@@ -33,7 +33,7 @@ const getHealthQuery = (health: Decimal, liquidationBuffer: Decimal): HealthQuer
 const mountHealthDetails = (health: Decimal, liquidationBuffer: Decimal, positionStatus?: UserPositionStatus) =>
   cy.mount(
     <ComponentTestWrapper>
-      <HealthDetails healthQuery={getHealthQuery(health, liquidationBuffer)} positionStatus={positionStatus} />
+      <HealthDetails health={getHealthQuery(health, liquidationBuffer)} positionStatus={constQ(positionStatus)} />
     </ComponentTestWrapper>,
   )
 
