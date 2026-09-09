@@ -16,7 +16,7 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { stackedMarketCardHeadersSx } from '@ui/lib/mui'
+import { stackedCardHeadersSx } from '@ui/lib/mui'
 
 type MarketInformationCompProps = { previewPrices: Range<Decimal> | undefined }
 
@@ -37,7 +37,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
         </Stack>
       </MarketSection>
       <MarketSection id="historical-rates">
-        <Stack sx={stackedMarketCardHeadersSx}>
+        <Stack sx={stackedCardHeadersSx}>
           <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
           <MarketBorrowRateBreakdown />
         </Stack>
