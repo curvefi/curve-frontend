@@ -1,9 +1,9 @@
-import { useIncreasingLength, type IncreasingLengthCategory } from '@evm-ui/hooks/useIncreasingLength'
 import Skeleton from '@mui/material/Skeleton'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import type { Column, ReactTable, RowData } from '@tanstack/react-table'
+import { useIncreasingLength, type IncreasingLengthCategory } from '@ui/hooks/useIncreasingLength'
 import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import { useCellSx } from './hooks/useCellSx'
 

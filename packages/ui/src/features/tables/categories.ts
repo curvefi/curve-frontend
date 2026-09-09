@@ -1,6 +1,6 @@
-import type { IncreasingLengthCategory } from '@evm-ui/hooks/useIncreasingLength'
+import type { EmptyStateCardProps } from '@ui/components/EmptyStateCard'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { EmptyStateEvmCardProps } from '../EmptyStateEvmCard'
+import type { IncreasingLengthCategory } from '@ui/hooks/useIncreasingLength'
 import type { DataTableSize } from './data-table.utils'
 import { EmptyStateRowSize } from './EmptyStateRow'
 
@@ -13,7 +13,7 @@ export type DataTableCategoryConfig = {
   disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
   hideHeader?: boolean
   increasingLength?: IncreasingLengthCategory
-  emptyStateSize?: NonNullable<EmptyStateEvmCardProps['size']>
+  emptyStateSize?: NonNullable<EmptyStateCardProps['size']>
   emptyStateRowSize?: EmptyStateRowSize
 }
 

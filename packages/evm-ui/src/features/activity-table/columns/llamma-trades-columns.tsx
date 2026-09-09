@@ -1,6 +1,6 @@
-import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
+import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { TimestampCell, AddressCell, LlammaTokenAmount } from '../cells'
 import type { MarketTradeRow } from '../types'

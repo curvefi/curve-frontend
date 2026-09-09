@@ -2,7 +2,7 @@ import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { copyToClipboardWithToast } from '@evm-ui/hooks/useCopyToClipboard'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
-import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
+import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 

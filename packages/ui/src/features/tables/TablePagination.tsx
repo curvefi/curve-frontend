@@ -1,12 +1,12 @@
 import { capitalize, last } from 'lodash'
 import { useCallback, useId } from 'react'
-import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { range } from '@primitives/objects.utils'
 import type { ReactTable, RowData } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { ChevronLeftIcon } from '@ui/icons/ChevronLeftIcon'
 
 /**

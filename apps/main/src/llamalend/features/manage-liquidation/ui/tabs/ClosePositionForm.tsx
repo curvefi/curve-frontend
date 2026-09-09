@@ -5,7 +5,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import TableCell from '@mui/material/TableCell'
@@ -45,7 +45,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
       onSubmit={onSubmit}
       footer={<ClosePositionInfoList marketId={marketId} tokens={tokens} chainId={network.chainId} values={values} />}
     >
-      <DataTable
+      <EvmDataTable
         category="form"
         table={table}
         emptyState={{ title: t`No close position data` }}

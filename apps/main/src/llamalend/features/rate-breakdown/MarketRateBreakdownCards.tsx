@@ -2,8 +2,7 @@ import type { ReactNode } from 'react'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import type { PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 import { PointsCampaignsTable } from '@evm-ui/features/points-campaigns/PointsCampaignsTable'
-import { type CurveTableFeatures, useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import TableCell from '@mui/material/TableCell'
@@ -11,6 +10,7 @@ import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import type { Column } from '@tanstack/react-table'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { type CurveTableFeatures, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
@@ -89,7 +89,7 @@ export const RateBreakdownTable = ({
   return (
     <Card size="small" data-testid={`${rateType.toLowerCase()}-rate-breakdown`}>
       <MarketCardHeader title={title} />
-      <DataTable
+      <EvmDataTable
         category="detail"
         table={table}
         emptyState={{ title: emptyTitle }}

@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
-import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { MarketRateType } from '@evm-ui/types/market'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { QueryProp } from '@ui/features/queries/util'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsTablet } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
@@ -61,7 +61,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
   const rowCount = table.getRowModel().rows.length
 
   return (
-    <DataTable
+    <EvmDataTable
       category="limited"
       table={table}
       viewAllLabel={t`View all ${rowCount} ${label} positions`}
@@ -79,6 +79,6 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       >
         <CardHeader title={title} size="small" />
       </Stack>
-    </DataTable>
+    </EvmDataTable>
   )
 }
