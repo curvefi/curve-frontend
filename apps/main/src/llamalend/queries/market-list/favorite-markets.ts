@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react'
-import { EmptyValidationSuite } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model'
 import type { Address } from '@primitives/address.utils'
+import { queryFactory } from '@ui/features/queries/factory'
 import {
   getFavoriteMarkets,
   useFavoriteMarkets as useStoredFavoriteMarkets,
 } from '@ui/features/storage/useLocalStorage'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavoriteMarkets } = queryFactory({
   queryKey: () => ['favorite-markets'] as const,

@@ -2,13 +2,14 @@ import { skipWhen, test } from 'vest'
 import { getMarket, hasGauge, hasVault, tryGetMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
-import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { MakeOptional } from '@ui/features/queries/util'
+import { enforce } from '@ui/lib/validation/enforce-extension'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 export type DepositMutation = { depositAmount: Decimal }
 

@@ -1,9 +1,9 @@
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { UserMarketQuery } from '@evm-ui/lib/model'
-import { FieldsOf } from '@evm-ui/lib/validation/types'
 import { maybes } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
+import { FieldsOf } from '@ui/lib/validation/types'
 
 export const useVaultUserBalances = (query: FieldsOf<UserMarketQuery>, enabled?: boolean) =>
   mapQuery(useUserBalances(query, enabled), ({ gauge, gaugeConverted, vaultShares, vaultSharesConverted }) => ({

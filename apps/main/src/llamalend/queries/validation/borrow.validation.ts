@@ -12,11 +12,12 @@ import {
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
-import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
-import { validateSlippage } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
-import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import type { RouteProvider } from '@primitives/router.utils'
+import { enforce } from '@ui/lib/validation/enforce-extension'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { validateSlippage } from '@ui/lib/validation/slippage.validation'
+import { type FieldsOf } from '@ui/lib/validation/types'
 import { type CreateLoanDebtParams, type CreateLoanForm } from '../../features/borrow/types'
 import { getCreateLoanImplementation } from '../create-loan/create-loan-query.helpers'
 

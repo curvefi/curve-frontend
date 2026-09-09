@@ -1,4 +1,3 @@
-import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
@@ -6,11 +5,15 @@ import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { FormProvider } from '@ui/features/forms'
-import { SLIPPAGE_TYPES, type SlippageType } from '@ui/features/slippage/slippage.utils'
+import { FormAlerts } from '@ui/features/forms/FormAlerts'
+import { SLIPPAGE_TYPES, type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
+import { SlippageFormField } from '@ui/features/forms/slippage/SlippageFormField'
+import {
+  type SlippageSettingsFormData,
+  useSlippageSettingsForm,
+} from '@ui/features/forms/slippage/useSlipageSettingsForm'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { SlippageFormField } from './SlippageFormField'
-import { type SlippageSettingsFormData, useSlippageSettingsForm } from './useSlipageSettingsForm'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,5 +1,4 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
 import Button from '@mui/material/Button'
 import { type IconButtonProps } from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
@@ -12,6 +11,8 @@ import {
   type NumberFormatOptions,
   PLACEHOLDER_USD,
 } from '@primitives/number.utils'
+import { ErrorIconButton } from '@ui/components/ErrorIconButton'
+import { LabelTooltipIcon } from '@ui/components/LabelTooltipIcon'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
@@ -24,7 +25,6 @@ import { CopyIcon } from '@ui/icons/CopyIcon'
 import { copyToClipboard } from '@ui/lib/clipboard'
 import { t } from '@ui/lib/i18n'
 import { applySxProps, type SxProps } from '@ui/lib/mui'
-import { LabelTooltipIcon } from './LabelTooltipIcon'
 import { METRIC_CATEGORIES, type MetricCategory, type MetricLayout } from './metric-categories'
 
 const {

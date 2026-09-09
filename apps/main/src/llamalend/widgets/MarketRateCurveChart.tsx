@@ -5,7 +5,6 @@ import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { combineQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import {
   CHART_LINE_DASH_PATTERNS,
@@ -25,6 +24,7 @@ import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
+import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'

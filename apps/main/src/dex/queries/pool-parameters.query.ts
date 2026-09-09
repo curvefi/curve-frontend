@@ -1,9 +1,10 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { createValidationSuite } from '@evm-ui/lib'
-import { queryFactory, rootKeys, type PoolParams, type PoolQuery } from '@evm-ui/lib/model'
+import { rootKeys, type PoolParams, type PoolQuery } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 
 export const { useQuery: usePoolParameters, invalidate: invalidatePoolParameters } = queryFactory({
   queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'pool-parameters'] as const,

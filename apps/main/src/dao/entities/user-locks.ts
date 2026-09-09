@@ -1,6 +1,6 @@
 import { getUserLocks, type UserLock } from '@curvefi/prices-api/dao'
-import { EmptyValidationSuite } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model/query'
+import { queryFactory } from '@ui/features/queries/factory'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 export type UserLockFormatted = Omit<UserLock, 'amount' | 'lockedBalance'> & { amount: number; lockedBalance: number }
 

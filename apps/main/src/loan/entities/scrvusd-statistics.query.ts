@@ -2,9 +2,9 @@ import { Contract } from 'ethers'
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { getStatistics, type Statistics } from '@curvefi/prices-api/savings'
 import { useWallet } from '@evm-ui/features/connect-wallet'
-import { EmptyValidationSuite } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model/query'
 import { weiToEther } from '@evm-ui/utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 const YEAR = 86400 * 365.25 * 100
 const UNLOCK_MULTIPLIER = 1e-12 * YEAR

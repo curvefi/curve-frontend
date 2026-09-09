@@ -1,6 +1,6 @@
 import { noop } from 'lodash'
 import { create, only, type Suite } from 'vest'
-import { FieldName, FieldsOf } from './types'
+import { FieldName, FieldsOf } from '@ui/lib/validation/types'
 
 /**
  * This is using `any` because `vest` will try to match every single field,

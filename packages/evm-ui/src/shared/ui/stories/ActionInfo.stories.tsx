@@ -6,10 +6,9 @@ import { Stack } from '@mui/material'
 import Switch from '@mui/material/Switch'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ExternalLink } from '@ui/components/ExternalLink'
+import { ActionInfo, ActionInfoSize } from '@ui/features/forms/action-info/ActionInfo'
 import { q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { ActionInfo } from '../ActionInfo'
-import { ActionInfoSize } from '../ActionInfo/ActionInfo'
 
 const SIZES: ActionInfoSize[] = ['small', 'medium']
 

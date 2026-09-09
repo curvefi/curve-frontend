@@ -1,6 +1,6 @@
-import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { InlineTableCell } from './InlineTableCell'

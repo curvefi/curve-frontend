@@ -2,15 +2,15 @@ import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
-import { EmptyValidationSuite } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model'
 import { type AppName, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
 import { fetchJson } from '@primitives/fetch.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { queryFactory } from '@ui/features/queries/factory'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useMatchRoute } from '@ui/hooks/router'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
 const { useQuery: useAppStatsDailyVolume } = queryFactory({

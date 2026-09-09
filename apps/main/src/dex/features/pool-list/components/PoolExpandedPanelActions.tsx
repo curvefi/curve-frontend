@@ -1,9 +1,9 @@
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { copyToClipboardWithToast } from '@evm-ui/hooks/useCopyToClipboard'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import { tryChecksumAddress } from '@evm-ui/utils'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
+import { copyToClipboardWithToast } from '@ui/hooks/useCopyToClipboard'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 

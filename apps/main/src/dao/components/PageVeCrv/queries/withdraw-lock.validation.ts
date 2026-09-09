@@ -1,10 +1,10 @@
 import { test } from 'vest'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
-import { createValidationSuite } from '@evm-ui/lib/validation'
-import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { t } from '@ui/lib/i18n'
+import { enforce } from '@ui/lib/validation/enforce-extension'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { WithdrawLockQuery } from './withdraw-lock.types'
 
 export const withdrawLockValidationSuite = createValidationSuite((params: WithdrawLockQuery) => {

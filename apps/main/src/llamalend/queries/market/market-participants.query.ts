@@ -1,8 +1,9 @@
 import { getMarketBorrowers, getVaultDepositors, type PaginatedOptions } from '@curvefi/prices-api/llamalend'
-import type { FieldsOf } from '@evm-ui/lib'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model/query'
+import { rootKeys } from '@evm-ui/lib/model/query'
 import { contractValidationSuite } from '@evm-ui/lib/model/query/contract-validation'
 import type { ContractQuery } from '@evm-ui/lib/model/query/root-keys'
+import { queryFactory } from '@ui/features/queries/factory'
+import type { FieldsOf } from '@ui/lib/validation/types'
 
 type MarketParticipantsQuery = ContractQuery & Required<Pick<PaginatedOptions, 'page' | 'perPage'>>
 type MarketParticipantsParams = FieldsOf<MarketParticipantsQuery>

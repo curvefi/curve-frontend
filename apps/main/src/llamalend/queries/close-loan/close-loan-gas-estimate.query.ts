@@ -1,8 +1,9 @@
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { queryFactory, rootKeys, type UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, type UserMarketQuery } from '@evm-ui/lib/model'
 import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { queryFactory } from '@ui/features/queries/factory'
 import type { CloseLoanParams, CloseLoanQuery } from '../validation/manage-loan.types'
 import { closeLoanValidationSuite } from '../validation/manage-loan.validation'
 

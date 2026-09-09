@@ -17,7 +17,7 @@ import { createVirtualNetworkSnapshot, type VnetSnapshot } from '@cy/support/hel
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { MarketType } from '@evm-ui/types/market'
 import { Chain } from '@primitives/network.utils'
-import { SLIPPAGE } from '@ui/features/slippage/slippage.utils'
+import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 
 const WSTETH_USDC_MARKET = {
   id: 'one-way-market-v2-2',

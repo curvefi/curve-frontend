@@ -1,6 +1,6 @@
-import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
 import { type IconButtonProps } from '@mui/material/IconButton'
 import { notFalsy } from '@primitives/objects.utils'
+import { CopyIconButton } from '@ui/components/CopyIconButton'
 import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'
 import { t } from '@ui/lib/i18n'
 

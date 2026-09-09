@@ -1,10 +1,10 @@
 import { skipWhen, test } from 'vest'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
-import { createValidationSuite } from '@evm-ui/lib/validation'
-import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui/lib/i18n'
+import { enforce } from '@ui/lib/validation/enforce-extension'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { IncreaseLockQuery } from './increase-lock.types'
 
 export const validateIncreaseLockAmount = (lockedAmount: Decimal | undefined) => {

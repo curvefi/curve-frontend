@@ -4,14 +4,15 @@ import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { getResetDebtReduction } from '@/llamalend/queries/reset/reset-query.helpers'
 import { validateMaxBorrowed } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
-import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { MakeOptional } from '@ui/features/queries/util'
 import { decimalGreaterThan } from '@ui/lib/decimal'
+import { enforce } from '@ui/lib/validation/enforce-extension'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 type ResetInputs = {
   /** The amount of borrow tokens already converted from collateral in the user's band */

@@ -1,7 +1,8 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { queryFactory, rootKeys, type ChainParams, type ChainQuery } from '@evm-ui/lib/model'
+import { rootKeys, type ChainParams, type ChainQuery } from '@evm-ui/lib/model'
 import { llamaApiValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useScrvUsdExchangeRate } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'st_crvUSD.convertToShares'] as const,

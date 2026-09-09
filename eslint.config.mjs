@@ -171,7 +171,7 @@ const config = [
             {
               name: 'vest',
               importNames: ['enforce'],
-              message: 'Import enforce from @evm-ui/lib/validation/enforce-extension instead.',
+              message: 'Import enforce from @ui/lib/validation/enforce-extension instead.',
             },
           ],
         },
