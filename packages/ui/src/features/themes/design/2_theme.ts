@@ -305,6 +305,15 @@ export const createLightDesign = (
     },
   } as const
 
+  const Snackbar = {
+    Border: {
+      Info: Light.Snackbar.Border.Info,
+      Success: Light.Snackbar.Border.Success,
+      Warning: Light.Snackbar.Border.Warning,
+      Error: Light.Snackbar.Border.Error,
+    },
+  } as const
+
   const Chart = {
     LiquidationZone: {
       Current: Oranges[50],
@@ -396,6 +405,7 @@ export const createLightDesign = (
     Tabs,
     Chips,
     Badges,
+    Snackbar,
     Chart,
     Toggles,
     Table,
@@ -681,6 +691,15 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     },
   } as const
 
+  const Snackbar = {
+    Border: {
+      Info: Dark.Snackbar.Border.Info,
+      Success: Dark.Snackbar.Border.Success,
+      Warning: Dark.Snackbar.Border.Warning,
+      Error: Dark.Snackbar.Border.Error,
+    },
+  } as const
+
   const Chart = {
     LiquidationZone: {
       Current: Oranges[900],
@@ -772,6 +791,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Tabs,
     Chips,
     Badges,
+    Snackbar,
     Chart,
     Toggles,
     Table,
@@ -1018,6 +1038,15 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     },
   } as const
 
+  const Snackbar = {
+    Border: {
+      Info: Chad.Snackbar.Border.Info,
+      Success: Chad.Snackbar.Border.Success,
+      Warning: Chad.Snackbar.Border.Warning,
+      Error: Chad.Snackbar.Border.Error,
+    },
+  } as const
+
   const Chart = {
     LiquidationZone: {
       Current: Oranges[50],
@@ -1109,6 +1138,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Tabs,
     Chips,
     Badges,
+    Snackbar,
     Chart,
     Toggles,
     Table,

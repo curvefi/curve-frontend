@@ -20,12 +20,6 @@ const themes = {
 }
 
 const decorators: Decorator[] = [
-  withThemeFromJSXProvider<ReactRenderer>({
-    themes,
-    defaultTheme: 'light',
-    Provider: ThemeProvider,
-    GlobalStyles: CssBaseline,
-  }),
   Story => {
     const router = createRouter({
       routeTree: createRootRoute({ component: Story }),
@@ -39,6 +33,13 @@ const decorators: Decorator[] = [
       </>
     )
   },
+  // The last decorator wraps the others, so the shared Toast also receives the theme.
+  withThemeFromJSXProvider<ReactRenderer>({
+    themes,
+    defaultTheme: 'light',
+    Provider: ThemeProvider,
+    GlobalStyles: CssBaseline,
+  }),
 ]
 
 const preview: Preview = {

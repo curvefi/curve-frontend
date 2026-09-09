@@ -1,3 +1,4 @@
+import { capitalize } from 'lodash'
 import { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -68,21 +69,22 @@ export const Toast = () => {
           flexDirection: 'column',
         }}
       >
-        {items.map(({ id, severity, title, message, testId = `toast-${severity}`, keepAlive }) => (
+        {items.map(({ id, severity = 'info', title, message, testId, keepAlive }) => (
           <Alert
             key={id}
-            variant="filled"
+            variant="outlined"
             severity={severity}
-            data-testid={testId}
-            {...(!keepAlive && {
-              sx: {
+            data-testid={testId ?? `toast-${severity}`}
+            sx={{
+              borderColor: theme => theme.design.Snackbar.Border[capitalize(severity)],
+              ...(!keepAlive && {
                 animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
                 '@keyframes toastFadeOut': {
                   [getDurationPercent({ severity })]: { opacity: 1 },
                   '100%': { opacity: 0 },
                 },
-              },
-            })}
+              }),
+            }}
           >
             {title && <AlertTitle>{title}</AlertTitle>}
             {message}
