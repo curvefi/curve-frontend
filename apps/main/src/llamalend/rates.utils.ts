@@ -142,8 +142,8 @@ export const getSupplyApyMetrics = ({
 
   const [crvMinBoostApr, crvMaxBoostApr] = crvBoostApr ?? []
 
-  const crvMinBoostApy = aprToApy(crvMinBoostApr, 'llamalend.rewards')
-  const crvMaxBoostApy = aprToApy(crvMaxBoostApr, 'llamalend.rewards')
+  const crvMinBoostApy = aprToApy(crvMinBoostApr, 'llamalend.rewards') ?? null
+  const crvMaxBoostApy = aprToApy(crvMaxBoostApr, 'llamalend.rewards') ?? null
   const userBoostApy =
     maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) => aprToApy(apr * +boost, 'llamalend.rewards')) ?? null
 
