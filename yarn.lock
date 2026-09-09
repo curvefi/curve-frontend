@@ -533,7 +533,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@curvefi/evm-ui@workspace:packages/evm-ui"
   dependencies:
-    "@chromatic-com/storybook": "npm:5.3.0"
     "@coinbase/wallet-sdk": "npm:4.3.7"
     "@curvefi/api": "npm:2.69.17"
     "@curvefi/legacy-ui": "workspace:^"
@@ -543,14 +542,9 @@ __metadata:
     "@safe-global/safe-apps-provider": "npm:0.18.6"
     "@safe-global/safe-apps-sdk": "npm:9.1.0"
     "@sentry/react": "npm:10.72.0"
-    "@storybook/addon-a11y": "npm:10.5.10"
-    "@storybook/addon-docs": "npm:10.5.10"
-    "@storybook/addon-themes": "npm:10.5.10"
-    "@storybook/react-vite": "npm:10.5.10"
     "@supercharge/promise-pool": "npm:3.3.0"
     "@types/lodash": "npm:4.17.25"
     "@types/memoizee": "npm:0.4.12"
-    "@vitejs/plugin-react": "npm:5.1.2"
     "@walletconnect/ethereum-provider": "npm:2.24.0"
     dayjs: "npm:1.11.23"
     echarts: "npm:6.1.0"
@@ -558,7 +552,6 @@ __metadata:
     ethers: "npm:6.17.0"
     external-rewards: "workspace:^"
     lightweight-charts: "npm:5.2.1"
-    storybook: "npm:10.5.10"
     viem: "npm:2.56.0"
     wagmi: "npm:3.7.7"
   languageName: unknown
@@ -606,6 +599,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@curvefi/storybook@workspace:storybook":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/storybook@workspace:storybook"
+  dependencies:
+    "@chromatic-com/storybook": "npm:5.3.0"
+    "@curvefi/evm-ui": "workspace:^"
+    "@curvefi/ui": "workspace:^"
+    "@storybook/addon-a11y": "npm:10.5.10"
+    "@storybook/addon-docs": "npm:10.5.10"
+    "@storybook/addon-themes": "npm:10.5.10"
+    "@storybook/react-vite": "npm:10.5.10"
+    "@vitejs/plugin-react": "npm:5.1.2"
+    main: "workspace:^"
+    stellar: "workspace:^"
+    storybook: "npm:10.5.10"
+    vite: "npm:7.3.5"
+    vite-plugin-svgr: "npm:5.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@curvefi/tests@workspace:tests":
   version: 0.0.0-use.local
   resolution: "@curvefi/tests@workspace:tests"
@@ -646,6 +659,7 @@ __metadata:
     "@tanstack/react-table": "npm:9.2.4"
     "@types/node": "npm:26.1.0"
     bignumber.js: "npm:9.3.1"
+    fuse.js: "npm:7.5.0"
     immer: "npm:11.1.18"
     lodash: "npm:4.18.1"
     memoizee: "npm:0.4.17"
@@ -10731,7 +10745,6 @@ __metadata:
     "@sentry/vite-plugin": "npm:5.4.0"
     "@types/lodash": "npm:4.17.25"
     "@vitejs/plugin-react": "npm:5.1.2"
-    fuse.js: "npm:7.5.0"
     merkl-api: "workspace:^"
     pinst: "npm:3.0.0"
     router-api: "workspace:^"
@@ -12933,7 +12946,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stellar@workspace:apps/stellar":
+"stellar@workspace:^, stellar@workspace:apps/stellar":
   version: 0.0.0-use.local
   resolution: "stellar@workspace:apps/stellar"
   dependencies:

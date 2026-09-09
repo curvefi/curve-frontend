@@ -208,6 +208,19 @@ const config = [
 
   // Override (replaces legacy `overrides`)
   {
+    files: ['**/*.stories.{ts,tsx,mts}', 'storybook/**/*.{ts,tsx,mts}'],
+    languageOptions: {
+      // Stories are excluded from app/package projects and checked by Storybook.
+      parserOptions: { projectService: false, project: ['./storybook/tsconfig.json'] },
+    },
+    settings: {
+      'import-x/resolver': {
+        // Resolve cross-workspace imports with the same aliases as the story typecheck.
+        typescript: { alwaysTryTypes: true, project: [path.join(__dirname, 'storybook/tsconfig.json')] },
+      },
+    },
+  },
+  {
     files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts', '**/_api/*.ts'],
     rules: { 'import-x/no-default-export': 'off' },
   },

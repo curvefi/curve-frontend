@@ -123,7 +123,7 @@ const BorrowPositionDetailsStory = ({
 }
 
 const meta: Meta<typeof BorrowPositionDetailsStory> = {
-  title: 'Llamalend/BorrowPositionDetails',
+  title: 'Llamalend/Features/BorrowPositionDetails',
   component: BorrowPositionDetailsStory,
   parameters: {
     layout: 'padded',

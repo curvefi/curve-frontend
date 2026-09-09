@@ -14,7 +14,7 @@ const PartnerCardWrapper = (args: Parameters<typeof PartnerCard>[0]) => (
 )
 
 const meta: Meta<typeof PartnerCard> = {
-  title: 'UI Kit/Widgets/PartnerCard',
+  title: 'EVM UI/Shared UI/PartnerCard',
   component: PartnerCard,
   render: PartnerCardWrapper,
   argTypes: {

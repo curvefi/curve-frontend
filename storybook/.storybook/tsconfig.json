@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "include": [
+    "./**/*.ts",
+    "./**/*.tsx",
+    "../../packages/legacy-ui/src/globals.d.ts",
+    "../../packages/evm-ui/src/**/*.d.ts",
+    "../../packages/ui/src/**/*.d.ts"
+  ]
+}

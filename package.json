@@ -8,7 +8,8 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "tests"
+    "tests",
+    "storybook"
   ],
   "scripts": {
     "build": "yarn workspaces foreach --parallel --all run build",
@@ -23,8 +24,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
-    "storybook": "yarn workspace evm-ui run storybook",
-    "storybook:build": "yarn workspace evm-ui run build:storybook",
+    "storybook": "yarn workspace @curvefi/storybook storybook",
+    "storybook:build": "yarn workspace @curvefi/storybook build:storybook",
     "check-supply-chain": "node .github/check-supply-chain.mjs"
   },
   "devDependencies": {
@@ -55,7 +56,7 @@
   },
   "packageManager": "yarn@4.17.1",
   "lint-staged": {
-    "{apps,tests,packages}/**/*.{js,jsx,ts,tsx}": [
+    "{apps,tests,packages,storybook}/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",
       "eslint --fix"
     ]

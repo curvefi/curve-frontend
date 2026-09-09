@@ -32,7 +32,7 @@ const ActionInfoStory = ({ loading, errorMessage, value, ...args }: ActionInfoSt
 )
 
 const meta: Meta<typeof ActionInfoStory> = {
-  title: 'UI Kit/Widgets/ActionInfo',
+  title: 'EVM UI/Shared UI/ActionInfo',
   component: ActionInfoStory,
   argTypes: {
     label: { control: 'text', description: 'Label text displayed on the left side' },

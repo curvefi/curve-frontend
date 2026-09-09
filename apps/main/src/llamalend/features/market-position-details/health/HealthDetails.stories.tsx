@@ -26,7 +26,7 @@ const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthDetailsS
 const HealthDetailsStory = (props: HealthDetailsStoryProps) => <HealthDetails healthQuery={getHealthQuery(props)} />
 
 const meta: Meta<typeof HealthDetailsStory> = {
-  title: 'Llamalend/HealthDetails',
+  title: 'Llamalend/Features/HealthDetails',
   component: HealthDetailsStory,
   parameters: {
     layout: 'padded',

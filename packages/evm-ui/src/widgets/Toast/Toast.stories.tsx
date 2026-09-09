@@ -8,7 +8,7 @@ import { showToast } from './toast.util'
 const { Spacing } = SizesAndSpaces
 
 const meta: Meta<typeof Toast> = {
-  title: 'UI Kit/Widgets/Toast',
+  title: 'EVM UI/Widgets/Toast',
   component: Toast,
   args: { title: 'Toast Title' },
   argTypes: { title: { control: 'text' } },

@@ -26,7 +26,7 @@ const NumericTextFieldWrapper = (props: NumericTextFieldProps) => {
 }
 
 const meta: Meta<typeof NumericTextField> = {
-  title: 'UI Kit/Widgets/NumericTextField',
+  title: 'EVM UI/Shared UI/NumericTextField',
   component: NumericTextField,
   render: args => <NumericTextFieldWrapper {...args} />,
   argTypes: {

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "types": ["node"],
     "paths": {
-      "@/*": ["./src/*"],
+      "@stellar/*": ["./src/*"],
       "@ui": ["../../packages/ui/src/index.ts"],
       "@ui/*": ["../../packages/ui/src/*"],
       "@primitives/*": ["../../packages/primitives/src/*"]

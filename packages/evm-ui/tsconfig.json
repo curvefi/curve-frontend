@@ -14,5 +14,5 @@
       "@primitives/*": ["../primitives/src/*"]
     }
   },
-  "include": ["src", "vite.config.mts", "../legacy-ui/src/globals.d.ts", "./src/types/*.d.ts"]
+  "include": ["src", "../legacy-ui/src/globals.d.ts", "./src/types/*.d.ts"]
 }

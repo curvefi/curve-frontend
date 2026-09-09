@@ -38,7 +38,7 @@ export default defineConfig(({ command }) => ({
   optimizeDeps: { include: ['@mui/material', '@mui/icons-material'] },
   resolve: {
     alias: [
-      { find: '@', replacement: resolve(__dirname, './src') },
+      { find: '@stellar', replacement: resolve(__dirname, './src') },
       { find: '@ui', replacement: resolve(__dirname, '../../packages/ui/src') },
       { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
     ],
