@@ -9,10 +9,7 @@ import { CampaignBannerComp } from '@legacy-ui/CampaignRewards/CampaignBannerCom
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 
-type CampaignRewardsBannerProps = {
-  chainId: ChainId
-  market: LendMarketTemplate | undefined
-}
+type CampaignRewardsBannerProps = { chainId: ChainId; market: LendMarketTemplate | undefined }
 
 export const CampaignRewardsBanner = ({ chainId, market }: CampaignRewardsBannerProps) => {
   const blockchainId = networks[chainId].blockchainId as Chain

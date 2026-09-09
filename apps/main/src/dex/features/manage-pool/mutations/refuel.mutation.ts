@@ -43,13 +43,7 @@ export const useRefuelMutation = ({ chainId, poolAddress, tokens, userAddress, o
 
         await waitForApproval({
           isApproved: async () =>
-            await fetchHasEnoughAllowance(config, {
-              amount,
-              chainId,
-              userAddress,
-              tokenAddress,
-              spenderAddress,
-            }),
+            await fetchHasEnoughAllowance(config, { amount, chainId, userAddress, tokenAddress, spenderAddress }),
           onApprove: async () => await approve(config, { amount, chainId, tokenAddress, spenderAddress }),
           message: t`Approved ${token.symbol} for refueling`,
           config,

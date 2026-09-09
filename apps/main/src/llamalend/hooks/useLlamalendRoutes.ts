@@ -26,19 +26,13 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
     return [
       {
         app: LEND_APP,
-        route: buildLendMarketPath({
-          marketId: params.marketId,
-          action: LEND_MARKET_ROUTES.PAGE_LOAN,
-        }),
+        route: buildLendMarketPath({ marketId: params.marketId, action: LEND_MARKET_ROUTES.PAGE_LOAN }),
         label: () => t`Borrow`,
         matchMode: 'exact',
       },
       {
         app: LEND_APP,
-        route: buildLendMarketPath({
-          marketId: params.marketId,
-          action: LEND_MARKET_ROUTES.PAGE_VAULT,
-        }),
+        route: buildLendMarketPath({ marketId: params.marketId, action: LEND_MARKET_ROUTES.PAGE_VAULT }),
         label: () => t`Supply`,
         matchMode: 'exact',
       },

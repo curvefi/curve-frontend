@@ -1,16 +1,9 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { HelperMessage } from '@evm-ui/shared/ui/LargeTokenInput/HelperMessage'
 
-type ExpectedMatch = {
-  raw: string
-  text: string
-}
+type ExpectedMatch = { raw: string; text: string }
 
-type TestCase = {
-  name: string
-  message: string
-  expectedMatches: ExpectedMatch[]
-}
+type TestCase = { name: string; message: string; expectedMatches: ExpectedMatch[] }
 
 const testCases: TestCase[] = [
   {

@@ -11,11 +11,7 @@ export enum SORT_ID {
   claimables = 'claimables',
 }
 
-export const DEFAULT_FORM_VALUES: FormValues = {
-  sortBy: SORT_ID.liquidityUsd,
-  sortByOrder: 'desc',
-  walletAddress: '',
-}
+export const DEFAULT_FORM_VALUES: FormValues = { sortBy: SORT_ID.liquidityUsd, sortByOrder: 'desc', walletAddress: '' }
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   loading: false,
@@ -26,8 +22,4 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   error: '',
 }
 
-export const tooltipProps: TooltipProps = {
-  placement: 'bottom-end',
-  textAlign: 'end',
-  noWrap: true,
-}
+export const tooltipProps: TooltipProps = { placement: 'bottom-end', textAlign: 'end', noWrap: true }

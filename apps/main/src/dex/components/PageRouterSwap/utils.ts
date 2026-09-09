@@ -13,12 +13,7 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   swapError: '',
 }
 
-export const DEFAULT_FORM_VALUES: FormValues = {
-  isFrom: null,
-  fromAmount: '',
-  fromError: '',
-  toAmount: '',
-}
+export const DEFAULT_FORM_VALUES: FormValues = { isFrom: null, fromAmount: '', fromError: '', toAmount: '' }
 
 export function parseRouterRoutes(
   routes: IRouteStep[],

@@ -7,10 +7,7 @@ import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { LazyItem } from '@legacy-ui/LazyItem'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  proposalData: ProposalData
-  handleClick: (rProposalId: string) => void
-}
+type Props = { proposalData: ProposalData; handleClick: (rProposalId: string) => void }
 
 export const Proposal = ({ proposalData, handleClick }: Props) => {
   const { id, type, timestamp, metadata, status, executed } = proposalData

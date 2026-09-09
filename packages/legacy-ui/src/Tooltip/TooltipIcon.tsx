@@ -9,8 +9,6 @@ export const TooltipIcon = ({
   children,
   customIcon,
   ...props
-}: TooltipProps & {
-  children: ReactNode
-  iconStyles?: IconStyles
-  customIcon?: ReactNode
-}) => <TooltipButton {...props} showIcon customIcon={customIcon} tooltip={children}></TooltipButton>
+}: TooltipProps & { children: ReactNode; iconStyles?: IconStyles; customIcon?: ReactNode }) => (
+  <TooltipButton {...props} showIcon customIcon={customIcon} tooltip={children}></TooltipButton>
+)

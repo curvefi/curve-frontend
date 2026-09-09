@@ -1,17 +1,9 @@
 import { useEffect, useState } from 'react'
 import { setTimeoutInterval } from '@ui/lib/timers'
 
-type IncreasingLengthOptions = {
-  initialLength?: number
-  increaseEveryMs?: number
-  maxLength?: number
-}
+type IncreasingLengthOptions = { initialLength?: number; increaseEveryMs?: number; maxLength?: number }
 
-const DEFAULT: Required<IncreasingLengthOptions> = {
-  initialLength: 3,
-  increaseEveryMs: 5000,
-  maxLength: 10,
-}
+const DEFAULT: Required<IncreasingLengthOptions> = { initialLength: 3, increaseEveryMs: 5000, maxLength: 10 }
 
 const INCREASING_LENGTH_CATEGORIES = {
   default: DEFAULT,

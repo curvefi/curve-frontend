@@ -6,13 +6,7 @@ import { Chain } from '@primitives/network.utils'
 
 type V2PoolNetwork = 'ethereum' | 'taiko'
 
-type V2Coin = {
-  pool_index: number
-  symbol: string
-  address: Address
-  name: string
-  decimals: number
-}
+type V2Coin = { pool_index: number; symbol: string; address: Address; name: string; decimals: number }
 
 type RawV2Pool = {
   chain_id: number
@@ -33,14 +27,7 @@ type RawV2Pool = {
   base_weekly_apr: number | null
   crv_apr: number | null
   crv_apr_boosted: number | null
-  extra_rewards_apr: {
-    address: Address
-    symbol: string
-    name: string
-    decimals: number
-    price: number
-    apr: number
-  }[]
+  extra_rewards_apr: { address: Address; symbol: string; name: string; decimals: number; price: number; apr: number }[]
   vyper_version: string | null
   gauges: { address: Address; is_killed: boolean }[]
 }
@@ -54,11 +41,7 @@ type RawLitePool = {
   registry_id: string
   name: string | null
   tvl: number
-  coins: {
-    address: Address
-    decimals?: string | null
-    symbol?: string | null
-  }[]
+  coins: { address: Address; decimals?: string | null; symbol?: string | null }[]
   gauge_address?: Address | null
   root_gauge_address?: Address | null
   gauge_crv_apr?: number[] | null
@@ -68,11 +51,7 @@ type RawLitePool = {
     name: string
     symbol: string
     decimals: string
-    apr_data: {
-      is_reward_still_active: boolean
-      rate: number
-      total_supply: number
-    }
+    apr_data: { is_reward_still_active: boolean; rate: number; total_supply: number }
     apr?: number | null
     meta_data: { rate: string; period_finish: number }
   }[]
@@ -108,40 +87,14 @@ const createCoins = (network: V2PoolNetwork): RawV2Pool['coins'] => [
 
 const createShowcaseTradeableCoins = (): RawV2Pool['tradeable_coins'] => [
   ...createCoins('ethereum'),
-  {
-    pool_index: 2,
-    symbol: 'DAI',
-    address: address('4103'),
-    name: 'Dai Stablecoin',
-    decimals: 18,
-  },
-  {
-    pool_index: 3,
-    symbol: 'FRAX',
-    address: address('4104'),
-    name: 'Frax',
-    decimals: 18,
-  },
-  {
-    pool_index: 4,
-    symbol: 'WBTC',
-    address: address('4105'),
-    name: 'Wrapped Bitcoin',
-    decimals: 8,
-  },
+  { pool_index: 2, symbol: 'DAI', address: address('4103'), name: 'Dai Stablecoin', decimals: 18 },
+  { pool_index: 3, symbol: 'FRAX', address: address('4104'), name: 'Frax', decimals: 18 },
+  { pool_index: 4, symbol: 'WBTC', address: address('4105'), name: 'Wrapped Bitcoin', decimals: 8 },
 ]
 
 const createLiteCoins = (): RawLitePool['coins'] => [
-  {
-    address: address('4001'),
-    decimals: '6',
-    symbol: 'USDC',
-  },
-  {
-    address: address('4002'),
-    decimals: '6',
-    symbol: 'USD₮',
-  },
+  { address: address('4001'), decimals: '6', symbol: 'USDC' },
+  { address: address('4002'), decimals: '6', symbol: 'USD₮' },
 ]
 
 const extraReward = (apr: number, symbol = 'RWD'): RawV2Pool['extra_rewards_apr'][number] => ({
@@ -159,11 +112,7 @@ const liteExtraReward = (apr: number, symbol = 'LITE'): NonNullable<RawLitePool[
   name: `${symbol} reward`,
   symbol,
   decimals: '18',
-  apr_data: {
-    is_reward_still_active: true,
-    rate: 1,
-    total_supply: 1,
-  },
+  apr_data: { is_reward_still_active: true, rate: 1, total_supply: 1 },
   apr,
   meta_data: { rate: '1', period_finish: V2_POOL_FIXTURE_NOW_SECONDS + YEAR_SECONDS },
 })
@@ -347,22 +296,9 @@ const createMerklOpportunity = ({
   apr,
   explorerAddress: pool.address,
   tags: [platform],
-  chain: {
-    id: pool.chain_id,
-    name: pool.chain_id === Number(Chain.Ethereum) ? 'Ethereum' : 'Taiko',
-  },
+  chain: { id: pool.chain_id, name: pool.chain_id === Number(Chain.Ethereum) ? 'Ethereum' : 'Taiko' },
   rewardsRecord: {
-    breakdowns: [
-      {
-        token: {
-          chainId: pool.chain_id,
-          address: tokenAddress,
-          symbol,
-          icon: MOCK_ICON,
-        },
-        value: 100,
-      },
-    ],
+    breakdowns: [{ token: { chainId: pool.chain_id, address: tokenAddress, symbol, icon: MOCK_ICON }, value: 100 }],
   },
 })
 
@@ -474,10 +410,7 @@ const mockLitePoolChains = () =>
     {
       body: {
         success: true,
-        data: {
-          platforms: { taiko: [] },
-          platforms_metadata: { taiko: { chain_id: Chain.Taiko, name: 'Taiko' } },
-        },
+        data: { platforms: { taiko: [] }, platforms_metadata: { taiko: { chain_id: Chain.Taiko, name: 'Taiko' } } },
         generated_time_ms: V2_POOL_FIXTURE_NOW,
       },
     },
@@ -523,10 +456,7 @@ const mockLitePoolList = () =>
     {
       body: {
         success: true,
-        data: {
-          pool_data: LITE_POOL_FIXTURES,
-          tvl: LITE_POOL_FIXTURES.reduce((total, pool) => total + pool.tvl, 0),
-        },
+        data: { pool_data: LITE_POOL_FIXTURES, tvl: LITE_POOL_FIXTURES.reduce((total, pool) => total + pool.tvl, 0) },
         generated_time_ms: V2_POOL_FIXTURE_NOW,
       },
     },

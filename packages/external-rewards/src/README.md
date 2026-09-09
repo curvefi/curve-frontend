@@ -15,14 +15,7 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
 ### Example:
 
 ```json
-[
-  {
-    "campaign": "ProtocolName.json"
-  },
-  {
-    "campaign": "ProtocolName.json"
-  }
-]
+[{ "campaign": "ProtocolName.json" }, { "campaign": "ProtocolName.json" }]
 ```
 
 ### Each single campaign file in the folder `campaigns` must have the following properties:

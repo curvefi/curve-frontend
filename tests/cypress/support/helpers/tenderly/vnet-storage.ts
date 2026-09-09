@@ -17,20 +17,10 @@ export const setVirtualNetworkStorageAt = ({
   value: Hex
 }) => {
   const { adminRpcUrl } = getRpcUrls(vnet)
-  const body = {
-    jsonrpc: '2.0',
-    method: 'tenderly_setStorageAt',
-    params: [contractAddress, slot, value],
-    id: oneInt(),
-  }
+  const body = { jsonrpc: '2.0', method: 'tenderly_setStorageAt', params: [contractAddress, slot, value], id: oneInt() }
 
   return cy
-    .request<{ error?: unknown; result?: unknown }>({
-      method: 'POST',
-      url: adminRpcUrl,
-      body,
-      ...LOAD_TIMEOUT,
-    })
+    .request<{ error?: unknown; result?: unknown }>({ method: 'POST', url: adminRpcUrl, body, ...LOAD_TIMEOUT })
     .then(({ body: responseBody, isOkStatusCode }) => {
       const errorMessage = JSON.stringify({ request: body, response: responseBody })
       expect(isOkStatusCode).to.equal(true, errorMessage)

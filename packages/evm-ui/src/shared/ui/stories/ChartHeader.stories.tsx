@@ -22,10 +22,7 @@ const statisticsSelections: ChartSelections<StatisticsChart>[] = [
   { key: 'distributions', label: 'Distributions', activeTitle: 'Historical Distributions' },
 ]
 
-const exampleWidths = {
-  normalWidth: 600,
-  narrowWidth: 300,
-}
+const exampleWidths = { normalWidth: 600, narrowWidth: 300 }
 
 type CandleChartTimeOption = (typeof TIME_OPTIONS)[number]
 
@@ -201,9 +198,7 @@ export const ButtonsGroupVariantScrvUsdStatisticsHeader: Story = {
   render: () => <ScrvUsdStatisticsHeaderExample />,
   parameters: {
     docs: {
-      description: {
-        story: 'Matches the scrvUSD statistics view: button-group variant with chart selection buttons.',
-      },
+      description: { story: 'Matches the scrvUSD statistics view: button-group variant with chart selection buttons.' },
     },
   },
 }

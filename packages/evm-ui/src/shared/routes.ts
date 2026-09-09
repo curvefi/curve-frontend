@@ -24,16 +24,9 @@ export const DEX_ROUTES = {
   PAGE_INTEGRATIONS,
 } as const
 
-export const LEND_ROUTES = {
-  PAGE_MARKETS: '/markets',
-  PAGE_LEGAL,
-  PAGE_INTEGRATIONS,
-} as const
+export const LEND_ROUTES = { PAGE_MARKETS: '/markets', PAGE_LEGAL, PAGE_INTEGRATIONS } as const
 
-export const LEND_MARKET_ROUTES = {
-  PAGE_LOAN: '',
-  PAGE_VAULT: '/vault',
-} as const
+export const LEND_MARKET_ROUTES = { PAGE_LOAN: '', PAGE_VAULT: '/vault' } as const
 
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
@@ -43,11 +36,7 @@ export const CRVUSD_ROUTES = {
   PAGE_INTEGRATIONS,
 } as const
 
-export const LLAMALEND_ROUTES = {
-  PAGE_MARKETS: '/markets',
-  PAGE_LEGAL,
-  PAGE_INTEGRATIONS,
-} as const
+export const LLAMALEND_ROUTES = { PAGE_MARKETS: '/markets', PAGE_LEGAL, PAGE_INTEGRATIONS } as const
 
 export const DAO_ROUTES = {
   PAGE_PROPOSALS: '/proposals',
@@ -60,13 +49,9 @@ export const DAO_ROUTES = {
   PAGE_INTEGRATIONS,
 } as const
 
-const ANALYTICS_ROUTES = {
-  PAGE_HOME: '/home',
-}
+const ANALYTICS_ROUTES = { PAGE_HOME: '/home' }
 
-const BRIDGE_ROUTES = {
-  PAGE_BRIDGES: '',
-}
+const BRIDGE_ROUTES = { PAGE_BRIDGES: '' }
 
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'bridge', 'analytics'] as const
 export type AppName = (typeof AppNames)[number]
@@ -80,10 +65,7 @@ export type NavigationItem = {
   matchMode?: 'prefix' | 'exact' // some pages have "../marketId" and "../marketId/vault" as routes, so we need to match the exact route
 }
 
-type AppNavigation = {
-  label: string
-  routes: NavigationItem[]
-}
+type AppNavigation = { label: string; routes: NavigationItem[] }
 
 export const LlamalendApps: AppName[] = ['crvusd', 'lend', 'llamalend']
 
@@ -115,10 +97,7 @@ export const APP_LINK: Record<AppMenuOption, AppNavigation> = {
       { app: 'dao', route: DAO_ROUTES.DISCUSSION, label: () => t`Discussion`, target: '_blank' },
     ],
   },
-  bridge: {
-    label: t`Bridge`,
-    routes: [{ app: 'bridge', route: BRIDGE_ROUTES.PAGE_BRIDGES, label: () => t`Bridge` }],
-  },
+  bridge: { label: t`Bridge`, routes: [{ app: 'bridge', route: BRIDGE_ROUTES.PAGE_BRIDGES, label: () => t`Bridge` }] },
   analytics: {
     label: 'Analytics',
     routes: [{ app: 'analytics', route: ANALYTICS_ROUTES.PAGE_HOME, label: () => t`Home` }],

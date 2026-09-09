@@ -2,12 +2,7 @@ import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 
-type TextEllipsisProps = {
-  maxWidth?: string
-  smMaxWidth?: string
-  mdMaxWidth?: string
-  lgMaxWidth?: string
-}
+type TextEllipsisProps = { maxWidth?: string; smMaxWidth?: string; mdMaxWidth?: string; lgMaxWidth?: string }
 
 export const TextEllipsis: IStyledComponent<'web', TextEllipsisProps & ComponentPropsWithRef<'span'>> =
   styled.span<TextEllipsisProps>`

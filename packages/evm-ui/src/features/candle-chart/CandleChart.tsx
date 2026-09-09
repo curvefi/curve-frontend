@@ -17,10 +17,7 @@ import { useVisiblePriceRangeSync } from './hooks/useVisiblePriceRangeSync'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange, priceFormatter } from './utils'
 
-type RangeValueAccumulator = {
-  upper?: number
-  lower?: number
-}
+type RangeValueAccumulator = { upper?: number; lower?: number }
 
 const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null): LiquidationRangePoint[] => {
   if (!range) return []
@@ -41,11 +38,8 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
       ...Array.from(
         pointMap,
         ([time, { upper, lower }]) =>
-          maybes([upper, lower], (...points) => ({
-            time,
-            upper: Math.max(...points),
-            lower: Math.min(...points),
-          })) ?? null,
+          maybes([upper, lower], (...points) => ({ time, upper: Math.max(...points), lower: Math.min(...points) })) ??
+          null,
       ),
     ),
     point => point.time,
@@ -60,21 +54,13 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   const rangeStartTime = range.startTime ?? fallbackStart
   const rangeEndTime = range.endTime ?? fallbackEnd
 
-  return orderedPoints.map(point => ({
-    ...point,
-    time: point.time as Time,
-    rangeStartTime,
-    rangeEndTime,
-  }))
+  return orderedPoints.map(point => ({ ...point, time: point.time as Time, rangeStartTime, rangeEndTime }))
 }
 
 function getPriceFormat(ohlcData: LpPriceOhlcDataFormatted[] | undefined) {
   const delta = ohlcData?.length ? Math.max(...ohlcData.map(x => x.high)) - Math.min(...ohlcData.map(x => x.low)) : 1
 
-  return {
-    type: 'custom' as const,
-    formatter: (price: number) => priceFormatter(price, delta),
-  }
+  return { type: 'custom' as const, formatter: (price: number) => priceFormatter(price, delta) }
 }
 
 type LiquidationRangeSeriesApi = ISeriesApi<
@@ -225,15 +211,8 @@ export const CandleChart = ({
     chartRef.current = createChart(chartContainerRef.current, {
       autoSize: true,
       hoveredSeriesOnTop: false,
-      timeScale: {
-        borderVisible: false,
-      },
-      rightPriceScale: {
-        autoScale: true,
-        alignLabels: true,
-        borderVisible: false,
-        scaleMargins: PRICE_SCALE_MARGINS,
-      },
+      timeScale: { borderVisible: false },
+      rightPriceScale: { autoScale: true, alignLabels: true, borderVisible: false, scaleMargins: PRICE_SCALE_MARGINS },
     })
     return () => {
       if (chartRef.current) {
@@ -252,14 +231,7 @@ export const CandleChart = ({
         background: { type: ColorType.Solid, color: memoizedColors.backgroundColor },
         textColor: memoizedColors.textColor,
       },
-      grid: {
-        vertLines: {
-          color: memoizedColors.gridLine,
-        },
-        horzLines: {
-          color: memoizedColors.gridLine,
-        },
-      },
+      grid: { vertLines: { color: memoizedColors.gridLine }, horzLines: { color: memoizedColors.gridLine } },
     })
   }, [memoizedColors.backgroundColor, memoizedColors.textColor, memoizedColors.gridLine])
 
@@ -267,11 +239,7 @@ export const CandleChart = ({
   useEffect(() => {
     if (!chartRef.current) return
 
-    chartRef.current.applyOptions({
-      timeScale: {
-        timeVisible: timeOption !== 'day',
-      },
-    })
+    chartRef.current.applyOptions({ timeScale: { timeVisible: timeOption !== 'day' } })
   }, [timeOption])
 
   // Update crosshair settings when colors change
@@ -439,9 +407,7 @@ export const CandleChart = ({
           return originalRange
         }
 
-        return {
-          priceRange: robustRange,
-        }
+        return { priceRange: robustRange }
       },
     })
 
@@ -509,10 +475,7 @@ export const CandleChart = ({
   useEffect(() => {
     if (!oraclePriceSeriesRef.current) return
 
-    oraclePriceSeriesRef.current.applyOptions({
-      color: memoizedColors.oraclePrice,
-      visible: oraclePriceVisible,
-    })
+    oraclePriceSeriesRef.current.applyOptions({ color: memoizedColors.oraclePrice, visible: oraclePriceVisible })
   }, [memoizedColors.oraclePrice, oraclePriceVisible])
 
   const { scheduleEmitPriceRange } = useVisiblePriceRangeSync({

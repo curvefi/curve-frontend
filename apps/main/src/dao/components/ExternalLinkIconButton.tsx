@@ -4,11 +4,7 @@ import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink } from '@legacy-ui/Link'
 import { TooltipButton } from '@legacy-ui/Tooltip/TooltipButton'
 
-type ExternalLinkIconButtonProps = {
-  href?: string
-  tooltip: string
-  children?: ReactNode
-}
+type ExternalLinkIconButtonProps = { href?: string; tooltip: string; children?: ReactNode }
 
 /** Returns null when href is undefined, allowing concise usage without conditional checks at call sites. */
 export const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) =>

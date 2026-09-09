@@ -4,10 +4,7 @@ import MuiLink from '@mui/material/Link'
 import { RouterLink } from '@ui/components/RouterLink'
 import type { HeaderLink } from './types'
 
-type PageTabsProps = {
-  pages: HeaderLink[]
-  overflow?: TabsSwitcherProps<string>['overflow']
-}
+type PageTabsProps = { pages: HeaderLink[]; overflow?: TabsSwitcherProps<string>['overflow'] }
 
 export const PageTabsSwitcher = ({ pages, overflow = 'standard' }: PageTabsProps) => (
   <TabsSwitcher

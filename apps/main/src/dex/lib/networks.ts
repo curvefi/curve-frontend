@@ -10,30 +10,15 @@ import { Chain } from '@primitives/network.utils'
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
-    poolIsWrappedOnly: {
-      pax: true,
-      busd: true,
-      y: true,
-    },
-    swap: {
-      fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      toAddress: ethAddress,
-    },
-    swapCustomRouteRedirect: {
-      'sfrxeth-llamma': getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_MARKETS),
-    },
+    poolIsWrappedOnly: { pax: true, busd: true, y: true },
+    swap: { fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7', toAddress: ethAddress },
+    swapCustomRouteRedirect: { 'sfrxeth-llamma': getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_MARKETS) },
     createDisabledTokens: [
       '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',
       '0x051d7e5609917bd9b73f04bac0ded8dd46a74301',
       '0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6',
     ],
-    createQuickList: [
-      {
-        address: CRVUSD_ADDRESS,
-        haveSameTokenName: false,
-        symbol: 'crvUSD',
-      },
-    ],
+    createQuickList: [{ address: CRVUSD_ADDRESS, haveSameTokenName: false, symbol: 'crvUSD' }],
     stableswapFactoryOld: true,
     stableswapFactory: true,
     twocryptoFactoryOld: true,
@@ -49,11 +34,7 @@ export const defaultNetworks = Object.entries({
     },
     symbol: 'ETH',
     createQuickList: [
-      {
-        address: '0xc52d7f23a2e460248db6ee192cb23dd12bddcbf6',
-        haveSameTokenName: false,
-        symbol: 'crvUSD',
-      },
+      { address: '0xc52d7f23a2e460248db6ee192cb23dd12bddcbf6', haveSameTokenName: false, symbol: 'crvUSD' },
     ],
     stableswapFactoryOld: true,
     stableswapFactory: true,
@@ -69,11 +50,7 @@ export const defaultNetworks = Object.entries({
     },
     symbol: 'XDAI',
     createQuickList: [
-      {
-        address: '0xabef652195f98a91e490f047a5006b71c85f058d',
-        haveSameTokenName: false,
-        symbol: 'crvUSD',
-      },
+      { address: '0xabef652195f98a91e490f047a5006b71c85f058d', haveSameTokenName: false, symbol: 'crvUSD' },
     ],
     stableswapFactoryOld: true,
     stableswapFactory: true,
@@ -90,11 +67,7 @@ export const defaultNetworks = Object.entries({
     },
     createDisabledTokens: ['0x0000000000000000000000000000000000001010'],
     createQuickList: [
-      {
-        address: '0xc4ce1d6f5d98d65ee25cf85e9f2e9dcfee6cb5d6',
-        haveSameTokenName: false,
-        symbol: 'crvUSD',
-      },
+      { address: '0xc4ce1d6f5d98d65ee25cf85e9f2e9dcfee6cb5d6', haveSameTokenName: false, symbol: 'crvUSD' },
     ],
     stableswapFactoryOld: true,
     stableswapFactory: true,
@@ -135,11 +108,7 @@ export const defaultNetworks = Object.entries({
       toAddress: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
     },
     createQuickList: [
-      {
-        address: '0x498bf2b1e120fed3ad3d42ea2165e9b73f99c1e5',
-        haveSameTokenName: false,
-        symbol: 'crvUSD',
-      },
+      { address: '0x498bf2b1e120fed3ad3d42ea2165e9b73f99c1e5', haveSameTokenName: false, symbol: 'crvUSD' },
     ],
     stableswapFactoryOld: true,
     stableswapFactory: true,
@@ -187,16 +156,9 @@ export const defaultNetworks = Object.entries({
   },
   [Chain.Base]: {
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
-    swap: {
-      fromAddress: ethAddress,
-      toAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-    },
+    swap: { fromAddress: ethAddress, toAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913' },
     createQuickList: [
-      {
-        address: '0x417Ac0e078398C154EdFadD9Ef675d30Be60Af93',
-        haveSameTokenName: false,
-        symbol: 'crvUSD',
-      },
+      { address: '0x417Ac0e078398C154EdFadD9Ef675d30Be60Af93', haveSameTokenName: false, symbol: 'crvUSD' },
     ],
     stableswapFactoryOld: true,
     stableswapFactory: true,
@@ -213,11 +175,7 @@ export const defaultNetworks = Object.entries({
       toAddress: '0xcba2aeec821b0b119857a9ab39e09b034249681a',
     },
     createQuickList: [
-      {
-        address: '0xe2fb3f127f5450dee44afe054385d74c392bdef4',
-        haveSameTokenName: false,
-        symbol: 'crvUSD',
-      },
+      { address: '0xe2fb3f127f5450dee44afe054385d74c392bdef4', haveSameTokenName: false, symbol: 'crvUSD' },
     ],
     stableswapFactoryOld: true,
     stableswapFactory: true,
@@ -235,11 +193,7 @@ export const defaultNetworks = Object.entries({
       toAddress: '0xfc00000000000000000000000000000000000001',
     },
     createQuickList: [
-      {
-        address: '0xb102f7efa0d5de071a8d37b3548e1c7cb148caf3',
-        haveSameTokenName: false,
-        symbol: 'crvUSD',
-      },
+      { address: '0xb102f7efa0d5de071a8d37b3548e1c7cb148caf3', haveSameTokenName: false, symbol: 'crvUSD' },
     ],
     stableswapFactory: true,
     twocryptoFactory: true,
@@ -320,9 +274,7 @@ export async function getNetworks() {
       tricryptoFactory: true,
       fxswapFactory: isLiteFxswapEnabled,
       isCrvRewardsEnabled: isUpgraded,
-      ...(isOnlyPoolRewardsUpgraded && {
-        isCrvRewardsEnabled: true,
-      }),
+      ...(isOnlyPoolRewardsUpgraded && { isCrvRewardsEnabled: true }),
     }
     return prev
   }, {} as Networks)

@@ -47,11 +47,7 @@ export const parseTimestamp = (timestamp: TimestampResponse) => fromDate(toDate(
 
 const ONE_DAY_IN_SECONDS = 24 * 60 * 60
 
-type TimeRangeParams = {
-  end?: number
-  start?: number
-  daysRange?: number
-}
+type TimeRangeParams = { end?: number; start?: number; daysRange?: number }
 
 /**
  * Get start and end unix timestamps for a time range for the prices API.
@@ -67,8 +63,5 @@ export function getTimeRange({ end, start, daysRange = 10 }: TimeRangeParams = {
   end ??= Math.floor(Date.now() / 1000)
   start ??= end - daysRange * ONE_DAY_IN_SECONDS
 
-  return {
-    end,
-    start,
-  }
+  return { end, start }
 }

@@ -33,11 +33,7 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
     <Grid
       container
       columnSpacing={Spacing.sm}
-      sx={{
-        paddingBlock: Spacing.sm,
-        paddingInline: Spacing.md,
-        backgroundColor: t => t.design.Layer[1].Fill,
-      }}
+      sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}
     >
       {summary.map((item, index) => (
         // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.

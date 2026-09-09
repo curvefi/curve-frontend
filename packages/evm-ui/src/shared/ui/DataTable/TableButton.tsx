@@ -12,13 +12,7 @@ const { IconSize } = SizesAndSpaces
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 export const TableButton = forwardRef<
   HTMLButtonElement,
-  {
-    onClick: () => void
-    rotateIcon?: boolean
-    testId?: string
-    icon: typeof SvgIcon
-    active?: boolean
-  }
+  { onClick: () => void; rotateIcon?: boolean; testId?: string; icon: typeof SvgIcon; active?: boolean }
 >(({ active, icon: Icon, rotateIcon, testId, ...rest }, ref) => (
   <IconButton
     ref={ref}
@@ -30,16 +24,9 @@ export const TableButton = forwardRef<
        * TODO: refactor the IconButton's style from mui-icon-button.ts */
       transition: `color ${TRANSITION_FUNCTION}`,
       color: active || rotateIcon ? t.design.Button.Ghost.Hover.Label : t.design.Button.Ghost.Default.Label,
-      '&:hover': {
-        color: t.design.Button.Ghost.Hover.Label,
-      },
-      '&:disabled': {
-        color: t.design.Button.Ghost.Disabled.Label,
-      },
-      '& svg': {
-        width: IconSize.md,
-        height: IconSize.md,
-      },
+      '&:hover': { color: t.design.Button.Ghost.Hover.Label },
+      '&:disabled': { color: t.design.Button.Ghost.Disabled.Label },
+      '& svg': { width: IconSize.md, height: IconSize.md },
     })}
     {...rest}
   >

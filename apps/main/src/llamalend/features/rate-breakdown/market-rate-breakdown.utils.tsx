@@ -115,12 +115,7 @@ export const buildSupplyRateBreakdown = ({
   const crvRow: RateBreakdownRow[] = notFalsy(
     crvRates.some(Boolean) && {
       source: {
-        tokenInfo: {
-          address: MAINNET_CRV_ADDRESS,
-          blockchainId: 'ethereum',
-          iconPosition: 'left',
-          primary: 'CRV',
-        },
+        tokenInfo: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
         address: MAINNET_CRV_ADDRESS,
         explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
       },

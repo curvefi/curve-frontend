@@ -37,10 +37,6 @@ export const userAddressValidationGroup = <T extends string>({
   userAddress,
   required = true,
 }: UserParams<T> & { required?: boolean }) =>
-  evmAddressValidationGroup({
-    evmAddress: userAddress,
-    fieldName: 'userAddress',
-    required,
-  })
+  evmAddressValidationGroup({ evmAddress: userAddress, fieldName: 'userAddress', required })
 
 export const userAddressValidationSuite = createValidationSuite(userAddressValidationGroup)

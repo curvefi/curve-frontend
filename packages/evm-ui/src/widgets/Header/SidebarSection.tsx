@@ -5,11 +5,7 @@ import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { SidebarItem } from './SidebarItem'
 
-type SidebarSectionProps = {
-  title: string
-  pages?: HeaderLink[]
-  children?: ReactNode
-}
+type SidebarSectionProps = { title: string; pages?: HeaderLink[]; children?: ReactNode }
 
 export const SidebarSection = ({ pages, title, children }: SidebarSectionProps) => (
   <List

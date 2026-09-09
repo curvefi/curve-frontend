@@ -33,18 +33,12 @@ const meta: Meta<typeof Typography> = {
       description: 'The color of the component',
     },
   },
-  args: {
-    children: 'The quick brown fox jumps over the lazy dog. While the dog is sleeping, the fox is running.',
-  },
+  args: { children: 'The quick brown fox jumps over the lazy dog. While the dog is sleeping, the fox is running.' },
 }
 
 type Story = StoryObj<typeof Typography>
 
-type TypographyDisplayProps = {
-  variant: TypographyVariantKey
-  children?: ReactNode
-  [key: string]: unknown
-}
+type TypographyDisplayProps = { variant: TypographyVariantKey; children?: ReactNode; [key: string]: unknown }
 
 const Item = ({ title, value }: { title: string; value: ReactNode }) =>
   value && (
