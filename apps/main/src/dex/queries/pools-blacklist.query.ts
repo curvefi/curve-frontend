@@ -10,8 +10,7 @@ import { useMappedQuery } from '@ui/features/queries/util'
 // List for core api https://github.com/curvefi/curve-api-core/blob/ab4080c816438c9c97d0baab82ad939aabb9bc85/routes/v1/getHiddenPools.js
 
 // We allow blocking more than just the chains supported by prices api.
-type ChainBlacklist =
-  Chain | 'avalanche' | 'moonbeam' | 'kava' | 'xdc' | 'tac' | 'etherlink' | 'plume' | 'unichain' | 'monad'
+type ChainBlacklist = Chain | 'avalanche' | 'kava' | 'xdc' | 'tac' | 'etherlink' | 'plume' | 'unichain' | 'monad'
 
 /**
  * A local hardcoded blacklist of pools we don't want to show in the front-end for whatever reason.
@@ -126,10 +125,6 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
     // List from api.curve.finance
     '0xe5042bbac35056f3f95bF0a79D9eB64dc0daFDb8', // factory-v2-42 - empty/borked
     '0x5Aa2a79293424bf39171d704A364FDE3B641DB25', // factory-v2-47 - empty/borked
-  ],
-  moonbeam: [
-    // List from api.curve.finance
-    '0xd937afa3E51aAc92FD6B4c9F487D7B9D52Fd7417', // factory-v2-5 - spam
   ],
   kava: [
     // List from api.curve.finance

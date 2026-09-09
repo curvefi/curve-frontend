@@ -1,5 +1,5 @@
 {
-  "name": "legacy-ui",
+  "name": "@curvefi/legacy-ui",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
@@ -10,20 +10,9 @@
   },
   "dependencies": {
     "@carbon/icons-react": "11.87.0",
+    "@curvefi/evm-ui": "workspace:^",
     "react-aria": "3.51.0",
-    "react-stately": "3.49.0"
-  },
-  "devDependencies": {
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "eslint": "*",
-    "typescript": "*"
-  },
-  "peerDependencies": {
-    "bignumber.js": "*",
-    "ethers": "*",
-    "react": "*",
-    "react-dom": "*",
-    "styled-components": "*"
+    "react-stately": "3.49.0",
+    "styled-components": "6.5.3"
   }
 }

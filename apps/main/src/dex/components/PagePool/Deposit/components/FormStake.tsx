@@ -11,6 +11,7 @@ import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
@@ -24,16 +25,15 @@ import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
 
-export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
+export const FormStake = ({ seed }: TransferProps) => {
+  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve ?? {}
-  const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
-  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
+  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolData.pool.id])
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepStakeApprove)
   const fetchStepStake = useStore(state => state.poolDeposit.fetchStepStake)
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
@@ -42,7 +42,6 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
-  const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
   const config = useConfig()
@@ -51,19 +50,9 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
     (updatedFormValues: Partial<FormValues>) => {
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
-      void setFormValues(
-        'STAKE',
-        config,
-        curve,
-        poolDataCacheOrApi.pool.id,
-        poolData,
-        updatedFormValues,
-        null,
-        seed.isSeed,
-        '',
-      )
+      void setFormValues('STAKE', config, curve, poolData.pool.id, poolData, updatedFormValues, null, seed.isSeed, '')
     },
-    [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, poolData, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -188,28 +177,18 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       </FieldsWrapper>
 
       <div>
-        <DetailInfoExpectedApy
-          lpTokenAmount={formValues.lpToken}
-          poolDataCacheOrApi={poolDataCacheOrApi}
-          crvApr={rewardsApy?.crv?.[0]}
-        />
+        <DetailInfoExpectedApy lpTokenAmount={formValues.lpToken} poolData={poolData} crvApr={rewardsApy?.crv?.[0]} />
 
         {haveSigner && (
           <DetailInfoEstGas
-            chainId={rChainId}
+            chainId={chainId}
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
       </div>
 
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || !seed.loaded}
-        routerParams={routerParams}
-        seed={seed}
-      >
+      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
         {formStatus.error === 'lpToken-too-much' ? (
           <AlertBox alertType="error">{t`Not enough LP Tokens balances.`}</AlertBox>
         ) : formStatus.error ? (

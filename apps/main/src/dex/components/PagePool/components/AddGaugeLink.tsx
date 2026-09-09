@@ -5,21 +5,20 @@ import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
-import type { PageTransferProps } from '@/dex/components/PagePool/types'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
+import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useParams } from '@evm-ui/hooks/router'
 import Button from '@mui/material/Button'
 import { RouterLink } from '@ui/components/RouterLink'
 import { t } from '@ui/lib/i18n'
 
-export const AddGaugeLink = ({
-  chainId,
-  address,
-  lpToken,
-  poolDataCacheOrApi,
-}: { chainId: ChainId; address: string; lpToken: string } & Pick<PageTransferProps, 'poolDataCacheOrApi'>) => {
+export const AddGaugeLink = () => {
+  const {
+    chainId,
+    poolData: { pool, tokens },
+  } = usePoolContext()
   const setCurrentPoolType = useStore(state => state.deployGauge.setCurrentPoolType)
   const setSidechainGauge = useStore(state => state.deployGauge.setSidechainGauge)
   const setPoolAddress = useStore(state => state.deployGauge.setPoolAddress)
@@ -31,21 +30,21 @@ export const AddGaugeLink = ({
   const handleClick = () => {
     if (chainId === 1) {
       setSidechainGauge(false)
-      setPoolAddress(address)
+      setPoolAddress(pool.address)
     } else {
       setSidechainGauge(true)
-      setLpTokenAddress(lpToken)
+      setLpTokenAddress(pool.lpToken)
     }
 
-    if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.pool.isNg && poolDataCacheOrApi.tokens.length === 2) {
+    if (pool.isCrypto && pool.isNg && tokens.length === 2) {
       setCurrentPoolType(TWOCOINCRYPTOSWAPNG)
-    } else if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 2) {
+    } else if (pool.isCrypto && tokens.length === 2) {
       setCurrentPoolType(TWOCOINCRYPTOSWAP)
-    } else if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 3) {
+    } else if (pool.isCrypto && tokens.length === 3) {
       setCurrentPoolType(THREECOINCRYPTOSWAP)
-    } else if (poolDataCacheOrApi.pool.isNg && !poolDataCacheOrApi.pool.isCrypto) {
+    } else if (pool.isNg && !pool.isCrypto) {
       setCurrentPoolType(STABLESWAP)
-    } else if (!poolDataCacheOrApi.pool.isNg && !poolDataCacheOrApi.pool.isCrypto) {
+    } else if (!pool.isNg && !pool.isCrypto) {
       setCurrentPoolType(STABLESWAPOLD)
     }
   }

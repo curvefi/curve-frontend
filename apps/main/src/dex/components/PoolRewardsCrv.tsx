@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ChipInactive } from '@/dex/components/ChipInactive'
-import { PoolData, PoolDataCache, RewardsApy } from '@/dex/types/main.types'
+import { PoolData, RewardsApy } from '@/dex/types/main.types'
 import { formatNumber } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
@@ -17,7 +17,7 @@ export const PoolRewardsCrv = ({
   isLoading?: boolean
   isHighlight?: boolean
   rewardsApy: RewardsApy | undefined
-  poolData: PoolDataCache | PoolData | undefined
+  poolData: PoolData | undefined
 }) => {
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status ?? {}
 

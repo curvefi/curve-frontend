@@ -3,3 +3,5 @@
 export { AddressCell } from './AddressCell'
 
 export { TimestampCell } from './TimestampCell'
+export { TokenCell } from './TokenCell'
+export { TokenPriceCell } from './TokenPriceCell'
