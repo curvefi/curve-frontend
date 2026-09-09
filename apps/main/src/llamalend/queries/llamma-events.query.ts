@@ -16,14 +16,7 @@ export const { useQuery: useLlammaEvents } = queryFactory({
     endpoint,
     page = DEFAULT_PAGE_START_INDEX,
     perPage = DEFAULT_PAGE_SIZE,
-  }: GetEventsParams) =>
-    getEvents({
-      endpoint,
-      chain,
-      llamma,
-      page,
-      perPage,
-    }),
+  }: GetEventsParams) => getEvents({ endpoint, chain, llamma, page, perPage }),
   category: 'llamalend.user',
   validationSuite: createValidationSuite(({ chain, llamma, endpoint }: LlammaEventsParams) => {
     contractValidationGroup({ blockchainId: chain, contractAddress: llamma })

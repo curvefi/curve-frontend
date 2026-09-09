@@ -4,9 +4,7 @@ import { useTextField } from 'react-aria'
 import { styled } from 'styled-components'
 import { InputProvider } from '@legacy-ui/InputComp'
 
-type Props = {
-  label: string
-} & AriaTextFieldProps
+type Props = { label: string } & AriaTextFieldProps
 
 export const TextInput = (props: Props) => {
   const ref = useRef(null)

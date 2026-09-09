@@ -37,10 +37,10 @@ type ScrvUsdForm = 'deposit' | 'withdraw'
 
 const SCRVUSD_NETWORK = 'ethereum'
 const ETH_FUND_AMOUNT = '1' as Decimal
-const ScrvUsdFormComponents = {
-  deposit: ScrvUsdDepositForm,
-  withdraw: ScrvUsdWithdrawForm,
-} satisfies Record<ScrvUsdForm, typeof ScrvUsdDepositForm | typeof ScrvUsdWithdrawForm>
+const ScrvUsdFormComponents = { deposit: ScrvUsdDepositForm, withdraw: ScrvUsdWithdrawForm } satisfies Record<
+  ScrvUsdForm,
+  typeof ScrvUsdDepositForm | typeof ScrvUsdWithdrawForm
+>
 
 describe('scrvUSD', () => {
   skipTestsAfterFailure()
@@ -78,12 +78,7 @@ describe('scrvUSD', () => {
 
   before(() => {
     const vnet = getVirtualNetwork()
-    fundUserWithCrvUsd({
-      vnet,
-      userAddress: address,
-      crvUsdAmount: fundValue,
-      ethAmount: ETH_FUND_AMOUNT,
-    })
+    fundUserWithCrvUsd({ vnet, userAddress: address, crvUsdAmount: fundValue, ethAmount: ETH_FUND_AMOUNT })
     cy.log(`Funded ${fundValue} crvUSD and ${ETH_FUND_AMOUNT} ETH to ${address} in ${vnet.slug}`)
   })
 

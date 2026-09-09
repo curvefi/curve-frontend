@@ -14,11 +14,7 @@ const PagePool = lazyRouteComponent(() => import('@/dex/components/PagePool/Page
 const PageManagePool = lazyRouteComponent(() => import('@/dex/components/PageManagePool'), 'ManagePool')
 const PageRouterSwap = lazyRouteComponent(() => import('@/dex/components/PageRouterSwap/Page'), 'PageRouterSwap')
 
-const dexLayoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'dex',
-  component: DexLayout,
-})
+const dexLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'dex', component: DexLayout })
 
 const layoutProps = { getParentRoute: () => dexLayoutRoute }
 
@@ -29,11 +25,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     loader: ({ params: { network } }) => redirectTo(`/dex/${network}/swap/`),
     ...layoutProps,
   }),
-  createRoute({
-    path: '/integrations',
-    loader: () => redirectTo('/dex/ethereum/integrations/'),
-    ...layoutProps,
-  }),
+  createRoute({ path: '/integrations', loader: () => redirectTo('/dex/ethereum/integrations/'), ...layoutProps }),
   createRoute({
     path: '$network/compensation',
     component: PageCompensation,

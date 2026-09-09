@@ -66,10 +66,7 @@ export const SelectTokenButton = ({
   const [filterBasepools, setFilterBasepools] = useState(false)
 
   const favorites = [
-    {
-      address: nativeToken?.wrappedAddress ?? '',
-      symbol: nativeToken?.wrappedSymbol ?? '',
-    },
+    { address: nativeToken?.wrappedAddress ?? '', symbol: nativeToken?.wrappedSymbol ?? '' },
     ...network.createQuickList,
   ].map(({ address, symbol }) => ({ chain: blockchainId, address: address as Address, symbol }))
 

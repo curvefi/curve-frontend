@@ -14,10 +14,7 @@ type CurveApiBaseGauge = {
   blockchainId: string
   gauge: string
   rootGauge?: string
-  gauge_data: {
-    inflation_rate: string
-    working_supply: string
-  }
+  gauge_data: { inflation_rate: string; working_supply: string }
   gauge_controller: {
     gauge_relative_weight: string
     gauge_future_relative_weight: string
@@ -33,11 +30,7 @@ type CurveApiBaseGauge = {
 
 type CurveApiPoolGauge = CurveApiBaseGauge & {
   isPool: true
-  poolUrls: {
-    swap: string[]
-    deposit: string[]
-    withdraw: string[]
-  }
+  poolUrls: { swap: string[]; deposit: string[]; withdraw: string[] }
   poolAddress: string
   virtualPrice: string | number
   type: string
@@ -47,10 +40,7 @@ type CurveApiPoolGauge = CurveApiBaseGauge & {
 
 type CurveApiLendingGauge = CurveApiBaseGauge & {
   isPool: false
-  lendingVaultUrls: {
-    deposit: string
-    withdraw: string
-  }
+  lendingVaultUrls: { deposit: string; withdraw: string }
   lendingVaultAddress: string
 }
 
@@ -66,11 +56,7 @@ type CurveApiFundraisingGauge = CurveApiBaseGauge & {
 
 export type CurveApiGaugeData = CurveApiPoolGauge | CurveApiLendingGauge | CurveApiFundraisingGauge
 
-type CurveGaugeResponse = {
-  success: boolean
-  data: Record<string, CurveApiGaugeData>
-  generatedTimeMs: number
-}
+type CurveGaugeResponse = { success: boolean; data: Record<string, CurveApiGaugeData>; generatedTimeMs: number }
 
 type GaugeCurveApiDataMapper = Record<string, CurveApiGaugeData>
 

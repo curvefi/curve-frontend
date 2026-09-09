@@ -19,19 +19,11 @@ import { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 
 const chainId = Chain.Ethereum
-const testCases: {
-  title: string
-  claimableCrv: Decimal
-  claimableRewards: { amount: Decimal; symbol: string }[]
-}[] = [
+const testCases: { title: string; claimableCrv: Decimal; claimableRewards: { amount: Decimal; symbol: string }[] }[] = [
   { title: 'no rewards', claimableCrv: '0', claimableRewards: [] },
   { title: 'crv only', claimableCrv: '5.00', claimableRewards: [] },
   { title: 'rewards only', claimableCrv: '0', claimableRewards: [{ amount: '2.50', symbol: 'CVX' }] },
-  {
-    title: 'crv and rewards',
-    claimableCrv: '5.00',
-    claimableRewards: [{ amount: '2.50', symbol: 'CVX' }],
-  },
+  { title: 'crv and rewards', claimableCrv: '5.00', claimableRewards: [{ amount: '2.50', symbol: 'CVX' }] },
 ]
 
 describe('ClaimTab (mocked)', () => {
@@ -54,10 +46,7 @@ describe('ClaimTab (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      checkClaimTableState({
-        rows: expected.table.rows,
-        totalNotional: expected.table.totalNotional,
-      })
+      checkClaimTableState({ rows: expected.table.rows, totalNotional: expected.table.totalNotional })
 
       validateClaimTabState({
         crvButtonDisabled: expected.crvButtonDisabled,

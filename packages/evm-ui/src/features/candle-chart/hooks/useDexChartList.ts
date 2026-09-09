@@ -5,10 +5,7 @@ import type { ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import { t } from '@ui/lib/i18n'
 import type { ChartSelection } from '../types'
 
-type UseDexChartListArgs = {
-  coins: PoolCoin[]
-  nCoins: number
-}
+type UseDexChartListArgs = { coins: PoolCoin[]; nCoins: number }
 
 /**
  * Calculates all possible combinations without repetition of a certain size. Copied from `lodash.combinations`.
@@ -83,16 +80,8 @@ export const useDexChartList = ({ coins, nCoins }: UseDexChartListArgs) => {
     const lpTokenLabel = lpTokenSymbol ? t`LP Token (${lpTokenSymbol})` : t`LP Token`
 
     return [
-      {
-        activeTitle: t`LP Token (USD)`,
-        label: t`LP Token (USD)`,
-        key: 'lp-usd',
-      },
-      {
-        activeTitle: lpTokenLabel,
-        label: lpTokenLabel,
-        key: 'lp-token',
-      },
+      { activeTitle: t`LP Token (USD)`, label: t`LP Token (USD)`, key: 'lp-usd' },
+      { activeTitle: lpTokenLabel, label: lpTokenLabel, key: 'lp-token' },
       ...chartCombinations.map(([mainToken, refToken], index) => {
         // Use flipped tokens if this pair is selected
         const isSelected = selectedPairIndex === index && selectedChart.type === 'pair'

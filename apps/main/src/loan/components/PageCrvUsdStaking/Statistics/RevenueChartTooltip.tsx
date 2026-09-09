@@ -14,10 +14,7 @@ const lineLabels: Record<YieldKeys, string> = {
 
 const format = (value: number) => formatNumber(value, 'percent.value')
 
-type RevenueChartTooltipProps = {
-  datum: ScrvUsdYieldWithAverages
-  visibleSeries: LineSeriesConfig<YieldKeys>[]
-}
+type RevenueChartTooltipProps = { datum: ScrvUsdYieldWithAverages; visibleSeries: LineSeriesConfig<YieldKeys>[] }
 
 export const RevenueChartTooltip = ({ datum, visibleSeries }: RevenueChartTooltipProps) => (
   <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>

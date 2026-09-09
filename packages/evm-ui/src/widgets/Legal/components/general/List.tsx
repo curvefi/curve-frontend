@@ -4,10 +4,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type Props = {
-  children: ReactNode
-  type: 'numeric' | 'lower-alpha' | 'disc'
-}
+type Props = { children: ReactNode; type: 'numeric' | 'lower-alpha' | 'disc' }
 
 export const List = ({ children, type = 'numeric' }: Props) => (
   <Stack
@@ -20,20 +17,11 @@ export const List = ({ children, type = 'numeric' }: Props) => (
         ...(type === 'disc' && {
           position: 'relative',
           paddingInlineStart: Spacing.lg,
-          '&::before': {
-            content: '"•"',
-            position: 'absolute',
-            left: 5,
-            top: 2.5,
-            lineHeight: 1,
-            fontSize: '1em',
-          },
+          '&::before': { content: '"•"', position: 'absolute', left: 5, top: 2.5, lineHeight: 1, fontSize: '1em' },
         }),
       },
 
-      ol: {
-        marginInlineStart: Spacing.lg,
-      },
+      ol: { marginInlineStart: Spacing.lg },
     }}
   >
     {children}

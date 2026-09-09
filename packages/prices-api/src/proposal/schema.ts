@@ -58,30 +58,15 @@ const transformProposal = (data: RawProposal) => ({
 const proposal = rawProposal.transform(transformProposal)
 
 const vote = z
-  .object({
-    voter: address,
-    supports: z.boolean(),
-    voting_power: z.string(),
-    transaction_hash: address,
-  })
+  .object({ voter: address, supports: z.boolean(), voting_power: z.string(), transaction_hash: address })
   .transform(camelizeKeys)
 
 export const getProposalsResponse = z
-  .object({
-    proposals: z.array(proposal),
-    count: z.number(),
-  })
-  .transform(({ proposals, count }) => ({
-    proposals,
-    count,
-  }))
+  .object({ proposals: z.array(proposal), count: z.number() })
+  .transform(({ proposals, count }) => ({ proposals, count }))
 
 export const getProposalDetailsResponse = z
-  .object({
-    ...proposalShape,
-    script: z.string().nullable(),
-    votes: z.array(vote),
-  })
+  .object({ ...proposalShape, script: z.string().nullable(), votes: z.array(vote) })
   .transform(camelizeKeys)
   .transform(({ executionTx, script, votes, ...details }) => ({
     ...transformProposal({ ...details, executionTx }),
@@ -96,10 +81,7 @@ export const getProposalDetailsResponse = z
   }))
 
 const userProposalVote = z
-  .object({
-    proposal: rawProposal,
-    votes: z.array(vote),
-  })
+  .object({ proposal: rawProposal, votes: z.array(vote) })
   .transform(({ proposal, votes }) => ({
     proposal: transformProposal(proposal),
     votes: votes.map(item => ({
@@ -111,11 +93,7 @@ const userProposalVote = z
   }))
 
 export const getUserProposalVotesResponse = z
-  .object({
-    page: z.number(),
-    count: z.number(),
-    data: z.array(userProposalVote),
-  })
+  .object({ page: z.number(), count: z.number(), data: z.array(userProposalVote) })
   .transform(({ data }) => data)
 
 export const getUserProposalVoteResponse = userProposalVote

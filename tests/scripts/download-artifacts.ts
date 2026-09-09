@@ -8,10 +8,7 @@ const DEST_DIR = 'artifacts'
 const MAX_LOG_SIZE = 100 * 1024 * 1024
 const COMMAND_TIMEOUT = 10 * 60 * 1000
 
-type WorkflowJob = {
-  databaseId: number
-  name: string
-}
+type WorkflowJob = { databaseId: number; name: string }
 
 /**
  * Execute a command and return trimmed stdout.
@@ -102,10 +99,7 @@ async function downloadFailedJobLogs(runId: string, dest: string) {
     const log = await run(
       'gh',
       ['run', 'view', '--repo', REPOSITORY, '--job', String(job.databaseId), '--log-failed'],
-      {
-        encoding: 'utf8',
-        maxBuffer: MAX_LOG_SIZE,
-      },
+      { encoding: 'utf8', maxBuffer: MAX_LOG_SIZE },
     )
     const path = join(logsDir, `${job.databaseId}-${safeFilename(job.name)}.log`)
     await writeFile(path, `${stripVTControlCharacters(log)}\n`)

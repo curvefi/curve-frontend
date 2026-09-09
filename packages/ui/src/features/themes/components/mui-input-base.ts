@@ -30,9 +30,7 @@ export const defineMuiInputBase = (
       },
       '&:hover:not(.Mui-focused):not(.Mui-error):not(.Mui-disabled)': {
         backgroundColor: InputSelect.Base.Default.Fill.Hover,
-        '& .MuiOutlinedInput-notchedOutline': {
-          borderColor: InputSelect.Base.Default.Border.Hover,
-        },
+        '& .MuiOutlinedInput-notchedOutline': { borderColor: InputSelect.Base.Default.Border.Hover },
       },
       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
         borderColor: InputSelect.Base.Default.Border.Active,
@@ -40,60 +38,38 @@ export const defineMuiInputBase = (
       },
       '&.Mui-error': {
         color: Inputs.Text.Error,
-        '& .MuiOutlinedInput-notchedOutline': {
-          borderColor: InputSelect.Base.Default.Border.Error,
-          borderWidth: 2,
-        },
+        '& .MuiOutlinedInput-notchedOutline': { borderColor: InputSelect.Base.Default.Border.Error, borderWidth: 2 },
       },
-      '&.Mui-disabled': {
-        color: Inputs.Text.Disabled,
-      },
-      '& .MuiInputAdornment-root': {
-        color: Inputs.Text.Unit,
-      },
-      '&.Mui-error .MuiInputAdornment-root': {
-        color: Inputs.Text.Error,
-      },
-      '&.Mui-disabled .MuiInputAdornment-root': {
-        color: Inputs.Text.Disabled,
-      },
+      '&.Mui-disabled': { color: Inputs.Text.Disabled },
+      '& .MuiInputAdornment-root': { color: Inputs.Text.Unit },
+      '&.Mui-error .MuiInputAdornment-root': { color: Inputs.Text.Error },
+      '&.Mui-disabled .MuiInputAdornment-root': { color: Inputs.Text.Disabled },
       '& .MuiInputAdornment-positionEnd': {
         marginInlineStart: InputSpacing.ValueGap,
         paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
-      '&.MuiInputBase-sizeSmall': {
-        height: InputSize.small,
-      },
+      '&.MuiInputBase-sizeSmall': { height: InputSize.small },
       '&.MuiInputBase-sizeSmall .MuiInputBase-input': {
         height: InputSize.small,
         paddingInlineStart: InputSpacing.PaddingX.small,
         paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
-      '&.MuiInputBase-sizeTiny': {
-        height: InputSize.tiny,
-      },
+      '&.MuiInputBase-sizeTiny': { height: InputSize.tiny },
       '&.MuiInputBase-sizeTiny .MuiInputBase-input': {
         height: InputSize.tiny,
         ...typography.bodySBold,
         paddingInlineStart: InputSpacing.PaddingX.tiny,
         paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
-      '&.MuiInputBase-sizeExtraLarge': {
-        height: InputSize.extraLarge,
-      },
+      '&.MuiInputBase-sizeExtraLarge': { height: InputSize.extraLarge },
       '&.MuiInputBase-sizeExtraLarge .MuiInputBase-input': {
         height: InputSize.extraLarge,
         ...typography.headingSBold,
         paddingInlineStart: InputSpacing.PaddingX.extraLarge,
         paddingInlineEnd: InputSpacing.ContentPaddingRight,
       },
-      '&.MuiInputBase-multiline': {
-        height: 'auto',
-        alignItems: 'flex-start',
-      },
-      '&.MuiInputBase-multiline .MuiInputBase-input': {
-        height: 'auto',
-      },
+      '&.MuiInputBase-multiline': { height: 'auto', alignItems: 'flex-start' },
+      '&.MuiInputBase-multiline .MuiInputBase-input': { height: 'auto' },
     },
     input: {
       height: InputSize.medium,
@@ -103,14 +79,8 @@ export const defineMuiInputBase = (
       ...typography.bodyMBold,
       paddingInlineStart: InputSpacing.PaddingX.medium,
       paddingInlineEnd: InputSpacing.ContentPaddingRight,
-      '&::placeholder': {
-        color: Inputs.Text.Placeholder,
-        opacity: 1,
-      },
-      '&.Mui-disabled': {
-        color: Inputs.Text.Disabled,
-        WebkitTextFillColor: Inputs.Text.Disabled,
-      },
+      '&::placeholder': { color: Inputs.Text.Placeholder, opacity: 1 },
+      '&.Mui-disabled': { color: Inputs.Text.Disabled, WebkitTextFillColor: Inputs.Text.Disabled },
     },
   },
 })

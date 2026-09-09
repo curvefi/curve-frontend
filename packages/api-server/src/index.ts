@@ -70,10 +70,7 @@ export async function startDevServer({
   process.on('SIGTERM', stopServer)
 
   try {
-    const address = await server.listen({
-      port: Number(env.PORT ?? defaultPort),
-      host: env.HOST,
-    })
+    const address = await server.listen({ port: Number(env.PORT ?? defaultPort), host: env.HOST })
     server.log.info({ address }, readyMessage)
   } catch (error) {
     server.log.error({ err: error }, failureMessage)

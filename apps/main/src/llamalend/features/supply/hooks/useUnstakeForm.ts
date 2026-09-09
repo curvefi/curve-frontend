@@ -50,10 +50,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
   }
   const maxUnstakeShares = mapQuery(userBalances, d => d.stakedShares)
 
-  const form = useForm<UnstakeForm>({
-    validation: unstakeFormValidationSuite,
-    defaultValues: emptyUnstakeForm(),
-  })
+  const form = useForm<UnstakeForm>({ validation: unstakeFormValidationSuite, defaultValues: emptyUnstakeForm() })
 
   const values = form.watchValues()
   const convertedUnstakeShares = useUnstakeAssetsToShares({
@@ -83,12 +80,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
     onSubmit,
     isPending: isUnstaking,
     error: unstakeError,
-  } = useUnstakeMutation({
-    marketId,
-    network,
-    onReset: () => form.reset(userDefaultValues),
-    userAddress,
-  })
+  } = useUnstakeMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
 
   const { formState } = form
 

@@ -11,9 +11,7 @@ import { formatDateFromTimestamp } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
 import { TIME_FRAMES } from '@ui/utils/time'
 
-type ProposalInformationProps = {
-  proposal: ProposalData | null
-}
+type ProposalInformationProps = { proposal: ProposalData | null }
 
 export const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
   const timestamp = proposal?.timestamp

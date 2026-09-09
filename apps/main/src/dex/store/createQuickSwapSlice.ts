@@ -129,9 +129,7 @@ export const createQuickSwapSlice = (
 
         // get max amount for native token
         if (fromAddress.toLowerCase() === ethAddress) {
-          const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
-            chainId,
-          })
+          const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId })
           const firstBasePlusPriority = basePlusPriority?.[0]
 
           if (typeof firstBasePlusPriority !== 'undefined' && +userBalance > 0) {
@@ -309,11 +307,7 @@ export const createQuickSwapSlice = (
           ? storedFormValues
           : isFullReset
             ? { ...storedFormValues, isFrom: true, fromAmount: '', fromError: '' as const, toAmount: '' }
-            : {
-                ...storedFormValues,
-                ...updatedFormValues,
-                fromError: '' as const,
-              },
+            : { ...storedFormValues, ...updatedFormValues, fromError: '' as const },
       )
 
       const activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
@@ -494,10 +488,7 @@ export const createQuickSwapSlice = (
     resetState: () => {
       get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
-        formValues: {
-          ...get()[SLICE_KEY].formValues,
-          fromError: '',
-        },
+        formValues: { ...get()[SLICE_KEY].formValues, fromError: '' },
       })
     },
   },

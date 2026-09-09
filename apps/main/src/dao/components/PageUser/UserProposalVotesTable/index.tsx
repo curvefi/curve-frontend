@@ -16,10 +16,7 @@ import Box from '@mui/material/Box'
 import { t } from '@ui/lib/i18n'
 import { VOTES_LABELS } from '../constants'
 
-type UserProposalVotesTableProps = {
-  userAddress: string
-  tableMinWidth: number
-}
+type UserProposalVotesTableProps = { userAddress: string; tableMinWidth: number }
 
 const sortUserProposalVotes = (
   userProposalVotes: UserProposalVoteFormatted[],
@@ -35,9 +32,7 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
     isLoading: userProposalVotesLoading,
     isError: userProposalVotesError,
     isSuccess: userProposalVotesSuccess,
-  } = useUserProposalVotesQuery({
-    userAddress,
-  })
+  } = useUserProposalVotesQuery({ userAddress })
   const userProposalVotesSortBy = useStore(state => state.user.userProposalVotesSortBy)
   const setUserProposalVotesSortBy = useStore(state => state.user.setUserProposalVotesSortBy)
 

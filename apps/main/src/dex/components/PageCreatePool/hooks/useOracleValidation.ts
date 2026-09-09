@@ -6,10 +6,7 @@ import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
 import { useStore } from '@/dex/store/useStore'
 import type { Address } from '@primitives/address.utils'
 
-type UseOracleValidationParams = {
-  token: TokenState
-  tokenId: TokenId
-}
+type UseOracleValidationParams = { token: TokenState; tokenId: TokenId }
 
 /**
  * This hook validates oracle configuration, syncs results to store, and returns them

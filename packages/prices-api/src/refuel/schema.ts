@@ -8,16 +8,9 @@ const nullableNumber = z.number().nullable().optional()
 const nullableTimestamp = timestamp.nullable().optional()
 const nullableNumberArray = z.array(z.number()).nullable().optional()
 
-const donationToken = z.object({
-  symbol: z.string(),
-  address,
-  decimals: z.number(),
-})
+const donationToken = z.object({ symbol: z.string(), address, decimals: z.number() })
 
-const donationTokenAmount = z.object({
-  token: donationToken,
-  amount: z.number(),
-})
+const donationTokenAmount = z.object({ token: donationToken, amount: z.number() })
 
 const timeseriesPoint = z
   .object({
@@ -66,10 +59,7 @@ const donationEvent = z
     transaction_hash: hex.nullable().optional(),
   })
   .transform(camelizeKeys)
-  .transform(({ transactionHash, ...data }) => ({
-    ...data,
-    txHash: transactionHash ?? null,
-  }))
+  .transform(({ transactionHash, ...data }) => ({ ...data, txHash: transactionHash ?? null }))
 
 const donationLeader = z
   .object({
@@ -82,13 +72,7 @@ const donationLeader = z
   })
   .transform(camelizeKeys)
 
-const donationDailyPoint = z
-  .object({
-    timestamp,
-    total_usd: z.number(),
-    count: z.number(),
-  })
-  .transform(camelizeKeys)
+const donationDailyPoint = z.object({ timestamp, total_usd: z.number(), count: z.number() }).transform(camelizeKeys)
 
 export const refuelTimeseriesResponse = z.object({
   count: z.number(),
@@ -128,10 +112,7 @@ export const refuelDonationEventsResponse = z.object({
 export const refuelDonationLeaderboardResponse = z.array(donationLeader)
 
 export const refuelChainsResponse = z
-  .object({
-    chains: z.array(z.string()),
-    count: z.number(),
-  })
+  .object({ chains: z.array(z.string()), count: z.number() })
   .transform(({ chains: chainNames }) => chainNames.filter((chain): chain is Chain => chains.includes(chain as Chain)))
 
 export const refuelPoolsResponse = getPoolsResponse // just a reuse of the pools schema since the response is the same

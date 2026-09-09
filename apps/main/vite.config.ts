@@ -68,9 +68,7 @@ export default defineConfig(({ command }) => ({
       { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
     ],
   },
-  define: {
-    'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production'),
-  },
+  define: { 'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production') },
   vercel: {
     buildCommand: 'yarn build',
     rewrites: [

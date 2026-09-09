@@ -15,10 +15,7 @@ export type ClaimableToken = ClaimableReward & {
 
 const columnHelper = createAppColumnHelper<ClaimableToken>()
 
-const headers = {
-  [ClaimTabColumnId.Token]: t`Token`,
-  [ClaimTabColumnId.Notional]: t`Notional`,
-} as const
+const headers = { [ClaimTabColumnId.Token]: t`Token`, [ClaimTabColumnId.Notional]: t`Notional` } as const
 
 export const CLAIM_TAB_COLUMNS = columnHelper.columns([
   columnHelper.accessor('amount', {

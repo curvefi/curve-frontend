@@ -3,21 +3,11 @@ import { Banner } from '@evm-ui/shared/ui/Banner'
 import { formatNumber } from '@evm-ui/utils'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  solvencyPercent: number
-}
+type Props = { solvencyPercent: number }
 
 const BANNER_CONFIG = [
-  {
-    id: 'low',
-    threshold: SOLVENCY_THRESHOLDS.low,
-    severity: 'warning',
-  },
-  {
-    id: 'insolvent',
-    threshold: SOLVENCY_THRESHOLDS.insolvent,
-    severity: 'alert',
-  },
+  { id: 'low', threshold: SOLVENCY_THRESHOLDS.low, severity: 'warning' },
+  { id: 'insolvent', threshold: SOLVENCY_THRESHOLDS.insolvent, severity: 'alert' },
 ] as const
 
 export const LowSolvencyBanner = ({ solvencyPercent }: Props) => {

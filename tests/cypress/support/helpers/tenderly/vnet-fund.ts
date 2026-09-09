@@ -24,12 +24,7 @@ export const fundEth = ({
     method: 'POST',
     url: adminRpcUrl,
     headers: { 'Content-Type': 'application/json' },
-    body: {
-      jsonrpc: '2.0',
-      method: 'tenderly_setBalance',
-      params: [recipientAddresses, amountWei],
-      id: oneInt(),
-    },
+    body: { jsonrpc: '2.0', method: 'tenderly_setBalance', params: [recipientAddresses, amountWei], id: oneInt() },
     ...LOAD_TIMEOUT,
   })
 
@@ -86,10 +81,6 @@ export const approveErc20 = ({
     tx: {
       from: userAddress,
       to: tokenAddress,
-      data: encodeFunctionData({
-        abi: erc20Abi,
-        functionName: 'approve',
-        args: [spenderAddress, tokenAmountWei],
-      }),
+      data: encodeFunctionData({ abi: erc20Abi, functionName: 'approve', args: [spenderAddress, tokenAmountWei] }),
     },
   })
