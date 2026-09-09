@@ -8,7 +8,7 @@ import { WalletIcon as DefaultWalletIcon } from '@ui/icons/WalletIcon'
 import { t } from '@ui/lib/i18n'
 import type { SxProps } from '@ui/lib/mui'
 
-type WalletConnector = { id: string; name: string }
+type WalletConnector = { id: string; name: string; loading?: boolean }
 
 /** Menu item for each wallet type */
 const WalletListItem = <T extends WalletConnector>({
@@ -43,7 +43,7 @@ export const ConnectWalletModal = <T extends WalletConnector>({
   connectingToId,
   WalletIcon,
 }: {
-  error: Error | null
+  error: Error | null | undefined
   showModal: boolean
   closeModal: () => void
   sx?: SxProps
@@ -60,12 +60,12 @@ export const ConnectWalletModal = <T extends WalletConnector>({
     compact
     sx={sx}
   >
-    {error ? (
+    {error && (
       <Alert variant="filled" severity="error">
         <AlertTitle>{t`Error connecting wallet`}</AlertTitle>
         {error.message}
       </Alert>
-    ) : null}
+    )}
     <MenuList>
       {visibleConnectors.map(connector => (
         <WalletListItem
