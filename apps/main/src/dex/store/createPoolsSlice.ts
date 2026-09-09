@@ -19,7 +19,6 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Chain } from '@curvefi/prices-api'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { Chain as ChainEnum } from '@primitives/network.utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui/lib/logging'
 import { fetchNetworks } from '../entities/networks'
@@ -90,11 +89,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         return
       }
 
-      // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
-      const failedFetching24hOldVprice: Record<string, boolean> =
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
-        chainId === ChainEnum.Kava ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
-
       const networks = await fetchNetworks()
       const { blockchainId } = networks[chainId]
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
@@ -107,14 +101,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         )
 
         const blacklist = await fetchPoolsBlacklist({ blockchainId: blockchainId as Chain })
-        const { poolsMapper } = await getPools(
-          curve,
-          poolIds,
-          new Set(blacklist),
-          networks[chainId],
-          failedFetching24hOldVprice,
-          includeGaugeData,
-        )
+        const { poolsMapper } = await getPools(curve, poolIds, new Set(blacklist), networks[chainId], includeGaugeData)
 
         const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
 

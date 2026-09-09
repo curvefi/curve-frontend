@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import { isUndefined } from 'lodash'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-import { httpFetcher } from '@/dex/lib/utils'
 import {
   ChainId,
   ClaimableReward,
@@ -55,29 +54,6 @@ const network = {
   getVolume: (curve: CurveApi) => {
     log('getChainVolume', curve.chainId)
     return curve.getVolume()
-  },
-  getFailedFetching24hOldVprice: async () => {
-    // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
-    // If `failedFetching24hOldVprice` is true, it means the base apy couldn't be calculated, display in UI
-    // something like a dash with a tooltip "not available currently"
-    const failedFetching24hOldVprice: Record<string, boolean> = {}
-    const url = 'https://api.curve.finance/api/getFactoryAPYs-kava'
-    try {
-      const { data, success } = (await httpFetcher(url)) as {
-        success: boolean
-        data: { poolDetails: { poolAddress: string; failedFetching24hOldVprice: boolean }[] }
-      }
-      if (success) {
-        for (const poolDetail of data.poolDetails) {
-          failedFetching24hOldVprice[poolDetail.poolAddress.toLowerCase()] = poolDetail.failedFetching24hOldVprice
-        }
-      }
-      return failedFetching24hOldVprice
-    } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-      console.warn(`Unable to fetch failedFetching24hOldVprice from ${url}`, e.message)
-      return failedFetching24hOldVprice
-    }
   },
 }
 

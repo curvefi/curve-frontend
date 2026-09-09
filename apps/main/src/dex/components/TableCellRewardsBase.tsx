@@ -1,7 +1,6 @@
 import { LARGE_RATE } from '@/dex/constants'
 import { RewardBase, PoolData } from '@/dex/types/main.types'
 import { amount } from '@evm-ui/utils'
-import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { ChipVolatileBaseApy } from './ChipVolatileBaseApy'
@@ -9,38 +8,21 @@ import { LegacyTooltipBaseApy } from './LegacyTooltipBaseApy'
 
 type Props = { base: RewardBase | undefined; isHighlight: boolean; poolData: PoolData | undefined }
 
-export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => {
-  const failedFetching24hOldVprice =
-    poolData && 'failedFetching24hOldVprice' in poolData && poolData.failedFetching24hOldVprice
-
-  return (
-    <>
-      {failedFetching24hOldVprice ? (
-        <span>
-          -<IconTooltip>Not available currently</IconTooltip>
-        </span>
-      ) : (
-        typeof base !== 'undefined' && (
-          <>
-            {+base.day > LARGE_RATE ? (
-              <ChipVolatileBaseApy isBold={isHighlight} />
-            ) : (
-              <Chip
-                isBold={isHighlight}
-                size="md"
-                tooltip={base ? <LegacyTooltipBaseApy poolData={poolData} baseApy={base} /> : null}
-                tooltipProps={{
-                  placement: 'bottom-end',
-                  textAlign: 'left',
-                  ...(base && Number(base.day) < 0 ? { minWidth: '200px' } : {}),
-                }}
-              >
-                {formatNumber(amount(base.day), 'percent.value')}
-              </Chip>
-            )}
-          </>
-        )
-      )}
-    </>
-  )
-}
+export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) =>
+  typeof base !== 'undefined' &&
+  (+base.day > LARGE_RATE ? (
+    <ChipVolatileBaseApy isBold={isHighlight} />
+  ) : (
+    <Chip
+      isBold={isHighlight}
+      size="md"
+      tooltip={base ? <LegacyTooltipBaseApy poolData={poolData} baseApy={base} /> : null}
+      tooltipProps={{
+        placement: 'bottom-end',
+        textAlign: 'left',
+        ...(base && Number(base.day) < 0 ? { minWidth: '200px' } : {}),
+      }}
+    >
+      {formatNumber(amount(base.day), 'percent.value')}
+    </Chip>
+  ))
