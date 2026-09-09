@@ -45,7 +45,6 @@ type TableEmptyState = { testId?: string } & Pick<
 type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
 
 export type DataTableProps<TData extends RowData> = {
-  userAddress: Address | undefined
   category?: DataTableCategory
   table: ReturnType<typeof useCurveTable<TData>>
   emptyState?: TableEmptyState // optional overrides for the built-in empty state
@@ -53,7 +52,7 @@ export type DataTableProps<TData extends RowData> = {
   children?: ReactNode // passed to <FilterRow />
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
-} & AllOrNone<ConnectionProps> &
+} & AllOrNone<ConnectionProps & { userAddress: Address | undefined }> &
   Omit<DataRowProps<TData>, 'table' | 'row'>
 
 /**
@@ -75,7 +74,7 @@ export const DataTable = <TData extends RowData>({
   connect,
   ...rowProps
 }: DataTableProps<TData>) => {
-  const connectionProps: AllOrNone<ConnectionProps> = connect ? { connect, isConnecting, isConnected } : {}
+  const connectionProps = connect ? { connect, isConnecting, isConnected } : {}
   const {
     size = 'small',
     height,
@@ -85,7 +84,7 @@ export const DataTable = <TData extends RowData>({
     increasingLength = 'default',
     emptyStateSize = 'md',
     emptyStateRowSize = 'sm',
-  } = DATA_TABLE_CATEGORIES[category] as DataTableCategoryConfig
+  }: DataTableCategoryConfig = DATA_TABLE_CATEGORIES[category]
   const { table } = rowProps
   const { isLoading, error } = table
   const { rows } = table.getRowModel()
