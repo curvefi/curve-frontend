@@ -20,18 +20,9 @@ const createIconWrapper = (icon: ReactNode) => (
       outline: '1px solid currentColor',
 
       // Animate the checkbox as it appears. It's not possible to animate it when unchecking.
-      '& svg': {
-        animation: 'checkmark-appear 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards',
-      },
+      '& svg': { animation: 'checkmark-appear 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards' },
 
-      '@keyframes checkmark-appear': {
-        from: {
-          transform: 'scale(0)',
-        },
-        to: {
-          transform: 'scale(1)',
-        },
-      },
+      '@keyframes checkmark-appear': { from: { transform: 'scale(0)' }, to: { transform: 'scale(1)' } },
     }}
   >
     {icon}
@@ -72,10 +63,7 @@ export const defineMuiCheckbox = (): Components['MuiCheckbox'] => ({
     disableRipple: true,
   },
   styleOverrides: {
-    root: {
-      ...buttonSize({ size: 'sm' }),
-      [ON_HOVER_FOCUS_OR_LABEL_HOVER]: { outlineWidth: '2px' },
-    },
+    root: { ...buttonSize({ size: 'sm' }), [ON_HOVER_FOCUS_OR_LABEL_HOVER]: { outlineWidth: '2px' } },
 
     sizeSmall: { ...buttonSize({ size: 'xs' }) },
     sizeLarge: { ...buttonSize({ size: 'md' }) },

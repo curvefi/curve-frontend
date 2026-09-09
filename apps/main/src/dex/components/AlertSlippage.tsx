@@ -3,10 +3,7 @@ import { formatNumber, amount } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Trans } from '@ui/lib/i18n'
 
-type Props = {
-  maxSlippage: string | undefined
-  usdAmount?: string | number
-}
+type Props = { maxSlippage: string | undefined; usdAmount?: string | number }
 
 export const AlertSlippage = ({ maxSlippage, usdAmount }: Props) => {
   const maxUsdSlippage = useMemo(() => {
@@ -24,12 +21,8 @@ export const AlertSlippage = ({ maxSlippage, usdAmount }: Props) => {
           With your current slippage tolerance setting ({formatNumber(amount(maxSlippage), 'percent.value')}
           ), the expected output displayed above might incur up to{' '}
           <strong>
-            {formatNumber(maxUsdSlippage, {
-              maximumFractionDigits: 0,
-              unit: 'dollar',
-              abbreviate: false,
-            })}{' '}
-            worth of slippage
+            {formatNumber(maxUsdSlippage, { maximumFractionDigits: 0, unit: 'dollar', abbreviate: false })} worth of
+            slippage
           </strong>{' '}
           (in addition to the price impact). We recommend that you reduce your slippage tolerance setting just above.
         </Trans>

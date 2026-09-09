@@ -55,9 +55,7 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   })),
 }
 
-export type LargeTokenInputRef = {
-  resetBalance: () => void
-}
+export type LargeTokenInputRef = { resetBalance: () => void }
 
 export type LargeTokenInputProps = {
   ref?: Ref<LargeTokenInputRef>

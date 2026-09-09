@@ -105,33 +105,14 @@ export const createCreateLoanScenario = ({
 
   const leverageExpected = {
     query: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED, debt: borrow, range: presetRange },
-    estimateGas: {
-      userCollateral: collateral,
-      debt: borrow,
-      range: presetRange,
-      ...routeMutationMeta,
-    },
+    estimateGas: { userCollateral: collateral, debt: borrow, range: presetRange, ...routeMutationMeta },
     maxRecv: { userCollateral: collateral, range: presetRange },
     approved: { userCollateral: collateral },
     estimateGasApprove: { userCollateral: collateral },
     approve: { userCollateral: collateral },
-    submit: {
-      userCollateral: collateral,
-      debt: borrow,
-      range: presetRange,
-      ...routeMutationMeta,
-    },
-    expectedCollateral: {
-      userCollateral: collateral,
-      debt: borrow,
-      ...routeMeta,
-    },
-    expectedMetrics: {
-      userCollateral: collateral,
-      debt: borrow,
-      range: presetRange,
-      ...routeMeta,
-    },
+    submit: { userCollateral: collateral, debt: borrow, range: presetRange, ...routeMutationMeta },
+    expectedCollateral: { userCollateral: collateral, debt: borrow, ...routeMeta },
+    expectedMetrics: { userCollateral: collateral, debt: borrow, range: presetRange, ...routeMeta },
   } as const
   const normalExpected = {
     query: [collateral, borrow, presetRange] as const,

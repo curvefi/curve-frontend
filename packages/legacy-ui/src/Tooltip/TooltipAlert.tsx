@@ -8,11 +8,7 @@ export const TooltipAlert = ({
   alertType,
   isDeprecated,
   ...props
-}: TooltipProps & {
-  children: ReactNode
-  alertType: AlertType
-  isDeprecated?: boolean
-}) => (
+}: TooltipProps & { children: ReactNode; alertType: AlertType; isDeprecated?: boolean }) => (
   <IconTooltip
     {...props}
     customIcon={

@@ -14,10 +14,7 @@ import Box from '@mui/material/Box'
 import { t } from '@ui/lib/i18n'
 import { GAUGE_VOTES_LABELS } from '../constants'
 
-type UserGaugeVotesTableProps = {
-  userAddress: string
-  tableMinWidth: number
-}
+type UserGaugeVotesTableProps = { userAddress: string; tableMinWidth: number }
 
 const sortUserGaugeVotes = (
   userGaugeVotes: UserGaugeVote[],

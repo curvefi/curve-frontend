@@ -1,9 +1,7 @@
 import { styled } from 'styled-components'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 
-type SpinnnerProps = {
-  height: string
-}
+type SpinnnerProps = { height: string }
 
 export const SpinnerComponent = ({ height }: SpinnnerProps) => (
   <StyledSpinnerWrapper height={height}>

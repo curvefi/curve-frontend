@@ -51,10 +51,7 @@ type BandsChartContentProps = Omit<BandsChartProps, 'chartData' | 'error' | 'isL
 const toUserBandsPriceRange = (userBandsPriceRange: UserBandsPriceRange): BandsPriceRange | null => {
   if (!userBandsPriceRange) return null
 
-  return {
-    lowerPrice: userBandsPriceRange.upperBandPriceUp,
-    upperPrice: userBandsPriceRange.lowerBandPriceDown,
-  }
+  return { lowerPrice: userBandsPriceRange.upperBandPriceUp, upperPrice: userBandsPriceRange.lowerBandPriceDown }
 }
 
 // Candle chart builds LlammaLiquididationRange from [low, high] as:
@@ -66,10 +63,7 @@ const toBandsPriceRange = (liquidationRange: LlammaLiquididationRange | null | u
 
   if (lowerPrice === undefined || upperPrice === undefined) return null
 
-  return {
-    lowerPrice,
-    upperPrice,
-  }
+  return { lowerPrice, upperPrice }
 }
 
 const BandsChartContent = ({

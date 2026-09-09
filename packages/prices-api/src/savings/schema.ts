@@ -26,17 +26,9 @@ const event = z
   }))
 
 const yieldData = z
-  .object({
-    timestamp,
-    assets: z.number(),
-    supply: z.number(),
-    proj_apy: numberLike,
-  })
+  .object({ timestamp, assets: z.number(), supply: z.number(), proj_apy: numberLike })
   .transform(camelizeKeys)
-  .transform(({ projApy, ...data }) => ({
-    ...data,
-    apyProjected: projApy,
-  }))
+  .transform(({ projApy, ...data }) => ({ ...data, apyProjected: projApy }))
 
 const revenue = z
   .object({
@@ -62,34 +54,19 @@ const revenue = z
     timestamp: dt,
   }))
 
-export const getEventsResponse = z.object({
-  count: z.number(),
-  events: z.array(event),
-})
+export const getEventsResponse = z.object({ count: z.number(), events: z.array(event) })
 
 export const getYieldResponse = z.object({ data: z.array(yieldData) }).transform(({ data }) => data)
 
 export const getRevenueResponse = z
-  .object({
-    count: z.number(),
-    total_distributed: z.string(),
-    history: z.array(revenue),
-  })
+  .object({ count: z.number(), total_distributed: z.string(), history: z.array(revenue) })
   .transform(camelizeKeys)
   .transform(({ count: _count, ...data }) => data)
 
 export const getStatisticsResponse = z
-  .object({
-    last_updated: timestamp,
-    last_updated_block: z.number(),
-    proj_apy: z.number(),
-    supply: z.number(),
-  })
+  .object({ last_updated: timestamp, last_updated_block: z.number(), proj_apy: z.number(), supply: z.number() })
   .transform(camelizeKeys)
-  .transform(({ projApy, ...data }) => ({
-    ...data,
-    apyProjected: projApy,
-  }))
+  .transform(({ projApy, ...data }) => ({ ...data, apyProjected: projApy }))
 
 export const getUserStatsResponse = z
   .object({

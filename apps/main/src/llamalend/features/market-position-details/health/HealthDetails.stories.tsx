@@ -23,12 +23,7 @@ type HealthDetailsStoryProps = {
 const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthDetailsStoryProps) => {
   const data = maybes([health, liquidationBuffer], (h, lb) => {
     const healthNotFull = decimalMultiply(decimalDiv(lb, '100'), DISCOUNT_GAP)
-    return {
-      health: h,
-      healthFactor: decimalSum('1', decimalDiv(h, '100')),
-      healthNotFull,
-      liquidationBuffer: lb,
-    }
+    return { health: h, healthFactor: decimalSum('1', decimalDiv(h, '100')), healthNotFull, liquidationBuffer: lb }
   }) satisfies QueryData<typeof useUserHealthValues> | undefined
 
   return isLoading ? q({ data, isLoading: true, error: null }) : constQ(data)
@@ -43,11 +38,7 @@ const meta: Meta<typeof HealthDetailsStory> = {
   component: HealthDetailsStory,
   parameters: {
     layout: 'padded',
-    docs: {
-      description: {
-        component: 'Health details with controlled Health and Liquidation Buffer values.',
-      },
-    },
+    docs: { description: { component: 'Health details with controlled Health and Liquidation Buffer values.' } },
   },
   argTypes: {
     health: { control: 'text' },
@@ -63,13 +54,9 @@ const meta: Meta<typeof HealthDetailsStory> = {
 export default meta
 type Story = StoryObj<typeof HealthDetailsStory>
 
-export const Pristine: Story = {
-  args: { health: '426.9', liquidationBuffer: '108', positionStatus: 'healthy' },
-}
+export const Pristine: Story = { args: { health: '426.9', liquidationBuffer: '108', positionStatus: 'healthy' } }
 
-export const Loading: Story = {
-  args: { isLoading: true },
-}
+export const Loading: Story = { args: { isLoading: true } }
 
 const allStates = [
   { name: 'Undefined', args: {} },

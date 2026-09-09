@@ -37,10 +37,7 @@ import { getLendingVaultsOptions, type LendingPosition, LendingVault } from './l
 import { type UserHasPosition, type UserHasPositions, useUserLlamaPositions } from './llama-market-positions'
 import { getMintMarketOptions, MintMarket } from './mint-markets'
 
-type Assets = {
-  borrowed: AssetDetails
-  collateral: AssetDetails
-}
+type Assets = { borrowed: AssetDetails; collateral: AssetDetails }
 
 export type AssetDetails = {
   symbol: string
@@ -180,18 +177,8 @@ const convertLendingVault = (
     vaultAddress: vault,
     version: toMarketVersion(version),
     assets: {
-      borrowed: {
-        ...borrowedToken,
-        chain,
-        balance: totalDebt,
-        balanceUsd: totalDebtUsd,
-      },
-      collateral: {
-        ...collateralToken,
-        chain,
-        balance: totalAssets,
-        balanceUsd: totalAssetsUsd,
-      },
+      borrowed: { ...borrowedToken, chain, balance: totalDebt, balanceUsd: totalDebtUsd },
+      collateral: { ...collateralToken, chain, balance: totalAssets, balanceUsd: totalAssetsUsd },
     },
     maxLtv,
     minBand,
@@ -396,10 +383,7 @@ type LlamaMarketsQueries = [
   ReturnType<typeof getFavoriteMarketOptions>,
 ]
 
-export type LlamaMarketParams = {
-  userAddress: Address | undefined
-  enableDeprecatedMarkets: boolean
-}
+export type LlamaMarketParams = { userAddress: Address | undefined; enableDeprecatedMarkets: boolean }
 
 /**
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.

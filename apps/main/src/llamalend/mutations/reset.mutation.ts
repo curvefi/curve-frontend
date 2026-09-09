@@ -40,9 +40,7 @@ export const useResetMutation = ({ network, network: { chainId }, marketId, user
         message: t`Approved reset`,
         config,
       })
-      return {
-        hash: (await getResetImplementation(market).repay({ debt, address: userAddress, shrink: true })) as Hex,
-      }
+      return { hash: (await getResetImplementation(market).repay({ debt, address: userAddress, shrink: true })) as Hex }
     },
     pendingMessage: (mutation, { market }) => t`Resetting position... ${formatResetTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Position reset! ${formatResetTokenAmounts(market, mutation)}`,

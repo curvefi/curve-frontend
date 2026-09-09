@@ -19,13 +19,7 @@ export const CrvUsd = () => (
       <Paragraph>{t`Curve stablecoin infrastructure enables users to mint crvUSD using a selection of crypto-tokenized collaterals (adding new ones is subject to DAO approval). Interacting with crvUSD doesn't come without risks. Before minting or taking exposure of crvUSD, it is best to research and understand the risks involved.`}</Paragraph>
     </Section>
 
-    <Stack
-      direction={{
-        mobile: 'column',
-        tablet: 'row',
-      }}
-      sx={{ gap: Spacing.md, marginInline: Spacing.md }}
-    >
+    <Stack direction={{ mobile: 'column', tablet: 'row' }} sx={{ gap: Spacing.md, marginInline: Spacing.md }}>
       <ExternalLink href={EXTERNAL_LINKS.docs.assets.crvUsdWhitepaper} label={t`crvUSD whitepaper`} />
       <ExternalLink href={EXTERNAL_LINKS.docs.user.security.audits} label={t`crvUSD smart contract audits`} />
     </Stack>

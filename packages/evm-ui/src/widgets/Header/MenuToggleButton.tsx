@@ -1,18 +1,11 @@
 import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
 
-const Svg = styled('svg')({
-  fill: 'currentColor',
-  width: '24px',
-  height: '24px',
-})
+const Svg = styled('svg')({ fill: 'currentColor', width: '24px', height: '24px' })
 
 const Path = styled('path')``
 
-type MenuToggleButtonProps = {
-  isOpen: boolean
-  toggle: () => void
-}
+type MenuToggleButtonProps = { isOpen: boolean; toggle: () => void }
 
 /** Menu toggle button for mobile/tablet view, it animates from a hamburger menu to a cross */
 export const MenuToggleButton = ({ toggle, isOpen }: MenuToggleButtonProps) => (

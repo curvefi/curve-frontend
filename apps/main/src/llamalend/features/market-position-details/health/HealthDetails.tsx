@@ -58,10 +58,7 @@ export const HealthDetails = ({
             testId="health-details-liquidation-buffer-metric"
             value={mapQuery(healthQuery, data => data.liquidationBuffer)}
             notional={mapQuery(healthQuery, data => t`(${formatNumber(data.healthNotFull, 'percent.value')} of debt)`)}
-            valueOptions={{
-              abbreviate: false,
-              formatter: value => formatNumber(value, 'percent.value'),
-            }}
+            valueOptions={{ abbreviate: false, formatter: value => formatNumber(value, 'percent.value') }}
             valueTooltip={LIQUIDATION_BUFFER_TOOLTIP}
           />
         </Grid>

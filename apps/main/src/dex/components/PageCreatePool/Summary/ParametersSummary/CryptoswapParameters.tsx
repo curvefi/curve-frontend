@@ -12,9 +12,7 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  chainId: ChainId
-}
+type Props = { chainId: ChainId }
 
 export const CryptoswapParameters = ({ chainId }: Props) => {
   const tokensInPool = useStore(state => state.createPool.tokensInPool)

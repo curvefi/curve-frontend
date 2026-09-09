@@ -6,10 +6,7 @@
  *   signal: new AbortController().signal // For request cancellation
  * }
  */
-export type Options = {
-  host?: string
-  signal?: AbortSignal
-}
+export type Options = { host?: string; signal?: AbortSignal }
 
 /**
  * Gets the API host URL, using the provided host or falling back to default

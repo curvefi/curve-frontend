@@ -10,10 +10,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type Props = {
-  walletAddress?: Address
-  onClose: () => void
-}
+type Props = { walletAddress?: Address; onClose: () => void }
 
 /** Gap deviates from Figma as personally 'xs' is too narrow. */
 export const UserProfileHeader = ({ walletAddress, onClose }: Props) => (

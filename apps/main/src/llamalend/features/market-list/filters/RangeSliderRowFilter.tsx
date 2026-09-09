@@ -31,10 +31,7 @@ export const RangeSliderRowFilter = <TColumnId extends string>({
       min={min}
       max={max}
       step={step}
-      inputProps={{
-        format: value => formatNumber(Number(value), { abbreviate: true }),
-        adornment,
-      }}
+      inputProps={{ format: value => formatNumber(Number(value), { abbreviate: true }), adornment }}
       name={id}
     />
   )

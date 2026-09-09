@@ -6,10 +6,7 @@ import { formatDate } from '@legacy-ui/utils'
 
 type RateSeriesKey = keyof Omit<RateChartPoint, 'timestamp'>
 
-type HistoricalRatesTooltipProps = {
-  datum: RateChartPoint
-  visibleSeries: LineSeriesConfig<RateSeriesKey>[]
-}
+type HistoricalRatesTooltipProps = { datum: RateChartPoint; visibleSeries: LineSeriesConfig<RateSeriesKey>[] }
 
 export const HistoricalRatesTooltip = ({ datum, visibleSeries }: HistoricalRatesTooltipProps) => (
   <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>

@@ -38,10 +38,7 @@ export type LoanFormTokenInputProps<
   /**
    * Optional, displays the position balance instead of the wallet balance.
    */
-  positionBalance?: {
-    position: QueryProp<Decimal>
-    tooltip?: WalletBalanceProps['tooltip']
-  }
+  positionBalance?: { position: QueryProp<Decimal>; tooltip?: WalletBalanceProps['tooltip'] }
   /**
    * The network of the token.
    */
@@ -89,15 +86,8 @@ export const LoanFormTokenInput = <
     data: balance,
     isLoading: isBalanceLoading,
     error: balanceError,
-  } = useTokenBalance({
-    chainId: network?.chainId,
-    userAddress,
-    tokenAddress: token?.address,
-  })
-  const { data: usdRate } = useTokenUsdRate({
-    chainId: network?.chainId,
-    tokenAddress: token?.address,
-  })
+  } = useTokenBalance({ chainId: network?.chainId, userAddress, tokenAddress: token?.address })
+  const { data: usdRate } = useTokenUsdRate({ chainId: network?.chainId, tokenAddress: token?.address })
 
   const { position, tooltip } = positionBalance ?? {}
   const walletBalance = useMemo(

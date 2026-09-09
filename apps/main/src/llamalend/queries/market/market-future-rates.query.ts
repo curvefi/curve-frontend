@@ -9,9 +9,7 @@ import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-valid
 import type { Decimal } from '@primitives/decimal.utils'
 import { convertRates } from '../../rates.utils'
 
-type BorrowApyQuery = MarketQuery<IChainId> & {
-  debtDelta: Decimal
-}
+type BorrowApyQuery = MarketQuery<IChainId> & { debtDelta: Decimal }
 type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>
 
 type SupplyApyQuery = MarketQuery<IChainId> & { reserves: Decimal }

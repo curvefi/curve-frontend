@@ -6,21 +6,13 @@ const activityType = z.enum(['crvusd', 'lending', 'pools', 'router', 'dao'])
 
 export type ActivityType = z.infer<typeof activityType>
 
-const activity = z.object({
-  timestamp,
-  chain,
-  type: activityType,
-})
+const activity = z.object({ timestamp, chain, type: activityType })
 
 const transactions = activity.extend({ transactions: z.number() })
 const users = activity.extend({ users: z.number() })
 
 const supportedChain = z
-  .object({
-    name: z.string(),
-    pool_tvl: z.number(),
-    lending_tvl: z.number(),
-  })
+  .object({ name: z.string(), pool_tvl: z.number(), lending_tvl: z.number() })
   .transform(camelizeKeys)
 
 export const getSupportedChainsResponse = z
@@ -57,16 +49,7 @@ export const getChainInfoResponse = z
 export const getTransactionsResponse = z
   .object({
     data: z.array(
-      z.object({
-        chain,
-        transactions: z.array(
-          z.object({
-            type: activityType,
-            transactions: z.number(),
-            timestamp,
-          }),
-        ),
-      }),
+      z.object({ chain, transactions: z.array(z.object({ type: activityType, transactions: z.number(), timestamp })) }),
     ),
   })
   .transform(({ data }) =>
@@ -75,18 +58,7 @@ export const getTransactionsResponse = z
 
 export const getUsersResponse = z
   .object({
-    data: z.array(
-      z.object({
-        chain,
-        users: z.array(
-          z.object({
-            type: activityType,
-            users: z.number(),
-            timestamp,
-          }),
-        ),
-      }),
-    ),
+    data: z.array(z.object({ chain, users: z.array(z.object({ type: activityType, users: z.number(), timestamp })) })),
   })
   .transform(({ data }) => data.flatMap(item => item.users.map(user => users.parse({ ...user, chain: item.chain }))))
 

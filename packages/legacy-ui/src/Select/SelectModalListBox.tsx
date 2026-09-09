@@ -6,10 +6,7 @@ import { styled } from 'styled-components'
 import { SelectModalListBoxItem } from '@legacy-ui/Select/SelectModalListBoxItem'
 
 export function SelectModalListBox<T>(
-  props: AriaListBoxOptions<T> & {
-    state: SelectState<T>
-    listBoxRef?: RefObject<HTMLUListElement | null>
-  },
+  props: AriaListBoxOptions<T> & { state: SelectState<T>; listBoxRef?: RefObject<HTMLUListElement | null> },
 ) {
   const ref = useRef<HTMLUListElement>(null)
   const { listBoxRef = ref, state } = props

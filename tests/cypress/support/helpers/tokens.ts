@@ -2,12 +2,7 @@ import { oneOf } from '@cy/support/generators'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 
-type Token = {
-  symbol: string
-  address: Address
-  chain: string
-  usdPrice: number | null
-}
+type Token = { symbol: string; address: Address; chain: string; usdPrice: number | null }
 
 // prettier-ignore
 const TOKENS: Token[] = [
@@ -64,10 +59,6 @@ export const mockTokenPrices = () =>
     if (!token) {
       return req.reply(404, { error: `Token ${address} not in the mocked data` })
     }
-    const data = {
-      address: token.address,
-      usd_price: token.usdPrice,
-      last_updated: '2025-02-11T16:18:47',
-    }
+    const data = { address: token.address, usd_price: token.usdPrice, last_updated: '2025-02-11T16:18:47' }
     req.reply({ data })
   })

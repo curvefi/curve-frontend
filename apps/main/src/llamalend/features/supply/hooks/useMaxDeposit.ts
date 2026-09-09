@@ -18,11 +18,7 @@ export function useMaxDepositTokenValues<ChainId extends LlamaChainId>({
   form: UseFormReturn<DepositForm>
 }) {
   const { chainId, marketId, userAddress } = params
-  const maxUserDeposit = useTokenBalance({
-    chainId,
-    userAddress,
-    tokenAddress: borrowToken,
-  })
+  const maxUserDeposit = useTokenBalance({ chainId, userAddress, tokenAddress: borrowToken })
   const maxVaultDeposit = useMarketVaultMaxDeposit({ chainId, marketId })
   const maxDepositAmount = queryMinimum(maxUserDeposit, maxVaultDeposit)
 

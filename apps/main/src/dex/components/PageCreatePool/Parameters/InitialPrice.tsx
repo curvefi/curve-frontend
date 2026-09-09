@@ -7,10 +7,7 @@ import { CurveApi } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  curve: CurveApi
-  haveSigner: boolean
-}
+type Props = { curve: CurveApi; haveSigner: boolean }
 
 export const InitialPrice = ({ curve }: Props) => {
   const tokenA = useStore(state => state.createPool.tokensInPool.tokenA)
@@ -32,10 +29,7 @@ export const InitialPrice = ({ curve }: Props) => {
                 label={t`${tokenA.symbol} price in USD`}
                 value={initialPrice[TOKEN_A]}
                 onChange={value => updateTokenPrice(TOKEN_A, value)}
-                formatOptions={{
-                  maximumSignificantDigits: 21,
-                  maximumFractionDigits: 21,
-                }}
+                formatOptions={{ maximumSignificantDigits: 21, maximumFractionDigits: 21 }}
                 className={initialPrice[TOKEN_A] === 0 ? 'warning' : ''}
               />
 
@@ -43,10 +37,7 @@ export const InitialPrice = ({ curve }: Props) => {
                 label={t`${tokenB.symbol} price in USD`}
                 value={initialPrice[TOKEN_B]}
                 onChange={value => updateTokenPrice(TOKEN_B, value)}
-                formatOptions={{
-                  maximumSignificantDigits: 21,
-                  maximumFractionDigits: 21,
-                }}
+                formatOptions={{ maximumSignificantDigits: 21, maximumFractionDigits: 21 }}
                 className={initialPrice[TOKEN_B] === 0 ? 'warning' : ''}
               />
               {tokenAmount === 3 && (
@@ -55,10 +46,7 @@ export const InitialPrice = ({ curve }: Props) => {
                     label={t`${tokenC.symbol} price in USD`}
                     value={initialPrice[TOKEN_C]}
                     onChange={value => updateTokenPrice(TOKEN_C, value)}
-                    formatOptions={{
-                      maximumSignificantDigits: 21,
-                      maximumFractionDigits: 21,
-                    }}
+                    formatOptions={{ maximumSignificantDigits: 21, maximumFractionDigits: 21 }}
                     className={initialPrice[TOKEN_C] === 0 ? 'warning' : ''}
                   />
                 </>

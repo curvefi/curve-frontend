@@ -35,11 +35,7 @@ const { Spacing, Height } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'llamalend.marketCharts'
 
-export type RateCurveChartPoint = {
-  utilization: number
-  borrowApr: number
-  supplyApy: number
-}
+export type RateCurveChartPoint = { utilization: number; borrowApr: number; supplyApy: number }
 
 type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>
 
