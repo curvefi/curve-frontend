@@ -1,42 +1,47 @@
-import { useChainId, useConnection } from 'wagmi'
-import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
-import { DOWNGRADED_CHAINS, getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import type { ReactNode } from 'react'
 import { BackendMaintenanceBanner } from '@evm-ui/features/maintenance/components/BackendMaintenanceBanner'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
-import { usePathname } from '@evm-ui/hooks/router'
 import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
-import {
-  useDismissAaveBanner,
-  useDismissCurveLiteBanner,
-  useDismissFantomRetirementBanner,
-  useReleaseChannel,
-} from '@evm-ui/hooks/useLocalStorage'
-import { getCurrentApp } from '@evm-ui/shared/routes'
+import { useDismissCurveLiteBanner, useDismissPhishingWarn, useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
 import { Banner } from '@evm-ui/shared/ui/Banner'
-import { PhishingWarningBanner } from '@evm-ui/widgets/Header/PhishingWarningBanner'
 import { formatDate } from '@legacy-ui/utils'
-import { Chain } from '@primitives/network.utils'
 import { t } from '@ui/lib/i18n'
-import { IS_CYPRESS, ReleaseChannel } from '@ui/utils/env'
+import { IS_CYPRESS, IS_PREVIEW_HOST, ReleaseChannel } from '@ui/utils/env'
 import { StackBanners } from './StackBanners'
 
-type GlobalBannerProps = { blockchainId: string; chainId: number; backendMaintenance: Maintenance }
+export type GlobalBannerProps = {
+  rootUrl: string
+  blockchainId: string
+  chainName: string
+  chainId: number
+  backendMaintenance: Maintenance
+  deprecationDate: Date
+  isDowngraded: boolean
+  connectError: Error | undefined
+  isConnected: boolean
+  switchChain: ({ chainId }: { chainId: number }) => Promise<unknown>
+  walletChainId: number
+  children: ReactNode
+}
 
-export const GlobalBanner = ({ blockchainId, chainId, backendMaintenance }: GlobalBannerProps) => {
+export const GlobalBanner = ({
+  rootUrl,
+  blockchainId,
+  chainName,
+  chainId,
+  backendMaintenance,
+  deprecationDate,
+  isDowngraded,
+  connectError,
+  isConnected,
+  switchChain,
+  walletChainId,
+  children,
+}: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
-  const { isConnected } = useConnection()
-  const { connectState } = useCurve()
-  const switchChain = useSwitchChain()
-  const walletChainId = useChainId()
-  const pathname = usePathname()
-  const currentApp = getCurrentApp(pathname)
-  const deprecationDate = DEPRECATED_CHAINS[chainId]
-  const isDowngraded = DOWNGRADED_CHAINS.has(chainId)
-  const currentDate = useCurrentDate()
-
-  const [showAaveBanner, dismissAaveBanner] = useDismissAaveBanner()
-  const [showFantomRetirementBanner, dismissFantomRetirementBanner] = useDismissFantomRetirementBanner()
   const [showDowngraded, dismissDowngraded] = useDismissCurveLiteBanner(chainId)
+  const [shouldShowPhishingBanner, dismissShowPhishingBanner] = useDismissPhishingWarn()
+  const currentDate = useCurrentDate()
 
   return (
     <StackBanners>
@@ -50,10 +55,19 @@ export const GlobalBanner = ({ blockchainId, chainId, backendMaintenance }: Glob
         </Banner>
       )}
       {backendMaintenance.showBanner && !IS_CYPRESS && <BackendMaintenanceBanner {...backendMaintenance} />}
-      <PhishingWarningBanner />
-      {isFailure(connectState) ? (
+      {!IS_PREVIEW_HOST && shouldShowPhishingBanner && (
+        <Banner
+          subtitle={t`Always carefully check that your URL is ${rootUrl}.`}
+          severity="warning"
+          onClick={dismissShowPhishingBanner}
+          testId="phishing-warning-banner"
+        >
+          {t`Make sure you are on the right domain`}
+        </Banner>
+      )}
+      {connectError ? (
         <Banner severity="alert">
-          {t`There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.`}
+          {[connectError.message, t`Please try to switch your RPC in your wallet settings.`].join(' ')}
         </Banner>
       ) : (
         isConnected &&
@@ -67,10 +81,11 @@ export const GlobalBanner = ({ blockchainId, chainId, backendMaintenance }: Glob
       )}
       {deprecationDate ? (
         <Banner severity="alert">
-          {`“${getChainName(chainId)}”` +
-            (deprecationDate > currentDate
+          {`“${chainName}”${
+            deprecationDate > currentDate
               ? t` will be deprecated at ${formatDate(deprecationDate)}. `
-              : t` is deprecated. `)}
+              : t` is deprecated. `
+          }`}
           {t`Future management of positions will only be possible via the chain explorer. `}
           {t`Manage your positions accordingly. `}
         </Banner>
@@ -82,30 +97,11 @@ export const GlobalBanner = ({ blockchainId, chainId, backendMaintenance }: Glob
             subtitle={t`Advanced metrics won’t be available anymore, but all functions remain available. `}
             onClick={dismissDowngraded}
           >
-            {`“${getChainName(chainId)}”` + t` has been moved to curve-lite due to low activity. `}
+            {`“${chainName}”${t` has been moved to curve-lite due to low activity. `}`}
           </Banner>
         )
       )}
-      {showAaveBanner && currentApp === 'dex' && [Chain.Polygon, Chain.Avalanche].includes(chainId) && (
-        <Banner
-          severity="info"
-          subtitle={t`Aave is deprecating its V2 markets on Polygon and Avalanche. Deposits and swaps are not supported`}
-          onClick={dismissAaveBanner}
-          learnMoreUrl="https://governance.aave.com/t/direct-to-aip-aave-v2-non-ethereum-pools-next-deprecation-steps/22445"
-        >
-          {t`Aave V2 Frozen aTokens`}
-        </Banner>
-      )}
-      {showFantomRetirementBanner && chainId === +Chain.Fantom && (
-        <Banner
-          severity="alert"
-          subtitle={t`The Fantom chain will be retired at the end of the year. Please withdraw from pools.`}
-          onClick={dismissFantomRetirementBanner}
-          learnMoreUrl="https://x.com/SonicLabs/status/2041551455254097988"
-        >
-          {t`Fantom Retirement`}
-        </Banner>
-      )}
+      {children}
     </StackBanners>
   )
 }

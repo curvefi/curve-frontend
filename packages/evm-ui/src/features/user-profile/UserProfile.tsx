@@ -1,18 +1,23 @@
-import { useConnection } from 'wagmi'
 import { Settings } from '@evm-ui/features/user-profile/settings/Settings'
 import { UserProfileHeader } from '@evm-ui/features/user-profile/UserProfileHeader'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
 
 const { Spacing, Width } = SizesAndSpaces
 
-export const UserProfile = () => {
+export const UserProfile = ({
+  address,
+  addressLabel,
+}: {
+  address: Address | undefined
+  addressLabel: string | undefined
+}) => {
   const [isOpen, open, close] = useSwitch(false)
-  const { address: walletAddress } = useConnection()
   return (
     <>
       <IconButton size="small" onClick={open} data-testid="user-profile-button">
@@ -34,7 +39,7 @@ export const UserProfile = () => {
         }}
       >
         <Stack sx={{ gap: Spacing.md }}>
-          <UserProfileHeader walletAddress={walletAddress} onClose={close} />
+          <UserProfileHeader userAddress={address} addressLabel={addressLabel} onClose={close} />
           <Settings />
         </Stack>
       </Drawer>

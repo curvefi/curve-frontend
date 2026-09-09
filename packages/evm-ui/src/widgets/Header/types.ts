@@ -1,5 +1,5 @@
+import type { ReactNode } from 'react'
 import type { ConnectWalletProps } from '@evm-ui/features/connect-wallet/ui/ConnectWalletIndicator'
-import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
 import type { ChainListOption } from '@evm-ui/features/switch-chain/ui/ChainList'
 import type { PartialRecord } from '@primitives/objects.utils'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -16,7 +16,7 @@ export type HeaderAppLinks<TApp extends string> = Record<TApp, { label: string; 
 export type HeaderProps<TApp extends string> = {
   currentMenu: TApp
   currentNetwork: ChainListOption
-  backendMaintenance: Maintenance
+  banners: ReactNode
   supportedNetworks: ChainListOption[]
   appStats?: { label: string; value: string }[]
   links: HeaderAppLinks<TApp>

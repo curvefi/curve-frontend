@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { usePathname } from '@evm-ui/hooks/router'
-import { GlobalBanner } from '@evm-ui/shared/ui/GlobalBanner'
 import AppBar from '@mui/material/AppBar'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
@@ -33,7 +32,7 @@ export const MobileHeader = <TApp extends string>({
   pages,
   appStats,
   sections,
-  backendMaintenance,
+  banners,
   supportedNetworks,
   tvls,
   hideChains,
@@ -44,7 +43,6 @@ export const MobileHeader = <TApp extends string>({
   const [isSidebarOpen, , closeSidebar, toggleSidebar] = useSwitch(false)
   const pathname = usePathname()
   const top = useLayoutStore(state => state.navHeight)
-  const { blockchainId, chainId } = currentNetwork
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
@@ -68,7 +66,7 @@ export const MobileHeader = <TApp extends string>({
       }}
       data-testid="mobile-main-bar"
     >
-      <GlobalBanner blockchainId={blockchainId} chainId={chainId} backendMaintenance={backendMaintenance} />
+      {banners}
       <Toolbar sx={t => ({ paddingBlock: PADDING_BLOCK, zIndex: t.zIndex.drawer + 1 })}>
         <MobileTopBar
           supportedNetworks={supportedNetworks}
