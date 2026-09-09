@@ -54,7 +54,13 @@ const getImportName = source => {
 }
 
 const internalPackages = readPackages('packages')
-const workspacePackages = [...readPackages('apps'), ...internalPackages, readPackage(path.join(repoRoot, 'tests'))]
+const storybookPackage = readPackage(path.join(repoRoot, 'storybook'))
+const workspacePackages = [
+  ...readPackages('apps'),
+  ...internalPackages,
+  readPackage(path.join(repoRoot, 'tests')),
+  storybookPackage,
+]
   .filter(Boolean)
   .sort(({ dir: a }, { dir: b }) => b.length - a.length)
 const packageAliases = new Map(
@@ -116,6 +122,8 @@ const getAllowedDeps = ({ deps, dir, name }) => {
 /** Finds the workspace package containing a file. */
 const getImporter = filename => {
   const file = path.resolve(filename)
+  // Colocated stories use Storybook's dependencies, not their component package's.
+  if (storybookPackage && /\.stories\.(?:[cm]?[jt]s|[jt]sx)$/.test(file)) return storybookPackage
   return workspacePackages.find(({ dir }) => isInside(file, dir))
 }
 

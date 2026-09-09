@@ -1,0 +1,30 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "paths": {
+      "@/*": ["../apps/main/src/*"],
+      "@legacy-ui": ["../packages/legacy-ui/src/index.ts"],
+      "@legacy-ui/*": ["../packages/legacy-ui/src/*"],
+      "@evm-ui/*": ["../packages/evm-ui/src/*"],
+      "@ui": ["../packages/ui/src/index.ts"],
+      "@ui/*": ["../packages/ui/src/*"],
+      "@external-rewards": ["../packages/external-rewards/src/index.ts"],
+      "@curvefi/prices-api": ["../packages/prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../packages/prices-api/src/*"],
+      "@primitives/*": ["../packages/primitives/src/*"],
+      "@stellar/*": ["../apps/stellar/src/*"]
+    }
+  },
+  "include": [
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx",
+    "vite.config.ts",
+    "stories/**/*.ts",
+    "stories/**/*.tsx",
+    "../apps/**/*.stories.*",
+    "../packages/**/*.stories.*",
+    "../packages/**/*.d.ts"
+  ],
+  "exclude": ["node_modules", "storybook-static"]
+}

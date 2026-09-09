@@ -1,5 +1,6 @@
-import '../src/eip6963-test-setup'
+import '@evm-ui/eip6963-test-setup'
 import type { PropsWithChildren } from 'react'
+import { Toast } from '@evm-ui/widgets/Toast'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import Box from '@mui/material/Box'
 import { DocsContainer, type DocsContainerProps } from '@storybook/addon-docs/blocks'
@@ -8,7 +9,6 @@ import type { Decorator, Preview, ReactRenderer } from '@storybook/react-vite'
 import { createRouter, createRootRoute, RouterProvider, createMemoryHistory } from '@tanstack/react-router'
 import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
 import '@ui/styles/initial-load.css'
-import { Toast } from '../src/widgets/Toast'
 
 const themes = {
   light: lightTheme(),
