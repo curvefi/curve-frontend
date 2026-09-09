@@ -23,18 +23,13 @@ import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
 import { combineQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
-import {
-  AVERAGE_CATEGORIES,
-  type AverageCategory,
-  decimalMultiply,
-  formatCappedRateValue,
-  formatNumber,
-} from '@evm-ui/utils'
+import { AVERAGE_CATEGORIES, type AverageCategory, decimalMultiply, formatCappedRateValue } from '@evm-ui/utils'
 import { Grid, Stack } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { assert } from '@primitives/objects.utils'
+import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'

@@ -6,10 +6,11 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
-import { formatNumber, amount } from '@evm-ui/utils'
+import { amount } from '@evm-ui/utils'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@legacy-ui/utils/responsive'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 export const FormClaimFees = () => {

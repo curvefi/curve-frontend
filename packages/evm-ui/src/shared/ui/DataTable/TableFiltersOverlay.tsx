@@ -12,7 +12,7 @@ import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { Cross2Icon } from '@ui/icons/Cross2Icon'
 import { t } from '@ui/lib/i18n'
-import { borderStyle, directChildrenAfterFirst } from '@ui/utils/mui'
+import { borderStyle, directChildrenAfterFirst } from '@ui/lib/mui'
 
 const { Spacing, Width, MinHeight } = SizesAndSpaces
 

@@ -17,18 +17,19 @@ import {
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { decimal, formatNumber } from '@evm-ui/utils'
-import { formatDate } from '@legacy-ui/utils'
+import { decimal } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import { formatDate } from '@primitives/date.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { TIME_OPTION_MS } from '@ui/utils/time'
+import { TIME_OPTION_MS } from '@ui/lib/time'
 
 const { Height, Spacing } = SizesAndSpaces
 

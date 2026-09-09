@@ -25,7 +25,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { constQ, type Range } from '@ui/features/queries/util'
-import { ReleaseChannel } from '@ui/utils/env'
+import { ReleaseChannel } from '@ui/lib/env'
 
 const ALERT_TEST_ID = '[data-testid="borrow-position-status-alert"]'
 

@@ -1,7 +1,7 @@
 import { type ThemeOptions, type TypographyVariantsOptions } from '@mui/material/styles'
 import { alpha } from '@mui/system'
 import { defineMuiInputBase } from '@ui/features/themes/components/mui-input-base'
-import { borderStyle } from '@ui/utils/mui'
+import { borderStyle } from '@ui/lib/mui'
 import { basicMuiTheme } from '../basic-theme'
 import { getShadow } from '../basic-theme/shadows'
 import { DesignSystem } from '../design'

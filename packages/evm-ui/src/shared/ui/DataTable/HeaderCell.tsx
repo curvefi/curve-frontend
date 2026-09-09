@@ -6,7 +6,7 @@ import type { SxProps } from '@mui/system'
 import { flexRender, type Header, type RowData } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { borderStyle } from '@ui/utils/mui'
+import { borderStyle } from '@ui/lib/mui'
 import { type CurveTableFeatures, getAlignment, type DataTableSize, EXTRA_COLUMN_PADDING } from './data-table.utils'
 
 const { Spacing, Sizing } = SizesAndSpaces

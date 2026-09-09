@@ -6,7 +6,7 @@ import { ErrorReportModal } from '@ui/features/report-error'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { t } from '@ui/lib/i18n'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 
 export const ErrorMessage = ({
   title,

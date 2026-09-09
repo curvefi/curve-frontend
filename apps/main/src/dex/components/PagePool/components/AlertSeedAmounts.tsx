@@ -3,8 +3,9 @@ import { styled } from 'styled-components'
 import type { Seed } from '@/dex/components/PagePool/types'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolData } from '@/dex/types/main.types'
-import { formatNumber, amount } from '@evm-ui/utils'
+import { amount } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 export const AlertSeedAmounts = ({ seed }: { seed: Seed }) => {

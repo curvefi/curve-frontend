@@ -13,7 +13,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { DotsVerticalIcon } from '@ui/icons/DotsVertical'
 import { t } from '@ui/lib/i18n'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 
 const { MaxHeight, Spacing } = SizesAndSpaces
 // number of button rendered before hiding the rest in a kebab menu

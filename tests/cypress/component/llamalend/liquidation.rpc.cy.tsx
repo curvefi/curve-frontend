@@ -16,8 +16,8 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { createVirtualNetworkSnapshot, type VnetSnapshot } from '@cy/support/helpers/tenderly/vnet-snapshot'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { MarketType } from '@evm-ui/types/market'
-import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import { Chain } from '@primitives/network.utils'
+import { SLIPPAGE } from '@ui/features/slippage/slippage.utils'
 
 const WSTETH_USDC_MARKET = {
   id: 'one-way-market-v2-2',

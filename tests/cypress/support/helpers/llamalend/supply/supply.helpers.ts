@@ -1,9 +1,9 @@
 import type { Address } from 'viem'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import { formatNumber } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
+import { formatNumber } from '@primitives/number.utils'
 import {
   checkEstimatedTxCost as checkEstimatedTxCostValue,
   DECIMAL_REGEX,

@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { IconStack } from '@ui/components/IconStack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { borderStyle } from '@ui/utils/mui'
+import { borderStyle } from '@ui/lib/mui'
 import { TokenIcon } from './TokenIcon'
 
 const { IconSize } = SizesAndSpaces

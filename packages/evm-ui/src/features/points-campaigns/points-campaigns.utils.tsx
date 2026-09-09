@@ -1,6 +1,6 @@
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
-import { formatNumber } from '@evm-ui/utils'
+import { formatNumber } from '@primitives/number.utils'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
 
 export type PointsCampaignRow = { source: TokenInfoProps; multiplier: string; campaignUrl: string }

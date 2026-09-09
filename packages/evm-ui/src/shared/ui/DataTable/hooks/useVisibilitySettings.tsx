@@ -1,8 +1,8 @@
 import { isEqual } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { useTableColumnVisibility } from '@evm-ui/hooks/useLocalStorage'
-import type { MigrationOptions } from '@evm-ui/hooks/useStoredState'
-import type { VisibilityGroup } from '../visibility.types'
+import { useTableColumnVisibility } from '@ui/features/storage/useLocalStorage'
+import type { MigrationOptions } from '@ui/features/storage/useStoredState'
+import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 
 /**
  * Converts a grouped visibility settings object to a flat object with column ids as keys and visibility as values.

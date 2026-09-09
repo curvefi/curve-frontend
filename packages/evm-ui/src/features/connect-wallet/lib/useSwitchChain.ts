@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { SwitchChainNotSupportedError, useSwitchChain as useWagmiSwitchChain } from 'wagmi'
+import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
-import { notify } from './notify'
 
 /**
  * Wraps wagmi's `useSwitchChain` and shows an error toast when the wallet does not support
