@@ -5,10 +5,7 @@ import type { Query } from '@ui/features/queries/util'
 
 const MIN_USD_PRICE_IMPACT_WARN = 1000
 
-export type PriceImpact = {
-  priceImpact: Decimal | undefined
-  tokenInUsd: Decimal | undefined
-}
+export type PriceImpact = { priceImpact: Decimal | undefined; tokenInUsd: Decimal | undefined }
 
 export type PriceImpactLevel = 'caution' | 'warning' | 'error'
 

@@ -7,13 +7,7 @@ import { IS_CYPRESS } from '@ui/lib/env'
 import { useCurve } from './CurveContext'
 import type { Wallet } from './types'
 
-const state: {
-  provider: Provider | null
-  wallet: Wallet | null
-} = {
-  provider: null,
-  wallet: null,
-}
+const state: { provider: Provider | null; wallet: Wallet | null } = { provider: null, wallet: null }
 
 export const useWallet = () => {
   // modal state needs to be global because every call creates new state

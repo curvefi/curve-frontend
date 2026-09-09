@@ -2,11 +2,7 @@ import type { ReactNode } from 'react'
 import Button, { type ButtonProps } from '@mui/material/Button'
 import { t } from '@ui/lib/i18n'
 
-export type ConnectionProps = {
-  isConnecting: boolean
-  isConnected: boolean
-  connect: () => Promise<void>
-}
+export type ConnectionProps = { isConnecting: boolean; isConnected: boolean; connect: () => Promise<void> }
 
 export type ConnectWalletButtonProps = Pick<ButtonProps, 'size' | 'fullWidth' | 'sx'> & {
   label?: ReactNode

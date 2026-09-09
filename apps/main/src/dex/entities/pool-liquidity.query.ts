@@ -14,13 +14,7 @@ export const { useQuery: usePoolLiquidityEvents } = queryFactory({
     poolAddress,
     page = DEFAULT_PAGE_START_INDEX,
     perPage = DEFAULT_PAGE_SIZE,
-  }: GetPoolLiquidityEventsParams) =>
-    getPoolLiquidityEvents({
-      chain,
-      poolAddress,
-      page,
-      perPage,
-    }),
+  }: GetPoolLiquidityEventsParams) => getPoolLiquidityEvents({ chain, poolAddress, page, perPage }),
   validationSuite: createValidationSuite(({ chain, poolAddress }: PoolLiquidityEventsParams) => {
     contractValidationGroup({ blockchainId: chain, contractAddress: poolAddress })
   }),

@@ -6,11 +6,7 @@ import { Icon } from '@legacy-ui/Icon'
 import { InternalLink } from '@legacy-ui/Link'
 import { useParams } from '@ui/hooks/router'
 
-type InternalLinkButtonProps = {
-  to: string
-  children: ReactNode
-  smallSize?: boolean
-}
+type InternalLinkButtonProps = { to: string; children: ReactNode; smallSize?: boolean }
 
 export const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => {
   const params = useParams<UrlParams>()

@@ -55,10 +55,7 @@ const getHealthValues = ({
 >) => {
   const healthNotFull = ((userBandsCollateralValue * (1 - liquidationDiscount / 100)) / totalDebt - 1) * 100
 
-  return {
-    healthNotFull,
-    healthFull: healthNotFull + (aboveBandsCollateralValue / totalDebt) * 100,
-  }
+  return { healthNotFull, healthFull: healthNotFull + (aboveBandsCollateralValue / totalDebt) * 100 }
 }
 
 const BorrowPositionDetailsStory = ({
@@ -157,57 +154,25 @@ type Story = StoryObj<typeof BorrowPositionDetailsStory>
 export const Healthy: Story = {
   args: baseProps,
   parameters: {
-    docs: {
-      description: {
-        story: 'Position above the liquidation range with a positive above-band cushion.',
-      },
-    },
+    docs: { description: { story: 'Position above the liquidation range with a positive above-band cushion.' } },
   },
 }
 
 export const SoftLiquidation: Story = {
   args: { ...baseProps, userBandsCollateralValue: 108.5, aboveBandsCollateralValue: 0, oraclePrice: 0.85, borrow: 15 },
   parameters: {
-    docs: {
-      description: {
-        story: 'Position in liquidation protection with collateral being converted.',
-      },
-    },
+    docs: { description: { story: 'Position in liquidation protection with collateral being converted.' } },
   },
 }
 
 export const FullyConverted: Story = {
-  args: {
-    ...baseProps,
-    userBandsCollateralValue: 108,
-    aboveBandsCollateralValue: 0,
-    oraclePrice: 0.75,
-    borrow: 108,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Collateral fully converted to crvUSD below the liquidation range.',
-      },
-    },
-  },
+  args: { ...baseProps, userBandsCollateralValue: 108, aboveBandsCollateralValue: 0, oraclePrice: 0.75, borrow: 108 },
+  parameters: { docs: { description: { story: 'Collateral fully converted to crvUSD below the liquidation range.' } } },
 }
 
 export const IncompleteConversion: Story = {
-  args: {
-    ...baseProps,
-    userBandsCollateralValue: 107.5,
-    aboveBandsCollateralValue: 0,
-    oraclePrice: 0.75,
-    borrow: 100,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Price below the range with collateral not fully converted.',
-      },
-    },
-  },
+  args: { ...baseProps, userBandsCollateralValue: 107.5, aboveBandsCollateralValue: 0, oraclePrice: 0.75, borrow: 100 },
+  parameters: { docs: { description: { story: 'Price below the range with collateral not fully converted.' } } },
 }
 
 export const HardLiquidation: Story = {
@@ -220,9 +185,7 @@ export const HardLiquidation: Story = {
   },
   parameters: {
     docs: {
-      description: {
-        story: 'Discounted recoverable value has fallen just below debt, so full liquidation can occur.',
-      },
+      description: { story: 'Discounted recoverable value has fallen just below debt, so full liquidation can occur.' },
     },
   },
 }

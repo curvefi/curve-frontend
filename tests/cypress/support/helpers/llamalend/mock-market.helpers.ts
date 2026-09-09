@@ -42,27 +42,17 @@ const oneConfiguredZapV2Controller = () =>
       .map(([controller]) => controller),
   )
 
-export type MockLendStats = {
-  rates: MockMethod
-  futureRates: MockMethod
-}
+export type MockLendStats = { rates: MockMethod; futureRates: MockMethod }
 
 export const createMockLendStats = (): MockLendStats => ({
   rates: cy.stub().resolves(createMockLendRates()),
   futureRates: cy.stub().resolves(createMockLendRates()),
 })
 
-export type MockLendWallet = {
-  balances: MockMethod
-}
+export type MockLendWallet = { balances: MockMethod }
 
 export const createMockLendWallet = (): MockLendWallet => ({
-  balances: cy.stub().resolves({
-    collateral: '0',
-    borrowed: '0',
-    vaultShares: '0',
-    gauge: '0',
-  }),
+  balances: cy.stub().resolves({ collateral: '0', borrowed: '0', vaultShares: '0', gauge: '0' }),
 })
 
 export type MockLendEstimateGas = {
@@ -143,23 +133,9 @@ export const createMockLendVault = (): MockLendVault => ({
 export const createMockLendMarket = (overrides?: object) =>
   Object.assign(Object.create(LendMarketTemplate.prototype), {
     id: 'one-way-market-7',
-    llamalend: {
-      constants: {
-        ALIASES: {
-          crv: MAINNET_CRV_ADDRESS,
-        },
-      },
-    },
-    collateral_token: {
-      symbol: 'wstETH',
-      address: oneAddress(),
-      decimals: 18,
-    },
-    borrowed_token: {
-      symbol: 'crvUSD',
-      address: CRVUSD_ADDRESS,
-      decimals: 18,
-    },
+    llamalend: { constants: { ALIASES: { crv: MAINNET_CRV_ADDRESS } } },
+    collateral_token: { symbol: 'wstETH', address: oneAddress(), decimals: 18 },
+    borrowed_token: { symbol: 'crvUSD', address: CRVUSD_ADDRESS, decimals: 18 },
     addresses: {
       amm: oneAddress(),
       controller: oneConfiguredZapV2Controller(),

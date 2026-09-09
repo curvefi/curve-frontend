@@ -3,9 +3,7 @@ import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { formatNumber } from '@primitives/number.utils'
 
-type GaugeListColumnsProps = {
-  gaugeData: GaugeFormattedData
-}
+type GaugeListColumnsProps = { gaugeData: GaugeFormattedData }
 
 export const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
   const gaugeListSortBy = useStore(state => state.gauges.gaugeListSortBy)

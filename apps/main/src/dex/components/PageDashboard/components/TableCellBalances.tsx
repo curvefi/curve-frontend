@@ -5,9 +5,7 @@ import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { tooltipProps } from '../utils'
 
-type Props = Pick<WalletPoolData, 'liquidityUsd' | 'percentStaked'> & {
-  isHighLight: boolean
-}
+type Props = Pick<WalletPoolData, 'liquidityUsd' | 'percentStaked'> & { isHighLight: boolean }
 
 export const TableCellBalances = ({ isHighLight, liquidityUsd, percentStaked }: Props) => (
   <>

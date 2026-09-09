@@ -11,11 +11,7 @@ import {
 import { useTheme } from '@mui/material/styles'
 import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 
-type TopHoldersBarChartProps = {
-  height: number
-  data: VeCrvHolder[]
-  filter: TopHoldersSortBy
-}
+type TopHoldersBarChartProps = { height: number; data: VeCrvHolder[]; filter: TopHoldersSortBy }
 
 const getValueByFilter: Record<TopHoldersSortBy, (datum: VeCrvHolder) => number> = {
   locked: datum => +datum.locked,

@@ -24,10 +24,7 @@ const { Spacing } = SizesAndSpaces
 const PRIMARY_METRIC_CATEGORY = 'dex.poolListMobileExpanded'
 const DETAIL_METRIC_CATEGORY = 'dex.poolListMobileExpandedDetails'
 
-type RateValueOptions = {
-  hasTooltip?: boolean
-  volatile?: boolean
-}
+type RateValueOptions = { hasTooltip?: boolean; volatile?: boolean }
 
 const getRateValueOptions = (
   value: number | null | undefined,

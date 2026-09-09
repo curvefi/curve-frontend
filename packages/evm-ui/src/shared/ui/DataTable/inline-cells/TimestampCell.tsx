@@ -9,11 +9,7 @@ import { useIsMobile } from '@ui/hooks/useBreakpoints'
 
 const { Spacing } = SizesAndSpaces
 
-type TimestampCellProps = {
-  timestamp: Date
-  txUrl?: string | null
-  align?: 'start' | 'end'
-}
+type TimestampCellProps = { timestamp: Date; txUrl?: string | null; align?: 'start' | 'end' }
 
 /**
  * Cell component for displaying timestamps with optional transaction link.
@@ -34,14 +30,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
       <Typography variant="tableCellMBold" sx={{ textAlign: align }}>
         {formatDate(timestamp, 'short', { omitYear: isMobile })}
       </Typography>
-      <Stack
-        direction="row"
-        sx={{
-          alignItems: 'center',
-          justifyContent: align,
-          gap: Spacing.xs,
-        }}
-      >
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: align, gap: Spacing.xs }}>
         <Typography variant="tableCellSRegular" className={TABLE_SECONDARY_TEXT_CLASS}>
           {formatTime(timestamp, { precise: !isMobile })}
         </Typography>

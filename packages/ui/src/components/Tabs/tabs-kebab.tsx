@@ -89,11 +89,7 @@ export const KebabMenu = <T extends string | number>({
       onClose={closeKebabMenu}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      slotProps={{
-        paper: {
-          sx: { padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill },
-        },
-      }}
+      slotProps={{ paper: { sx: { padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill } } }}
     >
       <Tabs
         data-testid={`${testIdPrefix}-kebab-tabs`}

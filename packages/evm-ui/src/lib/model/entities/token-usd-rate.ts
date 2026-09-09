@@ -59,13 +59,7 @@ const sreusdAbi = [
   {
     inputs: [],
     name: 'pricePerShare',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '_pricePerShare',
-        type: 'uint256',
-      },
-    ],
+    outputs: [{ internalType: 'uint256', name: '_pricePerShare', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
   },

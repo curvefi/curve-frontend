@@ -86,12 +86,7 @@ export const Parameters = () => {
                 mapQuery(parameters, ({ virtualPrice }) => virtualPrice),
                 mapQuery(snapshots, ([snapshot]) => maybe(snapshot?.virtualPrice, value => value / 10 ** 18)),
               ),
-              value =>
-                formatNumber(amount(value), {
-                  maximumFractionDigits: 8,
-                  abbreviate: false,
-                  fallback: '-',
-                }),
+              value => formatNumber(amount(value), { maximumFractionDigits: 8, abbreviate: false, fallback: '-' }),
             )}
             valueTooltip={t`Measures pool growth; this is not a dollar value`}
           />

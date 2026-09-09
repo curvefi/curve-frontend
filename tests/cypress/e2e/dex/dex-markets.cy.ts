@@ -67,9 +67,7 @@ const getUsdValues = (cells: HTMLElement[]) =>
 
 const getPoolListTvlRangeChip = (minTvl: number, maxTvl: number) =>
   assert(
-    getRangeFilterLabel(getPoolsTvlLabelRange([minTvl, maxTvl]), 'dollar', {
-      defaultMin: null,
-    }),
+    getRangeFilterLabel(getPoolsTvlLabelRange([minTvl, maxTvl]), 'dollar', { defaultMin: null }),
     'No TVL range filter chip label',
   )
 

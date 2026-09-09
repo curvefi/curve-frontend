@@ -1,25 +1,11 @@
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 
-type UserBaseProfit = {
-  day: string
-  week: string
-  month: string
-  year: string
-}
+type UserBaseProfit = { day: string; week: string; month: string; year: string }
 
-type UserClaimableToken = {
-  token: string
-  symbol: string
-  amount: string
-  price: number
-}
+type UserClaimableToken = { token: string; symbol: string; amount: string; price: number }
 
-type UserTokenProfit = {
-  token: string
-  symbol: string
-  price: number
-} & UserBaseProfit
+type UserTokenProfit = { token: string; symbol: string; price: number } & UserBaseProfit
 
 export type Order = 'asc' | 'desc'
 
@@ -44,11 +30,7 @@ export type WalletPoolData = {
 export type DashboardDataMapper = Record<string, WalletPoolData>
 export type DashboardDatasMapper = Record<string, DashboardDataMapper>
 
-export type FormValues = {
-  sortBy: SortId
-  sortByOrder: Order
-  walletAddress: string
-}
+export type FormValues = { sortBy: SortId; sortByOrder: Order; walletAddress: string }
 
 export type TableLabel = Record<SortId, { name: string; mobile: string }>
 

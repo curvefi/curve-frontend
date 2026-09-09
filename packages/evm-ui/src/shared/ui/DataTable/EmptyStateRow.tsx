@@ -7,10 +7,7 @@ const { Height, Spacing } = SizesAndSpaces
 
 export type EmptyStateRowSize = keyof typeof Height.table.noResults
 
-const SPACING_SIZE_MAP: Record<EmptyStateRowSize, keyof typeof Spacing> = {
-  sm: 'md',
-  lg: 'xl',
-}
+const SPACING_SIZE_MAP: Record<EmptyStateRowSize, keyof typeof Spacing> = { sm: 'md', lg: 'xl' }
 
 export const EmptyStateRow = ({
   colSpan,

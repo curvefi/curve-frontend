@@ -52,11 +52,7 @@ const ChartTab = ({
         activeSelection: ohlcChartProps.selectedChartKey,
         setActiveSelection: setSelectedChart,
       }}
-      timeOption={{
-        options: TIME_OPTIONS,
-        activeOption: ohlcChartProps.timeOption,
-        setActiveOption: setTimeOption,
-      }}
+      timeOption={{ options: TIME_OPTIONS, activeOption: ohlcChartProps.timeOption, setActiveOption: setTimeOption }}
       isLoading={isLoading}
     />
     <ChartWrapper {...ohlcChartProps} />

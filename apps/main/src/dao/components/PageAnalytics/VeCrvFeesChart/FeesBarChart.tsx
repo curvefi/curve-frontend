@@ -5,10 +5,7 @@ import { formatDate } from '@primitives/date.utils'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { FeesBarChartTooltip } from './FeesBarChartTooltip'
 
-type FeesBarChartProps = {
-  data: VeCrvFee[]
-  height: number
-}
+type FeesBarChartProps = { data: VeCrvFee[]; height: number }
 
 export const FeesBarChart = ({ data, height }: FeesBarChartProps) => {
   const currentDate = useCurrentDate()

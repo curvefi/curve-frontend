@@ -26,11 +26,7 @@ export const Stepper = ({
   </StepsContainer>
 )
 
-type StepNumberProps = {
-  index: number
-  step: Step
-  steps: Step[]
-}
+type StepNumberProps = { index: number; step: Step; steps: Step[] }
 
 const StepNumber = ({ index, step, steps }: StepNumberProps) => (
   <StepNumberContainer flex flexColumn flexAlignItems="center">

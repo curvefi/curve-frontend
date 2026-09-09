@@ -47,12 +47,5 @@ export const SwipeableDrawer = ({ button, children, keepMounted = false, open, s
 )
 
 const Puller = () => (
-  <Box
-    sx={{
-      width: 80,
-      height: 4,
-      backgroundColor: t => t.design.Color.Neutral[500],
-      margin: '0 auto',
-    }}
-  />
+  <Box sx={{ width: 80, height: 4, backgroundColor: t => t.design.Color.Neutral[500], margin: '0 auto' }} />
 )

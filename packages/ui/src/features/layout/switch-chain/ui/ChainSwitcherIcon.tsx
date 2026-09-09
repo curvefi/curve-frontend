@@ -1,10 +1,7 @@
 import Box from '@mui/material/Box'
 import { getBlockchainIconUrl } from '@ui/lib/resource.constants'
 
-type ChainIconProps = {
-  blockchainId: string
-  size?: number
-}
+type ChainIconProps = { blockchainId: string; size?: number }
 
 /**
  * Display a chain icon for the chain switcher.

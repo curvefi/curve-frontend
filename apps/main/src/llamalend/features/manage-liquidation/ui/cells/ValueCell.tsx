@@ -37,12 +37,7 @@ export const ValueCellDisplay = ({
           variant={isFooter ? 'tableCellMBold' : 'tableCellMRegular'}
           color={tokensColor}
           data-testid={testId}
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'end',
-            textAlign: 'end',
-          }}
+          sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'end', textAlign: 'end' }}
         >
           {tokens.map((token, i) => (
             // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.

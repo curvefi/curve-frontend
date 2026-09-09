@@ -1,10 +1,7 @@
 import type { ChipColors } from '@ui/features/themes/components/chip'
 import type { PegKeeperDetails } from '../types'
 
-export type PegStatus = {
-  label: 'loading' | 'pegged' | 'overpegged' | 'underpegged' | 'error'
-  color: ChipColors
-}
+export type PegStatus = { label: 'loading' | 'pegged' | 'overpegged' | 'underpegged' | 'error'; color: ChipColors }
 /**
  * Determines the peg status based on the rate deviation from 1.0
  * @param rate - The current rate query

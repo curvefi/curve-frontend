@@ -59,12 +59,7 @@ export const LegacyTableFilters = <ColumnIds extends string>({
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
 
   return (
-    <Stack
-      sx={{
-        paddingBlockEnd: { mobile: Spacing.sm.tablet },
-        paddingBlockStart: { mobile: Spacing.md.tablet },
-      }}
-    >
+    <Stack sx={{ paddingBlockEnd: { mobile: Spacing.sm.tablet }, paddingBlockStart: { mobile: Spacing.md.tablet } }}>
       <Grid container spacing={Spacing.sm} sx={{ paddingInline: Spacing.md, justifyContent: 'space-between' }}>
         <Fade in={!hideTitle} timeout={Duration.Transition} mountOnEnter unmountOnExit>
           <Grid size={{ mobile: 'grow', tablet: 6 }} sx={{ position: hideTitle ? 'absolute' : 'relative' }}>
@@ -73,12 +68,7 @@ export const LegacyTableFilters = <ColumnIds extends string>({
         </Fade>
         <Grid
           size={{ mobile: isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: Spacing.xs,
-            flexWrap: 'wrap',
-          }}
+          sx={{ display: 'flex', justifyContent: 'flex-end', gap: Spacing.xs, flexWrap: 'wrap' }}
         >
           {hasSearchBar && (
             <LegacyTableSearchField

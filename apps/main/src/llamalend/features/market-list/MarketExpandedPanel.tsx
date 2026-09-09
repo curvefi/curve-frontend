@@ -30,22 +30,14 @@ const POSITION_METRIC_CATEGORY = 'llamalend.marketListPosition'
 
 const ratesConfig: Record<
   MarketRateType,
-  {
-    tooltipComponent: FunctionComponent<RateTooltipProps>
-    title: string
-    rateKey: keyof LlamaMarket['rates']
-  }
+  { tooltipComponent: FunctionComponent<RateTooltipProps>; title: string; rateKey: keyof LlamaMarket['rates'] }
 > = {
   [MarketRateType.Supply]: {
     tooltipComponent: SupplyRateLendTooltip,
     title: NET_SUPPLY_RATE_TITLE,
     rateKey: 'lendTotalApyMinBoosted',
   },
-  [MarketRateType.Borrow]: {
-    tooltipComponent: BorrowRateTooltip,
-    title: t`Borrow APR`,
-    rateKey: 'borrowApr',
-  },
+  [MarketRateType.Borrow]: { tooltipComponent: BorrowRateTooltip, title: t`Borrow APR`, rateKey: 'borrowApr' },
 }
 
 function useMobileGraphSize() {

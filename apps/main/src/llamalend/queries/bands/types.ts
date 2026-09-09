@@ -1,10 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
 
-export type SortedBandBalance = {
-  borrowed: Decimal
-  collateral: Decimal
-  band: number
-}
+export type SortedBandBalance = { borrowed: Decimal; collateral: Decimal; band: number }
 
 /**
  * `*Value` fields are denominated in the market borrow token, not USD.

@@ -2,10 +2,7 @@ import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box'
 import { Spinner } from '@legacy-ui/Spinner'
 
-type Props = {
-  pendingMessage: string
-  className?: string
-}
+type Props = { pendingMessage: string; className?: string }
 
 export const PendingTx = ({ pendingMessage, className }: Props) => (
   <Wrapper className={className}>

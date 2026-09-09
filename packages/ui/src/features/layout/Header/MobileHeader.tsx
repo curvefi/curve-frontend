@@ -50,11 +50,7 @@ export const MobileHeader = <TApp extends string>({
     () =>
       recordEntries(links)
         .filter(([appName]) => appName != currentMenu)
-        .map(([appName, { label, pages }]) => ({
-          appName,
-          title: label,
-          pages,
-        })),
+        .map(([appName, { label, pages }]) => ({ appName, title: label, pages })),
     [currentMenu, links],
   )
   return (
@@ -87,14 +83,7 @@ export const MobileHeader = <TApp extends string>({
           onClose={closeSidebar}
           open={isSidebarOpen}
           slotProps={{
-            paper: {
-              sx: {
-                top,
-                ...MOBILE_SIDEBAR_WIDTH,
-                ...HIDE_SCROLLBAR,
-                height: `calc(100dvh - ${top}px)`,
-              },
-            },
+            paper: { sx: { top, ...MOBILE_SIDEBAR_WIDTH, ...HIDE_SCROLLBAR, height: `calc(100dvh - ${top}px)` } },
           }}
           sx={{ top }}
           variant="temporary"

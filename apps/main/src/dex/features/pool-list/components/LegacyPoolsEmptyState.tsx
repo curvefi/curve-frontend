@@ -22,10 +22,7 @@ enum ERROR {
   filter = 'filter',
 }
 
-type Props = {
-  columnFiltersById: PartialRecord<LegacyPoolColumnId, string>
-  resetFilters: () => void
-}
+type Props = { columnFiltersById: PartialRecord<LegacyPoolColumnId, string>; resetFilters: () => void }
 
 export const LegacyPoolsEmptyState = ({ columnFiltersById, resetFilters }: Props) => {
   const searchText = columnFiltersById[LegacyPoolColumnId.PoolName]

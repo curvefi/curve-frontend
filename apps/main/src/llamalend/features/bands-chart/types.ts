@@ -41,10 +41,7 @@ export type BandsChartPalette = {
   liquidationBandOutlineColor: string
 }
 
-export type BandsPriceRange = {
-  lowerPrice: number
-  upperPrice: number
-}
+export type BandsPriceRange = { lowerPrice: number; upperPrice: number }
 
 export type BandsRangeOverlay = {
   variant: 'current' | 'new'
@@ -99,30 +96,19 @@ export type BandsChartNativeMarkLineData = [
   { coord: [number, number]; lineStyle?: unknown },
 ][]
 
-type BandsChartSeriesBase = {
-  name: string
-  type: 'custom'
-}
+type BandsChartSeriesBase = { name: string; type: 'custom' }
 
 export type BandsChartSeries =
-  | (BandsChartSeriesBase & {
-      bandsChartSeriesType: typeof BANDS_CHART_SERIES_TYPE.rangeArea
-      data: RangeSeriesData
-    })
+  | (BandsChartSeriesBase & { bandsChartSeriesType: typeof BANDS_CHART_SERIES_TYPE.rangeArea; data: RangeSeriesData })
   | (BandsChartSeriesBase & {
       bandsChartSeriesType: typeof BANDS_CHART_SERIES_TYPE.rangeLine
       data: HorizontalLineSeriesData
     })
-  | (BandsChartSeriesBase & {
-      bandsChartSeriesType: typeof BANDS_CHART_SERIES_TYPE.band
-      data: RectSeriesData
-    })
+  | (BandsChartSeriesBase & { bandsChartSeriesType: typeof BANDS_CHART_SERIES_TYPE.band; data: RectSeriesData })
   | (BandsChartSeriesBase & {
       bandsChartSeriesType: typeof BANDS_CHART_SERIES_TYPE.oracleLine
       data: RectSeriesData
       markLine?: { data?: BandsChartNativeMarkLineData }
     })
 
-export type BandsChartOption = Omit<EChartsOption, 'series'> & {
-  series?: BandsChartSeries[]
-}
+export type BandsChartOption = Omit<EChartsOption, 'series'> & { series?: BandsChartSeries[] }

@@ -1,15 +1,9 @@
 import { TIME_OPTION_MS } from '@ui/lib/time'
 import type { TimeOption } from './types'
 
-export type OhlcPageParam = {
-  start: number
-  end: number
-}
+export type OhlcPageParam = { start: number; end: number }
 
-export type OhlcPageResult = {
-  hasMore: boolean
-  oldestPageTimestamp?: number
-}
+export type OhlcPageResult = { hasMore: boolean; oldestPageTimestamp?: number }
 
 const CANDLE_CHART_MAX_RESULTS = 300
 const CANDLE_CHART_PAGE_INTERVALS = CANDLE_CHART_MAX_RESULTS - 1
@@ -47,10 +41,7 @@ export const createOhlcPageResult = (
   const oldestPageTimestamp = pageTimes.length > 0 ? Math.floor(Math.min(...pageTimes) / 1000) : undefined
   const hasMore = hasHistoricalPageData(resultCount)
 
-  return {
-    hasMore,
-    oldestPageTimestamp,
-  }
+  return { hasMore, oldestPageTimestamp }
 }
 
 export const createCandleChartQueryKey = <TParts extends readonly unknown[]>(...parts: TParts) =>

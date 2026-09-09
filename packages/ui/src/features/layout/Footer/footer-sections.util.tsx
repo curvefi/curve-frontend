@@ -19,12 +19,7 @@ import { XIcon } from '@ui/icons/XIcon'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS, EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 
-export type FooterLink = {
-  label: string
-  href: string
-  icon?: ReactNode
-  target?: string
-}
+export type FooterLink = { label: string; href: string; icon?: ReactNode; target?: string }
 
 export type FooterSection = { title: string; links: FooterLink[] }
 

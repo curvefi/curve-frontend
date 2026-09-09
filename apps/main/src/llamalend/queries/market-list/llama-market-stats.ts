@@ -18,10 +18,7 @@ type MintBorrowStats = QueryOptionsData<ReturnType<typeof getUserMintMarketsStat
 type BorrowStats = LendBorrowStats | MintBorrowStats
 type TokenPrice = number
 
-type TokenPriceEntry = {
-  chainId: number
-  tokenAddress: Address
-}
+type TokenPriceEntry = { chainId: number; tokenAddress: Address }
 
 const getTokenPriceKey = ({ chainId, tokenAddress }: TokenPriceEntry) => `${chainId}:${tokenAddress.toLowerCase()}`
 
@@ -49,18 +46,12 @@ export type MarketStats = ReturnType<typeof normalizeMarketStats>
 
 type UserPositionQueries = {
   stats: QueryProp<MarketStats>
-  prices: {
-    borrowed: QueryProp<TokenPrice>
-    collateral: QueryProp<TokenPrice>
-  }
+  prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
 }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   stats: DISABLED_Q,
-  prices: {
-    borrowed: DISABLED_Q,
-    collateral: DISABLED_Q,
-  },
+  prices: { borrowed: DISABLED_Q, collateral: DISABLED_Q },
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */

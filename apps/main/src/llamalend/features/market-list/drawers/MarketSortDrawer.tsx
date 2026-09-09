@@ -3,10 +3,7 @@ import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { MarketColumnId } from '../columns'
 import { useMarketsSortOptions } from '../hooks/useMarketsSortOptions'
 
-type Props = {
-  onSortingChange: OnChangeFn<SortingState>
-  sortField: MarketColumnId
-}
+type Props = { onSortingChange: OnChangeFn<SortingState>; sortField: MarketColumnId }
 
 export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
   const sortOptions = useMarketsSortOptions()

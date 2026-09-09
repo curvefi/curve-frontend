@@ -13,10 +13,7 @@ import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 
-type HoldersSort = {
-  key: AllHoldersSortBy
-  order: 'asc' | 'desc'
-}
+type HoldersSort = { key: AllHoldersSortBy; order: 'asc' | 'desc' }
 
 const getSortableHolderValue = (holder: VeCrvHolder, key: AllHoldersSortBy) =>
   key === 'unlockTime' ? (holder.unlockTime ?? 0) : Number(holder[key])
@@ -29,10 +26,7 @@ export const TopHoldersTable = () => {
     isSuccess: holdersSuccess,
     refetch: refetchHolders,
   } = useVeCrvHoldersQuery({})
-  const [allHoldersSortBy, setAllHoldersSortBy] = useState<HoldersSort>({
-    key: 'weightRatio',
-    order: 'desc',
-  })
+  const [allHoldersSortBy, setAllHoldersSortBy] = useState<HoldersSort>({ key: 'weightRatio', order: 'desc' })
 
   const tableMinWidth = 41.875
 

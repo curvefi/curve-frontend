@@ -242,9 +242,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
       cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.estimateGas)
-      checkResetPositionDetailsLoaded({
-        debt: { current: debt, future: getFutureDebt('0'), symbol: 'crvUSD' },
-      })
+      checkResetPositionDetailsLoaded({ debt: { current: debt, future: getFutureDebt('0'), symbol: 'crvUSD' } })
       cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT)
         .should('not.be.disabled')
         .and('contain.text', 'Reset position')

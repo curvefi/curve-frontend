@@ -12,12 +12,7 @@ import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  totalVotes: number
-  voteId: string
-  proposalType: ProposalType
-  className?: string
-}
+type Props = { totalVotes: number; voteId: string; proposalType: ProposalType; className?: string }
 
 export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
   const { data: pricesProposal, isSuccess: pricesProposalSuccess } = useProposalPricesApiQuery({

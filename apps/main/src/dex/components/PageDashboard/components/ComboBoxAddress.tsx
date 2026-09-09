@@ -34,15 +34,7 @@ const Popover = (props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElemen
   const ref = useRef<HTMLDivElement>(null)
   const { popoverRef = ref, isOpen, onClose, children } = props
 
-  const { overlayProps } = useOverlay(
-    {
-      isOpen,
-      onClose,
-      shouldCloseOnBlur: true,
-      isDismissable: true,
-    },
-    popoverRef,
-  )
+  const { overlayProps } = useOverlay({ isOpen, onClose, shouldCloseOnBlur: true, isDismissable: true }, popoverRef)
 
   return (
     <FocusScope restoreFocus>
@@ -128,13 +120,7 @@ export function ComboBoxAddress<T extends object>(props: ComboBoxStateOptions<T>
   const state = useComboBoxState({ ...props, defaultFilter: contains })
 
   const { buttonProps, inputProps, listBoxProps, labelProps } = useComboBox(
-    {
-      ...props,
-      inputRef,
-      buttonRef,
-      listBoxRef,
-      popoverRef,
-    },
+    { ...props, inputRef, buttonRef, listBoxRef, popoverRef },
     state,
   )
 

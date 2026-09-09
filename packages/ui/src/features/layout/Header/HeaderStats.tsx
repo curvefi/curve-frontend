@@ -1,9 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-type HeaderStatsProps = {
-  appStats?: { label: string; value: string }[]
-}
+type HeaderStatsProps = { appStats?: { label: string; value: string }[] }
 
 export const HeaderStats = ({ appStats }: HeaderStatsProps) =>
   appStats?.map(({ label, value }) => (
