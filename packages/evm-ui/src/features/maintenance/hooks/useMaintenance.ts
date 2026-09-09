@@ -1,9 +1,8 @@
-import { useState } from 'react'
+import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
 import { useDismissMaintenanceBanner, useDismissMaintenanceModal } from '@evm-ui/hooks/useLocalStorage'
-import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { formatDate, formatTime } from '@legacy-ui/utils/utilsDate'
 import { Falsy } from '@primitives/objects.utils'
-import { REFRESH_INTERVAL, TIME_OPTION_MS } from '@ui/utils/time'
+import { TIME_OPTION_MS } from '@ui/utils/time'
 
 export type MaintenanceConfig = {
   // UTC ISO string date of the scheduled maintenance.
@@ -53,9 +52,7 @@ export const useMaintenance = (maintenance: MaintenanceConfig): Maintenance => {
   const { dateISO, warnBeforeMs, durationMs, expectedDurationLabel, learnMoreLink } = maintenance ?? {}
   const [modalDismissedAt, setModalDismissedAt] = useDismissMaintenanceModal(dateISO)
   const [shouldShowBanner, dismissBanner] = useDismissMaintenanceBanner(dateISO)
-  const [currentTime, setCurrentTime] = useState(Date.now)
-
-  usePageVisibleInterval(() => setCurrentTime(Date.now()), REFRESH_INTERVAL['1m'])
+  const currentTime = useCurrentDate().getTime()
 
   const warningStartsTime = getWarningStartsTime(dateISO, warnBeforeMs)
   const maintenanceDate = dateISO && new Date(dateISO)

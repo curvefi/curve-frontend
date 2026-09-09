@@ -1,22 +1,23 @@
 import { ChainSwitcher } from '@evm-ui/features/switch-chain'
-import type { AppMenuOption } from '@evm-ui/shared/routes'
-import { NetworkMapping } from '@legacy-ui/utils'
+import type { ChainSwitcherProps } from '@evm-ui/features/switch-chain/ui/ChainSwitcher'
 import Stack from '@mui/material/Stack'
 import { HeaderLogo } from './HeaderLogo'
 import { MenuToggleButton } from './MenuToggleButton'
 
-type MobileTopBarProps = {
+type MobileTopBarProps<TApp extends string> = ChainSwitcherProps<TApp> & {
   toggleSidebar: () => void
   isSidebarOpen: boolean
-  supportedNetworks: NetworkMapping
-  currentMenu: AppMenuOption
 }
 
-export const MobileTopBar = ({ supportedNetworks, isSidebarOpen, toggleSidebar, currentMenu }: MobileTopBarProps) => (
+export const MobileTopBar = <TApp extends string>({
+  isSidebarOpen,
+  toggleSidebar,
+  ...chainSwitcherProps
+}: MobileTopBarProps<TApp>) => (
   <Stack direction="row" sx={{ width: '100%', paddingX: 2 }}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
     <HeaderLogo />
     <Stack sx={{ flexGrow: 1 }} />
-    <ChainSwitcher supportedNetworks={supportedNetworks} currentMenu={currentMenu} />
+    <ChainSwitcher {...chainSwitcherProps} />
   </Stack>
 )

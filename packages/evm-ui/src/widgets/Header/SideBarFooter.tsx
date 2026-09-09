@@ -1,4 +1,5 @@
 import { ConnectWalletIndicator } from '@evm-ui/features/connect-wallet'
+import type { ConnectWalletProps } from '@evm-ui/features/connect-wallet/ui/ConnectWalletIndicator'
 import { Settings } from '@evm-ui/features/user-profile/settings/Settings'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 // eslint-disable-next-line no-restricted-imports
@@ -17,9 +18,11 @@ const { Spacing } = SizesAndSpaces
 
 const BACKGROUND_COLOR = 'background.paper'
 
-export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
+type SideBarFooterProps = { onConnect: () => void; connectWalletProps: ConnectWalletProps }
+
+export const SideBarFooter = ({ onConnect, connectWalletProps }: SideBarFooterProps) => (
   <Stack sx={{ ...MOBILE_SIDEBAR_WIDTH, backgroundColor: BACKGROUND_COLOR }}>
-    <ConnectWalletIndicator sx={{ flexGrow: 1, margin: Spacing.sm }} onConnect={onConnect} />
+    <ConnectWalletIndicator sx={{ flexGrow: 1, margin: Spacing.sm }} onConnect={onConnect} {...connectWalletProps} />
 
     <Accordion sx={{ backgroundColor: BACKGROUND_COLOR }} disableGutters>
       <AccordionSummary

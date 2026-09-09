@@ -1,10 +1,10 @@
-import type { AppPage } from '@evm-ui/widgets/Header/types'
+import type { HeaderLink } from '@evm-ui/widgets/Header/types'
 import { ListItem } from '@mui/material'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import { RouterLink } from '@ui/components/RouterLink'
 
-type SidebarItemProps = { page: AppPage; child?: boolean }
+type SidebarItemProps = { page: HeaderLink; child?: boolean }
 
 export const SidebarItem = ({ page, child }: SidebarItemProps) => (
   <ListItem disableGutters sx={{ display: 'flex', paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}>

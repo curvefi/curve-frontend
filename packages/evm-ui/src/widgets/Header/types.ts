@@ -1,36 +1,28 @@
+import type { ConnectWalletProps } from '@evm-ui/features/connect-wallet/ui/ConnectWalletIndicator'
 import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
-import type { AppMenuOption, AppName } from '@evm-ui/shared/routes'
-import type { NetworkMapping } from '@legacy-ui/utils'
+import type { ChainListOption } from '@evm-ui/features/switch-chain/ui/ChainList'
+import type { PartialRecord } from '@primitives/objects.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 
-export type AppPage = {
+export type HeaderLink = {
   href: string // this is the full pathname to the page, including leading slash, the app name and the network
   label: string
   isActive?: boolean
   target?: '_self' | '_blank'
 }
 
-export type AppRoute = {
-  app: AppName
-  route: string // this is a route inside the app, with leading slash, does not include the app name and the network
-  label: () => string // lazy evaluation for translations
-  target?: '_self' | '_blank'
-  matchMode?: 'prefix' | 'exact' // some pages have "../marketId" and "../marketId/vault" as routes, so we need to match the exact route
-}
+export type HeaderAppLinks<TApp extends string> = Record<TApp, { label: string; href: string; pages: HeaderLink[] }>
 
-export type AppRoutes = { label: string; routes: AppRoute[] }
-
-export type NavigationSection = { title: string; links: AppPage[] }
-
-type HeaderBaseProps = {
-  currentMenu: AppMenuOption
-  isLite: boolean | undefined
-  blockchainId: string // ID of the network as displayed in the URL
-  chainId: number
+export type HeaderProps<TApp extends string> = {
+  currentMenu: TApp
+  currentNetwork: ChainListOption
   backendMaintenance: Maintenance
-  supportedNetworks: NetworkMapping
+  supportedNetworks: ChainListOption[]
   appStats?: { label: string; value: string }[]
+  links: HeaderAppLinks<TApp>
+  hideChains: PartialRecord<TApp, number[]>
+  tvls: QueryProp<Record<string, number>>
+  connectWalletProps: ConnectWalletProps
+  pages: HeaderLink[]
+  sections: { title: string; links: HeaderLink[] }[]
 }
-
-export type HeaderImplementationProps = HeaderBaseProps & { pages: AppPage[]; sections: NavigationSection[] }
-
-export type HeaderProps = HeaderBaseProps & { currentApp: AppName; routes: Record<AppMenuOption, AppRoute[]> }

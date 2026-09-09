@@ -1,4 +1,3 @@
-import { AppName } from '@evm-ui/shared/routes'
 import { LlamaImg } from '@legacy-ui/images'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -9,14 +8,14 @@ import { useSwitch } from '@ui/hooks/useSwitch'
 import { ReleaseChannel } from '@ui/utils/env'
 import { ReleaseChannelDialog } from '../../features/user-profile/settings/ReleaseChannelDialog'
 import { Description } from './Description'
+import { type FooterSection } from './footer-sections.util'
 import { Section } from './Section'
-import { getSections } from './Sections'
 
 const Llama = styled('img')({ alt: 'Llama', position: 'absolute' })
 
-type FooterProps = { blockchainId: string; appName: AppName }
+type FooterProps = { sections: FooterSection[] }
 
-export const Footer = ({ appName, blockchainId }: FooterProps) => {
+export const Footer = ({ sections }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const isTiny = useIsTiny()
   return (
@@ -41,9 +40,9 @@ export const Footer = ({ appName, blockchainId }: FooterProps) => {
           <Description />
         </Grid>
 
-        {getSections().map(section => (
+        {sections.map(section => (
           <Grid key={section.title} size={{ mobile: 12, tablet: 4, desktop: 3 }}>
-            <Section {...section} blockchainId={blockchainId} appName={appName} isTiny={isTiny} />
+            <Section {...section} isTiny={isTiny} />
           </Grid>
         ))}
 

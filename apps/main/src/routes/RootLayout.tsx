@@ -1,15 +1,14 @@
 import { type ReactNode, useEffect, useMemo } from 'react'
 import { OverlayProvider } from 'react-aria'
 import { StyleSheetManager } from 'styled-components'
-import { WagmiProvider } from 'wagmi'
+import { useConnection, WagmiProvider } from 'wagmi'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
 import { BACKEND_MAINTENANCE } from '@/maintenances'
 import isPropValid from '@emotion/is-prop-valid'
 import { CurveProvider } from '@evm-ui/features/connect-wallet'
 import { useWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/useWagmiConfig'
-import { BackendMaintenanceModal } from '@evm-ui/features/maintenance/components/BackendMaintenanceModal'
-import { MaintenancePage } from '@evm-ui/features/maintenance/components/MaintenancePage'
+import { BackendMaintenanceGuard } from '@evm-ui/features/maintenance/components/BackendMaintenanceGuard'
 import { useMaintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { usePathname } from '@evm-ui/hooks/router'
@@ -65,14 +64,14 @@ export const NetworkAwareLayout = () => {
   const onChainUnavailable = useOnChainUnavailable(networks)
   const { hydrate: dex } = useDexStore()
   const hydrate = useMemo(() => ({ dex }), [dex])
+  const { address: userAddress } = useConnection()
   useBreadcrumbs(pathname)
 
   return (
-    <>
-      {backendMaintenance.isMaintenanceMode ? (
-        <MaintenancePage />
-      ) : (
-        networks && (
+    <ErrorBoundary title={t`Root route error`} userAddress={userAddress}>
+      <HeadContent />
+      <BackendMaintenanceGuard maintenance={backendMaintenance}>
+        {networks && (
           <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
             {network ? (
               <GlobalLayout
@@ -80,8 +79,8 @@ export const NetworkAwareLayout = () => {
                 currentApp={currentApp}
                 network={network}
                 networks={networks}
+                userAddress={userAddress}
               >
-                <HeadContent />
                 <Outlet />
               </GlobalLayout>
             ) : (
@@ -89,10 +88,9 @@ export const NetworkAwareLayout = () => {
             )}
             {!IS_CYPRESS && <TanStackRouterDevtools />}
           </CurveProvider>
-        )
-      )}
-      {!IS_CYPRESS && <BackendMaintenanceModal {...backendMaintenance} />}
-    </>
+        )}
+      </BackendMaintenanceGuard>
+    </ErrorBoundary>
   )
 }
 
