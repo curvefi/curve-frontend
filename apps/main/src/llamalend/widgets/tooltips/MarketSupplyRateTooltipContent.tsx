@@ -132,7 +132,7 @@ export const MarketSupplyRateTooltipContent = ({
 
       {(hasIncentives || showBoostRow) && (
         <TooltipFooter>
-          {t`*Token incentive APY assumes a ${COMPOUNDING_CATEGORIES['llamalend.rewards'].adjective} compounding rate.`}
+          {t`Token incentive APY assumes a ${COMPOUNDING_CATEGORIES['llamalend.rewards'].adjective} compounding rate.`}
         </TooltipFooter>
       )}
     </TooltipWrapper>
