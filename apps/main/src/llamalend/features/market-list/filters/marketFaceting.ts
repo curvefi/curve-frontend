@@ -26,11 +26,7 @@ const getChainFilteredRowModel = (
     LlamaMarketRow
   >['rowsById']
 
-  return {
-    rows: preRowModel.rows.filter(row => rowsById[row.id]),
-    flatRows,
-    rowsById,
-  }
+  return { rows: preRowModel.rows.filter(row => rowsById[row.id]), flatRows, rowsById }
 }
 
 /**

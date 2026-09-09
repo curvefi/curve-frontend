@@ -21,10 +21,7 @@ const marketTypeDetails: Record<MarketType, { label: string; description: string
   },
 }
 
-const marketVersionLabel: Record<MarketVersion, string> = {
-  [MarketVersion.v1]: t`V1`,
-  [MarketVersion.v2]: t`V2`,
-}
+const marketVersionLabel: Record<MarketVersion, string> = { [MarketVersion.v1]: t`V1`, [MarketVersion.v2]: t`V2` }
 
 const MarketBadge = ({ ...props }: Omit<BadgeProps, 'size'>) => <Badge size="extraSmall" {...props} />
 

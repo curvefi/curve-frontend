@@ -33,9 +33,7 @@ export const LegacyPoolsTable = ({ network }: { network: NetworkConfig }) => {
   const { data, isLoading, userHasPositions } = useLegacyPoolsTable(network)
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
-    {
-      columns: LegacyPoolColumnId,
-    },
+    { columns: LegacyPoolColumnId },
   )
   const globalFilterFn = useLegacyPoolsGlobalFilterFn(data ?? [], globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(getDefaultLegacyPoolsSort(isLite))
@@ -69,10 +67,7 @@ export const LegacyPoolsTable = ({ network }: { network: NetworkConfig }) => {
           <LegacyPoolsEmptyState columnFiltersById={columnFiltersById} resetFilters={resetFilters} />
         </EmptyStateRow>
       }
-      expandedPanel={{
-        Body: LegacyPoolExpandedPanel,
-        Actions: LegacyPoolExpandedPanelActions,
-      }}
+      expandedPanel={{ Body: LegacyPoolExpandedPanel, Actions: LegacyPoolExpandedPanelActions }}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
     >

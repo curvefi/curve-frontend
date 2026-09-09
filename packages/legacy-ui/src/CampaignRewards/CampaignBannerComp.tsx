@@ -4,10 +4,7 @@ import { ExternalLink } from '@legacy-ui/Link'
 import { RCPointsIcon } from '@ui/images'
 import { RewardsCompSmall } from './CampaignRewardsComp'
 
-type CampaignRewardsBannerCompProps = {
-  campaignRewards: CampaignRewards[]
-  message: string
-}
+type CampaignRewardsBannerCompProps = { campaignRewards: CampaignRewards[]; message: string }
 
 export const CampaignBannerComp = ({ campaignRewards, message }: CampaignRewardsBannerCompProps) => (
   <Wrapper>

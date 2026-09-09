@@ -78,7 +78,4 @@ const { week, month } = {
   month: { window: MONTHLY, period: `${MONTHLY}D`, adjective: 'monthly' },
 } satisfies Record<string, AverageType>
 
-export const AVERAGES_TYPES = {
-  week,
-  month,
-} as const
+export const AVERAGES_TYPES = { week, month } as const

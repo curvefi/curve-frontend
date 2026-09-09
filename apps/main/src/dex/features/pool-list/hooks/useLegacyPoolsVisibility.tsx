@@ -27,13 +27,7 @@ const createMobileColumns = (sortBy: LegacyPoolColumnId) =>
 
 export function useLegacyPoolsVisibility(
   title: string,
-  {
-    isLite,
-    sorting,
-  }: {
-    isLite: boolean
-    sorting: SortingState
-  },
+  { isLite, sorting }: { isLite: boolean; sorting: SortingState },
 ) {
   const variant: LegacyPoolColumnVariant = isLite ? 'lite' : 'full'
   const sortField = (sorting.length ? sorting : getDefaultLegacyPoolsSort(isLite))[0].id as LegacyPoolColumnId

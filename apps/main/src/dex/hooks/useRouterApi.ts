@@ -95,14 +95,9 @@ export function useRouterApi(
     chainId,
     userAddress,
     searchedParams: { toAddress, fromAddress },
-  }: {
-    searchedParams: SearchedParams
-  } & Pick<RoutesQuery, 'chainId' | 'userAddress'>,
+  }: { searchedParams: SearchedParams } & Pick<RoutesQuery, 'chainId' | 'userAddress'>,
   enabled?: boolean,
-): {
-  data: RoutesAndOutput | undefined
-  isLoading: boolean
-} {
+): { data: RoutesAndOutput | undefined; isLoading: boolean } {
   const formValues = useStore(state => state.quickSwap.formValues)
   const tokensMapper = useStore(state => state.tokens.tokensMapper[chainId])
   const fromDecimals = tokensMapper?.[fromAddress]?.decimals

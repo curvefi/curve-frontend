@@ -26,10 +26,7 @@ const POOL_TYPES = POOL_TYPE_FILTERS.map(({ key }) => key) satisfies readonly Po
 const CRYPTO_POOL_TYPE_ALIASES: ReadonlySet<string> = new Set(['factory_crypto', 'twocryptong'])
 
 // Known Ethereum pool used by search assertions.
-const SearchPool = {
-  name: '3pool',
-  address: '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7' as Address,
-} as const
+const SearchPool = { name: '3pool', address: '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7' as Address } as const
 
 const DEX_POOL_LIST_NAVIGATION_POOL = {
   name: '2pool',
@@ -53,13 +50,7 @@ const createCoins = (chainId: MockChainId) => {
   return range(2).map(poolIndex => {
     const { address, symbol } = oneToken(blockchainId)
 
-    return {
-      pool_index: poolIndex,
-      symbol,
-      address,
-      name: symbol,
-      decimals: 18,
-    }
+    return { pool_index: poolIndex, symbol, address, name: symbol, decimals: 18 }
   })
 }
 
@@ -226,11 +217,7 @@ const getPoolListResponse = (query: PoolListQuery) => {
 const mockDexPoolChains = () =>
   cy.intercept(
     { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/chains/' },
-    {
-      body: {
-        data: MOCK_CHAIN_IDS.map(chainId => ({ chain_id: chainId, name: requireBlockchainId(chainId) })),
-      },
-    },
+    { body: { data: MOCK_CHAIN_IDS.map(chainId => ({ chain_id: chainId, name: requireBlockchainId(chainId) })) } },
   )
 
 const mockDexPoolList = () =>

@@ -36,11 +36,7 @@ const { Height, Spacing } = SizesAndSpaces
 const METRIC_CATEGORY = 'dex.poolInformation'
 
 type BaseRateSeriesKey = 'dailyBaseRate' | 'weeklyBaseRate'
-type BaseRateChartPoint = {
-  timestamp: number
-  dailyBaseRate: number | undefined
-  weeklyBaseRate: number | undefined
-}
+type BaseRateChartPoint = { timestamp: number; dailyBaseRate: number | undefined; weeklyBaseRate: number | undefined }
 
 const SERIES_CONFIG = [
   { key: 'dailyBaseRate', label: t`Daily Base APR` },
@@ -68,11 +64,13 @@ export const PoolHistoricalBaseRateChart = ({
   })
 
   const ratePoints = mapQuery(snapshots, snapshots =>
-    snapshots.toReversed().map(snapshot => ({
-      timestamp: snapshot.timestamp,
-      dailyBaseRate: maybe(snapshot.baseDailyApr, apr => apr * 100) ?? undefined,
-      weeklyBaseRate: maybe(snapshot.baseWeeklyApr, apr => apr * 100) ?? undefined,
-    })),
+    snapshots
+      .toReversed()
+      .map(snapshot => ({
+        timestamp: snapshot.timestamp,
+        dailyBaseRate: maybe(snapshot.baseDailyApr, apr => apr * 100) ?? undefined,
+        weeklyBaseRate: maybe(snapshot.baseWeeklyApr, apr => apr * 100) ?? undefined,
+      })),
   )
 
   // Current metric values are based on pool list data to avoid mismatches, and is also updated more frequently than snapshots

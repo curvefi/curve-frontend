@@ -3,10 +3,7 @@ import { RewardsApy } from '@/dex/types/main.types'
 import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@primitives/number.utils'
 
-type Prop = {
-  isHighlight: boolean
-  rewardsApy: RewardsApy | undefined
-}
+type Prop = { isHighlight: boolean; rewardsApy: RewardsApy | undefined }
 
 export const TableCellRewardsOthers = ({ isHighlight, rewardsApy }: Prop) => {
   if (!rewardsApy?.other || rewardsApy.other.length === 0) {

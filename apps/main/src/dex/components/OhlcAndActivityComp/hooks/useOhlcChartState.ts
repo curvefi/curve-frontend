@@ -13,10 +13,7 @@ import { t } from '@ui/lib/i18n'
 
 const { Height } = SizesAndSpaces
 
-type UseOhlcChartStateArgs = {
-  chainId: ChainId
-  pricesApiPoolData: Pool
-}
+type UseOhlcChartStateArgs = { chainId: ChainId; pricesApiPoolData: Pool }
 
 const selectDexOhlcData = (page: { ohlcData: LpPriceOhlcDataFormatted[] }) => page.ohlcData
 
@@ -24,10 +21,7 @@ export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartSt
   const { data: networkData } = useNetworkByChain({ chainId })
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
   const { chartCombinations, selectChartList, selectedChart, selectedChartKey, setSelectedChart, flipChart } =
-    useDexChartList({
-      coins: pricesApiPoolData.coins,
-      nCoins: pricesApiPoolData.numCoins,
-    })
+    useDexChartList({ coins: pricesApiPoolData.coins, nCoins: pricesApiPoolData.numCoins })
 
   const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(
     chainId,
@@ -70,12 +64,5 @@ export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartSt
     fetchMoreChartData: fetchMore,
   }
 
-  return {
-    chartCombinations,
-    isLoading,
-    setSelectedChart,
-    setTimeOption,
-    flipChart,
-    ohlcChartProps,
-  }
+  return { chartCombinations, isLoading, setSelectedChart, setTimeOption, flipChart, ohlcChartProps }
 }

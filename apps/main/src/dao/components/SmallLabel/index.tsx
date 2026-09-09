@@ -1,12 +1,7 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 
-type SmallLabelProps = {
-  description: ReactNode
-  isKilled?: boolean
-  isNetwork?: boolean
-  className?: string
-}
+type SmallLabelProps = { description: ReactNode; isKilled?: boolean; isNetwork?: boolean; className?: string }
 
 export const SmallLabel = ({ description, isKilled, className, isNetwork }: SmallLabelProps) => (
   <BoxedData isKilled={!!isKilled} isNetwork={isNetwork} className={className}>

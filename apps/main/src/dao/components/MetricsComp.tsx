@@ -3,13 +3,7 @@ import { styled, type IStyledComponent } from 'styled-components'
 import { Box } from '@legacy-ui/Box/Box'
 import { Loader } from '@legacy-ui/Loader/Loader'
 
-type Props = {
-  loading?: boolean
-  title: string
-  data: ReactNode
-  className?: string
-  row?: boolean
-}
+type Props = { loading?: boolean; title: string; data: ReactNode; className?: string; row?: boolean }
 
 export const MetricsComp = ({ loading = false, title, data, className, row = false }: Props) => (
   <Wrapper className={className} row={row}>

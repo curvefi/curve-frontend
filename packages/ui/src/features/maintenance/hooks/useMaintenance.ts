@@ -56,11 +56,7 @@ export const useMaintenance = (maintenance: MaintenanceConfig): Maintenance => {
 
   const warningStartsTime = getWarningStartsTime(dateISO, warnBeforeMs)
   const maintenanceDate = dateISO && new Date(dateISO)
-  const isWithinWarningWindow = isWithinInterval({
-    currentTime,
-    startTime: warningStartsTime,
-    duration: warnBeforeMs,
-  })
+  const isWithinWarningWindow = isWithinInterval({ currentTime, startTime: warningStartsTime, duration: warnBeforeMs })
   const isModalDismissedAtLeastADayAgo =
     !!modalDismissedAt && new Date(modalDismissedAt).getTime() + TIME_OPTION_MS['1d'] <= currentTime
 

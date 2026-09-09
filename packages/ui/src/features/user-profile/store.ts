@@ -5,11 +5,7 @@ import { mapRecord } from '@primitives/objects.utils'
 import { SLIPPAGE, type SlippageSettings } from '@ui/features/slippage/slippage.utils'
 import type { ThemeKey } from '@ui/features/themes/basic-theme'
 
-type UserProfileState = {
-  theme: ThemeKey
-  maxSlippage: SlippageSettings
-  showDeprecatedMarkets: boolean
-}
+type UserProfileState = { theme: ThemeKey; maxSlippage: SlippageSettings; showDeprecatedMarkets: boolean }
 
 type Action = {
   reset: () => void

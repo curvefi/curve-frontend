@@ -50,10 +50,7 @@ const createMetric = <T extends Amount>(label: string, metric: QueryProp<T>): Us
 })
 
 const aggregate = (queries: Query<unknown>[], values: (number | undefined)[]) =>
-  q({
-    data: sum(values.map(value => value ?? 0)),
-    ...combineQueryState(...queries),
-  })
+  q({ data: sum(values.map(value => value ?? 0)), ...combineQueryState(...queries) })
 
 /** Build the summary from the same enriched rows used by the table and its sort accessors. */
 export const getUserPositionsSummary = (markets: LlamaMarketRow[] = []): UserPositionSummaryMetric[] => {

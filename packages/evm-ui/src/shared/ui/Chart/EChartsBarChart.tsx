@@ -5,9 +5,7 @@ import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsToolt
 import { useTheme } from '@mui/material/styles'
 import { maybe } from '@primitives/objects.utils'
 
-export type EChartsBarChartTooltipContext<TData> = {
-  datum: TData
-}
+export type EChartsBarChartTooltipContext<TData> = { datum: TData }
 
 type BarColor<TData> = string | ((datum: TData, index: number) => string)
 
@@ -77,12 +75,7 @@ export const EChartsBarChart = <
       animation: false,
       backgroundColor: 'transparent',
       textStyle: { fontFamily: typography.bodyMRegular.fontFamily as string, color: gridTextColor },
-      grid: {
-        left: 0,
-        right: 0,
-        bottom: 0,
-        top: 0,
-      },
+      grid: { left: 0, right: 0, bottom: 0, top: 0 },
       xAxis: {
         type: 'category',
         data: xAxisData,
@@ -110,12 +103,7 @@ export const EChartsBarChart = <
         position: 'right',
         axisLine: { show: true, lineStyle: { color: gridLineColor, width: CHART_LINE_WIDTH } },
         axisTick: { show: true, lineStyle: { color: gridLineColor, width: CHART_LINE_WIDTH } },
-        splitLine: {
-          lineStyle: {
-            color: gridLineColor,
-            width: CHART_LINE_WIDTH,
-          },
-        },
+        splitLine: { lineStyle: { color: gridLineColor, width: CHART_LINE_WIDTH } },
         axisLabel: {
           color: gridTextColor,
           formatter: (value: number) => (yTickFormatter ? yTickFormatter(value) : `${value}`),
@@ -124,13 +112,7 @@ export const EChartsBarChart = <
       tooltip: {
         trigger: 'axis',
         appendToBody: true,
-        axisPointer: {
-          type: 'line',
-          lineStyle: {
-            width: CHART_LINE_WIDTH,
-            color: gridTextColor,
-          },
-        },
+        axisPointer: { type: 'line', lineStyle: { width: CHART_LINE_WIDTH, color: gridTextColor } },
         formatter: tooltipFormatter,
         backgroundColor: 'transparent',
         borderWidth: 0,

@@ -14,14 +14,9 @@ import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 import { tooltipProps } from '../utils'
 
-type AllTotal = {
-  totalUsd: number
-  tokens: Record<string, { symbol: string; total: number; price: number }>
-}
+type AllTotal = { totalUsd: number; tokens: Record<string, { symbol: string; total: number; price: number }> }
 
-type Props = {
-  title?: string
-}
+type Props = { title?: string }
 
 export const SummaryClaimable = ({ title }: Props) => {
   const {

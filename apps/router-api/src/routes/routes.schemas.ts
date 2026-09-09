@@ -65,18 +65,10 @@ const routeItemSchema = {
     priceImpact: { anyOf: [{ type: 'number' }, { type: 'null' }] },
     createdAt: { type: 'integer' },
     isStableswapRoute: { type: 'boolean' },
-    warnings: {
-      type: 'array',
-      items: { type: 'string', enum: ['high-slippage', 'low-exchange-rate'] },
-    },
+    warnings: { type: 'array', items: { type: 'string', enum: ['high-slippage', 'low-exchange-rate'] } },
     tx: {
       type: 'object',
-      properties: {
-        data: { type: 'string' },
-        to: AddressSchema,
-        from: AddressSchema,
-        value: DecimalSchema,
-      },
+      properties: { data: { type: 'string' }, to: AddressSchema, from: AddressSchema, value: DecimalSchema },
     },
     route: {
       type: 'array',
@@ -88,10 +80,7 @@ const routeItemSchema = {
           tokenOut: { type: 'array', items: AddressSchema },
           protocol: { type: 'string' },
           action: { type: 'string' },
-          args: {
-            type: 'object',
-            additionalProperties: true,
-          },
+          args: { type: 'object', additionalProperties: true },
           chainId: { type: 'integer' },
         },
       },
@@ -99,9 +88,6 @@ const routeItemSchema = {
   },
 } as const
 
-const RoutesSchema = {
-  querystring: routesQuerySchema,
-  response: { 200: { type: 'array', items: routeItemSchema } },
-}
+const RoutesSchema = { querystring: routesQuerySchema, response: { 200: { type: 'array', items: routeItemSchema } } }
 
 export const RoutesOpts = { schema: RoutesSchema } as const

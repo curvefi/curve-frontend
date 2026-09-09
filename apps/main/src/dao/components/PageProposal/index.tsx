@@ -57,11 +57,7 @@ export const Proposal = () => {
   const activeProposal = useMemo(
     () =>
       proposal?.status === 'Active'
-        ? {
-            active: true,
-            startTimestamp: proposal?.timestamp,
-            endTimestamp: proposal?.timestamp + 604800,
-          }
+        ? { active: true, startTimestamp: proposal?.timestamp, endTimestamp: proposal?.timestamp + 604800 }
         : undefined,
     [proposal?.status, proposal?.timestamp],
   )
@@ -79,10 +75,7 @@ export const Proposal = () => {
 
   const snapshotVeCrv = useMemo(
     () =>
-      maybes([proposal, votingPower], (proposal, votingPower) => ({
-        value: votingPower,
-        blockNumber: proposal.block,
-      })),
+      maybes([proposal, votingPower], (proposal, votingPower) => ({ value: votingPower, blockNumber: proposal.block })),
     [proposal, votingPower],
   )
 

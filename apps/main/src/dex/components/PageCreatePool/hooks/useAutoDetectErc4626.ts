@@ -5,10 +5,7 @@ import { TokenId } from '@/dex/components/PageCreatePool/types'
 import { useStore } from '@/dex/store/useStore'
 import type { Address } from '@primitives/address.utils'
 
-type UseAutoDetectErc4626Params = {
-  tokenId: TokenId
-  address: Address
-}
+type UseAutoDetectErc4626Params = { tokenId: TokenId; address: Address }
 
 /**
  * This hook is used to automatically detect if a token is an ERC4626 token and set the asset type to ERC4626

@@ -15,9 +15,7 @@ import { useClaimTab } from '../hooks/useClaimTab'
 import { ClaimActionInfoList } from './ClaimActionInfoList'
 import { TotalNotionalRow } from './columns/notional-cells'
 
-type ClaimTabProps<ChainId extends IChainId> = {
-  networks: NetworkDict<ChainId>
-}
+type ClaimTabProps<ChainId extends IChainId> = { networks: NetworkDict<ChainId> }
 
 const TEST_ID_PREFIX = 'supply-claim'
 const { Spacing } = SizesAndSpaces

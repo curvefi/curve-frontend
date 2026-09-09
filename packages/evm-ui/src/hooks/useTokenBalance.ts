@@ -24,10 +24,7 @@ const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
 
 /** Create query options for native token balance */
 const getNativeBalanceQueryOptions = (config: Config, { chainId, userAddress }: ChainQuery & UserQuery) =>
-  getBalanceQueryOptions(config, {
-    chainId,
-    address: userAddress,
-  })
+  getBalanceQueryOptions(config, { chainId, address: userAddress })
 
 /** Create query contracts for ERC-20 token balance and decimals */
 const getERC20QueryContracts = ({ chainId, userAddress, tokenAddress }: TokenBalanceQuery) =>
@@ -145,10 +142,7 @@ export function useTokenBalance(
 /** Get query options for a token balance (handles both native and ERC-20) */
 const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =>
   isNative(query)
-    ? {
-        ...getNativeBalanceQueryOptions(config, query),
-        select: (data: GetBalanceReturnType) => convertBalance(data),
-      }
+    ? { ...getNativeBalanceQueryOptions(config, query), select: (data: GetBalanceReturnType) => convertBalance(data) }
     : {
         ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
         select: (data: ERC20ReadResult) => convertBalance(parseERC20Results(data)),

@@ -8,10 +8,7 @@ const MARKET_METRIC_GRID_CATEGORIES = {
   primaryStat: {
     columnGap: Grid.Column_Spacing,
     rowGap: Grid.Row_Spacing,
-    gridTemplateColumns: {
-      mobile: 'repeat(2, minmax(0, 1fr))',
-      tablet: 'repeat(4, minmax(0, 1fr))',
-    },
+    gridTemplateColumns: { mobile: 'repeat(2, minmax(0, 1fr))', tablet: 'repeat(4, minmax(0, 1fr))' },
   },
   secondaryDetail: {
     columnGap: Grid.Column_Spacing,
@@ -33,17 +30,6 @@ export const MarketMetricGrid = ({
   category = 'primaryStat',
   sx,
   ...props
-}: BoxProps & {
-  category?: keyof typeof MARKET_METRIC_GRID_CATEGORIES
-}) => (
-  <Box
-    {...props}
-    sx={applySxProps(
-      {
-        display: 'grid',
-      },
-      MARKET_METRIC_GRID_CATEGORIES[category],
-      sx,
-    )}
-  />
+}: BoxProps & { category?: keyof typeof MARKET_METRIC_GRID_CATEGORIES }) => (
+  <Box {...props} sx={applySxProps({ display: 'grid' }, MARKET_METRIC_GRID_CATEGORIES[category], sx)} />
 )

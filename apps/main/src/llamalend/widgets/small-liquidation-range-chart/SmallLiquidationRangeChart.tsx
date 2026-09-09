@@ -14,9 +14,7 @@ import type {
 } from './small-liquidation-range-chart.types'
 import { useSmallLiquidationRangeChartOption } from './useSmallLiquidationRangeChartOption'
 
-type SmallLiquidationRangeChartData = SmallLiquidationRangeChartOptionProps & {
-  isLoading: boolean
-}
+type SmallLiquidationRangeChartData = SmallLiquidationRangeChartOptionProps & { isLoading: boolean }
 
 const useSmallLiquidationRangeChartData = ({
   prices,
@@ -31,10 +29,7 @@ const useSmallLiquidationRangeChartData = ({
 
   return useMemo(
     () => ({
-      liquidationRanges: {
-        ...(currentRange && { currentRange }),
-        ...(newRange && { newRange }),
-      },
+      liquidationRanges: { ...(currentRange && { currentRange }), ...(newRange && { newRange }) },
       oraclePrice: chartOraclePrice,
       isLoading,
     }),

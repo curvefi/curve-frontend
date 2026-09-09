@@ -8,10 +8,7 @@ export const SelectableCard = ({
   isError,
   sx,
   ...props
-}: Omit<ButtonBaseProps<typeof Card>, 'component'> & {
-  isSelected: boolean
-  isError?: boolean
-}) => (
+}: Omit<ButtonBaseProps<typeof Card>, 'component'> & { isSelected: boolean; isError?: boolean }) => (
   <ButtonBase
     component={Card}
     sx={applySxProps(
@@ -26,9 +23,7 @@ export const SelectableCard = ({
             : t.design.Layer[1].Outline,
         outlineOffset: `-${Sizing[10]}`,
         transition: `background-color ${TRANSITION_FUNCTION}, outline-color ${TRANSITION_FUNCTION}`,
-        '&:hover, &.cypress-hover': {
-          backgroundColor: t.design.Layer.TypeAction.Hover,
-        },
+        '&:hover, &.cypress-hover': { backgroundColor: t.design.Layer.TypeAction.Hover },
       }),
       sx,
     )}

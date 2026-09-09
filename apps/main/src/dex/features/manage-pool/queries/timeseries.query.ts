@@ -35,15 +35,7 @@ export const { useQuery: useRefuelTimeseries } = queryFactory({
     end,
     page = DEFAULT_PAGE_START_INDEX,
     pageSize = REFUEL_TIMESERIES_PAGE_SIZE,
-  }: RefuelTimeseriesQuery) =>
-    getRefuelTimeseries({
-      chain: blockchainId,
-      poolAddress,
-      start,
-      end,
-      page,
-      pageSize,
-    }),
+  }: RefuelTimeseriesQuery) => getRefuelTimeseries({ chain: blockchainId, poolAddress, start, end, page, pageSize }),
   validationSuite: createValidationSuite(({ blockchainId, poolAddress }: RefuelTimeseriesParams) => {
     contractValidationGroup({ blockchainId, contractAddress: poolAddress })
   }),

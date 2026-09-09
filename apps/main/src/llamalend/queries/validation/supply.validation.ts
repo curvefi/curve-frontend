@@ -9,63 +9,38 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { MakeOptional } from '@ui/features/queries/util'
 
-export type DepositMutation = {
-  depositAmount: Decimal
-}
+export type DepositMutation = { depositAmount: Decimal }
 
-type CalculatedDepositValues = {
-  maxDepositAmount: Decimal | undefined
-}
+type CalculatedDepositValues = { maxDepositAmount: Decimal | undefined }
 export type DepositForm = MakeOptional<DepositMutation, 'depositAmount'> & CalculatedDepositValues
 
 export type DepositQuery<ChainId = number> = UserMarketQuery<ChainId> & DepositMutation
 export type DepositParams<ChainId = number> = FieldsOf<DepositQuery<ChainId>>
 
-export type WithdrawMutation = {
-  withdrawAmount: Decimal
-  isFull: boolean
-  userVaultShares: Decimal
-}
+export type WithdrawMutation = { withdrawAmount: Decimal; isFull: boolean; userVaultShares: Decimal }
 
-type CalculatedWithdrawValues = {
-  maxWithdrawAmount: Decimal | undefined
-}
+type CalculatedWithdrawValues = { maxWithdrawAmount: Decimal | undefined }
 export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount' | 'userVaultShares'> &
   CalculatedWithdrawValues
 
 export type WithdrawQuery<ChainId = number> = UserMarketQuery<ChainId> & WithdrawMutation
 export type WithdrawParams<ChainId = number> = FieldsOf<WithdrawQuery<ChainId>>
 
-export type StakeMutation = {
-  stakeShares: Decimal
-  isFull: boolean
-}
+export type StakeMutation = { stakeShares: Decimal; isFull: boolean }
 
-type CalculatedStakeValues = {
-  maxStakeAssets: Decimal | undefined
-}
-export type StakeForm = MakeOptional<StakeMutation, 'stakeShares'> &
-  CalculatedStakeValues & {
-    stakeAssets?: Decimal
-  }
+type CalculatedStakeValues = { maxStakeAssets: Decimal | undefined }
+export type StakeForm = MakeOptional<StakeMutation, 'stakeShares'> & CalculatedStakeValues & { stakeAssets?: Decimal }
 
 export type StakeQuery<ChainId = number> = UserMarketQuery<ChainId> & StakeMutation
 export type StakeParams<ChainId = number> = FieldsOf<StakeQuery<ChainId>>
 export type StakeFormQuery<ChainId = number> = StakeQuery<ChainId> & Required<Pick<StakeForm, 'stakeAssets'>>
 export type StakeFormParams<ChainId = number> = FieldsOf<StakeFormQuery<ChainId>>
 
-export type UnstakeMutation = {
-  unstakeShares: Decimal
-  isFull: boolean
-}
+export type UnstakeMutation = { unstakeShares: Decimal; isFull: boolean }
 
-type CalculatedUnstakeValues = {
-  maxUnstakeAssets: Decimal | undefined
-}
+type CalculatedUnstakeValues = { maxUnstakeAssets: Decimal | undefined }
 export type UnstakeForm = MakeOptional<UnstakeMutation, 'unstakeShares'> &
-  CalculatedUnstakeValues & {
-    unstakeAssets?: Decimal
-  }
+  CalculatedUnstakeValues & { unstakeAssets?: Decimal }
 
 export type UnstakeQuery<ChainId = number> = UserMarketQuery<ChainId> & UnstakeMutation
 export type UnstakeParams<ChainId = number> = FieldsOf<UnstakeQuery<ChainId>>

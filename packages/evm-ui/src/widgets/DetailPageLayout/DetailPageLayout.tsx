@@ -40,9 +40,7 @@ const stickyHeaderSx = (navHeight: number): StackProps['sx'] => ({
   marginBlockStart: { tablet: `calc(${PAGE_MARGIN.marginBlockStart.tablet} * -1)` },
   zIndex: t => t.zIndex.appBar - 1,
   backgroundColor: t => t.palette.background.default,
-  paddingBlockStart: {
-    tablet: PAGE_MARGIN.marginBlockStart.tablet,
-  },
+  paddingBlockStart: { tablet: PAGE_MARGIN.marginBlockStart.tablet },
 })
 
 /** CSS rules for making the section navigation sticky */
@@ -130,10 +128,7 @@ export const DetailPageLayout = ({
         {formTabs !== null && !showMobileDrawer && (
           <Grid
             size={{ mobile: 12, tablet: 5, desktop: 4 }}
-            sx={{
-              maxWidth: { desktop: MaxWidth.actionCard },
-              ...stickyFormTabsSx(navHeight),
-            }}
+            sx={{ maxWidth: { desktop: MaxWidth.actionCard }, ...stickyFormTabsSx(navHeight) }}
           >
             <FormPlacementProvider placement={placement}>{formTabs?.content || <FormSkeleton />}</FormPlacementProvider>
           </Grid>

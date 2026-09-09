@@ -9,10 +9,7 @@ import { FireIcon } from '@ui/icons/FireIcon'
 import { t } from '@ui/lib/i18n'
 import { ActionInfo } from './ActionInfo'
 
-export type TxGasInfo = {
-  estGasCostUsd?: Amount
-  tooltip?: string
-}
+export type TxGasInfo = { estGasCostUsd?: Amount; tooltip?: string }
 
 export type EstimatedTxCostProps = {
   gas: QueryProp<TxGasInfo | null>

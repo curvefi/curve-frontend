@@ -42,8 +42,5 @@ export const getLeverageInfoFields = ({
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,
         }
-      : {
-          prevCollateral,
-          collateral: mapQuery(prevCollateral, prev => maybes([prev, collateralDelta], decimalSum)),
-        }),
+      : { prevCollateral, collateral: mapQuery(prevCollateral, prev => maybes([prev, collateralDelta], decimalSum)) }),
   }) satisfies Partial<LoanActionInfoListProps>

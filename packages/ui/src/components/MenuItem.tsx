@@ -6,11 +6,7 @@ import { InvertOnHover } from '@ui/components/InvertOnHover'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 import { CheckedIcon } from '@ui/icons/CheckedIcon'
 
-type Item<T> = {
-  label: string
-  value: T
-  icon: ReactNode
-}
+type Item<T> = { label: string; value: T; icon: ReactNode }
 
 type MenuItemProps<T, RootComponent extends ElementType> = Item<T> & {
   labelVariant?: TypographyVariantKey

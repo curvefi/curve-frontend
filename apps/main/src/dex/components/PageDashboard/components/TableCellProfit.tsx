@@ -4,9 +4,7 @@ import type { SortId, WalletPoolData } from '@/dex/components/PageDashboard/type
 import { amount, formatToken } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
 
-type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 'profitsTotalUsd'> & {
-  sortBy: SortId
-}
+type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 'profitsTotalUsd'> & { sortBy: SortId }
 
 export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTotalUsd, sortBy }: Props) => {
   const formattedBaseProfit = useMemo(

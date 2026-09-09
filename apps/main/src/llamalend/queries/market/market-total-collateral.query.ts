@@ -12,10 +12,7 @@ export const { useQuery: useMarketTotalCollateral } = queryFactory({
 
     if (market instanceof LendMarketTemplate) {
       const totalCollateral = await market.stats.ammBalances(IS_GETTER, USE_API)
-      return {
-        collateral: decimal(totalCollateral.collateral),
-        borrowed: decimal(totalCollateral.borrowed),
-      }
+      return { collateral: decimal(totalCollateral.collateral), borrowed: decimal(totalCollateral.borrowed) }
     }
     const [totalCollateral, totalBorrowed] = await Promise.all([
       market.stats.totalCollateral(),

@@ -26,10 +26,7 @@ type PoolListRequestParams = Pick<
   | 'sortBy'
   | 'sortDirection'
 >
-type PoolListQuery = ChainQuery &
-  PoolListRequestParams & {
-    pageSize?: ListPoolsParams['pagination']
-  }
+type PoolListQuery = ChainQuery & PoolListRequestParams & { pageSize?: ListPoolsParams['pagination'] }
 type PoolListParams = FieldsOf<PoolListQuery>
 
 export const { reset: resetPoolList, useQuery: usePoolList } = queryFactory({

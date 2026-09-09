@@ -14,11 +14,7 @@ import { createVoteFormValidationSuite } from './create-vote.validation'
 import type { CreateVoteForm, CreateVoteMutation } from './useCreateVoteForm'
 
 const buildEvmScript = (gaugeAddress: Address) => {
-  const callData = encodeFunctionData({
-    abi: abiGauge,
-    functionName: 'add_gauge',
-    args: [gaugeAddress, 0n, 0n],
-  })
+  const callData = encodeFunctionData({ abi: abiGauge, functionName: 'add_gauge', args: [gaugeAddress, 0n, 0n] })
 
   const agentCalldata = encodeFunctionData({
     abi: abiAgent,

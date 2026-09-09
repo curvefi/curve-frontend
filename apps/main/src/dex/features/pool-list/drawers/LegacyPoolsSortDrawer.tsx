@@ -15,10 +15,7 @@ import { LegacyPoolColumnId } from '../columns'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-type Props = {
-  onSortingChange: OnChangeFn<SortingState>
-  sortField: LegacyPoolColumnId
-}
+type Props = { onSortingChange: OnChangeFn<SortingState>; sortField: LegacyPoolColumnId }
 
 const DEX_POOL_SORT_OPTIONS = [
   { id: LegacyPoolColumnId.Volume, label: t`Volume` },

@@ -24,25 +24,13 @@ type MintManageLoanProps = {
 }
 
 const MintManageMenu = [
-  {
-    value: 'borrow',
-    label: t`Borrow`,
-    component: props => <BorrowMoreForm networks={networks} {...props} />,
-  },
-  {
-    value: 'repay',
-    label: t`Repay`,
-    component: props => <RepayForm networks={networks} {...props} />,
-  },
+  { value: 'borrow', label: t`Borrow`, component: props => <BorrowMoreForm networks={networks} {...props} /> },
+  { value: 'repay', label: t`Repay`, component: props => <RepayForm networks={networks} {...props} /> },
   {
     value: 'collateral',
     label: t`Collateral`,
     subTabs: [
-      {
-        value: 'add',
-        label: t`Add`,
-        component: props => <AddCollateralForm networks={networks} {...props} />,
-      },
+      { value: 'add', label: t`Add`, component: props => <AddCollateralForm networks={networks} {...props} /> },
       {
         value: 'remove',
         label: t`Remove`,
