@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { TokensMapper, PoolData } from '@/dex/types/main.types'
-import { shortenAddress, amount } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { Loader } from '@legacy-ui/Loader'
 import { Radio, RadioGroup } from '@legacy-ui/Radio'
 import { Spacer } from '@legacy-ui/Spacer'
@@ -10,6 +10,7 @@ import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
+import { amount } from '@ui/lib/decimal'
 
 export const SelectedOneCoinExpected = ({
   amounts,

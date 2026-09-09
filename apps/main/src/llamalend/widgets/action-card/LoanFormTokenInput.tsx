@@ -6,7 +6,6 @@ import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import type { LargeTokenInputProps } from '@evm-ui/shared/ui/LargeTokenInput'
 import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
-import { decimal } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { PartialRecord } from '@primitives/objects.utils'
@@ -14,6 +13,7 @@ import { TokenLabel } from '@ui/components/TokenLabel'
 import { FieldPath, FieldPathByValue, FieldValues, type FormUpdates, UseFormReturn } from '@ui/features/forms'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
+import { decimal } from '@ui/lib/decimal'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 

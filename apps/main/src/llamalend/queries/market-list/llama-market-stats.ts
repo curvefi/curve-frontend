@@ -8,10 +8,11 @@ import type { Chain } from '@curvefi/prices-api'
 import { getTokenUsdRateQueryOptions } from '@evm-ui/lib/model/entities/token-usd-rate'
 import type { QueryOptionsData } from '@evm-ui/lib/queries/types'
 import { MarketType } from '@evm-ui/types/market'
-import { decimal, requireChainId } from '@evm-ui/utils'
+import { requireChainId } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { useQueries } from '@tanstack/react-query'
 import { DISABLED_Q, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { decimal } from '@ui/lib/decimal'
 
 type LendBorrowStats = QueryOptionsData<ReturnType<typeof getUserLendingVaultStatsOptions>>
 type MintBorrowStats = QueryOptionsData<ReturnType<typeof getUserMintMarketsStatsOptions>>

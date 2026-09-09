@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { shortenAddress, amount } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -9,6 +9,7 @@ import { TokenIcon } from '@ui/components/TokenIcon'
 import { Tooltip } from '@ui/components/Tooltip'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { amount } from '@ui/lib/decimal'
 import type { TokenOption as Option } from '../../types'
 
 const { IconSize } = SizesAndSpaces

@@ -1,8 +1,8 @@
 import { getDistributions, getDistributionsPage, type Distribution } from '@curvefi/prices-api/revenue'
 import { queryFactory } from '@evm-ui/lib/model/query'
 import { EmptyValidationSuite, type FieldsOf } from '@evm-ui/lib/validation'
-import { decimal } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { decimal } from '@ui/lib/decimal'
 
 type VeCrvFeesQuery = { weeks?: number }
 type VeCrvFeesParams = FieldsOf<VeCrvFeesQuery>

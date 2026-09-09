@@ -4,7 +4,7 @@ import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-valid
 import { rootKeys } from '@evm-ui/lib/model/query/root-keys'
 import type { MarketQuery, MarketParams } from '@evm-ui/lib/model/query/root-keys'
 import { MarketVersion } from '@evm-ui/types/market'
-import { decimal } from '@evm-ui/utils'
+import { decimal } from '@ui/lib/decimal'
 import { getLendMarketVersion, getMarket } from '../../llama.utils'
 import { convertRates } from '../../rates.utils'
 
