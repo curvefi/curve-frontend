@@ -1,5 +1,6 @@
-import { enforce, skipWhen, test } from 'vest'
+import { skipWhen, test } from 'vest'
 import { createValidationSuite } from '@evm-ui/lib/validation'
+import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import { t } from '@ui/lib/i18n'
 import type { RefuelFormValues } from '../types'
 

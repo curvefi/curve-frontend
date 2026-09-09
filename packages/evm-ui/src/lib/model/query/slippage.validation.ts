@@ -1,4 +1,5 @@
-import { enforce, skipWhen, test } from 'vest'
+import { skipWhen, test } from 'vest'
+import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export const validateSlippage = ({

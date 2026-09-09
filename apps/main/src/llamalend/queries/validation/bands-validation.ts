@@ -1,4 +1,5 @@
-import { enforce, group, test } from 'vest'
+import { group, test } from 'vest'
+import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 
 export const liquidationBandValidationGroup = ({ liquidationBand }: { liquidationBand?: number | null | undefined }) =>
   group('liquidationBandValidation', () => {

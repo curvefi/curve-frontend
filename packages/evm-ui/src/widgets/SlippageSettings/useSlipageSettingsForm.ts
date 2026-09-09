@@ -1,5 +1,6 @@
-import { enforce, test } from 'vest'
+import { test } from 'vest'
 import { createValidationSuite } from '@evm-ui/lib'
+import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import { useForm } from '@ui/features/forms'

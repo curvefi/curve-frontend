@@ -1,9 +1,10 @@
-import { enforce, skipWhen, test } from 'vest'
+import { skipWhen, test } from 'vest'
 import type { ChainId } from '@/loan/types/loan.types'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { llamaApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import type { UserChainQuery } from '@evm-ui/lib/model/query/root-keys'
+import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type ScrvUsdUserQuery = UserChainQuery<ChainId>

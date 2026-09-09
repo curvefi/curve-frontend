@@ -1,4 +1,4 @@
-import { enforce } from 'vest'
+import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 
 // TODO: move to Token validation lib
 export const tokenIdValidationFn = <T>(value: T) => {

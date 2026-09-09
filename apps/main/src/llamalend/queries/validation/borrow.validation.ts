@@ -1,4 +1,4 @@
-import { enforce, group, skipWhen, test } from 'vest'
+import { group, skipWhen, test } from 'vest'
 import { isRouterRequired, tryGetMarket } from '@/llamalend/llama.utils'
 import {
   validateDebt,
@@ -15,6 +15,7 @@ import {
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { validateSlippage } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import type { RouteProvider } from '@primitives/router.utils'
 import { type CreateLoanDebtParams, type CreateLoanForm } from '../../features/borrow/types'
 import { getCreateLoanImplementation } from '../create-loan/create-loan-query.helpers'

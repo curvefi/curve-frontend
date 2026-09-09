@@ -1,4 +1,4 @@
-import { enforce, group, test } from 'vest'
+import { group, test } from 'vest'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
@@ -8,6 +8,7 @@ import {
   createValidationSuite,
   tokenIdValidationFn,
 } from '@evm-ui/lib/validation'
+import { enforce } from '@evm-ui/lib/validation/enforce-extension'
 import { formatNumber } from '@primitives/number.utils'
 import { amount as toAmount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
