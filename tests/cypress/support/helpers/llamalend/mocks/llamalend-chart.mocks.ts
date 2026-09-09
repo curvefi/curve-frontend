@@ -7,7 +7,7 @@ import {
   SECONDS_PER_MINUTE,
   SECONDS_PER_MONTH,
   SECONDS_PER_WEEK,
-} from '@ui/utils/time'
+} from '@ui/lib/time'
 
 const MAX_OHLC_POINTS = 240
 const AGG_UNIT_SECONDS = {

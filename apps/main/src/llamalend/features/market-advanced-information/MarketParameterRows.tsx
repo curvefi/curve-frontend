@@ -2,7 +2,8 @@ import { useMarketOraclePrice, useMarketVaultPricePerShare } from '@/llamalend/q
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { formatNumber, decimal } from '@evm-ui/utils'
+import { decimal } from '@evm-ui/utils'
+import { formatNumber } from '@primitives/number.utils'
 import { fakeLoadingQ, fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

@@ -7,7 +7,7 @@ import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { useLayoutStore } from '@ui/features/layout/layout'
+import { useLayoutStore } from '@ui/features/layout/store'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 
 type Props = {

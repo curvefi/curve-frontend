@@ -1,11 +1,11 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LiquidityUsdTooltipContent } from '@/llamalend/widgets/tooltips/LiquidityUsdTooltipContent'
-import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { formatNumber } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
+import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { Tooltip } from '@ui/components/Tooltip'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
 export const LiquidityUsdCell = ({ getValue, row }: CellContext<CurveTableFeatures, LlamaMarketRow, number>) => {

@@ -1,6 +1,6 @@
 import { toArray } from '@primitives/array.utils'
 import type { QueryKey } from '@tanstack/react-query'
-import { ENABLE_LOGGING, IS_CYPRESS } from '@ui/utils/env'
+import { ENABLE_LOGGING, IS_CYPRESS } from '@ui/lib/env'
 
 export enum LogStatus {
   ERROR = 'error',

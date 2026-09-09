@@ -1,7 +1,8 @@
 import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
-import { formatNumber, amount } from '@evm-ui/utils'
+import { amount } from '@evm-ui/utils'
 import { Chip } from '@legacy-ui/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { tooltipProps } from '../utils'
 
 type Props = Pick<WalletPoolData, 'liquidityUsd' | 'percentStaked'> & { isHighLight: boolean }

@@ -3,9 +3,10 @@ import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
 import type { ExtraIncentive } from '@evm-ui/types/market'
-import { decimal, formatNumber, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { decimal, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/averageRates'
 import type { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { aprToApy } from '@primitives/rates.utils'
 import type { Range } from '@ui/features/queries/util'
@@ -142,8 +143,8 @@ export const getSupplyApyMetrics = ({
 
   const [crvMinBoostApr, crvMaxBoostApr] = crvBoostApr ?? []
 
-  const crvMinBoostApy = aprToApy(crvMinBoostApr, 'llamalend.rewards')
-  const crvMaxBoostApy = aprToApy(crvMaxBoostApr, 'llamalend.rewards')
+  const crvMinBoostApy = aprToApy(crvMinBoostApr, 'llamalend.rewards') ?? null
+  const crvMaxBoostApy = aprToApy(crvMaxBoostApr, 'llamalend.rewards') ?? null
   const userBoostApy =
     maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) => aprToApy(apr * +boost, 'llamalend.rewards')) ?? null
 

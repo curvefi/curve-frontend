@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
 import { PoolData } from '@/dex/types/main.types'
-import { weiToEther, formatNumber } from '@evm-ui/utils'
+import { weiToEther } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 export const DetailInfoExpectedApy = ({

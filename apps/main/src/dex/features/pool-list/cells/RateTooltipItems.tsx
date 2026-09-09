@@ -1,5 +1,5 @@
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
-import { formatNumber } from '@evm-ui/utils'
+import { formatNumber } from '@primitives/number.utils'
 import { TooltipItem, TooltipValueLink } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'

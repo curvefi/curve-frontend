@@ -20,7 +20,7 @@
     "cypress",
     "scripts",
     "cypress.config.ts",
-    "../packages/legacy-ui/src/globals.d.ts",
+    "../packages/ui/src/**/*.d.ts",
     "../packages/evm-ui/src/**/*.d.ts",
     "../packages/ui/src/**/*.d.ts"
   ]

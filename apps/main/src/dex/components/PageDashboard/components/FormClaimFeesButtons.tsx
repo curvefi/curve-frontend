@@ -13,13 +13,13 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
-import { notify } from '@evm-ui/features/connect-wallet'
 import { Button } from '@legacy-ui/Button'
 import type { ButtonProps } from '@legacy-ui/Button/types'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
+import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormClaimFeesButtons = ({

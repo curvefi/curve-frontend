@@ -11,7 +11,7 @@ import { WithWrapper } from '@ui/components/WithWrapper'
 import type { FormSubmitHandler } from '@ui/features/forms'
 import { Responsive } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import type { SxProps } from '@ui/utils/mui'
+import type { SxProps } from '@ui/lib/mui'
 
 const {
   Spacing,

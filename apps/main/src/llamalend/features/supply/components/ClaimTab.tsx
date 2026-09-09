@@ -2,7 +2,7 @@ import { useConnection } from 'wagmi'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ConnectEvmWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectEvmWalletButton'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import Button from '@mui/material/Button'
@@ -44,7 +44,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
   return (
     <>
       <FormContent footer={<ClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}>
-        <DataTable
+        <EvmDataTable
           category="form"
           table={table}
           emptyState={{ title: t`No rewards to claim`, testId: `${TEST_ID_PREFIX}-empty-state` }}

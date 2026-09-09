@@ -7,7 +7,7 @@ import type { Address } from '@primitives/address.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { q } from '@ui/features/queries/util'
-import { TIME_FRAMES } from '@ui/utils/time'
+import { TIME_FRAMES } from '@ui/lib/time'
 import { getLendingVaultsOptions } from '../market-list/lending-vaults'
 import { getMintMarketOptions } from '../market-list/mint-markets'
 

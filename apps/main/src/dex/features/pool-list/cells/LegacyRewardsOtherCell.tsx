@@ -1,6 +1,6 @@
 import { RewardsApy } from '@/dex/types/main.types'
-import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { CellContext } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { useLegacyHasPoolRewards } from '../hooks/useLegacyHasPoolRewards'
 import type { LegacyPoolRow } from '../types'
 import { LegacyRewardsCrvCell } from './LegacyRewardsCrvCell'

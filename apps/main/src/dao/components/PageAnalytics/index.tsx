@@ -1,7 +1,7 @@
-import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { PAGE_SPACING } from '@evm-ui/widgets/DetailPageLayout/constants'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import Stack from '@mui/material/Stack'
+import { Tabs } from '@ui/components/Tabs/Tabs'
 import { t } from '@ui/lib/i18n'
 import { CrvStats } from './CrvStats'
 import { DailyLocks } from './DailyLocksChart'

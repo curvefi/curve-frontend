@@ -18,15 +18,15 @@ describe('aprToApy', () => {
     expect(aprToApy(10, 'llamalend.rewards')).toBeCloseTo(10.506508315, 7)
   })
 
-  it('preserves the savings vault annualization convention', () => {
-    expect(aprToApy(10, 'savings.supply')).toBe(((1 + 0.1 / 365.25) ** 365.25 - 1) * 100)
+  it('compounds savings supply daily using a 365-day year', () => {
+    expect(aprToApy(10, 'savings.supply')).toBe(((1 + 0.1 / 365) ** 365 - 1) * 100)
   })
 
   it.each(Object.keys(COMPOUNDING_CATEGORIES) as CompoundingCategory[])(
     'preserves missing and zero APRs for %s',
     category => {
-      expect(aprToApy(null, category)).toBeNull()
-      expect(aprToApy(undefined, category)).toBeNull()
+      expect(aprToApy(null, category)).toBeUndefined()
+      expect(aprToApy(undefined, category)).toBeUndefined()
       expect(aprToApy(0, category)).toBe(0)
     },
   )

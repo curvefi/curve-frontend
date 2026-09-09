@@ -1,10 +1,10 @@
 import { usePoolContext } from '@/dex/features/pool-context'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
-import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { q } from '@ui/features/queries/util'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 import { usePoolComposition } from '../../hooks/usePoolComposition'
@@ -24,7 +24,7 @@ export const PoolComposition = ({ pricesApiPoolData }: { pricesApiPoolData?: Pri
   return (
     <Stack>
       <CardHeader title={t`Composition`} size="small" />
-      <DataTable
+      <EvmDataTable
         category="detail"
         table={table}
         emptyState={{ title: t`No market composition found` }}

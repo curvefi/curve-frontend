@@ -1,7 +1,7 @@
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { Badge, BadgeProps } from '@evm-ui/shared/ui/Badge'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
+import { Badge, BadgeProps } from '@ui/components/Badge'
 import { Tooltip } from '@ui/components/Tooltip'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ChainIcon } from '@ui/icons/ChainIcon'

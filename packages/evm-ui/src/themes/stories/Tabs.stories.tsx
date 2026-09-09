@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { SIZE_TO_ICON_SIZE } from '@evm-ui/shared/ui/Tabs/tabs-kebab'
 import { Stack } from '@mui/material'
 import { objectKeys } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { SIZE_TO_ICON_SIZE } from '@ui/components/Tabs/tabs-kebab'
+import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '@ui/components/Tabs/TabsSwitcher'
 import { TABS_SIZES_CLASSES } from '@ui/features/themes/components/tabs/mui-tabs'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
-import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '../../shared/ui/Tabs/TabsSwitcher'
 
 type TabValue = string
 const VARIANTS = ['contained', 'underlined', 'overlined'] as const
