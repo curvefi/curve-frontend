@@ -26,12 +26,7 @@ const checkBarWidth =
 const getHealthQuery = (health: Decimal, liquidationBuffer: Decimal): HealthQuery => {
   const healthNotFull = decimalMultiply(decimalDiv(liquidationBuffer, '100'), DISCOUNT_GAP)
 
-  return constQ({
-    health,
-    healthFactor: decimalSum('1', decimalDiv(health, '100')),
-    healthNotFull,
-    liquidationBuffer,
-  })
+  return constQ({ health, healthFactor: decimalSum('1', decimalDiv(health, '100')), healthNotFull, liquidationBuffer })
 }
 
 const mountHealthDetails = (health: Decimal, liquidationBuffer: Decimal) =>

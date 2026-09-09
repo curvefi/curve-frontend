@@ -21,11 +21,7 @@ export const RouteComparisonChip = ({
     {...(maxAmountOut &&
       (amountOut.includes(maxAmountOut)
         ? { 'aria-label': t`Best price`, label: t`Best price`, color: 'active' }
-        : {
-            'aria-label': t`Price difference`,
-            label: showPercentage(amountOut[0], maxAmountOut),
-            color: 'alert',
-          }))}
+        : { 'aria-label': t`Price difference`, label: showPercentage(amountOut[0], maxAmountOut), color: 'alert' }))}
     size="extraSmall"
   />
 )

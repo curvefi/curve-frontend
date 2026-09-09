@@ -22,8 +22,6 @@ export type OpportunitiesQuery = {
   page?: number
 }
 
-const OpportunitiesSchema = {
-  querystring: opportunitiesQuerySchema,
-}
+const OpportunitiesSchema = { querystring: opportunitiesQuerySchema }
 
 export const OpportunitiesOpts = { schema: OpportunitiesSchema } as const

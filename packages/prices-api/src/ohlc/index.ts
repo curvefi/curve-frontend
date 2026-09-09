@@ -8,13 +8,7 @@ export type * from './schema'
 type OhlcUnits = 'day' | 'hour' | 'minute'
 type LpOhlcPriceUnits = 'usd' | 'token0'
 
-type OhlcRangeParams = {
-  interval?: number
-  units?: OhlcUnits
-  start?: number
-  end?: number
-  daysRange?: number
-}
+type OhlcRangeParams = { interval?: number; units?: OhlcUnits; start?: number; end?: number; daysRange?: number }
 
 export type GetOHLCParams = OhlcRangeParams & {
   chain: Chain
@@ -23,11 +17,7 @@ export type GetOHLCParams = OhlcRangeParams & {
   referenceToken: string
 }
 
-export type GetLpOHLCParams = OhlcRangeParams & {
-  chain: Chain
-  poolAddress: string
-  priceUnits?: LpOhlcPriceUnits
-}
+export type GetLpOHLCParams = OhlcRangeParams & { chain: Chain; poolAddress: string; priceUnits?: LpOhlcPriceUnits }
 
 const DEFAULT_DAYS_RANGE = 90
 const DEFAULT_INTERVAL = 1
@@ -43,13 +33,7 @@ const getOhlcQuery = ({
 }: OhlcRangeParams & Record<string, string | number | undefined>) => {
   const range = getTimeRange({ start, end, daysRange })
 
-  return addQueryString({
-    ...params,
-    agg_number: interval,
-    agg_units: units,
-    start: range.start,
-    end: range.end,
-  })
+  return addQueryString({ ...params, agg_number: interval, agg_units: units, start: range.start, end: range.end })
 }
 
 const fetchOhlc = async (url: string, options?: Options) => {
@@ -101,14 +85,7 @@ export async function getLpOHLC(
   { chain, poolAddress, priceUnits = 'usd', interval, units, start, end, daysRange }: GetLpOHLCParams,
   options?: Options,
 ) {
-  const query = getOhlcQuery({
-    price_units: priceUnits,
-    interval,
-    units,
-    start,
-    end,
-    daysRange,
-  })
+  const query = getOhlcQuery({ price_units: priceUnits, interval, units, start, end, daysRange })
 
   return fetchOhlc(`/v1/lp_ohlc/${chain}/${poolAddress}${query}`, options)
 }

@@ -84,12 +84,7 @@ function UseUniqueDebounceTest({
   debounceMs?: number
   equals?: (a: string, b: string) => boolean
 }) {
-  const [value, setValue, cancel] = useUniqueDebounce({
-    defaultValue,
-    callback,
-    debounceMs,
-    equals,
-  })
+  const [value, setValue, cancel] = useUniqueDebounce({ defaultValue, callback, debounceMs, equals })
 
   return (
     <div>
@@ -112,12 +107,7 @@ function UseUniqueDebounceObjectTest({
   callback: (value: { id: number; name: string }) => void
   equals?: (a: { id: number; name: string }, b: { id: number; name: string }) => boolean
 }) {
-  const [value, setValue] = useUniqueDebounce({
-    defaultValue,
-    callback,
-    debounceMs: 200,
-    equals,
-  })
+  const [value, setValue] = useUniqueDebounce({ defaultValue, callback, debounceMs: 200, equals })
 
   return (
     <div>
@@ -390,11 +380,7 @@ describe('useUniqueDebounce', () => {
     // 4. Callback should fire because we compare against the updated defaultValue, not the original
     function AsyncInitWrapper() {
       const [defaultValue, setDefaultValue] = useState('')
-      const [value, setValue] = useUniqueDebounce({
-        defaultValue,
-        callback,
-        debounceMs: 200,
-      })
+      const [value, setValue] = useUniqueDebounce({ defaultValue, callback, debounceMs: 200 })
 
       return (
         <div>
@@ -472,11 +458,7 @@ describe('useUniqueDebounce', () => {
     const callback = cy.stub().as('callback')
 
     function NumberTest() {
-      const [value, setValue] = useUniqueDebounce({
-        defaultValue: 0,
-        callback,
-        debounceMs: 200,
-      })
+      const [value, setValue] = useUniqueDebounce({ defaultValue: 0, callback, debounceMs: 200 })
 
       return (
         <div>

@@ -5,10 +5,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { TableFilterItem } from './TableFilterItem'
 
-type TableFilterButtonOption<T extends string> = {
-  value: T
-  label: string
-}
+type TableFilterButtonOption<T extends string> = { value: T; label: string }
 
 type TableFilterButtonGroupProps<T extends string> = {
   title: string

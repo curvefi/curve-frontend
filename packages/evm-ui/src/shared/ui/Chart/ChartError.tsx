@@ -18,15 +18,7 @@ export const ChartError = ({
   refreshData?: () => Promise<unknown> | void
   userAddress: Address | undefined
 }) => (
-  <Box
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '100%',
-      minHeight: height,
-    }}
-  >
+  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: height }}>
     <ErrorMessage
       title={t`An error occurred`}
       subtitle={errorMessage}

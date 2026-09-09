@@ -2,10 +2,7 @@ import { styled } from 'styled-components'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { RewardsCompSmall as CampaignRewardsComp } from '@legacy-ui/CampaignRewards/CampaignRewardsComp'
 
-type Props = {
-  rewardItems: CampaignRewards[]
-  mobile?: boolean
-}
+type Props = { rewardItems: CampaignRewards[]; mobile?: boolean }
 
 export const CampaignRewardsRow = ({ rewardItems, mobile = false }: Props) => (
   <Container mobile={mobile}>

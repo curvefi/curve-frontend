@@ -6,28 +6,14 @@ export const defineMuiSwitch = ({
   Button: { Focus_Outline },
 }: DesignSystem): Components['MuiSwitch'] => ({
   styleOverrides: {
-    root: {
-      padding: 0,
-      ':focus-within': {
-        '.MuiSwitch-track': {
-          borderColor: Focus_Outline,
-        },
-      },
-    },
+    root: { padding: 0, ':focus-within': { '.MuiSwitch-track': { borderColor: Focus_Outline } } },
     switchBase: { borderRadius: 0, '&.Mui-checked+.MuiSwitch-track': { opacity: 1 } },
     track: {
       borderRadius: 0,
       backgroundColor: Default.Fill,
       border: `1px solid ${Default.Outline}`,
-      '.Mui-checked &': {
-        backgroundColor: Checked.Fill,
-        borderColor: Checked.Outline,
-      },
+      '.Mui-checked &': { backgroundColor: Checked.Fill, borderColor: Checked.Outline },
     },
-    thumb: {
-      borderRadius: 0,
-      color: Default.Label,
-      '.Mui-checked &': { color: Checked.Label },
-    },
+    thumb: { borderRadius: 0, color: Default.Label, '.Mui-checked &': { color: Checked.Label } },
   },
 })

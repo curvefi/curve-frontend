@@ -8,9 +8,7 @@ import { ChainId } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  chainId: ChainId
-}
+type Props = { chainId: ChainId }
 
 export const ParametersSummary = ({ chainId }: Props) => {
   const swapType = useStore(state => state.createPool.swapType)

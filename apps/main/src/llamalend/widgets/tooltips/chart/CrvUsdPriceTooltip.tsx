@@ -6,10 +6,7 @@ import { formatDate } from '@legacy-ui/utils'
 
 type PriceSeriesKey = keyof Omit<CrvUsdPriceChartPoint, 'timestamp'>
 
-type CrvUsdPriceTooltipProps = {
-  datum: CrvUsdPriceChartPoint
-  visibleSeries: LineSeriesConfig<PriceSeriesKey>[]
-}
+type CrvUsdPriceTooltipProps = { datum: CrvUsdPriceChartPoint; visibleSeries: LineSeriesConfig<PriceSeriesKey>[] }
 
 export const CrvUsdPriceTooltip = ({ datum, visibleSeries }: CrvUsdPriceTooltipProps) => (
   <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>

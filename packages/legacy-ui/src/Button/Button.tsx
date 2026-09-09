@@ -10,11 +10,7 @@ import { buttonBaseStyles } from './styles'
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 export const Button = forwardRef<
   HTMLButtonElement,
-  ButtonProps &
-    ButtonHTMLAttributes<HTMLButtonElement> & {
-      className?: string
-      testId?: string
-    }
+  ButtonProps & ButtonHTMLAttributes<HTMLButtonElement> & { className?: string; testId?: string }
 >(({ className, children, loading, testId, ...props }, ref) => {
   const buttonRef = useRef(null)
   const { isFocusVisible, focusProps } = useFocusRing()

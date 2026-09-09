@@ -1,9 +1,6 @@
 import { t } from '@ui/lib/i18n'
 
-type CustomError = {
-  data?: { message: string }
-  code?: string
-} & Error
+type CustomError = { data?: { message: string }; code?: string } & Error
 
 /**
  * TODO: this function was deduplicated from four different apps into ui for FormAlerts.tsx, but it's rather ugly.

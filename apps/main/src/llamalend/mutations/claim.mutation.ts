@@ -44,9 +44,7 @@ export const useClaimCrvMutation = ({
   marketId,
   userAddress,
   crvTokenAddress,
-}: ClaimOptions & {
-  crvTokenAddress: Address | undefined
-}) => {
+}: ClaimOptions & { crvTokenAddress: Address | undefined }) => {
   const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,

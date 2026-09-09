@@ -5,9 +5,6 @@ type VisibilityOption<ColumnIds> = {
   enabled: boolean // whether the column can be currently used
 }
 
-export type VisibilityGroup<ColumnIds> = {
-  options: VisibilityOption<ColumnIds>[]
-  label: string
-}
+export type VisibilityGroup<ColumnIds> = { options: VisibilityOption<ColumnIds>[]; label: string }
 
 export type VisibilityVariants<Variant extends string, ColumnIds> = Record<Variant, VisibilityGroup<ColumnIds>[]>

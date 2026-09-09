@@ -2,9 +2,7 @@ import { HTMLAttributes, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { useIntersectionObserver } from '@evm-ui/hooks/useIntersectionObserver'
 
-type Props = {
-  defaultHeight: string
-} & HTMLAttributes<HTMLDivElement>
+type Props = { defaultHeight: string } & HTMLAttributes<HTMLDivElement>
 
 /**
  * Component to lazy load the <Item> table row when it is visible in the viewport.

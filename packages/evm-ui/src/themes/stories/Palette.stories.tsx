@@ -21,27 +21,13 @@ const PaletteStory = () => {
                 <Typography variant="headingMLight">
                   {palette}.{type}
                 </Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    maxWidth: '100%',
-                    flexWrap: 'wrap',
-                  }}
-                >
+                <Box sx={{ display: 'flex', flexDirection: 'row', maxWidth: '100%', flexWrap: 'wrap' }}>
                   {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
                   {Object.entries(options)
                     .filter(([, color]) => typeof color == 'string')
                     .map(([key, color]) => (
                       <Box title={`${type}.${key}`} key={`${type}.${key}`}>
-                        <Box
-                          sx={{
-                            maxWidth: 100,
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                          }}
-                        >
+                        <Box sx={{ maxWidth: 100, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                           {key}
                         </Box>
                         <Box
@@ -63,10 +49,7 @@ const PaletteStory = () => {
   )
 }
 
-const meta: Meta = {
-  title: 'UI Kit/Primitives/Palette',
-  component: PaletteStory,
-}
+const meta: Meta = { title: 'UI Kit/Primitives/Palette', component: PaletteStory }
 
 export const Palette = {}
 export default meta

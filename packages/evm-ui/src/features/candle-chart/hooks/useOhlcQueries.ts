@@ -13,11 +13,7 @@ type UseOhlcInfiniteQueryParams<TPage extends OhlcPageResult, TQueryKey extends 
   timeOption: TimeOption
 }
 
-type OhlcPaginationQuery = {
-  hasNextPage: boolean
-  isFetchingNextPage: boolean
-  isSuccess: boolean
-}
+type OhlcPaginationQuery = { hasNextPage: boolean; isFetchingNextPage: boolean; isSuccess: boolean }
 
 type OhlcFetchMoreQuery = OhlcPaginationQuery & {
   fetchNextPage: (options?: { cancelRefetch?: boolean }) => Promise<unknown>
@@ -31,25 +27,16 @@ type OhlcQuery<TPage> = OhlcFetchMoreQuery & {
   refetch: () => Promise<unknown>
 }
 
-type UseOhlcQueryAdapterParams<TPage, TItem> = {
-  query: OhlcQuery<TPage>
-  selectItems: (page: TPage) => TItem[]
-}
+type UseOhlcQueryAdapterParams<TPage, TItem> = { query: OhlcQuery<TPage>; selectItems: (page: TPage) => TItem[] }
 
 type UseOhlcPagesAdapterParams<TPage, TData> = {
   query: OhlcQuery<TPage>
   selectData: (pages: TPage[] | undefined) => TData
 }
 
-type UseOhlcAdapterParams<TPage, TData> = {
-  query: OhlcQuery<TPage>
-  data: TData
-}
+type UseOhlcAdapterParams<TPage, TData> = { query: OhlcQuery<TPage>; data: TData }
 
-type OhlcAnchor = {
-  anchorEnd: number
-  resetKey: string
-}
+type OhlcAnchor = { anchorEnd: number; resetKey: string }
 
 /**
  * Candle chart pages are anchored historical windows. Background refetches can
@@ -127,15 +114,7 @@ const useOhlcAdapter = <TPage, TData>({ query, data }: UseOhlcAdapterParams<TPag
     [canFetchMore, fetchNextPage],
   )
 
-  return {
-    canFetchMore,
-    data,
-    error,
-    fetchMore,
-    isFetchingMore,
-    isLoading,
-    refetch,
-  }
+  return { canFetchMore, data, error, fetchMore, isFetchingMore, isLoading, refetch }
 }
 
 export const useOhlcPagesAdapter = <TPage, TData>({ query, selectData }: UseOhlcPagesAdapterParams<TPage, TData>) => {
@@ -154,10 +133,7 @@ export const useOhlcQueryAdapter = <TPage, TItem>({ query, selectItems }: UseOhl
     ),
   })
 
-const createOhlcAnchor = (resetKey: string): OhlcAnchor => ({
-  anchorEnd: Math.floor(Date.now() / 1000),
-  resetKey,
-})
+const createOhlcAnchor = (resetKey: string): OhlcAnchor => ({ anchorEnd: Math.floor(Date.now() / 1000), resetKey })
 
 const replaceOhlcAnchor = (_current: OhlcAnchor, next: OhlcAnchor) => next
 
@@ -173,8 +149,5 @@ export const useStableOhlcAnchorEnd = (...resetKeyParts: readonly (string | numb
     replaceAnchor(createOhlcAnchor(resetKey))
   }, [isAnchorEndReady, resetKey])
 
-  return {
-    anchorEnd: anchor.anchorEnd,
-    isAnchorEndReady,
-  }
+  return { anchorEnd: anchor.anchorEnd, isAnchorEndReady }
 }

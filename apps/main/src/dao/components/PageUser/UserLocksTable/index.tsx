@@ -11,9 +11,7 @@ import Box from '@mui/material/Box'
 import { t } from '@ui/lib/i18n'
 import { LOCKS_LABELS } from '../constants'
 
-type UserLocksTableProps = {
-  userAddress: string
-}
+type UserLocksTableProps = { userAddress: string }
 
 const sortUserLocks = (locks: UserLockFormatted[], sortBy: { key: UserLocksSortBy; order: SortDirection }) => {
   const { key, order } = sortBy

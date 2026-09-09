@@ -70,11 +70,7 @@ export const AmountTokenInput = ({
   const tokenAddresses = filteredTokens.map(t => t.address).filter(t => !isAddressEqual(t, zeroAddress))
 
   const tokenPrices = useTokenUsdRates({ chainId, tokenAddresses })
-  const tokenBalances = useTokenBalances({
-    chainId,
-    userAddress,
-    tokenAddresses,
-  })
+  const tokenBalances = useTokenBalances({ chainId, userAddress, tokenAddresses })
 
   const rewardTokenBalance = useMappedQuery(
     tokenBalances,

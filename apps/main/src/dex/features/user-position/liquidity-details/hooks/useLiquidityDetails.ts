@@ -10,11 +10,7 @@ import { combineQueries } from '@evm-ui/lib'
 import { decimalPercent, decimalSum } from '@evm-ui/utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 
-export type UseLiquidityDetailsParams = {
-  chainId: ChainId
-  poolData: PoolData
-  poolId: string | undefined
-}
+export type UseLiquidityDetailsParams = { chainId: ChainId; poolData: PoolData; poolId: string | undefined }
 
 export const useLiquidityDetails = ({ chainId, poolData, poolId }: UseLiquidityDetailsParams) => {
   const { address: userAddress } = useConnection()
@@ -51,11 +47,7 @@ export const useLiquidityDetails = ({ chainId, poolData, poolId }: UseLiquidityD
       unstakedPercent,
       userLpShare: mapQuery(userShare, ({ lpShare }) => lpShare),
     },
-    metrics: {
-      boost: q(userBoost),
-      lpTokenTotal,
-      positionValue: q(userLiquidityUsd),
-    },
+    metrics: { boost: q(userBoost), lpTokenTotal, positionValue: q(userLiquidityUsd) },
     rows: mapQuery(userBalances, () => withdrawRows),
   }
 }

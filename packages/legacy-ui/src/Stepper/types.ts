@@ -2,20 +2,9 @@ import { type MouseEvent, ReactNode } from 'react'
 
 export type StepStatus = 'current' | 'pending' | 'in-progress' | 'succeeded' | 'failed'
 
-type StepTask = {
-  key: string
-  status: StepStatus
-  type: 'task'
-  content: ReactNode
-}
+type StepTask = { key: string; status: StepStatus; type: 'task'; content: ReactNode }
 
-type StepAction = {
-  key: string
-  status: StepStatus
-  type: 'action'
-  content: ReactNode
-  onClick: () => void
-}
+type StepAction = { key: string; status: StepStatus; type: 'action'; content: ReactNode; onClick: () => void }
 
 export type StepActionModal = {
   key: string
@@ -27,14 +16,8 @@ export type StepActionModal = {
     content: ReactNode
     initFn?: () => void
     isDismissable: boolean
-    cancelBtnProps?: {
-      label?: string | undefined
-      onClick: () => void
-    }
-    primaryBtnProps: {
-      onClick: (event: MouseEvent<HTMLButtonElement>) => void
-      disabled?: boolean
-    }
+    cancelBtnProps?: { label?: string | undefined; onClick: () => void }
+    primaryBtnProps: { onClick: (event: MouseEvent<HTMLButtonElement>) => void; disabled?: boolean }
     primaryBtnLabel: string
     testId?: string
   }

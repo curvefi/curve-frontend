@@ -8,13 +8,9 @@ import type { TokenOption } from '../../types'
 
 const { Spacing } = SizesAndSpaces
 
-type FavoriteTokenCallbacks<T extends TokenOption> = {
-  onToken: (token: T) => void
-}
+type FavoriteTokenCallbacks<T extends TokenOption> = { onToken: (token: T) => void }
 
-type FavoriteTokenProps<T extends TokenOption> = {
-  tokens: T[]
-}
+type FavoriteTokenProps<T extends TokenOption> = { tokens: T[] }
 
 type Props<T extends TokenOption> = FavoriteTokenCallbacks<T> & FavoriteTokenProps<T>
 
