@@ -1,4 +1,4 @@
-import { StellarErrorPage } from '@/components/StellarErrorPage'
+import { StellarErrorPage } from '@stellar/components/StellarErrorPage'
 import { createRoute, createRouter } from '@tanstack/react-router'
 import { Loading } from '@ui/components/Loading'
 import { Duration } from '@ui/features/themes/design/0_primitives'
