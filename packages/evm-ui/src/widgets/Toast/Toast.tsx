@@ -1,9 +1,9 @@
+import { capitalize } from 'lodash'
 import { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
-import { capitalize } from '@mui/material/utils'
 import { useLayoutStore } from '@ui/features/layout/layout'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -76,7 +76,7 @@ export const Toast = () => {
             severity={severity}
             data-testid={testId ?? `toast-${severity}`}
             sx={{
-              borderColor: theme => theme.design.Snackbar.Border[capitalize(severity) as Capitalize<typeof severity>],
+              borderColor: theme => theme.design.Snackbar.Border[capitalize(severity)],
               ...(!keepAlive && {
                 animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
                 '@keyframes toastFadeOut': {
