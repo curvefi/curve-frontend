@@ -11,10 +11,7 @@ import Stack from '@mui/material/Stack'
 import { q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
-type ClaimActionInfoListProps<ChainId extends IChainId> = {
-  params: UserMarketParams<ChainId>
-  isOpen?: boolean
-}
+type ClaimActionInfoListProps<ChainId extends IChainId> = { params: UserMarketParams<ChainId>; isOpen?: boolean }
 
 export const ClaimActionInfoList = <ChainId extends IChainId>({
   params,

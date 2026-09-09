@@ -47,10 +47,7 @@ const preview: Preview = {
     themes,
     controls: {
       expanded: true, // Adds the description and default columns
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
-      },
+      matchers: { color: /(background|color)$/i, date: /Date$/i },
     },
     docs: {
       container: ({ children, context }: PropsWithChildren<DocsContainerProps>) => {

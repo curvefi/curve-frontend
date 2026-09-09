@@ -34,11 +34,7 @@ function useRepayRemainingDebt(
     params,
     showLeverage,
     prevDebt,
-  }: {
-    params: RepayParams
-    showLeverage: boolean | undefined
-    prevDebt: Query<Decimal | null>
-  },
+  }: { params: RepayParams; showLeverage: boolean | undefined; prevDebt: Query<Decimal | null> },
   { isFull, userBorrowed }: Pick<RepayFormData, 'userBorrowed' | 'isFull'>,
   enabled: boolean,
 ) {
@@ -134,11 +130,7 @@ export function RepayLoanInfoList({
         ),
       )}
       returnToWallet={useReturnToWallet(
-        {
-          params,
-          collateralSymbol: collateralToken?.symbol ?? '',
-          borrowedSymbol: borrowToken?.symbol ?? '',
-        },
+        { params, collateralSymbol: collateralToken?.symbol ?? '', borrowedSymbol: borrowToken?.symbol ?? '' },
         isOpen && !!isFull,
       )}
       {...getLeverageInfoFields({

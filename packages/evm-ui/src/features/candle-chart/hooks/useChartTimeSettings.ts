@@ -48,10 +48,5 @@ export const useChartTimeSettings = (
 ): UseChartTimeSettingsReturn => {
   const [timeOption, setTimeOption] = useState<TimeOption>(initialTimeOption)
 
-  return {
-    timeOption,
-    setTimeOption,
-    chartInterval: intervals[timeOption],
-    timeUnit: timeUnits[timeOption],
-  }
+  return { timeOption, setTimeOption, chartInterval: intervals[timeOption], timeUnit: timeUnits[timeOption] }
 }

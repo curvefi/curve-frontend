@@ -2,11 +2,7 @@ import { z } from 'zod/v4'
 import { notFalsy } from '@primitives/objects.utils'
 import { address, camelizeKeys, chain, decimal, sortDirection, timestamp } from '../schemas'
 
-const rawCoin = z.object({
-  pool_index: z.number(),
-  symbol: z.string(),
-  address,
-})
+const rawCoin = z.object({ pool_index: z.number(), symbol: z.string(), address })
 
 const coin = rawCoin.transform(camelizeKeys)
 
@@ -63,11 +59,7 @@ const userPoolPosition = z
   })
   .transform(camelizeKeys)
 
-const volume = z.object({
-  timestamp,
-  volume: z.number(),
-  fees: z.number(),
-})
+const volume = z.object({ timestamp, volume: z.number(), fees: z.number() })
 
 const tvl = z
   .object({
@@ -85,12 +77,7 @@ const tvl = z
   }))
 
 const tradeToken = z
-  .object({
-    symbol: z.string(),
-    address,
-    pool_index: z.number(),
-    event_index: z.number(),
-  })
+  .object({ symbol: z.string(), address, pool_index: z.number(), event_index: z.number() })
   .transform(camelizeKeys)
 
 const poolTradeData = z
@@ -256,10 +243,7 @@ export type V2PoolFilterType = Extract<
 >
 
 const v2Coin = rawCoin
-  .extend({
-    name: z.string().nullable().optional(),
-    decimals: z.number().nullable().optional(),
-  })
+  .extend({ name: z.string().nullable().optional(), decimals: z.number().nullable().optional() })
   .transform(camelizeKeys)
 
 const v2ExtraRewardApr = z
@@ -274,15 +258,9 @@ const v2ExtraRewardApr = z
   .transform(camelizeKeys)
 
 const v2Gauge = z
-  .object({
-    address,
-    is_killed: z.boolean().optional(),
-  })
+  .object({ address, is_killed: z.boolean().optional() })
   .transform(camelizeKeys)
-  .transform(({ isKilled, ...data }) => ({
-    ...data,
-    isKilled: isKilled ?? false,
-  }))
+  .transform(({ isKilled, ...data }) => ({ ...data, isKilled: isKilled ?? false }))
 
 const v2Pool = z
   .object({
@@ -312,21 +290,10 @@ const v2Pool = z
   .transform(({ extraRewardsApr, gauges, ...data }) => {
     const poolGauges = gauges ?? []
 
-    return {
-      ...data,
-      extraRewardsApr: extraRewardsApr ?? [],
-      gauge: poolGauges[0] ?? null,
-      gauges: poolGauges,
-    }
+    return { ...data, extraRewardsApr: extraRewardsApr ?? [], gauge: poolGauges[0] ?? null, gauges: poolGauges }
   })
 
-const v2PoolRegistry = z
-  .object({
-    chain_id: z.number(),
-    address,
-    type: poolType,
-  })
-  .transform(camelizeKeys)
+const v2PoolRegistry = z.object({ chain_id: z.number(), address, type: poolType }).transform(camelizeKeys)
 
 export const v2PoolSortField = z.enum([
   'name',
@@ -367,10 +334,7 @@ const litePoolGaugeExtraRewardAprData = z
   .transform(camelizeKeys)
 
 const litePoolGaugeExtraRewardMetaData = z
-  .object({
-    rate: z.string(),
-    period_finish: z.number(),
-  })
+  .object({ rate: z.string(), period_finish: z.number() })
   .transform(camelizeKeys)
 
 const litePoolGaugeExtraReward = z
@@ -434,12 +398,7 @@ export const getPoolsResponse = z
 
 export const getPoolResponse = pool
 export const listPoolsResponse = z
-  .object({
-    page: z.number().optional(),
-    pagination: z.number().optional(),
-    count: z.number(),
-    pools: z.array(v2Pool),
-  })
+  .object({ page: z.number().optional(), pagination: z.number().optional(), count: z.number(), pools: z.array(v2Pool) })
   .transform(({ page, pagination, count, pools }) => ({
     page: page ?? 1,
     pagination: pagination ?? pools.length,
@@ -466,27 +425,14 @@ export const listLitePoolChainsResponse = z
 export const listLitePoolsResponse = z
   .object({
     success: z.boolean(),
-    data: z
-      .object({
-        pool_data: z.array(litePool).optional(),
-        tvl: z.number().default(0),
-      })
-      .transform(camelizeKeys),
+    data: z.object({ pool_data: z.array(litePool).optional(), tvl: z.number().default(0) }).transform(camelizeKeys),
     generated_time_ms: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(({ data, generatedTimeMs }) => ({
-    pools: data.poolData ?? [],
-    totalTvl: data.tvl,
-    generatedTimeMs,
-  }))
+  .transform(({ data, generatedTimeMs }) => ({ pools: data.poolData ?? [], totalTvl: data.tvl, generatedTimeMs }))
 
 export const getUserPoolPositionsResponse = z
-  .object({
-    chain_id: z.number(),
-    user: address,
-    positions: z.array(userPoolPosition).default([]),
-  })
+  .object({ chain_id: z.number(), user: address, positions: z.array(userPoolPosition).default([]) })
   .transform(camelizeKeys)
 
 export const getVolumeResponse = z.object({ data: z.array(volume) }).transform(({ data }) => data)
@@ -519,14 +465,7 @@ export const getPoolTradesResponse = z
   }))
 
 export const getAllPoolTradesResponse = z
-  .object({
-    chain,
-    address,
-    data: z.array(allPoolTrade),
-    page: z.number(),
-    per_page: z.number(),
-    count: z.number(),
-  })
+  .object({ chain, address, data: z.array(allPoolTrade), page: z.number(), per_page: z.number(), count: z.number() })
   .transform(camelizeKeys)
   .transform(({ data: trades, ...data }) => ({ ...data, trades }))
 
@@ -540,10 +479,7 @@ export const getPoolLiquidityEventsResponse = z
     count: z.number(),
   })
   .transform(camelizeKeys)
-  .transform(({ data: events, ...data }) => ({
-    ...data,
-    events,
-  }))
+  .transform(({ data: events, ...data }) => ({ ...data, events }))
 
 export const getPoolSnapshotsResponse = z
   .object({ chain: z.string(), address: z.string(), data: z.array(poolSnapshot) })

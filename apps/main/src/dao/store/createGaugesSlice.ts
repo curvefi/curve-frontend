@@ -22,29 +22,19 @@ import { getGauges, type GaugeFormattedData, type GaugeMapper } from '../queries
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  txCastVoteState: {
-    state: TransactionState
-    hash: string
-    errorMessage: string
-  } | null
+  txCastVoteState: { state: TransactionState; hash: string; errorMessage: string } | null
   filteringGaugesLoading: boolean
   gaugeListSortBy: SortByFilterGauges
   searchValue: string
   gaugeVotesMapper: GaugeVotesMapper
   filteredGauges: GaugeFormattedData[]
-  gaugeVotesSortBy: {
-    key: GaugeVotesSortBy
-    order: SortDirection
-  }
+  gaugeVotesSortBy: { key: GaugeVotesSortBy; order: SortDirection }
   selectGaugeFilterValue: string
   selectGaugeListResult: GaugeFormattedData[]
   selectedGauge: GaugeFormattedData | null
 }
 
-type FilterOptions = {
-  showSearch?: boolean
-  endsWith: (string: string, substring: string) => boolean
-}
+type FilterOptions = { showSearch?: boolean; endsWith: (string: string, substring: string) => boolean }
 
 const SLICE_KEY = 'gauges'
 
@@ -71,17 +61,11 @@ export type GaugesSlice = {
 const DEFAULT_STATE: SliceState = {
   txCastVoteState: null,
   filteringGaugesLoading: true,
-  gaugeListSortBy: {
-    key: 'gauge_relative_weight',
-    order: 'desc',
-  },
+  gaugeListSortBy: { key: 'gauge_relative_weight', order: 'desc' },
   searchValue: '',
   gaugeVotesMapper: {},
   filteredGauges: [],
-  gaugeVotesSortBy: {
-    key: 'timestamp',
-    order: 'desc',
-  },
+  gaugeVotesSortBy: { key: 'timestamp', order: 'desc' },
   selectGaugeFilterValue: '',
   selectGaugeListResult: [],
   selectedGauge: null,
@@ -95,10 +79,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
       set(
         produce(get(), state => {
-          state[SLICE_KEY].gaugeVotesMapper[gaugeAddress] = {
-            fetchingState: 'LOADING',
-            votes: [],
-          }
+          state[SLICE_KEY].gaugeVotesMapper[gaugeAddress] = { fetchingState: 'LOADING', votes: [] }
         }),
       )
 
@@ -111,10 +92,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
         set(
           produce(get(), state => {
-            state[SLICE_KEY].gaugeVotesMapper[gaugeAddress] = {
-              fetchingState: 'SUCCESS',
-              votes: formattedData,
-            }
+            state[SLICE_KEY].gaugeVotesMapper[gaugeAddress] = { fetchingState: 'SUCCESS', votes: formattedData }
           }),
         )
       } catch (error) {
@@ -134,15 +112,9 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
       if (searchValue !== '') {
         const searchFilteredGauges = searchFn(searchValue, gauges)
-        get()[SLICE_KEY].setStateByKeys({
-          filteredGauges: searchFilteredGauges,
-          filteringGaugesLoading: true,
-        })
+        get()[SLICE_KEY].setStateByKeys({ filteredGauges: searchFilteredGauges, filteringGaugesLoading: true })
       } else {
-        get()[SLICE_KEY].setStateByKeys({
-          filteredGauges: gauges,
-          filteringGaugesLoading: true,
-        })
+        get()[SLICE_KEY].setStateByKeys({ filteredGauges: gauges, filteringGaugesLoading: true })
       }
 
       setTimeout(() => {
@@ -228,11 +200,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
       set(
         produce(get(), state => {
-          state[SLICE_KEY].txCastVoteState = {
-            state: 'CONFIRMING',
-            hash: '',
-            errorMessage: '',
-          }
+          state[SLICE_KEY].txCastVoteState = { state: 'CONFIRMING', hash: '', errorMessage: '' }
         }),
       )
 
@@ -241,11 +209,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
         set(
           produce(get(), state => {
-            state[SLICE_KEY].txCastVoteState = {
-              state: 'LOADING',
-              hash: '',
-              errorMessage: '',
-            }
+            state[SLICE_KEY].txCastVoteState = { state: 'LOADING', hash: '', errorMessage: '' }
           }),
         )
         dismissConfirm()
@@ -257,26 +221,15 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
         set(
           produce(get(), state => {
-            state[SLICE_KEY].txCastVoteState = {
-              state: 'SUCCESS',
-              hash: res,
-              errorMessage: '',
-            }
+            state[SLICE_KEY].txCastVoteState = { state: 'SUCCESS', hash: res, errorMessage: '' }
           }),
         )
         dismissLoading()
         const successNotificationMessage = t`Succesfully cast vote!`
         notify(successNotificationMessage, 'success')
 
-        await invalidateUserGaugeWeightVotesQuery({
-          chainId: Chain.Ethereum,
-          userAddress,
-        })
-        await invalidateUserGaugeVoteNextTimeQuery({
-          chainId: Chain.Ethereum,
-          gaugeAddress,
-          userAddress,
-        })
+        await invalidateUserGaugeWeightVotesQuery({ chainId: Chain.Ethereum, userAddress })
+        await invalidateUserGaugeVoteNextTimeQuery({ chainId: Chain.Ethereum, gaugeAddress, userAddress })
 
         set(
           produce(get(), state => {
@@ -296,11 +249,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         console.error('Error casting vote:', error)
         set(
           produce(get(), state => {
-            state[SLICE_KEY].txCastVoteState = {
-              state: 'ERROR',
-              hash: '',
-              errorMessage: 'Error casting vote',
-            }
+            state[SLICE_KEY].txCastVoteState = { state: 'ERROR', hash: '', errorMessage: 'Error casting vote' }
           }),
         )
       }

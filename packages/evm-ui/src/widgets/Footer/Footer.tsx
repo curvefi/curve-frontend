@@ -36,12 +36,7 @@ export const Footer = ({ sections }: FooterProps) => {
         data-testid="footer-content"
         sx={{ rowGap: SizesAndSpaces.Grid.Row_Spacing, position: 'relative', maxWidth: SizesAndSpaces.MaxWidth.footer }}
       >
-        <Grid
-          size={{
-            mobile: 12,
-            desktop: 3,
-          }}
-        >
+        <Grid size={{ mobile: 12, desktop: 3 }}>
           <Description />
         </Grid>
 

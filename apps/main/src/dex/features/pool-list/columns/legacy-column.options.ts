@@ -6,36 +6,11 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Lega
   {
     label: t`Pools`,
     options: [
-      {
-        label: t`Pool`,
-        columns: [LegacyPoolColumnId.PoolName],
-        active: true,
-        enabled: true,
-      },
-      {
-        label: t`Rewards Base`,
-        columns: [LegacyPoolColumnId.RewardsBase],
-        active: !isLite,
-        enabled: true,
-      },
-      {
-        label: t`Rewards Other`,
-        columns: [LegacyPoolColumnId.RewardsOther],
-        active: true,
-        enabled: true,
-      },
-      {
-        label: t`Volume`,
-        columns: [LegacyPoolColumnId.Volume],
-        active: !isLite,
-        enabled: true,
-      },
-      {
-        label: t`TVL`,
-        columns: [LegacyPoolColumnId.Tvl],
-        active: true,
-        enabled: true,
-      },
+      { label: t`Pool`, columns: [LegacyPoolColumnId.PoolName], active: true, enabled: true },
+      { label: t`Rewards Base`, columns: [LegacyPoolColumnId.RewardsBase], active: !isLite, enabled: true },
+      { label: t`Rewards Other`, columns: [LegacyPoolColumnId.RewardsOther], active: true, enabled: true },
+      { label: t`Volume`, columns: [LegacyPoolColumnId.Volume], active: !isLite, enabled: true },
+      { label: t`TVL`, columns: [LegacyPoolColumnId.Tvl], active: true, enabled: true },
     ],
   },
 ]

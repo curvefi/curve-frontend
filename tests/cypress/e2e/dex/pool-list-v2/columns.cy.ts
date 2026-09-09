@@ -298,14 +298,8 @@ describe('V2 pool-list columns', () => {
     ])
 
     for (const { testId, severityClass } of [
-      {
-        testId: 'badge-pool-alert',
-        severityClass: 'MuiChip-colorAccent',
-      },
-      {
-        testId: 'badge-token-alert',
-        severityClass: 'MuiChip-colorWarning',
-      },
+      { testId: 'badge-pool-alert', severityClass: 'MuiChip-colorAccent' },
+      { testId: 'badge-token-alert', severityClass: 'MuiChip-colorWarning' },
     ]) {
       const getAlertBadge = () => getV2PoolRow(V2_POOL_FIXTURES.alerts.address).find(`[data-testid="${testId}"]`)
 

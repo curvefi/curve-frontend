@@ -4,11 +4,7 @@ import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { Link } from './Link'
 
-type SectionProps = {
-  title: string
-  links: FooterLink[]
-  isTiny: boolean
-}
+type SectionProps = { title: string; links: FooterLink[]; isTiny: boolean }
 
 export const Section = ({ title, links, isTiny }: SectionProps) => (
   <Grid container spacing={1}>

@@ -4,10 +4,7 @@ import { address, camelizeKeys, chain, decimal, timestamp } from '../schemas'
 export const endpoint = z.enum(['crvusd', 'lending'])
 export type Endpoint = z.infer<typeof endpoint>
 
-const bar = z.object({
-  value: z.number(),
-  label: z.string(),
-})
+const bar = z.object({ value: z.number(), label: z.string() })
 
 export const getLoanDistributionResponse = z
   .object({
@@ -16,10 +13,7 @@ export const getLoanDistributionResponse = z
     debt: z.array(bar),
     collateral: z.array(bar),
   })
-  .transform(({ stablecoin, borrowed, ...data }) => ({
-    ...data,
-    stablecoin: stablecoin ?? borrowed ?? [],
-  }))
+  .transform(({ stablecoin, borrowed, ...data }) => ({ ...data, stablecoin: stablecoin ?? borrowed ?? [] }))
 
 const oraclePool = z
   .object({
@@ -51,12 +45,7 @@ const oracleOHLC = z
   .transform(camelizeKeys)
 
 type RawOracleOHLC = z.infer<typeof oracleOHLC>
-type CompleteOracleOHLC = RawOracleOHLC & {
-  close: number
-  high: number
-  low: number
-  open: number
-}
+type CompleteOracleOHLC = RawOracleOHLC & { close: number; high: number; low: number; open: number }
 
 const isCompleteOracleOHLC = (data: RawOracleOHLC): data is CompleteOracleOHLC =>
   data.close != null && data.high != null && data.low != null && data.open != null

@@ -12,11 +12,7 @@ import type { BandsChartToken, ChartDataPoint } from './types'
 
 const { Spacing } = SizesAndSpaces
 
-type TooltipContentProps = {
-  data: ChartDataPoint
-  collateralToken: BandsChartToken
-  borrowToken: BandsChartToken
-}
+type TooltipContentProps = { data: ChartDataPoint; collateralToken: BandsChartToken; borrowToken: BandsChartToken }
 
 const isPositiveDecimal = (value: Decimal | undefined): boolean => value != null && decimalGreaterThan(value, ZERO)
 const calculateBandShare = (part: Decimal | undefined, total: Decimal | undefined) =>

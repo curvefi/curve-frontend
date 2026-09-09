@@ -70,11 +70,7 @@ export function useMarketMutation<TVariables extends object>({
           contractAddress: getControllerAddress(market),
           blockchainId,
         }),
-        invalidateTokenBalances(config, {
-          chainId,
-          userAddress,
-          tokenAddresses,
-        }),
+        invalidateTokenBalances(config, { chainId, userAddress, tokenAddresses }),
       ])
 
       await onSuccess?.(data, receipt, variables, context)

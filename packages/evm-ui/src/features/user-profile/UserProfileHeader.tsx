@@ -9,11 +9,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type Props = {
-  userAddress: Address | undefined
-  addressLabel: string | undefined
-  onClose: () => void
-}
+type Props = { userAddress: Address | undefined; addressLabel: string | undefined; onClose: () => void }
 
 /** Gap deviates from Figma as personally 'xs' is too narrow. */
 export const UserProfileHeader = ({ userAddress, addressLabel, onClose }: Props) => (

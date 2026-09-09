@@ -55,19 +55,9 @@ export const setControllerBorrowCap = ({
     const minimumBorrowCapWei = totalDebtWei + availableBalanceWei
     const effectiveBorrowCapWei = borrowCapWei > minimumBorrowCapWei ? borrowCapWei : minimumBorrowCapWei
 
-    return {
-      availableBalanceWei,
-      borrowCapWei: effectiveBorrowCapWei,
-      client,
-      configuratorAddress,
-      vaultAddress,
-    }
+    return { availableBalanceWei, borrowCapWei: effectiveBorrowCapWei, client, configuratorAddress, vaultAddress }
   }).then(({ availableBalanceWei, borrowCapWei, client, configuratorAddress, vaultAddress }) =>
-    fundEth({
-      adminRpcUrl,
-      amountWei: '0xde0b6b3a7640000',
-      recipientAddresses: [configuratorAddress, vaultAddress],
-    })
+    fundEth({ adminRpcUrl, amountWei: '0xde0b6b3a7640000', recipientAddresses: [configuratorAddress, vaultAddress] })
       .then(() =>
         sendAdminTransaction({
           adminRpcUrl,

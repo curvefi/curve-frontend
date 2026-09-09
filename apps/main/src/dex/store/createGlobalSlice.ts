@@ -16,10 +16,7 @@ import { refetchPoolTvls } from '../queries/pool-tvl.query'
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-type GlobalState = {
-  hasDepositAndStake: Record<string, boolean | null>
-  hasRouter: Record<string, boolean | null>
-}
+type GlobalState = { hasDepositAndStake: Record<string, boolean | null>; hasRouter: Record<string, boolean | null> }
 
 export type GlobalSlice = {
   getNetworkConfigFromApi: (chainId: ChainId | '') => NetworkConfigFromApi
@@ -40,19 +37,13 @@ export type GlobalSlice = {
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean) => void
 } & GlobalState
 
-const DEFAULT_STATE = {
-  hasDepositAndStake: {},
-  hasRouter: {},
-} satisfies GlobalState
+const DEFAULT_STATE = { hasDepositAndStake: {}, hasRouter: {} } satisfies GlobalState
 
 export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
   ...DEFAULT_STATE,
 
   getNetworkConfigFromApi: (chainId: ChainId | '') => {
-    const resp: NetworkConfigFromApi = {
-      hasDepositAndStake: undefined,
-      hasRouter: undefined,
-    }
+    const resp: NetworkConfigFromApi = { hasDepositAndStake: undefined, hasRouter: undefined }
     if (chainId) {
       resp.hasDepositAndStake = get().hasDepositAndStake[chainId] ?? get().storeCache.hasDepositAndStake[chainId]
       resp.hasRouter = get().hasRouter[chainId] ?? get().storeCache.hasRouter[chainId]
@@ -79,11 +70,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     const isUserSwitched = prevCurveApi?.signerAddress !== curveApi.signerAddress
     const { chainId } = curveApi
     const start = new Date()
-    log('Hydrating DEX', curveApi?.chainId, {
-      isNetworkSwitched,
-      isUserSwitched,
-      hasRPC: !curveApi.isNoRPC,
-    })
+    log('Hydrating DEX', curveApi?.chainId, { isNetworkSwitched, isUserSwitched, hasRPC: !curveApi.isNoRPC })
 
     // reset store
     if (isNetworkSwitched) {

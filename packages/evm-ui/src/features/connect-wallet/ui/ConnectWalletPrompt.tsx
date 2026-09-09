@@ -64,8 +64,5 @@ const CurveLogo = styled('img')({
   width: '3rem',
   height: '3rem',
   margin: '0 auto',
-  '@media (min-width: 43.75rem)': {
-    width: '5.5rem',
-    height: '5.5rem',
-  },
+  '@media (min-width: 43.75rem)': { width: '5.5rem', height: '5.5rem' },
 })

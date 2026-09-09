@@ -10,11 +10,7 @@ const ohlc = z.object({
 })
 
 export const getOHLCResponse = z
-  .object({
-    chain: z.string(),
-    address: z.string(),
-    data: z.array(ohlc),
-  })
+  .object({ chain: z.string(), address: z.string(), data: z.array(ohlc) })
   .transform(({ data }) => data)
 
 export type OHLC = z.infer<typeof ohlc>
