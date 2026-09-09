@@ -3,10 +3,10 @@ import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
-import { isHighPriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { Decimal } from '@primitives/decimal.utils'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { isHighPriceImpact } from '@ui/lib/price-impact.util'
 
 const LOW_EXCHANGE_RATE = 0.98
 

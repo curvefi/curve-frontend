@@ -3,9 +3,9 @@ import Stack from '@mui/material/Stack'
 import { TabsSwitcher, TabsSwitcherProps } from '@ui/components/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { useIsMobileFormDrawer } from '@ui/features/form-context/FormPlacementContext'
+import { FormContent } from '@ui/features/forms/components/FormContent'
 import { type TabItem, useTabs } from '@ui/hooks/useTabs'
 import { applySxProps } from '@ui/lib/mui'
-import { FormContent } from './FormContent'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 
 type FormTabBase<Props extends object> = Omit<TabItem<string, Props>, 'subTabs'> & {

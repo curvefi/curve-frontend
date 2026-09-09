@@ -1,4 +1,4 @@
-import type { DetailPageSectionOption } from '@evm-ui/widgets/DetailPageLayout/DetailPageSectionNav'
+import type { DetailPageSectionOption } from '@ui/features/layout/DetailPageLayout/DetailPageSectionNav'
 
 export type MarketSectionId =
   | 'position-details'

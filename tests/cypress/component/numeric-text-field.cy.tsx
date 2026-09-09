@@ -1,8 +1,8 @@
 import '@evm-ui/eip6963-test-setup'
 import { useState } from 'react'
-import { NumericTextField, type NumericTextFieldProps } from '@evm-ui/shared/ui/NumericTextField'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { NumericTextField, type NumericTextFieldProps } from '@ui/features/forms/controls/NumericTextField'
 
 const INITIAL_VALUE = '5'
 

@@ -1,4 +1,4 @@
-import { FormTabs, type FormTab } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import { FormTabs, type FormTab } from '@ui/features/forms/tabs/FormTabs'
 import { t } from '@ui/lib/i18n'
 import { RefuelForm, type RefuelFormParams } from './components/RefuelForm'
 
