@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import type { IFastBridgeNetwork } from '@curvefi/api/lib/bridge'
+import { chains } from '@curvefi/prices-api'
 import { createTestWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test-config'
-import { TestQueryProvider } from '@evm-ui/lib/queries/test-query.provider.test'
 import { decimal } from '@evm-ui/utils'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ, q } from '@ui/features/queries/util'
 import { BridgeActionInfos } from './BridgeActionInfos'
@@ -92,7 +93,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
       <BridgeFormContent
         {...props}
         networks={BridgeNetworks}
-        tvls={constQ({ arbitrum: 1000000, optimism: 500000, fraxtal: 250000 })}
+        tvls={constQ(fromEntries(chains.map(chain => [chain, 1000000])))}
         fromChainId={fromChainId}
         amount={q({
           data: amount,
@@ -145,9 +146,7 @@ export const Default: Story = {
 export const NotConnected: Story = {
   render: args => (
     <WagmiProvider config={createTestWagmiConfig()}>
-      <TestQueryProvider data={[]}>
-        <BridgeForm {...args} />
-      </TestQueryProvider>
+      <BridgeForm {...args} />
     </WagmiProvider>
   ),
   parameters: { docs: { description: { story: 'No connected wallet' } } },
