@@ -9,8 +9,6 @@ import { networks as crvusdNetworks } from '@/loan/networks'
 import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConnectModal'
-import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
-import { usePathname } from '@evm-ui/hooks/router'
 import {
   APP_LINK,
   AppMenuOption,
@@ -23,14 +21,16 @@ import {
 } from '@evm-ui/shared/routes'
 import { EvmBanners } from '@evm-ui/shared/ui/EvmBanners'
 import { shortenAddress } from '@evm-ui/utils'
-import { Footer } from '@evm-ui/widgets/Footer'
-import { getFooterSections } from '@evm-ui/widgets/Footer/footer-sections.util'
-import { Header } from '@evm-ui/widgets/Header'
-import { getHeaderSections } from '@evm-ui/widgets/Header/header-sections.util'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { mapRecord, maybe, type PartialRecord } from '@primitives/objects.utils'
+import { Footer } from '@ui/features/layout/Footer'
+import { getFooterSections } from '@ui/features/layout/Footer/footer-sections.util'
+import { Header } from '@ui/features/layout/Header'
+import { getHeaderSections } from '@ui/features/layout/Header/header-sections.util'
 import { PageLayout } from '@ui/features/layout/PageLayout'
+import type { Maintenance } from '@ui/features/maintenance/hooks/useMaintenance'
+import { usePathname } from '@ui/hooks/router'
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) =>
   [

@@ -1,7 +1,7 @@
 import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
-import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { shortenString } from '@primitives/string.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'

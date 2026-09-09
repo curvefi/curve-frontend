@@ -6,10 +6,11 @@ import {
   SummaryTitle,
 } from '@/dex/components/PageDashboard/components/Summary'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { formatNumber, formatToken } from '@evm-ui/utils'
+import { formatToken } from '@evm-ui/utils'
 import { Spinner } from '@legacy-ui/Spinner'
 import { Stats } from '@legacy-ui/Stats'
 import { Chip } from '@legacy-ui/Typography/Chip'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 import { tooltipProps } from '../utils'
 

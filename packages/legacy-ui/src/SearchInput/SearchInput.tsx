@@ -2,9 +2,9 @@ import { InputHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
 import { Icon } from '@legacy-ui/Icon/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
-import { RCEditClear } from '@legacy-ui/images'
 import { InputDebounced } from '@legacy-ui/InputComp/InputDebounced'
 import { InputProvider } from '@legacy-ui/InputComp/InputProvider'
+import { RCEditClear } from '@ui/images'
 
 type Props = {
   className?: string

@@ -6,9 +6,9 @@ import {
   SummarySpinnerWrapper,
 } from '@/dex/components/PageDashboard/components/Summary'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { formatNumber } from '@evm-ui/utils'
 import { Spinner } from '@legacy-ui/Spinner'
 import { Chip } from '@legacy-ui/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 export const SummaryTotal = () => {

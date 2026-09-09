@@ -1,5 +1,5 @@
-import { useMatchRoute } from '@evm-ui/hooks/router'
 import { APP_LINK, type AppName, type NavigationItem, LEND_MARKET_ROUTES, LEND_ROUTES } from '@evm-ui/shared/routes'
+import { useMatchRoute } from '@ui/hooks/router'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 

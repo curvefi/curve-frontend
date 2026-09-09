@@ -1,6 +1,6 @@
 import type { Amount } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { AVERAGE_CATEGORIES } from './average-categories'
-import { formatNumber } from './number'
 
 const DAYS_PER_YEAR = 365
 export const MAX_DISPLAY_RATE_PERCENT = 5000

@@ -20,7 +20,7 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { stackedMarketCardHeadersSx } from '@ui/utils/mui'
+import { stackedMarketCardHeadersSx } from '@ui/lib/mui'
 
 type MarketInformationCompProps = { rateType: MarketRateType; previewPrices?: Range<Decimal> | undefined }
 

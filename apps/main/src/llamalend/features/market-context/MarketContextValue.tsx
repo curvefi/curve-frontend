@@ -3,7 +3,7 @@ import type { LlamaApi } from '@evm-ui/features/connect-wallet'
 import type { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import type { QueryProp } from '@ui/features/queries/util'
-import type { ReleaseChannel } from '@ui/utils/env'
+import type { ReleaseChannel } from '@ui/lib/env'
 import {
   type BandRangeOrEmpty,
   getAmmAddress,

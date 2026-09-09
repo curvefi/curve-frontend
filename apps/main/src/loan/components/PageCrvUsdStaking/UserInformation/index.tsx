@@ -1,6 +1,5 @@
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { RCCrvUSDLogoSM, RCScrvUSDLogoSM } from '@legacy-ui/images'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -11,6 +10,7 @@ import { ExternalLink } from '@ui/components/ExternalLink'
 import { RouterLink } from '@ui/components/RouterLink'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { YieldGrowth } from '@ui/icons/YieldGrowth'
+import { RCCrvUSDLogoSM, RCScrvUSDLogoSM } from '@ui/images'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces

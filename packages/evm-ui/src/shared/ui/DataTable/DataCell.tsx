@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import { type Cell, flexRender, type RowData } from '@tanstack/react-table'
 import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import { TriangleDown } from '@ui/icons/TriangleDown'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import { useCellSx } from './hooks/useCellSx'
 

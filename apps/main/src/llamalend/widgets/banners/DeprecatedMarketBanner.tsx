@@ -1,5 +1,5 @@
 import { DeprecatedMarketAlert } from '@/llamalend/markets.constants'
-import { Banner } from '@evm-ui/shared/ui/Banner'
+import { Banner } from '@ui/features/banners/Banner'
 import { t } from '@ui/lib/i18n'
 
 export const DeprecatedMarketBanner = ({ message, url }: DeprecatedMarketAlert) => (
