@@ -95,7 +95,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       // Legacy TVL/gauge enrichment is skipped there because the v2 pool list uses backend data.
       ...notFalsy(isLegacy && refetchPoolTvls({ chainId })),
     ])
-    await state.pools.fetchPools(curveApi, poolIds, true)
+    await state.pools.fetchPools(curveApi, poolIds, { includeGaugeData: true })
 
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },
