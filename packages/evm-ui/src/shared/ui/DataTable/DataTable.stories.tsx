@@ -7,8 +7,8 @@ import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { q } from '@ui/features/queries/util'
+import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { createAppColumnHelper, useCurveTable } from './data-table.utils'
 import { EvmDataTable, type EvmDataTableProps } from './EvmDataTable'
 
 const { Spacing } = SizesAndSpaces

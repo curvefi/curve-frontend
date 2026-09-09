@@ -1,6 +1,6 @@
 import { EvmDataTable, type EvmDataTableProps } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
-import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
+import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { getTransactionActions } from './utils'
 
 type ActivityTableItem = { chainId: number; txHash: string | null }

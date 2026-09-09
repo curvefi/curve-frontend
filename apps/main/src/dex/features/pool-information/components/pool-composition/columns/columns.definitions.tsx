@@ -1,4 +1,3 @@
-import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { formatToken } from '@evm-ui/utils'
@@ -9,6 +8,7 @@ import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { TokenInfo, type TokenInfoTokenIconProps } from '@ui/components/TokenInfo'
 import { Tooltip } from '@ui/components/Tooltip'
+import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { PoolCompositionColumnId } from './columns.enum'
 

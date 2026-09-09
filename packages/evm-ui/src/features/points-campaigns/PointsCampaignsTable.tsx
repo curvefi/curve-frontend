@@ -1,4 +1,3 @@
-import { createAppColumnHelper, useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import Box from '@mui/material/Box'
@@ -6,6 +5,7 @@ import Typography from '@mui/material/Typography'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { constQ } from '@ui/features/queries/util'
+import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import type { PointsCampaignRow } from './points-campaigns.utils'
 

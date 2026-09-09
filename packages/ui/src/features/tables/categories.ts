@@ -1,6 +1,6 @@
-import type { IncreasingLengthCategory } from '@evm-ui/hooks/useIncreasingLength'
 import type { EmptyStateCardProps } from '@ui/components/EmptyStateCard'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { IncreasingLengthCategory } from '@ui/hooks/useIncreasingLength'
 import type { DataTableSize } from './data-table.utils'
 import { EmptyStateRowSize } from './EmptyStateRow'
 
