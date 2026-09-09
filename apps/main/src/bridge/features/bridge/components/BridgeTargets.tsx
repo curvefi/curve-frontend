@@ -1,9 +1,6 @@
 import { useCallback } from 'react'
 import { useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
-import { ChainList } from '@evm-ui/features/switch-chain/ui/ChainList'
-import { ChainSwitcherIcon } from '@evm-ui/features/switch-chain/ui/ChainSwitcherIcon'
-import { usePathname } from '@evm-ui/hooks/router'
-import { getCurrentNetwork } from '@evm-ui/shared/routes'
+import { createChainOptions, getCurrentNetwork } from '@evm-ui/shared/routes'
 import { requireBlockchainId } from '@evm-ui/utils/network'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { ArrowRight } from '@mui/icons-material'
@@ -15,10 +12,13 @@ import { Chain } from '@primitives/network.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { Select } from '@ui/components/Select'
 import { Spinner } from '@ui/components/Spinner'
+import { ChainList } from '@ui/features/layout/switch-chain/ui/ChainList'
+import { ChainSwitcherIcon } from '@ui/features/layout/switch-chain/ui/ChainSwitcherIcon'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { usePathname } from '@ui/hooks/router'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { applySxProps, type SxProps } from '@ui/utils/mui'
+import { applySxProps, type SxProps } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
 
@@ -130,7 +130,7 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
         {/** At the moment of writing, when selecting a network from the chain list feature it updates the URL */}
         <ChainList
           showTestnets={false}
-          options={networks}
+          options={createChainOptions(networks, 'bridge')}
           selectedNetworkId={getCurrentNetwork(usePathname())}
           tvls={useNetworksTVL('lending')}
           onNetwork={useCallback(

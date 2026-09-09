@@ -3,7 +3,7 @@ import { decimal } from '@evm-ui/utils/decimal'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { range, recordValues } from '@primitives/objects.utils'
-import { TIME_FRAMES } from '@ui/utils/time'
+import { TIME_FRAMES } from '@ui/lib/time'
 import { createSeededRandom, getTestSeed } from './seed'
 
 export const MAX_USD_VALUE = 400_000_000

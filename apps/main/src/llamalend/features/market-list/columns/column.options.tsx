@@ -1,6 +1,6 @@
-import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
 import { MarketRateType } from '@evm-ui/types/market'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
+import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { t } from '@ui/lib/i18n'
 import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'

@@ -6,12 +6,12 @@ import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { type NetworkUrlParams, Provider } from '@/dex/types/main.types'
 import { isLoading, useCurve, useWallet } from '@evm-ui/features/connect-wallet'
-import { useParams } from '@evm-ui/hooks/router'
 import { BoxHeader, Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { IconButton } from '@legacy-ui/IconButton'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
+import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
 export const PageCompensation = () => {

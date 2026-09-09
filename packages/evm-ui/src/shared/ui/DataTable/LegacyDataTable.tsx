@@ -1,6 +1,4 @@
-/// <reference types="./DataTable.d.ts" />
 import { type ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
-import { TablePagination } from '@evm-ui/shared/ui/DataTable/TablePagination'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -11,18 +9,23 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import type { ReactTable, RowData } from '@tanstack/react-table'
 import { WithWrapper } from '@ui/components/WithWrapper'
-import { useLayoutStore } from '@ui/features/layout/layout'
+import { useLayoutStore } from '@ui/features/layout/store'
+import {
+  type CurveTableFeatures,
+  DataTableHeaderHeight,
+  type DataTableSize,
+} from '@ui/features/tables/data-table.utils'
+import { HeaderCell } from '@ui/features/tables/HeaderCell'
+import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from '@ui/features/tables/hooks/useTableScroll'
+import { SkeletonRows } from '@ui/features/tables/SkeletonRows'
+import { TablePagination } from '@ui/features/tables/TablePagination'
+import { TableViewAllCell } from '@ui/features/tables/TableViewAllCell'
+import { useTableRowLimit } from '@ui/features/tables/useTableRowLimit'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
-import { type CurveTableFeatures, DataTableHeaderHeight, type DataTableSize } from './data-table.utils'
-import { HeaderCell } from './HeaderCell'
-import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from './hooks/useTableScroll'
 import { LegacyDataRow, LegacyDataRowProps } from './LegacyDataRow'
 import { LegacyFilterRow } from './LegacyFilterRow'
-import { SkeletonRows } from './SkeletonRows'
-import { TableViewAllCell } from './TableViewAllCell'
-import { useTableRowLimit } from './useTableRowLimit'
 
 /**
  * Resets the table pagination to the first page whenever the number of filtered results changes.

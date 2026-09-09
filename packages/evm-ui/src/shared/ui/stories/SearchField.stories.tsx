@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { Meta, StoryObj } from '@storybook/react-vite'
-import { SearchField } from '../SearchField'
+import { SearchField } from '@ui/components/SearchField'
 
 const meta: Meta<typeof SearchField> = {
   title: 'UI Kit/Primitives/SearchField',

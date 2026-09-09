@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { stackedMarketCardHeadersSx } from '@ui/utils/mui'
+import { stackedMarketCardHeadersSx } from '@ui/lib/mui'
 import { buildBorrowRateBreakdown, buildSupplyRateBreakdown } from './market-rate-breakdown.utils'
 import { PointsCampaignsCard, RateBreakdownTable } from './MarketRateBreakdownCards'
 

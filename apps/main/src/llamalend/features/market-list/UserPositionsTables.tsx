@@ -12,7 +12,7 @@ import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
 import { mapQuery, QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { borderStyle, directChildrenAfterFirst } from '@ui/utils/mui'
+import { borderStyle, directChildrenAfterFirst } from '@ui/lib/mui'
 import { UserPositionsMarketRateTable } from './UserPositionsMarketRateTable'
 import { UserPositionSummary } from './UserPositionsSummary'
 

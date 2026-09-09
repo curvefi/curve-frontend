@@ -1,9 +1,9 @@
 import { useEffect, useState, ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import { DecimalRangeValue, SliderInput } from '@evm-ui/shared/ui/SliderInput'
-import { formatNumber } from '@evm-ui/utils/number'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 type SliderInputStoryProps = Omit<ComponentProps<typeof SliderInput>, 'value'> & { value?: Decimal | DecimalRangeValue }

@@ -1,8 +1,8 @@
-import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 
 export const CollateralChangeCell = ({

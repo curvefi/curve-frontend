@@ -1,29 +1,29 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
-import {
-  copyToClipboard,
-  decomposeNumber,
-  defaultNumberFormatter,
-  formatNumber,
-  type NumberFormatOptions,
-  PLACEHOLDER_USD,
-} from '@evm-ui/utils'
-import { showToast } from '@evm-ui/widgets/Toast/toast.util'
+import { copyToClipboard } from '@evm-ui/utils'
 import Button from '@mui/material/Button'
 import { type IconButtonProps } from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
+import {
+  decomposeNumber,
+  defaultNumberFormatter,
+  formatNumber,
+  type NumberFormatOptions,
+  PLACEHOLDER_USD,
+} from '@primitives/number.utils'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { type MakeOptional, type QueryOrValue, type QueryProp, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
+import { showToast } from '@ui/features/toast/Toast/toast.util'
 import { useBreakpoint, useIsMobile } from '@ui/hooks/useBreakpoints'
 import { CopyIcon } from '@ui/icons/CopyIcon'
 import { t } from '@ui/lib/i18n'
-import { applySxProps, type SxProps } from '@ui/utils/mui'
+import { applySxProps, type SxProps } from '@ui/lib/mui'
 import { LabelTooltipIcon } from './LabelTooltipIcon'
 import { METRIC_CATEGORIES, type MetricCategory, type MetricLayout } from './metric-categories'
 

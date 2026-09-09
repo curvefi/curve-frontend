@@ -3,8 +3,8 @@
  * These return booleans indicating whether a new experience is enabled.
  */
 
-import { defaultReleaseChannel, ReleaseChannel } from '@ui/utils/env'
-import { useReleaseChannel } from './useLocalStorage'
+import { useReleaseChannel } from '@ui/features/storage/useLocalStorage'
+import { defaultReleaseChannel, ReleaseChannel } from '@ui/lib/env'
 
 const isBetaChannel = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 const useBetaChannel = () => isBetaChannel(useReleaseChannel()[0])

@@ -12,8 +12,8 @@ import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useNavigate, useParams } from '@evm-ui/hooks/router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
+import { useNavigate, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
 export const PagePool = () => {

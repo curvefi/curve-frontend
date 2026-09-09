@@ -1,5 +1,5 @@
 import type { Amount } from '@primitives/decimal.utils'
-import { formatNumber } from './number'
+import { formatNumber } from '@primitives/number.utils'
 
 export const MAX_DISPLAY_RATE_PERCENT = 5000
 

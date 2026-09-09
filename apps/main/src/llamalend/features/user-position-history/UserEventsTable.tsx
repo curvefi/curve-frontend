@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { getTransactionActions } from '@evm-ui/features/activity-table'
-import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
-import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { SortingState } from '@tanstack/react-table'
 import type { QueryProp } from '@ui/features/queries/util'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
+import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { t } from '@ui/lib/i18n'
 import { DEFAULT_SORT, USER_POSITION_HISTORY_COLUMNS } from './columns'
 import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
@@ -33,7 +33,7 @@ export const UserEventsTable = ({ eventsQuery }: UserEventsTableProps) => {
   })
 
   return (
-    <DataTable
+    <EvmDataTable
       category="scrollable"
       table={table}
       emptyState={{ title: t`No events found` }}

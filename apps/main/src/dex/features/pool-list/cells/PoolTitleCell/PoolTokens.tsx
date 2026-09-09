@@ -1,7 +1,7 @@
 import { responsiveTitleEllipsisSx } from '@evm-ui/shared/ui/titleTruncate'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 
 const isHighlighted = (symbol: string, address: string, searchedTerms: string[] | undefined) =>
   searchedTerms?.some(searched => symbol.toLowerCase().includes(searched) || address.toLowerCase().startsWith(searched))
