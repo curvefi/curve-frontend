@@ -1,4 +1,4 @@
-import { getMaxRoe } from '@/llamalend/llama.utils'
+import { getMaxRoE } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
@@ -152,7 +152,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
       sortUndefined: 'last',
     },
   ),
-  columnHelper.accessor(getMaxRoe, {
+  columnHelper.accessor(getMaxRoE, {
     id: MarketColumnId.MaxRoe,
     header: MARKET_TITLES[MarketColumnId.MaxRoe],
     cell: MaxRoeCell,
@@ -163,7 +163,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(({ maxLtv }) => maxLtv ?? undefined, {
+  columnHelper.accessor('maxLtv', {
     id: MarketColumnId.MaxLtv,
     header: MARKET_TITLES[MarketColumnId.MaxLtv],
     cell: PercentCell,

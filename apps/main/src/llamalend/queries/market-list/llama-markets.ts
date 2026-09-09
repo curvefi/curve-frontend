@@ -54,7 +54,7 @@ export type LlamaMarket = {
   version: MarketVersion
   minBand?: number
   maxBand?: number
-  maxLtv: number | null
+  maxLtv: number | undefined
   loans: number
   oraclePrice?: number
   monetaryPolicyAddress?: Address
@@ -75,7 +75,7 @@ export type LlamaMarket = {
     lendCrvAprBoosted: number | null
     lendTotalApyMinBoosted: number | null
     lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
-    borrowApy: number // base borrow APY %, compounded continuously
+    borrowApy: number // base borrow APY %
     borrowTotalApy: number // borrow APY - yield from collateral
     borrowApr: number
     borrowTotalApr: number // borrow APR - yield from collateral
@@ -175,7 +175,7 @@ const convertLendingVault = (
       borrowed: { ...borrowedToken, chain, balance: totalDebt, balanceUsd: totalDebtUsd },
       collateral: { ...collateralToken, chain, balance: totalAssets, balanceUsd: totalAssetsUsd },
     },
-    maxLtv,
+    maxLtv: maxLtv ?? undefined,
     minBand,
     maxBand,
     loans: nLoans,
@@ -311,7 +311,7 @@ const convertMintMarket = (
         rebasingYieldApr: collateralToken.rebasingYieldApr,
       },
     },
-    maxLtv,
+    maxLtv: maxLtv ?? undefined,
     minBand,
     maxBand,
     loans,

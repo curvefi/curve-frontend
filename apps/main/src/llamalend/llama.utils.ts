@@ -305,28 +305,25 @@ export const calculateLtv = (
   return (debtValue / collateralValue) * 100
 }
 
-/** Annualized return on own capital at maximum leverage; input APYs and output are percentage points. */
-export const getMaxRoe = ({
+/** Annualized return on equity at the given leverage. Input APYs and output are percentage  */
+export const getRoE = (
+  leverage: number | null | undefined,
+  collateralApy: number | null | undefined,
+  borrowApy: number | null | undefined,
+): number | undefined =>
+  // Total collateral / equity = leverage, so debt / equity = leverage - 1.
+  maybes([leverage, collateralApy, borrowApy], (lev, colApy, borApy) =>
+    lev < 1 ? undefined : lev * colApy - (lev - 1) * borApy,
+  )
+
+/** Return on equity at the market's maximum leverage. */
+export const getMaxRoE = ({
   leverage,
   assets: {
     collateral: { rebasingYield },
   },
   rates: { borrowApy },
-}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => {
-  if (
-    leverage == null ||
-    leverage < 1 ||
-    rebasingYield == null ||
-    borrowApy == null ||
-    ![leverage, rebasingYield, borrowApy].every(Number.isFinite)
-  ) {
-    return undefined
-  }
-
-  // Total collateral / equity = leverage, so debt / equity = leverage - 1.
-  const roe = leverage * rebasingYield - (leverage - 1) * borrowApy
-  return Number.isFinite(roe) ? roe : undefined
-}
+}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => getRoE(leverage, rebasingYield, borrowApy)
 
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,
