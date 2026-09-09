@@ -14,7 +14,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const meta: Meta<typeof ToggleButtonGroup> = {
-  title: 'UI Kit/Primitives/ToggleButton',
+  title: 'UI/Themes/ToggleButtons',
   component: ToggleButtonGroup,
   argTypes: {
     size: {

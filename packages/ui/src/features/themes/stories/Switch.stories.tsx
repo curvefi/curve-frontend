@@ -18,7 +18,7 @@ const SwitchStory = ({ checked, onChange, ...props }: SwitchProps) => {
 }
 
 const meta: Meta<typeof Switch> = {
-  title: 'UI Kit/Primitives/Switch',
+  title: 'UI/Themes/Switch',
   component: SwitchStory,
   argTypes: {
     color: {

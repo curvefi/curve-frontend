@@ -59,7 +59,7 @@ const SliderContent = () => {
 }
 
 const meta: Meta<typeof CheckboxFieldStory> = {
-  title: 'UI Kit/Widgets/CheckboxField',
+  title: 'EVM UI/Themes/CheckboxField',
   component: CheckboxFieldStory,
   args: {
     checked: true,

@@ -25,7 +25,7 @@ const AccordionStory = ({ title }: StoryProps) => (
 )
 
 const meta: Meta<typeof AccordionStory> = {
-  title: 'UI Kit/Primitives/Accordion',
+  title: 'UI/Themes/Accordion',
   component: AccordionStory,
   argTypes: {
     title: {

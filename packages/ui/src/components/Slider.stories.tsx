@@ -61,7 +61,7 @@ const SliderStory = (
 }
 
 const meta: Meta<typeof SliderStory> = {
-  title: 'UI Kit/Primitives/Slider',
+  title: 'UI/Components/Slider',
   component: SliderStory,
   args: {
     'data-rail-background': 'default',

@@ -10,7 +10,7 @@ const ButtonMenuWrapper = <T extends string>(args: Parameters<typeof ButtonMenu<
 }
 
 const meta: Meta<typeof ButtonMenu> = {
-  title: 'UI Kit/Widgets/ButtonMenu',
+  title: 'EVM UI/Shared UI/ButtonMenu',
   component: ButtonMenu,
   render: ButtonMenuWrapper,
   argTypes: {

@@ -17,7 +17,7 @@ const { Spacing } = SizesAndSpaces
 const sizes = ['tiny', 'small', 'medium', 'extraLarge'] satisfies NonNullable<SelectProps['size']>[]
 
 const meta: Meta<typeof Select> = {
-  title: 'UI Kit/Primitives/Select',
+  title: 'UI/Components/Select',
   component: Select,
 }
 

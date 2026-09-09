@@ -18,7 +18,7 @@ const colors: NonNullable<IconButtonProps['color']>[] = [
 ]
 
 const meta: Meta<typeof IconButton> = {
-  title: 'UI Kit/Primitives/IconButton',
+  title: 'UI/Themes/IconButton',
   component: IconButton,
   argTypes: {
     size: {

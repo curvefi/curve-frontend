@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ChainIcon } from '@ui/icons/ChainIcon'
 
 const meta: Meta<typeof ChainIcon> = {
-  title: 'UI Kit/Icons/ChainIcon',
+  title: 'UI/Icons/ChainIcon',
   component: ChainIcon,
   argTypes: {
     blockchainId: {

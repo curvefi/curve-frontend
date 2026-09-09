@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LAFIcon } from '@ui/icons/LAFIcon'
 
 const meta: Meta<typeof Button> = {
-  title: 'UI Kit/Primitives/Button',
+  title: 'UI/Themes/Button',
   component: Button,
   argTypes: {
     variant: {

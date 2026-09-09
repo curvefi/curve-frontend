@@ -31,7 +31,7 @@ const LlamaTitleItems = ({ marketType }: { marketType: 'Lend' | 'Mint' }) => (
 )
 
 const meta: Meta<typeof PageHeader> = {
-  title: 'UI Kit/Widgets/PageHeader',
+  title: 'EVM UI/Widgets/PageHeader',
   component: PageHeader,
   parameters: {
     layout: 'fullscreen',

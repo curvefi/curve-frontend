@@ -71,7 +71,7 @@ const RouteProviderStory = ({
 }
 
 const meta: Meta<typeof RouteProviderStory> = {
-  title: 'UI Kit/Widgets/RouteProvidersAccordion',
+  title: 'EVM UI/Widgets/RouteProvider',
   component: RouteProviderStory,
   args: {
     chainId: 1,

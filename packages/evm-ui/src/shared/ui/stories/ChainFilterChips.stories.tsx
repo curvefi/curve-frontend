@@ -4,7 +4,7 @@ import { constQ } from '@ui/features/queries/util'
 import { ChainFilterChips } from '../DataTable/chips/ChainFilterChips'
 
 const meta: Meta<typeof ChainFilterChips> = {
-  title: 'UI Kit/DataTable/ChainFilterChips',
+  title: 'EVM UI/Shared UI/ChainFilterChips',
   component: ChainFilterChips,
   argTypes: {
     chainsQuery: {

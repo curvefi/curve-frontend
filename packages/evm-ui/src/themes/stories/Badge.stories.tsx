@@ -31,7 +31,7 @@ const BadgeStories = ({ color }: BadgeStoryProps) => (
 )
 
 const meta: Meta<typeof BadgeStories> = {
-  title: 'UI Kit/Primitives/Badges',
+  title: 'EVM UI/Themes/Badge',
   component: BadgeStories,
   argTypes: {
     color: {

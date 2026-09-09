@@ -11,7 +11,7 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { useSwitch } from '@ui/hooks/useSwitch'
 
 const meta: Meta<typeof Accordion> = {
-  title: 'UI Kit/Widgets/Accordion',
+  title: 'UI/Components/Accordion',
   component: Accordion,
   argTypes: {
     title: {

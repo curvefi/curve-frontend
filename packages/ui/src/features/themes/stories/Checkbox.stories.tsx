@@ -44,7 +44,7 @@ const CheckboxStory = ({ checked, onChange, ...props }: CheckboxProps) => {
 }
 
 const meta: Meta<typeof Checkbox> = {
-  title: 'UI Kit/Primitives/Checkbox',
+  title: 'UI/Themes/Checkbox',
   component: CheckboxStory,
   argTypes: {
     color: {

@@ -42,7 +42,7 @@ const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
 }
 
 const meta: Meta<typeof Radio> = {
-  title: 'UI Kit/Primitives/Radio',
+  title: 'UI/Themes/Radio',
   component: RadioStory,
   argTypes: {
     color: {

@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { SearchField } from '../SearchField'
 
 const meta: Meta<typeof SearchField> = {
-  title: 'UI Kit/Primitives/SearchField',
+  title: 'EVM UI/Shared UI/SearchField',
   component: SearchField,
   parameters: {
     layout: 'centered',

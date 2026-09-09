@@ -64,7 +64,7 @@ const PaletteStory = () => {
 }
 
 const meta: Meta = {
-  title: 'UI Kit/Primitives/Palette',
+  title: 'UI/Themes/Palette',
   component: PaletteStory,
 }
 

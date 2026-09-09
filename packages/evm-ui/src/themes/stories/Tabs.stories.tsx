@@ -54,7 +54,7 @@ const TabsSwitcherWrapper = ({
 }
 
 const meta: Meta<typeof TabsSwitcherWrapper> = {
-  title: 'UI Kit/Primitives/Tabs',
+  title: 'EVM UI/Themes/Tabs',
   component: TabsSwitcherWrapper,
   args: {
     overflow: 'standard',

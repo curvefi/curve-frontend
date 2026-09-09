@@ -121,7 +121,7 @@ const CardStoryTokenIconsAvatar = (props: CardProps) => (
 )
 
 const meta: Meta<typeof CardStory> = {
-  title: 'UI Kit/Primitives/Card',
+  title: 'UI/Themes/Card',
   argTypes: {
     variant: {
       control: 'select',

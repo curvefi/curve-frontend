@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BellIcon, BellRingingIcon } from '@ui/icons/BellIcon'
 
 const meta: Meta<typeof BellRingingIcon> = {
-  title: 'UI Kit/Icons/BellRingingIcon',
+  title: 'UI/Icons/BellIcon',
   component: BellRingingIcon,
   argTypes: {
     fontSize: {

@@ -33,7 +33,7 @@ const ICON_SIZE_OPTIONS: IconStackSize[] = ['xxs', 'xs', 'sm', 'md', 'lg', 'xl',
 const OVERLAPS = [1 / 4, 1 / 3, 1 / 2]
 
 const meta: Meta<typeof IconStack> = {
-  title: 'UI Kit/Widgets/IconStack',
+  title: 'UI/Components/IconStack',
   component: IconStack,
   argTypes: {
     iconSize: {

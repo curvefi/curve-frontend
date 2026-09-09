@@ -3,7 +3,7 @@ import { TokenInfo } from '@ui/components/TokenInfo'
 import { LeverageIcon } from '@ui/icons/LeverageIcon'
 
 const meta: Meta<typeof TokenInfo> = {
-  title: 'UI Kit/Widgets/TokenInfo',
+  title: 'UI/Components/TokenInfo',
   component: TokenInfo,
   argTypes: {
     address: {

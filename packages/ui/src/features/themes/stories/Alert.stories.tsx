@@ -29,7 +29,7 @@ const AlertStory = (props: AlertProps) => (
 )
 
 const meta: Meta<typeof AlertStory> = {
-  title: 'UI Kit/Primitives/Alert',
+  title: 'UI/Themes/Alert',
   component: AlertStory,
   argTypes: {
     variant: {

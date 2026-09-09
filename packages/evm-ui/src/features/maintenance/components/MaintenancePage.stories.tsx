@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MaintenancePage } from './MaintenancePage'
 
 const meta: Meta<typeof MaintenancePage> = {
-  title: 'UI Kit/Features/MaintenancePage',
+  title: 'EVM UI/Features/MaintenancePage',
   component: MaintenancePage,
   parameters: {
     layout: 'fullscreen',

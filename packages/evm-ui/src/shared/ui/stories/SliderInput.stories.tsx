@@ -33,7 +33,7 @@ const SliderInputComponent = ({ value: initialValue = '40', onChange, ...rest }:
 }
 
 const meta: Meta<typeof SliderInputComponent> = {
-  title: 'UI Kit/Widgets/SliderInput',
+  title: 'EVM UI/Shared UI/SliderInput',
   component: SliderInputComponent,
   render: args => <SliderInputComponent {...args} />,
   args: {

@@ -133,7 +133,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
 }
 
 const meta: Meta<typeof BridgeFormContent> = {
-  title: 'Bridge/Features/Bridge',
+  title: 'Bridge/Features/BridgeFormContent',
 }
 
 type Story = StoryObj<typeof BridgeFormContent>

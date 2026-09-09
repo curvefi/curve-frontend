@@ -16,7 +16,7 @@ const BalanceStory = ({ balance, loading, ...args }: BalanceStoryArgs) => (
 )
 
 const meta: Meta<typeof BalanceStory> = {
-  title: 'UI Kit/Widgets/Balance',
+  title: 'EVM UI/Shared UI/Balance',
   component: BalanceStory,
   argTypes: {
     symbol: {

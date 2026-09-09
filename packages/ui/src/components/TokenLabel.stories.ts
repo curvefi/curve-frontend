@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TokenLabel } from '@ui/components/TokenLabel'
 
 const meta: Meta<typeof TokenLabel> = {
-  title: 'UI Kit/Widgets/TokenLabel',
+  title: 'UI/Components/TokenLabel',
   component: TokenLabel,
   argTypes: {
     blockchainId: {

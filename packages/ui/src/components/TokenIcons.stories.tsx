@@ -28,7 +28,7 @@ const TOKENS = [
 const TOKEN_COUNT_CASES = [0, 1, 2, 3, 4, 5, 9, 13] as const
 
 const meta = {
-  title: 'UI Kit/Widgets/TokenIcons',
+  title: 'UI/Components/TokenIcons',
   component: TokenIcons,
   argTypes: {
     blockchainId: {

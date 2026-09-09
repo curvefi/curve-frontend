@@ -259,7 +259,7 @@ const LendMarketActivityComponent = () => {
 }
 
 const meta: Meta = {
-  title: 'UI Kit/Features/ActivityTable',
+  title: 'EVM UI/Features/ActivityTable',
   parameters: {
     layout: 'padded',
     docs: {

@@ -8,7 +8,7 @@ import { StackBanners } from '../StackBanners'
 const SEVERITIES: NonNullable<BannerProps['severity']>[] = ['alert', 'warning', 'caution', 'highlight', 'info']
 
 const meta: Meta<typeof Banner> = {
-  title: 'UI Kit/Primitives/Banner',
+  title: 'EVM UI/Shared UI/Banner',
   component: props => (
     <Box sx={{ minWidth: 600 }}>
       <Banner {...props} />

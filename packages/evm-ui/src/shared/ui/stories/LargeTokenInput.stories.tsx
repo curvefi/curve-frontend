@@ -79,7 +79,7 @@ const LargeTokenInputWithTokenSelector = ({ balance, isError, ...props }: LargeT
 }
 
 const meta: Meta<typeof LargeTokenInputWithTokenSelector> = {
-  title: 'UI Kit/Widgets/LargeTokenInput',
+  title: 'EVM UI/Shared UI/LargeTokenInput',
   component: LargeTokenInputWithTokenSelector,
   argTypes: {
     walletBalance: {

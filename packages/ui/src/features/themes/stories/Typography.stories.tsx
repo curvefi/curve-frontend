@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TYPOGRAPHY_VARIANTS, TypographyVariantDefinition, TypographyVariantKey } from '@ui/features/themes/typography'
 
 const meta: Meta<typeof Typography> = {
-  title: 'UI Kit/Primitives/Typography',
+  title: 'UI/Themes/Typography',
   component: Typography,
   argTypes: {
     color: {
