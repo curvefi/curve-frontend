@@ -12,9 +12,7 @@ const { Spacing } = SizesAndSpaces
 type TabLabelProps<T extends string | number> = Pick<
   TabOption<T>,
   'label' | 'suffix' | 'startAdornment' | 'endAdornment'
-> & {
-  size: NonNullable<TabsSwitcherProps<T>['size']>
-}
+> & { size: NonNullable<TabsSwitcherProps<T>['size']> }
 
 type WithTypographyProps<T extends string | number> = {
   shouldWrap: boolean

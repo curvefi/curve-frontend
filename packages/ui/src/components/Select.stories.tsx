@@ -16,10 +16,7 @@ import { useSwitch } from '@ui/hooks/useSwitch'
 const { Spacing } = SizesAndSpaces
 const sizes = ['tiny', 'small', 'medium', 'extraLarge'] satisfies NonNullable<SelectProps['size']>[]
 
-const meta: Meta<typeof Select> = {
-  title: 'UI/Components/Select',
-  component: Select,
-}
+const meta: Meta<typeof Select> = { title: 'UI/Components/Select', component: Select }
 
 type Story = StoryObj<typeof Select>
 
@@ -120,13 +117,7 @@ const MultiSelect = <T extends string>({
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
-          <Box
-            component="li"
-            sx={{
-              borderBottom: t => `1px solid ${t.design.Layer[3].Outline}`,
-              padding: Spacing.sm,
-            }}
-          >
+          <Box component="li" sx={{ borderBottom: t => `1px solid ${t.design.Layer[3].Outline}`, padding: Spacing.sm }}>
             <Button
               color="ghost"
               size="extraSmall"
@@ -157,13 +148,7 @@ export const Simple: Story = {
       placeholder="Select an option"
     />
   ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic select component with simple text options',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'A basic select component with simple text options' } } },
 }
 
 const options = ['ETH', 'USDC', 'DAI', 'USDT', 'WBTC', 'CRV'] as const
@@ -187,15 +172,9 @@ export const CustomRendering: Story = {
       )}
     />
   ),
-  args: {
-    size: 'small',
-  },
+  args: { size: 'small' },
   parameters: {
-    docs: {
-      description: {
-        story: 'A multi-select component with custom rendering of options using Token',
-      },
-    },
+    docs: { description: { story: 'A multi-select component with custom rendering of options using Token' } },
   },
 }
 
@@ -210,13 +189,7 @@ export const Sizes: Story = {
       ))}
     </Box>
   ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'Displays all Select sizes.',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'Displays all Select sizes.' } } },
 }
 
 export const InlineAlignment: Story = {
@@ -233,13 +206,7 @@ export const InlineAlignment: Story = {
       ))}
     </Box>
   ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'Checks select and button height alignment across sizes.',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'Checks select and button height alignment across sizes.' } } },
 }
 
 export default meta

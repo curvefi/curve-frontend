@@ -41,12 +41,7 @@ const createMarketsColumnOptions = ({
         active: !onlyPositions,
         enabled: true,
       },
-      {
-        label: MARKET_TITLES[MarketColumnId.MaxLtv],
-        columns: [MarketColumnId.MaxLtv],
-        active: false,
-        enabled: true,
-      },
+      { label: MARKET_TITLES[MarketColumnId.MaxLtv], columns: [MarketColumnId.MaxLtv], active: false, enabled: true },
       {
         label: MARKET_TITLES[MarketColumnId.UtilizationPercent],
         columns: [MarketColumnId.UtilizationPercent],
@@ -105,12 +100,7 @@ const createMarketsColumnOptions = ({
         active: onlyPositions == MarketRateType.Borrow,
         enabled: hasPositions,
       },
-      {
-        label: t`Chart`,
-        columns: [MarketColumnId.BorrowChart],
-        active: false,
-        enabled: true,
-      },
+      { label: t`Chart`, columns: [MarketColumnId.BorrowChart], active: false, enabled: true },
     ],
   },
   {
@@ -134,14 +124,8 @@ const createMarketsColumnOptions = ({
 
 /** We keep visibility settings separately when the user has positions, since more columns are available. */
 export const MARKETS_COLUMN_OPTIONS = {
-  [MarketRateType.Borrow]: createMarketsColumnOptions({
-    hasPositions: true,
-    onlyPositions: MarketRateType.Borrow,
-  }),
-  [MarketRateType.Supply]: createMarketsColumnOptions({
-    hasPositions: true,
-    onlyPositions: MarketRateType.Supply,
-  }),
+  [MarketRateType.Borrow]: createMarketsColumnOptions({ hasPositions: true, onlyPositions: MarketRateType.Borrow }),
+  [MarketRateType.Supply]: createMarketsColumnOptions({ hasPositions: true, onlyPositions: MarketRateType.Supply }),
   hasPositions: createMarketsColumnOptions({ hasPositions: true }),
   noPositions: createMarketsColumnOptions({ hasPositions: false }),
 }

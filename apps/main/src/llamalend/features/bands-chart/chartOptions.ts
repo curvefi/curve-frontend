@@ -94,16 +94,8 @@ const createCustomRectSeries = (
   encode: { y: 0, x: [1, 2, 6] },
   data,
   clip: true, // Clip rectangles to grid area to prevent overflow over axis labels
-  emphasis: {
-    focus: 'self',
-  },
-  renderItem: (
-    _params: unknown,
-    api: {
-      value: (index: number) => number
-      coord: (point: number[]) => number[]
-    },
-  ) => {
+  emphasis: { focus: 'self' },
+  renderItem: (_params: unknown, api: { value: (index: number) => number; coord: (point: number[]) => number[] }) => {
     const startX = api.value(1)
     const widthX = api.value(2)
     // lower edge of band price range
@@ -219,10 +211,7 @@ const createRangeBoundaryLineSeries = (name: string, lines: HorizontalLine[], z:
   z,
   renderItem: (
     params: { dataIndex: number },
-    api: {
-      value: (index: number) => number
-      coord: (point: number[]) => number[]
-    },
+    api: { value: (index: number) => number; coord: (point: number[]) => number[] },
   ) => {
     const xStartValue = api.value(0)
     const xEndValue = api.value(1)
@@ -234,11 +223,7 @@ const createRangeBoundaryLineSeries = (name: string, lines: HorizontalLine[], z:
     return {
       type: 'line',
       shape: { x1: start[0], y1: start[1], x2: end[0], y2: end[1] },
-      style: {
-        stroke: lineStyle.color,
-        lineWidth: lineStyle.width,
-        lineDash: lineStyle.type,
-      },
+      style: { stroke: lineStyle.color, lineWidth: lineStyle.width, lineDash: lineStyle.type },
     }
   },
 })
@@ -267,13 +252,7 @@ const createRangeAreaSeries = (
   tooltip: { show: false },
   clip: true,
   z,
-  renderItem: (
-    _params: unknown,
-    api: {
-      value: (index: number) => number
-      coord: (point: number[]) => number[]
-    },
-  ) => {
+  renderItem: (_params: unknown, api: { value: (index: number) => number; coord: (point: number[]) => number[] }) => {
     const xStartValue = api.value(0)
     const xEndValue = api.value(1)
     const lowerPrice = api.value(2)
@@ -290,9 +269,7 @@ const createRangeAreaSeries = (
         width: Math.abs(topRight[0] - topLeft[0]),
         height: Math.abs(bottomLeft[1] - topLeft[1]),
       },
-      style: {
-        fill: rangeOverlay.backgroundColor,
-      },
+      style: { fill: rangeOverlay.backgroundColor },
     }
   },
 })
@@ -334,14 +311,7 @@ export const getChartOptions = (
     },
     tooltip: {
       trigger: 'axis',
-      axisPointer: {
-        type: 'shadow',
-        axis: 'y',
-        snap: true,
-        shadowStyle: {
-          opacity: 0.1,
-        },
-      },
+      axisPointer: { type: 'shadow', axis: 'y', snap: true, shadowStyle: { opacity: 0.1 } },
       formatter: tooltipFormatter,
       appendTo: 'body',
       backgroundColor: 'transparent',
@@ -369,33 +339,16 @@ export const getChartOptions = (
         margin: 10,
         formatter: (value: number) => formatChartAxisNumber(value),
       },
-      splitLine: {
-        show: true,
-        lineStyle: {
-          color: palette.gridColor,
-          width: LINE_WIDTH,
-        },
-      },
+      splitLine: { show: true, lineStyle: { color: palette.gridColor, width: LINE_WIDTH } },
       splitNumber: 3,
     },
     yAxis: {
       position: 'right',
       axisLine: { show: false },
       axisTick: { show: false },
-      axisPointer: {
-        show: true,
-        type: 'shadow',
-        snap: true,
-        label: {
-          show: false,
-        },
-      },
-      axisLabel: {
-        show: false,
-      },
-      splitLine: {
-        show: false,
-      },
+      axisPointer: { show: true, type: 'shadow', snap: true, label: { show: false } },
+      axisLabel: { show: false },
+      splitLine: { show: false },
       min: priceMin,
       max: priceMax,
     },

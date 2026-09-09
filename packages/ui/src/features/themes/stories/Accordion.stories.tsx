@@ -6,9 +6,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-type StoryProps = {
-  title?: string
-}
+type StoryProps = { title?: string }
 
 const AccordionStory = ({ title }: StoryProps) => (
   <Accordion>
@@ -27,15 +25,8 @@ const AccordionStory = ({ title }: StoryProps) => (
 const meta: Meta<typeof AccordionStory> = {
   title: 'UI/Themes/Accordion',
   component: AccordionStory,
-  argTypes: {
-    title: {
-      control: 'text',
-      description: 'The title of the accordion',
-    },
-  },
-  args: {
-    title: 'Accordion Title',
-  },
+  argTypes: { title: { control: 'text', description: 'The title of the accordion' } },
+  args: { title: 'Accordion Title' },
 }
 
 type Story = StoryObj<typeof AccordionStory>

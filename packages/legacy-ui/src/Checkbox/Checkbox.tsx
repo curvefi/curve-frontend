@@ -3,12 +3,7 @@ import { VisuallyHidden, useCheckbox, useFocusRing } from 'react-aria'
 import { type ToggleProps, useToggleState } from 'react-stately'
 import { styled } from 'styled-components'
 
-type CheckboxProps = {
-  className?: string
-  isDisabled?: boolean
-  fillColor?: string
-  blank?: boolean
-} & ToggleProps
+type CheckboxProps = { className?: string; isDisabled?: boolean; fillColor?: string; blank?: boolean } & ToggleProps
 
 export const Checkbox = ({ className, isDisabled = false, fillColor, blank, ...props }: CheckboxProps) => {
   const ref = useRef<HTMLInputElement>(null)

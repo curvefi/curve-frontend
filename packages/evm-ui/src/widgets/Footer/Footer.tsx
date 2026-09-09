@@ -12,15 +12,9 @@ import { Description } from './Description'
 import { Section } from './Section'
 import { getSections } from './Sections'
 
-const Llama = styled('img')({
-  alt: 'Llama',
-  position: 'absolute',
-})
+const Llama = styled('img')({ alt: 'Llama', position: 'absolute' })
 
-type FooterProps = {
-  blockchainId: string
-  appName: AppName
-}
+type FooterProps = { blockchainId: string; appName: AppName }
 
 export const Footer = ({ appName, blockchainId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
@@ -43,24 +37,12 @@ export const Footer = ({ appName, blockchainId }: FooterProps) => {
         data-testid="footer-content"
         sx={{ rowGap: SizesAndSpaces.Grid.Row_Spacing, position: 'relative', maxWidth: SizesAndSpaces.MaxWidth.footer }}
       >
-        <Grid
-          size={{
-            mobile: 12,
-            desktop: 3,
-          }}
-        >
+        <Grid size={{ mobile: 12, desktop: 3 }}>
           <Description />
         </Grid>
 
         {getSections().map(section => (
-          <Grid
-            key={section.title}
-            size={{
-              mobile: 12,
-              tablet: 4,
-              desktop: 3,
-            }}
-          >
+          <Grid key={section.title} size={{ mobile: 12, tablet: 4, desktop: 3 }}>
             <Section {...section} blockchainId={blockchainId} appName={appName} isTiny={isTiny} />
           </Grid>
         ))}

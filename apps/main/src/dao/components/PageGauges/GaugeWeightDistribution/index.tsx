@@ -25,9 +25,7 @@ import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarCha
 // Show every other x-axis label for large gauge sets to reduce visual busyness of labels.
 const getXAxisInterval = (length: number) => (length > 50 ? 1 : 0)
 
-type GaugeWeightDistributionProps = {
-  isUserVotes: boolean
-}
+type GaugeWeightDistributionProps = { isUserVotes: boolean }
 
 export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistributionProps) => {
   const theme = useTheme()

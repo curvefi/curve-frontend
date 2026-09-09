@@ -25,15 +25,9 @@ const { Spacing } = SizesAndSpaces
 
 /** CSS grid template area names */
 const GRID_AREAS = {
-  from: {
-    label: 'from-label',
-    input: 'from-input',
-  },
+  from: { label: 'from-label', input: 'from-input' },
   arrow: 'arrow',
-  to: {
-    label: 'to-label',
-    input: 'to-input',
-  },
+  to: { label: 'to-label', input: 'to-input' },
 }
 
 /** Small label rendered above a network selector (e.g. "From" / "To"). */

@@ -15,13 +15,6 @@ runEndpointCases('ohlc', [
     ),
   ),
   endpointCase('getLpOHLC', () =>
-    ohlc.getLpOHLC(
-      {
-        chain: poolSeed().chain,
-        poolAddress: poolSeed().poolAddress,
-        priceUnits: 'usd',
-      },
-      requestOptions,
-    ),
+    ohlc.getLpOHLC({ chain: poolSeed().chain, poolAddress: poolSeed().poolAddress, priceUnits: 'usd' }, requestOptions),
   ),
 ])

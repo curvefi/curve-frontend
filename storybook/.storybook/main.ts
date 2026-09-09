@@ -13,14 +13,9 @@ const config: StorybookConfig = {
   staticDirs: ['../public', '../../packages/evm-ui/public', '../../packages/ui/public'],
   addons: ['@chromatic-com/storybook', '@storybook/addon-themes', '@storybook/addon-a11y', '@storybook/addon-docs'],
 
-  framework: {
-    name: '@storybook/react-vite',
-    options: {},
-  },
+  framework: { name: '@storybook/react-vite', options: {} },
 
-  core: {
-    disableTelemetry: true,
-  },
+  core: { disableTelemetry: true },
 
   docs: {},
   typescript: {},
@@ -81,10 +76,7 @@ const config: StorybookConfig = {
     </style>
   `,
   // Storybook uses its own Vite pipeline; set sourcemaps here to ensure `build:storybook` emits `.map` files.
-  viteFinal: config =>
-    mergeConfig(config, {
-      build: { sourcemap: true },
-    }),
+  viteFinal: config => mergeConfig(config, { build: { sourcemap: true } }),
 }
 // eslint-disable-next-line import-x/no-default-export
 export default config

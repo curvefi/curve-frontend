@@ -68,10 +68,7 @@ const market = z
     borrowedUsd: totalDebtUsd,
     loans: nLoans,
     collateralToken,
-    fees: {
-      pending: pendingFees,
-      collected: collectedFees,
-    },
+    fees: { pending: pendingFees, collected: collectedFees },
   }))
 
 const snapshot = z
@@ -124,20 +121,10 @@ const keeper = z
   })
   .transform(camelizeKeys)
 
-const crvUsdSupply = z.object({
-  market: z.string(),
-  supply: z.number(),
-  borrowable: z.number(),
-  timestamp,
-})
+const crvUsdSupply = z.object({ market: z.string(), supply: z.number(), borrowable: z.number(), timestamp })
 
 const userMarket = z
-  .object({
-    collateral: z.string(),
-    controller: address,
-    first_snapshot: timestamp,
-    last_snapshot: timestamp,
-  })
+  .object({ collateral: z.string(), controller: address, first_snapshot: timestamp, last_snapshot: timestamp })
   .transform(camelizeKeys)
   .transform(({ firstSnapshot, lastSnapshot, ...data }) => ({
     ...data,
@@ -210,22 +197,12 @@ const collateralEvent = z
     liquidation: liquidation ?? undefined,
   }))
 
-export const getMarketsResponse = z
-  .object({
-    data: z.array(market),
-    count: z.number(),
-  })
-  .transform(({ data }) => data)
+export const getMarketsResponse = z.object({ data: z.array(market), count: z.number() }).transform(({ data }) => data)
 
-const rawGetMarketsResponse = z.object({
-  data: z.array(market),
-  count: z.number(),
-})
+const rawGetMarketsResponse = z.object({ data: z.array(market), count: z.number() })
 
 export const getAllMarketsResponse = z
-  .object({
-    chains: z.record(z.string(), rawGetMarketsResponse),
-  })
+  .object({ chains: z.record(z.string(), rawGetMarketsResponse) })
   .transform(
     ({ chains }) =>
       fromEntries(recordEntries(chains).map(([chain, item]) => [chain, item.data])) as Record<
@@ -239,26 +216,14 @@ export const getKeepersResponse = z.object({ keepers: z.array(keeper) }).transfo
 export const getSupplyResponse = z.object({ data: z.array(crvUsdSupply) }).transform(({ data }) => data)
 
 export const getUserMarketsResponse = z
-  .object({
-    user: z.string(),
-    markets: z.array(userMarket),
-    page: z.number(),
-    per_page: z.number(),
-    count: z.number(),
-  })
+  .object({ user: z.string(), markets: z.array(userMarket), page: z.number(), per_page: z.number(), count: z.number() })
   .transform(camelizeKeys)
   .transform(({ markets }) => markets)
 
-const rawUserMarketsResponse = z.object({
-  markets: z.array(userMarket),
-  count: z.number(),
-})
+const rawUserMarketsResponse = z.object({ markets: z.array(userMarket), count: z.number() })
 
 export const getAllUserMarketsResponse = z
-  .object({
-    user: address,
-    chains: z.record(z.string(), rawUserMarketsResponse),
-  })
+  .object({ user: address, chains: z.record(z.string(), rawUserMarketsResponse) })
   .transform(
     ({ chains }) =>
       fromEntries(recordEntries(chains).map(([chain, item]) => [chain, item.markets])) as Record<
@@ -302,10 +267,7 @@ export const getUserCollateralEventsResponse = z
     events,
   }))
 
-export const getCrvUsdTvlResponse = z.object({
-  chain,
-  tvl: z.number(),
-})
+export const getCrvUsdTvlResponse = z.object({ chain, tvl: z.number() })
 
 export type Market = z.infer<typeof market>
 export type Snapshot = z.infer<typeof snapshot>

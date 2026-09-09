@@ -33,12 +33,8 @@ const LlamaTitleItems = ({ marketType }: { marketType: 'Lend' | 'Mint' }) => (
 const meta: Meta<typeof PageHeader> = {
   title: 'EVM UI/Widgets/PageHeader',
   component: PageHeader,
-  parameters: {
-    layout: 'fullscreen',
-  },
-  args: {
-    title: 'Page title',
-  },
+  parameters: { layout: 'fullscreen' },
+  args: { title: 'Page title' },
   render: args => (
     <Box sx={{ width: '100%', padding: '4rem 2rem' }}>
       <PageHeader {...args} />

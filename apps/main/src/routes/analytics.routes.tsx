@@ -6,10 +6,7 @@ import { redirectTo } from './util'
 
 const PageHome = lazyRouteComponent(() => import('@/analytics/components/PageHome'), 'PageHome')
 
-const analyticsLayoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'analytics',
-})
+const analyticsLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'analytics' })
 
 const layoutProps = { getParentRoute: () => analyticsLayoutRoute }
 
@@ -20,9 +17,5 @@ export const analyticsRoutes = analyticsLayoutRoute.addChildren([
     loader: ({ params: { network } }) => redirectTo(`/analytics/${network}/home`),
     ...layoutProps,
   }),
-  createRoute({
-    path: '$network/home',
-    component: PageHome,
-    ...layoutProps,
-  }),
+  createRoute({ path: '$network/home', component: PageHome, ...layoutProps }),
 ])

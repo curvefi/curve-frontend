@@ -8,9 +8,7 @@ import { copyToClipboard, shortenAddress, formatNumber } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { Spinner } from '@legacy-ui/Spinner'
 
-type ButtonProps = {
-  className?: string
-} & AriaButtonProps
+type ButtonProps = { className?: string } & AriaButtonProps
 
 const Button = ({ className, ...props }: ButtonProps) => {
   const ref = useRef(null)

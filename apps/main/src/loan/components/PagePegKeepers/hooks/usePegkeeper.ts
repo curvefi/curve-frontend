@@ -13,11 +13,7 @@ const formatWei = (value: bigint) => formatEther(value) as Decimal
 export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKeeper) {
   const { isConnected } = useConnection()
 
-  const debt = useReadContract({
-    abi: pegkeeperAbi,
-    address,
-    functionName: 'debt',
-  })
+  const debt = useReadContract({ abi: pegkeeperAbi, address, functionName: 'debt' })
 
   // There's an `estimate_caller_profit` view function in the abi, but it's very inaccurate (by design)
   // However, if this function fails we fall back to it (could be when no wallet is connected)

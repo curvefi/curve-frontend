@@ -20,27 +20,11 @@ const meta: Meta<typeof Metric> = {
       options: CATEGORIES,
       description: 'The category that controls responsive size and orientation',
     },
-    alignment: {
-      control: 'select',
-      options: ALIGNMENTS,
-      description: 'The alignment of the component',
-    },
-    label: {
-      control: 'text',
-      description: 'The label on top of the value describing it',
-    },
-    labelTooltip: {
-      control: 'text',
-      description: 'Optional tooltip shown next to the label',
-    },
-    valueTooltip: {
-      control: 'text',
-      description: 'Optional tooltip shown when hovering the metric value',
-    },
-    value: {
-      control: 'object',
-      description: 'The value of the component',
-    },
+    alignment: { control: 'select', options: ALIGNMENTS, description: 'The alignment of the component' },
+    label: { control: 'text', description: 'The label on top of the value describing it' },
+    labelTooltip: { control: 'text', description: 'Optional tooltip shown next to the label' },
+    valueTooltip: { control: 'text', description: 'Optional tooltip shown when hovering the metric value' },
+    value: { control: 'object', description: 'The value of the component' },
     valueOptions: {
       control: 'object',
       description: 'Options for formatting the value including decimals, abbreviation, and unit',
@@ -63,11 +47,7 @@ const meta: Meta<typeof Metric> = {
     category: 'storybook.metric.standard',
     alignment: 'start',
     value: constQ(26539422),
-    valueOptions: {
-      decimals: 1,
-      unit: 'dollar',
-      color: 'textPrimary',
-    },
+    valueOptions: { decimals: 1, unit: 'dollar', color: 'textPrimary' },
     label: 'Metrics label',
     copyText: 'Copied metric value',
   },
@@ -93,22 +73,9 @@ export const Standard: Story = {
   },
 }
 
-export const Compact: Story = {
-  render: args => <Metric {...args} />,
-  args: {
-    category: 'storybook.metric.compact',
-  },
-}
+export const Compact: Story = { render: args => <Metric {...args} />, args: { category: 'storybook.metric.compact' } }
 
-export const Percentage: Story = {
-  args: {
-    value: constQ(133.42),
-    valueOptions: {
-      decimals: 2,
-      unit: 'percentage',
-    },
-  },
-}
+export const Percentage: Story = { args: { value: constQ(133.42), valueOptions: { decimals: 2, unit: 'percentage' } } }
 
 export const Tooltip: Story = {
   args: {
@@ -116,11 +83,7 @@ export const Tooltip: Story = {
   },
 }
 
-export const Loading: Story = {
-  args: {
-    value: q({ data: undefined, isLoading: true, error: null }),
-  },
-}
+export const Loading: Story = { args: { value: q({ data: undefined, isLoading: true, error: null }) } }
 
 export const Notional: Story = {
   args: {
@@ -133,37 +96,14 @@ export const Notional: Story = {
   },
 }
 
-export const NotionalString: Story = {
-  args: {
-    notional: constQ('1337.69% close to reckage'),
-  },
-}
+export const NotionalString: Story = { args: { notional: constQ('1337.69% close to reckage') } }
 
-export const CustomUnit: Story = {
-  args: {
-    valueOptions: {
-      unit: {
-        symbol: '¥',
-        position: 'prefix',
-      },
-    },
-    change: 0,
-  },
-}
+export const CustomUnit: Story = { args: { valueOptions: { unit: { symbol: '¥', position: 'prefix' } }, change: 0 } }
 
-export const CustomValueFontColor: Story = {
-  args: {
-    valueOptions: {
-      color: 'danger',
-    },
-  },
-}
+export const CustomValueFontColor: Story = { args: { valueOptions: { color: 'danger' } } }
 
 export const NotAvailable: Story = {
-  args: {
-    value: q({ data: undefined, isLoading: false, error: null }),
-    label: 'Metric with N/A Value',
-  },
+  args: { value: q({ data: undefined, isLoading: false, error: null }), label: 'Metric with N/A Value' },
   parameters: {
     docs: {
       description: {
@@ -175,16 +115,8 @@ export const NotAvailable: Story = {
 }
 
 export const WithIcon: Story = {
-  args: {
-    icon: <FireIcon fontSize="small" color="error" />,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Demonstrates the Metric component with a leading icon',
-      },
-    },
-  },
+  args: { icon: <FireIcon fontSize="small" color="error" /> },
+  parameters: { docs: { description: { story: 'Demonstrates the Metric component with a leading icon' } } },
 }
 
 export default meta

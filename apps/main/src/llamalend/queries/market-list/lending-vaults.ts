@@ -99,11 +99,7 @@ export const resetAllUserLendingVaults = async (userAddress: Address | null | un
   )
 }
 
-export type LendingPosition = {
-  supplied: number
-  earnings: number
-  boostMultiplier: number | null
-}
+export type LendingPosition = { supplied: number; earnings: number; boostMultiplier: number | null }
 
 export type UserLendingSupplies = Record<Address, LendingPosition>
 

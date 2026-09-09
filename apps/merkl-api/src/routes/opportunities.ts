@@ -3,9 +3,7 @@ import type { OpportunitiesQuery } from './opportunities.schemas'
 
 const MERKL_OPPORTUNITIES_URL = 'https://api.merkl.xyz/v4/opportunities'
 
-type MerklConfig = {
-  MERKL_API_KEY: string
-}
+type MerklConfig = { MERKL_API_KEY: string }
 
 const buildMerklOpportunitiesUrl = (query: OpportunitiesQuery) => {
   const url = new URL(MERKL_OPPORTUNITIES_URL)
@@ -34,11 +32,13 @@ export const getOpportunities =
         body,
         authenticated: true,
       })
-      return reply.code(status).send({
-        statusCode: status,
-        error: statusText || 'Merkl API Error',
-        message: `Merkl opportunities request failed with status ${status}`,
-      })
+      return reply
+        .code(status)
+        .send({
+          statusCode: status,
+          error: statusText || 'Merkl API Error',
+          message: `Merkl opportunities request failed with status ${status}`,
+        })
     }
 
     const payload: unknown = await response.json()

@@ -24,17 +24,8 @@ const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
   { approved: false, title: 'fills, approves, and submits' },
 ].flatMap(testCase => [
-  {
-    ...testCase,
-    leverage: false,
-    repayToken: 'borrowed' as const,
-  },
-  {
-    ...testCase,
-    title: `${testCase.title} with leverage`,
-    leverage: true,
-    repayToken: 'collateral' as const,
-  },
+  { ...testCase, leverage: false, repayToken: 'borrowed' as const },
+  { ...testCase, title: `${testCase.title} with leverage`, leverage: true, repayToken: 'collateral' as const },
 ])
 
 describe('RepayForm (mocked)', () => {
@@ -43,11 +34,7 @@ describe('RepayForm (mocked)', () => {
   testCases.forEach(({ approved, leverage, repayToken, title }) => {
     it(title, () => {
       const { borrow, collateral, currentDebt, futureDebt, llamaApi, market, assertPreSubmit, assertSubmit } =
-        createRepayScenario({
-          chainId: CHAIN_ID,
-          approved,
-          leverage,
-        })
+        createRepayScenario({ chainId: CHAIN_ID, approved, leverage })
 
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
       const amount = repayToken === 'collateral' ? collateral : borrow

@@ -9,14 +9,9 @@ import { formatNumber } from '@evm-ui/utils'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@ui/lib/i18n'
 
-type GaugesBarChartCustomTooltipProps = {
-  datum: GaugeFormattedData
-}
+type GaugesBarChartCustomTooltipProps = { datum: GaugeFormattedData }
 
-type DeltaTooltipRowProps = {
-  label: string
-  value: number | null
-}
+type DeltaTooltipRowProps = { label: string; value: number | null }
 
 const DeltaTooltipRow = ({ label, value }: DeltaTooltipRowProps) => {
   const theme = useTheme()

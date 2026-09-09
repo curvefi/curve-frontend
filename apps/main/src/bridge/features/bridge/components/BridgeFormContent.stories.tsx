@@ -42,11 +42,10 @@ const BridgeNetworks = [
   { chainId: Chain.Fraxtal, blockchainId: 'fraxtal' },
 ]
 
-const BridgeNetworkSymbols = {
-  [Chain.Arbitrum]: 'ETH',
-  [Chain.Optimism]: 'ETH',
-  [Chain.Fraxtal]: 'FRAX',
-} as Record<number, string>
+const BridgeNetworkSymbols = { [Chain.Arbitrum]: 'ETH', [Chain.Optimism]: 'ETH', [Chain.Fraxtal]: 'FRAX' } as Record<
+  number,
+  string
+>
 
 const BridgeForm = (props: BridgeFormContentParams) => {
   const [fromChainId, setFromChainId] = useState(SupportedNetworks[0].chainId)
@@ -133,9 +132,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
   )
 }
 
-const meta: Meta<typeof BridgeFormContent> = {
-  title: 'Bridge/Features/BridgeFormContent',
-}
+const meta: Meta<typeof BridgeFormContent> = { title: 'Bridge/Features/BridgeFormContent' }
 
 type Story = StoryObj<typeof BridgeFormContent>
 

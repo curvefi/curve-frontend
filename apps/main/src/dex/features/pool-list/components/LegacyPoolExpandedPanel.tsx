@@ -39,10 +39,7 @@ export const LegacyPoolExpandedPanel: ExpandedPanelComponent<LegacyPoolRow> = ({
     totalAPR,
     network,
   } = poolData
-  const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network,
-    address: address as Address,
-  })
+  const { data: campaigns } = useCampaignsByAddress({ blockchainId: network, address: address as Address })
   const { volume, tvl, rewards } = poolData
 
   const { isCrvRewardsEnabled } = useNetworkFromUrl() ?? {}

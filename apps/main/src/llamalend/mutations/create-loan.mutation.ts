@@ -15,10 +15,7 @@ import type { RouteProvider } from '@primitives/router.utils'
 import { t } from '@ui/lib/i18n'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 
-type CreateLoanMutationContext = {
-  chainId: LlamaChainId
-  marketId: string | undefined
-}
+type CreateLoanMutationContext = { chainId: LlamaChainId; marketId: string | undefined }
 
 export type CreateLoanMutation = Omit<CreateLoanFormQuery, keyof CreateLoanMutationContext>
 

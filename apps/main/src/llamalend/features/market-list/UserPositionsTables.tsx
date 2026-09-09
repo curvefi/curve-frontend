@@ -18,10 +18,7 @@ import { UserPositionSummary } from './UserPositionsSummary'
 
 const { Spacing } = SizesAndSpaces
 
-type UserPositionsTableProps = {
-  onReload: () => void
-  tableQuery: QueryProp<LlamaMarketsTableResult>
-}
+type UserPositionsTableProps = { onReload: () => void; tableQuery: QueryProp<LlamaMarketsTableResult> }
 
 const buildVaultUrl = (market: LlamaMarket) =>
   getInternalUrl(
@@ -31,13 +28,7 @@ const buildVaultUrl = (market: LlamaMarket) =>
   )
 
 const CenteredEmptyState = ({ children }: { children: ReactNode }) => (
-  <Stack
-    sx={{
-      alignItems: 'center',
-      paddingBlock: Spacing.md,
-      backgroundColor: t => t.design.Layer[1].Fill,
-    }}
-  >
+  <Stack sx={{ alignItems: 'center', paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
     {children}
   </Stack>
 )

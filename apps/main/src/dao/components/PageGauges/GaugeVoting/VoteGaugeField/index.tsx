@@ -66,11 +66,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
                 title="Assigned voting power"
                 data={
                   <MetricsColumnData>
-                    {formatNumber(userPower, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                      abbreviate: false,
-                    })}
+                    {formatNumber(userPower, { minimumFractionDigits: 2, maximumFractionDigits: 2, abbreviate: false })}
                     %
                   </MetricsColumnData>
                 }
@@ -145,11 +141,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
         />
         {!newVote && (
           <AbsoluteData>
-            {formatNumber(power * userVeCrv, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-              abbreviate: false,
-            })}{' '}
+            {formatNumber(power * userVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2, abbreviate: false })}{' '}
             veCRV
           </AbsoluteData>
         )}
@@ -161,11 +153,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
       </Box>
       {newVote && (
         <NewVoteAbsoluteData>
-          {formatNumber(power * userVeCrv, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-            abbreviate: false,
-          })}{' '}
+          {formatNumber(power * userVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2, abbreviate: false })}{' '}
           veCRV
         </NewVoteAbsoluteData>
       )}

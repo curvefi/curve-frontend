@@ -7,22 +7,11 @@ const meta: Meta<typeof ChainFilterChips> = {
   title: 'EVM UI/Shared UI/ChainFilterChips',
   component: ChainFilterChips,
   argTypes: {
-    chainsQuery: {
-      control: 'object',
-      description: 'Array of blockchain network IDs to display',
-    },
-    selectedChains: {
-      control: 'object',
-      description: 'Array of currently selected chain IDs',
-    },
-    toggleChain: {
-      action: 'toggleChain',
-      description: 'Callback fired when a chain chip is toggled',
-    },
+    chainsQuery: { control: 'object', description: 'Array of blockchain network IDs to display' },
+    selectedChains: { control: 'object', description: 'Array of currently selected chain IDs' },
+    toggleChain: { action: 'toggleChain', description: 'Callback fired when a chain chip is toggled' },
   },
-  args: {
-    selectedChains: [],
-  },
+  args: { selectedChains: [] },
 }
 
 export default meta
@@ -39,44 +28,21 @@ const SAMPLE_CHAINS_QUERY = constQ([
   'fantom',
 ])
 
-export const Default: Story = {
-  args: {
-    chainsQuery: SAMPLE_CHAINS_QUERY,
-    selectedChains: ['ethereum'],
-  },
-}
+export const Default: Story = { args: { chainsQuery: SAMPLE_CHAINS_QUERY, selectedChains: ['ethereum'] } }
 
 export const MultipleSelected: Story = {
-  args: {
-    chainsQuery: SAMPLE_CHAINS_QUERY,
-    selectedChains: ['ethereum', 'arbitrum', 'optimism'],
-  },
+  args: { chainsQuery: SAMPLE_CHAINS_QUERY, selectedChains: ['ethereum', 'arbitrum', 'optimism'] },
 }
 
-export const NoneSelected: Story = {
-  args: {
-    chainsQuery: SAMPLE_CHAINS_QUERY,
-  },
-}
+export const NoneSelected: Story = { args: { chainsQuery: SAMPLE_CHAINS_QUERY } }
 
-export const NoNetworksFound: Story = {
-  args: {
-    chainsQuery: constQ(undefined),
-  },
-}
+export const NoNetworksFound: Story = { args: { chainsQuery: constQ(undefined) } }
 
-export const Loading: Story = {
-  args: {
-    chainsQuery: { ...constQ(undefined), isLoading: true },
-  },
-}
+export const Loading: Story = { args: { chainsQuery: { ...constQ(undefined), isLoading: true } } }
 
 /** Interactive example demonstrating single-select behavior like in IntegrationsList */
 export const InteractiveSingleSelect: Story = {
-  args: {
-    chainsQuery: SAMPLE_CHAINS_QUERY,
-    selectedChains: ['ethereum'],
-  },
+  args: { chainsQuery: SAMPLE_CHAINS_QUERY, selectedChains: ['ethereum'] },
   render: function Render(args) {
     const [selected, setSelected] = useState<string>('ethereum')
     return (
@@ -91,10 +57,7 @@ export const InteractiveSingleSelect: Story = {
 
 /** Interactive example demonstrating multi-select behavior */
 export const InteractiveMultiSelect: Story = {
-  args: {
-    chainsQuery: SAMPLE_CHAINS_QUERY,
-    selectedChains: ['ethereum'],
-  },
+  args: { chainsQuery: SAMPLE_CHAINS_QUERY, selectedChains: ['ethereum'] },
   render: function Render(args) {
     const [selected, setSelected] = useState<string[]>(['ethereum'])
     const toggleChain = (chain: string) => {

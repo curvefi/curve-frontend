@@ -97,9 +97,7 @@ export const buildOracleMarkerSeries = ({
             width: geometry.labelWidth,
             height: ORACLE_MARKER_LAYOUT.label.height,
           },
-          style: {
-            fill: colors.oracleMarkerLabelBackground,
-          },
+          style: { fill: colors.oracleMarkerLabelBackground },
         },
         {
           type: 'text',
@@ -120,12 +118,8 @@ export const buildOracleMarkerSeries = ({
           type: 'path',
           x: geometry.arrowLeft,
           y: geometry.arrowTop,
-          shape: {
-            pathData: ORACLE_MARKER_LAYOUT.arrow.pathData,
-          },
-          style: {
-            fill: colors.referenceLine,
-          },
+          shape: { pathData: ORACLE_MARKER_LAYOUT.arrow.pathData },
+          style: { fill: colors.referenceLine },
         },
       ],
     }

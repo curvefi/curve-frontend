@@ -43,34 +43,24 @@ export const defineMuiSelect = (
   design: DesignSystem,
   typography: TypographyVariantsOptions,
 ): Components['MuiSelect'] => ({
-  defaultProps: {
-    IconComponent: ChevronDownIcon,
-  },
+  defaultProps: { IconComponent: ChevronDownIcon },
   styleOverrides: {
     root: {
       border: 'none',
       color: design.Select.Text.Value,
-      '& .MuiOutlinedInput-notchedOutline': {
-        border: `1px solid ${design.InputSelect.Base.Default.Border.Default}`,
-      },
+      '& .MuiOutlinedInput-notchedOutline': { border: `1px solid ${design.InputSelect.Base.Default.Border.Default}` },
       '&:hover:not(.Mui-focused):not(.Mui-error):not(.Mui-disabled)': {
         backgroundColor: design.InputSelect.Base.Default.Fill.Hover,
-        '& .MuiOutlinedInput-notchedOutline': {
-          borderColor: design.InputSelect.Base.Default.Border.Hover,
-        },
+        '& .MuiOutlinedInput-notchedOutline': { borderColor: design.InputSelect.Base.Default.Border.Hover },
       },
       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
         border: `2px solid ${design.InputSelect.Base.Default.Border.Active}`,
       },
       '&.Mui-error': {
         color: design.Select.Text.Error,
-        '& .MuiOutlinedInput-notchedOutline': {
-          border: `2px solid ${design.InputSelect.Base.Default.Border.Error}`,
-        },
+        '& .MuiOutlinedInput-notchedOutline': { border: `2px solid ${design.InputSelect.Base.Default.Border.Error}` },
       },
-      '&.Mui-disabled': {
-        color: design.Select.Text.Disabled,
-      },
+      '&.Mui-disabled': { color: design.Select.Text.Disabled },
     },
     select: {
       // By default, the select doesn't vertically align items, which looks off as we make the height responsive.
@@ -84,9 +74,7 @@ export const defineMuiSelect = (
       // Use hardcoded transition values instead of MUI's theme function, which isn't accessible here.
       color: design.Select.Text.Value,
       transition: 'transform 225ms cubic-bezier(0.4, 0, 0.2, 1)',
-      '.Mui-disabled &': {
-        color: design.Select.Text.Disabled,
-      },
+      '.Mui-disabled &': { color: design.Select.Text.Disabled },
     },
   },
   variants: [

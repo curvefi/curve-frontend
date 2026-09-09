@@ -18,18 +18,10 @@ type Story = StoryObj<typeof EmptyStateCard>
 
 export const Default: Story = {}
 
-export const WithTitle: Story = {
-  args: {
-    description: undefined,
-    button: undefined,
-  },
-}
+export const WithTitle: Story = { args: { description: undefined, button: undefined } }
 
 export const WithDescription: Story = {
-  args: {
-    description: 'Try adjusting your filters or search query.',
-    button: undefined,
-  },
+  args: { description: 'Try adjusting your filters or search query.', button: undefined },
 }
 
 export const WithButton: Story = {
@@ -47,10 +39,6 @@ export const With2Buttons: Story = {
   },
 }
 
-export const Loading: Story = {
-  args: {
-    isLoading: true,
-  },
-}
+export const Loading: Story = { args: { isLoading: true } }
 
 export default meta

@@ -47,15 +47,9 @@ const WETH_TOKEN = {
 }
 
 // Lending Mock Tokens (WETH/crvUSD market)
-const COLLATERAL_TOKEN: Token = {
-  symbol: 'WETH',
-  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-}
+const COLLATERAL_TOKEN: Token = { symbol: 'WETH', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' }
 
-const BORROW_TOKEN: Token = {
-  symbol: 'crvUSD',
-  address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
-}
+const BORROW_TOKEN: Token = { symbol: 'crvUSD', address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' }
 
 // Pool Trades Mock Data Generator
 const generatePoolTrades = (count: number): PoolTradeRow[] => {
@@ -169,10 +163,7 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
         : null,
       withdrawal: isDeposit
         ? null
-        : {
-            amountBorrowed: Math.random() * 5000 + 100,
-            amountCollateral: Math.random() * 2 + 0.1,
-          },
+        : { amountBorrowed: Math.random() * 5000 + 100, amountCollateral: Math.random() * 2 + 0.1 },
       blockNumber: 19000000 + i * 60,
       timestamp: fromDate(new Date(now - i * 3600000)), // 1 hour apart
       txHash: generateTxHash(6000 + i),
@@ -194,15 +185,9 @@ const DexPoolActivityComponent = () => {
   const tradesData = useMemo(() => generatePoolTrades(20), [])
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
 
-  const tradesTable = useCurveTable({
-    query: constQ(tradesData),
-    columns: POOL_TRADES_COLUMNS,
-  })
+  const tradesTable = useCurveTable({ query: constQ(tradesData), columns: POOL_TRADES_COLUMNS })
 
-  const liquidityTable = useCurveTable({
-    query: constQ(liquidityData),
-    columns: liquidityColumns,
-  })
+  const liquidityTable = useCurveTable({ query: constQ(liquidityData), columns: liquidityColumns })
 
   return (
     <>
@@ -230,15 +215,9 @@ const LendMarketActivityComponent = () => {
   const tradesData = useMemo(() => generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN), [])
   const eventsData = useMemo(() => generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN), [])
 
-  const tradesTable = useCurveTable({
-    query: constQ(tradesData),
-    columns: LLAMMA_TRADES_COLUMNS,
-  })
+  const tradesTable = useCurveTable({ query: constQ(tradesData), columns: LLAMMA_TRADES_COLUMNS })
 
-  const eventsTable = useCurveTable({
-    query: constQ(eventsData),
-    columns: LLAMMA_EVENTS_COLUMNS,
-  })
+  const eventsTable = useCurveTable({ query: constQ(eventsData), columns: LLAMMA_EVENTS_COLUMNS })
 
   return (
     <>
@@ -312,10 +291,7 @@ export const LendMarketActivity: LendStory = {
 }
 
 const LoadingStateComponent = () => {
-  const table = useCurveTable({
-    query: fakeLoadingQ<PoolTradeRow[]>(undefined),
-    columns: POOL_TRADES_COLUMNS,
-  })
+  const table = useCurveTable({ query: fakeLoadingQ<PoolTradeRow[]>(undefined), columns: POOL_TRADES_COLUMNS })
   return (
     <ActivityTable
       table={table}
@@ -327,20 +303,11 @@ const LoadingStateComponent = () => {
 
 export const LoadingState: StoryObj = {
   render: () => <LoadingStateComponent />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Activity table in loading state showing skeleton rows.',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'Activity table in loading state showing skeleton rows.' } } },
 }
 
 const EmptyStateComponent = () => {
-  const table = useCurveTable({
-    query: constQ([] as PoolTradeRow[]),
-    columns: POOL_TRADES_COLUMNS,
-  })
+  const table = useCurveTable({ query: constQ([] as PoolTradeRow[]), columns: POOL_TRADES_COLUMNS })
   return (
     <ActivityTable
       table={table}
@@ -352,13 +319,7 @@ const EmptyStateComponent = () => {
 
 export const EmptyState: StoryObj = {
   render: () => <EmptyStateComponent />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Activity table showing empty state with custom message.',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'Activity table showing empty state with custom message.' } } },
 }
 
 const ErrorStateComponent = () => {
@@ -377,11 +338,5 @@ const ErrorStateComponent = () => {
 
 export const ErrorState: StoryObj = {
   render: () => <ErrorStateComponent />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Activity table showing error state with error message.',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'Activity table showing error state with error message.' } } },
 }
