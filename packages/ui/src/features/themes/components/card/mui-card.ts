@@ -15,7 +15,7 @@ export const defineMuiCard = (design: DesignSystem, typography: TypographyVarian
     {
       props: { size: 'small' },
       style: {
-        '& .MuiCardHeader-root': cardHeaderSmallStyles(typography),
+        '& .MuiCardHeader-root': cardHeaderSmallStyles(design, typography),
         '& .MuiCardContent-root': cardContentSmallStyles,
       },
     },

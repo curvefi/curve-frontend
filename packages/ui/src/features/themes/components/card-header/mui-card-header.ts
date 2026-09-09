@@ -4,15 +4,25 @@ import { handleBreakpoints } from '@ui/features/themes/basic-theme'
 import { DesignSystem } from '@ui/features/themes/design'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
-const { BorderWidth, Spacing, Sizing } = SizesAndSpaces
+const { BorderWidth, Spacing, Sizing, ButtonSize, Tab } = SizesAndSpaces
 
-export const cardHeaderSmallStyles = (typography: TypographyVariantsOptions) => ({
-  '& .MuiCardHeader-title': typography.headingXsBold,
-  ...handleBreakpoints({ minHeight: Sizing.lg }),
+export const cardHeaderSmallStyles = (design: DesignSystem, typography: TypographyVariantsOptions) => ({
+  '& .MuiCardHeader-title': { ...typography.headingXsBold, color: design.Tabs.Contained.Current.Label },
+  '& .MuiCardHeader-content': {
+    backgroundColor: design.Layer[1].Fill,
+    display: 'flex',
+    flex: '0 1 auto',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    minHeight: ButtonSize.sm,
+    ...handleBreakpoints({ paddingInline: Spacing[Tab.Padding.medium.inline] }),
+  },
+  '& .MuiCardHeader-action': { alignSelf: 'end', margin: 0, paddingBlockEnd: Spacing.xs, marginInlineStart: 'auto' },
+  ...handleBreakpoints({ minHeight: ButtonSize.sm, padding: 0 }),
 })
 
 export const cardHeaderInlineStyles = (design: DesignSystem, typography: TypographyVariantsOptions) => ({
-  ...cardHeaderSmallStyles(typography),
+  ...cardHeaderSmallStyles(design, typography),
   borderBottom: `${BorderWidth.thin} solid ${design.Layer[3].Outline}`,
   ...handleBreakpoints({ minHeight: Sizing.sm, paddingInline: 0 }),
 })
@@ -33,7 +43,7 @@ export const defineMuiCardHeader = (
     title: typography.headingSBold,
   },
   variants: [
-    { props: { size: 'small' }, style: cardHeaderSmallStyles(typography) },
+    { props: { size: 'small' }, style: cardHeaderSmallStyles(design, typography) },
     { props: { size: 'inline' }, style: cardHeaderInlineStyles(design, typography) },
   ],
 })

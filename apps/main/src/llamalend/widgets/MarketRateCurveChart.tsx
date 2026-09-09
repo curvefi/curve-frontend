@@ -4,7 +4,6 @@ import { getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { combineQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import {
@@ -30,7 +29,6 @@ import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/uti
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../features/market-context'
-import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -74,7 +72,6 @@ const calculateCombinedCollateral = ({
       )
 
 export const MarketRateCurveChart = () => {
-  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const {
     chainId,
     blockchainId,
@@ -162,7 +159,7 @@ export const MarketRateCurveChart = () => {
 
   return (
     <Card size="small" data-testid="interest-rate-utilization-chart">
-      <Header title={t`Interest Rate & Utilization`} />
+      <CardHeader title={t`Interest Rate & Utilization`} />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <Stack
           sx={{

@@ -6,7 +6,6 @@ import {
   MarketBorrowRateBreakdown,
   MarketSupplyRateBreakdown,
 } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
-import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
@@ -30,7 +29,6 @@ type MarketInformationCompProps = { rateType: MarketRateType; previewPrices?: Ra
 export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
   const isBorrow = rateType === MarketRateType.Borrow
-  const Header = isNewLlamaMarketDetailPage ? MarketCardHeader : CardHeader
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
@@ -62,7 +60,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       )}
       <MarketSection id="market-parameters">
         <Card size="small" data-testid="market-parameters-card">
-          <Header title={t`Advanced Details`} />
+          <CardHeader title={t`Advanced Details`} />
           <CardContent component={Stack}>
             {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
             <MarketInfoLayout />
