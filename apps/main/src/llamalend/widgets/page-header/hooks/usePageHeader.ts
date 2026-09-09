@@ -12,7 +12,6 @@ import {
 } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
-  aprToApy,
   formatSupplyExtraIncentives,
   getBorrowRateMetrics,
   getLatestSnapshotValue,
@@ -35,6 +34,7 @@ import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory, decimal, decimalMultiply } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
+import { aprToApy } from '@primitives/rates.utils'
 import { fallbackQ, mapQuery, q, Query, type QueryProp, type Range } from '@ui/features/queries/util'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
@@ -80,7 +80,7 @@ function buildSupplyRate({
           incentives: notFalsyArray(
             marketOnChainRewards?.rewardsApr?.map(reward => ({
               title: reward.symbol,
-              percentage: aprToApy(reward.apy),
+              percentage: aprToApy(reward.apy, 'llamalend.rewards'),
               blockchainId,
               address: reward.tokenAddress,
             })),

@@ -5,7 +5,6 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
-  aprToApy,
   formatSupplyExtraIncentives,
   getLatestSnapshotValue,
   getSupplyApyAverageMetrics,
@@ -35,6 +34,7 @@ import { Grid, Stack } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
+import { aprToApy } from '@primitives/rates.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -132,7 +132,7 @@ export const SupplyPositionDetails = () => {
       formatSupplyExtraIncentives({
         incentives: rewardsApr.map(r => ({
           title: r.symbol,
-          percentage: aprToApy(r.apy),
+          percentage: aprToApy(r.apy, 'llamalend.rewards'),
           blockchainId,
           address: r.tokenAddress,
         })),

@@ -1,10 +1,11 @@
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { aprToApy, formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
+import { formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
+import { aprToApy } from '@primitives/rates.utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { useMarketRateHistory } from '../../hooks/useMarketRateHistory'
@@ -37,14 +38,17 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
       periodLabel={PERIOD_LABEL}
       extraRewards={poolRewards}
       extraIncentives={formatSupplyExtraIncentives({
-        incentives: rates.incentives.map(incentive => ({ ...incentive, percentage: aprToApy(incentive.percentage) })),
-        baseRate: aprToApy(lendCrvAprUnboosted),
+        incentives: rates.incentives.map(incentive => ({
+          ...incentive,
+          percentage: aprToApy(incentive.percentage, 'llamalend.rewards'),
+        })),
+        baseRate: aprToApy(lendCrvAprUnboosted, 'llamalend.rewards'),
       })}
       totalApy={lendTotalApyMinBoosted}
       totalAverageApy={minBoostedAprAverage}
       boost={{
         type: 'market',
-        apy: aprToApy(lendCrvAprBoosted),
+        apy: aprToApy(lendCrvAprBoosted, 'llamalend.rewards'),
         totalApy: lendTotalApyMaxBoosted,
         totalAverageApy: maxBoostedAprAverage,
       }}
