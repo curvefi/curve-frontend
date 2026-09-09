@@ -19,7 +19,7 @@ export type ChainSwitcherProps<TApp extends string> = {
   supportedNetworks: ChainListOption[]
   currentMenu: TApp
   currentNetwork: ChainListOption | undefined
-  hideChains: PartialRecord<TApp, number[]>
+  hideChains?: PartialRecord<TApp, number[]>
   tvls: QueryProp<Record<string, number>>
 }
 
@@ -46,7 +46,7 @@ export const ChainSwitcher = <TApp extends string>({
   const options: ChainListOption[] = useMemo(
     () =>
       lodash.orderBy(
-        supportedNetworks.filter(n => !hideChains[currentMenu]?.includes(n.chainId)),
+        supportedNetworks.filter(n => !hideChains?.[currentMenu]?.includes(n.chainId)),
         [getTvl(tvls.data), 'name'],
         ['desc', 'asc'],
       ),

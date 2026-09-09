@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box'
+import { FallbackIcon } from '@ui/images'
 import { getBlockchainIconUrl } from '@ui/lib/resource.constants'
 
 type ChainIconProps = { blockchainId: string; size?: number }
@@ -11,7 +12,7 @@ export const ChainSwitcherIcon = ({ blockchainId, size = 28 }: ChainIconProps) =
   <Box component="span" data-testid={`chain-icon-${blockchainId}`} sx={{ alignItems: 'center', display: 'flex' }}>
     <img
       alt={`${blockchainId} logo`}
-      // onError={(evt) => (evt.target as HTMLImageElement).src = src}
+      onError={({ currentTarget }) => (currentTarget.src = FallbackIcon)}
       src={getBlockchainIconUrl(blockchainId)}
       loading="lazy"
       width={size}
