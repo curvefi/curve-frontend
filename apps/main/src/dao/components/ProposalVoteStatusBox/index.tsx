@@ -8,10 +8,7 @@ import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@legacy-ui/utils'
 import { t } from '@ui/lib/i18n'
 
-type ProposalVoteStatusBoxProps = {
-  proposalData: ProposalData
-  className?: string
-}
+type ProposalVoteStatusBoxProps = { proposalData: ProposalData; className?: string }
 
 export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBoxProps) => {
   const { votesFor, votesAgainst, quorum, support, currentQuorumPercentage } = proposalData
@@ -82,11 +79,7 @@ export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteS
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <Tooltip noWrap tooltip={formatToken(votesAgainst, 'veCRV')}>
               <HighlightedData>
-                {formatNumber(against * 100, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                  abbreviate: false,
-                })}
+                {formatNumber(against * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2, abbreviate: false })}
                 %
               </HighlightedData>
             </Tooltip>

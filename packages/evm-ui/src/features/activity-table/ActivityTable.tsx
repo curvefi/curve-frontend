@@ -29,11 +29,6 @@ export const ActivityTable = <TData extends ActivityTableItem>({
     table={table}
     emptyState={emptyState}
     errorState={errorState}
-    expandedPanel={
-      expandedPanel && {
-        ...expandedPanel,
-        Actions: expandedPanel.Actions ?? DefaultExpandedPanelActions,
-      }
-    }
+    expandedPanel={expandedPanel && { ...expandedPanel, Actions: expandedPanel.Actions ?? DefaultExpandedPanelActions }}
   />
 )

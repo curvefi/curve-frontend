@@ -6,21 +6,11 @@ import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { Chip } from '@legacy-ui/Typography'
 import { t, Trans } from '@ui/lib/i18n'
 
-type SlippageDetail = {
-  isBold: boolean
-  label: ReactNode
-  tip: string
-  variant: 'warning' | 'success' | ''
-}
+type SlippageDetail = { isBold: boolean; label: ReactNode; tip: string; variant: 'warning' | 'success' | '' }
 
 export const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Slippage) => {
   const { isBold, label, tip, variant } = useMemo(() => {
-    const slippageDetail: SlippageDetail = {
-      isBold: false,
-      label: t`Slippage`,
-      tip: '',
-      variant: '',
-    }
+    const slippageDetail: SlippageDetail = { isBold: false, label: t`Slippage`, tip: '', variant: '' }
 
     if (isHighSlippage) {
       slippageDetail.variant = 'warning'

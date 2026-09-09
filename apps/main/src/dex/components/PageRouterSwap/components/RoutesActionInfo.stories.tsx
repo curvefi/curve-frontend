@@ -51,10 +51,7 @@ const RoutesActionInfoStory = ({ routes, loading, errorMessage, ...args }: Route
 const meta: Meta<typeof RoutesActionInfoStory> = {
   title: 'DEX/PageRouterSwap/DetailInfoTradeRoute',
   component: RoutesActionInfoStory,
-  argTypes: {
-    loading: { control: 'boolean' },
-    errorMessage: { control: 'text' },
-  },
+  argTypes: { loading: { control: 'boolean' }, errorMessage: { control: 'text' } },
   args: {
     params: { network: 'ethereum' },
     routes: undefined,

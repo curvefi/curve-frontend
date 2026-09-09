@@ -16,13 +16,7 @@ export const Dex = () => (
       <Paragraph>{t`Providing liquidity on Curve doesn't come without risks. Before making a deposit, it is best to research and understand the risks involved.`}</Paragraph>
     </Section>
 
-    <Stack
-      direction={{
-        mobile: 'column',
-        tablet: 'row',
-      }}
-      sx={{ gap: Spacing.md, marginInline: Spacing.md }}
-    >
+    <Stack direction={{ mobile: 'column', tablet: 'row' }} sx={{ gap: Spacing.md, marginInline: Spacing.md }}>
       <ExternalLink href={EXTERNAL_LINKS.docs.references.whitepaper} label={t`Curve whitepaper`} />
       <ExternalLink href={EXTERNAL_LINKS.docs.user.security.audits} label={t`Curve smart contract audits`} />
     </Stack>

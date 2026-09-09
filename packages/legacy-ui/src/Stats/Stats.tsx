@@ -38,11 +38,7 @@ const DetailValue = styled.div`
   flex-direction: column;
 `
 
-type DetailInfoProps = {
-  isAlignRight?: boolean
-  isBorderBottom?: boolean
-  isOneLine?: boolean
-}
+type DetailInfoProps = { isAlignRight?: boolean; isBorderBottom?: boolean; isOneLine?: boolean }
 
 const DetailInfo = styled.div<DetailInfoProps>`
   margin: 0.25rem 0 0 0;

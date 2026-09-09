@@ -3,12 +3,7 @@ import { ConnectEvmWalletButton } from '@evm-ui/features/connect-wallet/ui/Conne
 import Button from '@mui/material/Button'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  canRebalance: boolean
-  isRebalancing: boolean
-  onRebalance: () => void
-  testId?: string
-}
+type Props = { canRebalance: boolean; isRebalancing: boolean; onRebalance: () => void; testId?: string }
 
 export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebalance, testId = 'pegkeeper' }: Props) => {
   const { isConnected } = useConnection()

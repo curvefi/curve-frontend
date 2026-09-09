@@ -181,9 +181,7 @@ export const DEPRECATED_LLAMAS: Record<MarketType, PartialRecord<ApiChain, Recor
       // sDOLA-crvUSD 2024-07-17
       '0xCf3DF6C1B4A6b38496661B31170de9508b867C8E': DEFAULT_DEPRECATE,
       // sDOLA-crvUSD
-      '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86': {
-        message: t`This market is deprecated after donation attack.`,
-      },
+      '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86': { message: t`This market is deprecated after donation attack.` },
       // crvUSD-WETH old
       '0xa5D9137d2A1Ee912469d911A8E74B6c77503bac8': DEFAULT_DEPRECATE,
       // crvUSD-tBTC old
@@ -406,10 +404,7 @@ type MarketLeverageConfig = { providers: readonly RouteProvider[]; slippage?: De
 
 // Default is the most commonly used configuration.
 const DEFAULT_LEVERAGE_CONFIG = { providers: ['enso'] } satisfies MarketLeverageConfig
-const DEFAULT_STABLE_LEVERAGE_CONFIG = {
-  ...DEFAULT_LEVERAGE_CONFIG,
-  slippage: SLIPPAGE.stable.default,
-}
+const DEFAULT_STABLE_LEVERAGE_CONFIG = { ...DEFAULT_LEVERAGE_CONFIG, slippage: SLIPPAGE.stable.default }
 
 // This is a leverage allowlist: unlisted markets remain disabled until their leverage routes are tested and approved
 export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, MarketLeverageConfig>> = {

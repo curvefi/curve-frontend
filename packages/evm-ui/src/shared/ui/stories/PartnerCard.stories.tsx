@@ -18,33 +18,13 @@ const meta: Meta<typeof PartnerCard> = {
   component: PartnerCard,
   render: PartnerCardWrapper,
   argTypes: {
-    name: {
-      control: 'text',
-      description: 'The name of the partner or protocol',
-    },
-    description: {
-      control: 'text',
-      description: 'A brief description of what the partner does',
-    },
-    imageId: {
-      control: 'text',
-      description: 'The image filename for the partner logo (null if no image)',
-    },
-    networks: {
-      description: 'Object mapping network names to boolean values indicating support',
-    },
-    tags: {
-      control: 'object',
-      description: 'Array of tags/categories associated with the partner',
-    },
-    appUrl: {
-      control: 'text',
-      description: 'URL to the partner application (null if not available)',
-    },
-    twitterUrl: {
-      control: 'text',
-      description: 'URL to the partner Twitter/X profile (null if not available)',
-    },
+    name: { control: 'text', description: 'The name of the partner or protocol' },
+    description: { control: 'text', description: 'A brief description of what the partner does' },
+    imageId: { control: 'text', description: 'The image filename for the partner logo (null if no image)' },
+    networks: { description: 'Object mapping network names to boolean values indicating support' },
+    tags: { control: 'object', description: 'Array of tags/categories associated with the partner' },
+    appUrl: { control: 'text', description: 'URL to the partner application (null if not available)' },
+    twitterUrl: { control: 'text', description: 'URL to the partner Twitter/X profile (null if not available)' },
   },
 }
 

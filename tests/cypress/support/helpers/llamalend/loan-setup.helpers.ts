@@ -107,12 +107,7 @@ export const setupTenderlyLoan = ({
   const { publicRpcUrl } = getRpcUrls(vnet)
   const client = createPublicClient({ transport: http(publicRpcUrl) })
 
-  fundUserForLoanSetup({
-    vnet,
-    userAddress,
-    collateralAddress,
-    collateralAmountWei: fundedCollateral,
-  })
+  fundUserForLoanSetup({ vnet, userAddress, collateralAddress, collateralAmountWei: fundedCollateral })
 
   // the call above uses cy.request, but to use async we need cy.then()
   loadTenderlyAccount().then(LOAD_TIMEOUT, async tenderlyAccount => {

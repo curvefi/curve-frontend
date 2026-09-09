@@ -37,10 +37,7 @@ export const useBandsData = ({
     enabled,
   )
 
-  const processedChartData = useProcessedBandsData({
-    marketBandsBalances,
-    userBandsBalances,
-  })
+  const processedChartData = useProcessedBandsData({ marketBandsBalances, userBandsBalances })
 
   const isLoading =
     isLiquidationBandLoading ||

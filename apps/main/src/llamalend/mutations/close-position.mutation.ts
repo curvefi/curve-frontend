@@ -19,9 +19,7 @@ type ClosePositionOptions = {
   userAddress: Address | undefined
 }
 
-export type CloseLoanMutation = {
-  slippage: Decimal
-}
+export type CloseLoanMutation = { slippage: Decimal }
 
 /**
  * Hook for closing a market position by self liquidating the user's position
@@ -47,9 +45,7 @@ export const useClosePositionMutation = ({
         message: t`Approved closing position`,
         config,
       })
-      return {
-        hash: (await getLoanImplementation(market).selfLiquidate(Number(slippage))) as Hex,
-      }
+      return { hash: (await getLoanImplementation(market).selfLiquidate(Number(slippage))) as Hex }
     },
     pendingMessage: () => t`Closing position...`,
     successMessage: () => t`Position closed successfully!`,

@@ -26,11 +26,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
         sx={{
           gap: Spacing.lg,
 
-          flexWrap: {
-            mobile: 'wrap',
-            tablet: 'wrap',
-            desktop: 'nowrap',
-          },
+          flexWrap: { mobile: 'wrap', tablet: 'wrap', desktop: 'nowrap' },
         }}
       >
         <Stack sx={{ gap: Spacing.sm }}>

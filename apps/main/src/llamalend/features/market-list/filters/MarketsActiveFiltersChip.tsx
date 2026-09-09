@@ -42,10 +42,10 @@ export const MarketsActiveFiltersChip = ({
   table,
   setColumnFilter,
   testIdPrefix,
-}: {
-  table: ReactTable<CurveTableFeatures, LlamaMarketRow>
-  testIdPrefix: string
-} & Pick<FilterProps<MarketColumnId>, 'setColumnFilter'>) => {
+}: { table: ReactTable<CurveTableFeatures, LlamaMarketRow>; testIdPrefix: string } & Pick<
+  FilterProps<MarketColumnId>,
+  'setColumnFilter'
+>) => {
   const filtersState = table.state.columnFilters as { id: MarketColumnId; value: string }[]
   // Keep networks first than remaining filters in the same order as the market columns to avoid chips jumping when filters are removed.
   const sortedFiltersState = useMemo(

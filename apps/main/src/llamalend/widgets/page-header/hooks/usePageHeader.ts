@@ -68,10 +68,7 @@ function buildSupplyRate({
     extraIncentivesApy: sumOnChainExtraIncentivesApy(marketOnChainRewards?.rewardsApr),
     campaignsApy: sumCampaignsApy(campaigns),
   })
-  const supplyAverageMetrics = getSupplyApyAverageMetrics({
-    snapshots: lendingSnapshots,
-    daysBack,
-  })
+  const supplyAverageMetrics = getSupplyApyAverageMetrics({ snapshots: lendingSnapshots, daysBack })
 
   return {
     ...supplyMetrics,
@@ -278,12 +275,7 @@ export const usePageHeaderRates = () => {
   const vaultAddress = getVaultAddress(market, apiMarket.data)
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const snapshot = q(
-    useMarketSnapshots({
-      marketType,
-      controllerAddress,
-      blockchainId,
-      range: { kind: 'limit', limit: RATE_WINDOW },
-    }),
+    useMarketSnapshots({ marketType, controllerAddress, blockchainId, range: { kind: 'limit', limit: RATE_WINDOW } }),
   )
   const marketRates = q(useMarketRates({ chainId, marketId: market?.id }))
   const campaigns = useCampaigns({ blockchainId, controllerAddress, vaultAddress, marketType })
@@ -308,10 +300,7 @@ export const usePageHeaderRates = () => {
 export const usePageHeader = () => {
   const { chainId, marketQuery, apiMarket } = useMarketContext()
 
-  return {
-    ...usePageHeaderRates(),
-    availableLiquidity: useAvailableLiquidity({ chainId, marketQuery, apiMarket }),
-  }
+  return { ...usePageHeaderRates(), availableLiquidity: useAvailableLiquidity({ chainId, marketQuery, apiMarket }) }
 }
 
 type UsePageHeaderRatesResult = ReturnType<typeof usePageHeaderRates>

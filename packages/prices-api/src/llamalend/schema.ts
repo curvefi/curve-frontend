@@ -14,11 +14,7 @@ const token = z
   .transform(camelizeKeys)
 
 const extraRewardApr = z
-  .object({
-    address,
-    symbol: z.string(),
-    apr: z.number(),
-  })
+  .object({ address, symbol: z.string(), apr: z.number() })
   .transform(({ apr, ...data }) => ({ ...data, rate: apr }))
 
 const numberLike = z.union([z.number(), z.string()]).transform(value => Number(value))
@@ -150,12 +146,7 @@ const snapshot = z
   )
 
 const userMarket = z
-  .object({
-    market_name: z.string(),
-    controller: address,
-    first_snapshot: timestamp,
-    last_snapshot: timestamp,
-  })
+  .object({ market_name: z.string(), controller: address, first_snapshot: timestamp, last_snapshot: timestamp })
   .transform(camelizeKeys)
   .transform(({ marketName, firstSnapshot, lastSnapshot, ...data }) => ({
     ...data,
@@ -380,15 +371,10 @@ const collateralEvent = z
     leverage: leverage ? transformLeverageEvent(leverage) : undefined,
   }))
 
-const rawGetMarketsResponse = z.object({
-  count: z.number(),
-  data: z.array(market),
-})
+const rawGetMarketsResponse = z.object({ count: z.number(), data: z.array(market) })
 
 export const getAllMarketsResponse = z
-  .object({
-    chains: z.record(z.string(), rawGetMarketsResponse),
-  })
+  .object({ chains: z.record(z.string(), rawGetMarketsResponse) })
   .transform(
     ({ chains }) =>
       fromEntries(recordEntries(chains).map(([chain, item]) => [chain, item.data])) as Record<
@@ -403,20 +389,11 @@ export const getSnapshotsResponse = z.object({ data: z.array(snapshot) }).transf
 const rawUserMarketsResponse = z.object({ markets: z.array(userMarket), count: z.number() })
 
 export const getUserMarketsResponse = z
-  .object({
-    user: address,
-    markets: z.array(userMarket),
-    page: z.number(),
-    per_page: z.number(),
-    count: z.number(),
-  })
+  .object({ user: address, markets: z.array(userMarket), page: z.number(), per_page: z.number(), count: z.number() })
   .transform(({ markets }) => markets)
 
 export const getAllUserMarketsResponse = z
-  .object({
-    user: address,
-    chains: z.record(z.string(), rawUserMarketsResponse),
-  })
+  .object({ user: address, chains: z.record(z.string(), rawUserMarketsResponse) })
   .transform(
     ({ chains }) =>
       fromEntries(recordEntries(chains).map(([chain, item]) => [chain, item.markets])) as Record<
@@ -425,10 +402,7 @@ export const getAllUserMarketsResponse = z
       >,
   )
 
-const rawUserLendingPositionsResponse = z.object({
-  markets: z.array(userLendingPosition),
-  count: z.number(),
-})
+const rawUserLendingPositionsResponse = z.object({ markets: z.array(userLendingPosition), count: z.number() })
 
 export const getUserLendingPositionsResponse = z
   .object({
@@ -441,10 +415,7 @@ export const getUserLendingPositionsResponse = z
   .transform(({ markets }) => markets)
 
 export const getAllUserLendingPositionsResponse = z
-  .object({
-    user: address,
-    chains: z.record(z.string(), rawUserLendingPositionsResponse),
-  })
+  .object({ user: address, chains: z.record(z.string(), rawUserLendingPositionsResponse) })
   .transform(
     ({ chains }) =>
       fromEntries(recordEntries(chains).map(([chain, item]) => [chain, item.markets])) as Record<
@@ -484,26 +455,12 @@ export const getVaultDepositorsResponse = z
   .transform(camelizeKeys)
 
 export const getUserMarketSnapshotsResponse = z
-  .object({
-    user: address,
-    data: z.array(userMarketStats),
-    page: z.number(),
-    per_page: z.number(),
-    count: z.number(),
-  })
+  .object({ user: address, data: z.array(userMarketStats), page: z.number(), per_page: z.number(), count: z.number() })
   .transform(({ data }) => data)
 
 export const getMarketUsersResponse = z
-  .object({
-    data: z.array(marketUser),
-    page: z.number(),
-    per_page: z.number(),
-    count: z.number(),
-  })
-  .transform(({ count, data }) => ({
-    count,
-    users: data,
-  }))
+  .object({ data: z.array(marketUser), page: z.number(), per_page: z.number(), count: z.number() })
+  .transform(({ count, data }) => ({ count, users: data }))
 
 export const getUserCollateralEventsResponse = z
   .object({

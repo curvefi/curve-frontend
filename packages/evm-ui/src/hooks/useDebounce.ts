@@ -3,10 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { objectKeys } from '@primitives/objects.utils'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 
-type DebouncedValueOptions<T> = {
-  defaultValue?: T
-  debounceMs?: number
-}
+type DebouncedValueOptions<T> = { defaultValue?: T; debounceMs?: number }
 
 /**
  * A hook that debounces a function call and calls a callback when the debouncing period has elapsed.
