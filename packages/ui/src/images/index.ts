@@ -1,6 +1,7 @@
 // LOGO
 export { default as RCScrvUSDLogoSM } from './scrvusd-logo/webp/scrvUSD-sm.webp'
 export { default as RCCrvUSDLogoSM } from './crvusd-logo/webp/crvUSD-sm.webp'
+export { default as FallbackIcon } from './default-crypto.png'
 
 // ICON
 export { default as RCPointsIcon } from './points-icon.svg?react'
