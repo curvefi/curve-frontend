@@ -80,7 +80,7 @@ export const HealthAndBufferBar = ({
   const isHealth = type === 'health'
   const percentage = getPercentage(data)
   const label = isHealth && maybe(positionStatus, status => POSITION_STATUS_LABEL[status])
-  const testId = `health-details-${isHealth ? 'health' : 'liquidation-buffer'}-bar`
+  const testId = `health-details-${{ health: 'health', liquidationBuffer: 'liquidation-buffer' }[type]}-bar`
 
   return (
     <WithSkeleton loading={isHealthLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
