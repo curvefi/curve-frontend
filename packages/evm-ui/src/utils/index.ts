@@ -9,22 +9,24 @@ export * from './average-categories'
 export * from './rates'
 export * from './tokens'
 
+export function tryChecksumAddress(text: string) {
+  if (isAddress(text)) {
+    try {
+      return getAddress(text)
+    } catch (error) {
+      console.warn('Failed to checksum address', error)
+    }
+  }
+  return text
+}
+
 /**
- * Copies text to clipboard with Ethereum address checksumming
+ * Copies text to the clipboard
  * @param text - The text to copy to clipboard
  * @returns Promise resolving to true if copy was successful, false otherwise
  * @todo Potentially show a snackbar of the copied value
  */
 export async function copyToClipboard(text: string) {
-  // Check if the text is an Ethereum address and apply checksumming if it is
-  if (isAddress(text)) {
-    try {
-      text = getAddress(text)
-    } catch (error) {
-      console.warn('Failed to checksum address', error)
-    }
-  }
-
   try {
     await navigator.clipboard.writeText(text)
     return true

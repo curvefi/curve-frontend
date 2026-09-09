@@ -5,6 +5,7 @@ import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
 import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
 import { UserPositionIndicator } from '@evm-ui/shared/ui/DataTable/UserPositionIndicator'
+import { tryChecksumAddress } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
 import { TokenIcons } from '@ui/components/TokenIcons'
@@ -51,6 +52,7 @@ export const LegacyPoolTitleCell = ({
               className={`${DESKTOP_ONLY_HOVER_CLASS} ${CLICKABLE_IN_ROW_CLASS}`}
               label={t`Copy pool address`}
               copyText={pool.address}
+              format={tryChecksumAddress}
               confirmationText={t`Pool address copied`}
             />
           </Stack>

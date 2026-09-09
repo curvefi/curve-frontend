@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { shortenAddress } from '@evm-ui/utils'
+import { tryChecksumAddress, shortenAddress } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { TokenInfo, type TokenInfoProps } from '@ui/components/TokenInfo'
@@ -26,7 +26,7 @@ type TokenCellProps = {
 /** Displays token information with copy-address and optional explorer interactions. */
 export const TokenCell = ({ source, address, explorerUrl, endAdornment }: TokenCellProps) => {
   address = address ?? ('address' in source ? source.address : undefined)
-  const copyAddress = useCopyToClipboard({ copyText: address })
+  const copyAddress = useCopyToClipboard({ copyText: address, format: tryChecksumAddress })
 
   return (
     <InlineTableCell>
