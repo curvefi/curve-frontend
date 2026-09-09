@@ -229,9 +229,6 @@ export const defineMuiChip = (
         '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': { ...handleBreakpoints({ gap: Spacing.xxs }) },
         '& .MuiChip-icon': { marginInline: 0, color: 'inherit', transition: `color ${CHIP_TRANSITION}` },
         '& .MuiChip-deleteIcon': { margin: 0, color: 'inherit', transition: `color ${CHIP_TRANSITION}` },
-        '@media (prefers-reduced-motion: no-preference)': {
-          '&:active:not(:focus-visible)': { transform: 'scale(0.98)' },
-        },
         '&:hover, &:focus-visible': {
           borderColor: 'transparent',
           backgroundColor: Chips.Hover.Fill,
