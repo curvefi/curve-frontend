@@ -22,7 +22,7 @@ export const cardHeaderSmallStyles = (design: DesignSystem, typography: Typograp
 })
 
 export const cardHeaderInlineStyles = (design: DesignSystem, typography: TypographyVariantsOptions) => ({
-  ...cardHeaderSmallStyles(design, typography),
+  '& .MuiCardHeader-title': typography.headingXsBold,
   borderBottom: `${BorderWidth.thin} solid ${design.Layer[3].Outline}`,
   ...handleBreakpoints({ minHeight: Sizing.sm, paddingInline: 0 }),
 })
