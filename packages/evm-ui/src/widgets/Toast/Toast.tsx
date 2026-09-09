@@ -3,19 +3,13 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
+import { capitalize } from '@mui/material/utils'
 import { useLayoutStore } from '@ui/features/layout/layout'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { watchToasts, type ToastItem } from './toast.util'
 
 const { Spacing } = SizesAndSpaces
-
-const snackbarBorderBySeverity = {
-  info: 'Info',
-  success: 'Success',
-  warning: 'Warning',
-  error: 'Error',
-} as const satisfies Record<NonNullable<ToastItem['severity']>, string>
 
 /** Get toast duration based on severity */
 const getDuration = ({ severity = 'info' }: Pick<ToastItem, 'severity'>) => Duration.Toast[severity]
@@ -75,31 +69,27 @@ export const Toast = () => {
           flexDirection: 'column',
         }}
       >
-        {items.map(({ id, severity, title, message, testId, keepAlive }) => {
-          const resolvedSeverity = severity ?? 'info'
-          const snackbarBorder = snackbarBorderBySeverity[resolvedSeverity]
-          return (
-            <Alert
-              key={id}
-              variant="outlined"
-              severity={resolvedSeverity}
-              data-testid={testId ?? `toast-${resolvedSeverity}`}
-              sx={{
-                borderColor: theme => theme.design.Snackbar.Border[snackbarBorder],
-                ...(!keepAlive && {
-                  animation: `toastFadeOut ${getDuration({ severity: resolvedSeverity }) + Duration.Transition}ms forwards`,
-                  '@keyframes toastFadeOut': {
-                    [getDurationPercent({ severity: resolvedSeverity })]: { opacity: 1 },
-                    '100%': { opacity: 0 },
-                  },
-                }),
-              }}
-            >
-              {title && <AlertTitle>{title}</AlertTitle>}
-              {message}
-            </Alert>
-          )
-        })}
+        {items.map(({ id, severity = 'info', title, message, testId, keepAlive }) => (
+          <Alert
+            key={id}
+            variant="outlined"
+            severity={severity}
+            data-testid={testId ?? `toast-${severity}`}
+            sx={{
+              borderColor: theme => theme.design.Snackbar.Border[capitalize(severity) as Capitalize<typeof severity>],
+              ...(!keepAlive && {
+                animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
+                '@keyframes toastFadeOut': {
+                  [getDurationPercent({ severity })]: { opacity: 1 },
+                  '100%': { opacity: 0 },
+                },
+              }),
+            }}
+          >
+            {title && <AlertTitle>{title}</AlertTitle>}
+            {message}
+          </Alert>
+        ))}
       </Stack>
     </Snackbar>
   )
