@@ -21,7 +21,6 @@ import {
   mainnet,
   mantle,
   monad,
-  moonbeam,
   neonDevnet,
   neonMainnet,
   optimism,
@@ -64,7 +63,6 @@ const wagmiChains = [
   mantle,
   megaeth,
   monad,
-  moonbeam,
   neonMainnet,
   neonDevnet,
   optimism,
@@ -89,7 +87,7 @@ export const DEPRECATED_CHAINS: Record<number, Date> = {
   [kava.id]: deprecateDate,
 }
 export const DOWNGRADED_CHAINS = new Set<number>(
-  [aurora, avalanche, celo, fantom, kava, mantle, moonbeam, sonic, xLayer, zksync].map(c => c.id),
+  [aurora, avalanche, celo, fantom, kava, mantle, sonic, xLayer, zksync].map(c => c.id),
 )
 
 /**
@@ -107,9 +105,12 @@ export const isLiteChain = (chainId: number) =>
 export const getChainName = (chainId: number) =>
   CHAIN_NAMES[chainId] ?? wagmiChainsMap[chainId]?.name ?? `Chain ${chainId}`
 
-export const getChainNativeCurrency = (chainId: number) => wagmiChainsMap[chainId]?.nativeCurrency
-export const getChainBlockExplorer = (chainId: number) => wagmiChainsMap[chainId]?.blockExplorers?.default.url
-export const getChainDefaultRpcUrls = (chainId: number) => wagmiChainsMap[chainId]?.rpcUrls.default.http
+export const getChainNativeCurrency = (chainId: number): { symbol: string } | undefined =>
+  wagmiChainsMap[chainId]?.nativeCurrency
+export const getChainBlockExplorer = (chainId: number): string | undefined =>
+  wagmiChainsMap[chainId]?.blockExplorers?.default.url
+export const getChainDefaultRpcUrls = (chainId: number): readonly string[] | undefined =>
+  wagmiChainsMap[chainId]?.rpcUrls.default.http
 
 /** Creates a Wagmi / Viem chain configuration with potential custom overrides. */
 export const createChain = (chainId: number, getRpcUrls: typeof defaultGetRpcUrls): Chain =>

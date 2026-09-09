@@ -2,7 +2,6 @@ export enum Chain {
   Ethereum = 1,
   Optimism = 10,
   Gnosis = 100,
-  Moonbeam = 1284,
   Polygon = 137,
   Kava = 2222,
   Fantom = 250,

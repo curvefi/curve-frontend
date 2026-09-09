@@ -1,4 +1,4 @@
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { usePoolContext } from '@/dex/features/pool-context'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
@@ -11,24 +11,10 @@ import { usePoolComposition } from '../../hooks/usePoolComposition'
 import { POOL_COMPOSITION_COLUMNS, POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY } from './columns/columns.definitions'
 import { FooterRow } from './FooterRow'
 
-export const PoolComposition = ({
-  chainId,
-  poolDataCacheOrApi,
-  poolId,
-  pricesApiPoolData,
-}: {
-  chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-  poolId: string
-  pricesApiPoolData?: PricesApiPool
-}) => {
+export const PoolComposition = ({ pricesApiPoolData }: { pricesApiPoolData?: PricesApiPool }) => {
+  const { chainId, poolId, poolData } = usePoolContext()
   const isMobile = useIsMobile()
-  const { isLoading, error, rows, totalUsd } = usePoolComposition({
-    chainId,
-    poolDataCacheOrApi,
-    poolId,
-    pricesApiPoolData,
-  })
+  const { isLoading, error, rows, totalUsd } = usePoolComposition({ chainId, poolData, poolId, pricesApiPoolData })
   const table = useCurveTable({
     query: q({ data: rows, isLoading, error }),
     columns: POOL_COMPOSITION_COLUMNS,

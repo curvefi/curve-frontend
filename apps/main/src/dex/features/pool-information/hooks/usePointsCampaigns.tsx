@@ -1,51 +1,19 @@
 import { useMemo } from 'react'
 import { type Address } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import type { ChainId, PoolData } from '@/dex/types/main.types'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
-import { formatNumber } from '@evm-ui/utils'
-import Box from '@mui/material/Box'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import type { PointsCampaignsRow } from '../components/points-campaigns/columns/columns.definitions'
+import { getPointsCampaignRows } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 
-const { IconSize } = SizesAndSpaces
-
-export const usePointsCampaigns = ({
-  chainId,
-  poolDataCacheOrApi,
-}: {
-  chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
-}) => {
-  const poolAddress = poolDataCacheOrApi.pool.address as Address
+export const usePointsCampaigns = ({ chainId, poolData }: { chainId: ChainId; poolData: PoolData }) => {
+  const poolAddress = poolData.pool.address as Address
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network?.blockchainId,
     address: poolAddress,
   })
 
-  const rows = useMemo(
-    () =>
-      campaigns
-        .filter(({ reward, symbol }) => reward?.type === 'points' || (!reward?.type && symbol))
-        .map(({ dashboardLink, reward, platform, platformImageId, symbol }): PointsCampaignsRow => ({
-          source: {
-            icon: (
-              <Box
-                component="img"
-                src={platformImageId}
-                alt={platform}
-                sx={{ borderRadius: '50%', width: IconSize.lg, height: IconSize.lg }}
-              />
-            ),
-            iconPosition: 'left',
-            primary: platform,
-          },
-          multiplier: reward?.value != null || symbol == null ? formatNumber(reward?.value, 'multiplier') : symbol,
-          campaignUrl: dashboardLink,
-        })),
-    [campaigns],
-  )
+  const rows = useMemo(() => getPointsCampaignRows(campaigns), [campaigns])
 
   return { rows }
 }

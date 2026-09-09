@@ -1,15 +1,15 @@
 import { Contract, Interface, type InterfaceAbi, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { type State, useStore } from '@/dex/store/useStore'
-import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
+import { PoolData, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import { useCurve, useWallet } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/lib/dayjs'
 
 type PoolTotalStaked = State['pools']['stakedMapper'][string]
 
-export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): PoolTotalStaked | undefined => {
-  const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
+export const usePoolTotalStaked = (poolData: PoolData): PoolTotalStaked | undefined => {
+  const { address, lpToken, gauge } = poolData?.pool ?? {}
   const { curveApi = null } = useCurve()
   const { provider } = useWallet()
   const staked = useStore(state => state.pools.stakedMapper[address])
