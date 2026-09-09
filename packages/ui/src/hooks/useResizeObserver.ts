@@ -1,10 +1,7 @@
 import { type RefObject, useEffect, useState } from 'react'
 
 /** Options for the height resize observer */
-type ResizeObserverOptions = {
-  threshold?: number
-  enabled?: boolean
-}
+type ResizeObserverOptions = { threshold?: number; enabled?: boolean }
 
 const EMPTY_DIMENSIONS: readonly [] = []
 

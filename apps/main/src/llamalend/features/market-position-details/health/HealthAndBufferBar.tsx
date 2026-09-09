@@ -64,10 +64,7 @@ const SEGMENT_CONFIG: Record<
   },
 }
 
-const BADGE_SIZE_BY_BAR_SIZE = {
-  lg: 'small',
-  sm: 'extraSmall',
-} as const
+const BADGE_SIZE_BY_BAR_SIZE = { lg: 'small', sm: 'extraSmall' } as const
 
 export const HealthAndBufferBar = ({
   state,

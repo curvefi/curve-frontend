@@ -9,12 +9,7 @@ import { formatDate } from '@primitives/date.utils'
 import { Chain } from '@primitives/network.utils'
 import { t } from '@ui/lib/i18n'
 
-type ProposalHeaderProps = {
-  proposal: ProposalData | null
-  loading: boolean
-  voteId: string
-  proposalType: string
-}
+type ProposalHeaderProps = { proposal: ProposalData | null; loading: boolean; voteId: string; proposalType: string }
 
 export const ProposalHeader = ({ proposal, loading, voteId, proposalType }: ProposalHeaderProps) => {
   const { status, executed, timestamp, executionDate, executionTx } = proposal ?? {}

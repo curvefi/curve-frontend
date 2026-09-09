@@ -13,11 +13,10 @@ import { poolTypeClassifications, type PoolClassification } from './classificati
 
 const { Spacing } = SizesAndSpaces
 
-const poolTypeLabels = {
-  stable: t`Stable`,
-  volatile: t`Volatile`,
-  fxswap: t`FXSwap`,
-} satisfies Record<PoolClassification, string>
+const poolTypeLabels = { stable: t`Stable`, volatile: t`Volatile`, fxswap: t`FXSwap` } satisfies Record<
+  PoolClassification,
+  string
+>
 
 const alertTypeToBadgeColor: Record<AlertType, BadgeProps['color']> = {
   '': 'accent',

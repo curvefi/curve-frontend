@@ -39,45 +39,15 @@ const meta: Meta<typeof SelectableChip> = {
   title: 'UI Kit/Primitives/Chip',
   component: SelectableChip,
   argTypes: {
-    variant: {
-      control: 'select',
-      options: ['outlined', 'ghost'],
-      description: 'The variant of the component.',
-    },
-    label: {
-      control: 'text',
-      description: 'The label displayed inside the chip.',
-    },
-    size: {
-      control: 'select',
-      options: sizes,
-      description: 'The size of the component.',
-    },
-    selected: {
-      control: 'boolean',
-      description: 'The selected state of the component.',
-    },
-    disabled: {
-      control: 'boolean',
-      description: 'The disabled state of the component.',
-    },
-    icon: {
-      control: false,
-      description: 'Optional icon rendered before the label.',
-    },
-    toggle: {
-      control: false,
-      description: 'Click handler used to toggle the chip selection.',
-    },
+    variant: { control: 'select', options: ['outlined', 'ghost'], description: 'The variant of the component.' },
+    label: { control: 'text', description: 'The label displayed inside the chip.' },
+    size: { control: 'select', options: sizes, description: 'The size of the component.' },
+    selected: { control: 'boolean', description: 'The selected state of the component.' },
+    disabled: { control: 'boolean', description: 'The disabled state of the component.' },
+    icon: { control: false, description: 'Optional icon rendered before the label.' },
+    toggle: { control: false, description: 'Click handler used to toggle the chip selection.' },
   },
-  args: {
-    label: 'Label',
-    size: 'medium',
-    selected: false,
-    disabled: false,
-    toggle: fn(),
-    variant: 'outlined',
-  },
+  args: { label: 'Label', size: 'medium', selected: false, disabled: false, toggle: fn(), variant: 'outlined' },
   parameters: {
     docs: {
       description: {
@@ -89,62 +59,30 @@ const meta: Meta<typeof SelectableChip> = {
 }
 
 export const Chip: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'Default selectable chip with configurable props.',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'Default selectable chip with configurable props.' } } },
 }
 
 export const Outlined: Story = {
   render: () => <VariantStory />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Displays the unselected chip variant across all available sizes.',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'Displays the unselected chip variant across all available sizes.' } } },
 }
 
 export const SelectedOutlined: Story = {
   render: () => <VariantStory selected />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Displays the selected chip variant across all available sizes.',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'Displays the selected chip variant across all available sizes.' } } },
 }
 
 export const Ghost: Story = {
   render: () => <VariantStory variant="ghost" />,
-  args: {
-    variant: 'ghost',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Displays the ghost chip variant across all available sizes.',
-      },
-    },
-  },
+  args: { variant: 'ghost' },
+  parameters: { docs: { description: { story: 'Displays the ghost chip variant across all available sizes.' } } },
 }
 
 export const SelectedGhost: Story = {
   render: () => <VariantStory selected variant="ghost" />,
-  args: {
-    variant: 'ghost',
-  },
+  args: { variant: 'ghost' },
   parameters: {
-    docs: {
-      description: {
-        story: 'Displays the selected ghost chip variant across all available sizes.',
-      },
-    },
+    docs: { description: { story: 'Displays the selected ghost chip variant across all available sizes.' } },
   },
 }
 

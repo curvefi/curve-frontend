@@ -8,18 +8,12 @@ export const { networks, networksIdMapper } = Object.entries({
   (
     mapper,
     [key, blockchainId],
-  ): {
-    networks: Record<ChainId, NetworkConfig>
-    networksIdMapper: Record<NetworkEnum, ChainId>
-  } => {
+  ): { networks: Record<ChainId, NetworkConfig>; networksIdMapper: Record<NetworkEnum, ChainId> } => {
     const chainId = +key
     const networkConfig = { chainId, blockchainId }
     mapper.networks[chainId] = networkConfig
     mapper.networksIdMapper[networkConfig.blockchainId] = chainId
     return mapper
   },
-  {
-    networks: {},
-    networksIdMapper: {},
-  },
+  { networks: {}, networksIdMapper: {} },
 )

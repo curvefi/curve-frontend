@@ -16,9 +16,7 @@ const ghostSx = {
   '&.Mui-disabled .MuiOutlinedInput-notchedOutline': { borderColor: TRANSPARENT },
 } as const
 
-export type SelectProps = Omit<MuiSelectProps, 'variant'> & {
-  variant?: MuiSelectProps['variant'] | 'ghost'
-}
+export type SelectProps = Omit<MuiSelectProps, 'variant'> & { variant?: MuiSelectProps['variant'] | 'ghost' }
 
 /**
  * Wrapper component for Mui's Select component that adds additional functionality, like a ghost variant

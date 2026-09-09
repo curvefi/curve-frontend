@@ -1,8 +1,8 @@
 import type { GaugeUrlParams, ProposalUrlParams, UserUrlParams } from '@/dao/types/dao.types'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
-import { redirectTo } from './util'
 
 const DaoLayout = lazyRouteComponent(() => import('@/dao/DaoLayout'), 'DaoLayout')
 const PageAnalytics = lazyRouteComponent(() => import('@/dao/components/PageAnalytics'), 'Analytics')
@@ -13,11 +13,7 @@ const PageProposal = lazyRouteComponent(() => import('@/dao/components/PagePropo
 const PageUser = lazyRouteComponent(() => import('@/dao/components/PageUser'), 'User')
 const PageVeCrv = lazyRouteComponent(() => import('@/dao/components/PageVeCrv'), 'VeCrv')
 
-const daoLayoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'dao',
-  component: DaoLayout,
-})
+const daoLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'dao', component: DaoLayout })
 
 const layoutProps = { getParentRoute: () => daoLayoutRoute }
 

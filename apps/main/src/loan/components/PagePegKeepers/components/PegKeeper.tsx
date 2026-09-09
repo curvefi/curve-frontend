@@ -12,10 +12,7 @@ import { PegKeeperRebalanceButton } from './PegKeeperRebalanceButton'
 
 const { Spacing } = SizesAndSpaces
 
-type Props = PegKeeperType & {
-  testId?: string
-  sx?: SxProps
-}
+type Props = PegKeeperType & { testId?: string; sx?: SxProps }
 
 export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => {
   const {

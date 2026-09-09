@@ -93,11 +93,7 @@ export const LegacyDataTable = <TData extends RowData>({
   useResetPageOnResultChange(table)
   useScrollToTopOnPageChange({ table, tableTopRef })
   const tableHeaderSx = (t: Theme) => ({
-    ...(!disableStickyHeader && {
-      position: 'sticky',
-      top: maxHeight ? 0 : top,
-      zIndex: t.zIndex.tableHeader,
-    }),
+    ...(!disableStickyHeader && { position: 'sticky', top: maxHeight ? 0 : top, zIndex: t.zIndex.tableHeader }),
     backgroundColor: t.design.Table.Header.Fill,
     marginBlock: Sizing.sm,
   })

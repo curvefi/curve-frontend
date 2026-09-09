@@ -9,14 +9,9 @@ import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
-type GaugesBarChartCustomTooltipProps = {
-  datum: GaugeFormattedData
-}
+type GaugesBarChartCustomTooltipProps = { datum: GaugeFormattedData }
 
-type DeltaTooltipRowProps = {
-  label: string
-  value: number | null
-}
+type DeltaTooltipRowProps = { label: string; value: number | null }
 
 const DeltaTooltipRow = ({ label, value }: DeltaTooltipRowProps) => {
   const theme = useTheme()

@@ -19,8 +19,8 @@ export type GlobalBannerProps = {
   chainName: string
   chainId: number
   backendMaintenance: Maintenance
-  deprecationDate: Date
-  isDowngraded: boolean
+  deprecationDate?: Date
+  isDowngraded?: boolean
   connectError: Error | undefined
   isConnected: boolean
   switchChain: ({ chainId }: { chainId: number }) => Promise<unknown>

@@ -28,9 +28,7 @@ import { Spinner } from '@legacy-ui/Spinner'
 import { useLayoutStore } from '@ui/features/layout/store'
 import { t } from '@ui/lib/i18n'
 
-type Props = {
-  curve: CurveApi
-}
+type Props = { curve: CurveApi }
 
 export const CreatePool = ({ curve }: Props) => {
   const navHeight = useLayoutStore(state => state.navHeight)

@@ -20,7 +20,7 @@ export type HeaderProps<TApp extends string> = {
   supportedNetworks: ChainListOption[]
   appStats?: { label: string; value: string }[]
   links: HeaderAppLinks<TApp>
-  hideChains: PartialRecord<TApp, number[]>
+  hideChains?: PartialRecord<TApp, number[]>
   tvls: QueryProp<Record<string, number>>
   connectWalletProps: ConnectWalletProps
   pages: HeaderLink[]

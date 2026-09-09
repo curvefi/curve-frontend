@@ -14,10 +14,7 @@ import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
-type GaugeMetricsProps = {
-  gaugeData: GaugeFormattedData | undefined
-  dataLoading: boolean
-}
+type GaugeMetricsProps = { gaugeData: GaugeFormattedData | undefined; dataLoading: boolean }
 
 export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
   const gaugeAddress = gaugeData?.effective_address?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''

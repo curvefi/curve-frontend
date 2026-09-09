@@ -7,7 +7,7 @@ import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { stackedMarketCardHeadersSx } from '@ui/lib/mui'
 import { buildBorrowRateBreakdown, buildSupplyRateBreakdown } from './market-rate-breakdown.utils'
 import { PointsCampaignsCard, RateBreakdownTable } from './MarketRateBreakdownCards'
@@ -19,19 +19,11 @@ export const MarketBorrowRateBreakdown = () => {
     tokens: { collateralToken },
   } = useMarketContext()
   const { borrowRate } = usePageHeaderRates()
-  const addresses = useMemo(
-    () =>
-      notFalsy(
-        ...notFalsyArray(
-          [collateralToken?.address],
-          borrowRate.data?.extraRewards.map(({ reward }) => reward?.type === 'apr' && reward.address),
-        ),
-      ),
-    [borrowRate.data?.extraRewards, collateralToken?.address],
+  const collateralPrice = q(
+    useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address }, borrowRate.data?.rebasingYield != null),
   )
-  const { data: prices } = useTokenUsdRates({ chainId, tokenAddresses: addresses })
   const borrowQuery = mapQuery(borrowRate, rate =>
-    buildBorrowRateBreakdown({ rate, chainId, blockchainId, collateralToken, prices }),
+    buildBorrowRateBreakdown({ rate, chainId, blockchainId, collateralToken, collateralPrice }),
   )
 
   return (
@@ -54,19 +46,22 @@ export const MarketSupplyRateBreakdown = () => {
   const addresses = useMemo(
     () =>
       notFalsy(
+        supplyRate?.data?.rebasingYield != null && borrowToken?.address,
         ...notFalsyArray(
-          [borrowToken?.address],
           supplyRate?.data?.extraIncentives.map(
             ({ address }) => address.toLowerCase() !== MAINNET_CRV_ADDRESS && address,
           ),
-          supplyRate?.data?.extraRewards.map(({ reward }) => reward?.type === 'apr' && reward.address),
         ),
       ),
     [borrowToken?.address, supplyRate?.data],
   )
-  const { data: prices } = useTokenUsdRates({ chainId, tokenAddresses: addresses })
-  const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
-
+  const prices = useTokenUsdRates({ chainId, tokenAddresses: addresses })
+  const crvPrice = q(
+    useTokenUsdRate(
+      { chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS },
+      !!(supplyRate?.data?.supplyApyCrvMinBoost || supplyRate?.data?.supplyApyCrvMaxBoost),
+    ),
+  )
   if (!supplyRate) return null
 
   const supplyQuery = mapQuery(supplyRate, rate =>

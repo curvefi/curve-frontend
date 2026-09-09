@@ -5,10 +5,7 @@ import { RouterLink } from '@ui/components/RouterLink'
 import type { HeaderAppLinks } from '@ui/features/layout/Header/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
-type AppNavAppsProps<TApp extends string> = {
-  currentMenu: TApp
-  links: HeaderAppLinks<TApp>
-}
+type AppNavAppsProps<TApp extends string> = { currentMenu: TApp; links: HeaderAppLinks<TApp> }
 
 const { Spacing } = SizesAndSpaces
 

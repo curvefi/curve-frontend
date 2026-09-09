@@ -1,14 +1,11 @@
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
-import { redirectTo } from './util'
 
 const MarketsList = lazyRouteComponent(() => import('@/llamalend/features/market-list'), 'MarketsList')
 
-const llamalendLayoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'llamalend',
-})
+const llamalendLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'llamalend' })
 
 const layoutProps = { getParentRoute: () => llamalendLayoutRoute }
 

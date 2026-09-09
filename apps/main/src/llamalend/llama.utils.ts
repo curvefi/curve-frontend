@@ -524,10 +524,7 @@ export const tokenMetric = ({
 }) =>
   ({
     value,
-    valueOptions: {
-      abbreviate: true,
-      unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
-    },
+    valueOptions: { abbreviate: true, unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })) },
     notional:
       notional ??
       (usdRate &&

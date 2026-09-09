@@ -15,28 +15,19 @@ type OhlcPoint = {
 
 type CompleteOhlcPoint = OhlcData<number>
 
-type NullableOraclePoint = {
-  time: number
-  oraclePrice?: number | null
-}
+type NullableOraclePoint = { time: number; oraclePrice?: number | null }
 
 const hasCompleteOhlcValues = (data: OhlcPoint): data is CompleteOhlcPoint =>
   data.close != null && data.high != null && data.low != null && data.open != null
 
 export const formatCandleOhlcData = (data: OhlcPoint[]): LpPriceOhlcDataFormatted[] =>
-  data.filter(hasCompleteOhlcValues).map(({ time, ...ohlc }) => ({
-    time: toLocalTimestampSeconds(time) as UTCTimestamp,
-    ...ohlc,
-  }))
+  data
+    .filter(hasCompleteOhlcValues)
+    .map(({ time, ...ohlc }) => ({ time: toLocalTimestampSeconds(time) as UTCTimestamp, ...ohlc }))
 
 export const formatOraclePriceData = (data: NullableOraclePoint[]): OraclePriceData[] =>
   data.flatMap(({ time, oraclePrice }) =>
-    notFalsy(
-      oraclePrice != null && {
-        time: toLocalTimestampSeconds(time) as UTCTimestamp,
-        value: oraclePrice,
-      },
-    ),
+    notFalsy(oraclePrice != null && { time: toLocalTimestampSeconds(time) as UTCTimestamp, value: oraclePrice }),
   )
 
 export const applyLatestOraclePrice = (data: OraclePriceData[], oraclePrice: number | undefined) => {
@@ -141,11 +132,7 @@ export const priceFormatter = (x: number, delta: number) => {
   }
 
   if (x > ABBREVIATION_CUTOFF) {
-    return formatNumber(x, {
-      decimals: ABBREVIATION_DECIMALS,
-      abbreviate: true,
-      useGrouping: false,
-    })
+    return formatNumber(x, { decimals: ABBREVIATION_DECIMALS, abbreviate: true, useGrouping: false })
   }
 
   const valueMagnitude = Math.floor(Math.log10(Math.abs(x)))
@@ -155,9 +142,5 @@ export const priceFormatter = (x: number, delta: number) => {
   const maxDecimals = x < 1 ? MAX_SUB_UNIT_PRICE_DECIMALS : MAX_PRICE_DECIMALS
   const decimals = Math.min(maxDecimals, Math.max(0, 3 - magnitude))
 
-  return x.toLocaleString('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: decimals,
-    useGrouping: false,
-  })
+  return x.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: decimals, useGrouping: false })
 }

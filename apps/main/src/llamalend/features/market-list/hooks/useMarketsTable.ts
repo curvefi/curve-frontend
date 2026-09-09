@@ -24,10 +24,7 @@ export const useMarketsTable = (address: Address | undefined) => {
   const tableQuery = useMappedQuery(
     marketsQuery,
     useCallback(
-      (data: LlamaMarketsResult): LlamaMarketsTableResult => ({
-        ...data,
-        markets: marketRows,
-      }),
+      (data: LlamaMarketsResult): LlamaMarketsTableResult => ({ ...data, markets: marketRows }),
       [marketRows],
     ),
   )

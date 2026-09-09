@@ -40,10 +40,7 @@ export const SmallScreenCard = ({
 
   const getGaugeListSortingData = (key: string) => {
     if (key === 'gauge_relative_weight') {
-      return {
-        title: t`Weight`,
-        value: formatNumber(gaugeData.gauge_relative_weight, 'percent.value'),
-      }
+      return { title: t`Weight`, value: formatNumber(gaugeData.gauge_relative_weight, 'percent.value') }
     }
     if (key === 'gauge_relative_weight_7d_delta') {
       return {

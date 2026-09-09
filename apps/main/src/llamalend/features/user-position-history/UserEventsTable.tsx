@@ -12,9 +12,7 @@ import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 import { useUserPositionHistoryVisibility } from './hooks/useUserPositionHistoryVisibility'
 import { RowExpandedPanel } from './RowExpandedPanel'
 
-type UserEventsTableProps = {
-  eventsQuery: QueryProp<ParsedUserCollateralEvent[]>
-}
+type UserEventsTableProps = { eventsQuery: QueryProp<ParsedUserCollateralEvent[]> }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 

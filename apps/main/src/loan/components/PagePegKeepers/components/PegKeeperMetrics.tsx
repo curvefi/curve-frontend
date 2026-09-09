@@ -9,10 +9,7 @@ const { Spacing } = SizesAndSpaces
 
 const DETAIL_METRIC_CATEGORY = 'loan.pegKeeperDetailAmounts'
 
-type Props = Pick<PegKeeperDetails, 'debt' | 'debtCeiling' | 'rate'> & {
-  poolName: string
-  testId?: string
-}
+type Props = Pick<PegKeeperDetails, 'debt' | 'debtCeiling' | 'rate'> & { poolName: string; testId?: string }
 
 export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = 'pegkeeper' }: Props) => (
   <Stack sx={{ gap: Spacing.sm }}>

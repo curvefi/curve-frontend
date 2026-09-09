@@ -4,10 +4,7 @@ import Link from '@mui/material/Link'
 import { RouterLink } from '@ui/components/RouterLink'
 import type { HeaderLink } from '@ui/features/layout/Header/types'
 
-type SidebarItemProps = {
-  page: HeaderLink
-  child?: boolean
-}
+type SidebarItemProps = { page: HeaderLink; child?: boolean }
 
 export const SidebarItem = ({ page, child }: SidebarItemProps) => (
   <ListItem disableGutters sx={{ display: 'flex', paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}>

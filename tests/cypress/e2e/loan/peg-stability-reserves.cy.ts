@@ -15,10 +15,7 @@ describe(`Peg Stability Reserves`, () => {
     ;[width, height] = oneViewport()
 
     cy.viewport(width, height)
-    cy.visit('/crvusd/ethereum/psr/', {
-      onBeforeLoad: window => window.localStorage.clear(),
-      ...LOAD_TIMEOUT,
-    })
+    cy.visit('/crvusd/ethereum/psr/', { onBeforeLoad: window => window.localStorage.clear(), ...LOAD_TIMEOUT })
     cy.get('[data-testid="pegkeepers"]', LOAD_TIMEOUT).should('be.visible')
   })
 

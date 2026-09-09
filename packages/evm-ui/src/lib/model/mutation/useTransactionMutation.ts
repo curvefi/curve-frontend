@@ -43,9 +43,7 @@ function throwIfError(data: unknown) {
 }
 
 /** Base context provided to all transaction mutations */
-export type TransactionContext = {
-  wallet: NonNullable<ReturnType<typeof useCurve>['wallet']>
-}
+export type TransactionContext = { wallet: NonNullable<ReturnType<typeof useCurve>['wallet']> }
 
 type TransactionResult = { hash: Hex }
 

@@ -51,10 +51,7 @@ export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab, omitFormButt
         <Stack
           data-testid="mobile-form-drawer"
           sx={applySxProps(
-            {
-              paddingInline: Spacing.sm,
-              paddingBlockEnd: Spacing.md,
-            },
+            { paddingInline: Spacing.sm, paddingBlockEnd: Spacing.md },
             // Reserve space for the form submit button, which is fixed to the bottom of the drawer.
             !omitFormButton && { marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height] },
           )}

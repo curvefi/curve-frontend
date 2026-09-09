@@ -6,10 +6,7 @@ import { EmptyStateEvmCard } from '../EmptyStateEvmCard'
 
 const { Spacing } = SizesAndSpaces
 
-type ChartEmptyProps = {
-  height: number
-  message?: ReactNode
-}
+type ChartEmptyProps = { height: number; message?: ReactNode }
 
 export const ChartEmpty = ({ height, message }: ChartEmptyProps) => (
   <Stack sx={{ alignItems: 'center', justifyContent: 'center', padding: Spacing.md, minHeight: height }}>

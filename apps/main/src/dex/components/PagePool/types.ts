@@ -1,11 +1,7 @@
 import { TokensMapper, PoolAlert, type PoolUrlParams } from '@/dex/types/main.types'
 import type { Decimal } from '@primitives/decimal.utils'
 
-export type EstimatedGas = {
-  loading: boolean
-  estimatedGas: number | null
-  error?: string | null
-}
+export type EstimatedGas = { loading: boolean; estimatedGas: number | null; error?: string | null }
 
 export type Slippage = {
   loading: boolean
@@ -15,15 +11,9 @@ export type Slippage = {
   error: string
 }
 
-export type Seed = {
-  isSeed: boolean | null
-  loaded: boolean
-}
+export type Seed = { isSeed: boolean | null; loaded: boolean }
 
-export type PageTransferProps = {
-  params: PoolUrlParams
-  hasDepositAndStake: boolean
-}
+export type PageTransferProps = { params: PoolUrlParams; hasDepositAndStake: boolean }
 
 export type TransferProps = {
   poolAlert: PoolAlert | null

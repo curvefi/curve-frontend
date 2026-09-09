@@ -9,9 +9,7 @@ import { Icon } from '@legacy-ui/Icon'
 import { Spinner } from '@legacy-ui/Spinner'
 import { formatNumber } from '@primitives/number.utils'
 
-type ButtonProps = {
-  className?: string
-} & AriaButtonProps
+type ButtonProps = { className?: string } & AriaButtonProps
 
 const Button = ({ className, ...props }: ButtonProps) => {
   const ref = useRef(null)

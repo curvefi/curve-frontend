@@ -2,10 +2,7 @@ import { getUserLocks, type UserLock } from '@curvefi/prices-api/dao'
 import { EmptyValidationSuite } from '@evm-ui/lib'
 import { queryFactory } from '@evm-ui/lib/model/query'
 
-export type UserLockFormatted = Omit<UserLock, 'amount' | 'lockedBalance'> & {
-  amount: number
-  lockedBalance: number
-}
+export type UserLockFormatted = Omit<UserLock, 'amount' | 'lockedBalance'> & { amount: number; lockedBalance: number }
 
 const _fetchUserLocks = async ({ userAddress }: { userAddress: string }): Promise<UserLockFormatted[]> => {
   const response = await getUserLocks(userAddress)

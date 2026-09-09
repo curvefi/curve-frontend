@@ -25,10 +25,7 @@ export const getTokenAmountColumnId = (tokenIndex: number): string => `tokenAmou
 
 const columnHelper = createAppColumnHelper<PoolLiquidityRow>()
 
-type CreatePoolLiquidityColumnsParams = {
-  blockchainId: Chain | undefined
-  poolTokens: Token[]
-}
+type CreatePoolLiquidityColumnsParams = { blockchainId: Chain | undefined; poolTokens: Token[] }
 
 export const createPoolLiquidityColumns = ({ blockchainId, poolTokens }: CreatePoolLiquidityColumnsParams) =>
   columnHelper.columns([

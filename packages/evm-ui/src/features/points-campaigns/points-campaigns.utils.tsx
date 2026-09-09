@@ -3,11 +3,7 @@ import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import { formatNumber } from '@primitives/number.utils'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
 
-export type PointsCampaignRow = {
-  source: TokenInfoProps
-  multiplier: string
-  campaignUrl: string
-}
+export type PointsCampaignRow = { source: TokenInfoProps; multiplier: string; campaignUrl: string }
 
 /** Converts points rewards, including legacy symbolic multipliers, into shared table rows. */
 export const getPointsCampaignRows = (campaigns: CampaignRewards[]): PointsCampaignRow[] =>

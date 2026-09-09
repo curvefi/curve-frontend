@@ -6,11 +6,7 @@ import { decimal } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { formatNumber } from '@primitives/number.utils'
 
-type Props = {
-  crv?: RewardCrv[]
-  userCrvApy: number
-  fetchUserPoolBoost: () => Promise<string>
-}
+type Props = { crv?: RewardCrv[]; userCrvApy: number; fetchUserPoolBoost: () => Promise<string> }
 
 export const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoost }: Props) => {
   const isSubscribedRef = useRef(false)

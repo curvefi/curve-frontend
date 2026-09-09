@@ -64,11 +64,7 @@ export function getClaimText(
       isNudgeAndClaim: t`Please confirm nudge and claim of ${tokensMessage}`,
       isNudgeOnly: t`Please confirm nudge rewards`,
     },
-    inProgress: {
-      isClaimOnly: t`Claiming`,
-      isNudgeAndClaim: t`Nudging and Claiming`,
-      isNudgeOnly: t`Nudging`,
-    },
+    inProgress: { isClaimOnly: t`Claiming`, isNudgeAndClaim: t`Nudging and Claiming`, isNudgeOnly: t`Nudging` },
     success: {
       isClaimOnly: t`Claim CRV Complete`,
       isNudgeAndClaim: t`Nudge and Claim CRV Complete`,
@@ -79,11 +75,7 @@ export function getClaimText(
       isNudgeAndClaim: t`Nudged and Claimed ${tokensMessage}`,
       isNudgeOnly: t`Nudged Rewards Tx`,
     },
-    claimCrvButton: {
-      isClaimOnly: t`Claim CRV`,
-      isNudgeAndClaim: t`Nudge and Claim CRV`,
-      isNudgeOnly: t`Nudge CRV`,
-    },
+    claimCrvButton: { isClaimOnly: t`Claim CRV`, isNudgeAndClaim: t`Nudge and Claim CRV`, isNudgeOnly: t`Nudge CRV` },
   }
 
   if (type) {

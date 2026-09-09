@@ -55,27 +55,24 @@ export type ActionInfoProps = {
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
 
-const labelSize = {
-  small: 'bodyXsRegular',
-  medium: 'bodyMRegular',
-} as const satisfies Record<ActionInfoSize, TypographyVariantKey>
+const labelSize = { small: 'bodyXsRegular', medium: 'bodyMRegular' } as const satisfies Record<
+  ActionInfoSize,
+  TypographyVariantKey
+>
 
 const currentValueSize = labelSize
 
-const valueSize = {
-  small: 'bodyXsBold',
-  medium: 'bodyMBold',
-} as const satisfies Record<ActionInfoSize, TypographyVariantKey>
+const valueSize = { small: 'bodyXsBold', medium: 'bodyMBold' } as const satisfies Record<
+  ActionInfoSize,
+  TypographyVariantKey
+>
 
-const iconButtonSize = {
-  small: 'extraExtraSmall',
-  medium: 'extraSmall',
-} satisfies Record<ActionInfoSize, IconButtonProps['size']>
+const iconButtonSize = { small: 'extraExtraSmall', medium: 'extraSmall' } satisfies Record<
+  ActionInfoSize,
+  IconButtonProps['size']
+>
 
-const rowHeight: Record<ActionInfoSize, string> = {
-  small: ButtonSize.xxs,
-  medium: ButtonSize.xs,
-}
+const rowHeight: Record<ActionInfoSize, string> = { small: ButtonSize.xxs, medium: ButtonSize.xs }
 
 type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'value' | 'valueColor' | 'testId'>
 
@@ -86,10 +83,7 @@ const ValueTypography = ({
   testId,
   value,
   onClick,
-}: ValueDecoratorProps & {
-  children: ReactNode
-  onClick?: () => void
-}) => {
+}: ValueDecoratorProps & { children: ReactNode; onClick?: () => void }) => {
   const { error, data } = toQuery(value)
   return (
     <Typography
@@ -99,12 +93,7 @@ const ValueTypography = ({
       data-testid={testId}
       data-value={data}
       onClick={onClick}
-      sx={
-        onClick && {
-          cursor: 'pointer',
-          '&:hover': { textDecoration: 'underline' },
-        }
-      }
+      sx={onClick && { cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
     >
       {children}
     </Typography>

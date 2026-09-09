@@ -4,11 +4,7 @@ import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import { Spinner } from '@legacy-ui/Spinner'
 
-type Props = {
-  transactionHash: string
-  txLink: string
-  pendingMessage: string
-}
+type Props = { transactionHash: string; txLink: string; pendingMessage: string }
 
 export const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => (
   <PendingContainer>

@@ -18,21 +18,12 @@ export const useDexAppStats = ({ chainId }: NetworkDef, enabled: boolean) => {
   const { data: volumeTotal } = useAppStatsVolume({ chainId }, enabled)
   return notFalsyArray(
     enabled && [
-      {
-        label: t`Total Deposits`,
-        value: formatNumber(tvlTotal, 'usd.notional'),
-      },
+      { label: t`Total Deposits`, value: formatNumber(tvlTotal, 'usd.notional') },
       ...notFalsyArray(
         !isLiteChain(chainId) && [
           // only show total deposits on curve-lite networks
-          {
-            label: t`Daily Volume`,
-            value: formatNumber(volumeTotal?.totalVolume, 'usd.notional'),
-          },
-          {
-            label: t`Crypto Volume Share`,
-            value: formatNumber(volumeTotal?.cryptoShare, 'percent.value'),
-          },
+          { label: t`Daily Volume`, value: formatNumber(volumeTotal?.totalVolume, 'usd.notional') },
+          { label: t`Crypto Volume Share`, value: formatNumber(volumeTotal?.cryptoShare, 'percent.value') },
         ],
       ),
     ],
@@ -52,13 +43,7 @@ export function useDexRoutes({ chainId }: NetworkDef) {
       ...(HIDE_ROUTER_SWAP.includes(chainId)
         ? []
         : routerCached && network
-          ? [
-              {
-                app: 'dex' as const,
-                route: _createSwapPath(network.swap, routerCached),
-                label: () => t`Swap`,
-              },
-            ]
+          ? [{ app: 'dex' as const, route: _createSwapPath(network.swap, routerCached), label: () => t`Swap` }]
           : [swapRoute]),
       ...dexRoutes.filter(page => page.route !== ROUTE.PAGE_SWAP),
     ],

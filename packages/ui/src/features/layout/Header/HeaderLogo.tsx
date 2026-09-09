@@ -3,14 +3,9 @@ import { RouterLink } from '@ui/components/RouterLink'
 import type { SxProps } from '@ui/lib/mui'
 import { CURVE_LOGO_URL } from '@ui/lib/resource.constants'
 
-const Image = styled('img')({
-  width: 26,
-  height: 26,
-})
+const Image = styled('img')({ width: 26, height: 26 })
 
-type HeaderLogoProps = {
-  sx?: SxProps
-}
+type HeaderLogoProps = { sx?: SxProps }
 
 export const HeaderLogo = ({ sx }: HeaderLogoProps) => (
   <RouterLink href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', ...sx }}>
