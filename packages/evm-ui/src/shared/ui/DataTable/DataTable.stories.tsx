@@ -1,14 +1,15 @@
 import { type ReactNode, useMemo } from 'react'
-import { formatNumber, formatToken } from '@evm-ui/utils'
+import { formatToken } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { q } from '@ui/features/queries/util'
+import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { createAppColumnHelper, useCurveTable } from './data-table.utils'
-import { DataTable, DataTableProps } from './DataTable'
+import { EvmDataTable, type EvmDataTableProps } from './EvmDataTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -32,7 +33,7 @@ type MarketRow = {
 }
 
 type DemoDataTableProps = Omit<
-  DataTableProps<MarketRow>,
+  EvmDataTableProps<MarketRow>,
   'table' | 'emptyState' | 'children' | 'footerRow' | 'expandedPanel'
 > & {
   rowCount?: number
@@ -166,7 +167,7 @@ const DemoDataTable = ({
   const columnCount = table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)
 
   const tableElement = (
-    <DataTable
+    <EvmDataTable
       category={category}
       table={table}
       emptyState={{ title: emptyTitle, description: emptyMessage }}
@@ -186,7 +187,7 @@ const DemoDataTable = ({
           <Typography>This is a filter row</Typography>
         </Stack>
       )}
-    </DataTable>
+    </EvmDataTable>
   )
 
   return wrapperWidth ? (

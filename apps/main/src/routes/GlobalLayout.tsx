@@ -1,23 +1,36 @@
 import { type ReactNode } from 'react'
+import { useConnection, useEnsName } from 'wagmi'
 import { networks as daoNetworks } from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import { networks as lendNetworks } from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
 import { useLlamalendRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
 import { networks as crvusdNetworks } from '@/loan/networks'
-import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
-import { APP_LINK, AppMenuOption, type AppName, LlamalendApps } from '@evm-ui/shared/routes'
-import { EvmErrorBoundary } from '@evm-ui/widgets/EvmErrorBoundary'
-import { Footer } from '@evm-ui/widgets/Footer'
-import { Header } from '@evm-ui/widgets/Header'
+import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
+import { useWallet } from '@evm-ui/features/connect-wallet'
+import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConnectModal'
+import {
+  APP_LINK,
+  AppMenuOption,
+  type AppName,
+  createChainOption,
+  createChainOptions,
+  getInternalUrl,
+  LlamalendApps,
+  routeToPage,
+} from '@evm-ui/shared/routes'
+import { EvmBanners } from '@evm-ui/shared/ui/EvmBanners'
+import { shortenAddress } from '@evm-ui/utils'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { t } from '@ui/lib/i18n'
-
-const { MinHeight } = SizesAndSpaces
+import { Chain } from '@primitives/network.utils'
+import { mapRecord, maybe, type PartialRecord } from '@primitives/objects.utils'
+import { Footer } from '@ui/features/layout/Footer'
+import { getFooterSections } from '@ui/features/layout/Footer/footer-sections.util'
+import { Header } from '@ui/features/layout/Header'
+import { getHeaderSections } from '@ui/features/layout/Header/header-sections.util'
+import { PageLayout } from '@ui/features/layout/PageLayout'
+import type { Maintenance } from '@ui/features/maintenance/hooks/useMaintenance'
+import { usePathname } from '@ui/hooks/router'
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) =>
   [
@@ -33,16 +46,15 @@ const useAppRoutes = (network: NetworkDef) => ({
   analytics: APP_LINK.analytics.routes,
 })
 
-const getAppMenu = (app: AppName): AppMenuOption =>
-  ({
-    dao: 'dao' as const,
-    crvusd: 'llamalend' as const,
-    lend: 'llamalend' as const,
-    llamalend: 'llamalend' as const,
-    dex: 'dex' as const,
-    bridge: 'bridge' as const,
-    analytics: 'analytics' as const,
-  })[app]
+const APP_TO_MENU = {
+  dao: 'dao',
+  crvusd: 'llamalend',
+  lend: 'llamalend',
+  llamalend: 'llamalend',
+  dex: 'dex',
+  bridge: 'bridge',
+  analytics: 'analytics',
+} as const satisfies Record<AppName, AppMenuOption>
 
 const getSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
   ({
@@ -54,6 +66,25 @@ const getSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
     bridge: allNetworks,
     analytics: allNetworks,
   })[app]
+
+const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
+  dex: 'pool',
+  llamalend: 'lending',
+  dao: 'pool', // kind of irrelevant for tvl, since it only supports mainnet
+  bridge: 'pool', // only shows lending chains in the form but shows all networks in selector
+  analytics: 'pool', // only has crvUSD charts, but shows all networks in selector
+}
+
+// Sometimes a network has been defined and needs to be accessed for legacy purposes, but we want to hide it from the list for whatever reason.
+const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = { dex: [Chain.ZkSync, Chain.Mantle] }
+
+/** Resolves the given links based on current network and pathname */
+const resolveLinks = ({ blockchainId, pathname }: { blockchainId: string; pathname: string }) =>
+  mapRecord(APP_LINK, (_menu, { label, routes }) => ({
+    label,
+    href: getInternalUrl(routes[0].app, blockchainId),
+    pages: routes.map(route => routeToPage(route, { blockchainId, pathname })),
+  }))
 
 export const GlobalLayout = <TId extends string, TChainId extends number>({
   children,
@@ -67,25 +98,46 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   currentApp: AppName
   network: NetworkDef<TId, TChainId>
   networks: NetworkMapping<TId, TChainId>
-}) => (
-  <Stack>
-    <Header
-      currentApp={currentApp}
-      backendMaintenance={backendMaintenance}
-      chainId={network.chainId}
-      blockchainId={network.blockchainId}
-      currentMenu={getAppMenu(currentApp)}
-      supportedNetworks={getSupportedNetworks(networks, currentApp)}
-      isLite={isLiteChain(network.chainId)}
-      appStats={useAppStats(currentApp, network)}
-      routes={useAppRoutes(network)}
-    />
-    <Box
-      component="main"
-      sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: MinHeight.pageContent, width: '100%' }}
+}) => {
+  const { connect, disconnect } = useWallet()
+  const { address, isConnecting, isConnected } = useConnection()
+  const addressLabel = useEnsName({ address }).data ?? maybe(address, shortenAddress)
+  const { blockchainId, chainId } = network
+
+  const currentMenu = APP_TO_MENU[currentApp]
+  const routeContext = { blockchainId, pathname: usePathname() }
+  const formatUrl = (page: string) => getInternalUrl(currentApp, blockchainId, page)
+
+  return (
+    <PageLayout
+      header={
+        <Header
+          banners={
+            <EvmBanners
+              chainId={chainId}
+              blockchainId={blockchainId}
+              currentApp={currentApp}
+              backendMaintenance={backendMaintenance}
+              isConnected={isConnected}
+            />
+          }
+          currentNetwork={createChainOption(network, currentApp)}
+          currentMenu={currentMenu}
+          supportedNetworks={createChainOptions(getSupportedNetworks(networks, currentApp), currentApp)}
+          appStats={useAppStats(currentApp, network)}
+          pages={useAppRoutes(network)[currentMenu].map(route => routeToPage(route, routeContext))}
+          links={resolveLinks(routeContext)}
+          sections={getHeaderSections(formatUrl)}
+          hideChains={HIDE_CHAINS}
+          tvls={useNetworksTVL(TVL_SOURCES[currentMenu])}
+          connectWalletProps={{ disconnect, address, addressLabel, isConnecting, isConnected, connect }}
+        />
+      }
+      userAddress={address}
+      connectModal={<WagmiConnectModal />}
+      footer={<Footer sections={getFooterSections(formatUrl)} />}
     >
-      <EvmErrorBoundary title={t`Page error`}>{children}</EvmErrorBoundary>
-    </Box>
-    <Footer appName={currentApp} blockchainId={network.blockchainId} />
-  </Stack>
-)
+      {children}
+    </PageLayout>
+  )
+}

@@ -1,8 +1,8 @@
-import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenAmount } from '@evm-ui/shared/ui/TokenAmount'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
+import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { Health, Percentage, TokenHeader, type BorrowerRow, type SupplierRow } from './market-participants.utils'
 

@@ -1,8 +1,9 @@
 import { styled } from 'styled-components'
 import { RewardBase, PoolData } from '@/dex/types/main.types'
-import { formatNumber, amount } from '@evm-ui/utils'
+import { amount } from '@evm-ui/utils'
 import { Chip } from '@legacy-ui/Typography'
 import Box from '@mui/material/Box'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 export const LegacyTooltipBaseApy = ({

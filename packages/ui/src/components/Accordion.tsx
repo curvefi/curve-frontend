@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { RotatableIcon } from '@ui/icons/RotatableIcon'
-import { applySxProps, borderStyle, type SxProps } from '@ui/utils/mui'
+import { applySxProps, borderStyle, type SxProps } from '@ui/lib/mui'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

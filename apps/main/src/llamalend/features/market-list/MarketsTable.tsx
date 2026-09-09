@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react'
 import type { LlamaMarketsTableResult } from '@/llamalend/queries/market-list/llama-market-stats'
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
-import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { useFilters } from '@evm-ui/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@evm-ui/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@evm-ui/shared/ui/DataTable/TableFiltersChip'
@@ -11,6 +10,7 @@ import { TableVisibilitySettingsPopover } from '@evm-ui/shared/ui/DataTable/Tabl
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
@@ -74,7 +74,7 @@ export const MarketsTable = ({
   return (
     <Stack>
       <TableHeader title={t`Markets`} onReload={onReload} isLoading={isLoading} />
-      <DataTable
+      <EvmDataTable
         table={table}
         emptyState={{
           title: t`No markets found`,
@@ -118,7 +118,7 @@ export const MarketsTable = ({
           sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
           chips={<MarketsChips hasFavorites={hasFavorites} {...filterProps} />}
         />
-      </DataTable>
+      </EvmDataTable>
       <TableVisibilitySettingsPopover<MarketColumnId>
         anchorRef={visibilitySettingsRef}
         visibilityGroups={columnSettings}

@@ -2,9 +2,9 @@ import { MouseEvent, type ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { RouterLink } from '@ui/components/RouterLink'
+import { CLICKABLE_IN_ROW_CLASS } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { responsiveTitleEllipsisSx } from '../titleTruncate'
-import { CLICKABLE_IN_ROW_CLASS } from './data-table.utils'
 
 /** Title as in, the name of the pool or market, used in the corresponding title cell */
 export function TableRowTitle({ title, url, testId }: { title: ReactNode; url: string; testId: string }) {

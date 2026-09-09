@@ -1,8 +1,8 @@
 import { type ReactNode, useMemo } from 'react'
 import { LiquidityDetails } from '@/dex/features/user-position/liquidity-details'
 import { useLiquidityDetails } from '@/dex/features/user-position/liquidity-details/hooks/useLiquidityDetails'
-import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import Stack from '@mui/material/Stack'
+import { Tabs } from '@ui/components/Tabs/Tabs'
 import { t } from '@ui/lib/i18n'
 import { usePoolContext } from '../pool-context'
 

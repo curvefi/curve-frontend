@@ -1,6 +1,6 @@
 import type { Amount } from '@primitives/decimal.utils'
-import type { NumberFormatCategory } from './number'
-import { formatNumber } from './number'
+import type { NumberFormatCategory } from '@primitives/number.utils'
+import { formatNumber } from '@primitives/number.utils'
 
 export const UNAVAILABLE_TOKEN_SYMBOL = '?'
 /** Formats a token amount with compact suffixes for dense displays, e.g. "1.23k CRV". */

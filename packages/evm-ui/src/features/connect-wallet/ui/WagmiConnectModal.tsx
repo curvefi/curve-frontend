@@ -1,13 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
 import type { BaseError } from 'viem'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
+import { ConnectWalletModal } from '@evm-ui/features/connect-wallet/ui/ConnectWalletModal'
 import Box from '@mui/material/Box'
-import MenuList from '@mui/material/MenuList'
 import { createSvgIcon } from '@mui/material/utils'
 import { toArray } from '@primitives/array.utils'
-import { MenuItem } from '@ui/components/MenuItem'
-import { ModalDialog } from '@ui/components/ModalDialog'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { BrowserWalletIcon } from '@ui/icons/BrowserWalletIcon'
@@ -16,7 +12,6 @@ import { MetamaskWalletIcon } from '@ui/icons/MetamaskWalletIcon'
 import { SafeWalletIcon } from '@ui/icons/SafeWalletIcon'
 import { WalletConnectIcon } from '@ui/icons/WalletConnectIcon'
 import { WalletIcon as DefaultWalletIcon } from '@ui/icons/WalletIcon'
-import { t } from '@ui/lib/i18n'
 import type { Connector } from '@wagmi/core'
 import { useWallet } from '../lib'
 import { INJECTED_CONNECTOR_ID } from '../lib/wagmi/connectors'
@@ -46,34 +41,13 @@ const WalletIcon = ({ connector }: { connector: Connector }) =>
       <DefaultWalletIcon sx={WALLET_ICON_SIZE} />
     ))(WALLET_ICONS[connector.id])
 
-/** Menu item for each wallet type */
-const WalletListItem = ({
-  connector,
-  isLoading,
-  onConnect,
-}: {
-  connector: Connector
-  isLoading?: boolean
-  onConnect: (connector: Connector) => Promise<void>
-}) => (
-  <MenuItem
-    key={connector.type}
-    label={connector.name}
-    labelVariant="bodyMBold"
-    icon={<WalletIcon connector={connector} />}
-    value={connector.id}
-    onSelected={() => void onConnect(connector)}
-    isLoading={isLoading}
-  />
-)
-
 /**
  * Display a list of wallets to choose from, connecting to the selected one.
  * Use global state retrieved from the useWallet hook to determine if the modal is open.
  */
 export const WagmiConnectModal = () => {
   const { connectors, connect, showModal, closeModal } = useWallet()
-  const [error, setError] = useState<unknown>(null)
+  const [error, setError] = useState<Error | null>(null)
   const [connectingToId, setConnectingToId] = useState<string | null>(null)
   const isSafeApp = typeof window !== 'undefined' && window !== window.parent
 
@@ -105,54 +79,44 @@ export const WagmiConnectModal = () => {
         await connect(connector)
       } catch (e) {
         console.info(e) // e.g. user rejected
-        setError(e)
+        if (e instanceof Error) {
+          const error = new Error((e as BaseError).shortMessage ?? e.message)
+          error.stack = e.stack
+          setError(error)
+        } else {
+          setError(new Error(String(e)))
+        }
       } finally {
         setConnectingToId(null)
       }
     },
     [connect],
   )
-
   return (
-    <ModalDialog
-      open={showModal}
-      onClose={closeModal}
-      title={t`Connect Wallet`}
-      titleAction={<DefaultWalletIcon />}
-      compact
+    <ConnectWalletModal
+      connectingToId={connectingToId}
+      onConnect={onConnect}
+      WalletIcon={WalletIcon}
+      error={error}
+      closeModal={closeModal}
+      showModal={showModal}
+      visibleConnectors={visibleConnectors}
       sx={{
         /*
-          When connecting with WalletConnect, we hide this dialog because the MUI Dialog
-          component adds a tabIndex of -1 to its container. This prevents text input in
-          the "Search wallet" field of the WC modal — it's not a z-index issue, but
-          caused by the tabIndex itself.
+        When connecting with WalletConnect, we hide this dialog because the MUI Dialog
+        component adds a tabIndex of -1 to its container. This prevents text input in
+        the "Search wallet" field of the WC modal — it's not a z-index issue, but
+        caused by the tabIndex itself.
 
-          Although MUI provides a slotProp for the container, the tabIndex is still set
-          to -1 internally, regardless of what you specify. Other slotProps work fine,
-          so this behavior seems hardcoded in MUI.
+        Although MUI provides a slotProp for the container, the tabIndex is still set
+        to -1 internally, regardless of what you specify. Other slotProps work fine,
+        so this behavior seems hardcoded in MUI.
 
-          The most reliable fix is to skip rendering this modal while WalletConnect
-          is connecting, rather than patching the tabIndex via a flaky JavaScript hack.
-        */
+        The most reliable fix is to skip rendering this modal while WalletConnect
+        is connecting, rather than patching the tabIndex via a flaky JavaScript hack.
+      */
         ...(connectingToId === 'walletConnect' && { display: 'none' }),
       }}
-    >
-      {error ? (
-        <Alert variant="filled" severity="error">
-          <AlertTitle>{t`Error connecting wallet`}</AlertTitle>
-          {(error as BaseError).shortMessage ?? (error as Error).message ?? (error as string)}
-        </Alert>
-      ) : null}
-      <MenuList>
-        {visibleConnectors.map(connector => (
-          <WalletListItem
-            key={connector.id}
-            connector={connector}
-            onConnect={onConnect}
-            isLoading={connectingToId == connector.id}
-          />
-        ))}
-      </MenuList>
-    </ModalDialog>
+    />
   )
 }

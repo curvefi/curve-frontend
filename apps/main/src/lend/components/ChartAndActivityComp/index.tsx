@@ -9,11 +9,11 @@ import {
   MarketPriceChartLayout,
 } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { useBandsChartVisible } from '@evm-ui/hooks/useLocalStorage'
 import { PAGE_SPACING } from '@evm-ui/widgets/DetailPageLayout/constants'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui/features/queries/util'
+import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 
 type ChartAndActivityCompProps = { previewPrices: Range<Decimal> | undefined }
 

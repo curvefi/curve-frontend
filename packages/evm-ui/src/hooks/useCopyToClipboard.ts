@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { isAddress } from 'viem'
 import { copyToClipboard } from '@evm-ui/utils'
-import { showToast } from '@evm-ui/widgets/Toast/toast.util'
+import { showToast } from '@ui/features/toast/Toast/toast.util'
 import { t } from '@ui/lib/i18n'
 
 const getTitle = (copyText: string, title: string | undefined) =>

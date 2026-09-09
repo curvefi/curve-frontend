@@ -4,10 +4,10 @@ import { dayjs } from '@evm-ui/lib/dayjs'
 import { decimal } from '@evm-ui/utils'
 import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
-import { formatDate } from '@legacy-ui/utils'
+import { formatDate } from '@primitives/date.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
-import { MILLISECONDS_PER_SECOND } from '@ui/utils/time'
+import { MILLISECONDS_PER_SECOND } from '@ui/lib/time'
 
 /** Returns the Curve API rounded unlock timestamp for a lock duration. */
 export const calcUnlockTime = ({ days, unlockTime }: { days: number | undefined; unlockTime: number | undefined }) =>

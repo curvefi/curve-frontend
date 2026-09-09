@@ -1,8 +1,6 @@
 import { ReactNode } from 'react'
 import { type Chain as ApiChain } from '@curvefi/prices-api'
-import type { BannerProps } from '@evm-ui/shared/ui/Banner'
 import { MarketType } from '@evm-ui/types/market'
-import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import { AlertType } from '@legacy-ui/AlertBox/types'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import type { Address } from '@primitives/address.utils'
@@ -10,6 +8,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
+import type { BannerProps } from '@ui/features/banners/Banner'
+import { SLIPPAGE } from '@ui/features/slippage/slippage.utils'
 import { t } from '@ui/lib/i18n'
 
 type MarketAlert = TooltipProps & {

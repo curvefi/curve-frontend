@@ -18,7 +18,7 @@ import {
   TABLET_BREAKPOINT,
 } from '@cy/support/ui'
 import { LEND_ROUTES } from '@evm-ui/shared/routes'
-import { TIME_FRAMES } from '@ui/utils/time'
+import { TIME_FRAMES } from '@ui/lib/time'
 
 const BORDER = 1
 const EXPECTED_MAIN_NAV_HEIGHT = 40
@@ -252,7 +252,7 @@ describe('Header', () => {
     it('should have no missing wagmi chains alert', () => {
       cy.get(`[data-testid='chain-icon-ethereum']`, LOAD_TIMEOUT).should('be.visible')
       cy.get(`[data-testid='btn-change-chain']`).click()
-      cy.get(`[data-testid='missing-wagmi-chain']`).should('not.exist')
+      cy.get(`[data-testid='missing-chain-config']`).should('not.exist')
     })
   })
 

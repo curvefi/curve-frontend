@@ -6,8 +6,8 @@ import { FetchError } from '@primitives/fetch.utils'
 import { isEmpty, notFalsy } from '@primitives/objects.utils'
 import {
   type DefaultError,
-  type FetchQueryOptions,
   keepPreviousData,
+  type QueryExecuteOptions,
   QueryFunctionContext,
   type QueryKey,
   queryOptions,
@@ -15,7 +15,7 @@ import {
 } from '@tanstack/react-query'
 import { queryClient } from '@ui/features/queries/query-client'
 import { logError, logQuery, logSuccess } from '@ui/lib/logging'
-import { formatTimeDiff } from '@ui/utils/time'
+import { formatTimeDiff } from '@ui/lib/time'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
 type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never
@@ -156,17 +156,15 @@ export function queryFactory<
     getQueryOptions,
     getQueryData: (params: TParams): TData | undefined => queryClient.getQueryData(queryKey(params)),
     setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(queryKey(params), data),
-    prefetchQuery: (params: TParams, staleTime = 0) =>
-      queryClient.prefetchQuery<TData, DefaultError, TData, TKey>({ ...getQueryOptions(params), staleTime }),
-    fetchQuery: (params: TParams, options?: Partial<FetchQueryOptions<TData, DefaultError, TData, TKey>>) =>
-      queryClient.fetchQuery<TData, DefaultError, TData, TKey>({ ...getQueryOptions(params), ...options }),
+    fetchQuery: (params: TParams, options?: Partial<QueryExecuteOptions<TData, DefaultError, TData, TData, TKey>>) =>
+      queryClient.query<TData, DefaultError, TData, TData, TKey>({ ...getQueryOptions(params), ...options }),
     /**
      * Function that is like fetchQuery, but sets staleTime to 0 to ensure fresh data is fetched.
      * Primary use case is for Zustand stores where want to both use queries and ensure freshness.
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
     refetchQuery: (params: TParams) =>
-      queryClient.fetchQuery<TData, DefaultError, TData, TKey>({
+      queryClient.query<TData, DefaultError, TData, TData, TKey>({
         ...getQueryOptions(params),
         ...options,
         staleTime: 0,

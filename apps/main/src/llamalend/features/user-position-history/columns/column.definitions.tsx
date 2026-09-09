@@ -1,5 +1,5 @@
-import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { scanTxPath } from '@legacy-ui/utils'
+import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { TimestampCell, DebtChangeCell, EventTypeCell, CollateralChangeCell } from '../cells'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'

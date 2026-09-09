@@ -1,9 +1,9 @@
-import { withPendingToast } from '@evm-ui/features/connect-wallet/lib/notify'
 import { Button, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { Toast } from './Toast'
-import { showToast } from './toast.util'
+import { withPendingToast } from '@ui/features/toast/Toast/notify'
+import { Toast } from '@ui/features/toast/Toast/Toast'
+import { showToast } from '@ui/features/toast/Toast/toast.util'
 
 const { Spacing } = SizesAndSpaces
 

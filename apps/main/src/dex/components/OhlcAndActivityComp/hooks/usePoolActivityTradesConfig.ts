@@ -12,11 +12,11 @@ import {
 } from '@evm-ui/features/activity-table'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
-import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
 type UsePoolActivityProps = { chainId: ChainId; poolAddress: Address }
