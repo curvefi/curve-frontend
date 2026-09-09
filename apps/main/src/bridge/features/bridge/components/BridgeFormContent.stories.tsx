@@ -93,6 +93,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
       <BridgeFormContent
         {...props}
         networks={BridgeNetworks}
+        tvls={constQ({ arbitrum: 1000000, optimism: 500000, fraxtal: 250000 })}
         fromChainId={fromChainId}
         amount={q({
           data: amount,

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
+import type { Chain as PricesChain } from '@curvefi/prices-api'
 import { ChainList } from '@evm-ui/features/switch-chain/ui/ChainList'
 import { ChainSwitcherIcon } from '@evm-ui/features/switch-chain/ui/ChainSwitcherIcon'
 import { usePathname } from '@evm-ui/hooks/router'
@@ -15,6 +15,7 @@ import { Chain } from '@primitives/network.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { Select } from '@ui/components/Select'
 import { Spinner } from '@ui/components/Spinner'
+import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
@@ -93,6 +94,7 @@ const SelectNetworkButton = ({
 export type BridgeTargetsProps = {
   /** List of networks available as bridge sources. */
   networks: NetworkDef[]
+  tvls: QueryProp<Record<PricesChain, number>>
   /** Currently selected source chain id. At the moment of writing the parent component reads this from the URL. */
   fromChainId: number | undefined
   disabled: boolean
@@ -108,7 +110,14 @@ export type BridgeTargetsProps = {
  * while the destination ("To") is fixed to Ethereum mainnet. Perhaps later
  * we can support bridging to different networks.
  */
-export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetworkSelected }: BridgeTargetsProps) => {
+export const BridgeTargets = ({
+  networks,
+  tvls,
+  fromChainId,
+  disabled,
+  loading,
+  onNetworkSelected,
+}: BridgeTargetsProps) => {
   const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
 
   return (
@@ -138,7 +147,7 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
           showTestnets={false}
           options={networks}
           selectedNetworkId={getCurrentNetwork(usePathname())}
-          tvls={useNetworksTVL('lending')}
+          tvls={tvls}
           onNetwork={useCallback(
             (network: NetworkDef) => {
               closeFrom()
