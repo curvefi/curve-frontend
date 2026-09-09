@@ -3,6 +3,9 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { TableMeta } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
+import type { POOLS_COLUMN_OPTIONS } from './columns/column.options'
 
 type PoolRowGauge = { address: Address; isKilled: boolean }
 
@@ -46,18 +49,27 @@ export type PoolRowData = {
   tvlUsd: number | undefined
 }
 
+type PoolUserPosition = {
+  /** Both staked and unstaked */
+  lpBalance: Decimal
+  depositsUsd?: Decimal
+}
+
 /** Additional pool context not in the main pool data (contextual information sourced with external sources) */
 type PoolRowContext = {
   chainId: number
   blockchainId: string
   campaigns: CampaignRewards[]
-  hasPosition: boolean | undefined
+  userPosition: PoolUserPosition
   hasVyperVulnerability: boolean | undefined
   url: string
 }
 
 /** Source-independent view model containing only data consumed by the pools table. */
 export type PoolRow = PoolRowData & PoolRowContext
+
+export type PoolTableVariant = keyof typeof POOLS_COLUMN_OPTIONS
+export type PoolTableMeta = TableMeta<CurveTableFeatures, PoolRow> & { variant: PoolTableVariant }
 
 export type LegacyPoolTag =
   'btc' | 'crypto' | 'kava' | 'eth' | 'usd' | 'others' | 'user' | 'crvusd' | 'tricrypto' | 'stableng' | 'cross-chain'

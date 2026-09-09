@@ -1,4 +1,3 @@
-import { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
 import type { LlamaMarketsTableResult } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
@@ -10,13 +9,11 @@ import { MarketRateType } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
 import { mapQuery, QueryProp } from '@ui/features/queries/util'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { CenteredEmptyState } from '@ui/features/tables/CenteredEmptyState'
 import { t } from '@ui/lib/i18n'
 import { borderStyle, directChildrenAfterFirst } from '@ui/lib/mui'
 import { UserPositionsMarketRateTable } from './UserPositionsMarketRateTable'
 import { UserPositionSummary } from './UserPositionsSummary'
-
-const { Spacing } = SizesAndSpaces
 
 type UserPositionsTableProps = { onReload: () => void; tableQuery: QueryProp<LlamaMarketsTableResult> }
 
@@ -26,12 +23,6 @@ const buildVaultUrl = (market: LlamaMarket) =>
     market.chain,
     `${LEND_ROUTES.PAGE_MARKETS}/${market.controllerAddress}${LEND_MARKET_ROUTES.PAGE_VAULT}`,
   )
-
-const CenteredEmptyState = ({ children }: { children: ReactNode }) => (
-  <Stack sx={{ alignItems: 'center', paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
-    {children}
-  </Stack>
-)
 
 export const UserPositionsTables = ({
   onReload,

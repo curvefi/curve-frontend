@@ -13,4 +13,5 @@ export const POOL_TITLES: Record<PoolColumnId, string> = {
   [PoolColumnId.Volume]: t`1D vol`,
   [PoolColumnId.Tvl]: t`TVL`,
   [PoolColumnId.Age]: t`Age`,
+  [PoolColumnId.Deposits]: t`Deposits`,
 }
