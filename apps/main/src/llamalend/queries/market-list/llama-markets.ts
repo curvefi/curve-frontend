@@ -20,7 +20,7 @@ import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '
 import { decimal, decimalDiv } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert, maybe } from '@primitives/objects.utils'
+import { assert } from '@primitives/objects.utils'
 import { aprToApy } from '@primitives/rates.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { QueriesResults } from '@tanstack/react-query'
@@ -75,8 +75,8 @@ export type LlamaMarket = {
     lendCrvAprBoosted: number | null
     lendTotalApyMinBoosted: number | null
     lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
-    borrowApy: number | null // base borrow APY %
-    borrowTotalApy: number | null // borrow APY - yield from collateral
+    borrowApy: number // base borrow APY %, compounded continuously
+    borrowTotalApy: number // borrow APY - yield from collateral
     borrowApr: number
     borrowTotalApr: number // borrow APR - yield from collateral
     // extra lending incentives, like OP rewards (so non CRV)
@@ -121,7 +121,6 @@ const convertLendingVault = (
     borrowedToken,
     borrowedBalanceUsd,
     collateralBalanceUsd,
-    borrowApy,
     borrowApr,
     apyLend: lendApy,
     aprLendCrv0Boost: lendCrvAprUnboosted,
@@ -148,6 +147,7 @@ const convertLendingVault = (
   badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = MarketType.Lend
+  const borrowApy = aprToApy(borrowApr, 'llamalend.borrow')
   const hasBorrowed = userBorrows?.has(controller) ?? null
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
@@ -204,9 +204,7 @@ const convertLendingVault = (
       lendTotalApyMinBoosted: totalMinBoost,
       lendTotalApyMaxBoosted: totalMaxBoost,
       borrowApy,
-      borrowTotalApy:
-        maybe(borrowApy, apy => computeTotalRate(apy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0)) ??
-        null,
+      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
       borrowApr,
       borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
       incentives: extraRewardApr
@@ -247,7 +245,6 @@ const convertMintMarket = (
     collateralAmountUsd,
     stablecoinToken,
     llamma,
-    borrowApy,
     borrowApr,
     borrowed,
     borrowedUsd,
@@ -274,6 +271,7 @@ const convertMintMarket = (
   badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = MarketType.Mint
+  const borrowApy = aprToApy(borrowApr, 'llamalend.borrow')
   const hasBorrow = userMintMarkets?.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
@@ -342,9 +340,7 @@ const convertMintMarket = (
       lendTotalApyMinBoosted: null,
       lendTotalApyMaxBoosted: null,
       borrowApy,
-      borrowTotalApy:
-        maybe(borrowApy, apy => computeTotalRate(apy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0)) ??
-        null,
+      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
       borrowApr,
       borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
       incentives: [],

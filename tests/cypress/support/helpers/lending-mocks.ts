@@ -56,7 +56,6 @@ const oneLendingPool = (
     oracle: oneAddress(),
     oracle_pools: oneOf([], [oneAddress()]),
     rate: oneFloat(),
-    borrow_apy: oneFloat(),
     borrow_total_apy: oneFloat(),
     borrow_apr: oneFloat(),
     borrow_total_apr: oneFloat(),

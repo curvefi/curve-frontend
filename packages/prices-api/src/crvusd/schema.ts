@@ -27,7 +27,6 @@ const market = z
     oracle: address,
     oracle_pools: z.array(address),
     rate: z.number(),
-    borrow_apy: z.number().nullable(),
     borrow_total_apy: z.number(),
     borrow_apr: z.number(),
     borrow_total_apr: z.number(),
