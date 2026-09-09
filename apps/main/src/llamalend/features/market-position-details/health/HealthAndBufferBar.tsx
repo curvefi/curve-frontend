@@ -118,7 +118,7 @@ export const HealthAndBufferBar = ({
               <WithSkeleton
                 loading={isStatusLoading}
                 variant="rectangular"
-                width="8rem"
+                width="3rem"
                 height={BadgeSizes.Size.extraSmall}
               >
                 {label && (
