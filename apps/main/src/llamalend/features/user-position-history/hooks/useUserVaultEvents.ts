@@ -20,22 +20,21 @@ export const useUserVaultEvents = () => {
     vaultToken,
     tokens: { borrowToken },
   } = useMarketContext()
-  const query = useUserVaultEventsQuery(
-    { blockchainId, userAddress, contractAddress: vaultToken?.address },
-    !!userAddress && !!vaultToken && !!borrowToken,
+  const query = useUserVaultEventsQuery({ blockchainId, userAddress, contractAddress: vaultToken?.address })
+  return mapQuery(query, ({ events }): ParsedUserVaultEvent[] =>
+    !borrowToken || !vaultToken
+      ? []
+      : events
+          .filter((event): event is UserVaultEvent & { type: 'Deposit' | 'Withdraw' } => event.type !== 'Transfer')
+          .map(event => ({
+            ...event,
+            chainId,
+            symbol: borrowToken.symbol,
+            amount:
+              Number(formatUnits(BigInt(event.assets), borrowToken.decimals)) * (event.type === 'Deposit' ? 1 : -1),
+            shareChange:
+              Number(formatUnits(BigInt(event.shares), vaultToken.decimals)) * (event.type === 'Deposit' ? 1 : -1),
+          }))
+          .toSorted((a, b) => b.blockNumber - a.blockNumber || b.logIndex - a.logIndex),
   )
-  return mapQuery(query, ({ events }): ParsedUserVaultEvent[] => {
-    if (!borrowToken || !vaultToken) return []
-    return events
-      .filter((event): event is UserVaultEvent & { type: 'Deposit' | 'Withdraw' } => event.type !== 'Transfer')
-      .map(event => ({
-        ...event,
-        chainId,
-        symbol: borrowToken.symbol,
-        amount: Number(formatUnits(BigInt(event.assets), borrowToken.decimals)) * (event.type === 'Deposit' ? 1 : -1),
-        shareChange:
-          Number(formatUnits(BigInt(event.shares), vaultToken.decimals)) * (event.type === 'Deposit' ? 1 : -1),
-      }))
-      .toSorted((a, b) => b.blockNumber - a.blockNumber || b.logIndex - a.logIndex)
-  })
 }

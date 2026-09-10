@@ -25,6 +25,7 @@ import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLa
 import type { Decimal } from '@primitives/decimal.utils'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import type { Range } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
@@ -110,7 +111,11 @@ export const MintMarketPage = () => {
       >
         <MarketBanners chainId={chainId} market={market} />
         <MarketSection id="position-details">
-          <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+          <PositionDetailsComposite
+            type={MarketRateType.Borrow}
+            hasPosition={loanExists}
+            events={mapQuery(collateralEvents, data => data.events)}
+          />
         </MarketSection>
         <MarketInformationComposite previewPrices={previewPrices} />
       </DetailPageLayout>

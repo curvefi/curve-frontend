@@ -6,11 +6,8 @@ import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
-import {
-  MarketEmptyPosition,
-  SupplyPositionDetails,
-  SupplyPositionDetailsCard,
-} from '@/llamalend/features/market-position-details'
+import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
+import { useUserVaultEvents } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
@@ -29,6 +26,15 @@ import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
 const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
+
+const SupplyPositionSection = ({ hasPosition }: { hasPosition: boolean | undefined }) => {
+  const events = useUserVaultEvents()
+  return (
+    <MarketSection id="position-details">
+      <PositionDetailsComposite type={MarketRateType.Supply} hasPosition={hasPosition} events={events} />
+    </MarketSection>
+  )
+}
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
@@ -85,11 +91,7 @@ export const Page = () => {
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        <MarketSection id="position-details">
-          <SupplyPositionDetailsCard hasPosition={hasPosition}>
-            {hasPosition ? <SupplyPositionDetails /> : <MarketEmptyPosition type={MarketRateType.Supply} />}
-          </SupplyPositionDetailsCard>
-        </MarketSection>
+        <SupplyPositionSection hasPosition={hasPosition} />
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
     </MarketContextProvider>

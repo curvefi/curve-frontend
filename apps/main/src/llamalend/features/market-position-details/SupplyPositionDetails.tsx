@@ -1,10 +1,7 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { useUserVaultEvents } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
-import type { ParsedUserVaultEvent } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
-import { UserVaultEventsTable } from '@/llamalend/features/user-position-history/UserVaultEventsTable'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
@@ -27,16 +24,13 @@ import { combineQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { AVERAGE_CATEGORIES, type AverageCategory, formatCappedRateValue } from '@evm-ui/utils'
-import { Grid, Stack } from '@mui/material'
+import { Grid } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { assert } from '@primitives/objects.utils'
-import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { mapQuery, q } from '@ui/features/queries/util'
-import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { useTabs } from '@ui/hooks/useTabs'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
@@ -51,58 +45,10 @@ export type SupplyAsset = {
   depositedUsdValue: Decimal
 }
 
-const SUPPLY_POSITION_TAB = 'supplyPosition'
-
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 const METRIC_CATEGORY = 'llamalend.positionSupplyDetails'
 
 const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 12, tablet: 3 }}>{children}</Grid>
-
-type SupplyPositionTabsParams = {
-  children: ReactNode
-  events: QueryProp<ParsedUserVaultEvent[]>
-  hasPosition: boolean | undefined
-  userAddress: Address | undefined
-}
-
-const supplyPositionMenu = [
-  {
-    value: SUPPLY_POSITION_TAB,
-    label: t`Your position`,
-    visible: ({ hasPosition, events }: SupplyPositionTabsParams) => hasPosition !== false || !events.data?.length,
-    component: ({ children }: SupplyPositionTabsParams) => <>{children}</>,
-  },
-  {
-    value: 'activity',
-    label: t`Activity`,
-    visible: ({ userAddress }: SupplyPositionTabsParams) => !!userAddress,
-    component: ({ events }: SupplyPositionTabsParams) => <UserVaultEventsTable eventsQuery={events} />,
-  },
-]
-
-export const SupplyPositionDetailsCard = ({
-  children,
-  hasPosition,
-}: {
-  children: ReactNode
-  hasPosition: boolean | undefined
-}) => {
-  const { userAddress } = useMarketContext()
-  const events = useUserVaultEvents()
-  const { tab, tabs, onChange, content } = useTabs({
-    menu: supplyPositionMenu,
-    params: useMemo(
-      () => ({ children, events, hasPosition, userAddress }),
-      [children, events, hasPosition, userAddress],
-    ),
-  })
-  return (
-    <Stack>
-      <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{content}</Stack>
-    </Stack>
-  )
-}
 
 export const SupplyPositionDetails = () => {
   const {
