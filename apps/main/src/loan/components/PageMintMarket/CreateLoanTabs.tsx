@@ -1,7 +1,7 @@
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { networks } from '@/loan/networks'
-import { FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import type { Decimal } from '@primitives/decimal.utils'
+import { FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
