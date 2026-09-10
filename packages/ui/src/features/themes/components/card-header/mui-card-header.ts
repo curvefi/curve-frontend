@@ -17,8 +17,14 @@ export const cardHeaderSmallStyles = (design: DesignSystem, typography: Typograp
     minHeight: ButtonSize.sm,
     ...handleBreakpoints({ paddingInline: Spacing[Tab.Padding.medium.inline] }),
   },
-  '& .MuiCardHeader-action': { alignSelf: 'end', margin: 0, paddingBlockEnd: Spacing.xs, marginInlineStart: 'auto' },
-  ...handleBreakpoints({ minHeight: ButtonSize.sm, padding: 0 }),
+  '& .MuiCardHeader-action': handleBreakpoints({
+    alignSelf: 'end',
+    margin: 0,
+    paddingBlockEnd: Spacing.xs,
+    marginInlineStart: 'auto',
+  }),
+  minHeight: ButtonSize.sm,
+  padding: 0,
 })
 
 export const cardHeaderInlineStyles = (design: DesignSystem, typography: TypographyVariantsOptions) => ({
