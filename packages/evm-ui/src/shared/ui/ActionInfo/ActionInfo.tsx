@@ -36,6 +36,8 @@ export type ActionInfoProps = {
   valueTooltip?: QueryOrValue<ReactNode>
   /** Value to copy from the primary displayed value when clicked. */
   copyValue?: string
+  /** Formats the copied value only when clicked. */
+  format?: (text: string) => string
   /** Size of the component */
   size?: ActionInfoSize
   /** Test ID for the component */
@@ -121,6 +123,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
     valueTooltip,
     size = DEFAULT_SIZE,
     copyValue,
+    format,
     testId = 'action-info',
     sx,
     skeleton,
@@ -143,7 +146,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
       : { width: '2ch', height: '1rem' }
   const displayedValue = isLoading && typeof skeleton === 'string' ? skeleton : error ? '' : (futureValue ?? '-')
 
-  const copyToClipboard = useCopyToClipboard({ copyText: copyValue })
+  const copyToClipboard = useCopyToClipboard({ copyText: copyValue, format })
 
   return (
     <Stack
