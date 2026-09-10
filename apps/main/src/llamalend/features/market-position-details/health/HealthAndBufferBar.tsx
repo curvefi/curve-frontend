@@ -1,5 +1,7 @@
+import type { UserPositionStatus, UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { type HealthQuery, useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { QueryData } from '@evm-ui/lib/queries/types'
+import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
 import { Stack } from '@mui/material'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
@@ -10,7 +12,7 @@ import { Accordion } from '@ui/components/Accordion'
 import { Badge } from '@ui/components/Badge'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { IS_DEVELOPMENT } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
@@ -26,15 +28,14 @@ import {
   HealthType,
 } from './utils'
 
-const { Height, MinWidth, Spacing } = SizesAndSpaces
+const { Badge: BadgeSizes, Height, MinWidth, Spacing } = SizesAndSpaces
 
-const SOFT_LIQUIDATION_LABEL = t`Soft Liquidation`
+const LIQUIDATION_PROTECTION_LABEL = t`Liquidation Protection`
 
-const HEALTH_LABEL: Partial<Record<HealthAndBufferState, string>> = {
-  softLiquidation: SOFT_LIQUIDATION_LABEL,
-  light: SOFT_LIQUIDATION_LABEL,
-  risky: SOFT_LIQUIDATION_LABEL,
-  critical: SOFT_LIQUIDATION_LABEL,
+const POSITION_STATUS_LABEL: Partial<Record<UserPositionStatusKey, string>> = {
+  softLiquidation: t`Soft Liquidation`,
+  fullyConverted: LIQUIDATION_PROTECTION_LABEL,
+  incompleteConversion: LIQUIDATION_PROTECTION_LABEL,
   hardLiquidation: t`Hard Liquidation`,
 }
 
@@ -64,25 +65,25 @@ const SEGMENT_CONFIG: Record<
   },
 }
 
-const BADGE_SIZE_BY_BAR_SIZE = { lg: 'small', sm: 'extraSmall' } as const
-
 export const HealthAndBufferBar = ({
-  state,
+  positionStatus: { data: positionStatus, isLoading: isStatusLoading, error: statusError },
   type,
-  query,
+  health,
 }: {
-  state: HealthAndBufferState | undefined
+  positionStatus: QueryProp<UserPositionStatus>
   type: HealthType
-  query: HealthQuery
+  health: HealthQuery
 }) => {
   const { size, tooltip, getValue, getColor, getPercentage } = SEGMENT_CONFIG[type]
-  const { data, isLoading } = mapQuery(query, getValue)
+  // error already shown in the sibling Metric component
+  const { data, isLoading: isHealthLoading } = mapQuery(health, getValue)
+  const isHealth = type === 'health'
   const percentage = getPercentage(data)
-  const label = type === 'health' ? maybe(state, state => HEALTH_LABEL[state]) : undefined
-  const testId = `health-details-${type === 'liquidationBuffer' ? 'liquidation-buffer' : type}-bar`
+  const label = isHealth && maybe(positionStatus, status => POSITION_STATUS_LABEL[status])
+  const testId = `health-details-${{ health: 'health', liquidationBuffer: 'liquidation-buffer' }[type]}-bar`
 
   return (
-    <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
+    <WithSkeleton loading={isHealthLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
       <Tooltip title={tooltip.title} body={tooltip.body}>
         <Stack
           data-testid={testId}
@@ -103,14 +104,33 @@ export const HealthAndBufferBar = ({
               backgroundColor: getColor(data),
             }}
           />
-          {label && (
-            <Badge
-              data-testid={`${testId}-badge`}
-              size={BADGE_SIZE_BY_BAR_SIZE[size]}
-              color={state === 'hardLiquidation' ? 'alert' : 'warning'}
-              label={label}
-              sx={{ position: 'absolute', left: Spacing['3xs'] }}
-            />
+          {isHealth && (label || statusError || isStatusLoading) && (
+            <Stack
+              direction="row"
+              sx={{
+                position: 'absolute',
+                insetInlineStart: `calc((${Height.healthBar[size]} - ${BadgeSizes.Size.extraSmall}) / 2)`,
+                alignItems: 'center',
+                gap: Spacing.xs,
+              }}
+            >
+              {statusError && <ErrorIconButton error={statusError} size="extraExtraSmall" />}
+              <WithSkeleton
+                loading={isStatusLoading}
+                variant="rectangular"
+                width="3rem"
+                height={BadgeSizes.Size.extraSmall}
+              >
+                {label && (
+                  <Badge
+                    data-testid={`${testId}-badge`}
+                    size="extraSmall"
+                    color={positionStatus === 'hardLiquidation' ? 'alert' : 'warning'}
+                    label={label}
+                  />
+                )}
+              </WithSkeleton>
+            </Stack>
           )}
         </Stack>
       </Tooltip>

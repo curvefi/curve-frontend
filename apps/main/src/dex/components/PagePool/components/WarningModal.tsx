@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
-import { amount } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { formatNumber } from '@primitives/number.utils'
+import { amount } from '@ui/lib/decimal'
 import { t, Trans } from '@ui/lib/i18n'
 
 type SharedProps = { confirmed: boolean; setConfirmed: Dispatch<SetStateAction<boolean>> }

@@ -4,8 +4,8 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf, QueryData } from '@evm-ui/lib'
 import { type MarketQuery, queryFactory, rootKeys, type UserQuery } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
-import { decimalPercent, decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { decimalPercent, decimalSum } from '@ui/lib/decimal'
 
 type UserBalancesQuery = UserQuery & MarketQuery<IChainId>
 type UserBalancesParams = FieldsOf<UserBalancesQuery>

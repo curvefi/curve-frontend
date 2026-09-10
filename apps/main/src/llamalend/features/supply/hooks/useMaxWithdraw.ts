@@ -6,12 +6,12 @@ import {
 import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useCombinedQueries } from '@evm-ui/lib'
-import { decimalEqual } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { useFormSync } from '@ui/features/forms'
 import type { UseFormReturn } from '@ui/features/forms'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { decimalEqual } from '@ui/lib/decimal'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
 type VaultUserBalances = NonNullable<ReturnType<typeof useVaultUserBalances>['data']>

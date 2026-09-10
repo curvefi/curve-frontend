@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-import { decimal } from '@evm-ui/utils/decimal'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { range, recordValues } from '@primitives/objects.utils'
+import { decimal } from '@ui/lib/decimal'
 import { TIME_FRAMES } from '@ui/lib/time'
 import { createSeededRandom, getTestSeed } from './seed'
 

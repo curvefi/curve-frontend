@@ -3,8 +3,8 @@ import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/rep
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { parseRoute } from '@evm-ui/entities/router-api'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { decimal } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { decimal } from '@ui/lib/decimal'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceImpact } = queryFactory({
