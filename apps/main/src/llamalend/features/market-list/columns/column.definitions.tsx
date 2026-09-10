@@ -163,7 +163,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('maxLtv', {
+  columnHelper.accessor(row => row.maxLtv ?? undefined, {
     id: MarketColumnId.MaxLtv,
     header: MARKET_TITLES[MarketColumnId.MaxLtv],
     cell: PercentCell,
