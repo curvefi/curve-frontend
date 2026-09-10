@@ -10,11 +10,12 @@ import { TransferActions } from '@/dex/components/PagePool/components/TransferAc
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
+import { DEFAULT_ESTIMATED_GAS, GAUGE_KILLED_ALERT } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
+import { isValidAddress } from '@/dex/utils'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
@@ -89,7 +90,7 @@ export const FormStake = ({ seed }: TransferProps) => {
       formStatus: FormStatus,
       steps: Step[],
     ) => {
-      const isValid = !formStatus.error && +formValues.lpToken > 0
+      const isValid = isValidAddress(poolData.pool.gauge.address) && !formStatus.error && +formValues.lpToken > 0
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'STAKE'
 
@@ -165,6 +166,9 @@ export const FormStake = ({ seed }: TransferProps) => {
 
   return (
     <FormContent>
+      {poolData.gauge.isKilled && (
+        <AlertBox alertType={GAUGE_KILLED_ALERT.alertType}>{GAUGE_KILLED_ALERT.message}</AlertBox>
+      )}
       {/* input fields */}
       <FieldsWrapper>
         <FieldLpToken

@@ -17,12 +17,14 @@ import {
   amountsDescription,
   DEFAULT_ESTIMATED_GAS,
   DEFAULT_SLIPPAGE,
+  GAUGE_KILLED_ALERT,
   getSlippageType,
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
+import { isValidAddress } from '@/dex/utils'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -124,7 +126,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed, tokensMapper }:
       maxSlippage: string,
     ) => {
       const haveFormValues = formValues.amounts.some(a => Number(a.value) > 0)
-      const isValid = haveFormValues && !formStatus.error
+      const isValid = isValidAddress(poolData.pool.gauge.address) && haveFormValues && !formStatus.error
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'DEPOSIT_STAKE'
 
@@ -249,6 +251,9 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed, tokensMapper }:
 
   return (
     <FormContent>
+      {poolData.gauge.isKilled && (
+        <AlertBox alertType={GAUGE_KILLED_ALERT.alertType}>{GAUGE_KILLED_ALERT.message}</AlertBox>
+      )}
       <FieldsDeposit
         chainId={chainId}
         formProcessing={disableForm}

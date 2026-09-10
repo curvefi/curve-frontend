@@ -11,7 +11,6 @@ import type { PageTransferProps, Seed, TransferTabsParams } from '@/dex/componen
 import {
   getDepositTabAlert,
   getSlippageType,
-  getStakeTabAlert,
   getSwapTabAlert,
   getWithdrawTabAlert,
 } from '@/dex/components/PagePool/utils'
@@ -60,12 +59,12 @@ const menu = [
       {
         value: 'STAKE',
         label: t`Stake`,
-        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormStake} {...props} />,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormStake} {...props} />,
       },
       {
         value: 'DEPOSIT_STAKE',
         label: t`Deposit & Stake`,
-        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormDepositStake} {...props} />,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDepositStake} {...props} />,
       },
     ],
   } satisfies FormTab<TransferTabsParams>,
