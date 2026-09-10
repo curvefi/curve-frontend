@@ -5,6 +5,7 @@ import { useWallet } from '@evm-ui/features/connect-wallet'
 import { EmptyValidationSuite } from '@evm-ui/lib'
 import { queryFactory } from '@evm-ui/lib/model/query'
 import { weiToEther } from '@evm-ui/utils'
+import { aprToApy } from '@ui/lib/rates.utils'
 
 const YEAR = 86400 * 365.25 * 100
 const UNLOCK_MULTIPLIER = 1e-12 * YEAR
@@ -41,9 +42,7 @@ async function _fetchSavingsStatistics(): Promise<Omit<Statistics, 'lastUpdated'
     const profitUnlockingRateNum = Number(profitUnlockingRate)
     const supplyNum = Number(supply)
     const apr = supplyNum > 0 ? (profitUnlockingRateNum * UNLOCK_MULTIPLIER) / supplyNum : 0
-    const apy = (1 + apr / 100 / 365.25) ** 365.25 - 1
-
-    return { apyProjected: apy * 100, supply: weiToEther(supplyNum) }
+    return { apyProjected: aprToApy(apr, 'savings.supply'), supply: weiToEther(supplyNum) }
   }
 
   return getStatistics()

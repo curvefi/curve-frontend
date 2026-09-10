@@ -1,5 +1,4 @@
 import type { MarketToken } from '@/llamalend/llama.utils'
-import { aprToApy } from '@/llamalend/rates.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { getPointsCampaignRows, type PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
@@ -11,6 +10,7 @@ import { maybes, notFalsy } from '@primitives/objects.utils'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
 import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
+import { aprToApy } from '@ui/lib/rates.utils'
 
 export type BreakdownSource = {
   tokenInfo: TokenInfoProps
@@ -169,7 +169,7 @@ export const buildSupplyRateBreakdown = ({
           explorerUrl: scanTokenPath(chainId, reward.address),
         },
         price: constQ(reward.price),
-        rate: aprToApy(reward.value),
+        rate: aprToApy(reward.value, 'llamalend.rewards'),
       })),
       ...rebasingRow,
       {
