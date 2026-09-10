@@ -1,52 +1,39 @@
 import Box, { type BoxProps } from '@mui/material/Box'
-import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { applySxProps } from '@ui/lib/mui'
 
 const { Grid } = SizesAndSpaces
 
-const METRICS_GRID_VARIANTS = {
-  default: { columns: { mobile: 2, tablet: 4 }, rowGap: Grid.Row_Spacing },
-  mobileRows: {
-    columns: { mobile: 1, tablet: 2, desktop: 4 },
-    rowGap: {
-      ...Grid.Row_Spacing,
-      mobile: 0 /** set to 0 because the assumption here is that metrics get transformed to row metrics */,
-    },
-  },
-} as const
-
 const columnTemplate = (count: number) => `repeat(${count}, minmax(0, 1fr))`
 
-/** Grid for consistent column sizes across pages when only showing metrics. */
+const METRICS_GRID_VARIANTS = {
+  default: { gridTemplateColumns: { mobile: columnTemplate(2), tablet: columnTemplate(4) } },
+  mobileRows: {
+    gridTemplateColumns: { mobile: columnTemplate(1), tablet: columnTemplate(2), desktop: columnTemplate(4) },
+    /** set to 0 for mobile because the assumption here is that metrics get transformed to row metrics */
+    rowGap: { ...Grid.Row_Spacing, mobile: 0 },
+  },
+  auto: { gridAutoFlow: 'column', gridAutoColumns: 'minmax(0, 1fr)' },
+} as const
+
+/**
+ * Grid for consistent column sizes across pages when only showing metrics.
+ * The auto variant gives each rendered direct child an equal-width column at every viewport size.
+ */
 export const MetricsGrid = ({
   variant = 'default',
   sx,
   ...props
 }: BoxProps & {
-  /** Layout preset only; Metric children keep their own categories. Defaults to primaryStat. */
+  /** Layout preset only; Metric children keep their own categories. */
   variant?: keyof typeof METRICS_GRID_VARIANTS
-}) => {
-  // Somehow if you try to inline this you get a typescript error about union type being too long?
-  const gridTemplateColumns = fromEntries(
-    recordEntries(METRICS_GRID_VARIANTS[variant].columns).map(([breakpoint, count]) => [
-      breakpoint,
-      columnTemplate(count),
-    ]),
-  )
-
-  return (
-    <Box
-      {...props}
-      sx={applySxProps(
-        {
-          display: 'grid',
-          gridTemplateColumns,
-          columnGap: Grid.Column_Spacing,
-          rowGap: METRICS_GRID_VARIANTS[variant].rowGap,
-        },
-        sx,
-      )}
-    />
-  )
-}
+}) => (
+  <Box
+    {...props}
+    sx={applySxProps(
+      { display: 'grid', rowGap: Grid.Row_Spacing, columnGap: Grid.Column_Spacing },
+      METRICS_GRID_VARIANTS[variant],
+      sx,
+    )}
+  />
+)
