@@ -413,18 +413,8 @@ export function getLiquidationStatus(
   return 'healthy' as const
 }
 
-export function getIsUserCloseToSoftLiquidation(
-  userFirstBand: number,
-  userLiquidationBand: number | null,
-  oraclePriceBand: number | null | undefined,
-) {
-  if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
-    return false
-  } else if (typeof oraclePriceBand === 'number') {
-    return userFirstBand <= oraclePriceBand + 2
-  }
-  return false
-}
+export const getIsUserCloseToSoftLiquidation = (userFirstBand: number, oraclePriceBand: number | null | undefined) =>
+  oraclePriceBand != null && userFirstBand <= oraclePriceBand + 2
 
 /**
  * Formats a collateral + borrowed notional string, e.g. "1.5K WETH + 200 crvUSD".
