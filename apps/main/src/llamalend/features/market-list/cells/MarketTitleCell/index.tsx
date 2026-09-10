@@ -1,6 +1,7 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
 import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
+import { tryChecksumAddress } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
 import { TokenIcons } from '@ui/components/TokenIcons'
@@ -38,6 +39,7 @@ export const MarketTitleCell = ({
               className={`${DESKTOP_ONLY_HOVER_CLASS} ${CLICKABLE_IN_ROW_CLASS}`}
               label={t`Copy market address`}
               copyText={market.controllerAddress}
+              format={tryChecksumAddress}
               confirmationText={t`Market address copied`}
               data-testid={`copy-market-address-${market.controllerAddress}`}
             />

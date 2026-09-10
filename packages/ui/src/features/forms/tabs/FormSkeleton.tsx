@@ -1,11 +1,11 @@
-import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import Button from '@mui/material/Button'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import { noop } from '@tanstack/react-query'
+import { FormContent } from '@ui/features/forms/components/FormContent'
 import { BUTTON_FORM_SIZE } from '@ui/features/forms/constants'
+import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { t } from '@ui/lib/i18n'
-import { FormContent } from './FormContent'
 import { FormTabs } from './FormTabs'
 
 const PARAMS = {} as const

@@ -9,9 +9,9 @@ import {
   MarketPriceChartLayout,
 } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { PAGE_SPACING } from '@evm-ui/widgets/DetailPageLayout/constants'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { PAGE_SPACING } from '@ui/features/layout/DetailPageLayout/constants'
 import type { Range } from '@ui/features/queries/util'
 import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 

@@ -1,6 +1,6 @@
 import { useRangeFilter } from '@evm-ui/shared/ui/DataTable/hooks/useRangeFilter'
 import { RangeFilter } from '@evm-ui/shared/ui/DataTable/RangeFilter'
-import { type NumericTextFieldProps } from '@evm-ui/shared/ui/NumericTextField'
+import { type NumericTextFieldProps } from '@ui/features/forms/controls/NumericTextField'
 import { type FilterProps } from '@ui/features/tables/data-table.utils'
 
 type TableRangeFilterProps<TColumnId extends string> = FilterProps<TColumnId> & {

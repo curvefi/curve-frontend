@@ -2,6 +2,7 @@ import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { copyToClipboardWithToast } from '@evm-ui/hooks/useCopyToClipboard'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
+import { tryChecksumAddress } from '@evm-ui/utils'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
@@ -21,6 +22,7 @@ export const PoolExpandedPanelActions: ExpandedPanelComponent<PoolRow> = ({ row 
       onClick: () =>
         void copyToClipboardWithToast({
           copyText: pool.address,
+          format: tryChecksumAddress,
           confirmationText: t`Pool address copied`,
           failureText: t`Failed to copy pool address`,
         }),

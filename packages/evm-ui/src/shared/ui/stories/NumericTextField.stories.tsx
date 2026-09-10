@@ -3,8 +3,8 @@ import { fn } from 'storybook/test'
 import Grid from '@mui/material/Grid'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { NumericTextField, NumericTextFieldProps } from '@ui/features/forms/controls/NumericTextField'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { NumericTextField, NumericTextFieldProps } from '../NumericTextField'
 
 const { Spacing } = SizesAndSpaces
 
