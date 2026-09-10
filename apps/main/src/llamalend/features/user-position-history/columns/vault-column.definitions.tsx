@@ -7,7 +7,7 @@ import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { MinusCircleIcon } from '@ui/icons/MinusCircleIcon'
 import { PlusCircleIcon } from '@ui/icons/PlusCircleIcon'
-import { decimalCompare } from '@ui/lib/decimal'
+import { decimalCompare, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { VaultChangeAmount } from '../cells/VaultChangeAmount'
 import type { ParsedUserVaultEvent } from '../hooks/useUserVaultEvents'
@@ -15,21 +15,32 @@ import type { ParsedUserVaultEvent } from '../hooks/useUserVaultEvents'
 const { Spacing } = SizesAndSpaces
 const columnHelper = createAppColumnHelper<ParsedUserVaultEvent>()
 
+const EVENT_CONFIG: Record<ParsedUserVaultEvent['type'], { label: string; Icon: typeof PlusCircleIcon }> = {
+  Deposit: { label: t`Supply`, Icon: PlusCircleIcon },
+  Withdraw: { label: t`Withdraw`, Icon: MinusCircleIcon },
+  TransferIn: { label: t`Transfer in`, Icon: PlusCircleIcon },
+  TransferOut: { label: t`Transfer out`, Icon: MinusCircleIcon },
+}
+
 export const USER_VAULT_HISTORY_COLUMNS = columnHelper.columns([
   columnHelper.accessor('type', {
     header: t`Type`,
-    cell: ({ row: { original: event } }) => (
-      <InlineTableCell>
-        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
-          {event.type === 'Deposit' ? <PlusCircleIcon /> : <MinusCircleIcon />}
-          <Typography variant="tableCellMBold">{event.type === 'Deposit' ? t`Supply` : t`Withdraw`}</Typography>
-        </Stack>
-      </InlineTableCell>
-    ),
+    cell: ({ row: { original: event } }) => {
+      const { label, Icon } = EVENT_CONFIG[event.type]
+      return (
+        <InlineTableCell>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
+            <Icon />
+            <Typography variant="tableCellMBold">{label}</Typography>
+          </Stack>
+        </InlineTableCell>
+      )
+    },
   }),
   columnHelper.accessor('amount', {
     header: t`Amount`,
-    sortFn: (a, b) => decimalCompare(a.original.amount, b.original.amount),
+    sortFn: (a, b) => decimalCompare(a.original.amount ?? ZERO, b.original.amount ?? ZERO),
+    sortUndefined: 'last',
     cell: ({ row: { original: event } }) => (
       <InlineTableCell>
         <VaultChangeAmount value={event.amount} symbol={event.symbol} />
