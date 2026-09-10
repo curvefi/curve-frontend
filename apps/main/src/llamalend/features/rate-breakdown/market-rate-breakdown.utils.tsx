@@ -7,10 +7,10 @@ import { scanTokenPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
-import { aprToApy } from '@primitives/rates.utils'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
 import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
+import { aprToApy } from '@ui/lib/rates.utils'
 
 export type BreakdownSource = {
   tokenInfo: TokenInfoProps

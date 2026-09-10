@@ -28,11 +28,11 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { assert } from '@primitives/objects.utils'
-import { aprToApy } from '@primitives/rates.utils'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { aprToApy } from '@ui/lib/rates.utils'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces

@@ -8,8 +8,8 @@ import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/average
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
-import { aprToApy } from '@primitives/rates.utils'
 import type { Range } from '@ui/features/queries/util'
+import { aprToApy } from '@ui/lib/rates.utils'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
   borrowRate: number | null | undefined

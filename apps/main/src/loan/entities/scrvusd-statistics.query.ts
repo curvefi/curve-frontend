@@ -5,7 +5,7 @@ import { useWallet } from '@evm-ui/features/connect-wallet'
 import { EmptyValidationSuite } from '@evm-ui/lib'
 import { queryFactory } from '@evm-ui/lib/model/query'
 import { weiToEther } from '@evm-ui/utils'
-import { aprToApy } from '@primitives/rates.utils'
+import { aprToApy } from '@ui/lib/rates.utils'
 
 const YEAR = 86400 * 365.25 * 100
 const UNLOCK_MULTIPLIER = 1e-12 * YEAR

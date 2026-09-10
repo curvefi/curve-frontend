@@ -34,8 +34,8 @@ import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory, decimal, decimalMultiply } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
-import { aprToApy } from '@primitives/rates.utils'
 import { fallbackQ, mapQuery, q, Query, type QueryProp, type Range } from '@ui/features/queries/util'
+import { aprToApy } from '@ui/lib/rates.utils'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 

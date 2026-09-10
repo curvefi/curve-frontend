@@ -2,9 +2,9 @@ import { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { formatNumber } from '@primitives/number.utils'
-import { aprToApy } from '@primitives/rates.utils'
 import { TooltipItem, TooltipValueLink } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
+import { aprToApy } from '@ui/lib/rates.utils'
 import type { RewardsAction } from '@external-rewards'
 
 type RewardsTooltipItemsProps = {

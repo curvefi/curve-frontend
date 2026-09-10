@@ -4,7 +4,7 @@ import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { formatNumber } from '@primitives/number.utils'
-import { aprToApy } from '@primitives/rates.utils'
+import { aprToApy } from '@ui/lib/rates.utils'
 
 type CampaignRewardsCompProps = {
   rewardsPool: CampaignRewards
