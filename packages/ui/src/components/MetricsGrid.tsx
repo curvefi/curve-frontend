@@ -18,13 +18,15 @@ const METRICS_GRID_VARIANTS = {
 
 const columnTemplate = (count: number) => `repeat(${count}, minmax(0, 1fr))`
 
-type MetricsGridProps = BoxProps & {
+/** Grid for consistent column sizes across pages when only showing metrics. */
+export const MetricsGrid = ({
+  variant = 'default',
+  sx,
+  ...props
+}: BoxProps & {
   /** Layout preset only; Metric children keep their own categories. Defaults to primaryStat. */
   variant?: keyof typeof METRICS_GRID_VARIANTS
-}
-
-/** Grid for consistent column sizes across pages when only showing metrics. */
-export const MetricsGrid = ({ variant = 'default', sx, ...props }: MetricsGridProps) => {
+}) => {
   // Somehow if you try to inline this you get a typescript error about union type being too long?
   const gridTemplateColumns = fromEntries(
     recordEntries(METRICS_GRID_VARIANTS[variant].columns).map(([breakpoint, count]) => [
