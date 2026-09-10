@@ -1,7 +1,10 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
+import { useUserVaultEvents } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
+import type { ParsedUserVaultEvent } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
+import { UserVaultEventsTable } from '@/llamalend/features/user-position-history/UserVaultEventsTable'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
@@ -31,7 +34,9 @@ import { formatNumber } from '@primitives/number.utils'
 import { assert } from '@primitives/objects.utils'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { mapQuery, q } from '@ui/features/queries/util'
+import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useTabs } from '@ui/hooks/useTabs'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
@@ -53,17 +58,51 @@ const METRIC_CATEGORY = 'llamalend.positionSupplyDetails'
 
 const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 12, tablet: 3 }}>{children}</Grid>
 
-// TODO: use the same PositionDetailsComposite component as the borrow tab once the supply events are ready
-export const SupplyPositionDetailsCard = ({ children }: { children: ReactNode }) => (
-  <Stack>
-    <TabsSwitcher
-      variant="contained"
-      value={SUPPLY_POSITION_TAB}
-      options={[{ value: SUPPLY_POSITION_TAB, label: t`Your position` }]}
-    />
-    <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
-  </Stack>
-)
+type SupplyPositionTabsParams = {
+  children: ReactNode
+  events: QueryProp<ParsedUserVaultEvent[]>
+  hasPosition: boolean | undefined
+  userAddress: Address | undefined
+}
+
+const supplyPositionMenu = [
+  {
+    value: SUPPLY_POSITION_TAB,
+    label: t`Your position`,
+    visible: ({ hasPosition, events }: SupplyPositionTabsParams) => hasPosition !== false || !events.data?.length,
+    component: ({ children }: SupplyPositionTabsParams) => <>{children}</>,
+  },
+  {
+    value: 'activity',
+    label: t`Activity`,
+    visible: ({ userAddress }: SupplyPositionTabsParams) => !!userAddress,
+    component: ({ events }: SupplyPositionTabsParams) => <UserVaultEventsTable eventsQuery={events} />,
+  },
+]
+
+export const SupplyPositionDetailsCard = ({
+  children,
+  hasPosition,
+}: {
+  children: ReactNode
+  hasPosition: boolean | undefined
+}) => {
+  const { userAddress } = useMarketContext()
+  const events = useUserVaultEvents()
+  const { tab, tabs, onChange, content } = useTabs({
+    menu: supplyPositionMenu,
+    params: useMemo(
+      () => ({ children, events, hasPosition, userAddress }),
+      [children, events, hasPosition, userAddress],
+    ),
+  })
+  return (
+    <Stack>
+      <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{content}</Stack>
+    </Stack>
+  )
+}
 
 export const SupplyPositionDetails = () => {
   const {
@@ -138,102 +177,100 @@ export const SupplyPositionDetails = () => {
   )
 
   return (
-    <SupplyPositionDetailsCard>
-      <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm }}>
-        <MetricGrid>
-          <Metric
-            category={METRIC_CATEGORY}
-            label={USER_NET_SUPPLY_RATE_TITLE}
-            value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
-            valueOptions={{
-              unit: 'percentage',
-              abbreviate: false,
-              formatter: formatCappedRateValue,
-              ...(noGauge && { fallback: `No Gauge` }),
-            }}
-            notional={mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
-            valueTooltip={{
-              title: USER_NET_SUPPLY_RATE_TITLE,
-              body: (
-                <MarketSupplyRateTooltipContent
-                  supplyApy={supplyMetrics.data?.supplyApy}
-                  averageSupplyApy={snapshots.data?.supplyAverageMetrics.averageLendApy}
-                  periodLabel={AVERAGE_CATEGORIES[RATE_CATEGORY].period}
-                  extraRewards={campaigns}
-                  extraIncentives={extraIncentives.data ?? []}
-                  totalApy={supplyMetrics.data?.totalUserBoost}
-                  totalAverageApy={snapshots.data?.supplyAverageMetrics.totalAverageUserBoost}
-                  boost={{
-                    type: 'user',
-                    apy: supplyMetrics.data?.userBoostApy,
-                    totalApy: supplyMetrics.data?.totalUserBoost,
-                    totalAverageApy: snapshots.data?.supplyAverageMetrics.totalAverageUserBoost,
-                  }}
-                  rebasingYieldApy={snapshots.data?.rebasingYield}
-                  rebasingSymbol={supplyAsset.data?.symbol}
-                  isLoading={extraIncentives.isLoading} // todo: implement Query<> states in tooltip
-                />
-              ),
-              placement: 'top',
-              arrow: false,
-              clickable: true,
-            }}
-          />
-        </MetricGrid>
-        <MetricGrid>
-          <Metric
-            category={METRIC_CATEGORY}
-            label={t`Amount supplied`}
-            value={mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue)}
-            valueOptions={{ unit: 'dollar' }}
-            notional={mapQuery(supplyAsset, ({ depositedAmount, symbol }) => ({
-              value: depositedAmount,
-              unit: { symbol: ` ${symbol}`, position: 'suffix' as const },
-            }))}
-            valueTooltip={{
-              title: t`Amount Supplied`,
-              body: <AmountSuppliedTooltipContent balances={q(balances)} supplyAsset={supplyAsset} />,
-              placement: 'top',
-              arrow: false,
-              clickable: true,
-            }}
-          />
-        </MetricGrid>
-        <MetricGrid>
-          <Metric
-            category={METRIC_CATEGORY}
-            label={t`Vault shares`}
-            value={mapQuery(balances, ({ totalShares }) => totalShares)}
-            valueOptions={{}}
-            notional={mapQuery(balances, ({ stakedPercentage = '0' }) => ({
-              value: stakedPercentage,
-              unit: { symbol: t`% staked`, position: 'suffix' as const },
-            }))}
-            valueTooltip={{
-              title: t`Vault Shares`,
-              body: <VaultSharesTooltipContent />,
-              placement: 'top',
-              arrow: false,
-              clickable: true,
-            }}
-          />
-        </MetricGrid>
-        <MetricGrid>
-          <Metric
-            category={METRIC_CATEGORY}
-            label={t`veCRV Boost`}
-            value={q(userSupplyBoost)}
-            valueOptions={{ unit: 'multiplier', ...(noGauge && { fallback: `No Gauge` }) }}
-            valueTooltip={{
-              title: t`veCRV Boost`,
-              body: <BoostTooltipContent />,
-              placement: 'top',
-              arrow: false,
-              clickable: true,
-            }}
-          />
-        </MetricGrid>
-      </Grid>
-    </SupplyPositionDetailsCard>
+    <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm }}>
+      <MetricGrid>
+        <Metric
+          category={METRIC_CATEGORY}
+          label={USER_NET_SUPPLY_RATE_TITLE}
+          value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
+          valueOptions={{
+            unit: 'percentage',
+            abbreviate: false,
+            formatter: formatCappedRateValue,
+            ...(noGauge && { fallback: `No Gauge` }),
+          }}
+          notional={mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
+          valueTooltip={{
+            title: USER_NET_SUPPLY_RATE_TITLE,
+            body: (
+              <MarketSupplyRateTooltipContent
+                supplyApy={supplyMetrics.data?.supplyApy}
+                averageSupplyApy={snapshots.data?.supplyAverageMetrics.averageLendApy}
+                periodLabel={AVERAGE_CATEGORIES[RATE_CATEGORY].period}
+                extraRewards={campaigns}
+                extraIncentives={extraIncentives.data ?? []}
+                totalApy={supplyMetrics.data?.totalUserBoost}
+                totalAverageApy={snapshots.data?.supplyAverageMetrics.totalAverageUserBoost}
+                boost={{
+                  type: 'user',
+                  apy: supplyMetrics.data?.userBoostApy,
+                  totalApy: supplyMetrics.data?.totalUserBoost,
+                  totalAverageApy: snapshots.data?.supplyAverageMetrics.totalAverageUserBoost,
+                }}
+                rebasingYieldApy={snapshots.data?.rebasingYield}
+                rebasingSymbol={supplyAsset.data?.symbol}
+                isLoading={extraIncentives.isLoading} // todo: implement Query<> states in tooltip
+              />
+            ),
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
+        />
+      </MetricGrid>
+      <MetricGrid>
+        <Metric
+          category={METRIC_CATEGORY}
+          label={t`Amount supplied`}
+          value={mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue)}
+          valueOptions={{ unit: 'dollar' }}
+          notional={mapQuery(supplyAsset, ({ depositedAmount, symbol }) => ({
+            value: depositedAmount,
+            unit: { symbol: ` ${symbol}`, position: 'suffix' as const },
+          }))}
+          valueTooltip={{
+            title: t`Amount Supplied`,
+            body: <AmountSuppliedTooltipContent balances={q(balances)} supplyAsset={supplyAsset} />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
+        />
+      </MetricGrid>
+      <MetricGrid>
+        <Metric
+          category={METRIC_CATEGORY}
+          label={t`Vault shares`}
+          value={mapQuery(balances, ({ totalShares }) => totalShares)}
+          valueOptions={{}}
+          notional={mapQuery(balances, ({ stakedPercentage = '0' }) => ({
+            value: stakedPercentage,
+            unit: { symbol: t`% staked`, position: 'suffix' as const },
+          }))}
+          valueTooltip={{
+            title: t`Vault Shares`,
+            body: <VaultSharesTooltipContent />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
+        />
+      </MetricGrid>
+      <MetricGrid>
+        <Metric
+          category={METRIC_CATEGORY}
+          label={t`veCRV Boost`}
+          value={q(userSupplyBoost)}
+          valueOptions={{ unit: 'multiplier', ...(noGauge && { fallback: `No Gauge` }) }}
+          valueTooltip={{
+            title: t`veCRV Boost`,
+            body: <BoostTooltipContent />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
+        />
+      </MetricGrid>
+    </Grid>
   )
 }

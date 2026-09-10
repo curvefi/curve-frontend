@@ -53,8 +53,8 @@ export const Page = () => {
     },
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
-  const supplied = +(useUserBalances({ marketId: market?.id, chainId, userAddress }).data?.totalShares ?? 0)
-  const hasPosition = !!market && supplied > 0
+  const { data: balances } = useUserBalances({ marketId: market?.id, chainId, userAddress })
+  const hasPosition = market && balances ? +(balances.totalShares ?? 0) > 0 : undefined
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -86,13 +86,9 @@ export const Page = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         <MarketSection id="position-details">
-          {hasPosition ? (
-            <SupplyPositionDetails />
-          ) : (
-            <SupplyPositionDetailsCard>
-              <MarketEmptyPosition type={MarketRateType.Supply} />
-            </SupplyPositionDetailsCard>
-          )}
+          <SupplyPositionDetailsCard hasPosition={hasPosition}>
+            {hasPosition ? <SupplyPositionDetails /> : <MarketEmptyPosition type={MarketRateType.Supply} />}
+          </SupplyPositionDetailsCard>
         </MarketSection>
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
