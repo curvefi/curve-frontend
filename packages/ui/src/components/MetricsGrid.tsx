@@ -10,11 +10,11 @@ const METRICS_GRID_VARIANTS = {
   default: { gridTemplateColumns: { mobile: columnTemplate(2), tablet: columnTemplate(4) } },
   mobileRows: {
     gridTemplateColumns: { mobile: columnTemplate(1), tablet: columnTemplate(2), desktop: columnTemplate(4) },
-    /** set to 0 for mobile because the assumption here is that metrics get transformed to row metrics */
+    // Set to 0 for mobile because the assumption here is that metrics get transformed to row metrics.
     rowGap: { ...Grid.Row_Spacing, mobile: 0 },
   },
   fill: { gridAutoFlow: 'column', gridAutoColumns: 'minmax(0, 1fr)' },
-  // like fill, but assumes that on mobile the metrics turn into vertically stacked row metrics
+  // Like fill, but assumes that on mobile the metrics turn into vertically stacked row metrics.
   fillMobile: {
     gridTemplateColumns: { mobile: columnTemplate(1), tablet: 'none' },
     gridAutoFlow: { mobile: 'row', tablet: 'column' },
