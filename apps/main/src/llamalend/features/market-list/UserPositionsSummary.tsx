@@ -21,7 +21,8 @@ export const UserPositionSummary = ({
   }, [markets, selectedChains])
   const summary = getUserPositionsSummary(filteredMarkets)
   return (
-    <MetricsGrid variant='fillMobile'
+    <MetricsGrid
+      variant="fillMobile"
       sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}
     >
       {summary.map((item, index) => (
