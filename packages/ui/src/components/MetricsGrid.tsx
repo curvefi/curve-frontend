@@ -13,13 +13,17 @@ const METRICS_GRID_VARIANTS = {
     /** set to 0 for mobile because the assumption here is that metrics get transformed to row metrics */
     rowGap: { ...Grid.Row_Spacing, mobile: 0 },
   },
-  auto: { gridAutoFlow: 'column', gridAutoColumns: 'minmax(0, 1fr)' },
+  fill: { gridAutoFlow: 'column', gridAutoColumns: 'minmax(0, 1fr)' },
+  // like fill, but assumes that on mobile the metrics turn into vertically stacked row metrics
+  fillMobile: {
+    gridTemplateColumns: { mobile: columnTemplate(1), tablet: 'none' },
+    gridAutoFlow: { mobile: 'row', tablet: 'column' },
+    gridAutoColumns: 'minmax(0, 1fr)',
+    rowGap: { ...Grid.Row_Spacing, mobile: 0 },
+  },
 } as const
 
-/**
- * Grid for consistent column sizes across pages when only showing metrics.
- * The auto variant gives each rendered direct child an equal-width column at every viewport size.
- */
+/** Grid for consistent column sizes across pages when only showing metrics. */
 export const MetricsGrid = ({
   variant = 'default',
   sx,

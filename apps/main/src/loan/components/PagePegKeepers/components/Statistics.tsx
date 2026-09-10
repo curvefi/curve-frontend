@@ -16,7 +16,7 @@ export const Statistics = () => {
     <Card size="small">
       <CardHeader title={t`Statistics`} />
       <CardContent>
-        <MetricsGrid variant="auto">
+        <MetricsGrid variant="fill">
           <Metric
             category={METRIC_CATEGORY}
             label={t`Peg stabilisation reserve`}

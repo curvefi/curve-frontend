@@ -38,7 +38,7 @@ export const StatsBanner = () => {
         <Typography variant="headingSBold">{t`Your stablecoins could do more`}</Typography>
         <Typography variant="bodyMRegular">{t`With $100k of scrvUSD held you could get`}</Typography>
       </Stack>
-      <MetricsGrid variant="auto">
+      <MetricsGrid variant="fill">
         <Metric
           category={METRIC_CATEGORY}
           label={t`30 Days Projection`}
