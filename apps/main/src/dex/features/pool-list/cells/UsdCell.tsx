@@ -1,9 +1,9 @@
-import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import type { PoolRow } from '../types'
 import { formatCellValue } from './utils'
 

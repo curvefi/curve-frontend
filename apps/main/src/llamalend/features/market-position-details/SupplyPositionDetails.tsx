@@ -5,7 +5,6 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
-  aprToApy,
   formatSupplyExtraIncentives,
   getLatestSnapshotValue,
   getSupplyApyAverageMetrics,
@@ -23,7 +22,7 @@ import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
 import { combineQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { AVERAGE_CATEGORIES, type AverageCategory, decimalMultiply, formatCappedRateValue } from '@evm-ui/utils'
+import { AVERAGE_CATEGORIES, type AverageCategory, formatCappedRateValue } from '@evm-ui/utils'
 import { Grid, Stack } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -32,7 +31,9 @@ import { assert } from '@primitives/objects.utils'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { aprToApy } from '@ui/lib/rates.utils'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
@@ -127,7 +128,7 @@ export const SupplyPositionDetails = () => {
       formatSupplyExtraIncentives({
         incentives: rewardsApr.map(r => ({
           title: r.symbol,
-          percentage: aprToApy(r.apy),
+          percentage: aprToApy(r.apy, 'llamalend.rewards'),
           blockchainId,
           address: r.tokenAddress,
         })),

@@ -14,10 +14,10 @@ import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevL
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MarketType } from '@evm-ui/types/market'
-import { decimal } from '@evm-ui/utils'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { decimal } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function AddCollateralInfoList<ChainId extends IChainId>({

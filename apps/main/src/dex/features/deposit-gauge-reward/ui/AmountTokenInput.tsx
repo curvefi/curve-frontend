@@ -9,11 +9,12 @@ import { TokenList, type TokenOption, TokenSelector } from '@evm-ui/features/sel
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
-import { decimal, decimalMultiply, shortenAddress } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
 import { mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 export const AmountTokenInput = ({

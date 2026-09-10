@@ -1,4 +1,4 @@
-import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { AgeCell } from '../cells/AgeCell'
 import { BaseRateCell, WeeklyBaseRateCell } from '../cells/BaseRateCell'
 import { CrvRateCell } from '../cells/CrvRateCell'

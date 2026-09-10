@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import type { ReactTable, RowData } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 
 /** Returns sorted string options from a TanStack column's faceted unique values. */
 export const useFacetedSortedOptions = <TData extends RowData>({

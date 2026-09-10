@@ -1,7 +1,7 @@
-import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { t } from '@ui/lib/i18n'
 import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 

@@ -1,14 +1,14 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
-import {
-  CLICKABLE_IN_ROW_CLASS,
-  DESKTOP_ONLY_HOVER_CLASS,
-  type CurveTableFeatures,
-} from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
 import { TokenIcons } from '@ui/components/TokenIcons'
+import {
+  CLICKABLE_IN_ROW_CLASS,
+  DESKTOP_ONLY_HOVER_CLASS,
+  type CurveTableFeatures,
+} from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'

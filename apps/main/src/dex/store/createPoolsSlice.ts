@@ -47,7 +47,7 @@ export type PoolsSlice = {
     fetchPools: (
       curve: CurveApi,
       poolIds: string[],
-      includeGaugeData: boolean,
+      options: { includeGaugeData: boolean },
     ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
     fetchPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[], useApi?: boolean) => Promise<void>
@@ -78,7 +78,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    fetchPools: async (curve, poolIds, includeGaugeData) => {
+    fetchPools: async (curve, poolIds, { includeGaugeData }) => {
       const { pools, tokens } = get()
       const { chainId } = curve
 
@@ -148,7 +148,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])
-      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId], true)
+      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId], { includeGaugeData: true })
       return resp?.poolsMapper?.[poolId]
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {

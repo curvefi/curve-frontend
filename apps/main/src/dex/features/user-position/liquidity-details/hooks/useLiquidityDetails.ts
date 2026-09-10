@@ -7,8 +7,8 @@ import { useUserPoolLiquidityUsdQuery } from '@/dex/queries/user-pool-liquidity-
 import { useUserPoolShareQuery } from '@/dex/queries/user-pool-share.query'
 import type { ChainId, PoolData } from '@/dex/types/main.types'
 import { combineQueries } from '@evm-ui/lib'
-import { decimalPercent, decimalSum } from '@evm-ui/utils'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { decimalPercent, decimalSum } from '@ui/lib/decimal'
 
 export type UseLiquidityDetailsParams = { chainId: ChainId; poolData: PoolData; poolId: string | undefined }
 

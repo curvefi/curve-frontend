@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { formatUnits } from 'viem'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 
@@ -77,4 +76,3 @@ export const toWei = (n: string, decimals: number) =>
       .shiftedBy(decimals)
       .integerValue(BigNumber.ROUND_DOWN),
   )!
-export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

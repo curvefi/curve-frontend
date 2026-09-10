@@ -1,11 +1,12 @@
 import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
-import { decimalDiv, decimalMinus, decimalMultiply, formatToken } from '@evm-ui/utils'
+import { formatToken } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import type { QueryProp } from '@ui/features/queries/util'
+import { decimalDiv, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { SupplyAsset } from '../SupplyPositionDetails'
 

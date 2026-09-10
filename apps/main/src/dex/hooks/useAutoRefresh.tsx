@@ -1,13 +1,11 @@
 import { useMemo } from 'react'
 import { useStore } from '@/dex/store/useStore'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
 import { useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
 
 export const useAutoRefresh = (chainId: number | undefined) => {
-  const usePoolListV2 = useDexPoolListV2()
   const { curveApi, isHydrated } = useCurve()
   const fetchPools = useStore(state => state.pools.fetchPools)
   const poolIds = useMemo(
@@ -19,6 +17,6 @@ export const useAutoRefresh = (chainId: number | undefined) => {
 
   usePageVisibleInterval(async () => {
     if (!curveApi || !poolIds || !chainId) return
-    await fetchPools(curveApi, poolIds, !usePoolListV2)
+    await fetchPools(curveApi, poolIds, { includeGaugeData: true })
   }, REFRESH_INTERVAL['15m'])
 }

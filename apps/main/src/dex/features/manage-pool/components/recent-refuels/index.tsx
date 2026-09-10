@@ -3,13 +3,13 @@ import type { Address } from 'viem'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import { useManualPagination } from '@evm-ui/features/activity-table'
-import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { mapQuery } from '@ui/features/queries/util'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { RECENT_REFUELS_PAGE_SIZE, useRecentRefuels } from '../../queries/recent-refuels.query'
 import { createRecentRefuelsColumns } from './columns/columns.definitions'
@@ -51,7 +51,7 @@ export const RecentRefuels = ({
   return (
     <Stack data-testid="refuel-recent-refuels">
       <CardHeader title={t`Recent Refuels`} size="small" />
-      <DataTable
+      <EvmDataTable
         table={table}
         emptyState={{ title: t`No recent refuels found` }}
         errorState={{ title: t`Could not load recent refuels` }}

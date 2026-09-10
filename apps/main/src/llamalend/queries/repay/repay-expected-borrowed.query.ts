@@ -2,8 +2,8 @@ import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { decimal } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { decimal } from '@ui/lib/decimal'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
 type RepayExpectedBorrowedResult = {

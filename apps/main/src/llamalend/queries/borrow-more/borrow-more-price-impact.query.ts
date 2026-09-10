@@ -3,7 +3,7 @@ import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { decimal } from '@evm-ui/utils'
+import { decimal } from '@ui/lib/decimal'
 
 export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowMorePriceImpact } = queryFactory({
   queryKey: ({

@@ -1,19 +1,19 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react'
-import { hasParentWithClass } from '@evm-ui/utils/dom'
 import TableRow from '@mui/material/TableRow'
 import type { ReactTable, Row, RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
-import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
-import { useNavigate } from '@ui/hooks/router'
-import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import {
   CLICKABLE_IN_ROW_CLASS,
   type CurveTableFeatures,
   DESKTOP_ONLY_HOVER_CLASS,
   TABLE_SECONDARY_TEXT_CLASS,
-} from './data-table.utils'
-import { DataCell } from './DataCell'
-import { type ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
+} from '@ui/features/tables/data-table.utils'
+import { DataCell } from '@ui/features/tables/DataCell'
+import { type ExpandedPanelConfig, ExpansionRow } from '@ui/features/tables/ExpansionRow'
+import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
+import { useNavigate } from '@ui/hooks/router'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { hasParentWithClass } from '@ui/lib/dom'
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row

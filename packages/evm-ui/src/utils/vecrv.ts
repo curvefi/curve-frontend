@@ -1,4 +1,4 @@
-import { decimal, decimalGreaterThan, ZERO } from './decimal'
+import { decimal, decimalGreaterThan, ZERO } from '@ui/lib/decimal'
 
 export const VECRV_MAX_LOCK_YEARS = 4
 const DAYS_PER_YEAR = 365

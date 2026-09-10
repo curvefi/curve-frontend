@@ -1,11 +1,11 @@
 import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
 import { LegacyTooltipBaseApy } from '@/dex/components/LegacyTooltipBaseApy'
 import { LARGE_RATE } from '@/dex/constants'
-import { isSortedBy, type CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
+import { isSortedBy, type CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import type { LegacyPoolRow } from '../types'
 
 export const LegacyRewardsBaseCell = ({
