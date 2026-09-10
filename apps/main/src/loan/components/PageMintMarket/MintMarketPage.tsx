@@ -16,7 +16,6 @@ import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { networks } from '@/loan/networks'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
-import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
@@ -66,7 +65,6 @@ export const MintMarketPage = () => {
   const collateralEvents = useUserCollateralEvents({
     app: MarketType.Mint,
     chainId,
-    blockchainId: getPricesApiBlockchainId(network.blockchainId),
     controllerAddress,
     userAddress: address,
     tokens,

@@ -7,6 +7,7 @@ import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { MinusCircleIcon } from '@ui/icons/MinusCircleIcon'
 import { PlusCircleIcon } from '@ui/icons/PlusCircleIcon'
+import { decimalCompare } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { VaultChangeAmount } from '../cells/VaultChangeAmount'
 import type { ParsedUserVaultEvent } from '../hooks/useUserVaultEvents'
@@ -28,6 +29,7 @@ export const USER_VAULT_HISTORY_COLUMNS = columnHelper.columns([
   }),
   columnHelper.accessor('amount', {
     header: t`Amount`,
+    sortFn: (a, b) => decimalCompare(a.original.amount, b.original.amount),
     cell: ({ row: { original: event } }) => (
       <InlineTableCell>
         <VaultChangeAmount value={event.amount} symbol={event.symbol} />
@@ -37,6 +39,7 @@ export const USER_VAULT_HISTORY_COLUMNS = columnHelper.columns([
   }),
   columnHelper.accessor('shareChange', {
     header: t`Shares`,
+    sortFn: (a, b) => decimalCompare(a.original.shareChange, b.original.shareChange),
     cell: ({ getValue }) => (
       <InlineTableCell>
         <VaultChangeAmount value={getValue()} />

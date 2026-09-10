@@ -17,7 +17,6 @@ import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
-import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import {
   useMarketResetPosition,
@@ -69,7 +68,6 @@ export const LendMarketPage = () => {
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const collateralEvents = useUserCollateralEvents({
     chainId,
-    blockchainId: getPricesApiBlockchainId(network.blockchainId),
     app: MarketType.Lend,
     controllerAddress,
     userAddress,

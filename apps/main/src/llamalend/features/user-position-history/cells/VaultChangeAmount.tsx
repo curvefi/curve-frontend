@@ -1,9 +1,14 @@
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { notFalsy } from '@primitives/objects.utils'
+import { decimalCompare, ZERO } from '@ui/lib/decimal'
 
-export const VaultChangeAmount = ({ value, symbol }: { value: number; symbol?: string }) => (
-  <Typography variant="tableCellMBold" color={value === 0 ? 'textPrimary' : value > 0 ? 'success' : 'error'}>
-    {value > 0 ? '+' : ''}
-    {formatNumber(value, { abbreviate: false })} {symbol}
-  </Typography>
-)
+export const VaultChangeAmount = ({ value, symbol }: { value: Decimal; symbol?: string }) => {
+  const sign = decimalCompare(value, ZERO)
+  return (
+    <Typography variant="tableCellMBold" color={sign === 0 ? 'textPrimary' : sign > 0 ? 'success' : 'error'}>
+      {notFalsy(sign > 0 && '+', formatNumber(value, { abbreviate: false }), symbol).join(' ')}
+    </Typography>
+  )
+}
