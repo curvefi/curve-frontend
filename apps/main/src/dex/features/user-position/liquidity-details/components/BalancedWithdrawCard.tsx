@@ -1,5 +1,4 @@
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { amount } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -8,6 +7,7 @@ import { formatNumber } from '@primitives/number.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 

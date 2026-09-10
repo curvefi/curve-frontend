@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
-import { aprToApy } from '@evm-ui/utils'
 import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { formatNumber } from '@primitives/number.utils'
+import { aprToApy } from '@ui/lib/rates.utils'
 
 type CampaignRewardsCompProps = {
   rewardsPool: CampaignRewards
@@ -31,7 +31,10 @@ export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: 
             {action != 'lp' && `${action} `}
             {reward?.value
               ? reward.type === 'apr'
-                ? formatNumber(action === 'supply' ? aprToApy(reward.value) : reward.value, 'percent.rate')
+                ? formatNumber(
+                    action === 'supply' ? aprToApy(reward.value, 'llamalend.rewards') : reward.value,
+                    'percent.rate',
+                  )
                 : formatNumber(reward.value, 'multiplier')
               : symbol}
           </Multiplier>

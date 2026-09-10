@@ -1,12 +1,12 @@
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/lib/dayjs'
-import { decimal } from '@evm-ui/utils'
 import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
 import { formatDate } from '@primitives/date.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
+import { decimal } from '@ui/lib/decimal'
 import { MILLISECONDS_PER_SECOND } from '@ui/lib/time'
 
 /** Returns the Curve API rounded unlock timestamp for a lock duration. */

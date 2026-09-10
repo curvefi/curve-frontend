@@ -3,15 +3,14 @@ import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
 import type { ExtraIncentive } from '@evm-ui/types/market'
-import { decimal, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/averageRates'
-import { aprToApy } from '@evm-ui/utils/rates'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
-
-export { aprToApy } from '@evm-ui/utils/rates'
+import { decimal } from '@ui/lib/decimal'
+import { aprToApy } from '@ui/lib/rates.utils'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
   borrowRate: number | null | undefined
@@ -78,7 +77,7 @@ export const toNumberOrNull = (value: number | string | null | undefined) =>
 type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
 
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
-  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy)) : null
+  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy, 'llamalend.rewards')) : null
 
 export const sumCampaignsApr = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
@@ -92,7 +91,7 @@ export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
     ? sumBy(
         campaigns.filter(c => c.reward?.type === 'apr'),
-        c => aprToApy(c.reward?.value ?? 0),
+        c => aprToApy(c.reward?.value ?? 0, 'llamalend.rewards'),
       )
     : null
 
@@ -145,9 +144,10 @@ export const getSupplyApyMetrics = ({
 
   const [crvMinBoostApr, crvMaxBoostApr] = crvBoostApr ?? []
 
-  const crvMinBoostApy = aprToApy(crvMinBoostApr)
-  const crvMaxBoostApy = aprToApy(crvMaxBoostApr)
-  const userBoostApy = maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) => aprToApy(apr * +boost)) ?? null
+  const crvMinBoostApy = aprToApy(crvMinBoostApr, 'llamalend.rewards') ?? null
+  const crvMaxBoostApy = aprToApy(crvMaxBoostApr, 'llamalend.rewards') ?? null
+  const userBoostApy =
+    maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) => aprToApy(apr * +boost, 'llamalend.rewards')) ?? null
 
   const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy, campaignsApy)
 
@@ -175,9 +175,10 @@ export const getSupplyApyAverageMetrics = ({
     supplyApy: ({ lendApy }) => Number(lendApy) * 100,
     rebasingYieldApy: ({ borrowedToken }) => borrowedToken.rebasingYield,
     crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost * 100,
-    crvMinBoostApy: ({ lendAprCrv0Boost }) => aprToApy(lendAprCrv0Boost * 100),
-    crvMaxBoostApy: ({ lendAprCrvMaxBoost }) => aprToApy(lendAprCrvMaxBoost * 100),
-    extraIncentivesApy: ({ extraRewardApr }) => sumBy(extraRewardApr, reward => aprToApy(reward.rate)),
+    crvMinBoostApy: ({ lendAprCrv0Boost }) => aprToApy(lendAprCrv0Boost * 100, 'llamalend.rewards'),
+    crvMaxBoostApy: ({ lendAprCrvMaxBoost }) => aprToApy(lendAprCrvMaxBoost * 100, 'llamalend.rewards'),
+    extraIncentivesApy: ({ extraRewardApr }) =>
+      sumBy(extraRewardApr, reward => aprToApy(reward.rate, 'llamalend.rewards')),
   })
 
   const averageTotalWithoutBoost = sumRates(

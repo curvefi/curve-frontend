@@ -1,9 +1,10 @@
 import { zeroAddress } from 'viem'
 import type { Address } from 'viem'
 import { oneAddress } from '@cy/support/generators'
-import { CRVUSD_ADDRESS, decimalDiv, decimalMinus, decimalMultiply, decimalSum } from '@evm-ui/utils'
+import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { decimalDiv, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import {
   createMockLendMarket,

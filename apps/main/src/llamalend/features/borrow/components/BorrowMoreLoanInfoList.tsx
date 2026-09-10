@@ -14,11 +14,11 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
 import type { MarketType } from '@evm-ui/types/market'
-import { decimalSum } from '@evm-ui/utils'
 import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { decimalSum } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({

@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+import GlobalStyles from '@mui/material/GlobalStyles'
 import MuiLink from '@mui/material/Link'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
@@ -19,6 +20,11 @@ export const StellarRootLayout = ({ children }: { children: ReactNode }) => {
   useBodyThemeClass()
   return (
     <ThemeProvider theme={theme}>
+      <GlobalStyles
+        styles={({ palette: { background, text } }) => ({
+          body: { color: text.primary, backgroundColor: background.default },
+        })}
+      />
       <ErrorBoundary title={t`Root layout error`} LinkComponent={MuiLink}>
         <QueryProvider persister={persister} queryClient={queryClient}>
           {children}
