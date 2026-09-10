@@ -4,13 +4,14 @@ import type { ReactNode } from 'react'
 import { useConnection, useConfig } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { AlertGaugeKilled } from '@/dex/components/PagePool/components/AlertGaugeKilled'
 import { DetailInfoExpectedApy } from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
 import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
 import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import { DEFAULT_ESTIMATED_GAS, GAUGE_KILLED_ALERT } from '@/dex/components/PagePool/utils'
+import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
@@ -166,9 +167,7 @@ export const FormStake = ({ seed }: TransferProps) => {
 
   return (
     <FormContent>
-      {poolData.gauge.isKilled && (
-        <AlertBox alertType={GAUGE_KILLED_ALERT.alertType}>{GAUGE_KILLED_ALERT.message}</AlertBox>
-      )}
+      {poolData.gauge.isKilled && <AlertGaugeKilled />}
       {/* input fields */}
       <FieldsWrapper>
         <FieldLpToken

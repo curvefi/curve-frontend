@@ -4,6 +4,7 @@ import { useConfig } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { AlertSlippage } from '@/dex/components/AlertSlippage'
 import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { AlertGaugeKilled } from '@/dex/components/PagePool/components/AlertGaugeKilled'
 import { DetailInfoEstLpTokens } from '@/dex/components/PagePool/components/DetailInfoEstLpTokens'
 import { DetailInfoExpectedApy } from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
 import { DetailInfoSlippage } from '@/dex/components/PagePool/components/DetailInfoSlippage'
@@ -17,7 +18,6 @@ import {
   amountsDescription,
   DEFAULT_ESTIMATED_GAS,
   DEFAULT_SLIPPAGE,
-  GAUGE_KILLED_ALERT,
   getSlippageType,
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
@@ -251,9 +251,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed, tokensMapper }:
 
   return (
     <FormContent>
-      {poolData.gauge.isKilled && (
-        <AlertBox alertType={GAUGE_KILLED_ALERT.alertType}>{GAUGE_KILLED_ALERT.message}</AlertBox>
-      )}
+      {poolData.gauge.isKilled && <AlertGaugeKilled />}
       <FieldsDeposit
         chainId={chainId}
         formProcessing={disableForm}

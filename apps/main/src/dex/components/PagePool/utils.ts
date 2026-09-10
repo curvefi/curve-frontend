@@ -1,11 +1,9 @@
 import type { EstimatedGas, Slippage, TransferTabsParams } from '@/dex/components/PagePool/types'
-import type { PoolAlert } from '@/dex/types/main.types'
 import { PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import type { IDict } from '@curvefi/api/lib/interfaces'
 import { maybe } from '@primitives/objects.utils'
 import type { SlippageType } from '@ui/features/slippage/slippage.utils'
-import { t } from '@ui/lib/i18n'
 
 export type Amount = { value: string; touched?: boolean; token: string; tokenAddress: string }
 
@@ -44,8 +42,6 @@ export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGa
 
 export const getSlippageType = <T extends PoolData | undefined>(poolData: T) =>
   maybe(poolData, ({ pool }): SlippageType => (pool.isCrypto ? 'crypto' : 'stable'))
-
-export const GAUGE_KILLED_ALERT: PoolAlert = { alertType: 'warning', message: t`This gauge is inactive.` }
 
 export const getDepositTabAlert = ({ poolAlert }: TransferTabsParams) => poolAlert?.isDisableDeposit && poolAlert
 
