@@ -2,13 +2,13 @@ import { MARKET_TITLES } from '@/llamalend/features/market-list/columns/column.t
 import { MarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { formatNumber } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
 export const MaxRoeTooltipContent = ({ market }: { market?: LlamaMarket }) => (
