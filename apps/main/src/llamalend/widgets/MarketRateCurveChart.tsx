@@ -25,6 +25,7 @@ import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
@@ -164,13 +165,7 @@ export const MarketRateCurveChart = () => {
     <Card size="small" data-testid="interest-rate-utilization-chart">
       <Header title={t`Interest Rate & Utilization`} />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
-        <Stack
-          sx={{
-            display: 'grid',
-            gap: Spacing.xl,
-            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' },
-          }}
-        >
+        <MetricsGrid>
           <Metric
             category={METRIC_CATEGORY}
             label={t`Utilization`}
@@ -227,7 +222,7 @@ export const MarketRateCurveChart = () => {
               ...TooltipOptions,
             }}
           />
-        </Stack>
+        </MetricsGrid>
         <EvmChartStateWrapper
           height={Height.shortChart}
           isLoading={chartData.isLoading}

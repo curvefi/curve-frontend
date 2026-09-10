@@ -7,7 +7,6 @@ import {
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
-import { MarketMetricGrid } from '@/llamalend/widgets/MarketMetricGrid'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { combineQueries } from '@evm-ui/lib'
@@ -16,6 +15,7 @@ import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { UNAVAILABLE_TOKEN_SYMBOL } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -44,7 +44,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
       : UNAVAILABLE_TOKEN_SYMBOL
 
   return (
-    <MarketMetricGrid category="secondaryDetail">
+    <MetricsGrid variant="mobileRows">
       <Metric
         category={METRIC_CATEGORY}
         label={t`Collateral value`}
@@ -120,6 +120,6 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           valueOptions={{ unit: 'multiplier' }}
         />
       )}
-    </MarketMetricGrid>
+    </MetricsGrid>
   )
 }

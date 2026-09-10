@@ -1,12 +1,12 @@
 import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
-import { MarketMetricGrid } from '@/llamalend/widgets/MarketMetricGrid'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, formatCappedRateValue } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
@@ -118,10 +118,10 @@ export const MetricsRow = ({
     rateType === MarketRateType.Supply ? [supplyRateMetric, borrowRateMetric] : [borrowRateMetric, supplyRateMetric]
 
   return (
-    <MarketMetricGrid>
+    <MetricsGrid>
       {primaryRateMetric}
       {secondaryRateMetric}
       {liquidityMetrics}
-    </MarketMetricGrid>
+    </MetricsGrid>
   )
 }

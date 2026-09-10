@@ -8,6 +8,7 @@ import { combineQueries } from '@evm-ui/lib'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalDiv, decimalPercent } from '@ui/lib/decimal'
@@ -63,57 +64,41 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
           </Grid>
         </Grid>
 
-        <Grid
-          container
-          columnSpacing={Spacing.lg}
-          rowSpacing={{ ...Spacing.md, mobile: 0 }}
-          wrap="wrap"
-          sx={{
-            display: 'grid',
-            gridAutoRows: '1fr',
-            gridTemplateColumns: { mobile: 'repeat(1, 1fr)', tablet: 'repeat(3, 1fr)' },
-          }}
-        >
-          <Grid>
-            <Metric
-              category={SECONDARY_METRIC_CATEGORY}
-              label={t`30 Days Projection`}
-              valueOptions={{ unit: 'dollar' }}
-              value={thirtyDayProjection}
-              labelTooltip={{
-                title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
-              }}
-              testId="scrvusd-position-projection-30d"
-            />
-          </Grid>
-          <Grid>
-            <Metric
-              category={SECONDARY_METRIC_CATEGORY}
-              label={t`1 Year Projection`}
-              valueOptions={{ unit: 'dollar' }}
-              value={oneYearProjection}
-              labelTooltip={{
-                title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
-              }}
-              testId="scrvusd-position-projection-1y"
-            />
-          </Grid>
-          <Grid>
-            <Metric
-              category={SECONDARY_METRIC_CATEGORY}
-              label={t`Estimated APY`}
-              valueOptions={{ unit: 'percentage' }}
-              value={scrvUsdApy}
-              labelTooltip={{
-                title: [
-                  t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account.`,
-                  t`This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
-                ].join(' '),
-              }}
-              testId="scrvusd-position-apy"
-            />
-          </Grid>
-        </Grid>
+        <MetricsGrid>
+          <Metric
+            category={SECONDARY_METRIC_CATEGORY}
+            label={t`30 Days Projection`}
+            valueOptions={{ unit: 'dollar' }}
+            value={thirtyDayProjection}
+            labelTooltip={{
+              title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+            }}
+            testId="scrvusd-position-projection-30d"
+          />
+          <Metric
+            category={SECONDARY_METRIC_CATEGORY}
+            label={t`1 Year Projection`}
+            valueOptions={{ unit: 'dollar' }}
+            value={oneYearProjection}
+            labelTooltip={{
+              title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+            }}
+            testId="scrvusd-position-projection-1y"
+          />
+          <Metric
+            category={SECONDARY_METRIC_CATEGORY}
+            label={t`Estimated APY`}
+            valueOptions={{ unit: 'percentage' }}
+            value={scrvUsdApy}
+            labelTooltip={{
+              title: [
+                t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account.`,
+                t`This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+              ].join(' '),
+            }}
+            testId="scrvusd-position-apy"
+          />
+        </MetricsGrid>
       </CardContent>
     </Card>
   )
