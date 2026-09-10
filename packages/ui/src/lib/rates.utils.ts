@@ -1,4 +1,4 @@
-import { maybe } from './objects.utils'
+import { maybe } from '@primitives/objects.utils'
 
 /** Number of compounding periods per year. */
 export const COMPOUNDING_FREQUENCIES = { daily: 365, weekly: 365 / 7, continuous: Infinity } as const

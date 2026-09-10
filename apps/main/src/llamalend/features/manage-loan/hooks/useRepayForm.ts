@@ -16,12 +16,12 @@ import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validat
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/entities/router-api'
-import { decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
 import { type AllowUndefined, q, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
+import { decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../../market-context'
 

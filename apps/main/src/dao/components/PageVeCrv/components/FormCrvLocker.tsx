@@ -4,9 +4,9 @@ import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate
 import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { LockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
 import type { ChainId } from '@/dao/types/dao.types'
-import { decimalGreaterThan, ZERO } from '@evm-ui/utils'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
-import { FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
+import { decimalGreaterThan, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 type LockerTabsParams = { chainId: ChainId } & { canUnlock: boolean; hasLockedCrv: boolean }

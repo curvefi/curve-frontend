@@ -1,5 +1,6 @@
 import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { tryChecksumAddress } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
@@ -38,7 +39,7 @@ export const AddressCell = ({ address, label, explorerUrl }: AddressCellProps) =
       <Stack direction="row" sx={{ gap: Spacing.xs }}>
         <Typography
           variant="tableCellMBold"
-          onClick={useCopyToClipboard({ copyText: address })}
+          onClick={useCopyToClipboard({ copyText: address, format: tryChecksumAddress })}
           sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
         >
           {shortenString(address)}

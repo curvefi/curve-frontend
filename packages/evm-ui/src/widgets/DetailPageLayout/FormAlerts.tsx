@@ -1,11 +1,5 @@
 import { useState } from 'react'
-import { usePreviousValue } from '@evm-ui/hooks/usePreviousValue'
 import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
-import {
-  getPriceImpactSeverity,
-  getPriceImpactPercent,
-  type PriceImpact,
-} from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import CloseIcon from '@mui/icons-material/Close'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -22,8 +16,10 @@ import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { type QueryProp } from '@ui/features/queries/util'
 import { ErrorReportModal } from '@ui/features/report-error'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { usePreviousValue } from '@ui/hooks/usePreviousValue'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
+import { getPriceImpactSeverity, getPriceImpactPercent, type PriceImpact } from '@ui/lib/price-impact.util'
 
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 

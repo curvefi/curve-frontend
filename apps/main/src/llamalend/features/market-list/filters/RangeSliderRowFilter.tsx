@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react'
 import { useRangeFilter } from '@evm-ui/shared/ui/DataTable/hooks/useRangeFilter'
-import { type NumericTextFieldProps } from '@evm-ui/shared/ui/NumericTextField'
-import { type DecimalRangeValue, SliderInput } from '@evm-ui/shared/ui/SliderInput'
-import { decimal } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
+import { type NumericTextFieldProps } from '@ui/features/forms/controls/NumericTextField'
+import { type DecimalRangeValue, SliderInput } from '@ui/features/forms/controls/SliderInput'
 import { Range } from '@ui/features/queries/util'
 import { type FilterProps } from '@ui/features/tables/data-table.utils'
+import { decimal } from '@ui/lib/decimal'
 
 type RangeSliderRowFilterProps<TColumnId extends string> = FilterProps<TColumnId> & {
   id: TColumnId

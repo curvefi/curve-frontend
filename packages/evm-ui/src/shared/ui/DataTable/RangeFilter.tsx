@@ -1,12 +1,12 @@
 import { sortBy } from 'lodash'
 import { useCallback } from 'react'
-import { NumericTextField, type NumericTextFieldProps } from '@evm-ui/shared/ui/NumericTextField'
-import { amount, decimal } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { NumericTextField, type NumericTextFieldProps } from '@ui/features/forms/controls/NumericTextField'
 import type { Range } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { amount, decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces

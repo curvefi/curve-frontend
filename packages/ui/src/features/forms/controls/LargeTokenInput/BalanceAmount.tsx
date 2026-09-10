@@ -1,8 +1,8 @@
-import { VERTICAL_CENTER_TEXT } from '@evm-ui/shared/ui/LargeTokenInput/large-token-input.utils'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { VERTICAL_CENTER_TEXT } from '@ui/features/forms/controls/LargeTokenInput/large-token-input.utils'
 import type { SxProps } from '@ui/lib/mui'
 
 /**

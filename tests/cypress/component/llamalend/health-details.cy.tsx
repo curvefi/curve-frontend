@@ -1,10 +1,11 @@
 import { HealthDetails } from '@/llamalend/features/market-position-details/health/HealthDetails'
+import type { UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { decimalDiv, decimalMultiply, decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { constQ } from '@ui/features/queries/util'
 import { lightTheme } from '@ui/features/themes/themes'
+import { decimalDiv, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 
 const { design } = lightTheme()
 const DISCOUNT_GAP: Decimal = '3'
@@ -29,10 +30,10 @@ const getHealthQuery = (health: Decimal, liquidationBuffer: Decimal): HealthQuer
   return constQ({ health, healthFactor: decimalSum('1', decimalDiv(health, '100')), healthNotFull, liquidationBuffer })
 }
 
-const mountHealthDetails = (health: Decimal, liquidationBuffer: Decimal) =>
+const mountHealthDetails = (health: Decimal, liquidationBuffer: Decimal, positionStatus?: UserPositionStatus) =>
   cy.mount(
     <ComponentTestWrapper>
-      <HealthDetails healthQuery={getHealthQuery(health, liquidationBuffer)} />
+      <HealthDetails health={getHealthQuery(health, liquidationBuffer)} positionStatus={constQ(positionStatus)} />
     </ComponentTestWrapper>,
   )
 
@@ -40,6 +41,7 @@ type HealthDetailsTestCase = {
   title: string
   health: Decimal
   liquidationBuffer: Decimal
+  positionStatus?: UserPositionStatus
   expected: {
     healthFactor: string
     healthColor: string
@@ -48,7 +50,7 @@ type HealthDetailsTestCase = {
     debtNotional: string
     liquidationBufferColor: string
     liquidationBufferBarWidth: number
-    badge?: 'Soft Liquidation' | 'Hard Liquidation'
+    badge?: 'Soft Liquidation' | 'Liquidation Protection' | 'Hard Liquidation'
   }
 }
 
@@ -110,9 +112,10 @@ const testCases: HealthDetailsTestCase[] = [
     },
   },
   {
-    title: 'renders soft liquidation with a risky buffer',
+    title: 'renders active soft liquidation with a risky buffer',
     health: '0',
     liquidationBuffer: '22.5',
+    positionStatus: 'softLiquidation',
     expected: {
       healthFactor: '1.00',
       healthColor: design.Layer.Feedback.Error,
@@ -125,9 +128,10 @@ const testCases: HealthDetailsTestCase[] = [
     },
   },
   {
-    title: 'renders soft liquidation with a critical buffer',
+    title: 'renders liquidation protection below the range',
     health: '0',
     liquidationBuffer: '2.4',
+    positionStatus: 'fullyConverted',
     expected: {
       healthFactor: '1.00',
       healthColor: design.Layer.Feedback.Error,
@@ -136,13 +140,14 @@ const testCases: HealthDetailsTestCase[] = [
       debtNotional: '(0.07% of debt)',
       liquidationBufferColor: design.Layer.Feedback.Error,
       liquidationBufferBarWidth: 2.4,
-      badge: 'Soft Liquidation',
+      badge: 'Liquidation Protection',
     },
   },
   {
     title: 'renders the hard liquidation threshold',
     health: '0',
     liquidationBuffer: '0',
+    positionStatus: 'hardLiquidation',
     expected: {
       healthFactor: '1.00',
       healthColor: design.Layer.Feedback.Error,
@@ -158,6 +163,7 @@ const testCases: HealthDetailsTestCase[] = [
     title: 'renders a position beyond liquidation',
     health: '0',
     liquidationBuffer: '-20',
+    positionStatus: 'hardLiquidation',
     expected: {
       healthFactor: '1.00',
       healthColor: design.Layer.Feedback.Error,
@@ -172,9 +178,9 @@ const testCases: HealthDetailsTestCase[] = [
 ]
 
 describe('Health details', () => {
-  testCases.forEach(({ title, health, liquidationBuffer, expected }) => {
+  testCases.forEach(({ title, health, liquidationBuffer, positionStatus, expected }) => {
     it(title, () => {
-      mountHealthDetails(health, liquidationBuffer)
+      mountHealthDetails(health, liquidationBuffer, positionStatus)
 
       cy.get('[data-testid="health-details-health-metric-value"]')
         .should('have.text', expected.healthFactor)
@@ -199,5 +205,10 @@ describe('Health details', () => {
         cy.get('[data-testid="health-details-health-bar-badge"]').should('not.exist')
       }
     })
+  })
+
+  it('renders liquidation protection for incomplete conversion below the range', () => {
+    mountHealthDetails('0', '22.5', 'incompleteConversion')
+    cy.get('[data-testid="health-details-health-bar-badge"]').should('have.text', 'Liquidation Protection')
   })
 })

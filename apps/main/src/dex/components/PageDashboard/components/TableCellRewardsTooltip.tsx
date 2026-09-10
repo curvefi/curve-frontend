@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { RewardCrv } from '@/dex/types/main.types'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
-import { decimal } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { formatNumber } from '@primitives/number.utils'
+import { decimal } from '@ui/lib/decimal'
 
 type Props = { crv?: RewardCrv[]; userCrvApy: number; fetchUserPoolBoost: () => Promise<string> }
 

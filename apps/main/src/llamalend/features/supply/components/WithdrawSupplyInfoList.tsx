@@ -5,11 +5,11 @@ import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyR
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
-import { decimalMinus, decimalNegate } from '@evm-ui/utils'
 import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { decimalMinus, decimalNegate } from '@ui/lib/decimal'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type WithdrawSupplyInfoListProps<ChainId extends IChainId> = {

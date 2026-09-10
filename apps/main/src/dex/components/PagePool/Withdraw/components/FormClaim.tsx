@@ -10,8 +10,6 @@ import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Wit
 import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
-import { amount as toAmount } from '@evm-ui/utils'
-import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
@@ -22,7 +20,9 @@ import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
+import { FormContent } from '@ui/features/forms/components/FormContent'
 import { notify } from '@ui/features/toast/Toast/notify'
+import { amount as toAmount } from '@ui/lib/decimal'
 import { t, Trans } from '@ui/lib/i18n'
 
 export const FormClaim = ({ seed }: TransferProps) => {

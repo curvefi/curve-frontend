@@ -1,6 +1,6 @@
-import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import Stack from '@mui/material/Stack'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
+import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { useTabs } from '@ui/hooks/useTabs'
 import { t } from '@ui/lib/i18n'
 import { GaugesList } from './GaugeList'

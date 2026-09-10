@@ -15,13 +15,14 @@ import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet
 import { combineQueries } from '@evm-ui/lib'
 import { MetricProps } from '@evm-ui/shared/ui/Metric'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
-import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken } from '@evm-ui/utils'
+import { CRVUSD, formatToken } from '@evm-ui/utils'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { QueryProp, toQuery } from '@ui/features/queries/util'
 import { SLIPPAGE } from '@ui/features/slippage/slippage.utils'
+import { decimal, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
@@ -432,18 +433,8 @@ export function getLiquidationStatus(
   return 'healthy' as const
 }
 
-export function getIsUserCloseToSoftLiquidation(
-  userFirstBand: number,
-  userLiquidationBand: number | null,
-  oraclePriceBand: number | null | undefined,
-) {
-  if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
-    return false
-  } else if (typeof oraclePriceBand === 'number') {
-    return userFirstBand <= oraclePriceBand + 2
-  }
-  return false
-}
+export const getIsUserCloseToSoftLiquidation = (userFirstBand: number, oraclePriceBand: number | null | undefined) =>
+  oraclePriceBand != null && userFirstBand <= oraclePriceBand + 2
 
 /**
  * Formats a collateral + borrowed notional string, e.g. "1.5K WETH + 200 crvUSD".

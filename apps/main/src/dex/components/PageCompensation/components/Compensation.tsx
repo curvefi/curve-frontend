@@ -4,7 +4,7 @@ import { AlertFormError } from '@/dex/components/AlertFormError'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
-import { copyToClipboard, shortenAddress } from '@evm-ui/utils'
+import { tryChecksumAddress, copyToClipboard, shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
@@ -102,7 +102,7 @@ export const Compensation = ({
               {shortenAddress(contractAddress)}
               <Icon name="Launch" size={16} />
             </StyledExternalLink>
-            <StyledIconButton size="medium" onClick={() => void copyToClipboard(contractAddress)}>
+            <StyledIconButton size="medium" onClick={() => void copyToClipboard(tryChecksumAddress(contractAddress))}>
               <Icon name="Copy" size={16} />
             </StyledIconButton>
           </div>
