@@ -8,11 +8,11 @@ import { getExpectedFn } from '@evm-ui/entities/router-api'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { pickQuery } from '@evm-ui/lib/queries/combine'
-import { decimal } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { useQueries } from '@tanstack/react-query'
+import { decimal } from '@ui/lib/decimal'
 
 export type BorrowMoreMaxReceiveResult = {
   maxDebt: Decimal

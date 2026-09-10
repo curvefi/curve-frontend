@@ -1,7 +1,7 @@
-import { decimalGreaterThan } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordEntries } from '@primitives/objects.utils'
 import type { Query } from '@ui/features/queries/util'
+import { decimalGreaterThan } from '@ui/lib/decimal'
 
 const MIN_USD_PRICE_IMPACT_WARN = 1000
 

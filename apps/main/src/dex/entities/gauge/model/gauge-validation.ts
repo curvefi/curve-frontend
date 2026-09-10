@@ -8,8 +8,8 @@ import {
   createValidationSuite,
   tokenIdValidationFn,
 } from '@evm-ui/lib/validation'
-import { amount as toAmount } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
+import { amount as toAmount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { TIME_FRAMES } from '@ui/lib/time'
 import {

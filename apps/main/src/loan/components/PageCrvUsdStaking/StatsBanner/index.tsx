@@ -1,13 +1,13 @@
 import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { decimal } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { mapQuery } from '@ui/features/queries/util'
 import { Sizing } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces

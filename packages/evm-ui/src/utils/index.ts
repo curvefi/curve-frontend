@@ -1,10 +1,10 @@
-import { getAddress, isAddress } from 'viem'
+import { formatUnits, getAddress, isAddress } from 'viem'
+import { decimal } from '@ui/lib/decimal'
 
 export * from './address'
 export * from './web3'
 export * from './network'
 export * from './pagination'
-export * from './decimal'
 export * from './average-categories'
 export * from './rates'
 export * from './tokens'
@@ -33,3 +33,5 @@ export async function copyToClipboard(text: string) {
     return false
   }
 }
+
+export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!
