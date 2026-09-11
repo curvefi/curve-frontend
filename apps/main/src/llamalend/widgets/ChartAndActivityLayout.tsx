@@ -18,6 +18,7 @@ import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
 import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
@@ -26,7 +27,6 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing } = SizesAndSpaces
 
@@ -131,8 +131,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
 
   return (
     <Card size="small" data-testid="market-price-chart">
-      <MarketCardHeader
-        disableUpperCase={chart.chartMode === 'oracle-pool'}
+      <CardHeader
         title={
           <WithSkeleton loading={chart.isLoading} width="7rem" height="2lh">
             {chart.ohlcChartProps.selectChartList.find(({ key }) => key === chart.selectedChartKey)?.activeTitle ??
@@ -157,6 +156,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
             )}
           </Stack>
         }
+        slotProps={{ title: { style: chart.chartMode == 'oracle-pool' && { textTransform: 'none' } } }}
       />
       <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>
         <Stack

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketBorrowers, useMarketSuppliers } from '@/llamalend/queries/market'
-import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { useManualPagination } from '@evm-ui/features/activity-table'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
@@ -9,6 +8,7 @@ import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelA
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
@@ -78,7 +78,7 @@ export const BorrowersCard = () => {
 
   return (
     <Card size="small" data-testid="top-borrowers-card">
-      <MarketCardHeader title={t`Top Borrowers`} />
+      <CardHeader title={t`Top Borrowers`} />
       <EvmDataTable
         category="detail"
         table={table}
@@ -125,7 +125,7 @@ export const SuppliersCard = () => {
 
   return (
     <Card size="small" data-testid="top-suppliers-card">
-      <MarketCardHeader title={t`Top Suppliers`} />
+      <CardHeader title={t`Top Suppliers`} />
       <EvmDataTable
         category="detail"
         table={table}
