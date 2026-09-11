@@ -16,14 +16,9 @@ export type BalanceQuery = TokenQuery & UserQuery & { decimals: number }
 export type BalanceParams = FieldsOf<BalanceQuery>
 export type QuoteQuery = PoolQuery & { amounts: (Decimal | undefined)[]; decimals: number[]; supply: Decimal }
 export type QuoteParams = FieldsOf<QuoteQuery>
-export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal }
+export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: Decimal[] }
 export type DepositParams = FieldsOf<DepositQuery>
-export type DepositSubmission = DepositQuery & {
-  quote: Decimal
-  tokens: StellarAddress[]
-  slippage: Decimal
-  maxAmounts: Decimal[]
-}
+export type DepositSubmission = DepositQuery & { quote: Decimal; tokens: StellarAddress[]; slippage: Decimal }
 export type DepositFormValues = {
   amounts: (Decimal | undefined)[] | undefined
   decimals: number[] | undefined
@@ -71,14 +66,15 @@ export const balanceValidationSuite = createValidationSuite((params: BalanceQuer
 })
 export const quoteValidationSuite = createValidationSuite(validateQuote)
 export const depositValidationSuite = createValidationSuite((params: DepositQuery) => {
-  validateQuote(params)
+  validatePool(params)
+  validateFundedInputs(params)
   validateAccount(params.account)
   test('minMint', 'Invalid minimum LP amount', () => {
     enforce(params.minMint).isDecimal().gte(0)
   })
 })
 
-// Shared by disconnected previews and form validation. Wallet balances are only needed to submit.
+// Shared by disconnected quotes and form validation. Fee simulation also needs wallet balances.
 const validateInputs = ({
   amounts,
   decimals,
@@ -120,12 +116,15 @@ const validateInputs = ({
       enforce(amounts?.every((amount, i) => new BigNumber(amount || '0').lte(maxAmounts[i]))).isTruthy()
     })
 }
-const validateForm = (values: DepositFormValues) => {
-  validateSlippage(values.slippage)
+const validateFundedInputs = (values: Pick<DepositFormValues, 'amounts' | 'decimals' | 'supply' | 'maxAmounts'>) => {
   validateInputs(values)
   test('maxAmounts', 'Wallet balances are unavailable', () => {
-    enforce(values.maxAmounts != null).isTruthy()
+    enforce(values.maxAmounts?.length).isNumber().equals(values.decimals?.length)
   })
+}
+const validateForm = (values: DepositFormValues) => {
+  validateSlippage(values.slippage)
+  validateFundedInputs(values)
 }
 export const depositFormValidationSuite = createValidationSuite(validateForm)
 export const depositSubmissionValidationSuite = createValidationSuite((params: DepositSubmission) => {

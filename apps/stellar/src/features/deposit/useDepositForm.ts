@@ -59,8 +59,17 @@ export function useDepositForm(poolParams: PoolQuery) {
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
-      () => ({ network, pool, account, amounts, decimals: decimals.data, slippage, supply: supply.data }),
-      [network, pool, account, amounts, decimals.data, slippage, supply.data],
+      () => ({
+        network,
+        pool,
+        account,
+        amounts,
+        decimals: decimals.data,
+        slippage,
+        supply: supply.data,
+        maxAmounts: maxAmounts.data,
+      }),
+      [network, pool, account, amounts, decimals.data, slippage, supply.data, maxAmounts.data],
     ),
     userDefaultValues,
   )

@@ -40,6 +40,7 @@ export default defineConfig(({ command }) => ({
     alias: [
       { find: '@', replacement: resolve(__dirname, './src') },
       { find: '@ui', replacement: resolve(__dirname, '../../packages/ui/src') },
+      { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
       { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
     ],
   },
