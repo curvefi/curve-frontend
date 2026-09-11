@@ -6,6 +6,7 @@ import { getUnitOptions, type Unit } from './units.util'
 const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
 
 export const [PLACEHOLDER, PLACEHOLDER_USD] = [0.00001, 0.001]
+export const UNAVAILABLE_NOTATION = '-'
 
 /** Locale used for consistent number formatting across the application */
 const LOCALE = 'en-US'
@@ -203,38 +204,38 @@ const preciseFormatter = (value: Amount) => {
 const NUMBER_FORMAT_CATEGORIES = {
   health: {
     abbreviate: false,
-    fallback: '-',
+    fallback: UNAVAILABLE_NOTATION,
     minimumSignificantDigits: 3,
     maximumSignificantDigits: 3,
     trailingZeroDisplay: 'auto',
   },
   'health.precise': {
     abbreviate: false,
-    fallback: '-',
+    fallback: UNAVAILABLE_NOTATION,
     minimumFractionDigits: 2,
     maximumFractionDigits: 4,
     roundingPriority: 'lessPrecision',
     trailingZeroDisplay: 'auto',
   },
-  'health.compact': { abbreviate: true, fallback: '-' },
+  'health.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
   multiplier: {
     abbreviate: false,
-    fallback: '-',
+    fallback: UNAVAILABLE_NOTATION,
     unit: 'multiplier',
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   },
-  'token.amount': { abbreviate: false, fallback: '-' },
-  'token.compact': { abbreviate: true, fallback: '-' },
-  'token.balance': { abbreviate: false, fallback: '-', formatter: preciseFormatter },
-  'usd.amount': { unit: 'dollar', abbreviate: false, fallback: '-' },
-  'usd.precise': { unit: 'dollar', abbreviate: false, fallback: '-', formatter: preciseFormatter },
-  'usd.notional': { unit: 'dollar', abbreviate: true, fallback: '-' },
-  'percent.value': { unit: 'percentage', abbreviate: false, fallback: '-' },
+  'token.amount': { abbreviate: false, fallback: UNAVAILABLE_NOTATION },
+  'token.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
+  'token.balance': { abbreviate: false, fallback: UNAVAILABLE_NOTATION, formatter: preciseFormatter },
+  'usd.amount': { unit: 'dollar', abbreviate: false, fallback: UNAVAILABLE_NOTATION },
+  'usd.precise': { unit: 'dollar', abbreviate: false, fallback: UNAVAILABLE_NOTATION, formatter: preciseFormatter },
+  'usd.notional': { unit: 'dollar', abbreviate: true, fallback: UNAVAILABLE_NOTATION },
+  'percent.value': { unit: 'percentage', abbreviate: false, fallback: UNAVAILABLE_NOTATION },
   'percent.price-impact': {
     unit: 'percentage',
     abbreviate: false,
-    fallback: '-',
+    fallback: UNAVAILABLE_NOTATION,
     formatter: value => defaultNumberFormatter(value, getFractionDigitsOptions(value, 5)),
   },
   'percent.rate': {
@@ -243,9 +244,9 @@ const NUMBER_FORMAT_CATEGORIES = {
     // Disregard the precision edge case around 0 and 1 and force using 2 decimals.
     minimumFractionDigits: 2,
     maximumSignificantDigits: undefined,
-    fallback: '-',
+    fallback: UNAVAILABLE_NOTATION,
   },
-  'pool.parameter': { unit: 'none', abbreviate: false, fallback: '-', decimals: 5 },
+  'pool.parameter': { unit: 'none', abbreviate: false, fallback: UNAVAILABLE_NOTATION, decimals: 5 },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 
 export type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES
