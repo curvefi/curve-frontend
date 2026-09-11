@@ -1,13 +1,22 @@
 import { type RefObject, useEffect, useState } from 'react'
 
-/** Options for the height resize observer */
-type ResizeObserverOptions = { threshold?: number; enabled?: boolean }
+type Dimension = 'width' | 'height'
 
+/** Options for the resize observer */
+type ResizeObserverOptions = {
+  threshold?: number
+  enabled?: boolean
+  /** Only changes to this dimension trigger updates. Watches both when omitted. */
+  dimension?: Dimension
+}
+
+const DIMENSION_INDEX: Record<Dimension, number> = { width: 0, height: 1 }
 const EMPTY_DIMENSIONS: readonly [] = []
 
 /**
  * A hook that observes an element's dimension changes (including borders) and returns the current dimensions.
- * Only updates when dimensions change beyond the threshold.
+ * Only updates when the selected dimension changes beyond the threshold (both by default).
+ * Returns both dimensions from the last accepted measurement, even when observing just one.
  *
  * @param elementRef - React ref object for the element to observe
  * @param options - Configuration options
@@ -32,7 +41,7 @@ const EMPTY_DIMENSIONS: readonly [] = []
  */
 export function useResizeObserver(
   elementRef: RefObject<Element | null>,
-  { threshold = 10, enabled = true }: ResizeObserverOptions = {},
+  { threshold = 10, enabled = true, dimension }: ResizeObserverOptions = {},
 ) {
   const [dimensions, setDimensions] = useState<[number, number] | null>(null)
 
@@ -48,11 +57,14 @@ export function useResizeObserver(
     const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {
       const { inlineSize: width, blockSize: height } = updatedEntry?.borderBoxSize[0] ?? {}
       const dimensions = [width, height].map(d => Math.round(d || 0)) as [number, number]
-      // Allow initial height to be set if prev is null
+      // Allow the initial measurement to be set if prev is null
       setDimensions((prev): [number, number] =>
         prev == null
           ? dimensions
-          : dimensions.some((dimension, i) => Math.abs(dimension - prev[i]) > threshold)
+          : dimensions.some(
+                (value, i) =>
+                  (dimension == null || i === DIMENSION_INDEX[dimension]) && Math.abs(value - prev[i]) > threshold,
+              )
             ? dimensions
             : prev,
       )
@@ -64,7 +76,7 @@ export function useResizeObserver(
     return () => {
       observer?.disconnect()
     }
-  }, [elementRef, threshold, enabled])
+  }, [elementRef, threshold, enabled, dimension])
 
   return dimensions ?? EMPTY_DIMENSIONS
 }
