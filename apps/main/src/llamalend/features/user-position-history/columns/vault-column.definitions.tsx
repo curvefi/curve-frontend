@@ -15,7 +15,7 @@ import type { ParsedUserVaultEvent } from '../hooks/useUserVaultEvents'
 const { Spacing } = SizesAndSpaces
 const columnHelper = createAppColumnHelper<ParsedUserVaultEvent>()
 
-const EVENT_CONFIG: Record<ParsedUserVaultEvent['type'], { label: string; Icon: typeof PlusCircleIcon }> = {
+const EVENT_CONFIG = {
   Deposit: { label: t`Supply`, Icon: PlusCircleIcon },
   Withdraw: { label: t`Withdraw`, Icon: MinusCircleIcon },
   TransferIn: { label: t`Transfer in`, Icon: PlusCircleIcon },

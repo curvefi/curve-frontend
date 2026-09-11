@@ -34,7 +34,7 @@ export const useUserVaultEvents = ({
   const blockchainId = BlockchainIds[chainId]
   const query = useUserVaultEventsQuery({ blockchainId, userAddress, contractAddress: vaultToken?.address })
   return mapQuery(query, ({ events }) =>
-    maybes([borrowToken, vaultToken], (borrowToken, vaultToken): ParsedUserVaultEvent[] =>
+    maybes([borrowToken, vaultToken], (borrowToken, vaultToken) =>
       events
         .map((event): ParsedUserVaultEvent => {
           const sign = event.type === 'Withdraw' ? -1 : 1
