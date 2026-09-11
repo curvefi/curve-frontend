@@ -4,7 +4,7 @@ import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { SmallLabel } from '@/dao/components/SmallLabel'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import { shortenAddress } from '@evm-ui/utils'
+import { tryChecksumAddress, shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { TokenIcons } from '@ui/components/TokenIcons'
@@ -41,7 +41,11 @@ export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
               href={scanAddressPath(getChainIdFromGaugeData(gaugeData), gaugeAddress ?? '')}
               tooltip={t`View gauge on explorer`}
             />
-            <CopyIconButton copyContent={gaugeAddress ?? ''} tooltip={t`Copy gauge address`} />
+            <CopyIconButton
+              copyContent={gaugeAddress ?? ''}
+              format={tryChecksumAddress}
+              tooltip={t`Copy gauge address`}
+            />
           </ButtonsWrapper>
         </Box>
       )}

@@ -2,7 +2,6 @@ import { LEVERAGE } from '@/llamalend/constants'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { formatToken } from '@evm-ui/utils/tokens'
-import { getPriceImpactPercent, type PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
 import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
 import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
@@ -18,6 +17,7 @@ import { useSwitch } from '@ui/hooks/useSwitch'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { borderStyle } from '@ui/lib/mui'
+import { getPriceImpactPercent, type PriceImpact } from '@ui/lib/price-impact.util'
 
 const { Spacing } = SizesAndSpaces
 

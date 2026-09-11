@@ -1,5 +1,3 @@
-import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -49,15 +47,11 @@ const FaqContent = () => (
   </Stack>
 )
 
-export const MarketFaqCard = () => {
-  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
-
-  return (
-    <Card size="small" data-testid="llamalend-market-faq">
-      <Header title={t`FAQs`} />
-      <CardContent>
-        <FaqContent />
-      </CardContent>
-    </Card>
-  )
-}
+export const MarketFaqCard = () => (
+  <Card size="small" data-testid="llamalend-market-faq">
+    <CardHeader title={t`FAQs`} />
+    <CardContent>
+      <FaqContent />
+    </CardContent>
+  </Card>
+)

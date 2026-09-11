@@ -42,6 +42,11 @@ function createLightSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[950], Fill: Grays[100], Stroke: Grays[200] },
+      Hover: { LabelIcon: Grays[50], Fill: Grays[900] },
+      Current: { LabelIcon: Grays[950], Fill: Blues[100], Border: Blues[500] },
+    },
     Tables: {
       Row: { Default: Grays[50], Selected: Blues[100], Hover: Grays[10] },
       Header: { Fill: Grays[200], Label: { Default: Grays[700], Hover: Blues[500], Active: Grays[950] } },
@@ -73,6 +78,7 @@ function createLightSurfaces() {
         Accent: Blues[500],
       },
     },
+    Snackbar: { Border: { Info: Blues[500], Success: Greens[300], Warning: Yellows[500], Error: Reds[500] } },
   } as const
 }
 
@@ -118,6 +124,11 @@ function createDarkSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[50], Fill: Grays[900], Stroke: Grays[800] },
+      Hover: { LabelIcon: Grays[950], Fill: Grays[75] },
+      Current: { LabelIcon: Grays[50], Fill: Grays[850], Border: Blues[500] },
+    },
     Tables: {
       Row: { Default: Grays[950], Selected: Grays[850], Hover: Grays[900] },
       Header: { Fill: Grays[800], Label: { Default: Grays[300], Hover: Blues[400], Active: Grays[50] } },
@@ -148,6 +159,7 @@ function createDarkSurfaces() {
         Accent: Blues[400],
       },
     },
+    Snackbar: { Border: { Info: Blues[500], Success: Greens[400], Warning: Yellows[500], Error: Reds[500] } },
   } as const
 }
 
@@ -193,6 +205,11 @@ function createChadSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[950], Fill: Grays[150], Stroke: Grays[400] },
+      Hover: { LabelIcon: Grays[50], Fill: Violets[950] },
+      Current: { LabelIcon: Violets[600], Fill: Violets[50], Border: Violets[500] },
+    },
     Tables: {
       Row: { Default: Grays[150], Selected: Violets[50], Hover: Violets[50] },
       Header: { Fill: Grays[300], Label: { Default: Grays[750], Hover: Violets[600], Active: Grays[950] } },
@@ -223,6 +240,7 @@ function createChadSurfaces() {
         Accent: Violets[800],
       },
     },
+    Snackbar: { Border: { Info: Violets[500], Success: Greens[400], Warning: Yellows[500], Error: Reds[500] } },
   } as const
 }
 
@@ -268,6 +286,11 @@ function createLightInvertedSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[50], Fill: Grays[900], Stroke: Grays[200] },
+      Hover: { LabelIcon: Grays[50], Fill: Grays[900] },
+      Current: { LabelIcon: Grays[50], Fill: Blues[100], Border: Blues[500] },
+    },
     Tables: {
       Row: { Default: Grays[950], Selected: Grays[850], Hover: Grays[750] },
       Header: { Fill: Grays[800], Label: { Default: Grays[50], Hover: Blues[300], Active: Grays[300] } },
@@ -298,6 +321,7 @@ function createLightInvertedSurfaces() {
         Accent: Blues[400],
       },
     },
+    Snackbar: { Border: { Info: Blues[500], Success: Greens[300], Warning: Yellows[500], Error: Reds[500] } },
   } as const
 }
 
@@ -343,6 +367,11 @@ function createDarkInvertedSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[950], Fill: Grays[100], Stroke: Grays[800] },
+      Hover: { LabelIcon: Grays[950], Fill: Grays[75] },
+      Current: { LabelIcon: Grays[950], Fill: Grays[850], Border: Blues[500] },
+    },
     Tables: {
       Row: { Default: Grays[75], Selected: Blues[50], Hover: Blues[100] },
       Header: { Fill: Grays[200], Label: { Default: Grays[750], Hover: Blues[500], Active: Grays[950] } },
@@ -373,6 +402,7 @@ function createDarkInvertedSurfaces() {
         Accent: Blues[500],
       },
     },
+    Snackbar: { Border: { Info: Blues[500], Success: Greens[400], Warning: Yellows[500], Error: Reds[500] } },
   } as const
 }
 
@@ -418,6 +448,11 @@ function createChadInvertedSurfaces() {
   return {
     Text,
     Layer,
+    Chips: {
+      Default: { LabelIcon: Grays[50], Fill: Violets[950], Stroke: Grays[400] },
+      Hover: { LabelIcon: Grays[50], Fill: Violets[950] },
+      Current: { LabelIcon: Violets[400], Fill: Violets[400], Border: Violets[500] },
+    },
     Tables: {
       Row: { Default: Violets[950], Selected: Violets[900], Hover: Violets[800] },
       Header: { Fill: Violets[700], Label: { Default: Grays[300], Hover: Violets[400], Active: Grays[50] } },
@@ -448,6 +483,7 @@ function createChadInvertedSurfaces() {
         Accent: Violets[400],
       },
     },
+    Snackbar: { Border: { Info: Violets[500], Success: Greens[400], Warning: Yellows[500], Error: Reds[500] } },
   } as const
 }
 

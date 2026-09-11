@@ -1,9 +1,9 @@
 import { type ChangeEvent } from 'react'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { CheckboxField } from '@evm-ui/widgets/DetailPageLayout/CheckboxField'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
+import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

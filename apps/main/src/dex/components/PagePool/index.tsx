@@ -11,7 +11,6 @@ import type { PageTransferProps, Seed, TransferTabsParams } from '@/dex/componen
 import {
   getDepositTabAlert,
   getSlippageType,
-  getStakeTabAlert,
   getSwapTabAlert,
   getWithdrawTabAlert,
 } from '@/dex/components/PagePool/utils'
@@ -35,9 +34,9 @@ import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
-import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { maybes } from '@primitives/objects.utils'
+import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
+import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useLocation } from '@ui/hooks/router'
 import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
@@ -60,12 +59,12 @@ const menu = [
       {
         value: 'STAKE',
         label: t`Stake`,
-        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormStake} {...props} />,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormStake} {...props} />,
       },
       {
         value: 'DEPOSIT_STAKE',
         label: t`Deposit & Stake`,
-        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormDepositStake} {...props} />,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDepositStake} {...props} />,
       },
     ],
   } satisfies FormTab<TransferTabsParams>,

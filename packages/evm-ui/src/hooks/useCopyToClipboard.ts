@@ -1,14 +1,15 @@
 import { useCallback } from 'react'
-import { isAddress } from 'viem'
 import { copyToClipboard } from '@evm-ui/utils'
+import { ADDRESS_HEX_PATTERN } from '@primitives/address.utils'
 import { showToast } from '@ui/features/toast/Toast/toast.util'
 import { t } from '@ui/lib/i18n'
 
 const getTitle = (copyText: string, title: string | undefined) =>
-  title ?? t`${isAddress(copyText, { strict: false }) ? `Address` : `Value`} has been copied to clipboard`
+  title ?? t`${ADDRESS_HEX_PATTERN.test(copyText) ? `Address` : `Value`} has been copied to clipboard`
 
 type CopyToClipboardWithToastOptions = {
   copyText: string | undefined
+  format?: (text: string) => string
   confirmationText?: string
   confirmationMessage?: string
   failureText?: string
@@ -17,6 +18,7 @@ type CopyToClipboardWithToastOptions = {
 
 export const copyToClipboardWithToast = async ({
   copyText,
+  format,
   confirmationText,
   confirmationMessage,
   failureText = t`Failed to copy to clipboard`,
@@ -24,13 +26,14 @@ export const copyToClipboardWithToast = async ({
 }: CopyToClipboardWithToastOptions) => {
   if (!copyText) return showToast({ title: t`Nothing to copy`, severity: 'warning', testId })
 
-  const copied = await copyToClipboard(copyText)
+  const formattedText = format ? format(copyText) : copyText
+  const copied = await copyToClipboard(formattedText)
   showToast(
     copied
       ? {
-          message: confirmationMessage ?? copyText,
+          message: confirmationMessage ?? formattedText,
           severity: 'info',
-          title: getTitle(copyText, confirmationText),
+          title: getTitle(formattedText, confirmationText),
           testId,
         }
       : { severity: 'error', title: failureText, testId },
@@ -39,15 +42,17 @@ export const copyToClipboardWithToast = async ({
 
 export const useCopyToClipboard = ({
   copyText,
+  format,
   confirmationText,
   confirmationMessage,
   testId,
 }: {
   copyText: string | undefined
+  format?: (text: string) => string
   confirmationText?: string
   confirmationMessage?: string
   testId?: string
 }) =>
   useCallback(() => {
-    void copyToClipboardWithToast({ copyText, confirmationText, confirmationMessage, testId })
-  }, [copyText, confirmationText, confirmationMessage, testId])
+    void copyToClipboardWithToast({ copyText, format, confirmationText, confirmationMessage, testId })
+  }, [copyText, format, confirmationText, confirmationMessage, testId])

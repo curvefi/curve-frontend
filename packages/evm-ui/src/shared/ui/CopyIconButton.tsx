@@ -5,6 +5,7 @@ import { Tooltip } from '@ui/components/Tooltip'
 import { CopyIcon } from '@ui/icons/CopyIcon'
 
 type CopyIconButtonProps = {
+  format?: (text: string) => string
   copyText: string | undefined
   label: string
   confirmationText: string
@@ -14,6 +15,7 @@ type CopyIconButtonProps = {
 
 export const CopyIconButton = ({
   copyText,
+  format,
   label,
   confirmationText,
   confirmationMessage,
@@ -25,7 +27,7 @@ export const CopyIconButton = ({
     <IconButton
       size={size}
       {...iconProps}
-      onClick={useCopyToClipboard({ copyText, confirmationText, confirmationMessage })}
+      onClick={useCopyToClipboard({ copyText, format, confirmationText, confirmationMessage })}
     >
       {children}
     </IconButton>

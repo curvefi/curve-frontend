@@ -27,7 +27,7 @@ export const directChildrenAfterFirst = (css: SxStyleObject): SxProps => ({ '& >
  * by a fixed section order would not reliably identify the first visible card.
  * The selector follows the rendered order instead, styling each card header that immediately follows another card.
  */
-export const stackedMarketCardHeadersSx: SxProps = theme => ({
+export const stackedCardHeadersSx: SxProps = theme => ({
   '& > .MuiCard-root + .MuiCard-root > .MuiCardHeader-root': { backgroundColor: theme.design.Layer[1].Fill },
 })
 

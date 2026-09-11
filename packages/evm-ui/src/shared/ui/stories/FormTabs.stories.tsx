@@ -1,10 +1,10 @@
-import { FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TabsSwitcherProps } from '@ui/components/Tabs/TabsSwitcher'
 import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
+import { FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces

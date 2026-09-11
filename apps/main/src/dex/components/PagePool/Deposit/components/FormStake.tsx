@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { useConnection, useConfig } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { AlertGaugeKilled } from '@/dex/components/PagePool/components/AlertGaugeKilled'
 import { DetailInfoExpectedApy } from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
 import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
 import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
@@ -15,13 +16,14 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
-import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
+import { isValidAddress } from '@/dex/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
+import { FormContent } from '@ui/features/forms/components/FormContent'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
@@ -89,7 +91,7 @@ export const FormStake = ({ seed }: TransferProps) => {
       formStatus: FormStatus,
       steps: Step[],
     ) => {
-      const isValid = !formStatus.error && +formValues.lpToken > 0
+      const isValid = isValidAddress(poolData.pool.gauge.address) && !formStatus.error && +formValues.lpToken > 0
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'STAKE'
 
@@ -165,6 +167,7 @@ export const FormStake = ({ seed }: TransferProps) => {
 
   return (
     <FormContent>
+      {poolData.gauge.isKilled && <AlertGaugeKilled />}
       {/* input fields */}
       <FieldsWrapper>
         <FieldLpToken

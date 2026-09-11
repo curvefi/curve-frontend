@@ -34,7 +34,6 @@ const market = z
     oracle: address,
     oracle_pools: z.array(address),
     rate: z.number(),
-    borrow_apy: z.number(),
     borrow_total_apy: z.number(),
     borrow_apr: z.number(),
     borrow_total_apr: z.number(),
@@ -65,10 +64,10 @@ const market = z
     borrowed_balance_usd: z.number(),
     collateral_token: token,
     borrowed_token: token,
-    leverage: z.number(),
+    leverage: z.number().nullable(),
     extra_reward_apr: z.array(extraRewardApr),
     created_at: timestamp,
-    max_ltv: z.number(),
+    max_ltv: z.number().nullable(),
   })
   .transform(camelizeKeys)
   .transform(({ lendApy, lendApr, lendAprCrv0Boost, lendAprCrvMaxBoost, ...data }) => ({
