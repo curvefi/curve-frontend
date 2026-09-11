@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { TableActiveFilterChip } from '@evm-ui/shared/ui/DataTable/TableActiveFilterChip'
 import { TableActiveFiltersBar } from '@evm-ui/shared/ui/DataTable/TableActiveFiltersBar'
 import { TableFilterButtonGroup } from '@evm-ui/shared/ui/DataTable/TableFilterButtonGroup'
@@ -15,7 +15,6 @@ import type { OnChangeFn, SortDirection, SortingState } from '@tanstack/react-ta
 import { Select } from '@ui/components/Select'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { useSwitch } from '@ui/hooks/useSwitch'
 import { ArrowDownIcon } from '@ui/icons/ArrowDownIcon'
 import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import { t } from '@ui/lib/i18n'
@@ -56,7 +55,7 @@ export const ProposalsToolbar = ({
   onSortingChange: OnChangeFn<SortingState>
 }) => {
   const isMobile = useIsMobile()
-  const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const hasActiveFilters = status !== 'all'
 
