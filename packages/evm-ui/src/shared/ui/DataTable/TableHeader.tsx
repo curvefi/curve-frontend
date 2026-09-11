@@ -10,10 +10,12 @@ export const TableHeader = ({
   title,
   onReload,
   isLoading,
+  testId,
 }: {
   title: string
   onReload: () => void
   isLoading: boolean
+  testId?: string
 }) => (
   <Stack
     direction="row"
@@ -24,7 +26,7 @@ export const TableHeader = ({
       backgroundColor: t => t.design.Layer.App.Background,
     }}
   >
-    <CardHeader title={title} />
+    <CardHeader title={title} data-testid={testId} />
     <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />
   </Stack>
 )

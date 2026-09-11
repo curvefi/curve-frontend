@@ -22,6 +22,7 @@ type TableSortDrawerProps<TSortId extends string> = {
   drawerTestId: string
   onSortingChange: OnChangeFn<SortingState>
   options: readonly TableSortDrawerOption<TSortId>[]
+  sortDescending?: boolean
   sortField: TSortId
 }
 
@@ -31,6 +32,7 @@ export const TableSortDrawer = <TSortId extends string>({
   drawerTestId,
   onSortingChange,
   options,
+  sortDescending = true,
   sortField,
 }: TableSortDrawerProps<TSortId>) => {
   const [open, , closeDrawer, toggleDrawer, setOpen] = useSwitch(false)
@@ -40,10 +42,10 @@ export const TableSortDrawer = <TSortId extends string>({
 
   const handleSort = useCallback(
     (id: TSortId) => {
-      onSortingChange([{ id, desc: true }])
+      onSortingChange([{ id, desc: sortDescending }])
       closeDrawer()
     },
-    [onSortingChange, closeDrawer],
+    [closeDrawer, onSortingChange, sortDescending],
   )
 
   return (

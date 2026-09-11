@@ -19,6 +19,7 @@ const { Spacing, Width, MinHeight } = SizesAndSpaces
 type TableFiltersOverlayProps = {
   anchorRef: RefObject<HTMLDivElement | null>
   children: ReactNode
+  disableSticky?: boolean
   drawerTestId: string
   hasActiveFilters: boolean
   open: boolean
@@ -33,6 +34,7 @@ const testId = (testId: string, isReady: boolean | undefined) => isReady && ({ '
 export const TableFiltersOverlay = ({
   anchorRef,
   children,
+  disableSticky = false,
   drawerTestId,
   hasActiveFilters,
   open,
@@ -67,6 +69,8 @@ export const TableFiltersOverlay = ({
       onClose={() => setOpen(false)}
       anchorEl={() => anchorRef.current}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      marginThreshold={disableSticky ? null : undefined}
+      sx={disableSticky ? { zIndex: theme => theme.zIndex.tableFilters } : undefined}
       slotProps={{
         paper: {
           ...{ 'data-testid': 'table-filters-popover-root' },

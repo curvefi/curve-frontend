@@ -6,7 +6,7 @@ import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { CONTRACT_VECRV } from '@/dao/constants'
 import { invalidateProposalPricesApi, useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
-import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
+import { createProposalKey, useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
@@ -49,7 +49,7 @@ export const Proposal = () => {
     isError: pricesProposalError,
     isSuccess: pricesProposalSuccess,
   } = useProposalPricesApiQuery({ proposalId: +voteId, proposalType })
-  const proposal = proposalsMapper?.[rProposalId] ?? null
+  const proposal = proposalsMapper?.[createProposalKey(+voteId, proposalType)] ?? null
 
   const isLoading = pricesProposalLoading || proposalsListLoading
   const isFetched = pricesProposalSuccess && proposalsListSuccess
