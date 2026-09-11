@@ -13,6 +13,7 @@ export enum MarketColumnId {
   LendRate = 'rates_lend',
   MaxLtv = 'maxLtv',
   MaxLeverage = 'maxLeverage',
+  MaxRoe = 'maxRoe',
   UtilizationPercent = 'utilizationPercent',
   SolvencyPercent = 'solvencyPercent',
   LiquidityUsd = 'liquidityUsd',

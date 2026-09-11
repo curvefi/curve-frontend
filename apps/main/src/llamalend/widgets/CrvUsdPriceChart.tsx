@@ -2,7 +2,6 @@ import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
 import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { useCombinedQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
@@ -33,7 +32,6 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { TIME_OPTION_MS } from '@ui/lib/time'
-import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -65,7 +63,6 @@ const getDeviations = (priceHistory: PricePoint[], price: number, timestamp = Da
 }
 
 export const CrvUsdPriceChart = () => {
-  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<PriceSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
   const {
@@ -123,7 +120,7 @@ export const CrvUsdPriceChart = () => {
 
   return (
     <Card size="small" data-testid="crvusd-price-chart">
-      <Header
+      <CardHeader
         title={t`Historical crvUSD Peg`}
         action={
           <SelectTimeOption

@@ -11,19 +11,20 @@ export const defineMuiCard = (design: DesignSystem, typography: TypographyVarian
       boxShadow: 'none',
     },
   },
+  // Keep size styles on direct children so they do not leak into nested cards.
   variants: [
     {
       props: { size: 'small' },
       style: {
-        '& .MuiCardHeader-root': cardHeaderSmallStyles(typography),
-        '& .MuiCardContent-root': cardContentSmallStyles,
+        '& > .MuiCardHeader-root': cardHeaderSmallStyles(design, typography),
+        '& > .MuiCardContent-root': cardContentSmallStyles,
       },
     },
     {
       props: { size: 'inline' },
       style: {
-        '& .MuiCardHeader-root': cardHeaderInlineStyles(design, typography),
-        '& .MuiCardContent-root': cardContentInlineStyles,
+        '& > .MuiCardHeader-root': cardHeaderInlineStyles(design, typography),
+        '& > .MuiCardContent-root': cardContentInlineStyles,
       },
     },
   ],

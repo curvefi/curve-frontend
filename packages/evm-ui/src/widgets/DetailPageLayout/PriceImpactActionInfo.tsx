@@ -5,7 +5,7 @@ import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'
 import { t } from '@ui/lib/i18n'
-import { getPriceImpactLevel, type PriceImpact, type PriceImpactLevel } from './price-impact.util'
+import { getPriceImpactLevel, type PriceImpact, type PriceImpactLevel } from '@ui/lib/price-impact.util'
 
 const { IconSize } = SizesAndSpaces
 

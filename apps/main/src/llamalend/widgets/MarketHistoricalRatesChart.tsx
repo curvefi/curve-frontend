@@ -5,7 +5,6 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
   addMovingAverages,
@@ -36,7 +35,6 @@ import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { TIME_OPTION_MS } from '@ui/lib/time'
 import { useMarketContext } from '../features/market-context'
-import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -116,7 +114,6 @@ const getAverageRates = (ratePoints: { rate: number; timestamp: number }[]) => (
 })
 
 export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesChartProps) => {
-  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const { chainId, blockchainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const modeConfig = RATE_MODE_CONFIG[rateMode]
@@ -185,7 +182,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
 
   return (
     <Card size="small" data-testid={`historical-${rateMode.toLowerCase()}-rate-chart`}>
-      <Header
+      <CardHeader
         title={modeConfig.chartTitle}
         action={
           <SelectTimeOption

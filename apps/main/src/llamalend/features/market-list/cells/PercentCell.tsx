@@ -4,7 +4,7 @@ import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 
-export const PercentCell = ({ getValue }: CellContext<CurveTableFeatures, LlamaMarketRow, number>) => (
+export const PercentCell = ({ getValue }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => (
   <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
     {formatNumber(getValue(), 'percent.rate')}
   </Typography>

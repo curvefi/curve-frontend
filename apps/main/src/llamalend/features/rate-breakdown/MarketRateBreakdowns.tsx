@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { stackedMarketCardHeadersSx } from '@ui/lib/mui'
+import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { buildBorrowRateBreakdown, buildSupplyRateBreakdown } from './market-rate-breakdown.utils'
 import { PointsCampaignsCard, RateBreakdownTable } from './MarketRateBreakdownCards'
 
@@ -69,7 +69,7 @@ export const MarketSupplyRateBreakdown = () => {
   )
 
   return (
-    <Stack sx={stackedMarketCardHeadersSx}>
+    <Stack sx={stackedCardHeadersSx}>
       <RateBreakdownTable rateType={MarketRateType.Supply} query={supplyQuery} />
       {!!supplyQuery.data?.points.length && (
         <PointsCampaignsCard rateType={MarketRateType.Supply} rows={supplyQuery.data.points} />

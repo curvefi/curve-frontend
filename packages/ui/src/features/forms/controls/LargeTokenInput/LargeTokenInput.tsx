@@ -9,8 +9,6 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import { HelperMessage } from '@evm-ui/shared/ui/LargeTokenInput/HelperMessage'
-import { SliderInput, SliderInputProps } from '@evm-ui/shared/ui/SliderInput'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -18,6 +16,8 @@ import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { SelectableChip } from '@ui/components/SelectableChip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
+import { SliderInput, SliderInputProps } from '@ui/features/forms/controls/SliderInput'
 import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
 import { chipSizeClickable } from '@ui/features/themes/components/chip'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'

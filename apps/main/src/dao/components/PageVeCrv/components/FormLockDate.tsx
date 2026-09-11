@@ -4,9 +4,9 @@ import { useExtendLockForm } from '@/dao/components/PageVeCrv/hooks/useExtendLoc
 import { useExtendLockGasEstimate } from '@/dao/components/PageVeCrv/queries/extend-lock-estimate-gas.query'
 import type { ChainId } from '@/dao/types/dao.types'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
-import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { AlertBox } from '@legacy-ui/AlertBox'
+import { Form } from '@ui/features/forms/components/Form'
 import { q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import {
@@ -20,20 +19,10 @@ import {
 
 type MarketColumnVariant = keyof typeof MARKETS_COLUMN_OPTIONS
 
-const resolveMarketActive = (
-  preservedActive: boolean,
-  currentOption: VisibilityGroup<MarketColumnId>['options'][number],
-) =>
-  isEqual(currentOption.columns, [MarketColumnId.NetBorrowRate])
-    ? currentOption.active
-    : !isEqual(currentOption.columns, [MarketColumnId.BorrowRate]) && preservedActive
-
 const migration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 6,
+  version: 7,
   migrate: (oldValue, initialValue) =>
-    mapRecord(initialValue, (variant, currentGroups) =>
-      preserveVisibilityChoices(oldValue[variant], currentGroups, resolveMarketActive),
-    ),
+    mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
 }
 
 export const getMarketsColumnVariant = (
