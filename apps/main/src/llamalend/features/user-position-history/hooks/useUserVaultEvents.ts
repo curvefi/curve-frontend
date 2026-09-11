@@ -1,6 +1,9 @@
-import { useMarketContext } from '@/llamalend/features/market-context'
+import type { MarketToken, MarketTokens } from '@/llamalend/llama.utils'
 import { type UserVaultEvent } from '@curvefi/prices-api/llamalend'
+import type { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
 import { fromWei } from '@evm-ui/utils'
+import { BlockchainIds } from '@evm-ui/utils/network'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
@@ -15,14 +18,20 @@ export type ParsedUserVaultEvent = Omit<UserVaultEvent, 'type'> & {
   symbol: string
 }
 
-export const useUserVaultEvents = () => {
-  const {
-    blockchainId,
-    chainId,
-    userAddress,
-    vaultToken,
-    tokens: { borrowToken },
-  } = useMarketContext()
+export type UserVaultEventsProps = {
+  userAddress: Address | undefined
+  chainId: LlamaChainId
+  tokens: Partial<MarketTokens>
+  vaultToken: MarketToken | undefined
+}
+
+export const useUserVaultEvents = ({
+  chainId,
+  userAddress,
+  vaultToken,
+  tokens: { borrowToken },
+}: UserVaultEventsProps) => {
+  const blockchainId = BlockchainIds[chainId]
   const query = useUserVaultEventsQuery({ blockchainId, userAddress, contractAddress: vaultToken?.address })
   return mapQuery(query, ({ events }) =>
     maybes([borrowToken, vaultToken], (borrowToken, vaultToken): ParsedUserVaultEvent[] =>

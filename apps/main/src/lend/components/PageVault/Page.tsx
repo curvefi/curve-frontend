@@ -9,6 +9,7 @@ import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserVaultEvents } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
+import { getTokens, getVaultToken } from '@/llamalend/llama.utils'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
@@ -52,7 +53,12 @@ export const Page = () => {
   )
   const { data: balances } = useUserBalances({ marketId: market?.id, chainId, userAddress })
   const hasPosition = market && balances && +(balances.totalShares ?? 0) > 0
-  const events = useUserVaultEvents()
+  const events = useUserVaultEvents({
+    chainId,
+    userAddress,
+    tokens: getTokens(market, apiMarket.data) ?? {},
+    vaultToken: getVaultToken(market, apiMarket.data),
+  })
 
   const error = marketError ?? apiMarket.error
   return error ? (
