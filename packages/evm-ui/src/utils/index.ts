@@ -7,7 +7,7 @@ export * from './network'
 export * from './pagination'
 export * from './average-categories'
 export * from './rates'
-export * from './tokens'
+export * from '@ui/lib/tokens' // todo: update imports and remove this in a separate PR
 
 export function tryChecksumAddress(text: string) {
   if (isAddress(text)) {

@@ -2,7 +2,7 @@ import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { shortenString } from '@primitives/string.utils'
 
-export type StellarAddress = `G${string}`
+export type StellarAddress = `G${string}` | `C${string}`
 
 /**
  * Wrapper to 'convert' Stellar address to EVM addresses (typescript only).

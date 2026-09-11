@@ -1,4 +1,5 @@
 import { WorkInProgress } from '@/components/WorkInProgress'
+import { PoolPage } from '@/features/deposit/PoolPage'
 import { createRoute, Outlet } from '@tanstack/react-router'
 import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'
@@ -21,8 +22,8 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/pools/$poolIdOrAddress',
-    component: WorkInProgress,
+    path: '$network/pools/$pool',
+    component: PoolPage,
     head: () => ({ meta: [{ title: 'Pool - Curve Stellar' }] }),
     ...layoutProps,
   }),

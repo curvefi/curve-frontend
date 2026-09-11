@@ -1,6 +1,8 @@
 import { asAddress, shortenAddress } from '@/features/connect-wallet/address'
 import { StellarConnectModal } from '@/features/connect-wallet/StellarConnectModal'
 import { useWallet } from '@/features/connect-wallet/useWallet'
+import { STELLAR_NETWORKS } from '@/lib/networks'
+import { recordEntries } from '@primitives/objects.utils'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { GlobalBanner } from '@ui/features/banners/GlobalBanner'
@@ -24,33 +26,19 @@ import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 const DEV_TOOLS = !IS_CYPRESS
 
 const APP = 'dex' as const
-const STELLAR_NETWORKS: ChainListOption[] = [
-  {
-    blockchainId: 'stellar',
-    name: 'Stellar',
-    chainId: 1500,
-    isTestnet: false,
-    isLite: true,
-    isConfigured: true,
-    href: `/${APP}/stellar`,
-  },
-  {
-    blockchainId: 'stellar-testnet',
-    name: 'Stellar testnet',
-    chainId: 1500,
-    isTestnet: true,
-    isLite: true,
-    isConfigured: true,
-    href: `/${APP}/stellar-testnet`,
-  },
-]
+const CHAIN_OPTIONS: ChainListOption[] = recordEntries(STELLAR_NETWORKS).map(([blockchainId, n]) => ({
+  ...n,
+  blockchainId,
+  isConfigured: true,
+  href: `/${APP}/${blockchainId}`,
+}))
 
 const PLACEHOLDERS = {
   notImplementedCallback: () => {
     notify(t`Wallet network switching is not implemented yet.`, 'error')
     return Promise.resolve()
   },
-  chain: STELLAR_NETWORKS[0],
+  chain: CHAIN_OPTIONS[0],
   stats: [],
   tvl: constQ<Record<string, number>>({}),
 }
@@ -60,7 +48,7 @@ export const StellarNetworkAwareLayout = () => {
   const { address, connect, disconnect, isConnected, isConnecting, error } = useWallet()
   const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
 
-  const chain = STELLAR_NETWORKS.find(chain => chain.blockchainId === network) ?? PLACEHOLDERS.chain
+  const chain = CHAIN_OPTIONS.find(chain => chain.blockchainId === network) ?? PLACEHOLDERS.chain
   const formatUrl = (page: string) => `${chain.href}${page}`
   const pages = [{ label: t`Pools`, href: formatUrl('/pools') }]
   const userAddress = asAddress(address)
@@ -89,7 +77,7 @@ export const StellarNetworkAwareLayout = () => {
               }
               currentNetwork={chain}
               currentMenu={APP}
-              supportedNetworks={STELLAR_NETWORKS}
+              supportedNetworks={CHAIN_OPTIONS}
               appStats={PLACEHOLDERS.stats}
               pages={pages}
               links={{ dex: { label: t`DEX`, href: chain.href, pages } }}
