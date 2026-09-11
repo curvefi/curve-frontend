@@ -54,7 +54,7 @@ export type LlamaMarket = {
   version: MarketVersion
   minBand?: number
   maxBand?: number
-  maxLtv: number
+  maxLtv: number | null
   loans: number
   oraclePrice?: number
   monetaryPolicyAddress?: Address
@@ -121,7 +121,6 @@ const convertLendingVault = (
     borrowedToken,
     borrowedBalanceUsd,
     collateralBalanceUsd,
-    borrowApy,
     borrowApr,
     apyLend: lendApy,
     aprLendCrv0Boost: lendCrvAprUnboosted,
@@ -148,6 +147,7 @@ const convertLendingVault = (
   badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = MarketType.Lend
+  const borrowApy = aprToApy(borrowApr, 'llamalend.borrow')
   const hasBorrowed = userBorrows?.has(controller) ?? null
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
@@ -245,7 +245,6 @@ const convertMintMarket = (
     collateralAmountUsd,
     stablecoinToken,
     llamma,
-    borrowApy,
     borrowApr,
     borrowed,
     borrowedUsd,
@@ -272,6 +271,7 @@ const convertMintMarket = (
   badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = MarketType.Mint
+  const borrowApy = aprToApy(borrowApr, 'llamalend.borrow')
   const hasBorrow = userMintMarkets?.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
