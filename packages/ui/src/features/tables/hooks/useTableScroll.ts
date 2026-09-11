@@ -38,7 +38,7 @@ export function useScrollToTopOnFilterChange<TData extends RowData>({
   })
 }
 
-/** Scrolls to the container or table top, or the page top when neither ref is provided, after pagination changes. */
+/** Scrolls to the top of the table whenever the page changes. */
 export function useScrollToTopOnPageChange<TData extends RowData>({
   table,
   tableTopRef,
@@ -49,6 +49,5 @@ export function useScrollToTopOnPageChange<TData extends RowData>({
     // scroll after the user changes pages
     if (containerRef?.current) containerRef.current.scrollTo({ top: 0, behavior: 'smooth' })
     else if (tableTopRef) scrollTableTopIntoView(tableTopRef)
-    else window.scrollTo({ top: 0, behavior: 'smooth' })
   })
 }

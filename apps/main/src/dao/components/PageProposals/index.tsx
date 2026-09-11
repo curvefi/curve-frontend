@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import {
   createProposalKey,
   invalidateProposals,
@@ -19,6 +19,7 @@ import type { SortingState } from '@tanstack/react-table'
 import { EmptyStateCard } from '@ui/components/EmptyStateCard'
 import { Spinner } from '@ui/components/Spinner'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { useLayoutStore } from '@ui/features/layout/store'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useScrollToTopOnPageChange } from '@ui/features/tables/hooks/useTableScroll'
@@ -84,7 +85,9 @@ export const Proposals = () => {
     getRowId: proposal => createProposalKey(proposal.id, proposal.type),
   })
 
-  useScrollToTopOnPageChange({ table })
+  const navHeight = useLayoutStore(state => state.navHeight)
+  const tableTopRef = useRef<HTMLDivElement>(null)
+  useScrollToTopOnPageChange({ table, tableTopRef })
 
   const push = useNavigate()
   const handleProposalClick = useCallback(
@@ -96,7 +99,10 @@ export const Proposals = () => {
 
   return (
     <DetailPageLayout formTabs={null}>
-      <Stack sx={{ backgroundColor: theme => theme.design.Layer[1].Fill }}>
+      <Stack
+        ref={tableTopRef}
+        sx={{ backgroundColor: theme => theme.design.Layer[1].Fill, scrollMarginTop: `${navHeight}px` }}
+      >
         <TableHeader
           title={t`Proposals`}
           onReload={() => void onReload()}
