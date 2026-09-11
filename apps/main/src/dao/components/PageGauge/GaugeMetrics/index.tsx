@@ -1,4 +1,5 @@
 import { styled } from 'styled-components'
+import { getAddress } from 'viem'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
@@ -6,7 +7,7 @@ import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
-import { tryChecksumAddress, shortenAddress } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { scanAddressPath } from '@legacy-ui/utils/'
 import { formatDate } from '@primitives/date.utils'
@@ -41,7 +42,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                     href={scanAddressPath(Chain.Ethereum, gaugeAddress)}
                     tooltip={t`View on explorer`}
                   />
-                  <CopyIconButton copyContent={gaugeAddress} format={tryChecksumAddress} tooltip={t`Copy address`} />
+                  <CopyIconButton copyContent={gaugeAddress} format={getAddress} tooltip={t`Copy address`} />
                 </BigScreenButtonsWrapper>
               </Box>
             }
@@ -51,7 +52,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
               href={scanAddressPath(Chain.Ethereum, gaugeAddress)}
               tooltip={t`View on explorer`}
             />
-            <CopyIconButton copyContent={gaugeAddress} format={tryChecksumAddress} tooltip={t`Copy address`} />
+            <CopyIconButton copyContent={gaugeAddress} format={getAddress} tooltip={t`Copy address`} />
           </SmallScreenButtonsWrapper>
         </Box>
         <MetricsComp
@@ -142,7 +143,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                     />
                     <CopyIconButton
                       copyContent={gaugeData?.pool?.address}
-                      format={tryChecksumAddress}
+                      format={getAddress}
                       tooltip={t`Copy address`}
                     />
                   </BigScreenButtonsWrapper>
@@ -154,11 +155,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                 href={scanAddressPath(chainId, gaugeData?.pool?.address)}
                 tooltip={t`View on explorer`}
               />
-              <CopyIconButton
-                copyContent={gaugeData?.pool?.address}
-                format={tryChecksumAddress}
-                tooltip={t`Copy address`}
-              />
+              <CopyIconButton copyContent={gaugeData?.pool?.address} format={getAddress} tooltip={t`Copy address`} />
             </SmallScreenButtonsWrapper>
           </Box>
         )}
