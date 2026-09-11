@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { useConnection, useConfig } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { AlertGaugeKilled } from '@/dex/components/PagePool/components/AlertGaugeKilled'
 import { DetailInfoExpectedApy } from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
 import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
 import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
@@ -15,6 +16,7 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
+import { isValidAddress } from '@/dex/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
@@ -89,7 +91,7 @@ export const FormStake = ({ seed }: TransferProps) => {
       formStatus: FormStatus,
       steps: Step[],
     ) => {
-      const isValid = !formStatus.error && +formValues.lpToken > 0
+      const isValid = isValidAddress(poolData.pool.gauge.address) && !formStatus.error && +formValues.lpToken > 0
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'STAKE'
 
@@ -165,6 +167,7 @@ export const FormStake = ({ seed }: TransferProps) => {
 
   return (
     <FormContent>
+      {poolData.gauge.isKilled && <AlertGaugeKilled />}
       {/* input fields */}
       <FieldsWrapper>
         <FieldLpToken

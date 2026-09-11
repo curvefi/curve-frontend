@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
-import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import type { PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 import { PointsCampaignsTable } from '@evm-ui/features/points-campaigns/PointsCampaignsTable'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
@@ -88,7 +88,7 @@ export const RateBreakdownTable = ({
 
   return (
     <Card size="small" data-testid={`${rateType.toLowerCase()}-rate-breakdown`}>
-      <MarketCardHeader title={title} />
+      <CardHeader title={title} />
       <EvmDataTable
         category="detail"
         table={table}
@@ -111,7 +111,7 @@ export const RateBreakdownTable = ({
 
 export const PointsCampaignsCard = ({ rateType, rows }: { rateType: MarketRateType; rows: PointsCampaignRow[] }) => (
   <Card size="small" data-testid={`${rateType.toLowerCase()}-points-campaigns`}>
-    <MarketCardHeader title={POINTS_CAMPAIGN_TITLES[rateType]} />
+    <CardHeader title={POINTS_CAMPAIGN_TITLES[rateType]} />
     <PointsCampaignsTable rows={rows} />
   </Card>
 )

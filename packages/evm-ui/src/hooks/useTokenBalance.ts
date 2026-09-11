@@ -58,13 +58,10 @@ const isNative = ({ tokenAddress }: TokenQuery) => isAddressEqual(tokenAddress, 
 export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery) =>
   isNative(query)
     ? await queryClient
-        .fetchQuery({ ...getNativeBalanceQueryOptions(config, query), staleTime: 0 })
+        .query({ ...getNativeBalanceQueryOptions(config, query), staleTime: 0 })
         .then(balance => convertBalance({ value: balance.value, decimals: balance.decimals }))
     : await queryClient
-        .fetchQuery({
-          ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
-          staleTime: 0,
-        })
+        .query({ ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }), staleTime: 0 })
         .then(results => convertBalance(parseERC20Results(results)))
 
 /** Invalidate a specific token balance query  */
@@ -204,16 +201,12 @@ export const prefetchTokenBalances = async (
 ) => {
   const uniqueAddresses = uniqAddresses(tokenAddresses)
 
-  const nativeToken = uniqueAddresses.find(tokenAddress => isNative({ tokenAddress }))
   const erc20Addresses = uniqueAddresses.filter(tokenAddress => !isNative({ tokenAddress }))
 
   // Prefetch native balance individually (can't be multicalled as it uses wagmi's useBalance, and it's one address anyway)
-  if (nativeToken) {
-    const query = { chainId, userAddress, tokenAddress: nativeToken }
-    await queryClient.prefetchQuery({
-      ...getNativeBalanceQueryOptions(config, query),
-      ...QUERY_CATEGORIES['global.tokenBalances'],
-    })
+  if (uniqueAddresses.find(tokenAddress => isNative({ tokenAddress }))) {
+    const options = getNativeBalanceQueryOptions(config, { chainId, userAddress })
+    await queryClient.query({ ...options, ...QUERY_CATEGORIES['global.tokenBalances'] })
   }
 
   // Batch all ERC-20 tokens into a single multicall, then seed individual cache entries.

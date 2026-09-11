@@ -1,7 +1,6 @@
 import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
 import { LegacyTooltipBaseApy } from '@/dex/components/LegacyTooltipBaseApy'
 import { LARGE_RATE } from '@/dex/constants'
-import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
@@ -16,22 +15,18 @@ export const LegacyRewardsBaseCell = ({
   column,
 }: CellContext<CurveTableFeatures, LegacyPoolRow, number | null>) => {
   const { original: poolData } = row
-  const { failedFetching24hOldVprice: failed, rewards } = poolData
+  const { rewards } = poolData
 
   const isHighlight = isSortedBy(table, column.id)
   const day = getValue()
-  return failed ? (
-    <span>
-      -<IconTooltip>Not available currently</IconTooltip>
-    </span>
-  ) : (
+  return (
     day != null &&
-      (day > LARGE_RATE ? (
-        <ChipVolatileBaseApy isBold={isHighlight} />
-      ) : (
-        <Tooltip title={rewards?.base && <LegacyTooltipBaseApy poolData={poolData} baseApy={rewards.base} />}>
-          <Stack>{formatNumber(day, 'percent.rate')}</Stack>
-        </Tooltip>
-      ))
+    (day > LARGE_RATE ? (
+      <ChipVolatileBaseApy isBold={isHighlight} />
+    ) : (
+      <Tooltip title={rewards?.base && <LegacyTooltipBaseApy poolData={poolData} baseApy={rewards.base} />}>
+        <Stack>{formatNumber(day, 'percent.rate')}</Stack>
+      </Tooltip>
+    ))
   )
 }

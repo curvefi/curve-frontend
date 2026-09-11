@@ -97,7 +97,6 @@ export type PoolData = {
   tokensCountBy: Record<string, number>
   tokensAll: string[]
   tokensLowercase: string[]
-  failedFetching24hOldVprice: boolean
 }
 
 export type PoolDataMapper = Record<string, PoolData>
