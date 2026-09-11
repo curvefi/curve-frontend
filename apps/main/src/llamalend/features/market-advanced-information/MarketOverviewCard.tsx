@@ -1,4 +1,3 @@
-import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketMetricGrid } from '@/llamalend/widgets/MarketMetricGrid'
 import { MaxLeverageTooltip, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { Metric } from '@evm-ui/shared/ui/Metric'
@@ -6,6 +5,7 @@ import { MarketType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
@@ -33,7 +33,7 @@ export const MarketOverviewCard = () => {
   })
   return (
     <Card size="small" data-testid="market-overview-card">
-      <MarketCardHeader title={t`Overview`} />
+      <CardHeader title={t`Overview`} />
       <CardContent component={Stack} data-testid="market-advanced-details" sx={{ gap: Spacing.md }}>
         <MarketMetricGrid data-testid="market-overview-summary">
           {solvency && (

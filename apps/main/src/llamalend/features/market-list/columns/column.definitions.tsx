@@ -1,3 +1,4 @@
+import { getMaxRoE } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@evm-ui/shared/ui/DataTable/filters'
@@ -13,6 +14,8 @@ import {
   LtvCell,
   MarketTitleCell,
   MaxLeverageCell,
+  MaxRoeCell,
+  MaxRoeTooltipContent,
   PercentCell,
   PriceCell,
   RateCell,
@@ -149,12 +152,24 @@ export const MARKET_COLUMNS = columnHelper.columns([
       sortUndefined: 'last',
     },
   ),
-  columnHelper.accessor('maxLtv', {
+  columnHelper.accessor(getMaxRoE, {
+    id: MarketColumnId.MaxRoe,
+    header: MARKET_TITLES[MarketColumnId.MaxRoe],
+    cell: MaxRoeCell,
+    meta: {
+      type: 'numeric',
+      unit: 'percentage',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.MaxRoe], body: <MaxRoeTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(row => row.maxLtv ?? undefined, {
     id: MarketColumnId.MaxLtv,
     header: MARKET_TITLES[MarketColumnId.MaxLtv],
     cell: PercentCell,
     meta: { type: 'numeric', unit: 'percentage' },
     filterFn: rangeFilterFn,
+    sortUndefined: 'last',
   }),
   columnHelper.accessor('utilizationPercent', {
     id: MarketColumnId.UtilizationPercent,

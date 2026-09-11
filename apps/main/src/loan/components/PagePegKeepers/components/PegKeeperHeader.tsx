@@ -16,20 +16,14 @@ type Props = {
 
 export const PegKeeperHeader = ({ underlyingCoins, underlyingCoinAddresses, rate }: Props) => (
   <CardHeader
-    avatar={
-      <TokenIcon
-        blockchainId="ethereum"
-        address={underlyingCoinAddresses[0]}
-        sx={{
-          // Default space between avatar and card header content is a bit too big for this specific card, so we reduce it a bit
-          '--avatar-margin-right': Spacing.md,
-          marginRight: 'calc(-1 * var(--avatar-margin-right) / 1.25)',
-        }}
-      />
-    }
     title={
-      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+      <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
+        <TokenIcon blockchainId="ethereum" address={underlyingCoinAddresses[0]} />
         {underlyingCoins[0]}
+      </Stack>
+    }
+    action={
+      <Stack sx={{ marginBottom: Spacing.xs }}>
         <PegChip status={pegStatus(rate)} />
       </Stack>
     }

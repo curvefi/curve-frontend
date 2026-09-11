@@ -4,8 +4,8 @@ import { FetchError } from '@primitives/fetch.utils'
 import { isEmpty, notFalsy } from '@primitives/objects.utils'
 import {
   type DefaultError,
-  type FetchQueryOptions,
   keepPreviousData,
+  type QueryExecuteOptions,
   QueryFunctionContext,
   type QueryKey,
   queryOptions,
@@ -157,17 +157,15 @@ export function queryFactory<
     getQueryOptions,
     getQueryData: (params: TParams): TData | undefined => queryClient.getQueryData(queryKey(params)),
     setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(queryKey(params), data),
-    prefetchQuery: (params: TParams, staleTime = 0) =>
-      queryClient.prefetchQuery<TData, DefaultError, TData, TKey>({ ...getQueryOptions(params), staleTime }),
-    fetchQuery: (params: TParams, options?: Partial<FetchQueryOptions<TData, DefaultError, TData, TKey>>) =>
-      queryClient.fetchQuery<TData, DefaultError, TData, TKey>({ ...getQueryOptions(params), ...options }),
+    fetchQuery: (params: TParams, options?: Partial<QueryExecuteOptions<TData, DefaultError, TData, TData, TKey>>) =>
+      queryClient.query<TData, DefaultError, TData, TData, TKey>({ ...getQueryOptions(params), ...options }),
     /**
      * Function that is like fetchQuery, but sets staleTime to 0 to ensure fresh data is fetched.
      * Primary use case is for Zustand stores where want to both use queries and ensure freshness.
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
     refetchQuery: (params: TParams) =>
-      queryClient.fetchQuery<TData, DefaultError, TData, TKey>({
+      queryClient.query<TData, DefaultError, TData, TData, TKey>({
         ...getQueryOptions(params),
         ...options,
         staleTime: 0,

@@ -1,11 +1,7 @@
 import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import {
-  getMarketLiquidationBandKey,
-  getMarketOraclePriceBandKey,
-  getMarketOraclePriceKey,
-} from '@/llamalend/queries/market'
+import { getMarketOraclePriceBandKey, getMarketOraclePriceKey } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user/user-current-leverage.query'
@@ -111,7 +107,6 @@ const BorrowPositionDetailsStory = ({
             { loanDiscount: `${loanDiscount}`, liquidationDiscount: `${liquidationDiscount}` },
           ],
           [getMarketOraclePriceKey(params), `${oraclePrice}`],
-          [getMarketLiquidationBandKey(params), null],
           [getTokenUsdRateKey({ ...params, tokenAddress: BORROW_ADDRESS }), 1],
           [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
         ]}

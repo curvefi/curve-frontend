@@ -4,6 +4,7 @@ import { getStatistics, type Statistics } from '@curvefi/prices-api/savings'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { weiToEther } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
+import { aprToApy } from '@ui/lib/rates.utils'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 const YEAR = 86400 * 365.25 * 100
@@ -41,9 +42,7 @@ async function _fetchSavingsStatistics(): Promise<Omit<Statistics, 'lastUpdated'
     const profitUnlockingRateNum = Number(profitUnlockingRate)
     const supplyNum = Number(supply)
     const apr = supplyNum > 0 ? (profitUnlockingRateNum * UNLOCK_MULTIPLIER) / supplyNum : 0
-    const apy = (1 + apr / 100 / 365.25) ** 365.25 - 1
-
-    return { apyProjected: apy * 100, supply: weiToEther(supplyNum) }
+    return { apyProjected: aprToApy(apr, 'savings.supply'), supply: weiToEther(supplyNum) }
   }
 
   return getStatistics()

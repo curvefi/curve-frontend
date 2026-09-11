@@ -10,6 +10,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 
 const { Spacing, IconSize, LineHeight, ButtonSize, Badge } = SizesAndSpaces
+const CHIP_TRANSITION = '140ms cubic-bezier(0.23, 1, 0.32, 1)'
 
 type ChipSizeDefinition = {
   font: TypographyVariantKey
@@ -226,8 +227,8 @@ export const defineMuiChip = (
         borderRadius: Chips.BorderRadius.Clickable,
         cursor: 'pointer',
         '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': { ...handleBreakpoints({ gap: Spacing.xxs }) },
-        '& .MuiChip-icon': { marginInline: 0, color: 'inherit' },
-        '& .MuiChip-deleteIcon': { margin: 0, color: 'inherit' },
+        '& .MuiChip-icon': { marginInline: 0, color: 'inherit', transition: `color ${CHIP_TRANSITION}` },
+        '& .MuiChip-deleteIcon': { margin: 0, color: 'inherit', transition: `color ${CHIP_TRANSITION}` },
         '&:hover, &:focus-visible': {
           borderColor: 'transparent',
           backgroundColor: Chips.Hover.Fill,
@@ -278,7 +279,11 @@ export const defineMuiChip = (
       ([size, { font, deleteIconSize, height: heightOverride, iconSize, ...rest }]) => ({
         props: { size: size as ChipSizes, clickable: true },
         style: {
-          ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
+          ...handleBreakpoints({
+            ...(font && typography[font]),
+            ...rest,
+            transition: `background-color ${CHIP_TRANSITION}, border-color ${CHIP_TRANSITION}, color ${CHIP_TRANSITION}, transform ${CHIP_TRANSITION}`,
+          }),
           ...(heightOverride && {
             height: heightOverride, // constant height override for clickable chips
             '& .MuiChip-icon': handleBreakpoints({ width: iconSize.desktop, height: iconSize.desktop }),

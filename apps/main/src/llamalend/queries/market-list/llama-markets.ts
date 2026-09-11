@@ -9,13 +9,7 @@ import {
   createGetBadDebtMarket,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
-import {
-  aprToApy,
-  computeTotalRate,
-  getSupplyApyMetrics,
-  sumCampaignsApr,
-  sumCampaignsApy,
-} from '@/llamalend/rates.utils'
+import { computeTotalRate, getSupplyApyMetrics, sumCampaignsApr, sumCampaignsApy } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import { type CampaignRewards, combineCampaigns } from '@evm-ui/entities/campaigns'
 import { getCampaignsExternalOptions } from '@evm-ui/entities/campaigns/campaigns-external'
@@ -30,6 +24,7 @@ import type { QueriesResults } from '@tanstack/react-query'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { DISABLED_Q, type Query } from '@ui/features/queries/util'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
+import { aprToApy } from '@ui/lib/rates.utils'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
@@ -59,7 +54,7 @@ export type LlamaMarket = {
   version: MarketVersion
   minBand?: number
   maxBand?: number
-  maxLtv: number
+  maxLtv: number | null
   loans: number
   oraclePrice?: number
   monetaryPolicyAddress?: Address
@@ -126,7 +121,6 @@ const convertLendingVault = (
     borrowedToken,
     borrowedBalanceUsd,
     collateralBalanceUsd,
-    borrowApy,
     borrowApr,
     apyLend: lendApy,
     aprLendCrv0Boost: lendCrvAprUnboosted,
@@ -153,10 +147,11 @@ const convertLendingVault = (
   badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = MarketType.Lend
+  const borrowApy = aprToApy(borrowApr, 'llamalend.borrow')
   const hasBorrowed = userBorrows?.has(controller) ?? null
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
-    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate)) : null
+    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate, 'llamalend.rewards')) : null
   const rewards = [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])]
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
@@ -250,7 +245,6 @@ const convertMintMarket = (
     collateralAmountUsd,
     stablecoinToken,
     llamma,
-    borrowApy,
     borrowApr,
     borrowed,
     borrowedUsd,
@@ -277,6 +271,7 @@ const convertMintMarket = (
   badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = MarketType.Mint
+  const borrowApy = aprToApy(borrowApr, 'llamalend.borrow')
   const hasBorrow = userMintMarkets?.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol

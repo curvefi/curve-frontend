@@ -306,6 +306,26 @@ export const calculateLtv = (
   return (debtValue / collateralValue) * 100
 }
 
+/** Annualized return on equity at the given leverage. Input APYs and output are percentage  */
+export const getRoE = (
+  leverage: number | null | undefined,
+  collateralApy: number | null | undefined,
+  borrowApy: number | null | undefined,
+): number | undefined =>
+  // Total collateral / equity = leverage, so debt / equity = leverage - 1.
+  maybes([leverage, collateralApy, borrowApy], (lev, colApy, borApy) =>
+    lev < 1 ? undefined : lev * colApy - (lev - 1) * borApy,
+  )
+
+/** Return on equity at the market's maximum leverage. */
+export const getMaxRoE = ({
+  leverage,
+  assets: {
+    collateral: { rebasingYield },
+  },
+  rates: { borrowApy },
+}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => getRoE(leverage, rebasingYield, borrowApy)
+
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,
   collateralBalanceUsd,
@@ -413,18 +433,8 @@ export function getLiquidationStatus(
   return 'healthy' as const
 }
 
-export function getIsUserCloseToSoftLiquidation(
-  userFirstBand: number,
-  userLiquidationBand: number | null,
-  oraclePriceBand: number | null | undefined,
-) {
-  if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
-    return false
-  } else if (typeof oraclePriceBand === 'number') {
-    return userFirstBand <= oraclePriceBand + 2
-  }
-  return false
-}
+export const getIsUserCloseToSoftLiquidation = (userFirstBand: number, oraclePriceBand: number | null | undefined) =>
+  oraclePriceBand != null && userFirstBand <= oraclePriceBand + 2
 
 /**
  * Formats a collateral + borrowed notional string, e.g. "1.5K WETH + 200 crvUSD".

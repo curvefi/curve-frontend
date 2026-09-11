@@ -49,7 +49,7 @@ export const typeFilterInput = (testId: string, value: number) => {
 }
 
 /** Returns the median value for a column. */
-const getMedianValue = <T extends Partial<Record<string, number>>>(data: T[], key: string) =>
+const getMedianValue = <T extends Partial<Record<string, number | null>>>(data: T[], key: string) =>
   median(notFalsy(...data.map(item => item[key])))
 
 /** Returns one random column paired with its median value. */

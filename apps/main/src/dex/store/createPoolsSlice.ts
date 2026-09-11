@@ -19,7 +19,6 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Chain } from '@curvefi/prices-api'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { Chain as ChainEnum } from '@primitives/network.utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui/lib/logging'
 import { fetchNetworks } from '../entities/networks'
@@ -48,7 +47,7 @@ export type PoolsSlice = {
     fetchPools: (
       curve: CurveApi,
       poolIds: string[],
-      includeGaugeData: boolean,
+      options: { includeGaugeData: boolean },
     ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
     fetchPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[], useApi?: boolean) => Promise<void>
@@ -79,7 +78,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    fetchPools: async (curve, poolIds, includeGaugeData) => {
+    fetchPools: async (curve, poolIds, { includeGaugeData }) => {
       const { pools, tokens } = get()
       const { chainId } = curve
 
@@ -89,11 +88,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         tokens.setEmptyPoolListDefault(curve)
         return
       }
-
-      // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
-      const failedFetching24hOldVprice: Record<string, boolean> =
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
-        chainId === ChainEnum.Kava ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
       const networks = await fetchNetworks()
       const { blockchainId } = networks[chainId]
@@ -107,14 +101,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         )
 
         const blacklist = await fetchPoolsBlacklist({ blockchainId: blockchainId as Chain })
-        const { poolsMapper } = await getPools(
-          curve,
-          poolIds,
-          new Set(blacklist),
-          networks[chainId],
-          failedFetching24hOldVprice,
-          includeGaugeData,
-        )
+        const { poolsMapper } = await getPools(curve, poolIds, new Set(blacklist), networks[chainId], includeGaugeData)
 
         const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
 
@@ -161,7 +148,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])
-      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId], true)
+      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId], { includeGaugeData: true })
       return resp?.poolsMapper?.[poolId]
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
