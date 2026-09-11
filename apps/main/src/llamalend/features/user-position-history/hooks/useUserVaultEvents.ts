@@ -1,6 +1,5 @@
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { type UserVaultEvent } from '@curvefi/prices-api/llamalend'
-import type { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
 import { fromWei } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -10,7 +9,7 @@ import { useUserVaultEventsQuery } from '../queries/user-vault-events'
 
 export type ParsedUserVaultEvent = Omit<UserVaultEvent, 'type'> & {
   type: 'Deposit' | 'Withdraw' | 'TransferIn' | 'TransferOut'
-  chainId: LlamaChainId
+  chainId: number
   amount: Decimal | undefined
   shareChange: Decimal
   symbol: string

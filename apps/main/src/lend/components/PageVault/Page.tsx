@@ -27,15 +27,6 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
 const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
 
-const SupplyPositionSection = ({ hasPosition }: { hasPosition: boolean | undefined }) => {
-  const events = useUserVaultEvents()
-  return (
-    <MarketSection id="position-details">
-      <PositionDetailsComposite type={MarketRateType.Supply} hasPosition={hasPosition} events={events} />
-    </MarketSection>
-  )
-}
-
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
@@ -60,7 +51,8 @@ export const Page = () => {
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
   const { data: balances } = useUserBalances({ marketId: market?.id, chainId, userAddress })
-  const hasPosition = market && balances ? +(balances.totalShares ?? 0) > 0 : undefined
+  const hasPosition = market && balances && +(balances.totalShares ?? 0) > 0
+  const events = useUserVaultEvents()
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -91,7 +83,9 @@ export const Page = () => {
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        <SupplyPositionSection hasPosition={hasPosition} />
+        <MarketSection id="position-details">
+          <PositionDetailsComposite type={MarketRateType.Supply} hasPosition={hasPosition} events={events} />
+        </MarketSection>
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
     </MarketContextProvider>

@@ -47,7 +47,7 @@ export type UserCollateralEventType =
 const OriginalFields = ['loanChange', 'collateralChange', 'collateralChangeUsd', 'timestamp', 'txHash'] as const
 
 export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> & {
-  chainId: LlamaChainId
+  chainId: number
   type: UserCollateralEventType
 } & Partial<MarketTokens>
 
