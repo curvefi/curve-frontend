@@ -1,7 +1,7 @@
 import { z } from 'zod/v4'
 import { fromEntries, maybe, recordEntries } from '@primitives/objects.utils'
 import type { Chain } from '..'
-import { address, camelizeKeys, chain, timestamp } from '../schemas'
+import { address, camelizeKeys, chain, decimal, hex, timestamp } from '../schemas'
 
 const token = z
   .object({
@@ -491,6 +491,31 @@ export const getUserCollateralEventsResponse = z
     }) => ({ ...data, totalDepositUsd: totalDepositUsdValue, events }),
   )
 
+const userVaultEvent = z
+  .object({
+    user: address,
+    event_type: z.enum(['Deposit', 'Withdraw', 'Transfer']),
+    block_number: z.number(),
+    dt: timestamp,
+    transaction_hash: hex,
+    log_index: z.number(),
+    assets: decimal,
+    shares: decimal,
+    sender: address.nullable(),
+    receiver: address.nullable(),
+  })
+  .transform(camelizeKeys)
+  .transform(({ dt, transactionHash, eventType, ...event }) => ({
+    ...event,
+    timestamp: dt,
+    txHash: transactionHash,
+    type: eventType,
+  }))
+
+export const getUserVaultEventsResponse = z
+  .object({ user: address, total_deposited: decimal, events: z.array(userVaultEvent) })
+  .transform(camelizeKeys)
+
 export type GetMarketsResponse = z.input<typeof rawGetMarketsResponse>
 
 export type Market = z.infer<typeof market>
@@ -508,3 +533,4 @@ export type UserMarketSnapshots = z.infer<typeof getUserMarketSnapshotsResponse>
 export type MarketUser = z.infer<typeof marketUser>
 export type MarketUsers = z.infer<typeof getMarketUsersResponse>
 export type UserCollateralEvents = z.infer<typeof getUserCollateralEventsResponse>
+export type UserVaultEvent = z.infer<typeof userVaultEvent>

@@ -17,7 +17,6 @@ import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
-import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import {
   useMarketResetPosition,
@@ -30,6 +29,7 @@ import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import type { Range } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
@@ -68,7 +68,6 @@ export const LendMarketPage = () => {
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const collateralEvents = useUserCollateralEvents({
     chainId,
-    blockchainId: getPricesApiBlockchainId(network.blockchainId),
     app: MarketType.Lend,
     controllerAddress,
     userAddress,
@@ -119,7 +118,11 @@ export const LendMarketPage = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         <MarketSection id="position-details">
-          <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+          <PositionDetailsComposite
+            type={MarketRateType.Borrow}
+            hasPosition={loanExists}
+            events={mapQuery(collateralEvents, data => data.events)}
+          />
         </MarketSection>
         <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
       </DetailPageLayout>
