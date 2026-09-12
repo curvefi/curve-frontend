@@ -1,12 +1,17 @@
-import { readTokenBalance } from '@/features/connect-wallet/stellar-wallet-kit'
-import { rootKeys } from '@/queries/root-keys'
-import { balanceValidationSuite, type BalanceQuery, type BalanceParams } from '@/queries/validation/deposit.validation'
+import { readTokenBalance } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { rootKeys } from '@/stellar/queries/root-keys'
+import {
+  balanceValidationSuite,
+  type BalanceQuery,
+  type BalanceParams,
+} from '@/stellar/queries/validation/deposit.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei } from '@ui/lib/decimal'
 
 export const {
   useQuery: useTokenBalance,
   getQueryOptions: getTokenBalanceQueryOptions,
+  fetchQuery: fetchTokenBalance,
   invalidate: invalidateTokenBalance,
 } = queryFactory({
   queryKey: ({ network, token, account, decimals }: BalanceParams) =>

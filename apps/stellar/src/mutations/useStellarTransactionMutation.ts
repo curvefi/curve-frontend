@@ -4,7 +4,7 @@ import {
   type StellarTransactionError,
   type StellarTransaction,
   type StellarTransactionResponse,
-} from '@/features/connect-wallet/stellar-wallet-kit'
+} from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { useMutation } from '@tanstack/react-query'
 import { addBreadcrumb, captureError } from '@ui/features/sentry'
 import { notify, withPendingToast } from '@ui/features/toast/Toast/notify'

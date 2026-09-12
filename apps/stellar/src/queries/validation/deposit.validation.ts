@@ -1,17 +1,17 @@
 import { BigNumber } from 'bignumber.js'
-import { test } from 'vest'
-import type { StellarAddress } from '@/features/connect-wallet/address'
-import { isAccountAddress, isContractAddress } from '@/features/connect-wallet/stellar-wallet-kit'
-import { MAX_I128, minimumMint } from '@/lib/amounts'
-import { STELLAR_NETWORKS } from '@/lib/networks'
-import type { PoolQuery, TokenQuery, UserQuery } from '@/queries/root-keys'
+import { skipWhen, test } from 'vest'
+import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import { isAccountAddress, isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { MAX_I128, minimumMint } from '@/stellar/lib/amounts'
+import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
+import type { PoolQuery, TokenQuery, UserQuery } from '@/stellar/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
-export type { PoolQuery, PoolParams, TokenQuery, TokenParams } from '@/queries/root-keys'
+export type { PoolQuery, PoolParams, TokenQuery, TokenParams } from '@/stellar/queries/root-keys'
 export type BalanceQuery = TokenQuery & UserQuery & { decimals: number }
 export type BalanceParams = FieldsOf<BalanceQuery>
 export type QuoteQuery = PoolQuery & { amounts: (Decimal | undefined)[]; decimals: number[]; supply: Decimal }
@@ -87,18 +87,21 @@ const validateInputs = ({
   test('amounts', 'Pool data is unavailable', () => {
     enforce(decimals?.length).isNumber().equals(amounts?.length)
   })
-  test('amounts', 'Enter non-negative amounts within token precision and the i128 limit', () => {
+  test('amounts', 'Enter valid non-negative amounts', () => {
+    amounts?.forEach(amount =>
+      enforce(amount || '0')
+        .isDecimal({ decimal_digits: '0,' })
+        .gte(0),
+    )
+  })
+  test('amounts', 'Amounts exceed token decimal precision', () => {
+    amounts?.forEach((amount, i) => enforce(amount || '0').isDecimal({ decimal_digits: `0,${decimals?.[i] ?? 0}` }))
+  })
+  test('amounts', 'Amounts exceed the maximum supported token amount', () => {
     enforce(
-      amounts?.every((amount, i) => {
-        const value = new BigNumber(amount || '0').shiftedBy(decimals?.[i] ?? 0)
-        return (
-          /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(amount || '0') &&
-          ((amount || '0').split('.')[1]?.length ?? 0) <= (decimals?.[i] ?? 0) &&
-          value.isInteger() &&
-          value.gte(0) &&
-          value.lte(MAX_I128.toString())
-        )
-      }),
+      amounts?.every((amount, i) =>
+        new BigNumber(amount || '0').shiftedBy(decimals?.[i] ?? 0).lte(MAX_I128.toString()),
+      ),
     ).isTruthy()
   })
   test('amounts', 'Enter an amount to deposit', () => {
@@ -111,10 +114,11 @@ const validateInputs = ({
         decimals?.every((_, i) => new BigNumber(amounts?.[i] || '0').gt(0)),
     ).isTruthy()
   })
-  if (maxAmounts)
+  skipWhen(!maxAmounts, () => {
     test('amounts', 'Insufficient token balance', () => {
-      enforce(amounts?.every((amount, i) => new BigNumber(amount || '0').lte(maxAmounts[i]))).isTruthy()
+      enforce(amounts?.every((amount, i) => new BigNumber(amount || '0').lte(maxAmounts![i]))).isTruthy()
     })
+  })
 }
 const validateFundedInputs = (values: Pick<DepositFormValues, 'amounts' | 'decimals' | 'supply' | 'maxAmounts'>) => {
   validateInputs(values)

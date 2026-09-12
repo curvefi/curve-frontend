@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -50,7 +51,10 @@ export const DepositForm = <TValues extends DepositFormValues>({
 }: DepositFormProps<TValues>) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
     {isSeed && (
-      <Alert severity="info">{t`The first deposit must fund every coin. The seed lock is permanent; expected LP is the net amount you receive.`}</Alert>
+      <Alert severity="info" variant="outlined">
+        <AlertTitle>{t`The first deposit must fund every coin`}</AlertTitle>
+        {t`The seed lock is permanent; expected LP is the net amount you receive.`}
+      </Alert>
     )}
     {tokens.isLoading && !tokens.data && (
       <>

@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { StellarWalletProvider } from '@/features/connect-wallet/StellarWalletProvider'
+import { StellarWalletProvider } from '@/stellar/features/connect-wallet/StellarWalletProvider'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import MuiLink from '@mui/material/Link'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'

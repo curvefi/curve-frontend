@@ -1,5 +1,5 @@
-import { WorkInProgress } from '@/components/WorkInProgress'
-import { PoolPage } from '@/features/deposit/PoolPage'
+import { WorkInProgress } from '@/stellar/components/WorkInProgress'
+import { PoolPage } from '@/stellar/features/deposit/PoolPage'
 import { createRoute, Outlet } from '@tanstack/react-router'
 import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'

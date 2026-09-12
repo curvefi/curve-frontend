@@ -1,5 +1,5 @@
-import type { StellarAddress } from '@/features/connect-wallet/address'
-import type { StellarNetwork } from '@/lib/networks'
+import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import type { StellarNetwork } from '@/stellar/lib/networks'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 export type NetworkQuery = { network: StellarNetwork }

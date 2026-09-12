@@ -1,18 +1,18 @@
 import { useCallback } from 'react'
-import { LP_TOKEN_DECIMALS } from '@/lib/amounts'
-import { invalidateExpectedLp } from '@/queries/deposit/deposit-expected-lp.query'
-import { fetchDepositSimulation, invalidateDepositSimulation } from '@/queries/deposit/deposit-simulation.query'
-import { invalidatePoolRates } from '@/queries/pool/pool-rates.query'
-import { invalidatePoolReserves } from '@/queries/pool/pool-reserves.query'
-import { invalidatePoolSupply } from '@/queries/pool/pool-supply.query'
-import { rootKeys } from '@/queries/root-keys'
-import { invalidateTokenBalance } from '@/queries/token/token-balance.query'
+import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { invalidateExpectedLp } from '@/stellar/queries/deposit/deposit-expected-lp.query'
+import { fetchDepositSimulation, invalidateDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
+import { invalidatePoolRates } from '@/stellar/queries/pool/pool-rates.query'
+import { invalidatePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
+import { invalidatePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
+import { rootKeys } from '@/stellar/queries/root-keys'
+import { invalidateTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import {
   depositQuoteValidationSuite,
   depositSubmissionValidationSuite,
   type DepositSubmission,
   type DepositFormValues,
-} from '@/queries/validation/deposit.validation'
+} from '@/stellar/queries/validation/deposit.validation'
 import { zip } from '@primitives/array.utils'
 import { fromWei } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'

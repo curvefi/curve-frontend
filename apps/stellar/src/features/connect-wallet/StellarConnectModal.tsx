@@ -1,4 +1,4 @@
-import type { WalletConnector } from '@/features/connect-wallet/stellar-wallet-kit'
+import type { WalletConnector } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import Box from '@mui/material/Box'
 import { ConnectWalletModal } from '@ui/features/connect-wallet/ConnectWalletModal'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'

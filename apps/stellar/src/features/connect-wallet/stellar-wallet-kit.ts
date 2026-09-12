@@ -1,9 +1,9 @@
 /* eslint-disable no-restricted-imports -- This module wraps Stellar wallet and contract SDK access. */
-import { once } from 'lodash'
-import type { StellarAddress } from '@/features/connect-wallet/address'
-import { STELLAR_NETWORKS, type StellarNetwork } from '@/lib/networks'
+import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import { STELLAR_NETWORKS, type StellarNetwork } from '@/stellar/lib/networks'
 import { defaultModules } from '@creit-tech/stellar-wallets-kit/modules/utils'
 import { StellarWalletsKit } from '@creit-tech/stellar-wallets-kit/sdk'
+import { activeModule } from '@creit-tech/stellar-wallets-kit/state'
 import { type ISupportedWallet, KitEventType } from '@creit-tech/stellar-wallets-kit/types'
 import { assert } from '@primitives/objects.utils'
 import { Address, contract, nativeToScVal, Networks, type rpc, scValToNative, StrKey, xdr } from '@stellar/stellar-sdk'
@@ -14,7 +14,10 @@ export type StellarTransaction = contract.AssembledTransaction<bigint>
 export type StellarTransactionResponse = Omit<rpc.Api.SendTransactionResponse, 'hash'> & { hash: StellarHex }
 export type StellarTransactionError = Error & { submission?: StellarTransactionResponse }
 
-export const initWallet = once(() => StellarWalletsKit.init({ modules: defaultModules() }))
+export const initWallet = async () => {
+  StellarWalletsKit.init({ modules: defaultModules() })
+  if (activeModule.value) await StellarWalletsKit.fetchAddress()
+}
 
 export const onWalletAddressChanged = (onChange: (address: StellarAddress | undefined) => void) =>
   StellarWalletsKit.on(KitEventType.STATE_UPDATED, ({ payload }) =>

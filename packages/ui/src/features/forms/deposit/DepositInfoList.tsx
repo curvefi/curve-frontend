@@ -1,7 +1,7 @@
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
@@ -36,16 +36,38 @@ export const DepositInfoList = ({
   userAddress,
 }: DepositInfoListProps) => (
   <Stack>
-    <ActionInfo label={t`Expected LP received`} value={expectedLp} size="small" />
-    <ActionInfo label={t`Minimum LP received`} value={minimumLp} size="small" />
-    <ActionInfo label={t`Current LP balance`} value={currentLp} size="small" />
-    <ActionInfo label={t`Projected LP balance`} value={projectedLp} size="small" />
-    <PriceImpactActionInfo
-      priceImpact={priceImpact}
-      value={mapQuery(priceImpact, value => maybe(value, value => `${value}%`))}
+    <ActionInfo
+      label={t`Expected LP received`}
+      value={mapQuery(expectedLp, value => formatNumber(value, 'token.balance'))}
       size="small"
     />
-    {seedLock.data && <ActionInfo label={t`Permanently locked LP`} value={seedLock} size="small" />}
+    <ActionInfo
+      label={t`Minimum LP received`}
+      value={mapQuery(minimumLp, value => formatNumber(value, 'token.balance'))}
+      size="small"
+    />
+    <ActionInfo
+      label={t`Current LP balance`}
+      value={mapQuery(currentLp, value => formatNumber(value, 'token.balance'))}
+      size="small"
+    />
+    <ActionInfo
+      label={t`Projected LP balance`}
+      value={mapQuery(projectedLp, value => formatNumber(value, 'token.balance'))}
+      size="small"
+    />
+    <PriceImpactActionInfo
+      priceImpact={priceImpact}
+      value={mapQuery(priceImpact, value => formatNumber(value, 'percent.price-impact'))}
+      size="small"
+    />
+    {seedLock.data && (
+      <ActionInfo
+        label={t`Permanently locked LP`}
+        value={mapQuery(seedLock, value => formatNumber(value, 'token.balance'))}
+        size="small"
+      />
+    )}
     <SlippageToleranceActionInfo
       maxSlippage={slippage}
       onChanged={onSlippageChanged}

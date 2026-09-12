@@ -1,5 +1,5 @@
-import type { StellarAddress } from '@/features/connect-wallet/address'
-import type { StellarNetwork } from '@/lib/networks'
+import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import type { StellarNetwork } from '@/stellar/lib/networks'
 import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { useParams } from '@ui/hooks/router'
