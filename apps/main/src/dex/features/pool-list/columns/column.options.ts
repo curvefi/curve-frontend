@@ -26,7 +26,3 @@ export const POOLS_COLUMN_OPTIONS = {
   ),
   userPositions: createVisibility([PoolColumnId.Deposits], [PoolColumnId.Volume, PoolColumnId.Tvl, PoolColumnId.Age]),
 }
-
-export const getDefaultPoolsSort = (isLite: boolean) => [
-  { id: isLite ? PoolColumnId.Tvl : PoolColumnId.Volume, desc: true },
-]

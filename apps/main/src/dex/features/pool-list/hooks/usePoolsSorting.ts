@@ -3,7 +3,7 @@ import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortFie
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
 import { recordEntries } from '@primitives/objects.utils'
 import type { OnChangeFn, SortingState } from '@tanstack/react-table'
-import { POOL_TITLES, PoolColumnId, getDefaultPoolsSort } from '../columns'
+import { POOL_TITLES, PoolColumnId } from '../columns'
 import type { PoolsQueryUpdater } from '../filters/utils'
 
 const POOL_SORT_BY = {
@@ -36,6 +36,7 @@ type PoolsSortParams = { sortBy: PoolSortField; sortDirection: PoolSortDirection
 const SORT_OPTIONS = recordEntries(POOL_SORT_BY).map(([id]) => ({ id, label: POOL_TITLES[id] }))
 const LITE_SORT_OPTIONS = SORT_OPTIONS.filter(({ id }) => LITE_SORT_COLUMNS.has(id))
 
+const getDefaultPoolsSort = (isLite: boolean) => [{ id: isLite ? PoolColumnId.Tvl : PoolColumnId.Volume, desc: true }]
 const getPoolsSorting = (sorting: SortingState, defaultSort: SortingState, isLite: boolean): PoolsSorting => {
   const sort = [...sorting, ...defaultSort].find(
     ({ id }) => Object.hasOwn(POOL_SORT_BY, id) && (!isLite || LITE_SORT_COLUMNS.has(id as PoolColumnId)),
