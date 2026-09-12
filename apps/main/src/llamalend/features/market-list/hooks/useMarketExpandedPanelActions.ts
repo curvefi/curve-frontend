@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
+import { getAddress } from 'viem'
 import { useFavoriteMarkets } from '@/llamalend/queries/market-list/favorite-markets'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { tryChecksumAddress } from '@evm-ui/utils'
 import { copyToClipboardWithToast } from '@ui/hooks/useCopyToClipboard'
 import { t } from '@ui/lib/i18n'
 
@@ -24,7 +24,7 @@ export const useMarketExpandedPanelActions = (market: LlamaMarket) => {
         onClick: () =>
           void copyToClipboardWithToast({
             copyText: controllerAddress,
-            format: tryChecksumAddress,
+            format: getAddress,
             confirmationText: t`Market address copied`,
             failureText: t`Failed to copy market address`,
           }),

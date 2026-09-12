@@ -1,7 +1,6 @@
 import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
-import { tryChecksumAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -19,7 +18,7 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
           <Box flex flexAlignItems="center">
             <UserAddress>{getAddress(userAddress)}</UserAddress>{' '}
             <Box margin="0 0 0 var(--spacing-1)" flex>
-              <StyledCopyButton size="small" onClick={() => void copyToClipboard(tryChecksumAddress(userAddress))}>
+              <StyledCopyButton size="small" onClick={() => void copyToClipboard(getAddress(userAddress))}>
                 <Icon name="Copy" size={16} />
               </StyledCopyButton>
               <StyledExternalLink size="small" href={scanAddressPath(Chain.Ethereum, userAddress)}>
@@ -31,7 +30,7 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
       </Box>
       {!userEnsName && !TOP_HOLDERS[userAddress]?.title && (
         <Box flex margin="0 0 0 var(--spacing-1)">
-          <StyledCopyButton size="small" onClick={() => void copyToClipboard(tryChecksumAddress(userAddress))}>
+          <StyledCopyButton size="small" onClick={() => void copyToClipboard(getAddress(userAddress))}>
             <Icon name="Copy" size={16} />
           </StyledCopyButton>
           <StyledExternalLink size="small" href={scanAddressPath(Chain.Ethereum, userAddress)}>

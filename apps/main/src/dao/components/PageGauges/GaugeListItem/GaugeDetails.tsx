@@ -1,10 +1,11 @@
-import { styled, type IStyledComponent } from 'styled-components'
+import { type IStyledComponent, styled } from 'styled-components'
+import { getAddress } from 'viem'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
-import { tryChecksumAddress, shortenAddress } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import type { IconProps } from '@legacy-ui/Icon/Icon'
@@ -52,7 +53,7 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
                   <CopyIconButton
                     tooltip={t`Copy Pool Address`}
                     copyContent={gaugeData.pool.address}
-                    format={tryChecksumAddress}
+                    format={getAddress}
                   />
                 </Box>
               )}
@@ -90,11 +91,7 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
               {shortenAddress(gaugeData.address)}
             </StyledExternalLink>
             <ExternalLinkIconButton href={scanAddressPath(chainId, gaugeData.address)} tooltip={t`View on explorer`} />
-            <CopyIconButton
-              tooltip={t`Copy Gauge Address`}
-              copyContent={gaugeData.address}
-              format={tryChecksumAddress}
-            />
+            <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} format={getAddress} />
           </Box>
           <Chip
             size="md"

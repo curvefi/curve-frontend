@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
-import { tryChecksumAddress, shortenAddress } from '@evm-ui/utils'
+import { getAddress } from 'viem'
+import { shortenAddress } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { Typography } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
@@ -45,7 +46,7 @@ export const AddressActionInfo = ({
       <Typography variant={VALUE_SIZE[size]}>{shortenAddress(address)}</Typography>
     }
     copyValue={address}
-    format={tryChecksumAddress}
+    format={getAddress}
     valueTooltip={
       !hideTooltip &&
       maybe(address && scanAddressPath(chainId, address), link => (
