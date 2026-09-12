@@ -2,10 +2,9 @@ import { produce } from 'immer'
 import { isEqual } from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
-import { curvejsApi } from '@/dex/lib/curvejs'
 import { fetchPoolIds } from '@/dex/lib/pool-ids'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
+import { CurveApi, Wallet } from '@/dex/types/main.types'
 import { isDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
 import { notFalsy } from '@primitives/objects.utils'
 import type { ReleaseChannel } from '@ui/lib/env'
@@ -19,9 +18,6 @@ export type StateKey = string
 type GlobalState = { hasRouter: Record<string, boolean | null> }
 
 export type GlobalSlice = {
-  getNetworkConfigFromApi: (chainId: ChainId | '') => NetworkConfigFromApi
-  setNetworkConfigFromApi: (curve: CurveApi) => void
-
   /** Hydrate resets states and refreshes store data from the API */
   hydrate: (
     config: Config,
@@ -41,24 +37,6 @@ const DEFAULT_STATE = { hasRouter: {} } satisfies GlobalState
 
 export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
   ...DEFAULT_STATE,
-
-  getNetworkConfigFromApi: (chainId: ChainId | '') => {
-    const resp: NetworkConfigFromApi = { hasRouter: undefined }
-    if (chainId) {
-      resp.hasRouter = get().hasRouter[chainId] ?? get().storeCache.hasRouter[chainId]
-    }
-    return resp
-  },
-  setNetworkConfigFromApi: (curve: CurveApi) => {
-    const { chainId } = curve
-    const { hasRouter } = curvejsApi.network.fetchNetworkConfig(curve)
-    set(
-      produce((state: State) => {
-        state.hasRouter[chainId] = hasRouter
-        state.storeCache.hasRouter[chainId] = hasRouter
-      }),
-    )
-  },
   hydrate: async (_config, curveApi, prevCurveApi, _wallet, releaseChannel) => {
     if (!curveApi) return
 
@@ -77,9 +55,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       state.createPool.resetState()
       state.dashboard.resetState()
     }
-
-    // update network settings from api
-    state.setNetworkConfigFromApi(curveApi)
 
     const isLegacy = isDexPoolListV2(releaseChannel)
     const poolIds = await fetchPoolIds(curveApi)

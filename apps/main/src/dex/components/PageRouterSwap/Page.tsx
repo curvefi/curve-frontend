@@ -26,7 +26,6 @@ export const PageRouterSwap = () => {
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
-  const getNetworkConfigFromApi = useStore(state => state.getNetworkConfigFromApi)
   const routerCachedFromAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.fromAddress)
   const routerCachedToAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.toAddress)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
@@ -34,7 +33,7 @@ export const PageRouterSwap = () => {
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
 
-  const { hasRouter } = getNetworkConfigFromApi(rChainId)
+  const hasRouter = curveApi?.hasRouter()
   const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
@@ -57,7 +56,7 @@ export const PageRouterSwap = () => {
   useEffect(() => {
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setLoaded(false)
-    if (!isConnecting && rChainId && typeof hasRouter !== 'undefined') {
+    if (!isConnecting && rChainId && hasRouter != null) {
       if (!hasRouter) {
         push(getPath(props, `${ROUTE.PAGE_POOLS}`))
         return
