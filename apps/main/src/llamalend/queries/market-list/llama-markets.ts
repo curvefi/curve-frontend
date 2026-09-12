@@ -59,7 +59,7 @@ export type LlamaMarket = {
   oraclePrice?: number
   monetaryPolicyAddress?: Address
   oracleAddress?: Address
-  parameters: { A: number | null; loanDiscount: Decimal; liquidationDiscount: Decimal }
+  parameters: { A: number | null; loanDiscount: Decimal; liquidationDiscount: Decimal; adminFee: Decimal }
   utilizationPercent: number
   liquidity: number
   liquidityUsd: number
@@ -139,6 +139,7 @@ const convertLendingVault = (
     priceOracle,
     policy,
     oracle,
+    adminFee,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignRewards[]> = {},
@@ -186,6 +187,7 @@ const convertLendingVault = (
       A: ammA,
       loanDiscount: scaledFractionToPercent(loanDiscount),
       liquidationDiscount: scaledFractionToPercent(liquidationDiscount),
+      adminFee: scaledFractionToPercent(adminFee),
     },
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     solvencyPercent,
@@ -322,6 +324,7 @@ const convertMintMarket = (
       A: ammA ?? null,
       loanDiscount: scaledFractionToPercent(loanDiscount),
       liquidationDiscount: scaledFractionToPercent(liquidationDiscount),
+      adminFee: '0',
     },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
     // solvency is only relevant for lending markets; if mint markets have bad debt that's a protocol problem, not a user problem

@@ -90,6 +90,7 @@ const oneLendingPool = (
     extra_reward_apr: [],
     created_at: createdAt.getTime() / 1000,
     max_ltv: oneFloat(60, 110), // between 60% and 110%
+    admin_fee: 100000000000000000,
   }
 }
 

@@ -34,6 +34,7 @@ const market = z
     oracle: address,
     oracle_pools: z.array(address),
     rate: z.number(),
+    admin_fee: z.number(),
     borrow_total_apy: z.number(),
     borrow_apr: z.number(),
     borrow_total_apr: z.number(),
