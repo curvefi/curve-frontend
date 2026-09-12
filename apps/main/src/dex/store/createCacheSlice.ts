@@ -6,11 +6,7 @@ export type SwapFormValuesCache = { fromAddress: string; fromToken: string; toAd
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = {
-  hasDepositAndStake: Record<string, boolean>
-  hasRouter: Record<string, boolean>
-  routerFormValues: Record<string, SwapFormValuesCache>
-}
+type SliceState = { hasRouter: Record<string, boolean>; routerFormValues: Record<string, SwapFormValuesCache> }
 
 const SLICE_KEY = 'storeCache'
 
@@ -23,7 +19,7 @@ export type CacheSlice = {
   }
 }
 
-const DEFAULT_STATE: SliceState = { hasDepositAndStake: {}, hasRouter: {}, routerFormValues: {} }
+const DEFAULT_STATE: SliceState = { hasRouter: {}, routerFormValues: {} }
 
 const TIMEOUT_MS = 4000
 

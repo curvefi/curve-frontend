@@ -16,7 +16,7 @@ import { refetchPoolTvls } from '../queries/pool-tvl.query'
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-type GlobalState = { hasDepositAndStake: Record<string, boolean | null>; hasRouter: Record<string, boolean | null> }
+type GlobalState = { hasRouter: Record<string, boolean | null> }
 
 export type GlobalSlice = {
   getNetworkConfigFromApi: (chainId: ChainId | '') => NetworkConfigFromApi
@@ -37,26 +37,23 @@ export type GlobalSlice = {
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean) => void
 } & GlobalState
 
-const DEFAULT_STATE = { hasDepositAndStake: {}, hasRouter: {} } satisfies GlobalState
+const DEFAULT_STATE = { hasRouter: {} } satisfies GlobalState
 
 export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
   ...DEFAULT_STATE,
 
   getNetworkConfigFromApi: (chainId: ChainId | '') => {
-    const resp: NetworkConfigFromApi = { hasDepositAndStake: undefined, hasRouter: undefined }
+    const resp: NetworkConfigFromApi = { hasRouter: undefined }
     if (chainId) {
-      resp.hasDepositAndStake = get().hasDepositAndStake[chainId] ?? get().storeCache.hasDepositAndStake[chainId]
       resp.hasRouter = get().hasRouter[chainId] ?? get().storeCache.hasRouter[chainId]
     }
     return resp
   },
   setNetworkConfigFromApi: (curve: CurveApi) => {
     const { chainId } = curve
-    const { hasDepositAndStake, hasRouter } = curvejsApi.network.fetchNetworkConfig(curve)
+    const { hasRouter } = curvejsApi.network.fetchNetworkConfig(curve)
     set(
       produce((state: State) => {
-        state.hasDepositAndStake[chainId] = hasDepositAndStake
-        state.storeCache.hasDepositAndStake[chainId] = hasDepositAndStake
         state.hasRouter[chainId] = hasRouter
         state.storeCache.hasRouter[chainId] = hasRouter
       }),
