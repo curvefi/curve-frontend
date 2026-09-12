@@ -1,4 +1,3 @@
-import { MarketMetricGrid } from '@/llamalend/widgets/MarketMetricGrid'
 import { MaxLeverageTooltip, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { Metric } from '@evm-ui/shared/ui/Metric'
@@ -9,6 +8,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -35,7 +35,7 @@ export const MarketOverviewCard = () => {
     <Card size="small" data-testid="market-overview-card">
       <CardHeader title={t`Overview`} />
       <CardContent component={Stack} data-testid="market-advanced-details" sx={{ gap: Spacing.md }}>
-        <MarketMetricGrid data-testid="market-overview-summary">
+        <MetricsGrid data-testid="market-overview-summary">
           {solvency && (
             <Metric
               category={OVERVIEW_METRIC_CATEGORY}
@@ -69,7 +69,7 @@ export const MarketOverviewCard = () => {
             value={deployedDays}
             valueOptions={{ abbreviate: false, decimals: 0, unit: { symbol: t`Days`, position: 'suffix' } }}
           />
-        </MarketMetricGrid>
+        </MetricsGrid>
         <Box
           data-testid="market-overview-details"
           sx={{

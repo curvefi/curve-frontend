@@ -25,6 +25,7 @@ import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
@@ -118,13 +119,7 @@ export const PoolHistoricalBaseRateChart = ({
         }
       />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
-        <Stack
-          sx={{
-            display: 'grid',
-            gap: Spacing.xl,
-            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(5, 1fr)' },
-          }}
-        >
+        <MetricsGrid>
           <Metric
             category={METRIC_CATEGORY}
             label={t`Current daily base APR`}
@@ -137,7 +132,7 @@ export const PoolHistoricalBaseRateChart = ({
             value={mapQuery(currentPool, pool => pool.baseWeeklyApr * 100)}
             valueOptions={{ unit: 'percentage' }}
           />
-        </Stack>
+        </MetricsGrid>
         <EvmChartStateWrapper
           height={Height.shortChart}
           isLoading={ratePoints.isLoading}
