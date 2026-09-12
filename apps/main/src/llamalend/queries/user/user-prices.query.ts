@@ -1,13 +1,15 @@
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { combineQueryState, type FieldsOf } from '@evm-ui/lib'
-import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { loanExistsValidationGroup } from '@evm-ui/lib/model/query/loan-exists-validation'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
-import { createValidationSuite } from '@evm-ui/lib/validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { combineQueryState } from '@ui/features/queries/combine'
+import { queryFactory } from '@ui/features/queries/factory'
 import { constQ, q, type Range } from '@ui/features/queries/util'
 import { decimalDiv, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 import { useLoanExists } from './user-loan-exists.query'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }

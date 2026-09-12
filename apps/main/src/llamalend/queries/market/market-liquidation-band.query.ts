@@ -1,7 +1,8 @@
 import { getMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { type MarketQuery, queryFactory, rootKeys, MarketParams } from '@evm-ui/lib/model'
+import { type MarketQuery, rootKeys, MarketParams } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useMarketLiquidationBand, queryKey: getMarketLiquidationBandKey } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'liquidationBand'] as const,

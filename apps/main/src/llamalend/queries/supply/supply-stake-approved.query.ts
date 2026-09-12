@@ -1,4 +1,5 @@
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
+import { queryFactory } from '@ui/features/queries/factory'
 import { StakeParams, StakeQuery, stakeValidationSuite, requireVault } from '../validation/supply.validation'
 
 export const { useQuery: useStakeIsApproved, fetchQuery: fetchStakeIsApproved } = queryFactory({

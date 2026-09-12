@@ -1,9 +1,9 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
 import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
 import { tryChecksumAddress } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
+import { CopyIconButton } from '@ui/components/CopyIconButton'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import {
   CLICKABLE_IN_ROW_CLASS,

@@ -1,4 +1,5 @@
-import { enforce, group, test } from 'vest'
+import { group, test } from 'vest'
+import { enforce } from '@ui/lib/validation/enforce-extension'
 import { ChainParams } from './root-keys'
 
 export const chainValidationGroup = ({ chainId }: ChainParams) =>

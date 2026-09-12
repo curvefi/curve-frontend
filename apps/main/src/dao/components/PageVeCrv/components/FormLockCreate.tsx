@@ -5,9 +5,9 @@ import { useCreateLockForm } from '@/dao/components/PageVeCrv/hooks/useCreateLoc
 import { useCreateLockGasEstimate } from '@/dao/components/PageVeCrv/queries/create-lock-estimate-gas.query'
 import type { ChainId } from '@/dao/types/dao.types'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
-import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 import { fromEntries } from '@primitives/objects.utils'
 import { Form } from '@ui/features/forms/components/Form'
+import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

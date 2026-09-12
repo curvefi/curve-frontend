@@ -1,5 +1,6 @@
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
+import { queryFactory } from '@ui/features/queries/factory'
 import {
   DepositParams,
   DepositQuery,

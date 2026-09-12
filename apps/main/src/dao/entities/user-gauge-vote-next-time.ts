@@ -1,11 +1,12 @@
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import type { ChainQuery, UserQuery } from '@evm-ui/lib/model/query'
-import { queryFactory } from '@evm-ui/lib/model/query'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
-import { createValidationSuite, type FieldsOf } from '@evm-ui/lib/validation'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 type UserGaugeQuery = ChainQuery<ChainId> & UserQuery<string> & { gaugeAddress: string }
 type UserGaugeParams = FieldsOf<UserGaugeQuery>

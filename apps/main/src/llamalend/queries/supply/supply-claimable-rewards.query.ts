@@ -1,6 +1,7 @@
 import { Address } from 'viem'
-import { queryFactory, rootKeys, UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
+import { queryFactory } from '@ui/features/queries/factory'
 import { claimableRewardsValidationSuite, requireGauge } from '../validation/supply.validation'
 
 export type ClaimableReward = { token: Address; symbol: string; amount: Decimal }

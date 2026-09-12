@@ -5,8 +5,9 @@ import {
   type ResetQuery,
   resetValidationSuite,
 } from '@/llamalend/queries/validation/reset.validation'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
+import { queryFactory } from '@ui/features/queries/factory'
 import type { Range } from '@ui/features/queries/util'
 
 export const { useQuery: useResetPrices } = queryFactory({

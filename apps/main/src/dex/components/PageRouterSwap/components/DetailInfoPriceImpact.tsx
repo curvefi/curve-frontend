@@ -1,7 +1,7 @@
-import { PriceImpactActionInfo } from '@evm-ui/widgets/DetailPageLayout/PriceImpactActionInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

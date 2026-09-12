@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { tryChecksumAddress, shortenAddress } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
@@ -9,6 +8,7 @@ import { Tooltip } from '@ui/components/Tooltip'
 import { CLICKABLE_IN_ROW_CLASS } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { useCopyToClipboard } from '@ui/hooks/useCopyToClipboard'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces

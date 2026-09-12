@@ -9,7 +9,7 @@ import { Chain } from '@primitives/network.utils'
 import { type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { BannerProps } from '@ui/features/banners/Banner'
-import { SLIPPAGE } from '@ui/features/slippage/slippage.utils'
+import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { t } from '@ui/lib/i18n'
 
 type MarketAlert = TooltipProps & {

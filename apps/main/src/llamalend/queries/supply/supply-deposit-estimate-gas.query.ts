@@ -1,5 +1,6 @@
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
 import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { queryFactory } from '@ui/features/queries/factory'
 import { DepositParams, DepositQuery, depositValidationSuite, requireVault } from '../validation/supply.validation'
 import { useDepositIsApproved } from './supply-deposit-approved.query'
 

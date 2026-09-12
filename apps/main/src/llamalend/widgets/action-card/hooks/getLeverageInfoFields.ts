@@ -1,9 +1,9 @@
 import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
-import { combineQueryState } from '@evm-ui/lib'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
+import { combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
 

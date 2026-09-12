@@ -1,8 +1,8 @@
 import { useConnection } from 'wagmi'
-import type { FieldsOf } from '@evm-ui/lib'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { usePinataJwt } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
+import type { FieldsOf } from '@ui/lib/validation/types'
 import { useCreateVoteMutation } from './create-vote.mutation'
 import { createVoteFormValidationSuite } from './create-vote.validation'
 

@@ -1,9 +1,6 @@
 import { noop } from 'lodash'
-import { create, enforce, only, type Suite } from 'vest'
-import { extendEnforce } from './enforce-extension'
-import { FieldName, FieldsOf } from './types'
-
-extendEnforce(enforce)
+import { create, only, type Suite } from 'vest'
+import { FieldName, FieldsOf } from '@ui/lib/validation/types'
 
 /**
  * This is using `any` because `vest` will try to match every single field,

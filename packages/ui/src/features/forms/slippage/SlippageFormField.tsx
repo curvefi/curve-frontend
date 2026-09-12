@@ -13,10 +13,10 @@ import { formatNumber } from '@primitives/number.utils'
 import { Badge } from '@ui/components/Badge'
 import type { UseFormReturn } from '@ui/features/forms'
 import { NumericTextField } from '@ui/features/forms/controls/NumericTextField'
-import { SLIPPAGE, type SlippageType } from '@ui/features/slippage/slippage.utils'
+import { SLIPPAGE, type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
+import { type SlippageSettingsFormData } from '@ui/features/forms/slippage/useSlipageSettingsForm'
 import { decimal, decimalGreaterThan } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { type SlippageSettingsFormData } from './useSlipageSettingsForm'
 
 export const SlippageFormField = ({
   type,

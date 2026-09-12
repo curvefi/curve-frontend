@@ -35,6 +35,8 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "7.86.0",
+    "vest": "5.4.6",
+    "vest-utils": "1.5.0",
     "zustand": "5.0.15"
   },
   "devDependencies": {

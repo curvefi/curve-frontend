@@ -1,4 +1,4 @@
-import { enforce, skipWhen, test } from 'vest'
+import { skipWhen, test } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
 import { getMarket, hasLeverage, hasLeverageValue, tryGetMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
@@ -6,6 +6,7 @@ import { assertRouteProvider, getRouteQueryData, isZapV2RouterCalldataTooLarge }
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
+import { enforce } from '@ui/lib/validation/enforce-extension'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {

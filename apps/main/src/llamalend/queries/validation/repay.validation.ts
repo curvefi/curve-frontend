@@ -1,4 +1,4 @@
-import { enforce, skipWhen, test } from 'vest'
+import { skipWhen, test } from 'vest'
 import { isRouterRequired, tryGetMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
@@ -14,11 +14,13 @@ import {
   validateRouteProvider,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
-import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
-import { validateSlippage } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteProvider } from '@primitives/router.utils'
+import { enforce } from '@ui/lib/validation/enforce-extension'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { validateSlippage } from '@ui/lib/validation/slippage.validation'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 const validateRepayCollateralField = (
   field: 'stateCollateral' | 'userCollateral',

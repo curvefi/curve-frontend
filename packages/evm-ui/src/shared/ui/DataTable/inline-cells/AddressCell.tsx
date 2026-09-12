@@ -1,4 +1,3 @@
-import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { tryChecksumAddress } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
@@ -8,6 +7,7 @@ import { ExternalLink } from '@ui/components/ExternalLink'
 import { Tooltip } from '@ui/components/Tooltip'
 import { TABLE_SECONDARY_TEXT_CLASS } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useCopyToClipboard } from '@ui/hooks/useCopyToClipboard'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces

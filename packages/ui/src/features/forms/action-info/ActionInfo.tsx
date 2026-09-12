@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
-import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
-import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import type { IconButtonProps } from '@mui/material/IconButton'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import { ErrorIconButton } from '@ui/components/ErrorIconButton'
+import { LabelTooltipIcon } from '@ui/components/LabelTooltipIcon'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
@@ -12,8 +12,8 @@ import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
 import { IconButtonIconSize } from '@ui/features/themes/components/button'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
+import { useCopyToClipboard } from '@ui/hooks/useCopyToClipboard'
 import { applySxProps } from '@ui/lib/mui'
-import { LabelTooltipIcon } from '../LabelTooltipIcon'
 
 const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
 

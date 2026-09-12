@@ -1,9 +1,9 @@
 import type { IQuote } from '@curvefi/llamalend-api/lib/interfaces'
-import type { FieldsOf } from '@evm-ui/lib'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
 import type { QueryProp } from '@ui/features/queries/util'
+import type { FieldsOf } from '@ui/lib/validation/types'
 
 export type RoutesQuery = {
   chainId: number

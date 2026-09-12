@@ -5,10 +5,12 @@ import {
   listPools,
   type ListPoolsParams,
 } from '@curvefi/prices-api/pools'
-import { createValidationSuite, EmptyValidationSuite, type FieldsOf } from '@evm-ui/lib'
-import { queryFactory, rootKeys, type ChainQuery } from '@evm-ui/lib/model'
+import { rootKeys, type ChainQuery } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { getPageCount } from '@evm-ui/utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite, EmptyValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 type PoolListRequestParams = Pick<
   ListPoolsParams,

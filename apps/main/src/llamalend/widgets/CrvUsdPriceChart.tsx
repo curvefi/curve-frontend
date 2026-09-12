@@ -2,18 +2,17 @@ import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
 import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
-import { useCombinedQueries } from '@evm-ui/lib'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { timeOptions, type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
+import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
-  EvmChartStateWrapper,
-  ChartFooter,
-  type LegendItem,
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
-  EChartsLineChart,
-  formatChartAxisNumber,
+  ChartFooter,
   type ChartLineDashPattern,
+  EChartsLineChart,
+  EvmChartStateWrapper,
+  formatChartAxisNumber,
+  type LegendItem,
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
@@ -28,6 +27,7 @@ import { formatDate } from '@primitives/date.utils'
 import { Chain } from '@primitives/network.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
+import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'

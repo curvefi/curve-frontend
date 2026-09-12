@@ -1,7 +1,8 @@
 import { getMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { type MarketQuery, queryFactory, rootKeys, MarketParams } from '@evm-ui/lib/model'
+import { type MarketQuery, rootKeys, MarketParams } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 import { IS_GETTER, USE_API } from './market.constants'
 

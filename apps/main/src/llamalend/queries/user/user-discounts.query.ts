@@ -1,7 +1,8 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useUserDiscounts, queryKey: getUserDiscountsKey } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'userDiscounts'] as const,

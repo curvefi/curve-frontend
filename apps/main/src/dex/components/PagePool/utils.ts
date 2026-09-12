@@ -3,7 +3,7 @@ import { PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import type { IDict } from '@curvefi/api/lib/interfaces'
 import { maybe } from '@primitives/objects.utils'
-import type { SlippageType } from '@ui/features/slippage/slippage.utils'
+import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 
 export type Amount = { value: string; touched?: boolean; token: string; tokenAddress: string }
 

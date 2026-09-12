@@ -1,4 +1,4 @@
-import { enforce, skipWhen, test } from 'vest'
+import { skipWhen, test } from 'vest'
 import { isRouterRequired, tryGetMarket } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
@@ -14,8 +14,7 @@ import {
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
-import { createValidationSuite, FieldsOf } from '@evm-ui/lib'
-import { type UserMarketQuery, validateSlippage } from '@evm-ui/lib/model'
+import { type UserMarketQuery } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
@@ -23,6 +22,10 @@ import { marketIdValidationGroup } from '@evm-ui/lib/model/query/market-id-valid
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { MakeOptional } from '@ui/features/queries/util'
+import { enforce } from '@ui/lib/validation/enforce-extension'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { validateSlippage } from '@ui/lib/validation/slippage.validation'
+import { FieldsOf } from '@ui/lib/validation/types'
 
 export type BorrowMoreMutation = {
   userCollateral: Decimal
