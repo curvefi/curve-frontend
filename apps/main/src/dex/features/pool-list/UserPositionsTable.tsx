@@ -107,7 +107,6 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
                 onSearch={value => {
                   setSearchText(value)
                   table.setPageIndex(0)
-                  setExpanded({})
                 }}
                 disableSearchAutoFocus
               />
