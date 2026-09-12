@@ -1,6 +1,5 @@
 import { LEVERAGE } from '@/llamalend/constants'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { formatToken } from '@evm-ui/utils/tokens'
 import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
@@ -18,6 +17,7 @@ import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { borderStyle } from '@ui/lib/mui'
 import { getPriceImpactPercent, type PriceImpact } from '@ui/lib/price-impact.util'
+import { formatToken } from '@ui/lib/tokens'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { zip } from '@primitives/array.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 
@@ -76,3 +77,16 @@ export const toWei = (n: string, decimals: number) =>
       .shiftedBy(decimals)
       .integerValue(BigNumber.ROUND_DOWN),
   )!
+
+/** Converts integer token units to a decimal amount without losing precision. */
+export const fromWei = (n: string, decimals: number): Decimal => decimal(BigNumber(n).shiftedBy(-decimals))!
+
+/** Divide decimal values and truncate the quotient toward zero without rounding fractional digits first. */
+export const decimalIntegerDiv = (first: Decimal, second: Decimal): Decimal =>
+  BigNumber(first).dividedToIntegerBy(second).toFixed() as Decimal
+
+/** Convert ordered token amounts to integer units, preserving empty inputs. */
+export const toWeiArray = (amounts: (Decimal | undefined)[], decimals: number[]) =>
+  zip(amounts, decimals).map(([amount, precision]) => maybe(amount, value => toWei(value, precision)))
+
+export const toBigIntArray = (amounts: (Decimal | undefined)[]) => amounts.map(amount => maybe(amount, BigInt))

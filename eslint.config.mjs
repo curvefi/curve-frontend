@@ -162,17 +162,14 @@ const config = [
               message: "Use `'@evm-ui/features/forms'` instead of 'react-hook-form' directly.",
             },
             {
-              name: '@creit-tech/stellar-wallets-kit/sdk',
-              message: [
-                'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
-                'Change this rule if the file needs to be split.',
-              ].join(' '),
-            },
-            {
               name: 'vest',
               importNames: ['enforce'],
               message: 'Import enforce from @ui/lib/validation/enforce-extension instead.',
             },
+            ...['@stellar/stellar-sdk', '@creit-tech/stellar-wallets-kit/sdk'].map(name => ({
+              name,
+              message: 'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
+            })),
           ],
         },
       ],

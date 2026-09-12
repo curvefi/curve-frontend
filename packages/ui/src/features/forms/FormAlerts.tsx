@@ -21,13 +21,13 @@ import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { getPriceImpactSeverity, getPriceImpactPercent, type PriceImpact } from '@ui/lib/price-impact.util'
 
-type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
+export type VisibleErrors<Field extends string> = readonly (readonly [Field, string])[]
 
 type FormAlertProps<Field extends string> = {
   /** Error that occurred during form submission. Only omit when there is no exception possible */
   error?: Error | null
   /** List of form errors */
-  formErrors: FormErrors<Field>
+  formErrors: VisibleErrors<Field>
   /** List of fields that have their errors already displayed elsewhere */
   handledErrors: readonly Field[]
   userAddress: Address | undefined

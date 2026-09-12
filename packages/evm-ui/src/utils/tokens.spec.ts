@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatToken } from './tokens'
+import { formatToken } from '@ui/lib/tokens'
 
 describe('token formatters', () => {
   it('formats compact token amounts', () => {
