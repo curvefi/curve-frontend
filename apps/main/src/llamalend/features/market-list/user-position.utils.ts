@@ -7,7 +7,7 @@ import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
-export type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
+type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
 
 export const getUserBorrowedUsd = ({ positionQueries }: LlamaMarketRow) => {
   const borrowed = positionQueries.stats.data?.borrowed
