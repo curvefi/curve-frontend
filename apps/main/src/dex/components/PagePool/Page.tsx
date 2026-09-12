@@ -24,7 +24,6 @@ export const PagePool = () => {
   const rChainId = useChainId(blockchainId)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
 
-  const hasDepositAndStake = useStore(state => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
   const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
   const fetchNewPool = useStore(state => state.pools.fetchNewPool)
   const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[poolId ?? ''])
@@ -68,9 +67,9 @@ export const PagePool = () => {
       userAddress={curveApi?.signerAddress}
     />
   ) : (
-    poolId && poolData?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
+    poolId && poolData?.pool?.id === poolId && isHydrated && (
       <PoolContextProvider network={network} poolIdOrAddress={rPoolIdOrAddress}>
-        <Transfer params={props} hasDepositAndStake={hasDepositAndStake} />
+        <Transfer params={props} />
       </PoolContextProvider>
     )
   )

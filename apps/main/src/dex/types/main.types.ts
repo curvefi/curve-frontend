@@ -11,7 +11,6 @@ export type { CurveApi, Wallet } from '@evm-ui/features/connect-wallet'
 
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName
-export type NetworkConfigFromApi = { hasDepositAndStake: boolean | undefined; hasRouter: boolean | undefined }
 
 export type NetworkUrlParams = { network: INetworkName }
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
