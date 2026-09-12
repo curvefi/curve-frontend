@@ -15,8 +15,6 @@ import { refetchPoolTvls } from '../queries/pool-tvl.query'
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-type GlobalState = { hasRouter: Record<string, boolean | null> }
-
 export type GlobalSlice = {
   /** Hydrate resets states and refreshes store data from the API */
   hydrate: (
@@ -31,12 +29,9 @@ export type GlobalSlice = {
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => void
   setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean) => void
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean) => void
-} & GlobalState
-
-const DEFAULT_STATE = { hasRouter: {} } satisfies GlobalState
+}
 
 export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
-  ...DEFAULT_STATE,
   hydrate: async (_config, curveApi, prevCurveApi, _wallet, releaseChannel) => {
     if (!curveApi) return
 
