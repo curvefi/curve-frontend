@@ -3,13 +3,7 @@ import type { StoreApi } from 'zustand'
 import { invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { invalidateUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import type { State } from '@/dao/store/useStore'
-import {
-  ProposalListFilter,
-  CurveJsProposalType,
-  SortByFilterProposals,
-  SortDirection,
-  TransactionState,
-} from '@/dao/types/dao.types'
+import type { CurveJsProposalType, TransactionState } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { useWallet, getLib } from '@evm-ui/features/connect-wallet'
 import { waitForTransaction } from '@evm-ui/lib/ethers'
@@ -29,20 +23,12 @@ type SliceState = {
     string,
     { hash: string | null; txLink: string | null; error: string | null; status: TransactionState }
   >
-  searchValue: string
-  activeFilter: ProposalListFilter
-  activeSortBy: SortByFilterProposals
-  activeSortDirection: SortDirection
 }
 
 const SLICE_KEY = 'proposals'
 
 export type ProposalsSlice = {
   [SLICE_KEY]: SliceState & {
-    setSearchValue: (searchValue: string) => void
-    setActiveFilter: (filter: ProposalListFilter) => void
-    setActiveSortBy: (sortBy: SortByFilterProposals) => void
-    setActiveSortDirection: (direction: SortDirection) => void
     castVote: (voteId: number, voteType: ProposalType, support: boolean) => Promise<void>
     executeProposal: (voteId: number, voteType: ProposalType) => Promise<void>
     setStateByKey: <T>(key: StateKey, value: T) => void
@@ -51,14 +37,7 @@ export type ProposalsSlice = {
   }
 }
 
-const DEFAULT_STATE: SliceState = {
-  voteTxMapper: {},
-  executeTxMapper: {},
-  searchValue: '',
-  activeFilter: 'all',
-  activeSortBy: 'timeCreated',
-  activeSortDirection: 'desc',
-}
+const DEFAULT_STATE: SliceState = { voteTxMapper: {}, executeTxMapper: {} }
 
 export const createProposalsSlice = (
   set: StoreApi<State>['setState'],
@@ -66,18 +45,6 @@ export const createProposalsSlice = (
 ): ProposalsSlice => ({
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
-    setSearchValue: filterValue => {
-      get()[SLICE_KEY].setStateByKey('searchValue', filterValue)
-    },
-    setActiveFilter: (filter: ProposalListFilter) => {
-      get()[SLICE_KEY].setStateByKey('activeFilter', filter)
-    },
-    setActiveSortDirection: (direction: SortDirection) => {
-      get()[SLICE_KEY].setStateByKey('activeSortDirection', direction)
-    },
-    setActiveSortBy: (sortBy: SortByFilterProposals) => {
-      get()[SLICE_KEY].setStateByKey('activeSortBy', sortBy)
-    },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
       const curve = getLib('curveApi')
