@@ -108,7 +108,6 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
                   setSearchText(value)
                   table.setPageIndex(0)
                 }}
-                disableSearchAutoFocus
               />
             </EvmDataTable>
             <TableVisibilitySettingsPopover
