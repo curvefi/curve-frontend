@@ -7,7 +7,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei } from '@ui/lib/decimal'
 
 type Config = { tokens: StellarAddress[]; n_coins: number; min_locked_liquidity: bigint }
-export const { useQuery: usePoolConfig } = queryFactory({
+export const { useQuery: usePoolConfig, fetchQuery: fetchPoolConfig } = queryFactory({
   queryKey: ({ network, pool }: PoolParams) => [...rootKeys.pool({ network, pool }), 'config'] as const,
   queryFn: async ({ network, pool }: PoolQuery) => {
     const { min_locked_liquidity, tokens } = await readContract<Config>(network, pool, 'config')
