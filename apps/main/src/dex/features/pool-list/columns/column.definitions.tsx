@@ -2,6 +2,7 @@ import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { AgeCell } from '../cells/AgeCell'
 import { BaseRateCell, WeeklyBaseRateCell } from '../cells/BaseRateCell'
 import { CrvRateCell } from '../cells/CrvRateCell'
+import { DepositsCell } from '../cells/DepositsCell'
 import { NetRateCell } from '../cells/NetRateCell'
 import { PointsCell } from '../cells/PointsCell'
 import { PoolTitleCell } from '../cells/PoolTitleCell'
@@ -12,6 +13,7 @@ import { getCrvAprRange, getNetApr, getRewardsApr } from '../cells/utils'
 import { AgeHeaderTooltipContent } from '../header-tooltips/AgeHeaderTooltipContent'
 import { BaseRateHeaderTooltipContent } from '../header-tooltips/BaseRateHeaderTooltipContent'
 import { CrvRateHeaderTooltipContent } from '../header-tooltips/CrvRateHeaderTooltipContent'
+import { DepositsHeaderTooltipContent } from '../header-tooltips/DepositsHeaderTooltipContent'
 import { NetRateHeaderTooltipContent } from '../header-tooltips/NetRateHeaderTooltipContent'
 import { PointsHeaderTooltipContent } from '../header-tooltips/PointsHeaderTooltipContent'
 import { PoolHeaderTooltipContent } from '../header-tooltips/PoolHeaderTooltipContent'
@@ -123,5 +125,14 @@ export const POOL_COLUMNS = columnHelper.columns([
     cell: AgeCell,
     meta: { type: 'numeric', tooltip: { title: POOL_TITLES[PoolColumnId.Age], body: <AgeHeaderTooltipContent /> } },
     sortUndefined: 'last',
+  }),
+  columnHelper.accessor(pool => pool.userPosition.depositsUsd, {
+    id: PoolColumnId.Deposits,
+    header: POOL_TITLES[PoolColumnId.Deposits],
+    cell: ({ row }) => <DepositsCell pool={row.original} />,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.Deposits], body: <DepositsHeaderTooltipContent /> },
+    },
   }),
 ])

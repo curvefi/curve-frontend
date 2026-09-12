@@ -1,6 +1,7 @@
 import { z } from 'zod/v4'
 import { notFalsy } from '@primitives/objects.utils'
 import { address, camelizeKeys, chain, decimal, sortDirection, timestamp } from '../schemas'
+import { MAX_USER_POOL_PAGE_SIZE } from './constants'
 
 const rawCoin = z.object({ pool_index: z.number(), symbol: z.string(), address })
 
@@ -47,17 +48,6 @@ const poolTotals = z
   })
   .transform(camelizeKeys)
   .transform(({ totalTvl, ...data }) => ({ ...data, tvl: totalTvl }))
-
-const userPoolPosition = z
-  .object({
-    chain_id: z.number(),
-    pool_name: z.string(),
-    pool_address: address,
-    lp_token_address: address,
-    lp_balance: decimal,
-    gauge_balance: decimal,
-  })
-  .transform(camelizeKeys)
 
 const volume = z.object({ timestamp, volume: z.number(), fees: z.number() })
 
@@ -256,13 +246,34 @@ const v2Gauge = z
   .transform(camelizeKeys)
   .transform(({ isKilled, ...data }) => ({ ...data, isKilled: isKilled ?? false }))
 
-const v2Pool = z
-  .object({
-    chain_id: z.number(),
+// Sorry for the lack of a better name, but these are just a select few shared props between pool and user pool props
+const poolProperties = z.object({
+  chain_id: z.number(),
+  pool_type: poolType.nullable().optional(),
+  tradeable_coins: z.array(v2Coin).default([]),
+  base_daily_apr: z.number().nullable().optional(),
+  base_weekly_apr: z.number().nullable().optional(),
+  crv_apr: z.number().nullable().optional(),
+  crv_apr_boosted: z.number().nullable().optional(),
+  extra_rewards_apr: z.array(v2ExtraRewardApr).default([]),
+})
+
+const userPoolPosition = poolProperties
+  .extend({
+    pool_name: z.string(),
+    pool_address: address,
+    lp_token_address: address,
+    lp_balance: decimal,
+    gauge_balance: decimal,
+  })
+  .transform(camelizeKeys)
+  .transform(({ poolName, poolAddress, ...data }) => ({ ...data, name: poolName, address: poolAddress }))
+
+const v2Pool = poolProperties
+  .extend({
     name: z.string(),
     address,
     creation_date: timestamp.nullable(),
-    pool_type: poolType.nullable().optional(),
     is_metapool: z.boolean().nullable().optional(),
     base_pool: address.nullable().optional(),
     tvl_usd: z.number().nullable().optional(),
@@ -271,20 +282,14 @@ const v2Pool = z
     liquidity_volume_24h: z.number(),
     liquidity_fee_24h: z.number(),
     coins: z.array(v2Coin),
-    tradeable_coins: z.array(v2Coin),
-    base_daily_apr: z.number().nullable().optional(),
-    base_weekly_apr: z.number().nullable().optional(),
-    crv_apr: z.number().nullable().optional(),
-    crv_apr_boosted: z.number().nullable().optional(),
-    extra_rewards_apr: z.array(v2ExtraRewardApr).optional(),
     vyper_version: z.string().nullable().optional(),
     gauges: z.array(v2Gauge).optional(),
   })
   .transform(camelizeKeys)
-  .transform(({ extraRewardsApr, gauges, ...data }) => {
+  .transform(({ gauges, ...data }) => {
     const poolGauges = gauges ?? []
 
-    return { ...data, extraRewardsApr: extraRewardsApr ?? [], gauge: poolGauges[0] ?? null, gauges: poolGauges }
+    return { ...data, gauge: poolGauges[0] ?? null, gauges: poolGauges }
   })
 
 const v2PoolRegistry = z.object({ chain_id: z.number(), address, type: poolType }).transform(camelizeKeys)
@@ -426,7 +431,14 @@ export const listLitePoolsResponse = z
   .transform(({ data, generatedTimeMs }) => ({ pools: data.poolData ?? [], totalTvl: data.tvl, generatedTimeMs }))
 
 export const getUserPoolPositionsResponse = z
-  .object({ chain_id: z.number(), user: address, positions: z.array(userPoolPosition).default([]) })
+  .object({
+    page: z.number().int().positive(),
+    pagination: z.number().int().positive().max(MAX_USER_POOL_PAGE_SIZE),
+    count: z.number().int().nonnegative(),
+    chain_id: z.number(),
+    user: address,
+    positions: z.array(userPoolPosition).default([]),
+  })
   .transform(camelizeKeys)
 
 export const getVolumeResponse = z.object({ data: z.array(volume) }).transform(({ data }) => data)

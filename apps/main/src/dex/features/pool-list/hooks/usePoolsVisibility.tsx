@@ -8,28 +8,27 @@ import type { MigrationOptions } from '@ui/features/storage/useStoredState'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { POOL_COLUMNS, POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
-import type { PoolsSorting } from './usePoolsSorting'
+import type { PoolTableVariant } from '../types'
 
-export type PoolColumnVariant = keyof typeof POOLS_COLUMN_OPTIONS
-
-const migration: MigrationOptions<Record<PoolColumnVariant, VisibilityGroup<PoolColumnId>[]>> = {
-  version: 5,
+const migration: MigrationOptions<Record<PoolTableVariant, VisibilityGroup<PoolColumnId>[]>> = {
+  version: 6,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
 }
 
 /**
  * Create a map of column visibility for the pool list on mobile devices.
- * On mobile that is just the title and the column that is currently sorted.
+ * Show the title and the chosen metric, independently of how the table is sorted.
  */
-const createMobileColumns = (sortBy: PoolColumnId) =>
-  fromEntries(recordValues(PoolColumnId).map(key => [key, key === PoolColumnId.PoolName || key === sortBy]))
+const createMobileColumns = (mobileColumn: PoolColumnId) =>
+  fromEntries(recordValues(PoolColumnId).map(key => [key, key === PoolColumnId.PoolName || key === mobileColumn]))
 
-export function usePoolsVisibility(title: string, { isLite, sorting }: { isLite: boolean; sorting: PoolsSorting }) {
-  const variant: PoolColumnVariant = isLite ? 'lite' : 'full'
-  const [{ id: sortField }] = sorting
+export function usePoolsVisibility(
+  title: string,
+  { variant, mobileColumn }: { variant: PoolTableVariant; mobileColumn: PoolColumnId },
+) {
   const visibilitySettings = useVisibilitySettings(title, POOLS_COLUMN_OPTIONS, variant, POOL_COLUMNS, migration)
-  const columnVisibility = useMemo(() => createMobileColumns(sortField), [sortField])
+  const columnVisibility = useMemo(() => createMobileColumns(mobileColumn), [mobileColumn])
 
-  return { variant, sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
+  return { variant, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }

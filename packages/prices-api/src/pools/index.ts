@@ -5,6 +5,7 @@ import { getTimeRange } from '../timestamp'
 import * as Schema from './schema'
 
 export type * from './schema'
+export { MAX_USER_POOL_PAGE_SIZE } from './constants'
 
 const LITE_POOLS_HOST = 'https://api2.curve.finance'
 
@@ -113,11 +114,17 @@ export async function listPoolRegistries({ chainId }: { chainId: number }, optio
 }
 
 export async function getUserPoolPositions(
-  { chainId, userAddress, newTx }: { chainId: number; userAddress: Address; newTx?: Hex },
+  {
+    chainId,
+    userAddress,
+    newTx,
+    page,
+    pagination,
+  }: { chainId: number; userAddress: Address; newTx?: Hex; page?: number; pagination?: number },
   options?: Options,
 ) {
   const host = getHost(options)
-  const query = addQueryString({ new_tx: newTx })
+  const query = addQueryString({ new_tx: newTx, page, pagination })
   const response = await fetch(`${host}/v2/pools/${chainId}/users/${userAddress}/positions${query}`, {
     signal: options?.signal,
   })
