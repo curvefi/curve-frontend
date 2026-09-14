@@ -101,7 +101,16 @@ export function useDepositForm(poolParams: PoolQuery) {
       balance,
     })),
   )
-  const dataState = combineQueryState(tokenInputs, supply, decimals, maxAmounts, quote, minimum, priceImpact, fee)
+  const { error, isLoading } = combineQueryState(
+    tokenInputs,
+    supply,
+    decimals,
+    maxAmounts,
+    quote,
+    minimum,
+    priceImpact,
+    fee,
+  )
   const onAmount = useCallback(
     (index: number, value: Decimal | undefined) =>
       update({ amounts: assert(getValue('amounts'), 'Missing amounts').map((amt, i) => (i === index ? value : amt)) }),
@@ -119,15 +128,15 @@ export function useDepositForm(poolParams: PoolQuery) {
       isPending ||
       isDebouncing ||
       !form.formState.isValid ||
-      !!dataState.error ||
+      !!error ||
       !quote.data ||
       !+quote.data ||
       minimum.data == null ||
       !fee.data,
-    isLoading: isPending || dataState.isLoading,
+    isLoading: isPending || isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
-    error: depositError ?? dataState.error,
+    error: depositError ?? error,
     formErrors: form.formState.visibleErrors,
     tokens: tokenInputs,
     priceImpact,

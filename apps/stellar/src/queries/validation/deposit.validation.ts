@@ -142,10 +142,3 @@ export const depositSubmissionValidationSuite = createValidationSuite((params: D
     enforce(minimumMint(params.quote, params.slippage)).equals(params.minMint)
   })
 })
-export const depositQuoteValidationSuite = createValidationSuite(
-  ({ quote, acceptedQuote }: { quote: Decimal; acceptedQuote: Decimal }) => {
-    test('quote', 'The quote changed. Review the refreshed LP amount and minimum before depositing.', () => {
-      enforce(quote).equals(acceptedQuote)
-    })
-  },
-)
