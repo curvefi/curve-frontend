@@ -73,17 +73,23 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
       <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         {address ? (
           <>
-            <MetricsGrid
-              variant="fillMobile"
-              sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}
-            >
-              <Metric
-                category="dex.poolListSummary"
-                label={t`Total liquidity provided`}
-                value={address ? totalLiquidityUsd : constQ(undefined)}
-                valueOptions={{ unit: 'dollar' }}
-              />
-            </MetricsGrid>
+            {rowCount > 0 && (
+              <MetricsGrid
+                variant="fillMobile"
+                sx={{
+                  paddingBlock: Spacing.sm,
+                  paddingInline: Spacing.md,
+                  backgroundColor: t => t.design.Layer[1].Fill,
+                }}
+              >
+                <Metric
+                  category="dex.poolListSummary"
+                  label={t`Total liquidity provided`}
+                  value={address ? totalLiquidityUsd : constQ(undefined)}
+                  valueOptions={{ unit: 'dollar' }}
+                />
+              </MetricsGrid>
+            )}
             <EvmDataTable
               category="limited"
               table={table}
@@ -98,19 +104,21 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
               expandedPanel={{ Body: UserPositionsExpandedPanel, Actions: PoolExpandedPanelActions }}
               shouldStickFirstColumn={Boolean(isTablet && rowCount)}
             >
-              <TableFilters
-                testIdPrefix={LOCAL_STORAGE_KEY}
-                visibilitySettings={{
-                  anchorRef: visibilitySettingsRef,
-                  open: visibilitySettingsOpen,
-                  onOpen: openVisibilitySettings,
-                }}
-                searchText={searchText}
-                onSearch={value => {
-                  setSearchText(value)
-                  table.setPageIndex(0)
-                }}
-              />
+              {rowCount > 0 && (
+                <TableFilters
+                  testIdPrefix={LOCAL_STORAGE_KEY}
+                  visibilitySettings={{
+                    anchorRef: visibilitySettingsRef,
+                    open: visibilitySettingsOpen,
+                    onOpen: openVisibilitySettings,
+                  }}
+                  searchText={searchText}
+                  onSearch={value => {
+                    setSearchText(value)
+                    table.setPageIndex(0)
+                  }}
+                />
+              )}
             </EvmDataTable>
             <TableVisibilitySettingsPopover
               anchorRef={visibilitySettingsRef}
