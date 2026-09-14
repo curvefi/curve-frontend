@@ -1,4 +1,4 @@
-import { QUERY_TYPES } from './query-types'
+import { QUERY_TYPES } from '@ui/features/queries/query-types'
 
 const { user, table, chart, marketDetail, static: staticData, form, urgent } = QUERY_TYPES
 

@@ -1,6 +1,7 @@
 import { once } from 'lodash'
 import type { StellarAddress } from '@/features/connect-wallet/address'
 import { defaultModules } from '@creit-tech/stellar-wallets-kit/modules/utils'
+// eslint-disable-next-line no-restricted-imports -- This module wraps direct wallet SDK access.
 import { StellarWalletsKit } from '@creit-tech/stellar-wallets-kit/sdk'
 import { KitEventType, type ISupportedWallet } from '@creit-tech/stellar-wallets-kit/types'
 

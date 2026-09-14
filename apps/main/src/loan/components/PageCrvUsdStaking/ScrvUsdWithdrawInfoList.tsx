@@ -4,10 +4,11 @@ import { ScrvUsdExchangeRateActionInfo } from '@/loan/components/PageCrvUsdStaki
 import { useScrvUsdPreviewWithdraw } from '@/loan/entities/scrvusd-preview.query'
 import { useScrvUsdWithdrawEstimateGas } from '@/loan/entities/scrvusd-withdraw-estimate-gas.query'
 import type { ScrvUsdWithdrawForm, ScrvUsdWithdrawParams } from '@/loan/entities/scrvusd.validation'
-import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import type { UseFormReturn } from '@ui/features/forms'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
+import { ActionInfoGasEstimate } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

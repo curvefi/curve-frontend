@@ -7,8 +7,9 @@ import {
   resetValidationSuite,
 } from '@/llamalend/queries/validation/reset.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
 import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { queryFactory } from '@ui/features/queries/factory'
 
 const { useQuery: useResetLoanEstimateGas } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) =>

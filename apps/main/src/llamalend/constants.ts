@@ -1,5 +1,5 @@
 import { MarketType } from '@evm-ui/types/market'
-import type { SlippageType } from '@ui/features/slippage/slippage.utils'
+import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { t } from '@ui/lib/i18n'
 
 /**

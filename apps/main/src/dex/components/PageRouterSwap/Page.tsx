@@ -4,7 +4,6 @@ import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { useStore } from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
@@ -26,15 +25,12 @@ export const PageRouterSwap = () => {
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
-  const getNetworkConfigFromApi = useStore(state => state.getNetworkConfigFromApi)
-  const routerCachedFromAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.fromAddress)
-  const routerCachedToAddress = useStore(state => state.storeCache.routerFormValues[rChainId]?.toAddress)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
 
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
 
-  const { hasRouter } = getNetworkConfigFromApi(rChainId)
+  const hasRouter = curveApi?.hasRouter()
   const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
@@ -57,7 +53,7 @@ export const PageRouterSwap = () => {
   useEffect(() => {
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setLoaded(false)
-    if (!isConnecting && rChainId && typeof hasRouter !== 'undefined') {
+    if (!isConnecting && rChainId && hasRouter != null) {
       if (!hasRouter) {
         push(getPath(props, `${ROUTE.PAGE_POOLS}`))
         return
@@ -75,8 +71,8 @@ export const PageRouterSwap = () => {
           !isValidParamsToAddress ||
           paramsToAddress === paramsFromAddress
         ) {
-          const fromAddress = routerCachedFromAddress ?? routerDefault.fromAddress
-          const toAddress = routerCachedToAddress ?? routerDefault.toAddress
+          const fromAddress = routerDefault.fromAddress
+          const toAddress = routerDefault.toAddress
           if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
         } else {
           // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
@@ -85,16 +81,7 @@ export const PageRouterSwap = () => {
       }
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [
-    isConnecting,
-    hasRouter,
-    paramsFromAddress,
-    paramsToAddress,
-    rChainId,
-    tokensMapperStr,
-    routerCachedFromAddress,
-    routerCachedToAddress,
-  ])
+  }, [isConnecting, hasRouter, paramsFromAddress, paramsToAddress, rChainId, tokensMapperStr])
   return (
     <Card sx={{ maxWidth: MaxWidth.actionCard, margin: '0 auto' }} data-testid="swap-page">
       <CardHeader title={t`Swap`} />

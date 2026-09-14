@@ -1,6 +1,6 @@
-import { ActionInfo, type ActionInfoProps } from '@evm-ui/shared/ui/ActionInfo'
 import type { Theme } from '@mui/material/styles'
 import type { Decimal } from '@primitives/decimal.utils'
+import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'

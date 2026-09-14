@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { getPoolSnapshots, type GetPoolSnapshotsParams } from '@curvefi/prices-api/pools'
-import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model/query'
 import { contractValidationGroup } from '@evm-ui/lib/model/query/contract-validation'
+import { queryFactory } from '@ui/features/queries/factory'
 import { TIME_FRAMES } from '@ui/lib/time'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 type PoolSnapshotsParams = FieldsOf<GetPoolSnapshotsParams>
 

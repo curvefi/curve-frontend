@@ -161,6 +161,18 @@ const config = [
               name: 'react-hook-form',
               message: "Use `'@evm-ui/features/forms'` instead of 'react-hook-form' directly.",
             },
+            {
+              name: '@creit-tech/stellar-wallets-kit/sdk',
+              message: [
+                'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
+                'Change this rule if the file needs to be split.',
+              ].join(' '),
+            },
+            {
+              name: 'vest',
+              importNames: ['enforce'],
+              message: 'Import enforce from @ui/lib/validation/enforce-extension instead.',
+            },
           ],
         },
       ],
@@ -200,27 +212,6 @@ const config = [
       'no-console': [
         'error', // use console.log only for debugging
         { allow: ['warn', 'error', 'info', 'trace', 'assert'] },
-      ],
-    },
-  },
-
-  // Keep direct wallet SDK access inside its wrapper.
-  {
-    ignores: ['apps/stellar/src/features/connect-wallet/stellar-wallet-kit.ts'],
-    rules: {
-      '@typescript-eslint/no-restricted-imports': [
-        'error',
-        {
-          paths: [
-            {
-              name: '@creit-tech/stellar-wallets-kit/sdk',
-              message: [
-                'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
-                'Change this rule if the file needs to be split.',
-              ].join(' '),
-            },
-          ],
-        },
       ],
     },
   },

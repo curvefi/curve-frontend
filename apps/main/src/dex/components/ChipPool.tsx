@@ -5,11 +5,12 @@ import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { tryChecksumAddress, copyToClipboard, shortenAddress } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 import { RouterLink } from '@ui/components/RouterLink'
+import { copyToClipboard } from '@ui/lib/clipboard'
 
 type ButtonProps = { className?: string } & AriaButtonProps
 
@@ -57,7 +58,7 @@ export const ChipPool = ({ blockchainId, poolId, poolName, poolAddress }: ChipPo
         </RouterLink>{' '}
       </ChipPoolName>
       <ChipPoolAdditionalInfo>
-        <Button onPress={() => void copyToClipboard(tryChecksumAddress(poolAddress))}>
+        <Button onPress={() => void copyToClipboard(getAddress(poolAddress))}>
           <ChipPoolAddress>{parsedPoolAddress}</ChipPoolAddress>
           <ChipPoolCopyButtonIcon name="Copy" size={16} />
         </Button>

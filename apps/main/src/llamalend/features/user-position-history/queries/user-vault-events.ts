@@ -1,6 +1,7 @@
 import { getUserVaultEvents } from '@curvefi/prices-api/llamalend'
-import { type FieldsOf } from '@evm-ui/lib'
-import { queryFactory, type UserContractQuery } from '@evm-ui/lib/model/query'
+import { type UserContractQuery } from '@evm-ui/lib/model/query'
+import { queryFactory } from '@ui/features/queries/factory'
+import type { FieldsOf } from '@ui/lib/validation/types'
 import { userCollateralEventsValidationSuite } from './validation/user-collateral-events-validation'
 
 export const { useQuery: useUserVaultEventsQuery, invalidate: invalidateUserVaultEventsQuery } = queryFactory({

@@ -1,5 +1,6 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
+import { queryFactory } from '@ui/features/queries/factory'
 import type { IncreaseLockParams, IncreaseLockQuery } from './increase-lock.types'
 import { increaseLockQueryValidationSuite } from './increase-lock.validation'
 

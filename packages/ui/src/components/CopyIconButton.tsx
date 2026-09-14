@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
-import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
 import { Tooltip } from '@ui/components/Tooltip'
+import { useCopyToClipboard } from '@ui/hooks/useCopyToClipboard'
 import { CopyIcon } from '@ui/icons/CopyIcon'
 
 type CopyIconButtonProps = {
