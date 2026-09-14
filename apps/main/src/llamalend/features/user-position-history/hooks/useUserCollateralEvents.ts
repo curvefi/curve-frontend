@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 import type { MarketTokens } from '@/llamalend/llama.utils'
-import { type Chain } from '@curvefi/prices-api'
 import { UserCollateralEvent as CrvUsdUserCollateralEvent } from '@curvefi/prices-api/crvusd'
 import { UserCollateralEvent as LendingUserCollateralEvent } from '@curvefi/prices-api/lending'
+import type { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
 import type { UserContractQuery } from '@evm-ui/lib/model'
 import { MarketType } from '@evm-ui/types/market'
+import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
@@ -72,8 +73,7 @@ export type UserCollateralEventsProps = {
   app: MarketType
   userAddress: Address | undefined
   controllerAddress: Address | undefined
-  chainId: number
-  blockchainId: Chain | undefined
+  chainId: LlamaChainId
   tokens: Partial<MarketTokens>
 }
 
@@ -82,10 +82,9 @@ export const useUserCollateralEvents = ({
   userAddress,
   controllerAddress,
   chainId,
-  blockchainId,
   tokens: { collateralToken, borrowToken },
 }: UserCollateralEventsProps): QueryProp<UserCollateralEvents> => {
-  const params = { blockchainId, contractAddress: controllerAddress, userAddress }
+  const params = { blockchainId: BlockchainIds[chainId], contractAddress: controllerAddress, userAddress }
   const { data, isLoading, error } = {
     [MarketType.Lend]: useUserLendCollateralEventsQuery(params, app === MarketType.Lend),
     [MarketType.Mint]: useUserCrvUsdCollateralEventsQuery(params, app === MarketType.Mint),

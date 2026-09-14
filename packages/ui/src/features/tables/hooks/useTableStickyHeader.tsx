@@ -12,8 +12,8 @@ export const useTableStickyHeader = ({
   const enabled = !(disableStickyHeader || isLimited)
   const tableWrapperRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
-  const [tableWrapperWidth] = useResizeObserver(tableWrapperRef, { enabled })
-  const [tableWidth] = useResizeObserver(tableRef, { enabled })
+  const [tableWrapperWidth] = useResizeObserver(tableWrapperRef, { enabled, dimension: 'width' })
+  const [tableWidth] = useResizeObserver(tableRef, { enabled, dimension: 'width' })
 
   return {
     tableRef,
