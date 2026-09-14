@@ -1,9 +1,9 @@
 import { sum } from 'lodash'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
+import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

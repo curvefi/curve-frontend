@@ -1,12 +1,13 @@
 import { ReactNode } from 'react'
-import { tryChecksumAddress, shortenAddress } from '@evm-ui/utils'
+import { getAddress } from 'viem'
+import { shortenAddress } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { Typography } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
+import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 import { t } from '@ui/lib/i18n'
-import { ActionInfo, type ActionInfoProps } from './ActionInfo'
 
 type AddressActionInfoProps = {
   chainId: number
@@ -45,7 +46,7 @@ export const AddressActionInfo = ({
       <Typography variant={VALUE_SIZE[size]}>{shortenAddress(address)}</Typography>
     }
     copyValue={address}
-    format={tryChecksumAddress}
+    format={getAddress}
     valueTooltip={
       !hideTooltip &&
       maybe(address && scanAddressPath(chainId, address), link => (

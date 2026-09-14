@@ -13,7 +13,7 @@ import type {
 } from '@curvefi/prices-api/pools'
 import { useCampaigns } from '@evm-ui/entities/campaigns'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { useCombinedQueries } from '@evm-ui/lib'
+import { useCombinedQueries } from '@ui/features/queries/combine'
 import { constQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import type { PoolsApiParams } from '../filters/utils'
 import { enrichPoolRow, litePoolToRowData, poolToRowData } from '../utils'

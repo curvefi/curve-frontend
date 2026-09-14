@@ -8,8 +8,7 @@ import {
   USER_MARKETS_FIRST_PAGE,
 } from '@curvefi/prices-api/crvusd'
 import { paginate } from '@curvefi/prices-api/paginate'
-import { type FieldsOf } from '@evm-ui/lib'
-import { type ChainNameQuery, queryFactory, type UserQuery } from '@evm-ui/lib/model/query'
+import { type ChainNameQuery, type UserQuery } from '@evm-ui/lib/model/query'
 import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import { pricesApiChainNameValidationGroup } from '@evm-ui/lib/model/query/prices-chain-validation'
 import {
@@ -17,9 +16,11 @@ import {
   UserContractQuery,
   userContractValidationSuite,
 } from '@evm-ui/lib/model/query/user-contract'
-import { createValidationSuite, EmptyValidationSuite } from '@evm-ui/lib/validation'
 import type { Address } from '@primitives/address.utils'
 import { recordEntries } from '@primitives/objects.utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite, EmptyValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 type UserChainNameQuery = UserQuery & ChainNameQuery
 type UserChainNameParams = FieldsOf<UserChainNameQuery>

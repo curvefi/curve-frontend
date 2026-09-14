@@ -1,6 +1,7 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
 import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { queryFactory } from '@ui/features/queries/factory'
 import { useCreateLockIsApproved } from './create-lock-approved.query'
 import type { CreateLockParams, CreateLockQuery } from './create-lock.types'
 import { createLockApprovalQueryValidationSuite, createLockQueryValidationSuite } from './create-lock.validation'

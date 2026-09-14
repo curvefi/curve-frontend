@@ -1,9 +1,10 @@
 import { getSnapshots, type Snapshot } from '@curvefi/prices-api/crvusd'
-import { type FieldsOf } from '@evm-ui/lib'
-import { ContractQuery, NoRetryError, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
+import { ContractQuery, rootKeys } from '@evm-ui/lib/model/query'
 import { contractValidationSuite } from '@evm-ui/lib/model/query/contract-validation'
 import type { TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
+import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
 import { TIME_OPTION_MS } from '@ui/lib/time'
+import { type FieldsOf } from '@ui/lib/validation/types'
 import { fetchDailySnapshotHistory } from './time-series-history'
 
 export type CrvUsdSnapshot = Snapshot

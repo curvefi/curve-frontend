@@ -1,9 +1,11 @@
 import { getRefuelDonationEvents } from '@curvefi/prices-api/refuel'
 import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
-import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
-import { queryFactory, rootKeys, type ChainNameQuery } from '@evm-ui/lib/model'
+import { rootKeys, type ChainNameQuery } from '@evm-ui/lib/model'
 import { contractValidationGroup } from '@evm-ui/lib/model/query/contract-validation'
 import type { Address } from '@primitives/address.utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 export const RECENT_REFUELS_PAGE_SIZE = 10
 

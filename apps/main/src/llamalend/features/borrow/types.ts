@@ -1,8 +1,8 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { FieldsOf } from '@evm-ui/lib'
 import type { MarketQuery } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { MakeOptional } from '@ui/features/queries/util'
+import type { FieldsOf } from '@ui/lib/validation/types'
 
 /** Complete create loan form with all fields already filled in (after validation) */
 type CompleteCreateLoanForm = {

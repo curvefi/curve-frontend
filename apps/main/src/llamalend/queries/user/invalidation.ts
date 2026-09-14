@@ -1,5 +1,6 @@
 import { invalidateUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getMarket } from '@/llamalend/llama.utils'
+import { invalidateUserVaultEventsQuery } from '@/llamalend/features/user-position-history/queries/user-vault-events'
+import { getMarket, getVaultAddress } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { rootKeys, type UserContractQuery, type UserMarketQuery } from '@evm-ui/lib/model'
@@ -18,10 +19,13 @@ export const invalidateAllUserMarketDetails = ({
   chainId,
   contractAddress,
 }: UserMarketQuery<IChainId> & UserContractQuery) => {
-  ;(getMarket(marketId) as LendMarketTemplate)?.userPosition?.clearCache?.()
+  const market = getMarket(marketId)
+  ;(market as LendMarketTemplate)?.userPosition?.clearCache?.()
   return Promise.all([
     queryClient.invalidateQueries({ queryKey: rootKeys.market({ chainId, marketId }) }),
     invalidateUserCollateralEvents({ userAddress, contractAddress, blockchainId }),
+    market instanceof LendMarketTemplate &&
+      invalidateUserVaultEventsQuery({ userAddress, blockchainId, contractAddress: getVaultAddress(market) }),
     invalidateAllUserMintMarkets(userAddress),
     invalidateAllUserLendingVaults(userAddress),
     invalidateUserLendingSupplies({ userAddress }),

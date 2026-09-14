@@ -1,12 +1,13 @@
 import { invalidateLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/lib/model/query'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
-import { createValidationSuite } from '@evm-ui/lib/validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 
 type LockerVecrvQuery = UserChainQuery<ChainId>
 type LockerVecrvParams = UserChainParams<ChainId>

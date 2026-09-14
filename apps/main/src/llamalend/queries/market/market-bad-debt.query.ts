@@ -1,8 +1,8 @@
 import { type Endpoint, getBadDebt } from '@curvefi/prices-api/liquidations'
-import { queryFactory } from '@evm-ui/lib/model/query'
-import { EmptyValidationSuite } from '@evm-ui/lib/validation'
 import { MarketType } from '@evm-ui/types/market'
 import { recordValues } from '@primitives/objects.utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 type BadDebtParams = { type: MarketType }
 

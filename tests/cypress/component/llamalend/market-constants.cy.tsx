@@ -14,7 +14,7 @@ import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
-import { SLIPPAGE } from '@ui/features/slippage/slippage.utils'
+import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { ReleaseChannel } from '@ui/lib/env'
 
 function MarketAlertHookTest({
@@ -110,7 +110,7 @@ describe('llama market constants', () => {
   it('resolves configured market providers by release channel', () => {
     const controller = STABLE_LEVERAGE_MARKETS[Chain.Ethereum][0]
     expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Beta)).to.deep.eq(RouteProviders)
-    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq(['enso'])
+    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq(['enso', 'curve'])
     expect(getMarketLeverageProviders(Chain.Ethereum, zeroAddress, ReleaseChannel.Beta)).to.eq(undefined)
   })
 })

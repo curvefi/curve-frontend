@@ -1,19 +1,13 @@
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { createValidationSuite } from '@evm-ui/lib'
-import {
-  type ChainParams,
-  type ChainQuery,
-  type PoolParams,
-  type PoolQuery,
-  queryFactory,
-  rootKeys,
-} from '@evm-ui/lib/model'
+import { type ChainParams, type ChainQuery, type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({
   category: 'dex.pools',

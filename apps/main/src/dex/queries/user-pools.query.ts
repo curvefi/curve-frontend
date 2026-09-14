@@ -1,9 +1,11 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
-import { queryFactory, rootKeys, type ChainQuery, type UserQuery } from '@evm-ui/lib/model'
+import { rootKeys, type ChainQuery, type UserQuery } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 type UserPoolsQuery = ChainQuery & UserQuery
 type UserPoolsParams = FieldsOf<UserPoolsQuery>

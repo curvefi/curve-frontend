@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
-import { copyToClipboard } from '@evm-ui/utils'
 import { ADDRESS_HEX_PATTERN } from '@primitives/address.utils'
 import { showToast } from '@ui/features/toast/Toast/toast.util'
+import { copyToClipboard } from '@ui/lib/clipboard'
 import { t } from '@ui/lib/i18n'
 
 const getTitle = (copyText: string, title: string | undefined) =>
