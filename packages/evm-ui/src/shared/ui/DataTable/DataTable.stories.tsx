@@ -1,5 +1,4 @@
 import { type ReactNode, useMemo } from 'react'
-import { formatToken } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
@@ -9,6 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { q } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { formatToken } from '@ui/lib/tokens'
 import { EvmDataTable, type EvmDataTableProps } from './EvmDataTable'
 
 const { Spacing } = SizesAndSpaces
