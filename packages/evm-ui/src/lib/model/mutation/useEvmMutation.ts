@@ -45,7 +45,7 @@ export type TransactionContext = { wallet: NonNullable<ReturnType<typeof useCurv
 
 type TransactionResult = { hash: Hex }
 
-export type EvmTransactionMutationOptions<
+export type EvmMutationOptions<
   TVariables extends object,
   TContext extends TransactionContext = TransactionContext,
   TData extends TransactionResult = TransactionResult,
@@ -65,10 +65,10 @@ export type OnTransactionSuccess<
   TVariables extends object,
   TContext extends TransactionContext = TransactionContext,
   TData extends TransactionResult = TransactionResult,
-> = NonNullable<EvmTransactionMutationOptions<TVariables, TContext, TData>['onSuccess']>
+> = NonNullable<EvmMutationOptions<TVariables, TContext, TData>['onSuccess']>
 
 /** EVM transaction mutations with wallet validation, submission toasts, and receipt waiting. */
-export function useEvmTransactionMutation<
+export function useEvmMutation<
   TVariables extends object,
   TContext extends TransactionContext = TransactionContext,
   TData extends TransactionResult = TransactionResult,
@@ -79,7 +79,7 @@ export function useEvmTransactionMutation<
   confirmingMessage,
   onSuccess,
   ...options
-}: EvmTransactionMutationOptions<TVariables, TContext, TData>) {
+}: EvmMutationOptions<TVariables, TContext, TData>) {
   const { wallet } = useCurve()
   const config = useConfig()
 

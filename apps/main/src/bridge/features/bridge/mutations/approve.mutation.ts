@@ -1,10 +1,7 @@
 import { useCallback } from 'react'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { rootKeys } from '@evm-ui/lib/model'
-import {
-  type OnTransactionSuccess,
-  useEvmTransactionMutation,
-} from '@evm-ui/lib/model/mutation/useEvmTransactionMutation'
+import { type OnTransactionSuccess, useEvmMutation } from '@evm-ui/lib/model/mutation/useEvmMutation'
 import { formatToken } from '@evm-ui/utils'
 import type { Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,7 +18,7 @@ type BridgeApproveOptions = {
 }
 
 export const useBridgeApproveMutation = ({ chainId, onApproved, ...props }: BridgeApproveOptions) => {
-  const { mutate, error, isPending } = useEvmTransactionMutation<BridgeApproveMutation>({
+  const { mutate, error, isPending } = useEvmMutation<BridgeApproveMutation>({
     mutationKey: [...rootKeys.chain({ chainId }), 'bridge-approve'] as const,
     mutationFn: async ({ amount }) =>
       await requireLib('curveApi')

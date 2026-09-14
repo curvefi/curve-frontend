@@ -4,7 +4,7 @@ import { useConfig } from 'wagmi'
 import { invalidateTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { rootKeys } from '@evm-ui/lib/model'
 import { approve, fetchHasEnoughAllowance } from '@evm-ui/lib/model/entities/allowance'
-import { useEvmTransactionMutation } from '@evm-ui/lib/model/mutation/useEvmTransactionMutation'
+import { useEvmMutation } from '@evm-ui/lib/model/mutation/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import { t } from '@ui/lib/i18n'
 import { writeContract } from '@wagmi/core'
@@ -22,7 +22,7 @@ type RefuelMutationOptions = {
 
 export const useRefuelMutation = ({ chainId, poolAddress, tokens, userAddress, onReset }: RefuelMutationOptions) => {
   const config = useConfig()
-  const { mutate, error, isPending } = useEvmTransactionMutation<RefuelFormValues>({
+  const { mutate, error, isPending } = useEvmMutation<RefuelFormValues>({
     mutationKey: [...rootKeys.chain({ chainId }), 'refuel'] as const,
     mutationFn: async (form: RefuelFormValues) => {
       if (!userAddress) throw new Error('Wallet not connected')

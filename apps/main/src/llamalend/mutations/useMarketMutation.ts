@@ -5,9 +5,9 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { invalidateTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import {
   type TransactionContext,
-  useEvmTransactionMutation,
-  type EvmTransactionMutationOptions,
-} from '@evm-ui/lib/model/mutation/useEvmTransactionMutation'
+  useEvmMutation,
+  type EvmMutationOptions,
+} from '@evm-ui/lib/model/mutation/useEvmMutation'
 import type { Address } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
 import { getControllerAddress, getMarket, getTokens, updateUserEventsApi } from '../llama.utils'
@@ -27,7 +27,7 @@ const getDefaultAddresses = (market: MarketTemplate) => {
 }
 
 type MarketMutationOptions<TVariables extends object> = Omit<
-  EvmTransactionMutationOptions<TVariables, MarketContext>,
+  EvmMutationOptions<TVariables, MarketContext>,
   'buildContext' | 'validationParams'
 >
 
@@ -54,7 +54,7 @@ export function useMarketMutation<TVariables extends object>({
   const { address: userAddress } = useConnection()
   const config = useConfig()
 
-  return useEvmTransactionMutation<TVariables, MarketContext>({
+  return useEvmMutation<TVariables, MarketContext>({
     ...options,
     validationParams: { chainId, marketId, userAddress },
     buildContext: (_variables, baseContext) => ({
