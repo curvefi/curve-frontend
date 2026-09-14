@@ -110,7 +110,7 @@ describe('llama market constants', () => {
   it('resolves configured market providers by release channel', () => {
     const controller = STABLE_LEVERAGE_MARKETS[Chain.Ethereum][0]
     expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Beta)).to.deep.eq(RouteProviders)
-    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq(['enso'])
+    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq(['enso', 'curve'])
     expect(getMarketLeverageProviders(Chain.Ethereum, zeroAddress, ReleaseChannel.Beta)).to.eq(undefined)
   })
 })
