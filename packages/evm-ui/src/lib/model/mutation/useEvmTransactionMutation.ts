@@ -3,10 +3,13 @@ import { useConfig } from 'wagmi'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import type { Hex } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
+import {
+  useTransactionMutation,
+  type TransactionMutationOptions,
+} from '@ui/features/queries/mutations/useTransactionMutation'
 import { withPendingToast } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { waitForTransactionReceipt } from '@wagmi/core'
-import { useTransactionMutation, type TransactionMutationOptions } from './useTransactionMutation'
 
 /**
  * Throws an error if the data contains an error string object.
