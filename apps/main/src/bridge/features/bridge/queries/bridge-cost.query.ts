@@ -1,8 +1,9 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { createValidationSuite } from '@evm-ui/lib'
-import { queryFactory, rootKeys, type ChainParams } from '@evm-ui/lib/model'
+import { rootKeys, type ChainParams } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSupportedNetworkGroup } from '../validation/bridge.validation'
 
 export const { useQuery: useBridgeCost, fetchQuery: fetchBridgeCost } = queryFactory({

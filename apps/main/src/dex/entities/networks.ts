@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { EmptyValidationSuite } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model/query'
 import { assert } from '@primitives/objects.utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { defaultNetworks, getNetworks as getNetworksLib } from '../lib/networks'
 
 const { useQuery, fetchQuery, getQueryData } = queryFactory({

@@ -1,7 +1,7 @@
 import { zeroAddress } from 'viem'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
-import { SLIPPAGE } from '@ui/features/slippage/slippage.utils'
+import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
+import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 
 describe('Slippage settings', () => {
   it('does not submit an enclosing form when saving', () => {

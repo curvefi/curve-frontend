@@ -6,8 +6,8 @@ import {
   useManualPagination,
   DEFAULT_PAGE_SIZE,
 } from '@evm-ui/features/activity-table'
-import { combineQueries } from '@evm-ui/lib'
 import { getPageCount } from '@evm-ui/utils'
+import { combineQueries } from '@ui/features/queries/combine'
 import { fakeLoadingQ } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'

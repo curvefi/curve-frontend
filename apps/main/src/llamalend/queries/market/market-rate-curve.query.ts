@@ -1,7 +1,8 @@
 import { getRateCurve, type RateCurve } from '@curvefi/prices-api/lending'
-import { type FieldsOf } from '@evm-ui/lib'
-import { ContractQuery, NoRetryError, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
+import { ContractQuery, rootKeys } from '@evm-ui/lib/model/query'
 import { contractValidationSuite } from '@evm-ui/lib/model/query/contract-validation'
+import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
+import { type FieldsOf } from '@ui/lib/validation/types'
 
 type Query = ContractQuery
 type QueryParams = FieldsOf<Query>

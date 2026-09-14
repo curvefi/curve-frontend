@@ -1,9 +1,9 @@
 import type { TimestampResponse } from '@curvefi/prices-api/timestamp'
-import { EmptyValidationSuite } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model'
 import { shortenAddress } from '@evm-ui/utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { fromEntries, maybe } from '@primitives/objects.utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 const GAUGES_URL = 'https://prices.curve.finance/v1/dao/gauges/overview'
 

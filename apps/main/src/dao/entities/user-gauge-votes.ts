@@ -1,6 +1,6 @@
 import { getUserGaugeVotes } from '@curvefi/prices-api/gauge'
-import { EmptyValidationSuite } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model/query'
+import { queryFactory } from '@ui/features/queries/factory'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 export const { useQuery: useUserGaugeVoteQuery, invalidate: invalidateUserGaugeVoteQuery } = queryFactory({
   queryKey: (params: { userAddress: string }) => ['user-gauge-votes', { userAddress: params.userAddress }] as const,

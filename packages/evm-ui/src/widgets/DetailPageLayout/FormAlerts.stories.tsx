@@ -1,7 +1,7 @@
 import { zeroAddress } from 'viem'
 import { range } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { FormAlerts } from './FormAlerts'
+import { FormAlerts } from '@ui/features/forms/FormAlerts'
 
 const LONG_ERROR = new Error(
   range(20)

@@ -3,11 +3,11 @@ import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { FireIcon } from '@ui/icons/FireIcon'
 import { t } from '@ui/lib/i18n'
-import { ActionInfo } from './ActionInfo'
 
 export type TxGasInfo = { estGasCostUsd?: Amount; tooltip?: string }
 
