@@ -44,6 +44,8 @@ const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
       ? new Address(value).toScVal()
       : nativeToScVal(value, typeof value === 'bigint' ? { type: 'i128' } : {})
 
+const PASSPHRASES = { stellar: Networks.PUBLIC, 'stellar-testnet': Networks.TESTNET }
+
 export async function simulateContractCall<T>(
   network: StellarNetwork,
   contractId: StellarContract,
@@ -57,7 +59,7 @@ export async function simulateContractCall<T>(
     args: args.map(encodeContractArgument),
     publicKey: account,
     address: account,
-    networkPassphrase: { stellar: Networks.PUBLIC, 'stellar-testnet': Networks.TESTNET }[network],
+    networkPassphrase: PASSPHRASES[network],
     rpcUrl: STELLAR_NETWORKS[network].rpcUrl,
     parseResultXdr: value => scValToNative(value) as T,
   })

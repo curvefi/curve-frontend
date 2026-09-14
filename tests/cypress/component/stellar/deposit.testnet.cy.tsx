@@ -55,6 +55,7 @@ describe('Stellar testnet deposit', () => {
 
   beforeEach(() => {
     queryClient.clear()
+    cy.intercept('GET', 'https://api.testnet.stellarindex.io/v1/price*', { statusCode: 404 })
     cy.then(() => connectTestWallet(testnetConfig))
   })
 
@@ -187,7 +188,6 @@ describe('Stellar testnet deposit', () => {
             coins: state.coins.map(coin => ({ ...coin, balance: decimalMinus(coin.balance, amounts[coin.symbol]) })),
           })
           cy.then(LOAD_TIMEOUT, () => fetchDepositState(pool, testnetConfig)).then(next => {
-            state = next
             state.coins.forEach(({ symbol, balance }) => {
               const received = assert(
                 next.coins.find(coin => coin.symbol === symbol),
@@ -204,6 +204,7 @@ describe('Stellar testnet deposit', () => {
             cy.get('[data-testid="pool-deposit-seed-alert"]').should('not.exist')
             cy.get('[data-testid="pool-deposit-seed-lock"]').should('not.exist')
             checkDepositBalances(next)
+            state = next
           })
         },
       )

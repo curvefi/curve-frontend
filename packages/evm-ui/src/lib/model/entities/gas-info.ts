@@ -11,6 +11,7 @@ import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { assert, maybe, maybes, type PartialRecord } from '@primitives/objects.utils'
+import type { TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
 import { constQ, type Query as QueryResult } from '@ui/features/queries/util'
@@ -356,7 +357,7 @@ export function calculateGas(
   chainTokenUsdRate: number | undefined,
   chainId: number,
   networkSymbol: string | undefined,
-): { estGasCost?: number; estGasCostUsd?: number; tooltip?: string; gasCostInWei?: number } {
+): TxGasInfo {
   const { gasPricesUnit, gasL2, gasPricesDefault } = getGasConfig(chainId)
   const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
   if (!estimatedGas || !basePlusPriority) {
@@ -377,7 +378,12 @@ export function calculateGas(
   const tooltip =
     `${formatToken(estGasCost, networkSymbol, 'amount')} at ` +
     `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2, abbreviate: false })} ${gasPricesUnit}`
-  return { estGasCost, tooltip, ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }) }
+  return {
+    estGasCost,
+    nativeSymbol: networkSymbol,
+    tooltip,
+    ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }),
+  }
 }
 
 type GasEstimate = Amount | [Decimal, Decimal] | number[] | null | undefined

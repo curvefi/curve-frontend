@@ -2,12 +2,12 @@ import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { rootKeys } from '@/stellar/queries/root-keys'
 import {
-  depositValidationSuite,
-  type DepositQuery,
   type DepositParams,
+  type DepositQuery,
+  depositValidationSuite,
 } from '@/stellar/queries/validation/deposit.validation'
 import { queryFactory } from '@ui/features/queries/factory'
-import { toWei, toWeiArray, toBigIntArray } from '@ui/lib/decimal'
+import { toBigIntArray, toWei, toWeiArray } from '@ui/lib/decimal'
 
 export const {
   useQuery: useDepositSimulation,
@@ -38,6 +38,6 @@ export const {
       ],
       account,
     ),
-  category: 'dex.deposit',
+  category: 'global.no-persist', // todo: the values returned by the SDK lose the built transaction, so disable persistance for now
   validationSuite: depositValidationSuite,
 })

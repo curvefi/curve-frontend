@@ -8,8 +8,9 @@ import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { FireIcon } from '@ui/icons/FireIcon'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 
-export type TxGasInfo = { estGasCostUsd?: Amount; nativeCost?: { amount: Amount; symbol: string }; tooltip?: string }
+export type TxGasInfo = { estGasCost?: Amount; estGasCostUsd?: Amount; nativeSymbol?: string; tooltip?: string }
 
 export type EstimatedTxCostProps = {
   gas: QueryProp<TxGasInfo | null>
@@ -40,7 +41,7 @@ export const ActionInfoGasEstimate = ({
       gas,
       data =>
         maybe(data?.estGasCostUsd, value => formatNumber(value, 'usd.notional')) ??
-        maybe(data?.nativeCost, ({ amount, symbol }) => `${formatNumber(amount, 'token.amount')} ${symbol}`), // todo use formatToken
+        maybe(data?.estGasCost, amount => formatToken(amount, data?.nativeSymbol, 'amount')),
     )}
     valueTooltip={gas.data?.tooltip}
     valueLeft={<FireIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
