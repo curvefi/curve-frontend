@@ -13,6 +13,7 @@ import {
   type DepositFormValues as DepositTokenValues,
 } from '@ui/features/forms/deposit/deposit-form.utils'
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
+import type { DeepPartial } from '@ui/features/queries/util'
 import { decimalEqual, decimalGreaterThan, fromWei } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -22,12 +23,12 @@ export type { PoolQuery, PoolParams, TokenQuery, TokenParams } from '@/stellar/q
 export type BalanceQuery = TokenQuery & UserQuery & { decimals: number }
 export type BalanceParams = FieldsOf<BalanceQuery>
 export type QuoteQuery = PoolQuery & { amounts: (Decimal | undefined)[]; decimals: number[]; supply: Decimal }
-export type QuoteParams = FieldsOf<QuoteQuery>
+export type QuoteParams = FieldsOf<DeepPartial<QuoteQuery>>
 export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: (Decimal | undefined)[] }
-export type DepositParams = FieldsOf<DepositQuery>
-export type DepositSubmission = DepositQuery & { quote: Decimal; tokens: StellarContract[]; slippage: Decimal }
-export type DepositFormValues = DepositTokenValues & {
-  decimals: number[] | undefined
+export type DepositParams = FieldsOf<DeepPartial<DepositQuery>>
+export type DepositMutation = DepositQuery & { quote: Decimal; tokens: StellarContract[]; slippage: Decimal }
+export type DepositForm = DepositTokenValues & {
+  decimals: (number | undefined)[] | undefined
   supply: Decimal | undefined
   slippage: Decimal
 }
@@ -81,7 +82,7 @@ export const depositValidationSuite = createValidationSuite((params: DepositQuer
 
 type DepositInputs = {
   amounts: (Decimal | undefined)[] | undefined
-  decimals: number[] | undefined
+  decimals: (number | undefined)[] | undefined
   supply: Decimal | undefined
   maxAmounts: (Decimal | undefined)[] | undefined
 }
@@ -135,7 +136,7 @@ const validateFundedInputs = (values: DepositInputs) => {
     })
   })
 }
-const validateForm = (values: DepositFormValues) => {
+const validateForm = (values: DepositForm) => {
   validateSlippage(values.slippage)
   validateFundedInputs({
     decimals: values.decimals,
@@ -150,7 +151,7 @@ const validateTokens = ({ tokens }: { tokens: StellarContract[] }) => {
   enforce(tokens?.length).isNumber().gt(0)
 }
 
-export const depositSubmissionValidationSuite = createValidationSuite(
+export const depositMutationValidationSuite = createValidationSuite(
   ({
     pool,
     amounts,
@@ -163,7 +164,7 @@ export const depositSubmissionValidationSuite = createValidationSuite(
     tokens,
     quote,
     account,
-  }: DepositSubmission) => {
+  }: DepositMutation) => {
     validatePool({ pool, network })
     validateAccount(account)
     validateSlippage(slippage)

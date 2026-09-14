@@ -7,7 +7,7 @@ import { fetchTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { fetchTokenSymbol } from '@/stellar/queries/token/token-symbol.query'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import type { TestnetConfig, TokenConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
+import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -23,20 +23,24 @@ const fetchToken = async (address: StellarContract, account: StellarAddress) => 
   return { ...params, address, symbol, decimals, balance }
 }
 
-export const fetchDepositState = async (pool: StellarContract, { deployer, coins: testCoins }: TestnetConfig) => {
+export const fetchDepositState = async (pool: StellarContract, { deployer }: TestnetConfig) => {
   const poolParams = { network: TEST_NETWORK, pool } as const
-  const [coins, lp, supply, config] = await Promise.all([
-    Promise.all(testCoins.map(({ address }) => fetchToken(address, deployer.address))),
+  const config = await fetchPoolConfig(poolParams)
+  const [coins, lp, supply] = await Promise.all([
+    Promise.all(config.tokens.map(address => fetchToken(address, deployer.address))),
     fetchToken(pool, deployer.address),
     fetchPoolSupply(poolParams, { staleTime: 0 }),
-    fetchPoolConfig(poolParams),
   ])
-  return { pool, coins, lp, supply, config }
+  return { coins, lp, supply, config }
 }
 export type DepositState = Awaited<ReturnType<typeof fetchDepositState>>
 export type DepositAmounts = Record<string, Decimal>
 
-export const fetchDepositPreview = async ({ pool, coins, lp, supply }: DepositState, amounts: DepositAmounts) => {
+export const fetchDepositPreview = async (
+  pool: StellarContract,
+  { coins, lp, supply }: DepositState,
+  amounts: DepositAmounts,
+) => {
   const expected = await fetchExpectedLp({
     network: TEST_NETWORK,
     pool,
@@ -54,7 +58,10 @@ export const fetchDepositPreview = async ({ pool, coins, lp, supply }: DepositSt
 export const depositInput = (address: StellarContract) =>
   cy.get(`[data-testid="pool-deposit-input-${address}"]`, LOAD_TIMEOUT)
 export const depositSubmit = () => cy.get('[data-testid="pool-deposit-submit"]', LOAD_TIMEOUT)
-export const writeDepositForm = (coins: Pick<TokenConfig, 'address' | 'symbol'>[], amounts: DepositAmounts) =>
+export const writeDepositForm = (
+  coins: Pick<DepositState['coins'][number], 'address' | 'symbol'>[],
+  amounts: DepositAmounts,
+) =>
   coins.forEach(({ address, symbol }) => {
     const amount = amounts[symbol]
     if (amount != null) {

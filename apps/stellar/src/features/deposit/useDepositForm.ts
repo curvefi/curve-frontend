@@ -7,7 +7,7 @@ import { useDepositMutation } from '@/stellar/mutations/deposit.mutation'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery } from '@/stellar/queries/root-keys'
-import { depositFormValidationSuite, type DepositFormValues } from '@/stellar/queries/validation/deposit.validation'
+import { depositFormValidationSuite, type DepositForm } from '@/stellar/queries/validation/deposit.validation'
 import { zip } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
@@ -36,7 +36,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   const { metadata, balances, decimals, maxAmounts } = useDepositTokens({ ...poolParams, account, tokens })
   const slippage = useUserProfileStore(state => state.maxSlippage.stable)
   const userDefaultValues = useMemo(() => maybe(tokenCount, getDepositDefaultValues) ?? {}, [tokenCount])
-  const form = useForm<DepositFormValues>({
+  const form = useForm<DepositForm>({
     ...formOptions,
     defaultValues: { ...formOptions.defaultValues, ...userDefaultValues },
   })
@@ -48,7 +48,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
 
   // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
-  const values = useShallow(identity<DepositFormValues>)(form.watchValues())
+  const values = useShallow(identity<DepositForm>)(form.watchValues())
   const [params, isDebouncing] = useFormDebounce<DepositPreviewParams, DepositAmountField>(
     useMemo(
       () => ({

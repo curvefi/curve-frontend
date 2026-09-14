@@ -13,6 +13,7 @@ import {
 } from '@tanstack/react-query'
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui/features/queries/query-categories'
 import { queryClient } from '@ui/features/queries/query-client'
+import type { DeepPartial } from '@ui/features/queries/util'
 import { logError, logQuery, logSuccess } from '@ui/lib/logging'
 import { formatTimeDiff } from '@ui/lib/time'
 import { validate } from '@ui/lib/validation/lib'
@@ -112,7 +113,7 @@ export function queryFactory<
   TQuery extends object,
   const TKey extends readonly unknown[],
   TData,
-  TParams extends FieldsOf<TQuery> = FieldsOf<TQuery>,
+  TParams extends FieldsOf<DeepPartial<TQuery>> = FieldsOf<TQuery>,
   TField extends string = FieldName<TQuery>,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
@@ -143,7 +144,7 @@ export function queryFactory<
       queryFn: async ({ queryKey }: QueryFunctionContext<TKey>) => await runQuery(queryKey, queryFn, disableLog),
       enabled:
         enabled &&
-        isEmpty(validate(validationSuite, params)) &&
+        isEmpty(validate<TParams, typeof validationSuite>(validationSuite, params)) &&
         !dependencies?.(params).some(key => queryClient.getQueryData(key) === undefined),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such

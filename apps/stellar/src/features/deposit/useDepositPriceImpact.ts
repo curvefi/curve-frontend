@@ -31,6 +31,7 @@ export function useDepositPriceImpact(params: QuoteParams, quote: Query<Decimal>
   const rates = usePoolRates(params)
   const balancedAmounts = combineQueries([reserves, rates], (reserves, rates) =>
     maybes([params.amounts, params.decimals], (amounts, decimals) => {
+      if (!decimals.every(precision => precision != null)) return undefined
       // Raw amounts × stored rates normalize coins with different decimals.
       const value = rateAdjustedValue(amounts, rates, decimals)
       const reserveValue = rateAdjustedValue(reserves, rates)

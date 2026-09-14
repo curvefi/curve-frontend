@@ -49,7 +49,7 @@ type Factory = {
 }
 
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
-export const deployTestPool = async ({ factory: factoryAddress, deployer, coins: coins }: TestnetConfig) => {
+export const deployTestPool = async ({ factory: factoryAddress, deployer, coins }: TestnetConfig) => {
   const factory = await contract.Client.from<Factory>({
     contractId: factoryAddress,
     publicKey: deployer.address,
@@ -61,7 +61,7 @@ export const deployTestPool = async ({ factory: factoryAddress, deployer, coins:
     deployer: deployer.address,
     name: 'Cypress StableSwap USDX/USDY/USDZ',
     symbol: 'CY-USDXUSDYUSDZ',
-    coins: coins.map(c => c.address),
+    coins,
     a: 100n,
     fee: 30_000_000n,
     offpeg_fee_multiplier: 20_000_000_000n,
