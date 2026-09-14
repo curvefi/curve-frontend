@@ -3,8 +3,8 @@ import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-marke
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { MarketRateType } from '@evm-ui/types/market'
-import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { ExpandedState } from '@tanstack/react-table'
 import { QueryProp } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
@@ -73,11 +73,11 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
         sx={{
           backgroundColor: t => t.design.Layer[1].Fill,
           height: Sizing.md,
-          justifyContent: 'end',
+          justifyContent: 'center',
           paddingInline: Spacing.md,
         }}
       >
-        <CardHeader title={title} size="small" />
+        <Typography variant="headingXsBold">{title}</Typography>
       </Stack>
     </EvmDataTable>
   )
