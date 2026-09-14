@@ -177,3 +177,11 @@ export async function getUserMarketCollateralEvents(
 
   return Schema.getUserCollateralEventsResponse.parse(response)
 }
+
+export async function getUserVaultEvents(userAddr: string, chain: Chain, vaultAddress: string, options?: Options) {
+  const host = getHost(options)
+  const response = await fetch(`${host}/v1/lending/vaults/${chain}/${vaultAddress}/${userAddr}`, {
+    signal: options?.signal,
+  })
+  return Schema.getUserVaultEventsResponse.parse(response)
+}
