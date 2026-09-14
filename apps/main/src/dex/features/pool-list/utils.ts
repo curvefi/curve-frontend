@@ -65,7 +65,7 @@ export const litePoolToRowData = (pool: LitePool): PoolRowData => {
     gauge: gauges[0],
     gauges,
     isMetapool: pool.isMetaPool,
-    name: pool.name ?? '',
+    name: pool.name ?? '<No Name>',
     poolType: undefined,
     tradeableCoins: coins,
     tradingVolume24h: undefined,
