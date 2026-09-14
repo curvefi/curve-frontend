@@ -9,6 +9,7 @@ import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { constQ } from '@ui/features/queries/util'
 import { CenteredEmptyState } from '@ui/features/tables/CenteredEmptyState'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
@@ -70,16 +71,17 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
     <Stack data-testid="user-pool-positions">
       <TableHeader title={t`Your positions`} onReload={() => void onReload()} isLoading={isFetching} />
       <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
-        <Stack
+        <MetricsGrid
+          variant="fillMobile"
           sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}
         >
           <Metric
-            category="dex.userLiquidityDetails"
+            category="dex.poolListSummary"
             label={t`Total liquidity provided`}
             value={address ? totalLiquidityUsd : constQ(undefined)}
             valueOptions={{ unit: 'dollar' }}
           />
-        </Stack>
+        </MetricsGrid>
         {address ? (
           <>
             <EvmDataTable
