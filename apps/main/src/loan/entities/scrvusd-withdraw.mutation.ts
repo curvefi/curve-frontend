@@ -3,7 +3,10 @@ import { useConfig } from 'wagmi'
 import type { ChainId } from '@/loan/types/loan.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { rootKeys } from '@evm-ui/lib/model'
-import { type OnTransactionSuccess, useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactionMutation'
+import {
+  type OnTransactionSuccess,
+  useEvmTransactionMutation,
+} from '@evm-ui/lib/model/mutation/useEvmTransactionMutation'
 import { formatToken } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
@@ -20,7 +23,7 @@ type ScrvUsdWithdrawOptions = {
 
 export const useScrvUsdWithdrawMutation = ({ chainId, userAddress, onSuccess, ...props }: ScrvUsdWithdrawOptions) => {
   const config = useConfig()
-  const { mutate, error, isPending } = useTransactionMutation<ScrvUsdWithdrawMutation>({
+  const { mutate, error, isPending } = useEvmTransactionMutation<ScrvUsdWithdrawMutation>({
     mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.withdraw'] as const,
     mutationFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }) => {
       const { st_crvUSD } = requireLib('llamaApi')

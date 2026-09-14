@@ -2,7 +2,10 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { rootKeys } from '@evm-ui/lib/model'
-import { type OnTransactionSuccess, useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactionMutation'
+import {
+  type OnTransactionSuccess,
+  useEvmTransactionMutation,
+} from '@evm-ui/lib/model/mutation/useEvmTransactionMutation'
 import { formatToken, waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
@@ -22,7 +25,7 @@ export const useIncreaseLockMutation = ({
   onIncreased: OnTransactionSuccess<IncreaseLockMutation>
 }) => {
   const config = useConfig()
-  const { mutate, error, isPending } = useTransactionMutation<IncreaseLockMutation>({
+  const { mutate, error, isPending } = useEvmTransactionMutation<IncreaseLockMutation>({
     mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.increase'] as const,
     mutationFn: async ({ lockedAmount }) => {
       const params = { chainId, userAddress, lockedAmount }
