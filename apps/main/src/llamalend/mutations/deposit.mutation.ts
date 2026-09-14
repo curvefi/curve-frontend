@@ -11,7 +11,7 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { rootKeys } from '@evm-ui/lib/model'
-import type { OnTransactionSuccess } from '@evm-ui/lib/model/mutation/useTransactionMutation'
+import type { OnTransactionSuccess } from '@evm-ui/lib/model/mutation/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
