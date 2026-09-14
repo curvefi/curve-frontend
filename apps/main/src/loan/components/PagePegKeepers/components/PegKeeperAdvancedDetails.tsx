@@ -1,5 +1,6 @@
+import { getAddress } from 'viem'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { tryChecksumAddress, shortenAddress } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
@@ -42,7 +43,7 @@ export const PegKeeperAdvancedDetails = ({
         />
       }
       copyValue={poolAddress}
-      format={tryChecksumAddress}
+      format={getAddress}
       testId={`${testId}-action-info-pool`}
     />
 
@@ -51,7 +52,7 @@ export const PegKeeperAdvancedDetails = ({
       value={shortenAddress(address, { digits: 2 })}
       valueTooltip={<ExternalLink href={`https://etherscan.io/address/${address}`} label={t`View on Etherscan`} />}
       copyValue={address}
-      format={tryChecksumAddress}
+      format={getAddress}
       testId={`${testId}-action-info-contract`}
     />
 
