@@ -13,6 +13,7 @@ import {
   type DepositFormValues,
 } from '@/stellar/queries/validation/deposit.validation'
 import { zip } from '@primitives/array.utils'
+import { getDepositAmounts } from '@ui/features/forms/deposit/deposit-form.utils'
 import { t } from '@ui/lib/i18n'
 import type { FieldsOf } from '@ui/lib/validation/types'
 import { useStellarMutation } from './useStellarMutation'
@@ -45,7 +46,7 @@ export const useDepositMutation = ({
   })
   const { network, pool, account, decimals, tokens, quote, minMint, slippage, maxAmounts, supply } = params
   const onSubmit = useCallback(
-    ({ amounts }: DepositFormValues) =>
+    (values: DepositFormValues) =>
       mutate({
         network,
         pool,
@@ -57,7 +58,7 @@ export const useDepositMutation = ({
         slippage,
         maxAmounts,
         supply,
-        amounts,
+        amounts: getDepositAmounts(values, tokens?.length),
       } as DepositSubmission),
     [mutate, network, pool, account, decimals, tokens, quote, minMint, slippage, maxAmounts, supply],
   )

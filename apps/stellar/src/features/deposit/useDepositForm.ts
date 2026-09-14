@@ -1,4 +1,6 @@
-import { useCallback, useMemo } from 'react'
+import { identity } from 'lodash'
+import { useCallback, useEffect, useMemo } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { useDepositMutation } from '@/stellar/mutations/deposit.mutation'
@@ -7,26 +9,20 @@ import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery } from '@/stellar/queries/root-keys'
 import { depositFormValidationSuite, type DepositFormValues } from '@/stellar/queries/validation/deposit.validation'
 import { zip } from '@primitives/array.utils'
-import type { Decimal } from '@primitives/decimal.utils'
-import { assert, maybe, range } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
+import { getDepositDefaultValues, type DepositAmountField } from '@ui/features/forms/deposit/deposit-form.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { useDepositPreview } from './useDepositPreview'
+import { useDepositPreview, type DepositPreviewParams } from './useDepositPreview'
 import { useDepositTokens } from './useDepositTokens'
 
 const formOptions = {
   validation: depositFormValidationSuite,
-  defaultValues: {
-    amounts: undefined,
-    decimals: undefined,
-    maxAmounts: undefined,
-    supply: undefined,
-    slippage: SLIPPAGE.stable.default,
-  },
+  defaultValues: { decimals: undefined, supply: undefined, slippage: SLIPPAGE.stable.default },
 }
 
 export function useDepositForm(poolParams: PoolQuery) {
@@ -39,37 +35,34 @@ export function useDepositForm(poolParams: PoolQuery) {
 
   const { metadata, balances, decimals, maxAmounts } = useDepositTokens({ ...poolParams, account, tokens })
   const slippage = useUserProfileStore(state => state.maxSlippage.stable)
-  const userDefaultValues = useMemo(
-    () => ({ amounts: maybe(tokenCount, tokenCount => range(tokenCount).map(() => undefined)) }),
-    [tokenCount],
-  )
+  const userDefaultValues = useMemo(() => maybe(tokenCount, getDepositDefaultValues) ?? {}, [tokenCount])
   const form = useForm<DepositFormValues>({
     ...formOptions,
     defaultValues: { ...formOptions.defaultValues, ...userDefaultValues },
   })
-  const { getValue, reset, update } = form
+  const { reset } = form
 
   useFormSync(form, { slippage })
   useFormSync(form, { decimals: decimals.data })
-  useFormSync(form, { maxAmounts: maxAmounts.data })
   useFormSync(form, { supply: supply.data })
-  useFormSync(form, userDefaultValues)
+  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
 
-  const { amounts } = form.watchValues()
-
-  const [params, isDebouncing] = useFormDebounce(
+  // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
+  const values = useShallow(identity<DepositFormValues>)(form.watchValues())
+  const [params, isDebouncing] = useFormDebounce<DepositPreviewParams, DepositAmountField>(
     useMemo(
       () => ({
+        ...values,
         network,
         pool,
         account,
-        amounts,
+        tokenCount,
         decimals: decimals.data,
         slippage,
         supply: supply.data,
         maxAmounts: maxAmounts.data,
       }),
-      [network, pool, account, amounts, decimals.data, slippage, supply.data, maxAmounts.data],
+      [values, network, pool, account, tokenCount, decimals.data, slippage, supply.data, maxAmounts.data],
     ),
     userDefaultValues,
   )
@@ -111,17 +104,10 @@ export function useDepositForm(poolParams: PoolQuery) {
     priceImpact,
     fee,
   )
-  const onAmount = useCallback(
-    (index: number, value: Decimal | undefined) =>
-      update({ amounts: assert(getValue('amounts'), 'Missing amounts').map((amt, i) => (i === index ? value : amt)) }),
-    [getValue, update],
-  )
   return {
     form,
     params,
     preview,
-    amounts,
-    onAmount,
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
     isDisabled:

@@ -33,6 +33,7 @@ export const combineQueries = <const TQueries extends Queries, TResult>(
 /** Collect ordered results when all data is available, preserving loading and error states. Empty input yields []. */
 export const aggregateQueries = <T>(queries: Query<T>[]): QueryProp<T[]> =>
   combineQueries(queries, (...values) => values)
+// todo: change aggregate to: q({ data: queries.map(result => result.data), ...combineQueryState(...queries) })
 
 export const pickQuery = <TData>(
   queries: readonly Query<TData>[],

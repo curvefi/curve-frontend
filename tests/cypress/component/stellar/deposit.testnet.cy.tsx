@@ -79,7 +79,7 @@ describe('Stellar testnet deposit', () => {
       checkDepositBalances(state)
       depositSubmit().should('be.disabled')
       writeDepositForm(coins, zeroDeposit(coins))
-      cy.get('[data-testid="loan-form-error-amounts"]', LOAD_TIMEOUT)
+      cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT)
         .should('be.visible')
         .and('contain.text', 'Enter an amount to deposit')
       depositSubmit().should('be.disabled')
@@ -130,7 +130,7 @@ describe('Stellar testnet deposit', () => {
 
   it('requires every coin in the seed deposit', () => {
     getDepositState().then(state => {
-      const { deployer } = testnetConfig
+      const { deployer, coins } = testnetConfig
       expect(state.supply, 'new pool supply').to.equal('0')
       expect(state.lp.balance, 'new pool LP balance').to.equal('0')
       cy.mount(
@@ -141,13 +141,13 @@ describe('Stellar testnet deposit', () => {
       cy.get('[data-testid="pool-deposit-seed-alert"]', LOAD_TIMEOUT).should('be.visible')
       checkDepositDetail('seed-lock', state.config.seedLock)
       state.coins.forEach(({ address, symbol }) => {
-        writeDepositForm(state.coins, { ...balancedDeposit, [symbol]: '0' })
-        cy.get('[data-testid="loan-form-error-amounts"]', LOAD_TIMEOUT)
+        writeDepositForm(state.coins, { ...balancedDeposit(coins), [symbol]: '0' })
+        cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT)
           .should('be.visible')
           .and('contain.text', 'Seed deposits require a positive amount of every coin')
         depositSubmit().should('be.disabled')
         depositInput(address).find('input').clear().blur()
-        cy.get('[data-testid="loan-form-error-amounts"]', LOAD_TIMEOUT)
+        cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT)
           .should('be.visible')
           .and('contain.text', 'Seed deposits require a positive amount of every coin')
         depositSubmit().should('be.disabled')
