@@ -6,11 +6,11 @@ import { TableFilters } from '@evm-ui/shared/ui/DataTable/TableFilters'
 import { TableHeader } from '@evm-ui/shared/ui/DataTable/TableHeader'
 import { TableVisibilitySettingsPopover } from '@evm-ui/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
+import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
-import { constQ } from '@ui/features/queries/util'
 import { CenteredEmptyState } from '@ui/features/tables/CenteredEmptyState'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
@@ -72,8 +72,8 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
       <TableHeader title={t`Your positions`} onReload={() => void onReload()} isLoading={isFetching} />
       <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         {address ? (
-          <>
-            {rowCount > 0 && (
+          tableQuery.data?.length ? (
+            <>
               <MetricsGrid
                 variant="fillMobile"
                 sx={{
@@ -85,26 +85,22 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
                 <Metric
                   category="dex.poolListSummary"
                   label={t`Total liquidity provided`}
-                  value={address ? totalLiquidityUsd : constQ(undefined)}
+                  value={totalLiquidityUsd}
                   valueOptions={{ unit: 'dollar' }}
                 />
               </MetricsGrid>
-            )}
-            <EvmDataTable
-              category="limited"
-              table={table}
-              viewAllLabel={t`View all ${rowCount} pool positions`}
-              emptyState={{
-                title: searchText ? t`No matching positions` : t`No active positions`,
-                description: searchText
-                  ? t`Try another pool name, token symbol, or address.`
-                  : t`Provide liquidity to a pool to see your positions here.`,
-              }}
-              errorState={{ title: t`Could not load pool positions`, onReload }}
-              expandedPanel={{ Body: UserPositionsExpandedPanel, Actions: PoolExpandedPanelActions }}
-              shouldStickFirstColumn={Boolean(isTablet && rowCount)}
-            >
-              {rowCount > 0 && (
+              <EvmDataTable
+                category="limited"
+                table={table}
+                viewAllLabel={t`View all ${rowCount} pool positions`}
+                emptyState={{
+                  title: t`No matching positions`,
+                  description: t`Try another pool name, token symbol, or address.`,
+                }}
+                errorState={{ title: t`Could not load pool positions`, onReload }}
+                expandedPanel={{ Body: UserPositionsExpandedPanel, Actions: PoolExpandedPanelActions }}
+                shouldStickFirstColumn={Boolean(isTablet && rowCount)}
+              >
                 <TableFilters
                   testIdPrefix={LOCAL_STORAGE_KEY}
                   visibilitySettings={{
@@ -118,16 +114,33 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
                     table.setPageIndex(0)
                   }}
                 />
+              </EvmDataTable>
+              <TableVisibilitySettingsPopover
+                anchorRef={visibilitySettingsRef}
+                visibilityGroups={columnSettings}
+                toggleVisibility={toggleVisibility}
+                open={visibilitySettingsOpen}
+                onClose={closeVisibilitySettings}
+              />
+            </>
+          ) : (
+            <CenteredEmptyState>
+              {tableQuery.error ? (
+                <EvmErrorMessage
+                  title={t`Could not load pool positions`}
+                  subtitle={tableQuery.error.message}
+                  error={tableQuery.error}
+                  refreshData={onReload}
+                />
+              ) : (
+                <EmptyStateEvmCard
+                  isLoading={tableQuery.isLoading}
+                  title={t`No active positions`}
+                  description={t`Provide liquidity to a pool to see your positions here.`}
+                />
               )}
-            </EvmDataTable>
-            <TableVisibilitySettingsPopover
-              anchorRef={visibilitySettingsRef}
-              visibilityGroups={columnSettings}
-              toggleVisibility={toggleVisibility}
-              open={visibilitySettingsOpen}
-              onClose={closeVisibilitySettings}
-            />
-          </>
+            </CenteredEmptyState>
+          )
         ) : (
           <CenteredEmptyState>
             <EmptyStateEvmCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
