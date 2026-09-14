@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-imports -- This module wraps Stellar wallet and contract SDK access. */
-import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { STELLAR_NETWORKS, type StellarNetwork } from '@/stellar/lib/networks'
 import { defaultModules } from '@creit-tech/stellar-wallets-kit/modules/utils'
 import { StellarWalletsKit } from '@creit-tech/stellar-wallets-kit/sdk'
@@ -10,9 +10,8 @@ import { Address, contract, nativeToScVal, Networks, type rpc, scValToNative, St
 
 export type WalletConnector = ISupportedWallet
 export type StellarHex = string & { readonly __stellarHex: unique symbol } // Stellar hashes are hex strings without an 0x prefix.
-export type StellarTransaction = contract.AssembledTransaction<bigint>
+export type StellarTransaction<T = bigint> = contract.AssembledTransaction<T>
 export type StellarTransactionResponse = Omit<rpc.Api.SendTransactionResponse, 'hash'> & { hash: StellarHex }
-export type StellarTransactionError = Error & { submission?: StellarTransactionResponse }
 
 export const initWallet = async () => {
   StellarWalletsKit.init({ modules: defaultModules() })
@@ -33,10 +32,10 @@ export const connectWallet = async (connector: WalletConnector) => {
 
 export const disconnectWallet = () => StellarWalletsKit.disconnect()
 
-export const isContractAddress = (address: string) => StrKey.isValidContract(address)
-export const isAccountAddress = (address: string) => StrKey.isValidEd25519PublicKey(address)
+export const isContractAddress = (address: string): address is StellarContract => StrKey.isValidContract(address)
+export const isAccountAddress = (address: string): address is StellarAddress => StrKey.isValidEd25519PublicKey(address)
 
-type ContractArgument = StellarAddress | bigint | boolean | ContractArgument[]
+type ContractArgument = StellarAddress | StellarContract | bigint | boolean | ContractArgument[]
 
 const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
   Array.isArray(value)
@@ -45,9 +44,9 @@ const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
       ? new Address(value).toScVal()
       : nativeToScVal(value, typeof value === 'bigint' ? { type: 'i128' } : {})
 
-export async function simulateContract<T = bigint>(
+export async function simulateContractCall<T>(
   network: StellarNetwork,
-  contractId: StellarAddress,
+  contractId: StellarContract,
   method: string,
   args: ContractArgument[] = [],
   account?: StellarAddress,
@@ -68,22 +67,10 @@ export async function simulateContract<T = bigint>(
 
 export const readContract = async <T>(
   network: StellarNetwork,
-  contractId: StellarAddress,
+  contractId: StellarContract,
   method: string,
   args: ContractArgument[] = [],
-) => (await simulateContract<T>(network, contractId, method, args)).result
-
-export async function readTokenBalance(network: StellarNetwork, token: StellarAddress, account: StellarAddress) {
-  try {
-    return await readContract<bigint>(network, token, 'balance', [account])
-  } catch (error) {
-    // Stellar asset contracts throw instead of returning zero when the account has no trustline.
-    if ((error as Error).message.includes('trustline entry is missing for account')) {
-      return 0n
-    }
-    throw error
-  }
-}
+) => (await simulateContractCall<T>(network, contractId, method, args)).result
 
 export async function sendStellarTransaction(transaction: StellarTransaction) {
   let submission: StellarTransactionResponse | undefined

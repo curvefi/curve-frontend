@@ -1,4 +1,4 @@
-import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { NetworkParams, UserParams } from '@/stellar/queries/root-keys'
 import { getTokenBalanceQueryOptions } from '@/stellar/queries/token/token-balance.query'
 import { getTokenDecimalsQueryOptions } from '@/stellar/queries/token/token-decimals.query'
@@ -13,7 +13,7 @@ export function useDepositTokens({
   network,
   account,
   tokens: { data: tokens = [] },
-}: NetworkParams & UserParams & { tokens: QueryProp<StellarAddress[]> }) {
+}: NetworkParams & UserParams & { tokens: QueryProp<StellarContract[]> }) {
   const decimals = useQueries({
     queries: tokens.map(token => getTokenDecimalsQueryOptions({ network, token })),
     combine: aggregateQueries,

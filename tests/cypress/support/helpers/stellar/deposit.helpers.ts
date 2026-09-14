@@ -1,4 +1,4 @@
-import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { minimumMint } from '@/stellar/lib/amounts'
 import { fetchExpectedLp } from '@/stellar/queries/deposit/deposit-expected-lp.query'
 import { fetchPoolConfig } from '@/stellar/queries/pool/pool-config.query'
@@ -15,14 +15,14 @@ import { decimalSum } from '@ui/lib/decimal'
 
 export const TEST_NETWORK = 'stellar-testnet'
 
-const fetchToken = async (address: StellarAddress, account: StellarAddress) => {
+const fetchToken = async (address: StellarContract, account: StellarAddress) => {
   const params = { network: TEST_NETWORK, token: address, account } as const
   const [decimals, symbol] = await Promise.all([fetchTokenDecimals(params), fetchTokenSymbol(params)])
   const balance = await fetchTokenBalance({ ...params, decimals }, { staleTime: 0 })
   return { ...params, symbol, decimals, balance }
 }
 
-export const fetchDepositState = async (pool: StellarAddress, { deployer, coins: testCoins }: TestnetConfig) => {
+export const fetchDepositState = async (pool: StellarContract, { deployer, coins: testCoins }: TestnetConfig) => {
   const poolParams = { network: TEST_NETWORK, pool } as const
   const [coins, lp, supply, config] = await Promise.all([
     Promise.all(testCoins.map(({ address }) => fetchToken(address, deployer.address))),

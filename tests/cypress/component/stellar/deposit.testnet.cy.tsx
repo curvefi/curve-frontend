@@ -1,5 +1,5 @@
 import { once } from 'lodash'
-import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { DepositTab } from '@/stellar/features/deposit/DepositTab'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import {
@@ -30,7 +30,7 @@ describe('Stellar testnet deposit', () => {
   let testnetConfig: TestnetConfig
   const getPool = once(deployTestPool)
   const getDepositState = () =>
-    cy.get<StellarAddress>('@pool').then(LOAD_TIMEOUT, pool => fetchDepositState(pool, testnetConfig))
+    cy.get<StellarContract>('@pool').then(LOAD_TIMEOUT, pool => fetchDepositState(pool, testnetConfig))
 
   before(() => {
     getTestnetConfig().then(config => {
@@ -47,7 +47,7 @@ describe('Stellar testnet deposit', () => {
 
   it('requires a connected wallet', () => {
     const { coins } = testnetConfig
-    cy.get<StellarAddress>('@pool').then(pool => {
+    cy.get<StellarContract>('@pool').then(pool => {
       cy.mount(
         <StellarTestWrapper>
           <DepositTab network={TEST_NETWORK} pool={pool} />

@@ -1,4 +1,4 @@
-import { readTokenBalance } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { rootKeys } from '@/stellar/queries/root-keys'
 import {
   balanceValidationSuite,
@@ -6,7 +6,7 @@ import {
   type BalanceParams,
 } from '@/stellar/queries/validation/deposit.validation'
 import { queryFactory } from '@ui/features/queries/factory'
-import { fromWei } from '@ui/lib/decimal'
+import { fromWei, ZERO } from '@ui/lib/decimal'
 
 export const {
   useQuery: useTokenBalance,
@@ -16,8 +16,16 @@ export const {
 } = queryFactory({
   queryKey: ({ network, token, account, decimals }: BalanceParams) =>
     [...rootKeys.token({ network, token }), ...rootKeys.user({ account }), 'balance', { decimals }] as const,
-  queryFn: async ({ network, token, account, decimals }: BalanceQuery) =>
-    fromWei((await readTokenBalance(network, token, account)).toString(), decimals),
+  queryFn: async ({ network, token, account, decimals }: BalanceQuery) => {
+    try {
+      const result = await readContract<bigint>(network, token, 'balance', [account])
+      return fromWei(result.toString(), decimals)
+    } catch (error) {
+      // Stellar asset contracts throw instead of returning zero when the account has no trustline.
+      if ((error as Error).message.includes('trustline entry is missing for account')) return ZERO
+      throw error
+    }
+  },
   category: 'global.tokenBalance',
   validationSuite: balanceValidationSuite,
 })

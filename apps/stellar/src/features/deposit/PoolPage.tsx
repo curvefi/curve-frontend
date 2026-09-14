@@ -1,4 +1,4 @@
-import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { StellarNetwork } from '@/stellar/lib/networks'
 import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
@@ -9,7 +9,7 @@ import { DepositTab } from './DepositTab'
 const menu = [{ value: 'deposit', label: t`Deposit`, component: DepositTab }]
 
 export const PoolPage = () => {
-  const { network, pool } = useParams<{ network: StellarNetwork; pool: StellarAddress }>()
+  const { network, pool } = useParams<{ network: StellarNetwork; pool: StellarContract }>()
   return (
     <DetailPageLayout
       formTabs={{ placement: 'inline', content: <FormTabs menu={menu} params={{ network, pool }} /> }}

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import {
   sendStellarTransaction,
-  type StellarTransactionError,
   type StellarTransaction,
   type StellarTransactionResponse,
 } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
@@ -11,16 +10,16 @@ import { notify, withPendingToast } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { logError, logMutation, logSuccess } from '@ui/lib/logging'
 import { assertValidity, type ValidationSuite } from '@ui/lib/validation/lib'
-import type { FieldsOf } from '@ui/lib/validation/types'
 
 type TransactionMutationOptions<TVariables> = {
   mutationKey: readonly unknown[]
   createTransaction: (variables: TVariables) => Promise<StellarTransaction>
   validateTransaction?: (transaction: StellarTransaction, variables: TVariables) => unknown
   validationSuite: ValidationSuite
-  pendingMessage: string
-  successMessage: string
-  onReset: (variables: TVariables) => void
+  pendingMessage: (variables: TVariables) => string
+  confirmingMessage?: (variables: TVariables) => string
+  successMessage: (variables: TVariables) => string
+  onReset: () => void
   onSuccess?: (data: StellarTransactionResponse, variables: TVariables) => unknown
 }
 
@@ -30,32 +29,34 @@ export function useStellarTransactionMutation<TVariables extends object>({
   validationSuite,
   validateTransaction,
   pendingMessage,
+  confirmingMessage,
   successMessage,
   onSuccess,
   onReset,
 }: TransactionMutationOptions<TVariables>) {
-  const [error, setError] = useState<StellarTransactionError | null>(null)
-  const { mutate, isPending, data } = useMutation({
+  // Errors thrown in onMutate also need to be available to the form.
+  const [error, setError] = useState<Error | null>(null)
+  const { mutate, isPending } = useMutation({
     mutationKey,
-    onMutate: (variables: FieldsOf<TVariables>) => {
+    onMutate: (variables: TVariables) => {
       setError(null)
       assertValidity(validationSuite, variables)
       logMutation(mutationKey, variables)
-      addBreadcrumb('Transaction mutation starting', 'mutation', variables)
+      addBreadcrumb('Transaction mutation starting', 'mutation', { variables })
     },
-    mutationFn: async (variables: FieldsOf<TVariables>) => {
-      const transaction = await withPendingToast(createTransaction(variables as TVariables), pendingMessage)
-      await validateTransaction?.(transaction, variables as TVariables)
+    mutationFn: async (variables: TVariables) => {
+      const transaction = await withPendingToast(createTransaction(variables), pendingMessage(variables))
+      await validateTransaction?.(transaction, variables)
       return withPendingToast(
         sendStellarTransaction(transaction),
-        t`Confirm in your wallet and wait for transaction confirmation`,
+        confirmingMessage?.(variables) || t`Confirm in your wallet and wait for transaction confirmation`,
       )
     },
     onSuccess: async (data, variables) => {
       logSuccess(mutationKey, { data, variables })
-      onReset(variables as TVariables)
-      await onSuccess?.(data, variables as TVariables)
-      notify(successMessage, 'success')
+      onReset()
+      await onSuccess?.(data, variables)
+      notify(successMessage(variables), 'success')
     },
     onError: (error, variables) => {
       setError(error)
@@ -64,5 +65,5 @@ export function useStellarTransactionMutation<TVariables extends object>({
       notify(t`Transaction failed`, 'error')
     },
   })
-  return { mutate, error, isPending, hash: data?.hash ?? error?.submission?.hash }
+  return { mutate, error, isPending }
 }

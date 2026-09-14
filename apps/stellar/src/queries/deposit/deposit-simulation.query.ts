@@ -1,4 +1,4 @@
-import { simulateContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { rootKeys } from '@/stellar/queries/root-keys'
 import {
@@ -26,7 +26,7 @@ export const {
       { maxAmounts },
     ] as const,
   queryFn: ({ network, pool, account, amounts, decimals, minMint }: DepositQuery) =>
-    simulateContract(
+    simulateContractCall<bigint>(
       network,
       pool,
       'add_liquidity',

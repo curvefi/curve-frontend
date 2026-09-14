@@ -1,4 +1,4 @@
-import type { StellarAddress, StellarSecret } from '@/stellar/features/connect-wallet/address'
+import type { StellarAddress, StellarContract, StellarSecret } from '@/stellar/features/connect-wallet/address'
 import type { StellarNetwork } from '@/stellar/lib/networks'
 import { assert } from '@primitives/objects.utils'
 
@@ -6,9 +6,9 @@ export type TestnetConfig = {
   network: StellarNetwork
   deployer: { address: StellarAddress; secret: StellarSecret }
   issuer: StellarAddress
-  factory: StellarAddress
-  coins: { symbol: string; address: StellarAddress; decimals: number }[]
-  pool: StellarAddress
+  factory: StellarContract
+  coins: { symbol: string; address: StellarContract; decimals: number }[]
+  pool: StellarContract
 }
 
 /** Set STELLAR_TESTNET_CONFIG in tests/cypress.env.json, or CYPRESS_STELLAR_TESTNET_CONFIG as JSON in the shell. */

@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { skipWhen, test } from 'vest'
-import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { isAccountAddress, isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { MAX_I128, minimumMint } from '@/stellar/lib/amounts'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
@@ -18,7 +18,7 @@ export type QuoteQuery = PoolQuery & { amounts: (Decimal | undefined)[]; decimal
 export type QuoteParams = FieldsOf<QuoteQuery>
 export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: Decimal[] }
 export type DepositParams = FieldsOf<DepositQuery>
-export type DepositSubmission = DepositQuery & { quote: Decimal; tokens: StellarAddress[]; slippage: Decimal }
+export type DepositSubmission = DepositQuery & { quote: Decimal; tokens: StellarContract[]; slippage: Decimal }
 export type DepositFormValues = {
   amounts: (Decimal | undefined)[] | undefined
   decimals: number[] | undefined

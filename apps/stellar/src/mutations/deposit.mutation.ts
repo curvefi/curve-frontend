@@ -23,8 +23,8 @@ import { useStellarTransactionMutation } from './useStellarTransactionMutation'
 export const useDepositMutation = ({
   onReset,
   ...params
-}: Omit<FieldsOf<DepositSubmission>, 'amounts'> & { onReset: (submitted: DepositSubmission) => void }) => {
-  const { mutate, error, isPending, hash } = useStellarTransactionMutation<DepositSubmission>({
+}: Omit<FieldsOf<DepositSubmission>, 'amounts'> & { onReset: () => void }) => {
+  const { mutate, error, isPending } = useStellarTransactionMutation<DepositSubmission>({
     mutationKey: [...rootKeys.userPool(params), 'deposit'],
     createTransaction: params => fetchDepositSimulation(params, { staleTime: 0 }),
     validateTransaction: async (transaction, params) => {
@@ -34,8 +34,8 @@ export const useDepositMutation = ({
       assertValidity(depositQuoteValidationSuite, { quote: simulatedLpAmount, acceptedQuote: params.quote })
     },
     validationSuite: depositSubmissionValidationSuite,
-    pendingMessage: t`Preparing deposit`,
-    successMessage: t`Deposit confirmed`,
+    pendingMessage: () => t`Preparing deposit`,
+    successMessage: () => t`Deposit confirmed`,
     onReset,
     onSuccess: async (_, submitted) => {
       await Promise.allSettled([
@@ -54,8 +54,20 @@ export const useDepositMutation = ({
   const { network, pool, account, decimals, tokens, quote, minMint, slippage, maxAmounts, supply } = params
   const onSubmit = useCallback(
     ({ amounts }: DepositFormValues) =>
-      mutate({ network, pool, account, decimals, tokens, quote, minMint, slippage, maxAmounts, supply, amounts }),
+      mutate({
+        network,
+        pool,
+        account,
+        decimals,
+        tokens,
+        quote,
+        minMint,
+        slippage,
+        maxAmounts,
+        supply,
+        amounts,
+      } as DepositSubmission),
     [mutate, network, pool, account, decimals, tokens, quote, minMint, slippage, maxAmounts, supply],
   )
-  return { onSubmit, mutate, error, isPending, hash }
+  return { onSubmit, mutate, error, isPending }
 }
