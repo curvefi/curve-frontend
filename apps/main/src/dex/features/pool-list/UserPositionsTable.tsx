@@ -71,19 +71,19 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
     <Stack data-testid="user-pool-positions">
       <TableHeader title={t`Your positions`} onReload={() => void onReload()} isLoading={isFetching} />
       <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
-        <MetricsGrid
-          variant="fillMobile"
-          sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}
-        >
-          <Metric
-            category="dex.poolListSummary"
-            label={t`Total liquidity provided`}
-            value={address ? totalLiquidityUsd : constQ(undefined)}
-            valueOptions={{ unit: 'dollar' }}
-          />
-        </MetricsGrid>
         {address ? (
           <>
+            <MetricsGrid
+              variant="fillMobile"
+              sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}
+            >
+              <Metric
+                category="dex.poolListSummary"
+                label={t`Total liquidity provided`}
+                value={address ? totalLiquidityUsd : constQ(undefined)}
+                valueOptions={{ unit: 'dollar' }}
+              />
+            </MetricsGrid>
             <EvmDataTable
               category="limited"
               table={table}
