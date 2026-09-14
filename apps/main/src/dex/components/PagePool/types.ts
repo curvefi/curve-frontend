@@ -13,7 +13,7 @@ export type Slippage = {
 
 export type Seed = { isSeed: boolean | null; loaded: boolean }
 
-export type PageTransferProps = { params: PoolUrlParams; hasDepositAndStake: boolean }
+export type PageTransferProps = { params: PoolUrlParams }
 
 export type TransferProps = {
   poolAlert: PoolAlert | null

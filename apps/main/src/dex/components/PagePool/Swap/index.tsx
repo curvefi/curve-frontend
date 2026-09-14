@@ -1,4 +1,4 @@
-import { cloneDeep, isUndefined } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig, useConnection, type Config } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
@@ -69,7 +69,6 @@ export const Swap = ({
   const formEstGas = useStore(state => state.poolSwap.formEstGas[activeKey] ?? DEFAULT_EST_GAS)
   const formStatus = useStore(state => state.poolSwap.formStatus)
   const formValues = useStore(state => state.poolSwap.formValues)
-  const hasRouter = useStore(state => state.hasRouter)
   const isMaxLoading = useStore(state => state.poolSwap.isMaxLoading)
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
   const fetchStepApprove = useStore(state => state.poolSwap.fetchStepApprove)
@@ -295,7 +294,7 @@ export const Swap = ({
 
   // get user balances
   useEffect(() => {
-    if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
+    if (curve && poolId && haveSigner && (userFromBalance == null || userToBalance == null)) {
       void fetchPoolTokenBalances(config, curve, poolId)
     }
   }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve])
@@ -453,7 +452,7 @@ export const Swap = ({
           onBalance={setToAmount}
           inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
           balance={decimal(formValues.toAmount)}
-          disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
+          disabled={!curve?.hasRouter() || isDisabled}
           tokenSelector={
             <TokenSelector
               selectedToken={toToken}
@@ -547,7 +546,7 @@ export const Swap = ({
       <AlertSlippage
         maxSlippage={maxSlippage}
         usdAmount={
-          !isUndefined(toUsdRate) && !Number.isNaN(toUsdRate)
+          toUsdRate != null && !Number.isNaN(toUsdRate)
             ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
             : ''
         }

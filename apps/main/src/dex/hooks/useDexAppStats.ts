@@ -2,8 +2,6 @@ import { useMemo } from 'react'
 import { ROUTE } from '@/dex/constants'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
-import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
-import { useStore } from '@/dex/store/useStore'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { APP_LINK } from '@evm-ui/shared/routes'
 import { type NetworkDef } from '@legacy-ui/utils'
@@ -36,23 +34,22 @@ const [swapRoute, ...dexRoutes] = APP_LINK.dex.routes
 const HIDE_ROUTER_SWAP = [Chain.Mantle]
 
 export function useDexRoutes({ chainId }: NetworkDef) {
-  const routerCached = useStore(state => state.storeCache.routerFormValues[chainId])
   const { data: network } = useNetworkByChain({ chainId })
   return useMemo(
     () => [
       ...(HIDE_ROUTER_SWAP.includes(chainId)
         ? []
-        : routerCached && network
-          ? [{ app: 'dex' as const, route: _createSwapPath(network.swap, routerCached), label: () => t`Swap` }]
+        : network
+          ? [{ app: 'dex' as const, route: _createSwapPath(network.swap), label: () => t`Swap` }]
           : [swapRoute]),
       ...dexRoutes.filter(page => page.route !== ROUTE.PAGE_SWAP),
     ],
-    [chainId, network, routerCached],
+    [chainId, network],
   )
 }
 
-function _createSwapPath(routerDefault: Record<string, string>, routerCached: SwapFormValuesCache) {
-  const from = routerCached?.fromAddress ?? routerDefault?.fromAddress
-  const to = routerCached?.toAddress ?? routerDefault?.toAddress
+function _createSwapPath(routerDefault: Record<string, string>) {
+  const from = routerDefault?.fromAddress
+  const to = routerDefault?.toAddress
   return `${ROUTE.PAGE_SWAP}/${from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''}`
 }
