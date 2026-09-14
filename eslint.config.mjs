@@ -83,9 +83,7 @@ const config = [
     },
     settings: {
       react: { version: 'detect' },
-      'import-x/resolver': {
-        typescript: { alwaysTryTypes: true, project: ['./tsconfig.json'] },
-      },
+      'import-x/resolver': { typescript: { alwaysTryTypes: true, project: ['./tsconfig.json'] } },
       'import-x/internal-regex': '^@(ui|legacy-ui|evm-ui|curvefi/prices-api|external-rewards)',
     },
     rules: {
@@ -202,6 +200,27 @@ const config = [
       'no-console': [
         'error', // use console.log only for debugging
         { allow: ['warn', 'error', 'info', 'trace', 'assert'] },
+      ],
+    },
+  },
+
+  // Keep direct wallet SDK access inside its wrapper.
+  {
+    ignores: ['apps/stellar/src/features/connect-wallet/stellar-wallet-kit.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@creit-tech/stellar-wallets-kit/sdk',
+              message: [
+                'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
+                'Change this rule if the file needs to be split.',
+              ].join(' '),
+            },
+          ],
+        },
       ],
     },
   },

@@ -1,3 +1,6 @@
+import { asAddress, shortenAddress } from '@/features/connect-wallet/address'
+import { StellarConnectModal } from '@/features/connect-wallet/StellarConnectModal'
+import { useWallet } from '@/features/connect-wallet/useWallet'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { GlobalBanner } from '@ui/features/banners/GlobalBanner'
@@ -43,37 +46,26 @@ const STELLAR_NETWORKS: ChainListOption[] = [
 ]
 
 const PLACEHOLDERS = {
-  user: undefined,
-  connectError: undefined,
-  walletError: new Error(t`The wallet connection is currently being implemented.`),
   notImplementedCallback: () => {
-    notify(PLACEHOLDERS.walletError.message, 'error')
+    notify(t`Wallet network switching is not implemented yet.`, 'error')
     return Promise.resolve()
   },
   chain: STELLAR_NETWORKS[0],
-  isConnected: false,
-  connectWalletProps: () => ({
-    disconnect: PLACEHOLDERS.notImplementedCallback,
-    address: PLACEHOLDERS.user,
-    addressLabel: undefined,
-    isConnecting: false,
-    isConnected: PLACEHOLDERS.isConnected,
-    connect: PLACEHOLDERS.notImplementedCallback,
-  }),
   stats: [],
   tvl: constQ<Record<string, number>>({}),
-  connectModal: null,
 }
 
 export const StellarNetworkAwareLayout = () => {
   const { network } = useParams<{ network?: string }>()
+  const { address, connect, disconnect, isConnected, isConnecting, error } = useWallet()
   const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
 
   const chain = STELLAR_NETWORKS.find(chain => chain.blockchainId === network) ?? PLACEHOLDERS.chain
   const formatUrl = (page: string) => `${chain.href}${page}`
   const pages = [{ label: t`Pools`, href: formatUrl('/pools') }]
+  const userAddress = asAddress(address)
   return (
-    <ErrorBoundary title={t`Root route error`} userAddress={PLACEHOLDERS.user}>
+    <ErrorBoundary title={t`Root route error`} userAddress={userAddress}>
       <HeadContent />
       <BackendMaintenanceGuard maintenance={backendMaintenance}>
         <PageLayout
@@ -82,14 +74,15 @@ export const StellarNetworkAwareLayout = () => {
               banners={
                 <GlobalBanner
                   rootUrl={EXTERNAL_LINKS.curve.root}
-                  connectError={PLACEHOLDERS.connectError}
+                  connectError={error}
                   switchChain={PLACEHOLDERS.notImplementedCallback}
+                  // TODO: Read the wallet network; the existing chain IDs do not distinguish mainnet from testnet.
                   walletChainId={chain.chainId}
                   chainName={chain.name}
                   chainId={chain.chainId}
                   blockchainId={chain.blockchainId}
                   backendMaintenance={backendMaintenance}
-                  isConnected={PLACEHOLDERS.isConnected}
+                  isConnected={isConnected}
                 >
                   {null}
                 </GlobalBanner>
@@ -102,11 +95,18 @@ export const StellarNetworkAwareLayout = () => {
               links={{ dex: { label: t`DEX`, href: chain.href, pages } }}
               sections={getHeaderSections(formatUrl)}
               tvls={PLACEHOLDERS.tvl}
-              connectWalletProps={PLACEHOLDERS.connectWalletProps()}
+              connectWalletProps={{
+                address: userAddress,
+                addressLabel: shortenAddress(address),
+                connect,
+                disconnect: () => void disconnect(),
+                isConnected,
+                isConnecting,
+              }}
             />
           }
-          userAddress={PLACEHOLDERS.user}
-          connectModal={PLACEHOLDERS.connectModal}
+          userAddress={userAddress}
+          connectModal={<StellarConnectModal />}
           footer={<Footer sections={getFooterSections(formatUrl)} />}
         >
           <Outlet />

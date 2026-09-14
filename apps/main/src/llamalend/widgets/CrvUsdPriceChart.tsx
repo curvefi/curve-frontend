@@ -27,6 +27,7 @@ import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import { Chain } from '@primitives/network.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -131,13 +132,7 @@ export const CrvUsdPriceChart = () => {
         }
       />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
-        <Stack
-          sx={{
-            display: 'grid',
-            gap: Spacing.xl,
-            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(5, 1fr)' },
-          }}
-        >
+        <MetricsGrid>
           <Metric
             category={METRIC_CATEGORY}
             label={t`Current price`}
@@ -164,7 +159,7 @@ export const CrvUsdPriceChart = () => {
               valueOptions={{ unit: 'percentage' }}
             />
           )}
-        </Stack>
+        </MetricsGrid>
         <EvmChartStateWrapper
           height={Height.shortChart}
           isLoading={showLoading}

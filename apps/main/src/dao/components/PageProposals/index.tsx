@@ -1,237 +1,151 @@
-import { useCallback } from 'react'
-import { styled } from 'styled-components'
-import { ErrorMessage } from '@/dao/components/ErrorMessage'
-import { useStore } from '@/dao/store/useStore'
-import { SortByFilterProposals, type ProposalListFilter } from '@/dao/types/dao.types'
+import { useCallback, useMemo, useRef } from 'react'
+import {
+  createProposalKey,
+  invalidateProposals,
+  type ProposalData,
+  useProposalsMapperQuery,
+} from '@/dao/entities/proposals-mapper'
 import { getEthPath } from '@/dao/utils'
+import { useFuzzyFilterFn } from '@evm-ui/hooks/useFuzzySearch'
+import { usePageFromQueryString } from '@evm-ui/hooks/usePageFromQueryString'
+import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
-import { SearchInput } from '@legacy-ui/SearchInput'
-import { SelectSortingMethod } from '@legacy-ui/Select/SelectSortingMethod'
-import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
+import { useFilters } from '@evm-ui/shared/ui/DataTable/hooks/useFilters'
+import { TableHeader } from '@evm-ui/shared/ui/DataTable/TableHeader'
+import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import Stack from '@mui/material/Stack'
+import { notFalsy } from '@primitives/objects.utils'
+import type { SortingState } from '@tanstack/react-table'
+import { EmptyStateCard } from '@ui/components/EmptyStateCard'
+import { Spinner } from '@ui/components/Spinner'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { useLayoutStore } from '@ui/features/layout/store'
+import { useMappedQuery } from '@ui/features/queries/util'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
+import { useScrollToTopOnPageChange } from '@ui/features/tables/hooks/useTableScroll'
+import { TablePagination } from '@ui/features/tables/TablePagination'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useNavigate } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
-import { invalidateProposals } from '../../entities/proposals-mapper'
-import { useProposalsList } from '../../hooks/useProposalsList'
-import { ProposalsFilters } from './components/ProposalsFilters'
-import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
-import { Proposal } from './Proposal'
+import { columns, ProposalColumnId } from './columns'
+import { Proposal } from './components/Proposal'
+import { ProposalsToolbar } from './components/ProposalsToolbar'
+
+const { Spacing } = SizesAndSpaces
+
+const EMPTY_PROPOSALS: ProposalData[] = []
+const PROPOSALS_PAGE_SIZE = 20 as const
+const DEFAULT_SORT: SortingState = [{ id: ProposalColumnId.TimeCreated, desc: true }]
+
+const onReload = () => invalidateProposals({})
 
 export const Proposals = () => {
-  const activeSortBy = useStore(state => state.proposals.activeSortBy)
-  const activeSortDirection = useStore(state => state.proposals.activeSortDirection)
-  const setActiveSortBy = useStore(state => state.proposals.setActiveSortBy)
-  const setActiveSortDirection = useStore(state => state.proposals.setActiveSortDirection)
-  const setActiveFilter = useStore(state => state.proposals.setActiveFilter)
-  const setSearchValue = useStore(state => state.proposals.setSearchValue)
-  const searchValue = useStore(state => state.proposals.searchValue)
-  const activeFilter = useStore(state => state.proposals.activeFilter)
-  const push = useNavigate()
+  const proposalsQuery = useProposalsMapperQuery({})
+  const tableQuery = useMappedQuery(
+    proposalsQuery,
+    useCallback(proposals => Object.values(proposals), []),
+  )
 
-  const { data: proposalsList, isLoading, isError, isSuccess } = useProposalsList()
+  const {
+    globalFilter: search,
+    setGlobalFilter: setSearch,
+    columnFiltersById,
+    setColumnFilter,
+    resetFilters,
+  } = useFilters({ columns: { Status: ProposalColumnId.Status }, resetPageOnChange: true })
 
-  const handleChangeSortingDirection = useCallback(() => {
-    setActiveSortDirection(activeSortDirection === 'asc' ? 'desc' : 'asc')
-  }, [activeSortDirection, setActiveSortDirection])
+  const status = columnFiltersById[ProposalColumnId.Status] ?? 'all'
 
-  const handleProposalClick = useCallback(
-    (rProposalId: string) => {
-      push(getEthPath(`${DAO_ROUTES.PAGE_PROPOSALS}/${rProposalId}`))
+  const [pagination, onPaginationChange] = usePageFromQueryString(PROPOSALS_PAGE_SIZE)
+
+  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
+  const globalFilterFn = useFuzzyFilterFn(tableQuery.data ?? EMPTY_PROPOSALS, search, [
+    { name: 'id', getFn: proposal => String(proposal.id) },
+    'proposer',
+    'type',
+    'metadata',
+  ])
+
+  const table = useCurveTable({
+    query: tableQuery,
+    columns,
+    state: {
+      // Finished proposals all have undefined for Ending Soon; break that tie by creation time, newest first.
+      sorting: useMemo(() => [...sorting, ...DEFAULT_SORT], [sorting]),
+      columnFilters: useMemo(
+        () => notFalsy(status !== 'all' && { id: ProposalColumnId.Status, value: status }),
+        [status],
+      ),
+      pagination,
+      globalFilter: search,
     },
+    onSortingChange,
+    onPaginationChange,
+    globalFilterFn,
+    getRowId: proposal => createProposalKey(proposal.id, proposal.type),
+  })
+
+  const navHeight = useLayoutStore(state => state.navHeight)
+  const tableTopRef = useRef<HTMLDivElement>(null)
+  useScrollToTopOnPageChange({ table, tableTopRef })
+
+  const push = useNavigate()
+  const handleProposalClick = useCallback(
+    (proposalId: string) => push(getEthPath(`${DAO_ROUTES.PAGE_PROPOSALS}/${proposalId}`)),
     [push],
   )
 
+  const rows = table.getRowModel().rows
+
   return (
     <DetailPageLayout formTabs={null}>
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-        <Header>
-          <h3 data-testid="proposal-title">{t`PROPOSALS`}</h3>
-          <StyledSearchInput
-            id="inpSearchProposals"
-            placeholder={t`Search`}
-            variant="small"
-            handleInputChange={val => setSearchValue(val)}
-            handleSearchClose={() => setSearchValue('')}
-            value={searchValue}
-          />
-        </Header>
-        <SortingBox>
-          <ListManagerContainer>
-            <StyledSelectFilter
-              items={PROPOSAL_FILTERS}
-              selectedKey={activeFilter}
-              minWidth="9rem"
-              onSelectionChange={key => key != null && setActiveFilter(key as ProposalListFilter)}
+      <Stack
+        ref={tableTopRef}
+        sx={{ backgroundColor: theme => theme.design.Layer[1].Fill, scrollMarginTop: `${navHeight}px` }}
+      >
+        <TableHeader
+          title={t`Proposals`}
+          onReload={() => void onReload()}
+          isLoading={proposalsQuery.isFetching}
+          testId="proposal-title"
+        />
+
+        <ProposalsToolbar
+          onSortingChange={onSortingChange}
+          resetFilters={resetFilters}
+          search={search}
+          setSearch={setSearch}
+          setStatus={value => setColumnFilter(ProposalColumnId.Status, value === 'all' ? null : value)}
+          sortBy={sorting[0].id}
+          sortDirection={sorting[0].desc ? 'desc' : 'asc'}
+          status={status}
+        />
+
+        <Stack sx={{ gap: Spacing.md, paddingInline: Spacing.md, paddingBlockEnd: Spacing.xxl }}>
+          {tableQuery.error ? (
+            <EvmErrorMessage
+              title={t`Error fetching proposals`}
+              error={tableQuery.error}
+              refreshData={onReload}
+              sx={{ paddingBlock: Spacing.xxl }}
             />
-            <StyledProposalsFilters
-              filters={PROPOSAL_FILTERS}
-              activeFilter={activeFilter}
-              setActiveFilter={setActiveFilter}
-              listLength={proposalsList.length}
-              proposalsLoading={isLoading}
-            />
-          </ListManagerContainer>
-          <SortingMethodContainer>
-            <StyledSelectSortingMethod
-              selectedKey={activeSortBy}
-              minWidth="9rem"
-              items={PROPOSAL_SORTING_METHODS}
-              onSelectionChange={key => key != null && setActiveSortBy(key as SortByFilterProposals)}
-            />
-            <ToggleDirectionIcon
-              size={20}
-              name={activeSortDirection === 'asc' ? 'ArrowUp' : 'ArrowDown'}
-              onClick={() => handleChangeSortingDirection()}
-            />
-          </SortingMethodContainer>
-        </SortingBox>
-        <Box flex flexColumn>
-          {searchValue !== '' && (
-            <SearchMessage>
-              Showing results ({proposalsList.length}) for &quot;<strong>{searchValue}</strong>&quot;:
-            </SearchMessage>
+          ) : tableQuery.isLoading ? (
+            <Spinner />
+          ) : rows.length ? (
+            rows.map(row => <Proposal key={row.id} proposalData={row.original} handleClick={handleProposalClick} />)
+          ) : (
+            <Stack sx={{ alignItems: 'center', paddingBlock: Spacing.xxl }}>
+              <EmptyStateCard
+                title={t`No proposals found`}
+                description={t`Try adjusting your filters or search query`}
+                button={{ label: t`Show all proposals`, onClick: resetFilters, testId: 'reset-proposals' }}
+              />
+            </Stack>
           )}
-          <ProposalsWrapper>
-            {isLoading && (
-              <StyledSpinnerWrapper>
-                <Spinner />
-              </StyledSpinnerWrapper>
-            )}
-            {isError && (
-              <ErrorMessageWrapper>
-                <ErrorMessage message={t`Error fetching proposals`} onClick={() => void invalidateProposals({})} />
-              </ErrorMessageWrapper>
-            )}
-            {isSuccess &&
-              proposalsList.map((proposal, index) => (
-                // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
-                <Proposal proposalData={proposal} handleClick={handleProposalClick} key={`${proposal.id}-${index}`} />
-              ))}
-          </ProposalsWrapper>
-        </Box>
+
+          {table.getPageCount() > 1 && <TablePagination table={table} />}
+        </Stack>
       </Stack>
     </DetailPageLayout>
   )
 }
-
-const Header = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
-  width: 100%;
-  @media (min-width: 29.375rem) {
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
-  }
-`
-
-const ProposalsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  row-gap: var(--spacing-3);
-  padding: 0 0 var(--spacing-7);
-  @media (min-width: 25rem) {
-    padding: 0 var(--spacing-3) var(--spacing-7);
-  }
-`
-
-const SortingBox = styled.div`
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
-  padding: 0 var(--spacing-3) var(--spacing-3);
-  @media (min-width: 63rem) {
-    display: flex;
-  }
-`
-
-const StyledSearchInput = styled(SearchInput)`
-  width: calc(100vw - var(--spacing-3) - var(--spacing-3));
-  @media (min-width: 29.375rem) {
-    width: 15rem;
-    grid-row: 1/2;
-    grid-column: 1/2;
-  }
-`
-
-const ListManagerContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  @media (min-width: 37.4375rem) {
-    margin: var(--spacing-1) 0 var(--spacing-2) 0;
-  }
-  @media (min-width: 63rem) {
-    margin: auto 0;
-  }
-`
-
-const SortingMethodContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin: auto 0 auto auto;
-  @media (min-width: 28.1875rem) {
-    grid-row: 1/2; // Changed to second row
-    grid-column: 2/3;
-  }
-`
-
-const StyledSelectFilter = styled(SelectSortingMethod)`
-  margin: auto 0;
-  grid-column: 1/2;
-  grid-row: 2/3;
-  @media (min-width: 37.5rem) {
-    display: none;
-  }
-`
-
-const StyledProposalsFilters = styled(ProposalsFilters)`
-  display: flex;
-  @media (max-width: 37.4375rem) {
-    display: none;
-  }
-`
-
-const StyledSelectSortingMethod = styled(SelectSortingMethod)`
-  margin: auto 0;
-  @media (min-width: 28.1875rem) {
-    grid-column: 1/2;
-    grid-row: 1/2;
-  }
-`
-
-const ToggleDirectionIcon = styled(Icon)`
-  margin: auto 0 auto var(--spacing-2);
-  &:hover {
-    cursor: pointer;
-  }
-`
-
-const SearchMessage = styled.p`
-  font-size: var(--font-size-2);
-  margin-left: var(--spacing-2);
-  margin-bottom: var(--spacing-2);
-  padding: 0 var(--spacing-3);
-`
-
-const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  width: 100%;
-`
-
-const ErrorMessageWrapper = styled.div`
-  width: 100%;
-  min-width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-5) 0;
-  @media (min-width: 25rem) {
-    padding: var(--spacing-5) var(--spacing-3);
-  }
-`

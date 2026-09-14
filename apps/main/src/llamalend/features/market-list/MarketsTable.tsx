@@ -38,7 +38,7 @@ export const MarketsTable = ({
   tableQuery: QueryProp<LlamaMarketsTableResult>
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
-  const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const visibilitySettingsRef = useRef<HTMLButtonElement>(null)

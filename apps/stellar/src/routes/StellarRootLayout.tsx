@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+import { StellarWalletProvider } from '@/features/connect-wallet/StellarWalletProvider'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import MuiLink from '@mui/material/Link'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -27,7 +28,7 @@ export const StellarRootLayout = ({ children }: { children: ReactNode }) => {
       />
       <ErrorBoundary title={t`Root layout error`} LinkComponent={MuiLink}>
         <QueryProvider persister={persister} queryClient={queryClient}>
-          {children}
+          <StellarWalletProvider>{children}</StellarWalletProvider>
           {DEV_TOOLS && <ReactQueryDevtools />}
         </QueryProvider>
       </ErrorBoundary>
