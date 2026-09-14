@@ -1,18 +1,18 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
+import { getAddress } from 'viem'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { TableRowTitle } from '@evm-ui/shared/ui/DataTable/TableRowTitle'
 import { UserPositionIndicator } from '@evm-ui/shared/ui/DataTable/UserPositionIndicator'
-import { tryChecksumAddress } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
 import { CopyIconButton } from '@ui/components/CopyIconButton'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import {
   CLICKABLE_IN_ROW_CLASS,
-  DESKTOP_ONLY_HOVER_CLASS,
   type CurveTableFeatures,
+  DESKTOP_ONLY_HOVER_CLASS,
 } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -52,7 +52,7 @@ export const LegacyPoolTitleCell = ({
               className={`${DESKTOP_ONLY_HOVER_CLASS} ${CLICKABLE_IN_ROW_CLASS}`}
               label={t`Copy pool address`}
               copyText={pool.address}
-              format={tryChecksumAddress}
+              format={getAddress}
               confirmationText={t`Pool address copied`}
             />
           </Stack>

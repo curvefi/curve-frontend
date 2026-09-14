@@ -4,8 +4,8 @@ import { Metric } from '@evm-ui/shared/ui/Metric'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery } from '@ui/features/queries/util'
-import { Sizing } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -38,7 +38,7 @@ export const StatsBanner = () => {
         <Typography variant="headingSBold">{t`Your stablecoins could do more`}</Typography>
         <Typography variant="bodyMRegular">{t`With $100k of scrvUSD held you could get`}</Typography>
       </Stack>
-      <Stack direction="row" sx={{ gap: Sizing[200], justifyContent: 'space-between', flexWrap: 'wrap' }}>
+      <MetricsGrid variant="fill">
         <Metric
           category={METRIC_CATEGORY}
           label={t`30 Days Projection`}
@@ -70,7 +70,7 @@ This value is an indicator based on the historical yield of the crvUSD Savings V
           }}
           copyText={t`Copied estimated APY`}
         />
-      </Stack>
+      </MetricsGrid>
     </Stack>
   )
 }

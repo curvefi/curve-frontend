@@ -16,7 +16,6 @@ import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { networks } from '@/loan/networks'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
-import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
@@ -25,6 +24,7 @@ import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import type { Range } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
@@ -65,7 +65,6 @@ export const MintMarketPage = () => {
   const collateralEvents = useUserCollateralEvents({
     app: MarketType.Mint,
     chainId,
-    blockchainId: getPricesApiBlockchainId(network.blockchainId),
     controllerAddress,
     userAddress: address,
     tokens,
@@ -110,7 +109,11 @@ export const MintMarketPage = () => {
       >
         <MarketBanners chainId={chainId} market={market} />
         <MarketSection id="position-details">
-          <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+          <PositionDetailsComposite
+            type={MarketRateType.Borrow}
+            hasPosition={loanExists}
+            events={mapQuery(collateralEvents, data => data.events)}
+          />
         </MarketSection>
         <MarketInformationComposite previewPrices={previewPrices} />
       </DetailPageLayout>

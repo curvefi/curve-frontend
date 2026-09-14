@@ -22,32 +22,33 @@ export const MarketLoanParameters = ({
     <>
       {(!apiMarket.data || marketId) && (
         // these fields are not exposed by the API yet
-        <>
-          <ActionInfo
-            testId="market-param-amm-swap-fee"
-            label={t`AMM swap fee`}
-            labelTooltip={{
-              title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
-            }}
-            value={mapQuery(
-              mapQuery(parameters, d => d.fee),
-              value => formatNumber(value, 'percent.rate'),
-            )}
-          />
-
-          <ActionInfo
-            testId="market-param-admin-fee"
-            label={t`Admin fee`}
-            labelTooltip={{
-              title: t`The share of market interest routed to the market admin or fee receiver instead of lenders.`,
-            }}
-            value={mapQuery(
-              mapQuery(parameters, d => d.admin_fee),
-              value => formatNumber(value, 'percent.rate'),
-            )}
-          />
-        </>
+        <ActionInfo
+          testId="market-param-amm-swap-fee"
+          label={t`AMM swap fee`}
+          labelTooltip={{
+            title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
+          }}
+          value={mapQuery(
+            mapQuery(parameters, d => d.fee),
+            value => formatNumber(value, 'percent.rate'),
+          )}
+        />
       )}
+
+      <ActionInfo
+        testId="market-param-admin-fee"
+        label={t`Admin fee`}
+        labelTooltip={{
+          title: t`The share of market interest routed to the market admin or fee receiver instead of lenders.`,
+        }}
+        value={mapQuery(
+          fallbackQ(
+            mapQuery(parameters, p => p.admin_fee),
+            mapQuery(apiMarket, m => m.parameters.adminFee),
+          ),
+          value => formatNumber(value, 'percent.rate'),
+        )}
+      />
 
       <ActionInfo
         testId="market-param-band-width-factor"

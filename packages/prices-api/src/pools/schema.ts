@@ -111,9 +111,9 @@ const transformPoolTrade = (data: PoolTradeData, tokenSold?: TradeTokenData, tok
   tokenSoldSymbol: data.tokenSoldSymbol ?? requireTradeToken(tokenSold, data.soldId).symbol,
   tokenBoughtSymbol: data.tokenBoughtSymbol ?? requireTradeToken(tokenBought, data.boughtId).symbol,
   tokensSold: data.tokensSold,
-  tokensSoldUsd: data.tokensSoldUsd ?? 0,
+  tokensSoldUsd: data.tokensSoldUsd,
   tokensBought: data.tokensBought,
-  tokensBoughtUsd: data.tokensBoughtUsd ?? 0,
+  tokensBoughtUsd: data.tokensBoughtUsd,
   blockNumber: data.blockNumber,
   time: data.time,
   txHash: data.transactionHash,
@@ -152,13 +152,7 @@ const allPoolTrade = z
     pool_state: z.unknown().nullable(),
   })
   .transform(camelizeKeys)
-  .transform(({ transactionHash, tokensSoldUsd, tokensBoughtUsd, usdFee, ...data }) => ({
-    ...data,
-    tokensSoldUsd: tokensSoldUsd ?? 0,
-    tokensBoughtUsd: tokensBoughtUsd ?? 0,
-    txHash: transactionHash,
-    usdFee: usdFee ?? 0,
-  }))
+  .transform(({ transactionHash, usdFee, ...data }) => ({ ...data, txHash: transactionHash, usdFee: usdFee ?? 0 }))
 
 const poolLiquidityEventType = z.enum([
   'AddLiquidity',

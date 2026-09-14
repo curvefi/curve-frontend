@@ -5,6 +5,7 @@ import { TokenInfo } from '@ui/components/TokenInfo'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { TimestampCell, AddressCell } from '../cells'
+import { ActivityUsdValue } from '../cells/ActivityUsdValue'
 import type { PoolTradeRow } from '../types'
 
 export enum PoolTradesColumnId {
@@ -37,7 +38,13 @@ export const POOL_TRADES_COLUMNS = columnHelper.columns([
           blockchainId={row.original.blockchainId}
           iconPosition="right"
           primary={formatNumber(row.original.tokensBought, { abbreviate: false })}
-          secondary={formatNumber(row.original.tokensBoughtUsd, 'usd.notional')}
+          secondary={
+            <ActivityUsdValue
+              amount={row.original.tokensBought}
+              amountUsd={row.original.tokensBoughtUsd}
+              timestamp={row.original.time}
+            />
+          }
         />
       </InlineTableCell>
     ),
@@ -53,7 +60,14 @@ export const POOL_TRADES_COLUMNS = columnHelper.columns([
           blockchainId={row.original.blockchainId}
           iconPosition="right"
           primary={formatNumber(-row.original.tokensSold, { abbreviate: false })}
-          secondary={formatNumber(-row.original.tokensSoldUsd, 'usd.notional')}
+          secondary={
+            <ActivityUsdValue
+              amount={row.original.tokensSold}
+              amountUsd={row.original.tokensSoldUsd}
+              timestamp={row.original.time}
+              isSold
+            />
+          }
         />
       </InlineTableCell>
     ),
