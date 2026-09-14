@@ -1,12 +1,13 @@
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
-import { minimumMint } from '@/stellar/lib/amounts'
+import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { fetchExpectedLp } from '@/stellar/queries/deposit/deposit-expected-lp.query'
 import { fetchPoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { fetchTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { fetchTokenSymbol } from '@/stellar/queries/token/token-symbol.query'
-import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import type { TestnetConfig, TokenConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -19,7 +20,7 @@ const fetchToken = async (address: StellarContract, account: StellarAddress) => 
   const params = { network: TEST_NETWORK, token: address, account } as const
   const [decimals, symbol] = await Promise.all([fetchTokenDecimals(params), fetchTokenSymbol(params)])
   const balance = await fetchTokenBalance({ ...params, decimals }, { staleTime: 0 })
-  return { ...params, symbol, decimals, balance }
+  return { ...params, address, symbol, decimals, balance }
 }
 
 export const fetchDepositState = async (pool: StellarContract, { deployer, coins: testCoins }: TestnetConfig) => {
@@ -45,37 +46,39 @@ export const fetchDepositPreview = async ({ pool, coins, lp, supply }: DepositSt
   })
   return {
     expected,
-    minimum: minimumMint(expected, useUserProfileStore.getState().maxSlippage.stable),
+    minimum: calculateMinimumMint(expected, useUserProfileStore.getState().maxSlippage.stable),
     projected: decimalSum(lp.balance, expected),
   }
 }
 
-export const depositInput = (symbol: string) =>
-  cy.contains('[data-testid^="pool-deposit-input-"]', symbol, LOAD_TIMEOUT)
+export const depositInput = (address: StellarContract) =>
+  cy.get(`[data-testid="pool-deposit-input-${address}"]`, LOAD_TIMEOUT)
 export const depositSubmit = () => cy.get('[data-testid="pool-deposit-submit"]', LOAD_TIMEOUT)
-export const writeDepositForm = (amounts: DepositAmounts) =>
-  Object.entries(amounts).forEach(([symbol, amount]) => {
-    depositInput(symbol).find('input').clear().type(amount).blur()
+export const writeDepositForm = (coins: Pick<TokenConfig, 'address' | 'symbol'>[], amounts: DepositAmounts) =>
+  coins.forEach(({ address, symbol }) => {
+    const amount = amounts[symbol]
+    if (amount != null) {
+      depositInput(address).find('input').clear().type(amount).blur()
+    }
   })
 
-export const checkDepositDetail = (label: string, amount: Decimal) =>
-  cy
-    .contains('[data-testid="action-info"]', label, LOAD_TIMEOUT)
-    .find('[data-testid="action-info-value"]')
-    .should('have.text', formatNumber(amount, 'token.balance'))
+export const checkDepositDetail = (
+  detail: 'expected-lp' | 'minimum-lp' | 'current-lp' | 'projected-lp' | 'seed-lock',
+  amount: Decimal,
+) => getActionValue(`pool-deposit-${detail}`).should('equal', formatNumber(amount, 'token.balance'))
 
 export const checkDepositBalances = ({ coins, lp }: DepositState) => {
-  checkDepositDetail('Current LP balance', lp.balance)
-  coins.forEach(({ symbol, balance }) => {
-    depositInput(symbol).find('[data-testid="balance-value"]').should('have.attr', 'data-value', balance)
+  checkDepositDetail('current-lp', lp.balance)
+  coins.forEach(({ address, balance }) => {
+    depositInput(address).find('[data-testid="balance-value"]').should('have.attr', 'data-value', balance)
   })
 }
 
 export const submitDepositForm = ({ coins }: Pick<DepositState, 'coins'>) => {
   depositSubmit().click(LOAD_TIMEOUT)
   cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).should('contain.text', 'Deposit confirmed')
-  coins.forEach(({ symbol }) => {
-    depositInput(symbol).find('input').should('have.value', '')
+  coins.forEach(({ address }) => {
+    depositInput(address).find('input').should('have.value', '')
   })
   depositSubmit().should('be.disabled')
 }

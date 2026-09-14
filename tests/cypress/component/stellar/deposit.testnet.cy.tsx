@@ -1,6 +1,8 @@
 import { once } from 'lodash'
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { DepositTab } from '@/stellar/features/deposit/DepositTab'
+import { oneOf } from '@cy/support/generators'
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import {
   checkDepositBalances,
@@ -14,15 +16,20 @@ import {
   TEST_NETWORK,
   writeDepositForm,
 } from '@cy/support/helpers/stellar/deposit.helpers'
-import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
+import {
+  getTestnetConfig,
+  type TestnetConfig,
+  type TokenConfig,
+} from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
-import { assert } from '@primitives/objects.utils'
+import { assert, fromEntries } from '@primitives/objects.utils'
 import { queryClient } from '@ui/features/queries/query-client'
 import { decimalMinus, decimalSum, fromWei } from '@ui/lib/decimal'
 
-const balancedDeposit: DepositAmounts = { USDX: '0.01', USDY: '0.01', USDZ: '0.01' }
-const zeroDeposit: DepositAmounts = { USDX: '0', USDY: '0', USDZ: '0' }
+const balancedDeposit = (coins: TokenConfig[]): DepositAmounts => fromEntries(coins.map(c => [c.symbol, '0.01']))
+const singleCoinDeposit = (coins: TokenConfig[]): DepositAmounts => fromEntries([[oneOf(...coins).symbol, '0.01']])
+const zeroDeposit = (coins: TokenConfig[]): DepositAmounts => fromEntries(coins.map(c => [c.symbol, '0']))
 
 describe('Stellar testnet deposit', () => {
   skipTestsAfterFailure()
@@ -54,16 +61,16 @@ describe('Stellar testnet deposit', () => {
         </StellarTestWrapper>,
       )
     })
-    coins.forEach(({ symbol }) => {
-      depositInput(symbol).should('be.visible')
+    coins.forEach(({ address }) => {
+      depositInput(address).should('be.visible')
     })
-    cy.contains('button', 'Connect Wallet', LOAD_TIMEOUT).should('be.enabled')
+    cy.get('[data-testid="pool-deposit-connect-wallet"]', LOAD_TIMEOUT).should('be.enabled')
     depositSubmit().should('not.exist')
   })
 
   it('loads pool balances and rejects an empty or zero deposit', () => {
     getDepositState().then(state => {
-      const { deployer } = testnetConfig
+      const { deployer, coins } = testnetConfig
       cy.mount(
         <StellarTestWrapper address={deployer.address}>
           <DepositTab network={TEST_NETWORK} pool={state.pool} />
@@ -71,8 +78,10 @@ describe('Stellar testnet deposit', () => {
       )
       checkDepositBalances(state)
       depositSubmit().should('be.disabled')
-      writeDepositForm(zeroDeposit)
-      cy.contains('Enter an amount to deposit', LOAD_TIMEOUT).should('be.visible')
+      writeDepositForm(coins, zeroDeposit(coins))
+      cy.get('[data-testid="loan-form-error-amounts"]', LOAD_TIMEOUT)
+        .should('be.visible')
+        .and('contain.text', 'Enter an amount to deposit')
       depositSubmit().should('be.disabled')
     })
   })
@@ -86,12 +95,18 @@ describe('Stellar testnet deposit', () => {
         </StellarTestWrapper>,
       )
       checkDepositBalances(state)
-      state.coins.forEach(({ symbol, balance, decimals }) => {
-        writeDepositForm({ ...balancedDeposit, [symbol]: decimalSum(balance, '1') })
-        cy.contains('Insufficient token balance', LOAD_TIMEOUT).should('be.visible')
+      state.coins.forEach(({ address, symbol, balance, decimals }) => {
+        writeDepositForm(state.coins, { ...balancedDeposit(state.coins), [symbol]: decimalSum(balance, '1') })
+        depositInput(address)
+          .find('[data-testid="helper-message-error"]')
+          .should('be.visible')
+          .and('contain.text', 'Insufficient token balance')
         depositSubmit().should('be.disabled')
-        writeDepositForm({ [symbol]: fromWei('1', decimals + 1) })
-        cy.contains('Amounts exceed token decimal precision', LOAD_TIMEOUT).should('be.visible')
+        writeDepositForm(state.coins, { [symbol]: fromWei('1', decimals + 1) })
+        depositInput(address)
+          .find('[data-testid="helper-message-error"]')
+          .should('be.visible')
+          .and('contain.text', 'Amount exceeds token decimal precision')
         depositSubmit().should('be.disabled')
       })
     })
@@ -106,9 +121,9 @@ describe('Stellar testnet deposit', () => {
         </StellarTestWrapper>,
       )
       checkDepositBalances(state)
-      state.coins.forEach(({ symbol, balance }) => {
-        depositInput(symbol).contains('Max').click()
-        depositInput(symbol).find('input').should('have.value', balance)
+      state.coins.forEach(({ address, balance }) => {
+        depositInput(address).find('[data-testid="input-chip-Max"]').click()
+        depositInput(address).find('input').should('have.value', balance)
       })
     })
   })
@@ -123,14 +138,18 @@ describe('Stellar testnet deposit', () => {
           <DepositTab network={TEST_NETWORK} pool={state.pool} />
         </StellarTestWrapper>,
       )
-      cy.contains('The first deposit must fund every coin', LOAD_TIMEOUT).should('be.visible')
-      checkDepositDetail('Permanently locked LP', state.config.seedLock)
-      state.coins.forEach(({ symbol }) => {
-        writeDepositForm({ ...balancedDeposit, [symbol]: '0' })
-        cy.contains('Seed deposits require a positive amount of every coin', LOAD_TIMEOUT).should('be.visible')
+      cy.get('[data-testid="pool-deposit-seed-alert"]', LOAD_TIMEOUT).should('be.visible')
+      checkDepositDetail('seed-lock', state.config.seedLock)
+      state.coins.forEach(({ address, symbol }) => {
+        writeDepositForm(state.coins, { ...balancedDeposit, [symbol]: '0' })
+        cy.get('[data-testid="loan-form-error-amounts"]', LOAD_TIMEOUT)
+          .should('be.visible')
+          .and('contain.text', 'Seed deposits require a positive amount of every coin')
         depositSubmit().should('be.disabled')
-        depositInput(symbol).find('input').clear().blur()
-        cy.contains('Seed deposits require a positive amount of every coin', LOAD_TIMEOUT).should('be.visible')
+        depositInput(address).find('input').clear().blur()
+        cy.get('[data-testid="loan-form-error-amounts"]', LOAD_TIMEOUT)
+          .should('be.visible')
+          .and('contain.text', 'Seed deposits require a positive amount of every coin')
         depositSubmit().should('be.disabled')
       })
     })
@@ -139,11 +158,12 @@ describe('Stellar testnet deposit', () => {
   ;[
     { label: 'the initial seed', amounts: balancedDeposit, isSeed: true },
     { label: 'all three coins', amounts: balancedDeposit, isSeed: false },
-    { label: 'a single coin', amounts: { USDX: '0.01' } satisfies DepositAmounts, isSeed: false },
-  ].forEach(({ label, amounts, isSeed }) => {
+    { label: 'a single coin', amounts: singleCoinDeposit, isSeed: false },
+  ].forEach(({ label, amounts: getAmounts, isSeed }) => {
     it(`deposits ${label}, confirms LP received and refreshes balances`, () => {
       getDepositState().then(state => {
-        const { deployer } = testnetConfig
+        // todo: either use coins from state or config, not both!
+        const { deployer, coins } = testnetConfig
         cy.mount(
           <StellarTestWrapper address={deployer.address}>
             <DepositTab network={TEST_NETWORK} pool={state.pool} />
@@ -152,18 +172,19 @@ describe('Stellar testnet deposit', () => {
         checkDepositBalances(state)
         if (isSeed) {
           expect(state.supply).to.equal('0')
-          checkDepositDetail('Permanently locked LP', state.config.seedLock)
-          cy.contains('The first deposit must fund every coin', LOAD_TIMEOUT).should('be.visible')
+          checkDepositDetail('seed-lock', state.config.seedLock)
+          cy.get('[data-testid="pool-deposit-seed-alert"]', LOAD_TIMEOUT).should('be.visible')
         } else {
-          cy.contains('The first deposit must fund every coin').should('not.exist')
-          cy.contains('Permanently locked LP').should('not.exist')
+          cy.get('[data-testid="pool-deposit-seed-alert"]').should('not.exist')
+          cy.get('[data-testid="pool-deposit-seed-lock"]').should('not.exist')
         }
-        writeDepositForm(amounts)
+        const amounts = getAmounts(coins)
+        writeDepositForm(state.coins, amounts)
         cy.then(LOAD_TIMEOUT, () => fetchDepositPreview(state, amounts)).then(({ expected, minimum, projected }) => {
-          checkDepositDetail('Expected LP received', expected)
-          checkDepositDetail('Minimum LP received', minimum)
-          checkDepositDetail('Projected LP balance', projected)
-          cy.get('[data-testid="estimated-tx-cost-value"]', LOAD_TIMEOUT).should('contain.text', 'XLM')
+          checkDepositDetail('expected-lp', expected)
+          checkDepositDetail('minimum-lp', minimum)
+          checkDepositDetail('projected-lp', projected)
+          getActionValue('estimated-tx-cost').should('include', 'XLM')
           submitDepositForm(state)
           checkDepositBalances({
             ...state,
@@ -184,8 +205,8 @@ describe('Stellar testnet deposit', () => {
               'LP supply includes the lock only on the first deposit',
             ).to.equal(decimalSum(expected, isSeed ? state.config.seedLock : '0'))
             expect(decimalMinus(next.supply, next.lp.balance), 'permanently locked LP').to.equal(state.config.seedLock)
-            cy.contains('The first deposit must fund every coin').should('not.exist')
-            cy.contains('Permanently locked LP').should('not.exist')
+            cy.get('[data-testid="pool-deposit-seed-alert"]').should('not.exist')
+            cy.get('[data-testid="pool-deposit-seed-lock"]').should('not.exist')
             checkDepositBalances(next)
           })
         })

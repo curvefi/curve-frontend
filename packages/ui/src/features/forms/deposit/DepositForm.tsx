@@ -35,7 +35,7 @@ export type DepositFormProps<TValues extends DepositFormValues = DepositFormValu
 export const DepositForm = <TValues extends DepositFormValues>({
   form,
   amounts,
-  tokens,
+  tokens: { data: tokens, error: tokensError },
   onAmount,
   onSubmit,
   isPending,
@@ -51,18 +51,13 @@ export const DepositForm = <TValues extends DepositFormValues>({
 }: DepositFormProps<TValues>) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
     {isSeed && (
-      <Alert severity="info" variant="outlined">
+      <Alert severity="info" variant="outlined" data-testid="pool-deposit-seed-alert">
         <AlertTitle>{t`The first deposit must fund every coin`}</AlertTitle>
         {t`The seed lock is permanent; expected LP is the net amount you receive.`}
       </Alert>
     )}
-    {tokens.isLoading && !tokens.data && (
-      <>
-        <LargeTokenInputSkeleton />
-        <LargeTokenInputSkeleton />
-      </>
-    )}
-    {tokens.data?.map((token, index) => (
+    {}
+    {tokens?.map((token, index) => (
       <LargeTokenInput
         key={token.address}
         name={`amounts.${index}`}
@@ -74,9 +69,15 @@ export const DepositForm = <TValues extends DepositFormValues>({
         walletBalance={{ symbol: token.symbol, balance: token.balance }}
         maxBalance={{ balance: token.balance, chips: 'max' }}
         message={token.error}
-        testId={`pool-deposit-input-${index}`}
+        testId={`pool-deposit-input-${token.address}`}
       />
-    ))}
+    )) ??
+      (!tokensError && (
+        <>
+          <LargeTokenInputSkeleton />
+          <LargeTokenInputSkeleton />
+        </>
+      ))}
     <HighPriceImpactAlert priceImpact={priceImpact} />
     <FormButton
       {...wallet}
@@ -85,6 +86,7 @@ export const DepositForm = <TValues extends DepositFormValues>({
       disabled={isDisabled}
       label={t`Deposit`}
       testId="pool-deposit-submit"
+      connectWalletTestId="pool-deposit-connect-wallet"
     />
     <FormAlerts error={error} formErrors={formErrors} handledErrors={[]} userAddress={userAddress} />
   </Form>

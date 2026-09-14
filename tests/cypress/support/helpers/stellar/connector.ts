@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-imports -- Single SDK boundary for Stellar test wallet signing and fixture deployment. */
-import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarWalletsKit } from '@creit-tech/stellar-wallets-kit/sdk'
 import { type ModuleInterface, ModuleType, Networks } from '@creit-tech/stellar-wallets-kit/types'
@@ -31,28 +31,25 @@ export const connectTestWallet = ({ deployer }: TestnetConfig) => {
   return StellarWalletsKit.fetchAddress()
 }
 
-type DeployPoolParams = {
-  deployer: string
-  name: string
-  symbol: string
-  coins: string[]
-  a: bigint
-  fee: bigint
-  offpeg_fee_multiplier: bigint
-  ma_exp_time: bigint
-  implementation_idx: number
-  asset_types: number[]
-  methods: string[]
-  oracles: string[]
-}
 type Factory = {
-  deploy_plain_pool: (
-    params: DeployPoolParams,
-  ) => Promise<contract.AssembledTransaction<contract.Result<StellarAddress>>>
+  deploy_plain_pool: (params: {
+    deployer: StellarAddress
+    name: string
+    symbol: string
+    coins: StellarContract[]
+    a: bigint
+    fee: bigint
+    offpeg_fee_multiplier: bigint
+    ma_exp_time: bigint
+    implementation_idx: number
+    asset_types: 0[]
+    methods: []
+    oracles: StellarContract[]
+  }) => Promise<contract.AssembledTransaction<contract.Result<StellarContract>>>
 }
 
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
-export const deployTestPool = async ({ factory: factoryAddress, deployer, coins: testCoins }: TestnetConfig) => {
+export const deployTestPool = async ({ factory: factoryAddress, deployer, coins: coins }: TestnetConfig) => {
   const factory = await contract.Client.from<Factory>({
     contractId: factoryAddress,
     publicKey: deployer.address,
@@ -60,12 +57,11 @@ export const deployTestPool = async ({ factory: factoryAddress, deployer, coins:
     rpcUrl: STELLAR_NETWORKS['stellar-testnet'].rpcUrl,
     signTransaction: (xdr, options) => StellarWalletsKit.signTransaction(xdr, options),
   })
-  const coins = testCoins.map(({ address }) => address)
   const transaction = await factory.deploy_plain_pool({
     deployer: deployer.address,
     name: 'Cypress StableSwap USDX/USDY/USDZ',
     symbol: 'CY-USDXUSDYUSDZ',
-    coins,
+    coins: coins.map(c => c.address),
     a: 100n,
     fee: 30_000_000n,
     offpeg_fee_multiplier: 20_000_000_000n,
@@ -75,6 +71,6 @@ export const deployTestPool = async ({ factory: factoryAddress, deployer, coins:
     methods: [],
     oracles: [],
   })
-  const confirmed = await transaction.signAndSend()
-  return confirmed.result.unwrap()
+  const { result } = await transaction.signAndSend()
+  return result.unwrap()
 }

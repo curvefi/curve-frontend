@@ -2,12 +2,14 @@ import type { StellarAddress, StellarContract, StellarSecret } from '@/stellar/f
 import type { StellarNetwork } from '@/stellar/lib/networks'
 import { assert } from '@primitives/objects.utils'
 
+export type TokenConfig = { symbol: string; address: StellarContract; decimals: number }
+
 export type TestnetConfig = {
   network: StellarNetwork
   deployer: { address: StellarAddress; secret: StellarSecret }
   issuer: StellarAddress
   factory: StellarContract
-  coins: { symbol: string; address: StellarContract; decimals: number }[]
+  coins: TokenConfig[]
   pool: StellarContract
 }
 

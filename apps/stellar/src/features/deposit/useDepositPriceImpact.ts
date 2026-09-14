@@ -17,6 +17,7 @@ import {
   toWei,
 } from '@ui/lib/decimal'
 
+/** Adjusts the value of the amounts based on the rates and decimals. */
 const rateAdjustedValue = (amounts: (Decimal | undefined)[], rates: Decimal[], decimals?: number[]) =>
   decimalSum(
     ...rates.map((rate, index) =>
@@ -33,8 +34,7 @@ export function useDepositPriceImpact(params: QuoteParams, quote: Query<Decimal>
       // Raw amounts × stored rates normalize coins with different decimals.
       const value = rateAdjustedValue(amounts, rates, decimals)
       const reserveValue = rateAdjustedValue(reserves, rates)
-      // Empty seed reserves have no proportions to compare against.
-      if (!+reserveValue) return undefined
+      if (!+reserveValue) return undefined // Empty seed reserves have no proportions to compare against.
       return zip(reserves, decimals).map(([reserve, decimals]) =>
         fromWei(decimalIntegerDiv(decimalMultiply(reserve, value), reserveValue), decimals),
       )

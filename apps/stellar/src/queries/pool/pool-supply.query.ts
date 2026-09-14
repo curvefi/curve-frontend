@@ -12,7 +12,7 @@ export const {
 } = queryFactory({
   queryKey: ({ network, pool }: PoolParams) => [...rootKeys.pool({ network, pool }), 'total_supply'] as const,
   queryFn: async ({ network, pool }: PoolQuery) =>
-    fromWei((await readContract<bigint>(network, pool, 'total_supply')).toString(), LP_TOKEN_DECIMALS),
+    fromWei(await readContract<bigint>(network, pool, 'total_supply'), LP_TOKEN_DECIMALS),
   category: 'dex.pool',
   validationSuite: poolValidationSuite,
 })

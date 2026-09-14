@@ -1,12 +1,12 @@
-import { BigNumber } from 'bignumber.js'
 import { skipWhen, test } from 'vest'
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { isAccountAddress, isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { MAX_I128, minimumMint } from '@/stellar/lib/amounts'
+import { MAX_I128, calculateMinimumMint } from '@/stellar/lib/amounts'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import type { PoolQuery, TokenQuery, UserQuery } from '@/stellar/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
+import { decimalEqual, decimalGreaterThan, fromWei } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -99,24 +99,22 @@ const validateInputs = ({
   })
   test('amounts', 'Amounts exceed the maximum supported token amount', () => {
     enforce(
-      amounts?.every((amount, i) =>
-        new BigNumber(amount || '0').shiftedBy(decimals?.[i] ?? 0).lte(MAX_I128.toString()),
-      ),
+      amounts?.every((amount, i) => !decimalGreaterThan(amount || '0', fromWei(MAX_I128, decimals?.[i] ?? 0))),
     ).isTruthy()
   })
   test('amounts', 'Enter an amount to deposit', () => {
-    enforce(amounts?.some(amount => new BigNumber(amount ?? '0').gt(0))).isTruthy()
+    enforce(amounts?.some(amount => decimalGreaterThan(amount ?? '0', '0'))).isTruthy()
   })
   test('amounts', 'Seed deposits require a positive amount of every coin', () => {
     enforce(
       supply == null ||
-        !new BigNumber(supply).isZero() ||
-        decimals?.every((_, i) => new BigNumber(amounts?.[i] || '0').gt(0)),
+        !decimalEqual(supply, '0') ||
+        decimals?.every((_, i) => decimalGreaterThan(amounts?.[i] || '0', '0')),
     ).isTruthy()
   })
   skipWhen(!maxAmounts, () => {
     test('amounts', 'Insufficient token balance', () => {
-      enforce(amounts?.every((amount, i) => new BigNumber(amount || '0').lte(maxAmounts![i]))).isTruthy()
+      enforce(amounts?.every((amount, i) => !decimalGreaterThan(amount || '0', maxAmounts![i]))).isTruthy()
     })
   })
 }
@@ -131,14 +129,34 @@ const validateForm = (values: DepositFormValues) => {
   validateFundedInputs(values)
 }
 export const depositFormValidationSuite = createValidationSuite(validateForm)
-export const depositSubmissionValidationSuite = createValidationSuite((params: DepositSubmission) => {
-  validatePool(params)
-  validateAccount(params.account)
-  validateForm(params)
-  test('quote', 'Deposit must leave LP after the permanent seed lock', () => {
-    enforce(new BigNumber(params.quote).gt(0)).isTruthy()
-  })
-  test('minMint', 'Minimum LP does not match the accepted quote and slippage', () => {
-    enforce(minimumMint(params.quote, params.slippage)).equals(params.minMint)
-  })
-})
+
+const validateTokens = ({ tokens }: { tokens: StellarContract[] }) => {
+  enforce(tokens?.length).isNumber().gt(0)
+}
+
+export const depositSubmissionValidationSuite = createValidationSuite(
+  ({
+    pool,
+    amounts,
+    decimals,
+    maxAmounts,
+    network,
+    supply,
+    minMint,
+    slippage,
+    tokens,
+    quote,
+    account,
+  }: DepositSubmission) => {
+    validatePool({ pool, network })
+    validateAccount(account)
+    validateForm({ amounts, decimals, maxAmounts, supply, slippage })
+    validateTokens({ tokens })
+    test('quote', 'Deposit must leave LP after the permanent seed lock', () => {
+      enforce(decimalGreaterThan(quote, '0')).isTruthy()
+    })
+    test('minMint', 'Minimum LP does not match the accepted quote and slippage', () => {
+      enforce(calculateMinimumMint(quote, slippage)).equals(minMint)
+    })
+  },
+)

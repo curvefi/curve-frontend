@@ -37,21 +37,25 @@ export const DepositInfoList = ({
 }: DepositInfoListProps) => (
   <Stack>
     <ActionInfo
+      testId="pool-deposit-expected-lp"
       label={t`Expected LP received`}
       value={mapQuery(expectedLp, value => formatNumber(value, 'token.balance'))}
       size="small"
     />
     <ActionInfo
+      testId="pool-deposit-minimum-lp"
       label={t`Minimum LP received`}
       value={mapQuery(minimumLp, value => formatNumber(value, 'token.balance'))}
       size="small"
     />
     <ActionInfo
+      testId="pool-deposit-current-lp"
       label={t`Current LP balance`}
       value={mapQuery(currentLp, value => formatNumber(value, 'token.balance'))}
       size="small"
     />
     <ActionInfo
+      testId="pool-deposit-projected-lp"
       label={t`Projected LP balance`}
       value={mapQuery(projectedLp, value => formatNumber(value, 'token.balance'))}
       size="small"
@@ -63,6 +67,7 @@ export const DepositInfoList = ({
     />
     {seedLock.data && (
       <ActionInfo
+        testId="pool-deposit-seed-lock"
         label={t`Permanently locked LP`}
         value={mapQuery(seedLock, value => formatNumber(value, 'token.balance'))}
         size="small"

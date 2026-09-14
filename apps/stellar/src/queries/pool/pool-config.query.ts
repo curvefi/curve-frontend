@@ -12,7 +12,7 @@ export const { useQuery: usePoolConfig, fetchQuery: fetchPoolConfig } = queryFac
   queryKey: ({ network, pool }: PoolParams) => [...rootKeys.pool({ network, pool }), 'config'] as const,
   queryFn: async ({ network, pool }: PoolQuery) => {
     const { min_locked_liquidity, tokens } = await readContract<PoolConfig>(network, pool, 'config')
-    return { tokens, seedLock: fromWei(min_locked_liquidity.toString(), LP_TOKEN_DECIMALS) }
+    return { tokens, seedLock: fromWei(min_locked_liquidity, LP_TOKEN_DECIMALS) }
   },
   category: 'dex.poolParams',
   validationSuite: poolValidationSuite,

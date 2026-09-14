@@ -5,14 +5,18 @@ import { getTokenDecimalsQueryOptions } from '@/stellar/queries/token/token-deci
 import { getTokenNameQueryOptions } from '@/stellar/queries/token/token-name.query'
 import { getTokenSymbolQueryOptions } from '@/stellar/queries/token/token-symbol.query'
 import { zip } from '@primitives/array.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { q, type QueryProp } from '@ui/features/queries/util'
 
+/**
+ * Queries the token balances, decimals, symbols, and names for the given tokens.
+ */
 export function useDepositTokens({
   network,
   account,
-  tokens: { data: tokens = [] },
+  tokens: { data: tokens = [] /* useQueries doesn't accept undefined */ },
 }: NetworkParams & UserParams & { tokens: QueryProp<StellarContract[]> }) {
   const decimals = useQueries({
     queries: tokens.map(token => getTokenDecimalsQueryOptions({ network, token })),
@@ -31,11 +35,11 @@ export function useDepositTokens({
   )
   const { balances, maxAmounts } = useQueries({
     queries:
-      mapQuery(decimals, decimals =>
+      maybe(decimals.data, decimals =>
         zip(tokens, decimals).map(([token, decimals]) =>
           getTokenBalanceQueryOptions({ network, token, account, decimals }),
         ),
-      ).data ?? [],
+      ) ?? [],
     combine: results => ({ balances: results.map(q), maxAmounts: aggregateQueries(results) }),
   })
   return { metadata, balances, decimals, maxAmounts }

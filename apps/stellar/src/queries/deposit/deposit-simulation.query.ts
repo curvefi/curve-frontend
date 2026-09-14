@@ -38,6 +38,6 @@ export const {
       ],
       account,
     ),
-  category: 'stellar.simulation',
+  category: 'dex.deposit',
   validationSuite: depositValidationSuite,
 })

@@ -20,12 +20,10 @@ export const {
     [...rootKeys.pool({ network, pool }), 'calc_token_amount', { amounts }, { decimals }, { supply }] as const,
   queryFn: async ({ network, pool, amounts, decimals }: QuoteQuery) =>
     fromWei(
-      (
-        await readContract<bigint>(network, pool, 'calc_token_amount', [
-          toBigIntArray(toWeiArray(amounts, decimals)).map(amount => amount ?? 0n),
-          IS_DEPOSIT,
-        ])
-      ).toString(),
+      await readContract<bigint>(network, pool, 'calc_token_amount', [
+        toBigIntArray(toWeiArray(amounts, decimals)).map(amount => amount ?? 0n),
+        IS_DEPOSIT,
+      ]),
       LP_TOKEN_DECIMALS,
     ),
   category: 'dex.deposit',

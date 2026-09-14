@@ -35,7 +35,6 @@ export const QUERY_CATEGORIES = {
   'dex.user': user,
   'dex.swap': form,
   'dex.deposit': form,
-  'stellar.simulation': { ...form, meta: { persist: false } },
   'dex.deployGauge': form,
 
   // LlamaLend / crvUSD lending

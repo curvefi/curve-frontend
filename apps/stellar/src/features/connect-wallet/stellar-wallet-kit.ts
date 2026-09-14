@@ -73,22 +73,10 @@ export const readContract = async <T>(
 ) => (await simulateContractCall<T>(network, contractId, method, args)).result
 
 export async function sendStellarTransaction(transaction: StellarTransaction) {
-  let submission: StellarTransactionResponse | undefined
-  try {
-    const sent = await transaction.signAndSend({
-      signTransaction: (transaction, options) => StellarWalletsKit.signTransaction(transaction, options),
-      watcher: {
-        onSubmitted: response => {
-          submission = assert(response, 'Missing submission response') as StellarTransactionResponse
-        },
-      },
-    })
-    // Reading the result checks confirmed execution, not just submission.
-    void sent.result
-    return assert(sent.sendTransactionResponse, 'Missing submission response') as StellarTransactionResponse
-  } catch (error) {
-    // Keep the submitted hash available when confirmation fails, retaining the original SDK error.
-    if (error instanceof Error && submission) Object.assign(error, { submission })
-    throw error
-  }
+  const sent = await transaction.signAndSend({
+    signTransaction: (transaction, options) => StellarWalletsKit.signTransaction(transaction, options),
+    watcher: {}, // we could change the watcher to log submission and confirmation events
+  })
+  void sent.result // Reading the result checks confirmed execution, not just submission.
+  return assert(sent.sendTransactionResponse, 'Missing submission response') as StellarTransactionResponse
 }

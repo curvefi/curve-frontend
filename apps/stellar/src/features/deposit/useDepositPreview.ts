@@ -1,4 +1,4 @@
-import { minimumMint } from '@/stellar/lib/amounts'
+import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { useExpectedLp } from '@/stellar/queries/deposit/deposit-expected-lp.query'
 import { useDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
@@ -14,11 +14,11 @@ export type DepositPreviewParams = QuoteParams & UserParams & Pick<DepositParams
 export function useDepositPreview(params: DepositPreviewParams) {
   const quote = q(useExpectedLp(params))
   const priceImpact = useDepositPriceImpact(params, quote)
-  const minimum = mapQuery(quote, value => minimumMint(value, params.slippage))
+  const minimum = mapQuery(quote, value => calculateMinimumMint(value, params.slippage))
   const simulation = useDepositSimulation({ ...params, minMint: minimum.data })
-  const fee = mapQuery(simulation, transaction => {
+  const fee = mapQuery(simulation, ({ built }) => {
     const { decimals, symbol } = STELLAR_NETWORKS[params.network!].nativeCurrency
-    return { nativeCost: { amount: fromWei(transaction.built!.fee, decimals), symbol } }
+    return { nativeCost: { amount: fromWei(built!.fee, decimals), symbol } }
   })
   return { quote, minimum, priceImpact, fee }
 }

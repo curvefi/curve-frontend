@@ -79,7 +79,7 @@ export const toWei = (n: string, decimals: number) =>
   )!
 
 /** Converts integer token units to a decimal amount without losing precision. */
-export const fromWei = (n: string, decimals: number): Decimal => decimal(BigNumber(n).shiftedBy(-decimals))!
+export const fromWei = (n: string | bigint, decimals: number): Decimal => decimal(BigNumber(n).shiftedBy(-decimals))!
 
 /** Divide decimal values and truncate the quotient toward zero without rounding fractional digits first. */
 export const decimalIntegerDiv = (first: Decimal, second: Decimal): Decimal =>

@@ -41,7 +41,6 @@ export function useStellarMutation<
   ...options
 }: StellarMutationOptions<TVariables, TContext>) {
   const { address } = useWallet()
-
   return useTransactionMutation({
     ...options,
     validationParams,
