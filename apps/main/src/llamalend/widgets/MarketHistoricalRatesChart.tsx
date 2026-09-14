@@ -210,14 +210,14 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption }: MarketHisto
           )}
         </MetricsGrid>
         <EvmChartStateWrapper
-          height={Height.shortChart}
+          height={Height.chart.sm}
           isLoading={snapshots.isLoading || !controllerAddress}
           error={snapshots.error}
           errorMessage={t`Unable to fetch historical rates data.`}
         >
           <EChartsLineChart<RateChartPoint, RateSeriesKey, 'timestamp'>
             data={chartData}
-            height={Height.shortChart}
+            height={Height.chart.sm}
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}

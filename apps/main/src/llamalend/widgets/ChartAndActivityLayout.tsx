@@ -182,6 +182,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
               liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
               oraclePrice={bands.oraclePrice}
               priceRange={candlePriceRange}
+              height={chart.ohlcChartProps.chartHeight}
             />
           )}
         </Stack>
@@ -291,6 +292,7 @@ export const LegacyMarketPriceChartLayout = ({
             liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
             oraclePrice={bands.oraclePrice}
             priceRange={candlePriceRange}
+            height={chart.ohlcChartProps.chartHeight}
           />
         )}
       </Stack>
