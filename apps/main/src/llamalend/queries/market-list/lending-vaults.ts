@@ -34,7 +34,7 @@ const userChainNameValidationSuite = createValidationSuite((params: UserChainNam
 export type LendingVault = Market & { chain: ChainName }
 
 export const { getQueryOptions: getLendingVaultsOptions, reset: resetLendingVaults } = queryFactory({
-  queryKey: () => ['lending-vaults', 'v4'] as const,
+  queryKey: () => ['lending-vaults', 'v5'] as const,
   queryFn: async (): Promise<LendingVault[]> =>
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
       markets.map(market => ({ ...market, chain: chain as ChainName })),
