@@ -3,12 +3,12 @@ import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarWalletsKit } from '@creit-tech/stellar-wallets-kit/sdk'
 import { type ModuleInterface, ModuleType, Networks } from '@creit-tech/stellar-wallets-kit/types'
-import { COIN0, COIN1, COIN2, DEPLOYER, DEPLOYER_KEY, FACTORY } from '@cy/e2e/stellar/config'
+import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { contract, Keypair, TransactionBuilder } from '@stellar/stellar-sdk'
 
 /** Register a real keypair wallet through the wallet kit's module interface. */
-export const connectTestWallet = () => {
-  const keypair = Keypair.fromSecret(DEPLOYER_KEY)
+export const connectTestWallet = ({ deployer }: TestnetConfig) => {
+  const keypair = Keypair.fromSecret(deployer.secret)
   const wallet: ModuleInterface = {
     productId: 'cypress-stellar',
     productName: 'Cypress Stellar wallet',
@@ -52,17 +52,17 @@ type Factory = {
 }
 
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
-export const deployTestPool = async () => {
+export const deployTestPool = async ({ factory: factoryAddress, deployer, coins: testCoins }: TestnetConfig) => {
   const factory = await contract.Client.from<Factory>({
-    contractId: FACTORY,
-    publicKey: DEPLOYER,
+    contractId: factoryAddress,
+    publicKey: deployer.address,
     networkPassphrase: Networks.TESTNET,
     rpcUrl: STELLAR_NETWORKS['stellar-testnet'].rpcUrl,
     signTransaction: (xdr, options) => StellarWalletsKit.signTransaction(xdr, options),
   })
-  const coins = [COIN0, COIN1, COIN2]
+  const coins = testCoins.map(({ address }) => address)
   const transaction = await factory.deploy_plain_pool({
-    deployer: DEPLOYER,
+    deployer: deployer.address,
     name: 'Cypress StableSwap USDX/USDY/USDZ',
     symbol: 'CY-USDXUSDYUSDZ',
     coins,

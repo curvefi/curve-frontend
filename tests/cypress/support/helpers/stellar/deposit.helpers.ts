@@ -6,7 +6,7 @@ import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { fetchTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { fetchTokenSymbol } from '@/stellar/queries/token/token-symbol.query'
-import { COIN0, COIN1, COIN2, DEPLOYER } from '@cy/e2e/stellar/config'
+import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -14,20 +14,19 @@ import { useUserProfileStore } from '@ui/features/user-profile'
 import { decimalSum } from '@ui/lib/decimal'
 
 export const TEST_NETWORK = 'stellar-testnet'
-export const testCoins = { USDX: COIN0, USDY: COIN1, USDZ: COIN2 } as const
 
-const fetchToken = async (address: string) => {
-  const params = { network: TEST_NETWORK, token: address as StellarAddress, account: DEPLOYER } as const
+const fetchToken = async (address: StellarAddress, account: StellarAddress) => {
+  const params = { network: TEST_NETWORK, token: address, account } as const
   const [decimals, symbol] = await Promise.all([fetchTokenDecimals(params), fetchTokenSymbol(params)])
   const balance = await fetchTokenBalance({ ...params, decimals }, { staleTime: 0 })
   return { ...params, symbol, decimals, balance }
 }
 
-export const fetchDepositState = async (pool: StellarAddress) => {
+export const fetchDepositState = async (pool: StellarAddress, { deployer, coins: testCoins }: TestnetConfig) => {
   const poolParams = { network: TEST_NETWORK, pool } as const
   const [coins, lp, supply, config] = await Promise.all([
-    Promise.all(Object.values(testCoins).map(fetchToken)),
-    fetchToken(pool),
+    Promise.all(testCoins.map(({ address }) => fetchToken(address, deployer.address))),
+    fetchToken(pool, deployer.address),
     fetchPoolSupply(poolParams, { staleTime: 0 }),
     fetchPoolConfig(poolParams),
   ])
@@ -72,10 +71,10 @@ export const checkDepositBalances = ({ coins, lp }: DepositState) => {
   })
 }
 
-export const submitDepositForm = () => {
+export const submitDepositForm = ({ coins }: Pick<DepositState, 'coins'>) => {
   depositSubmit().click(LOAD_TIMEOUT)
   cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).should('contain.text', 'Deposit confirmed')
-  Object.keys(testCoins).forEach(symbol => {
+  coins.forEach(({ symbol }) => {
     depositInput(symbol).find('input').should('have.value', '')
   })
   depositSubmit().should('be.disabled')

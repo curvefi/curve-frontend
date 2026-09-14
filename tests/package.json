@@ -18,8 +18,9 @@
     "cy:open:e2e": "cypress open --e2e",
     "cy:run:e2e": "wait-on http://localhost:3000 --timeout 1m && cypress run --e2e",
     "cy:open:component": "cypress open --component",
-    "cy:run:component": "cypress run --component --spec 'cypress/component/**/!(*.rpc).cy.{ts,tsx}'",
+    "cy:run:component": "cypress run --component --spec 'cypress/component/**/!(*.rpc).cy.{ts,tsx}' --config 'excludeSpecPattern=cypress/component/stellar/**'",
     "cy:run:rpc": "cypress run --component --spec 'cypress/component/**/*.rpc.cy.{ts,tsx}'",
+    "cy:run:stellar": "cypress run --component --spec 'cypress/component/stellar/**/*.cy.{ts,tsx}'",
     "download:artifacts": "node --experimental-strip-types scripts/download-artifacts.ts"
   },
   "dependencies": {

@@ -1,7 +1,6 @@
 import { once } from 'lodash'
 import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
 import { DepositTab } from '@/stellar/features/deposit/DepositTab'
-import { DEPLOYER } from '@cy/e2e/stellar/config'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import {
   checkDepositBalances,
@@ -13,9 +12,9 @@ import {
   fetchDepositState,
   submitDepositForm,
   TEST_NETWORK,
-  testCoins,
   writeDepositForm,
 } from '@cy/support/helpers/stellar/deposit.helpers'
+import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
@@ -28,15 +27,26 @@ const zeroDeposit: DepositAmounts = { USDX: '0', USDY: '0', USDZ: '0' }
 describe('Stellar testnet deposit', () => {
   skipTestsAfterFailure()
 
+  let testnetConfig: TestnetConfig
   const getPool = once(deployTestPool)
-  const getDepositState = () => cy.get<StellarAddress>('@pool').then(LOAD_TIMEOUT, fetchDepositState)
+  const getDepositState = () =>
+    cy.get<StellarAddress>('@pool').then(LOAD_TIMEOUT, pool => fetchDepositState(pool, testnetConfig))
+
+  before(() => {
+    getTestnetConfig().then(config => {
+      testnetConfig = config
+    })
+  })
 
   beforeEach(() => {
     queryClient.clear()
-    cy.then(connectTestWallet).then(TRANSACTION_LOAD_TIMEOUT, getPool).as('pool', { type: 'static' })
+    cy.then(() => connectTestWallet(testnetConfig))
+      .then(TRANSACTION_LOAD_TIMEOUT, () => getPool(testnetConfig))
+      .as('pool', { type: 'static' })
   })
 
   it('requires a connected wallet', () => {
+    const { coins } = testnetConfig
     cy.get<StellarAddress>('@pool').then(pool => {
       cy.mount(
         <StellarTestWrapper>
@@ -44,7 +54,7 @@ describe('Stellar testnet deposit', () => {
         </StellarTestWrapper>,
       )
     })
-    Object.keys(testCoins).forEach(symbol => {
+    coins.forEach(({ symbol }) => {
       depositInput(symbol).should('be.visible')
     })
     cy.contains('button', 'Connect Wallet', LOAD_TIMEOUT).should('be.enabled')
@@ -53,8 +63,9 @@ describe('Stellar testnet deposit', () => {
 
   it('loads pool balances and rejects an empty or zero deposit', () => {
     getDepositState().then(state => {
+      const { deployer } = testnetConfig
       cy.mount(
-        <StellarTestWrapper address={DEPLOYER}>
+        <StellarTestWrapper address={deployer.address}>
           <DepositTab network={TEST_NETWORK} pool={state.pool} />
         </StellarTestWrapper>,
       )
@@ -68,8 +79,9 @@ describe('Stellar testnet deposit', () => {
 
   it('rejects amounts exceeding wallet balances and token precision', () => {
     getDepositState().then(state => {
+      const { deployer } = testnetConfig
       cy.mount(
-        <StellarTestWrapper address={DEPLOYER}>
+        <StellarTestWrapper address={deployer.address}>
           <DepositTab network={TEST_NETWORK} pool={state.pool} />
         </StellarTestWrapper>,
       )
@@ -87,8 +99,9 @@ describe('Stellar testnet deposit', () => {
 
   it('fills each coin balance with Max', () => {
     getDepositState().then(state => {
+      const { deployer } = testnetConfig
       cy.mount(
-        <StellarTestWrapper address={DEPLOYER}>
+        <StellarTestWrapper address={deployer.address}>
           <DepositTab network={TEST_NETWORK} pool={state.pool} />
         </StellarTestWrapper>,
       )
@@ -102,10 +115,11 @@ describe('Stellar testnet deposit', () => {
 
   it('requires every coin in the seed deposit', () => {
     getDepositState().then(state => {
+      const { deployer } = testnetConfig
       expect(state.supply, 'new pool supply').to.equal('0')
       expect(state.lp.balance, 'new pool LP balance').to.equal('0')
       cy.mount(
-        <StellarTestWrapper address={DEPLOYER}>
+        <StellarTestWrapper address={deployer.address}>
           <DepositTab network={TEST_NETWORK} pool={state.pool} />
         </StellarTestWrapper>,
       )
@@ -129,8 +143,9 @@ describe('Stellar testnet deposit', () => {
   ].forEach(({ label, amounts, isSeed }) => {
     it(`deposits ${label}, confirms LP received and refreshes balances`, () => {
       getDepositState().then(state => {
+        const { deployer } = testnetConfig
         cy.mount(
-          <StellarTestWrapper address={DEPLOYER}>
+          <StellarTestWrapper address={deployer.address}>
             <DepositTab network={TEST_NETWORK} pool={state.pool} />
           </StellarTestWrapper>,
         )
@@ -149,7 +164,7 @@ describe('Stellar testnet deposit', () => {
           checkDepositDetail('Minimum LP received', minimum)
           checkDepositDetail('Projected LP balance', projected)
           cy.get('[data-testid="estimated-tx-cost-value"]', LOAD_TIMEOUT).should('contain.text', 'XLM')
-          submitDepositForm()
+          submitDepositForm(state)
           checkDepositBalances({
             ...state,
             lp: { ...state.lp, balance: projected },
