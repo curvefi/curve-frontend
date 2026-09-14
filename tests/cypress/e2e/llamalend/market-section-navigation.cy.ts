@@ -5,7 +5,7 @@ import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/create-loan.hel
 import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
 import { clickTab } from '@cy/support/helpers/tabs'
 import type { AppRoute } from '@cy/support/routes'
-import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 
 const NAV_ID = 'detail-page-section-nav'
@@ -55,7 +55,7 @@ describe(`${PAGE.label} section navigation (${BREAKPOINT}, ${WIDTH}x${HEIGHT})`,
     })
     cy.get('[data-testid="no-position-disconnected"]', LOAD_TIMEOUT).should('exist')
     // Loading tables can change section positions when their rows arrive.
-    cy.get('[data-testid^="data-table-loading-"]', LOAD_TIMEOUT).should('not.exist')
+    cy.get('[data-testid^="data-table-loading-"]', API_LOAD_TIMEOUT).should('not.exist')
   }
 
   beforeEach(() => {
