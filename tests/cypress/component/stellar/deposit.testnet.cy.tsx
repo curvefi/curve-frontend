@@ -180,7 +180,7 @@ describe('Stellar testnet deposit', () => {
           checkDepositDetail('expected-lp', expected)
           checkDepositDetail('minimum-lp', minimum)
           checkDepositDetail('projected-lp', projected)
-          getActionValue('estimated-tx-cost').should('include', 'XLM')
+          getActionValue('estimated-tx-cost').should('include', '$')
           submitDepositForm(state)
           checkDepositBalances({
             ...state,
