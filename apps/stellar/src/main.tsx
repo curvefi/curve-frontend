@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { StellarRootLayout } from '@/routes/StellarRootLayout'
+import { StellarRootLayout } from '@/stellar/routes/StellarRootLayout'
 import MuiLink from '@mui/material/Link'
 import { RouterProvider } from '@tanstack/react-router'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'

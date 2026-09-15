@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { rootKeys } from '@evm-ui/lib/model'
-import { useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactionMutation'
+import { useEvmMutation } from '@evm-ui/lib/model/mutation/useEvmMutation'
 import type { Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui/lib/i18n'
@@ -15,7 +15,7 @@ type BridgeMutation = { amount: Decimal }
 type BridgeOptions = { chainId: number; onReset: () => void }
 
 export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
-  const { mutate, error, isPending } = useTransactionMutation<BridgeMutation>({
+  const { mutate, error, isPending } = useEvmMutation<BridgeMutation>({
     mutationKey: [...rootKeys.chain({ chainId }), 'bridge'] as const,
     mutationFn: async ({ amount }) => {
       const curve = requireLib('curveApi')

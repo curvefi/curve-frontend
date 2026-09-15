@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
-import type { StellarAddress } from '@/features/connect-wallet/address'
+import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
 import {
   connectWallet,
   disconnectWallet,
@@ -7,7 +7,7 @@ import {
   onWalletAddressChanged,
   refreshSupportedWallets,
   type WalletConnector,
-} from '@/features/connect-wallet/stellar-wallet-kit'
+} from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { WalletContext } from './useWallet'
 
