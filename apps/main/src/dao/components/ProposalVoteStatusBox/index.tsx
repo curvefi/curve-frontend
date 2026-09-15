@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
 import { ProgressBar } from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
-import { formatToken } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@legacy-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 
 type ProposalVoteStatusBoxProps = { proposalData: ProposalData; className?: string }
 

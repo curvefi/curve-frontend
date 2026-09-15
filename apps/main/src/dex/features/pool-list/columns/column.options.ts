@@ -1,42 +1,28 @@
+import { recordEntries } from '@primitives/objects.utils'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { t } from '@ui/lib/i18n'
 import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
 
-const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<PoolColumnId>[] => [
+const DEFAULT_ACTIVE = [PoolColumnId.PoolName, PoolColumnId.NetRate] as const
+
+const createVisibility = (active: PoolColumnId[], disabled: PoolColumnId[]): VisibilityGroup<PoolColumnId>[] => [
   {
     label: t`Pools`,
-    options: [
-      { label: POOL_TITLES[PoolColumnId.Tokens], columns: [PoolColumnId.Tokens], active: false, enabled: true },
-      { label: POOL_TITLES[PoolColumnId.NetRate], columns: [PoolColumnId.NetRate], active: true, enabled: true },
-      { label: POOL_TITLES[PoolColumnId.BaseRate], columns: [PoolColumnId.BaseRate], active: false, enabled: !isLite },
-      {
-        label: POOL_TITLES[PoolColumnId.WeeklyBaseRate],
-        columns: [PoolColumnId.WeeklyBaseRate],
-        active: false,
-        enabled: !isLite,
-      },
-      { label: POOL_TITLES[PoolColumnId.CrvRate], columns: [PoolColumnId.CrvRate], active: false, enabled: true },
-      {
-        label: POOL_TITLES[PoolColumnId.RewardsRate],
-        columns: [PoolColumnId.RewardsRate],
-        active: false,
-        enabled: true,
-      },
-
-      { label: POOL_TITLES[PoolColumnId.Points], columns: [PoolColumnId.Points], active: false, enabled: true },
-      { label: POOL_TITLES[PoolColumnId.Volume], columns: [PoolColumnId.Volume], active: !isLite, enabled: !isLite },
-      { label: POOL_TITLES[PoolColumnId.Tvl], columns: [PoolColumnId.Tvl], active: true, enabled: true },
-      { label: POOL_TITLES[PoolColumnId.Age], columns: [PoolColumnId.Age], active: false, enabled: !isLite },
-    ],
+    options: recordEntries(POOL_TITLES).map(([column, label]) => ({
+      label,
+      columns: [column],
+      active: [...DEFAULT_ACTIVE, ...active].includes(column),
+      enabled: !disabled.includes(column),
+    })),
   },
 ]
 
 export const POOLS_COLUMN_OPTIONS = {
-  full: createVisibility({ isLite: false }),
-  lite: createVisibility({ isLite: true }),
+  full: createVisibility([PoolColumnId.Volume, PoolColumnId.Tvl], [PoolColumnId.Deposits]),
+  lite: createVisibility(
+    [PoolColumnId.Tvl],
+    [PoolColumnId.BaseRate, PoolColumnId.WeeklyBaseRate, PoolColumnId.Volume, PoolColumnId.Age, PoolColumnId.Deposits],
+  ),
+  userPositions: createVisibility([PoolColumnId.Deposits], [PoolColumnId.Volume, PoolColumnId.Tvl, PoolColumnId.Age]),
 }
-
-export const getDefaultPoolsSort = (isLite: boolean) => [
-  { id: isLite ? PoolColumnId.Tvl : PoolColumnId.Volume, desc: true },
-]

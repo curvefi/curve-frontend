@@ -57,7 +57,7 @@ export const NetRateIncentivesTooltipItems = ({
 export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
   const baseRate = getBaseApr(pool, 'daily')
   const netRate = getNetApr(pool)
-  const crvRateRange = pool.gauge && !pool.gauge.isKilled ? getCrvAprRange(pool) : null
+  const crvRateRange = pool.gauge?.isKilled ? null : getCrvAprRange(pool)
   const maxNetRate = crvRateRange ? netRate - crvRateRange.unboostedRate + crvRateRange.boostedRate : null
   const incentiveItems = getIncentivesItems(pool)
   const pointsCampaigns = getPointsCampaigns(pool)
