@@ -11,6 +11,11 @@ import { poolAmountField, type PoolForm, poolMaxAmountField } from './pool-form.
 
 export type PoolToken = { address: Address; symbol: string | undefined; balance: QueryProp<Decimal> }
 
+const getBalancedUpdates = (reserves: Decimal[], decimals: number[], value: Decimal | undefined, index: number) =>
+  fromEntries(
+    getBalancedAmounts(reserves, decimals, value, index).map((amount, index) => [poolAmountField(index), amount]),
+  )
+
 export const PoolTokenInput = ({
   token: { address, balance, symbol },
   index,
@@ -22,12 +27,8 @@ export const PoolTokenInput = ({
   disabled: boolean
   reserves: QueryProp<Decimal[]>
 }) => {
-  const {
-    update,
-    watchValue,
-    getValue,
-    formState: { errors, touchedFields },
-  } = useFormContext<PoolForm>()
+  const { update, watchValue, getValue, formState } = useFormContext<PoolForm>() // todo: pass form via prop after migration to tanstack forms
+  const { errors, touchedFields } = formState
   const field = poolAmountField(index)
   useFormSync({ update }, { [poolMaxAmountField(index)]: balance.data })
   const amount = watchValue(field)
@@ -43,12 +44,7 @@ export const PoolTokenInput = ({
           const decimals = getValue('decimals')
           update(
             getValue('isBalanced') && reserves?.every(reserve => +reserve) && decimals?.every(value => value != null)
-              ? fromEntries(
-                  getBalancedAmounts(reserves, decimals, value, index).map((amount, index) => [
-                    poolAmountField(index),
-                    amount,
-                  ]),
-                )
+              ? getBalancedUpdates(reserves, decimals, value, index)
               : { [field]: value },
           )
         },
