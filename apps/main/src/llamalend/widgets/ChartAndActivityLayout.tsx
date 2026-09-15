@@ -8,7 +8,9 @@ import {
   type LlammaActivityProps,
   LlammaActivityTrades,
 } from '@/llamalend/features/llamma-activity'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
+import { useMarketOraclePrice, useMarketPrice } from '@/llamalend/queries/market'
 import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
@@ -17,18 +19,27 @@ import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/Chart
 import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
+import { Metric } from '@evm-ui/shared/ui/Metric'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
+import type { Amount } from '@primitives/decimal.utils'
+import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { Tabs } from '@ui/components/Tabs/Tabs'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
+
+const METRIC_CATEGORY = 'llamalend.marketCharts'
+const PRICE_VALUE_OPTIONS = { abbreviate: false, formatter: (value: Amount) => formatNumber(value, 'token.precise') }
 
 const EMPTY_ARRAY: never[] = []
 // Ignore tiny floating-point jitter from chart autoscale updates.
@@ -80,6 +91,35 @@ const CHART_AND_ACTIVITY_MENU = [
 const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
   <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
 )
+
+const MarketPriceMetrics = () => {
+  const { chainId, marketId, apiMarket } = useMarketContext()
+
+  return (
+    <MetricsGrid>
+      <Metric
+        category={METRIC_CATEGORY}
+        label={t`Oracle price`}
+        value={fallbackQ(
+          q(useMarketOraclePrice({ chainId, marketId })),
+          mapQuery(apiMarket, market => decimal(market.oraclePrice)),
+        )}
+        valueOptions={PRICE_VALUE_OPTIONS}
+        testId="market-price-chart-oracle-metric"
+      />
+      <Metric
+        category={METRIC_CATEGORY}
+        label={t`Current price`}
+        value={fallbackQ(
+          q(useMarketPrice({ chainId, marketId })),
+          mapQuery(apiMarket, market => (market.ammPrice === 0 ? undefined : market.ammPrice)),
+        )}
+        valueOptions={PRICE_VALUE_OPTIONS}
+        testId="market-price-chart-current-metric"
+      />
+    </MetricsGrid>
+  )
+}
 
 export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutProps, 'activity'>) => (
   <Stack data-testid="market-activity">
@@ -158,7 +198,8 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
         }
         slotProps={{ title: { style: chart.chartMode == 'oracle-pool' && { textTransform: 'none' } } }}
       />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+        <MarketPriceMetrics />
         <Stack
           sx={{
             display: showBands ? 'grid' : undefined,
