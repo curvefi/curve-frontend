@@ -38,8 +38,8 @@ export const Contracts = () => {
   )
 
   return (
-    <Card variant="inline">
-      <CardHeader size="extraSmall" title={t`Contracts`} />
+    <Card size="extraSmall" variant="inline">
+      <CardHeader title={t`Contracts`} />
       <CardContent component={Stack}>
         <Section>
           {poolAddress && (

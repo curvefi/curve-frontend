@@ -43,8 +43,8 @@ export const Parameters = () => {
   }))
 
   return (
-    <Card variant="inline">
-      <CardHeader size="extraSmall" title={t`Parameters`} />
+    <Card size="extraSmall" variant="inline">
+      <CardHeader title={t`Parameters`} />
       <CardContent component={Stack}>
         <Section>
           <ActionInfo

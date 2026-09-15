@@ -4,7 +4,7 @@ import '@mui/material/Paper'
 
 declare module '@mui/material/Card' {
   export interface CardOwnProps {
-    size?: 'small'
+    size?: 'extraSmall' | 'small' | 'medium'
   }
 }
 

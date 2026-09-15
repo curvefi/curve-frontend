@@ -84,7 +84,11 @@ export const PageRouterSwap = () => {
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isConnecting, hasRouter, paramsFromAddress, paramsToAddress, rChainId, tokensMapperStr])
   return (
-    <Card sx={{ ...PAGE_BLOCK_MARGIN, maxWidth: MaxWidth.actionCard, marginInline: 'auto' }} data-testid="swap-page">
+    <Card
+      size="small"
+      sx={{ ...PAGE_BLOCK_MARGIN, maxWidth: MaxWidth.actionCard, marginInline: 'auto' }}
+      data-testid="swap-page"
+    >
       <CardHeader title={t`Swap`} />
       <CardContent>
         {rChainId && (

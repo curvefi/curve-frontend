@@ -18,8 +18,8 @@ export const MarketParticipationCard = ({
 }: {
   marketParticipation: LiquidityDetailsData['marketParticipation']
 }) => (
-  <Card variant="inline">
-    <CardHeader size="extraSmall" title={t`Market Participation`} />
+  <Card size="extraSmall" variant="inline">
+    <CardHeader title={t`Market Participation`} />
     <CardContent component={Stack} sx={{ gap: Spacing.xs, marginBlockStart: Spacing.xs }}>
       <ActionInfo
         label={t`Your share of pool`}

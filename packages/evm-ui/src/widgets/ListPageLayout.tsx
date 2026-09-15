@@ -7,7 +7,7 @@ import { useIsTiny } from '@ui/hooks/useBreakpoints'
 
 const { Spacing, MaxWidth, MinHeight } = SizesAndSpaces
 
-export const ListPageWrapper = ({ footer, children }: { children: ReactNode; footer?: ReactNode }) => (
+export const ListPageLayout = ({ footer, children }: { children: ReactNode; footer?: ReactNode }) => (
   <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
     <Stack sx={{ gap: Spacing.xxl, ...PAGE_BLOCK_MARGIN, maxWidth: MaxWidth.table, minHeight: MinHeight.pageContent }}>
       {children}

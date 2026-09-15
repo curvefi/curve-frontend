@@ -15,8 +15,8 @@ const { Spacing } = SizesAndSpaces
 const FaqContent = () => (
   <Stack>
     {FAQ_GROUPS.map(group => (
-      <Card key={group.title} variant="inline">
-        <CardHeader size="extraSmall" title={group.title} />
+      <Card key={group.title} size="extraSmall" variant="inline">
+        <CardHeader title={group.title} />
         <CardContent sx={{ marginBlock: Spacing.sm }}>
           <Stack sx={{ gap: Spacing.xs, paddingInlineStart: Spacing.md }}>
             {group.items.map(item => (

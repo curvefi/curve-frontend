@@ -20,8 +20,8 @@ export const BalancedWithdrawCard = ({
   blockchainId: string
   rows: LiquidityDetailsData['rows']
 }) => (
-  <Card variant="inline">
-    <CardHeader size="extraSmall" title={t`Balanced withdraw amount`} />
+  <Card size="extraSmall" variant="inline">
+    <CardHeader title={t`Balanced withdraw amount`} />
     <CardContent component={Stack} sx={{ gap: Spacing.xs, marginBlockStart: Spacing.xs }}>
       {rows.data?.map(row => (
         <ActionInfo
