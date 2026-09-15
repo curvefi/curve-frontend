@@ -10,13 +10,15 @@ import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { FormButton, type FormButtonProps } from '@ui/features/forms/FormButton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { type PoolTokensForm, type PoolTokenField, poolTokenFields } from '../pool-form.utils'
+import { type PoolForm, type PoolTokenField, poolTokenFields } from '../pool-form.utils'
 import { PoolTokenInput, type PoolToken } from '../PoolTokenInput'
-export type { PoolTokensForm } from '../pool-form.utils'
+import { BalancedDepositCheckbox } from './BalancedDepositCheckbox'
+export type { PoolTokenFields } from '../pool-form.utils'
 
-export type DepositFormProps<TValues extends PoolTokensForm = PoolTokensForm> = {
+export type DepositFormProps<TValues extends PoolForm = PoolForm> = {
   form: UseFormReturn<TValues>
   tokens: QueryProp<PoolToken[]>
+  reserves: QueryProp<Decimal[]>
   onSubmit: FormSubmitHandler
   isPending: boolean
   isLoading: boolean
@@ -30,10 +32,11 @@ export type DepositFormProps<TValues extends PoolTokensForm = PoolTokensForm> = 
   isSeed: QueryProp<boolean>
 }
 
-export const DepositForm = <TValues extends PoolTokensForm>({
+export const DepositForm = <TValues extends PoolForm>({
   form,
   tokens: { data: tokens, error: tokensError },
   onSubmit,
+  reserves,
   isPending,
   isLoading,
   isDisabled,
@@ -53,13 +56,7 @@ export const DepositForm = <TValues extends PoolTokensForm>({
       </Alert>
     )}
     {tokens?.map((token, index) => (
-      <PoolTokenInput
-        label={t`Amount to deposit`}
-        key={token.address}
-        token={token}
-        index={index}
-        disabled={isPending}
-      />
+      <PoolTokenInput key={token.address} token={token} index={index} disabled={isPending} reserves={reserves} />
     )) ??
       (!tokensError && (
         <>
@@ -67,6 +64,11 @@ export const DepositForm = <TValues extends PoolTokensForm>({
           <LargeTokenInputSkeleton />
         </>
       ))}
+    <BalancedDepositCheckbox
+      reserves={reserves}
+      isConnected={wallet.isConnected}
+      disabled={isPending || isSeed.data !== false}
+    />
     <HighPriceImpactAlert priceImpact={priceImpact} />
     <FormButton
       {...wallet}

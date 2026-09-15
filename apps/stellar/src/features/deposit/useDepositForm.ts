@@ -5,6 +5,7 @@ import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { useDepositMutation } from '@/stellar/mutations/deposit.mutation'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
+import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery } from '@/stellar/queries/root-keys'
 import { depositFormValidationSuite, type DepositForm } from '@/stellar/queries/validation/deposit.validation'
@@ -14,7 +15,7 @@ import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useDepositPreview, type DepositPreviewParams } from './useDepositPreview'
@@ -22,7 +23,7 @@ import { useDepositTokens } from './useDepositTokens'
 
 const formOptions = {
   validation: depositFormValidationSuite,
-  defaultValues: { decimals: undefined, supply: undefined, slippage: SLIPPAGE.stable.default },
+  defaultValues: { isBalanced: false, decimals: undefined, supply: undefined, slippage: SLIPPAGE.stable.default },
 }
 
 export function useDepositForm(poolParams: PoolQuery) {
@@ -30,12 +31,16 @@ export function useDepositForm(poolParams: PoolQuery) {
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const config = usePoolConfig(poolParams)
   const supply = usePoolSupply(poolParams)
+  const reserves = usePoolReserves(poolParams)
   const tokens = mapQuery(config, config => config.tokens)
   const tokenCount = tokens.data?.length
 
   const { metadata, balances, decimals, maxAmounts } = useDepositTokens({ ...poolParams, account, tokens })
   const slippage = useUserProfileStore(state => state.maxSlippage.stable)
-  const userDefaultValues = useMemo(() => maybe(tokenCount, getPoolDefaultValues) ?? {}, [tokenCount])
+  const userDefaultValues = useMemo(
+    () => ({ ...maybe(tokenCount, getPoolDefaultValues), isBalanced: false }),
+    [tokenCount],
+  )
   const form = useForm<DepositForm>({
     ...formOptions,
     defaultValues: { ...formOptions.defaultValues, ...userDefaultValues },
@@ -97,6 +102,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   const { error, isLoading } = combineQueryState(
     tokenInputs,
     supply,
+    reserves,
     decimals,
     maxAmounts,
     quote,
@@ -106,6 +112,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   )
   return {
     form,
+    reserves: q(reserves),
     params,
     preview,
     onSubmit: form.handleSubmit(onSubmit),
