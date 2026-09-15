@@ -8,6 +8,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui/lib/i18n'
+import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { usePoolContext } from '../pool-context'
 import { Alerts } from './components/Alerts'
 import { Metrics } from './components/Metrics'
@@ -30,15 +31,17 @@ export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformatio
   }, [curve, fetchPoolStats, poolData])
 
   return (
-    <Card size="small">
-      <CardHeader title={t`Pool Information`} />
-      <CardContent component={Stack}>
-        <Metrics pricesApiPoolData={pricesApiPoolData} />
-        <PoolComposition pricesApiPoolData={pricesApiPoolData} />
-        <YieldBreakdown />
-        <PointsCampaigns />
-        <Alerts poolAlert={poolAlert} tokenAlert={tokenAlert} />
-      </CardContent>
-    </Card>
+    <Stack sx={stackedCardHeadersSx}>
+      <Card size="small">
+        <CardHeader title={t`Pool Information`} />
+        <CardContent component={Stack}>
+          <Metrics pricesApiPoolData={pricesApiPoolData} />
+        </CardContent>
+      </Card>
+      <PoolComposition pricesApiPoolData={pricesApiPoolData} />
+      <YieldBreakdown />
+      <PointsCampaigns />
+      <Alerts poolAlert={poolAlert} tokenAlert={tokenAlert} />
+    </Stack>
   )
 }

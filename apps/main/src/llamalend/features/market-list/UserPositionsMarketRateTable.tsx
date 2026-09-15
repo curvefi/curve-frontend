@@ -16,7 +16,7 @@ import { useMarketsVisibility } from './hooks/useMarketsVisibility'
 import { MarketExpandedPanel } from './MarketExpandedPanel'
 import { UserPositionExpandedPanelActions } from './UserPositionExpandedPanelActions'
 
-const { Spacing, Sizing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const TABLE_CONFIG = {
   [MarketRateType.Borrow]: {

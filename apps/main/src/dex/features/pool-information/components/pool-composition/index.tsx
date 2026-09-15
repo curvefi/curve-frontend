@@ -1,8 +1,8 @@
 import { usePoolContext } from '@/dex/features/pool-context'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
+import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
-import Stack from '@mui/material/Stack'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
@@ -22,7 +22,7 @@ export const PoolComposition = ({ pricesApiPoolData }: { pricesApiPoolData?: Pri
   })
 
   return (
-    <Stack>
+    <Card size="small">
       <CardHeader title={t`Composition`} />
       <EvmDataTable
         category="detail"
@@ -39,6 +39,6 @@ export const PoolComposition = ({ pricesApiPoolData }: { pricesApiPoolData?: Pri
           )
         }
       />
-    </Stack>
+    </Card>
   )
 }

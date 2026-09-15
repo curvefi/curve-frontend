@@ -1,7 +1,7 @@
 import { usePoolContext } from '@/dex/features/pool-context'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
+import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
-import Stack from '@mui/material/Stack'
 import { constQ } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
@@ -22,7 +22,7 @@ export const YieldBreakdown = () => {
 
   return (
     rows.length > 0 && (
-      <Stack>
+      <Card size="small">
         <CardHeader title={t`Yield Breakdown`} />
         <EvmDataTable
           category="detail"
@@ -34,7 +34,7 @@ export const YieldBreakdown = () => {
             )
           }
         />
-      </Stack>
+      </Card>
     )
   )
 }
