@@ -65,7 +65,7 @@ export const ManagePool = () => {
         }}
         testId="refuel-page"
       >
-        <Grid container columnSpacing={Spacing.md}>
+        <Grid container spacing={Spacing.md}>
           {reserveRatio != null && reserveRatio < LOW_RESERVES_RATIO && (
             <Grid size={12}>
               <Banner
