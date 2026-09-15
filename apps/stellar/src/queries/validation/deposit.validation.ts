@@ -10,7 +10,7 @@ import {
   poolAmountField,
   poolMaxAmountField,
   getPoolAmounts,
-  type PoolTokensForm as DepositTokenValues,
+  type PoolForm,
 } from '@ui/features/pool-forms/pool-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
 import { decimalEqual, decimalGreaterThan, fromWei } from '@ui/lib/decimal'
@@ -23,11 +23,7 @@ export type QuoteParams = FieldsOf<DeepPartial<QuoteQuery>>
 export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: (Decimal | undefined)[] }
 export type DepositParams = FieldsOf<DeepPartial<DepositQuery>>
 export type DepositMutation = DepositQuery & { quote: Decimal; tokens: StellarContract[]; slippage: Decimal }
-export type DepositForm = DepositTokenValues & {
-  decimals: (number | undefined)[] | undefined
-  supply: Decimal | undefined
-  slippage: Decimal
-}
+export type DepositForm = PoolForm & { supply: Decimal | undefined; slippage: Decimal }
 
 const validateSlippage = (slippage: Decimal) =>
   test('slippage', 'Invalid slippage tolerance', () => {

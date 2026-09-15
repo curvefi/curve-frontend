@@ -12,7 +12,7 @@ import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
-import { decimalSum } from '@ui/lib/decimal'
+import { decimalSum, decimalMinus } from '@ui/lib/decimal'
 
 export const TEST_NETWORK = 'stellar-testnet'
 
@@ -58,6 +58,43 @@ export const fetchDepositPreview = async (
 
 export const depositInput = (address: StellarContract) =>
   cy.get(`[data-testid="pool-token-input-${address}"]`, LOAD_TIMEOUT)
+export const depositBalancedCheckbox = () =>
+  cy.get('[data-testid="pool-deposit-balanced-checkbox"]', LOAD_TIMEOUT).find('input')
+
+export const checkBalancedDepositAmounts = (coins: DepositState['coins'], unit: number) =>
+  coins.forEach(({ address, decimals }, index) => {
+    depositInput(address)
+      .find('input')
+      .should(input => expect(+input.val()!).to.be.closeTo(unit * (index + 1), 10 ** -decimals))
+  })
+
+/** Reselect after each action because changing an amount can rerender every token input. */
+export const writeDepositAmount = (address: StellarContract, amount: Decimal | undefined) => {
+  depositInput(address).find('input').clear()
+  if (amount != null) depositInput(address).find('input').type(amount)
+  depositInput(address).find('input').blur()
+}
+
+export const checkBalancedWalletAmounts = (coins: DepositState['coins']) => {
+  // These tests seed the pool in human-readable proportions 1:2:3.
+  const unit = Math.min(...coins.map((coin, index) => +coin.balance / (index + 1)))
+  checkBalancedDepositAmounts(coins, unit)
+  coins.forEach(({ address, balance }) => {
+    depositInput(address)
+      .find('input')
+      .should(input => expect(+input.val()!).to.be.at.most(+balance))
+  })
+}
+
+export const checkDepositSupply = (pool: StellarContract, state: DepositState, expectedLp: Decimal) =>
+  cy
+    .then(LOAD_TIMEOUT, () => fetchPoolSupply({ network: TEST_NETWORK, pool }, { staleTime: 0 }))
+    .then(supply => {
+      const seedLock = +state.supply ? '0' : state.config.seedLock
+      expect(decimalMinus(supply, state.supply)).to.equal(decimalSum(expectedLp, seedLock))
+      expect(decimalMinus(supply, decimalSum(state.lp.balance, expectedLp))).to.equal(state.config.seedLock)
+    })
+
 export const depositSubmit = () => cy.get('[data-testid="pool-deposit-submit"]', LOAD_TIMEOUT)
 export const writeDepositForm = (
   coins: Pick<DepositState['coins'][number], 'address' | 'symbol'>[],
@@ -66,7 +103,7 @@ export const writeDepositForm = (
   coins.forEach(({ address, symbol }) => {
     const amount = amounts[symbol]
     if (amount != null) {
-      depositInput(address).find('input').clear().type(amount).blur()
+      writeDepositAmount(address, amount)
     }
   })
 
@@ -89,4 +126,12 @@ export const submitDepositForm = ({ coins }: Pick<DepositState, 'coins'>) => {
     depositInput(address).find('input').should('have.value', '')
   })
   depositSubmit().should('be.disabled')
+}
+
+export const checkDepositGasEstimate = () => {
+  cy.get('[data-testid="estimated-tx-cost-value"]', LOAD_TIMEOUT).should('be.visible')
+  getActionValue('estimated-tx-cost').should(value => {
+    expect(value).to.include('XLM')
+    expect(Number.parseFloat(value!)).to.be.greaterThan(0)
+  })
 }

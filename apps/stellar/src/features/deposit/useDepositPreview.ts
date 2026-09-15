@@ -8,7 +8,7 @@ import { type DepositParams, type QuoteParams } from '@/stellar/queries/validati
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
-import { getPoolAmounts, type PoolTokensForm } from '@ui/features/pool-forms/pool-form.utils'
+import { getPoolAmounts, type PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { fromWei } from '@ui/lib/decimal'
 import { useDepositPriceImpact } from './useDepositPriceImpact'
@@ -16,7 +16,7 @@ import { useDepositPriceImpact } from './useDepositPriceImpact'
 export type DepositPreviewParams = Omit<QuoteParams, 'amounts'> &
   UserParams &
   Pick<DepositParams, 'maxAmounts'> &
-  PoolTokensForm & { slippage: Decimal; tokenCount: number | undefined }
+  PoolTokenFields & { slippage: Decimal; tokenCount: number | undefined }
 
 export function useDepositPreview(params: DepositPreviewParams) {
   const queryParams = useMemo(() => ({ ...params, amounts: getPoolAmounts(params, params.tokenCount) }), [params])
