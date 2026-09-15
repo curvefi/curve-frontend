@@ -23,7 +23,7 @@ export const YieldBreakdown = () => {
   return (
     rows.length > 0 && (
       <Stack>
-        <CardHeader title={t`Yield Breakdown`} size="small" />
+        <CardHeader title={t`Yield Breakdown`} />
         <EvmDataTable
           category="detail"
           table={table}

@@ -18,6 +18,7 @@ const { Spacing } = SizesAndSpaces
 const CardStory = (props: CardProps) => (
   <Card sx={{ maxWidth: '20rem' }} {...props}>
     <CardHeader
+      size="medium"
       avatar={<Avatar sx={{ bgcolor: 'primary.main' }}>L</Avatar>}
       title="Llama Card"
       subheader="September 14, 2024"
@@ -49,7 +50,7 @@ const CardStory = (props: CardProps) => (
 
 const CardStorySimple = (props: CardProps) => (
   <Card sx={{ maxWidth: '20rem' }} {...props}>
-    <CardHeader title="Simple card" />
+    <CardHeader size="medium" title="Simple card" />
 
     <CardContent>
       <Typography variant="bodySRegular" color="textSecondary">
@@ -65,7 +66,7 @@ const CardStorySimple = (props: CardProps) => (
 
 const CardStoryHeaderOnly = (props: CardProps) => (
   <Card sx={{ maxWidth: '20rem' }} {...props}>
-    <CardHeader title="Header Only Card" subheader="With subtitle" />
+    <CardHeader size="medium" title="Header Only Card" subheader="With subtitle" />
 
     <CardContent>
       <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
@@ -95,6 +96,7 @@ const CardStoryInline = (props: CardProps) => (
 const CardStoryTokenIconsAvatar = (props: CardProps) => (
   <Card sx={{ maxWidth: '20rem' }} {...props}>
     <CardHeader
+      size="medium"
       avatar={
         <TokenIcons
           blockchainId="ethereum"

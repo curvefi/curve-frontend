@@ -85,7 +85,7 @@ export const PageRouterSwap = () => {
   }, [isConnecting, hasRouter, paramsFromAddress, paramsToAddress, rChainId, tokensMapperStr])
   return (
     <Card sx={{ ...PAGE_BLOCK_MARGIN, maxWidth: MaxWidth.actionCard, marginInline: 'auto' }} data-testid="swap-page">
-      <CardHeader size="small" title={t`Swap`} />
+      <CardHeader title={t`Swap`} />
       <CardContent>
         {rChainId && (
           <QuickSwap

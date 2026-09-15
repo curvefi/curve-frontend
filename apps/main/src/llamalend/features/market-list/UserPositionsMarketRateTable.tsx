@@ -70,7 +70,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, justifyContent: 'end', paddingInline: Spacing.md }}>
-        <CardHeader title={title} size="small" variant="inline" />
+        <CardHeader title={title} variant="inline" />
       </Stack>
     </EvmDataTable>
   )

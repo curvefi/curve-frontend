@@ -63,7 +63,7 @@ export const defineMuiCardHeader = (
   design: DesignSystem,
   typography: TypographyVariantsOptions,
 ): Components['MuiCardHeader'] => ({
-  defaultProps: { size: 'medium' },
+  defaultProps: { size: 'small' },
   styleOverrides: {
     root: {
       padding: 0,

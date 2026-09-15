@@ -133,6 +133,7 @@ export const ModalDialog = ({
     <Card sx={{ width: { tablet: modalWidth[width], mobile: '100dvw' }, display: 'flex', flexDirection: 'column' }}>
       <WithWrapper shouldWrap={formProps} Wrapper={Form} {...formProps}>
         <CardHeader
+          size="medium"
           variant="modal"
           action={
             onClose && (

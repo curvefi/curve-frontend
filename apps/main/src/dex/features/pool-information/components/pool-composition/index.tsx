@@ -23,7 +23,7 @@ export const PoolComposition = ({ pricesApiPoolData }: { pricesApiPoolData?: Pri
 
   return (
     <Stack>
-      <CardHeader title={t`Composition`} size="small" />
+      <CardHeader title={t`Composition`} />
       <EvmDataTable
         category="detail"
         table={table}

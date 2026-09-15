@@ -19,7 +19,7 @@ export const TableHeader = ({
     direction="row"
     sx={{ justifyContent: 'space-between', alignItems: 'end', backgroundColor: t => t.design.Layer.App.Background }}
   >
-    <CardHeader size="small" title={title} data-testid={testId} />
+    <CardHeader title={title} data-testid={testId} />
     <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />
   </Stack>
 )

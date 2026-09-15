@@ -12,7 +12,7 @@ export const PointsCampaigns = () => {
   return (
     rows.length > 0 && (
       <Stack>
-        <CardHeader title={t`Points Campaigns`} size="small" />
+        <CardHeader title={t`Points Campaigns`} />
         <PointsCampaignsTable rows={rows} />
       </Stack>
     )
