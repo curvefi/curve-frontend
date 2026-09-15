@@ -9,12 +9,14 @@ const DEFAULT_ACTIVE = [PoolColumnId.PoolName, PoolColumnId.NetRate] as const
 const createVisibility = (active: PoolColumnId[], disabled: PoolColumnId[]): VisibilityGroup<PoolColumnId>[] => [
   {
     label: t`Pools`,
-    options: recordEntries(POOL_TITLES).map(([column, label]) => ({
-      label,
-      columns: [column],
-      active: [...DEFAULT_ACTIVE, ...active].includes(column),
-      enabled: !disabled.includes(column),
-    })),
+    options: recordEntries(POOL_TITLES)
+      .filter(([column]) => column !== PoolColumnId.PoolName) // Makes no sense to disable pool names
+      .map(([column, label]) => ({
+        label,
+        columns: [column],
+        active: [...DEFAULT_ACTIVE, ...active].includes(column),
+        enabled: !disabled.includes(column),
+      })),
   },
 ]
 
