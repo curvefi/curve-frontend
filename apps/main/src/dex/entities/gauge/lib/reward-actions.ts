@@ -13,7 +13,7 @@ import {
 import type { AddRewardMutation, DepositRewardMutation } from '@/dex/entities/gauge/types'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
-import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { getToken, useTokens } from '@/dex/queries/tokens.query'
 import { useEvmMutation } from '@evm-ui/lib/model/mutation/useEvmMutation'
 import { type GaugeQuery, rootKeys } from '@evm-ui/lib/model/query'
 import { waitForApproval } from '@evm-ui/utils'
@@ -23,10 +23,9 @@ import { t } from '@ui/lib/i18n'
 type GaugeRewardMutationOptions = GaugeQuery & { onReset: () => void }
 
 export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutationOptions) => {
-  const { tokensMapper } = useTokensMapper(chainId)
+  const { data: tokens } = useTokens({ chainId })
   const { address: userAddress } = useConnection()
-  const getRewardTokenSymbol = ({ rewardTokenId }: AddRewardMutation) =>
-    rewardTokenId ? tokensMapper[rewardTokenId.toLowerCase()]?.symbol : ''
+  const getRewardTokenSymbol = ({ rewardTokenId }: AddRewardMutation) => getToken(tokens, rewardTokenId)?.symbol ?? ''
 
   const { mutate, error, isPending } = useEvmMutation<AddRewardMutation>({
     mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'addRewardToken'] as const,
@@ -51,10 +50,10 @@ export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutat
 }
 
 export const useDepositReward = ({ chainId, poolId, onReset }: GaugeRewardMutationOptions) => {
-  const { tokensMapper } = useTokensMapper(chainId)
+  const { data: tokens } = useTokens({ chainId })
   const config = useConfig()
   const getRewardTokenSymbol = ({ rewardTokenId }: DepositRewardMutation) =>
-    rewardTokenId ? tokensMapper[rewardTokenId.toLowerCase()]?.symbol : ''
+    getToken(tokens, rewardTokenId)?.symbol ?? ''
 
   const { mutate, error, isPending } = useEvmMutation<DepositRewardMutation>({
     mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'depositReward'] as const,

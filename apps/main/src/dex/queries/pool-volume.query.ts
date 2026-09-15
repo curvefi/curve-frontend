@@ -1,10 +1,9 @@
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { type ChainParams, type ChainQuery, type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/lib/model'
+import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -24,42 +23,4 @@ const { useQuery: usePoolVolumeQuery } = queryFactory({
 export function usePoolVolume({ chainId, poolId }: PoolParams) {
   const { isHydrated } = useCurve()
   return usePoolVolumeQuery({ chainId, poolId }, isHydrated && chainId != null && !isLiteChain(chainId))
-}
-
-const { useQuery: usePoolVolumesQuery, invalidate: invalidatePoolVolumesQuery } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'stats.volume'] as const,
-  queryFn: async (_params: ChainQuery) => {
-    const curveApi = requireLib('curveApi')
-    const volumesByAddress = await curveApi.getPoolVolumes()
-
-    return Object.fromEntries(
-      curveApi.getPoolList().map(poolId => {
-        const poolAddress = curveApi.getPool(poolId).address.toLowerCase() as Address
-        return [poolId, volumesByAddress[poolAddress] ?? '0']
-      }),
-    )
-  },
-  category: 'dex.pools',
-  validationSuite: createValidationSuite((params: ChainParams) => {
-    curveApiValidationGroup(params)
-    chainValidationGroup(params)
-  }),
-})
-
-export { invalidatePoolVolumesQuery }
-
-/**
- * Hook to fetch trading volumes for multiple pools on the same chain.
- *
- * @remarks
- * Uses a single query keyed only by `chainId` (not per pool) to avoid 1000+ individual query
- * entries that slow down the front-end. Volumes are fetched from curve-js in one API request.
- * The poolIds are explicitly not part of the query key. The query reads the currently hydrated
- * curve instance directly, so DEX hydration must manually refetch this query after pool bootstrap.
- *
- * Disabled on lite networks.
- */
-export function usePoolVolumes({ chainId }: ChainParams) {
-  const { isHydrated } = useCurve()
-  return usePoolVolumesQuery({ chainId }, isHydrated && chainId != null && !isLiteChain(chainId))
 }
