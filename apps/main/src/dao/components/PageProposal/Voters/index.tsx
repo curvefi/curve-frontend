@@ -3,7 +3,7 @@ import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { formatToken, shortenAddress } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink, InternalLink } from '@legacy-ui/Link'
@@ -11,6 +11,7 @@ import { scanTxPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 
 type Props = { totalVotes: number; voteId: string; proposalType: ProposalType; className?: string }
 

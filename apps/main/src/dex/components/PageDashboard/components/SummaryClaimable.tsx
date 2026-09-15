@@ -6,12 +6,12 @@ import {
   SummaryTitle,
 } from '@/dex/components/PageDashboard/components/Summary'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { formatToken } from '@evm-ui/utils'
 import { Spinner } from '@legacy-ui/Spinner'
 import { Stats } from '@legacy-ui/Stats'
 import { Chip } from '@legacy-ui/Typography/Chip'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 import { tooltipProps } from '../utils'
 
 type AllTotal = { totalUsd: number; tokens: Record<string, { symbol: string; total: number; price: number }> }
