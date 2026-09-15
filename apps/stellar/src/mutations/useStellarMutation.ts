@@ -10,6 +10,7 @@ import {
   type TransactionMutationOptions,
 } from '@ui/features/queries/mutations/useTransactionMutation'
 import { withPendingToast } from '@ui/features/toast/Toast/notify'
+import { t } from '@ui/lib/i18n'
 
 export type TransactionContext = { account: NonNullable<ReturnType<typeof useWallet>['address']> }
 
@@ -25,7 +26,7 @@ export type StellarMutationOptions<
   validationParams?: Record<string, unknown>
   createTransaction: (variables: TVariables, context: TContext) => Promise<StellarTransaction>
   pendingMessage: (variables: TVariables, context: TContext) => string
-  confirmingMessage: (variables: TVariables, context: TContext) => string
+  confirmingMessage?: (variables: TVariables, context: TContext) => string
 }
 
 /** Stellar transaction mutations with preparation and wallet submission. */
@@ -37,7 +38,7 @@ export function useStellarMutation<
   validationParams = {},
   createTransaction,
   pendingMessage,
-  confirmingMessage,
+  confirmingMessage = () => t`Confirm in your wallet and wait for transaction confirmation`,
   ...options
 }: StellarMutationOptions<TVariables, TContext>) {
   const { address } = useWallet()

@@ -1,6 +1,6 @@
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { calculateMinimumMint } from '@/stellar/lib/amounts'
-import { fetchExpectedLp } from '@/stellar/queries/deposit/deposit-expected-lp.query'
+import { fetchExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { fetchPoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { fetchTokenBalance } from '@/stellar/queries/token/token-balance.query'
@@ -47,6 +47,7 @@ export const fetchDepositPreview = async (
     amounts: coins.map(({ symbol }) => amounts[symbol] ?? '0'),
     decimals: coins.map(({ decimals }) => decimals),
     supply,
+    isDeposit: true,
   })
   return {
     expected,
@@ -56,7 +57,7 @@ export const fetchDepositPreview = async (
 }
 
 export const depositInput = (address: StellarContract) =>
-  cy.get(`[data-testid="pool-deposit-input-${address}"]`, LOAD_TIMEOUT)
+  cy.get(`[data-testid="pool-token-input-${address}"]`, LOAD_TIMEOUT)
 export const depositSubmit = () => cy.get('[data-testid="pool-deposit-submit"]', LOAD_TIMEOUT)
 export const writeDepositForm = (
   coins: Pick<DepositState['coins'][number], 'address' | 'symbol'>[],

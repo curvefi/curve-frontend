@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
-import { invalidateExpectedLp } from '@/stellar/queries/deposit/deposit-expected-lp.query'
 import { fetchDepositSimulation, invalidateDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
+import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { invalidatePoolRates } from '@/stellar/queries/pool/pool-rates.query'
 import { invalidatePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { invalidatePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
@@ -13,7 +13,7 @@ import {
   type DepositForm,
 } from '@/stellar/queries/validation/deposit.validation'
 import { zip } from '@primitives/array.utils'
-import { getDepositAmounts } from '@ui/features/forms/deposit/deposit-form.utils'
+import { getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -27,7 +27,6 @@ export const useDepositMutation = ({ onReset, ...params }: DepositOptions) => {
     createTransaction: params => fetchDepositSimulation(params, { staleTime: 0 }),
     validationSuite: depositMutationValidationSuite,
     pendingMessage: () => t`Preparing deposit`,
-    confirmingMessage: () => t`Confirm in your wallet and wait for transaction confirmation`,
     successMessage: () => t`Deposit confirmed`,
     onReset,
     onSuccess: async (_, submitted) => {
@@ -39,7 +38,7 @@ export const useDepositMutation = ({ onReset, ...params }: DepositOptions) => {
         invalidatePoolReserves(submitted),
         invalidatePoolSupply(submitted),
         invalidatePoolRates(submitted),
-        invalidateExpectedLp(submitted),
+        invalidateExpectedLp({ ...submitted, isDeposit: true }),
         invalidateDepositSimulation(submitted),
       ])
     },
@@ -58,7 +57,7 @@ export const useDepositMutation = ({ onReset, ...params }: DepositOptions) => {
         slippage,
         maxAmounts,
         supply,
-        amounts: getDepositAmounts(values, tokens?.length),
+        amounts: getPoolAmounts(values, tokens?.length),
       } as DepositMutation),
     [mutate, network, pool, account, decimals, tokens, quote, minMint, slippage, maxAmounts, supply],
   )

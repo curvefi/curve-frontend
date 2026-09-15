@@ -1,6 +1,6 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { rootKeys, type TokenQuery, type TokenParams } from '@/stellar/queries/root-keys'
-import { tokenValidationSuite } from '@/stellar/queries/validation/deposit.validation'
+import { tokenValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { getQueryOptions: getTokenSymbolQueryOptions, fetchQuery: fetchTokenSymbol } = queryFactory({

@@ -3,25 +3,20 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type ErrorKey, type UseFormReturn, type FormSubmitHandler, type VisibleErrors } from '@ui/features/forms'
+import { type UseFormReturn, type FormSubmitHandler, type VisibleErrors, type ErrorKey } from '@ui/features/forms'
 import { Form } from '@ui/features/forms/components/Form'
 import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { FormButton, type FormButtonProps } from '@ui/features/forms/FormButton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import {
-  depositAmountField,
-  depositMaxAmountField,
-  type DepositField,
-  type DepositFormValues,
-} from './deposit-form.utils'
-import { DepositTokenInput, type DepositToken } from './DepositTokenInput'
+import { type PoolTokensForm, type PoolTokenField, poolTokenFields } from '../pool-form.utils'
+import { PoolTokenInput, type PoolToken } from '../PoolTokenInput'
+export type { PoolTokensForm } from '../pool-form.utils'
 
-export type { DepositFormValues } from './deposit-form.utils'
-export type DepositFormProps<TValues extends DepositFormValues = DepositFormValues> = {
+export type DepositFormProps<TValues extends PoolTokensForm = PoolTokensForm> = {
   form: UseFormReturn<TValues>
-  tokens: QueryProp<DepositToken[]>
+  tokens: QueryProp<PoolToken[]>
   onSubmit: FormSubmitHandler
   isPending: boolean
   isLoading: boolean
@@ -32,10 +27,10 @@ export type DepositFormProps<TValues extends DepositFormValues = DepositFormValu
   formErrors: VisibleErrors<TValues>
   footer: ReactNode
   priceImpact: QueryProp<Decimal | null>
-  isSeed: boolean
+  isSeed: QueryProp<boolean>
 }
 
-export const DepositForm = <TValues extends DepositFormValues>({
+export const DepositForm = <TValues extends PoolTokensForm>({
   form,
   tokens: { data: tokens, error: tokensError },
   onSubmit,
@@ -51,14 +46,20 @@ export const DepositForm = <TValues extends DepositFormValues>({
   isSeed,
 }: DepositFormProps<TValues>) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
-    {isSeed && (
+    {isSeed.data && (
       <Alert severity="info" variant="outlined" data-testid="pool-deposit-seed-alert">
         <AlertTitle>{t`The first deposit must fund every coin`}</AlertTitle>
         {t`The seed lock is permanent; expected LP is the net amount you receive.`}
       </Alert>
     )}
     {tokens?.map((token, index) => (
-      <DepositTokenInput key={token.address} token={token} index={index} disabled={isPending} />
+      <PoolTokenInput
+        label={t`Amount to deposit`}
+        key={token.address}
+        token={token}
+        index={index}
+        disabled={isPending}
+      />
     )) ??
       (!tokensError && (
         <>
@@ -76,10 +77,10 @@ export const DepositForm = <TValues extends DepositFormValues>({
       testId="pool-deposit-submit"
       connectWalletTestId="pool-deposit-connect-wallet"
     />
-    <FormAlerts<ErrorKey<TValues> | DepositField>
+    <FormAlerts<ErrorKey<TValues> | PoolTokenField>
       error={error}
       formErrors={formErrors}
-      handledErrors={tokens?.flatMap((_, index) => [depositAmountField(index), depositMaxAmountField(index)]) ?? []}
+      handledErrors={tokens?.flatMap((_, index) => poolTokenFields(index)) ?? []}
       userAddress={userAddress}
     />
   </Form>

@@ -19,7 +19,7 @@ export const QUERY_CATEGORIES = {
   'global.routerApi': urgent,
   'global.snapshots': table,
   'global.networks': table, // not static, includes tvl
-  'global.no-persist': { meta: { persist: false } },
+  'global.no-persist': { meta: { persist: false } }, // for queries that cannot be serialized
 
   // Bridge
   'bridge.capacity': marketDetail,

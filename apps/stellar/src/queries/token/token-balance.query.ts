@@ -4,7 +4,7 @@ import {
   type BalanceParams,
   type BalanceQuery,
   balanceValidationSuite,
-} from '@/stellar/queries/validation/deposit.validation'
+} from '@/stellar/queries/validation/pool.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei } from '@ui/lib/decimal'
 

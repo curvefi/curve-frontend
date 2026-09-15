@@ -11,8 +11,8 @@ import { depositFormValidationSuite, type DepositForm } from '@/stellar/queries/
 import { zip } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
-import { getDepositDefaultValues, type DepositAmountField } from '@ui/features/forms/deposit/deposit-form.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
+import { getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
@@ -35,12 +35,12 @@ export function useDepositForm(poolParams: PoolQuery) {
 
   const { metadata, balances, decimals, maxAmounts } = useDepositTokens({ ...poolParams, account, tokens })
   const slippage = useUserProfileStore(state => state.maxSlippage.stable)
-  const userDefaultValues = useMemo(() => maybe(tokenCount, getDepositDefaultValues) ?? {}, [tokenCount])
+  const userDefaultValues = useMemo(() => maybe(tokenCount, getPoolDefaultValues) ?? {}, [tokenCount])
   const form = useForm<DepositForm>({
     ...formOptions,
     defaultValues: { ...formOptions.defaultValues, ...userDefaultValues },
   })
-  const { reset } = form
+  const { formState, reset } = form
 
   useFormSync(form, { slippage })
   useFormSync(form, { decimals: decimals.data })
@@ -49,7 +49,7 @@ export function useDepositForm(poolParams: PoolQuery) {
 
   // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
   const values = useShallow(identity<DepositForm>)(form.watchValues())
-  const [params, isDebouncing] = useFormDebounce<DepositPreviewParams, DepositAmountField>(
+  const [params, isDebouncing] = useFormDebounce<DepositPreviewParams, PoolAmountField>(
     useMemo(
       () => ({
         ...values,
@@ -86,7 +86,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     onReset: useCallback(() => reset(userDefaultValues), [reset, userDefaultValues]),
   })
 
-  const isPending = form.formState.isSubmitting || isDepositing
+  const isPending = formState.isSubmitting || isDepositing
   const tokenInputs = combineQueries([tokens, metadata], (addresses, metadata) =>
     zip(addresses, metadata, balances).map(([address, metadata, balance]) => ({
       address: asAddress(address),
@@ -116,7 +116,6 @@ export function useDepositForm(poolParams: PoolQuery) {
       !form.formState.isValid ||
       !!error ||
       !quote.data ||
-      !+quote.data ||
       minimum.data == null ||
       !fee.data,
     isLoading: isPending || isLoading,
@@ -126,6 +125,6 @@ export function useDepositForm(poolParams: PoolQuery) {
     formErrors: form.formState.visibleErrors,
     tokens: tokenInputs,
     priceImpact,
-    isSeed: supply.data != null && !+supply.data,
+    isSeed: mapQuery(supply, supply => !+supply),
   }
 }

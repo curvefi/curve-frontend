@@ -9,20 +9,28 @@ import {
 import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei, toWeiArray, toBigIntArray } from '@ui/lib/decimal'
 
-const IS_DEPOSIT = true
+type ExpectedLpParams = QuoteParams & { isDeposit: boolean }
+type ExpectedLpQuery = QuoteQuery & { isDeposit: boolean }
 
 export const {
   useQuery: useExpectedLp,
   fetchQuery: fetchExpectedLp,
   invalidate: invalidateExpectedLp,
 } = queryFactory({
-  queryKey: ({ network, pool, amounts, decimals, supply }: QuoteParams) =>
-    [...rootKeys.pool({ network, pool }), 'calc_token_amount', { amounts }, { decimals }, { supply }] as const,
-  queryFn: async ({ network, pool, amounts, decimals }: QuoteQuery) =>
+  queryKey: ({ network, pool, amounts, decimals, supply, isDeposit }: ExpectedLpParams) =>
+    [
+      ...rootKeys.pool({ network, pool }),
+      'calc_token_amount',
+      { amounts },
+      { decimals },
+      { supply },
+      { isDeposit },
+    ] as const,
+  queryFn: async ({ network, pool, amounts, decimals, isDeposit }: ExpectedLpQuery) =>
     fromWei(
       await readContract<bigint>(network, pool, 'calc_token_amount', [
         toBigIntArray(toWeiArray(amounts, decimals)).map(amount => amount ?? 0n),
-        IS_DEPOSIT,
+        isDeposit,
       ]),
       LP_TOKEN_DECIMALS,
     ),
