@@ -5,20 +5,16 @@ import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { getLib } from '@evm-ui/features/connect-wallet'
 import type { LibKey } from '@evm-ui/features/connect-wallet/lib/types'
 import { getWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
-import { combineQueriesToObject, createValidationSuite, QueryData } from '@evm-ui/lib'
-import {
-  type ChainParams,
-  NoRetryError,
-  queryFactory,
-  rootKeys,
-  type TokenParams,
-  type TokenQuery,
-} from '@evm-ui/lib/model/query'
+import { QueryData } from '@evm-ui/lib'
+import { type ChainParams, rootKeys, type TokenParams, type TokenQuery } from '@evm-ui/lib/model/query'
 import { tokenValidationGroup } from '@evm-ui/lib/model/query/token-validation'
 import { BlockchainIds, REUSD_ADDRESS, SREUSD_ADDRESS } from '@evm-ui/utils'
 import { FetchError } from '@primitives/fetch.utils'
 import { Chain } from '@primitives/network.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
+import { combineQueriesToObject } from '@ui/features/queries/combine'
+import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 import { readContract } from '@wagmi/core'
 
 const getTestTokenPrice = async (chainId: number, tokenAddress: Address): Promise<number | null> => {

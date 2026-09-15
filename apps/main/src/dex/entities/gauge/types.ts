@@ -1,7 +1,7 @@
 import { GaugeQuery, type UserQuery } from '@evm-ui/lib/model/query'
-import { FieldsOf } from '@evm-ui/lib/validation'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { FieldsOf } from '@ui/lib/validation/types'
 
 export type AddReward = { rewardTokenId: Address; distributorId: Address }
 export type AddRewardQuery = GaugeQuery & AddReward

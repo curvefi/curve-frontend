@@ -1,8 +1,8 @@
 import type { ChainId } from '@/dao/types/dao.types'
-import type { FieldsOf } from '@evm-ui/lib'
 import type { UserChainQuery } from '@evm-ui/lib/model'
 import type { CalendarDate } from '@internationalized/date'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { FieldsOf } from '@ui/lib/validation/types'
 
 export type CreateLockFormValues = {
   lockedAmount: Decimal | undefined

@@ -9,7 +9,7 @@ import { Chain } from '@primitives/network.utils'
 import { type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { BannerProps } from '@ui/features/banners/Banner'
-import { SLIPPAGE } from '@ui/features/slippage/slippage.utils'
+import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { t } from '@ui/lib/i18n'
 
 type MarketAlert = TooltipProps & {
@@ -403,8 +403,13 @@ export const NO_LEVERAGE_LEND: PartialRecord<ApiChain, Address[]> = {
 type MarketLeverageConfig = { providers: readonly RouteProvider[]; slippage?: Decimal }
 
 // Default is the most commonly used configuration.
-const DEFAULT_LEVERAGE_CONFIG = { providers: ['enso'] } satisfies MarketLeverageConfig
+const DEFAULT_LEVERAGE_CONFIG = { providers: ['enso', 'curve-solver', 'curve'] } satisfies MarketLeverageConfig
 const DEFAULT_STABLE_LEVERAGE_CONFIG = { ...DEFAULT_LEVERAGE_CONFIG, slippage: SLIPPAGE.stable.default }
+// For markets where Curve Solver is not supported.
+const STABLE_ROUTER_LEVERAGE_CONFIG = {
+  ...DEFAULT_STABLE_LEVERAGE_CONFIG,
+  providers: ['enso', 'curve'],
+} satisfies MarketLeverageConfig
 
 // This is a leverage allowlist: unlisted markets remain disabled until their leverage routes are tested and approved
 export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, MarketLeverageConfig>> = {
@@ -416,7 +421,7 @@ export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, Mark
     '0xFd85e847cDd2549f213E276e4B57B0690169F043': DEFAULT_LEVERAGE_CONFIG, // svZCHF-crvUSD v2
     '0x652aEa6B22310C89DCc506710CaD24d2Dba56B11': DEFAULT_LEVERAGE_CONFIG, // weETH Mint
     '0xf8C786b1064889fFd3c8A08B48D5e0c159F4cBe3': DEFAULT_LEVERAGE_CONFIG, // cbBTC Mint
-    '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675': DEFAULT_STABLE_LEVERAGE_CONFIG, // syrupUSDC-crvUSD
+    '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675': STABLE_ROUTER_LEVERAGE_CONFIG, // syrupUSDC-crvUSD
     '0x3cD4d86a2c65e57ce4b4121b67E2D2224BA41bbe': DEFAULT_STABLE_LEVERAGE_CONFIG, // sfrxUSD-crvUSD v2
     '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0': DEFAULT_STABLE_LEVERAGE_CONFIG, // sDOLA-crvUSD v2
     '0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9': DEFAULT_STABLE_LEVERAGE_CONFIG, // sreUSD-crvUSD

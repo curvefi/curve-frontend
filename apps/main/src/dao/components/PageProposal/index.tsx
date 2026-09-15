@@ -6,12 +6,11 @@ import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { CONTRACT_VECRV } from '@/dao/constants'
 import { invalidateProposalPricesApi, useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
-import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
+import { createProposalKey, useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
-import { copyToClipboard } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -22,6 +21,7 @@ import { Chain } from '@primitives/network.utils'
 import { maybes } from '@primitives/objects.utils'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { useParams } from '@ui/hooks/router'
+import { copyToClipboard } from '@ui/lib/clipboard'
 import { t } from '@ui/lib/i18n'
 import { BackButton } from '../BackButton'
 import { ProposalVoteStatusBox } from '../ProposalVoteStatusBox'
@@ -49,7 +49,7 @@ export const Proposal = () => {
     isError: pricesProposalError,
     isSuccess: pricesProposalSuccess,
   } = useProposalPricesApiQuery({ proposalId: +voteId, proposalType })
-  const proposal = proposalsMapper?.[rProposalId] ?? null
+  const proposal = proposalsMapper?.[createProposalKey(+voteId, proposalType)] ?? null
 
   const isLoading = pricesProposalLoading || proposalsListLoading
   const isFetched = pricesProposalSuccess && proposalsListSuccess

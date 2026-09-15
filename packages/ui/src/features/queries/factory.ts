@@ -1,0 +1,179 @@
+import type { Suite } from 'vest'
+import { CB } from 'vest-utils'
+import { FetchError } from '@primitives/fetch.utils'
+import { isEmpty, notFalsy } from '@primitives/objects.utils'
+import {
+  type DefaultError,
+  keepPreviousData,
+  type QueryExecuteOptions,
+  QueryFunctionContext,
+  type QueryKey,
+  queryOptions,
+  useQuery,
+} from '@tanstack/react-query'
+import { QUERY_CATEGORIES, type QueryCategory } from '@ui/features/queries/query-categories'
+import { queryClient } from '@ui/features/queries/query-client'
+import { logError, logQuery, logSuccess } from '@ui/lib/logging'
+import { formatTimeDiff } from '@ui/lib/time'
+import { validate } from '@ui/lib/validation/lib'
+import { FieldName, FieldsOf } from '@ui/lib/validation/types'
+
+// Checks if T is a union type (e.g., 'a' | 'b')
+type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never
+
+// Checks if T is a string literal (not just `string`)
+type IsStringLiteral<T> = T extends string ? (string extends T ? false : true) : false
+
+// Checks if T is an object with exactly one key
+type IsSingleKeyObject<T> = T extends object
+  ? keyof T extends never
+    ? false // empty object
+    : IsUnion<keyof T> extends false
+      ? true // single key
+      : false // multiple keys (union)
+  : false
+
+// Checks if T is a string literal or an object with one property
+type IsLiteralOrSingleKeyObject<T> = IsStringLiteral<T> extends true ? true : IsSingleKeyObject<T>
+
+// Recursively checks each element in the tuple
+type AreAllElementsLiteralOrSinglePropertyObject<T extends readonly unknown[]> = T extends readonly [
+  infer First,
+  ...infer Rest,
+]
+  ? IsLiteralOrSingleKeyObject<First> extends true
+    ? AreAllElementsLiteralOrSinglePropertyObject<Rest>
+    : false
+  : true
+
+// Combined type that ensures T is a tuple and all elements pass the checks
+type QueryKeyTuple<T extends readonly unknown[]> = T extends readonly [...infer Elements]
+  ? number extends Elements['length']
+    ? never // Not a tuple
+    : AreAllElementsLiteralOrSinglePropertyObject<T> extends true
+      ? T // Valid tuple
+      : never // Elements fail the check
+  : never // Not an array
+
+/** Specific class of errors thrown from inside queryFn to skip query retries on failure */
+export class NoRetryError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+
+  /**
+   * When we receive 404's from t
+   * @param run
+   */
+  static async catch404<T>(run: () => Promise<T>) {
+    try {
+      return await run()
+    } catch (error) {
+      if (error instanceof FetchError && error.status === 404) {
+        throw new NoRetryError(error.message)
+      }
+      throw error
+    }
+  }
+}
+
+/**
+ * Reconstructs params from a query key tuple by merging all object entries.
+ *
+ * This pattern ensures we can recover named parameters from the query key for validation.
+ * Query keys must contain only string literals (ignored) or **single-key objects** (parsed).
+ *
+ * @example
+ * getParamsFromQueryKey(['pool', { chainId: 1 }, { poolId: 'abc' }])
+ * // → { chainId: 1, poolId: 'abc' }
+ */
+const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams>(queryKey: TKey) =>
+  Object.fromEntries(queryKey.flatMap(i => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
+
+async function runQuery<TKey extends QueryKey, TData, TQuery>(
+  queryKey: TKey,
+  queryFn: (params: TQuery) => Promise<TData>,
+  disableLog: true | undefined,
+) {
+  try {
+    const start = new Date()
+    if (!disableLog) logQuery(queryKey)
+    const data = await queryFn(getParamsFromQueryKey(queryKey))
+    if (!disableLog) logSuccess(queryKey, formatTimeDiff(start), notFalsy(data))
+    return data
+  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+    logError(queryKey, error, error.message)
+    throw error
+  }
+}
+
+export function queryFactory<
+  TQuery extends object,
+  const TKey extends readonly unknown[],
+  TData,
+  TParams extends FieldsOf<TQuery> = FieldsOf<TQuery>,
+  TField extends string = FieldName<TQuery>,
+  TCallback extends CB = CB<TQuery, TField[]>,
+>({
+  queryFn,
+  queryKey,
+  category,
+  validationSuite,
+  dependencies,
+  disableLog,
+  keepPreviousData: shouldKeepPreviousData,
+  ...options
+}: {
+  queryKey: (params: TParams) => QueryKeyTuple<TKey>
+  validationSuite: Suite<TField, string, TCallback>
+  queryFn: (params: TQuery) => Promise<TData>
+  category: QueryCategory
+  dependencies?: (params: TParams) => QueryKey[]
+  refetchOnWindowFocus?: 'always'
+  refetchOnMount?: 'always'
+  disableLog?: true
+  keepPreviousData?: boolean
+}) {
+  const getQueryOptions = (params: TParams, enabled = true) =>
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryOptions({
+      ...QUERY_CATEGORIES[category],
+      queryKey: queryKey(params),
+      queryFn: async ({ queryKey }: QueryFunctionContext<TKey>) => await runQuery(queryKey, queryFn, disableLog),
+      enabled:
+        enabled &&
+        isEmpty(validate(validationSuite, params)) &&
+        !dependencies?.(params).some(key => queryClient.getQueryData(key) === undefined),
+      retry: (failureCount, error) =>
+        !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
+        !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
+        failureCount < 3,
+      ...(shouldKeepPreviousData && { placeholderData: keepPreviousData }),
+      ...options,
+    })
+  return {
+    queryKey,
+    getQueryOptions,
+    getQueryData: (params: TParams): TData | undefined => queryClient.getQueryData(queryKey(params)),
+    setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(queryKey(params), data),
+    fetchQuery: (params: TParams, options?: Partial<QueryExecuteOptions<TData, DefaultError, TData, TData, TKey>>) =>
+      queryClient.query<TData, DefaultError, TData, TData, TKey>({ ...getQueryOptions(params), ...options }),
+    /**
+     * Function that is like fetchQuery, but sets staleTime to 0 to ensure fresh data is fetched.
+     * Primary use case is for Zustand stores where want to both use queries and ensure freshness.
+     * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
+     */
+    refetchQuery: (params: TParams) =>
+      queryClient.query<TData, DefaultError, TData, TData, TKey>({
+        ...getQueryOptions(params),
+        ...options,
+        staleTime: 0,
+      }),
+    useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
+    /** Invalidates the cache for the query, marking it as stale and triggering a refetch if needed **/
+    invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
+    /** Removes all the cached data for the query **/
+    reset: (params: TParams) => queryClient.resetQueries({ queryKey: queryKey(params) }),
+  } as const
+}

@@ -28,6 +28,7 @@ import { formatDate } from '@primitives/date.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
@@ -193,13 +194,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
         }
       />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
-        <Stack
-          sx={{
-            display: 'grid',
-            gap: Spacing.xl,
-            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(5, 1fr)' },
-          }}
-        >
+        <MetricsGrid>
           <Metric
             category={METRIC_CATEGORY}
             label={modeConfig.currentRateLabel}
@@ -230,7 +225,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
               valueOptions={{ unit: 'percentage' }}
             />
           )}
-        </Stack>
+        </MetricsGrid>
         <EvmChartStateWrapper
           height={Height.shortChart}
           isLoading={snapshots.isLoading || !controllerAddress}

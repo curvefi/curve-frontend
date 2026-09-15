@@ -8,7 +8,8 @@ import type {
   DepositRewardQuery,
 } from '@/dex/entities/gauge/types'
 import { createApprovedEstimateGasHook, createEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model/query'
+import { rootKeys } from '@evm-ui/lib/model/query'
+import { queryFactory } from '@ui/features/queries/factory'
 import {
   gaugeAddRewardValidationSuite,
   gaugeDepositRewardApproveValidationSuite,

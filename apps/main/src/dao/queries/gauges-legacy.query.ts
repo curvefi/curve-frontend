@@ -1,7 +1,7 @@
-import { EmptyValidationSuite } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model'
 import { fetchJson } from '@primitives/fetch.utils'
 import { maybe } from '@primitives/objects.utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 const GAUGES_LEGACY_URL = 'https://api.curve.finance/v1/getAllGauges'
 

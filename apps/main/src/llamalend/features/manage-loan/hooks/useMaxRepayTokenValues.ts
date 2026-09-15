@@ -8,11 +8,11 @@ import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { queryMinimum } from '@evm-ui/lib'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { useFormSync, useOnChangeCallback } from '@ui/features/forms'
+import { queryMinimum } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 
 export function useMaxRepayTokenValues({

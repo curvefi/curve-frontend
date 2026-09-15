@@ -83,9 +83,7 @@ const config = [
     },
     settings: {
       react: { version: 'detect' },
-      'import-x/resolver': {
-        typescript: { alwaysTryTypes: true, project: ['./tsconfig.json'] },
-      },
+      'import-x/resolver': { typescript: { alwaysTryTypes: true, project: ['./tsconfig.json'] } },
       'import-x/internal-regex': '^@(ui|legacy-ui|evm-ui|curvefi/prices-api|external-rewards)',
     },
     rules: {
@@ -162,6 +160,18 @@ const config = [
             {
               name: 'react-hook-form',
               message: "Use `'@evm-ui/features/forms'` instead of 'react-hook-form' directly.",
+            },
+            {
+              name: '@creit-tech/stellar-wallets-kit/sdk',
+              message: [
+                'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
+                'Change this rule if the file needs to be split.',
+              ].join(' '),
+            },
+            {
+              name: 'vest',
+              importNames: ['enforce'],
+              message: 'Import enforce from @ui/lib/validation/enforce-extension instead.',
             },
           ],
         },

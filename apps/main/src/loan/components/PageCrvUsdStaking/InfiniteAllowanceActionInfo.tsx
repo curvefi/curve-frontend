@@ -1,5 +1,5 @@
-import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import Switch from '@mui/material/Switch'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { t } from '@ui/lib/i18n'
 
 type ScrvUsdInfiniteAllowanceActionInfoProps = { approveInfinite: boolean; onToggle: () => void }

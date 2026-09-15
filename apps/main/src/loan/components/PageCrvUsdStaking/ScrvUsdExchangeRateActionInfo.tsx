@@ -1,5 +1,5 @@
-import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { formatNumber } from '@primitives/number.utils'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { mapQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { useScrvUsdExchangeRate } from '../../entities/scrvusd-exchange-rate.query'

@@ -15,6 +15,7 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-stellar.tsbuildinfo"
   },
   "dependencies": {
+    "@creit-tech/stellar-wallets-kit": "jsr:^2.6.0",
     "@curvefi/ui": "workspace:^",
     "@tanstack/react-query": "5.102.8",
     "@tanstack/react-query-devtools": "5.102.8",

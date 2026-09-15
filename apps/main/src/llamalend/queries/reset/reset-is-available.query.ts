@@ -1,7 +1,8 @@
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import { resetSupportedValidationSuite } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
+import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useResetIsAvailable, queryKey: resetIsAvailableQueryKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) =>

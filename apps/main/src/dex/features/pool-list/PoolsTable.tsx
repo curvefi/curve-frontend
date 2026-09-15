@@ -39,7 +39,7 @@ const POOL_EXPANDED_PANEL_BODIES = {
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const isLite = isLiteChain(network.chainId)
   const isMobile = useIsMobile()
-  const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const visibilitySettingsRef = useRef<HTMLButtonElement>(null)

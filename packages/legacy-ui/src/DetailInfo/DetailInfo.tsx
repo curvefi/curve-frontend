@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
-import { ActionInfoProps, ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import Divider from '@mui/material/Divider'
+import { ActionInfoProps, ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 

@@ -5,7 +5,8 @@ import {
   type ResetQuery,
   resetValidationSuite,
 } from '@/llamalend/queries/validation/reset.validation'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
+import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useResetIsApproved, fetchQuery: fetchResetIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) =>

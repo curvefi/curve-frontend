@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import type { LlamaApi } from '@evm-ui/features/connect-wallet'
 import { useLlamaQuery } from '@evm-ui/features/connect-wallet/lib/CurveContext'
-import { useCombinedQueries } from '@evm-ui/lib'
+import { useCombinedQueries } from '@ui/features/queries/combine'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { type LendMarketData, useLendMarkets } from '../queries/lend-markets.query'

@@ -3,9 +3,11 @@ import { fetchChartBandBalancesData, sortBands } from '@/llamalend/queries/bands
 import { normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
 import { liquidationBandValidationGroup } from '@/llamalend/queries/validation/bands-validation'
 import type { MarketQuery } from '@evm-ui/lib/model'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
-import { createValidationSuite, FieldsOf } from '@evm-ui/lib/validation'
+import { queryFactory } from '@ui/features/queries/factory'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { FieldsOf } from '@ui/lib/validation/types'
 
 const IS_MARKET = true
 const QUERY_KEY = 'bandsBalances' as const

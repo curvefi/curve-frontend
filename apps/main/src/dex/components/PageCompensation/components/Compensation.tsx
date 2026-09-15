@@ -1,10 +1,11 @@
-import { ReactNode, useCallback, useEffect, useState, type ComponentProps } from 'react'
-import { css, styled, type IStyledComponent } from 'styled-components'
+import { type ComponentProps, ReactNode, useCallback, useEffect, useState } from 'react'
+import { css, type IStyledComponent, styled } from 'styled-components'
+import { getAddress } from 'viem'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
-import { tryChecksumAddress, copyToClipboard, shortenAddress } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
@@ -16,6 +17,7 @@ import { Hex } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { notify } from '@ui/features/toast/Toast/notify'
+import { copyToClipboard } from '@ui/lib/clipboard'
 import { t } from '@ui/lib/i18n'
 
 export const Compensation = ({
@@ -102,7 +104,7 @@ export const Compensation = ({
               {shortenAddress(contractAddress)}
               <Icon name="Launch" size={16} />
             </StyledExternalLink>
-            <StyledIconButton size="medium" onClick={() => void copyToClipboard(tryChecksumAddress(contractAddress))}>
+            <StyledIconButton size="medium" onClick={() => void copyToClipboard(getAddress(contractAddress))}>
               <Icon name="Copy" size={16} />
             </StyledIconButton>
           </div>

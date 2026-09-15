@@ -1,7 +1,5 @@
-import { debounce, merge } from 'lodash'
 import { create, StoreApi } from 'zustand'
-import { devtools, persist, StorageValue, type PersistOptions } from 'zustand/middleware'
-import { CacheSlice, createCacheSlice } from '@/dex/store/createCacheSlice'
+import { devtools } from 'zustand/middleware'
 import { CreatePoolSlice, createCreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
 import { DashboardSlice, createDashboardSlice } from '@/dex/store/createDashboardSlice'
 import { DeployGaugeSlice, createDeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
@@ -12,11 +10,8 @@ import { PoolSwapSlice, createPoolSwapSlice } from '@/dex/store/createPoolSwapSl
 import { PoolWithdrawSlice, createPoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
 import { QuickSwapSlice, createQuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import { TokensSlice, createTokensSlice } from '@/dex/store/createTokensSlice'
-import { maybe } from '@primitives/objects.utils'
-import { setLocalStorageItem } from '@ui/features/storage/useLocalStorage'
 
 export type State = GlobalSlice &
-  CacheSlice &
   PoolsSlice &
   PoolDepositSlice &
   PoolWithdrawSlice &
@@ -29,7 +24,6 @@ export type State = GlobalSlice &
 
 const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
   ...createGlobalSlice(set, get),
-  ...createCacheSlice(set, get),
   ...createPoolsSlice(set, get),
   ...createPoolDepositSlice(set, get),
   ...createPoolWithdrawSlice(set, get),
@@ -41,31 +35,4 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createDeployGaugeSlice(set, get),
 })
 
-// the storage crashes in some browsers if the size of the object is too big
-const MAX_SIZE = 2.5 * 1024 * 1024 // 2.5MB limit
-
-type CacheState = Pick<State, 'storeCache'>
-
-// cache all items in CacheSlice store
-const cache: PersistOptions<State, CacheState> = {
-  name: 'curve-app-store-cache',
-  partialize: ({ storeCache }: State) => ({ storeCache }),
-  merge,
-  storage: {
-    getItem: (name: string) => maybe(localStorage?.getItem(name), JSON.parse) as StorageValue<CacheState> | null,
-    // debounce storage to avoid performance issues serializing too often. The item can be large.
-    setItem: debounce((name: string, value) => {
-      const json = JSON.stringify(value)
-      if (json.length > MAX_SIZE) {
-        console.warn(`Cache item ${name} is too big (${json.length} bytes), removing it.`)
-        return setLocalStorageItem(name, null)
-      }
-      return setLocalStorageItem(name, json)
-    }, 1000),
-    removeItem: name => localStorage.removeItem(name),
-  },
-  version: 19, // update version number to prevent UI from using cache
-}
-
-export const useStore =
-  process.env.NODE_ENV === 'development' ? create(devtools(persist(store, cache))) : create(persist(store, cache))
+export const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)
