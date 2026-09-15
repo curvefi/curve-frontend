@@ -131,7 +131,7 @@ export const useLlammaOhlcChartStateModel = ({
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
-    chartHeight: Height.chart,
+    chartHeight: Height.chart.md,
     isLoading,
     isEmpty: oraclePoolsChartQuery.data?.ohlcData?.length === 0,
     emptyMessage,

@@ -221,14 +221,14 @@ export const MarketRateCurveChart = () => {
           />
         </MetricsGrid>
         <EvmChartStateWrapper
-          height={Height.shortChart}
+          height={Height.chart.sm}
           isLoading={chartData.isLoading}
           error={chartData.error}
           errorMessage={t`Unable to fetch rate curve data.`}
         >
           <EChartsLineChart<RateCurveChartPoint, RateCurveSeriesKey, 'utilization'>
             data={chartData.data ?? []}
-            height={Height.shortChart}
+            height={Height.chart.sm}
             xKey="utilization"
             series={series}
             visibleSeries={visibleSeries}

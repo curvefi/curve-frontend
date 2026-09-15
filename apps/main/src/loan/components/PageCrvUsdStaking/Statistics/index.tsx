@@ -85,13 +85,13 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
         {selectedStatisticsChart === 'savingsRate' && (
           <Stack sx={{ gap: Spacing.md }}>
             <EvmChartStateWrapper
-              height={Height.chart}
+              height={Height.chart.lg}
               isLoading={isScrvUsdYieldLoading}
               error={scrvUsdYieldError}
               errorMessage={t`Unable to fetch savings rate data.`}
             >
               <RevenueLineChart
-                height={Height.chart}
+                height={Height.chart.lg}
                 data={yieldData ?? EMPTY_YIELD_DATA}
                 visibleSeries={visibleSeries}
               />
@@ -107,12 +107,12 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
 
         {selectedStatisticsChart === 'distributions' && (
           <EvmChartStateWrapper
-            height={Height.chart}
+            height={Height.chart.lg}
             isLoading={isRevenueLoading}
             error={revenueError}
             errorMessage={t`Unable to fetch distributions data.`}
           >
-            <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+            <RevenueDistributionsBarChart height={Height.chart.lg} data={revenueData ?? null} />
           </EvmChartStateWrapper>
         )}
 

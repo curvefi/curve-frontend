@@ -23,8 +23,6 @@ import { useDerivedChartData } from './hooks/useDerivedChartData'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
 import { TooltipContent } from './TooltipContent'
 
-const { Height } = SizesAndSpaces
-
 type BandsChartProps = {
   collateralToken: BandsChartToken
   borrowToken: BandsChartToken
@@ -36,7 +34,7 @@ type BandsChartProps = {
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
   oraclePrice?: string
-  height?: number
+  height: number
   priceRange?: { min: number; max: number }
 }
 
@@ -155,7 +153,7 @@ const BandsChartComponent = ({
   liqRangeCurrentVisible = true,
   liqRangeNewVisible = true,
   oraclePrice,
-  height = Height.chart,
+  height,
   priceRange,
 }: BandsChartProps) => {
   const isChartDataPending = !error && chartData === undefined

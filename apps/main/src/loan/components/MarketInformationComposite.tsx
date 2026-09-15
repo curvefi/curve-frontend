@@ -1,9 +1,8 @@
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
-import { MarketBorrowRateBreakdown } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
+import { MarketHistoricalRatesTabs } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
-import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp, MarketActivityComp } from '@/loan/components/ChartAndActivityComp'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
@@ -16,7 +15,6 @@ import { PAGE_SPACING } from '@ui/features/layout/DetailPageLayout/constants'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { stackedCardHeadersSx } from '@ui/lib/mui'
 
 type MarketInformationCompProps = { previewPrices: Range<Decimal> | undefined }
 
@@ -37,10 +35,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
         </Stack>
       </MarketSection>
       <MarketSection id="historical-rates">
-        <Stack sx={stackedCardHeadersSx}>
-          <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
-          <MarketBorrowRateBreakdown />
-        </Stack>
+        <MarketHistoricalRatesTabs rateType={MarketRateType.Borrow} />
       </MarketSection>
       {isNewLlamaMarketDetailPage && (
         <MarketSection id="market-activity">
