@@ -1,8 +1,8 @@
 import { zip } from 'lodash'
-import { zeroAddress } from 'viem'
+import { getAddress, zeroAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
-import { type PoolData, type UrlParams } from '@/dex/types/main.types'
+import { type PoolData, type TokensNameMapper, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
@@ -23,12 +23,12 @@ export const DetailInfoTradeRouteRoute = ({
 }: {
   params: UrlParams
   route: Route
-  tokensNameMapper: Record<string, string>
+  tokensNameMapper: TokensNameMapper | undefined
   poolData: PoolData | undefined
   swapCustomRouteRedirect: string | undefined
 }) => {
-  const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenAddress(route.inputCoinAddress) ?? ''
-  const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenAddress(route.outputCoinAddress) ?? ''
+  const inputToken = tokensNameMapper?.[getAddress(route.inputCoinAddress)] ?? shortenAddress(route.inputCoinAddress)
+  const outputToken = tokensNameMapper?.[getAddress(route.outputCoinAddress)] ?? shortenAddress(route.outputCoinAddress)
   const { tokenAddresses, tokens } = poolData ?? {}
   return (
     <ActionInfo

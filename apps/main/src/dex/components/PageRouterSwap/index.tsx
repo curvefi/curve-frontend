@@ -10,19 +10,21 @@ import type {
   ExchangeRate,
   FormStatus,
   FormValues,
+  RawRoutesAndOutput,
   RoutesAndOutput,
   SearchedParams,
   StepKey,
 } from '@/dex/components/PageRouterSwap/types'
 import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
-import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
 import { useTokenVolumes } from '@/dex/hooks/useTokenVolumes'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
+import { useTokenNames, useTokens } from '@/dex/queries/tokens.query'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper, TokensMapper } from '@/dex/types/main.types'
-import { getSlippageImpact } from '@/dex/utils/utilsSwap'
+import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper } from '@/dex/types/main.types'
+import { getRouterSwapsExchangeRate, getRouterWarningModal, getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { TokenList, TokenSelector, useTokenSelectorData, type TokenOption } from '@evm-ui/features/select-token'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useEstimateGasValue } from '@evm-ui/lib/model/entities/gas-info'
@@ -39,7 +41,7 @@ import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { assert, maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { assert, maybe, maybes } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
@@ -64,7 +66,7 @@ const { Spacing } = SizesAndSpaces
 const formatExchangeRate = ({ from, to, value }: ExchangeRate) =>
   ['1', from, '=', +value ? formatNumber(value, { abbreviate: true, highPrecision: true }) : '-', to].join(' ')
 
-const getSlippageType = ({ isStableswapRoute }: RouterRouteResponse | RoutesAndOutput): SlippageType =>
+const getSlippageType = ({ isStableswapRoute }: RouterRouteResponse | RawRoutesAndOutput): SlippageType =>
   isStableswapRoute ? 'stable' : 'crypto'
 
 export const QuickSwap = ({
@@ -72,8 +74,6 @@ export const QuickSwap = ({
   params,
   rChainId: chainId,
   searchedParams,
-  tokensMapper,
-  tokensMapperStr,
   redirect,
   curve,
 }: {
@@ -81,14 +81,24 @@ export const QuickSwap = ({
   params: NetworkUrlParams
   rChainId: ChainId
   searchedParams: SearchedParams
-  tokensMapper: TokensMapper
-  tokensMapperStr: string
   redirect: (toAddress: string, fromAddress: string) => void
   curve: CurveApi | null
 }) => {
   const isSubscribedRef = useRef(false)
+  const { isHydrated } = useCurve()
   const { signerAddress: userAddress } = curve ?? {}
-  const { tokensNameMapper } = useTokensNameMapper(chainId)
+  const { data: tokenData, error: tokensError, isLoading: tokensLoading } = useTokens({ chainId })
+  const { data: tokensNameMapper } = useTokenNames({ chainId })
+  const tokensMapper = tokenData?.tokens
+  const tokensMapperStr = tokenData?.tokensMapperStr
+  const { fromAddress, toAddress } = searchedParams
+  const metadataReady =
+    !!fromAddress &&
+    !!toAddress &&
+    tokensMapper?.[fromAddress as Address]?.decimals != null &&
+    tokensMapper?.[toAddress as Address]?.decimals != null &&
+    !!tokensNameMapper &&
+    !tokensError
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const activeKey = useStore(state => state.quickSwap.activeKey)
   const formEstGas = useStore(state => state.quickSwap.formEstGas[activeKey])
@@ -109,16 +119,35 @@ export const QuickSwap = ({
     error: blacklistError,
   } = usePoolsBlacklist({ blockchainId: network?.blockchainId as Chain })
 
-  const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
-    { chainId, userAddress, searchedParams },
-    !userAddress,
-  )
+  const {
+    data: apiRoutes,
+    isLoading: apiRoutesLoading,
+    error: apiRoutesError,
+  } = useRouterApi({ chainId, userAddress, searchedParams }, !userAddress)
   const gas = useEstimateGasValue(chainId, formEstGas?.estimatedGas, !!userAddress)
 
-  const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
-  const slippageType = routesAndOutput && getSlippageType(routesAndOutput)
+  const quote = userAddress ? rpcRoutesAndOutput : apiRoutes
+  const slippageType = quote && getSlippageType(quote)
   const storeSlippage = useUserProfileStore(state => state.maxSlippage)
   const maxSlippage = slippageType && storeSlippage[slippageType]
+  const routesAndOutput = useMemo(
+    () =>
+      metadataReady
+        ? userAddress
+          ? rpcRoutesAndOutput &&
+            maxSlippage && {
+              ...rpcRoutesAndOutput,
+              exchangeRate: getRouterSwapsExchangeRate(
+                rpcRoutesAndOutput.exchangeRates,
+                searchedParams,
+                tokensNameMapper,
+              ),
+              modal: getRouterWarningModal(rpcRoutesAndOutput, searchedParams, maxSlippage, tokensNameMapper),
+            }
+          : apiRoutes
+        : undefined,
+    [metadataReady, userAddress, rpcRoutesAndOutput, maxSlippage, searchedParams, tokensNameMapper, apiRoutes],
+  )
   const slippageImpact = maybes([routesAndOutput, maxSlippage], (r, maxSlippage) =>
     getSlippageImpact({ maxSlippage, ...r }),
   )
@@ -127,12 +156,10 @@ export const QuickSwap = ({
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
-  const { fromAddress, toAddress } = searchedParams
-
   const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
   const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
-  const isReady = pageLoaded && isPageVisible
+  const isReady = pageLoaded && isPageVisible && metadataReady && (!userAddress || isHydrated)
 
   useEffect(() => {
     if (curve && userAddress && blacklist) {
@@ -143,17 +170,16 @@ export const QuickSwap = ({
 
   const tokens = useMemo(
     () =>
-      notFalsy(...Object.values(tokensMapper ?? {})).map<TokenOption>(token => ({
-        address: getAddress(token.address),
+      Object.entries(tokensMapper ?? {}).map<TokenOption>(([address, token]) => ({
+        address: getAddress(address),
         symbol: token.symbol,
         chain: network?.blockchainId,
       })),
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [tokensMapperStr, network?.blockchainId],
+    [tokensMapper, network?.blockchainId],
   )
 
-  const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == fromAddress)
-  const toToken = tokens.find(x => x.address.toLocaleLowerCase() == toAddress)
+  const fromToken = tokens.find(x => x.address === fromAddress)
+  const toToken = tokens.find(x => x.address === toAddress)
 
   const userFromBalance = useTokenBalance(
     { chainId, userAddress, tokenAddress: fromAddress ? (fromAddress as Address) : undefined },
@@ -191,7 +217,7 @@ export const QuickSwap = ({
 
       void setFormValues(
         config,
-        pageLoaded && !isBlacklistLoading ? curve : null,
+        pageLoaded && metadataReady && (!userAddress || isHydrated) && !isBlacklistLoading ? curve : null,
         updatedFormValues ?? {},
         searchedParams,
         maxSlippage,
@@ -200,7 +226,18 @@ export const QuickSwap = ({
         isRefetch,
       )
     },
-    [config, curve, isBlacklistLoading, maxSlippage, pageLoaded, searchedParams, setFormValues],
+    [
+      config,
+      curve,
+      isBlacklistLoading,
+      isHydrated,
+      maxSlippage,
+      metadataReady,
+      pageLoaded,
+      searchedParams,
+      setFormValues,
+      userAddress,
+    ],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -267,7 +304,7 @@ export const QuickSwap = ({
       const { fromAmount } = formValues
 
       const isValidFromAmount = +fromAmount > 0 && !formValues.fromError
-      const isValid = !!routesAndOutput && !routesAndOutput.loading && !formStatus.error && isValidFromAmount
+      const isValid = isReady && !!routesAndOutput && !routesAndOutput.loading && !formStatus.error && isValidFromAmount
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'SWAP'
 
@@ -365,6 +402,7 @@ export const QuickSwap = ({
       config,
       confirmedLoss,
       fetchStepApprove,
+      isReady,
       maxSlippage,
       handleBtnClickSwap,
       slippageImpact?.isExpectedToAmount,
@@ -428,8 +466,11 @@ export const QuickSwap = ({
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [curve?.chainId])
 
-  // updateForm - immediate fetch on token changes
-  useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress, fetchData])
+  // Fetch when token selection changes or the client finishes hydrating.
+  useEffect(
+    () => fetchData(),
+    [isReady, tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress, fetchData],
+  )
 
   // re-fetch data
   usePageVisibleInterval(throttledFetchData, REFRESH_INTERVAL['15s'])
@@ -452,12 +493,15 @@ export const QuickSwap = ({
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
-  const isDisable = formStatus.formProcessing
+  const isDisable = formStatus.formProcessing || !metadataReady || (!!userAddress && !isHydrated)
   const routesAndOutputLoading =
-    !pageLoaded ||
-    (userAddress
-      ? isBlacklistLoading || _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus)
-      : apiRoutesLoading)
+    tokensLoading ||
+    (metadataReady &&
+      (!pageLoaded ||
+        (userAddress
+          ? !isHydrated || isBlacklistLoading || _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus)
+          : apiRoutesLoading)))
+  const queryError = tokensError ?? (userAddress ? blacklistError : apiRoutesError)
 
   const setFromAmount = useCallback(
     (fromAmount?: Decimal) => updateFormValues({ isFrom: true, fromAmount: fromAmount ?? '', toAmount: '' }),
@@ -599,9 +643,11 @@ export const QuickSwap = ({
       {/* alerts */}
       <RouterSwapAlerts
         formStatus={
-          userAddress && blacklistError && !formStatus.error
-            ? { ...formStatus, error: blacklistError.message }
-            : formStatus
+          tokensError
+            ? { ...formStatus, error: tokensError.message }
+            : queryError && !formStatus.error
+              ? { ...formStatus, error: queryError.message }
+              : formStatus
         }
         formValues={formValues}
         maxSlippage={maxSlippage}
@@ -622,7 +668,7 @@ export const QuickSwap = ({
 }
 
 function _isRoutesAndOutputLoading(
-  routesAndOutput: RoutesAndOutput | undefined,
+  routesAndOutput: RawRoutesAndOutput | undefined,
   { isFrom, fromAmount, toAmount }: FormValues,
   { error }: FormStatus,
 ) {

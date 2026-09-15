@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
-import { TokensMapper, PoolData } from '@/dex/types/main.types'
+import { PoolData } from '@/dex/types/main.types'
 import { shortenAddress } from '@evm-ui/utils'
 import { Loader } from '@legacy-ui/Loader'
 import { Radio, RadioGroup } from '@legacy-ui/Radio'
@@ -20,7 +20,6 @@ export const SelectedOneCoinExpected = ({
   poolData,
   selectedTokenAddress,
   tokens,
-  tokensMapper,
   tokenAddresses,
   handleChanged,
 }: {
@@ -31,7 +30,6 @@ export const SelectedOneCoinExpected = ({
   poolData: PoolData
   selectedTokenAddress: string
   tokens: string[]
-  tokensMapper: TokensMapper
   tokenAddresses: string[]
   handleChanged: ({ token, tokenAddress }: { token: string; tokenAddress: string }) => void
 }) => {
@@ -57,7 +55,7 @@ export const SelectedOneCoinExpected = ({
                 size="sm"
                 blockchainId={blockchainId}
                 tooltip={symbol}
-                address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
+                address={tokenAddress}
               />{' '}
               {symbol} {haveSameTokenName && <StyledChip>{shortenAddress(tokenAddress)}</StyledChip>}
               <Spacer />

@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import { useMemo, useCallback } from 'react'
 import { styled } from 'styled-components'
+import { getAddress, isAddress } from 'viem'
 import { SwitchTokensButton } from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
 import { WarningBox } from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -22,8 +23,8 @@ import { SetOracle } from '@/dex/components/PageCreatePool/TokensInPool/SetOracl
 import { CreateToken, TokenId, TokensInPoolState, type TokenState } from '@/dex/components/PageCreatePool/types'
 import { containsOracle } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { useBasePools } from '@/dex/queries/base-pools.query'
+import { useTokens } from '@/dex/queries/tokens.query'
 import {
   DEFAULT_CREATE_POOL_STATE,
   DEFAULT_ERC4626_STATUS,
@@ -69,7 +70,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const updateSwapType = useStore(state => state.createPool.updateSwapType)
   const updateNgAssetType = useStore(state => state.createPool.updateNgAssetType)
   const { data: basePools = [] } = useBasePools({ chainId })
-  const { tokensMapper } = useTokensMapper(chainId)
+  const { data: tokenData } = useTokens({ chainId })
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
   const {
     data: { createDisabledTokens, stableswapFactory, tricryptoFactory, twocryptoFactory },
@@ -82,28 +83,31 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
 
   // prepares list of tokens
   const selTokens: CreateToken[] = useMemo(() => {
-    const tokensArray = Object.entries(tokensMapper)
-      .map(token => ({
-        ...token[1]!,
+    const tokensArray = (tokenData ? Object.entries(tokenData.tokens) : [])
+      .map(([address, token]) => ({
+        ...token,
+        address: address.toLowerCase(), // The create-pool form and its selector use lowercase addresses.
+        haveSameTokenName: false,
         userAddedToken: false,
-        basePool: basePools.some(pool => pool.token.toLowerCase() === token[0].toLowerCase()),
+        basePool: basePools.some(pool => pool.token.toLowerCase() === address.toLowerCase()),
       }))
       .filter(token => token.symbol !== '' && token.address !== '')
 
-    return lodash.uniqBy([...userAddedTokens, ...tokensArray], o => o.address)
-  }, [tokensMapper, userAddedTokens, basePools])
+    return lodash.uniqBy([...userAddedTokens, ...tokensArray], o => o.address.toLowerCase())
+  }, [tokenData, userAddedTokens, basePools])
 
   const findSymbol = useCallback(
     (address: string) => {
       if (address !== '') {
-        if (tokensMapper[address]) return tokensMapper[address].symbol
+        const token = isAddress(address, { strict: false }) ? tokenData?.tokens[getAddress(address)] : undefined
+        if (token) return token.symbol
         //search through user added tokens
-        const addedToken = userAddedTokens.find(userToken => userToken.address === address)
+        const addedToken = userAddedTokens.find(userToken => userToken.address.toLowerCase() === address.toLowerCase())
         if (addedToken) return addedToken.symbol
       }
       return ''
     },
-    [tokensMapper, userAddedTokens],
+    [tokenData, userAddedTokens],
   )
 
   const handleInpChange = useCallback(

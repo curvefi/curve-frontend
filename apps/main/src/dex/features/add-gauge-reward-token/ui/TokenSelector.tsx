@@ -1,16 +1,16 @@
 import { useEffect, useMemo } from 'react'
-import { ethAddress, isAddressEqual, zeroAddress, getAddress } from 'viem'
+import { ethAddress, isAddressEqual, zeroAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
-import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useTokens } from '@/dex/queries/tokens.query'
 import { ChainId } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { TokenSelector as TokenSelectorUIKit, TokenList, TokenOption } from '@evm-ui/features/select-token'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
-import { notFalsy, objectKeys } from '@primitives/objects.utils'
+import { objectKeys, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -33,16 +33,16 @@ export const TokenSelector = ({
   const crvAddress = curveApi?.getNetworkConstants()?.ALIASES?.crv as Address
   const { update: updateForm, watchValue } = useFormContext<AddRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
-  const { tokensMapper } = useTokensMapper(chainId)
+  const { data: tokenData } = useTokens({ chainId })
   const [isOpen, openModal, closeModal] = useSwitch()
 
   const { data: gaugeRewardsDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
 
   const filteredTokens = useMemo(
     () =>
-      notFalsy(...Object.values(tokensMapper))
+      (tokenData ? recordEntries(tokenData.tokens) : [])
         .filter(
-          token =>
+          ([address, token]) =>
             // Roman: "There are calculation errors for coins with small decimals, including USDC. Though, new cross chain gauges are good with it, so it depends which gauge do you ask"
             // I fixed it here: https://github.com/curvefi/curve-xchain-factory/blob/3e03f19d49826cad7c1e84829b35cc34955b046e/contracts/implementations/ChildGauge.vy#L117
             token.decimals == 18 &&
@@ -52,18 +52,18 @@ export const TokenSelector = ({
               zeroAddress,
               ethAddress,
               crvAddress,
-            ].some(rewardToken => isAddressEqual(rewardToken, token.address as Address)),
+            ].some(rewardToken => isAddressEqual(rewardToken, address)),
         )
-        .map<TokenOption>(token => ({
-          address: getAddress(token.address),
+        .map<TokenOption>(([address, token]) => ({
+          address,
           symbol: token.symbol,
           chain: network?.blockchainId,
         })),
-    [gaugeRewardsDistributors, tokensMapper, crvAddress, network.blockchainId],
+    [gaugeRewardsDistributors, tokenData, crvAddress, network.blockchainId],
   )
 
   const rewardTokenId = watchValue('rewardTokenId')
-  const selectedToken = filteredTokens.find(x => x.address === rewardTokenId)
+  const selectedToken = filteredTokens.find(x => rewardTokenId && isAddressEqual(x.address, rewardTokenId))
 
   useEffect(() => {
     const isRewardTokenInGaugeRewardsDistributors =

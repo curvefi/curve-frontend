@@ -4,6 +4,7 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import type { TokensResponse } from '@primitives/tokens'
 import { BannerProps } from '@ui/features/banners/Banner'
 
 export type { Provider } from '@evm-ui/lib/ethers'
@@ -75,8 +76,8 @@ export type Token = {
   decimals: number
   haveSameTokenName: boolean // use to display token address if duplicated token names
 }
-export type TokensMapper = Record<string, Token | undefined>
-export type TokensNameMapper = Record<string, string>
+export type TokensMapper = TokensResponse
+export type TokensNameMapper = Record<Address, string>
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
 type Gauge = { status: GaugeStatus | null; isKilled: boolean | null }

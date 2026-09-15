@@ -1,4 +1,5 @@
 import lodash from 'lodash'
+import { getAddress } from 'viem'
 import type { ExchangeOutput, FormStatus, FormValues } from '@/dex/components/PagePool/Swap/types'
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
 import { Token, TokensMapper, PoolData } from '@/dex/types/main.types'
@@ -36,15 +37,15 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   toToken: '',
 }
 
-export function getSwapTokens(tokensMapper: TokensMapper, poolData: PoolData) {
+export function getSwapTokens(tokens: TokensMapper | undefined, poolData: PoolData) {
   const { tokenAddresses, tokensCountBy } = poolData
   const swapTokensMapper: Record<string, Token> = {}
 
   for (const address of tokenAddresses) {
-    const token = lodash.cloneDeep(tokensMapper[address])
+    const token = tokens?.[getAddress(address)]
 
     if (token) {
-      swapTokensMapper[address] = { ...token, haveSameTokenName: tokensCountBy[token.symbol] > 1 }
+      swapTokensMapper[address] = { ...token, address, haveSameTokenName: tokensCountBy[token.symbol] > 1 }
     }
   }
 

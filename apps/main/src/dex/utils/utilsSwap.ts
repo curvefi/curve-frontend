@@ -1,7 +1,12 @@
-import { ethAddress, zeroAddress } from 'viem'
-import type { Route } from '@/dex/components/PageRouterSwap/types'
+import { ethAddress, getAddress, zeroAddress } from 'viem'
+import type {
+  RawRoutesAndOutput,
+  Route,
+  RoutesAndOutputModal,
+  SearchedParams,
+} from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
-import { CurveApi, PoolData } from '@/dex/types/main.types'
+import { CurveApi, PoolData, TokensNameMapper } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
 import { Decimal } from '@primitives/decimal.utils'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
@@ -16,6 +21,9 @@ export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: stri
   if (Array.isArray(routes) && routes.some(r => r.routeUrlId === '')) {
     return true
   }
+
+  fromAddress = fromAddress.toLowerCase()
+  toAddress = toAddress.toLowerCase()
 
   // exclude sDAI check
   const sDAI = '0x83f20f44975d03b1b09e64809b757c47f942beea'
@@ -189,4 +197,59 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveApi, toA
   const toStoredRate = ratesWithAddresses.find(r => r.coinAddress === toAddress.toLowerCase())?.rate
 
   return toStoredRate
+}
+
+export function getRouterSwapsExchangeRate(
+  [value]: [Decimal, Decimal],
+  { fromAddress, toAddress }: SearchedParams,
+  tokensNameMapper: TokensNameMapper | undefined,
+) {
+  const fromToken = tokensNameMapper?.[getAddress(fromAddress)] ?? fromAddress
+  const toToken = tokensNameMapper?.[getAddress(toAddress)] ?? toAddress
+  return { from: fromToken, to: toToken, fromAddress, value, label: `${fromToken}/${toToken}` }
+}
+
+export function getRouterWarningModal(
+  {
+    isExchangeRateLow,
+    priceImpact,
+    toAmount,
+    toAmountOutput,
+    fromAmount,
+    fetchedToAmount,
+  }: Pick<
+    RawRoutesAndOutput,
+    'isExchangeRateLow' | 'priceImpact' | 'toAmount' | 'toAmountOutput' | 'fromAmount' | 'fetchedToAmount'
+  >,
+  { toAddress }: SearchedParams,
+  maxSlippage: string,
+  storedTokensNameMapper: TokensNameMapper | undefined,
+): RoutesAndOutputModal | null {
+  const { isHighImpact, isExpectedToAmount } = getSlippageImpact({
+    maxSlippage,
+    toAmount,
+    priceImpact,
+    fetchedToAmount,
+  })
+  const parsedToAmount = isExpectedToAmount ? toAmountOutput : toAmount
+  const swapModalProps = getSwapActionModalType(isHighImpact, isExchangeRateLow)
+  const toToken = storedTokensNameMapper?.[getAddress(toAddress)] ?? ''
+  const exchangeRate = (+parsedToAmount / +fromAmount).toString()
+  const exchangeValues = { toAmount: parsedToAmount, toToken }
+  const modalTypeObj = { ...exchangeValues, title: swapModalProps.title }
+  const modalType = {
+    lowExchangeRate: { ...modalTypeObj, lowExchangeRate: true as boolean, exchangeRate },
+    priceImpact: { ...modalTypeObj, priceImpact: true as boolean, value: priceImpact },
+    priceImpactLowExchangeRate: {
+      ...modalTypeObj,
+      priceImpactLowExchangeRate: true as boolean,
+      value: priceImpact,
+      exchangeRate,
+    },
+  } as const
+
+  if (swapModalProps.type && swapModalProps.type in modalType) {
+    return modalType[swapModalProps.type]
+  }
+  return null
 }

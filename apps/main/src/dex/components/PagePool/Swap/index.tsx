@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { getAddress } from 'viem'
 import { useConfig, useConnection, type Config } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { AlertFormWarning } from '@/dex/components/AlertFormWarning'
@@ -16,8 +17,9 @@ import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/component
 import { useNetworks } from '@/dex/entities/networks'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
+import { useTokens } from '@/dex/queries/tokens.query'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
+import { CurveApi, PoolAlert, PoolData } from '@/dex/types/main.types'
 import { TokenList, TokenSelector, type TokenOption } from '@evm-ui/features/select-token'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -54,14 +56,13 @@ export const Swap = ({
   maxSlippage,
   poolAlert,
   seed,
-  tokensMapper,
 }: Pick<PageTransferProps, 'params'> & {
   poolAlert: PoolAlert | null
   maxSlippage: Decimal
   seed: Seed
-  tokensMapper: TokensMapper
 }) => {
   const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { data: tokenData, error: tokensError, isLoading: tokensLoading } = useTokens({ chainId })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolSwap.activeKey)
@@ -111,19 +112,20 @@ export const Swap = ({
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: formValues.toAddress }, !!formValues.toAddress)
 
   const { selectList, swapTokensMapper } = useMemo(() => {
-    const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolData)
+    const { selectList, swapTokensMapper } = getSwapTokens(tokenData?.tokens, poolData)
     return {
       selectList: selectList.map<TokenOption>(token => ({
-        address: token.address as Address, // not checksummed!
+        address: getAddress(token.address),
         symbol: token.symbol,
         chain: network?.blockchainId,
       })),
       swapTokensMapper,
     }
-  }, [poolData, tokensMapper, network?.blockchainId])
+  }, [poolData, tokenData, network?.blockchainId])
 
-  const fromToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
-  const toToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.toAddress)
+  const fromToken = selectList.find(x => x.address.toLowerCase() === formValues.fromAddress.toLowerCase())
+  const toToken = selectList.find(x => x.address.toLowerCase() === formValues.toAddress.toLowerCase())
+  const tokensReady = !!fromToken && !!toToken && !tokensError
 
   const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
   const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
@@ -197,6 +199,7 @@ export const Swap = ({
     ) => {
       const { formProcessing, formTypeCompleted, step } = formStatus
       const isValid =
+        tokensReady &&
         !userPoolBalancesLoading &&
         !isSeed &&
         !formStatus.error &&
@@ -248,7 +251,7 @@ export const Swap = ({
                   isDismissable: false,
                   primaryBtnProps: {
                     onClick: () => void handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
-                    disabled: !confirmedLoss,
+                    disabled: !confirmedLoss || !tokensReady,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
@@ -267,7 +270,7 @@ export const Swap = ({
 
       return stepsKey.map(key => stepsObj[key])
     },
-    [fetchStepApprove, handleSwapClick],
+    [fetchStepApprove, handleSwapClick, tokensReady],
   )
 
   const fetchData = useCallback(() => {
@@ -347,6 +350,7 @@ export const Swap = ({
     seed.isSeed,
     userFromBalance.isLoading,
     userToBalance.isLoading,
+    tokensReady,
   ])
 
   // pageVisible
@@ -357,7 +361,7 @@ export const Swap = ({
   usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
+  const isDisabled = !tokenData || !!tokensError || seed.isSeed === null || seed.isSeed || formStatus.formProcessing
 
   const setFromAmount = useCallback(
     (value?: Decimal) => updateFormValues({ isFrom: true, fromAmount: value ?? '', toAmount: '' }, null, null),
@@ -398,11 +402,11 @@ export const Swap = ({
                   updateFormValues(
                     {
                       ...formValues,
-                      ...(address === formValues.toAddress && {
+                      ...(address.toLowerCase() === formValues.toAddress && {
                         toAddress: formValues.fromAddress,
-                        toToken: swapTokensMapper[formValues.fromAddress].symbol,
+                        toToken: swapTokensMapper[formValues.fromAddress]?.symbol ?? formValues.fromToken,
                       }),
-                      fromAddress: address,
+                      fromAddress: address.toLowerCase(),
                       fromToken: symbol,
                       ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
                     },
@@ -416,7 +420,7 @@ export const Swap = ({
           {...(formValues.fromError && {
             message: t`Amount > wallet balance ${formatNumber(userFromBalance.data, 'token.amount')}`,
           })}
-          disabled={isDisabled}
+          disabled={isDisabled || !tokensReady}
           walletBalance={{
             balance: { ...q(userFromBalance), isLoading: userFromBalance.isLoading || isMaxLoading },
             symbol: fromToken?.symbol,
@@ -426,7 +430,7 @@ export const Swap = ({
         />
 
         <IconButton
-          disabled={isDisabled}
+          disabled={isDisabled || !tokensReady}
           onClick={() => {
             const cFormValues = cloneDeep(formValues)
             cFormValues.isFrom = true
@@ -452,7 +456,7 @@ export const Swap = ({
           onBalance={setToAmount}
           inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
           balance={decimal(formValues.toAmount)}
-          disabled={!curve?.hasRouter() || isDisabled}
+          disabled={!curve?.hasRouter() || isDisabled || !tokensReady}
           tokenSelector={
             <TokenSelector
               selectedToken={toToken}
@@ -470,11 +474,11 @@ export const Swap = ({
                   updateFormValues(
                     {
                       ...formValues,
-                      ...(address === formValues.fromAddress && {
+                      ...(address.toLowerCase() === formValues.fromAddress && {
                         fromAddress: formValues.toAddress,
-                        fromToken: swapTokensMapper[formValues.toAddress].symbol,
+                        fromToken: swapTokensMapper[formValues.toAddress]?.symbol ?? formValues.toToken,
                       }),
-                      toAddress: address,
+                      toAddress: address.toLowerCase(),
                       toToken: symbol,
                       ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
                     },
@@ -552,6 +556,7 @@ export const Swap = ({
         }
       />
       <AlertFormWarning errorKey={formStatus.warning} />
+      {tokensError && <AlertBox alertType="error">{tokensError.message}</AlertBox>}
       <AlertFormError
         errorKey={formStatus.error}
         handleBtnClose={() => {
@@ -562,7 +567,7 @@ export const Swap = ({
         <AlertBox alertType="error">{t`The entered amount exceeds the available currency reserves.`}</AlertBox>
       ) : null}
       {/* actions*/}
-      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
+      <TransferActions loading={tokensLoading || !chainId || !steps.length || !seed.loaded} seed={seed}>
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>
