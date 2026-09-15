@@ -43,10 +43,6 @@ const helpers = { waitForTransaction, waitForTransactions }
 
 // curve
 const network = {
-  fetchNetworkConfig: (curve: CurveApi) => ({
-    hasDepositAndStake: curve.hasDepositAndStake(),
-    hasRouter: curve.hasRouter(),
-  }),
   getTVL: (curve: CurveApi) => {
     log('getChainTVL', curve.chainId)
     return curve.getTVL()

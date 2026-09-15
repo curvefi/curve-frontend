@@ -1,4 +1,3 @@
-import { formatToken } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
@@ -6,6 +5,7 @@ import { TokenIcon } from '@ui/components/TokenIcon'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 import type { MarketTradeRow } from '../types'
 
 const { Spacing } = SizesAndSpaces

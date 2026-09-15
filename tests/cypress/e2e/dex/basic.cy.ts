@@ -36,7 +36,8 @@ describe('Basic Access Test', () => {
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Page Not Found')
   })
 
-  it('should load for lite networks', () => {
+  // todo: re-enable test once lite api is fixed
+  it.skip('should load for lite networks', () => {
     cy.visitWithoutTestConnector('dex/plasma/pools')
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/plasma/pools')

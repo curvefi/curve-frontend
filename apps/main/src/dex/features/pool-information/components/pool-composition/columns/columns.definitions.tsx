@@ -1,6 +1,5 @@
 import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { formatToken } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
@@ -10,6 +9,7 @@ import { TokenInfo, type TokenInfoTokenIconProps } from '@ui/components/TokenInf
 import { Tooltip } from '@ui/components/Tooltip'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 import { PoolCompositionColumnId } from './columns.enum'
 
 export type PoolCompositionRow = {

@@ -111,7 +111,7 @@ const menu = [
 type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
-  const { params, hasDepositAndStake } = pageTransferProps
+  const { params } = pageTransferProps
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
   const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.hasVyperVulnerability })
@@ -151,7 +151,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     () =>
       poolData && {
         params,
-        hasDepositAndStake,
         poolAlert,
         maxSlippage,
         seed,
@@ -162,18 +161,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
         ),
       },
-    [
-      poolData,
-      params,
-      hasDepositAndStake,
-      poolAlert,
-      maxSlippage,
-      seed,
-      tokensMapper,
-      gaugeManager,
-      signerAddress,
-      rewardDistributors,
-    ],
+    [poolData, params, poolAlert, maxSlippage, seed, tokensMapper, gaugeManager, signerAddress, rewardDistributors],
   )
 
   return (

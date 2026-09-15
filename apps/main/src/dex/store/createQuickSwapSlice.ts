@@ -412,7 +412,6 @@ export const createQuickSwapSlice = (
         step: 'SWAP',
       })
 
-      const { chainId } = curve
       const { fromAmount } = formValues
       const { fromAddress, toAddress } = searchedParams
 
@@ -449,9 +448,6 @@ export const createQuickSwapSlice = (
             formStatus: cFormStatus,
             routesAndOutput: {},
           })
-
-          // cache swapped tokens
-          void state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
 
           // Refetch balances
           await fetchTokenBalance(config, {
