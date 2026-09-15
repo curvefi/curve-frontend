@@ -1,4 +1,4 @@
-import { WorkInProgress } from '@/components/WorkInProgress'
+import { WorkInProgress } from '@/stellar/components/WorkInProgress'
 import { createRoute, Outlet } from '@tanstack/react-router'
 import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'

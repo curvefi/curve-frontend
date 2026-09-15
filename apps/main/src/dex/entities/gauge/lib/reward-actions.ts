@@ -14,7 +14,7 @@ import type { AddRewardMutation, DepositRewardMutation } from '@/dex/entities/ga
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactionMutation'
+import { useEvmMutation } from '@evm-ui/lib/model/mutation/useEvmMutation'
 import { type GaugeQuery, rootKeys } from '@evm-ui/lib/model/query'
 import { waitForApproval } from '@evm-ui/utils'
 import type { Hex } from '@primitives/address.utils'
@@ -28,7 +28,7 @@ export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutat
   const getRewardTokenSymbol = ({ rewardTokenId }: AddRewardMutation) =>
     rewardTokenId ? tokensMapper[rewardTokenId.toLowerCase()]?.symbol : ''
 
-  const { mutate, error, isPending } = useTransactionMutation<AddRewardMutation>({
+  const { mutate, error, isPending } = useEvmMutation<AddRewardMutation>({
     mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'addRewardToken'] as const,
     mutationFn: async ({ rewardTokenId, distributorId }) => ({
       hash: (await getGauge(poolId).addReward(rewardTokenId, distributorId)) as Hex,
@@ -56,7 +56,7 @@ export const useDepositReward = ({ chainId, poolId, onReset }: GaugeRewardMutati
   const getRewardTokenSymbol = ({ rewardTokenId }: DepositRewardMutation) =>
     rewardTokenId ? tokensMapper[rewardTokenId.toLowerCase()]?.symbol : ''
 
-  const { mutate, error, isPending } = useTransactionMutation<DepositRewardMutation>({
+  const { mutate, error, isPending } = useEvmMutation<DepositRewardMutation>({
     mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'depositReward'] as const,
     mutationFn: async ({ amount, rewardTokenId, epoch, userBalance }) => {
       await waitForApproval({

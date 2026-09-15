@@ -1,5 +1,4 @@
 import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
-import { formatToken } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
@@ -7,6 +6,7 @@ import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@
 import type { QueryProp } from '@ui/features/queries/util'
 import { decimalDiv, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 import type { SupplyAsset } from '../SupplyPositionDetails'
 
 const formatAmount = (

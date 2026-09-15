@@ -405,10 +405,10 @@ type MarketLeverageConfig = { providers: readonly RouteProvider[]; slippage?: De
 // Default is the most commonly used configuration.
 const DEFAULT_LEVERAGE_CONFIG = { providers: ['enso', 'curve-solver', 'curve'] } satisfies MarketLeverageConfig
 const DEFAULT_STABLE_LEVERAGE_CONFIG = { ...DEFAULT_LEVERAGE_CONFIG, slippage: SLIPPAGE.stable.default }
-// For markets where Curve Solver is not supported.
+// For stable markets where Curve providers are not supported.
 const STABLE_ROUTER_LEVERAGE_CONFIG = {
   ...DEFAULT_STABLE_LEVERAGE_CONFIG,
-  providers: ['enso', 'curve'],
+  providers: ['enso'],
 } satisfies MarketLeverageConfig
 
 // This is a leverage allowlist: unlisted markets remain disabled until their leverage routes are tested and approved

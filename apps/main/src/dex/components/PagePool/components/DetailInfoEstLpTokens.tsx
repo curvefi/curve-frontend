@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import type { FormLpTokenExpected } from '@/dex/components/PagePool/Deposit/types'
 import { PoolData } from '@/dex/types/main.types'
-import { formatToken } from '@evm-ui/utils'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@primitives/number.utils'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 
 export const DetailInfoEstLpTokens = ({
   formLpTokenExpected,
