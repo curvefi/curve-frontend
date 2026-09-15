@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import '@mui/material/Card'
 import '@mui/material/Paper'
+import type { CardSize } from '../card-sizes'
 
 declare module '@mui/material/Card' {
   export interface CardOwnProps {
-    size?: 'extraSmall' | 'small' | 'medium'
+    size?: CardSize
   }
 }
 

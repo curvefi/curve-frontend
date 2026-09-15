@@ -1,15 +1,12 @@
 /// <reference types="./mui-card-header.d.ts" />
-import type { CardHeaderProps } from '@mui/material/CardHeader'
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
-import { objectKeys } from '@primitives/objects.utils'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
 import { DesignSystem } from '@ui/features/themes/design'
 import { TRANSPARENT } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { CARD_SIZES, type CardSize } from '../card-sizes'
 
 const { ButtonSize, Spacing, Sizing: ResponsiveSizing, Tab } = SizesAndSpaces
-
-type CardHeaderSize = NonNullable<CardHeaderProps['size']>
 
 const CARD_HEADER_SIZES = {
   extraSmall: {
@@ -24,15 +21,11 @@ const CARD_HEADER_SIZES = {
   },
   medium: { minHeight: ButtonSize.sm, typography: 'headingSBold', color: design => design.Text.TextColors.Secondary },
 } as const satisfies Record<
-  CardHeaderSize,
+  CardSize,
   { minHeight: string; typography: keyof TypographyVariantsOptions; color: (design: DesignSystem) => string }
 >
 
-export const createHeaderStyle = (
-  design: DesignSystem,
-  typography: TypographyVariantsOptions,
-  size: CardHeaderSize,
-) => {
+export const createHeaderStyle = (design: DesignSystem, typography: TypographyVariantsOptions, size: CardSize) => {
   const { minHeight, typography: titleTypography, color } = CARD_HEADER_SIZES[size]
   return {
     '& .MuiCardHeader-title': { ...typography[titleTypography], color: color(design) },
@@ -77,10 +70,7 @@ export const defineMuiCardHeader = (
     title: typography.headingSBold,
   },
   variants: [
-    ...objectKeys(CARD_HEADER_SIZES).map(size => ({
-      props: { size },
-      style: createHeaderStyle(design, typography, size),
-    })),
+    ...CARD_SIZES.map(size => ({ props: { size }, style: createHeaderStyle(design, typography, size) })),
     { props: { variant: 'inline' }, style: createInlineHeaderStyle(design) },
     {
       props: { variant: 'modal' },

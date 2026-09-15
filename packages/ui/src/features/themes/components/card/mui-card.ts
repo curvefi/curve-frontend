@@ -1,15 +1,12 @@
 /// <reference types="./mui-card.d.ts" />
-import type { CardProps } from '@mui/material/Card'
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
-import { objectKeys } from '@primitives/objects.utils'
 import { DesignSystem } from '@ui/features/themes/design'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { CARD_CONTENT_SIZE_STYLES, cardContentInlineStyles } from '../card-content'
 import { createHeaderStyle, createInlineHeaderStyle } from '../card-header'
+import { CARD_SIZES } from '../card-sizes'
 
 const { BorderWidth } = SizesAndSpaces
-
-type CardSize = NonNullable<CardProps['size']>
 
 export const defineMuiCard = (design: DesignSystem, typography: TypographyVariantsOptions): Components['MuiCard'] => ({
   defaultProps: { size: 'medium' },
@@ -21,7 +18,7 @@ export const defineMuiCard = (design: DesignSystem, typography: TypographyVarian
   },
   // Keep styles on direct children so they do not leak into nested cards.
   variants: [
-    ...objectKeys(CARD_CONTENT_SIZE_STYLES).map((size: CardSize) => ({
+    ...CARD_SIZES.map(size => ({
       props: { size },
       style: {
         '& > .MuiCardHeader-root': createHeaderStyle(design, typography, size),
