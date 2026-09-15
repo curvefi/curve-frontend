@@ -17,7 +17,7 @@ export const RoutesActionInfo = ({
 }: {
   params: NetworkUrlParams
   routes: QueryProp<Route[]>
-  tokensNameMapper: TokensNameMapper
+  tokensNameMapper: TokensNameMapper | undefined
   poolDataMapper: PoolDataMapper | undefined
   swapCustomRouteRedirect: Record<string, string> | undefined
 }) => (

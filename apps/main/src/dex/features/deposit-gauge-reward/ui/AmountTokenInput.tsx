@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { isAddressEqual, zeroAddress } from 'viem'
+import { getAddress, isAddressEqual, zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
-import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useTokenNames } from '@/dex/queries/tokens.query'
 import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
 import { TokenList, type TokenOption, TokenSelector } from '@evm-ui/features/select-token'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
@@ -36,7 +36,7 @@ export const AmountTokenInput = ({
   const [isOpen, openModal, closeModal] = useSwitch()
 
   const { address: userAddress } = useConnection()
-  const { tokensMapper } = useTokensMapper(chainId)
+  const { data: tokenNames } = useTokenNames({ chainId })
 
   const { data: rewardDistributors, isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
@@ -53,10 +53,10 @@ export const AmountTokenInput = ({
 
     return activeRewardTokens.map(address => ({
       chain: blockchainId,
-      address,
-      symbol: tokensMapper[address.toLowerCase()]?.symbol ?? shortenAddress(address),
+      address: getAddress(address),
+      symbol: tokenNames?.[getAddress(address)] ?? shortenAddress(address),
     }))
-  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, blockchainId])
+  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokenNames, blockchainId])
 
   useEffect(() => {
     if (
@@ -67,7 +67,7 @@ export const AmountTokenInput = ({
     }
   }, [filteredTokens, rewardTokenId, updateForm])
 
-  const token = filteredTokens.find(x => x.address === rewardTokenId)
+  const token = filteredTokens.find(x => rewardTokenId && isAddressEqual(x.address, rewardTokenId))
   const tokenAddresses = filteredTokens.map(t => t.address).filter(t => !isAddressEqual(t, zeroAddress))
 
   const tokenPrices = useTokenUsdRates({ chainId, tokenAddresses })

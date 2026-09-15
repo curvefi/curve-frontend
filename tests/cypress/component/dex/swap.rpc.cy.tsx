@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { checkSwapDetailsLoaded, submitApprovedSwap, writeSwapForm } from '@cy/support/helpers/swap/swap.helpers'
 import { SwapTestCase } from '@cy/support/helpers/swap/SwapTestCase'
@@ -6,6 +7,7 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import { Chain } from '@primitives/network.utils'
+import type { TokensResponse } from '@primitives/tokens'
 
 const FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH in wei
 
@@ -26,6 +28,12 @@ describe('Router Swap (RPC)', () => {
   }))
 
   beforeEach(() => {
+    cy.intercept('GET', '**/api/router/v1/tokens?chainId=1', {
+      body: {
+        [getAddress(FROM_ADDRESS)]: { decimals: 18, symbol: 'ETH', name: 'ETH' },
+        [getAddress(TO_ADDRESS)]: { decimals: 6, symbol: 'USDT', name: 'USDT' },
+      } satisfies TokensResponse,
+    })
     const { adminRpcUrl } = getRpcUrls(getVirtualNetwork())
     fundEth({ adminRpcUrl, amountWei: FUND_AMOUNT, recipientAddresses: [address] })
   })

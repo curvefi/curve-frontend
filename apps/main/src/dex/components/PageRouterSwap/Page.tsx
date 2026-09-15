@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { getAddress, isAddress } from 'viem'
 import { QuickSwap } from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
-import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useTokens } from '@/dex/queries/tokens.query'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
@@ -16,6 +17,9 @@ import { t } from '@ui/lib/i18n'
 
 const { MaxWidth } = SizesAndSpaces
 
+const normalizeAddress = (address: string | undefined) =>
+  address && isAddress(address, { strict: false }) ? getAddress(address) : ''
+
 export const PageRouterSwap = () => {
   const props = useParams<NetworkUrlParams>()
   const push = useNavigate()
@@ -27,13 +31,14 @@ export const PageRouterSwap = () => {
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
 
-  const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
+  const { data: tokenData } = useTokens({ chainId: rChainId })
+  const tokensMapper = tokenData?.tokens
   const [loaded, setLoaded] = useState(false)
 
   const hasRouter = curveApi?.hasRouter()
   const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
-  const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
-  const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
+  const paramsFromAddress = normalizeAddress(searchParams?.get('from') || nativeToken?.address)
+  const paramsToAddress = normalizeAddress(searchParams?.get('to') || nativeToken?.wrappedAddress)
   const searchedParams = useMemo(
     () => ({ fromAddress: paramsFromAddress, toAddress: paramsToAddress }),
     [paramsFromAddress, paramsToAddress],
@@ -60,7 +65,7 @@ export const PageRouterSwap = () => {
       }
 
       const routerDefault = network.swap
-      if (Object.keys(tokensMapper).length && !!routerDefault) {
+      if (tokensMapper && Object.keys(tokensMapper).length && !!routerDefault) {
         const isValidParamsFromAddress = !!paramsFromAddress && !!tokensMapper[paramsFromAddress]
         const isValidParamsToAddress = !!paramsToAddress && !!tokensMapper[paramsToAddress]
 
@@ -71,8 +76,8 @@ export const PageRouterSwap = () => {
           !isValidParamsToAddress ||
           paramsToAddress === paramsFromAddress
         ) {
-          const fromAddress = routerDefault.fromAddress
-          const toAddress = routerDefault.toAddress
+          const fromAddress = normalizeAddress(routerDefault.fromAddress)
+          const toAddress = normalizeAddress(routerDefault.toAddress)
           if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
         } else {
           // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
@@ -81,7 +86,7 @@ export const PageRouterSwap = () => {
       }
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [isConnecting, hasRouter, paramsFromAddress, paramsToAddress, rChainId, tokensMapperStr])
+  }, [isConnecting, hasRouter, paramsFromAddress, paramsToAddress, rChainId, tokensMapper])
   return (
     <Card sx={{ maxWidth: MaxWidth.actionCard, margin: '0 auto' }} data-testid="swap-page">
       <CardHeader title={t`Swap`} />
@@ -93,8 +98,6 @@ export const PageRouterSwap = () => {
             params={props}
             searchedParams={searchedParams}
             rChainId={rChainId}
-            tokensMapper={tokensMapper}
-            tokensMapperStr={tokensMapperStr}
             redirect={redirect}
           />
         )}
