@@ -4,8 +4,6 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { TableButton } from './TableButton'
 
-const { Spacing } = SizesAndSpaces
-
 export const TableHeader = ({
   title,
   onReload,
@@ -19,14 +17,9 @@ export const TableHeader = ({
 }) => (
   <Stack
     direction="row"
-    sx={{
-      justifyContent: 'space-between',
-      alignItems: 'end',
-      paddingBlockEnd: Spacing.xs,
-      backgroundColor: t => t.design.Layer.App.Background,
-    }}
+    sx={{ justifyContent: 'space-between', alignItems: 'end', backgroundColor: t => t.design.Layer.App.Background }}
   >
-    <CardHeader title={title} data-testid={testId} />
+    <CardHeader size="small" title={title} data-testid={testId} />
     <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />
   </Stack>
 )

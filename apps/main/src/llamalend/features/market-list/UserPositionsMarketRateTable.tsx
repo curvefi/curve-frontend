@@ -69,15 +69,8 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       expandedPanel={{ Body: MarketExpandedPanel, Actions: UserPositionExpandedPanelActions }}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
-      <Stack
-        sx={{
-          backgroundColor: t => t.design.Layer[1].Fill,
-          height: Sizing.md,
-          justifyContent: 'end',
-          paddingInline: Spacing.md,
-        }}
-      >
-        <CardHeader title={title} size="small" />
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, justifyContent: 'end', paddingInline: Spacing.md }}>
+        <CardHeader title={title} size="small" variant="inline" />
       </Stack>
     </EvmDataTable>
   )

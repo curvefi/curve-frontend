@@ -76,8 +76,8 @@ const CardStoryHeaderOnly = (props: CardProps) => (
 )
 
 const CardStoryInline = (props: CardProps) => (
-  <Card sx={{ maxWidth: '20rem' }} {...props} size="inline">
-    <CardHeader title="Inline card" />
+  <Card sx={{ maxWidth: '20rem' }} {...props} variant="inline">
+    <CardHeader size="extraSmall" title="Inline card" />
 
     <CardContent>
       <Stack sx={{ gap: Spacing.sm }}>
@@ -123,7 +123,11 @@ const CardStoryTokenIconsAvatar = (props: CardProps) => (
 const meta: Meta<typeof CardStory> = {
   title: 'UI Kit/Primitives/Card',
   argTypes: {
-    variant: { control: 'select', options: ['elevation', 'outlined'], description: 'The variant of the component' },
+    variant: {
+      control: 'select',
+      options: ['elevation', 'outlined', 'inline'],
+      description: 'The variant of the component',
+    },
   },
 }
 
@@ -132,6 +136,17 @@ type Story = StoryObj<typeof CardStory>
 export const Default: Story = { render: args => <CardStory {...args} /> }
 export const Simple: Story = { render: args => <CardStorySimple {...args} /> }
 export const HeaderOnly: Story = { render: args => <CardStoryHeaderOnly {...args} /> }
+export const HeaderSizes: Story = {
+  render: args => (
+    <Stack sx={{ gap: Spacing.md, width: '20rem', maxWidth: '100%' }}>
+      {(['medium', 'small', 'extraSmall'] as const).map(size => (
+        <Card key={size} {...args}>
+          <CardHeader size={size} title={size} />
+        </Card>
+      ))}
+    </Stack>
+  ),
+}
 export const Inline: Story = { render: args => <CardStoryInline {...args} /> }
 export const TokenIconsAvatar: Story = { render: args => <CardStoryTokenIconsAvatar {...args} /> }
 
