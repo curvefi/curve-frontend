@@ -71,7 +71,6 @@ export const TokenSection = <T extends Option = Option>({
                 )}
               </Stack>
             }
-            size="small"
           />
           <Divider />
         </Box>

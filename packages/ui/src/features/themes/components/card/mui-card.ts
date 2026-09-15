@@ -1,8 +1,11 @@
 /// <reference types="./mui-card.d.ts" />
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
 import { DesignSystem } from '@ui/features/themes/design'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { cardContentInlineStyles, cardContentSmallStyles } from '../card-content'
-import { cardHeaderInlineStyles, cardHeaderSmallStyles } from '../card-header'
+import { createHeaderStyle, createInlineHeaderStyle } from '../card-header'
+
+const { BorderWidth } = SizesAndSpaces
 
 export const defineMuiCard = (design: DesignSystem, typography: TypographyVariantsOptions): Components['MuiCard'] => ({
   styleOverrides: {
@@ -11,19 +14,24 @@ export const defineMuiCard = (design: DesignSystem, typography: TypographyVarian
       boxShadow: 'none',
     },
   },
-  // Keep size styles on direct children so they do not leak into nested cards.
+  // Keep styles on direct children so they do not leak into nested cards.
   variants: [
     {
       props: { size: 'small' },
       style: {
-        '& > .MuiCardHeader-root': cardHeaderSmallStyles(design, typography),
+        '& > .MuiCardHeader-root': createHeaderStyle(design, typography, 'small'),
         '& > .MuiCardContent-root': cardContentSmallStyles,
       },
     },
     {
-      props: { size: 'inline' },
+      /** Use inline for sections within a page or card: content has no padding or background. */
+      props: { variant: 'inline' },
       style: {
-        '& > .MuiCardHeader-root': cardHeaderInlineStyles(design, typography),
+        '& > .MuiCardHeader-root': {
+          ...createInlineHeaderStyle(design),
+          // The header border only appears when it is a direct child of an inline Card.
+          borderBottom: `${BorderWidth.thin} solid ${design.Layer[3].Outline}`,
+        },
         '& > .MuiCardContent-root': cardContentInlineStyles,
       },
     },

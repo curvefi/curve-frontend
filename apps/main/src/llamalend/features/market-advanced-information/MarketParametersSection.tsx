@@ -24,8 +24,8 @@ type MarketParametersProps = {
 export const MarketParametersSection = ({ chainId, marketId, marketType, apiMarket }: MarketParametersProps) => (
   <Stack>
     {!useNewLlamaMarketDetailPage() && (
-      <Card size="inline" data-testid="market-prices-section">
-        <CardHeader title={t`Prices`} />
+      <Card variant="inline" data-testid="market-prices-section">
+        <CardHeader size="extraSmall" title={t`Prices`} />
         <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
           <MarketPricesRows
             chainId={chainId}
@@ -37,15 +37,15 @@ export const MarketParametersSection = ({ chainId, marketId, marketType, apiMark
       </Card>
     )}
 
-    <Card size="inline" data-testid="market-parameters-section">
-      <CardHeader title={t`Parameters`} />
+    <Card variant="inline" data-testid="market-parameters-section">
+      <CardHeader size="extraSmall" title={t`Parameters`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
         <MarketLoanParameters chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
       </CardContent>
     </Card>
 
-    <Card size="inline" data-testid="market-id-section">
-      <CardHeader title={t`Market`} />
+    <Card variant="inline" data-testid="market-id-section">
+      <CardHeader size="extraSmall" title={t`Market`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
         <MarketIdRow marketId={marketId ?? apiMarket.data?.controllerAddress} />
       </CardContent>

@@ -51,13 +51,14 @@ export const EChartsCard = ({
     {/** A lot of flex and height code is to make sure the chart expands correctly in fullscreen mode */}
     <Card component={Stack} sx={{ height: '100%' }} {...(!fullscreen && { size: 'small' })} data-testid={testId}>
       <CardHeader
+        size="medium"
         title={title}
         action={
           <Stack direction="row" sx={{ gap: Spacing.xs }}>
             {action}
           </Stack>
         }
-        sx={{ ...(fullscreen && { marginInlineStart: Spacing.md }) }}
+        {...(fullscreen && { sx: { marginInlineStart: Spacing.md }, variant: 'inline' })}
       />
 
       <CardContent component={Stack} sx={{ gap: Spacing.md, flexGrow: 1 }}>
