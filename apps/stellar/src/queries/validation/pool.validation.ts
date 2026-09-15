@@ -2,7 +2,7 @@ import { test } from 'vest'
 import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
 import { isAccountAddress, isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import type { PoolQuery, TokenQuery, UserQuery } from '@/stellar/queries/root-keys'
+import type { PoolParams, TokenQuery, UserQuery } from '@/stellar/queries/root-keys'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -11,16 +11,16 @@ export type { PoolQuery, PoolParams, TokenQuery, TokenParams } from '@/stellar/q
 export type BalanceQuery = TokenQuery & UserQuery & { decimals: number }
 export type BalanceParams = FieldsOf<BalanceQuery>
 
-const validateNetwork = (network: string) =>
+const validateNetwork = (network: string | null | undefined) =>
   test('network', 'Unsupported Stellar network', () => {
     enforce(!!network && network in STELLAR_NETWORKS).isTruthy()
   })
-export const validateAccount = (account: StellarAddress | undefined) => {
+export const validateAccount = (account: StellarAddress | null | undefined) => {
   test('account', 'Connect a Stellar wallet', () => {
     enforce(!!account && isAccountAddress(account)).isTruthy()
   })
 }
-export const validatePool = ({ network, pool }: PoolQuery) => {
+export const validatePool = ({ network, pool }: PoolParams) => {
   validateNetwork(network)
   test('pool', 'Invalid Stellar pool address', () => {
     enforce(!!pool && isContractAddress(pool)).isTruthy()

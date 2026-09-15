@@ -1,4 +1,4 @@
-import type { StellarContract } from '@/stellar/features/connect-wallet/address'
+import { asAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { NetworkParams, UserParams } from '@/stellar/queries/root-keys'
 import { getTokenBalanceQueryOptions } from '@/stellar/queries/token/token-balance.query'
 import { getTokenDecimalsQueryOptions } from '@/stellar/queries/token/token-decimals.query'
@@ -8,19 +8,21 @@ import { zip } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 
 /**
  * Queries the token balances, decimals, symbols, and names for the given tokens.
  */
-export function useDepositTokens({
+export function usePoolTokens({
   network,
   account,
-  tokens: { data: tokens = [] /* useQueries doesn't accept undefined */ },
+  tokens: tokenQuery,
 }: NetworkParams & UserParams & { tokens: QueryProp<StellarContract[]> }) {
+  const tokens = tokenQuery.data ?? [] // useQueries doesn't accept undefined
   const decimals = useQueries({
     queries: tokens.map(token => getTokenDecimalsQueryOptions({ network, token })),
-    combine: aggregateQueries,
+    combine: results =>
+      mapQuery(aggregateQueries(results), values => (values.every(value => value != null) ? values : undefined)),
   })
   const symbols = useQueries({
     queries: tokens.map(token => getTokenSymbolQueryOptions({ network, token })),
@@ -42,5 +44,12 @@ export function useDepositTokens({
       ) ?? [],
     combine: results => ({ balances: results.map(q), maxAmounts: aggregateQueries(results) }),
   })
-  return { metadata, balances, decimals, maxAmounts }
+  const inputs = combineQueries([tokenQuery, metadata], (addresses, metadata) =>
+    zip(addresses, metadata, balances).map(([address, metadata, balance]) => ({
+      address: asAddress(address),
+      symbol: metadata.symbol,
+      balance,
+    })),
+  )
+  return { inputs, decimals, maxAmounts }
 }

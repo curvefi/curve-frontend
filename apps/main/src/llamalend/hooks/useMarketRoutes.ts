@@ -20,8 +20,8 @@ import { maybe, notFalsy, recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import type { QueryKey } from '@tanstack/react-query'
 import { q, type QueryProp } from '@ui/features/queries/util'
-import { decimalCompare, decimalMax, toWei, decimalDiv, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
-import type { PriceImpact } from '@ui/lib/price-impact.util'
+import { decimalCompare, decimalMax, toWei, decimalMultiply } from '@ui/lib/decimal'
+import { calculatePriceImpact as calculateValuePriceImpact, type PriceImpact } from '@ui/lib/price-impact.util'
 
 export type MarketRoutes = {
   queries: RouteQueries
@@ -57,8 +57,7 @@ export const calculatePriceImpact = ({
 }) => {
   const amountInUsd = decimalMultiply(fromWei(selectedAmountIn, tokenInDecimals), tokenInUsdRate)
   const amountOutUsd = decimalMultiply(fromWei(selectedAmountOut, tokenOutDecimals), tokenOutUsdRate)
-  const ratio = decimalDiv(amountOutUsd, amountInUsd)
-  return decimalMax('0', decimalMultiply(decimalMinus('1', ratio), '100'))
+  return maybe(calculateValuePriceImpact(amountOutUsd, amountInUsd), impact => decimalMax('0', impact))
 }
 
 /**

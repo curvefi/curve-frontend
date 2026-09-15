@@ -1,25 +1,21 @@
 import { useCallback } from 'react'
-import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { fetchDepositSimulation, invalidateDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
 import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
-import { invalidatePoolRates } from '@/stellar/queries/pool/pool-rates.query'
-import { invalidatePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
-import { invalidatePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { rootKeys } from '@/stellar/queries/root-keys'
-import { invalidateTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import {
   depositMutationValidationSuite,
   type DepositMutation,
   type DepositForm,
 } from '@/stellar/queries/validation/deposit.validation'
-import { zip } from '@primitives/array.utils'
-import { getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
-import type { DeepPartial } from '@ui/features/queries/util'
+import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { t } from '@ui/lib/i18n'
 import type { FieldsOf } from '@ui/lib/validation/types'
+import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
-type DepositOptions = FieldsOf<DeepPartial<DepositMutation>> & { onReset: () => void }
+type DepositOptions = FieldsOf<
+  Pick<DepositMutation, 'network' | 'pool' | 'account' | 'tokens' | 'quote' | 'minMint'>
+> & { onReset: () => void }
 
 export const useDepositMutation = ({ onReset, ...params }: DepositOptions) => {
   const { mutate, error, isPending } = useStellarMutation<DepositMutation>({
@@ -31,35 +27,21 @@ export const useDepositMutation = ({ onReset, ...params }: DepositOptions) => {
     onReset,
     onSuccess: async (_, submitted) => {
       await Promise.allSettled([
-        ...zip(submitted.tokens, submitted.decimals).map(([token, decimals]) =>
-          invalidateTokenBalance({ ...submitted, token, decimals }),
-        ),
-        invalidateTokenBalance({ ...submitted, token: submitted.pool, decimals: LP_TOKEN_DECIMALS }),
-        invalidatePoolReserves(submitted),
-        invalidatePoolSupply(submitted),
-        invalidatePoolRates(submitted),
+        invalidatePoolLiquidity(submitted),
         invalidateExpectedLp({ ...submitted, isDeposit: true }),
         invalidateDepositSimulation(submitted),
       ])
     },
   })
-  const { network, pool, account, decimals, tokens, quote, minMint, slippage, maxAmounts, supply } = params
   const onSubmit = useCallback(
     (values: DepositForm) =>
       mutate({
-        network,
-        pool,
-        account,
-        decimals,
-        tokens,
-        quote,
-        minMint,
-        slippage,
-        maxAmounts,
-        supply,
-        amounts: getPoolAmounts(values, tokens?.length),
+        ...values,
+        ...params,
+        amounts: getPoolAmounts(values, params.tokens?.length),
+        maxAmounts: getPoolMaxAmounts(values, params.tokens?.length),
       } as DepositMutation),
-    [mutate, network, pool, account, decimals, tokens, quote, minMint, slippage, maxAmounts, supply],
+    [mutate, params],
   )
   return { onSubmit, mutate, error, isPending }
 }

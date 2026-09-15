@@ -23,3 +23,6 @@ export const getPoolAmounts = (values: PoolTokenFields, tokenCount: number | und
 
 export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokenFields, PoolAmountField> =>
   Object.fromEntries(range(tokenCount).map(index => [poolAmountField(index), undefined]))
+
+export const getPoolMaxAmounts = (values: PoolTokenFields, tokenCount: number | undefined) =>
+  maybe(tokenCount, count => range(count).map(index => values[poolMaxAmountField(index)]))

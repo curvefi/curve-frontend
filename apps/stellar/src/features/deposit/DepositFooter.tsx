@@ -5,10 +5,9 @@ import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { useTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { DepositInfoList } from '@ui/features/pool-forms/deposit/DepositInfoList'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { decimalEqual, decimalSum } from '@ui/lib/decimal'
-import { t } from '@ui/lib/i18n'
 import { type DepositPreviewParams, type DepositPreview } from './useDepositPreview'
 
 export const DepositFooter = ({ params, preview }: { params: DepositPreviewParams; preview: DepositPreview }) => {
@@ -25,7 +24,7 @@ export const DepositFooter = ({ params, preview }: { params: DepositPreviewParam
       projectedLp={combineQueries([lpBalance, quote], decimalSum)}
       priceImpact={priceImpact}
       seedLock={combineQueries([config, supply], (pool, supply) => (decimalEqual(supply, '0') ? pool.seedLock : null))}
-      gas={mapQuery(fee, value => ({ ...value, tooltip: t`Estimated total network fee, including resource fees.` }))}
+      gas={fee}
       slippage={params.slippage}
       onSlippageChanged={useUserProfileStore(state => state.setMaxSlippage)}
       userAddress={asAddress(params.account ?? undefined)}
