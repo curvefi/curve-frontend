@@ -4,6 +4,6 @@ import '@mui/material/CardHeader'
 declare module '@mui/material/CardHeader' {
   export interface CardHeaderOwnProps {
     size?: 'extraSmall' | 'small' | 'medium'
-    variant?: 'inline'
+    variant?: 'inline' | 'modal'
   }
 }

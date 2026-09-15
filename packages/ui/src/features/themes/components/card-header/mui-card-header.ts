@@ -4,6 +4,7 @@ import type { Components, TypographyVariantsOptions } from '@mui/material/styles
 import { objectKeys } from '@primitives/objects.utils'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
 import { DesignSystem } from '@ui/features/themes/design'
+import { TRANSPARENT } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { ButtonSize, Spacing, Sizing: ResponsiveSizing, Tab } = SizesAndSpaces
@@ -55,7 +56,7 @@ export const createHeaderStyle = (
 
 export const createInlineHeaderStyle = (design: DesignSystem) => ({
   '& .MuiCardHeader-title': { color: design.Text.TextColors.Secondary },
-  '& .MuiCardHeader-content': { paddingInline: 0, minHeight: 0, alignSelf: 'stretch' },
+  '& .MuiCardHeader-content': { backgroundColor: TRANSPARENT, paddingInline: 0, minHeight: 0, alignSelf: 'stretch' },
 })
 
 export const defineMuiCardHeader = (
@@ -81,5 +82,14 @@ export const defineMuiCardHeader = (
       style: createHeaderStyle(design, typography, size),
     })),
     { props: { variant: 'inline' }, style: createInlineHeaderStyle(design) },
+    {
+      props: { variant: 'modal' },
+      style: {
+        ...createInlineHeaderStyle(design),
+        ...handleBreakpoints({ paddingInline: Spacing.md, paddingBlock: Spacing.sm }),
+        alignItems: 'center',
+        '& .MuiCardHeader-action': { alignSelf: 'center' },
+      },
+    },
   ],
 })
