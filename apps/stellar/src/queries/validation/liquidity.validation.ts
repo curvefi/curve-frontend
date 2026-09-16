@@ -17,7 +17,7 @@ export type QuoteParams = FieldsOf<DeepPartial<QuoteQuery>>
 export type ExpectedLpQuery = QuoteQuery & { isDeposit: boolean; maxAmounts?: (Decimal | undefined)[] }
 export type ExpectedLpParams = FieldsOf<DeepPartial<ExpectedLpQuery>>
 
-export const validateSlippage = (slippage: Decimal | undefined) => {
+export const validateSlippage = (slippage: Decimal | null | undefined) => {
   test('slippage', 'Invalid slippage tolerance', () => {
     enforce(slippage).isDecimal().gte(MIN_SLIPPAGE).lte(MAX_SLIPPAGE)
   })

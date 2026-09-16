@@ -4,6 +4,7 @@ import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import type { UserQuery } from '@/stellar/queries/root-keys'
 import { validateAccount, validatePool } from '@/stellar/queries/validation/pool.validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import {
   poolAmountField,
   poolMaxAmountField,
@@ -11,18 +12,26 @@ import {
   type PoolForm,
 } from '@ui/features/pool-forms/pool-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
-import { decimalGreaterThan } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
 import { validateLiquidityInputs, validateSlippage, type QuoteQuery } from './liquidity.validation'
 export type { QuoteQuery, QuoteParams } from './liquidity.validation'
+
+export type DepositMutation = {
+  amounts: (Decimal | undefined)[]
+  maxAmounts: (Decimal | undefined)[]
+  decimals: number[]
+  supply: Decimal
+  slippage: Decimal
+}
+export type DepositForm = PoolForm & { supply: Decimal | undefined; slippage: Decimal }
 export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: (Decimal | undefined)[] }
 export type DepositParams = FieldsOf<DeepPartial<DepositQuery>>
-export type DepositMutation = DepositQuery & { quote: Decimal; tokens: StellarContract[]; slippage: Decimal }
-export type DepositForm = PoolForm & { supply: Decimal | undefined; slippage: Decimal }
+export type DepositFormQuery = DepositQuery & DepositMutation & { quote: Decimal; tokens: StellarContract[] }
+export type DepositFormParams = FieldsOf<DeepPartial<DepositFormQuery>>
 
-export const depositValidationSuite = createValidationSuite((params: DepositQuery) => {
+export const depositValidationSuite = createValidationSuite((params: DepositParams) => {
   validatePool(params)
   validateFundedInputs(params)
   validateAccount(params.account)
@@ -31,12 +40,7 @@ export const depositValidationSuite = createValidationSuite((params: DepositQuer
   })
 })
 
-type DepositInputs = {
-  amounts: (Decimal | undefined)[] | undefined
-  decimals: (number | undefined)[] | undefined
-  supply: Decimal | undefined
-  maxAmounts: (Decimal | undefined)[] | undefined
-}
+type DepositInputs = Pick<DepositParams, 'amounts' | 'decimals' | 'supply' | 'maxAmounts'>
 
 // Shared by disconnected quotes and form validation. Fee simulation also needs wallet balances.
 const validateInputs = ({ amounts, decimals, supply, maxAmounts }: DepositInputs) => {
@@ -45,7 +49,7 @@ const validateInputs = ({ amounts, decimals, supply, maxAmounts }: DepositInputs
     const field = poolAmountField(i)
     skipWhen(maxAmounts?.[i] == null, () => {
       test(field, 'Insufficient token balance', () => {
-        enforce(!decimalGreaterThan(amount || '0', maxAmounts![i]!)).isTruthy()
+        enforce(amount || '0').lte(maxAmounts![i]!)
       })
     })
   })
@@ -72,7 +76,7 @@ const validateForm = (values: DepositForm) => {
 
 export const depositFormValidationSuite = createValidationSuite(validateForm)
 
-const validateTokens = ({ tokens }: { tokens: StellarContract[] }) => {
+const validateTokens = ({ tokens }: Pick<DepositFormParams, 'tokens'>) => {
   enforce(tokens?.length).isNumber().gt(0)
 }
 
@@ -89,17 +93,17 @@ export const depositMutationValidationSuite = createValidationSuite(
     tokens,
     quote,
     account,
-  }: DepositMutation) => {
+  }: DepositFormParams) => {
     validatePool({ pool, network })
     validateAccount(account)
     validateSlippage(slippage)
     validateFundedInputs({ amounts, decimals, maxAmounts, supply })
     validateTokens({ tokens })
     test('quote', 'Deposit must leave LP after the permanent seed lock', () => {
-      enforce(decimalGreaterThan(quote, '0')).isTruthy()
+      enforce(quote && +quote).gt(0)
     })
     test('minMint', 'Minimum LP does not match the accepted quote and slippage', () => {
-      enforce(calculateMinimumMint(quote, slippage)).equals(minMint)
+      enforce(maybes([quote, slippage], calculateMinimumMint)).equals(minMint)
     })
   },
 )
