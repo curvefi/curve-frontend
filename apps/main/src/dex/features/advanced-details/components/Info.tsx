@@ -49,7 +49,7 @@ export const Info = () => {
     getPoolType({ pool, isFxSwap, tokenCount: metadata?.coins.length ?? tokens.length }) || metadata?.poolType || '-'
 
   return (
-    <Card size="inline">
+    <Card size="extraSmall" variant="inline">
       <CardHeader title={t`Info`} />
       <CardContent component={Section}>
         <ActionInfo

@@ -4,10 +4,18 @@ import { DesignSystem } from '@ui/features/themes/design'
 import { TRANSPARENT } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '../../basic-theme'
+import { CARD_SIZES, type CardSize } from '../card-sizes'
 
 const { Padding } = SizesAndSpaces
 
-export const cardContentSmallStyles = { padding: Padding.Card.sm, '&:last-child': { paddingBlockEnd: Padding.Card.sm } }
+const createCardContentSizeStyle = (padding: string) => ({ padding, '&:last-child': { paddingBlockEnd: padding } })
+
+export const CARD_CONTENT_SIZE_STYLES = {
+  // TODO: Use extraSmall padding once a dedicated design token is available.
+  extraSmall: createCardContentSizeStyle(Padding.Card.sm),
+  small: createCardContentSizeStyle(Padding.Card.sm),
+  medium: createCardContentSizeStyle(Padding.Card.md),
+} as const satisfies Record<CardSize, ReturnType<typeof createCardContentSizeStyle>>
 
 export const cardContentInlineStyles = {
   ...handleBreakpoints({ padding: 0 }),
@@ -16,15 +24,6 @@ export const cardContentInlineStyles = {
 }
 
 export const defineMuiCardContent = (design: DesignSystem): Components['MuiCardContent'] => ({
-  styleOverrides: {
-    root: {
-      backgroundColor: design.Layer[1].Fill,
-      padding: Padding.Card.md,
-      '&:last-child': { paddingBlockEnd: Padding.Card.md },
-    },
-  },
-  variants: [
-    { props: { size: 'small' }, style: cardContentSmallStyles },
-    { props: { size: 'inline' }, style: cardContentInlineStyles },
-  ],
+  styleOverrides: { root: { backgroundColor: design.Layer[1].Fill, ...CARD_CONTENT_SIZE_STYLES.medium } },
+  variants: CARD_SIZES.map(size => ({ props: { size }, style: CARD_CONTENT_SIZE_STYLES[size] })),
 })

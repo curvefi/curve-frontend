@@ -1,7 +1,7 @@
 import type { NetworkQuery } from '@/stellar/queries/root-keys'
 import { StellarUrls } from '@/stellar/routes/routes'
 import Stack from '@mui/material/Stack'
-import { ListPageWrapper } from '@ui/features/layout/ListPageWrapper'
+import { ListPageLayout } from '@ui/features/layout/ListPageLayout'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { DataTable } from '@ui/features/tables/DataTable'
@@ -26,7 +26,7 @@ export const PoolListPage = () => {
   })
 
   return (
-    <ListPageWrapper>
+    <ListPageLayout>
       <Stack>
         <TableHeader title={t`Pools`} onReload={() => void query.refetch()} isLoading={query.isFetching} />
         <DataTable
@@ -35,6 +35,6 @@ export const PoolListPage = () => {
           errorState={{ title: t`Could not load pools`, onReload: query.refetch }}
         />
       </Stack>
-    </ListPageWrapper>
+    </ListPageLayout>
   )
 }
