@@ -5,6 +5,7 @@ import { useBalance, useConfig, useReadContracts } from 'wagmi'
 import { type ChainQuery, type UserQuery } from '@evm-ui/lib/model'
 import { uniqAddresses } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { DEFAULT_DECIMALS } from '@primitives/units.util'
 import { useQueries } from '@tanstack/react-query'
 import { combineQueriesToObject } from '@ui/features/queries/combine'
@@ -220,11 +221,17 @@ export const prefetchTokenBalances = async (
   const results = await multicall(config, { chainId, contracts: tokenContracts.flat() })
   const updatedAt = Date.now()
 
-  // Each token uses 2 contracts (balanceOf + decimals), so chunk results by 2
-  // Failures are fine — allowFailure defaults to true, so failed calls are seeded as
-  // { status: 'failure' } entries. Downstream consumers (useTokenBalance, fetchTokenBalance)
-  // already handle per-token failures gracefully.
+  /**
+   * Each token uses 2 contracts (balanceOf + decimals), so chunk results by 2
+   * Failures are fine — allowFailure defaults to true, so failed calls are seeded as
+   * { status: 'failure' } entries. Downstream consumers (useTokenBalance, fetchTokenBalance)
+   * already handle per-token failures gracefully.
+   *
+   * We only care about non-zero balances in order not to overload the TanStack Query
+   * persistor with too many setQueryData calls. There's sadly no good way to batch them. (see commit message)
+   */
   zip(tokenContracts, chunk(results, 2))
+    .filter(([, tokenResults]) => maybe(tokenResults?.[0].result, balance => balance > 0n) ?? false)
     .map(([contracts, tokenResults]) => [readContractsQueryOptions(config, { contracts }), tokenResults] as const)
     .forEach(([{ queryKey }, tokenResults]) => queryClient.setQueryData(queryKey, tokenResults, { updatedAt }))
 }
