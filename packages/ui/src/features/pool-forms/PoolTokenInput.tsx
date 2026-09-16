@@ -4,8 +4,9 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import { useFormContext, useFormSync } from '@ui/features/forms'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { LargeTokenInput, type LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput'
 import { q, type QueryProp } from '@ui/features/queries/util'
+import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { getBalancedAmounts } from './balanced-amounts.utils'
 import { poolAmountField, type PoolForm, poolMaxAmountField } from './pool-form.utils'
 
@@ -20,20 +21,30 @@ export const PoolTokenInput = ({
   token: { address, balance, symbol },
   index,
   disabled,
+  hideMaxButton,
   reserves: { data: reserves },
+  positionBalance,
 }: {
   token: PoolToken
   index: number
   disabled: boolean
+  hideMaxButton?: boolean
   reserves: QueryProp<Decimal[]>
+  /** Display the position balance instead of the wallet balance, as in LoanFormTokenInput. */
+  positionBalance?: {
+    position: QueryProp<Decimal>
+    tooltip?: NonNullable<LargeTokenInputProps['walletBalance']>['tooltip']
+  }
 }) => {
   const { update, watchValue, getValue, formState } = useFormContext<PoolForm>() // todo: pass form via prop after migration to tanstack forms
   const { errors, touchedFields } = formState
   const field = poolAmountField(index)
-  useFormSync({ update }, { [poolMaxAmountField(index)]: balance.data })
   const amount = watchValue(field)
   const fieldError = touchedFields[field] ? (errors[field] ?? errors[poolMaxAmountField(index)]) : undefined
-  const inputError = fieldError ?? balance.error
+  const { position, tooltip } = positionBalance ?? {}
+  const maxBalance = position ?? balance
+  useFormSync({ update }, { [poolMaxAmountField(index)]: maxBalance.data })
+  const inputError = fieldError ?? maxBalance.error
   return (
     <LargeTokenInput
       name={field}
@@ -51,8 +62,8 @@ export const PoolTokenInput = ({
         [getValue, update, reserves, index, field],
       )}
       disabled={disabled}
-      walletBalance={{ symbol, balance }}
-      maxBalance={{ balance, chips: 'max' }}
+      walletBalance={{ symbol, balance: position ?? balance, tooltip, prefix: position && LlamaIcon }}
+      {...(!hideMaxButton && { maxBalance: { balance: maxBalance, chips: 'max' } })}
       message={inputError?.message}
       testId={`pool-token-input-${address}`}
     />

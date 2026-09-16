@@ -3,21 +3,18 @@ import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { rootKeys } from '@/stellar/queries/root-keys'
 import {
   quoteValidationSuite,
-  type QuoteParams,
-  type QuoteQuery,
-} from '@/stellar/queries/validation/deposit.validation'
+  type ExpectedLpParams,
+  type ExpectedLpQuery,
+} from '@/stellar/queries/validation/liquidity.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei, toWeiArray, toBigIntArray } from '@ui/lib/decimal'
 
-type ExpectedLpParams = QuoteParams & { isDeposit: boolean }
-type ExpectedLpQuery = QuoteQuery & { isDeposit: boolean }
-
 export const {
   useQuery: useExpectedLp,
-  fetchQuery: fetchExpectedLp,
   invalidate: invalidateExpectedLp,
+  fetchQuery: fetchExpectedLp,
 } = queryFactory({
-  queryKey: ({ network, pool, amounts, decimals, supply, isDeposit }: ExpectedLpParams) =>
+  queryKey: ({ network, pool, amounts, decimals, supply, isDeposit, maxAmounts }: ExpectedLpParams) =>
     [
       ...rootKeys.pool({ network, pool }),
       'calc_token_amount',
@@ -25,6 +22,7 @@ export const {
       { decimals },
       { supply },
       { isDeposit },
+      { maxAmounts: isDeposit ? undefined : maxAmounts },
     ] as const,
   queryFn: async ({ network, pool, amounts, decimals, isDeposit }: ExpectedLpQuery) =>
     fromWei(

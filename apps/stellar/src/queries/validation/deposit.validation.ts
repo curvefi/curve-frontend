@@ -1,11 +1,9 @@
 import { each, skipWhen, test } from 'vest'
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { MAX_I128, calculateMinimumMint } from '@/stellar/lib/amounts'
-import type { PoolQuery, UserQuery } from '@/stellar/queries/root-keys'
+import { calculateMinimumMint } from '@/stellar/lib/amounts'
+import type { UserQuery } from '@/stellar/queries/root-keys'
 import { validateAccount, validatePool } from '@/stellar/queries/validation/pool.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
-import { MAX_SLIPPAGE, MIN_SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import {
   poolAmountField,
   poolMaxAmountField,
@@ -13,29 +11,17 @@ import {
   type PoolForm,
 } from '@ui/features/pool-forms/pool-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
-import { decimalEqual, decimalGreaterThan, fromWei } from '@ui/lib/decimal'
+import { decimalGreaterThan } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
-
-export type QuoteQuery = PoolQuery & { amounts: (Decimal | undefined)[]; decimals: number[]; supply: Decimal }
-export type QuoteParams = FieldsOf<DeepPartial<QuoteQuery>>
+import { validateLiquidityInputs, validateSlippage, type QuoteQuery } from './liquidity.validation'
+export type { QuoteQuery, QuoteParams } from './liquidity.validation'
 export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: (Decimal | undefined)[] }
 export type DepositParams = FieldsOf<DeepPartial<DepositQuery>>
 export type DepositMutation = DepositQuery & { quote: Decimal; tokens: StellarContract[]; slippage: Decimal }
 export type DepositForm = PoolForm & { supply: Decimal | undefined; slippage: Decimal }
 
-const validateSlippage = (slippage: Decimal) =>
-  test('slippage', 'Invalid slippage tolerance', () => {
-    enforce(slippage).isDecimal().gte(MIN_SLIPPAGE).lte(MAX_SLIPPAGE)
-  })
-
-const validateQuote = (params: QuoteQuery) => {
-  validatePool(params)
-  validateInputs({ ...params, maxAmounts: undefined })
-}
-
-export const quoteValidationSuite = createValidationSuite(validateQuote)
 export const depositValidationSuite = createValidationSuite((params: DepositQuery) => {
   validatePool(params)
   validateFundedInputs(params)
@@ -54,45 +40,17 @@ type DepositInputs = {
 
 // Shared by disconnected quotes and form validation. Fee simulation also needs wallet balances.
 const validateInputs = ({ amounts, decimals, supply, maxAmounts }: DepositInputs) => {
-  test('supply', 'Pool supply is unavailable', () => {
-    enforce(supply).isDecimal().gte(0)
-  })
-  test('root', 'Pool data is unavailable', () => {
-    enforce(decimals?.length).isNumber().equals(amounts?.length)
-    decimals?.forEach(precision => enforce(precision).isNumber())
-  })
+  validateLiquidityInputs({ amounts, decimals, supply }, true)
   each(amounts ?? [], (amount, i) => {
     const field = poolAmountField(i)
-    test(field, 'Enter a valid non-negative amount', () => {
-      enforce(amount || '0')
-        .isDecimal({ decimal_digits: '0,' })
-        .gte(0)
-    })
-    maybe(decimals?.[i], precision => {
-      test(field, 'Amount exceeds token decimal precision', () => {
-        enforce(amount || '0').isDecimal({ decimal_digits: `0,${precision}` })
-      })
-      test(field, 'Amount exceeds the maximum supported token amount', () => {
-        enforce(!decimalGreaterThan(amount || '0', fromWei(MAX_I128, precision))).isTruthy()
-      })
-    })
     skipWhen(maxAmounts?.[i] == null, () => {
       test(field, 'Insufficient token balance', () => {
         enforce(!decimalGreaterThan(amount || '0', maxAmounts![i]!)).isTruthy()
       })
     })
   })
-  test('root', 'Enter an amount to deposit', () => {
-    enforce(amounts?.some(amount => decimalGreaterThan(amount ?? '0', '0'))).isTruthy()
-  })
-  test('root', 'Seed deposits require a positive amount of every coin', () => {
-    enforce(
-      supply == null ||
-        !decimalEqual(supply, '0') ||
-        decimals?.every((_, i) => decimalGreaterThan(amounts?.[i] || '0', '0')),
-    ).isTruthy()
-  })
 }
+
 const validateFundedInputs = (values: DepositInputs) => {
   validateInputs(values)
   each(values.decimals ?? [], (_, i) => {
@@ -104,7 +62,7 @@ const validateFundedInputs = (values: DepositInputs) => {
 
 const validateForm = (values: DepositForm) => {
   validateSlippage(values.slippage)
-  validateFundedInputs({
+  validateInputs({
     decimals: values.decimals,
     supply: values.supply,
     amounts: getPoolAmounts(values, values.decimals?.length),
