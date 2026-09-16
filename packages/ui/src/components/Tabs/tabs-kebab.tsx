@@ -117,6 +117,7 @@ export const KebabMenu = <T extends string | number>({
           }) => (
             <Tab
               key={val}
+              data-testid={`${testIdPrefix}-${val}`}
               value={val}
               disabled={disabled}
               icon={icon}
