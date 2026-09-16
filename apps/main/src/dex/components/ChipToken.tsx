@@ -2,11 +2,14 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
+import { getAddress } from 'viem'
 import { useChainId } from 'wagmi'
 import { fetchTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { copyToClipboard, shortenAddress, formatNumber } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { Icon } from '@legacy-ui/Icon'
 import { Spinner } from '@legacy-ui/Spinner'
+import { formatNumber } from '@primitives/number.utils'
+import { copyToClipboard } from '@ui/lib/clipboard'
 
 type ButtonProps = { className?: string } & AriaButtonProps
 
@@ -63,7 +66,7 @@ export const ChipToken = ({ className, tokenName, tokenAddress, ...props }: Chip
     <ChipTokenWrapper className={className} onMouseEnter={handleMouseEnter}>
       <span>{parsedTokenName}</span>
       <ChipTokenAdditionalInfo>
-        <Button {...props} onPress={() => void copyToClipboard(tokenAddress)}>
+        <Button {...props} onPress={() => void copyToClipboard(getAddress(tokenAddress))}>
           <AlignmentWrapper>
             <ChipTokenUsdRate>
               {usdRate == null ? <ChipTokenUsdRateSpinner size={10} /> : parsedUsdRate}

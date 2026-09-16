@@ -1,7 +1,8 @@
 import { getUsdPriceHistoryRange } from '@curvefi/prices-api/usd-price'
-import { EmptyValidationSuite, type FieldsOf } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model/query'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
 import { fetchChunkedTimeSeries, getTimeRange } from './time-series-history'
 
 // The endpoint returns at most 300 rows. A 299-day inclusive range contains at most 300 daily buckets.

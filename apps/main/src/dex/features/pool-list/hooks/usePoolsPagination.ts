@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { useSearchNavigate, useSearchParams } from '@evm-ui/hooks/router'
 import { usePageFromQueryString } from '@evm-ui/hooks/usePageFromQueryString'
+import { useSearchNavigate, useSearchParams } from '@ui/hooks/router'
 import type { PoolsQueryUpdater } from '../filters/utils'
 
 export const POOLS_PAGE_SIZE = 50

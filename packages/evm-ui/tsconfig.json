@@ -14,5 +14,5 @@
       "@primitives/*": ["../primitives/src/*"]
     }
   },
-  "include": ["src", "../legacy-ui/src/globals.d.ts", "./src/types/*.d.ts"]
+  "include": ["src", "../ui/src/**/*.d.ts", "./src/types/*.d.ts"]
 }

@@ -1,0 +1,42 @@
+import { noop } from 'lodash'
+import { create, only, type Suite } from 'vest'
+import { FieldName, FieldsOf } from '@ui/lib/validation/types'
+
+/**
+ * This is using `any` because `vest` will try to match every single field,
+ * and some validators don't validate everything (we pass chainId, marketId, userAddress plus variables).
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ValidationSuite = Suite<any, any> | Suite<never, any>
+
+export const validate = <D extends object, S extends ValidationSuite>(
+  suite: S,
+  data: FieldsOf<D>,
+  fields?: FieldName<D>[],
+) => {
+  suite.reset() // reset the validation state so all fields get revalidated even if they didn't change
+  return suite(data, fields).getErrors()
+}
+
+export function assertValidity<D extends object, S extends ValidationSuite>(
+  suite: S,
+  data: FieldsOf<D>,
+  fields?: FieldName<D>[],
+): D {
+  const entries = Object.entries(validate(suite, data, fields))
+  if (entries.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
+    throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)
+  }
+  return data as D
+}
+
+export const createValidationSuite = <T extends object, TGroupName extends string = string>(
+  validationGroup: (data: T) => void,
+): Suite<FieldName<T>, TGroupName> =>
+  create<FieldName<T>, TGroupName>((data: T, fieldsList?: FieldName<T>[]) => {
+    only(fieldsList)
+    validationGroup(data)
+  })
+
+export const EmptyValidationSuite = createValidationSuite(noop)

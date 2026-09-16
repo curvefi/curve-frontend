@@ -1,8 +1,8 @@
 import type { MarketUrlParams } from '@/lend/types/lend.types'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
-import { redirectTo } from './util'
 
 const LendLayout = lazyRouteComponent(() => import('@/lend/LendLayout'), 'LendLayout')
 const LendMarketPage = lazyRouteComponent(

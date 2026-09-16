@@ -1,6 +1,7 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
+import { queryFactory } from '@ui/features/queries/factory'
 import type { Range } from '@ui/features/queries/util'
 
 const reverseBands = ([low, high]: number[]): Range<number> => [high, low]

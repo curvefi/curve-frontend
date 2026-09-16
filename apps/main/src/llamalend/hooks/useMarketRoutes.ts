@@ -11,8 +11,7 @@ import {
   useRouterQueries,
 } from '@evm-ui/entities/router-api'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { decimalCompare, decimalMax, toWei, decimalDiv, decimalMinus, decimalMultiply, fromWei } from '@evm-ui/utils'
-import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { fromWei } from '@evm-ui/utils'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
@@ -21,6 +20,8 @@ import { maybe, notFalsy, recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import type { QueryKey } from '@tanstack/react-query'
 import { q, type QueryProp } from '@ui/features/queries/util'
+import { decimalCompare, decimalMax, toWei, decimalDiv, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
+import type { PriceImpact } from '@ui/lib/price-impact.util'
 
 export type MarketRoutes = {
   queries: RouteQueries

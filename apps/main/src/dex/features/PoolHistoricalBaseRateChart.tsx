@@ -17,18 +17,20 @@ import {
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { decimal, formatNumber } from '@evm-ui/utils'
-import { formatDate } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import { formatDate } from '@primitives/date.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { TIME_OPTION_MS } from '@ui/utils/time'
+import { TIME_OPTION_MS } from '@ui/lib/time'
 
 const { Height, Spacing } = SizesAndSpaces
 
@@ -117,13 +119,7 @@ export const PoolHistoricalBaseRateChart = ({
         }
       />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
-        <Stack
-          sx={{
-            display: 'grid',
-            gap: Spacing.xl,
-            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(5, 1fr)' },
-          }}
-        >
+        <MetricsGrid>
           <Metric
             category={METRIC_CATEGORY}
             label={t`Current daily base APR`}
@@ -136,7 +132,7 @@ export const PoolHistoricalBaseRateChart = ({
             value={mapQuery(currentPool, pool => pool.baseWeeklyApr * 100)}
             valueOptions={{ unit: 'percentage' }}
           />
-        </Stack>
+        </MetricsGrid>
         <EvmChartStateWrapper
           height={Height.shortChart}
           isLoading={ratePoints.isLoading}

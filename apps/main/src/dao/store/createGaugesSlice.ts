@@ -13,9 +13,10 @@ import {
   SortDirection,
   TransactionState,
 } from '@/dao/types/dao.types'
-import { getLib, notify, useWallet } from '@evm-ui/features/connect-wallet'
+import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { waitForTransaction } from '@evm-ui/lib/ethers'
 import { Chain } from '@primitives/network.utils'
+import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { getGauges, type GaugeFormattedData, type GaugeMapper } from '../queries/gauges.query'
 

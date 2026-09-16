@@ -3,14 +3,13 @@ import type { Theme } from '@mui/material/styles'
 import { Tooltip } from '@ui/components/Tooltip'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { FallbackIcon } from '@ui/images'
+import { applySxProps, type SxProps } from '@ui/lib/mui'
 import { getImageBaseUrl } from '@ui/lib/resource.constants'
-import { applySxProps, type SxProps } from '@ui/utils/mui'
 import { BadgeIcon } from './BadgeIcon'
 import { TokenBadge } from './TokenBadge'
 import { TokenChainIcon } from './TokenChainIcon'
 import { WithWrapper } from './WithWrapper'
-
-const DEFAULT_IMAGE = '/images/default-crypto.png'
 
 const { IconSize } = SizesAndSpaces
 
@@ -26,7 +25,7 @@ const MAIN_ICON_SIZE = {
 const squareSize = <T,>(value: T) => ({ width: value, height: value })
 
 const getTokenImageUrl = (blockchainId: string, address?: string | null) =>
-  address ? `${getImageBaseUrl(blockchainId)}${address.toLowerCase()}.png` : DEFAULT_IMAGE
+  address ? `${getImageBaseUrl(blockchainId)}${address.toLowerCase()}.png` : FallbackIcon
 
 const getTokenIconSizeSx = (
   theme: Theme,
@@ -93,9 +92,7 @@ export const TokenIcon = ({
         data-testid={`token-icon-${tooltip || address}`}
         className={`${className}`}
         alt={tooltip}
-        onError={({ currentTarget }) => {
-          currentTarget.src = DEFAULT_IMAGE
-        }}
+        onError={({ currentTarget }) => (currentTarget.src = FallbackIcon)}
         src={getTokenImageUrl(blockchainId, address)}
         loading="lazy"
         sx={applySxProps(
@@ -114,9 +111,7 @@ export const TokenIcon = ({
           alt={blockchainId}
           src={getTokenImageUrl(blockchainId, badgeAddress)}
           disabled={disabled}
-          onError={({ currentTarget }) => {
-            currentTarget.src = DEFAULT_IMAGE
-          }}
+          onError={({ currentTarget }) => (currentTarget.src = FallbackIcon)}
         />
       </TokenBadge>
     )}

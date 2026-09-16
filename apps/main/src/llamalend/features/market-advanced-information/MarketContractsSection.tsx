@@ -13,17 +13,17 @@ import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { ActionInfo, type ActionInfoProps } from '@evm-ui/shared/ui/ActionInfo'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
-import { Badge } from '@evm-ui/shared/ui/Badge'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { notFalsy } from '@primitives/objects.utils'
+import { Badge } from '@ui/components/Badge'
 import { TokenIcon, type TokenIconProps } from '@ui/components/TokenIcon'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
@@ -169,7 +169,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
   return (
     <Stack data-testid="market-contracts-section">
       {!useNewLlamaMarketDetailPage() && (
-        <Card size="inline" data-testid="market-assets-section">
+        <Card size="extraSmall" variant="inline" data-testid="market-assets-section">
           <CardHeader title={t`Assets`} />
           <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
             <MarketAssets chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket} />
@@ -177,7 +177,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
         </Card>
       )}
 
-      <Card size="inline">
+      <Card size="extraSmall" variant="inline">
         <CardHeader title={isMobile ? t`Market Contracts` : t`Contracts`} />
         <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
           <WithSkeleton loading={contractsLoading} variant="rectangular" height="8lh" width="100%">

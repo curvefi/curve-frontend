@@ -12,9 +12,6 @@ const { week, month } = AVERAGES_TYPES
  * Format: 'app.surface.metric'.
  */
 export const AVERAGE_CATEGORIES = {
-  // compounding rate frequency to convert APR rates to APY
-  'llamalend.compoundRate': week,
-
   // llamalend market page
   'llamalend.market.rate': month,
 

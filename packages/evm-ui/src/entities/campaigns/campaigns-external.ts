@@ -1,8 +1,8 @@
 import { groupBy, inRange } from 'lodash'
-import { EmptyValidationSuite } from '@evm-ui/lib'
-import { queryFactory } from '@evm-ui/lib/model'
 import { mapRecord } from '@primitives/objects.utils'
+import { queryFactory } from '@ui/features/queries/factory'
 import { CURVE_ASSETS_URL } from '@ui/lib/resource.constants'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { campaigns } from '@external-rewards'
 import type { CampaignRewards } from './types'
 
@@ -46,7 +46,7 @@ const REWARDS = groupBy(
  *
  * @returns TanStack Query result with all active campaigns grouped by pool address
  */
-export const { getQueryOptions: getCampaignsExternalOptions } = queryFactory({
+export const { getQueryOptions: getCampaignsExternalOptions, queryKey: getCampaignsExternalQueryKey } = queryFactory({
   queryKey: () => ['campaigns-external'] as const,
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async () => {

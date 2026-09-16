@@ -1,6 +1,6 @@
 import SvgIcon from '@mui/material/SvgIcon'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
-import type { SxProps } from '@ui/utils/mui'
+import type { SxProps } from '@ui/lib/mui'
 
 /** Allows an icon to be rotated with animations when rotated or getting hidden */
 export const RotatableIcon = ({

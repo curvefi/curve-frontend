@@ -12,8 +12,8 @@ import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useNavigate, useParams } from '@evm-ui/hooks/router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
+import { useNavigate, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
 export const PagePool = () => {
@@ -24,7 +24,6 @@ export const PagePool = () => {
   const rChainId = useChainId(blockchainId)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
 
-  const hasDepositAndStake = useStore(state => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
   const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
   const fetchNewPool = useStore(state => state.pools.fetchNewPool)
   const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[poolId ?? ''])
@@ -68,9 +67,9 @@ export const PagePool = () => {
       userAddress={curveApi?.signerAddress}
     />
   ) : (
-    poolId && poolData?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
+    poolId && poolData?.pool?.id === poolId && isHydrated && (
       <PoolContextProvider network={network} poolIdOrAddress={rPoolIdOrAddress}>
-        <Transfer params={props} hasDepositAndStake={hasDepositAndStake} />
+        <Transfer params={props} />
       </PoolContextProvider>
     )
   )

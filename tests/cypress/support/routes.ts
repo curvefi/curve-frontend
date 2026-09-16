@@ -7,10 +7,9 @@ import {
   LEND_ROUTES,
   LEND_MARKET_ROUTES,
   LLAMALEND_ROUTES,
-  PAGE_INTEGRATIONS,
-  PAGE_LEGAL,
 } from '@evm-ui/shared/routes'
 import { recordValues, assert } from '@primitives/objects.utils'
+import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
 
 const WBTC_LEND_POOL = '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617'
 const DEFAULT_NETWORK = 'ethereum'

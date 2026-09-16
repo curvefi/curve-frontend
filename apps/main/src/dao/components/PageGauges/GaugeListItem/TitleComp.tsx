@@ -1,4 +1,5 @@
 import { styled } from 'styled-components'
+import { getAddress } from 'viem'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { SmallLabel } from '@/dao/components/SmallLabel'
@@ -41,7 +42,7 @@ export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
               href={scanAddressPath(getChainIdFromGaugeData(gaugeData), gaugeAddress ?? '')}
               tooltip={t`View gauge on explorer`}
             />
-            <CopyIconButton copyContent={gaugeAddress ?? ''} tooltip={t`Copy gauge address`} />
+            <CopyIconButton copyContent={gaugeAddress ?? ''} format={getAddress} tooltip={t`Copy gauge address`} />
           </ButtonsWrapper>
         </Box>
       )}

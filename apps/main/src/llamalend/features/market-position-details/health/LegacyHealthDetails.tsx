@@ -1,11 +1,11 @@
 import { useLegacyUserHealthValue } from '@/llamalend/queries/user/user-health.query'
 import type { UserMarketParams } from '@evm-ui/lib/model'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { decimal } from '@evm-ui/utils'
 import { Stack, useTheme } from '@mui/material'
 import { Tooltip } from '@ui/components/Tooltip'
 import { type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { decimal } from '@ui/lib/decimal'
 import { getHealthValueColor, HealthBar } from '..'
 import { LEGACY_HEALTH_TOOLTIP } from '../tooltips'
 

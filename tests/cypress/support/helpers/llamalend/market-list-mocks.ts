@@ -15,11 +15,12 @@ import { mockTokenPrices } from '../tokens'
  */
 export const blockUnmockedApis = () => {
   ;[
-    'prices.curve.finance',
-    'api.curve.finance',
-    'api.merkl.xyz',
     'api-core.curve.finance',
     'api.coingecko.com',
+    'api.curve.finance',
+    'api.merkl.xyz',
+    'api2.curve.finance',
+    'prices.curve.finance',
   ].forEach(hostname => void cy.intercept({ hostname }, UnexpectedApiRequest))
   cy.intercept('/api/merkl/*', UnexpectedApiRequest)
 }

@@ -1,5 +1,3 @@
-import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -17,7 +15,7 @@ const { Spacing } = SizesAndSpaces
 const FaqContent = () => (
   <Stack>
     {FAQ_GROUPS.map(group => (
-      <Card key={group.title} size="inline">
+      <Card key={group.title} size="extraSmall" variant="inline">
         <CardHeader title={group.title} />
         <CardContent sx={{ marginBlock: Spacing.sm }}>
           <Stack sx={{ gap: Spacing.xs, paddingInlineStart: Spacing.md }}>
@@ -49,15 +47,11 @@ const FaqContent = () => (
   </Stack>
 )
 
-export const MarketFaqCard = () => {
-  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
-
-  return (
-    <Card size="small" data-testid="llamalend-market-faq">
-      <Header title={t`FAQs`} />
-      <CardContent>
-        <FaqContent />
-      </CardContent>
-    </Card>
-  )
-}
+export const MarketFaqCard = () => (
+  <Card size="small" data-testid="llamalend-market-faq">
+    <CardHeader title={t`FAQs`} />
+    <CardContent>
+      <FaqContent />
+    </CardContent>
+  </Card>
+)

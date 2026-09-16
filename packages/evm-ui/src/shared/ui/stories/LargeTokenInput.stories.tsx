@@ -3,8 +3,12 @@ import { fn } from 'storybook/test'
 import { Select, MenuItem, Typography, Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import {
+  LargeTokenInput,
+  type LargeTokenInputRef,
+  type LargeTokenInputProps,
+} from '@ui/features/forms/controls/LargeTokenInput'
 import { q } from '@ui/features/queries/util'
-import { LargeTokenInput, type LargeTokenInputRef, type LargeTokenInputProps } from '../LargeTokenInput'
 
 // Test options for token selector with corresponding pre-seeded wallet balances
 type Token = { name: string; walletBalance: { symbol: string; balance: Decimal; notionalValueUsd?: Decimal } }

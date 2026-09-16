@@ -3,9 +3,9 @@ import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
-import { RCExternal } from '@legacy-ui/images'
 import { ExternalLink } from '@legacy-ui/Link'
 import { toArray } from '@primitives/array.utils'
+import { RCExternal } from '@ui/images'
 
 type Props = { description: ReactNode; txHash: string | string[] | undefined; onClose?: () => void }
 

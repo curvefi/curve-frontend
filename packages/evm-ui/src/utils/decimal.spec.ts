@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { describe, expect, it } from 'vitest'
-import { amount, decimal, decimalSqrt, toWei } from './decimal'
+import { amount, decimal, decimalSqrt, toWei } from '@ui/lib/decimal'
 
 describe('decimal', () => {
   it('handles basic, normal numbers', () => {

@@ -4,7 +4,7 @@ import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { BorrowInformation } from './BorrowInformation'
 import { HealthDetails } from './health/HealthDetails'
@@ -17,17 +17,17 @@ export const BorrowPositionDetails = () => {
   const { collateralToken, borrowToken } = tokens
   const params = { chainId, marketId, userAddress }
   const liquidationStatus = useLiquidationStatus(params)
-  const healthQuery = useUserHealthValues(params)
+  const useNewHealth = useNewLlamalendHealth()
+  const health = useUserHealthValues(params, useNewHealth)
   const statusContent =
     liquidationStatus.data &&
     getPositionStatusContent(collateralToken?.symbol, borrowToken?.symbol)[liquidationStatus.data]
   const softLiquidation = mapQuery(liquidationStatus, positionStatus => positionStatus === 'softLiquidation')
-  const useNewHealth = useNewLlamalendHealth()
   return (
     <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
       <Stack sx={{ gap: Spacing.sm }}>
         {useNewHealth ? (
-          <HealthDetails healthQuery={q(healthQuery)} />
+          <HealthDetails health={health} positionStatus={liquidationStatus} />
         ) : (
           <LegacyHealthDetails params={params} softLiquidation={softLiquidation} />
         )}

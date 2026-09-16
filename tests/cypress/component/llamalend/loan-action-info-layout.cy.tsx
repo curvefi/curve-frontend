@@ -7,11 +7,11 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
-import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
+import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
+import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { q } from '@ui/features/queries/util'
 
 const getHeight = (testId: string, subelement?: string) =>

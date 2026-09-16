@@ -12,18 +12,20 @@ import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } fr
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet'
-import { combineQueries } from '@evm-ui/lib'
 import { MetricProps } from '@evm-ui/shared/ui/Metric'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
-import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken } from '@evm-ui/utils'
-import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
+import { CRVUSD } from '@evm-ui/utils'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
+import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
+import { combineQueries } from '@ui/features/queries/combine'
 import { QueryProp, toQuery } from '@ui/features/queries/util'
+import { decimal, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
+import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { ReleaseChannel } from '@ui/utils/env'
+import { formatToken } from '@ui/lib/tokens'
 import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 
 /**
@@ -305,6 +307,26 @@ export const calculateLtv = (
   return (debtValue / collateralValue) * 100
 }
 
+/** Annualized return on equity at the given leverage. Input APYs and output are percentage  */
+export const getRoE = (
+  leverage: number | null | undefined,
+  collateralApy: number | null | undefined,
+  borrowApy: number | null | undefined,
+): number | undefined =>
+  // Total collateral / equity = leverage, so debt / equity = leverage - 1.
+  maybes([leverage, collateralApy, borrowApy], (lev, colApy, borApy) =>
+    lev < 1 ? undefined : lev * colApy - (lev - 1) * borApy,
+  )
+
+/** Return on equity at the market's maximum leverage. */
+export const getMaxRoE = ({
+  leverage,
+  assets: {
+    collateral: { rebasingYield },
+  },
+  rates: { borrowApy },
+}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => getRoE(leverage, rebasingYield, borrowApy)
+
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,
   collateralBalanceUsd,
@@ -412,18 +434,8 @@ export function getLiquidationStatus(
   return 'healthy' as const
 }
 
-export function getIsUserCloseToSoftLiquidation(
-  userFirstBand: number,
-  userLiquidationBand: number | null,
-  oraclePriceBand: number | null | undefined,
-) {
-  if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
-    return false
-  } else if (typeof oraclePriceBand === 'number') {
-    return userFirstBand <= oraclePriceBand + 2
-  }
-  return false
-}
+export const getIsUserCloseToSoftLiquidation = (userFirstBand: number, oraclePriceBand: number | null | undefined) =>
+  oraclePriceBand != null && userFirstBand <= oraclePriceBand + 2
 
 /**
  * Formats a collateral + borrowed notional string, e.g. "1.5K WETH + 200 crvUSD".

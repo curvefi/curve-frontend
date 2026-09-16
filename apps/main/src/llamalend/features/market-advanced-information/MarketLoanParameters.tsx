@@ -2,8 +2,8 @@ import { useMarketParameters } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { formatNumber } from '@evm-ui/utils'
+import { formatNumber } from '@primitives/number.utils'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { getMaxLtv } from './market-risk-values'
@@ -22,32 +22,33 @@ export const MarketLoanParameters = ({
     <>
       {(!apiMarket.data || marketId) && (
         // these fields are not exposed by the API yet
-        <>
-          <ActionInfo
-            testId="market-param-amm-swap-fee"
-            label={t`AMM swap fee`}
-            labelTooltip={{
-              title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
-            }}
-            value={mapQuery(
-              mapQuery(parameters, d => d.fee),
-              value => formatNumber(value, 'percent.rate'),
-            )}
-          />
-
-          <ActionInfo
-            testId="market-param-admin-fee"
-            label={t`Admin fee`}
-            labelTooltip={{
-              title: t`The share of market interest routed to the market admin or fee receiver instead of lenders.`,
-            }}
-            value={mapQuery(
-              mapQuery(parameters, d => d.admin_fee),
-              value => formatNumber(value, 'percent.rate'),
-            )}
-          />
-        </>
+        <ActionInfo
+          testId="market-param-amm-swap-fee"
+          label={t`AMM swap fee`}
+          labelTooltip={{
+            title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
+          }}
+          value={mapQuery(
+            mapQuery(parameters, d => d.fee),
+            value => formatNumber(value, 'percent.rate'),
+          )}
+        />
       )}
+
+      <ActionInfo
+        testId="market-param-admin-fee"
+        label={t`Admin fee`}
+        labelTooltip={{
+          title: t`The share of market interest routed to the market admin or fee receiver instead of lenders.`,
+        }}
+        value={mapQuery(
+          fallbackQ(
+            mapQuery(parameters, p => p.admin_fee),
+            mapQuery(apiMarket, m => m.parameters.adminFee),
+          ),
+          value => formatNumber(value, 'percent.rate'),
+        )}
+      />
 
       <ActionInfo
         testId="market-param-band-width-factor"

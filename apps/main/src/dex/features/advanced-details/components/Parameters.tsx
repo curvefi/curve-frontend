@@ -4,17 +4,18 @@ import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { dayjs } from '@evm-ui/lib/dayjs'
-import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { amount, formatNumber } from '@evm-ui/utils'
-import { formatDate } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import { formatDate } from '@primitives/date.utils'
 import { Chain } from '@primitives/network.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { usePoolContext } from '../../pool-context'
 import { Section } from './Section'
@@ -42,7 +43,7 @@ export const Parameters = () => {
   }))
 
   return (
-    <Card size="inline">
+    <Card size="extraSmall" variant="inline">
       <CardHeader title={t`Parameters`} />
       <CardContent component={Stack}>
         <Section>

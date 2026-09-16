@@ -7,19 +7,20 @@ const MAX_AGE_MS = MAX_AGE_DAYS * DAY_MS
 const ALLOWED_SCOPES = ['@curvefi']
 const BASE = 'origin/main'
 
-/** Fetches the publish date of a specific package version from the npm registry. */
+/** Fetches the publish date of a specific package version from its registry. */
 async function getPublishTime(name, version) {
-  const response = await fetch(`https://registry.npmjs.org/${name}`)
+  const registry = name.startsWith('@jsr/') ? 'https://npm.jsr.io' : 'https://registry.npmjs.org'
+  const response = await fetch(`${registry}/${name}`)
   if (!response.ok) throw new Error(`HTTP ${response.status} fetching ${name}`)
   const { time } = await response.json()
   if (!time?.[version]) throw new Error(`No publish time found for ${name}@${version}`)
   return new Date(time[version])
 }
 
-/** Parses yarn.lock diff against origin/main and returns all newly added npm package resolutions, excluding allowed scopes. */
+/** Parses yarn.lock diff against origin/main and returns all newly added npm package resolutions. */
 function getAddedPackages(base) {
   const diff = execSync(`git diff ${base} HEAD -- yarn.lock`, { encoding: 'utf8' })
-  const matches = [...diff.matchAll(/^\+\s+resolution: "(.+)@npm:([^"]+)"$/gm)]
+  const matches = [...diff.matchAll(/^\+\s+resolution: "(.+)@npm:([^":]+)(?:::[^"]+)?"$/gm)]
   return [...new Map(matches.map(([, name, version]) => [`${name}@${version}`, { name, version }])).values()]
 }
 
@@ -37,14 +38,14 @@ async function checkPackage({ name, version }) {
   return { name, version, ageDays, isForbidden }
 }
 
-/** Main function to check all newly added packages in yarn.lock against npm publish dates. */
+/** Main function to check all newly added packages in yarn.lock against registry publish dates. */
 async function main() {
   const packages = getAddedPackages(BASE)
   if (!packages.length) {
     return console.info(`No new packages added to yarn.lock since ${BASE}. ✓`)
   }
 
-  console.info(`Checking ${packages.length} newly added package(s) against npm publish dates...\n`)
+  console.info(`Checking ${packages.length} newly added package(s) against registry publish dates...\n`)
   const results = await Promise.all(packages.map(checkPackage))
   const forbidden = results.filter((r) => r.isForbidden)
   if (!forbidden.length) {

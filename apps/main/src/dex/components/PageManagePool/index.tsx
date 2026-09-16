@@ -12,14 +12,14 @@ import { useChainId } from '@/dex/hooks/useChainId'
 import type { PoolAddressParams } from '@/dex/types/main.types'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
-import { useParams } from '@evm-ui/hooks/router'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { Banner } from '@evm-ui/shared/ui/Banner'
-import { formatNumber } from '@evm-ui/utils'
-import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import Grid from '@mui/material/Grid'
+import { formatNumber } from '@primitives/number.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
+import { Banner } from '@ui/features/banners/Banner'
+import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
@@ -65,7 +65,7 @@ export const ManagePool = () => {
         }}
         testId="refuel-page"
       >
-        <Grid container columnSpacing={Spacing.md}>
+        <Grid container spacing={Spacing.md}>
           {reserveRatio != null && reserveRatio < LOW_RESERVES_RATIO && (
             <Grid size={12}>
               <Banner

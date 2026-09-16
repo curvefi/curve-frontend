@@ -1,12 +1,13 @@
-import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
-import { TABLE_SECONDARY_TEXT_CLASS } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { getAddress } from 'viem'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { Tooltip } from '@ui/components/Tooltip'
+import { TABLE_SECONDARY_TEXT_CLASS } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useCopyToClipboard } from '@ui/hooks/useCopyToClipboard'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
@@ -38,7 +39,7 @@ export const AddressCell = ({ address, label, explorerUrl }: AddressCellProps) =
       <Stack direction="row" sx={{ gap: Spacing.xs }}>
         <Typography
           variant="tableCellMBold"
-          onClick={useCopyToClipboard({ copyText: address })}
+          onClick={useCopyToClipboard({ copyText: address, format: getAddress })}
           sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
         >
           {shortenString(address)}

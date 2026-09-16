@@ -14,11 +14,5 @@
       "@primitives/*": ["../../packages/primitives/src/*"]
     }
   },
-  "include": [
-    "src",
-    "_api",
-    "../../packages/ui/src/**/*.d.ts",
-    "../../packages/legacy-ui/src/globals.d.ts",
-    "../../packages/evm-ui/src/**/*.d.ts"
-  ]
+  "include": ["src", "_api", "../../packages/ui/src/**/*.d.ts", "../../packages/evm-ui/src/**/*.d.ts"]
 }

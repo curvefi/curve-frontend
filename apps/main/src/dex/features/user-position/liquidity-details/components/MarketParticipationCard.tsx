@@ -1,12 +1,13 @@
-import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { amount, formatNumber } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 
@@ -17,7 +18,7 @@ export const MarketParticipationCard = ({
 }: {
   marketParticipation: LiquidityDetailsData['marketParticipation']
 }) => (
-  <Card size="inline">
+  <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Market Participation`} />
     <CardContent component={Stack} sx={{ gap: Spacing.xs, marginBlockStart: Spacing.xs }}>
       <ActionInfo

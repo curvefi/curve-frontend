@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.types'
-import { useParams } from '@evm-ui/hooks/router'
+import { useParams } from '@ui/hooks/router'
 import { useNetworks } from '../entities/networks'
 
 const useNetwork = (blockchainId: string) => {

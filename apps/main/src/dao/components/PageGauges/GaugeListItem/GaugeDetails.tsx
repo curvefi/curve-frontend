@@ -1,17 +1,20 @@
-import { styled, type IStyledComponent } from 'styled-components'
+import { type IStyledComponent, styled } from 'styled-components'
+import { getAddress } from 'viem'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
-import { shortenAddress, formatNumber } from '@evm-ui/utils'
+import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import type { IconProps } from '@legacy-ui/Icon/Icon'
 import { ExternalLink } from '@legacy-ui/Link'
 import { Chip } from '@legacy-ui/Typography'
-import { formatDate, scanAddressPath } from '@legacy-ui/utils'
+import { scanAddressPath } from '@legacy-ui/utils'
+import { formatDate } from '@primitives/date.utils'
 import { Chain } from '@primitives/network.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 const StyledInformationSquare16: IStyledComponent<'web', IconProps> = styled(Icon)`
@@ -47,7 +50,11 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
                     href={scanAddressPath(chainId, gaugeData.pool.address)}
                     tooltip={t`View on explorer`}
                   />
-                  <CopyIconButton tooltip={t`Copy Pool Address`} copyContent={gaugeData.pool.address} />
+                  <CopyIconButton
+                    tooltip={t`Copy Pool Address`}
+                    copyContent={gaugeData.pool.address}
+                    format={getAddress}
+                  />
                 </Box>
               )}
               <h5>
@@ -84,7 +91,7 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
               {shortenAddress(gaugeData.address)}
             </StyledExternalLink>
             <ExternalLinkIconButton href={scanAddressPath(chainId, gaugeData.address)} tooltip={t`View on explorer`} />
-            <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
+            <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} format={getAddress} />
           </Box>
           <Chip
             size="md"

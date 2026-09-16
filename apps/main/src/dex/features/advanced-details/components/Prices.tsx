@@ -1,12 +1,13 @@
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
-import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
-import { amount, formatNumber } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import { formatNumber } from '@primitives/number.utils'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
+import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { usePoolContext } from '../../pool-context'
 
@@ -34,7 +35,7 @@ export const Prices = () => {
   return (
     <>
       {!!priceOracleData?.length && (
-        <Card size="inline">
+        <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Price Oracle`} />
           <CardContent component={Stack}>
             {priceRows.map(({ key, label, index }) => (
@@ -49,7 +50,7 @@ export const Prices = () => {
       )}
 
       {!!priceScaleData?.length && (
-        <Card size="inline">
+        <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Price Scale`} />
           <CardContent component={Stack}>
             {priceRows.map(({ key, label, index }) => (
@@ -64,7 +65,7 @@ export const Prices = () => {
       )}
 
       {(snapshotData?.xcpProfit != null || snapshotData?.xcpProfitA != null) && (
-        <Card size="inline">
+        <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Xcp Profit`} />
           <CardContent component={Stack}>
             {snapshotData?.xcpProfit != null && (

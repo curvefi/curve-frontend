@@ -1,5 +1,5 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { HelperMessage } from '@evm-ui/shared/ui/LargeTokenInput/HelperMessage'
+import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
 
 type ExpectedMatch = { raw: string; text: string }
 

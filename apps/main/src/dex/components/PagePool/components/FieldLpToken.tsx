@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
-import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
-import { decimal } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 export const FieldLpToken = ({

@@ -1,5 +1,5 @@
-import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import type { NetworkDef } from '@legacy-ui/utils'
+import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { t } from '@ui/lib/i18n'
 import { BridgeForm } from './components/BridgeForm'
 import { useBridgeAlert } from './hooks/useBridgeAlert'

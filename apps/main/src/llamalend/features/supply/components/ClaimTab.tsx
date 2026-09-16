@@ -2,12 +2,12 @@ import { useConnection } from 'wagmi'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ConnectEvmWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectEvmWalletButton'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
-import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
-import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import { FormContent } from '@ui/features/forms/components/FormContent'
 import { BUTTON_FORM_SIZE } from '@ui/features/forms/constants'
+import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../../market-context'
@@ -44,7 +44,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
   return (
     <>
       <FormContent footer={<ClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}>
-        <DataTable
+        <EvmDataTable
           category="form"
           table={table}
           emptyState={{ title: t`No rewards to claim`, testId: `${TEST_ID_PREFIX}-empty-state` }}

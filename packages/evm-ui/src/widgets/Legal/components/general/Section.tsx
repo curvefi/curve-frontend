@@ -2,7 +2,7 @@ import { ReactNode, Children, isValidElement } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { borderStyle } from '@ui/utils/mui'
+import { borderStyle } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
 

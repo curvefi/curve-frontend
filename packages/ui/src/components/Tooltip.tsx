@@ -8,7 +8,7 @@ import { SwipeableDrawer } from '@ui/components/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
-import { InvertTheme } from './ThemeProvider'
+import { InvertTheme } from '../features/themes/ThemeProvider'
 
 export type TooltipProps = MuiTooltipProps & {
   body?: ReactNode

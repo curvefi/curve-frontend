@@ -1,8 +1,8 @@
-import { SliderInput } from '@evm-ui/shared/ui/SliderInput'
-import { decimal } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
+import { SliderInput } from '@ui/features/forms/controls/SliderInput'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { PRESET_RANGES } from '../../../constants'
 

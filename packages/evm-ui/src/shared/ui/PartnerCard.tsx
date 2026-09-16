@@ -5,13 +5,13 @@ import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Badge } from '@ui/components/Badge'
 import { IconStack } from '@ui/components/IconStack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ChainIcon } from '@ui/icons/ChainIcon'
 import { GlobeIcon } from '@ui/icons/GlobeIcon'
 import { XIcon } from '@ui/icons/XIcon'
 import { CURVE_ASSETS_URL } from '@ui/lib/resource.constants'
-import { Badge } from './Badge'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

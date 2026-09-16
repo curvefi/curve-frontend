@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box/Box'
-import { RCCross, RCCheck } from '@legacy-ui/images'
 import { statusColorMap } from '@legacy-ui/Stepper/helpers'
 import { StepAction } from '@legacy-ui/Stepper/StepAction'
 import { StepNumberConnector } from '@legacy-ui/Stepper/StepNumberConnector'
 import type { Step, StepStatus } from '@legacy-ui/Stepper/types'
+import { RCCross, RCCheck } from '@ui/images'
 
 export const Stepper = ({
   steps,

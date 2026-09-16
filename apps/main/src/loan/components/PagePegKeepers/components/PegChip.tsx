@@ -1,5 +1,5 @@
 import type { PegStatus } from '@/loan/components/PagePegKeepers/components/peg-status.util'
-import { Badge } from '@evm-ui/shared/ui/Badge'
+import { Badge } from '@ui/components/Badge'
 import { t } from '@ui/lib/i18n'
 
 const pegChipLabels = {

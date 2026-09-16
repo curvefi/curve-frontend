@@ -2,9 +2,9 @@ import type { ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import type { Amount } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { q } from '@ui/features/queries/util'
 import { FireIcon } from '@ui/icons/FireIcon'
-import { Balance } from '../LargeTokenInput/Balance'
 
 type BalanceStoryArgs = Omit<ComponentProps<typeof Balance>, 'balance'> & { balance?: Amount; loading?: boolean }
 

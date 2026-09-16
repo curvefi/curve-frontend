@@ -1,4 +1,4 @@
-import { type GetAndSet, useStoredState } from './useStoredState'
+import { type GetAndSet, useStoredState } from '@ui/features/storage/useStoredState'
 
 const storedValues = new Map<string, unknown>()
 const get = <T>(key: string, initialValue?: T) =>

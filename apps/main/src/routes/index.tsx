@@ -3,6 +3,7 @@ import { EvmErrorPage } from '@evm-ui/pages/EvmErrorPage'
 import { createRoute, createRouter } from '@tanstack/react-router'
 import { Loading } from '@ui/components/Loading'
 import { Duration } from '@ui/features/themes/design/0_primitives'
+import { redirectTo } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { analyticsRoutes } from './analytics.routes'
 import { bridgeRoutes } from './bridge.routes'
@@ -12,7 +13,6 @@ import { dexRoutes } from './dex.routes'
 import { lendRoutes } from './lend.routes'
 import { llamalendRoutes } from './llamalend.routes'
 import { rootRoute } from './root.routes'
-import { redirectTo } from './util'
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,

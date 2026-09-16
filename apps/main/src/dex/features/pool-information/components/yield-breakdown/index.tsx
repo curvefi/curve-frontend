@@ -1,9 +1,9 @@
 import { usePoolContext } from '@/dex/features/pool-context'
-import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
+import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
-import Stack from '@mui/material/Stack'
 import { constQ } from '@ui/features/queries/util'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 import { useYieldBreakdown } from '../../hooks/useYieldBreakdown'
@@ -22,9 +22,9 @@ export const YieldBreakdown = () => {
 
   return (
     rows.length > 0 && (
-      <Stack>
-        <CardHeader title={t`Yield Breakdown`} size="small" />
-        <DataTable
+      <Card size="small">
+        <CardHeader title={t`Yield Breakdown`} />
+        <EvmDataTable
           category="detail"
           table={table}
           emptyState={{ title: t`No yield breakdown found` }}
@@ -34,7 +34,7 @@ export const YieldBreakdown = () => {
             )
           }
         />
-      </Stack>
+      </Card>
     )
   )
 }

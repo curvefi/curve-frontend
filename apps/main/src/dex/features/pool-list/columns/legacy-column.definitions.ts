@@ -1,7 +1,7 @@
 import { sumBy } from 'lodash'
-import { createAppColumnHelper, type CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, inListFilterFn, multiFilterFn, rangeFilterFn } from '@evm-ui/shared/ui/DataTable/filters'
 import type { Row } from '@tanstack/react-table'
+import { createAppColumnHelper, type CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { LegacyRewardsBaseCell } from '../cells/LegacyRewardsBaseCell'
 import { LegacyRewardsBaseHeader } from '../cells/LegacyRewardsBaseHeader'

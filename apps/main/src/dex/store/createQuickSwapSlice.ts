@@ -20,9 +20,9 @@ import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
-import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { sleep } from '@primitives/promise.utils'
+import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -412,7 +412,6 @@ export const createQuickSwapSlice = (
         step: 'SWAP',
       })
 
-      const { chainId } = curve
       const { fromAmount } = formValues
       const { fromAddress, toAddress } = searchedParams
 
@@ -449,9 +448,6 @@ export const createQuickSwapSlice = (
             formStatus: cFormStatus,
             routesAndOutput: {},
           })
-
-          // cache swapped tokens
-          void state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
 
           // Refetch balances
           await fetchTokenBalance(config, {

@@ -1,4 +1,4 @@
-import { AlertDisableForm } from '@evm-ui/shared/ui/AlertDisableForm'
+import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { BridgeAmount, type BridgeAmountProps } from './BridgeAmount'
 import { BridgeButton, type BridgeButtonProps } from './BridgeButton'

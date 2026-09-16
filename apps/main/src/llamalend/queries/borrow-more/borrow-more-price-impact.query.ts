@@ -2,8 +2,9 @@ import { getBorrowMoreExpectedCollateralKey } from '@/llamalend/queries/borrow-m
 import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { decimal } from '@evm-ui/utils'
+import { rootKeys } from '@evm-ui/lib/model'
+import { queryFactory } from '@ui/features/queries/factory'
+import { decimal } from '@ui/lib/decimal'
 
 export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowMorePriceImpact } = queryFactory({
   queryKey: ({

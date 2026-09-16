@@ -1,17 +1,16 @@
 import { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import { BannerProps } from '@evm-ui/shared/ui/Banner'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import { BannerProps } from '@ui/features/banners/Banner'
 
 export type { Provider } from '@evm-ui/lib/ethers'
 export type { CurveApi, Wallet } from '@evm-ui/features/connect-wallet'
 
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName
-export type NetworkConfigFromApi = { hasDepositAndStake: boolean | undefined; hasRouter: boolean | undefined }
 
 export type NetworkUrlParams = { network: INetworkName }
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
@@ -97,7 +96,6 @@ export type PoolData = {
   tokensCountBy: Record<string, number>
   tokensAll: string[]
   tokensLowercase: string[]
-  failedFetching24hOldVprice: boolean
 }
 
 export type PoolDataMapper = Record<string, PoolData>

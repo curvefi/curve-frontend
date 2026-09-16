@@ -1,6 +1,6 @@
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { ExtraIncentive } from '@evm-ui/types/market'
-import { AVERAGE_CATEGORIES, formatCappedRatePercent, MAINNET_CRV } from '@evm-ui/utils'
+import { formatCappedRatePercent, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import {
   TooltipDescription,
@@ -10,6 +10,7 @@ import {
   TooltipWrapper,
 } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
+import { COMPOUNDING_CATEGORIES } from '@ui/lib/rates.utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 type SupplyBoostType = 'market' | 'user'
@@ -46,7 +47,6 @@ export const MarketSupplyRateTooltipContent = ({
   rebasingSymbol,
   isLoading,
 }: MarketSupplyRateTooltipContentProps) => {
-  const showApyDescription = [extraRewards.length, extraIncentives.length, rebasingYieldApy != null].some(Boolean)
   const hasIncentives = !!(extraRewards.length || extraIncentives.length)
   const hasRebasingYield = rebasingYieldApy != null
   const showBoostRow = boost.type === 'market' && !!boost.apy
@@ -80,7 +80,7 @@ export const MarketSupplyRateTooltipContent = ({
 
         {hasRebasingYield && (
           <TooltipItems secondary>
-            <TooltipItem title={t`Yield bearing APY*`} loading={isLoading}>
+            <TooltipItem title={t`Yield bearing APY`} loading={isLoading}>
               {formatCappedRatePercent(rebasingYieldApy)}
             </TooltipItem>
             {!!rebasingSymbol && (
@@ -130,9 +130,9 @@ export const MarketSupplyRateTooltipContent = ({
         )}
       </Stack>
 
-      {showApyDescription && (
+      {(hasIncentives || showBoostRow) && (
         <TooltipFooter>
-          {t`*Token incentive and yield bearing APY assume a ${AVERAGE_CATEGORIES['llamalend.compoundRate'].adjective} compounding rate.`}
+          {t`Token incentive APY assumes a ${COMPOUNDING_CATEGORIES['llamalend.rewards'].adjective} compounding rate.`}
         </TooltipFooter>
       )}
     </TooltipWrapper>

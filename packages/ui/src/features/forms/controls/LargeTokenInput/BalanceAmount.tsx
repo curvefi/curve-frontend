@@ -1,0 +1,40 @@
+import Typography from '@mui/material/Typography'
+import type { Amount } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { VERTICAL_CENTER_TEXT } from '@ui/features/forms/controls/LargeTokenInput/large-token-input.utils'
+import type { SxProps } from '@ui/lib/mui'
+
+/**
+ * Displays a balance amount with optional loading and disabled states.
+ * @see `Balance` component to include a prefix, symbol, tooltip, notional values, and clickable behavior.
+ */
+export const BalanceAmount = <T extends Amount>({
+  children,
+  loading = false,
+  disabled,
+  testId = 'balance-value',
+  sx,
+}: {
+  disabled?: boolean
+  children: T | undefined
+  loading?: boolean
+  testId?: string
+  sx?: SxProps
+}) => (
+  <WithSkeleton loading={loading} sx={sx}>
+    <Typography
+      className="balance"
+      variant="highlightXs"
+      {...(children != null && { 'data-testid': testId })}
+      data-value={children ?? ''}
+      sx={{
+        ...VERTICAL_CENTER_TEXT,
+        color: t => t.design.Inputs.Text[disabled ? 'Disabled' : children == null ? 'MetaSubtle' : 'Value'],
+        ...sx,
+      }}
+    >
+      {loading ? '?????' : formatNumber(children, 'token.compact')}
+    </Typography>
+  </WithSkeleton>
+)

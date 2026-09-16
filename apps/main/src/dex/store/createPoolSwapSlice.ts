@@ -412,7 +412,7 @@ export const createPoolSwapSlice = (
         formProcessing: true,
         step: 'SWAP',
       })
-      const { fromAddress, fromToken, fromAmount, toAddress, toToken, isWrapped } = formValues
+      const { fromAddress, fromAmount, toAddress, isWrapped } = formValues
       const resp = await curvejsApi.poolSwap.swap(
         activeKey,
         provider,
@@ -445,14 +445,6 @@ export const createPoolSwapSlice = (
             exchangeOutput: {},
             formEstGas: {},
             formValues: cFormValues,
-          })
-
-          // cache swapped tokens
-          void get().storeCache.setStateByActiveKey('routerFormValues', curve.chainId.toString(), {
-            fromAddress,
-            fromToken,
-            toAddress,
-            toToken,
           })
 
           // re-fetch data

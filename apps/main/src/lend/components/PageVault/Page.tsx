@@ -6,24 +6,22 @@ import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
-import {
-  MarketEmptyPosition,
-  SupplyPositionDetails,
-  SupplyPositionDetailsCard,
-} from '@/llamalend/features/market-position-details'
+import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
+import { useUserVaultEvents } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
+import { getTokens, getVaultToken } from '@/llamalend/llama.utils'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useUserProfileStore } from '@evm-ui/features/user-profile'
-import { useParams } from '@evm-ui/hooks/router'
 import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
-import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
-import { DetailPageSection as MarketSection } from '@evm-ui/widgets/DetailPageLayout/DetailPageSection'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
+import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
+import { useUserProfileStore } from '@ui/features/user-profile'
+import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -53,8 +51,14 @@ export const Page = () => {
     },
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
-  const supplied = +(useUserBalances({ marketId: market?.id, chainId, userAddress }).data?.totalShares ?? 0)
-  const hasPosition = !!market && supplied > 0
+  const { data: balances } = useUserBalances({ marketId: market?.id, chainId, userAddress })
+  const hasPosition = market && balances && +(balances.totalShares ?? 0) > 0
+  const events = useUserVaultEvents({
+    chainId,
+    userAddress,
+    tokens: getTokens(market, apiMarket.data) ?? {},
+    vaultToken: getVaultToken(market, apiMarket.data),
+  })
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -86,13 +90,7 @@ export const Page = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         <MarketSection id="position-details">
-          {hasPosition ? (
-            <SupplyPositionDetails />
-          ) : (
-            <SupplyPositionDetailsCard>
-              <MarketEmptyPosition type={MarketRateType.Supply} />
-            </SupplyPositionDetailsCard>
-          )}
+          <PositionDetailsComposite type={MarketRateType.Supply} hasPosition={hasPosition} events={events} />
         </MarketSection>
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>

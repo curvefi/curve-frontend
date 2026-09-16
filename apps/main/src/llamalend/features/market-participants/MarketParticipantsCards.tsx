@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketBorrowers, useMarketSuppliers } from '@/llamalend/queries/market'
-import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { useManualPagination } from '@evm-ui/features/activity-table'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 import {
@@ -78,8 +78,8 @@ export const BorrowersCard = () => {
 
   return (
     <Card size="small" data-testid="top-borrowers-card">
-      <MarketCardHeader title={t`Top Borrowers`} />
-      <DataTable
+      <CardHeader title={t`Top Borrowers`} />
+      <EvmDataTable
         category="detail"
         table={table}
         emptyState={{ title: t`No borrowers found.` }}
@@ -125,8 +125,8 @@ export const SuppliersCard = () => {
 
   return (
     <Card size="small" data-testid="top-suppliers-card">
-      <MarketCardHeader title={t`Top Suppliers`} />
-      <DataTable
+      <CardHeader title={t`Top Suppliers`} />
+      <EvmDataTable
         category="detail"
         table={table}
         emptyState={{ title: t`No suppliers found.` }}

@@ -1,8 +1,9 @@
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
-import { decimal } from '@evm-ui/utils'
+import { rootKeys } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { decimal } from '@ui/lib/decimal'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutureLeverage } = queryFactory({

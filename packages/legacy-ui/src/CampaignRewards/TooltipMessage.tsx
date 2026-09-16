@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { Box } from '@legacy-ui/Box'
 import { ExternalLink } from '@legacy-ui/Link'
-import { formatDate } from '../utils'
+import { formatDate } from '@primitives/date.utils'
 
 export const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignRewards }) => {
   const { campaignName, platform, description, action, dashboardLink, period, steps, symbol } = rewardsPool

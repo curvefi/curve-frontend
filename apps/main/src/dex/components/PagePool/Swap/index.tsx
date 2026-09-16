@@ -1,4 +1,4 @@
-import { cloneDeep, isUndefined } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig, useConnection, type Config } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
@@ -18,16 +18,9 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
-import { notify } from '@evm-ui/features/connect-wallet'
 import { TokenList, TokenSelector, type TokenOption } from '@evm-ui/features/select-token'
-import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
-import { decimal, formatNumber } from '@evm-ui/utils'
-import { HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
-import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { Icon } from '@legacy-ui/Icon'
@@ -40,12 +33,20 @@ import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useLayoutStore } from '@ui/features/layout/layout'
+import { formatNumber } from '@primitives/number.utils'
+import { FormContent } from '@ui/features/forms/components/FormContent'
+import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
+import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
+import { useLayoutStore } from '@ui/features/layout/store'
 import { q, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { notify } from '@ui/features/toast/Toast/notify'
+import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui/utils/time'
+import { REFRESH_INTERVAL } from '@ui/lib/time'
 
 const { Spacing } = SizesAndSpaces
 
@@ -68,7 +69,6 @@ export const Swap = ({
   const formEstGas = useStore(state => state.poolSwap.formEstGas[activeKey] ?? DEFAULT_EST_GAS)
   const formStatus = useStore(state => state.poolSwap.formStatus)
   const formValues = useStore(state => state.poolSwap.formValues)
-  const hasRouter = useStore(state => state.hasRouter)
   const isMaxLoading = useStore(state => state.poolSwap.isMaxLoading)
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
   const fetchStepApprove = useStore(state => state.poolSwap.fetchStepApprove)
@@ -294,7 +294,7 @@ export const Swap = ({
 
   // get user balances
   useEffect(() => {
-    if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
+    if (curve && poolId && haveSigner && (userFromBalance == null || userToBalance == null)) {
       void fetchPoolTokenBalances(config, curve, poolId)
     }
   }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve])
@@ -452,7 +452,7 @@ export const Swap = ({
           onBalance={setToAmount}
           inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
           balance={decimal(formValues.toAmount)}
-          disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
+          disabled={!curve?.hasRouter() || isDisabled}
           tokenSelector={
             <TokenSelector
               selectedToken={toToken}
@@ -546,7 +546,7 @@ export const Swap = ({
       <AlertSlippage
         maxSlippage={maxSlippage}
         usdAmount={
-          !isUndefined(toUsdRate) && !Number.isNaN(toUsdRate)
+          toUsdRate != null && !Number.isNaN(toUsdRate)
             ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
             : ''
         }

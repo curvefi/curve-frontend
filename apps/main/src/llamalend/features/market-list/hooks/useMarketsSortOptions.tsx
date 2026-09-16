@@ -28,6 +28,7 @@ export const useMarketsSortOptions = () => {
     { id: MarketColumnId.Tvl, label: t`Total Value Locked` },
     { id: MarketColumnId.MaxLtv, label: t`Max LTV` },
     { id: MarketColumnId.MaxLeverage, label: t`Max leverage` },
+    { id: MarketColumnId.MaxRoe, label: t`Max RoE` },
     { id: MarketColumnId.UtilizationPercent, label: t`Utilization` },
     { id: MarketColumnId.LiquidityUsd, label: t`Available Liquidity` },
     { id: MarketColumnId.TotalCollateralUsd, label: t`Total Collateral` },

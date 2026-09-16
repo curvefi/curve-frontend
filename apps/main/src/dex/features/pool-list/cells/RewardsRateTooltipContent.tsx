@@ -1,5 +1,5 @@
-import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
+import { formatNumber } from '@primitives/number.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'

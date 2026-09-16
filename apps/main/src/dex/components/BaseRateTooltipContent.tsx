@@ -1,5 +1,5 @@
-import { formatNumber } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 

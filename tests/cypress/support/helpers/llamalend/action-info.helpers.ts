@@ -1,6 +1,6 @@
 import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import { formatNumber } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
 
 type ActionInfoField = 'previous' | 'left' | 'right' | 'value'

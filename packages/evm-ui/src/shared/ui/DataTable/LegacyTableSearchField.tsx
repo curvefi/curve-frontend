@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react'
-import { SearchField } from '@evm-ui/shared/ui/SearchField'
 import Box from '@mui/material/Box'
 import { notFalsy } from '@primitives/objects.utils'
+import { SearchField } from '@ui/components/SearchField'
 import { Duration, TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'

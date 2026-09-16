@@ -13,11 +13,11 @@ import {
   removeCollateralFormValidationSuite,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useCallbackSync, useFormSync, useForm, useOnChangeCallback } from '@ui/features/forms'
 import { mapQuery, type Range } from '@ui/features/queries/util'
+import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { userCollateral: undefined }

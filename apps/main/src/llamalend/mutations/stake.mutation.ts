@@ -10,8 +10,9 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { rootKeys } from '@evm-ui/lib/model'
-import { formatNumber, waitForApproval } from '@evm-ui/utils'
+import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 type StakeOptions = {

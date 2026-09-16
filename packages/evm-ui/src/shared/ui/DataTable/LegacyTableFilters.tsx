@@ -1,9 +1,10 @@
 import { ReactNode, useRef } from 'react'
-import { useFilterExpanded } from '@evm-ui/hooks/useLocalStorage'
 import Collapse from '@mui/material/Collapse'
 import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
+import { useFilterExpanded } from '@ui/features/storage/useLocalStorage'
+import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
@@ -14,7 +15,6 @@ import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { LegacyTableButton } from './LegacyTableButton'
 import { LegacyTableSearchField } from './LegacyTableSearchField'
 import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
-import type { VisibilityGroup } from './visibility.types'
 
 const { Spacing } = SizesAndSpaces
 

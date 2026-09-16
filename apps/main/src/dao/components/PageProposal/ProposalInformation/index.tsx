@@ -7,9 +7,9 @@ import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils/address'
 import { Box } from '@legacy-ui/Box'
 import { InternalLink } from '@legacy-ui/Link'
-import { formatDateFromTimestamp } from '@legacy-ui/utils'
+import { formatDateFromTimestamp } from '@primitives/date.utils'
 import { t } from '@ui/lib/i18n'
-import { TIME_FRAMES } from '@ui/utils/time'
+import { TIME_FRAMES } from '@ui/lib/time'
 
 type ProposalInformationProps = { proposal: ProposalData | null }
 

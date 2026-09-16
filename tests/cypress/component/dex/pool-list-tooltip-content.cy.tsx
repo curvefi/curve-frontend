@@ -74,7 +74,7 @@ const createPool = (): PoolRow => ({
   gauge: { address: GAUGE_ADDRESS, isKilled: false },
   gauges: [{ address: GAUGE_ADDRESS, isKilled: false }],
   campaigns: [BOLD_CAMPAIGN, BOLD_APR_CAMPAIGN],
-  hasPosition: false,
+  userPosition: { lpBalance: '0' },
   hasVyperVulnerability: false,
   isMetapool: false,
   chainId: Chain.Ethereum,

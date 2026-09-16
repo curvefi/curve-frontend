@@ -2,7 +2,7 @@ import { capitalize, groupBy } from 'lodash'
 import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
-import { IS_CYPRESS } from '@ui/utils/env'
+import { IS_CYPRESS } from '@ui/lib/env'
 import type { RewardsAction } from '@external-rewards'
 import type { CampaignRewards } from './types'
 
@@ -117,3 +117,5 @@ export const fetchMerklRewards = async (params: Record<string, string | number |
   // Can't use Object.groupBy until we support ES2024
   return groupBy(campaigns, x => x.address)
 }
+
+export const isMerkl = (campaign: CampaignRewards) => campaign.dashboardLink.includes('merkl.xyz')

@@ -38,7 +38,6 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
     tokensCountBy,
     tokensAll,
     tokensLowercase,
-    failedFetching24hOldVprice: false,
     gauge: { status: null, isKilled: null },
   }
 
@@ -50,7 +49,6 @@ export async function getPools(
   poolList: string[],
   blacklist: Set<Address>,
   network: NetworkConfig,
-  failedFetching24hOldVprice: Record<string, boolean> | null,
   includeGaugeData: boolean,
 ) {
   const { getPool } = curve
@@ -63,10 +61,7 @@ export async function getPools(
         return prev
       }
 
-      const poolData = getPoolData(pool, network)
-
-      poolData.failedFetching24hOldVprice = failedFetching24hOldVprice?.[pool.address] ?? false
-      prev.poolsMapper[poolId] = poolData
+      prev.poolsMapper[poolId] = getPoolData(pool, network)
 
       return prev
     },

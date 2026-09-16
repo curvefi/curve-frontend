@@ -1,9 +1,7 @@
 import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
-import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { TableFilters } from '@evm-ui/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@evm-ui/shared/ui/DataTable/TableFiltersChip'
 import { TableFiltersOverlay } from '@evm-ui/shared/ui/DataTable/TableFiltersOverlay'
@@ -12,6 +10,8 @@ import { TableSortDrawer } from '@evm-ui/shared/ui/DataTable/TableSortDrawer'
 import { TableVisibilitySettingsPopover } from '@evm-ui/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
+import { useCurveTable } from '@ui/features/tables/data-table.utils'
+import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
@@ -26,20 +26,24 @@ import { usePoolsGlobalFilterFn } from './hooks/usePoolsGlobalFilter'
 import { usePoolsPagination } from './hooks/usePoolsPagination'
 import { usePoolsSorting } from './hooks/usePoolsSorting'
 import { usePoolsTable } from './hooks/usePoolsTable'
-import { type PoolColumnVariant, usePoolsVisibility } from './hooks/usePoolsVisibility'
-import type { PoolRow } from './types'
+import { usePoolsVisibility } from './hooks/usePoolsVisibility'
+import type { PoolRow, PoolTableMeta } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const EMPTY_POOL_ROWS: readonly PoolRow[] = []
-const POOL_EXPANDED_PANEL_BODIES = {
-  full: props => <PoolExpandedPanel {...props} variant="full" />,
-  lite: props => <PoolExpandedPanel {...props} variant="lite" />,
-} satisfies Record<PoolColumnVariant, ExpandedPanelComponent<PoolRow>>
+
+const FullPoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row }) => (
+  <PoolExpandedPanel pool={row.original} variant="full" />
+)
+
+const LitePoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row }) => (
+  <PoolExpandedPanel pool={row.original} variant="lite" />
+)
 
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const isLite = isLiteChain(network.chainId)
   const isMobile = useIsMobile()
-  const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const visibilitySettingsRef = useRef<HTMLButtonElement>(null)
@@ -52,8 +56,8 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
 
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
-    isLite,
-    sorting,
+    variant: isLite ? 'lite' : 'full',
+    mobileColumn: sortField,
   })
 
   const { isFetching, onReload, pageCount, userHasPositions, tableQuery } = usePoolsTable({
@@ -73,7 +77,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    meta: { getRowHref: ({ url }) => url },
+    meta: { getRowHref: ({ url }) => url, variant } as PoolTableMeta,
     state: { expanded, sorting, columnVisibility, globalFilter, ...(!isLite && { pagination, columnFilters }) },
     getRowId: row => row.address,
     onExpandedChange: setExpanded,
@@ -91,7 +95,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   return (
     <Stack>
       <TableHeader title={t`Pools`} onReload={() => void onReload()} isLoading={isFetching} />
-      <DataTable
+      <EvmDataTable
         table={table}
         emptyState={{
           title: t`Can't find what you're looking for?`,
@@ -100,7 +104,10 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list`, description: tableQuery.error?.message, onReload }}
-        expandedPanel={{ Body: POOL_EXPANDED_PANEL_BODIES[variant], Actions: PoolExpandedPanelActions }}
+        expandedPanel={{
+          Body: isLite ? LitePoolExpandedPanel : FullPoolExpandedPanel,
+          Actions: PoolExpandedPanelActions,
+        }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters
@@ -148,7 +155,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
             )
           }
         />
-      </DataTable>
+      </EvmDataTable>
       <TableVisibilitySettingsPopover<PoolColumnId>
         anchorRef={visibilitySettingsRef}
         visibilityGroups={columnSettings}

@@ -10,7 +10,7 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
-import { applySxProps } from '@ui/utils/mui'
+import { applySxProps } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
 
@@ -36,12 +36,12 @@ export const TooltipValueLink = ({ children, href }: { children: ReactNode; href
       gap: Spacing.xs,
       textDecoration: 'none',
       color: theme => theme.design.Text.TextColors.Secondary,
-      svg: { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
-      '&:hover svg': { fontSize: 16 },
+      '.arrow': { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
+      '&:hover .arrow': { fontSize: 16 },
     }}
   >
     {children}
-    <ArrowOutwardIcon />
+    <ArrowOutwardIcon className="arrow" />
   </Stack>
 )
 

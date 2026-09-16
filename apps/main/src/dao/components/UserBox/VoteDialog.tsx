@@ -6,12 +6,12 @@ import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import { useStore } from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
-import { formatNumber } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
 import type { Address } from '@primitives/address.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
 type Props = {

@@ -1,0 +1,147 @@
+import type { ReactNode } from 'react'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Stack, { StackProps } from '@mui/material/Stack'
+import { WithWrapper } from '@ui/components/WithWrapper'
+import { getIsMobileFormDrawer } from '@ui/features/form-context/FormPlacementContext'
+import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
+import { FormSkeleton } from '@ui/features/forms/tabs/FormSkeleton'
+import { useLayoutStore } from '@ui/features/layout/store'
+import { mapBreakpoints } from '@ui/features/themes/basic-theme/basic-theme'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { PAGE_SPACING } from './constants'
+import { DetailPageSectionNav, type DetailPageSectionOption } from './DetailPageSectionNav'
+import type { DetailPageLayoutFormTabs } from './types'
+
+const { ButtonSize, MaxWidth, Spacing, BorderWidth } = SizesAndSpaces
+
+const PAGE_MARGIN = { marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }
+
+/**
+ * Creates the scroll container boundary for the mobile drawer action bar. The action bar is position: sticky, so
+ * wrapping the page content keeps it from scrolling past DetailPageLayout into the global footer.
+ */
+const MobileDrawerBoundary = ({ children }: { children: ReactNode }) => (
+  <Box sx={{ position: 'relative' }}>{children}</Box>
+)
+
+/**
+ * CSS rules for making the page header sticky.
+ *
+ * There is a gap between the navbar and the page title where scrolled content can briefly become visible. To prevent this,
+ * a negative margin is applied and the same value is added as top padding so the header remains visually fixed in the intended position.
+ *
+ * An alternative approach would be using a ::before pseudo-element to mask the scrolling content.
+ */
+const stickyHeaderSx = (navHeight: number): StackProps['sx'] => ({
+  position: { tablet: 'sticky' },
+  top: { tablet: `${navHeight}px` },
+  marginBlockStart: { tablet: `calc(${PAGE_MARGIN.marginBlockStart.tablet} * -1)` },
+  zIndex: t => t.zIndex.appBar - 1,
+  backgroundColor: t => t.palette.background.default,
+  paddingBlockStart: { tablet: PAGE_MARGIN.marginBlockStart.tablet },
+})
+
+/** CSS rules for making the section navigation sticky */
+const stickySectionNavSx = (navHeight: number, isMobile: boolean): StackProps['sx'] => ({
+  position: { tablet: 'sticky' },
+  // -1 to hide the top border behind the page headers and not have two borders when sticky
+  top: { tablet: `calc(${navHeight}px - ${BorderWidth.thin})` },
+  zIndex: theme => theme.zIndex.appBar - 1,
+  // Can't use gap for spacing because it requires a wrapper, which prevents sticky positioning from working.
+  paddingBlockEnd: isMobile ? undefined : PAGE_SPACING,
+  marginBlockStart: Spacing.sm,
+})
+
+/** CSS rules for making the form tabs sticky */
+const stickyFormTabsSx = (navHeight: number) => ({
+  alignSelf: { tablet: 'flex-start' },
+  position: { tablet: 'sticky' },
+  // mobile breakpoint is not used because sticky only starts at tablet breakpoint
+  top: mapBreakpoints(PAGE_MARGIN.marginBlockStart, marginBlockStart => `calc(${navHeight}px + ${marginBlockStart})`),
+})
+
+/**
+ * A grid that separates the detail page into two or three main sections:
+ * 1. action form (`FormTabs`) (right side on large screens, inside a drawer on mobile)
+ * 2. market and user position details
+ * 3. an optional footer that goes at the bottom, but still inside the grid
+ */
+export const DetailPageLayout = ({
+  formTabs,
+  header,
+  sections,
+  children,
+  footer,
+  testId,
+}: {
+  formTabs: DetailPageLayoutFormTabs | null
+  header?: ReactNode
+  /** Ordered hash-addressable sections displayed in the sticky section navigation. */
+  sections?: readonly DetailPageSectionOption<string>[]
+  children?: ReactNode
+  footer?: ReactNode
+  testId?: string
+}) => {
+  const navHeight = useLayoutStore(state => state.navHeight)
+  const isMobile = useIsMobile()
+  const placement = formTabs?.placement ?? 'inline'
+  const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
+  const hasSections = !!sections?.length
+
+  const headerStack = (
+    <>
+      {header && <Stack sx={hasSections ? undefined : stickyHeaderSx(navHeight)}>{header}</Stack>}
+      {hasSections && (
+        <Stack sx={stickySectionNavSx(navHeight, isMobile)}>
+          <DetailPageSectionNav sections={sections} />
+        </Stack>
+      )}
+    </>
+  )
+  return (
+    <WithWrapper shouldWrap={showMobileDrawer} Wrapper={MobileDrawerBoundary}>
+      <Grid
+        container
+        data-testid={testId ?? 'detail-page-layout'}
+        columnSpacing={Spacing.md}
+        rowSpacing={PAGE_SPACING}
+        sx={{
+          ...PAGE_MARGIN,
+          ...(hasSections && {
+            // The section navigation is sticky from tablet up
+            '--detail-page-scroll-margin-top': {
+              mobile: `${navHeight}px`,
+              // instead of tracking the navigation height bar with a ref, let's approximate with ButtonSize
+              tablet: `calc(${navHeight}px + ${ButtonSize.sm})`,
+            },
+          }),
+          ...(!header && { marginBlockStart: Spacing.xl }),
+        }}
+        // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
+        {...(!showMobileDrawer && { direction: 'row-reverse' })}
+      >
+        {isMobile && <Grid size={12}>{headerStack}</Grid>}
+        {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
+            Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
+        {formTabs !== null && !showMobileDrawer && (
+          <Grid
+            size={{ mobile: 12, tablet: 5, desktop: 4 }}
+            sx={{ maxWidth: { desktop: MaxWidth.actionCard }, ...stickyFormTabsSx(navHeight) }}
+          >
+            <FormPlacementProvider placement={placement}>{formTabs?.content || <FormSkeleton />}</FormPlacementProvider>
+          </Grid>
+        )}
+        <Grid size="grow">
+          {!isMobile && headerStack}
+          <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
+        </Grid>
+        {footer && <Grid size={12}>{footer}</Grid>}
+      </Grid>
+      {formTabs !== null && showMobileDrawer && (
+        <FormPlacementProvider placement={placement}>{formTabs?.content}</FormPlacementProvider>
+      )}
+    </WithWrapper>
+  )
+}

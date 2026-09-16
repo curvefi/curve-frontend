@@ -7,9 +7,9 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { FormSkeleton } from '@evm-ui/widgets/DetailPageLayout/FormSkeleton'
-import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import Stack from '@mui/material/Stack'
+import { FormSkeleton } from '@ui/features/forms/tabs/FormSkeleton'
+import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { t } from '@ui/lib/i18n'
 
 type DepositTabsParams = Record<string, never>

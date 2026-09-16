@@ -1,7 +1,7 @@
 import { PartnerCard, type Partner } from '@evm-ui/shared/ui/PartnerCard'
 import Grid from '@mui/material/Grid'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import type { SxProps } from '@ui/utils/mui'
+import type { SxProps } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
 

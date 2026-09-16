@@ -1,13 +1,14 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { combineQueries, combineQueryState } from '@evm-ui/lib'
-import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 import type { QueryData } from '@evm-ui/lib/queries/types'
-import { createValidationSuite } from '@evm-ui/lib/validation'
-import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
+import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
+import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryProp } from '@ui/features/queries/util'
+import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@ui/lib/decimal'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 import { useUserDiscounts } from './user-discounts.query'
 
@@ -55,10 +56,10 @@ export const useLegacyUserHealthValue = (params: UserMarketParams) =>
     (full, notFull) => (+notFull < 0 ? notFull : full),
   )
 
-export const useUserHealthValues = (params: UserMarketParams) => {
-  const healthFull = useUserHealth({ ...params, isFull: true })
-  const healthNotFull = useUserHealth({ ...params, isFull: false })
-  const discounts = useUserDiscounts(params)
+export const useUserHealthValues = (params: UserMarketParams, enabled = true) => {
+  const healthFull = useUserHealth({ ...params, isFull: true }, enabled)
+  const healthNotFull = useUserHealth({ ...params, isFull: false }, enabled)
+  const discounts = useUserDiscounts(params, enabled)
 
   return {
     data: maybes(

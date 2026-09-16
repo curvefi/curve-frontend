@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 import type { Config } from 'wagmi'
 import { useCurve, type CurveApi } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
-import type { FieldsOf } from '@evm-ui/lib'
 import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/lib/model'
 import type { Address } from '@primitives/address.utils'
+import type { FieldsOf } from '@ui/lib/validation/types'
 
 type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>

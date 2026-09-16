@@ -1,10 +1,10 @@
 import { useConnection } from 'wagmi'
 import { useLockerCrv, useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
-import { LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
+import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

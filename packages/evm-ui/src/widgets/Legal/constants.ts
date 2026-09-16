@@ -1,5 +1,5 @@
 import type { AppName } from '@evm-ui/shared/routes'
-import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import type { TabOption } from '@ui/components/Tabs/TabsSwitcher'
 import { t } from '@ui/lib/i18n'
 import type { Tab, DisclaimerTab } from './types/tabs'
 

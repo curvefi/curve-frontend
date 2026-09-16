@@ -1,6 +1,5 @@
 import '@evm-ui/eip6963-test-setup'
 import type { PropsWithChildren } from 'react'
-import { Toast } from '@evm-ui/widgets/Toast'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import Box from '@mui/material/Box'
 import { DocsContainer, type DocsContainerProps } from '@storybook/addon-docs/blocks'
@@ -8,6 +7,7 @@ import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import type { Decorator, Preview, ReactRenderer } from '@storybook/react-vite'
 import { createRouter, createRootRoute, RouterProvider, createMemoryHistory } from '@tanstack/react-router'
 import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
+import { Toast } from '@ui/features/toast/Toast/Toast'
 import '@ui/styles/initial-load.css'
 
 const themes = {
@@ -20,12 +20,6 @@ const themes = {
 }
 
 const decorators: Decorator[] = [
-  withThemeFromJSXProvider<ReactRenderer>({
-    themes,
-    defaultTheme: 'light',
-    Provider: ThemeProvider,
-    GlobalStyles: CssBaseline,
-  }),
   Story => {
     const router = createRouter({
       routeTree: createRootRoute({ component: Story }),
@@ -39,6 +33,13 @@ const decorators: Decorator[] = [
       </>
     )
   },
+  // The last decorator wraps the others, so the shared Toast also receives the theme.
+  withThemeFromJSXProvider<ReactRenderer>({
+    themes,
+    defaultTheme: 'light',
+    Provider: ThemeProvider,
+    GlobalStyles: CssBaseline,
+  }),
 ]
 
 const preview: Preview = {

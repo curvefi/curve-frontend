@@ -1,5 +1,5 @@
-import { createAppColumnHelper } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { LabelCell } from '../cells/LabelCell'
 import { ValueCell } from '../cells/ValueCell'

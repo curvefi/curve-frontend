@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import { ListPageWrapper } from '@evm-ui/widgets/ListPageWrapper'
+import { ListPageLayout } from '@evm-ui/widgets/ListPageLayout'
 import { useMarketsTable } from './hooks/useMarketsTable'
 import { MarketsTable } from './MarketsTable'
 import { MarketsTableFooter } from './MarketsTableFooter'
@@ -10,9 +10,9 @@ export const MarketsList = () => {
   const { address } = useConnection()
   const { tableQuery, onReload } = useMarketsTable(address)
   return (
-    <ListPageWrapper footer={<MarketsTableFooter />}>
+    <ListPageLayout footer={<MarketsTableFooter />}>
       <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
       <MarketsTable onReload={onReload} tableQuery={tableQuery} />
-    </ListPageWrapper>
+    </ListPageLayout>
   )
 }

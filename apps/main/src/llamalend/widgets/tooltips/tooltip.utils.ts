@@ -1,7 +1,5 @@
-import { formatNumber } from '@evm-ui/utils'
 import { Amount } from '@primitives/decimal.utils'
-
-export const UNAVAILABLE_NOTATION = '-'
+import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 
 export const formatMetricValue = (value: Amount | null | undefined) =>
   value == null ? UNAVAILABLE_NOTATION : formatNumber(value, { abbreviate: true })

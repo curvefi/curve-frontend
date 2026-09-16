@@ -1,9 +1,9 @@
 import { ReactNode, useMemo } from 'react'
 import type { Slippage } from '@/dex/components/PagePool/types'
-import { formatNumber } from '@evm-ui/utils'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { Chip } from '@legacy-ui/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { t, Trans } from '@ui/lib/i18n'
 
 type SlippageDetail = { isBold: boolean; label: ReactNode; tip: string; variant: 'warning' | 'success' | '' }

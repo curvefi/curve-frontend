@@ -1,6 +1,6 @@
-import { getSearchString } from '@evm-ui/hooks/router'
 import Typography from '@mui/material/Typography'
 import { RouterLink } from '@ui/components/RouterLink'
+import { getSearchString } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { List } from '../general/List'
 import { Paragraph } from '../general/Section'

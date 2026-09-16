@@ -7,11 +7,11 @@ import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart'
-import { decimalMinus, decimalSum } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { SelectSortingMethod } from '@legacy-ui/Select/SelectSortingMethod'
 import MuiBox from '@mui/material/Box'
 import { sortBy } from '@primitives/array.utils'
+import { decimalMinus, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 const TOP_HOLDERS_LIMIT = 100

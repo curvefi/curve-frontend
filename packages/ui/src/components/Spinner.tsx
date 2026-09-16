@@ -1,5 +1,5 @@
 import CircularProgress from '@mui/material/CircularProgress'
-import type { SxProps } from '@ui/utils/mui'
+import type { SxProps } from '@ui/lib/mui'
 
 type SpinnerProps = {
   /** Whether to inherit theme color or use secondary text color. Defaults to false. */

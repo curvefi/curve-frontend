@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import type { VeCrvHolder } from '@/dao/entities/vecrv-holders'
-import { formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
-import { formatDate } from '@legacy-ui/utils/'
 import Stack from '@mui/material/Stack'
+import { formatDate } from '@primitives/date.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 

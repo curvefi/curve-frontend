@@ -9,9 +9,9 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useParams } from '@evm-ui/hooks/router'
 import Button from '@mui/material/Button'
 import { RouterLink } from '@ui/components/RouterLink'
+import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
 export const AddGaugeLink = () => {

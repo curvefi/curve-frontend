@@ -1,0 +1,79 @@
+import type { ReactNode } from 'react'
+import type { Theme } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
+import { BalanceAmount } from '@ui/features/forms/controls/LargeTokenInput/BalanceAmount'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { decimal } from '@ui/lib/decimal'
+import { BalanceButton } from './BalanceButton'
+
+const { Spacing, Sizing } = SizesAndSpaces
+
+type HelperMessageProps = {
+  message: string | ReactNode
+  isError?: boolean
+  /** Callback when a number in the error is clicked. Used to set the max value when balance error is shown. */
+  onNumberClick?: (balance: Decimal | undefined) => void
+}
+
+/** Matches decimal numbers with optional minus sign and optional fractional part. */
+const NUMBER_REGEX = /-?\b\d+(?:\.\d+)?\b/g
+
+const getTextColor = (t: Theme, isError?: boolean) =>
+  isError ? t.design.Inputs.Text.Error : t.design.Inputs.Text.Helper
+
+/**
+ * Injects clickable BalanceButton components around numbers in the message.
+ * Important: This only works for unformatted numbers!
+ * This was introduced to be able to pass information from the validation suites, which can't use a structured format.
+ * It can incorrectly mark numbers that are not meant to be clickable, such as numbers in an URL.
+ */
+const buildClickableMessage = (
+  message: string,
+  isError: boolean | undefined,
+  onNumberClick: (balance: Decimal | undefined) => void,
+) => {
+  const matches = (message.match(NUMBER_REGEX) ?? []).map(m => decimal(m))
+  return message.split(NUMBER_REGEX).flatMap((part, index) => [
+    part,
+    matches[index] && (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
+      <BalanceButton key={index} onClick={() => onNumberClick(matches[index])}>
+        <BalanceAmount
+          testId={`helper-message-number-${index}`}
+          sx={{ ...(isError && { color: t => t.design.Inputs.Text.Error }) }}
+        >
+          {matches[index]}
+        </BalanceAmount>
+      </BalanceButton>
+    ),
+  ])
+}
+
+export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessageProps) => (
+  <Box
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      backgroundColor: t => t.design.Layer[1].Fill,
+      paddingBlock: Spacing.xs,
+      paddingInline: Spacing.sm,
+      minHeight: Sizing.sm,
+    }}
+  >
+    {typeof message === 'string' ? (
+      <Typography
+        variant="bodyXsRegular"
+        component="div"
+        // todo: replace with alert component and add filledfeedback colors to alert component.
+        sx={{ color: t => getTextColor(t, isError), whiteSpace: 'pre-line' /** Allows for \n newlines */ }}
+        data-testid={`helper-message-${isError ? 'error' : 'info'}`}
+      >
+        {onNumberClick ? buildClickableMessage(message, isError, onNumberClick) : message}
+      </Typography>
+    ) : (
+      message
+    )}
+  </Box>
+)

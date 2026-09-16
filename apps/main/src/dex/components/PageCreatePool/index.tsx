@@ -25,7 +25,7 @@ import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
 import { Spinner } from '@legacy-ui/Spinner'
-import { useLayoutStore } from '@ui/features/layout/layout/store'
+import { useLayoutStore } from '@ui/features/layout/store'
 import { t } from '@ui/lib/i18n'
 
 type Props = { curve: CurveApi }

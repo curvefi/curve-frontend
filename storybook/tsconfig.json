@@ -13,7 +13,7 @@
       "@curvefi/prices-api": ["../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../packages/prices-api/src/*"],
       "@primitives/*": ["../packages/primitives/src/*"],
-      "@stellar/*": ["../apps/stellar/src/*"]
+      "@/stellar/*": ["../apps/stellar/src/*"]
     }
   },
   "include": [

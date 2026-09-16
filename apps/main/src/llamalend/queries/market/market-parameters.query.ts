@@ -1,10 +1,10 @@
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { queryFactory } from '@evm-ui/lib/model/query'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
 import { rootKeys } from '@evm-ui/lib/model/query/root-keys'
 import type { MarketQuery, MarketParams } from '@evm-ui/lib/model/query/root-keys'
 import { MarketVersion } from '@evm-ui/types/market'
-import { decimal } from '@evm-ui/utils'
+import { queryFactory } from '@ui/features/queries/factory'
+import { decimal } from '@ui/lib/decimal'
 import { getLendMarketVersion, getMarket } from '../../llama.utils'
 import { convertRates } from '../../rates.utils'
 

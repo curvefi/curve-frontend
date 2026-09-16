@@ -1,6 +1,6 @@
 import { GridChip } from '@evm-ui/shared/ui/DataTable/chips/GridChip'
-import type { FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import Grid from '@mui/material/Grid'
+import type { FilterProps } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { HeartIcon } from '@ui/icons/HeartIcon'
 import { t } from '@ui/lib/i18n'

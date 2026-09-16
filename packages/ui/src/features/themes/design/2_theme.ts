@@ -260,9 +260,17 @@ export const createLightDesign = (
   } as const
 
   const Chips = {
-    Default: { Label: Text.TextColors.Primary, Fill: Layer[2].Fill, Stroke: Inputs.Base.Default.Border.Default },
-    Hover: { Label: Color.Neutral[50], Fill: Color.Neutral[900] },
-    Current: { Label: Text.TextColors.Highlight, Fill: Layer[2].Fill, Outline: Layer.Highlight.Outline },
+    Default: {
+      Label: Light.Chips.Default.LabelIcon,
+      Fill: Light.Chips.Default.Fill,
+      Stroke: Light.Chips.Default.Stroke,
+    },
+    Hover: { Label: Light.Chips.Hover.LabelIcon, Fill: Light.Chips.Hover.Fill },
+    Current: {
+      Label: Light.Chips.Current.LabelIcon,
+      Fill: Light.Chips.Current.Fill,
+      Outline: Light.Chips.Current.Border,
+    },
     BorderRadius: {
       Clickable: Radius.square,
       NonClickable: '6.25rem', // 100px
@@ -294,6 +302,15 @@ export const createLightDesign = (
       Highlight: Light.Badges.Fill.Highlight,
       Warning: Light.Badges.Fill.Warning,
       Accent: Light.Badges.Fill.Accent,
+    },
+  } as const
+
+  const Snackbar = {
+    Border: {
+      Info: Light.Snackbar.Border.Info,
+      Success: Light.Snackbar.Border.Success,
+      Warning: Light.Snackbar.Border.Warning,
+      Error: Light.Snackbar.Border.Error,
     },
   } as const
 
@@ -388,6 +405,7 @@ export const createLightDesign = (
     Tabs,
     Chips,
     Badges,
+    Snackbar,
     Chart,
     Toggles,
     Table,
@@ -636,9 +654,9 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
   } as const
 
   const Chips = {
-    Default: { Label: Text.TextColors.Primary, Fill: Layer[2].Fill, Stroke: Inputs.Base.Default.Border.Default },
-    Hover: { Label: Color.Neutral[50], Fill: Color.Neutral[900] },
-    Current: { Label: Color.Primary[500], Fill: Layer[2].Fill, Outline: Layer.Highlight.Outline },
+    Default: { Label: Dark.Chips.Default.LabelIcon, Fill: Dark.Chips.Default.Fill, Stroke: Dark.Chips.Default.Stroke },
+    Hover: { Label: Dark.Chips.Hover.LabelIcon, Fill: Dark.Chips.Hover.Fill },
+    Current: { Label: Dark.Chips.Current.LabelIcon, Fill: Dark.Chips.Current.Fill, Outline: Dark.Chips.Current.Border },
     BorderRadius: {
       Clickable: Radius.square,
       NonClickable: '6.25rem', // 100px
@@ -670,6 +688,15 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Highlight: Dark.Badges.Fill.Highlight,
       Warning: Dark.Badges.Fill.Warning,
       Accent: Dark.Badges.Fill.Accent,
+    },
+  } as const
+
+  const Snackbar = {
+    Border: {
+      Info: Dark.Snackbar.Border.Info,
+      Success: Dark.Snackbar.Border.Success,
+      Warning: Dark.Snackbar.Border.Warning,
+      Error: Dark.Snackbar.Border.Error,
     },
   } as const
 
@@ -764,6 +791,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Tabs,
     Chips,
     Badges,
+    Snackbar,
     Chart,
     Toggles,
     Table,
@@ -973,9 +1001,9 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
   } as const
 
   const Chips = {
-    Default: { Label: Grays[950], Fill: Layer[1].Fill, Stroke: Inputs.Base.Default.Border.Default },
-    Hover: { Label: Color.Neutral[50], Fill: Color.Primary[950] },
-    Current: { Label: Text.TextColors.Highlight, Fill: Layer[2].Fill, Outline: Layer.Highlight.Outline },
+    Default: { Label: Chad.Chips.Default.LabelIcon, Fill: Chad.Chips.Default.Fill, Stroke: Chad.Chips.Default.Stroke },
+    Hover: { Label: Chad.Chips.Hover.LabelIcon, Fill: Chad.Chips.Hover.Fill },
+    Current: { Label: Chad.Chips.Current.LabelIcon, Fill: Chad.Chips.Current.Fill, Outline: Chad.Chips.Current.Border },
     BorderRadius: {
       Clickable: Radius.square,
       NonClickable: '6.25rem', // 100px
@@ -1007,6 +1035,15 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Highlight: Chad.Badges.Fill.Highlight,
       Warning: Chad.Badges.Fill.Warning,
       Accent: Chad.Badges.Fill.Accent,
+    },
+  } as const
+
+  const Snackbar = {
+    Border: {
+      Info: Chad.Snackbar.Border.Info,
+      Success: Chad.Snackbar.Border.Success,
+      Warning: Chad.Snackbar.Border.Warning,
+      Error: Chad.Snackbar.Border.Error,
     },
   } as const
 
@@ -1101,6 +1138,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Tabs,
     Chips,
     Badges,
+    Snackbar,
     Chart,
     Toggles,
     Table,

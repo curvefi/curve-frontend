@@ -1,8 +1,8 @@
 import type { OhlcData, UTCTimestamp } from 'lightweight-charts'
 import { sortBy } from 'lodash'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { toLocalTimestampSeconds } from '@primitives/timestamp.utils'
-import { formatNumber } from '../../utils/number'
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from './types'
 
 type OhlcPoint = {

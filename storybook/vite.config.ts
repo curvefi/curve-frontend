@@ -12,8 +12,8 @@ export default defineConfig({
   plugins: [react(), svgr()],
   resolve: {
     alias: {
+      '@/stellar': resolve(rootDir, '../apps/stellar/src'),
       '@': resolve(rootDir, '../apps/main/src'),
-      '@stellar': resolve(rootDir, '../apps/stellar/src'),
       '@legacy-ui': resolve(rootDir, '../packages/legacy-ui/src'),
       '@evm-ui': resolve(rootDir, '../packages/evm-ui/src'),
       '@ui': resolve(rootDir, '../packages/ui/src'),

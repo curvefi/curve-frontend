@@ -2,13 +2,10 @@ import { Metric } from '@evm-ui/shared/ui/Metric'
 import { CardContent } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
-import Stack from '@mui/material/Stack'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { t } from '@ui/lib/i18n'
 import { CRVUSD_UNIT } from '../constants'
 import { useStatistics } from '../hooks/useStatistics'
-
-const { Spacing } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'loan.pegKeeperOverview'
 
@@ -19,7 +16,7 @@ export const Statistics = () => {
     <Card size="small">
       <CardHeader title={t`Statistics`} />
       <CardContent>
-        <Stack direction="row" sx={{ gap: Spacing.md }}>
+        <MetricsGrid variant="fill">
           <Metric
             category={METRIC_CATEGORY}
             label={t`Peg stabilisation reserve`}
@@ -37,7 +34,7 @@ export const Statistics = () => {
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-total-ceiling"
           />
-        </Stack>
+        </MetricsGrid>
       </CardContent>
     </Card>
   )

@@ -7,7 +7,7 @@ import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
-import { formatDate } from '@legacy-ui/utils/'
+import { formatDate } from '@primitives/date.utils'
 import { t } from '@ui/lib/i18n'
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
 

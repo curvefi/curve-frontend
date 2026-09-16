@@ -1,6 +1,7 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
 import { createEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { queryFactory } from '@ui/features/queries/factory'
 import type { ScrvUsdWithdrawParams, ScrvUsdWithdrawQuery } from './scrvusd.validation'
 import { scrvUsdWithdrawMaxValidationSuite } from './scrvusd.validation'
 

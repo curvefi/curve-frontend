@@ -11,7 +11,6 @@ import type { PageTransferProps, Seed, TransferTabsParams } from '@/dex/componen
 import {
   getDepositTabAlert,
   getSlippageType,
-  getStakeTabAlert,
   getSwapTabAlert,
   getWithdrawTabAlert,
 } from '@/dex/components/PagePool/utils'
@@ -34,15 +33,15 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { useUserProfileStore } from '@evm-ui/features/user-profile'
-import { useLocation } from '@evm-ui/hooks/router'
-import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
-import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { maybes } from '@primitives/objects.utils'
+import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
+import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { useUserProfileStore } from '@ui/features/user-profile'
+import { useLocation } from '@ui/hooks/router'
+import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { t } from '@ui/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui/utils/time'
+import { REFRESH_INTERVAL } from '@ui/lib/time'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
@@ -60,12 +59,12 @@ const menu = [
       {
         value: 'STAKE',
         label: t`Stake`,
-        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormStake} {...props} />,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormStake} {...props} />,
       },
       {
         value: 'DEPOSIT_STAKE',
         label: t`Deposit & Stake`,
-        component: props => <TabGuard alert={getStakeTabAlert} otherwise={FormDepositStake} {...props} />,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDepositStake} {...props} />,
       },
     ],
   } satisfies FormTab<TransferTabsParams>,
@@ -112,7 +111,7 @@ const menu = [
 type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
-  const { params, hasDepositAndStake } = pageTransferProps
+  const { params } = pageTransferProps
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
   const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.hasVyperVulnerability })
@@ -152,7 +151,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     () =>
       poolData && {
         params,
-        hasDepositAndStake,
         poolAlert,
         maxSlippage,
         seed,
@@ -163,18 +161,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
         ),
       },
-    [
-      poolData,
-      params,
-      hasDepositAndStake,
-      poolAlert,
-      maxSlippage,
-      seed,
-      tokensMapper,
-      gaugeManager,
-      signerAddress,
-      rewardDistributors,
-    ],
+    [poolData, params, poolAlert, maxSlippage, seed, tokensMapper, gaugeManager, signerAddress, rewardDistributors],
   )
 
   return (

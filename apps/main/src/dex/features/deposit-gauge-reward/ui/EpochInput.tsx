@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import { useFormContext } from '@ui/features/forms'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { TIME_FRAMES } from '@ui/utils/time'
+import { TIME_FRAMES } from '@ui/lib/time'
 
 const { Spacing } = SizesAndSpaces
 

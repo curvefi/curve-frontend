@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { applySxProps, SxProps } from '@ui/utils/mui'
+import { applySxProps, SxProps } from '@ui/lib/mui'
 import { TokenIcon, type Size } from './TokenIcon'
 
 const { Spacing } = SizesAndSpaces

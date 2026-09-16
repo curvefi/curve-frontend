@@ -6,8 +6,9 @@ import {
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/lib/model'
 import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { queryFactory } from '@ui/features/queries/factory'
 
 const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowMoreApproveGasEstimateQuery } =
   queryFactory({

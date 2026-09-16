@@ -15,7 +15,7 @@ type AllowanceQuery = ChainQuery & UserQuery & { tokenAddress: Address; spenderA
  * The value returned is in raw token units, as returned by the token contract.
  */
 const fetchAllowance = async (config: Config, { chainId, spenderAddress, tokenAddress, userAddress }: AllowanceQuery) =>
-  await queryClient.fetchQuery({
+  await queryClient.query({
     ...readContractQueryOptions(config, {
       chainId,
       address: tokenAddress,

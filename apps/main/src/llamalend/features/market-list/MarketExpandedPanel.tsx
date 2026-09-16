@@ -2,7 +2,6 @@ import { type FunctionComponent, ReactNode, useMemo } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { type ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils/average-categories'
@@ -11,12 +10,13 @@ import CardHeader, { CardHeaderProps } from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useLayoutStore } from '@ui/features/layout/layout'
+import { useLayoutStore } from '@ui/features/layout/store'
 import { constQ } from '@ui/features/queries/util'
+import { type ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsTiny } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
-import { borderStyle } from '@ui/utils/mui'
+import { borderStyle } from '@ui/lib/mui'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell, RateTooltipProps } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
@@ -81,7 +81,7 @@ const GridSection = ({ children }: { children: ReactNode }) => (
 
 const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
   <Grid size={12}>
-    <CardHeader {...props} size="small" sx={{ borderBottom: borderStyle }} />
+    <CardHeader {...props} sx={{ borderBottom: borderStyle }} />
   </Grid>
 )
 

@@ -3,10 +3,10 @@ import { RevenueChartTooltip } from '@/loan/components/PageCrvUsdStaking/Statist
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield.query'
 import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
-import { formatNumber } from '@evm-ui/utils'
-import { formatDate } from '@legacy-ui/utils'
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { formatDate } from '@primitives/date.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

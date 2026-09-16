@@ -1,8 +1,8 @@
 import Fuse, { type FuseOptionKey } from 'fuse.js'
 import { get, partition } from 'lodash'
 import { useMemo } from 'react'
-import type { CurveTableFeatures } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import type { FilterFn, RowData } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 
 /** Replace ₮ with T so users don't need the special character to find Tether markets */
 export const cleanValue = <T>(value: T): T =>

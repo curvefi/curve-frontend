@@ -1,6 +1,7 @@
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { MarketParams, type MarketQuery, queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { MarketParams, type MarketQuery, rootKeys } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useMarketOraclePriceBand, queryKey: getMarketOraclePriceBandKey } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'oraclePriceBand'] as const,

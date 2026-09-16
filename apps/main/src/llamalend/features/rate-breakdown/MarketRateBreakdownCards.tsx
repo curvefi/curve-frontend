@@ -1,16 +1,16 @@
 import type { ReactNode } from 'react'
-import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import type { PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 import { PointsCampaignsTable } from '@evm-ui/features/points-campaigns/PointsCampaignsTable'
-import { type CurveTableFeatures, useCurveTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
-import { DataTable } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { MarketRateType } from '@evm-ui/types/market'
-import { formatNumber } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import type { Column } from '@tanstack/react-table'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { type CurveTableFeatures, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
@@ -88,8 +88,8 @@ export const RateBreakdownTable = ({
 
   return (
     <Card size="small" data-testid={`${rateType.toLowerCase()}-rate-breakdown`}>
-      <MarketCardHeader title={title} />
-      <DataTable
+      <CardHeader title={title} />
+      <EvmDataTable
         category="detail"
         table={table}
         emptyState={{ title: emptyTitle }}
@@ -111,7 +111,7 @@ export const RateBreakdownTable = ({
 
 export const PointsCampaignsCard = ({ rateType, rows }: { rateType: MarketRateType; rows: PointsCampaignRow[] }) => (
   <Card size="small" data-testid={`${rateType.toLowerCase()}-points-campaigns`}>
-    <MarketCardHeader title={POINTS_CAMPAIGN_TITLES[rateType]} />
+    <CardHeader title={POINTS_CAMPAIGN_TITLES[rateType]} />
     <PointsCampaignsTable rows={rows} />
   </Card>
 )

@@ -1,0 +1,92 @@
+import { BigNumber } from 'bignumber.js'
+import { zip } from '@primitives/array.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
+
+export const ZERO: Decimal = '0'
+
+/** Converts loose numeric input to an Amount for formatting, returning undefined for empty or non-numeric values. */
+export const amount = (value: number | string | BigNumber | bigint | null | undefined): Amount | undefined =>
+  value == null || value === '' || Number.isNaN(value) ? undefined : typeof value === 'number' ? value : decimal(value)
+
+/** Converts a string to a Decimal typed string, returning undefined for null, undefined, empty strings, or non-finite values. */
+export const decimal = (value: number | string | undefined | null | BigNumber | bigint): Decimal | undefined => {
+  if (typeof value === 'number' || typeof value === 'bigint') {
+    value = BigNumber(value)
+  }
+  if (value instanceof BigNumber) {
+    value = value.toFixed()
+  }
+  if (value != null && !['', '-', '?', 'Infinity', '-Infinity'].includes(value) && !new BigNumber(value).isNaN()) {
+    return value as Decimal
+  }
+}
+
+/**
+ * Returns the minimum Decimal value from an array of Decimals, without losing precision.
+ */
+export const decimalMin = (...data: Decimal[]): Decimal | undefined =>
+  data.reduce<Decimal | undefined>(
+    (min, value) => (min == null ? value : new BigNumber(value).isLessThan(min) ? value : min),
+    undefined,
+  )
+
+export const decimalCompare = (a: Decimal, b: Decimal) => BigNumber(a).comparedTo(b) ?? 0
+
+/**
+ * Returns the maximum Decimal value from an array of Decimals, without losing precision.
+ */
+export const decimalMax = (...data: Decimal[]) =>
+  data.length ? (BigNumber.max(...data).toFixed() as Decimal) : undefined
+
+export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
+  notFalsy(...data).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
+
+export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): Decimal =>
+  notFalsy(...rest)
+    .reduce((acc, value) => acc.minus(value), new BigNumber(first))
+    .toFixed() as Decimal
+
+export const decimalNegate = <T extends Decimal | null | undefined>(value: T) =>
+  maybe(value, value => new BigNumber(value).negated().toFixed() as Decimal)
+
+export const decimalEqual = (first: Decimal, second: Decimal) => BigNumber(first).isEqualTo(second)
+
+export const decimalGreaterThan = (first: Decimal, second: Decimal) => BigNumber(first).isGreaterThan(second)
+
+export const decimalMultiply = (first: Decimal, ...items: Amount[]) =>
+  items.reduce((p, c) => p.multipliedBy(c), new BigNumber(first)).toFixed() as Decimal
+
+export const decimalSqrt = (value: Decimal): Decimal => {
+  const decimalValue = new BigNumber(value)
+  if (decimalValue.isNegative()) throw new Error(`Cannot calculate square root of a negative Decimal: ${value}`)
+  return decimalValue.squareRoot().toFixed() as Decimal
+}
+
+/** Divides the 1st by the 2nd decimal. Does NOT guard for division-by-zero! */
+export const decimalDiv = (first: Decimal, second: Decimal) =>
+  new BigNumber(first).dividedBy(second).toFixed() as Decimal
+
+export const decimalPercent = (part: Decimal, total: Decimal): Decimal =>
+  +total ? decimalMultiply(decimalDiv(part, total), '100') : '0'
+
+// Viem parseUnits rounds excess decimals, but we must truncate to match llamalend.js transaction amounts.
+export const toWei = (n: string, decimals: number) =>
+  decimal(
+    BigNumber(n || '0')
+      .shiftedBy(decimals)
+      .integerValue(BigNumber.ROUND_DOWN),
+  )!
+
+/** Converts integer token units to a decimal amount without losing precision. */
+export const fromWei = (n: string | bigint, decimals: number): Decimal => decimal(BigNumber(n).shiftedBy(-decimals))!
+
+/** Divide decimal values and truncate the quotient toward zero without rounding fractional digits first. */
+export const decimalIntegerDiv = (first: Decimal, second: Decimal): Decimal =>
+  BigNumber(first).dividedToIntegerBy(second).toFixed() as Decimal
+
+/** Convert ordered token amounts to integer units, preserving empty inputs. */
+export const toWeiArray = (amounts: (Decimal | undefined)[], decimals: number[]) =>
+  zip(amounts, decimals).map(([amount, precision]) => maybe(amount, value => toWei(value, precision)))
+
+export const toBigIntArray = (amounts: (Decimal | undefined)[]) => amounts.map(amount => maybe(amount, BigInt))
