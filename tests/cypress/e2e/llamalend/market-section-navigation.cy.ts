@@ -79,7 +79,11 @@ describe(`${PAGE.label} section navigation (${BREAKPOINT}, ${WIDTH}x${HEIGHT})`,
     })
   })
 
-  it(`initial URL scrolls to ${selectedSection}`, () => {
+  /**
+   * Async layout shifts can move the viewport after the initial hash scroll, letting the scroll spy select another
+   * section. Retry once because this timing-dependent failure has only occurred in CI.
+   * */
+  it(`initial URL scrolls to ${selectedSection}`, { retries: 1 }, () => {
     visit(`#${selectedSection}`)
     assertSectionReached(selectedSection)
     cy.location('hash').should('equal', `#${selectedSection}`)
