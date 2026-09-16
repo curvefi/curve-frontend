@@ -1,6 +1,7 @@
 import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
+import { TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
@@ -80,20 +81,11 @@ export const MetricsRow = ({
   const liquidityMetrics = (
     <>
       {marketType === MarketType.Lend && (
-        <Metric
-          category={METRIC_CATEGORY}
+        <TotalLiquidityMetric
           testId="market-total-liquidity"
-          label={t`Total liquidity`}
-          {...tokenMetric({
-            value: availableLiquidity.total,
-            symbol: borrowToken?.symbol,
-            usdRate: availableLiquidity.usdRate,
-          })}
-          valueTooltip={{
-            title: t`Total liquidity`,
-            body: t`Total liquidity is the total amount of the borrow token supplied to this lending market, including both available and borrowed liquidity.`,
-            ...TooltipOptions,
-          }}
+          value={availableLiquidity.total}
+          symbol={borrowToken?.symbol}
+          usdRate={availableLiquidity.usdRate}
         />
       )}
       <Metric

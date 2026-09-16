@@ -2,6 +2,7 @@ import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
+import { TotalBorrowedMetric } from '@/llamalend/widgets/MarketMetrics'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -178,17 +179,13 @@ export const MarketRateCurveChart = () => {
               ...TooltipOptions,
             }}
           />
-          <Metric
-            category={METRIC_CATEGORY}
-            label={t`Total borrowed`}
-            {...tokenMetric({
-              value: fallbackQ(
-                totalBorrowed,
-                mapQuery(apiMarket, m => m.assets.borrowed.balance),
-              ),
-              symbol: borrowToken?.symbol,
-              usdRate: q(borrowedUsdRate),
-            })}
+          <TotalBorrowedMetric
+            value={fallbackQ(
+              totalBorrowed,
+              mapQuery(apiMarket, m => m.assets.borrowed.balance),
+            )}
+            symbol={borrowToken?.symbol}
+            usdRate={q(borrowedUsdRate)}
           />
           <Metric
             category={METRIC_CATEGORY}

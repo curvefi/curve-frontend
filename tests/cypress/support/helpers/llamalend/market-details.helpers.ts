@@ -89,24 +89,40 @@ const shouldLoadMarketParameters = ({
   getActionValue('market-id').should('not.equal', '-')
 }
 
-const shouldLoadMarketDetails = ({ hasApi }: { hasApi: boolean }) => {
+const shouldLoadMarketDetails = () => {
   cy.get('[data-testid^="detail-page-layout"]', LOAD_TIMEOUT).should('be.visible')
   getActionValue('market-available-liquidity').should('match', DECIMAL_REGEX)
   cy.get('[data-testid="market-advanced-details"]', LOAD_TIMEOUT).should('be.visible')
-  if (hasApi) {
-    getMetricValue('market-total-borrowers').should('match', DECIMAL_REGEX)
-  }
   cy.get('[data-testid="llamalend-market-faq"]').should('be.visible')
+}
+
+const PARTICIPANT_CARDS = {
+  [MarketRateType.Borrow]: {
+    testId: 'top-borrowers-card',
+    metrics: ['market-total-borrowers', 'market-participants-total-borrowed'],
+  },
+  [MarketRateType.Supply]: {
+    testId: 'top-suppliers-card',
+    metrics: ['market-total-suppliers', 'market-participants-total-liquidity'],
+  },
+} satisfies Record<MarketRateType, { testId: string; metrics: string[] }>
+
+const shouldLoadParticipantCard = (rateType: MarketRateType) => {
+  const { testId, metrics } = PARTICIPANT_CARDS[rateType]
+  cy.get(`[data-testid="${testId}"]`).should('be.visible')
+  metrics.forEach(testId => {
+    getMetricValue(testId).should('match', DECIMAL_REGEX)
+  })
 }
 
 const shouldLoadLendMarketActivity = (rateType: MarketRateType) => {
   cy.get('[data-testid="market-activity"]', LOAD_TIMEOUT).should('be.visible')
-  cy.get(`[data-testid="top-${rateType.toLowerCase()}ers-card"]`).should('be.visible')
+  shouldLoadParticipantCard(rateType)
   recordValues(MarketRateType)
     .filter(type => type !== rateType)
     .forEach(type => {
       clickTab('market-participants-tab', type)
-      cy.get(`[data-testid="top-${type.toLowerCase()}ers-card"]`).should('be.visible')
+      shouldLoadParticipantCard(type)
     })
 }
 
@@ -126,14 +142,13 @@ const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: Mark
   } else {
     getActionInfo('market-net-borrow-apr').should('not.exist')
   }
-  shouldLoadMarketDetails({ hasApi })
+  shouldLoadMarketDetails()
 }
 
 export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
   shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
   shouldLoadRateBreakdown('borrow', hasApi)
   shouldLoadRateBreakdown('supply', hasApi)
-  if (hasApi) getMetricValue('market-total-suppliers').should('match', DECIMAL_REGEX)
   getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
   if (hasApi) {
     shouldLoadHistoricalSupplyRateChart()
@@ -167,7 +182,6 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
   shouldLoadRateBreakdown('borrow', hasApi)
   shouldLoadRateBreakdown('supply', hasApi)
   getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
-  if (hasApi) getMetricValue('market-total-suppliers').should('match', DECIMAL_REGEX)
   if (hasApi) {
     getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
     shouldLoadHistoricalSupplyRateChart()
@@ -178,5 +192,5 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
   }
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: hasWallet })
-  shouldLoadMarketDetails({ hasApi })
+  shouldLoadMarketDetails()
 }
