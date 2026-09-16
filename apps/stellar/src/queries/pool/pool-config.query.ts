@@ -6,7 +6,20 @@ import { type PoolParams, type PoolQuery, poolValidationSuite } from '@/stellar/
 import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei } from '@ui/lib/decimal'
 
-type PoolConfig = { tokens: StellarContract[]; n_coins: number; min_locked_liquidity: bigint }
+type PoolConfig = {
+  n_coins: number
+  tokens: StellarContract[]
+  factory: StellarContract
+  initial_a: bigint
+  future_a: bigint
+  initial_a_time: bigint
+  future_a_time: bigint
+  fee: bigint
+  admin_fee: bigint
+  offpeg_fee_multiplier: bigint
+  rates: bigint[]
+  min_locked_liquidity: bigint
+}
 
 export const { useQuery: usePoolConfig, fetchQuery: fetchPoolConfig } = queryFactory({
   queryKey: ({ network, pool }: PoolParams) => [...rootKeys.pool({ network, pool }), 'config'] as const,

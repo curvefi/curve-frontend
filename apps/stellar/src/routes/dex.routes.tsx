@@ -1,5 +1,5 @@
-import { WorkInProgress } from '@/stellar/components/WorkInProgress'
 import { PoolPage } from '@/stellar/features/deposit/PoolPage'
+import { PoolListPage } from '@/stellar/features/pool-list/PoolListPage'
 import { createRoute, Outlet } from '@tanstack/react-router'
 import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'
@@ -17,7 +17,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/pools',
-    component: WorkInProgress,
+    component: PoolListPage,
     head: () => ({ meta: [{ title: 'Pools - Curve Stellar' }] }),
     ...layoutProps,
   }),

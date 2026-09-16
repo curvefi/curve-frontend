@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import { ListPageLayout } from '@evm-ui/widgets/ListPageLayout'
+import { ListPageLayout } from '@ui/features/layout/ListPageLayout'
 import { useMarketsTable } from './hooks/useMarketsTable'
 import { MarketsTable } from './MarketsTable'
 import { MarketsTableFooter } from './MarketsTableFooter'
