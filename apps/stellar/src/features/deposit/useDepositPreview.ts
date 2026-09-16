@@ -3,7 +3,7 @@ import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { getTransactionFee } from '@/stellar/lib/transaction-fee'
 import { useDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
-import type { UserParams } from '@/stellar/queries/root-keys'
+import type { NetworkQuery, UserParams } from '@/stellar/queries/root-keys'
 import { type DepositParams, type QuoteParams } from '@/stellar/queries/validation/deposit.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { getPoolAmounts, type PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
@@ -12,6 +12,7 @@ import { useDepositPriceImpact } from './useDepositPriceImpact'
 
 export type DepositPreviewParams = Omit<QuoteParams, 'amounts'> &
   UserParams &
+  NetworkQuery &
   Pick<DepositParams, 'maxAmounts'> &
   PoolTokenFields & { slippage: Decimal; tokenCount: number | undefined }
 
@@ -21,7 +22,7 @@ export function useDepositPreview(params: DepositPreviewParams) {
   const priceImpact = useDepositPriceImpact(queryParams, quote)
   const minimum = mapQuery(quote, value => calculateMinimumMint(value, params.slippage))
   const simulation = useDepositSimulation({ ...queryParams, minMint: minimum.data })
-  const fee = mapQuery(simulation, transaction => getTransactionFee(transaction, params.network!))
+  const fee = mapQuery(simulation, transaction => getTransactionFee(transaction, params.network))
   return { quote, minimum, priceImpact, fee }
 }
 
