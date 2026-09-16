@@ -7,7 +7,7 @@
     "build": "tsc",
     "lint": "eslint --cache --cache-location ../../.cache/eslint/primitives --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/primitives --cache-strategy content . --fix",
-    "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-primitives.tsbuildinfo"
+    "typecheck": "tsc -b tsconfig.typecheck.json"
   },
   "devDependencies": {
     "vitest": "4.1.11"

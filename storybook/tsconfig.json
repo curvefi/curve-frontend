@@ -14,7 +14,8 @@
       "@curvefi/prices-api/*": ["../packages/prices-api/src/*"],
       "@primitives/*": ["../packages/primitives/src/*"],
       "@/stellar/*": ["../apps/stellar/src/*"]
-    }
+    },
+    "tsBuildInfoFile": "../.cache/typecheck/storybook.tsbuildinfo"
   },
   "include": [
     ".storybook/**/*.ts",
@@ -26,5 +27,17 @@
     "../packages/**/*.stories.*",
     "../packages/**/*.d.ts"
   ],
-  "exclude": ["node_modules", "storybook-static"]
+  "exclude": ["node_modules", "storybook-static"],
+  "references": [
+    { "path": "../packages/primitives/tsconfig.typecheck.json" },
+    { "path": "../packages/prices-api/tsconfig.typecheck.json" },
+    { "path": "../packages/ui" },
+    { "path": "../packages/evm-ui" },
+    { "path": "../packages/external-rewards" },
+    { "path": "../packages/api-server" },
+    { "path": "../apps/merkl-api" },
+    { "path": "../apps/router-api" },
+    { "path": "../apps/main" },
+    { "path": "../apps/stellar" }
+  ]
 }

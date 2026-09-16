@@ -46,6 +46,20 @@ This repository is organized as follows:
 
 ## Testing
 
+Run `yarn typecheck` to check all workspaces with TypeScript project references, or
+`yarn workspace <name> typecheck` to check a workspace and its dependencies.
+Shared packages and apps emit declarations into `.cache/typecheck`; downstream
+projects consume these instead of checking dependency sources again. Vite and
+published package builds keep their existing configurations and output directories.
+`main` and `external-rewards` also emit JavaScript and JSON into that cache so JSON
+imports in their declarations resolve correctly.
+Run `yarn typecheck --force` to recheck every project without using incremental results.
+
+Add a TypeScript project reference when introducing a dependency on another
+workspace. `primitives` and `prices-api` use separate `tsconfig.typecheck.json`
+files to keep their published builds unchanged. `evm-ui` and `legacy-ui` share the
+typecheck project in `packages/evm-ui` because they import from each other.
+
 Check the [README](./tests/README.md) in the `tests` directory for instructions on how to run end-to-end tests using Cypress.
 
 To run a specific Cypress spec:

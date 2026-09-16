@@ -1,3 +1,9 @@
+// Keep plugin type augmentations in the declarations consumed by other projects.
+/// <reference types="dayjs/plugin/customParseFormat" preserve="true" />
+/// <reference types="dayjs/plugin/isLeapYear" preserve="true" />
+/// <reference types="dayjs/plugin/localizedFormat" preserve="true" />
+/// <reference types="dayjs/plugin/utc" preserve="true" />
+
 /* eslint-disable import-x/no-named-as-default-member */
 export { default as dayjs } from 'dayjs'
 import dayjs from 'dayjs'

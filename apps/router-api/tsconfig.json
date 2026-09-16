@@ -7,7 +7,18 @@
       "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
       "@primitives/*": ["../../packages/primitives/src/*"]
-    }
+    },
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "rootDir": ".",
+    "outDir": "../../.cache/typecheck/apps-router-api",
+    "tsBuildInfoFile": "../../.cache/typecheck/apps-router-api.tsbuildinfo"
   },
-  "include": ["src", "test"]
+  "include": ["src", "test"],
+  "references": [
+    { "path": "../../packages/api-server" },
+    { "path": "../../packages/primitives/tsconfig.typecheck.json" },
+    { "path": "../../packages/prices-api/tsconfig.typecheck.json" }
+  ]
 }

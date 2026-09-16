@@ -10,9 +10,8 @@
     { "path": "./packages/api-server" },
     { "path": "./packages/evm-ui" },
     { "path": "./packages/external-rewards" },
-    { "path": "./packages/primitives" },
-    { "path": "./packages/prices-api" },
-    { "path": "./packages/legacy-ui" },
+    { "path": "./packages/primitives/tsconfig.typecheck.json" },
+    { "path": "./packages/prices-api/tsconfig.typecheck.json" },
     { "path": "./packages/ui" },
     { "path": "./tests" },
     { "path": "./storybook" }

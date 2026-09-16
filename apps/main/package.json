@@ -12,7 +12,7 @@
     "lint": "eslint --cache --cache-location ../../.cache/eslint/main --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/main --cache-strategy content . --fix",
     "start": "vite preview",
-    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-main.tsbuildinfo",
+    "typecheck": "tsc -b",
     "commit": "commit",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"

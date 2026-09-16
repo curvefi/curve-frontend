@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint --cache --cache-location ../../.cache/eslint/legacy-ui --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/legacy-ui --cache-strategy content . --fix",
-    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-legacy-ui.tsbuildinfo"
+    "typecheck": "tsc -b ../evm-ui"
   },
   "dependencies": {
     "@carbon/icons-react": "11.87.0",

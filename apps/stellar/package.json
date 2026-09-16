@@ -12,7 +12,7 @@
     "lint": "eslint --cache --cache-location ../../.cache/eslint/stellar --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/stellar --cache-strategy content . --fix",
     "start": "vite preview",
-    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-stellar.tsbuildinfo"
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@creit-tech/stellar-wallets-kit": "jsr:^2.6.0",

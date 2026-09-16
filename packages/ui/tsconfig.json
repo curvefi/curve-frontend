@@ -8,7 +8,17 @@
       "@curvefi/prices-api": ["../prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../prices-api/src/*"],
       "@primitives/*": ["../primitives/src/*"]
-    }
+    },
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "rootDir": "src",
+    "outDir": "../../.cache/typecheck/ui",
+    "tsBuildInfoFile": "../../.cache/typecheck/ui.tsbuildinfo"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    { "path": "../primitives/tsconfig.typecheck.json" },
+    { "path": "../prices-api/tsconfig.typecheck.json" }
+  ]
 }

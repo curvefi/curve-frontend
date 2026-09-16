@@ -28,6 +28,7 @@ const config = [
   // Global ignores — must be its own object with no `files` key
   {
     ignores: [
+      '**/.cache/**',
       '**/dist/**',
       '**/build/**',
       '**/.vercel/**',

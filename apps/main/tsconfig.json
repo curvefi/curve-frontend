@@ -12,7 +12,23 @@
       "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
       "@primitives/*": ["../../packages/primitives/src/*"]
-    }
+    },
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "rootDir": ".",
+    "outDir": "../../.cache/typecheck/apps-main",
+    "tsBuildInfoFile": "../../.cache/typecheck/apps-main.tsbuildinfo"
   },
-  "include": ["src", "_api", "../../packages/ui/src/**/*.d.ts", "../../packages/evm-ui/src/**/*.d.ts"]
+  "include": ["src", "_api", "../../packages/ui/src/**/*.d.ts", "../../packages/evm-ui/src/**/*.d.ts", "src/**/*.json"],
+  "references": [
+    { "path": "../../packages/primitives/tsconfig.typecheck.json" },
+    { "path": "../../packages/prices-api/tsconfig.typecheck.json" },
+    { "path": "../../packages/ui" },
+    { "path": "../../packages/evm-ui" },
+    { "path": "../../packages/external-rewards" },
+    { "path": "../../packages/api-server" },
+    { "path": "../../apps/merkl-api" },
+    { "path": "../../apps/router-api" }
+  ]
 }

@@ -10,7 +10,7 @@
   "scripts": {
     "lint": "eslint --cache --cache-location ../.cache/eslint/tests --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../.cache/eslint/tests --cache-strategy content . --fix",
-    "typecheck": "tsc --tsBuildInfoFile ../.cache/typecheck/tests.tsbuildinfo",
+    "typecheck": "tsc -b",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "vitest:watch": "vitest --watch",

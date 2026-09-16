@@ -6,7 +6,7 @@
   "scripts": {
     "storybook": "storybook dev -p 6006 --no-open",
     "build:storybook": "storybook build",
-    "typecheck": "tsc --tsBuildInfoFile ../.cache/typecheck/storybook.tsbuildinfo",
+    "typecheck": "tsc -b",
     "lint": "eslint --cache --cache-location ../.cache/eslint/storybook --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../.cache/eslint/storybook --cache-strategy content . --fix"
   },

@@ -2,9 +2,14 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node", "vitest/globals"],
-    "paths": {
-      "@curvefi/api-server": ["../../packages/api-server/src/index.ts"]
-    }
+    "paths": { "@curvefi/api-server": ["../../packages/api-server/src/index.ts"] },
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "rootDir": ".",
+    "outDir": "../../.cache/typecheck/apps-merkl-api",
+    "tsBuildInfoFile": "../../.cache/typecheck/apps-merkl-api.tsbuildinfo"
   },
-  "include": ["src", "test"]
+  "include": ["src", "test"],
+  "references": [{ "path": "../../packages/api-server" }]
 }

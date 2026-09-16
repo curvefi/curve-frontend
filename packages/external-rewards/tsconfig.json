@@ -1,6 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "rootDir": ".",
+    "outDir": "../../.cache/typecheck/external-rewards",
+    "tsBuildInfoFile": "../../.cache/typecheck/external-rewards.tsbuildinfo"
   },
-  "include": ["src"]
+  "include": ["src", "src/**/*.json"]
 }

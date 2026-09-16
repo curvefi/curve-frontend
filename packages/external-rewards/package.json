@@ -8,6 +8,6 @@
   "scripts": {
     "lint": "eslint --cache --cache-location ../../.cache/eslint/external-rewards --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/external-rewards --cache-strategy content . --fix",
-    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-external-rewards.tsbuildinfo"
+    "typecheck": "tsc -b"
   }
 }

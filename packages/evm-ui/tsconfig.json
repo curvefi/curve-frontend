@@ -12,7 +12,19 @@
       "@curvefi/prices-api": ["../prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../prices-api/src/*"],
       "@primitives/*": ["../primitives/src/*"]
-    }
+    },
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "rootDir": "..",
+    "outDir": "../../.cache/typecheck/evm-ui",
+    "tsBuildInfoFile": "../../.cache/typecheck/evm-ui.tsbuildinfo"
   },
-  "include": ["src", "../ui/src/**/*.d.ts", "./src/types/*.d.ts"]
+  "include": ["src", "../legacy-ui/src", "../ui/src/**/*.d.ts"],
+  "references": [
+    { "path": "../primitives/tsconfig.typecheck.json" },
+    { "path": "../prices-api/tsconfig.typecheck.json" },
+    { "path": "../ui" },
+    { "path": "../external-rewards" }
+  ]
 }

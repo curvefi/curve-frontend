@@ -7,12 +7,14 @@ runs:
       with:
         path: .cache
         key: >-
-          cache-${{ hashFiles(
+          cache-${{ github.job }}-${{ hashFiles(
             'yarn.lock',
             'tsconfig*.json',
-            'apps/**/tsconfig.json',
-            'packages/**/tsconfig.json',
-            'tests/tsconfig.json',
-            'storybook/**/tsconfig.json'
-          ) }}
-        restore-keys: cache-
+            'apps/**/tsconfig*.json',
+            'packages/**/tsconfig*.json',
+            'tests/tsconfig*.json',
+            'storybook/**/tsconfig*.json'
+          ) }}-${{ github.sha }}
+        restore-keys: |
+          cache-${{ github.job }}-${{ hashFiles('yarn.lock', 'tsconfig*.json', 'apps/**/tsconfig*.json', 'packages/**/tsconfig*.json', 'tests/tsconfig*.json', 'storybook/**/tsconfig*.json') }}-
+          cache-${{ github.job }}-

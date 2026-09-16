@@ -20,7 +20,7 @@
     "dev-merkl-api": "yarn workspace merkl-api dev",
     "lint": "yarn workspaces foreach --parallel --all --exclude curve-frontend run lint",
     "lint:fix": "yarn workspaces foreach --parallel --all --exclude curve-frontend run lint:fix",
-    "typecheck": "node -e \"require('fs').mkdirSync('.cache/typecheck', {recursive: true})\" && yarn workspaces foreach --parallel --all run typecheck",
+    "typecheck": "tsc -b",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",

@@ -9,7 +9,18 @@
       "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
       "@primitives/*": ["../../packages/primitives/src/*"]
-    }
+    },
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "rootDir": ".",
+    "outDir": "../../.cache/typecheck/apps-stellar",
+    "tsBuildInfoFile": "../../.cache/typecheck/apps-stellar.tsbuildinfo"
   },
-  "include": ["src", "../../packages/ui/src/**/*.d.ts"]
+  "include": ["src", "../../packages/ui/src/**/*.d.ts", "src/**/*.json"],
+  "references": [
+    { "path": "../../packages/primitives/tsconfig.typecheck.json" },
+    { "path": "../../packages/prices-api/tsconfig.typecheck.json" },
+    { "path": "../../packages/ui" }
+  ]
 }

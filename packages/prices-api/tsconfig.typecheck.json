@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "rootDir": "src",
+    "outDir": "../../.cache/typecheck/prices-api",
+    "tsBuildInfoFile": "../../.cache/typecheck/prices-api.tsbuildinfo"
+  },
+  "references": [{ "path": "../primitives/tsconfig.typecheck.json" }]
+}
