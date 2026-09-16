@@ -2,6 +2,7 @@ import { type Key, useCallback, useEffect, useMemo, useRef, useState } from 'rea
 import { useButton } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
+import { zeroAddress } from 'viem'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -66,7 +67,7 @@ export const SelectTokenButton = ({
   const [filterBasepools, setFilterBasepools] = useState(false)
 
   const favorites = [
-    { address: nativeToken?.wrappedAddress ?? '', symbol: nativeToken?.wrappedSymbol ?? '' },
+    { address: nativeToken?.address ?? '', symbol: nativeToken?.symbol ?? '' },
     ...network.createQuickList,
   ].map(({ address, symbol }) => ({ chain: blockchainId, address: address as Address, symbol }))
 
@@ -93,12 +94,14 @@ export const SelectTokenButton = ({
 
   const options = useMemo(
     () =>
-      filteredResults.map(token => ({
-        chain: blockchainId,
-        address: token.address as Address, // not checksummed though
-        symbol: token.symbol,
-        label: notFalsy(token.basePool && 'Base pool', token.userAddedToken && 'User added').join(' - '),
-      })),
+      filteredResults
+        .filter(token => token.address !== zeroAddress)
+        .map(token => ({
+          chain: blockchainId,
+          address: token.address as Address, // not checksummed though
+          symbol: token.symbol,
+          label: notFalsy(token.basePool && 'Base pool', token.userAddedToken && 'User added').join(' - '),
+        })),
     [filteredResults, blockchainId],
   )
 
