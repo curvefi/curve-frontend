@@ -1,4 +1,4 @@
-import { PoolPage } from '@/stellar/features/deposit/PoolPage'
+import { PoolPage } from '@/stellar/features/pool/PoolPage'
 import { PoolListPage } from '@/stellar/features/pool-list/PoolListPage'
 import { createRoute, Outlet } from '@tanstack/react-router'
 import { redirectTo } from '@ui/hooks/router'

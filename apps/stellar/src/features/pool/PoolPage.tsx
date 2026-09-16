@@ -4,7 +4,7 @@ import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
-import { DepositTab } from './DepositTab'
+import { DepositTab } from '../deposit/DepositTab'
 
 const menu = [{ value: 'deposit', label: t`Deposit`, component: DepositTab }]
 
