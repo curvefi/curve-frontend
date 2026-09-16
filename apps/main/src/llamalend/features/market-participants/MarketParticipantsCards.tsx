@@ -1,18 +1,22 @@
 import { useMemo } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketBorrowers, useMarketSuppliers } from '@/llamalend/queries/market'
+import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
 import { useManualPagination } from '@evm-ui/features/activity-table'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
+import { MarketRateType } from '@evm-ui/types/market'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
+import Stack from '@mui/material/Stack'
 import { maybe, notFalsy } from '@primitives/objects.utils'
+import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { mapQuery } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { useTabs } from '@ui/hooks/useTabs'
 import { t } from '@ui/lib/i18n'
 import {
   getBorrowerColumns,
@@ -78,7 +82,6 @@ export const BorrowersCard = () => {
 
   return (
     <Card size="small" data-testid="top-borrowers-card">
-      <CardHeader title={t`Top Borrowers`} />
       <EvmDataTable
         category="detail"
         table={table}
@@ -125,7 +128,6 @@ export const SuppliersCard = () => {
 
   return (
     <Card size="small" data-testid="top-suppliers-card">
-      <CardHeader title={t`Top Suppliers`} />
       <EvmDataTable
         category="detail"
         table={table}
@@ -134,5 +136,32 @@ export const SuppliersCard = () => {
         expandedPanel={{ Body: SupplierExpandedPanel, Actions: ParticipantExpandedPanelActions }}
       />
     </Card>
+  )
+}
+
+const MARKET_PARTICIPANT_TABS = {
+  [MarketRateType.Borrow]: { label: t`Top borrowers`, component: BorrowersCard },
+  [MarketRateType.Supply]: { label: t`Top suppliers`, component: SuppliersCard },
+}
+
+export const MarketParticipantsTabs = ({ rateType }: { rateType: MarketRateType }) => {
+  const { marketType } = useMarketContext()
+  const { types, defaultValue } = getMarketRateTypeTabConfig({ marketType, rateType })
+  const { tab, tabs, onChange, content } = useTabs({
+    menu: types.map(type => ({ ...MARKET_PARTICIPANT_TABS[type], value: type })),
+    defaultValue,
+  })
+
+  return (
+    <Stack>
+      <TabsSwitcher
+        variant="contained"
+        value={tab.value}
+        onChange={onChange}
+        options={tabs}
+        testIdPrefix="market-participants-tab"
+      />
+      {content}
+    </Stack>
   )
 }

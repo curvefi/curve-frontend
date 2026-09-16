@@ -43,7 +43,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       </MarketSection>
       {isNewLlamaMarketDetailPage && (
         <MarketSection id="market-activity">
-          <MarketActivityComp />
+          <MarketActivityComp rateType={rateType} />
         </MarketSection>
       )}
       <MarketSection id="market-parameters">

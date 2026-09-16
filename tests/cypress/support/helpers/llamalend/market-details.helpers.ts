@@ -4,7 +4,10 @@ import {
   getActionValue,
   getMetricValue,
 } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { clickTab } from '@cy/support/helpers/tabs'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
+import { MarketRateType } from '@evm-ui/types/market'
+import { recordValues } from '@primitives/objects.utils'
 
 type MarketDetailsOptions = { breakpoint: Breakpoint; hasWallet: boolean; hasApi?: boolean }
 
@@ -96,10 +99,15 @@ const shouldLoadMarketDetails = ({ hasApi }: { hasApi: boolean }) => {
   cy.get('[data-testid="llamalend-market-faq"]').should('be.visible')
 }
 
-const shouldLoadLendMarketActivity = () => {
+const shouldLoadLendMarketActivity = (rateType: MarketRateType) => {
   cy.get('[data-testid="market-activity"]', LOAD_TIMEOUT).should('be.visible')
-  cy.get('[data-testid="top-borrowers-card"]').should('be.visible')
-  cy.get('[data-testid="top-suppliers-card"]').should('be.visible')
+  cy.get(`[data-testid="top-${rateType.toLowerCase()}ers-card"]`).should('be.visible')
+  recordValues(MarketRateType)
+    .filter(type => type !== rateType)
+    .forEach(type => {
+      clickTab('market-participants-tab', type)
+      cy.get(`[data-testid="top-${type.toLowerCase()}ers-card"]`).should('be.visible')
+    })
 }
 
 const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: MarketDetailsOptions) => {
@@ -130,7 +138,7 @@ export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
   if (hasApi) {
     shouldLoadHistoricalSupplyRateChart()
     shouldShowCanvas('interest-rate-utilization-chart')
-    shouldLoadLendMarketActivity()
+    shouldLoadLendMarketActivity(MarketRateType.Borrow)
   }
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: false })
@@ -164,7 +172,7 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
     getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
     shouldLoadHistoricalSupplyRateChart()
     shouldShowCanvas('interest-rate-utilization-chart')
-    shouldLoadLendMarketActivity()
+    shouldLoadLendMarketActivity(MarketRateType.Supply)
   } else {
     getActionInfo('market-net-supply-apy').should('not.exist')
   }

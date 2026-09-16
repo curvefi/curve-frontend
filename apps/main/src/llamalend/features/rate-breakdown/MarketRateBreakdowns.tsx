@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
+import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart'
-import { MarketRateType, MarketType } from '@evm-ui/types/market'
+import { MarketRateType } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
@@ -88,17 +89,6 @@ const MarketSupplyHistoricalRates = ({ timeOption }: HistoricalRatesTabProps) =>
   )
 }
 
-const HISTORICAL_RATE_TAB_ORDER = {
-  [MarketType.Lend]: {
-    [MarketRateType.Borrow]: [MarketRateType.Borrow, MarketRateType.Supply],
-    [MarketRateType.Supply]: [MarketRateType.Supply, MarketRateType.Borrow],
-  },
-  [MarketType.Mint]: {
-    [MarketRateType.Borrow]: [MarketRateType.Borrow],
-    [MarketRateType.Supply]: [MarketRateType.Borrow],
-  },
-} satisfies Record<MarketType, Record<MarketRateType, MarketRateType[]>>
-
 const HISTORICAL_RATE_TABS = {
   [MarketRateType.Borrow]: { label: t`Borrow rate`, component: MarketBorrowHistoricalRates },
   [MarketRateType.Supply]: { label: t`Supply rate`, component: MarketSupplyHistoricalRates },
@@ -107,16 +97,23 @@ const HISTORICAL_RATE_TABS = {
 export const MarketHistoricalRatesTabs = ({ rateType }: { rateType: MarketRateType }) => {
   const { marketType, controllerAddress } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
-  const menu = HISTORICAL_RATE_TAB_ORDER[marketType][rateType].map(type => ({
-    ...HISTORICAL_RATE_TABS[type],
-    value: type,
-  }))
-  const { tab, tabs, onChange, content } = useTabs({ menu, params: { timeOption } })
+  const { types, defaultValue } = getMarketRateTypeTabConfig({ marketType, rateType })
+  const { tab, tabs, onChange, content } = useTabs({
+    menu: types.map(type => ({ ...HISTORICAL_RATE_TABS[type], value: type })),
+    params: { timeOption },
+    defaultValue,
+  })
 
   return (
     <Stack>
       <Stack direction="row" sx={{ alignItems: 'end', justifyContent: 'space-between' }}>
-        <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
+        <TabsSwitcher
+          variant="contained"
+          value={tab.value}
+          onChange={onChange}
+          options={tabs}
+          testIdPrefix="historical-rate-tab"
+        />
         <SelectTimeOption<TimeOption>
           options={timeOptions}
           activeOption={timeOption}

@@ -2,13 +2,14 @@ import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { BorrowersCard, SuppliersCard } from '@/llamalend/features/market-participants/MarketParticipantsCards'
+import { MarketParticipantsTabs } from '@/llamalend/features/market-participants/MarketParticipantsCards'
 import {
   LegacyChartAndActivityLayout,
   MarketActivityLayout,
   MarketPriceChartLayout,
 } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
+import { MarketRateType } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { PAGE_SPACING } from '@ui/features/layout/DetailPageLayout/constants'
@@ -66,7 +67,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
   )
 }
 
-export const MarketActivityComp = () => {
+export const MarketActivityComp = ({ rateType }: { rateType: MarketRateType }) => {
   const {
     chainId,
     blockchainId,
@@ -78,8 +79,7 @@ export const MarketActivityComp = () => {
       <MarketActivityLayout
         activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'lending' }}
       />
-      <BorrowersCard />
-      <SuppliersCard />
+      <MarketParticipantsTabs rateType={rateType} />
     </Stack>
   )
 }
