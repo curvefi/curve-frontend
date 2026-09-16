@@ -112,7 +112,7 @@ const TokenSelectorComponent = ({
 }
 
 const meta: Meta<typeof TokenSelectorComponent> = {
-  title: 'UI Kit/Features/TokenSelector',
+  title: 'EVM UI/Features/SelectToken',
   component: TokenSelectorComponent,
   args: {
     selectedToken: defaultTokens[0],

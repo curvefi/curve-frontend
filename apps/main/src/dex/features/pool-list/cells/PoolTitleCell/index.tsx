@@ -7,15 +7,22 @@ import { Tooltip } from '@ui/components/Tooltip'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import type { PoolRow } from '../../types'
+import type { PoolRow, PoolTableMeta } from '../../types'
 import { PoolBadges } from './PoolBadges'
 import { PoolTooltipContent } from './PoolTooltipContent'
 
 const { Spacing, Height } = SizesAndSpaces
 
-export const PoolTitleCell = ({ row: { original: pool } }: CellContext<CurveTableFeatures, PoolRow, string>) => (
+export const PoolTitleCell = ({
+  row: { original: pool },
+  table: {
+    options: { meta },
+  },
+}: CellContext<CurveTableFeatures, PoolRow, string>) => (
   <Stack direction="row" sx={{ height: Height.row }}>
-    {pool.hasPosition && <UserPositionIndicator tooltipTitle={t`You have a balance in this pool`} />}
+    {(meta as PoolTableMeta).variant !== 'userPositions' && +pool.userPosition.lpBalance > 0 && (
+      <UserPositionIndicator tooltipTitle={t`You have a balance in this pool`} />
+    )}
     <Tooltip clickable title={pool.name} body={<PoolTooltipContent pool={pool} />} placement="top">
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <TokenIcons blockchainId={pool.blockchainId} tokens={pool.tradeableCoins} showTooltips={false} />

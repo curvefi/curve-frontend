@@ -35,14 +35,17 @@ export const disconnectWallet = () => StellarWalletsKit.disconnect()
 export const isContractAddress = (address: string): address is StellarContract => StrKey.isValidContract(address)
 export const isAccountAddress = (address: string): address is StellarAddress => StrKey.isValidEd25519PublicKey(address)
 
-type ContractArgument = StellarAddress | StellarContract | bigint | boolean | ContractArgument[]
+type ContractArgument = StellarAddress | StellarContract | bigint | number | boolean | ContractArgument[]
 
 const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
   Array.isArray(value)
     ? xdr.ScVal.scvVec(value.map(encodeContractArgument))
     : typeof value === 'string'
       ? new Address(value).toScVal()
-      : nativeToScVal(value, typeof value === 'bigint' ? { type: 'i128' } : {})
+      : nativeToScVal(
+          value,
+          typeof value === 'bigint' ? { type: 'i128' } : typeof value === 'number' ? { type: 'u32' } : {},
+        )
 
 const PASSPHRASES = { stellar: Networks.PUBLIC, 'stellar-testnet': Networks.TESTNET }
 

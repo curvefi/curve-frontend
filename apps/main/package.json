@@ -21,7 +21,6 @@
     "@curvefi/evm-ui": "workspace:^",
     "@curvefi/legacy-ui": "workspace:^",
     "@curvefi/ui": "workspace:^",
-    "fuse.js": "7.5.0",
     "merkl-api": "workspace:^",
     "router-api": "workspace:^",
     "vest": "5.4.6",

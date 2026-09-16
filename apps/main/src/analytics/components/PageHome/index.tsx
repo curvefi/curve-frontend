@@ -9,7 +9,7 @@ const { Spacing } = SizesAndSpaces
 export const PageHome = () => (
   <Grid
     container
-    columnSpacing={Spacing.md}
+    spacing={Spacing.md}
     columns={{ mobile: 6, desktop: 12 }}
     sx={{ marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }}
     data-testid="analytics-home"

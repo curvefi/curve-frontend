@@ -156,7 +156,7 @@ const ScrvUsdStatisticsHeaderExampleNarrow = () => {
 }
 
 const meta: Meta<typeof ChartHeader> = {
-  title: 'UI Kit/Widgets/ChartHeader',
+  title: 'EVM UI/Shared UI/ChartHeader',
   component: ChartHeader,
   parameters: {
     docs: {

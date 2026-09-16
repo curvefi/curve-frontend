@@ -102,7 +102,7 @@ const FormTabsStory = ({ shouldWrap, overflow, menu, ...params }: StoryArgs) => 
 )
 
 const meta: Meta<typeof FormTabsStory> = {
-  title: 'UI Kit/Widgets/FormTabs',
+  title: 'EVM UI/Shared UI/FormTabs',
   component: FormTabsStory,
   args: {
     availableBalance: 1250,

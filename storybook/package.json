@@ -1,0 +1,28 @@
+{
+  "name": "@curvefi/storybook",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6006 --no-open",
+    "build:storybook": "storybook build",
+    "typecheck": "tsc --tsBuildInfoFile ../.cache/typecheck/storybook.tsbuildinfo",
+    "lint": "eslint --cache --cache-location ../.cache/eslint/storybook --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../.cache/eslint/storybook --cache-strategy content . --fix"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "5.3.0",
+    "@curvefi/evm-ui": "workspace:^",
+    "@curvefi/ui": "workspace:^",
+    "@storybook/addon-a11y": "10.5.10",
+    "@storybook/addon-docs": "10.5.10",
+    "@storybook/addon-themes": "10.5.10",
+    "@storybook/react-vite": "10.5.10",
+    "@vitejs/plugin-react": "5.1.2",
+    "main": "workspace:^",
+    "stellar": "workspace:^",
+    "storybook": "10.5.10",
+    "vite": "7.3.5",
+    "vite-plugin-svgr": "5.2.0"
+  }
+}

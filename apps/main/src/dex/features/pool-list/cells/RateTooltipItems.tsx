@@ -1,8 +1,14 @@
+import { isMerkl } from '@evm-ui/entities/campaigns/merkl'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
+import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import { TooltipItem, TooltipValueLink } from '@ui/components/TooltipComponents'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { MerklIcon } from '@ui/icons/MerklIcon'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
+
+const { Spacing, IconSize } = SizesAndSpaces
 
 type ExtraReward = PoolRow['extraRewardsApr'][number]
 type Campaign = PoolRow['campaigns'][number]
@@ -30,7 +36,10 @@ export const CampaignRewardTooltipItems = ({ campaigns }: { campaigns: Campaign[
       titleAdornment={<RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" />}
     >
       <TooltipValueLink href={campaign.dashboardLink}>
-        {formatNumber(campaign.reward?.type === 'apr' ? campaign.reward.value : null, 'percent.rate')}
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+          {isMerkl(campaign) && <MerklIcon sx={{ fontSize: IconSize.sm }} />}
+          {formatNumber(campaign.reward?.type === 'apr' ? campaign.reward.value : null, 'percent.rate')}
+        </Stack>
       </TooltipValueLink>
     </TooltipItem>
   ))
@@ -45,9 +54,12 @@ export const PointsTooltipItems = ({ campaigns }: { campaigns: Campaign[] }) =>
       titleAdornment={<RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" />}
     >
       <TooltipValueLink href={campaign.dashboardLink}>
-        {campaign.reward?.type === 'points'
-          ? formatNumber(campaign.reward.value, 'multiplier')
-          : campaign.symbol || '-'}
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+          {isMerkl(campaign) && <MerklIcon sx={{ fontSize: IconSize.sm }} />}
+          {campaign.reward?.type === 'points'
+            ? formatNumber(campaign.reward.value, 'multiplier')
+            : campaign.symbol || '-'}
+        </Stack>
       </TooltipValueLink>
     </TooltipItem>
   ))

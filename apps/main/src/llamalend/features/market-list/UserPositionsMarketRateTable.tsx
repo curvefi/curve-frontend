@@ -16,7 +16,7 @@ import { useMarketsVisibility } from './hooks/useMarketsVisibility'
 import { MarketExpandedPanel } from './MarketExpandedPanel'
 import { UserPositionExpandedPanelActions } from './UserPositionExpandedPanelActions'
 
-const { Spacing, Sizing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const TABLE_CONFIG = {
   [MarketRateType.Borrow]: {
@@ -69,15 +69,8 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       expandedPanel={{ Body: MarketExpandedPanel, Actions: UserPositionExpandedPanelActions }}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
-      <Stack
-        sx={{
-          backgroundColor: t => t.design.Layer[1].Fill,
-          height: Sizing.md,
-          justifyContent: 'end',
-          paddingInline: Spacing.md,
-        }}
-      >
-        <CardHeader title={title} size="small" />
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, justifyContent: 'end', paddingInline: Spacing.md }}>
+        <CardHeader title={title} variant="inline" />
       </Stack>
     </EvmDataTable>
   )

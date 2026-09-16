@@ -18,7 +18,7 @@ export const MarketParticipationCard = ({
 }: {
   marketParticipation: LiquidityDetailsData['marketParticipation']
 }) => (
-  <Card size="inline">
+  <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Market Participation`} />
     <CardContent component={Stack} sx={{ gap: Spacing.xs, marginBlockStart: Spacing.xs }}>
       <ActionInfo
