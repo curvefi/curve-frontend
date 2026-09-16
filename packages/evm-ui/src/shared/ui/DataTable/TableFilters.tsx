@@ -3,10 +3,10 @@ import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
+import { TableButton } from '@ui/features/tables/TableButton'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { GearIcon } from '@ui/icons/GearIcon'
-import { TableButton } from './TableButton'
 import { TableSearchField } from './TableSearchField'
 
 const { Spacing } = SizesAndSpaces

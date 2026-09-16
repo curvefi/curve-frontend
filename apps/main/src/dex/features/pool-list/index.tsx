@@ -1,6 +1,6 @@
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { useDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
-import { ListPageWrapper } from '@evm-ui/widgets/ListPageWrapper'
+import { ListPageWrapper } from '@ui/features/layout/ListPageWrapper'
 import { LegacyPoolsTable } from './LegacyPoolsTable'
 import { PoolsTable } from './PoolsTable'
 import { UserPositionsTable } from './UserPositionsTable'
