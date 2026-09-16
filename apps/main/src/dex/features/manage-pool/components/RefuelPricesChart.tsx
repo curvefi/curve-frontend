@@ -21,7 +21,7 @@ import { Metric } from '@evm-ui/shared/ui/Metric'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
-import { DEFAULT_DECIMALS, maybe, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, DEFAULT_DECIMALS, maybe, notFalsy } from '@primitives/objects.utils'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -44,13 +44,12 @@ const PRICE_SERIES = [
   { key: 'priceScale', label: PRICE_SCALE_LABEL },
 ] as const
 
-const formatPrice = (value: number | null | undefined) =>
-  formatNumber(value, { abbreviate: false, decimals: 6, fallback: '-' })
+const formatPrice = (value: number | Nullish) => formatNumber(value, { abbreviate: false, decimals: 6, fallback: '-' })
 
 // Helper functions and filters that don't type check nicely when inlined
 const toExportPoint = (time: number, value: number | null) => notFalsy(value != null && { time, value })
 const isFinitePrice = (value: number | null): value is number => value != null && Number.isFinite(value)
-const getLatestMetric = (values: (number | null | undefined)[]) =>
+const getLatestMetric = (values: (number | Nullish)[]) =>
   values.findLast((value): value is number => value != null && Number.isFinite(value))
 
 const getLatestLpUsdPrice = ({ data }: RefuelTimeSeriesData) => getLatestMetric(data.map(point => point.lpUsdPrice))

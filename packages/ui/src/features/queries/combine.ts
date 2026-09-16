@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, fromEntries, notFalsy } from '@primitives/objects.utils'
 import { DISABLED_Q, fallbackQ, q, Query, QueryProp } from '@ui/features/queries/util'
 import { decimalMin } from '@ui/lib/decimal'
 
@@ -19,7 +19,7 @@ export type QueryWithData<TData> = Query<TData> & { data: NonNullable<TData> }
 
 const combineQueryData = <const TQueries extends Queries, TResult>(
   queries: TQueries,
-  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
+  selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
 ) =>
   queries.some(({ data }) => data === undefined)
     ? undefined
@@ -27,7 +27,7 @@ const combineQueryData = <const TQueries extends Queries, TResult>(
 
 export const combineQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
-  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
+  selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
 ) => ({ data: combineQueryData(queries, selector), ...combineQueryState(...queries) }) as QueryProp<TResult>
 
 /** Collect ordered results, including missing data, preserving loading and error states. Empty input yields []. */
@@ -44,7 +44,7 @@ export const pickQuery = <TData>(
 
 export const useCombinedQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
-  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
+  selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
 ) =>
   ({
     data: useMemo(

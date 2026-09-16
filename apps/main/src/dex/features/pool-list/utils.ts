@@ -3,7 +3,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import type { LitePool, V2Pool } from '@curvefi/prices-api/pools'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
-import { notFalsy } from '@primitives/objects.utils'
+import { type Nullish, notFalsy } from '@primitives/objects.utils'
 import { isVyperVulnerablePool } from './alerts'
 import type { PoolRow, PoolRowData } from './types'
 
@@ -77,7 +77,7 @@ export const litePoolToRowData = (pool: LitePool): PoolRowData => {
 export const enrichPoolRow = (
   pool: PoolRowData,
   { chainId, blockchainId }: NetworkConfig,
-  campaignsByAddress: Record<string, CampaignRewards[]> | null | undefined,
+  campaignsByAddress: Record<string, CampaignRewards[]> | Nullish,
   userPosition: PoolRow['userPosition'] = { lpBalance: '0' },
 ): PoolRow => ({
   ...pool,

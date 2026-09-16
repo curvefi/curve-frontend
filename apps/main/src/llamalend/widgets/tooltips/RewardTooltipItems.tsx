@@ -4,6 +4,7 @@ import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { TooltipItem, TooltipValueLink } from '@ui/components/TooltipComponents'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { MerklIcon } from '@ui/icons/MerklIcon'
@@ -15,7 +16,7 @@ const { Spacing, IconSize } = SizesAndSpaces
 
 type RewardsTooltipItemsProps = {
   title: string
-  boostedApr?: number | null | undefined
+  boostedApr?: number | Nullish
   extraRewards: CampaignRewards[]
   tooltipType: Extract<RewardsAction, 'borrow' | 'supply'>
   extraIncentives: ExtraIncentive[]

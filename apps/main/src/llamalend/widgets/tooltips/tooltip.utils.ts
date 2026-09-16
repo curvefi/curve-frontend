@@ -1,13 +1,14 @@
 import { Amount } from '@primitives/decimal.utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 
-export const formatMetricValue = (value: Amount | null | undefined) =>
+export const formatMetricValue = (value: Amount | Nullish) =>
   value == null ? UNAVAILABLE_NOTATION : formatNumber(value, { abbreviate: true })
 
 /** Returns null instead of UNAVAILABLE_NOTATION to prevent showing UNAVAILABLE_NOTATION twice */
 export const formatPercentage = (
-  value: Amount | undefined | null,
-  totalValue: Amount | undefined | null,
+  value: Amount | Nullish,
+  totalValue: Amount | Nullish,
   // Converts value into the same denomination as totalValue.
   conversionRate?: Amount | null,
 ) =>

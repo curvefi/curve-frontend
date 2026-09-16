@@ -27,7 +27,7 @@ import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -45,7 +45,7 @@ export type RateChartPoint = { timestamp: number; rate: number; movingAverage: n
 type RateSeriesKey = 'rate' | 'movingAverage' | 'totalAverage'
 
 type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
-type RateValue = Amount | null | undefined
+type RateValue = Amount | Nullish
 
 type MarketHistoricalRatesChartProps = { rateMode: MarketRateType }
 

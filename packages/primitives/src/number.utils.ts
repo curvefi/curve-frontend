@@ -1,5 +1,5 @@
 import type { Amount } from './decimal.utils'
-import { notFalsy } from './objects.utils'
+import { type Nullish, notFalsy } from './objects.utils'
 import { getUnitOptions, type Unit } from './units.util'
 
 // Sometimes API returns overflowed USD values. Don't show them!
@@ -300,7 +300,7 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
   }
 }
 
-type MissingAmount = null | undefined | ''
+type MissingAmount = Nullish | ''
 
 /**
  * Formats a number according to the specified options by decomposing it into components
@@ -377,7 +377,7 @@ export function formatNumber(value: Amount | MissingAmount, options: NumberForma
  * Returns an empty object for empty, nullish, zero, or negative values so `formatNumber` can keep its normal defaults.
  */
 export function getFractionDigitsOptions(
-  val: number | string | undefined | null,
+  val: number | string | Nullish,
   defaultDecimal: number,
 ): Partial<NumberFormatOptions> {
   function getDecimal(val: number | string, defaultDecimal: number) {

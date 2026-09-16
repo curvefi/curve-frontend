@@ -2,7 +2,7 @@ import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { QueryData } from '@evm-ui/lib'
 import type { Theme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
-import { maybe, maybes, recordEntries, recordValues } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes, recordEntries, recordValues } from '@primitives/objects.utils'
 
 const HEALTH_UPPER_BOUND_STATE = 'pristine' as const
 const LIQ_BUFFER_UPPER_BOUND_STATE = 'light' as const
@@ -35,7 +35,7 @@ const LIQUIDATION_BUFFER_THRESHOLDS: Record<
   risky: 100,
 } as const
 
-export const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
+export const clampPercentage = (health: number | Nullish): number => Math.max(0, Math.min(health ?? 0, 100))
 
 export const getHealthState = (health: number): HealthState =>
   recordEntries(HEALTH_THRESHOLDS).find(([, threshold]) => health <= threshold)?.[0] ?? HEALTH_UPPER_BOUND_STATE
@@ -69,10 +69,10 @@ export const getLiquidationBufferColor = (state: LiquidationBufferState | undefi
   return maybe(state, s => colors[s])
 }
 
-export const getHealthPercent = (health: Decimal | null | undefined) =>
+export const getHealthPercent = (health: Decimal | Nullish) =>
   health == null ? 0 : clampPercentage((+health / recordValues(HEALTH_THRESHOLDS).at(-1)!) * 100)
 
-export const getLiquidationBufferPercent = (liquidationBuffer: Decimal | null | undefined) =>
+export const getLiquidationBufferPercent = (liquidationBuffer: Decimal | Nullish) =>
   liquidationBuffer == null
     ? 0
     : clampPercentage((+liquidationBuffer / recordValues(LIQUIDATION_BUFFER_THRESHOLDS).at(-1)!) * 100)

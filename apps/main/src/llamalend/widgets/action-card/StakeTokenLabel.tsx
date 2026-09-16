@@ -1,4 +1,5 @@
 import { Address } from '@primitives/address.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import type { FieldValues } from '@ui/features/forms'
 import type { LoanFormTokenInputProps } from './LoanFormTokenInput'
@@ -13,8 +14,8 @@ export const StakeTokenLabel = ({
 }: {
   blockchainId: LoanTokenLabelProps['blockchainId']
   vaultTokenLabel: string | undefined
-  collateralTokenAddress: Address | null | undefined
-  borrowTokenAddress: Address | null | undefined
+  collateralTokenAddress: Address | Nullish
+  borrowTokenAddress: Address | Nullish
 }) => (
   <TokenLabel
     badgeAddress={collateralTokenAddress}

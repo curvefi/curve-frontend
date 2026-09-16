@@ -1,23 +1,20 @@
 import { BigNumber } from 'bignumber.js'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { notFalsy, maybes } from '@primitives/objects.utils'
+import { type Nullish, notFalsy, maybes } from '@primitives/objects.utils'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 
 const { Spacing } = SizesAndSpaces
 
-export const formatAmount = (value: Amount | null | undefined, symbol?: string) =>
+export const formatAmount = (value: Amount | Nullish, symbol?: string) =>
   value == null ? '-' : notFalsy(formatNumber(value, { abbreviate: true }), symbol).join(' ')
 
-export const formatLeverage = (value: Amount | null | undefined) =>
+export const formatLeverage = (value: Amount | Nullish) =>
   value == null ? '-' : formatNumber(value, { abbreviate: false, decimals: 2, unit: 'multiplier' })
 
-export const calculateLeverageCollateral = (
-  totalCollateral: Decimal | null | undefined,
-  leverage: Decimal | null | undefined,
-) =>
+export const calculateLeverageCollateral = (totalCollateral: Decimal | Nullish, leverage: Decimal | Nullish) =>
   totalCollateral &&
   leverage &&
   (new BigNumber(leverage).isZero()
@@ -27,7 +24,5 @@ export const calculateLeverageCollateral = (
 export const ACTION_INFO_GROUP_SX = { gap: Spacing.sm }
 
 // Returns whether an action info should stay visible when its value differs from the reference value.
-export const isQueryValueDifferent = (
-  value: QueryProp<Decimal | null> | undefined,
-  comparedValue: Decimal | null | undefined,
-) => maybes([value?.data, comparedValue], (data, comparedValue) => !new BigNumber(data).isEqualTo(comparedValue))
+export const isQueryValueDifferent = (value: QueryProp<Decimal | null> | undefined, comparedValue: Decimal | Nullish) =>
+  maybes([value?.data, comparedValue], (data, comparedValue) => !new BigNumber(data).isEqualTo(comparedValue))

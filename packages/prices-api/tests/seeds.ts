@@ -1,7 +1,7 @@
 /** Discovers reproducible live endpoint parameters for schema tests. */
 import { beforeAll } from 'vitest'
 import type { Address } from '@primitives/address.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { type Nullish, notFalsy } from '@primitives/objects.utils'
 import type { Chain, Options } from '../src'
 import * as chains from '../src/chains'
 import * as crvusd from '../src/crvusd'
@@ -72,7 +72,7 @@ const once = <T>(load: () => Promise<T>) => {
   return () => (promise ??= load())
 }
 
-const requireSeed = <T>(value: T | null | undefined, source: string): T =>
+const requireSeed = <T>(value: T | Nullish, source: string): T =>
   value ??
   (() => {
     throw new Error(`Missing live seed from ${source}`)

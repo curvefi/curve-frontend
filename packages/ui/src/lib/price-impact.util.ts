@@ -1,5 +1,5 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { recordEntries } from '@primitives/objects.utils'
+import { type Nullish, recordEntries } from '@primitives/objects.utils'
 import type { Query } from '@ui/features/queries/util'
 import { decimalGreaterThan } from '@ui/lib/decimal'
 
@@ -18,14 +18,14 @@ const PRICE_IMPACT_THRESHOLDS = {
   caution: '0.5',
 } as const satisfies Record<'critical' | PriceImpactLevel, Decimal>
 
-const isPriceImpactSignificant = (priceImpact: PriceImpact | Decimal | null | undefined) =>
+const isPriceImpactSignificant = (priceImpact: PriceImpact | Decimal | Nullish) =>
   !(Number((priceImpact as PriceImpact)?.tokenInUsd) < MIN_USD_PRICE_IMPACT_WARN)
 
-export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | null | undefined) =>
+export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | Nullish) =>
   typeof priceImpact === 'string' ? priceImpact : priceImpact?.priceImpact
 
 /** Returns a percentage-only emphasis level without applying the USD significance filter. */
-export const getPriceImpactLevel = (priceImpact: PriceImpact | Decimal | null | undefined): PriceImpactLevel | null => {
+export const getPriceImpactLevel = (priceImpact: PriceImpact | Decimal | Nullish): PriceImpactLevel | null => {
   const level =
     recordEntries(PRICE_IMPACT_THRESHOLDS).find(([, threshold]) =>
       decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', threshold),
@@ -33,7 +33,7 @@ export const getPriceImpactLevel = (priceImpact: PriceImpact | Decimal | null | 
   return level === 'critical' ? 'error' : level
 }
 
-export const isHighPriceImpact = (priceImpact: PriceImpact | Decimal | null | undefined) =>
+export const isHighPriceImpact = (priceImpact: PriceImpact | Decimal | Nullish) =>
   isPriceImpactSignificant(priceImpact) &&
   decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', PRICE_IMPACT_THRESHOLDS.error)
 
@@ -43,9 +43,7 @@ export const isHighPriceImpact = (priceImpact: PriceImpact | Decimal | null | un
  * - 'warning' if price impact exceeds the warning threshold
  * - null if no alert is needed
  */
-export const getPriceImpactSeverity = (
-  priceImpact: PriceImpact | Decimal | null | undefined,
-): 'error' | 'warning' | null =>
+export const getPriceImpactSeverity = (priceImpact: PriceImpact | Decimal | Nullish): 'error' | 'warning' | null =>
   isHighPriceImpact(priceImpact)
     ? decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', PRICE_IMPACT_THRESHOLDS.critical)
       ? 'error'

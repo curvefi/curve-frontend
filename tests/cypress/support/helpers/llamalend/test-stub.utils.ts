@@ -1,4 +1,5 @@
-export type TestStubArg = string | number | boolean | bigint | symbol | null | undefined | object
+import type { Nullish } from '@primitives/objects.utils'
+export type TestStubArg = string | number | boolean | bigint | symbol | Nullish | object
 
 // define our own interface so we don't get errors from SinonStub
 export type TestStub<TArgs extends readonly TestStubArg[], TResult> = ((...args: TArgs) => TResult) & {

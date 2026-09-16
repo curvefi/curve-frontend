@@ -7,17 +7,17 @@ import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/averageRates'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
-  borrowRate: number | null | undefined
-  campaignsRate: number | null | undefined
+  borrowRate: number | Nullish
+  campaignsRate: number | Nullish
   snapshots: TSnapshot[] | undefined
-  getBorrowRate: (snapshot: TSnapshot) => number | null | undefined
-  getRebasingYield: (snapshot: TSnapshot) => number | null | undefined
+  getBorrowRate: (snapshot: TSnapshot) => number | Nullish
+  getRebasingYield: (snapshot: TSnapshot) => number | Nullish
   daysBack: number
 }
 
@@ -26,14 +26,14 @@ export const computeTotalRate = (rate: number, rebasingYield: number, campaignsR
 
 export const getSnapshotBorrowApr = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr
 export const getSnapshotCollateralRebasingYieldApr = <
-  TSnapshot extends { collateralToken: { rebasingYieldApr: number | null | undefined } },
+  TSnapshot extends { collateralToken: { rebasingYieldApr: number | Nullish } },
 >(
   snapshot: TSnapshot,
 ) => snapshot.collateralToken.rebasingYieldApr
 
 export const getLatestSnapshotValue = <TSnapshot extends WithTimestamp, TValue>(
   snapshots: TSnapshot[] | undefined,
-  getValue: (snapshot: TSnapshot) => TValue | null | undefined,
+  getValue: (snapshot: TSnapshot) => TValue | Nullish,
 ) => {
   const latest = snapshots?.at(-1)
   return latest ? (getValue(latest) ?? null) : null
@@ -68,11 +68,10 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
 }
 
 /** Sum a base rate with optional additional components, returning null if the base is null */
-const sumRates = (base: number | null | undefined, ...components: (number | null | undefined)[]) =>
+const sumRates = (base: number | Nullish, ...components: (number | Nullish)[]) =>
   maybe(base, base => components.reduce<number>((sum, c) => sum + (c ?? 0), base)) ?? null
 
-export const toNumberOrNull = (value: number | string | null | undefined) =>
-  maybe(value, value => Number(value)) ?? null
+export const toNumberOrNull = (value: number | string | Nullish) => maybe(value, value => Number(value)) ?? null
 
 type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
 
@@ -102,9 +101,9 @@ export const formatSupplyExtraIncentives = ({
   userBoost,
 }: {
   incentives: ExtraIncentive[]
-  baseRate?: number | null | undefined
-  userRate?: number | null | undefined
-  userBoost?: Decimal | null | undefined
+  baseRate?: number | Nullish
+  userRate?: number | Nullish
+  userBoost?: Decimal | Nullish
 }): ExtraIncentive[] =>
   notFalsy(
     baseRate && { title: 'CRV', percentage: baseRate, address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum' },
@@ -119,12 +118,12 @@ export const formatSupplyExtraIncentives = ({
   )
 
 type SupplyRateMetricsParams = {
-  supplyApy: number | null | undefined
-  crvBoostApr: Range<number> | null | undefined
-  rebasingYieldApy: number | null | undefined
-  extraIncentivesApy: number | null | undefined
-  campaignsApy: number | null | undefined
-  userSupplyBoost?: Decimal | null | undefined
+  supplyApy: number | Nullish
+  crvBoostApr: Range<number> | Nullish
+  rebasingYieldApy: number | Nullish
+  extraIncentivesApy: number | Nullish
+  campaignsApy: number | Nullish
+  userSupplyBoost?: Decimal | Nullish
 }
 
 /**

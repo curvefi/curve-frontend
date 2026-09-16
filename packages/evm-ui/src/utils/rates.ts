@@ -1,5 +1,6 @@
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 
 export const MAX_DISPLAY_RATE_PERCENT = 5000
 
@@ -17,7 +18,7 @@ export const formatCappedRateValue = (value: Amount) => {
   return formatNumber(value, { abbreviate: true })
 }
 
-export const formatCappedRatePercent = (value: Amount | null | undefined) =>
+export const formatCappedRatePercent = (value: Amount | Nullish) =>
   value != null && Number(value) >= MAX_DISPLAY_RATE_PERCENT
     ? `${formatCappedRateValue(value)}%`
     : formatNumber(value, 'percent.rate')

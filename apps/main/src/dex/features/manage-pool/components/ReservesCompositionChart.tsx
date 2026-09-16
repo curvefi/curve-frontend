@@ -19,14 +19,14 @@ import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
-import { mapRecord } from '@primitives/objects.utils'
+import { type Nullish, mapRecord } from '@primitives/objects.utils'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/timeseries.query'
 
 const PERIODS = ['7d', '1m', '3m', '6m', '1y'] as const satisfies Period[]
 
-const formatReserveShare = (value: number | null | undefined) => formatNumber(value, 'percent.value')
+const formatReserveShare = (value: number | Nullish) => formatNumber(value, 'percent.value')
 
 const getTokenLabel = (symbol: string | undefined, index: number) => symbol || t`Token ${index + 1}`
 
@@ -35,8 +35,8 @@ const getReserveUsdShares = ({
   prices,
   decimals,
 }: {
-  reserves: (number | null | undefined)[] | null | undefined
-  prices: (number | null | undefined)[] | null | undefined
+  reserves: (number | Nullish)[] | Nullish
+  prices: (number | Nullish)[] | Nullish
   decimals: (number | undefined)[]
 }) => {
   const reserveUsdValues =

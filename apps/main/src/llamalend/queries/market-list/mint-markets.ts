@@ -17,7 +17,7 @@ import {
   userContractValidationSuite,
 } from '@evm-ui/lib/model/query/user-contract'
 import type { Address } from '@primitives/address.utils'
-import { recordEntries } from '@primitives/objects.utils'
+import { type Nullish, recordEntries } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite, EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
@@ -76,7 +76,7 @@ const {
   validationSuite: userContractValidationSuite,
 })
 
-export const invalidateAllUserMintMarkets = async (userAddress: Address | null | undefined) => {
+export const invalidateAllUserMintMarkets = async (userAddress: Address | Nullish) => {
   await Promise.all(MINT_CHAINS.map(blockchainId => invalidateUserMintMarketsQuery({ userAddress, blockchainId })))
 
   const invalidateContracts = MINT_CHAINS.flatMap(blockchainId =>
@@ -87,7 +87,7 @@ export const invalidateAllUserMintMarkets = async (userAddress: Address | null |
   await Promise.all(invalidateContracts)
 }
 
-export const resetAllUserMintMarkets = async (userAddress: Address | null | undefined) => {
+export const resetAllUserMintMarkets = async (userAddress: Address | Nullish) => {
   await Promise.all(MINT_CHAINS.map(blockchainId => resetUserMintMarketsQuery({ userAddress, blockchainId })))
 
   const resetContracts = MINT_CHAINS.flatMap(blockchainId =>

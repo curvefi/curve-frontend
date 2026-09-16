@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { type QueryProp, type Range, useMappedQuery } from '@ui/features/queries/util'
 import type { LiquidationRanges, LlammaLiquididationRange, LpPriceOhlcDataFormatted, OraclePriceData } from '../types'
 
@@ -14,7 +14,7 @@ type UseLiquidationRangeProps = {
   /** User's current liquidation price range [low, high] */
   currentPrices: QueryProp<Range<Decimal> | null>
   /** New liquidation price range being calculated [low, high] */
-  newPrices: Range<Decimal> | null | undefined
+  newPrices: Range<Decimal> | Nullish
 }
 
 const EMPTY = [] as const

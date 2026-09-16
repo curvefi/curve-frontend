@@ -5,6 +5,7 @@
  * @param order Sort order (`asc` by default).
  * @returns A new sorted array.
  */
+import type { Nullish } from './objects.utils'
 export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' | 'desc' = 'asc'): T[] =>
   items.toSorted((a, b) => {
     const direction = order === 'asc' ? 1 : -1
@@ -39,7 +40,7 @@ export const splitAtFirst = <T>(items: T[], predicate: (value: T, index: number,
  * - If the input is a single item (not an array), it is wrapped in an array.
  * - If the input is null or undefined, an empty array is returned.
  */
-export const toArray = <T>(x: T | readonly T[] | null | undefined): readonly T[] =>
+export const toArray = <T>(x: T | readonly T[] | Nullish): readonly T[] =>
   Array.isArray(x) ? x : x == null ? [] : [x as T]
 
 /**

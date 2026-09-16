@@ -3,6 +3,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { type UseFormReturn, type FormSubmitHandler, type VisibleErrors, type ErrorKey } from '@ui/features/forms'
 import { Form } from '@ui/features/forms/components/Form'
 import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
@@ -23,7 +24,7 @@ export type DepositFormProps<TValues extends PoolTokensForm = PoolTokensForm> = 
   isDisabled: boolean
   wallet: Pick<FormButtonProps, 'connect' | 'isConnected' | 'isConnecting'>
   userAddress: Address | undefined
-  error: Error | null | undefined
+  error: Error | Nullish
   formErrors: VisibleErrors<TValues>
   footer: ReactNode
   priceImpact: QueryProp<Decimal | null>

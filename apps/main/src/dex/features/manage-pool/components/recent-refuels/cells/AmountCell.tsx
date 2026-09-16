@@ -1,11 +1,12 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type AmountCellProps = { amount: number | null | undefined; usdAmount: number | null | undefined }
+type AmountCellProps = { amount: number | Nullish; usdAmount: number | Nullish }
 
 export const AmountCell = ({ amount, usdAmount }: AmountCellProps) => {
   const formattedUsd = formatNumber(usdAmount, 'usd.amount')

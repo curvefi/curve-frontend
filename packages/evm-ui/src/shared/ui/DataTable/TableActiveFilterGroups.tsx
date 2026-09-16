@@ -1,6 +1,6 @@
 import type { FunctionComponent, ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
-import { notFalsy } from '@primitives/objects.utils'
+import { type Nullish, notFalsy } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
 import { getInlinedItemsVisibility } from './HiddenInlinedItems.utils'
@@ -18,7 +18,7 @@ export type TableActiveFilterGroup = {
   getChipLabel?: (label: string) => string
   getChipTestId?: (label: string) => string | undefined
   key: string
-  labels: readonly string[] | null | undefined
+  labels: readonly string[] | Nullish
   onRemove: TableActiveFilterGroupRemove
   testId?: string
   title: ReactNode
