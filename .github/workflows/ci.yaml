@@ -12,7 +12,7 @@ permissions:
 jobs:
   check-supply-chain:
     name: Check supply chain
-    timeout-minutes: 6
+    timeout-minutes: 8
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
