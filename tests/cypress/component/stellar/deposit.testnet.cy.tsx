@@ -1,7 +1,7 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { DepositTab } from '@/stellar/features/deposit/DepositTab'
 import { oneOf } from '@cy/support/generators'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import {
   allCoinDeposit,
@@ -9,8 +9,8 @@ import {
   checkBalancedDepositAmounts,
   checkBalancedWalletAmounts,
   checkDepositBalances,
-  checkDepositResult,
   checkDepositDetail,
+  checkDepositResult,
   checkDepositSupply,
   depositBalancedCheckbox,
   depositSubmit,
@@ -18,15 +18,14 @@ import {
   submitDepositForm,
 } from '@cy/support/helpers/stellar/deposit.helpers'
 import {
-  TEST_NETWORK,
+  checkPoolInputError,
   fetchPoolState,
-  type PoolState,
   type PoolAmounts,
   poolInput,
+  type PoolState,
+  TEST_NETWORK,
   writePoolAmount,
   writePoolForm,
-  checkPoolInputError,
-  checkPoolGasEstimate,
 } from '@cy/support/helpers/stellar/pool.helpers'
 import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
@@ -145,7 +144,7 @@ describe('Stellar testnet deposit', () => {
     cy.then(LOAD_TIMEOUT, () => fetchDepositPreview(pool, state, amounts)).then(({ expected, minimum, projected }) => {
       checkDepositDetail('expected-lp', expected)
       checkDepositDetail('minimum-lp', minimum)
-      checkPoolGasEstimate()
+      checkEstimatedTxCost()
       submitDepositForm(state)
       checkDepositResult(state, amounts, projected)
       checkDepositSupply(pool, state, expected)
@@ -204,7 +203,7 @@ describe('Stellar testnet deposit', () => {
     checkBalancedDepositAmounts(state.coins, 0.001)
     const amounts = fromEntries(state.coins.map((coin, index) => [coin.symbol, decimalMultiply('0.001', index + 1)]))
     cy.then(LOAD_TIMEOUT, () => fetchDepositPreview(pool, state, amounts)).then(({ projected }) => {
-      checkPoolGasEstimate()
+      checkEstimatedTxCost()
       submitDepositForm(state)
       checkDepositResult(state, amounts, projected)
       depositBalancedCheckbox().should('not.be.checked')
@@ -225,7 +224,7 @@ describe('Stellar testnet deposit', () => {
           checkDepositDetail('expected-lp', expected)
           checkDepositDetail('minimum-lp', minimum)
           checkDepositDetail('projected-lp', projected)
-          checkPoolGasEstimate()
+          checkEstimatedTxCost()
           submitDepositForm(state)
           checkDepositResult(state, amounts, projected)
           checkDepositSupply(pool, state, expected)

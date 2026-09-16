@@ -21,7 +21,7 @@ export const DepositFooter = ({
   quote,
   minimum,
   priceImpact,
-  fee,
+  gas,
 }: { params: DepositPreviewParams } & DepositPreview) => {
   const lpDecimals = useTokenDecimals({ ...params, token: params.pool })
   const lpBalance = useTokenBalance({ ...params, token: params.pool, decimals: lpDecimals.data })
@@ -33,7 +33,7 @@ export const DepositFooter = ({
       projectedLp={combineQueries([lpBalance, quote], decimalSum)}
       priceImpact={priceImpact}
       seedLock={useSeedLock(params)}
-      gas={fee}
+      gas={gas}
       slippage={params.slippage}
       onSlippageChanged={useUserProfileStore(state => state.setMaxSlippage)}
       userAddress={asAddress(params.account)}

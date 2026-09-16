@@ -33,6 +33,7 @@ export type PoolAmounts = Record<string, Decimal>
 
 export const poolInput = (address: StellarContract) =>
   cy.get(`[data-testid="pool-token-input-${address}"]`, LOAD_TIMEOUT)
+
 /** Reselect after each action because changing an amount can rerender every token input. */
 export const writePoolAmount = (address: StellarContract, amount: Decimal | undefined) => {
   poolInput(address).find('input').clear()

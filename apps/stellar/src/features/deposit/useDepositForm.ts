@@ -69,7 +69,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     userDefaultValues,
   )
   const preview = useDepositPreview(params)
-  const { quote, minimum, priceImpact, fee } = preview
+  const { quote, minimum, priceImpact, gas } = preview
 
   const {
     onSubmit,
@@ -94,7 +94,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     quote,
     minimum,
     priceImpact,
-    fee,
+    gas,
   )
   return {
     form,
@@ -104,7 +104,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
     isDisabled:
-      isPending || isDebouncing || !formState.isValid || !!error || !quote.data || minimum.data == null || !fee.data,
+      isPending || isDebouncing || !formState.isValid || !!error || !quote.data || minimum.data == null || !gas.data,
     isLoading: isPending || isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
