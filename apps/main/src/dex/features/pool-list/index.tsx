@@ -3,6 +3,7 @@ import { useDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
 import { ListPageLayout } from '@evm-ui/widgets/ListPageLayout'
 import { LegacyPoolsTable } from './LegacyPoolsTable'
 import { PoolsTable } from './PoolsTable'
+import { UserPositionsTable } from './UserPositionsTable'
 
 export const PoolsList = () => {
   const network = useNetworkFromUrl()
@@ -10,7 +11,15 @@ export const PoolsList = () => {
 
   return (
     <ListPageLayout>
-      {network && (isBetaPoolListEnabled ? <PoolsTable network={network} /> : <LegacyPoolsTable network={network} />)}
+      {network &&
+        (isBetaPoolListEnabled ? (
+          <>
+            <UserPositionsTable network={network} />
+            <PoolsTable network={network} />
+          </>
+        ) : (
+          <LegacyPoolsTable network={network} />
+        ))}
     </ListPageLayout>
   )
 }

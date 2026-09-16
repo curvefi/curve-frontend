@@ -7,23 +7,27 @@ export const oneDisclaimersSubTabs = () => oneOf(...DISCLAIMER_TABS.map(tab => t
 
 const isTabClickable = ($tab: JQuery) => window.getComputedStyle($tab[0]).pointerEvents !== 'none'
 
-export const clickTab = (testIdPrefix: string, value: string, options: Partial<Cypress.Timeoutable> = LOAD_TIMEOUT) => {
+export const clickTab = (
+  testIdPrefix: string,
+  value: string,
+  options: Partial<Cypress.Timeoutable> = LOAD_TIMEOUT,
+  // Existing callers force clicks because the phishing banner can cover tabs.
+  clickOptions: Partial<Cypress.ClickOptions> = { force: true },
+) => {
   const tab = cy
     .get(`[data-testid="${testIdPrefix}-container"]`, options)
-    .get(`[data-testid="${testIdPrefix}-${value}"]`, options)
+    .find(`[data-testid="${testIdPrefix}-${value}"]`, options)
 
   tab.then($tab => {
     // check if the tab is clickable
     if (isTabClickable($tab)) {
-      // phishing banner hides button on mobile that's why the force click
-      cy.wrap($tab).click({ force: true })
+      cy.wrap($tab).click(clickOptions)
       return
     }
     // if not clickable, find it in the kebab menu and click it
-    cy.get(`[data-testid="${testIdPrefix}-kebab-button"]`, options).click({ force: true })
+    cy.get(`[data-testid="${testIdPrefix}-kebab-button"]`, options).click(clickOptions)
     cy.get(`[data-testid="${testIdPrefix}-kebab-menu"]`, options)
-      // phishing banner hides button on mobile that's why the force click
-      .get(`[data-testid="${testIdPrefix}-${value}"]`, options)
-      .click({ force: true })
+      .find(`[data-testid="${testIdPrefix}-${value}"]`, options)
+      .click(clickOptions)
   })
 }
