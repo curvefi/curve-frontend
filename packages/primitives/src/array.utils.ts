@@ -12,6 +12,10 @@ export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' 
     return (getKey(a) - getKey(b)) * direction
   })
 
+/** Return the array only when every item is non-null, preserving its order and reference. */
+export const completeArray = <T>(items: (T | Nullish)[] | Nullish): NonNullable<T>[] | undefined =>
+  items?.every(value => value != null) ? items : undefined
+
 /** Split a list into two slices at the given index. */
 export const splitAt = <T>(items: T[], index: number) => [items.slice(0, index), items.slice(index)]
 

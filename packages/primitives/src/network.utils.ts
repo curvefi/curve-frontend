@@ -30,4 +30,5 @@ export enum Chain {
   Etherlink = 42793,
   Robinhood = 4663,
   Stable = 988,
+  Arc = 5042,
 }

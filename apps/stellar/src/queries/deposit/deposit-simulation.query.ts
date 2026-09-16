@@ -11,8 +11,8 @@ import { toBigIntArray, toWei, toWeiArray } from '@ui/lib/decimal'
 
 export const {
   useQuery: useDepositSimulation,
-  fetchQuery: fetchDepositSimulation,
   invalidate: invalidateDepositSimulation,
+  fetchQuery: fetchDepositSimulation,
 } = queryFactory({
   queryKey: ({ network, pool, amounts, decimals, account, minMint, supply, maxAmounts }: DepositParams) =>
     [

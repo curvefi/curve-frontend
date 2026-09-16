@@ -30,7 +30,7 @@ jobs:
 
   lint:
     name: Lint, format & typecheck
-    timeout-minutes: 6
+    timeout-minutes: 8
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
