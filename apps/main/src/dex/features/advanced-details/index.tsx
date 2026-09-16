@@ -38,7 +38,7 @@ export const AdvancedDetails = () => {
           title={t`Advanced Details`}
           action={<ManagePoolLink chainId={chainId} poolAddress={pool.address} />}
         />
-        <CardContent component={Stack}>
+        <CardContent>
           <Grid container columnSpacing={Spacing.md}>
             <Grid size={GRID_SIZE}>
               <Stack>
