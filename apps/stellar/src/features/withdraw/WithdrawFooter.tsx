@@ -9,13 +9,13 @@ import { decimalMinus } from '@ui/lib/decimal'
 import type { WithdrawPreview, WithdrawPreviewParams } from './useWithdrawPreview'
 
 export const WithdrawFooter = ({
-  params,
+  params: { account, network, pool, slippage },
   expected,
   maximum,
   priceImpact,
   fee,
 }: { params: WithdrawPreviewParams } & WithdrawPreview) => {
-  const lpBalance = useTokenBalance({ ...params, token: params.pool, decimals: LP_TOKEN_DECIMALS })
+  const lpBalance = useTokenBalance({ account, network, token: pool, decimals: LP_TOKEN_DECIMALS })
   return (
     <WithdrawInfoList
       expectedLp={expected}
@@ -24,9 +24,9 @@ export const WithdrawFooter = ({
       projectedLp={combineQueries([lpBalance, expected], decimalMinus)}
       priceImpact={priceImpact}
       gas={fee}
-      slippage={params.slippage}
+      slippage={slippage}
       onSlippageChanged={useUserProfileStore(state => state.setMaxSlippage)}
-      userAddress={asAddress(params.account ?? undefined)}
+      userAddress={asAddress(account)}
     />
   )
 }

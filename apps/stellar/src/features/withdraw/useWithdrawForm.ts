@@ -1,10 +1,10 @@
 import { identity } from 'lodash'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
-import { getBalancedWithdrawAmounts, getWithdrawLpBudget, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
@@ -12,12 +12,12 @@ import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery } from '@/stellar/queries/root-keys'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { withdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
-import { completeArray, zip } from '@primitives/array.utils'
+import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries, maybe, maybes } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
-import { getPoolDefaultValues, poolAmountField, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
+import { getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { combineQueryState, useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
@@ -44,19 +44,6 @@ const formOptions = {
 const getReserveAmounts = (reserves: Decimal[], decimals: (number | undefined)[]) =>
   zip(reserves, decimals).map(([amount, decimals]) => maybe(decimals, d => fromWei(amount, d)))
 
-const getBalancedAmountsOnLpChange = (
-  lpAmount: Decimal,
-  decimals: number[],
-  reserves: Decimal[],
-  supply: Decimal,
-  slippage: Decimal,
-) =>
-  fromEntries(
-    getBalancedWithdrawAmounts(getWithdrawLpBudget(lpAmount, slippage), supply, reserves, decimals).map(
-      (amount, index) => [poolAmountField(index), amount],
-    ),
-  )
-
 export function useWithdrawForm(poolParams: PoolQuery) {
   const { network, pool } = poolParams
   const { address: account, connect, isConnected, isConnecting } = useWallet()
@@ -78,7 +65,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     ...formOptions,
     defaultValues: { ...formOptions.defaultValues, ...userDefaultValues },
   })
-  const { formState, reset, update } = form
+  const { formState, reset } = form
 
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
   useFormSync(form, {
@@ -138,20 +125,6 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     onReset: () => reset(userDefaultValues),
   })
 
-  // Only an explicit LP edit fills outputs. Quotes and token edits never rewrite the user's amounts.
-  const onLpAmount = useCallback(
-    (lpAmount: Decimal | undefined) => {
-      update({
-        lpAmount,
-        ...(maybes(
-          [lpAmount, completeArray(decimals.data), reserves.data, supply.data, slippage],
-          getBalancedAmountsOnLpChange,
-        ) ?? getPoolDefaultValues(tokenCount ?? 0)),
-      })
-    },
-    [update, decimals.data, reserves.data, supply.data, slippage, tokenCount],
-  )
-
   const isPending = formState.isSubmitting || isWithdrawing
   const { error, isLoading } = combineQueryState(
     tokenInputs,
@@ -169,16 +142,17 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   return {
     form,
     reserves: q(reserves),
+    decimals: q(decimals),
+    lpTokenDecimals: LP_TOKEN_DECIMALS,
     maxAmounts,
     params,
     preview,
-    onLpAmount,
+    supply: q(supply),
     lpBalance: q(lpBalance),
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
     isDisabled: isPending || isDebouncing || !formState.isValid || !!error || !fee.data,
     isLoading: isPending || isLoading,
-    isLpDisabled: isPending || !maxAmounts.data || !supply.data || !+supply.data,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: withdrawError ?? error,

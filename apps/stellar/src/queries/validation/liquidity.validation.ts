@@ -23,7 +23,7 @@ export const validateSlippage = (slippage: Decimal | null | undefined) => {
   })
 }
 
-export const validateAmount = (field: string, amount: Decimal | undefined, precision: number | undefined) => {
+export const validateAmount = (field: string, amount: Decimal | null | undefined, precision: number | undefined) => {
   test(field, 'Enter a valid non-negative amount', () => {
     enforce(amount || '0')
       .isDecimal({ decimal_digits: '0,' })
@@ -39,10 +39,12 @@ export const validateAmount = (field: string, amount: Decimal | undefined, preci
   })
 }
 
-export const validateLiquidityInputs = (
-  { amounts, decimals, supply }: Pick<QuoteParams, 'amounts' | 'decimals' | 'supply'>,
-  isDeposit: boolean,
-) => {
+export const validateLiquidityInputs = ({
+  amounts,
+  decimals,
+  supply,
+  isDeposit,
+}: Pick<QuoteParams, 'amounts' | 'decimals' | 'supply'> & Pick<ExpectedLpParams, 'isDeposit'>) => {
   test('supply', 'Pool supply is unavailable', () => {
     enforce(supply).isDecimal().gte(0)
     if (!isDeposit) enforce(supply).gt(0)
@@ -78,7 +80,7 @@ export const validateReserveAmounts = ({ amounts, maxAmounts }: Pick<ExpectedLpP
 export const quoteValidationSuite = createValidationSuite(
   ({ pool, network, isDeposit, amounts, decimals, supply, maxAmounts }: ExpectedLpQuery) => {
     validatePool({ pool, network })
-    validateLiquidityInputs({ amounts, decimals, supply }, isDeposit)
+    validateLiquidityInputs({ amounts, decimals, supply, isDeposit })
     skipWhen(isDeposit, () => validateReserveAmounts({ amounts, maxAmounts }))
   },
 )

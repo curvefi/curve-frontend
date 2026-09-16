@@ -9,7 +9,7 @@ import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
-import { decimalMinus, fromWei } from '@ui/lib/decimal'
+import { decimalMinus, decimalSum, fromWei } from '@ui/lib/decimal'
 
 export const fetchWithdrawState = async (pool: StellarContract, config: TestnetConfig) => {
   const [state, reserves] = await Promise.all([
@@ -67,4 +67,28 @@ export const submitWithdrawForm = ({ coins }: PoolState) => {
     poolInput(address).find('input').should('have.value', '')
   })
   withdrawSubmit().should('be.disabled')
+}
+
+export const checkWithdrawResult = (
+  state: WithdrawState,
+  fresh: WithdrawState,
+  amounts: Decimal[],
+  expectedLp: Decimal,
+  projectedLp: Decimal,
+) => {
+  checkWithdrawBalances(fresh)
+  // Imbalanced withdrawals can also deduct fees from available reserves.
+  fresh.reserves.forEach((reserve, index) => {
+    expect(+reserve, `${state.coins[index].symbol} pool reserve`).to.be.at.most(
+      +decimalMinus(state.reserves[index], amounts[index]),
+    )
+  })
+  expect(fresh.lp.balance).to.equal(projectedLp)
+  expect(fresh.supply).to.equal(decimalMinus(state.supply, expectedLp))
+  expect(decimalMinus(fresh.supply, fresh.lp.balance)).to.equal(state.config.seedLock)
+  fresh.coins.forEach((coin, index) => {
+    expect(coin.balance, `${coin.symbol} wallet balance`).to.equal(
+      decimalSum(state.coins[index].balance, amounts[index]),
+    )
+  })
 }

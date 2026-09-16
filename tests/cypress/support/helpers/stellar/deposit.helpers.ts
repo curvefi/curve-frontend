@@ -7,8 +7,14 @@ import { type PoolAmounts, poolInput, type PoolState, TEST_NETWORK } from '@cy/s
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
-import { decimalMinus, decimalSum } from '@ui/lib/decimal'
+import { decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
+
+export const BASE_DEPOSIT_AMOUNT = '0.01' satisfies Decimal
+
+export const allCoinDeposit = (coins: PoolState['coins']): PoolAmounts =>
+  fromEntries(coins.map((coin, index) => [coin.symbol, decimalMultiply(BASE_DEPOSIT_AMOUNT, index + 1)]))
 
 export const fetchDepositPreview = async (
   pool: StellarContract,

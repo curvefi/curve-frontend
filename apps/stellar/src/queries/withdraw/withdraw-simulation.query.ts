@@ -20,7 +20,7 @@ export const {
     amounts,
     decimals,
     account,
-    maxBurn,
+    maximumBurn,
     supply,
     maxAmounts,
     lpAmount,
@@ -35,7 +35,7 @@ export const {
       { amounts },
       { decimals },
       { account },
-      { maxBurn },
+      { maximumBurn },
       { supply },
       { maxAmounts },
       { lpAmount },
@@ -44,7 +44,7 @@ export const {
       { quote },
       { slippage },
     ] as const,
-  queryFn: ({ network, pool, account, amounts, decimals, maxBurn }: WithdrawSimulationQuery) =>
+  queryFn: ({ network, pool, account, amounts, decimals, maximumBurn }: WithdrawSimulationQuery) =>
     simulateContractCall<bigint>(
       network,
       pool,
@@ -52,11 +52,11 @@ export const {
       [
         account,
         toBigIntArray(toWeiArray(amounts, decimals)).map(amount => amount ?? 0n),
-        BigInt(toWei(maxBurn, LP_TOKEN_DECIMALS)),
+        BigInt(toWei(maximumBurn, LP_TOKEN_DECIMALS)),
         account,
       ],
       account,
     ),
-  category: 'global.no-persist',
+  category: 'global.no-persist', // the values returned by the SDK lose the built transaction, disable persistence for now
   validationSuite: withdrawSimulationValidationSuite,
 })

@@ -23,7 +23,7 @@ export const useWithdrawMutation = ({ onReset, tokens, ...params }: WithdrawOpti
   const { mutate, error, isPending } = useStellarMutation<WithdrawMutation>({
     mutationKey: [...rootKeys.userPool(params), 'withdraw'],
     createTransaction: (values, { account }) =>
-      fetchWithdrawSimulation({ ...values, ...params, account, maxBurn: values.maximumBurn }, { staleTime: 0 }),
+      fetchWithdrawSimulation({ ...values, ...params, account }, { staleTime: 0 }),
     validationParams: params,
     validationSuite: withdrawValidationSuite,
     pendingMessage: () => t`Preparing withdrawal`,
@@ -31,11 +31,10 @@ export const useWithdrawMutation = ({ onReset, tokens, ...params }: WithdrawOpti
     onReset,
     onSuccess: async (_, values, { account }) => {
       const submitted = { ...values, ...params, account }
-      const simulation = { ...submitted, maxBurn: values.maximumBurn }
       await Promise.allSettled([
         invalidatePoolLiquidity({ ...submitted, tokens }),
-        invalidateExpectedLp({ ...simulation, isDeposit: false }),
-        invalidateWithdrawSimulation(simulation),
+        invalidateExpectedLp({ ...submitted, isDeposit: false }),
+        invalidateWithdrawSimulation(submitted),
       ])
     },
   })

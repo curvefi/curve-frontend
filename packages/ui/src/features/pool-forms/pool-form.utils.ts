@@ -16,6 +16,8 @@ export type PoolForm = PoolTokenFields & { isBalanced: boolean; decimals: (numbe
 export const poolAmountField = (index: number): PoolAmountField => `amount_${index}`
 export const poolMaxAmountField = (index: number): PoolMaxAmountField => `maxAmount_${index}`
 export const poolTokenFields = (index: number) => [poolAmountField(index), poolMaxAmountField(index)] as const
+export const allTokenFields = <T extends number | null | undefined>(count: T) =>
+  maybe(count, c => range(c).flatMap(index => poolTokenFields(index)))
 
 /** Keep contract amounts in pool token order, regardless of form field insertion order. */
 export const getPoolAmounts = (values: PoolTokenFields, tokenCount: number | undefined) =>
