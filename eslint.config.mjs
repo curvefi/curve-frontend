@@ -11,6 +11,7 @@ import storybook from 'eslint-plugin-storybook'
 import unusedImports from 'eslint-plugin-unused-imports'
 import tseslint from 'typescript-eslint'
 import { useMaybePatternRule } from './.eslint/use-maybe-pattern.rule.mjs'
+import { useNullishTypeRule } from './.eslint/use-nullish-type.rule.mjs'
 import { useNotFalsyPatternRule } from './.eslint/use-not-falsy-pattern.rule.mjs'
 import { stableHookCallbacksRule } from './.eslint/stable-hook-callbacks.rule.mjs'
 import { noDoubleNegativeRule } from './.eslint/no-double-negative.rule.mjs'
@@ -59,6 +60,7 @@ const config = [
       local: {
         rules: {
           'use-maybe-pattern': useMaybePatternRule,
+          'use-nullish-type': useNullishTypeRule,
           'use-not-falsy-pattern': useNotFalsyPatternRule,
           'stable-hook-callbacks': stableHookCallbacksRule,
           'no-double-negative': noDoubleNegativeRule,
@@ -88,6 +90,7 @@ const config = [
     },
     rules: {
       'local/use-maybe-pattern': 'error',
+      'local/use-nullish-type': 'error',
       'local/stable-hook-callbacks': 'error',
       'local/no-double-negative': 'error',
       'local/no-jsx-string-literal-braces': 'error',

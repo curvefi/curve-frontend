@@ -1,4 +1,6 @@
-export type Falsy = false | 0 | '' | null | undefined
+// eslint-disable-next-line local/use-nullish-type -- Defines the shared alias.
+export type Nullish = null | undefined
+export type Falsy = false | 0 | '' | Nullish
 export type PartialRecord<Key extends PropertyKey, Value> = Partial<Record<Key, Value>>
 export type AllOrNone<T extends object> = T | { [K in keyof T]?: never }
 
