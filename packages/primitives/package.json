@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-primitives.tsbuildinfo"
   },
   "devDependencies": {
+    "@typescript/native": "npm:typescript@7.0.2",
     "vitest": "4.1.11"
   },
   "publishConfig": {

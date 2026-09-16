@@ -14,5 +14,8 @@
   "types": "src/index.ts",
   "dependencies": {
     "fastify": "5.12.1"
+  },
+  "devDependencies": {
+    "@typescript/native": "npm:typescript@7.0.2"
   }
 }

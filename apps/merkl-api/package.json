@@ -19,6 +19,7 @@
     "fastify": "5.12.1"
   },
   "devDependencies": {
+    "@typescript/native": "npm:typescript@7.0.2",
     "tsx": "4.23.12"
   }
 }

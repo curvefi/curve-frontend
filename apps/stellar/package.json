@@ -28,6 +28,7 @@
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
     "@types/node": "26.1.0",
+    "@typescript/native": "npm:typescript@7.0.2",
     "@vitejs/plugin-react": "5.1.2",
     "vite": "7.3.5"
   }

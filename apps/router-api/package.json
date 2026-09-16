@@ -23,6 +23,7 @@
     "viem": "2.56.0"
   },
   "devDependencies": {
+    "@typescript/native": "npm:typescript@7.0.2",
     "tsx": "4.23.12"
   }
 }

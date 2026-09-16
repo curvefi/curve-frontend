@@ -14,5 +14,8 @@
     "react-aria": "3.51.0",
     "react-stately": "3.49.0",
     "styled-components": "6.5.3"
+  },
+  "devDependencies": {
+    "@typescript/native": "npm:typescript@7.0.2"
   }
 }

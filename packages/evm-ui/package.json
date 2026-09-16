@@ -35,6 +35,7 @@
   "devDependencies": {
     "@curvefi/api": "2.69.17",
     "@types/lodash": "4.17.25",
-    "@types/memoizee": "0.4.12"
+    "@types/memoizee": "0.4.12",
+    "@typescript/native": "npm:typescript@7.0.2"
   }
 }
