@@ -76,10 +76,10 @@ export const MarketActivityComp = ({ rateType }: { rateType: MarketRateType }) =
   } = useMarketContext<ChainId>()
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
+      <MarketParticipantsTabs rateType={rateType} />
       <MarketActivityLayout
         activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'lending' }}
       />
-      <MarketParticipantsTabs rateType={rateType} />
     </Stack>
   )
 }
