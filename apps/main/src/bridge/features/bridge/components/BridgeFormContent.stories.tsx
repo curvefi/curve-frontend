@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import type { IFastBridgeNetwork } from '@curvefi/api/lib/bridge'
+import { chains } from '@curvefi/prices-api'
 import { createTestWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test-config'
 import { TestQueryProvider } from '@evm-ui/lib/queries/test-query.provider.test'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { constQ, q } from '@ui/features/queries/util'
@@ -92,6 +94,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
       <BridgeFormContent
         {...props}
         networks={BridgeNetworks}
+        tvls={constQ(fromEntries(chains.map(chain => [chain, 1000000])))}
         fromChainId={fromChainId}
         amount={q({
           data: amount,

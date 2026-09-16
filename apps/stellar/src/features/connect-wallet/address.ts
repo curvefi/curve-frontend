@@ -13,4 +13,5 @@ export type StellarSecret = `S${string}`
 export const asAddress = <T extends StellarAddress | StellarContract | null | undefined>(address: T) =>
   maybe(address, a => a as string as Address)
 
-export const shortenAddress = <T extends StellarAddress | undefined>(address: T) => maybe(address, shortenString)
+export const shortenAddress = <T extends StellarAddress | StellarContract | null | undefined>(address: T) =>
+  maybe(address, shortenString)

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
+import type { Chain as PricesChain } from '@curvefi/prices-api'
 import { createChainOptions, getCurrentNetwork } from '@evm-ui/shared/routes'
 import { requireBlockchainId } from '@evm-ui/utils/network'
 import type { NetworkDef } from '@legacy-ui/utils'
@@ -14,6 +14,7 @@ import { Select } from '@ui/components/Select'
 import { Spinner } from '@ui/components/Spinner'
 import { ChainList } from '@ui/features/layout/switch-chain/ui/ChainList'
 import { ChainSwitcherIcon } from '@ui/features/layout/switch-chain/ui/ChainSwitcherIcon'
+import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { usePathname } from '@ui/hooks/router'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -87,6 +88,7 @@ const SelectNetworkButton = ({
 export type BridgeTargetsProps = {
   /** List of networks available as bridge sources. */
   networks: NetworkDef[]
+  tvls: QueryProp<Record<PricesChain, number>>
   /** Currently selected source chain id. At the moment of writing the parent component reads this from the URL. */
   fromChainId: number | undefined
   disabled: boolean
@@ -102,7 +104,14 @@ export type BridgeTargetsProps = {
  * while the destination ("To") is fixed to Ethereum mainnet. Perhaps later
  * we can support bridging to different networks.
  */
-export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetworkSelected }: BridgeTargetsProps) => {
+export const BridgeTargets = ({
+  networks,
+  tvls,
+  fromChainId,
+  disabled,
+  loading,
+  onNetworkSelected,
+}: BridgeTargetsProps) => {
   const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
 
   return (
@@ -132,7 +141,7 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
           showTestnets={false}
           options={createChainOptions(networks, 'bridge')}
           selectedNetworkId={getCurrentNetwork(usePathname())}
-          tvls={useNetworksTVL('lending')}
+          tvls={tvls}
           onNetwork={useCallback(
             (network: NetworkDef) => {
               closeFrom()

@@ -1,13 +1,17 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordEntries } from '@primitives/objects.utils'
 import type { Query } from '@ui/features/queries/util'
-import { decimalGreaterThan } from '@ui/lib/decimal'
+import { decimalDiv, decimalGreaterThan, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
 
 const MIN_USD_PRICE_IMPACT_WARN = 1000
 
 export type PriceImpact = { priceImpact: Decimal | undefined; tokenInUsd: Decimal | undefined }
 
 export type PriceImpactLevel = 'caution' | 'warning' | 'error'
+
+/** Compare values in the same units. Negative impact represents a bonus. */
+export const calculatePriceImpact = (value: Decimal, referenceValue: Decimal) =>
+  +referenceValue ? decimalMultiply(decimalMinus('1', decimalDiv(value, referenceValue)), '100') : undefined
 
 /** Thresholds shared by price-impact value emphasis, alerts, and blocking behavior. */
 const PRICE_IMPACT_THRESHOLDS = {

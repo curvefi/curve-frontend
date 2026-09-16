@@ -8,7 +8,7 @@ export type BridgeFormContentParams = Omit<
   BridgeButtonProps,
   'disableBridge' | 'disableConnect' | 'disableChangeNetwork'
 > &
-  Pick<BridgeTargetsProps, 'networks' | 'fromChainId' | 'onNetworkSelected'> &
+  Pick<BridgeTargetsProps, 'networks' | 'tvls' | 'fromChainId' | 'onNetworkSelected'> &
   Pick<BridgeAmountProps, 'amount' | 'onAmount' | 'walletBalance' | 'inputBalanceUsd'> & {
     bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
     loading: boolean
@@ -16,6 +16,7 @@ export type BridgeFormContentParams = Omit<
 
 export const BridgeFormContent = ({
   networks,
+  tvls,
   fromChainId,
   amount,
   walletBalance,
@@ -34,6 +35,7 @@ export const BridgeFormContent = ({
   <>
     <BridgeTargets
       networks={networks}
+      tvls={tvls}
       fromChainId={fromChainId}
       disabled={loading}
       loading={loading}

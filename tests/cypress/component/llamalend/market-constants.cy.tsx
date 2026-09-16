@@ -44,7 +44,7 @@ const mountMarketAlert = ({
 const ALL_MARKET_ALERTS = recordValues(MARKETS_ALERTS)
 const ALL_DEPRECATED_LLAMAS = recordValues(DEPRECATED_LLAMAS)
 const STABLE_LEVERAGE_MARKETS = {
-  [Chain.Ethereum]: ['0x2fb54c8eae57767A9A509A395b9C4FA0702e2675', '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0'],
+  [Chain.Ethereum]: ['0x3cD4d86a2c65e57ce4b4121b67E2D2224BA41bbe', '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0'],
   [Chain.Optimism]: ['0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9'],
 } as const
 
@@ -110,7 +110,11 @@ describe('llama market constants', () => {
   it('resolves configured market providers by release channel', () => {
     const controller = STABLE_LEVERAGE_MARKETS[Chain.Ethereum][0]
     expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Beta)).to.deep.eq(RouteProviders)
-    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq(['enso', 'curve'])
+    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq([
+      'enso',
+      'curve-solver',
+      'curve',
+    ])
     expect(getMarketLeverageProviders(Chain.Ethereum, zeroAddress, ReleaseChannel.Beta)).to.eq(undefined)
   })
 })

@@ -10,7 +10,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { assert, maybe, notFalsy } from '@primitives/objects.utils'
 import type { TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
-import { getPoolAmounts, type PoolTokensForm } from '@ui/features/pool-forms/pool-form.utils'
+import { getPoolAmounts, type PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimalMultiply, fromWei } from '@ui/lib/decimal'
 import { formatToken } from '@ui/lib/tokens'
@@ -20,7 +20,7 @@ export type DepositPreviewParams = Omit<QuoteParams, 'amounts' | 'network'> &
   NetworkQuery &
   UserParams &
   Pick<DepositParams, 'maxAmounts'> &
-  PoolTokensForm & { slippage: Decimal; tokenCount: number | undefined }
+  PoolTokenFields & { slippage: Decimal; tokenCount: number | undefined }
 
 function useGasEstimation(params: DepositPreviewParams, minimum: QueryProp<Decimal>): QueryProp<TxGasInfo> {
   const simulation = useDepositSimulation({ ...params, minMint: minimum.data })

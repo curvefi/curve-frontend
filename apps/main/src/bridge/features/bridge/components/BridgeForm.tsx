@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import { useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
 import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
@@ -70,6 +71,7 @@ export const BridgeForm = ({
     >
       <BridgeFormContent
         networks={supportedNetworks}
+        tvls={useNetworksTVL('lending')}
         fromChainId={fromChainId}
         amount={q({ data: amount, isLoading: false, error: amountError ? new Error(amountError) : null })}
         walletBalance={walletBalance}
