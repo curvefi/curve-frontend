@@ -34,4 +34,5 @@ export const CHAIN_BLOCKCHAIN_IDS = {
   [Chain.Mantle]: 'mantle',
   [Chain.Sonic]: 'sonic',
   [Chain.Hyperliquid]: 'hyperliquid',
+  [Chain.Arc]: 'arc',
 } as const satisfies PartialRecord<number, string>
