@@ -14,7 +14,6 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { SxProps } from '@ui/lib/mui'
 
 const {
-  Spacing,
   Width: { modal: modalWidth },
   Height: { modal: modalHeight },
 } = SizesAndSpaces
@@ -134,6 +133,8 @@ export const ModalDialog = ({
     <Card sx={{ width: { tablet: modalWidth[width], mobile: '100dvw' }, display: 'flex', flexDirection: 'column' }}>
       <WithWrapper shouldWrap={formProps} Wrapper={Form} {...formProps}>
         <CardHeader
+          size="medium"
+          variant="modal"
           action={
             onClose && (
               <IconButton onClick={onClose} size="extraSmall">
@@ -147,12 +148,6 @@ export const ModalDialog = ({
               {title}
             </Typography>
           }
-          sx={{
-            paddingInline: Spacing.md,
-            paddingBlock: Spacing.sm,
-            alignItems: 'center',
-            '& .MuiCardHeader-action': { alignSelf: 'center' },
-          }}
         />
         <CardContent sx={{ flexGrow: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}>
           {children}

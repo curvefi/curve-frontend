@@ -7,18 +7,18 @@ import Typography from '@mui/material/Typography'
 import { formatDate } from '@primitives/date.utils'
 import { maybe } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
+import { toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { relativeTime } from '@ui/lib/time'
+import { formatToken } from '@ui/lib/tokens'
 import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { RewardIcons } from '../cells/RewardIcons'
 import { getBaseApr, getNetApr, isVolatileRate } from '../cells/utils'
 import { POOL_TITLES, PoolColumnId } from '../columns'
-import type { PoolColumnVariant } from '../hooks/usePoolsVisibility'
-import type { PoolRow } from '../types'
+import type { PoolRow, PoolTableVariant } from '../types'
 
 const { Spacing } = SizesAndSpaces
 const PRIMARY_METRIC_CATEGORY = 'dex.poolListMobileExpanded'
@@ -38,8 +38,6 @@ const getRateValueOptions = (
   disableTooltip: !hasTooltip,
   ...(volatile && { color: 'error', formatter: formatCappedRateValue }),
 })
-
-type PoolExpandedPanelProps = Parameters<ExpandedPanelComponent<PoolRow>>[0] & { variant: PoolColumnVariant }
 
 const PRIMARY_METRIC_SIZE = 6 as const
 
@@ -72,8 +70,7 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
   </Stack>
 )
 
-export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
-  const pool = row.original
+export const PoolExpandedPanel = ({ pool, variant }: { pool: PoolRow; variant: PoolTableVariant }) => {
   const currentDate = useCurrentDate()
   const baseRate = getBaseApr(pool, 'daily')
   const netRate = getNetApr(pool)
@@ -120,6 +117,18 @@ export const PoolExpandedPanel = ({ row, variant }: PoolExpandedPanelProps) => {
             value={decimal(pool.tvlUsd) ?? null}
             valueOptions={{ unit: 'dollar' }}
             testId="pool-tvl"
+          />
+        </Grid>
+      )}
+      {variant === 'userPositions' && (
+        <Grid size={PRIMARY_METRIC_SIZE}>
+          <Metric
+            category={PRIMARY_METRIC_CATEGORY}
+            label={POOL_TITLES[PoolColumnId.Deposits]}
+            value={pool.userPosition.depositsUsd}
+            valueOptions={{ unit: 'dollar' }}
+            notional={toQuery(formatToken(pool.userPosition.lpBalance, 'LP', 'balance'))}
+            testId="pool-deposits"
           />
         </Grid>
       )}

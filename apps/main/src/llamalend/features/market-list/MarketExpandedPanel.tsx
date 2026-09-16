@@ -81,7 +81,7 @@ const GridSection = ({ children }: { children: ReactNode }) => (
 
 const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
   <Grid size={12}>
-    <CardHeader {...props} size="small" sx={{ borderBottom: borderStyle }} />
+    <CardHeader {...props} sx={{ borderBottom: borderStyle }} />
   </Grid>
 )
 

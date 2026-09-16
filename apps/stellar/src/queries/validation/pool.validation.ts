@@ -11,10 +11,11 @@ export type { PoolQuery, PoolParams, TokenQuery, TokenParams } from '@/stellar/q
 export type BalanceQuery = TokenQuery & UserQuery & { decimals: number }
 export type BalanceParams = FieldsOf<BalanceQuery>
 
-const validateNetwork = (network: string | null | undefined) =>
+export const validateNetwork = (network: string | null | undefined) => {
   test('network', 'Unsupported Stellar network', () => {
     enforce(network).inside(Object.keys(STELLAR_NETWORKS))
   })
+}
 export const validateAccount = (account: StellarAddress | null | undefined) => {
   test('account', 'Connect a Stellar wallet', () => {
     enforce(account).isNotEmpty().condition(isAccountAddress)

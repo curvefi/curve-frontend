@@ -35,7 +35,7 @@ export const Prices = () => {
   return (
     <>
       {!!priceOracleData?.length && (
-        <Card size="inline">
+        <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Price Oracle`} />
           <CardContent component={Stack}>
             {priceRows.map(({ key, label, index }) => (
@@ -50,7 +50,7 @@ export const Prices = () => {
       )}
 
       {!!priceScaleData?.length && (
-        <Card size="inline">
+        <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Price Scale`} />
           <CardContent component={Stack}>
             {priceRows.map(({ key, label, index }) => (
@@ -65,7 +65,7 @@ export const Prices = () => {
       )}
 
       {(snapshotData?.xcpProfit != null || snapshotData?.xcpProfitA != null) && (
-        <Card size="inline">
+        <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Xcp Profit`} />
           <CardContent component={Stack}>
             {snapshotData?.xcpProfit != null && (

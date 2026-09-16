@@ -5,7 +5,7 @@ import { useLayoutStore } from '@ui/features/layout/store'
 import { useLocation, useNavigate } from '@ui/hooks/router'
 import { useResizeObserver } from '@ui/hooks/useResizeObserver'
 
-/** Height in pixels of the viewport band used to determine the active section. */
+/** Height in pixels of the viewport band used to determine the active section below the navigation bar */
 const ACTIVE_SECTION_HEIGHT = 100
 
 type Section<T extends string> = { value: T }
@@ -45,8 +45,10 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
   const { hash } = useLocation()
   const navigate = useNavigate()
   const navigationRef = useRef<HTMLElement>(null)
-  // Coordinates URL-driven smooth scrolling with scroll-spy hash updates.
+  // Tracks hashes written by the scroll spy so they do not trigger redundant URL-driven scrolling.
   const scrollSpyHashRef = useRef('')
+  // Tracks URL-driven scrolling so the scroll spy stays paused until the requested scroll finishes.
+  const hashScrollRef = useRef('')
   const isNavigating = useRouterState({ select: state => state.status === 'pending' })
   const globalNavHeight = useLayoutStore(state => state.navHeight)
   const [, sectionNavHeight = 0] = useResizeObserver(navigationRef, { threshold: 1 })
@@ -54,6 +56,7 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
   const activationTop = globalNavHeight + sectionNavHeight
   const activeSection = sections.find(({ value }) => value === hash)?.value ?? sections[0]?.value
 
+  // URL to page: keep the hash-selected section visible as the layout changes.
   useEffect(() => {
     if (scrollSpyHashRef.current === hash) {
       scrollSpyHashRef.current = ''
@@ -63,12 +66,28 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
     // The target may render after TanStack Router's initial hash scroll attempt.
     const target = section && document.getElementById(section.value)
     const elements = notFalsy(...sections.map(({ value }) => document.getElementById(value)))
-    if (target && getActiveSection<T>(elements, activationTop) !== section.value) {
-      scrollSpyHashRef.current = section.value
-      target.scrollIntoView()
+    if (!target) return
+
+    const scrollToSection = () => {
+      if (
+        target.getBoundingClientRect().top < activationTop ||
+        getActiveSection<T>(elements, activationTop) !== section.value
+      ) {
+        hashScrollRef.current = section.value
+        target.scrollIntoView()
+      }
     }
+
+    scrollToSection()
+
+    // Keep the URL target aligned while asynchronously loaded sections above it change height.
+    const observer = new ResizeObserver(scrollToSection)
+    elements.forEach(element => observer.observe(element))
+
+    return () => observer.disconnect()
   }, [activationTop, hash, sections])
 
+  // Page to URL: keep the hash synchronized with the section visible below the navigation.
   useEffect(() => {
     const elements = notFalsy(...sections.map(({ value }) => document.getElementById(value)))
     if (!elements.length) return
@@ -76,11 +95,8 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
     const updateActiveSection = () => {
       if (isNavigating) return
       const section = getActiveSection<T>(elements, activationTop)
-      // Pause the scroll spy until the requested section becomes active.
-      if (scrollSpyHashRef.current) {
-        if (section === scrollSpyHashRef.current) scrollSpyHashRef.current = ''
-        return
-      }
+      // Pause the scroll spy until the URL-driven scroll finishes.
+      if (hashScrollRef.current) return
       // Clear the hash at the top so the first section becomes active.
       if (!section && window.scrollY <= activationTop && hash) {
         navigate('.', { replace: true, resetScroll: false, hashScrollIntoView: false, hash: '' })
@@ -93,12 +109,19 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
       }
     }
 
+    const finishHashScroll = () => {
+      hashScrollRef.current = ''
+      updateActiveSection()
+    }
+
     window.addEventListener('scroll', updateActiveSection, { passive: true })
+    window.addEventListener('scrollend', finishHashScroll)
     window.addEventListener('resize', updateActiveSection)
     updateActiveSection()
 
     return () => {
       window.removeEventListener('scroll', updateActiveSection)
+      window.removeEventListener('scrollend', finishHashScroll)
       window.removeEventListener('resize', updateActiveSection)
     }
   }, [activationTop, hash, isNavigating, navigate, sections])

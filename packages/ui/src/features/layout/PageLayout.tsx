@@ -5,7 +5,7 @@ import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
-const { MinHeight } = SizesAndSpaces
+const { MinHeight, MaxWidth } = SizesAndSpaces
 
 export const PageLayout = ({
   header,
@@ -24,7 +24,7 @@ export const PageLayout = ({
     {header}
     <Box
       component="main"
-      sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: MinHeight.pageContent, width: '100%' }}
+      sx={{ margin: `0 auto`, maxWidth: MaxWidth.page, minHeight: MinHeight.pageContent, width: '100%' }}
     >
       <ErrorBoundary title={t`Page error`} userAddress={userAddress}>
         {children}

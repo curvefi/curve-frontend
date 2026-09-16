@@ -38,11 +38,7 @@ export const AdvancedDetails = () => {
           title={t`Advanced Details`}
           action={<ManagePoolLink chainId={chainId} poolAddress={pool.address} />}
         />
-        <CardContent
-          component={Stack}
-          /** All inner components use inline card headers which come with their own paddingBlock */
-          sx={{ '&&': { paddingBlock: 0 } }}
-        >
+        <CardContent>
           <Grid container columnSpacing={Spacing.md}>
             <Grid size={GRID_SIZE}>
               <Stack>

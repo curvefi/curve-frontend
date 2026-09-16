@@ -262,7 +262,7 @@ export const SizesAndSpaces = {
     tableTitle: '67rem', // 1072px
     table: '96rem', // 1536px
     banner: '96rem', // 1536px
-    footer: '96rem', // 1536px
+    page: '96rem', // 1536px
     connectWallet: '50rem', // 800px
     actionCard: '28rem', // 448px
     candleAndBandChart: '68.75rem', // 1100px, switches to column from row when charts start to become to small next to eachother
