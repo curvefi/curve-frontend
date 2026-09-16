@@ -1,4 +1,5 @@
 import { countBy } from 'lodash'
+import { zeroAddress } from 'viem'
 import type { StoreApi } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
@@ -141,6 +142,7 @@ function _getDefaultTokenMapper(curve: CurveApi) {
   const { address, symbol, wrappedAddress, wrappedSymbol } = curve.getNetworkConstants().NATIVE_TOKEN
   return {
     [address]: { ...DEFAULT_TOKEN, symbol, address },
-    [wrappedAddress]: { ...DEFAULT_TOKEN, symbol: wrappedSymbol, address: wrappedAddress },
+    [wrappedAddress]:
+      wrappedAddress !== zeroAddress ? { ...DEFAULT_TOKEN, symbol: wrappedSymbol, address: wrappedAddress } : undefined,
   }
 }
