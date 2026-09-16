@@ -10,12 +10,17 @@ import { useUserProfileStore } from '@ui/features/user-profile'
 import { decimalEqual, decimalSum } from '@ui/lib/decimal'
 import { type DepositPreviewParams, type DepositPreview } from './useDepositPreview'
 
-export const DepositFooter = ({ params, preview }: { params: DepositPreviewParams; preview: DepositPreview }) => {
+export const DepositFooter = ({
+  params,
+  quote,
+  minimum,
+  priceImpact,
+  gas,
+}: { params: DepositPreviewParams } & DepositPreview) => {
   const config = usePoolConfig(params)
   const supply = usePoolSupply(params)
   const lpDecimals = useTokenDecimals({ ...params, token: params.pool })
   const lpBalance = useTokenBalance({ ...params, token: params.pool, decimals: lpDecimals.data })
-  const { quote, minimum, priceImpact, fee } = preview
   return (
     <DepositInfoList
       expectedLp={q(quote)}
@@ -24,10 +29,10 @@ export const DepositFooter = ({ params, preview }: { params: DepositPreviewParam
       projectedLp={combineQueries([lpBalance, quote], decimalSum)}
       priceImpact={priceImpact}
       seedLock={combineQueries([config, supply], (pool, supply) => (decimalEqual(supply, '0') ? pool.seedLock : null))}
-      gas={fee}
+      gas={gas}
       slippage={params.slippage}
       onSlippageChanged={useUserProfileStore(state => state.setMaxSlippage)}
-      userAddress={asAddress(params.account ?? undefined)}
+      userAddress={asAddress(params.account)}
     />
   )
 }
