@@ -1,10 +1,9 @@
 import Button from '@mui/material/Button'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
-import { noop } from '@tanstack/react-query'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { BUTTON_FORM_SIZE } from '@ui/features/forms/constants'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
 import { t } from '@ui/lib/i18n'
 import { FormTabs } from './FormTabs'
 
@@ -20,16 +19,7 @@ const menu = [
     ),
     component: () => (
       <FormContent>
-        <Skeleton variant="rectangular" width="100%">
-          <LargeTokenInput
-            name="loading"
-            onBalance={noop}
-            label={t`Loading`}
-            tokenSelector={<Typography variant="bodyMBold">{t`Token`}</Typography>}
-            walletBalance={{ balance: '0', symbol: t`Token` }}
-            inputBalanceUsd="0"
-          />
-        </Skeleton>
+        <LargeTokenInputSkeleton />
         <Button loading disabled fullWidth size={BUTTON_FORM_SIZE} />
       </FormContent>
     ),

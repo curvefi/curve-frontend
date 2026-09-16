@@ -162,6 +162,53 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
+  cypress-component-stellar:
+    name: Cypress Stellar component tests
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: yarn
+      - name: Restore cache
+        uses: ./.github/actions/restore-cache
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
+        run: yarn vite optimize --config vite.config.ts
+        working-directory: tests
+
+      - name: Run Stellar tests
+        run: |
+          set -o pipefail # fail tee if the main command fails
+          yarn run cy:run:stellar --browser electron 2>&1 | \
+            tee ../stellar-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
+        working-directory: tests
+        timeout-minutes: 5 # lower timeout than the whole job, so we can get screenshots on timeout
+        env:
+          ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
+          NODE_ENV: test
+          TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-stellar
+          CYPRESS_STELLAR_TESTNET_CONFIG: ${{ secrets.STELLAR_TESTNET_CONFIG }}
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: cypress-stellar
+          path: tests/cypress/screenshots
+          retention-days: ${{ job.status == 'success' && 1 || 3 }}
+          if-no-files-found: ${{ job.status == 'success' && 'ignore' || 'error' }}
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: stellar-cypress-log
+          path: stellar-cypress.log
+          retention-days: 3
+          if-no-files-found: error
+
   cypress-e2e:
     strategy:
       fail-fast: false
@@ -260,7 +307,7 @@ jobs:
     if: failure() && github.ref_name == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 1
-    needs: [lint, test, cypress-e2e, cypress-component, cypress-component-rpc]
+    needs: [lint, test, cypress-e2e, cypress-component, cypress-component-rpc, cypress-component-stellar]
     steps:
       - name: Send Slack alert
         run: |

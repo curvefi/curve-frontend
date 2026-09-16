@@ -9,6 +9,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '@cy', replacement: resolve(__dirname, './cypress') },
+      { find: '@/stellar', replacement: resolve(__dirname, '../apps/stellar/src') },
       { find: '@', replacement: resolve(__dirname, '../apps/main/src/') },
       { find: '@legacy-ui', replacement: resolve(__dirname, '../packages/legacy-ui/src/') },
       { find: '@evm-ui', replacement: resolve(__dirname, '../packages/evm-ui/src') },
