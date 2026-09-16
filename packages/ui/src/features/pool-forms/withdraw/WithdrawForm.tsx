@@ -12,7 +12,7 @@ import type { WithdrawFormValues } from './withdraw-form.utils'
 
 type WithdrawFormProps = PoolFormProps<WithdrawFormValues> & {
   reserves: QueryProp<Decimal[]>
-  maxAmounts: QueryProp<Decimal[]>
+  maxAmounts: QueryProp<(Decimal | undefined)[]>
   lpBalance: QueryProp<Decimal>
   onLpAmount: (value: Decimal | undefined) => void
   isLpDisabled: boolean

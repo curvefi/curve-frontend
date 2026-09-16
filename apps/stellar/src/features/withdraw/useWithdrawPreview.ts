@@ -13,7 +13,7 @@ import { useWithdrawPriceImpact } from './useWithdrawPriceImpact'
 export type WithdrawPreviewParams = Omit<WithdrawSimulationParams, 'amounts' | 'quote' | 'maxBurn'> &
   PoolTokenFields & { tokenCount: number | undefined; slippage: Decimal }
 
-export const useWithdrawPreview = (params: WithdrawPreviewParams) => {
+export function useWithdrawPreview(params: WithdrawPreviewParams) {
   const queryParams = useMemo(() => ({ ...params, amounts: getPoolAmounts(params, params.tokenCount) }), [params])
   const quote = q(useExpectedLp({ ...queryParams, isDeposit: false }))
   const expected = mapQuery(quote, amount => (decimalGreaterThan(amount, '0') ? calculateExpectedBurn(amount) : '0'))

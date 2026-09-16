@@ -15,7 +15,7 @@ export const PoolTokenInputs = ({
   reserves: QueryProp<Decimal[]>
   disabled: boolean
   hideMaxButton?: boolean
-  maxAmounts?: QueryProp<Decimal[]>
+  maxAmounts?: QueryProp<(Decimal | undefined)[]>
 }) =>
   tokens?.map((token, index) => (
     <PoolTokenInput

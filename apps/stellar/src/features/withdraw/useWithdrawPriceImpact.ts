@@ -7,7 +7,7 @@ import { combineQueries } from '@ui/features/queries/combine'
 import type { Query } from '@ui/features/queries/util'
 import { calculatePriceImpact } from '@ui/lib/price-impact.util'
 
-export const useWithdrawPriceImpact = (params: QuoteParams, expectedBurn: Query<Decimal>) => {
+export function useWithdrawPriceImpact(params: QuoteParams, expectedBurn: Query<Decimal>) {
   const reserves = usePoolReserves(params)
   const rates = usePoolRates(params)
   return combineQueries([reserves, rates, expectedBurn], (reserves, rates, burn) => {
