@@ -1,6 +1,5 @@
 import { formatChartAxisNumber } from '@evm-ui/shared/ui/Chart'
 import { LegendBox } from '@evm-ui/shared/ui/Chart/LegendSet'
-import { formatToken } from '@evm-ui/utils'
 import { Box, Stack, Typography } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -9,6 +8,7 @@ import { TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/Toolti
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalGreaterThan, decimalPercent, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import type { BandsChartToken, ChartDataPoint } from './types'
 

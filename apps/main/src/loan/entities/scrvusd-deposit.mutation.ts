@@ -3,10 +3,11 @@ import { useConfig } from 'wagmi'
 import type { ChainId } from '@/loan/types/loan.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { rootKeys } from '@evm-ui/lib/model'
-import { type OnTransactionSuccess, useTransactionMutation } from '@evm-ui/lib/model/mutation/useTransactionMutation'
-import { formatToken, waitForApproval } from '@evm-ui/utils'
+import { type OnTransactionSuccess, useEvmMutation } from '@evm-ui/lib/model/mutation/useEvmMutation'
+import { waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 import { fetchScrvUsdDepositIsApproved } from './scrvusd-deposit-is-approved.query'
 import { invalidateScrvUsdMutationQueries } from './scrvusd-mutation.helpers'
 import type { ScrvUsdDepositForm, ScrvUsdDepositMutation } from './scrvusd.validation'
@@ -21,7 +22,7 @@ type ScrvUsdDepositOptions = {
 
 export const useScrvUsdDepositMutation = ({ chainId, userAddress, onSuccess, ...props }: ScrvUsdDepositOptions) => {
   const config = useConfig()
-  const { mutate, error, isPending } = useTransactionMutation<ScrvUsdDepositMutation>({
+  const { mutate, error, isPending } = useEvmMutation<ScrvUsdDepositMutation>({
     mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.deposit'] as const,
     mutationFn: async ({ approveInfinite, depositAmount }) => {
       await waitForApproval({

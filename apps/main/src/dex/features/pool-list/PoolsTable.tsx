@@ -26,15 +26,19 @@ import { usePoolsGlobalFilterFn } from './hooks/usePoolsGlobalFilter'
 import { usePoolsPagination } from './hooks/usePoolsPagination'
 import { usePoolsSorting } from './hooks/usePoolsSorting'
 import { usePoolsTable } from './hooks/usePoolsTable'
-import { type PoolColumnVariant, usePoolsVisibility } from './hooks/usePoolsVisibility'
-import type { PoolRow } from './types'
+import { usePoolsVisibility } from './hooks/usePoolsVisibility'
+import type { PoolRow, PoolTableMeta } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const EMPTY_POOL_ROWS: readonly PoolRow[] = []
-const POOL_EXPANDED_PANEL_BODIES = {
-  full: props => <PoolExpandedPanel {...props} variant="full" />,
-  lite: props => <PoolExpandedPanel {...props} variant="lite" />,
-} satisfies Record<PoolColumnVariant, ExpandedPanelComponent<PoolRow>>
+
+const FullPoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row }) => (
+  <PoolExpandedPanel pool={row.original} variant="full" />
+)
+
+const LitePoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row }) => (
+  <PoolExpandedPanel pool={row.original} variant="lite" />
+)
 
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const isLite = isLiteChain(network.chainId)
@@ -52,8 +56,8 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
 
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
-    isLite,
-    sorting,
+    variant: isLite ? 'lite' : 'full',
+    mobileColumn: sortField,
   })
 
   const { isFetching, onReload, pageCount, userHasPositions, tableQuery } = usePoolsTable({
@@ -73,7 +77,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    meta: { getRowHref: ({ url }) => url },
+    meta: { getRowHref: ({ url }) => url, variant } as PoolTableMeta,
     state: { expanded, sorting, columnVisibility, globalFilter, ...(!isLite && { pagination, columnFilters }) },
     getRowId: row => row.address,
     onExpandedChange: setExpanded,
@@ -100,7 +104,10 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list`, description: tableQuery.error?.message, onReload }}
-        expandedPanel={{ Body: POOL_EXPANDED_PANEL_BODIES[variant], Actions: PoolExpandedPanelActions }}
+        expandedPanel={{
+          Body: isLite ? LitePoolExpandedPanel : FullPoolExpandedPanel,
+          Actions: PoolExpandedPanelActions,
+        }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters

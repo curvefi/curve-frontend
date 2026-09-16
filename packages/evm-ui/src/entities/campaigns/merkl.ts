@@ -117,3 +117,5 @@ export const fetchMerklRewards = async (params: Record<string, string | number |
   // Can't use Object.groupBy until we support ES2024
   return groupBy(campaigns, x => x.address)
 }
+
+export const isMerkl = (campaign: CampaignRewards) => campaign.dashboardLink.includes('merkl.xyz')

@@ -4,6 +4,7 @@
     "types": [],
     "paths": {
       "@/*": ["../apps/main/src/*"],
+      "@/stellar/*": ["../apps/stellar/src/*"],
       "@cy/*": ["./cypress/*"],
       "@legacy-ui": ["../packages/legacy-ui/src/index.ts"],
       "@legacy-ui/*": ["../packages/legacy-ui/src/*"],
