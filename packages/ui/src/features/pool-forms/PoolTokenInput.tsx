@@ -54,14 +54,7 @@ export const PoolTokenInput = ({
     <LargeTokenInput
       name={field}
       tokenSelector={
-        <TokenLabel
-          blockchainId={blockchainId}
-          address={address}
-          label={symbol}
-          size="mui-md"
-          disabled={disabled}
-          noWrap
-        />
+        <TokenLabel blockchainId={blockchainId} address={address} label={symbol} size="mui-md" disabled={disabled} />
       }
       balance={q({ data: amount, error: inputError ?? null, isLoading: false })}
       onBalance={useCallback(
