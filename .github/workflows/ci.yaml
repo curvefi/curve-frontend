@@ -38,15 +38,36 @@ jobs:
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
+      # Restore the latest compatible branch cache, then save a fresh entry on every run/retry.
+      # Rule implementations are part of the key because ESLint does not track their source changes.
+      - name: Restore lint and typecheck cache
+        id: lint_cache
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            .cache/eslint
+            .cache/typecheck
+          key: lint-v1-${{ runner.os }}-${{ hashFiles('yarn.lock', 'eslint.config.mjs', '.eslint/**', '**/tsconfig*.json') }}-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            lint-v1-${{ runner.os }}-${{ hashFiles('yarn.lock', 'eslint.config.mjs', '.eslint/**', '**/tsconfig*.json') }}-${{ github.ref_name }}-
+            lint-v1-${{ runner.os }}-${{ hashFiles('yarn.lock', 'eslint.config.mjs', '.eslint/**', '**/tsconfig*.json') }}-
       - run: yarn set version stable
       - run: yarn install --immutable
       - run: yarn lint
+        id: eslint
       - run: yarn format:check
         if: success() || failure()
       - run: yarn typecheck
         if: success() || failure()
+      # Preserve useful cache updates even if lint/format/typecheck reports errors.
+      - name: Save lint and typecheck cache
+        if: ${{ !cancelled() && steps.lint_cache.outcome == 'success' && steps.eslint.outcome != 'skipped' }}
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            .cache/eslint
+            .cache/typecheck
+          key: ${{ steps.lint_cache.outputs.cache-primary-key }}
 
   test:
     name: Unit tests

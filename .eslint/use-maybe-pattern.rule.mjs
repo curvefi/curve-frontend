@@ -67,22 +67,22 @@ export const useMaybePatternRule = {
       /** Detect guard patterns: if (x == null) return nullish; return expr */
       IfStatement: node => {
         const { test, parent, consequent } = node
+        if (
+          consequent.type !== 'ReturnStatement' ||
+          !isNullish(consequent.argument) ||
+          (parent.type !== 'BlockStatement' && parent.type !== 'Program')
+        )
+          return
+
         const nullChecks = getNullChecks(test)
         if (
           // Condition must be a single affirmative null check (not negated)
           nullChecks?.length === 1 &&
           !nullChecks[0].isNegated &&
-          // The then-block must be a return with a nullish value
-          consequent.type === 'ReturnStatement' &&
-          isNullish(consequent.argument) &&
           // the next sibling must be a return statement
-          (parent.type === 'BlockStatement' || parent.type === 'Program') &&
           parent.body[parent.body.indexOf(node) + 1]?.type === 'ReturnStatement'
         )
-          context.report({
-            node,
-            messageId: 'guard',
-          })
+          context.report({ node, messageId: 'guard' })
       },
     }
   },

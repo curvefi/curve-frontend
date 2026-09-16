@@ -20,10 +20,14 @@ const getPropertyName = ({ computed, property }) =>
 /**
  * Checks if type is an Array or tuple, including union members and aliases whose type exposes the underlying array shape.
  */
-const isArrayLikeType = (checker, type) => {
-  if (type.isUnion()) return type.types.some(unionType => isArrayLikeType(checker, unionType))
-  const apparentType = checker.getApparentType(type)
-  return checker.isArrayType(apparentType) || checker.isTupleType(apparentType)
+const isArrayLikeType = (checker, type, cache) => {
+  if (cache.has(type)) return cache.get(type)
+  const apparentType = type.isUnion() ? null : checker.getApparentType(type)
+  const result = type.isUnion()
+    ? type.types.some(unionType => isArrayLikeType(checker, unionType, cache))
+    : checker.isArrayType(apparentType) || checker.isTupleType(apparentType)
+  cache.set(type, result)
+  return result
 }
 
 const getNodeType = (services, checker, node) => {
@@ -43,21 +47,25 @@ export const noMutableArrayMethodsRule = {
     docs: { description: 'Disallow mutable Array methods in favor of immutable alternatives' },
     messages: { mutableArrayMethod: 'Do not mutate arrays with `{{method}}`; {{suggestion}}.' },
   },
-  create: context => ({
-    CallExpression: ({ callee }) => {
-      const services = context.sourceCode.parserServices
-      const checker = services.program.getTypeChecker()
+  create: context => {
+    let checker
+    // Cache per file and type; each receiver still needs its own flow-narrowed type lookup.
+    const arrayTypes = new WeakMap()
+    return {
+      CallExpression: ({ callee }) => {
+        if (callee.type !== 'MemberExpression') return
 
-      if (callee.type !== 'MemberExpression') return
+        const method = getPropertyName(callee)
+        const suggestion = mutableArrayMethods.get(method)
+        if (!suggestion) return
 
-      const method = getPropertyName(callee)
-      const suggestion = mutableArrayMethods.get(method)
-      if (!suggestion) return
+        const services = context.sourceCode.parserServices
+        checker ??= services.program.getTypeChecker()
+        const receiverType = getNodeType(services, checker, callee.object)
+        if (!receiverType || !isArrayLikeType(checker, receiverType, arrayTypes)) return
 
-      const receiverType = getNodeType(services, checker, callee.object)
-      if (!receiverType || !isArrayLikeType(checker, receiverType)) return
-
-      context.report({ node: callee.property, messageId: 'mutableArrayMethod', data: { method, suggestion } })
-    },
-  }),
+        context.report({ node: callee.property, messageId: 'mutableArrayMethod', data: { method, suggestion } })
+      },
+    }
+  },
 }

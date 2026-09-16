@@ -39,7 +39,7 @@ const isParameterDefinition = variable => variable?.defs.some(({ type }) => type
 const findVariable = (scope, name) => {
   let current = scope
   while (current) {
-    const variable = current.variables.find(({ name: variableName }) => variableName === name)
+    const variable = current.set.get(name)
     if (variable) return variable
     current = current.upper
   }

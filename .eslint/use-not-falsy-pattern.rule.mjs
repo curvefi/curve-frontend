@@ -37,16 +37,8 @@ const containsTypeParameter = type =>
   ((type.isUnion() || type.isIntersection()) && type.types.some(containsTypeParameter))
 
 /** True only for types whose runtime values cannot be falsy. */
-const isDefinitelyTruthy = (checker, type) => {
+const isDefinitelyTruthy = (checker, type, falsyTypes) => {
   if (!type || containsTypeParameter(type)) return false
-  const falsyTypes = [
-    checker.getFalseType(),
-    checker.getStringLiteralType(''),
-    checker.getNumberLiteralType(0),
-    checker.getBigIntLiteralType({ negative: false, base10Value: '0' }),
-    checker.getNullType(),
-    checker.getUndefinedType(),
-  ]
   // A branded primitive can exclude its falsy literal structurally without doing so at runtime.
   if (
     type.isIntersection() &&
@@ -91,6 +83,13 @@ const nullishMask = type =>
 const isObjectsUtilsImport = source =>
   source === '@primitives/objects.utils' || source === './objects.utils' || source.endsWith('/objects.utils')
 
+const isSupportedCallback = callback =>
+  callback.type === 'ArrowFunctionExpression' &&
+  !callback.async &&
+  callback.params.length === 1 &&
+  callback.params[0].type === 'Identifier' &&
+  callback.body.type !== 'BlockStatement'
+
 /** Reports safe, high-signal manual falsy compaction. */
 export const useNotFalsyPatternRule = {
   meta: {
@@ -109,7 +108,28 @@ export const useNotFalsyPatternRule = {
     const services = sourceCode.parserServices
     if (!services?.program || !services.esTreeNodeToTSNodeMap) return {}
 
-    const checker = services.program.getTypeChecker()
+    let checker
+    const getChecker = () => (checker ??= services.program.getTypeChecker())
+    // Keep type caches local to this file's checker; resolve narrowed receiver types at each use.
+    const elementTypes = new WeakMap()
+    const truthyTypes = new WeakMap()
+    let falsyTypes
+    const isTruthyType = type => {
+      if (!type) return false
+      if (truthyTypes.has(type)) return truthyTypes.get(type)
+      const checker = getChecker()
+      falsyTypes ??= [
+        checker.getFalseType(),
+        checker.getStringLiteralType(''),
+        checker.getNumberLiteralType(0),
+        checker.getBigIntLiteralType({ negative: false, base10Value: '0' }),
+        checker.getNullType(),
+        checker.getUndefinedType(),
+      ]
+      const result = isDefinitelyTruthy(checker, type, falsyTypes)
+      truthyTypes.set(type, result)
+      return result
+    }
     const inObjectsUtils = context.filename
       .replaceAll('\\', '/')
       .toLowerCase()
@@ -125,14 +145,20 @@ export const useNotFalsyPatternRule = {
       const variable = findVariable(node, name)
       return !variable || variable.defs.length === 0
     }
-    const getType = node => checker.getTypeAtLocation(services.esTreeNodeToTSNodeMap.get(node))
+    const getType = node => getChecker().getTypeAtLocation(services.esTreeNodeToTSNodeMap.get(node))
     const getElementType = receiver => {
       const type = getType(receiver)
+      // `undefined` is a cached result too.
+      if (elementTypes.has(type)) return elementTypes.get(type)
       const isArray = member => {
         const apparent = checker.getApparentType(member)
         return checker.isArrayType(apparent) || checker.isTupleType(apparent)
       }
-      return unionMembers(type).every(isArray) ? checker.getIndexTypeOfType(type, ts.IndexKind.Number) : undefined
+      const elementType = unionMembers(type).every(isArray)
+        ? checker.getIndexTypeOfType(type, ts.IndexKind.Number)
+        : undefined
+      elementTypes.set(type, elementType)
+      return elementType
     }
 
     const isReference = node => {
@@ -188,16 +214,8 @@ export const useNotFalsyPatternRule = {
       return node.operator === '!=' ? 3 : isNull ? 1 : 2
     }
 
+    // The caller has already checked isSupportedCallback before querying types.
     const classifyCallback = (callback, elementType) => {
-      if (
-        callback.type !== 'ArrowFunctionExpression' ||
-        callback.async ||
-        callback.params.length !== 1 ||
-        callback.params[0].type !== 'Identifier' ||
-        callback.body.type === 'BlockStatement'
-      )
-        return undefined
-
       const parameter = callback.params[0]
       const operands = flattenAnd(callback.body)
       let guardCount = truthinessPolarity(operands[0], parameter) === true ? 1 : 0
@@ -211,11 +229,7 @@ export const useNotFalsyPatternRule = {
           guardCount++
           if ((removed & required) === required) break
         }
-        if (
-          !required ||
-          (removed & required) !== required ||
-          !isDefinitelyTruthy(checker, checker.getNonNullableType(elementType))
-        )
+        if (!required || (removed & required) !== required || !isTruthyType(checker.getNonNullableType(elementType)))
           return undefined
       }
       return guardCount < operands.length ? 'compound' : 'direct'
@@ -283,19 +297,23 @@ export const useNotFalsyPatternRule = {
 
         const receiver = node.callee.object
         const arrayLiteral = unwrap(receiver)
-        if (arrayLiteral.type === 'ArrayExpression' && !isBoundedArrayLiteral(arrayLiteral)) return
+        const bounded = isBoundedArrayLiteral(arrayLiteral)
+        if (arrayLiteral.type === 'ArrayExpression' && !bounded) return
+        const callback = unwrap(node.arguments[0])
+        const globalBoolean = isGlobalBoolean(callback)
+        if (!globalBoolean && !isSupportedCallback(callback)) return
+        if (globalBoolean && isOwnImplementation(node)) return
+
         const elementType = getElementType(receiver)
         if (!elementType) return
 
-        const callback = unwrap(node.arguments[0])
-        if (isGlobalBoolean(callback) && isOwnImplementation(node)) return
-        if (isGlobalBoolean(callback) && isImportedNotFalsyCall(arrayLiteral)) {
+        if (globalBoolean && isImportedNotFalsyCall(arrayLiteral)) {
           context.report({ node, messageId: 'redundant' })
           return
         }
-        if (!isBoundedArrayLiteral(arrayLiteral) && !containsExplicitFalsy(elementType)) return
+        if (!bounded && !containsExplicitFalsy(elementType)) return
 
-        const predicate = isGlobalBoolean(callback) ? 'direct' : classifyCallback(callback, elementType)
+        const predicate = globalBoolean ? 'direct' : classifyCallback(callback, elementType)
         if (predicate) context.report({ node, messageId: predicate === 'compound' ? 'compactThenFilter' : 'compact' })
       },
 
@@ -304,11 +322,7 @@ export const useNotFalsyPatternRule = {
         if (!parts) return
         const polarity = truthinessPolarity(node.test, parts.element)
         const sameTruthyValue = polarity !== undefined && polarity === parts.includeOnTestTrue
-        if (
-          sameTruthyValue ||
-          isObviouslyTruthyExpression(parts.element) ||
-          isDefinitelyTruthy(checker, getType(parts.element))
-        )
+        if (sameTruthyValue || isObviouslyTruthyExpression(parts.element) || isTruthyType(getType(parts.element)))
           context.report({ node, messageId: 'conditional' })
       },
     }
