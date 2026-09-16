@@ -9,15 +9,20 @@ export type PoolTokenField = PoolAmountField | PoolMaxAmountField
  * Keep per-token form fields flat: we do not want to extend useForm to support nested values and errors before migrating
  * to TanStack Form. Convert to arrays only at validation, quote, and submission boundaries, using the pool's token order.
  */
-export type PoolTokensForm = Record<PoolAmountField | PoolMaxAmountField, Decimal | undefined>
+export type PoolTokenFields = Record<PoolAmountField | PoolMaxAmountField, Decimal | undefined>
+
+export type PoolForm = PoolTokenFields & { isBalanced: boolean; decimals: (number | undefined)[] | undefined }
 
 export const poolAmountField = (index: number): PoolAmountField => `amount_${index}`
 export const poolMaxAmountField = (index: number): PoolMaxAmountField => `maxAmount_${index}`
 export const poolTokenFields = (index: number) => [poolAmountField(index), poolMaxAmountField(index)] as const
 
 /** Keep contract amounts in pool token order, regardless of form field insertion order. */
-export const getPoolAmounts = (values: PoolTokensForm, tokenCount: number | undefined) =>
+export const getPoolAmounts = (values: PoolTokenFields, tokenCount: number | undefined) =>
   maybe(tokenCount, count => range(count).map(index => values[poolAmountField(index)]))
 
-export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokensForm, PoolAmountField> =>
+export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokenFields, PoolAmountField> =>
   Object.fromEntries(range(tokenCount).map(index => [poolAmountField(index), undefined]))
+
+export const getPoolMaxAmounts = (values: PoolTokenFields, tokenCount: number | undefined) =>
+  maybe(tokenCount, count => range(count).map(index => values[poolMaxAmountField(index)]))
