@@ -10,6 +10,7 @@ import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
+import { PAGE_BLOCK_MARGIN } from '@ui/features/layout/constants'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useNavigate, useSearchParams, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
@@ -83,7 +84,11 @@ export const PageRouterSwap = () => {
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isConnecting, hasRouter, paramsFromAddress, paramsToAddress, rChainId, tokensMapperStr])
   return (
-    <Card sx={{ maxWidth: MaxWidth.actionCard, margin: '0 auto' }} data-testid="swap-page">
+    <Card
+      size="small"
+      sx={{ ...PAGE_BLOCK_MARGIN, maxWidth: MaxWidth.actionCard, marginInline: 'auto' }}
+      data-testid="swap-page"
+    >
       <CardHeader title={t`Swap`} />
       <CardContent>
         {rChainId && (

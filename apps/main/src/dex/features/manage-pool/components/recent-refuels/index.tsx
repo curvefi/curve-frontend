@@ -50,7 +50,7 @@ export const RecentRefuels = ({
 
   return (
     <Stack data-testid="refuel-recent-refuels">
-      <CardHeader title={t`Recent Refuels`} size="small" />
+      <CardHeader title={t`Recent Refuels`} />
       <EvmDataTable
         table={table}
         emptyState={{ title: t`No recent refuels found` }}
