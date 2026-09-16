@@ -4,7 +4,6 @@ import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { fetchTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { fetchTokenSymbol } from '@/stellar/queries/token/token-symbol.query'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -33,19 +32,12 @@ export type PoolAmounts = Record<string, Decimal>
 
 export const poolInput = (address: StellarContract) =>
   cy.get(`[data-testid="pool-token-input-${address}"]`, LOAD_TIMEOUT)
+
 /** Reselect after each action because changing an amount can rerender every token input. */
 export const writePoolAmount = (address: StellarContract, amount: Decimal | undefined) => {
   poolInput(address).find('input').clear()
   if (amount != null) poolInput(address).find('input').type(amount)
   poolInput(address).find('input').blur()
-}
-
-export const checkPoolGasEstimate = () => {
-  cy.get('[data-testid="estimated-tx-cost-value"]', LOAD_TIMEOUT).should('be.visible')
-  getActionValue('estimated-tx-cost').should(value => {
-    expect(value).to.include('$')
-    expect(Number.parseFloat(value!)).to.be.greaterThan(0)
-  })
 }
 
 export const writePoolForm = (coins: Pick<PoolState['coins'][number], 'address' | 'symbol'>[], amounts: PoolAmounts) =>
