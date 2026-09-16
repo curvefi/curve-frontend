@@ -12,7 +12,7 @@ const { Spacing } = SizesAndSpaces
 const CATEGORIES = Object.keys(METRIC_CATEGORIES)
 
 const meta: Meta<typeof Metric> = {
-  title: 'UI Kit/Widgets/Metric',
+  title: 'EVM UI/Shared UI/Metric',
   component: Metric,
   argTypes: {
     category: {
