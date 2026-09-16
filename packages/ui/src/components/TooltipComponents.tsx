@@ -36,12 +36,12 @@ export const TooltipValueLink = ({ children, href }: { children: ReactNode; href
       gap: Spacing.xs,
       textDecoration: 'none',
       color: theme => theme.design.Text.TextColors.Secondary,
-      svg: { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
-      '&:hover svg': { fontSize: 16 },
+      '.arrow': { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
+      '&:hover .arrow': { fontSize: 16 },
     }}
   >
     {children}
-    <ArrowOutwardIcon />
+    <ArrowOutwardIcon className="arrow" />
   </Stack>
 )
 
