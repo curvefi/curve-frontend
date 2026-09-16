@@ -1,0 +1,212 @@
+import { useState, useRef, useCallback, type MouseEvent, type ReactNode } from 'react'
+import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Typography from '@mui/material/Typography'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { InvertOnHover } from '@ui/components/InvertOnHover'
+import { Select, type SelectProps } from '@ui/components/Select'
+import { TokenLabel } from '@ui/components/TokenLabel'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useResizeObserver } from '@ui/hooks/useResizeObserver'
+import { useSwitch } from '@ui/hooks/useSwitch'
+
+const { Spacing } = SizesAndSpaces
+const sizes = ['tiny', 'small', 'medium', 'extraLarge'] satisfies NonNullable<SelectProps['size']>[]
+
+const meta: Meta<typeof Select> = { title: 'UI/Components/Select', component: Select }
+
+type Story = StoryObj<typeof Select>
+
+// Simple select component that handles its own state
+const SimpleSelect = ({ options, placeholder }: { options: string[]; placeholder?: string }) => {
+  const [value, setValue] = useState('')
+
+  return (
+    <Select
+      value={value}
+      onChange={e => setValue(e.target.value as string)}
+      size="small"
+      displayEmpty
+      renderValue={() => <Typography>{value || placeholder}</Typography>}
+      sx={{ width: '20rem' }}
+    >
+      {options.map((option: string) => (
+        <MenuItem key={option} value={option}>
+          {option}
+        </MenuItem>
+      ))}
+    </Select>
+  )
+}
+
+// Multi-select component with clear button and custom rendering
+const MultiSelect = <T extends string>({
+  options,
+  placeholder,
+  renderItem,
+}: {
+  options: T[]
+  placeholder?: string
+  renderItem?: (value: T) => ReactNode
+}) => {
+  const menuRef = useRef<HTMLLIElement | null>(null)
+  const [selected, setSelected] = useState<string[]>([])
+  const selectRef = useRef<HTMLDivElement | null>(null)
+  const [selectWidth] = useResizeObserver(selectRef)
+  const [isOpen, open, close] = useSwitch(false)
+
+  const handleClear = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation()
+      setSelected([])
+      close()
+    },
+    [close],
+  )
+
+  const handleItemClick = useCallback(
+    ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
+      const value = currentTarget.getAttribute('value') as T
+      const newOptions = selected?.includes(value) ? selected.filter(v => v !== value) : [...(selected ?? []), value]
+
+      setSelected(newOptions)
+    },
+    [selected],
+  )
+
+  return (
+    <>
+      <Select
+        ref={selectRef}
+        open={isOpen}
+        onOpen={open}
+        onClose={close}
+        displayEmpty
+        value=""
+        size="small"
+        renderValue={() =>
+          selected.length ? (
+            selected.map((optionId, index) => (
+              <Box
+                component="span"
+                key={optionId}
+                sx={{
+                  display: 'inline-flex', // display inline to avoid wrapping
+                  alignItems: 'center',
+                  gap: Spacing.xs, // default spacing is too large inline
+                  ...(index > 0 && { ':before': { content: '", "' } }),
+                }}
+              >
+                {renderItem?.(optionId as T) ?? optionId}
+              </Box>
+            ))
+          ) : (
+            <Typography>{placeholder || 'Select options'}</Typography>
+          )
+        }
+        sx={{ width: '20rem' }}
+      />
+      {isOpen !== undefined && (
+        <Menu
+          open={isOpen}
+          onClose={close}
+          anchorEl={selectRef.current}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+          slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
+        >
+          <Box component="li" sx={{ borderBottom: t => `1px solid ${t.design.Layer[3].Outline}`, padding: Spacing.sm }}>
+            <Button
+              color="ghost"
+              size="extraSmall"
+              onClick={handleClear}
+              data-testid="multi-select-clear"
+              sx={{ paddingInline: 0 }}
+            >
+              Clear Selection
+            </Button>
+          </Box>
+          {options.map(option => (
+            <InvertOnHover hoverRef={menuRef} key={option}>
+              <MenuItem ref={menuRef} value={option} selected={selected.includes(option)} onClick={handleItemClick}>
+                {renderItem?.(option) || option}
+              </MenuItem>
+            </InvertOnHover>
+          ))}
+        </Menu>
+      )}
+    </>
+  )
+}
+
+export const Simple: Story = {
+  render: () => (
+    <SimpleSelect
+      options={['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5']}
+      placeholder="Select an option"
+    />
+  ),
+  parameters: { docs: { description: { story: 'A basic select component with simple text options' } } },
+}
+
+const options = ['ETH', 'USDC', 'DAI', 'USDT', 'WBTC', 'CRV'] as const
+
+const addresses = {
+  ETH: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  USDC: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
+  USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+  WBTC: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+  CRV: MAINNET_CRV_ADDRESS,
+} as const
+
+export const CustomRendering: Story = {
+  render: () => (
+    <MultiSelect
+      options={options.map(x => x)}
+      placeholder="Select tokens"
+      renderItem={(symbol: (typeof options)[number]) => (
+        <TokenLabel blockchainId="ethereum" address={addresses[symbol]} tooltip={symbol} label={symbol} size="mui-sm" />
+      )}
+    />
+  ),
+  args: { size: 'small' },
+  parameters: {
+    docs: { description: { story: 'A multi-select component with custom rendering of options using Token' } },
+  },
+}
+
+export const Sizes: Story = {
+  render: () => (
+    <Box sx={{ display: 'grid', gap: Spacing.sm, width: '20rem' }}>
+      {sizes.map(size => (
+        <Select key={size} value="Option 1" size={size}>
+          <MenuItem value="Option 1">Option 1</MenuItem>
+          <MenuItem value="Option 2">Option 2</MenuItem>
+        </Select>
+      ))}
+    </Box>
+  ),
+  parameters: { docs: { description: { story: 'Displays all Select sizes.' } } },
+}
+
+export const InlineAlignment: Story = {
+  render: () => (
+    <Box sx={{ display: 'grid', gap: Spacing.sm }}>
+      {sizes.map(size => (
+        <Box key={size} sx={{ display: 'flex', gap: Spacing.xs, alignItems: 'center' }}>
+          <Select value="Option 1" size={size} sx={{ width: '12rem' }}>
+            <MenuItem value="Option 1">Option 1</MenuItem>
+            <MenuItem value="Option 2">Option 2</MenuItem>
+          </Select>
+          <Button size={size === 'tiny' ? 'extraSmall' : size === 'extraLarge' ? 'large' : size}>Button</Button>
+        </Box>
+      ))}
+    </Box>
+  ),
+  parameters: { docs: { description: { story: 'Checks select and button height alignment across sizes.' } } },
+}
+
+export default meta

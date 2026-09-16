@@ -10,7 +10,7 @@ const LONG_ERROR = new Error(
 )
 
 const meta: Meta<typeof FormAlerts> = {
-  title: 'UI Kit/Widgets/Detail Page/Form Alerts',
+  title: 'EVM UI/Widgets/FormAlerts',
   component: FormAlerts,
   args: { formErrors: [], handledErrors: [], userAddress: zeroAddress },
   decorators: [Story => <div style={{ width: 'min(480px, 100vw)' }}>{Story()}</div>],

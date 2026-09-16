@@ -20,7 +20,7 @@ const HealthBarStory = ({
 )
 
 const meta: Meta<typeof HealthBarStory> = {
-  title: 'UI Kit/Widgets/HealthBar',
+  title: 'Llamalend/Features/HealthBar',
   component: HealthBarStory,
   parameters: {
     layout: 'centered',
