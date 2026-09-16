@@ -89,6 +89,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   const isPending = formState.isSubmitting || isDepositing
   const tokenInputs = combineQueries([tokens, metadata], (addresses, metadata) =>
     zip(addresses, metadata, balances).map(([address, metadata, balance]) => ({
+      blockchainId: network,
       address: asAddress(address),
       symbol: metadata.symbol,
       balance,

@@ -1,13 +1,18 @@
 import { useCallback } from 'react'
-import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { TokenLabel } from '@ui/components/TokenLabel'
 import { useFormContext, useFormSync } from '@ui/features/forms'
 import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { poolAmountField, type PoolTokensForm, poolMaxAmountField } from './pool-form.utils'
 
-export type PoolToken = { address: Address; symbol: string | undefined; balance: QueryProp<Decimal> }
+export type PoolToken = {
+  blockchainId: string
+  address: Address
+  symbol: string | undefined
+  balance: QueryProp<Decimal>
+}
 
 export const PoolTokenInput = ({
   token,
@@ -34,7 +39,16 @@ export const PoolTokenInput = ({
     <LargeTokenInput
       name={field}
       label={label}
-      tokenSelector={<Typography>{token.symbol}</Typography>}
+      tokenSelector={
+        <TokenLabel
+          blockchainId={token.blockchainId}
+          address={token.address}
+          label={token.symbol}
+          size="mui-md"
+          disabled={disabled}
+          noWrap
+        />
+      }
       balance={q({ data: amount, error: inputError ?? null, isLoading: false })}
       onBalance={useCallback((value: Decimal | undefined) => update({ [field]: value }), [update, field])}
       disabled={disabled}
