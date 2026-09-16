@@ -38,7 +38,8 @@ const assertSectionReached = (section: MarketSectionId) =>
         )
 
         expect(win.scrollY, `${section}: page scrolled`).to.be.greaterThan(0)
-        expect(top, `${section}: below navigation`).to.be.at.least(obstruction)
+        // Firefox can round fractional layout positions differently in CI, so allow one CSS pixel.
+        expect(top, `${section}: below navigation`).to.be.at.least(obstruction - 1)
         expect(top, `${section}: inside viewport`).to.be.lessThan(win.innerHeight)
       }),
   )
