@@ -1,13 +1,13 @@
-import { each, test } from 'vest'
+import { each, skipWhen, test } from 'vest'
 import { MAX_I128 } from '@/stellar/lib/amounts'
 import type { PoolQuery } from '@/stellar/queries/root-keys'
 import { validatePool } from '@/stellar/queries/validation/pool.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { poolAmountField, poolMaxAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
-import { decimalEqual, decimalGreaterThan, fromWei } from '@ui/lib/decimal'
+import { fromWei } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -34,7 +34,7 @@ export const validateAmount = (field: string, amount: Decimal | undefined, preci
       enforce(amount || '0').isDecimal({ decimal_digits: `0,${precision}` })
     })
     test(field, 'Amount exceeds the maximum supported token amount', () => {
-      enforce(!decimalGreaterThan(amount || '0', fromWei(MAX_I128, precision))).isTruthy()
+      enforce(+(amount || '0')).lte(+fromWei(MAX_I128, precision))
     })
   })
 }
@@ -51,34 +51,34 @@ export const validateLiquidityInputs = (
     enforce(decimals?.length).isNumber().gte(2).lte(8).equals(amounts?.length)
     decimals?.forEach(precision => enforce(precision).isNumber())
   })
-  each(amounts ?? [], (amount, index) => validateAmount(poolAmountField(index), amount, decimals?.[index]))
+  each(notFalsyArray(amounts), (amount, index) => validateAmount(poolAmountField(index), amount, decimals?.[index]))
   test('root', isDeposit ? 'Enter an amount to deposit' : 'Enter an amount to withdraw', () => {
-    enforce(amounts?.some(amount => decimalGreaterThan(amount ?? '0', '0'))).isTruthy()
+    enforce(maybe(amounts, amounts => notFalsy(...amounts).filter(amount => +amount > 0).length)).gt(0)
   })
-  if (isDeposit) {
+  skipWhen(!isDeposit || maybe(supply, supply => +supply) !== 0, () => {
     test('root', 'Seed deposits require a positive amount of every coin', () => {
-      enforce(
-        supply == null ||
-          !decimalEqual(supply, '0') ||
-          decimals?.every((_, index) => decimalGreaterThan(amounts?.[index] || '0', '0')),
-      ).isTruthy()
+      decimals?.forEach((_, index) => {
+        enforce(maybe(amounts?.[index], amount => +amount)).gt(0)
+      })
     })
-  }
+  })
 }
 
 export const validateReserveAmounts = ({ amounts, maxAmounts }: Pick<ExpectedLpParams, 'amounts' | 'maxAmounts'>) => {
-  each(amounts ?? [], (amount, index) => {
+  each(notFalsyArray(amounts), (amount, index) => {
     test(poolMaxAmountField(index), 'Pool reserve is unavailable', () => {
       enforce(maxAmounts?.[index]).isDecimal().gte(0)
     })
     test(poolAmountField(index), 'Amount must be less than the available pool reserve', () => {
-      enforce(decimalGreaterThan(maxAmounts?.[index] ?? '0', amount || '0')).isTruthy()
+      enforce(+(amount || '0')).lt(maybe(maxAmounts?.[index], maxAmount => +maxAmount))
     })
   })
 }
 
-export const quoteValidationSuite = createValidationSuite((params: ExpectedLpQuery) => {
-  validatePool(params)
-  validateLiquidityInputs(params, params.isDeposit)
-  if (!params.isDeposit) validateReserveAmounts(params)
-})
+export const quoteValidationSuite = createValidationSuite(
+  ({ pool, network, isDeposit, amounts, decimals, supply, maxAmounts }: ExpectedLpQuery) => {
+    validatePool({ pool, network })
+    validateLiquidityInputs({ amounts, decimals, supply }, isDeposit)
+    skipWhen(isDeposit, () => validateReserveAmounts({ amounts, maxAmounts }))
+  },
+)
