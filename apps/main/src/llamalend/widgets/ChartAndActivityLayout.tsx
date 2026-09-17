@@ -49,6 +49,13 @@ const VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE = 1e-8
 const hasVisiblePriceRangeChanged = (previous: { min: number; max: number }, next: { min: number; max: number }) =>
   Math.max(Math.abs(previous.min - next.min), Math.abs(previous.max - next.max)) >= VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
 
+const useMarketTokenPair = () => {
+  const { apiMarket, marketQuery, tokens } = useMarketContext()
+  const symbols = [tokens.collateralToken?.symbol, tokens.borrowToken?.symbol] as const
+  const isMarketLoading = symbols.some(symbol => !symbol) && (marketQuery.isLoading || apiMarket.isLoading)
+  return { tokenPair: isMarketLoading ? undefined : getTokenPairUnit(symbols), isMarketLoading }
+}
+
 type ChartAndActivityLayoutProps = {
   chart: {
     chartMode: LlammaOhlcChartMode | undefined
@@ -142,6 +149,7 @@ export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutPr
 
 export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
+  const { tokenPair, isMarketLoading } = useMarketTokenPair()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const bandsPalette = useBandsChartPalette()
@@ -181,9 +189,8 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
     <Card size="small" data-testid="market-price-chart">
       <CardHeader
         title={
-          <WithSkeleton loading={chart.isLoading} width="7rem" height="2lh">
-            {chart.ohlcChartProps.selectChartList.find(({ key }) => key === chart.selectedChartKey)?.activeTitle ??
-              (chart.isLoading ? '' : '?')}
+          <WithSkeleton loading={isMarketLoading} width="7rem" height="2lh">
+            {tokenPair}
           </WithSkeleton>
         }
         action={
@@ -204,7 +211,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
             )}
           </Stack>
         }
-        slotProps={{ title: { style: chart.chartMode == 'oracle-pool' && { textTransform: 'none' } } }}
+        slotProps={{ title: { style: { textTransform: 'none' } } }}
       />
       <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
         <MarketPriceMetrics />
@@ -257,6 +264,7 @@ export const LegacyMarketPriceChartLayout = ({
   bands,
 }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
+  const { tokenPair, isMarketLoading } = useMarketTokenPair()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const bandsPalette = useBandsChartPalette()
@@ -299,13 +307,19 @@ export const LegacyMarketPriceChartLayout = ({
     >
       <ChartHeader
         chartOptionVariant="select"
-        chartSelections={{ selections: chart.ohlcChartProps.selectChartList, activeSelection: chart.selectedChartKey }}
+        chartSelections={{
+          selections: chart.ohlcChartProps.selectChartList.map(selection => ({
+            ...selection,
+            activeTitle: tokenPair ?? '',
+          })),
+          activeSelection: chart.selectedChartKey,
+        }}
         timeOption={{
           options: TIME_OPTIONS,
           activeOption: chart.ohlcChartProps.timeOption,
           setActiveOption: chart.setTimeOption,
         }}
-        isLoading={chart.isLoading}
+        isLoading={chart.isLoading || isMarketLoading}
         customButton={
           isConnected &&
           bands && (
