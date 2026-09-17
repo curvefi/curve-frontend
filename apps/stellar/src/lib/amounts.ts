@@ -21,6 +21,13 @@ const applyLpSlippage = (amount: Decimal, slippage: Decimal, rounding: BigNumber
 export const calculateMinimumMint = (quote: Decimal, slippage: Decimal): Decimal =>
   applyLpSlippage(quote, decimalMinus('0', slippage), BigNumber.ROUND_FLOOR)
 
+/** The imbalance quote excludes the one raw LP unit added by execution. */
+export const calculateExpectedBurn = (quote: Decimal): Decimal =>
+  fromWei(BigInt(toWei(quote, LP_TOKEN_DECIMALS)) + 1n, LP_TOKEN_DECIMALS)
+
+export const calculateMaximumBurn = (expected: Decimal, slippage: Decimal): Decimal =>
+  applyLpSlippage(expected, slippage, BigNumber.ROUND_CEIL)
+
 /** Raw amounts multiplied by stored rates account for different token decimals. */
 export const rateAdjustedValue = (amounts: (Decimal | undefined)[], rates: Decimal[], decimals?: number[]) =>
   decimalSum(

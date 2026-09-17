@@ -111,7 +111,10 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
             state.tokens.tokensNameMapper[chainId] = {
               ...(nativeToken && {
                 [nativeToken.address]: nativeToken.symbol,
-                [nativeToken.wrappedAddress]: nativeToken.wrappedSymbol,
+                [nativeToken.wrappedAddress]:
+                  nativeToken.wrappedAddress !== zeroAddress
+                    ? nativeToken.wrappedSymbol
+                    : (undefined as unknown as string),
               }),
               ...parsedTokensNameMapper(poolDatas),
             }

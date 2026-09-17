@@ -46,7 +46,7 @@ type DepositInputs = Pick<DepositParams, 'amounts' | 'decimals' | 'supply' | 'ma
 
 // Shared by disconnected quotes and form validation. Fee simulation also needs wallet balances.
 const validateInputs = ({ amounts, decimals, supply, maxAmounts }: DepositInputs) => {
-  validateLiquidityInputs({ amounts, decimals, supply }, true)
+  validateLiquidityInputs({ amounts, decimals, supply, isDeposit: true })
   each(notFalsyArray(amounts), (amount, i) => {
     const field = poolAmountField(i)
     maybe(maxAmounts?.[i], maxAmount => {

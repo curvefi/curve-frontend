@@ -7,22 +7,22 @@ import { PoolTokenInput, type PoolToken } from './PoolTokenInput'
 export const PoolTokenInputs = ({
   tokens: { data: tokens, error },
   reserves,
-  disabled,
+  isDisabled,
   hideMaxButton,
   maxAmounts,
 }: {
   tokens: QueryProp<PoolToken[]>
   reserves: QueryProp<Decimal[]>
-  disabled: boolean
+  isDisabled: boolean
   hideMaxButton?: boolean
-  maxAmounts?: QueryProp<Decimal[]>
+  maxAmounts?: QueryProp<(Decimal | undefined)[]>
 }) =>
   tokens?.map((token, index) => (
     <PoolTokenInput
       key={token.address}
       token={token}
       index={index}
-      disabled={disabled}
+      disabled={isDisabled}
       hideMaxButton={hideMaxButton}
       reserves={reserves}
       positionBalance={

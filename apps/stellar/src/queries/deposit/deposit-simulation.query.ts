@@ -38,6 +38,6 @@ export const {
       ],
       account,
     ),
-  category: 'global.no-persist', // todo: the values returned by the SDK lose the built transaction, so disable persistance for now
+  category: 'global.no-persist', // values returned by the SDK lose the built transaction, disable persistence for now
   validationSuite: depositValidationSuite,
 })
