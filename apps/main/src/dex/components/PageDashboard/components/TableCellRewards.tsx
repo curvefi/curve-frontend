@@ -5,6 +5,7 @@ import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 import type { SortId } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { PoolData, RewardsApy } from '@/dex/types/main.types'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import { Chip } from '@legacy-ui/Typography'
@@ -30,12 +31,13 @@ export const TableCellRewards = ({
   userCrvApy?: number
   fetchUserPoolBoost: (() => Promise<string>) | null
 }) => {
+  const { data: gauge } = usePoolGaugeStatus({ chainId: poolData.pool.curve.chainId, poolId: poolData.pool.id })
   const { base, crv } = rewardsApy ?? {}
   const { haveCrv, haveOther } = haveRewardsApy(rewardsApy ?? {})
   const haveRewards = haveCrv || haveOther
   const boostedCrvApy = haveCrv && crv?.[1]
   const haveUserCrvApy = userCrvApy && !Number.isNaN(userCrvApy)
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status ?? {}
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = gauge?.status ?? {}
   const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
   const rewards = haveRewards && (

@@ -58,10 +58,10 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // You could argue that hooks with 'isHydrated' in the `enabled` parameter would suffice,
     // but we're still encountering situations where not all data is properly loaded.
     await Promise.all([
-      // Legacy TVL/gauge enrichment is skipped there because the v2 pool list uses backend data.
+      // The v2 pool list uses backend TVL data.
       ...notFalsy(isLegacy && refetchPoolTvls({ chainId })),
     ])
-    await state.pools.fetchPools(curveApi, poolIds, { includeGaugeData: true })
+    await state.pools.fetchPools(curveApi, poolIds)
 
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },

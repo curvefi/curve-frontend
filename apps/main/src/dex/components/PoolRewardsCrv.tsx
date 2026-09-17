@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ChipInactive } from '@/dex/components/ChipInactive'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { PoolData, RewardsApy } from '@/dex/types/main.types'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
@@ -19,7 +20,8 @@ export const PoolRewardsCrv = ({
   rewardsApy: RewardsApy | undefined
   poolData: PoolData | undefined
 }) => {
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status ?? {}
+  const { data: gauge } = usePoolGaugeStatus({ chainId: poolData?.pool.curve.chainId, poolId: poolData?.pool.id })
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = gauge?.status ?? {}
 
   const rewardsCrvLabel = useMemo(() => {
     if (isLoading || typeof poolData === 'undefined') {
@@ -41,7 +43,7 @@ export const PoolRewardsCrv = ({
     return ''
   }, [areCrvRewardsStuckInBridge, isLoading, poolData, rewardsApy?.crv, rewardsNeedNudging])
 
-  return poolData?.gauge.isKilled ? (
+  return gauge?.isKilled ? (
     <ChipInactive>Inactive gauge</ChipInactive>
   ) : (
     <>

@@ -66,14 +66,9 @@ export type RewardsApy = {
   error: Record<string, boolean>
 }
 export type RewardsApyMapper = Record<string, RewardsApy>
-export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
-
-type Gauge = { status: GaugeStatus | null; isKilled: boolean | null }
-
 export type PoolData = {
   idx?: number
   pool: Pool
-  gauge: Gauge
   hasWrapped: boolean
   hasVyperVulnerability: boolean
   isWrapped: boolean

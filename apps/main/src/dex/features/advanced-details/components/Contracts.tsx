@@ -1,6 +1,7 @@
 import { isAddressEqual, zeroAddress, type Address } from 'viem'
 import { ChipInactive } from '@/dex/components/ChipInactive'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import Card from '@mui/material/Card'
@@ -13,11 +14,12 @@ import { usePoolContext } from '../../pool-context'
 import { Section } from './Section'
 
 export const Contracts = () => {
-  const { chainId, blockchainId, poolAddress, poolData } = usePoolContext()
+  const { chainId, blockchainId, poolId, poolAddress, poolData } = usePoolContext()
+  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
 
   const lpTokenAddress = poolData.pool.lpToken as Address
   const gaugeAddress = poolData.pool.gauge.address as Address
-  const gaugeIsKilled = !!poolData.gauge.isKilled
+  const gaugeIsKilled = !!gauge?.isKilled
   const isSameAddress = isAddressEqual(poolAddress, lpTokenAddress)
 
   const { data: metadata } = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
