@@ -1,4 +1,5 @@
 import { meanBy } from 'lodash'
+import type { Nullish } from '@primitives/objects.utils'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { TIME_FRAMES } from '@ui/lib/time'
 
@@ -41,7 +42,7 @@ export function hasFullTimeWindow(
  */
 export function calculateAverageRates<
   T extends WithTimestamp,
-  K extends Record<string, (snapshot: T) => number | null | undefined>,
+  K extends Record<string, (snapshot: T) => number | Nullish>,
 >(snapshots: T[] | undefined, daysBack: number, extractors: K): { [P in keyof K]: number | null } | null {
   if (!snapshots) return null
 

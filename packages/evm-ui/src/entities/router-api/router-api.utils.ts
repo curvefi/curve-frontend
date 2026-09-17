@@ -5,7 +5,7 @@ import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
+import { type Nullish, assert } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
 import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
@@ -94,7 +94,7 @@ export const getExpectedFn =
   }
 
 export const createHash = async (
-  input: (number | string | null | undefined | readonly number[] | readonly string[])[],
+  input: (number | string | Nullish | readonly number[] | readonly string[])[],
   algorithm = 'SHA-256',
 ): Promise<string> =>
   Array.from(

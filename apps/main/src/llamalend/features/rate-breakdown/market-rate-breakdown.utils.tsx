@@ -6,7 +6,7 @@ import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
-import { maybes, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, maybes, notFalsy } from '@primitives/objects.utils'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
 import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -22,7 +22,7 @@ export type BreakdownSource = {
 export type RateBreakdownRow = {
   source: BreakdownSource
   price: QueryProp<number | undefined>
-  rate: number | null | undefined
+  rate: number | Nullish
   maxBoostRate?: number | null
 }
 

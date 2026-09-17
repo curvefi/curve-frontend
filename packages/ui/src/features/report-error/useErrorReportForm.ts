@@ -1,14 +1,11 @@
 import { ReactNode } from 'react'
+import type { Nullish } from '@primitives/objects.utils'
 import { useForm } from '@ui/features/forms'
 import { captureError, captureString } from '@ui/features/sentry'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 
-export type ErrorContext = {
-  error: Error | string | null | undefined
-  title: ReactNode
-  subtitle: ReactNode | null | undefined
-}
+export type ErrorContext = { error: Error | string | Nullish; title: ReactNode; subtitle: ReactNode | Nullish }
 
 export type ErrorReportFormValues = {
   address: string

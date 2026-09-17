@@ -1,4 +1,4 @@
-import { notFalsy } from '@primitives/objects.utils'
+import { type Nullish, notFalsy } from '@primitives/objects.utils'
 
 /**
  * Check if the target has a parent with the given class name.
@@ -18,4 +18,4 @@ export function hasParentWithClass(target: EventTarget, className: string, { unt
   return false
 }
 
-export const classNames = (...items: (string | false | undefined | null)[]): string => notFalsy(...items).join(' ')
+export const classNames = (...items: (string | false | Nullish)[]): string => notFalsy(...items).join(' ')

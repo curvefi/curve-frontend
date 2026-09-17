@@ -3,7 +3,7 @@ import { getRefuelPools } from '@curvefi/prices-api/refuel'
 import { rootKeys, type ChainNameParams, type ChainNameQuery } from '@evm-ui/lib/model'
 import { pricesApiChainValidationSuite } from '@evm-ui/lib/model/query/prices-chain-validation'
 import type { Address } from '@primitives/address.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { mapQuery } from '@ui/features/queries/util'
 
@@ -14,7 +14,7 @@ const { useQuery: useRefuelPools } = queryFactory({
   category: 'dex.pools',
 })
 
-type RefuelPoolParams = ChainNameParams & { poolAddress: Address | null | undefined }
+type RefuelPoolParams = ChainNameParams & { poolAddress: Address | Nullish }
 
 export const useRefuelPool = ({ blockchainId, poolAddress }: RefuelPoolParams) =>
   mapQuery(useRefuelPools({ blockchainId }), data =>

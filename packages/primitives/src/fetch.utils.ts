@@ -1,4 +1,4 @@
-import { notFalsy } from './objects.utils'
+import { type Nullish, notFalsy } from './objects.utils'
 import { retry } from './promise.utils'
 
 const RETRIES = 2
@@ -11,7 +11,7 @@ const RETRY_STATUSES = [0, 408, 425, 429, 500, 502, 503, 504]
  * Converts a Record of string key-value pairs to a URL query string.
  * Ignores keys with null or undefined values, automatically converting other values to strings.
  */
-export const addQueryString = (params: Record<string, string | number | boolean | null | undefined>) => {
+export const addQueryString = (params: Record<string, string | number | boolean | Nullish>) => {
   const query = new URLSearchParams(
     Object.fromEntries(
       Object.entries(params)

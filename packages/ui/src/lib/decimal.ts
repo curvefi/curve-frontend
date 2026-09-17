@@ -1,16 +1,16 @@
 import { BigNumber } from 'bignumber.js'
 import { zip } from '@primitives/array.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 
 export const ZERO: Decimal = '0'
 
 /** Converts loose numeric input to an Amount for formatting, returning undefined for empty or non-numeric values. */
-export const amount = (value: number | string | BigNumber | bigint | null | undefined): Amount | undefined =>
+export const amount = (value: number | string | BigNumber | bigint | Nullish): Amount | undefined =>
   value == null || value === '' || Number.isNaN(value) ? undefined : typeof value === 'number' ? value : decimal(value)
 
 /** Converts a string to a Decimal typed string, returning undefined for null, undefined, empty strings, or non-finite values. */
-export const decimal = (value: number | string | undefined | null | BigNumber | bigint): Decimal | undefined => {
+export const decimal = (value: number | string | Nullish | BigNumber | bigint): Decimal | undefined => {
   if (typeof value === 'number' || typeof value === 'bigint') {
     value = BigNumber(value)
   }
@@ -47,7 +47,7 @@ export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): 
     .reduce((acc, value) => acc.minus(value), new BigNumber(first))
     .toFixed() as Decimal
 
-export const decimalNegate = <T extends Decimal | null | undefined>(value: T) =>
+export const decimalNegate = <T extends Decimal | Nullish>(value: T) =>
   maybe(value, value => new BigNumber(value).negated().toFixed() as Decimal)
 
 export const decimalEqual = (first: Decimal, second: Decimal) => BigNumber(first).isEqualTo(second)

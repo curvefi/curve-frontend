@@ -1,7 +1,7 @@
 import memoizee from 'memoizee'
 import { useCallback } from 'react'
 import type { Address } from '@primitives/address.utils'
-import { fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
+import { type Nullish, fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { useMappedQuery } from '@ui/features/queries/util'
@@ -102,7 +102,7 @@ export const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
 export const useCampaignsByAddress = ({
   address,
   blockchainId,
-}: { address: Address | null | undefined } & UseCampaignsOptions) => {
+}: { address: Address | Nullish } & UseCampaignsOptions) => {
   const query = useMappedQuery(
     useCampaigns({ blockchainId, enabled: Boolean(address) }),
     useCallback(campaigns => address && campaigns[address], [address]),

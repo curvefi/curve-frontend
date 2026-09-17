@@ -1,4 +1,4 @@
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 
 /** Number of compounding periods per year. */
 export const COMPOUNDING_FREQUENCIES = { daily: 365, weekly: 365 / 7, continuous: Infinity } as const
@@ -19,7 +19,7 @@ export const COMPOUNDING_CATEGORIES = {
 export type CompoundingCategory = keyof typeof COMPOUNDING_CATEGORIES
 
 /** Converts APR percentage to APY percentage using the category's compounding frequency. */
-export const aprToApy = <T extends number | null | undefined>(aprPercentage: T, category: CompoundingCategory) =>
+export const aprToApy = <T extends number | Nullish>(aprPercentage: T, category: CompoundingCategory) =>
   maybe(aprPercentage, aprPercentage => {
     const { frequency } = COMPOUNDING_CATEGORIES[category]
     if (frequency === COMPOUNDING_FREQUENCIES.continuous) return Math.expm1(aprPercentage / 100) * 100

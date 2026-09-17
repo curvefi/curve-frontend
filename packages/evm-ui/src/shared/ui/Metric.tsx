@@ -11,6 +11,7 @@ import {
   type NumberFormatOptions,
   PLACEHOLDER_USD,
 } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { LabelTooltipIcon } from '@ui/components/LabelTooltipIcon'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
@@ -117,7 +118,7 @@ const getTypographyColorProps = (color: TypographyProps['color']) =>
   typeof color === 'string' && color.startsWith('#') ? { sx: { color } } : { color }
 
 type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> & {
-  value: Amount | null | undefined
+  value: Amount | Nullish
   size: MetricLayout['size']
   tooltip?: MetricProps['valueTooltip']
   copyValue?: () => void

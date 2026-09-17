@@ -4,6 +4,7 @@ import { type LendingSnapshot, useLendingSnapshots } from '@evm-ui/entities/lend
 import type { SnapshotRange } from '@evm-ui/lib/model/query/time-option-validation'
 import { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { Query } from '@ui/features/queries/util'
 
 type SnapshotByMarketType = { [MarketType.Lend]: LendingSnapshot; [MarketType.Mint]: CrvUsdSnapshot }
@@ -19,7 +20,7 @@ export function useMarketSnapshots<TMarketType extends MarketType>({
   controllerAddress,
   marketType,
 }: {
-  blockchainId: Chain | undefined | null
+  blockchainId: Chain | Nullish
   enabled?: boolean
   range?: SnapshotRange
   controllerAddress: Address | undefined

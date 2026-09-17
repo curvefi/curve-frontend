@@ -3,6 +3,7 @@ import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
 import { isAccountAddress, isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import type { PoolParams, TokenQuery, UserQuery } from '@/stellar/queries/root-keys'
+import type { Nullish } from '@primitives/objects.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -11,12 +12,12 @@ export type { PoolQuery, PoolParams, TokenQuery, TokenParams } from '@/stellar/q
 export type BalanceQuery = TokenQuery & UserQuery & { decimals: number }
 export type BalanceParams = FieldsOf<BalanceQuery>
 
-export const validateNetwork = (network: string | null | undefined) => {
+export const validateNetwork = (network: string | Nullish) => {
   test('network', 'Unsupported Stellar network', () => {
     enforce(network).inside(Object.keys(STELLAR_NETWORKS))
   })
 }
-export const validateAccount = (account: StellarAddress | null | undefined) => {
+export const validateAccount = (account: StellarAddress | Nullish) => {
   test('account', 'Connect a Stellar wallet', () => {
     enforce(account).isNotEmpty().condition(isAccountAddress)
   })

@@ -5,6 +5,7 @@
  * @param order Sort order (`asc` by default).
  * @returns A new sorted array.
  */
+import type { Nullish } from './objects.utils'
 export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' | 'desc' = 'asc'): T[] =>
   items.toSorted((a, b) => {
     const direction = order === 'asc' ? 1 : -1
@@ -12,11 +13,11 @@ export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' 
   })
 
 /** Return the array only when every item is non-null, preserving its order and reference. */
-export const completeArray = <T>(items: (T | null | undefined)[] | null | undefined): NonNullable<T>[] | undefined =>
+export const completeArray = <T>(items: (T | Nullish)[] | Nullish): NonNullable<T>[] | undefined =>
   items?.every(value => value != null) ? items : undefined
 
 /** Checks if the array is complete (i.e., all items are non-null and non-undefined). */
-export const isComplete = <T>(items: (T | null | undefined)[] | null | undefined): items is T[] =>
+export const isComplete = <T>(items: (T | Nullish)[] | Nullish): items is T[] =>
   !!items && items.every((value): value is T => value != null)
 
 /** Split a list into two slices at the given index. */
@@ -47,7 +48,7 @@ export const splitAtFirst = <T>(items: T[], predicate: (value: T, index: number,
  * - If the input is a single item (not an array), it is wrapped in an array.
  * - If the input is null or undefined, an empty array is returned.
  */
-export const toArray = <T>(x: T | readonly T[] | null | undefined): readonly T[] =>
+export const toArray = <T>(x: T | readonly T[] | Nullish): readonly T[] =>
   Array.isArray(x) ? x : x == null ? [] : [x as T]
 
 /**

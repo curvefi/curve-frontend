@@ -4,6 +4,7 @@ import {
   parseRangeFilter,
   serializeRangeFilter,
 } from '@evm-ui/shared/ui/DataTable/filters'
+import type { Nullish } from '@primitives/objects.utils'
 import { Range } from '@ui/features/queries/util'
 import type { FilterProps } from '@ui/features/tables/data-table.utils'
 import { useUniqueDebounce } from '@ui/hooks/useDebounce'
@@ -25,7 +26,7 @@ export const useRangeFilter = <TColumnId extends string>({
   max?: number
   isLoading?: boolean
 }) => {
-  const filterDefaults = useMemo((): Range<number | null | undefined> => [defaultMin, max], [defaultMin, max])
+  const filterDefaults = useMemo((): Range<number | Nullish> => [defaultMin, max], [defaultMin, max])
 
   return useUniqueDebounce({
     // Separate default and applied range, the input's onBlur event that didn't change anything could trigger the callback and clear the filter.

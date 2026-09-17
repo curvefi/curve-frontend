@@ -3,14 +3,12 @@ import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { parseMutationRoute } from '@evm-ui/entities/router-api'
+import type { Nullish } from '@primitives/objects.utils'
 
 /**
  * Determines the appropriate borrow more implementation based on market capabilities.
  */
-export function getBorrowMoreImplementation(
-  marketId: string | MarketTemplate,
-  leverageEnabled: boolean | null | undefined,
-) {
+export function getBorrowMoreImplementation(marketId: string | MarketTemplate, leverageEnabled: boolean | Nullish) {
   const market = getMarket(marketId)
   /**
    * leverageEnabled reflects the position's history, so it can be true for soft-liquidated positions in legacy markets
@@ -62,7 +60,5 @@ export function getBorrowMoreImplementationArgs(
  * based on the implementation available and whether leverage is enabled.
  * This is used to determine if leverage queries should be enabled and whether to show that information in the UI.
  */
-export const isLeverageBorrowMore = (
-  marketId: string | MarketTemplate | null | undefined,
-  leverageEnabled: boolean | null | undefined,
-) => !!marketId && getBorrowMoreImplementation(marketId, leverageEnabled)[0] === 'zapV2'
+export const isLeverageBorrowMore = (marketId: string | MarketTemplate | Nullish, leverageEnabled: boolean | Nullish) =>
+  !!marketId && getBorrowMoreImplementation(marketId, leverageEnabled)[0] === 'zapV2'

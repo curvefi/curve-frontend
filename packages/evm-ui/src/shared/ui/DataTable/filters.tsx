@@ -1,4 +1,5 @@
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { Unit } from '@primitives/units.util'
 import type { FilterFn } from '@tanstack/react-table'
 import { Range } from '@ui/features/queries/util'
@@ -7,7 +8,7 @@ import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 const RANGE_SEPARATOR = '~'
 const LIST_SEPARATOR = ','
 
-export type RangeFilterDefaults<T extends string | number> = Range<T | null | undefined>
+export type RangeFilterDefaults<T extends string | number> = Range<T | Nullish>
 
 export const normalizeRangeFilterDefaults = <T extends string | number>(
   range: Range<T | null>,
@@ -37,7 +38,7 @@ export const getRangeFilterLabel = (
   return null
 }
 
-export const serializeListFilter = (list: string[] | null | undefined) => list?.join(LIST_SEPARATOR) || null
+export const serializeListFilter = (list: string[] | Nullish) => list?.join(LIST_SEPARATOR) || null
 
 export const parseListFilter = (serialized: string | undefined) => serialized?.split(LIST_SEPARATOR).filter(v => v)
 

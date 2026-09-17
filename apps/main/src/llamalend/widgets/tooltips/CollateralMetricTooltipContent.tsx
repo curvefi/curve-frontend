@@ -2,20 +2,17 @@ import { formatPercentage } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import { Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 
-type TokenValues = {
-  value: Decimal | undefined | null
-  symbol: string | undefined
-  conversionRate?: Decimal | number | null
-}
+type TokenValues = { value: Decimal | Nullish; symbol: string | undefined; conversionRate?: Decimal | number | null }
 
 type CollateralMetricTooltipContentProps = {
-  totalValue: Decimal | undefined | null
+  totalValue: Decimal | Nullish
   totalValueUsd: QueryProp<Decimal>
   collateral: TokenValues
   borrow: TokenValues

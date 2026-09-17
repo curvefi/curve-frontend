@@ -10,7 +10,7 @@ import { gweiToEther, gweiToWai, weiToGwei } from '@evm-ui/utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { assert, maybe, maybes, type PartialRecord } from '@primitives/objects.utils'
+import { type Nullish, assert, maybe, maybes, type PartialRecord } from '@primitives/objects.utils'
 import type { TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -353,7 +353,7 @@ const calculateOptimisticRollupGas = (
  * Calculate estimated gas costs with ETH+USD conversion and tooltip
  */
 export function calculateGas(
-  estimatedGas: Amount | [Decimal, Decimal] | number[] | null | undefined,
+  estimatedGas: Amount | [Decimal, Decimal] | number[] | Nullish,
   gasInfo: GasInfo | undefined,
   chainTokenUsdRate: number | undefined,
   chainId: number,
@@ -387,10 +387,10 @@ export function calculateGas(
   }
 }
 
-type GasEstimate = Amount | [Decimal, Decimal] | number[] | null | undefined
+type GasEstimate = Amount | [Decimal, Decimal] | number[] | Nullish
 
 /** Converts an existing gas estimate query into native/USD gas cost info. */
-const useEstimateGas = (chainId: number | null | undefined, estimate: QueryResult<GasEstimate>, enabled?: boolean) => {
+const useEstimateGas = (chainId: number | Nullish, estimate: QueryResult<GasEstimate>, enabled?: boolean) => {
   const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
   const gasInfo = useGasInfoAndUpdateLib({ chainId }, enabled)
   const networkSymbol = maybe(chainId, chainId => getChainNativeCurrency(chainId)?.symbol)
@@ -410,19 +410,19 @@ const useEstimateGas = (chainId: number | null | undefined, estimate: QueryResul
  * Converts a raw gas estimate value into native/USD gas cost info.
  * @deprecated Prefer `createEstimateGasHook`.
  */
-export const useEstimateGasValue = (chainId: number | null | undefined, estimate: GasEstimate, enabled?: boolean) =>
+export const useEstimateGasValue = (chainId: number | Nullish, estimate: GasEstimate, enabled?: boolean) =>
   useEstimateGas(chainId, constQ(estimate), enabled)
 
-type EstimateValue = number | number[] | null | undefined
+type EstimateValue = number | number[] | Nullish
 
-type WithOptionalChainId = { chainId?: number | null | undefined }
+type WithOptionalChainId = { chainId?: number | Nullish }
 
 /** Builds a reusable gas-cost hook from a single estimate-gas query hook. */
 export const createEstimateGasHook =
   <Query extends WithOptionalChainId, Estimate extends EstimateValue>(
     useEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
   ) =>
-  (query: Query & { chainId?: number | null | undefined }, enabled = true) => {
+  (query: Query & { chainId?: number | Nullish }, enabled = true) => {
     const estimate = useEstimate(query, enabled)
     const converted = useEstimateGas(query.chainId, estimate, enabled)
     return combineQueries([converted, estimate], data => data)
@@ -439,7 +439,7 @@ export const createApprovedEstimateGasHook =
     useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
     useActionEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
   }) =>
-  (query: Query & { chainId?: number | null | undefined }, enabled = true) => {
+  (query: Query & { chainId?: number | Nullish }, enabled = true) => {
     const isApproved = useIsApproved(query, enabled)
     const approveEstimate = useApproveEstimate(query, enabled && isApproved.data === false)
     const actionEstimate = useActionEstimate(query, enabled && isApproved.data === true)

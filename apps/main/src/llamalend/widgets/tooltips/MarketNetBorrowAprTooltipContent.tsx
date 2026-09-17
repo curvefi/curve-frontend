@@ -2,20 +2,21 @@ import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { MarketType } from '@evm-ui/types/market'
 import { formatCappedRatePercent } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
+import type { Nullish } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketNetBorrowAprTooltipContentProps = {
   marketType: MarketType
-  borrowApr: number | null | undefined
-  averageApr: number | null | undefined
-  totalBorrowApr: number | null | undefined
-  totalAverageBorrowApr: number | null | undefined
+  borrowApr: number | Nullish
+  averageApr: number | Nullish
+  totalBorrowApr: number | Nullish
+  totalAverageBorrowApr: number | Nullish
   periodLabel: string // e.g. "7D", "30D"
   extraRewards: CampaignRewards[]
-  rebasingYieldApr: number | null | undefined
-  collateralSymbol: string | null | undefined
+  rebasingYieldApr: number | Nullish
+  collateralSymbol: string | Nullish
   isLoading?: boolean
 }
 

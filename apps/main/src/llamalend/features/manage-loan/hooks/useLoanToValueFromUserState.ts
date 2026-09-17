@@ -4,12 +4,12 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 
 type Params<ChainId extends IChainId> = {
-  chainId: ChainId | null | undefined
-  marketId: string | null | undefined
-  userAddress: Address | null | undefined
+  chainId: ChainId | Nullish
+  marketId: string | Nullish
+  userAddress: Address | Nullish
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   /**
@@ -18,7 +18,7 @@ type Params<ChainId extends IChainId> = {
    * */
   collateralDelta?: Decimal | null
   /** Expected new borrowed amount after the loan is updated. */
-  expectedBorrowed: Decimal | null | undefined
+  expectedBorrowed: Decimal | Nullish
 }
 
 /**
