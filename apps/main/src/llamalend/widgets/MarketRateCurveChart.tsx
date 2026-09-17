@@ -180,6 +180,7 @@ export const MarketRateCurveChart = () => {
             }}
           />
           <TotalBorrowedMetric
+            category={METRIC_CATEGORY}
             value={fallbackQ(
               totalBorrowed,
               mapQuery(apiMarket, m => m.assets.borrowed.balance),

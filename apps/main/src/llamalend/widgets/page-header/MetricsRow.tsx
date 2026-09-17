@@ -82,6 +82,7 @@ export const MetricsRow = ({
     <>
       {marketType === MarketType.Lend && (
         <TotalLiquidityMetric
+          category={METRIC_CATEGORY}
           testId="market-total-liquidity"
           value={availableLiquidity.total}
           symbol={borrowToken?.symbol}

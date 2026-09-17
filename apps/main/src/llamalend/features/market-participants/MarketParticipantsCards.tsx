@@ -104,6 +104,7 @@ export const BorrowersCard = () => {
             valueOptions={{ abbreviate: true }}
           />
           <TotalBorrowedMetric
+            category={METRIC_CATEGORY}
             testId="market-participants-total-borrowed"
             value={fallbackQ(
               totalBorrowed,
@@ -171,6 +172,7 @@ export const SuppliersCard = () => {
             valueOptions={{ abbreviate: true }}
           />
           <TotalLiquidityMetric
+            category={METRIC_CATEGORY}
             testId="market-participants-total-liquidity"
             value={availableLiquidity.total}
             symbol={tokens.borrowToken?.symbol}

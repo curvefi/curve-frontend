@@ -4,20 +4,15 @@ import { Metric, type MetricProps } from '@evm-ui/shared/ui/Metric'
 import { t } from '@ui/lib/i18n'
 
 type MarketMetricProps = Pick<Parameters<typeof tokenMetric>[0], 'usdRate' | 'symbol' | 'value'> &
-  Pick<MetricProps, 'testId'>
+  Pick<MetricProps, 'category' | 'testId'>
 
-export const TotalBorrowedMetric = ({ testId, ...tokenMetricProps }: MarketMetricProps) => (
-  <Metric
-    category={'llamalend.marketCharts'}
-    testId={testId}
-    label={t`Total borrowed`}
-    {...tokenMetric(tokenMetricProps)}
-  />
+export const TotalBorrowedMetric = ({ category, testId, ...tokenMetricProps }: MarketMetricProps) => (
+  <Metric category={category} testId={testId} label={t`Total borrowed`} {...tokenMetric(tokenMetricProps)} />
 )
 
-export const TotalLiquidityMetric = ({ testId, ...tokenMetricProps }: MarketMetricProps) => (
+export const TotalLiquidityMetric = ({ category, testId, ...tokenMetricProps }: MarketMetricProps) => (
   <Metric
-    category={'llamalend.marketCharts'}
+    category={category}
     testId={testId}
     label={t`Total liquidity`}
     {...tokenMetric(tokenMetricProps)}
