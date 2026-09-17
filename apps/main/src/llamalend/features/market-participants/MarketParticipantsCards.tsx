@@ -1,28 +1,40 @@
 import { useMemo } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { useMarketBorrowers, useMarketCapAndAvailable, useMarketSuppliers } from '@/llamalend/queries/market'
+import {
+  useMarketBorrowers,
+  useMarketSuppliers,
+  useMarketTotalCollateral,
+  useMarketTotalDebt,
+} from '@/llamalend/queries/market'
 import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
-import { TotalBorrowedMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
+import {
+  AvailableLiquidityMetric,
+  TotalCollateralMetric,
+  TotalDebtMetric,
+  TotalLiquidityMetric,
+} from '@/llamalend/widgets/MarketMetrics'
 import { useAvailableLiquidity } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { useManualPagination } from '@evm-ui/features/activity-table'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import { Metric } from '@evm-ui/shared/ui/Metric'
-import { MarketRateType } from '@evm-ui/types/market'
+import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
+import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { useTabs } from '@ui/hooks/useTabs'
-import { decimalMax, decimalMinus } from '@ui/lib/decimal'
+import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import {
   getBorrowerColumns,
@@ -34,6 +46,24 @@ import { BorrowerExpandedPanel, ParticipantRow, SupplierExpandedPanel } from './
 
 const PAGE_SIZE = 10
 const METRIC_CATEGORY = 'llamalend.marketParticipants'
+
+/** Combines collateral and soft-liquidated borrowed tokens in collateral-token units. */
+const calculateCombinedCollateral = ({
+  collateral,
+  borrowed,
+  collateralUsdRate,
+  borrowUsdRate,
+}: {
+  collateral: Decimal | undefined
+  borrowed: Decimal | undefined
+  collateralUsdRate: number
+  borrowUsdRate: number
+}) =>
+  collateralUsdRate === 0
+    ? undefined
+    : maybes([collateral, borrowed], (collateral, borrowed) =>
+        decimalSum(collateral, decimalMultiply(borrowed, borrowUsdRate / collateralUsdRate)),
+      )
 
 const ParticipantExpandedPanelActions = ({
   row: {
@@ -64,10 +94,27 @@ export const BorrowersCard = () => {
     page: apiPage,
     perPage: PAGE_SIZE,
   })
-  const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
+  const totalDebt = fallbackQ(
+    q(useMarketTotalDebt({ chainId, marketId })),
+    mapQuery(apiMarket, market => decimal(market.assets.borrowed.balance)),
+  )
+  const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
+  const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: tokens.collateralToken?.address })
   const borrowedUsdRate = useTokenUsdRate({ chainId, tokenAddress: tokens.borrowToken?.address })
-  const totalBorrowed = mapQuery(capAndAvailable, ({ available, totalAssets }) =>
-    maybes([available, totalAssets], (available, totalAssets) => decimalMax(decimalMinus(totalAssets, available), '0')),
+  const collateralTotal = mapQuery(totalCollateral, ({ collateral }) => collateral)
+  const borrowedCollateralTotal = mapQuery(totalCollateral, ({ borrowed }) => borrowed)
+  const combinedCollateral = combineQueries(
+    [totalCollateral, collateralUsdRate, borrowedUsdRate],
+    ({ collateral, borrowed }, collateralUsdRate, borrowUsdRate) =>
+      calculateCombinedCollateral({ collateral, borrowed, collateralUsdRate, borrowUsdRate }),
+  )
+  const combinedCollateralUsdValue = combineQueries(
+    [totalCollateral, collateralUsdRate, borrowedUsdRate],
+    ({ collateral, borrowed }, collateralUsdRate, borrowedUsdRate) =>
+      maybes(
+        [collateral, borrowed],
+        (collateral, borrowed) => +collateral * collateralUsdRate + +borrowed * borrowedUsdRate,
+      ),
   )
   const isMobile = useIsMobile()
   const query = mapQuery(borrowersQuery, ({ borrowers }) =>
@@ -103,15 +150,33 @@ export const BorrowersCard = () => {
             value={mapQuery(borrowersQuery, ({ totalBorrowers }) => totalBorrowers)}
             valueOptions={{ abbreviate: true }}
           />
-          <TotalBorrowedMetric
+          <TotalDebtMetric
             category={METRIC_CATEGORY}
-            testId="market-participants-total-borrowed"
-            value={fallbackQ(
-              totalBorrowed,
-              mapQuery(apiMarket, market => market.assets.borrowed.balance),
-            )}
+            testId="market-participants-total-debt"
+            value={totalDebt}
             symbol={tokens.borrowToken?.symbol}
             usdRate={q(borrowedUsdRate)}
+          />
+          <TotalCollateralMetric
+            category={METRIC_CATEGORY}
+            testId="market-participants-total-collateral"
+            value={fallbackQ(
+              combinedCollateral,
+              combineQueries([apiMarket, collateralUsdRate], (market, collateralUsdRate) =>
+                collateralUsdRate ? decimal(market.totalCollateralUsd / collateralUsdRate) : undefined,
+              ),
+            )}
+            symbol={tokens.collateralToken?.symbol}
+            usdRate={q(collateralUsdRate)}
+            tooltip={{
+              collateralSymbol: tokens.collateralToken?.symbol,
+              totalCollateral: collateralTotal.data,
+              borrowedSymbol: tokens.borrowToken?.symbol,
+              totalBorrowed: borrowedCollateralTotal.data,
+              combinedCollateralUsdValue: combinedCollateralUsdValue.data,
+              collateralUsdRate: collateralUsdRate.data ?? null,
+              borrowedUsdRate: borrowedUsdRate.data ?? null,
+            }}
           />
         </MetricsGrid>
       </CardContent>
@@ -175,6 +240,14 @@ export const SuppliersCard = () => {
             category={METRIC_CATEGORY}
             testId="market-participants-total-liquidity"
             value={availableLiquidity.total}
+            symbol={tokens.borrowToken?.symbol}
+            usdRate={availableLiquidity.usdRate}
+          />
+          <AvailableLiquidityMetric
+            category={METRIC_CATEGORY}
+            testId="market-participants-available-liquidity"
+            marketType={MarketType.Lend}
+            value={availableLiquidity.value}
             symbol={tokens.borrowToken?.symbol}
             usdRate={availableLiquidity.usdRate}
           />

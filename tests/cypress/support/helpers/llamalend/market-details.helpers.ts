@@ -97,7 +97,7 @@ const shouldLoadMarketDetails = () => {
 const PARTICIPANT_CARDS = {
   [MarketRateType.Borrow]: {
     testId: 'top-borrowers-card',
-    metrics: ['market-total-borrowers', 'market-participants-total-borrowed'],
+    metrics: ['market-total-borrowers', 'market-participants-total-debt'],
   },
   [MarketRateType.Supply]: {
     testId: 'top-suppliers-card',
