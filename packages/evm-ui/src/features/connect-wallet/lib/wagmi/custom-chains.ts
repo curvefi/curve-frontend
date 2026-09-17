@@ -38,7 +38,7 @@ export const arc = defineChain({
   nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
   rpcUrls: { default: { http: RPC[ChainId.Arc] } },
   blockExplorers: {
-    default: { name: 'Arc Explorer', url: 'https://arc.etherscan.io', apiUrl: 'https://explorer.arc.io/api/v2' },
+    default: { name: 'Arc Explorer', url: 'https://arc.etherscan.io', apiUrl: 'https://arc.etherscan.io/api' },
   },
   contracts: { multicall3: { address: '0xcA11bde05977b3631167028862bE2a173976CA11', blockCreated: 0 } },
 })
