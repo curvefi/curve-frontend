@@ -38,6 +38,7 @@
     "@types/react-dom": "19.2.5",
     "@typescript-eslint/eslint-plugin": "8.68.0",
     "@typescript-eslint/parser": "8.68.0",
+    "@vitest/ui": "4.1.11",
     "eslint": "10.9.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-import-resolver-typescript": "4.4.5",
@@ -51,7 +52,8 @@
     "prettier": "3.9.6",
     "typescript": "6.0.3",
     "typescript-eslint": "8.68.0",
-    "vite-plugin-svgr": "5.2.0"
+    "vite-plugin-svgr": "5.2.0",
+    "vitest": "4.1.11"
   },
   "packageManager": "yarn@4.17.1",
   "lint-staged": {
