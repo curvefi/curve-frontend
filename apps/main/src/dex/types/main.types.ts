@@ -84,7 +84,6 @@ export type PoolData = {
   tokens: string[]
   tokensCountBy: Record<string, number>
   tokensAll: string[]
-  tokensLowercase: string[]
 }
 
 export type PoolDataMapper = Record<string, PoolData>
