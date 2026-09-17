@@ -7,8 +7,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "eslint --cache --cache-location ../../.cache/eslint/evm-ui --cache-strategy content .",
-    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/evm-ui --cache-strategy content . --fix",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/evm-ui --cache-strategy content --ignore-pattern '**/*.stories.{ts,tsx,mts}' .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/evm-ui --cache-strategy content --ignore-pattern '**/*.stories.{ts,tsx,mts}' . --fix",
     "test": "vitest run --config vitest.config.ts",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-evm-ui.tsbuildinfo"
   },

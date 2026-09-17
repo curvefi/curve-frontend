@@ -218,6 +218,7 @@ const config = [
     files: ['**/*.stories.{ts,tsx,mts}', 'storybook/**/*.{ts,tsx,mts}'],
     languageOptions: {
       // Stories are excluded from app/package projects and checked by Storybook.
+      // Its workspace lint script owns all stories so this program is loaded once per run.
       parserOptions: { projectService: false, project: ['./storybook/tsconfig.json'] },
     },
     settings: {

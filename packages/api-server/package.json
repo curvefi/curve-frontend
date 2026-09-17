@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content .",
-    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content . --fix",
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content --ignore-pattern '**/*.stories.{ts,tsx,mts}' .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content --ignore-pattern '**/*.stories.{ts,tsx,mts}' . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-api-server.tsbuildinfo",
     "test": "vitest run",
     "test:watch": "vitest"
