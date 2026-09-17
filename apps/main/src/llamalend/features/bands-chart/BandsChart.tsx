@@ -14,7 +14,6 @@ import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapp
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
 import { Box, useTheme } from '@mui/material'
 import { notFalsy } from '@primitives/objects.utils'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { getChartOptions } from './chartOptions'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'

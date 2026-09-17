@@ -5,13 +5,13 @@ import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
 import { type ExtraIncentive, MarketRateType, MarketType } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/averageRates'
+import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes, notFalsy, recordValues } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
-import { toArray } from '@primitives/array.utils'
 
 /** Returns the rate tabs available for a market and the tab selected by default */
 export const getMarketRateTypeTabConfig = ({
