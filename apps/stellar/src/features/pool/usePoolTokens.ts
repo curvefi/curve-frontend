@@ -45,6 +45,7 @@ export function usePoolTokens({
   })
   const inputs = combineQueries([tokenQuery, metadata], (addresses, metadata) =>
     zip(addresses, metadata, balances).map(([address, metadata, balance]) => ({
+      blockchainId: network ?? undefined,
       address: asAddress(address),
       symbol: metadata.symbol,
       balance,
