@@ -14,14 +14,12 @@ import {
   RewardsApyMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import type { Chain } from '@curvefi/prices-api'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
-import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -86,7 +84,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       }
 
       const networks = await fetchNetworks()
-      const { blockchainId } = networks[chainId]
 
       try {
         set(
@@ -95,9 +92,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           }),
         )
 
-        const blacklist = await fetchPoolsBlacklist({ blockchainId: blockchainId as Chain })
-        const { poolsMapper } = await getPools(curve, poolIds, new Set(blacklist), networks[chainId], includeGaugeData)
-
+        const { poolsMapper } = await getPools(curve, poolIds, networks[chainId], includeGaugeData)
         const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
 
         set(
