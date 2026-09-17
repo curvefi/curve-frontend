@@ -26,9 +26,9 @@ import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
+import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
-import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
@@ -114,8 +114,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
   const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.hasVyperVulnerability })
-  const chainIdPoolId = getChainPoolIdActiveKey(chainId, poolId)
-  const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
+  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(poolData) ?? 'stable'])

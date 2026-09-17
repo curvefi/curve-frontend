@@ -16,7 +16,7 @@ const { Spacing } = SizesAndSpaces
 type FooterRowProps = {
   visibleColumns: Column<CurveTableFeatures, PoolCompositionRow>[]
   isLoading: boolean
-  totalUsd: string
+  totalUsd: string | undefined
   hasBalance: boolean
 }
 

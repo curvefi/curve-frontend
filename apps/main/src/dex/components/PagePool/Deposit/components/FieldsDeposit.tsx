@@ -7,9 +7,8 @@ import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposi
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolContext } from '@/dex/features/pool-context'
+import { usePoolCurrencyReserves, type CurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { useStore } from '@/dex/store/useStore'
-import type { CurrencyReserves } from '@/dex/types/main.types'
-import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import type { Address } from '@primitives/address.utils'
@@ -80,7 +79,7 @@ export const FieldsDeposit = ({
   const { data: network } = useNetworkByChain({ chainId })
   const maxLoading = useStore(state => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
-  const reserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(chainId, poolId)])
+  const { data: reserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
   const isBalancedAmounts = formValues.isBalancedAmounts
 
   const handleFormAmountChange = useCallback(

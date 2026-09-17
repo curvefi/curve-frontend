@@ -1,21 +1,11 @@
 import { produce } from 'immer'
-import { chunk, countBy, isNaN } from 'lodash'
+import { chunk, countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
+import { invalidatePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import type { State } from '@/dex/store/useStore'
-import {
-  ChainId,
-  CurrencyReserves,
-  CurrencyReservesMapper,
-  CurrencyReservesToken,
-  CurveApi,
-  PoolData,
-  PoolDataMapper,
-  RewardsApyMapper,
-} from '@/dex/types/main.types'
-import { getChainPoolIdActiveKey } from '@/dex/utils'
+import { ChainId, CurveApi, PoolData, PoolDataMapper, RewardsApyMapper } from '@/dex/types/main.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui/lib/logging'
 import { fetchNetworks } from '../entities/networks'
@@ -25,7 +15,6 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   poolsMapper: Record<string, PoolDataMapper>
-  currencyReserves: CurrencyReservesMapper
   rewardsApyMapper: Record<string, RewardsApyMapper>
   stakedMapper: Record<
     string,
@@ -47,7 +36,6 @@ export type PoolsSlice = {
     fetchPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[], useApi?: boolean) => Promise<void>
     fetchMissingPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
-    fetchPoolCurrenciesReserves: (curve: CurveApi, poolData: PoolData) => Promise<void>
     setPoolIsWrapped: (poolData: PoolData, isWrapped: boolean) => { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
     setEmptyPoolListDefault: (chainId: ChainId) => void
@@ -59,13 +47,7 @@ export type PoolsSlice = {
   }
 }
 
-const DEFAULT_STATE: SliceState = {
-  poolsMapper: {},
-  currencyReserves: {},
-  rewardsApyMapper: {},
-  stakedMapper: {},
-  error: '',
-} as const
+const DEFAULT_STATE: SliceState = { poolsMapper: {}, rewardsApyMapper: {}, stakedMapper: {}, error: '' } as const
 
 export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
   [SLICE_KEY]: {
@@ -122,63 +104,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const poolData = resp?.poolsMapper?.[poolId]
       return poolData
     },
-    fetchPoolCurrenciesReserves: async (curve, poolData) => {
-      const { ...sliceState } = get()[SLICE_KEY]
-      const { chainId } = curve
-      const { pool, isWrapped, tokens, tokenAddresses } = poolData
-
-      const [balancesResp] = await Promise.all([
-        curvejsApi.pool.poolBalances(pool, isWrapped),
-        // Fetching the token prices now, used later with getTokenUsdRateQueryData
-        ...tokenAddresses.map(tokenAddress => fetchTokenUsdRate({ chainId, tokenAddress }).catch(() => 0)),
-      ])
-
-      const { balances } = balancesResp
-      const isEmpty = !balances?.length || balances.every(b => +b === 0)
-      const crTokens: CurrencyReservesToken[] = []
-      let total = 0
-      let totalUsd = 0
-
-      for (const [idx, tokenAddress] of tokenAddresses.entries()) {
-        const usdRate = getTokenUsdRateQueryData({ chainId, tokenAddress }) ?? 0
-        const usdRateError = isNaN(usdRate)
-        const balance = Number(balances?.[idx])
-        const balanceUsd = !isEmpty && +usdRate > 0 && !usdRateError ? balance * usdRate : 0
-
-        total += balance
-        totalUsd += balanceUsd
-        const crToken: CurrencyReservesToken = {
-          token: tokens[idx],
-          tokenAddress,
-          balance,
-          balanceUsd,
-          usdRate,
-          percentShareInPool: '',
-        }
-        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-        crTokens.push(crToken)
-      }
-
-      for (const cr of crTokens) {
-        if (isEmpty) {
-          cr.percentShareInPool = '0'
-          // Only use USD balances for currency reserves if all tokens have a usd balance (and pool isn't empty)
-        } else if (crTokens.every(cr => cr.balanceUsd)) {
-          cr.percentShareInPool = ((cr.balanceUsd / totalUsd) * 100).toFixed(2)
-        } else {
-          cr.percentShareInPool = ((cr.balance / total) * 100).toFixed(2)
-        }
-      }
-
-      const result: CurrencyReserves = {
-        poolId: pool.id,
-        tokens: crTokens,
-        total: total.toString(),
-        totalUsd: totalUsd.toString(),
-      }
-
-      sliceState.setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
-    },
     fetchPoolsRewardsApy: async (chainId, poolIds, useApi = true) => {
       log('fetchPoolsRewardsApy', chainId, poolIds.length)
       const state = get()
@@ -234,7 +159,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       try {
         await Promise.all([
-          pools.fetchPoolCurrenciesReserves(curve, poolData),
+          invalidatePoolCurrencyReserves({ chainId, poolId: pool.id }),
           pools.fetchPoolsRewardsApy(chainId, [poolData], useApi),
         ])
       } catch (error) {
@@ -254,7 +179,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           state.pools.poolsMapper[chainId][poolData.pool.id] = cPoolData
         }),
       )
-      void get().pools.fetchPoolCurrenciesReserves(curve, cPoolData)
       return { tokens, tokenAddresses }
     },
     updatePool: (chainId, poolId, updatedPoolData) => {
@@ -285,7 +209,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
         poolsMapper: get()[SLICE_KEY].poolsMapper,
-        currencyReserves: get()[SLICE_KEY].currencyReserves,
         rewardsApyMapper: get()[SLICE_KEY].rewardsApyMapper,
       })
     },
