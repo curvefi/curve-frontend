@@ -1,5 +1,4 @@
 import lodash from 'lodash'
-import { type Address, getAddress } from 'viem'
 import { CurveApi, type GaugeStatus, NetworkConfig, Pool, PoolData } from '@/dex/types/main.types'
 import { fulfilledValue } from '@/dex/utils'
 import { shortenAddress } from '@evm-ui/utils'
@@ -44,24 +43,12 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
   return poolData
 }
 
-export async function getPools(
-  curve: CurveApi,
-  poolList: string[],
-  blacklist: Set<Address>,
-  network: NetworkConfig,
-  includeGaugeData: boolean,
-) {
+export async function getPools(curve: CurveApi, poolList: string[], network: NetworkConfig, includeGaugeData: boolean) {
   const { getPool } = curve
 
   const resp = poolList.reduce(
     (prev, poolId): { poolsMapper: Record<string, PoolData> } => {
-      const pool = getPool(poolId)
-
-      if (blacklist.has(getAddress(pool.address))) {
-        return prev
-      }
-
-      prev.poolsMapper[poolId] = getPoolData(pool, network)
+      prev.poolsMapper[poolId] = getPoolData(getPool(poolId), network)
 
       return prev
     },
