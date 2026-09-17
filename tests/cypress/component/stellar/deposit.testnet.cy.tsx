@@ -4,6 +4,8 @@ import { oneOf } from '@cy/support/generators'
 import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import {
+  allCoinDeposit,
+  BASE_DEPOSIT_AMOUNT,
   checkBalancedDepositAmounts,
   checkBalancedWalletAmounts,
   checkDepositBalances,
@@ -32,9 +34,8 @@ import { fromEntries } from '@primitives/objects.utils'
 import { queryClient } from '@ui/features/queries/query-client'
 import { decimalMultiply, decimalSum, fromWei } from '@ui/lib/decimal'
 
-const allCoinDeposit = (coins: PoolState['coins']): PoolAmounts =>
-  fromEntries(coins.map((c, index) => [c.symbol, decimalMultiply('0.01', `${index + 1}`)]))
-const singleCoinDeposit = (coins: PoolState['coins']): PoolAmounts => fromEntries([[oneOf(...coins).symbol, '0.01']])
+const singleCoinDeposit = (coins: PoolState['coins']): PoolAmounts =>
+  fromEntries([[oneOf(...coins).symbol, BASE_DEPOSIT_AMOUNT]])
 const zeroDeposit = (coins: PoolState['coins']): PoolAmounts => fromEntries(coins.map(c => [c.symbol, '0']))
 
 describe('Stellar testnet deposit', () => {

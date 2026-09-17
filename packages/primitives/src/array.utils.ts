@@ -16,6 +16,10 @@ export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' 
 export const completeArray = <T>(items: (T | Nullish)[] | Nullish): NonNullable<T>[] | undefined =>
   items?.every(value => value != null) ? items : undefined
 
+/** Checks if the array is complete (i.e., all items are non-null and non-undefined). */
+export const isComplete = <T>(items: (T | Nullish)[] | Nullish): items is T[] =>
+  !!items && items.every((value): value is T => value != null)
+
 /** Split a list into two slices at the given index. */
 export const splitAt = <T>(items: T[], index: number) => [items.slice(0, index), items.slice(index)]
 
