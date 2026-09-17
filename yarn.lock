@@ -596,6 +596,7 @@ __metadata:
     "@types/react-dom": "npm:19.2.5"
     "@typescript-eslint/eslint-plugin": "npm:8.68.0"
     "@typescript-eslint/parser": "npm:8.68.0"
+    "@vitest/ui": "npm:4.1.11"
     eslint: "npm:10.9.1"
     eslint-config-prettier: "npm:10.1.8"
     eslint-import-resolver-typescript: "npm:4.4.5"
@@ -691,8 +692,6 @@ __metadata:
 "@curvefi/primitives@workspace:^, @curvefi/primitives@workspace:packages/primitives":
   version: 0.0.0-use.local
   resolution: "@curvefi/primitives@workspace:packages/primitives"
-  dependencies:
-    vitest: "npm:4.1.11"
   languageName: unknown
   linkType: soft
 
@@ -724,7 +723,6 @@ __metadata:
     "@cypress/react": "npm:9.0.2"
     "@cypress/vite-dev-server": "npm:7.3.4"
     "@vitejs/plugin-react": "npm:5.1.2"
-    "@vitest/ui": "npm:4.1.11"
     cypress: "npm:15.21.1"
     main: "workspace:^"
     stellar: "workspace:^"

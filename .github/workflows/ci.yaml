@@ -40,8 +40,17 @@ jobs:
         uses: ./.github/actions/restore-cache
         with:
           path: .cache/eslint
-          # ESLint tracks config changes, but not changes to custom-rule implementations.
-          key-prefix: eslint-${{ hashFiles('.eslint/**') }}
+          # Invalidate for custom rules, dependency updates, and TypeScript project config changes.
+          key-prefix: >-
+            eslint-${{ hashFiles(
+              '.eslint/**',
+              'yarn.lock',
+              'tsconfig*.json',
+              'apps/**/tsconfig*.json',
+              'packages/**/tsconfig*.json',
+              'tests/**/tsconfig*.json',
+              'storybook/**/tsconfig*.json'
+            ) }}
       - name: Restore typecheck cache
         uses: ./.github/actions/restore-cache
         with:
