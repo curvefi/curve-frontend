@@ -10,7 +10,6 @@ import {
 } from '@/llamalend/features/llamma-activity'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
-import { getMarketPriceUnit } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice, useMarketPrice } from '@/llamalend/queries/market'
 import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
@@ -36,6 +35,7 @@ import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { getTokenPairUnit } from '@ui/lib/tokens'
 
 const { Spacing } = SizesAndSpaces
 
@@ -97,7 +97,10 @@ const MarketPriceMetrics = () => {
   const { chainId, marketId, apiMarket, tokens } = useMarketContext()
   const valueOptions = {
     ...PRICE_VALUE_OPTIONS,
-    unit: { symbol: getMarketPriceUnit(tokens), position: 'suffix' as const },
+    unit: {
+      symbol: getTokenPairUnit([tokens.collateralToken?.symbol, tokens.borrowToken?.symbol]),
+      position: 'suffix' as const,
+    },
   }
 
   return (

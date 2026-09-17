@@ -1,4 +1,3 @@
-import { getMarketPriceUnit } from '@/llamalend/llama.utils'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { Metric } from '@evm-ui/shared/ui/Metric'
@@ -43,7 +42,7 @@ const MarketInfoSections = ({ maxLeverage }: { maxLeverage?: QueryProp<{ value: 
         marketId={marketId}
         marketType={marketType}
         apiMarket={apiMarket}
-        priceUnit={getMarketPriceUnit(tokens)}
+        tokens={tokens}
         maxLeverage={maxLeverage}
       />
     </Box>

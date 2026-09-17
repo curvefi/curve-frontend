@@ -1,3 +1,4 @@
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MarketType } from '@evm-ui/types/market'
@@ -19,7 +20,7 @@ type MarketParametersProps = {
   marketId: string | undefined
   marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
-  priceUnit: string
+  tokens: MarketTokensOrEmpty
   maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
 }
 
@@ -28,7 +29,7 @@ export const MarketParametersSection = ({
   marketId,
   marketType,
   apiMarket,
-  priceUnit,
+  tokens,
   maxLeverage,
 }: MarketParametersProps) => (
   <Stack>
@@ -40,7 +41,7 @@ export const MarketParametersSection = ({
           marketId={marketId}
           enablePricePerShare={marketType === MarketType.Lend}
           apiMarket={apiMarket}
-          priceUnit={priceUnit}
+          tokens={tokens}
         />
       </CardContent>
     </Card>

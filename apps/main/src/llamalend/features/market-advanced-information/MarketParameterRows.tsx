@@ -1,3 +1,4 @@
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -6,13 +7,14 @@ import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { fakeLoadingQ, fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 
 type MarketPricesRowsProps = {
   chainId: IChainId
   marketId: string | undefined
   enablePricePerShare: boolean
   apiMarket: QueryProp<LlamaMarket>
-  priceUnit: string
+  tokens: MarketTokensOrEmpty
 }
 
 export const MarketPricesRows = ({
@@ -20,7 +22,7 @@ export const MarketPricesRows = ({
   marketId,
   enablePricePerShare,
   apiMarket,
-  priceUnit,
+  tokens: { collateralToken, borrowToken },
 }: MarketPricesRowsProps) => {
   const oraclePriceOnChain = useMarketOraclePrice({ chainId, marketId })
   const pricePerShare = useMarketVaultPricePerShare({ chainId, marketId }, enablePricePerShare)
@@ -37,7 +39,7 @@ export const MarketPricesRows = ({
           title: t`The price source that determines your collateral value, health, and when your position moves toward soft liquidation.`,
         }}
         value={mapQuery(oraclePrice, data =>
-          formatNumber(data, { abbreviate: false, decimals: 5, unit: { symbol: priceUnit, position: 'suffix' } }),
+          formatToken(data, [collateralToken?.symbol, borrowToken?.symbol], 'precise'),
         )}
       />
       {enablePricePerShare && marketId && (
