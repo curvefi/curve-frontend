@@ -9,6 +9,7 @@ import {
   readPoolAmounts,
   poolInput,
   TEST_NETWORK,
+  interceptStellarPrices,
   writePoolAmount,
   writePoolForm,
   checkPoolInputError,
@@ -29,7 +30,6 @@ import {
 } from '@cy/support/helpers/stellar/withdraw.helpers'
 import { LOAD_TIMEOUT, skipTestsAfterFailure, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { queryClient } from '@ui/features/queries/query-client'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { decimalSum, fromWei } from '@ui/lib/decimal'
 
@@ -44,7 +44,6 @@ describe('Stellar testnet withdraw', () => {
   let state: WithdrawState
 
   before(() => {
-    queryClient.clear()
     getTestnetConfig()
       .then(config => {
         testnetConfig = config
@@ -55,11 +54,8 @@ describe('Stellar testnet withdraw', () => {
   })
 
   beforeEach(() => {
-    queryClient.clear()
-    cy.intercept('GET', 'https://api.testnet.stellarindex.io/v1/price*', { statusCode: 404 })
-    cy.then(() => connectTestWallet(testnetConfig))
-      .then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig))
-      .then(freshState => (state = freshState))
+    interceptStellarPrices()
+    cy.then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig)).then(freshState => (state = freshState))
   })
 
   const mountWithdraw = ({ connected = true } = {}) => {

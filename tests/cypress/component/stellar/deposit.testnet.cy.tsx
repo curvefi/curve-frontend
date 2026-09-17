@@ -24,6 +24,7 @@ import {
   poolInput,
   type PoolState,
   TEST_NETWORK,
+  interceptStellarPrices,
   writePoolAmount,
   writePoolForm,
 } from '@cy/support/helpers/stellar/pool.helpers'
@@ -31,7 +32,6 @@ import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stella
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
 import { LOAD_TIMEOUT, skipTestsAfterFailure, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { fromEntries } from '@primitives/objects.utils'
-import { queryClient } from '@ui/features/queries/query-client'
 import { decimalMultiply, decimalSum, fromWei } from '@ui/lib/decimal'
 
 const singleCoinDeposit = (coins: PoolState['coins']): PoolAmounts =>
@@ -46,7 +46,6 @@ describe('Stellar testnet deposit', () => {
   let state: PoolState
 
   before(() => {
-    queryClient.clear()
     getTestnetConfig()
       .then(config => {
         testnetConfig = config
@@ -57,11 +56,8 @@ describe('Stellar testnet deposit', () => {
   })
 
   beforeEach(() => {
-    queryClient.clear()
-    cy.intercept('GET', 'https://api.testnet.stellarindex.io/v1/price*', { statusCode: 404 })
-    cy.then(() => connectTestWallet(testnetConfig))
-      .then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig))
-      .then(freshState => (state = freshState))
+    interceptStellarPrices()
+    cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(freshState => (state = freshState))
   })
 
   const mountDeposit = ({ connected = true } = {}) =>

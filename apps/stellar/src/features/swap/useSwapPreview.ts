@@ -14,8 +14,9 @@ import { useSwapPriceImpact } from './useSwapPriceImpact'
 export type SwapPreviewParams = PoolQuery & UserParams & Omit<SwapFormValues, 'minimum'>
 
 function useQuoteQueries(params: SwapPreviewParams) {
+  const quote = useSwapQuote(params)
   const { amountField, calculatedField } = SWAP_FIELDS[params.editedSide]
-  const amounts = { [amountField]: constQ(params[amountField]), [calculatedField]: q(useSwapQuote(params)) }
+  const amounts = { [amountField]: constQ(params[amountField]), [calculatedField]: q(quote) }
   const { inputAmount, outputAmount } = amounts
   return { inputAmount, outputAmount }
 }

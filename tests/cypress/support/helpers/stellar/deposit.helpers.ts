@@ -1,20 +1,41 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
+import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { fetchExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
+import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { type PoolAmounts, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
+import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
-import { decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
+import { decimalMinus, decimalMultiply, decimalSum, toWei } from '@ui/lib/decimal'
 
 export const BASE_DEPOSIT_AMOUNT = '0.01' satisfies Decimal
 
 export const allCoinDeposit = (coins: PoolState['coins']): PoolAmounts =>
   fromEntries(coins.map((coin, index) => [coin.symbol, decimalMultiply(BASE_DEPOSIT_AMOUNT, index + 1)]))
+
+/** Seed a fresh test pool without mounting a deposit form. */
+export const seedTestPool = async (pool: StellarContract, { coins, deployer: { address: account } }: TestnetConfig) => {
+  const amounts = await Promise.all(
+    coins.map(async (token, index) => {
+      const decimals = await fetchTokenDecimals({ network: TEST_NETWORK, token })
+      return BigInt(toWei(decimalMultiply(BASE_DEPOSIT_AMOUNT, index + 1), decimals))
+    }),
+  )
+  const transaction = await simulateContractCall<bigint>(
+    TEST_NETWORK,
+    pool,
+    'add_liquidity',
+    [account, amounts, 0n, account],
+    account,
+  )
+  return sendStellarTransaction(transaction)
+}
 
 export const fetchDepositPreview = async (
   pool: StellarContract,

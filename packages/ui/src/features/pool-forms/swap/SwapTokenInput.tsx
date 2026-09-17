@@ -13,11 +13,11 @@ import type { PoolToken } from '../PoolTokenInput'
 import { SWAP_FIELDS, type SwapFormValues, type SwapSide } from './swap-form.utils'
 
 const INPUT_BY_SIDE = {
-  pay: { ...SWAP_FIELDS.pay, label: t`You pay`, testId: 'pool-swap-input', selectorLabel: t`Token to sell` },
+  pay: { ...SWAP_FIELDS.pay, label: t`You pay`, testId: 'pool-swap-pay', selectorLabel: t`Token to sell` },
   receive: {
     ...SWAP_FIELDS.receive,
     label: t`You receive (estimated)`,
-    testId: 'pool-swap-output',
+    testId: 'pool-swap-receive',
     selectorLabel: t`Token to receive`,
   },
 } as const

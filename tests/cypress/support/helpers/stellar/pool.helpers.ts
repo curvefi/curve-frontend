@@ -28,6 +28,9 @@ export const fetchPoolState = async (pool: StellarContract, { deployer }: Testne
   ])
   return { coins, lp, supply, config }
 }
+export const interceptStellarPrices = () =>
+  cy.intercept('GET', 'https://api.testnet.stellarindex.io/v1/price*', { statusCode: 404 })
+
 export type PoolState = Awaited<ReturnType<typeof fetchPoolState>>
 export type PoolAmounts = Record<string, Decimal>
 
