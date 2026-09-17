@@ -21,7 +21,6 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
 
   const poolData: PoolData = {
     pool: p,
-    chainId: network.chainId,
 
     // stats
     hasVyperVulnerability: p.hasVyperVulnerability(),
