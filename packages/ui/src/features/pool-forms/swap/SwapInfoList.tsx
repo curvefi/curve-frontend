@@ -9,51 +9,40 @@ import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/Slippag
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 
-type WithdrawInfoListProps = {
-  expectedLp: QueryProp<Decimal>
-  maximumLp: QueryProp<Decimal>
-  currentLp: QueryProp<Decimal>
-  projectedLp: QueryProp<Decimal>
-  priceImpact: QueryProp<Decimal | null>
-  gas: QueryProp<TxGasInfo | null>
-  slippage: Decimal
-  userAddress: Address | undefined
-}
-
-export const WithdrawInfoList = ({
-  expectedLp,
-  maximumLp,
-  currentLp,
-  projectedLp,
+export const SwapInfoList = ({
+  exchangeRate,
+  minimum,
   priceImpact,
   gas,
+  fromSymbol,
+  toSymbol,
   slippage,
   userAddress,
-}: WithdrawInfoListProps) => (
+}: {
+  exchangeRate: QueryProp<Decimal>
+  minimum: QueryProp<Decimal>
+  priceImpact: QueryProp<Decimal | null>
+  gas: QueryProp<TxGasInfo>
+  fromSymbol: string | undefined
+  toSymbol: string | undefined
+  slippage: Decimal
+  userAddress: Address | undefined
+}) => (
   <Stack>
     <ActionInfo
-      testId="pool-withdraw-expected-lp"
-      label={t`Expected LP burned`}
-      value={mapQuery(expectedLp, value => formatNumber(value, 'token.balance'))}
+      label={t`Exchange rate`}
+      testId="pool-swap-exchange-rate"
+      value={mapQuery(exchangeRate, exchangeRate =>
+        [formatToken(1, fromSymbol), formatToken(exchangeRate, toSymbol, 'balance')].join(' = '),
+      )}
       size="small"
     />
     <ActionInfo
-      testId="pool-withdraw-maximum-lp"
-      label={t`Maximum LP burned`}
-      value={mapQuery(maximumLp, value => formatNumber(value, 'token.balance'))}
-      size="small"
-    />
-    <ActionInfo
-      testId="pool-withdraw-current-lp"
-      label={t`Current LP balance`}
-      value={mapQuery(currentLp, value => formatNumber(value, 'token.balance'))}
-      size="small"
-    />
-    <ActionInfo
-      testId="pool-withdraw-projected-lp"
-      label={t`Expected remaining LP balance`}
-      value={mapQuery(projectedLp, value => formatNumber(value, 'token.balance'))}
+      label={t`Minimum received`}
+      testId="pool-swap-minimum-received"
+      value={mapQuery(minimum, value => `${formatNumber(value, 'token.balance')} ${toSymbol ?? ''}`)}
       size="small"
     />
     <PriceImpactActionInfo

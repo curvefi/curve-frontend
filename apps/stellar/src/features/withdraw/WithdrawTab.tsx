@@ -5,5 +5,11 @@ import { WithdrawFooter } from './WithdrawFooter'
 
 export const WithdrawTab = (params: PoolQuery) => {
   const { params: queryParams, preview, ...form } = useWithdrawForm(params)
-  return <WithdrawForm {...form} footer={<WithdrawFooter params={queryParams} {...preview} />} />
+  return (
+    <WithdrawForm
+      {...form}
+      priceImpact={preview.priceImpact}
+      footer={<WithdrawFooter params={queryParams} {...preview} />}
+    />
+  )
 }

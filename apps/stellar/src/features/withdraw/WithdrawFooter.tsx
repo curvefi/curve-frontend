@@ -4,7 +4,6 @@ import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { WithdrawInfoList } from '@ui/features/pool-forms/withdraw/WithdrawInfoList'
 import { combineQueries } from '@ui/features/queries/combine'
 import { q } from '@ui/features/queries/util'
-import { useUserProfileStore } from '@ui/features/user-profile'
 import { decimalMinus } from '@ui/lib/decimal'
 import type { WithdrawPreview, WithdrawPreviewParams } from './useWithdrawPreview'
 
@@ -13,7 +12,7 @@ export const WithdrawFooter = ({
   expected,
   maximum,
   priceImpact,
-  fee,
+  gas,
 }: { params: WithdrawPreviewParams } & WithdrawPreview) => {
   const lpBalance = useTokenBalance({ account, network, token: pool, decimals: LP_TOKEN_DECIMALS })
   return (
@@ -23,9 +22,8 @@ export const WithdrawFooter = ({
       currentLp={q(lpBalance)}
       projectedLp={combineQueries([lpBalance, expected], decimalMinus)}
       priceImpact={priceImpact}
-      gas={fee}
+      gas={gas}
       slippage={slippage}
-      onSlippageChanged={useUserProfileStore(state => state.setMaxSlippage)}
       userAddress={asAddress(account)}
     />
   )

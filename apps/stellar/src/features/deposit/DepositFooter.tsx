@@ -6,7 +6,6 @@ import { useTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { DepositInfoList } from '@ui/features/pool-forms/deposit/DepositInfoList'
 import { combineQueries } from '@ui/features/queries/combine'
 import { q } from '@ui/features/queries/util'
-import { useUserProfileStore } from '@ui/features/user-profile'
 import { decimalEqual, decimalSum } from '@ui/lib/decimal'
 import { type DepositPreview, type DepositPreviewParams } from './useDepositPreview'
 
@@ -35,7 +34,6 @@ export const DepositFooter = ({
       seedLock={useSeedLock(params)}
       gas={gas}
       slippage={params.slippage}
-      onSlippageChanged={useUserProfileStore(state => state.setMaxSlippage)}
       userAddress={asAddress(params.account)}
     />
   )

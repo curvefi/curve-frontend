@@ -5,5 +5,11 @@ import { useDepositForm } from './useDepositForm'
 
 export const DepositTab = (params: PoolQuery) => {
   const { params: queryParams, preview, ...form } = useDepositForm(params)
-  return <DepositForm {...form} footer={<DepositFooter params={queryParams} {...preview} />} />
+  return (
+    <DepositForm
+      {...form}
+      priceImpact={preview.priceImpact}
+      footer={<DepositFooter params={queryParams} {...preview} />}
+    />
+  )
 }

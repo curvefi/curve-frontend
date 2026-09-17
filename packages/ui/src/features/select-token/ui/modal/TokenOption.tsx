@@ -1,27 +1,34 @@
 import { useRef } from 'react'
-import { shortenAddress } from '@evm-ui/utils'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import { shortenString } from '@primitives/string.utils'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { Tooltip } from '@ui/components/Tooltip'
+import type { TokenOption as Option } from '@ui/features/select-token/types'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { amount } from '@ui/lib/decimal'
-import type { TokenOption as Option } from '../../types'
 
 const { IconSize } = SizesAndSpaces
 
 type TokenOptionCallbacks = { onToken: () => void }
 
-type TokenOptionsProps = { balance?: string; tokenPrice?: number; disabled?: boolean; disabledReason?: string }
+type TokenOptionsProps = {
+  addressLabel?: string
+  balance?: string
+  tokenPrice?: number
+  disabled?: boolean
+  disabledReason?: string
+}
 
 export const TokenOption = ({
   chain,
   symbol,
   address,
+  addressLabel = shortenString(address),
   balance,
   tokenPrice,
   disabled,
@@ -67,7 +74,7 @@ export const TokenOption = ({
             {hasBalance && (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <Typography variant="bodyXsRegular" color={tertiary}>
-                {shortenAddress(address)}
+                {addressLabel}
               </Typography>
             )}
           </Stack>
@@ -90,7 +97,7 @@ export const TokenOption = ({
             {!hasBalance && (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <Typography variant="bodyXsRegular" color={tertiary}>
-                {shortenAddress(address)}
+                {addressLabel}
               </Typography>
             )}
           </Stack>

@@ -68,13 +68,6 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const { formState, reset } = form
 
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
-  useFormSync(form, {
-    slippage,
-    decimals: decimals.data,
-    supply: supply.data,
-    seedLock: config.data?.seedLock,
-    maxLpAmount: lpBalance.data,
-  })
 
   // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
   const values = useShallow(identity<WithdrawFormValues>)(form.watchValues())
@@ -110,9 +103,17 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     userDefaultValues,
   )
   const preview = useWithdrawPreview(params)
-  const { quote, expected, maximum, priceImpact, fee } = preview
+  const { quote, maximum, gas } = preview
 
-  useFormSync(form, { quote: quote.data, maximumBurn: isDebouncing ? undefined : maximum.data })
+  useFormSync(form, {
+    slippage,
+    decimals: decimals.data,
+    supply: supply.data,
+    seedLock: config.data?.seedLock,
+    maxLpAmount: lpBalance.data,
+    quote: quote.data,
+    maximumBurn: maximum.data,
+  })
 
   const {
     onSubmit,
@@ -133,11 +134,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     decimals,
     maxAmounts,
     lpBalance,
-    quote,
-    expected,
-    maximum,
-    priceImpact,
-    fee,
+    ...Object.values(preview),
   )
   return {
     form,
@@ -151,13 +148,12 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     lpBalance: q(lpBalance),
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
-    isDisabled: isPending || isDebouncing || !formState.isValid || !!error || !fee.data,
+    isDisabled: isPending || isDebouncing || !formState.isValid || !!error || !gas.data,
     isLoading: isPending || isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: withdrawError ?? error,
     formErrors: formState.visibleErrors,
     tokens: tokenInputs,
-    priceImpact,
   }
 }

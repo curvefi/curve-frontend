@@ -6,7 +6,13 @@ import type { TokenOption } from '../types'
 
 type TokenSelectButtonCallbacks = { onClick: () => void }
 
-type TokenSelectButtonProps = { token?: TokenOption; disabled: boolean; size?: SelectProps['size']; testId?: string }
+type TokenSelectButtonProps = {
+  token?: TokenOption
+  disabled: boolean
+  size?: SelectProps['size']
+  testId?: string
+  label?: string
+}
 
 /** The token selector is Select but acts like a button, so it's a bit unique */
 export const TokenSelectButton = ({
@@ -14,10 +20,12 @@ export const TokenSelectButton = ({
   disabled,
   size = 'medium',
   testId,
+  label,
   onClick,
 }: TokenSelectButtonProps & TokenSelectButtonCallbacks) => (
   <Select
     data-testid={testId}
+    inputProps={{ 'aria-label': label }}
     value=""
     variant="ghost"
     onClick={disabled ? undefined : onClick}

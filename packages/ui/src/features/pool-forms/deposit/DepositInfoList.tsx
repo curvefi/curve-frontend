@@ -6,8 +6,8 @@ import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
-import type { SlippageSettingsFormData } from '@ui/features/forms/slippage/useSlipageSettingsForm'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { useUserProfileStore } from '@ui/features/user-profile'
 import { t } from '@ui/lib/i18n'
 
 export type DepositInfoListProps = {
@@ -19,7 +19,6 @@ export type DepositInfoListProps = {
   seedLock: QueryProp<Decimal | null>
   gas: QueryProp<TxGasInfo | null>
   slippage: Decimal
-  onSlippageChanged: (settings: SlippageSettingsFormData) => void
   userAddress: Address | undefined
 }
 
@@ -28,7 +27,6 @@ export const DepositInfoList = ({
   expectedLp,
   gas,
   minimumLp,
-  onSlippageChanged,
   priceImpact,
   projectedLp,
   seedLock,
@@ -75,7 +73,7 @@ export const DepositInfoList = ({
     )}
     <SlippageToleranceActionInfo
       maxSlippage={slippage}
-      onChanged={onSlippageChanged}
+      onChanged={useUserProfileStore(state => state.setMaxSlippage)}
       type="stable"
       userAddress={userAddress}
       size="small"

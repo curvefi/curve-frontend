@@ -69,7 +69,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     userDefaultValues,
   )
   const preview = useDepositPreview(params)
-  const { quote, minimum, priceImpact, gas } = preview
+  const { quote, minimum, gas } = preview
 
   const {
     onSubmit,
@@ -91,10 +91,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     reserves,
     decimals,
     maxAmounts,
-    quote,
-    minimum,
-    priceImpact,
-    gas,
+    ...Object.values(preview),
   )
   return {
     form,
@@ -111,7 +108,6 @@ export function useDepositForm(poolParams: PoolQuery) {
     error: depositError ?? error,
     formErrors: formState.visibleErrors,
     tokens: tokenInputs,
-    priceImpact,
     isSeed: mapQuery(supply, supply => !+supply),
   }
 }
