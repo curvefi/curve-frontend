@@ -1,14 +1,14 @@
 import { useConnection } from 'wagmi'
 import { useForm, useFormSync } from '@ui/features/forms'
+import type { AllowUndefined } from '@ui/features/queries/util'
 import { usePinataJwt } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
-import type { FieldsOf } from '@ui/lib/validation/types'
 import { useCreateVoteMutation } from './create-vote.mutation'
 import { createVoteFormValidationSuite } from './create-vote.validation'
 
 export type CreateVoteMutation = { gaugeAddress: string; description: string; pinataJwt: string }
 
-export type CreateVoteForm = FieldsOf<CreateVoteMutation>
+export type CreateVoteForm = AllowUndefined<CreateVoteMutation>
 
 const defaultValues: CreateVoteForm = {
   gaugeAddress: undefined,

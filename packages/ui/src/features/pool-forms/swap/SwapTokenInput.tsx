@@ -4,8 +4,8 @@ import { shortenString } from '@primitives/string.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { q, type QueryProp } from '@ui/features/queries/util'
-import type { TokenOption } from '@ui/features/select-token/types'
-import { TokenOption as TokenOptionRow } from '@ui/features/select-token/ui/modal/TokenOption'
+import type { TokenOption as TokenOptionType } from '@ui/features/select-token/types'
+import { TokenOption } from '@ui/features/select-token/ui/modal/TokenOption'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
@@ -13,16 +13,11 @@ import type { PoolToken } from '../PoolTokenInput'
 import { SWAP_FIELDS, type SwapFormValues, type SwapSide } from './swap-form.utils'
 
 const INPUT_BY_SIDE = {
-  pay: { ...SWAP_FIELDS.pay, label: t`You pay`, testId: 'pool-swap-pay', selectorLabel: t`Token to sell` },
-  receive: {
-    ...SWAP_FIELDS.receive,
-    label: t`You receive (estimated)`,
-    testId: 'pool-swap-receive',
-    selectorLabel: t`Token to receive`,
-  },
+  pay: { label: t`You pay`, testId: 'pool-swap-pay', selectorLabel: t`Token to sell` },
+  receive: { label: t`You receive (estimated)`, testId: 'pool-swap-receive', selectorLabel: t`Token to receive` },
 } as const
 
-type SwapTokenOption = TokenOption & Pick<PoolToken, 'balance'> & { index: number }
+type SwapTokenOption = TokenOptionType & Pick<PoolToken, 'balance'> & { index: number }
 
 const SwapTokenList = ({
   tokens,
@@ -33,7 +28,7 @@ const SwapTokenList = ({
 }) => (
   <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
     {tokens?.map(token => (
-      <TokenOptionRow key={token.address} {...token} balance={token.balance.data} onToken={() => onToken(token)} />
+      <TokenOption key={token.address} {...token} balance={token.balance.data} onToken={() => onToken(token)} />
     ))}
   </MenuList>
 )
@@ -51,24 +46,17 @@ export const SwapTokenInput = ({
   balance: QueryProp<Decimal | undefined>
   disabled: boolean
 }) => {
-  const {
-    amountIndexField,
-    calculatedIndexField,
-    amountField: name,
-    label,
-    testId,
-    selectorLabel,
-  } = INPUT_BY_SIDE[side]
+  const { amountField: name, amountIndexField, calculatedIndexField } = SWAP_FIELDS[side]
+  const { label, testId, selectorLabel } = INPUT_BY_SIDE[side]
   const values = form.watchValues()
-  const [isOpen, onOpen, onClose] = useSwitch(false)
-  const [amountIndex, calculatedIndex] = [amountIndexField, calculatedIndexField].map(field => values[field])
-  const token = tokens.data?.[amountIndex]
+  const token = tokens.data?.[values[amountIndexField]]
   const options = tokens.data?.map((token, index): SwapTokenOption => ({
     ...token,
     symbol: token.symbol ?? shortenString(token.address),
     chain: token.blockchainId,
     index,
   }))
+  const [isOpen, onOpen, onClose] = useSwitch(false)
   const { errors } = form.formState
   const error = form.isTouched('inputAmount', 'outputAmount') ? errors[name] : undefined
   return (
@@ -78,7 +66,7 @@ export const SwapTokenInput = ({
       testId={testId}
       tokenSelector={
         <TokenSelector
-          selectedToken={options?.[amountIndex]}
+          selectedToken={options?.[values[amountIndexField]]}
           disabled={disabled || !tokens.data}
           title={selectorLabel}
           isOpen={isOpen}
@@ -87,8 +75,8 @@ export const SwapTokenInput = ({
           size="small"
         >
           <SwapTokenList
-            tokens={options?.filter(token => token.index !== calculatedIndex)}
-            onToken={token => form.update({ [amountIndexField]: token.index })}
+            tokens={options?.filter(option => option.index !== values[calculatedIndexField])}
+            onToken={option => form.update({ [amountIndexField]: option.index })}
           />
         </TokenSelector>
       }

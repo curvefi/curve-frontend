@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
-import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
+import type { WithdrawMutation, WithdrawMutationOptions } from '@/stellar/features/withdraw/types'
 import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
-import { rootKeys, type PoolQuery } from '@/stellar/queries/root-keys'
-import { withdrawValidationSuite, type WithdrawMutation } from '@/stellar/queries/validation/withdraw.validation'
+import { rootKeys } from '@/stellar/queries/root-keys'
+import { withdrawValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
 import {
   fetchWithdrawSimulation,
   invalidateWithdrawSimulation,
@@ -13,13 +13,7 @@ import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
-type WithdrawOptions = PoolQuery & {
-  account: StellarAddress | undefined
-  tokens: StellarContract[]
-  onReset: () => void
-}
-
-export const useWithdrawMutation = ({ onReset, tokens, ...params }: WithdrawOptions) => {
+export const useWithdrawMutation = ({ onReset, tokens, ...params }: WithdrawMutationOptions) => {
   const { mutate, error, isPending } = useStellarMutation<WithdrawMutation>({
     mutationKey: [...rootKeys.userPool(params), 'withdraw'],
     createTransaction: (values, { account }) =>

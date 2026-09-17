@@ -1,10 +1,7 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import type { SwapQuoteParams, SwapQuoteQuery } from '@/stellar/features/swap/types'
 import { rootKeys } from '@/stellar/queries/root-keys'
-import {
-  type SwapQuoteParams,
-  type SwapQuoteQuery,
-  swapQuoteValidationSuite,
-} from '@/stellar/queries/validation/swap.validation'
+import { swapQuoteValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import { SWAP_FIELDS } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei, toWei } from '@ui/lib/decimal'
@@ -32,26 +29,16 @@ export const {
   fetchQuery: fetchSwapQuote,
   getQueryOptions: getSwapQuoteQueryOptions,
 } = queryFactory({
-  queryKey: ({
-    network,
-    pool,
-    fromIndex,
-    toIndex,
-    inputAmount,
-    outputAmount,
-    decimals,
-    editedSide,
-    maxOutput,
-  }: SwapQuoteParams) =>
+  queryKey: ({ network, pool, fromIndex, toIndex, inputAmount, decimals, editedSide, maxOutput }: SwapQuoteParams) =>
     [
       ...rootKeys.pool({ network, pool }),
       'swap-quote',
       { editedSide },
       { fromIndex },
       { toIndex },
-      { inputAmount: editedSide === 'pay' ? inputAmount : undefined },
-      { outputAmount: editedSide === 'receive' ? outputAmount : undefined },
       { decimals },
+      // use only the key fields relevant to the side being quoted
+      { inputAmount: editedSide === 'pay' ? inputAmount : undefined },
       { maxOutput: editedSide === 'receive' ? maxOutput : undefined },
     ] as const,
   queryFn: async ({

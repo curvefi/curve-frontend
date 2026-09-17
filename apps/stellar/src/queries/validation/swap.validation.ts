@@ -1,27 +1,11 @@
 import { skipWhen, test } from 'vest'
-import type { PoolQuery, UserQuery } from '@/stellar/queries/root-keys'
-import { maybe, maybes } from '@primitives/objects.utils'
-import {
-  SWAP_FIELDS,
-  type SwapAmountField,
-  type SwapFormValues,
-  type SwapMutation,
-} from '@ui/features/pool-forms/swap/swap-form.utils'
-import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
-import type { DeepPartial } from '@ui/features/queries/util'
+import type { SwapParams, SwapQuoteParams } from '@/stellar/features/swap/types'
+import { maybe } from '@primitives/objects.utils'
+import { SWAP_FIELDS, type SwapAmountField, type SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import type { FieldsOf } from '@ui/lib/validation/types'
 import { validateAmount, validateSlippage } from './liquidity.validation'
 import { validateAccount, validatePool } from './pool.validation'
-
-export type { SwapFormValues, SwapMutation } from '@ui/features/pool-forms/swap/swap-form.utils'
-export type SwapQuoteQuery = PoolQuery &
-  Pick<SwapMutation, 'fromIndex' | 'toIndex' | 'decimals' | 'inputAmount' | 'outputAmount'> &
-  Pick<SwapFormValues, 'maxOutput' | 'editedSide'>
-export type SwapQuoteParams = FieldsOf<DeepPartial<SwapQuoteQuery>>
-export type SwapQuery = PoolQuery & UserQuery & Omit<SwapMutation, 'outputAmount' | 'slippage'>
-export type SwapParams = FieldsOf<DeepPartial<SwapQuery>>
 
 type SwapInputs = Pick<SwapQuoteParams, 'fromIndex' | 'toIndex' | 'inputAmount' | 'outputAmount' | 'decimals'>
 
@@ -111,16 +95,3 @@ const validateSwap = ({ network, pool, account, maxAmount, minimum, ...values }:
 }
 
 export const swapValidationSuite = createValidationSuite(validateSwap)
-export const swapMutationValidationSuite = createValidationSuite(
-  ({ outputAmount, slippage, ...values }: SwapParams & FieldsOf<SwapMutation>) => {
-    validateSwap(values)
-    validateSlippage(slippage)
-    test('outputAmount', 'Swap must return a positive amount', () => {
-      enforce(outputAmount).isDecimal().gt(0)
-    })
-    test('minimum', 'Minimum received does not match the accepted quote and slippage', () => {
-      const precision = maybe(values.toIndex, index => values.decimals?.[index])
-      enforce(maybes([outputAmount, slippage, precision], calculateMinimumReceived)).equals(values.minimum)
-    })
-  },
-)

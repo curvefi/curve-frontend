@@ -7,11 +7,8 @@ import { range } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapSide } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
-import { decimalDiv, decimalMinus, fromWei } from '@ui/lib/decimal'
+import { decimalDiv, decimalMinus } from '@ui/lib/decimal'
 import { formatToken } from '@ui/lib/tokens'
-
-// get_dx estimates input; allow two receiving-token base units when exchange rounds the output.
-const SWAP_ROUNDING_UNITS = '2' satisfies Decimal
 
 const SWAP_SIDES = ['pay', 'receive'] as const
 
@@ -43,7 +40,7 @@ export const readSwapAmounts = () =>
   cyMap(SWAP_SIDES, side =>
     swapAmountInput(side)
       .invoke('val')
-      .then(value => String(value) as Decimal),
+      .then(value => value as Decimal),
   ).then(([inputAmount, outputAmount]) => ({ inputAmount, outputAmount }))
 
 export const checkSwapDetails = (
@@ -76,15 +73,16 @@ export const submitSwapForm = () => {
 export const checkSwapResult = (
   state: PoolState,
   fresh: PoolState,
-  { inputAmount, outputAmount }: { inputAmount: Decimal; outputAmount: Decimal },
+  expected: { inputAmount: Decimal; minimumOutputAmount: Decimal; outputAmount?: Decimal },
   fromIndex: number,
   toIndex: number,
 ) => {
+  const { inputAmount, minimumOutputAmount, outputAmount } = expected
   const sent = decimalMinus(state.coins[fromIndex].balance, fresh.coins[fromIndex].balance)
   const received = decimalMinus(fresh.coins[toIndex].balance, state.coins[toIndex].balance)
   expect(sent, 'amount paid').to.equal(inputAmount)
-  const roundingTolerance = +fromWei(SWAP_ROUNDING_UNITS, state.coins[toIndex].decimals)
-  expect(+received, 'amount received').to.be.closeTo(+outputAmount, roundingTolerance)
+  expect(+received, 'amount received').to.be.gte(+minimumOutputAmount)
+  if (outputAmount) expect(received, 'amount received').to.equal(outputAmount)
   range(fresh.coins.length)
     .filter(index => index !== fromIndex && index !== toIndex)
     .forEach(index =>

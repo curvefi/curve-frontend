@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 import type { FieldValues, UseFormReturn, FormSubmitHandler, VisibleErrors } from '@ui/features/forms'
 import type { FormButtonProps } from '@ui/features/forms/FormButton'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -18,5 +17,4 @@ export type PoolFormProps<TValues extends FieldValues> = {
   error: Error | null | undefined
   formErrors: VisibleErrors<TValues>
   footer: ReactNode
-  priceImpact: QueryProp<Decimal | null>
 }

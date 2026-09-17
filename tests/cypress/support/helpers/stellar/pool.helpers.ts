@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { fetchPoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
@@ -53,7 +54,7 @@ export const checkPoolSlippage = () =>
 export const checkPoolPriceImpact = () =>
   getActionValue('pool-price-impact').should(value => {
     expect(value).to.include('%')
-    expect(Number.isFinite(Number.parseFloat(value!)), 'finite price impact').to.equal(true)
+    expect(Number.parseFloat(value!)).to.be.finite
   })
 
 export const writePoolForm = (coins: Pick<PoolState['coins'][number], 'address' | 'symbol'>[], amounts: PoolAmounts) =>
@@ -73,5 +74,5 @@ export const readPoolAmounts = (coins: PoolState['coins']) =>
       .find('input')
       .should('not.have.value', '')
       .invoke('val')
-      .then(value => String(value) as Decimal),
+      .then(value => value as Decimal),
   )

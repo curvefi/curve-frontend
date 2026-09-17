@@ -1,6 +1,7 @@
 import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import type { SwapParams, SwapQuery } from '@/stellar/features/swap/types'
 import { rootKeys } from '@/stellar/queries/root-keys'
-import { swapValidationSuite, type SwapParams, type SwapQuery } from '@/stellar/queries/validation/swap.validation'
+import { swapValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toWei } from '@ui/lib/decimal'
 

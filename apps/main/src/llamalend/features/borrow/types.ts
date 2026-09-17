@@ -1,7 +1,7 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MarketQuery } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { MakeOptional } from '@ui/features/queries/util'
+import type { AllowUndefined } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 /** Complete create loan form with all fields already filled in (after validation) */
@@ -18,8 +18,8 @@ type CompleteCreateLoanForm = {
 // todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
 type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
 
-/** Create loan form as used in the UI, with some fields still optional or being filled in */
-export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
+/** Create loan form as used in the UI, with undefined values for fields still being filled in */
+export type CreateLoanForm = AllowUndefined<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
 
 /** Full query type for create loan queries, including pool identification and all form fields */
 export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm

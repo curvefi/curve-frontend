@@ -1,22 +1,20 @@
 import { useCallback } from 'react'
-import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
-import { rootKeys, type PoolQuery } from '@/stellar/queries/root-keys'
+import type { SwapMutation, SwapMutationOptions } from '@/stellar/features/swap/types'
+import { rootKeys } from '@/stellar/queries/root-keys'
 import { fetchSwapSimulation, invalidateSwapSimulation } from '@/stellar/queries/swap/swap-simulation.query'
-import { swapMutationValidationSuite, type SwapMutation } from '@/stellar/queries/validation/swap.validation'
+import { swapValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import type { SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { queryClient } from '@ui/features/queries/query-client'
 import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
-type SwapOptions = PoolQuery & { account: StellarAddress | undefined; tokens: StellarContract[]; onReset: () => void }
-
-export const useSwapMutation = ({ tokens, onReset, ...params }: SwapOptions) => {
+export const useSwapMutation = ({ tokens, onReset, ...params }: SwapMutationOptions) => {
   const { mutate, error, isPending } = useStellarMutation<SwapMutation>({
     mutationKey: [...rootKeys.userPool(params), 'swap'],
     createTransaction: (values, { account }) =>
       fetchSwapSimulation({ ...values, ...params, account }, { staleTime: 0 }),
-    validationSuite: swapMutationValidationSuite,
+    validationSuite: swapValidationSuite,
     validationParams: params,
     pendingMessage: () => t`Preparing swap`,
     successMessage: () => t`Swap confirmed`,
