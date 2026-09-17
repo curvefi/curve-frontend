@@ -164,14 +164,14 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
 
   return (
     <Stack data-testid="market-contracts-section">
-      <Card size="inline" data-testid="market-assets-section">
+      <Card size="extraSmall" variant="inline" data-testid="market-assets-section">
         <CardHeader title={t`Assets`} />
         <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
           <MarketAssets chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket} />
         </CardContent>
       </Card>
 
-      <Card size="inline">
+      <Card size="extraSmall" variant="inline">
         <CardHeader title={t`Contracts`} />
         <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
           <WithSkeleton loading={contractsLoading} variant="rectangular" height="8lh" width="100%">

@@ -12,7 +12,7 @@ type TimeRange = '1D' | '1W' | '1M'
 const timeRanges: TimeRange[] = ['1D', '1W', '1M']
 
 const meta: Meta<typeof ChartFooter> = {
-  title: 'UI Kit/Widgets/ChartFooter',
+  title: 'EVM UI/Shared UI/ChartFooter',
   component: ChartFooter,
   argTypes: {
     legendSets: {

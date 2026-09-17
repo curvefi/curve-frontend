@@ -56,7 +56,7 @@ export const createComponents = (
   },
   MuiCheckbox: defineMuiCheckbox(),
   MuiChip: defineMuiChip(design, typography),
-  MuiContainer: { styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } } },
+  MuiContainer: { styleOverrides: { root: { display: 'flex', maxWidth: SizesAndSpaces.MaxWidth.page } } },
   MuiDialog: {
     styleOverrides: { paper: { maxHeight: '100dvh', [basicMuiTheme.breakpoints.down('tablet')]: { margin: 0 } } },
   },

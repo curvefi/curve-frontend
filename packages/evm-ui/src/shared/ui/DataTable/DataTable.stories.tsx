@@ -198,7 +198,7 @@ const DemoDataTable = ({
 }
 
 const meta: Meta<typeof DemoDataTable> = {
-  title: 'UI Kit/DataTable/DataTable',
+  title: 'EVM UI/Shared UI/DataTable',
   component: DemoDataTable,
   args: {
     rowCount: 30,

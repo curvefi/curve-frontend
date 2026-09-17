@@ -1,39 +1,28 @@
-import type { ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type UseFormReturn, type FormSubmitHandler, type VisibleErrors, type ErrorKey } from '@ui/features/forms'
+import { type ErrorKey } from '@ui/features/forms'
 import { Form } from '@ui/features/forms/components/Form'
-import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
-import { FormButton, type FormButtonProps } from '@ui/features/forms/FormButton'
+import { FormButton } from '@ui/features/forms/FormButton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { type PoolTokensForm, type PoolTokenField, poolTokenFields } from '../pool-form.utils'
-import { PoolTokenInput, type PoolToken } from '../PoolTokenInput'
-export type { PoolTokensForm } from '../pool-form.utils'
+import type { PoolFormProps } from '../pool-form.types'
+import { allTokenFields, type PoolForm, type PoolTokenField } from '../pool-form.utils'
+import { PoolTokenInputs } from '../PoolTokenInputs'
+import { BalancedDepositCheckbox } from './BalancedDepositCheckbox'
+export type { PoolTokenFields } from '../pool-form.utils'
 
-export type DepositFormProps<TValues extends PoolTokensForm = PoolTokensForm> = {
-  form: UseFormReturn<TValues>
-  tokens: QueryProp<PoolToken[]>
-  onSubmit: FormSubmitHandler
-  isPending: boolean
-  isLoading: boolean
-  isDisabled: boolean
-  wallet: Pick<FormButtonProps, 'connect' | 'isConnected' | 'isConnecting'>
-  userAddress: Address | undefined
-  error: Error | null | undefined
-  formErrors: VisibleErrors<TValues>
-  footer: ReactNode
-  priceImpact: QueryProp<Decimal | null>
+export type DepositFormProps<TValues extends PoolForm = PoolForm> = PoolFormProps<TValues> & {
+  reserves: QueryProp<Decimal[]>
   isSeed: QueryProp<boolean>
 }
 
-export const DepositForm = <TValues extends PoolTokensForm>({
+export const DepositForm = <TValues extends PoolForm>({
   form,
-  tokens: { data: tokens, error: tokensError },
+  tokens,
   onSubmit,
+  reserves,
   isPending,
   isLoading,
   isDisabled,
@@ -52,21 +41,12 @@ export const DepositForm = <TValues extends PoolTokensForm>({
         {t`The seed lock is permanent; expected LP is the net amount you receive.`}
       </Alert>
     )}
-    {tokens?.map((token, index) => (
-      <PoolTokenInput
-        label={t`Amount to deposit`}
-        key={token.address}
-        token={token}
-        index={index}
-        disabled={isPending}
-      />
-    )) ??
-      (!tokensError && (
-        <>
-          <LargeTokenInputSkeleton />
-          <LargeTokenInputSkeleton />
-        </>
-      ))}
+    <PoolTokenInputs tokens={tokens} reserves={reserves} isDisabled={isPending} />
+    <BalancedDepositCheckbox
+      reserves={reserves}
+      isConnected={wallet.isConnected}
+      disabled={isPending || isSeed.data !== false}
+    />
     <HighPriceImpactAlert priceImpact={priceImpact} />
     <FormButton
       {...wallet}
@@ -80,7 +60,7 @@ export const DepositForm = <TValues extends PoolTokensForm>({
     <FormAlerts<ErrorKey<TValues> | PoolTokenField>
       error={error}
       formErrors={formErrors}
-      handledErrors={tokens?.flatMap((_, index) => poolTokenFields(index)) ?? []}
+      handledErrors={allTokenFields(tokens.data?.length) ?? []}
       userAddress={userAddress}
     />
   </Form>

@@ -12,7 +12,7 @@ const LABEL_SPACING = { xs: 'xs', sm: 'sm', 'mui-sm': 'sm', 'mui-md': 'sm', lg: 
 >
 
 type TokenLabelProps = TokenIconProps & {
-  label: string
+  label: string | undefined
   noWrap?: boolean
   typographyVariant?: TypographyProps['variant']
 }

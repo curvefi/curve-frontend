@@ -1,124 +1,84 @@
-import { each, skipWhen, test } from 'vest'
+import { each, test } from 'vest'
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { MAX_I128, calculateMinimumMint } from '@/stellar/lib/amounts'
-import type { PoolQuery, UserQuery } from '@/stellar/queries/root-keys'
+import { calculateMinimumMint } from '@/stellar/lib/amounts'
+import type { UserQuery } from '@/stellar/queries/root-keys'
 import { validateAccount, validatePool } from '@/stellar/queries/validation/pool.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
-import { MAX_SLIPPAGE, MIN_SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
+import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import {
   poolAmountField,
   poolMaxAmountField,
   getPoolAmounts,
-  type PoolTokensForm as DepositTokenValues,
+  type PoolForm,
 } from '@ui/features/pool-forms/pool-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
-import { decimalEqual, decimalGreaterThan, fromWei } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
+import { validateLiquidityInputs, validateSlippage, type QuoteQuery } from './liquidity.validation'
+export type { QuoteQuery, QuoteParams } from './liquidity.validation'
 
-export type QuoteQuery = PoolQuery & { amounts: (Decimal | undefined)[]; decimals: number[]; supply: Decimal }
-export type QuoteParams = FieldsOf<DeepPartial<QuoteQuery>>
-export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: (Decimal | undefined)[] }
-export type DepositParams = FieldsOf<DeepPartial<DepositQuery>>
-export type DepositMutation = DepositQuery & { quote: Decimal; tokens: StellarContract[]; slippage: Decimal }
-export type DepositForm = DepositTokenValues & {
-  decimals: (number | undefined)[] | undefined
-  supply: Decimal | undefined
+export type DepositMutation = {
+  amounts: (Decimal | undefined)[]
+  maxAmounts: (Decimal | undefined)[]
+  decimals: number[]
+  supply: Decimal
   slippage: Decimal
 }
+export type DepositForm = PoolForm & { supply: Decimal | undefined; slippage: Decimal }
+export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: (Decimal | undefined)[] }
+export type DepositParams = FieldsOf<DeepPartial<DepositQuery>>
+export type DepositFormQuery = DepositQuery & DepositMutation & { quote: Decimal; tokens: StellarContract[] }
+export type DepositFormParams = FieldsOf<DeepPartial<DepositFormQuery>>
 
-const validateSlippage = (slippage: Decimal) =>
-  test('slippage', 'Invalid slippage tolerance', () => {
-    enforce(slippage).isDecimal().gte(MIN_SLIPPAGE).lte(MAX_SLIPPAGE)
-  })
+export const depositValidationSuite = createValidationSuite(
+  ({ pool, network, account, minMint, ...inputs }: DepositParams) => {
+    validatePool({ pool, network })
+    validateFundedInputs(inputs)
+    validateAccount(account)
+    test('minMint', 'Invalid minimum LP amount', () => {
+      enforce(minMint).isDecimal().gte(0)
+    })
+  },
+)
 
-const validateQuote = (params: QuoteQuery) => {
-  validatePool(params)
-  validateInputs({ ...params, maxAmounts: undefined })
-}
-
-export const quoteValidationSuite = createValidationSuite(validateQuote)
-export const depositValidationSuite = createValidationSuite((params: DepositQuery) => {
-  validatePool(params)
-  validateFundedInputs(params)
-  validateAccount(params.account)
-  test('minMint', 'Invalid minimum LP amount', () => {
-    enforce(params.minMint).isDecimal().gte(0)
-  })
-})
-
-type DepositInputs = {
-  amounts: (Decimal | undefined)[] | undefined
-  decimals: (number | undefined)[] | undefined
-  supply: Decimal | undefined
-  maxAmounts: (Decimal | undefined)[] | undefined
-}
+type DepositInputs = Pick<DepositParams, 'amounts' | 'decimals' | 'supply' | 'maxAmounts'>
 
 // Shared by disconnected quotes and form validation. Fee simulation also needs wallet balances.
 const validateInputs = ({ amounts, decimals, supply, maxAmounts }: DepositInputs) => {
-  test('supply', 'Pool supply is unavailable', () => {
-    enforce(supply).isDecimal().gte(0)
-  })
-  test('root', 'Pool data is unavailable', () => {
-    enforce(decimals?.length).isNumber().equals(amounts?.length)
-    decimals?.forEach(precision => enforce(precision).isNumber())
-  })
-  each(amounts ?? [], (amount, i) => {
+  validateLiquidityInputs({ amounts, decimals, supply, isDeposit: true })
+  each(notFalsyArray(amounts), (amount, i) => {
     const field = poolAmountField(i)
-    test(field, 'Enter a valid non-negative amount', () => {
-      enforce(amount || '0')
-        .isDecimal({ decimal_digits: '0,' })
-        .gte(0)
-    })
-    maybe(decimals?.[i], precision => {
-      test(field, 'Amount exceeds token decimal precision', () => {
-        enforce(amount || '0').isDecimal({ decimal_digits: `0,${precision}` })
-      })
-      test(field, 'Amount exceeds the maximum supported token amount', () => {
-        enforce(!decimalGreaterThan(amount || '0', fromWei(MAX_I128, precision))).isTruthy()
-      })
-    })
-    skipWhen(maxAmounts?.[i] == null, () => {
+    maybe(maxAmounts?.[i], maxAmount => {
       test(field, 'Insufficient token balance', () => {
-        enforce(!decimalGreaterThan(amount || '0', maxAmounts![i]!)).isTruthy()
+        enforce(amount || '0').lte(maxAmount)
       })
-    })
-  })
-  test('root', 'Enter an amount to deposit', () => {
-    enforce(amounts?.some(amount => decimalGreaterThan(amount ?? '0', '0'))).isTruthy()
-  })
-  test('root', 'Seed deposits require a positive amount of every coin', () => {
-    enforce(
-      supply == null ||
-        !decimalEqual(supply, '0') ||
-        decimals?.every((_, i) => decimalGreaterThan(amounts?.[i] || '0', '0')),
-    ).isTruthy()
-  })
-}
-const validateFundedInputs = (values: DepositInputs) => {
-  validateInputs(values)
-  each(values.decimals ?? [], (_, i) => {
-    test(poolMaxAmountField(i), 'Wallet balance is unavailable', () => {
-      enforce(values.maxAmounts?.[i]).isDecimal().gte(0)
     })
   })
 }
 
-const validateForm = (values: DepositForm) => {
-  validateSlippage(values.slippage)
-  validateFundedInputs({
-    decimals: values.decimals,
-    supply: values.supply,
-    amounts: getPoolAmounts(values, values.decimals?.length),
-    maxAmounts: values.decimals?.map((_, index) => values[poolMaxAmountField(index)]),
+const validateFundedInputs = ({ decimals, maxAmounts, ...inputs }: DepositInputs) => {
+  validateInputs({ decimals, maxAmounts, ...inputs })
+  each(notFalsyArray(decimals), (_, i) => {
+    test(poolMaxAmountField(i), 'Wallet balance is unavailable', () => {
+      enforce(maxAmounts?.[i]).isDecimal().gte(0)
+    })
+  })
+}
+
+const validateForm = ({ decimals, supply, slippage, ...values }: DepositForm) => {
+  validateSlippage(slippage)
+  validateInputs({
+    decimals,
+    supply,
+    amounts: getPoolAmounts(values, decimals?.length),
+    maxAmounts: decimals?.map((_, index) => values[poolMaxAmountField(index)]),
   })
 }
 
 export const depositFormValidationSuite = createValidationSuite(validateForm)
 
-const validateTokens = ({ tokens }: { tokens: StellarContract[] }) => {
+const validateTokens = ({ tokens }: Pick<DepositFormParams, 'tokens'>) => {
   enforce(tokens?.length).isNumber().gt(0)
 }
 
@@ -135,17 +95,17 @@ export const depositMutationValidationSuite = createValidationSuite(
     tokens,
     quote,
     account,
-  }: DepositMutation) => {
+  }: DepositFormParams) => {
     validatePool({ pool, network })
     validateAccount(account)
     validateSlippage(slippage)
     validateFundedInputs({ amounts, decimals, maxAmounts, supply })
     validateTokens({ tokens })
     test('quote', 'Deposit must leave LP after the permanent seed lock', () => {
-      enforce(decimalGreaterThan(quote, '0')).isTruthy()
+      enforce(maybe(quote, quote => +quote)).gt(0)
     })
     test('minMint', 'Minimum LP does not match the accepted quote and slippage', () => {
-      enforce(calculateMinimumMint(quote, slippage)).equals(minMint)
+      enforce(maybes([quote, slippage], calculateMinimumMint)).equals(minMint)
     })
   },
 )

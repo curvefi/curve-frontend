@@ -33,7 +33,7 @@ export const MarketParametersSection = ({
   maxLeverage,
 }: MarketParametersProps) => (
   <Stack>
-    <Card size="inline" data-testid="market-prices-section">
+    <Card size="extraSmall" variant="inline" data-testid="market-prices-section">
       <CardHeader title={t`Prices`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
         <MarketPricesRows
@@ -46,7 +46,7 @@ export const MarketParametersSection = ({
       </CardContent>
     </Card>
 
-    <Card size="inline" data-testid="market-parameters-section">
+    <Card size="extraSmall" variant="inline" data-testid="market-parameters-section">
       <CardHeader title={t`Parameters`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
         <MarketLoanParameters chainId={chainId} marketId={marketId} apiMarket={apiMarket} maxLeverage={maxLeverage} />

@@ -3,7 +3,6 @@ import { defaultGetRpcUrls } from '@evm-ui/features/connect-wallet/lib/wagmi/tra
 import {
   arbitrum,
   arbitrumSepolia,
-  arcTestnet,
   aurora,
   avalanche,
   base,
@@ -38,12 +37,12 @@ import {
   zksync,
 } from '@wagmi/core/chains'
 import { CHAIN_BLOCKCHAIN_IDS, CHAIN_NAMES } from './constants'
-import { expchain, megaeth, strata } from './custom-chains'
+import { arc, expchain, megaeth, strata } from './custom-chains'
 
 const wagmiChains = [
   arbitrum,
   arbitrumSepolia,
-  arcTestnet,
+  arc,
   aurora,
   avalanche,
   base,

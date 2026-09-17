@@ -34,7 +34,7 @@ export const Footer = ({ sections }: FooterProps) => {
         container
         spacing={SizesAndSpaces.Grid.Column_Spacing}
         data-testid="footer-content"
-        sx={{ rowGap: SizesAndSpaces.Grid.Row_Spacing, position: 'relative', maxWidth: SizesAndSpaces.MaxWidth.footer }}
+        sx={{ rowGap: SizesAndSpaces.Grid.Row_Spacing, position: 'relative', maxWidth: SizesAndSpaces.MaxWidth.page }}
       >
         <Grid size={{ mobile: 12, desktop: 3 }}>
           <Description />
