@@ -18,7 +18,6 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
   const tokenAddressesAll = isWrappedOnly
     ? p.wrappedCoinAddresses
     : [...p.underlyingCoinAddresses, ...p.wrappedCoinAddresses]
-  const tokenDecimalsAll = isWrappedOnly ? p.wrappedDecimals : [...p.underlyingDecimals, ...p.wrappedDecimals]
   const tokensCountBy = lodash.countBy(tokens)
 
   const poolData: PoolData = {
@@ -30,7 +29,6 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
     hasWrapped: isWrappedOnly ?? !hasNoWrapped(p),
     isWrapped: isWrappedOnly ?? false,
     tokenAddressesAll,
-    tokenDecimalsAll,
     tokenAddresses,
     tokens,
     tokensCountBy,

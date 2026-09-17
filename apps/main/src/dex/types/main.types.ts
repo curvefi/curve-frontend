@@ -80,7 +80,6 @@ export type PoolData = {
   isWrapped: boolean
   tokenAddresses: string[]
   tokenAddressesAll: string[]
-  tokenDecimalsAll: number[]
   tokens: string[]
   tokensCountBy: Record<string, number>
   tokensAll: string[]
