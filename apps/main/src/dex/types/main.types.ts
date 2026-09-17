@@ -72,7 +72,6 @@ type Gauge = { status: GaugeStatus | null; isKilled: boolean | null }
 
 export type PoolData = {
   idx?: number
-  chainId: ChainId
   pool: Pool
   gauge: Gauge
   hasWrapped: boolean
