@@ -34,8 +34,8 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 import type { QueryData } from '@evm-ui/lib'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
-import { t } from '@ui/lib/i18n'
 import { DEFAULT_DECIMALS } from '@primitives/units.util'
+import { t } from '@ui/lib/i18n'
 
 type BasePool = QueryData<typeof useBasePools>[number]
 
@@ -89,7 +89,14 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         userAddedToken: false,
         basePool: basePools.some(pool => pool.token.toLowerCase() === token[0].toLowerCase()),
       }))
-      .concat(createQuickList.map(token => ({ ...token, userAddedToken: false, basePool: false, decimals: DEFAULT_DECIMALS })))
+      .concat(
+        createQuickList.map(token => ({
+          ...token,
+          userAddedToken: false,
+          basePool: false,
+          decimals: DEFAULT_DECIMALS,
+        })),
+      )
       .filter(token => token.symbol !== '' && token.address !== '')
 
     return lodash.uniqBy([...userAddedTokens, ...tokensArray], o => o.address)
