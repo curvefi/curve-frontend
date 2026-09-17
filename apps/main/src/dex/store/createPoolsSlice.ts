@@ -3,13 +3,22 @@ import { chunk, countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { invalidatePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
+import { invalidatePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, CurveApi, PoolData, PoolDataMapper, RewardsApyMapper } from '@/dex/types/main.types'
+import {
+  ChainId,
+  CurveApi,
+  PoolData,
+  PoolDataMapper,
+  RewardsApyMapper,
+  type NetworkConfig,
+  type Pool,
+} from '@/dex/types/main.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
+import { shortenAddress } from '@evm-ui/utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui/lib/logging'
 import { fetchNetworks } from '../entities/networks'
-import { getPools } from '../lib/pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -30,7 +39,6 @@ export type PoolsSlice = {
     fetchPools: (
       curve: CurveApi,
       poolIds: string[],
-      options: { includeGaugeData: boolean },
     ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
     fetchPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[], useApi?: boolean) => Promise<void>
@@ -49,13 +57,41 @@ export type PoolsSlice = {
 
 const DEFAULT_STATE: SliceState = { poolsMapper: {}, rewardsApyMapper: {}, stakedMapper: {}, error: '' } as const
 
+const getPoolData = (p: Pool, network: NetworkConfig) => {
+  const isWrappedOnly = network.poolIsWrappedOnly[p.id]
+  const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx]))
+  const tokens = isWrappedOnly
+    ? tokensWrapped
+    : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx]))
+  const tokenAddresses = isWrappedOnly ? p.wrappedCoinAddresses : p.underlyingCoinAddresses
+  const tokenAddressesAll = isWrappedOnly
+    ? p.wrappedCoinAddresses
+    : [...p.underlyingCoinAddresses, ...p.wrappedCoinAddresses]
+  const tokensCountBy = countBy(tokens)
+
+  const poolData: PoolData = {
+    pool: p,
+
+    // stats
+    hasVyperVulnerability: p.hasVyperVulnerability(),
+    hasWrapped: isWrappedOnly ?? !(p?.isPlain || p?.isFake),
+    isWrapped: isWrappedOnly ?? false,
+    tokenAddressesAll,
+    tokenAddresses,
+    tokens,
+    tokensCountBy,
+  }
+
+  return poolData
+}
+
 export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    fetchPools: async (curve, poolIds, { includeGaugeData }) => {
+    fetchPools: async (curve, poolIds) => {
       const { pools } = get()
-      const { chainId } = curve
+      const { chainId, getPool } = curve
 
       // if no pools found for network, set tvl, volume and pools state to empty object
       if (!poolIds.length) {
@@ -72,7 +108,13 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           }),
         )
 
-        const { poolsMapper } = await getPools(curve, poolIds, networks[chainId], includeGaugeData)
+        const { poolsMapper } = poolIds.reduce(
+          (prev, poolId): { poolsMapper: Record<string, PoolData> } => {
+            prev.poolsMapper[poolId] = getPoolData(getPool(poolId), networks[chainId])
+            return prev
+          },
+          { poolsMapper: {} },
+        )
         const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
 
         set(
@@ -100,7 +142,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])
-      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId], { includeGaugeData: true })
+      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId])
       const poolData = resp?.poolsMapper?.[poolId]
       return poolData
     },
@@ -160,6 +202,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       try {
         await Promise.all([
           invalidatePoolCurrencyReserves({ chainId, poolId: pool.id }),
+          invalidatePoolGaugeStatus({ chainId, poolId: pool.id }),
           pools.fetchPoolsRewardsApy(chainId, [poolData], useApi),
         ])
       } catch (error) {

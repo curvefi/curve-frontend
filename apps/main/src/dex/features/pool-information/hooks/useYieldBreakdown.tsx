@@ -4,6 +4,7 @@ import { type Address } from 'viem'
 import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolData } from '@/dex/types/main.types'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
@@ -25,8 +26,9 @@ export const useYieldBreakdown = ({
   poolData: PoolData
   poolId: string
 }) => {
+  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
   const poolAddress = poolData.pool.address as Address
-  const gaugeIsKilled = !!poolData.gauge.isKilled
+  const gaugeIsKilled = !!gauge?.isKilled
   const { data: network } = useNetworkByChain({ chainId })
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs

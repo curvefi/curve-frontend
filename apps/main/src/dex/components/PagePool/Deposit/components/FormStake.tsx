@@ -14,6 +14,7 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
@@ -29,6 +30,7 @@ import { t } from '@ui/lib/i18n'
 
 export const FormStake = ({ seed }: TransferProps) => {
   const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -167,7 +169,7 @@ export const FormStake = ({ seed }: TransferProps) => {
 
   return (
     <FormContent>
-      {poolData.gauge.isKilled && <AlertGaugeKilled />}
+      {gauge?.isKilled && <AlertGaugeKilled />}
       {/* input fields */}
       <FieldsWrapper>
         <FieldLpToken

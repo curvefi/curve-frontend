@@ -22,6 +22,7 @@ import {
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
@@ -38,6 +39,7 @@ import { t } from '@ui/lib/i18n'
 
 export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps) => {
   const { chainId, blockchainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -251,7 +253,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
 
   return (
     <FormContent>
-      {poolData.gauge.isKilled && <AlertGaugeKilled />}
+      {gauge?.isKilled && <AlertGaugeKilled />}
       <FieldsDeposit
         chainId={chainId}
         formProcessing={disableForm}

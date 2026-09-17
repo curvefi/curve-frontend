@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { TableCellRewardsOthers } from '@/dex/components/TableCellRewardsOthers'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import { Metric, MetricProps } from '@evm-ui/shared/ui/Metric'
 import Grid from '@mui/material/Grid'
@@ -35,6 +36,7 @@ const highlight = { color: 'success' as const }
 
 export const LegacyPoolExpandedPanel: ExpandedPanelComponent<LegacyPoolRow> = ({ row, table }) => {
   const { original: poolData } = row
+  const { data: gauge } = usePoolGaugeStatus({ chainId: poolData.pool.curve.chainId, poolId: poolData.pool.id })
   const {
     pool: { address },
     totalAPR,
@@ -66,7 +68,7 @@ export const LegacyPoolExpandedPanel: ExpandedPanelComponent<LegacyPoolRow> = ({
         valueOptions={{ unit: 'percentage', ...(isSortedBy(table, LegacyPoolColumnId.RewardsBase) && highlight) }}
       />
 
-      {!poolData?.gauge.isKilled && (
+      {!gauge?.isKilled && (
         <>
           {isCrvRewardsEnabled ? (
             <ListInfoItem
