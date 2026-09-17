@@ -1,5 +1,6 @@
 import {
   formatCollateralNotional,
+  getMarketPriceUnit,
   isPositionLeveraged,
   tokenMetric,
   type MarketTokensOrEmpty,
@@ -38,10 +39,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   )
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
-  const priceUnit =
-    collateralToken?.symbol && borrowToken.symbol
-      ? `${collateralToken?.symbol}/${borrowToken.symbol}`
-      : UNAVAILABLE_TOKEN_SYMBOL
+  const priceUnit = getMarketPriceUnit({ collateralToken, borrowToken })
 
   return (
     <MetricsGrid variant="mobileRows">

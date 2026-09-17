@@ -25,7 +25,7 @@ import { QueryProp, toQuery } from '@ui/features/queries/util'
 import { decimal, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { formatToken } from '@ui/lib/tokens'
+import { formatToken, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 
 /**
@@ -153,6 +153,17 @@ export type MarketTokens = { collateralToken: MarketToken; borrowToken: MarketTo
 
 /** Accepts either both tokens or an empty object. Avoid Partial<> because it could allow one of the tokens only */
 export type MarketTokensOrEmpty = AllOrNone<MarketTokens>
+
+export const getMarketPriceUnit = ({
+  collateralToken,
+  borrowToken,
+}: {
+  collateralToken?: Pick<MarketToken, 'symbol'>
+  borrowToken?: Pick<MarketToken, 'symbol'>
+}) =>
+  collateralToken?.symbol && borrowToken?.symbol
+    ? `${collateralToken.symbol}/${borrowToken.symbol}`
+    : UNAVAILABLE_TOKEN_SYMBOL
 
 type MarketOrApiValue<T, Value> = T extends MarketTemplate ? Value : Value | undefined
 

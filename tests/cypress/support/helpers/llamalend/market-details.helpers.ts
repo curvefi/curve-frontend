@@ -60,6 +60,7 @@ const shouldLoadMarketContracts = ({
   getActionValue('market-contract-controller').should('match', ADDRESS_PATTERN)
   if (hasMonetaryPolicy) getActionValue('market-contract-monetary-policy').should('match', ADDRESS_PATTERN)
   if (hasOracle) getActionValue('market-contract-oracle').should('match', ADDRESS_PATTERN)
+  getActionValue('market-id').should('not.equal', '-')
 }
 
 const shouldLoadMarketParameters = ({
@@ -84,9 +85,6 @@ const shouldLoadMarketParameters = ({
   cy.get('[data-testid="market-price-oracle"]', LOAD_TIMEOUT).should('be.visible')
   if (hasOraclePrice) getActionValue('market-price-oracle').should('match', DECIMAL_REGEX)
   if (hasPricePerShare) getActionValue('market-price-per-share').should('match', DECIMAL_REGEX)
-
-  cy.get('[data-testid="market-id-section"]', LOAD_TIMEOUT).should('be.visible')
-  getActionValue('market-id').should('not.equal', '-')
 }
 
 const shouldLoadMarketDetails = () => {

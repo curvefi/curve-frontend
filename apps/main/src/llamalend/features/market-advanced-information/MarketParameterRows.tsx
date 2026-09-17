@@ -12,9 +12,16 @@ type MarketPricesRowsProps = {
   marketId: string | undefined
   enablePricePerShare: boolean
   apiMarket: QueryProp<LlamaMarket>
+  priceUnit: string
 }
 
-export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare, apiMarket }: MarketPricesRowsProps) => {
+export const MarketPricesRows = ({
+  chainId,
+  marketId,
+  enablePricePerShare,
+  apiMarket,
+  priceUnit,
+}: MarketPricesRowsProps) => {
   const oraclePriceOnChain = useMarketOraclePrice({ chainId, marketId })
   const pricePerShare = useMarketVaultPricePerShare({ chainId, marketId }, enablePricePerShare)
   const oraclePrice = fallbackQ(
@@ -29,12 +36,17 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare, apiMa
         labelTooltip={{
           title: t`The price source that determines your collateral value, health, and when your position moves toward soft liquidation.`,
         }}
-        value={mapQuery(oraclePrice, data => formatNumber(data, 'pool.parameter'))}
+        value={mapQuery(oraclePrice, data =>
+          formatNumber(data, { abbreviate: false, decimals: 5, unit: { symbol: priceUnit, position: 'suffix' } }),
+        )}
       />
       {enablePricePerShare && marketId && (
         <ActionInfo
           testId="market-price-per-share"
           label={t`Price per share`}
+          labelTooltip={{
+            title: t`The current value of one vault share, which increases as lending interest accrues.`,
+          }}
           value={mapQuery(pricePerShare, data => formatNumber(data, 'pool.parameter'))}
         />
       )}
@@ -43,5 +55,5 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare, apiMa
 }
 
 export const MarketIdRow = ({ marketId }: { marketId: string | undefined }) => (
-  <ActionInfo testId="market-id" label={t`ID`} value={fakeLoadingQ(marketId)} />
+  <ActionInfo testId="market-id" label={t`Market ID`} value={fakeLoadingQ(marketId)} />
 )

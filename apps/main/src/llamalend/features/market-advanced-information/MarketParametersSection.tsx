@@ -1,16 +1,16 @@
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { MarketLoanParameters } from './MarketLoanParameters'
-import { MarketIdRow, MarketPricesRows } from './MarketParameterRows'
+import { MarketPricesRows } from './MarketParameterRows'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,35 +19,36 @@ type MarketParametersProps = {
   marketId: string | undefined
   marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
+  priceUnit: string
+  maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
 }
 
-export const MarketParametersSection = ({ chainId, marketId, marketType, apiMarket }: MarketParametersProps) => (
+export const MarketParametersSection = ({
+  chainId,
+  marketId,
+  marketType,
+  apiMarket,
+  priceUnit,
+  maxLeverage,
+}: MarketParametersProps) => (
   <Stack>
-    {!useNewLlamaMarketDetailPage() && (
-      <Card size="inline" data-testid="market-prices-section">
-        <CardHeader title={t`Prices`} />
-        <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-          <MarketPricesRows
-            chainId={chainId}
-            marketId={marketId}
-            enablePricePerShare={marketType === MarketType.Lend}
-            apiMarket={apiMarket}
-          />
-        </CardContent>
-      </Card>
-    )}
+    <Card size="inline" data-testid="market-prices-section">
+      <CardHeader title={t`Prices`} />
+      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+        <MarketPricesRows
+          chainId={chainId}
+          marketId={marketId}
+          enablePricePerShare={marketType === MarketType.Lend}
+          apiMarket={apiMarket}
+          priceUnit={priceUnit}
+        />
+      </CardContent>
+    </Card>
 
     <Card size="inline" data-testid="market-parameters-section">
       <CardHeader title={t`Parameters`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-        <MarketLoanParameters chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
-      </CardContent>
-    </Card>
-
-    <Card size="inline" data-testid="market-id-section">
-      <CardHeader title={t`Market`} />
-      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-        <MarketIdRow marketId={marketId ?? apiMarket.data?.controllerAddress} />
+        <MarketLoanParameters chainId={chainId} marketId={marketId} apiMarket={apiMarket} maxLeverage={maxLeverage} />
       </CardContent>
     </Card>
   </Stack>

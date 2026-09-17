@@ -1,7 +1,10 @@
+import { getMaxRoE } from '@/llamalend/llama.utils'
 import { useMarketParameters } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { MaxLeverageTooltip, MaxRoeTooltipContent } from '@/llamalend/widgets/tooltips'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -12,10 +15,12 @@ export const MarketLoanParameters = ({
   chainId,
   marketId,
   apiMarket,
+  maxLeverage,
 }: {
   chainId: IChainId
   marketId: string | undefined
   apiMarket: QueryProp<LlamaMarket>
+  maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
 }) => {
   const parameters = useMarketParameters({ chainId, marketId })
   return (
@@ -24,7 +29,7 @@ export const MarketLoanParameters = ({
         // these fields are not exposed by the API yet
         <ActionInfo
           testId="market-param-amm-swap-fee"
-          label={t`AMM swap fee`}
+          label={t`AMM swap fees`}
           labelTooltip={{
             title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
           }}
@@ -93,8 +98,23 @@ export const MarketLoanParameters = ({
         )}
       />
 
-      {!useNewLlamaMarketDetailPage() && (
-        <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
+      <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
+
+      {useNewLlamaMarketDetailPage() && (
+        <>
+          <ActionInfo
+            testId="market-param-max-leverage"
+            label={t`Max leverage`}
+            labelTooltip={{ title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> }}
+            value={maxLeverage && mapQuery(maxLeverage, ({ value }) => formatNumber(value, 'multiplier'))}
+          />
+          <ActionInfo
+            testId="market-param-max-roe"
+            label={t`Max RoE`}
+            labelTooltip={{ title: t`Max RoE`, body: <MaxRoeTooltipContent market={apiMarket.data} /> }}
+            value={mapQuery(apiMarket, market => formatNumber(getMaxRoE(market), 'percent.rate'))}
+          />
+        </>
       )}
     </>
   )

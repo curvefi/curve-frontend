@@ -1,6 +1,5 @@
 import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
-import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { MarketHistoricalRatesTabs } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
@@ -27,11 +26,6 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      {isNewLlamaMarketDetailPage && (
-        <MarketSection id="market-overview">
-          <MarketOverviewCard />
-        </MarketSection>
-      )}
       {isBorrow && (
         <MarketSection id="price-chart">
           <ChartAndActivityComp previewPrices={previewPrices} />
