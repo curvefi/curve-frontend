@@ -26,7 +26,6 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   poolsMapper: Record<string, PoolDataMapper>
   currencyReserves: CurrencyReservesMapper
-  haveAllPools: Record<string, boolean>
   rewardsApyMapper: Record<string, RewardsApyMapper>
   stakedMapper: Record<
     string,
@@ -62,7 +61,6 @@ export type PoolsSlice = {
 
 const DEFAULT_STATE: SliceState = {
   poolsMapper: {},
-  haveAllPools: {},
   currencyReserves: {},
   rewardsApyMapper: {},
   stakedMapper: {},
@@ -98,7 +96,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         set(
           produce((state: State) => {
             state.pools.poolsMapper[chainId] = poolsMapper
-            state.pools.haveAllPools[chainId] = true
           }),
         )
 

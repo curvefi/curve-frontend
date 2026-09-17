@@ -47,7 +47,6 @@ export const Dashboard = ({
   const dashboardDataActiveKey = getDashboardDataActiveKey(rChainId, formValues.walletAddress)
   const dashboardDataMapper = useStore(state => state.dashboard.dashboardDatasMapper[dashboardDataActiveKey])
   const noResult = useStore(state => state.dashboard.noResult)
-  const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
   const isLoading = useStore(state => state.dashboard.loading)
   const isXSmDown = useLayoutStore(state => state.isXSmDown)
   const poolsMapper = useStore(state => state.pools.poolsMapper[rChainId])
@@ -91,7 +90,7 @@ export const Dashboard = ({
   useEffect(() => {
     updateFormValues({})
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, !pageLoaded, haveAllPools, poolsMapper])
+  }, [chainId, !pageLoaded, poolsMapper])
 
   // signerAddress
   useEffect(() => {

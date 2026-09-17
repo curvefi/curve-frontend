@@ -13,44 +13,30 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
-import { useNavigate, useParams } from '@ui/hooks/router'
+import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
 export const PagePool = () => {
-  const push = useNavigate()
   const { curveApi = null, isHydrated } = useCurve()
   const props = useParams<PoolUrlParams>()
   const { poolIdOrAddress: rPoolIdOrAddress, network: blockchainId } = props
-  const rChainId = useChainId(blockchainId)
-  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
+  const chainId = useChainId(blockchainId)
+  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress: rPoolIdOrAddress })
 
-  const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
   const fetchNewPool = useStore(state => state.pools.fetchNewPool)
-  const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[poolId ?? ''])
-  const { data: network } = useNetworkByChain({ chainId: rChainId })
+  const poolData = useStore(state => state.pools.poolsMapper[chainId]?.[poolId ?? ''])
+  const { data: network } = useNetworkByChain({ chainId })
   const [poolNotFound, setPoolNotFound] = useState(false)
 
+  // Legacy jank to refetch new pools. If we're fully hydrated yet the pool's missing it's probably a new one.
   useEffect(() => {
-    if (!rChainId || !poolId || curveApi?.chainId !== rChainId || !haveAllPools || poolData) return
-    fetchNewPool(curveApi, poolId)
-      .then(found => setPoolNotFound(!found))
-      .catch(() => setPoolNotFound(true))
-  }, [curveApi, fetchNewPool, haveAllPools, network, poolId, poolData, push, rChainId])
+    if (!poolData && poolId && curveApi && isHydrated) {
+      fetchNewPool(curveApi, poolId)
+        .then(found => setPoolNotFound(!found))
+        .catch(() => setPoolNotFound(true))
+    }
+  }, [curveApi, fetchNewPool, isHydrated, poolData, poolId])
 
-  /**
-   * Blacklisted pools are excluded from the pools mapper during initialization,
-   * so they cannot be resolved via `usePoolIdByAddressOrId`.
-   *
-   * Because of the way that legacy code loads pools (using stores and not queries),
-   * this creates an ambiguity when `rPoolIdOrAddress` is an address:
-   * - `poolId` being undefined could mean the data is still loading
-   * - `poolId` being undefined could mean the pool is blacklisted
-   *
-   * To handle this, we explicitly check against the blacklist when the URL
-   * parameter is an address. When `rPoolIdOrAddress` is a pool ID (not an address),
-   * the lookup will succeed or fail deterministically, and the `useEffect` above
-   * will set `poolNotFound` accordingly.
-   */
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
     () =>
