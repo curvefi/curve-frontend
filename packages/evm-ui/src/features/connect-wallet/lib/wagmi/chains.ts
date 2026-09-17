@@ -26,7 +26,6 @@ import {
   plasma,
   plumeMainnet,
   polygon,
-  robinhood,
   sonic,
   stable,
   tac,
@@ -37,7 +36,7 @@ import {
   zksync,
 } from '@wagmi/core/chains'
 import { CHAIN_BLOCKCHAIN_IDS, CHAIN_NAMES } from './constants'
-import { arc, expchain, megaeth, strata } from './custom-chains'
+import { arc, expchain, megaeth, robinhood, strata } from './custom-chains'
 
 const wagmiChains = [
   arbitrum,

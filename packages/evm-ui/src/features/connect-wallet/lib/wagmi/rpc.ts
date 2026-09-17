@@ -38,5 +38,5 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.Etherlink]: [],
   [ChainId.Robinhood]: ['https://rpc.mainnet.chain.robinhood.com'],
   [ChainId.Stable]: [],
-  [ChainId.Arc]: [],
+  [ChainId.Arc]: ['https://rpc.mainnet.arc.io'],
 } as const
