@@ -8,7 +8,13 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { decimalEqual, decimalSum } from '@ui/lib/decimal'
-import { type DepositPreviewParams, type DepositPreview } from './useDepositPreview'
+import { type DepositPreview, type DepositPreviewParams } from './useDepositPreview'
+
+/** Returns the amount of seed locked in the pool if the pool is empty, otherwise returns null. */
+const useSeedLock = (params: DepositPreviewParams) =>
+  combineQueries([usePoolConfig(params), usePoolSupply(params)], ({ seedLock }, supply) =>
+    decimalEqual(supply, '0') ? seedLock : null,
+  )
 
 export const DepositFooter = ({
   params,
@@ -17,8 +23,6 @@ export const DepositFooter = ({
   priceImpact,
   gas,
 }: { params: DepositPreviewParams } & DepositPreview) => {
-  const config = usePoolConfig(params)
-  const supply = usePoolSupply(params)
   const lpDecimals = useTokenDecimals({ ...params, token: params.pool })
   const lpBalance = useTokenBalance({ ...params, token: params.pool, decimals: lpDecimals.data })
   return (
@@ -28,7 +32,7 @@ export const DepositFooter = ({
       currentLp={q(lpBalance)}
       projectedLp={combineQueries([lpBalance, quote], decimalSum)}
       priceImpact={priceImpact}
-      seedLock={combineQueries([config, supply], (pool, supply) => (decimalEqual(supply, '0') ? pool.seedLock : null))}
+      seedLock={useSeedLock(params)}
       gas={gas}
       slippage={params.slippage}
       onSlippageChanged={useUserProfileStore(state => state.setMaxSlippage)}

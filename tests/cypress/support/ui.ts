@@ -71,3 +71,10 @@ export function skipTestsAfterFailure() {
     failed ||= this.currentTest!.state === 'failed'
   })
 }
+
+/** Maps items sequentially because Cypress chains cannot be combined with Promise.all. */
+export const cyMap = <T, R>(items: readonly T[], callback: (item: T) => Cypress.Chainable<R>) =>
+  items.reduce(
+    (chain, item) => chain.then(results => callback(item).then(result => [...results, result])),
+    cy.wrap<R[]>([]),
+  )

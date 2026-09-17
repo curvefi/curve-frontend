@@ -5,8 +5,12 @@ import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPag
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { DepositTab } from '../deposit/DepositTab'
+import { WithdrawTab } from '../withdraw/WithdrawTab'
 
-const menu = [{ value: 'deposit', label: t`Deposit`, component: DepositTab }]
+const menu = [
+  { value: 'deposit', label: t`Deposit`, component: DepositTab },
+  { value: 'withdraw', label: t`Withdraw`, component: WithdrawTab },
+]
 
 export const PoolPage = () => {
   const { network, pool } = useParams<{ network: StellarNetwork; pool: StellarContract }>()
