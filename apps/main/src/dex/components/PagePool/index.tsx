@@ -153,7 +153,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         maxSlippage,
         seed,
         isGaugeKilled: poolData.gauge.isKilled ?? undefined,
-        isGaugeManager: maybes([gaugeManager, signerAddress], isAddressEqual),
+        isGaugeManager: !!(gaugeManager && signerAddress && isAddressEqual(gaugeManager, signerAddress)),
         isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
           Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
         ),
