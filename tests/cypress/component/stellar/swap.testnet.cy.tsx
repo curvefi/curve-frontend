@@ -6,7 +6,8 @@ import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/c
 import { seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
 import {
   fetchPoolState,
-  interceptStellarPrices,
+  checkPoolSlippage,
+  checkPoolPriceImpact,
   type PoolState,
   TEST_NETWORK,
 } from '@cy/support/helpers/stellar/pool.helpers'
@@ -14,6 +15,7 @@ import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stella
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
 import {
   checkSwapBalances,
+  checkSwapDetails,
   checkSwapResult,
   readSwapAmounts,
   selectSwapToken,
@@ -48,7 +50,6 @@ describe('Stellar testnet swap', () => {
   })
 
   beforeEach(() => {
-    interceptStellarPrices()
     cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(fresh => (state = fresh))
   })
 
@@ -114,7 +115,10 @@ describe('Stellar testnet swap', () => {
         expect(amounts[SWAP_FIELDS[side].amountField]).to.equal(SWAP_AMOUNT)
         expect(+amounts.inputAmount).to.be.greaterThan(0)
         expect(+amounts.outputAmount).to.be.greaterThan(0)
+        checkSwapDetails(amounts, state.coins[fromIndex], state.coins[toIndex])
         checkEstimatedTxCost()
+        checkPoolSlippage()
+        checkPoolPriceImpact()
         submitSwapForm()
         cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(fresh => {
           checkSwapResult(state, fresh, amounts, fromIndex, toIndex)

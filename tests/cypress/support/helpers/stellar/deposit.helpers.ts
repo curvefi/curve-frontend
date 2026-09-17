@@ -4,8 +4,15 @@ import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { fetchExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { type PoolAmounts, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
+import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import {
+  checkPoolPriceImpact,
+  checkPoolSlippage,
+  type PoolAmounts,
+  poolInput,
+  type PoolState,
+  TEST_NETWORK,
+} from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -111,3 +118,19 @@ export const checkDepositResult = (state: PoolState, amounts: PoolAmounts, proje
     lp: { ...state.lp, balance: projectedLp },
     coins: state.coins.map(coin => ({ ...coin, balance: decimalMinus(coin.balance, amounts[coin.symbol]) })),
   })
+
+/** Check the preview, confirm the deposit, and verify its effect on the wallet and pool. */
+export const submitDepositAndCheck = (pool: StellarContract, state: PoolState, amounts: PoolAmounts) =>
+  cy
+    .then(LOAD_TIMEOUT, () => fetchDepositPreview(pool, state, amounts))
+    .then(({ expected, minimum, projected }) => {
+      checkDepositDetail('expected-lp', expected)
+      checkDepositDetail('minimum-lp', minimum)
+      checkDepositDetail('projected-lp', projected)
+      checkEstimatedTxCost()
+      checkPoolSlippage()
+      if (+state.supply) checkPoolPriceImpact()
+      submitDepositForm(state)
+      checkDepositResult(state, amounts, projected)
+      checkDepositSupply(pool, state, expected)
+    })

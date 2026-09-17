@@ -1,9 +1,14 @@
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import type { PoolState } from '@cy/support/helpers/stellar/pool.helpers'
 import { cyMap, LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { range } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapSide } from '@ui/features/pool-forms/swap/swap-form.utils'
-import { decimalMinus, fromWei } from '@ui/lib/decimal'
+import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
+import { useUserProfileStore } from '@ui/features/user-profile'
+import { decimalDiv, decimalMinus, fromWei } from '@ui/lib/decimal'
+import { formatToken } from '@ui/lib/tokens'
 
 // get_dx estimates input; allow two receiving-token base units when exchange rounds the output.
 const SWAP_ROUNDING_UNITS = '2' satisfies Decimal
@@ -40,6 +45,26 @@ export const readSwapAmounts = () =>
       .invoke('val')
       .then(value => String(value) as Decimal),
   ).then(([inputAmount, outputAmount]) => ({ inputAmount, outputAmount }))
+
+export const checkSwapDetails = (
+  { inputAmount, outputAmount }: { inputAmount: Decimal; outputAmount: Decimal },
+  fromToken: PoolState['coins'][number],
+  toToken: PoolState['coins'][number],
+) => {
+  getActionValue('pool-swap-exchange-rate').should(
+    'equal',
+    `${formatToken(1, fromToken.symbol)} = ${formatToken(decimalDiv(outputAmount, inputAmount), toToken.symbol, 'balance')}`,
+  )
+  const minimum = calculateMinimumReceived(
+    outputAmount,
+    useUserProfileStore.getState().maxSlippage.stable,
+    toToken.decimals,
+  )
+  getActionValue('pool-swap-minimum-received').should(
+    'equal',
+    `${formatNumber(minimum, 'token.balance')} ${toToken.symbol}`,
+  )
+}
 
 export const submitSwapForm = () => {
   swapSubmit().should('be.enabled').click()

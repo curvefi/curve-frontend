@@ -46,6 +46,7 @@ export const SwapInfoList = ({
       size="small"
     />
     <PriceImpactActionInfo
+      testId="pool-price-impact"
       priceImpact={priceImpact}
       value={mapQuery(priceImpact, value => formatNumber(value, 'percent.price-impact'))}
       size="small"

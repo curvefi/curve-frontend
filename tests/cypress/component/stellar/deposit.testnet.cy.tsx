@@ -1,7 +1,7 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { DepositTab } from '@/stellar/features/deposit/DepositTab'
 import { oneOf } from '@cy/support/generators'
-import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import {
   allCoinDeposit,
@@ -10,12 +10,9 @@ import {
   checkBalancedWalletAmounts,
   checkDepositBalances,
   checkDepositDetail,
-  checkDepositResult,
-  checkDepositSupply,
   depositBalancedCheckbox,
   depositSubmit,
-  fetchDepositPreview,
-  submitDepositForm,
+  submitDepositAndCheck,
 } from '@cy/support/helpers/stellar/deposit.helpers'
 import {
   checkPoolInputError,
@@ -24,7 +21,6 @@ import {
   poolInput,
   type PoolState,
   TEST_NETWORK,
-  interceptStellarPrices,
   writePoolAmount,
   writePoolForm,
 } from '@cy/support/helpers/stellar/pool.helpers'
@@ -56,16 +52,17 @@ describe('Stellar testnet deposit', () => {
   })
 
   beforeEach(() => {
-    interceptStellarPrices()
     cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(freshState => (state = freshState))
   })
 
-  const mountDeposit = ({ connected = true } = {}) =>
+  const mountDeposit = ({ connected = true } = {}) => {
     cy.mount(
       <StellarTestWrapper address={connected ? testnetConfig.deployer.address : undefined}>
         <DepositTab network={TEST_NETWORK} pool={pool} />
       </StellarTestWrapper>,
     )
+    if (connected) checkDepositBalances(state)
+  }
 
   it('requires a connected wallet', () => {
     const { coins } = state
@@ -80,7 +77,6 @@ describe('Stellar testnet deposit', () => {
 
   it('loads pool balances and rejects an empty or zero deposit', () => {
     mountDeposit()
-    checkDepositBalances(state)
     depositSubmit().should('be.disabled')
     writePoolForm(state.coins, zeroDeposit(state.coins))
     cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT)
@@ -91,7 +87,6 @@ describe('Stellar testnet deposit', () => {
 
   it('rejects amounts exceeding wallet balances and token precision', () => {
     mountDeposit()
-    checkDepositBalances(state)
     state.coins.forEach(({ address, symbol, balance, decimals }) => {
       writePoolForm(state.coins, { ...allCoinDeposit(state.coins), [symbol]: decimalSum(balance, '1') })
       checkPoolInputError(address, 'Insufficient token balance')
@@ -104,7 +99,6 @@ describe('Stellar testnet deposit', () => {
 
   it('fills each coin balance with Max', () => {
     mountDeposit()
-    checkDepositBalances(state)
     state.coins.forEach(({ address, balance }) => {
       poolInput(address).find('[data-testid="input-chip-Max"]').click()
       poolInput(address).find('input').should('have.value', balance)
@@ -118,17 +112,15 @@ describe('Stellar testnet deposit', () => {
     cy.get('[data-testid="pool-deposit-seed-alert"]', LOAD_TIMEOUT).should('be.visible')
     checkDepositDetail('seed-lock', state.config.seedLock)
     depositBalancedCheckbox().should('be.disabled')
-    state.coins.forEach(({ address, symbol }) => {
-      writePoolForm(state.coins, { ...allCoinDeposit(state.coins), [symbol]: '0' })
-      cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT)
-        .should('be.visible')
-        .and('contain.text', 'Seed deposits require a positive amount of every coin')
-      depositSubmit().should('be.disabled')
-      writePoolAmount(address, undefined)
-      cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT)
-        .should('be.visible')
-        .and('contain.text', 'Seed deposits require a positive amount of every coin')
-      depositSubmit().should('be.disabled')
+    state.coins.forEach(({ address }) => {
+      writePoolForm(state.coins, allCoinDeposit(state.coins))
+      ;(['0', undefined] as const).forEach(amount => {
+        writePoolAmount(address, amount)
+        cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT)
+          .should('be.visible')
+          .and('contain.text', 'Seed deposits require a positive amount of every coin')
+        depositSubmit().should('be.disabled')
+      })
     })
   })
 
@@ -137,15 +129,8 @@ describe('Stellar testnet deposit', () => {
     expect(state.supply).to.equal('0')
     const amounts = allCoinDeposit(state.coins)
     writePoolForm(state.coins, amounts)
-    cy.then(LOAD_TIMEOUT, () => fetchDepositPreview(pool, state, amounts)).then(({ expected, minimum, projected }) => {
-      checkDepositDetail('expected-lp', expected)
-      checkDepositDetail('minimum-lp', minimum)
-      checkEstimatedTxCost()
-      submitDepositForm(state)
-      checkDepositResult(state, amounts, projected)
-      checkDepositSupply(pool, state, expected)
-      cy.get('[data-testid="pool-deposit-seed-alert"]').should('not.exist')
-    })
+    submitDepositAndCheck(pool, state, amounts)
+    cy.get('[data-testid="pool-deposit-seed-alert"]').should('not.exist')
   })
 
   it('previews disconnected amounts', () => {
@@ -164,7 +149,6 @@ describe('Stellar testnet deposit', () => {
 
   it('balances wallet amounts initially and preserves subsequent edits', () => {
     mountDeposit()
-    checkDepositBalances(state)
     const [first, second, third] = state.coins
     writePoolAmount(first.address, '0.001')
     depositSubmit().should('be.enabled')
@@ -192,18 +176,13 @@ describe('Stellar testnet deposit', () => {
 
   it('deposits balanced amounts', () => {
     mountDeposit()
-    checkDepositBalances(state)
     depositBalancedCheckbox().should('not.be.checked').and('be.enabled').check()
     checkBalancedWalletAmounts(state.coins)
     writePoolAmount(state.coins[0].address, '0.001')
     checkBalancedDepositAmounts(state.coins, 0.001)
     const amounts = fromEntries(state.coins.map((coin, index) => [coin.symbol, decimalMultiply('0.001', index + 1)]))
-    cy.then(LOAD_TIMEOUT, () => fetchDepositPreview(pool, state, amounts)).then(({ projected }) => {
-      checkEstimatedTxCost()
-      submitDepositForm(state)
-      checkDepositResult(state, amounts, projected)
-      depositBalancedCheckbox().should('not.be.checked')
-    })
+    submitDepositAndCheck(pool, state, amounts)
+    depositBalancedCheckbox().should('not.be.checked')
   })
 
   ;[
@@ -212,20 +191,9 @@ describe('Stellar testnet deposit', () => {
   ].forEach(({ label, amounts: getAmounts }) => {
     it(`deposits ${label}`, () => {
       mountDeposit()
-      checkDepositBalances(state)
       const amounts = getAmounts(state.coins)
       writePoolForm(state.coins, amounts)
-      cy.then(LOAD_TIMEOUT, () => fetchDepositPreview(pool, state, amounts)).then(
-        ({ expected, minimum, projected }) => {
-          checkDepositDetail('expected-lp', expected)
-          checkDepositDetail('minimum-lp', minimum)
-          checkDepositDetail('projected-lp', projected)
-          checkEstimatedTxCost()
-          submitDepositForm(state)
-          checkDepositResult(state, amounts, projected)
-          checkDepositSupply(pool, state, expected)
-        },
-      )
+      submitDepositAndCheck(pool, state, amounts)
     })
   })
 })

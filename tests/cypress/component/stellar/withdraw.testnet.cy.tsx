@@ -2,14 +2,13 @@ import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { DepositTab } from '@/stellar/features/deposit/DepositTab'
 import { WithdrawTab } from '@/stellar/features/withdraw/WithdrawTab'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { allCoinDeposit, submitDepositForm } from '@cy/support/helpers/stellar/deposit.helpers'
 import {
-  checkPoolGasEstimate,
   readPoolAmounts,
   poolInput,
   TEST_NETWORK,
-  interceptStellarPrices,
   writePoolAmount,
   writePoolForm,
   checkPoolInputError,
@@ -54,7 +53,6 @@ describe('Stellar testnet withdraw', () => {
   })
 
   beforeEach(() => {
-    interceptStellarPrices()
     cy.then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig)).then(freshState => (state = freshState))
   })
 
@@ -190,7 +188,7 @@ describe('Stellar testnet withdraw', () => {
               checkWithdrawDetail('maximum-lp', maximum)
               checkWithdrawDetail('projected-lp', projected)
               expect(+maximum).to.be.at.most(+WITHDRAW_LP_AMOUNT)
-              checkPoolGasEstimate()
+              checkEstimatedTxCost()
               submitWithdrawForm(state)
               checkWithdrawDetail('current-lp', projected)
               cy.then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig)).then(fresh => {
