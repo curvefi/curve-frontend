@@ -27,7 +27,7 @@ import {
   type WithdrawState,
   writeWithdrawLp,
 } from '@cy/support/helpers/stellar/withdraw.helpers'
-import { LOAD_TIMEOUT, skipTestsAfterFailure, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryClient } from '@ui/features/queries/query-client'
 import { useUserProfileStore } from '@ui/features/user-profile'
@@ -50,7 +50,7 @@ describe('Stellar testnet withdraw', () => {
         testnetConfig = config
         return connectTestWallet(config)
       })
-      .then(TRANSACTION_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
+      .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
   })
 

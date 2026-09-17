@@ -181,6 +181,9 @@ jobs:
 
   cypress-component-stellar:
     name: Cypress Stellar component tests
+    concurrency: # shared testnet account, run sequentially to avoid conflicting balances
+      group: stellar-testnet
+      cancel-in-progress: false
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
