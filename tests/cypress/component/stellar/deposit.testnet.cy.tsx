@@ -29,7 +29,7 @@ import {
 } from '@cy/support/helpers/stellar/pool.helpers'
 import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
-import { LOAD_TIMEOUT, skipTestsAfterFailure, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { fromEntries } from '@primitives/objects.utils'
 import { queryClient } from '@ui/features/queries/query-client'
 import { decimalMultiply, decimalSum, fromWei } from '@ui/lib/decimal'
@@ -52,7 +52,7 @@ describe('Stellar testnet deposit', () => {
         testnetConfig = config
         return connectTestWallet(config)
       })
-      .then(TRANSACTION_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
+      .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
   })
 

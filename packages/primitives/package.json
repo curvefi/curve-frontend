@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "test": "vitest run --config vitest.config.ts",
+    "test:ui": "vitest --ui",
+    "vitest:watch": "vitest --watch",
     "lint": "eslint --cache --cache-location ../../.cache/eslint/primitives --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/primitives --cache-strategy content . --fix",
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-primitives.tsbuildinfo"
-  },
-  "devDependencies": {
-    "vitest": "4.1.11"
   },
   "publishConfig": {
     "access": "public"

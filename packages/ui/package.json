@@ -8,6 +8,8 @@
     "lint": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content . --fix",
     "test": "vitest run --config vitest.config.ts",
+    "test:ui": "vitest --ui",
+    "vitest:watch": "vitest --watch",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-ui.tsbuildinfo"
   },
   "dependencies": {
