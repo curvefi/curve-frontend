@@ -1,8 +1,7 @@
 import { sum } from 'lodash'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useStore } from '@/dex/store/useStore'
+import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import type { ChainId, PoolData } from '@/dex/types/main.types'
-import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { scanTokenPath } from '@legacy-ui/utils'
@@ -21,7 +20,7 @@ export const usePoolComposition = ({
   pricesApiPoolData?: PricesApiPool
 }) => {
   const { data: network } = useNetworkByChain({ chainId })
-  const currencyReserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(chainId, poolId)])
+  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
 
   // We use prices API as a fallback for non-lite networks, and currencyReserves.total is NaN when no wallet is connected.
   const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !isLiteChain(chainId)

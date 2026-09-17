@@ -44,8 +44,6 @@ export type CurrencyReservesToken = {
   usdRate: number
   percentShareInPool: string
 }
-export type CurrencyReserves = { poolId: string; tokens: CurrencyReservesToken[]; total: string; totalUsd: string }
-export type CurrencyReservesMapper = Record<string, CurrencyReserves>
 export type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
 export type Pool = PoolTemplate
 export type ClaimableReward = { token: string; symbol: string; amount: string; price: number }

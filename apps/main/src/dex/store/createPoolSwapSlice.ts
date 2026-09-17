@@ -13,10 +13,10 @@ import {
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
 import type { RoutesAndOutput } from '@/dex/components/PageRouterSwap/types'
 import { curvejsApi } from '@/dex/lib/curvejs'
+import { fetchPoolCurrencyReserves, type CurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
-  CurrencyReserves,
   CurveApi,
   FnStepApproveResponse,
   FnStepEstGasApprovalResponse,
@@ -301,8 +301,11 @@ export const createPoolSwapSlice = (
 
       // validate toAmount: If have toAmount and isFrom is false, confirm toAmount is not bigger than currency reserves
       if (+cFormValues.toAmount > 0 && !cFormValues.isFrom) {
-        const { currencyReserves, fetchPoolCurrenciesReserves } = get().pools
-        const currencyReserve = currencyReserves[poolId] ?? (await fetchPoolCurrenciesReserves(curve, poolData))
+        const currencyReserve = await fetchPoolCurrencyReserves({
+          chainId: curve.chainId,
+          poolId,
+          isWrapped: poolData.isWrapped,
+        })
 
         if (Array.isArray(currencyReserve?.tokens)) {
           cFormValues.toError = getReservesBalanceError(currencyReserve, cFormValues.toAddress, cFormValues.toAmount)
