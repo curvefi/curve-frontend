@@ -43,5 +43,3 @@ export const CROSS_CHAIN_ADDRESSES = [
   '0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2',
   '0x6e0dc5a4ef555277db3435703f0e287040013763',
 ]
-
-export const WRAPPED_ONLY_POOL_IDS = ['pax', 'busd', 'y']

@@ -13,9 +13,9 @@ import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import { WRAPPED_ONLY_POOL_IDS } from '@/dex/constants'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
+import { isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData } from '@/dex/types/main.types'
 import { TokenList } from '@evm-ui/features/select-token'
@@ -483,7 +483,7 @@ export const Swap = ({
         {poolData?.hasWrapped && formValues.isWrapped !== null && (
           <div>
             <Checkbox
-              isDisabled={isDisabled || !poolData || WRAPPED_ONLY_POOL_IDS.includes(poolData?.pool.id)}
+              isDisabled={isDisabled || !poolData || isWrappedOnly(poolData.pool)}
               isSelected={formValues.isWrapped}
               onChange={isWrapped => {
                 if (poolData) {
