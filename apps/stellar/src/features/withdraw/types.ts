@@ -12,9 +12,8 @@ type CompleteWithdrawForm = Omit<WithdrawFormValues, 'decimals'> &
 
 export type WithdrawFormQuery = PoolQuery & UserParams & CompleteWithdrawForm
 
-export type { WithdrawMutation }
 export type WithdrawQuery = PoolQuery & UserQuery & WithdrawMutation
-export type WithdrawParams = FieldsOf<DeepPartial<WithdrawQuery>>
+
 export type WithdrawSimulationQuery = QuoteQuery &
   UserQuery & {
     lpAmount: Decimal

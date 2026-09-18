@@ -1,9 +1,5 @@
 import { useCallback } from 'react'
-import type {
-  WithdrawMutation,
-  WithdrawMutationContext,
-  WithdrawMutationOptions,
-} from '@/stellar/features/withdraw/types'
+import type { WithdrawMutationContext, WithdrawMutationOptions } from '@/stellar/features/withdraw/types'
 import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { rootKeys } from '@/stellar/queries/root-keys'
 import { withdrawValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
@@ -12,7 +8,7 @@ import {
   invalidateWithdrawSimulation,
 } from '@/stellar/queries/withdraw/withdraw-simulation.query'
 import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
-import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import type { WithdrawFormValues, WithdrawMutation } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
