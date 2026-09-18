@@ -19,7 +19,7 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
 
   const tokenVolumes = pools.reduce<Partial<Record<Address, number>>>((volumes, pool) => {
     const volume = Number(poolVolumes?.[pool.address.toLowerCase() as Address])
-    if (Number.isNaN(volume) || volume <= 0) return volumes
+    if (!volume) return volumes
 
     const addresses = new Set(
       [...pool.underlyingCoinAddresses, ...pool.wrappedCoinAddresses].map(address => getAddress(address)),
