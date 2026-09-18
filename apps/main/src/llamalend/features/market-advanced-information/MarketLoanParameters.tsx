@@ -30,7 +30,7 @@ export const MarketLoanParameters = ({
         // these fields are not exposed by the API yet
         <ActionInfo
           testId="market-param-amm-swap-fee"
-          label={t`AMM swap fees`}
+          label={t`AMM swap fee`}
           labelTooltip={{
             title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
           }}
