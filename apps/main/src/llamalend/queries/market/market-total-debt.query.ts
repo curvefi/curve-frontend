@@ -14,7 +14,7 @@ export const { useQuery: useMarketTotalDebt } = queryFactory({
       market instanceof LendMarketTemplate
         ? await market.stats.totalDebt(IS_GETTER, USE_API)
         : await market.stats.totalDebt()
-    return decimal(totalDebt)
+    return decimal(totalDebt)!
   },
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
