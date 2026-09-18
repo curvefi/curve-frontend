@@ -18,7 +18,7 @@ import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { isWrappedOnly } from '@/dex/pool.utils'
+import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -423,9 +423,9 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
           )}
         </TokensSelectorWrapper>
 
-        {poolData.hasWrapped && formValues.isWrapped !== null && (
+        {hasWrapped(poolData.pool) && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={!poolData || isDisabled || isWrappedOnly(poolData.pool)}
+            isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
             isSelected={formValues.isWrapped}
             onChange={isWrapped => {
               if (poolData) {
