@@ -121,9 +121,8 @@ export const QuickSwap = ({
 
   const tokensMapper = useTokens({ chainId })
   const routesAndOutput = useMemo(() => {
-    if (!fromToken || !toToken) return undefined
     if (!userAddress) return apiRoutes
-    if (!isHydrated || !rpcRoutesAndOutput || !maxSlippage) return undefined
+    if (!fromToken || !toToken || !isHydrated || !rpcRoutesAndOutput || !maxSlippage) return undefined
     return {
       ...rpcRoutesAndOutput,
       exchangeRate: getRouterSwapsExchangeRate(rpcRoutesAndOutput.exchangeRates, searchedParams, tokensMapper.data),
