@@ -58,14 +58,6 @@ export type RewardOther = {
   tokenAddress: string
   tokenPrice?: number
 }
-export type RewardsApy = {
-  poolId: string
-  base: RewardBase
-  other: RewardOther[]
-  crv: RewardCrv[]
-  error: Record<string, boolean>
-}
-export type RewardsApyMapper = Record<string, RewardsApy>
 export type PoolData = {
   idx?: number
   pool: Pool

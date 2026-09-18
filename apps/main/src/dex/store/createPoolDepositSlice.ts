@@ -42,8 +42,7 @@ import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { t } from '@ui/lib/i18n'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
-import { invalidateUserPoolInfo } from '../queries/invalidation'
-import { invalidatePoolParameters } from '../queries/pool-parameters.query'
+import { invalidatePoolInfo, invalidateUserPoolInfo } from '../queries/invalidation'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -450,10 +449,8 @@ export const createPoolDepositSlice = (
           cFormStatus.formTypeCompleted = 'DEPOSIT'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          // re-fetch data
-          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
-          await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
+          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 
         return resp
@@ -491,10 +488,8 @@ export const createPoolDepositSlice = (
           cFormStatus.formTypeCompleted = 'DEPOSIT_STAKE'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          // re-fetch data
-          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
-          await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
+          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 
         return resp
@@ -558,10 +553,8 @@ export const createPoolDepositSlice = (
           cFormStatus.formTypeCompleted = 'STAKE'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          // re-fetch data
-          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
-          await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
+          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 
         return resp

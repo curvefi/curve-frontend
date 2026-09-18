@@ -1,5 +1,6 @@
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
-import { RewardsApy, PoolData } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
+import { PoolData } from '@/dex/types/main.types'
 import { TableCellRewardsOthers } from './TableCellRewardsOthers'
 
 type PoolRewardsTooltipContentProps = {

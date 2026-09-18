@@ -1,5 +1,5 @@
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
-import type { RewardsApy } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { HeaderContext } from '@tanstack/react-table'

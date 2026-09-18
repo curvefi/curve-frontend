@@ -38,9 +38,7 @@ import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useLocation } from '@ui/hooks/router'
-import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { t } from '@ui/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui/lib/time'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
@@ -128,9 +126,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const defaultTab = (state as PoolRouteState).defaultTab
 
   const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
-
-  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
-  usePageVisibleInterval(() => curve && void fetchPoolStats(curve, poolData), REFRESH_INTERVAL['5m'])
 
   // is seed
   useEffect(() => {

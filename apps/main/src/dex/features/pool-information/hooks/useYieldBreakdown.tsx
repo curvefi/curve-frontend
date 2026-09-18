@@ -5,7 +5,7 @@ import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
-import { useStore } from '@/dex/store/useStore'
+import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import type { ChainId, PoolData } from '@/dex/types/main.types'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -32,7 +32,7 @@ export const useYieldBreakdown = ({
   const { data: network } = useNetworkByChain({ chainId })
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs
-  const rewards = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId])
+  const { data: rewards } = usePoolRewardsApy({ chainId, poolId })
 
   const { data: campaigns } = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
 

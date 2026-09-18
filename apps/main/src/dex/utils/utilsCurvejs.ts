@@ -1,4 +1,4 @@
-import { RewardsApy } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { formatNumber } from '@primitives/number.utils'
 
 export function filterRewardsApy<T extends { apy: number | string }>(rewards: T[]) {

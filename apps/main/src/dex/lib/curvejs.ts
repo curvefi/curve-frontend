@@ -14,7 +14,6 @@ import {
   Provider,
   RewardCrv,
   RewardOther,
-  RewardsApy,
 } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import {
@@ -66,7 +65,13 @@ const pool = {
     }
   },
   poolAllRewardsApy: async (network: NetworkConfig, p: Pool, useApi: boolean) => {
-    const resp: RewardsApy = { poolId: p.id, base: { day: '0', week: '0' }, other: [], crv: [0, 0], error: {} }
+    const resp = {
+      poolId: p.id,
+      base: { day: '0', week: '0' },
+      other: [] as RewardOther[],
+      crv: [0, 0],
+      error: {} as Record<string, boolean>,
+    }
 
     const { chainId, isCrvRewardsEnabled } = network
 
