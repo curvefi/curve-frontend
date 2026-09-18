@@ -1,6 +1,6 @@
 import { isNaN } from 'lodash'
 import { test } from 'vest'
-import { curvejsApi } from '@/dex/lib/curvejs'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import type { QueryData } from '@evm-ui/lib'
 import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/lib/model'
@@ -8,13 +8,27 @@ import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@evm-ui/lib/model/e
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { queryFactory } from '@ui/features/queries/factory'
+import { t } from '@ui/lib/i18n'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type PoolCurrencyReservesQuery = PoolQuery & { isWrapped: boolean }
 type PoolCurrencyReservesParams = FieldsOf<PoolCurrencyReservesQuery>
+
+const poolBalances = async (p: PoolTemplate, isWrapped: boolean) => {
+  if (p.curve.isNoRPC) {
+    return { error: t`Connect your wallet to see pool balances` }
+  }
+  try {
+    return { balances: isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances() }
+  } catch (error) {
+    console.error(error)
+    return { error: getErrorMessage(error, 'error-stats-balances') }
+  }
+}
 
 const {
   useQuery: usePoolCurrencyReservesQuery,
@@ -26,11 +40,11 @@ const {
     [...rootKeys.pool({ chainId, poolId }), 'stats.currencyReserves', { isWrapped }] as const,
   queryFn: async ({ chainId, poolId, isWrapped }: PoolCurrencyReservesQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
-    const tokens = curvejsApi.pool.poolTokens(pool, isWrapped)
-    const tokenAddresses = curvejsApi.pool.poolTokenAddresses(pool, isWrapped)
+    const tokens = isWrapped ? pool.wrappedCoins : pool.underlyingCoins
+    const tokenAddresses = isWrapped ? pool.wrappedCoinAddresses : pool.underlyingCoinAddresses
 
     const [balancesResp] = await Promise.all([
-      curvejsApi.pool.poolBalances(pool, isWrapped),
+      poolBalances(pool, isWrapped),
       // Fetching the token prices now, used later with getTokenUsdRateQueryData.
       ...tokenAddresses.map(tokenAddress => fetchTokenUsdRate({ chainId, tokenAddress }).catch(() => 0)),
     ])

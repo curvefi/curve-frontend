@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js'
 import { isUndefined } from 'lodash'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
@@ -8,21 +7,11 @@ import {
   claimButtonsKey,
   CurveApi,
   EstimatedGas,
-  NetworkConfig,
   Pool,
   PoolData,
   Provider,
-  RewardCrv,
-  RewardOther,
 } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
-import {
-  filterCrvProfit,
-  filterRewardsApy,
-  parseBaseProfit,
-  separateCrvProfit,
-  separateCrvReward,
-} from '@/dex/utils/utilsCurvejs'
 import {
   _parseRoutesAndOutput,
   excludeLowExchangeRateCheck,
@@ -31,11 +20,9 @@ import {
   routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
-import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
 import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
-import { t } from '@ui/lib/i18n'
 import { log } from '@ui/lib/logging'
 
 const helpers = { waitForTransaction, waitForTransactions }
@@ -52,102 +39,33 @@ const network = {
   },
 }
 
-const pool = {
-  poolBalances: async (p: Pool, isWrapped: boolean) => {
-    if (p.curve.isNoRPC) {
-      return { error: t`Connect your wallet to see pool balances` }
+function filterCrvProfit<T extends { day: string; week: string; month: string; year: string }>(crvProfit: T) {
+  const haveCrvProfit = (['day', 'week', 'month', 'year'] as const).some(t => Number(crvProfit[t]) > 0)
+  return haveCrvProfit ? crvProfit : null
+}
+
+function separateCrvProfit<T extends { symbol: string }>(tokensProfit: T[]) {
+  if (Array.isArray(tokensProfit)) {
+    const crvIdx = tokensProfit.findIndex(r => r.symbol === 'CRV')
+
+    if (crvIdx !== -1) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
+      const crvProfit = tokensProfit.splice(crvIdx, 1)
+      return { crvProfit: crvProfit[0], tokensProfit }
     }
-    try {
-      return { balances: isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances() }
-    } catch (error) {
-      console.error(error)
-      return { error: getErrorMessage(error, 'error-stats-balances') }
-    }
-  },
-  poolAllRewardsApy: async (network: NetworkConfig, p: Pool, useApi: boolean) => {
-    const resp = {
-      poolId: p.id,
-      base: { day: '0', week: '0' },
-      other: [] as RewardOther[],
-      crv: [0, 0],
-      error: {} as Record<string, boolean>,
-    }
+  }
 
-    const { chainId, isCrvRewardsEnabled } = network
+  return { crvProfit: null, tokensProfit }
+}
 
-    // get base vAPY
-    if (!isLiteChain(chainId)) {
-      const DEFAULT_BASE = { day: '0', week: '0' }
-      const [baseApyResult] = await Promise.allSettled([p.stats.baseApy()])
-      resp.base = fulfilledValue(baseApyResult) ?? DEFAULT_BASE
-      if (baseApyResult.status === 'rejected') {
-        if (p.inApi) resp.error.base = true
-      } else {
-        resp.base.day = new BigNumber(resp.base.day).toFixed(8)
-        resp.base.week = new BigNumber(resp.base.week).toFixed(8)
-      }
-    }
-
-    if (!isValidAddress(p.gauge.address)) return resp
-
-    // both crv and incentives (others) are in one call
-    if (p.rewardsOnly()) {
-      const [rewardsResult] = await Promise.allSettled([p.stats.rewardsApy(useApi)])
-      const rewards = fulfilledValue(rewardsResult)
-
-      if (rewardsResult.status === 'rejected') {
-        resp.error.others = true
-        resp.error.crv = true
-      }
-
-      if (rewardsResult.status === 'fulfilled' && rewards) {
-        const [others, [baseApy, boostedApy]] = separateCrvReward(filterRewardsApy(rewards)) as [
-          RewardOther[],
-          RewardCrv[],
-        ]
-
-        // others rewards
-        resp.other = others.filter(other => +other.apy > 0)
-        resp.crv = +baseApy > 0 || +boostedApy > 0 ? [baseApy, boostedApy] : [0, 0]
-      }
-      return resp
-    }
-
-    const [otherResult, crvResult] = await Promise.allSettled([p.stats.rewardsApy(useApi), p.stats.tokenApy(useApi)])
-
-    // others rewards
-    const others = fulfilledValue(otherResult) ?? []
-    if (otherResult.status === 'rejected') {
-      resp.error.others = true
-    } else {
-      for (const other of others) {
-        if (chainId === 8453) {
-          if (other.symbol !== 'CRV' && +other.apy > 0) {
-            // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-            resp.other.push(other)
-          }
-        } else if (+other.apy > 0) {
-          // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-          resp.other.push(other)
-        }
-      }
-    }
-
-    // crv rewards
-    if (crvResult.status === 'rejected' && isCrvRewardsEnabled) {
-      resp.error.crv = true
-    }
-    if (crvResult.status === 'fulfilled' && !!crvResult.value) {
-      const [baseApy] = crvResult.value
-      const crv = fulfilledValue(crvResult)
-      if (crv && baseApy && !Number.isNaN(baseApy)) {
-        resp.crv = crv
-      }
-    }
-    return resp
-  },
-  poolTokens: (p: Pool, isWrapped: boolean) => (isWrapped ? p.wrappedCoins : p.underlyingCoins),
-  poolTokenAddresses: (p: Pool, isWrapped: boolean) => (isWrapped ? p.wrappedCoinAddresses : p.underlyingCoinAddresses),
+function parseBaseProfit(baseProfit: { day: string; week: string; month: string; year: string }) {
+  const { day, week, month, year } = baseProfit ?? {}
+  return {
+    day: day && +day > 0 ? day : '',
+    week: week && +week > 0 ? week : '',
+    month: month && +month > 0 ? month : '',
+    year: year && +year > 0 ? year : '',
+  }
 }
 
 const router = {
@@ -1253,4 +1171,4 @@ function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
   }
 }
 
-export const curvejsApi = { helpers, network, router, pool, poolDeposit, poolWithdraw, poolSwap, wallet, lockCrv }
+export const curvejsApi = { helpers, network, router, poolDeposit, poolWithdraw, poolSwap, wallet, lockCrv }

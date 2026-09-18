@@ -8,7 +8,6 @@ import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { PoolData } from '@/dex/types/main.types'
-import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { WithWrapper } from '@ui/components/WithWrapper'
@@ -16,6 +15,15 @@ import { TableCellRewardsBase } from '../../TableCellRewardsBase'
 import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 const Bold = ({ children }: { children: ReactNode }) => <strong>{children}</strong>
+
+function haveRewardsApy({ base, other, crv }: Partial<RewardsApy>) {
+  const haveBase = base !== undefined
+  const [crvMin, crvMax] = crv ?? ['', '']
+  const haveCrv = Number(crvMin) > 0 || Number(crvMax) > 0
+  const haveOther = Array.isArray(other) && other.length > 0
+
+  return { haveBase, haveCrv, haveOther }
+}
 
 export const TableCellRewards = ({
   poolData,

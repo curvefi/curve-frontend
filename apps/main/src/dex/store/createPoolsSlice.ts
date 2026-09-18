@@ -1,7 +1,6 @@
 import { produce } from 'immer'
 import { countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
-import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, PoolData, PoolDataMapper, type NetworkConfig, type Pool } from '@/dex/types/main.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
@@ -134,8 +133,8 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const curve = requireLib('curveApi')
       const chainId = curve.chainId
 
-      const tokens = curvejsApi.pool.poolTokens(poolData.pool, isWrapped)
-      const tokenAddresses = curvejsApi.pool.poolTokenAddresses(poolData.pool, isWrapped)
+      const tokens = isWrapped ? poolData.pool.wrappedCoins : poolData.pool.underlyingCoins
+      const tokenAddresses = isWrapped ? poolData.pool.wrappedCoinAddresses : poolData.pool.underlyingCoinAddresses
       const cPoolData = { ...poolData, isWrapped, tokens, tokensCountBy: countBy(tokens), tokenAddresses }
 
       set(
