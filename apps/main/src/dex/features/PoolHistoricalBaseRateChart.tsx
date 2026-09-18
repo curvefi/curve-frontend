@@ -34,6 +34,7 @@ import { TIME_OPTION_MS } from '@ui/lib/time'
 
 const { Height, Spacing } = SizesAndSpaces
 
+const CHART_HEIGHT = Height.chart.sm
 const METRIC_CATEGORY = 'dex.poolInformation'
 
 type BaseRateSeriesKey = 'dailyBaseRate' | 'weeklyBaseRate'
@@ -134,14 +135,14 @@ export const PoolHistoricalBaseRateChart = ({
           />
         </MetricsGrid>
         <EvmChartStateWrapper
-          height={Height.shortChart}
+          height={CHART_HEIGHT}
           isLoading={ratePoints.isLoading}
           error={ratePoints.error}
           errorMessage={t`Unable to fetch historical base rate data.`}
         >
           <EChartsLineChart<BaseRateChartPoint, BaseRateSeriesKey, 'timestamp'>
             data={ratePoints.data ?? []}
-            height={Height.shortChart}
+            height={CHART_HEIGHT}
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}

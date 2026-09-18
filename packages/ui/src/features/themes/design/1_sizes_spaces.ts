@@ -227,6 +227,11 @@ const MappedModalWidth = {
 
 const MappedModalHeight = { sm: '100dvh', md: '80dvh' }
 const MappedColumnWidth = { sm: 125, md: 200, lg: 350 }
+const MappedChartHeight = {
+  lg: 480, // 30rem
+  md: 320, // 20rem
+  sm: 240, // 15rem
+} as const
 
 export const SizesAndSpaces = {
   Spacing: MappedSpacing,
@@ -286,8 +291,7 @@ export const SizesAndSpaces = {
       },
     },
     row: Sizing[700],
-    chart: 420, // lightweight charts require height in number format
-    shortChart: 210,
+    chart: MappedChartHeight, // chart libraries require heights in number format
     healthBar: {
       legacy: '2rem', // 32px
       lg: '1.875rem', // 30px

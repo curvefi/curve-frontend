@@ -219,7 +219,7 @@ const useSupplyRate = ({
   return enabled ? fallbackQ(onChainSupplyRate, apiSupplyRate) : undefined
 }
 
-const useAvailableLiquidity = ({
+export const useAvailableLiquidity = ({
   chainId,
   marketQuery,
   apiMarket,

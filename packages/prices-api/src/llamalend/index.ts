@@ -130,11 +130,15 @@ export async function getUserMarketEarnings(userAddr: string, chain: Chain, vaul
   return Schema.getUserMarketEarningsResponse.parse(response)
 }
 
-export async function getMarketBorrowers(chain: Chain, controller: string, options: PaginatedOptions = {}) {
-  const { page = 1, perPage = 10, ...requestOptions } = options
+export async function getMarketBorrowers(
+  chain: Chain,
+  controller: string,
+  options: PaginatedOptions & { endpoint?: Endpoint } = {},
+) {
+  const { endpoint = 'lending', page = 1, perPage = 10, ...requestOptions } = options
   const host = getHost(requestOptions)
   const response = await fetch(
-    `${host}/v1/lending/markets/${chain}/${controller}/borrowers${addQueryString({ page, per_page: perPage })}`,
+    `${host}/v1/${endpoint}/markets/${chain}/${controller}/borrowers${addQueryString({ page, per_page: perPage })}`,
     { signal: requestOptions.signal },
   )
 

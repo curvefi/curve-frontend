@@ -5,7 +5,7 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
-import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
+import { type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
@@ -15,14 +15,12 @@ import {
   EChartsLineChart,
   type LegendItem,
   type LineSeriesConfig,
-  SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import type { Amount } from '@primitives/decimal.utils'
@@ -47,11 +45,10 @@ type RateSeriesKey = 'rate' | 'movingAverage' | 'totalAverage'
 type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
 type RateValue = Amount | Nullish
 
-type MarketHistoricalRatesChartProps = { rateMode: MarketRateType }
+type MarketHistoricalRatesChartProps = { rateMode: MarketRateType; timeOption: TimeOption }
 
 type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
 type RateModeConfig = {
-  chartTitle: string
   currentRateLabel: string
   averageRateLabels: { week: string; month: string; year: string }
   series: RateSeriesConfig[]
@@ -76,7 +73,6 @@ const toSnapshotRatePoints = (
 
 const RATE_MODE_CONFIG = {
   [MarketRateType.Borrow]: {
-    chartTitle: t`Historical Borrow Rate`,
     currentRateLabel: t`Current APR`,
     averageRateLabels: { week: t`1W average APR`, month: t`1M average APR`, year: t`1Y average APR` },
     series: [
@@ -89,7 +85,6 @@ const RATE_MODE_CONFIG = {
     getSnapshotRate: snapshot => snapshot.borrowApr,
   },
   [MarketRateType.Supply]: {
-    chartTitle: t`Historical Supply Rate`,
     currentRateLabel: t`Current APY`,
     averageRateLabels: { week: t`1W average APY`, month: t`1M average APY`, year: t`1Y average APY` },
     series: [
@@ -113,9 +108,8 @@ const getAverageRates = (ratePoints: { rate: number; timestamp: number }[]) => (
   hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_WINDOW_DAYS.year),
 })
 
-export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesChartProps) => {
+export const MarketHistoricalRatesChart = ({ rateMode, timeOption }: MarketHistoricalRatesChartProps) => {
   const { chainId, blockchainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
-  const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const modeConfig = RATE_MODE_CONFIG[rateMode]
   const activeSeriesConfig = modeConfig.series
   const [visibleSeries, setVisibleSeries] = useState<RateSeriesKey[]>(() => activeSeriesConfig.map(({ key }) => key))
@@ -182,17 +176,6 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
 
   return (
     <Card size="small" data-testid={`historical-${rateMode.toLowerCase()}-rate-chart`}>
-      <CardHeader
-        title={modeConfig.chartTitle}
-        action={
-          <SelectTimeOption
-            options={timeOptions}
-            activeOption={timeOption}
-            setActiveOption={setTimeOption}
-            isLoading={snapshots.isLoading || !controllerAddress}
-          />
-        }
-      />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <MetricsGrid>
           <Metric
@@ -227,14 +210,14 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
           )}
         </MetricsGrid>
         <EvmChartStateWrapper
-          height={Height.shortChart}
+          height={Height.chart.sm}
           isLoading={snapshots.isLoading || !controllerAddress}
           error={snapshots.error}
           errorMessage={t`Unable to fetch historical rates data.`}
         >
           <EChartsLineChart<RateChartPoint, RateSeriesKey, 'timestamp'>
             data={chartData}
-            height={Height.shortChart}
+            height={Height.chart.sm}
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}

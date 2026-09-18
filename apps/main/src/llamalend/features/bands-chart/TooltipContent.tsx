@@ -8,7 +8,7 @@ import { TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/Toolti
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalGreaterThan, decimalPercent, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { formatToken } from '@ui/lib/tokens'
+import { formatToken, getTokenPairUnit } from '@ui/lib/tokens'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import type { BandsChartToken, ChartDataPoint } from './types'
 
@@ -70,7 +70,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
           <>
             <TooltipItems secondary>
               <TooltipItem title={t`Band range`}>
-                {maybes([collateralToken?.symbol, borrowToken?.symbol], (x, y) => `${x} / ${y}`)}
+                {getTokenPairUnit([collateralToken?.symbol, borrowToken?.symbol])}
               </TooltipItem>
               <TooltipItem variant="subItem" title={t`Min`}>
                 {formatChartAxisNumber(data.p_down, { abbreviateFrom: false })}

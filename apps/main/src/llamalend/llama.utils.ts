@@ -183,6 +183,9 @@ export const getMarketType = <T extends MarketTemplate | Nullish>(
     m => m.type,
   )
 
+export const getMarketEndpoint = (marketType: MarketType) =>
+  (({ [MarketType.Mint]: 'crvusd', [MarketType.Lend]: 'lending' }) as const)[marketType]
+
 export const getTokens = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,

@@ -8,7 +8,9 @@ import {
   type LlammaActivityProps,
   LlammaActivityTrades,
 } from '@/llamalend/features/llamma-activity'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
+import { useMarketOraclePrice, useMarketPrice } from '@/llamalend/queries/market'
 import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
@@ -17,18 +19,28 @@ import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/Chart
 import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
+import { Metric } from '@evm-ui/shared/ui/Metric'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
+import type { Amount } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { Tabs } from '@ui/components/Tabs/Tabs'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { getTokenPairUnit } from '@ui/lib/tokens'
 
 const { Spacing } = SizesAndSpaces
+
+const METRIC_CATEGORY = 'llamalend.marketCharts'
+const PRICE_VALUE_OPTIONS = { abbreviate: false, formatter: (value: Amount) => formatNumber(value, 'token.precise') }
 
 const EMPTY_ARRAY: never[] = []
 // Ignore tiny floating-point jitter from chart autoscale updates.
@@ -36,6 +48,13 @@ const EMPTY_ARRAY: never[] = []
 const VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE = 1e-8
 const hasVisiblePriceRangeChanged = (previous: { min: number; max: number }, next: { min: number; max: number }) =>
   Math.max(Math.abs(previous.min - next.min), Math.abs(previous.max - next.max)) >= VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
+
+const useMarketTokenPair = () => {
+  const { apiMarket, marketQuery, tokens } = useMarketContext()
+  const symbols = [tokens.collateralToken?.symbol, tokens.borrowToken?.symbol] as const
+  const isMarketLoading = symbols.some(symbol => !symbol) && (marketQuery.isLoading || apiMarket.isLoading)
+  return { tokenPair: isMarketLoading ? undefined : getTokenPairUnit(symbols), isMarketLoading }
+}
 
 type ChartAndActivityLayoutProps = {
   chart: {
@@ -81,6 +100,48 @@ const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
   <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
 )
 
+const MarketPriceMetrics = () => {
+  const { chainId, marketId, apiMarket, tokens } = useMarketContext()
+  const valueOptions = {
+    ...PRICE_VALUE_OPTIONS,
+    unit: {
+      symbol: getTokenPairUnit([tokens.collateralToken?.symbol, tokens.borrowToken?.symbol]),
+      position: 'suffix' as const,
+    },
+  }
+
+  return (
+    <MetricsGrid>
+      <Metric
+        category={METRIC_CATEGORY}
+        label={t`Oracle price`}
+        labelTooltip={{
+          title: t`The price source that determines your collateral value, health, and when your position moves toward soft liquidation.`,
+        }}
+        value={fallbackQ(
+          q(useMarketOraclePrice({ chainId, marketId })),
+          mapQuery(apiMarket, market => decimal(market.oraclePrice)),
+        )}
+        valueOptions={valueOptions}
+        testId="market-price-chart-oracle-metric"
+      />
+      <Metric
+        category={METRIC_CATEGORY}
+        label={t`Current price`}
+        labelTooltip={{
+          title: t`The current price of the collateral token in the LLAMMA, which may differ from the oracle price.`,
+        }}
+        value={fallbackQ(
+          q(useMarketPrice({ chainId, marketId })),
+          mapQuery(apiMarket, market => (market.ammPrice === 0 ? undefined : market.ammPrice)),
+        )}
+        valueOptions={valueOptions}
+        testId="market-price-chart-current-metric"
+      />
+    </MetricsGrid>
+  )
+}
+
 export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutProps, 'activity'>) => (
   <Stack data-testid="market-activity">
     <Tabs
@@ -94,6 +155,7 @@ export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutPr
 
 export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
+  const { tokenPair, isMarketLoading } = useMarketTokenPair()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const bandsPalette = useBandsChartPalette()
@@ -133,9 +195,8 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
     <Card size="small" data-testid="market-price-chart">
       <CardHeader
         title={
-          <WithSkeleton loading={chart.isLoading} width="7rem" height="2lh">
-            {chart.ohlcChartProps.selectChartList.find(({ key }) => key === chart.selectedChartKey)?.activeTitle ??
-              (chart.isLoading ? '' : '?')}
+          <WithSkeleton loading={isMarketLoading} width="7rem" height="2lh">
+            {tokenPair}
           </WithSkeleton>
         }
         action={
@@ -156,9 +217,10 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
             )}
           </Stack>
         }
-        slotProps={{ title: { style: chart.chartMode == 'oracle-pool' && { textTransform: 'none' } } }}
+        slotProps={{ title: { style: { textTransform: 'none' } } }}
       />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, padding: Spacing.md }}>
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+        <MarketPriceMetrics />
         <Stack
           sx={{
             display: showBands ? 'grid' : undefined,
@@ -182,6 +244,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
               liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
               oraclePrice={bands.oraclePrice}
               priceRange={candlePriceRange}
+              height={chart.ohlcChartProps.chartHeight}
             />
           )}
         </Stack>
@@ -207,6 +270,7 @@ export const LegacyMarketPriceChartLayout = ({
   bands,
 }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
+  const { tokenPair, isMarketLoading } = useMarketTokenPair()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const bandsPalette = useBandsChartPalette()
@@ -249,13 +313,19 @@ export const LegacyMarketPriceChartLayout = ({
     >
       <ChartHeader
         chartOptionVariant="select"
-        chartSelections={{ selections: chart.ohlcChartProps.selectChartList, activeSelection: chart.selectedChartKey }}
+        chartSelections={{
+          selections: chart.ohlcChartProps.selectChartList.map(selection => ({
+            ...selection,
+            activeTitle: tokenPair ?? '',
+          })),
+          activeSelection: chart.selectedChartKey,
+        }}
         timeOption={{
           options: TIME_OPTIONS,
           activeOption: chart.ohlcChartProps.timeOption,
           setActiveOption: chart.setTimeOption,
         }}
-        isLoading={chart.isLoading}
+        isLoading={chart.isLoading || isMarketLoading}
         customButton={
           isConnected &&
           bands && (
@@ -291,6 +361,7 @@ export const LegacyMarketPriceChartLayout = ({
             liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
             oraclePrice={bands.oraclePrice}
             priceRange={candlePriceRange}
+            height={chart.ohlcChartProps.chartHeight}
           />
         )}
       </Stack>

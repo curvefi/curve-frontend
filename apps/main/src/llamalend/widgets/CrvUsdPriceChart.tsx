@@ -161,14 +161,14 @@ export const CrvUsdPriceChart = () => {
           )}
         </MetricsGrid>
         <EvmChartStateWrapper
-          height={Height.shortChart}
+          height={Height.chart.sm}
           isLoading={showLoading}
           error={priceHistory.error}
           errorMessage={t`Unable to fetch historical crvUSD peg data.`}
         >
           <EChartsLineChart<CrvUsdPriceChartPoint, PriceSeriesKey, 'timestamp'>
             data={chartData}
-            height={Height.shortChart}
+            height={Height.chart.sm}
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}

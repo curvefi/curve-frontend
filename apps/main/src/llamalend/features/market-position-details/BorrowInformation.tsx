@@ -18,7 +18,7 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
+import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { LiquidationThresholdTooltipContent } from './'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
@@ -38,10 +38,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   )
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
-  const priceUnit =
-    collateralToken?.symbol && borrowToken.symbol
-      ? `${collateralToken?.symbol}/${borrowToken.symbol}`
-      : UNAVAILABLE_TOKEN_SYMBOL
+  const priceUnit = getTokenPairUnit([collateralToken?.symbol, borrowToken?.symbol])
 
   return (
     <MetricsGrid variant="mobileRows">

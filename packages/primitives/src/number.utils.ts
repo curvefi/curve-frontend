@@ -228,6 +228,7 @@ const NUMBER_FORMAT_CATEGORIES = {
   'token.amount': { abbreviate: false, fallback: UNAVAILABLE_NOTATION },
   'token.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
   'token.balance': { abbreviate: false, fallback: UNAVAILABLE_NOTATION, formatter: preciseFormatter },
+  'token.precise': { unit: 'none', abbreviate: false, fallback: UNAVAILABLE_NOTATION, decimals: 5 },
   'usd.amount': { unit: 'dollar', abbreviate: false, fallback: UNAVAILABLE_NOTATION },
   'usd.precise': { unit: 'dollar', abbreviate: false, fallback: UNAVAILABLE_NOTATION, formatter: preciseFormatter },
   'usd.notional': { unit: 'dollar', abbreviate: true, fallback: UNAVAILABLE_NOTATION },
