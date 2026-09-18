@@ -282,7 +282,7 @@ export async function getNetworks() {
       tricryptoFactory: true,
       fxswapFactory: isLiteFxswapEnabled,
       isCrvRewardsEnabled: isUpgraded,
-      createQuickList: liteCreateQuickList?.[chainId],
+      createQuickList: liteCreateQuickList?.[chainId] ?? [],
       swap: liteSwap?.[chainId],
       ...(isOnlyPoolRewardsUpgraded && { isCrvRewardsEnabled: true }),
     }
