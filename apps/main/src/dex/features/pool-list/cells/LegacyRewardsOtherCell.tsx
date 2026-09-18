@@ -1,4 +1,4 @@
-import { RewardsApy } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import type { CellContext } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { useLegacyHasPoolRewards } from '../hooks/useLegacyHasPoolRewards'

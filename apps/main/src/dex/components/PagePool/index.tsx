@@ -26,9 +26,10 @@ import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
+import { hasWrapped } from '@/dex/pool.utils'
+import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
-import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
@@ -38,9 +39,7 @@ import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useLocation } from '@ui/hooks/router'
-import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { t } from '@ui/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui/lib/time'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
@@ -113,9 +112,12 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
-  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.hasVyperVulnerability })
-  const chainIdPoolId = getChainPoolIdActiveKey(chainId, poolId)
-  const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
+  const poolAlert = usePoolAlert({
+    blockchainId,
+    poolAddress,
+    hasVyperVulnerability: poolData?.pool.hasVyperVulnerability(),
+  })
+  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(poolData) ?? 'stable'])
@@ -130,16 +132,13 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
-  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
-  usePageVisibleInterval(() => curve && void fetchPoolStats(curve, poolData), REFRESH_INTERVAL['5m'])
-
   // is seed
   useEffect(() => {
     if (!poolData || !currencyReserves) return
 
     const isSeed = Number(currencyReserves.total) === 0
 
-    if (isSeed && poolData.hasWrapped) setPoolIsWrapped(poolData, true)
+    if (isSeed && hasWrapped(poolData.pool)) setPoolIsWrapped(poolData, true)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -152,8 +151,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         poolAlert,
         maxSlippage,
         seed,
-        isGaugeKilled: poolData.gauge.isKilled ?? undefined,
-        isGaugeManager: maybes([gaugeManager, signerAddress], isAddressEqual),
+        isGaugeManager: !!(gaugeManager && signerAddress && isAddressEqual(gaugeManager, signerAddress)),
         isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
           Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
         ),

@@ -17,6 +17,6 @@ export const useAutoRefresh = (chainId: number | undefined) => {
 
   usePageVisibleInterval(async () => {
     if (!curveApi || !poolIds || !chainId) return
-    await fetchPools(curveApi, poolIds, { includeGaugeData: true })
+    await fetchPools(curveApi, poolIds)
   }, REFRESH_INTERVAL['15m'])
 }

@@ -1,5 +1,5 @@
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
-import { RewardsApy } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'

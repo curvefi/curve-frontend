@@ -1,5 +1,5 @@
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
-import { RewardsApy } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import type { CellContext } from '@tanstack/react-table'
 import { isSortedBy, type CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { LegacyPoolColumnId } from '../columns'

@@ -21,7 +21,6 @@ export const visitV2PoolList = ({
     cy.wait('@dex-v2-lite-pool-chains', API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-lite-pools', API_LOAD_TIMEOUT)
   } else {
-    cy.wait(['@dex-v2-pool-filters', '@dex-v2-hidden-pools'], API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
   }

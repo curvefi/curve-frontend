@@ -1,21 +1,21 @@
-import { get, isEmpty, sum } from 'lodash'
-import { useEffect, useMemo } from 'react'
+import { get, sum } from 'lodash'
+import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { usePoolTvls } from '@/dex/queries/pool-tvl.query'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { NetworkConfig, PoolData, PoolDataMapper } from '@/dex/types/main.types'
 import type { Pool } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useCurve } from '@evm-ui/features/connect-wallet'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { notFalsy, recordValues } from '@primitives/objects.utils'
 import type { DeepKeys } from '@tanstack/table-core'
-import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { decimal } from '@ui/lib/decimal'
-import { REFRESH_INTERVAL } from '@ui/lib/time'
 import type { LegacyPoolRow, LegacyPoolTag } from '../types'
+
+const EMPTY_REWARDS_APY_MAPPER: Partial<Record<string, RewardsApy>> = {}
 
 const POOL_TEXT_FIELDS = [
   'pool.wrappedCoins',
@@ -50,11 +50,8 @@ const getLegacyPoolTags = (hasPosition: boolean, { pool, pool: { address, id, na
   )
 
 export function useLegacyPoolsTable({ blockchainId: network, chainId }: NetworkConfig) {
-  const { curveApi } = useCurve()
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
-  const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[chainId])
-  const fetchPoolsRewardsApy = useStore(state => state.pools.fetchPoolsRewardsApy)
-  const fetchMissingPoolsRewardsApy = useStore(state => state.pools.fetchMissingPoolsRewardsApy)
+  const rewardsApyMapper = EMPTY_REWARDS_APY_MAPPER
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
 
   const { address: userAddress } = useConnection()
@@ -62,17 +59,6 @@ export function useLegacyPoolsTable({ blockchainId: network, chainId }: NetworkC
   const { data: tvls, isLoading: isTvlsLoading } = usePoolTvls({ chainId })
 
   const isLoading = !poolsData || isTvlsLoading
-
-  useEffect(
-    () => poolsData && void fetchMissingPoolsRewardsApy(chainId, poolsData),
-    [chainId, fetchMissingPoolsRewardsApy, fetchPoolsRewardsApy, poolsData],
-  )
-
-  usePageVisibleInterval(async () => {
-    if (curveApi && !isEmpty(rewardsApyMapper) && poolsData) {
-      await fetchPoolsRewardsApy(chainId, poolsData)
-    }
-  }, REFRESH_INTERVAL['11m'])
 
   return {
     isLoading,

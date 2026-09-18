@@ -1,4 +1,5 @@
-import type { PoolData, RewardsApy } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
+import type { PoolData } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { Address } from '@primitives/address.utils'

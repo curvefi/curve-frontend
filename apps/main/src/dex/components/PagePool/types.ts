@@ -18,7 +18,6 @@ export type PageTransferProps = { params: PoolUrlParams }
 export type TransferProps = { poolAlert: PoolAlert | null; maxSlippage: Decimal; seed: Seed } & PageTransferProps
 
 export type TransferTabsParams = TransferProps & {
-  isGaugeKilled: boolean | undefined
   isGaugeManager: boolean | undefined
   isRewardsDistributor: boolean | undefined
 }

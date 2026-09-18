@@ -20,7 +20,6 @@ export const ROUTE = {
 
 export const DEFAULT_NETWORK_CONFIG = {
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
-  poolIsWrappedOnly: {}, // show only wrapped pool data
   swap: { fromAddress: '', toAddress: '' },
   swapCustomRouteRedirect: {},
   createQuickList: [],

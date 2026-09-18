@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
+import { usePoolTotalStaked } from '@/dex/queries/pool-total-staked.query'
 import { PoolData } from '@/dex/types/main.types'
 import { weiToEther } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
@@ -19,7 +19,7 @@ export const DetailInfoExpectedApy = ({
   lpTokenAmount: string
   poolData: PoolData
 }) => {
-  const staked = usePoolTotalStaked(poolData)
+  const { data: staked } = usePoolTotalStaked({ chainId: poolData.pool.curve.chainId, poolId: poolData.pool.id })
   const { gaugeTotalSupply } = staked ?? {}
 
   const [newCrvApr, setNewCrvApr] = useState<{ ratio: number; apr: number } | null>(null)
