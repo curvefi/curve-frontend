@@ -16,7 +16,7 @@ import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Withdraw/types'
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
-import { useNetworks } from '@/dex/entities/networks'
+import { WRAPPED_ONLY_POOL_IDS } from '@/dex/constants'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
@@ -52,8 +52,6 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const resetState = useStore(state => state.poolWithdraw.resetState)
-  const { data: networks } = useNetworks()
-  const network = (chainId && networks[chainId]) || null
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -427,7 +425,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
         {poolData.hasWrapped && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly[poolData.pool.id]}
+            isDisabled={!poolData || isDisabled || WRAPPED_ONLY_POOL_IDS.includes(poolData.pool.id)}
             isSelected={formValues.isWrapped}
             onChange={isWrapped => {
               if (poolData) {

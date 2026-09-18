@@ -5,7 +5,7 @@ import { useConnection } from 'wagmi'
 import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
-import { useNetworkByChain } from '@/dex/entities/networks'
+import { WRAPPED_ONLY_POOL_IDS } from '@/dex/constants'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolCurrencyReserves, type CurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { useStore } from '@/dex/store/useStore'
@@ -76,7 +76,6 @@ export const FieldsDeposit = ({
   ) => void
 }) => {
   const { chainId, blockchainId, poolId, poolData } = usePoolContext()
-  const { data: network } = useNetworkByChain({ chainId })
   const maxLoading = useStore(state => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { data: reserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
@@ -171,7 +170,7 @@ export const FieldsDeposit = ({
       {poolData.hasWrapped && formValues.isWrapped !== null && (
         <FieldsWrapper>
           <Checkbox
-            isDisabled={isDisabled || network?.poolIsWrappedOnly?.[poolId]}
+            isDisabled={isDisabled || WRAPPED_ONLY_POOL_IDS.includes(poolId)}
             isSelected={formValues.isWrapped}
             onChange={isWrapped => {
               if (poolData) {

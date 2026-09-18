@@ -2,10 +2,10 @@ import { produce } from 'immer'
 import { countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, CurveApi, PoolData, PoolDataMapper, type NetworkConfig, type Pool } from '@/dex/types/main.types'
+import { ChainId, CurveApi, PoolData, PoolDataMapper, type Pool } from '@/dex/types/main.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { shortenAddress } from '@evm-ui/utils'
-import { fetchNetworks } from '../entities/networks'
+import { WRAPPED_ONLY_POOL_IDS } from '../constants'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -24,7 +24,7 @@ export type PoolsSlice = {
     fetchPools: (
       curve: CurveApi,
       poolIds: string[],
-    ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
+    ) => { poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined
     fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
     setPoolIsWrapped: (poolData: PoolData, isWrapped: boolean) => { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
@@ -39,8 +39,8 @@ export type PoolsSlice = {
 
 const DEFAULT_STATE: SliceState = { poolsMapper: {}, stakedMapper: {} } as const
 
-const getPoolData = (p: Pool, network: NetworkConfig) => {
-  const isWrappedOnly = network.poolIsWrappedOnly[p.id]
+const getPoolData = (p: Pool) => {
+  const isWrappedOnly = WRAPPED_ONLY_POOL_IDS.includes(p.id)
   const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx]))
   const tokens = isWrappedOnly
     ? tokensWrapped
@@ -55,8 +55,8 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
     pool: p,
 
     // stats
-    hasWrapped: isWrappedOnly ?? !(p?.isPlain || p?.isFake),
-    isWrapped: isWrappedOnly ?? false,
+    hasWrapped: isWrappedOnly || !(p?.isPlain || p?.isFake),
+    isWrapped: isWrappedOnly,
     tokenAddressesAll,
     tokenAddresses,
     tokens,
@@ -70,7 +70,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    fetchPools: async (curve, poolIds) => {
+    fetchPools: (curve, poolIds) => {
       const { pools } = get()
       const { chainId, getPool } = curve
 
@@ -80,12 +80,10 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         return
       }
 
-      const networks = await fetchNetworks()
-
       try {
         const { poolsMapper } = poolIds.reduce(
           (prev, poolId): { poolsMapper: Record<string, PoolData> } => {
-            prev.poolsMapper[poolId] = getPoolData(getPool(poolId), networks[chainId])
+            prev.poolsMapper[poolId] = getPoolData(getPool(poolId))
             return prev
           },
           { poolsMapper: {} },
@@ -111,7 +109,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])
-      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId])
+      const resp = get()[SLICE_KEY].fetchPools(curve, [poolId])
       const poolData = resp?.poolsMapper?.[poolId]
       return poolData
     },
