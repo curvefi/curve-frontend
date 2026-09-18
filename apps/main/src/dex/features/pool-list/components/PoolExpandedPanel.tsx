@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatDate } from '@primitives/date.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -27,7 +27,7 @@ const DETAIL_METRIC_CATEGORY = 'dex.poolListMobileExpandedDetails'
 type RateValueOptions = { hasTooltip?: boolean; volatile?: boolean }
 
 const getRateValueOptions = (
-  value: number | null | undefined,
+  value: number | Nullish,
   { hasTooltip = Boolean(value), volatile = false }: RateValueOptions = {},
 ): MetricProps['valueOptions'] => ({
   unit: 'percentage',

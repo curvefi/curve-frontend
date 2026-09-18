@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars,@typescript-eslint/consistent-type-definitions */
 import '@tanstack/table-core'
+import type { Nullish } from '@primitives/objects.utils'
 import type { Unit } from '@primitives/units.util'
 import type { CellData, RowData, RowModel, Table, TableFeatures } from '@tanstack/table-core'
 import type { TooltipProps } from '@ui/components/Tooltip'
@@ -25,6 +26,6 @@ declare module '@tanstack/table-core' {
     /** Optional per-table override selected by the shared faceted row-model dispatcher. */
     facetedRowModelFactory?: (table: Table<TFeatures, TData>, columnId: string) => () => RowModel<TFeatures, TData>
     /** Resolve an optional navigation target for rows rendered by Curve DataTable. */
-    getRowHref?: (data: TData) => string | null | undefined
+    getRowHref?: (data: TData) => string | Nullish
   }
 }

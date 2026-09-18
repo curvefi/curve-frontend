@@ -3,6 +3,7 @@ import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -13,7 +14,7 @@ const validateRouter = ({
   router,
   isRequired,
 }: {
-  router: RouteProvider | readonly RouteProvider[] | null | undefined
+  router: RouteProvider | readonly RouteProvider[] | Nullish
   isRequired: boolean
 }) => {
   skipWhen(!isRequired && !router, () => {
@@ -35,7 +36,7 @@ const validateAddressList = ({
   addresses,
   fieldName,
 }: {
-  addresses: readonly Address[] | null | undefined
+  addresses: readonly Address[] | Nullish
   fieldName: string
 }) =>
   skipWhen(!addresses, () => {

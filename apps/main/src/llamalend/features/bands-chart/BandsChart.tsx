@@ -13,7 +13,7 @@ import type { LlammaLiquididationRange } from '@evm-ui/features/candle-chart/typ
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
 import { Box, useTheme } from '@mui/material'
-import { notFalsy } from '@primitives/objects.utils'
+import { type Nullish, notFalsy } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { getChartOptions } from './chartOptions'
@@ -57,7 +57,7 @@ const toUserBandsPriceRange = (userBandsPriceRange: UserBandsPriceRange): BandsP
 // Candle chart builds LlammaLiquididationRange from [low, high] as:
 // price1 = upper line, price2 = lower line. Bands chart consumes the same object for the
 // preview range, so preserve that contract instead of sorting the values here.
-const toBandsPriceRange = (liquidationRange: LlammaLiquididationRange | null | undefined): BandsPriceRange | null => {
+const toBandsPriceRange = (liquidationRange: LlammaLiquididationRange | Nullish): BandsPriceRange | null => {
   const upperPrice = liquidationRange?.price1.at(-1)?.value ?? liquidationRange?.price1[0]?.value
   const lowerPrice = liquidationRange?.price2.at(-1)?.value ?? liquidationRange?.price2[0]?.value
 

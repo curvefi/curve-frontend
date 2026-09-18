@@ -7,7 +7,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import type { AllowUndefined } from '@ui/features/queries/util'
 import { decimalGreaterThan } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
@@ -37,7 +37,7 @@ export type ResetForm = AllowUndefined<ResetInputs, 'convertedBorrowed' | 'userB
 export type ResetQuery<ChainId = IChainId> = UserMarketQuery<ChainId> & ResetInputs & ResetCalculatedValues
 export type ResetParams<ChainId = IChainId> = FieldsOf<ResetQuery<ChainId>>
 
-const validateResetSupported = (marketId: MarketTemplate | string | null | undefined) => {
+const validateResetSupported = (marketId: MarketTemplate | string | Nullish) => {
   const market = maybe(marketId, id => tryGetMarket(id))
   skipWhen(!market, () => {
     test('marketId', 'Reset is only available for Llamalend v2 lend markets', () => {
@@ -46,7 +46,7 @@ const validateResetSupported = (marketId: MarketTemplate | string | null | undef
   })
 }
 
-const validateAmount = (field: keyof ResetInputs, label: string, value: Decimal | null | undefined) => {
+const validateAmount = (field: keyof ResetInputs, label: string, value: Decimal | Nullish) => {
   skipWhen(value == null, () => {
     test(field, `${label} must be a non-negative number`, () => {
       enforce(value).isDecimal().gte(0)
@@ -54,7 +54,7 @@ const validateAmount = (field: keyof ResetInputs, label: string, value: Decimal 
   })
 }
 
-const validateMaxUserBorrowed = (userBorrowed: Decimal | null | undefined, maxBorrowed: Decimal | null | undefined) => {
+const validateMaxUserBorrowed = (userBorrowed: Decimal | Nullish, maxBorrowed: Decimal | Nullish) => {
   skipWhen(!userBorrowed, () => {
     test('maxBorrowed', 'Wallet balance must be loaded before it can be validated', () => {
       enforce(maxBorrowed).isDecimal()
@@ -63,10 +63,7 @@ const validateMaxUserBorrowed = (userBorrowed: Decimal | null | undefined, maxBo
   validateMaxBorrowed(userBorrowed, { label: `reset amount`, maxBorrowed, required: false })
 }
 
-const validateMinimumResetAmount = (
-  userBorrowed: Decimal | null | undefined,
-  minBorrowed: Decimal | null | undefined,
-) => {
+const validateMinimumResetAmount = (userBorrowed: Decimal | Nullish, minBorrowed: Decimal | Nullish) => {
   test('minBorrowed', 'Minimum reset amount must be loaded before it can be validated', () => {
     enforce(minBorrowed).isDecimal()
   })
@@ -78,9 +75,9 @@ const validateMinimumResetAmount = (
 }
 
 const validateMaxDebtReduction = (
-  convertedBorrowed: Decimal | null | undefined,
-  userBorrowed: Decimal | null | undefined,
-  maxTotalBorrowed: Decimal | null | undefined,
+  convertedBorrowed: Decimal | Nullish,
+  userBorrowed: Decimal | Nullish,
+  maxTotalBorrowed: Decimal | Nullish,
 ) => {
   const debtReduction = getResetDebtReduction({ convertedBorrowed, userBorrowed })
 
@@ -94,10 +91,7 @@ const validateMaxDebtReduction = (
   })
 }
 
-const validateResetAvailable = (
-  resetAvailable: boolean | null | undefined,
-  { requireLoaded }: { requireLoaded: boolean },
-) => {
+const validateResetAvailable = (resetAvailable: boolean | Nullish, { requireLoaded }: { requireLoaded: boolean }) => {
   if (requireLoaded) {
     test('root', 'Reset availability must be loaded before it can be validated', () => {
       enforce(resetAvailable != null).isTruthy()

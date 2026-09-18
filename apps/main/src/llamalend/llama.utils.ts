@@ -17,7 +17,15 @@ import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import {
+  type Nullish,
+  type AllOrNone,
+  assert,
+  DEFAULT_DECIMALS,
+  maybe,
+  maybes,
+  notFalsy,
+} from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
@@ -39,7 +47,7 @@ export const getMarket = (id: string | MarketTemplate, lib = requireLib('llamaAp
  * Helper to retrieve the llama market after initialization, avoiding crashing the components using it.
  * We use this helper during query validation since we cannot crash the validation suite outside `test()`
  */
-export const tryGetMarket = (marketId: MarketTemplate | string | null | undefined) =>
+export const tryGetMarket = (marketId: MarketTemplate | string | Nullish) =>
   typeof marketId === 'object' ? marketId : maybes([marketId, getLib('llamaApi')], getMarket)
 
 /** Returns the market-specific slippage, falling back to the default leverage slippage. */
@@ -77,7 +85,7 @@ export const hasLeverage = <T extends MarketTemplate | undefined>(market: T) =>
  * Note: Some older Mint markets (marketId < 6) support leverage operations (open/close positions)
  * but cannot calculate the leverage multiplier value.
  */
-export const hasLeverageValue = <T extends MarketTemplate | null | undefined>(market: T) => hasZapV2(market)
+export const hasLeverageValue = <T extends MarketTemplate | Nullish>(market: T) => hasZapV2(market)
 
 export const hasLegacyMintLeverage = (market: MarketTemplate) =>
   market instanceof MintMarketTemplate && market.index == null && market.leverageZap !== zeroAddress
@@ -87,7 +95,7 @@ const hasV1Deleverage = (market: MarketTemplate) =>
 
 export const hasDeleverage = (market: MarketTemplate) => hasZapV2(market) || hasV1Deleverage(market)
 
-export const hasResetPosition = (market: MarketTemplate | null | undefined): market is LendMarketTemplate<'v2'> =>
+export const hasResetPosition = (market: MarketTemplate | Nullish): market is LendMarketTemplate<'v2'> =>
   market instanceof LendMarketTemplate && market.version === 'v2'
 
 /**
@@ -97,7 +105,7 @@ export const hasResetPosition = (market: MarketTemplate | null | undefined): mar
  * (prev)Leverage is 1 when the position is not leveraged at all (simple borrowing, no leverage).
  * (prev)Leverage is > 1 when the position is leveraged.
  **/
-export const isPositionLeveraged = (leverage: Amount | undefined | null) =>
+export const isPositionLeveraged = (leverage: Amount | Nullish) =>
   leverage != null && !BigNumber(leverage).isZero() && !BigNumber(leverage).isEqualTo(1)
 
 export const canRepayFromStateCollateral = <T extends MarketTemplate | undefined>(market: T) =>
@@ -110,7 +118,7 @@ export const canLeverageUserBorrowed = <T extends MarketTemplate | undefined>(ma
 
 export const hasVault = (market: MarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
-export const hasZapV2 = <T extends MarketTemplate | null | undefined>(market: T) =>
+export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
 
 export const isRouterRequired = (
@@ -156,7 +164,7 @@ export type MarketTokensOrEmpty = AllOrNone<MarketTokens>
 
 type MarketOrApiValue<T, Value> = T extends MarketTemplate ? Value : Value | undefined
 
-const getMarketOrApiValue = <T extends MarketTemplate | null | undefined, Value>(
+const getMarketOrApiValue = <T extends MarketTemplate | Nullish, Value>(
   market: T,
   apiMarket: LlamaMarket | undefined,
   getMarketValue: (market: MarketTemplate) => Value,
@@ -164,7 +172,7 @@ const getMarketOrApiValue = <T extends MarketTemplate | null | undefined, Value>
 ): MarketOrApiValue<T, Value> =>
   maybe(market, getMarketValue) ?? (maybe(apiMarket, getApiValue) as MarketOrApiValue<T, Value>)
 
-export const getMarketType = <T extends MarketTemplate | null | undefined>(
+export const getMarketType = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
 ): MarketOrApiValue<T, MarketType> =>
@@ -175,7 +183,7 @@ export const getMarketType = <T extends MarketTemplate | null | undefined>(
     m => m.type,
   )
 
-export const getTokens = <T extends MarketTemplate | null | undefined>(
+export const getTokens = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
 ): MarketOrApiValue<T, MarketTokens> =>
@@ -207,7 +215,7 @@ export const getTokens = <T extends MarketTemplate | null | undefined>(
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
 
-export const getAmmAddress = <T extends MarketTemplate | null | undefined>(
+export const getAmmAddress = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
 ): MarketOrApiValue<T, Address> =>
@@ -218,7 +226,7 @@ export const getAmmAddress = <T extends MarketTemplate | null | undefined>(
     m => m.ammAddress,
   )
 
-export const getControllerAddress = <T extends MarketTemplate | null | undefined>(
+export const getControllerAddress = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
 ): MarketOrApiValue<T, Address> =>
@@ -229,7 +237,7 @@ export const getControllerAddress = <T extends MarketTemplate | null | undefined
     m => m.controllerAddress,
   )
 
-export const getVaultAddress = <T extends MarketTemplate | null | undefined>(
+export const getVaultAddress = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
 ): MarketOrApiValue<T, Address | null> =>
@@ -240,12 +248,12 @@ export const getVaultAddress = <T extends MarketTemplate | null | undefined>(
     m => m.vaultAddress,
   )
 
-export const getGaugeAddress = (market: MarketTemplate | null | undefined): Address | undefined =>
+export const getGaugeAddress = (market: MarketTemplate | Nullish): Address | undefined =>
   market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
     ? (market.addresses.gauge as Address)
     : undefined
 
-export const getVaultToken = <T extends MarketTemplate | null | undefined>(
+export const getVaultToken = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
 ): MarketOrApiValue<T, MarketToken | undefined> =>
@@ -258,7 +266,7 @@ export const getVaultToken = <T extends MarketTemplate | null | undefined>(
 export type BandRange = { minBands: number; maxBands: number }
 export type BandRangeOrEmpty = AllOrNone<BandRange>
 
-export const getMarketBandRange = <T extends MarketTemplate | null | undefined>(
+export const getMarketBandRange = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
 ): MarketOrApiValue<T, BandRange | undefined> =>
@@ -269,10 +277,10 @@ export const getMarketBandRange = <T extends MarketTemplate | null | undefined>(
     m => maybes([m.minBand, m.maxBand], (minBands, maxBands) => ({ minBands, maxBands })),
   )
 
-export const getCrvTokenAddress = (market: MarketTemplate | null | undefined): Address | undefined =>
+export const getCrvTokenAddress = (market: MarketTemplate | Nullish): Address | undefined =>
   maybe(market, m => m.getLlamalend().constants.ALIASES.crv as Address)
 
-export const getMonetaryPolicy = <T extends MarketTemplate | null | undefined>(
+export const getMonetaryPolicy = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
 ): MarketOrApiValue<T, Address | undefined> =>
@@ -297,8 +305,8 @@ export const calculateLtv = (
   debtAmount: number,
   collateralAmount: number,
   collateralBorrowTokenAmount: number,
-  borrowTokenUsdRate: number | null | undefined,
-  collateralTokenUsdRate: number | null | undefined,
+  borrowTokenUsdRate: number | Nullish,
+  collateralTokenUsdRate: number | Nullish,
 ) => {
   const collateralValue =
     collateralAmount * (collateralTokenUsdRate ?? 0) + collateralBorrowTokenAmount * (borrowTokenUsdRate ?? 0)
@@ -309,9 +317,9 @@ export const calculateLtv = (
 
 /** Annualized return on equity at the given leverage. Input APYs and output are percentage  */
 export const getRoE = (
-  leverage: number | null | undefined,
-  collateralApy: number | null | undefined,
-  borrowApy: number | null | undefined,
+  leverage: number | Nullish,
+  collateralApy: number | Nullish,
+  borrowApy: number | Nullish,
 ): number | undefined =>
   // Total collateral / equity = leverage, so debt / equity = leverage - 1.
   maybes([leverage, collateralApy, borrowApy], (lev, colApy, borApy) =>
@@ -386,7 +394,7 @@ const getSoftLiquidationThreshold = (userIsCloseToLiquidation: boolean) => (user
  * number (n2, or `userBandsValue[1]` after `reverseBands`). If the active/oracle-price band has
  * moved past it, the price is below the user's range and their collateral has fully converted.
  */
-export const isBelowRange = (activeBand: number | null | undefined, lowerBoundBand: number | null | undefined) =>
+export const isBelowRange = (activeBand: number | Nullish, lowerBoundBand: number | Nullish) =>
   activeBand != null && lowerBoundBand != null && activeBand > lowerBoundBand
 
 /**
@@ -406,8 +414,8 @@ export const isBelowRange = (activeBand: number | null | undefined, lowerBoundBa
  * See https://docs.curve.finance/user/llamalend/liquidation-protection/how-it-works.
  */
 export const getDisplayHealth = (
-  healthFull: Decimal | number | null | undefined,
-  healthNotFull: Decimal | number | null | undefined,
+  healthFull: Decimal | number | Nullish,
+  healthNotFull: Decimal | number | Nullish,
 ): number | null => {
   if (healthFull == null || healthNotFull == null) return null
   return +(+healthNotFull < 0 ? healthNotFull : healthFull)
@@ -434,7 +442,7 @@ export function getLiquidationStatus(
   return 'healthy' as const
 }
 
-export const getIsUserCloseToSoftLiquidation = (userFirstBand: number, oraclePriceBand: number | null | undefined) =>
+export const getIsUserCloseToSoftLiquidation = (userFirstBand: number, oraclePriceBand: number | Nullish) =>
   oraclePriceBand != null && userFirstBand <= oraclePriceBand + 2
 
 /**
@@ -442,8 +450,8 @@ export const getIsUserCloseToSoftLiquidation = (userFirstBand: number, oraclePri
  * Returns undefined if collateral value is not available.
  */
 export const formatCollateralNotional = (
-  collateral: { value: Decimal | null | undefined; symbol: string | undefined },
-  borrow: { value: Decimal | null | undefined; symbol: string | undefined } | undefined,
+  collateral: { value: Decimal | Nullish; symbol: string | undefined },
+  borrow: { value: Decimal | Nullish; symbol: string | undefined } | undefined,
 ): string | undefined =>
   notFalsy(
     collateral.value && +collateral.value && collateral.symbol && formatToken(collateral.value, collateral.symbol),
@@ -530,7 +538,7 @@ export const tokenMetric = ({
   notional,
 }: {
   value: MetricProps['value']
-  symbol: string | null | undefined
+  symbol: string | Nullish
   usdRate?: QueryProp<Amount>
   notional?: MetricProps['notional']
 }) =>

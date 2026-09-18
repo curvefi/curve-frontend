@@ -4,12 +4,13 @@ import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import type { Amount } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import type { BridgeParams } from '../types'
 
-type FieldAmount = Amount | null | undefined
+type FieldAmount = Amount | Nullish
 
 const validateAmountGroup = ({
   amount,

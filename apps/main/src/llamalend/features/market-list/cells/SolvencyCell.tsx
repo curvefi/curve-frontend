@@ -3,7 +3,7 @@ import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-marke
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, objectKeys } from '@primitives/objects.utils'
+import { type Nullish, maybe, objectKeys } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
@@ -15,7 +15,7 @@ const SOLVENCY_COLORS: Record<keyof typeof SOLVENCY_THRESHOLDS, TypographyProps[
   insolvent: 'error',
 }
 
-const getSolvencyColor = (value: number | undefined | null): TypographyProps['color'] =>
+const getSolvencyColor = (value: number | Nullish): TypographyProps['color'] =>
   SOLVENCY_COLORS[
     maybe(value, v => objectKeys(SOLVENCY_THRESHOLDS).find(t => v >= SOLVENCY_THRESHOLDS[t])) ?? 'solvent'
   ]

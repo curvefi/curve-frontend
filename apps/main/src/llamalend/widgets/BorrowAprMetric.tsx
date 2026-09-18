@@ -3,26 +3,26 @@ import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { Metric, type MetricProps } from '@evm-ui/shared/ui/Metric'
 import type { MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory, formatCappedRateValue } from '@evm-ui/utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips'
 
 type BorrowRateMetric = {
-  rate: number | null | undefined
-  averageRate: number | null | undefined
+  rate: number | Nullish
+  averageRate: number | Nullish
   averageCategory: AverageCategory
-  rebasingYield: number | null | undefined
-  totalBorrowRate: number | null | undefined
-  totalAverageBorrowRate: number | null | undefined
+  rebasingYield: number | Nullish
+  totalBorrowRate: number | Nullish
+  totalAverageBorrowRate: number | Nullish
   extraRewards: CampaignRewards[]
 }
 
 type BorrowAprMetricProps = {
   marketType: MarketType
   borrowRate: QueryProp<BorrowRateMetric>
-  collateralSymbol: string | null | undefined
+  collateralSymbol: string | Nullish
   alignment?: MetricProps['alignment']
 }
 

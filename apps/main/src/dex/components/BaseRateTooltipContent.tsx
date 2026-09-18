@@ -1,5 +1,6 @@
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 
@@ -8,8 +9,8 @@ export const BaseRateTooltipContent = ({
   weeklyRate,
   weekly = false,
 }: {
-  dailyRate: number | null | undefined
-  weeklyRate: number | null | undefined
+  dailyRate: number | Nullish
+  weeklyRate: number | Nullish
   weekly?: boolean
 }) => (
   <TooltipWrapper>

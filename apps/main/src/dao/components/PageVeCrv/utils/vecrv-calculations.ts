@@ -5,7 +5,7 @@ import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
 import { formatDate } from '@primitives/date.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes } from '@primitives/objects.utils'
 import { decimal } from '@ui/lib/decimal'
 import { MILLISECONDS_PER_SECOND } from '@ui/lib/time'
 
@@ -73,7 +73,7 @@ export const getExtendQuickDateUpdate = ({
 }: {
   currentDate: Date
   currentUnlockTime: number | undefined
-  currentUnlockUtcTime: dayjs.Dayjs | null | undefined
+  currentUnlockUtcTime: dayjs.Dayjs | Nullish
   maxUtcDate: dayjs.Dayjs | null
   unit: dayjs.ManipulateType | undefined
   value: number | undefined
@@ -91,10 +91,7 @@ export const getExtendQuickDateUpdate = ({
 }
 
 /** Returns the whole-day remainder for an existing lock. */
-export const getRemainingLockedDays = (
-  currentUnlockUtcTime: dayjs.Dayjs | null | undefined,
-  currentUtcDate: dayjs.Dayjs,
-) =>
+export const getRemainingLockedDays = (currentUnlockUtcTime: dayjs.Dayjs | Nullish, currentUtcDate: dayjs.Dayjs) =>
   maybe(currentUnlockUtcTime, currentUnlockUtcTime =>
     dayjs(currentUnlockUtcTime.format('YYYY-MM-DD')).diff(currentUtcDate.format('YYYY-MM-DD'), 'day', false),
   )

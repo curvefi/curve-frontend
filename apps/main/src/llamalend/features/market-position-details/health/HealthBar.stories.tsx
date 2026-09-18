@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
+import type { Nullish } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { HealthBar } from './HealthBar'
 
@@ -8,8 +9,8 @@ const HealthBarStory = ({
   health,
   softLiquidation,
 }: {
-  health: number | null | undefined
-  softLiquidation: boolean | null | undefined
+  health: number | Nullish
+  softLiquidation: boolean | Nullish
 }) => (
   <Box sx={{ minWidth: 400, padding: 2 }}>
     <Stack spacing={4}>

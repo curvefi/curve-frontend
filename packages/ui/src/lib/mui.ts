@@ -1,5 +1,5 @@
 import type { SxProps as MuiSx, Theme } from '@mui/material/styles'
-import { notFalsy } from '@primitives/objects.utils'
+import { type Nullish, notFalsy } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { BorderWidth } = SizesAndSpaces
@@ -11,7 +11,7 @@ type SxStyleObject = Exclude<SxProps, ((theme: Theme) => unknown) | readonly unk
  * Utility function to resolve sx props by calling theme function if needed and provided
  * @param sx - The sx prop value (style object, theme function, or undefined)
  */
-export const applySxProps = (...sx: (SxProps | false | null | undefined)[]): SxProps =>
+export const applySxProps = (...sx: (SxProps | false | Nullish)[]): SxProps =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
   sx.flatMap(s => (Array.isArray(s) ? s : notFalsy(s)))
 

@@ -3,6 +3,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { shortenString } from '@primitives/string.utils'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
 import { TokenIcon } from '@ui/components/TokenIcon'
@@ -11,6 +12,7 @@ import type { TokenOption as Option } from '@ui/features/select-token/types'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { amount } from '@ui/lib/decimal'
+import { t } from '@ui/lib/i18n'
 
 const { IconSize } = SizesAndSpaces
 
@@ -45,7 +47,11 @@ export const TokenOption = ({
     : ['textPrimary', 'textSecondary', 'textTertiary']
   return (
     <InvertOnHover hoverRef={menuItemRef}>
-      <Tooltip title={disabled && 'This token is not available because of'} body={disabledReason} placement="top">
+      <Tooltip
+        title={disabled && notFalsy(t`This token is not available`, disabledReason && t`because of`).join(' ')}
+        body={disabledReason}
+        placement="top"
+      >
         <MenuItem
           ref={menuItemRef}
           data-testid={`token-option-${address.toLowerCase()}`}

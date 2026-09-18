@@ -1,7 +1,7 @@
 import { chainConfig } from 'viem/op-stack'
 import { defineChain } from 'viem/utils'
 import { Chain as ChainId } from '@primitives/network.utils'
-import { mainnet } from '@wagmi/core/chains'
+import { mainnet, robinhood as robinhoodViem } from '@wagmi/core/chains'
 import { RPC } from './rpc'
 
 export const megaeth = defineChain({
@@ -36,9 +36,16 @@ export const arc = defineChain({
   id: 5042,
   name: 'Arc',
   nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
-  rpcUrls: { default: { http: ['https://rpc.mainnet.arc.io'] } },
+  rpcUrls: { default: { http: RPC[ChainId.Arc] } },
   blockExplorers: {
-    default: { name: 'Arc Explorer', url: 'https://explorer.arc.io', apiUrl: 'https://explorer.arc.io/api/v2' },
+    default: { name: 'Arc Explorer', url: 'https://arc.etherscan.io', apiUrl: 'https://arc.etherscan.io/api' },
   },
   contracts: { multicall3: { address: '0xcA11bde05977b3631167028862bE2a173976CA11', blockCreated: 0 } },
+})
+
+export const robinhood = defineChain({
+  ...robinhoodViem,
+  blockExplorers: {
+    default: { name: 'Etherscan', url: 'https://robin.etherscan.io', apiUrl: 'https://robin.etherscan.io/api' },
+  },
 })

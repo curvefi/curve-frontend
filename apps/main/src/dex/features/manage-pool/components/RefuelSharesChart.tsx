@@ -24,7 +24,7 @@ import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
+import { type Nullish, DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -44,7 +44,7 @@ const SHARE_SERIES = [
   { key: 'unlockedShares', label: UNLOCKED_SHARES_LABEL },
 ] as const
 
-const formatShares = (value: number | null | undefined) => formatNumber(value, 'token.compact')
+const formatShares = (value: number | Nullish) => formatNumber(value, 'token.compact')
 
 export const RefuelSharesChart = ({
   chainId,

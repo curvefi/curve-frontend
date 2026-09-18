@@ -19,7 +19,7 @@ import {
   userContractValidationSuite,
 } from '@evm-ui/lib/model/query/user-contract'
 import type { Address } from '@primitives/address.utils'
-import { fromEntries } from '@primitives/objects.utils'
+import { type Nullish, fromEntries } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite, EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
@@ -78,7 +78,7 @@ const {
   validationSuite: userContractValidationSuite,
 })
 
-export const invalidateAllUserLendingVaults = async (userAddress: Address | null | undefined) => {
+export const invalidateAllUserLendingVaults = async (userAddress: Address | Nullish) => {
   await Promise.all(
     LEND_CHAINS.flatMap(blockchainId => [
       invalidateUserLendingVaultsQuery({ userAddress, blockchainId }),
@@ -89,7 +89,7 @@ export const invalidateAllUserLendingVaults = async (userAddress: Address | null
   )
 }
 
-export const resetAllUserLendingVaults = async (userAddress: Address | null | undefined) => {
+export const resetAllUserLendingVaults = async (userAddress: Address | Nullish) => {
   await Promise.all(
     LEND_CHAINS.flatMap(blockchainId => [
       resetUserLendingVaultsQuery({ userAddress, blockchainId }),

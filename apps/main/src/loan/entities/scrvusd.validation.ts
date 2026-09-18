@@ -4,6 +4,7 @@ import { llamaApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-valid
 import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import type { UserChainQuery } from '@evm-ui/lib/model/query/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { AllowUndefined } from '@ui/features/queries/util'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -50,8 +51,8 @@ const validateRequiredDecimal = (field: 'depositAmount' | 'withdrawAmount', valu
 
 const validateMaxDecimal = (
   field: 'depositAmount' | 'withdrawAmount',
-  value: Decimal | null | undefined,
-  max: Decimal | null | undefined,
+  value: Decimal | Nullish,
+  max: Decimal | Nullish,
   maxRequired: boolean,
 ) => {
   skipWhen(!maxRequired, () => {

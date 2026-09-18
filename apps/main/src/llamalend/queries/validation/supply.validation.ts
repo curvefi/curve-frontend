@@ -5,7 +5,7 @@ import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
+import { type Nullish, assert } from '@primitives/objects.utils'
 import type { AllowUndefined } from '@ui/features/queries/util'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -70,7 +70,7 @@ export function requireGauge(marketId: string): LendMarketTemplate {
   return lendMarket
 }
 
-const validateHasVault = (marketId: string | null | undefined) => {
+const validateHasVault = (marketId: string | Nullish) => {
   const market = tryGetMarket(marketId)
   skipWhen(!market, () => {
     test('marketId', 'Market does not have a vault', () => {
@@ -79,7 +79,7 @@ const validateHasVault = (marketId: string | null | undefined) => {
   })
 }
 
-const validateHasGauge = (marketId: string | null | undefined) => {
+const validateHasGauge = (marketId: string | Nullish) => {
   const market = tryGetMarket(marketId)
   skipWhen(!market, () => {
     test('marketId', 'Market does not have a gauge', () => {
@@ -89,7 +89,7 @@ const validateHasGauge = (marketId: string | null | undefined) => {
 }
 
 const validateDepositAmount = (
-  amount: Decimal | undefined | null,
+  amount: Decimal | Nullish,
   { depositRequired = false }: { depositRequired?: boolean } = {},
 ) => {
   skipWhen(!depositRequired, () => {
@@ -104,7 +104,7 @@ const validateDepositAmount = (
   })
 }
 
-const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount: Decimal | undefined | null) => {
+const validateDepositMaxAmount = (amount: Decimal | Nullish, maxAmount: Decimal | Nullish) => {
   skipWhen(amount == null || maxAmount == null, () => {
     test('depositAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
       enforce(amount).lte(maxAmount)
@@ -112,7 +112,7 @@ const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount:
   })
 }
 
-const validateAssetsToShares = (assets: Decimal | undefined | null) => {
+const validateAssetsToShares = (assets: Decimal | Nullish) => {
   test('assets', 'Assets are required', () => {
     enforce(assets).isNotEmpty()
   })
@@ -160,7 +160,7 @@ export const userSupplyVaultAssetsValidationSuite = createValidationSuite((param
 })
 
 const validateWithdrawAmount = (
-  amount: Decimal | undefined | null,
+  amount: Decimal | Nullish,
   { withdrawRequired = false }: { withdrawRequired?: boolean } = {},
 ) => {
   skipWhen(!withdrawRequired, () => {
@@ -175,7 +175,7 @@ const validateWithdrawAmount = (
   })
 }
 
-const validateWithdrawMaxAmount = (amount: Decimal | undefined | null, maxAmount: Decimal | undefined | null) => {
+const validateWithdrawMaxAmount = (amount: Decimal | Nullish, maxAmount: Decimal | Nullish) => {
   skipWhen(amount == null || maxAmount == null, () => {
     test('withdrawAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
       enforce(amount).lte(maxAmount)
@@ -184,7 +184,7 @@ const validateWithdrawMaxAmount = (amount: Decimal | undefined | null, maxAmount
 }
 
 const validateUserVaultShares = (
-  shares: Decimal | undefined | null,
+  shares: Decimal | Nullish,
   { sharesRequired = false }: { sharesRequired?: boolean } = {},
 ) => {
   skipWhen(!sharesRequired, () => {
@@ -222,7 +222,7 @@ export const withdrawValidationSuite = createValidationSuite((params: WithdrawPa
 })
 
 const validateStakeAssets = (
-  assets: Decimal | undefined | null,
+  assets: Decimal | Nullish,
   { stakeRequired = false }: { stakeRequired?: boolean } = {},
 ) => {
   skipWhen(!stakeRequired, () => {
@@ -237,7 +237,7 @@ const validateStakeAssets = (
   })
 }
 
-const validateStakeShares = (shares: Decimal | undefined | null) => {
+const validateStakeShares = (shares: Decimal | Nullish) => {
   test('stakeShares', 'Stake shares are required', () => {
     enforce(shares).isNotEmpty()
   })
@@ -248,7 +248,7 @@ const validateStakeShares = (shares: Decimal | undefined | null) => {
   })
 }
 
-const validateStakeMaxAssets = (assets: Decimal | undefined | null, maxAssets: Decimal | undefined | null) => {
+const validateStakeMaxAssets = (assets: Decimal | Nullish, maxAssets: Decimal | Nullish) => {
   skipWhen(assets == null || maxAssets == null, () => {
     test('stakeAssets', `Amount exceeds maximum of ${maxAssets}`, () => {
       enforce(assets).lte(maxAssets)
@@ -271,7 +271,7 @@ export const stakeValidationSuite = createValidationSuite((params: UserMarketPar
 })
 
 const validateUnstakeAssets = (
-  assets: Decimal | undefined | null,
+  assets: Decimal | Nullish,
   { unstakeRequired = false }: { unstakeRequired?: boolean } = {},
 ) => {
   skipWhen(!unstakeRequired, () => {
@@ -286,7 +286,7 @@ const validateUnstakeAssets = (
   })
 }
 
-const validateUnstakeShares = (shares: Decimal | undefined | null) => {
+const validateUnstakeShares = (shares: Decimal | Nullish) => {
   test('unstakeShares', 'Unstake shares are required', () => {
     enforce(shares).isNotEmpty()
   })
@@ -297,7 +297,7 @@ const validateUnstakeShares = (shares: Decimal | undefined | null) => {
   })
 }
 
-const validateUnstakeMaxAssets = (assets: Decimal | undefined | null, maxAssets: Decimal | undefined | null) => {
+const validateUnstakeMaxAssets = (assets: Decimal | Nullish, maxAssets: Decimal | Nullish) => {
   skipWhen(assets == null || maxAssets == null, () => {
     test('unstakeAssets', `Amount exceeds maximum of ${maxAssets}`, () => {
       enforce(assets).lte(maxAssets)
