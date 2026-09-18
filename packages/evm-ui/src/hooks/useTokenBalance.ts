@@ -231,6 +231,9 @@ export const prefetchTokenBalances = async (
    */
   zip(tokenContracts, chunk(results, 2))
     .map(([contracts, tokenResults]) => [readContractsQueryOptions(config, { contracts }), tokenResults] as const)
-    .filter(([{ queryKey }, tokenResults]) => tokenResults?.[0].result || queryClient.getQueryData(queryKey))
+    .filter(
+      ([{ queryKey }, tokenResults]) =>
+        tokenResults?.[0].result || queryClient.getQueryData<typeof tokenResults>(queryKey)?.[0].result,
+    )
     .forEach(([{ queryKey }, tokenResults]) => queryClient.setQueryData(queryKey, tokenResults, { updatedAt }))
 }
