@@ -12,10 +12,9 @@ import { useMetrics } from '../hooks/useMetrics'
 const METRIC_CATEGORY = 'dex.poolInformation'
 
 export const Metrics = ({ pricesApiPoolData }: { pricesApiPoolData?: PricesApiPool }) => {
-  const { chainId, poolId, poolData } = usePoolContext()
+  const { chainId, poolId } = usePoolContext()
   const { liquidityUtilization, gaugeTotalSupply, totalStakedPercent } = useMetrics({
     chainId,
-    poolData,
     poolId,
     pricesApiPoolData,
   })

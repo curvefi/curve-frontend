@@ -12,6 +12,7 @@ import {
 } from './pool-list.query'
 import { invalidatePoolParameters } from './pool-parameters.query'
 import { invalidatePoolRewardsApy } from './pool-rewards-apy.query'
+import { invalidatePoolTotalStaked } from './pool-total-staked.query'
 import { invalidateUserPoolBalancesQuery } from './user-pool-balances.query'
 import { invalidateUserPoolBoostQuery } from './user-pool-boost.query'
 import { invalidateUserPoolLiquidityUsdQuery } from './user-pool-liquidity-usd.query'
@@ -37,6 +38,7 @@ export const invalidatePoolInfo = async (params: PoolParams) =>
     invalidatePoolCurrencyReserves(params),
     invalidatePoolGaugeStatus(params),
     invalidatePoolRewardsApy(params),
+    invalidatePoolTotalStaked(params),
   ])
 
 export const resetPoolLists = ({ chainId, userAddress }: UserChainParams) =>
