@@ -3,6 +3,7 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, q } from '@ui/features/queries/util'
 import type { SwapFormQuery } from './types'
 
+/** Run the swap quote query for both directions and return the input and output amounts. */
 export function useQuoteQueries(params: SwapFormQuery) {
   const isReceive = params.editedSide === 'receive'
   const inverseQuote = useSwapQuote(params, isReceive)

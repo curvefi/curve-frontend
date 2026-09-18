@@ -6,15 +6,16 @@ import type { DeepPartial } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type CompleteSwapForm = Omit<SwapFormValues, 'minimum'> & UserParams
-
 export type SwapFormQuery = PoolQuery & CompleteSwapForm
-export type { SwapMutation }
+
 export type SwapQuoteQuery = PoolQuery &
   Pick<SwapMutation, 'fromIndex' | 'toIndex' | 'decimals' | 'inputAmount'> &
   Pick<SwapFormValues, 'maxOutput' | 'editedSide'> & { outputAmount: Decimal }
 export type SwapQuoteParams = FieldsOf<DeepPartial<SwapQuoteQuery>>
+
 export type SwapQuery = PoolQuery & UserQuery & SwapMutation
 export type SwapParams = FieldsOf<DeepPartial<SwapQuery>>
+
 export type SwapMutationOptions = PoolQuery & {
   account: StellarAddress | undefined
   tokens: StellarContract[]
