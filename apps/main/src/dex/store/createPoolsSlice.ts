@@ -27,7 +27,6 @@ export type PoolsSlice = {
     ) => { poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined
     fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
     setPoolIsWrapped: (poolData: PoolData, isWrapped: boolean) => { tokens: string[]; tokenAddresses: string[] }
-    updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
     setEmptyPoolListDefault: (chainId: ChainId) => void
 
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
@@ -127,13 +126,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         }),
       )
       return { tokens, tokenAddresses }
-    },
-    updatePool: (chainId, poolId, updatedPoolData) => {
-      set(
-        produce((state: State) => {
-          state.pools.poolsMapper[chainId][poolId] = { ...state.pools.poolsMapper[chainId][poolId], ...updatedPoolData }
-        }),
-      )
     },
     setEmptyPoolListDefault: (chainId: number) => {
       const sliceState = get().pools
