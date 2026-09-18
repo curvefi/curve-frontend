@@ -1,5 +1,6 @@
 import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { MaxRoe } from '@/llamalend/widgets/tooltips/MaxRoeTooltipContent'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MarketType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
@@ -22,6 +23,7 @@ type MarketParametersProps = {
   apiMarket: QueryProp<LlamaMarket>
   tokens: MarketTokensOrEmpty
   maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
+  maxRoe?: QueryProp<MaxRoe>
 }
 
 export const MarketParametersSection = ({
@@ -31,6 +33,7 @@ export const MarketParametersSection = ({
   apiMarket,
   tokens,
   maxLeverage,
+  maxRoe,
 }: MarketParametersProps) => (
   <Stack>
     <Card size="extraSmall" variant="inline" data-testid="market-prices-section">
@@ -49,7 +52,13 @@ export const MarketParametersSection = ({
     <Card size="extraSmall" variant="inline" data-testid="market-parameters-section">
       <CardHeader title={t`Parameters`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-        <MarketLoanParameters chainId={chainId} marketId={marketId} apiMarket={apiMarket} maxLeverage={maxLeverage} />
+        <MarketLoanParameters
+          chainId={chainId}
+          marketId={marketId}
+          apiMarket={apiMarket}
+          maxLeverage={maxLeverage}
+          maxRoe={maxRoe}
+        />
       </CardContent>
     </Card>
   </Stack>

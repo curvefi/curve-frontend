@@ -1,4 +1,4 @@
-import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
+import { MaxRoe, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketType } from '@evm-ui/types/market'
@@ -17,7 +17,13 @@ import { MarketParametersSection } from './MarketParametersSection'
 const { Spacing, MaxWidth } = SizesAndSpaces
 const METRIC_CATEGORY = 'llamalend.marketAdvancedDetailsSummary'
 
-const MarketInfoSections = ({ maxLeverage }: { maxLeverage?: QueryProp<{ value: Decimal } | { value: number }> }) => {
+const MarketInfoSections = ({
+  maxLeverage,
+  maxRoe,
+}: {
+  maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
+  maxRoe?: QueryProp<MaxRoe>
+}) => {
   const { chainId, blockchainId, marketId, marketType, market, apiMarket, tokens } = useMarketContext()
 
   return (
@@ -44,6 +50,7 @@ const MarketInfoSections = ({ maxLeverage }: { maxLeverage?: QueryProp<{ value: 
         apiMarket={apiMarket}
         tokens={tokens}
         maxLeverage={maxLeverage}
+        maxRoe={maxRoe}
       />
     </Box>
   )
@@ -51,7 +58,7 @@ const MarketInfoSections = ({ maxLeverage }: { maxLeverage?: QueryProp<{ value: 
 
 const NewMarketInfoContent = () => {
   const { chainId, marketId, marketQuery, marketType, apiMarket } = useMarketContext()
-  const { solvency, deployedDays, maxLeverage } = useAdvancedDetailsData({
+  const { solvency, deployedDays, maxLeverage, maxRoe } = useAdvancedDetailsData({
     chainId,
     marketQuery,
     marketId,
@@ -80,7 +87,7 @@ const NewMarketInfoContent = () => {
           valueOptions={{ abbreviate: false, decimals: 0, unit: { symbol: t`Days`, position: 'suffix' } }}
         />
       </MetricsGrid>
-      <MarketInfoSections maxLeverage={maxLeverage} />
+      <MarketInfoSections maxLeverage={maxLeverage} maxRoe={maxRoe} />
     </>
   )
 }

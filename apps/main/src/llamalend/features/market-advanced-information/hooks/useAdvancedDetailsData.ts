@@ -3,6 +3,7 @@ import {
   calculateLendMarketTvlUsd,
   calculateMintMarketTvlUsd,
   getControllerAddress,
+  getRoE,
   getTokens,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
@@ -10,6 +11,7 @@ import {
   useMarketCapAndAvailable,
   useMarketMaxLeverage,
   useMarketOverview,
+  useMarketSnapshots,
   useMarketTotalCollateral,
 } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
@@ -21,6 +23,13 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
+
+const maxRoe = (leverage: number | null, collateralApy: number | null, borrowApy: number | null) => ({
+  value: getRoE(leverage, collateralApy, borrowApy),
+  leverage,
+  collateralApy,
+  borrowApy,
+})
 
 export const useAdvancedDetailsData = ({
   chainId,
@@ -42,6 +51,7 @@ export const useAdvancedDetailsData = ({
   const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
 
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: market?.minBands ?? 0 })
+  const snapshots = useMarketSnapshots({ blockchainId, controllerAddress, marketType })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
   const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
@@ -108,6 +118,16 @@ export const useAdvancedDetailsData = ({
     maxLeverage: fallbackQ(
       mapQuery(maxLeverage, value => ({ value })),
       mapQuery(apiMarket, ({ leverage }) => maybe(leverage, value => ({ value }))),
+    ),
+    maxRoe: fallbackQ(
+      combineQueries([maxLeverage, snapshots], (leverage, snapshots) =>
+        maybe(snapshots.at(-1), ({ borrowApy, collateralToken }) =>
+          maxRoe(+leverage, collateralToken.rebasingYield, borrowApy),
+        ),
+      ),
+      mapQuery(apiMarket, ({ leverage, assets, rates }) =>
+        maxRoe(leverage, assets.collateral.rebasingYield, rates.borrowApy),
+      ),
     ),
     availableLiquidity: fallbackQ(
       mapQuery(capAndAvailable, ({ available, totalAssets, borrowCap }) => ({

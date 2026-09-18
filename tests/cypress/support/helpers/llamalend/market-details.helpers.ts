@@ -156,6 +156,7 @@ export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
   }
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: false })
+  if (hasApi) getActionValue('market-param-max-roe').should('match', DECIMAL_REGEX)
 }
 
 export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
