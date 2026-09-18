@@ -38,20 +38,16 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
   return fromEntries(
     notFalsy(
       // Native token
-      [
+      decimals[nativeToken.address] && [
         nativeAddress,
-        {
-          symbol: nativeToken.symbol,
-          decimals: decimals[nativeToken.address] ?? DEFAULT_DECIMALS,
-          volume: tokenVolumes[nativeAddress],
-        },
+        { symbol: nativeToken.symbol, decimals: decimals[nativeToken.address], volume: tokenVolumes[nativeAddress] },
       ],
       // Native wrapped token
-      [
+      decimals[nativeToken.wrappedAddress] && [
         nativeWrappedAddress,
         {
           symbol: nativeToken.wrappedSymbol,
-          decimals: decimals[nativeToken.wrappedAddress] ?? DEFAULT_DECIMALS,
+          decimals: decimals[nativeToken.wrappedAddress],
           volume: tokenVolumes[nativeWrappedAddress],
         },
       ],
