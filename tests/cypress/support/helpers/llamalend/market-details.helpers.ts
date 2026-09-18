@@ -146,6 +146,7 @@ const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: Mark
 export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
   shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
   shouldLoadRateBreakdown('borrow', hasApi)
+  clickTab('historical-rate-tab', MarketRateType.Supply)
   shouldLoadRateBreakdown('supply', hasApi)
   getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
   if (hasApi) {
@@ -180,7 +181,6 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
   })
   cy.get(`[data-testid="no-position-${hasWallet ? 'supply' : 'disconnected'}"]`, LOAD_TIMEOUT).should('be.visible')
   cy.get(`[data-testid="no-position-${hasWallet ? 'disconnected' : 'supply'}"]`).should('not.exist')
-  shouldLoadRateBreakdown('borrow', hasApi)
   shouldLoadRateBreakdown('supply', hasApi)
   getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
   if (hasApi) {
@@ -191,6 +191,8 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
   } else {
     getActionInfo('market-net-supply-apy').should('not.exist')
   }
+  clickTab('historical-rate-tab', MarketRateType.Borrow)
+  shouldLoadRateBreakdown('borrow', hasApi)
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: hasWallet })
   shouldLoadMarketDetails()
