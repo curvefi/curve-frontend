@@ -49,15 +49,6 @@ export type Pool = PoolTemplate
 export type ClaimableReward = { token: string; symbol: string; amount: string; price: number }
 export type RewardBase = { day: string; week: string }
 export type RewardCrv = number
-export type RewardOther = {
-  apy: number
-  decimals?: number
-  gaugeAddress: string
-  name?: string
-  symbol: string
-  tokenAddress: string
-  tokenPrice?: number
-}
 export type PoolData = {
   idx?: number
   pool: Pool
