@@ -61,7 +61,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       // The v2 pool list uses backend TVL data.
       ...notFalsy(isLegacy && refetchPoolTvls({ chainId })),
     ])
-    await state.pools.fetchPools(curveApi, poolIds)
+    state.pools.fetchPools(curveApi, poolIds)
 
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },

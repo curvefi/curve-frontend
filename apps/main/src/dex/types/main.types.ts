@@ -20,7 +20,6 @@ export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlP
 
 export type NetworkConfig = {
   isCrvRewardsEnabled: boolean
-  poolIsWrappedOnly: Record<string, boolean>
   poolFilters: string[]
   swap: Record<string, string>
   swapCustomRouteRedirect: Record<string, string>
