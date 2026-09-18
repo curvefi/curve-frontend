@@ -220,15 +220,7 @@ export const prefetchTokenBalances = async (
   const results = await multicall(config, { chainId, contracts: tokenContracts.flat() })
   const updatedAt = Date.now()
 
-  /**
-   * Each token uses 2 contracts (balanceOf + decimals), so chunk results by 2
-   * Failures are fine — allowFailure defaults to true, so failed calls are seeded as
-   * { status: 'failure' } entries. Downstream consumers (useTokenBalance, fetchTokenBalance)
-   * already handle per-token failures gracefully.
-   *
-   * Only seed new entries for non-zero balances to limit persistence work,
-   * except if they were previously populated and should now be set to zero.
-   */
+  // Only seed new entries for non-zero balances to limit persistence work, except if they were previously populated and should now be set to zero.
   zip(tokenContracts, chunk(results, 2))
     .map(([contracts, tokenResults]) => [readContractsQueryOptions(config, { contracts }), tokenResults] as const)
     .filter(
