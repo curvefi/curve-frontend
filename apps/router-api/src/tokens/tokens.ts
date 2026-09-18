@@ -1,6 +1,6 @@
 import type { FastifyRequest } from 'fastify'
 import { type Address, getAddress, zeroAddress, isAddressEqual } from 'viem'
-import { DEFAULT_DECIMALS, fromEntries, notFalsy } from '@primitives/objects.utils'
+import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { loadCurve } from '../curve-router/curvejs'
 import type { TokensQuery } from './tokens.schemas'
 
@@ -77,14 +77,10 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
         const address = getAddress(pool.lpToken)
         return (
           !isAddressEqual(address, zeroAddress) &&
+          decimals[pool.lpToken] &&
           ([
             address,
-            {
-              symbol: pool.symbol,
-              decimals: decimals[pool.lpToken] ?? DEFAULT_DECIMALS,
-              lp: true,
-              volume: tokenVolumes[address],
-            },
+            { symbol: pool.symbol, decimals: decimals[pool.lpToken], lp: true, volume: tokenVolumes[address] },
           ] as const)
         )
       }),
