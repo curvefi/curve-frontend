@@ -15,7 +15,6 @@ type SliceState = {
     string,
     { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
   >
-  error: string
 }
 
 const SLICE_KEY = 'pools'
@@ -38,7 +37,7 @@ export type PoolsSlice = {
   }
 }
 
-const DEFAULT_STATE: SliceState = { poolsMapper: {}, stakedMapper: {}, error: '' } as const
+const DEFAULT_STATE: SliceState = { poolsMapper: {}, stakedMapper: {} } as const
 
 const getPoolData = (p: Pool, network: NetworkConfig) => {
   const isWrappedOnly = network.poolIsWrappedOnly[p.id]
@@ -85,12 +84,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const networks = await fetchNetworks()
 
       try {
-        set(
-          produce((state: State) => {
-            state.pools.error = ''
-          }),
-        )
-
         const { poolsMapper } = poolIds.reduce(
           (prev, poolId): { poolsMapper: Record<string, PoolData> } => {
             prev.poolsMapper[poolId] = getPoolData(getPool(poolId), networks[chainId])
@@ -109,12 +102,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         return { poolsMapper, poolDatas }
       } catch (error) {
         console.error(error)
-
-        set(
-          produce((state: State) => {
-            state.pools.error = 'Unable to load pool list, please refresh or try again later.'
-          }),
-        )
       }
     },
     fetchNewPool: async (curve, poolId) => {
