@@ -14,7 +14,7 @@ import {
   TEST_NETWORK,
 } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { fromEntries } from '@primitives/objects.utils'
@@ -104,8 +104,9 @@ export const checkDepositBalances = ({ coins, lp }: PoolState) => {
 }
 
 export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
+  getActionValue('pool-deposit-expected-lp').should(value => expect(+value!).to.be.greaterThan(0))
   depositSubmit().click(LOAD_TIMEOUT)
-  cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).should('contain.text', 'Deposit confirmed')
+  cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('contain.text', 'Deposit confirmed')
   coins.forEach(({ address }) => {
     poolInput(address).find('input').should('have.value', '')
   })

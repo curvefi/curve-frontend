@@ -1,5 +1,9 @@
 import { useCallback } from 'react'
-import type { WithdrawMutation, WithdrawMutationOptions } from '@/stellar/features/withdraw/types'
+import type {
+  WithdrawMutation,
+  WithdrawMutationContext,
+  WithdrawMutationOptions,
+} from '@/stellar/features/withdraw/types'
 import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { rootKeys } from '@/stellar/queries/root-keys'
 import { withdrawValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
@@ -13,18 +17,18 @@ import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
-export const useWithdrawMutation = ({ onReset, tokens, ...params }: WithdrawMutationOptions) => {
-  const { mutate, error, isPending } = useStellarMutation<WithdrawMutation>({
+export const useWithdrawMutation = ({ onReset, tokens, quote, ...params }: WithdrawMutationOptions) => {
+  const { mutate, error, isPending } = useStellarMutation<WithdrawMutation, WithdrawMutationContext>({
     mutationKey: [...rootKeys.userPool(params), 'withdraw'],
-    createTransaction: (values, { account }) =>
-      fetchWithdrawSimulation({ ...values, ...params, account }, { staleTime: 0 }),
-    validationParams: params,
+    buildContext: (_, baseContext) => ({ ...baseContext, ...params, quote }) as WithdrawMutationContext,
+    createTransaction: (values, context) => fetchWithdrawSimulation({ ...values, ...context }, { staleTime: 0 }),
+    validationParams: { ...params, quote },
     validationSuite: withdrawValidationSuite,
     pendingMessage: () => t`Preparing withdrawal`,
     successMessage: () => t`Withdrawal confirmed`,
     onReset,
-    onSuccess: async (_, values, { account }) => {
-      const submitted = { ...values, ...params, account }
+    onSuccess: async (_, values, context) => {
+      const submitted = { ...values, ...context }
       await Promise.allSettled([
         invalidatePoolLiquidity({ ...submitted, tokens }),
         invalidateExpectedLp({ ...submitted, isDeposit: false }),

@@ -37,7 +37,6 @@ const formOptions = {
     supply: undefined,
     seedLock: undefined,
     maximumBurn: undefined,
-    quote: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -113,7 +112,6 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     supply: supply.data,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
-    quote: quote.data,
     maximumBurn: maximum.data,
   })
 
@@ -125,6 +123,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     ...poolParams,
     account,
     tokens: tokens.data ?? [],
+    quote: quote.data,
     onReset: () => reset(userDefaultValues),
   })
 

@@ -29,7 +29,17 @@ export const {
   fetchQuery: fetchSwapQuote,
   getQueryOptions: getSwapQuoteQueryOptions,
 } = queryFactory({
-  queryKey: ({ network, pool, fromIndex, toIndex, inputAmount, decimals, editedSide, maxOutput }: SwapQuoteParams) =>
+  queryKey: ({
+    network,
+    pool,
+    fromIndex,
+    toIndex,
+    inputAmount,
+    outputAmount,
+    decimals,
+    editedSide,
+    maxOutput,
+  }: SwapQuoteParams) =>
     [
       ...rootKeys.pool({ network, pool }),
       'swap-quote',
@@ -39,6 +49,7 @@ export const {
       { decimals },
       // use only the key fields relevant to the side being quoted
       { inputAmount: editedSide === 'pay' ? inputAmount : undefined },
+      { outputAmount: editedSide === 'receive' ? outputAmount : undefined },
       { maxOutput: editedSide === 'receive' ? maxOutput : undefined },
     ] as const,
   queryFn: async ({

@@ -27,7 +27,7 @@ import {
   type WithdrawState,
   writeWithdrawLp,
 } from '@cy/support/helpers/stellar/withdraw.helpers'
-import { LOAD_TIMEOUT, skipTestsAfterFailure, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { decimalSum, fromWei } from '@ui/lib/decimal'
@@ -48,7 +48,7 @@ describe('Stellar testnet withdraw', () => {
         testnetConfig = config
         return connectTestWallet(config)
       })
-      .then(TRANSACTION_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
+      .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
   })
 
@@ -174,11 +174,13 @@ describe('Stellar testnet withdraw', () => {
       it(`withdraws ${label} and refreshes balances and supply`, () => {
         mountWithdraw()
         writeWithdrawLp(WITHDRAW_LP_AMOUNT)
-        if (singleCoin) {
-          state.coins.forEach(({ address }, index) =>
-            writePoolAmount(address, index === 0 ? SINGLE_COIN_OUTPUT_AMOUNT : '0'),
-          )
-        }
+        readPoolAmounts(state.coins).then(() => {
+          if (singleCoin) {
+            state.coins.forEach(({ address }, index) =>
+              writePoolAmount(address, index === 0 ? SINGLE_COIN_OUTPUT_AMOUNT : '0'),
+            )
+          }
+        })
         withdrawSubmit().should('be.enabled')
         readPoolAmounts(state.coins).then(amounts =>
           cy

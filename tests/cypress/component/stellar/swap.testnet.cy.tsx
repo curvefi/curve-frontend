@@ -18,6 +18,7 @@ import {
   checkSwapDetails,
   checkSwapResult,
   readSwapAmounts,
+  readSwapMinimum,
   selectSwapToken,
   submitSwapForm,
   swapInput,
@@ -25,7 +26,7 @@ import {
   swapSubmit,
   writeSwapAmount,
 } from '@cy/support/helpers/stellar/swap.helpers'
-import { LOAD_TIMEOUT, skipTestsAfterFailure, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { SWAP_FIELDS } from '@ui/features/pool-forms/swap/swap-form.utils'
 
@@ -44,9 +45,9 @@ describe('Stellar testnet swap', () => {
         testnetConfig = config
         return connectTestWallet(config)
       })
-      .then(TRANSACTION_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
+      .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
-      .then(TRANSACTION_LOAD_TIMEOUT, () => seedTestPool(pool, testnetConfig))
+      .then(API_LOAD_TIMEOUT, () => seedTestPool(pool, testnetConfig))
   })
 
   beforeEach(() => {
@@ -115,22 +116,23 @@ describe('Stellar testnet swap', () => {
         expect(amounts[SWAP_FIELDS[side].amountField]).to.equal(SWAP_AMOUNT)
         expect(+amounts.inputAmount).to.be.greaterThan(0)
         expect(+amounts.outputAmount).to.be.greaterThan(0)
-        if (side === 'pay') checkSwapDetails(amounts, state.coins[fromIndex], state.coins[toIndex])
-        checkEstimatedTxCost()
-        checkPoolSlippage()
-        checkPoolPriceImpact()
-        submitSwapForm()
-        cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(fresh => {
-          // get_dx is approximate, so a receive-side swap can return more than requested.
-          const expectedResult = {
-            pay: {
-              inputAmount: amounts.inputAmount,
-              minimumOutputAmount: amounts.outputAmount,
-              outputAmount: amounts.outputAmount,
-            },
-            receive: { inputAmount: amounts.inputAmount, minimumOutputAmount: amounts.outputAmount },
-          }[side]
-          checkSwapResult(state, fresh, expectedResult, fromIndex, toIndex)
+        const expectedResult =
+          side === 'pay'
+            ? cy.wrap({
+                inputAmount: amounts.inputAmount,
+                minimumOutputAmount: amounts.outputAmount,
+                outputAmount: amounts.outputAmount,
+              })
+            : readSwapMinimum().then(minimumOutputAmount => ({ inputAmount: amounts.inputAmount, minimumOutputAmount }))
+        expectedResult.then(result => {
+          if (side === 'pay') checkSwapDetails(amounts, state.coins[fromIndex], state.coins[toIndex])
+          checkEstimatedTxCost()
+          checkPoolSlippage()
+          checkPoolPriceImpact()
+          submitSwapForm()
+          cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(fresh => {
+            checkSwapResult(state, fresh, result, fromIndex, toIndex)
+          })
         })
       })
     })

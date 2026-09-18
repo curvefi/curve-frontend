@@ -5,7 +5,7 @@ import { fetchExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { fetchPoolState, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
@@ -61,7 +61,7 @@ export const fetchWithdrawPreview = async (pool: StellarContract, state: Withdra
 
 export const submitWithdrawForm = ({ coins }: PoolState) => {
   withdrawSubmit().should('be.enabled').click()
-  cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).should('contain.text', 'Withdrawal confirmed')
+  cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('contain.text', 'Withdrawal confirmed')
   withdrawLpInput().find('input').should('have.value', '')
   coins.forEach(({ address }) => {
     poolInput(address).find('input').should('have.value', '')

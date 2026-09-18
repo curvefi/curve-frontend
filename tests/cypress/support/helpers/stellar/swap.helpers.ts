@@ -1,6 +1,6 @@
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { DECIMAL_REGEX, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import type { PoolState } from '@cy/support/helpers/stellar/pool.helpers'
-import { cyMap, LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, cyMap, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { range } from '@primitives/objects.utils'
@@ -39,9 +39,13 @@ export const checkSwapBalances = ({ coins }: PoolState, fromIndex: number, toInd
 export const readSwapAmounts = () =>
   cyMap(SWAP_SIDES, side =>
     swapAmountInput(side)
+      .should(input => expect(+input.val()!).to.be.greaterThan(0))
       .invoke('val')
       .then(value => value as Decimal),
   ).then(([inputAmount, outputAmount]) => ({ inputAmount, outputAmount }))
+
+export const readSwapMinimum = () =>
+  getActionValue('pool-swap-minimum-received').then(value => value!.match(DECIMAL_REGEX)![0] as Decimal)
 
 export const checkSwapDetails = (
   { inputAmount, outputAmount }: { inputAmount: Decimal; outputAmount: Decimal },
@@ -65,7 +69,7 @@ export const checkSwapDetails = (
 
 export const submitSwapForm = () => {
   swapSubmit().should('be.enabled').click()
-  cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).should('contain.text', 'Swap confirmed')
+  cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('contain.text', 'Swap confirmed')
   cyMap(SWAP_SIDES, side => swapAmountInput(side).should('have.value', ''))
   swapSubmit().should('be.disabled')
 }
