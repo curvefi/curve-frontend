@@ -175,6 +175,9 @@ export const getMarketType = <T extends MarketTemplate | null | undefined>(
     m => m.type,
   )
 
+export const getMarketEndpoint = (marketType: MarketType) =>
+  (({ [MarketType.Mint]: 'crvusd', [MarketType.Lend]: 'lending' }) as const)[marketType]
+
 export const getTokens = <T extends MarketTemplate | null | undefined>(
   market: T,
   apiMarket?: LlamaMarket,

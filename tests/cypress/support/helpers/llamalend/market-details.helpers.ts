@@ -163,6 +163,9 @@ export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
   cy.get('[data-testid="supply-rate-breakdown"]').should('not.exist')
   if (hasApi) {
     shouldShowCanvas('crvusd-price-chart')
+    cy.get('[data-testid="market-activity"]', LOAD_TIMEOUT).should('be.visible')
+    shouldLoadParticipantCard(MarketRateType.Borrow)
+    cy.get(`[data-testid="market-participants-tab-${MarketRateType.Supply}"]`).should('not.exist')
     // TODO: add back market total collateral metric
   }
   shouldLoadMarketContracts({ hasMonetaryPolicy: hasWallet, hasOracle: hasWallet, hasVault: false })

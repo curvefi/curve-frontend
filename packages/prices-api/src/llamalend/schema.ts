@@ -431,7 +431,7 @@ export const getMarketBorrowersResponse = z
   .object({
     chain,
     controller_address: address,
-    vault_address: address,
+    vault_address: address.optional(),
     total_debt: z.number(),
     total_debt_usd: z.number(),
     total_borrowers: z.number(),
