@@ -47,7 +47,6 @@ const getPoolData = (p: Pool) => {
     pool: p,
 
     // stats
-    hasWrapped: isWrappedOnly(p) || !(p?.isPlain || p?.isFake),
     isWrapped: isWrappedOnly(p),
     tokenAddressesAll,
     tokenAddresses,

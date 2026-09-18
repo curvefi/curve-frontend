@@ -15,7 +15,7 @@ import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/componen
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
-import { isWrappedOnly } from '@/dex/pool.utils'
+import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData } from '@/dex/types/main.types'
 import { TokenList, TokenSelector, type TokenOption } from '@evm-ui/features/select-token'
@@ -478,10 +478,10 @@ export const Swap = ({
           walletBalance={{ balance: q(userToBalance), symbol: toToken?.symbol, usdRate: toUsdRate }}
         />
 
-        {poolData?.hasWrapped && formValues.isWrapped !== null && (
+        {hasWrapped(poolData.pool) && formValues.isWrapped !== null && (
           <div>
             <Checkbox
-              isDisabled={isDisabled || !poolData || isWrappedOnly(poolData.pool)}
+              isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
               isSelected={formValues.isWrapped}
               onChange={isWrapped => {
                 if (poolData) {

@@ -51,7 +51,6 @@ export type RewardCrv = number
 export type PoolData = {
   idx?: number
   pool: Pool
-  hasWrapped: boolean
   isWrapped: boolean
   tokenAddresses: string[]
   tokenAddressesAll: string[]

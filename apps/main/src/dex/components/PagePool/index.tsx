@@ -26,6 +26,7 @@ import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
+import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
@@ -111,7 +112,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
-  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.pool.hasVyperVulnerability() })
+  const poolAlert = usePoolAlert({
+    blockchainId,
+    poolAddress,
+    hasVyperVulnerability: poolData?.pool.hasVyperVulnerability(),
+  })
   const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
 
@@ -133,7 +138,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
     const isSeed = Number(currencyReserves.total) === 0
 
-    if (isSeed && poolData.hasWrapped) setPoolIsWrapped(poolData, true)
+    if (isSeed && hasWrapped(poolData.pool)) setPoolIsWrapped(poolData, true)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
     // eslint-disable-next-line @eslint-react/exhaustive-deps
