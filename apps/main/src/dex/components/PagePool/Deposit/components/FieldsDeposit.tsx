@@ -5,8 +5,8 @@ import { useConnection } from 'wagmi'
 import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
-import { WRAPPED_ONLY_POOL_IDS } from '@/dex/constants'
 import { usePoolContext } from '@/dex/features/pool-context'
+import { isWrappedOnly } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves, type CurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { useStore } from '@/dex/store/useStore'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
@@ -170,7 +170,7 @@ export const FieldsDeposit = ({
       {poolData.hasWrapped && formValues.isWrapped !== null && (
         <FieldsWrapper>
           <Checkbox
-            isDisabled={isDisabled || WRAPPED_ONLY_POOL_IDS.includes(poolId)}
+            isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
             isSelected={formValues.isWrapped}
             onChange={isWrapped => {
               if (poolData) {
