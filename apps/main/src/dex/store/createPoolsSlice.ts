@@ -9,13 +9,7 @@ import { WRAPPED_ONLY_POOL_IDS } from '../constants'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = {
-  poolsMapper: Record<string, PoolDataMapper>
-  stakedMapper: Record<
-    string,
-    { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
-  >
-}
+type SliceState = { poolsMapper: Record<string, PoolDataMapper> }
 
 const SLICE_KEY = 'pools'
 
@@ -36,7 +30,7 @@ export type PoolsSlice = {
   }
 }
 
-const DEFAULT_STATE: SliceState = { poolsMapper: {}, stakedMapper: {} } as const
+const DEFAULT_STATE: SliceState = { poolsMapper: {} } as const
 
 const getPoolData = (p: Pool) => {
   const isWrappedOnly = WRAPPED_ONLY_POOL_IDS.includes(p.id)
