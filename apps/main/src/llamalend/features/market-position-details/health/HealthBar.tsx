@@ -1,4 +1,5 @@
 import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
+import type { Nullish } from '@primitives/objects.utils'
 import { LinearProgress } from '@ui/components/LinearProgress'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -8,12 +9,7 @@ import { clampPercentage } from './utils'
 
 const { Height } = SizesAndSpaces
 
-type HealthBarProps = {
-  health: number | undefined | null
-  small?: boolean
-  softLiquidation: boolean | undefined | null
-  sx?: SxProps
-}
+type HealthBarProps = { health: number | Nullish; small?: boolean; softLiquidation: boolean | Nullish; sx?: SxProps }
 
 type HealthLevel = 'hardLiquidation' | 'liquidationProtection' | 'risky' | 'good' | 'pristine'
 
@@ -28,7 +24,7 @@ const insetLabelText = {
   pristine: t`Pristine`,
 } as const satisfies Record<HealthLevel, string>
 
-const getHealthLevel = (health: number | undefined | null, softLiquidation: boolean): HealthLevel => {
+const getHealthLevel = (health: number | Nullish, softLiquidation: boolean): HealthLevel => {
   if (softLiquidation) return 'liquidationProtection'
   if (health == null || health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION) return 'hardLiquidation'
   if (health <= HEALTH_THRESHOLDS.RISKY) return 'risky'

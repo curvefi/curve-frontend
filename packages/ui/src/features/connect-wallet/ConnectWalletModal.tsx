@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import MenuList from '@mui/material/MenuList'
+import type { Nullish } from '@primitives/objects.utils'
 import { MenuItem } from '@ui/components/MenuItem'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { WalletIcon as DefaultWalletIcon } from '@ui/icons/WalletIcon'
@@ -43,7 +44,7 @@ export const ConnectWalletModal = <T extends WalletConnector>({
   connectingToId,
   WalletIcon,
 }: {
-  error: Error | null | undefined
+  error: Error | Nullish
   showModal: boolean
   closeModal: () => void
   sx?: SxProps

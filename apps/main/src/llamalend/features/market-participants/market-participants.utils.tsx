@@ -6,6 +6,7 @@ import { TokenAmount } from '@evm-ui/shared/ui/TokenAmount'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -36,7 +37,7 @@ export const TokenHeader = ({
   </Stack>
 )
 
-export const Percentage = ({ value }: { value: number | null | undefined }) => (
+export const Percentage = ({ value }: { value: number | Nullish }) => (
   <Typography variant="tableCellMBold">{formatNumber(value, 'percent.value')}</Typography>
 )
 

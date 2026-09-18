@@ -1,12 +1,12 @@
 import type { UrlObject } from 'url'
 import { type ComponentType, createElement, type ReactNode, useCallback, useMemo, useState } from 'react'
-import { assert } from '@primitives/objects.utils'
+import { type Nullish, assert } from '@primitives/objects.utils'
 import type { TabOption } from '../components/Tabs/TabsSwitcher'
 import { useSearchParams } from './router'
 
 export type TabValue = string | number
 
-type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
+type FnOrValue<Props extends object, Result> = ((props: Props) => Result | Nullish) | Result
 
 export type TabItem<Value extends TabValue, Props extends object = Record<string, never>> = {
   /** Unique value of the tab, it might be used in the URL later */
@@ -61,10 +61,8 @@ type TabState<Value extends TabValue, Props extends object> = {
 
 const EMPTY_PARAMS = {}
 
-const applyFnOrValue = <Props extends object, Result>(
-  fnOrValue: FnOrValue<Props, Result> | null | undefined,
-  props: Props,
-) => (typeof fnOrValue === 'function' ? (fnOrValue as (props: Props) => Result)(props) : fnOrValue) ?? undefined
+const applyFnOrValue = <Props extends object, Result>(fnOrValue: FnOrValue<Props, Result> | Nullish, props: Props) =>
+  (typeof fnOrValue === 'function' ? (fnOrValue as (props: Props) => Result)(props) : fnOrValue) ?? undefined
 
 const createOptions = <Value extends TabValue, Props extends object>(
   tabs: readonly TabItem<Value, Props>[] | undefined,

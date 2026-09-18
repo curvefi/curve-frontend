@@ -9,7 +9,7 @@ import {
   type EvmMutationOptions,
 } from '@evm-ui/lib/model/mutation/useEvmMutation'
 import type { Address } from '@primitives/address.utils'
-import { assert } from '@primitives/objects.utils'
+import { type Nullish, assert } from '@primitives/objects.utils'
 import { getControllerAddress, getMarket, getTokens, updateUserEventsApi } from '../llama.utils'
 import type { MarketTemplate } from '../llamalend.types'
 
@@ -44,7 +44,7 @@ export function useMarketMutation<TVariables extends object>({
   ...options
 }: MarketMutationOptions<TVariables> & {
   /** The market id */
-  marketId: string | null | undefined
+  marketId: string | Nullish
   /** The current network config */
   network: { blockchainId: LlamaNetworkId; chainId: LlamaChainId }
   /** Token balances affected by the mutation that should be refetched after success. Defaults to market collateral + borrow tokens. */

@@ -32,7 +32,7 @@ import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q, Query, type QueryProp, type Range } from '@ui/features/queries/util'
 import { decimal, decimalMultiply } from '@ui/lib/decimal'
@@ -263,7 +263,7 @@ function useCampaigns({
 }: {
   blockchainId: Chain | undefined
   controllerAddress: Address | undefined
-  vaultAddress: Address | null | undefined
+  vaultAddress: Address | Nullish
   marketType: MarketType
 }) {
   const { data: controllerCampaigns } = useCampaignsByAddress({ blockchainId, address: controllerAddress })

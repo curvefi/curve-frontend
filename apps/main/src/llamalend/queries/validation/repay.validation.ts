@@ -16,16 +16,14 @@ import {
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
-const validateRepayCollateralField = (
-  field: 'stateCollateral' | 'userCollateral',
-  value: Decimal | null | undefined,
-): void => {
+const validateRepayCollateralField = (field: 'stateCollateral' | 'userCollateral', value: Decimal | Nullish): void => {
   skipWhen(value == null, () => {
     test(field, `Collateral amount must be a non-negative number`, () => {
       enforce(value).isDecimal().gte(0)
@@ -33,7 +31,7 @@ const validateRepayCollateralField = (
   })
 }
 
-const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined): void => {
+const validateRepayBorrowedField = (userBorrowed: Decimal | Nullish): void => {
   skipWhen(userBorrowed == null, () =>
     test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
       enforce(userBorrowed).isDecimal().gte(0)
@@ -42,9 +40,9 @@ const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined): v
 }
 
 const validateRepayHasValue = (
-  stateCollateral: Decimal | null | undefined,
-  userCollateral: Decimal | null | undefined,
-  userBorrowed: Decimal | null | undefined,
+  stateCollateral: Decimal | Nullish,
+  userCollateral: Decimal | Nullish,
+  userBorrowed: Decimal | Nullish,
 ) => {
   test('root', 'Enter an amount to repay', () => {
     enforce(stateCollateral ?? userCollateral ?? userBorrowed)
@@ -54,11 +52,11 @@ const validateRepayHasValue = (
 }
 
 const validateRepayFieldsForMarket = (
-  marketId: MarketTemplate | string | null | undefined,
-  stateCollateral: Decimal | null | undefined,
-  userCollateral: Decimal | null | undefined,
-  userBorrowed: Decimal | null | undefined,
-  routeId: string | null | undefined,
+  marketId: MarketTemplate | string | Nullish,
+  stateCollateral: Decimal | Nullish,
+  userCollateral: Decimal | Nullish,
+  userBorrowed: Decimal | Nullish,
+  routeId: string | Nullish,
   leverageProviders: readonly RouteProvider[] | undefined,
   validateLeverageProviders: boolean,
 ) => {
@@ -86,7 +84,7 @@ const validateRepayFieldsForMarket = (
 }
 
 const repayValidationGroup = (
-  marketId: MarketTemplate | string | null | undefined,
+  marketId: MarketTemplate | string | Nullish,
   {
     stateCollateral,
     userCollateral,

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Nullish } from '@primitives/objects.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -17,7 +18,7 @@ const getLowSolvencyModalCopy = ({
   tokenSymbol,
 }: {
   action: LowSolvencyAction
-  tokenSymbol: string | null | undefined
+  tokenSymbol: string | Nullish
 }) => {
   const token = tokenSymbol ?? t`this asset`
   return {
@@ -53,7 +54,7 @@ export const LowSolvencyActionModal = ({
   onClose: () => void
   onConfirm: () => void
   open: boolean
-  tokenSymbol: string | null | undefined
+  tokenSymbol: string | Nullish
 }) => {
   const [accepted, , unsetAccepted, toggleAccepted] = useSwitch(false)
   const { title, content, checkboxLabel, buttonText } = getLowSolvencyModalCopy({ action, tokenSymbol })

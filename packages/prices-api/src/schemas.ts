@@ -1,6 +1,7 @@
 import { z } from 'zod/v4'
 import type { Address, Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { parseTimestamp, type TimestampResponse } from './timestamp'
 import { chains } from './index'
 
@@ -13,7 +14,7 @@ export const timestamp = z
   .union([z.number(), z.string()])
   .transform(value => parseTimestamp(value as TimestampResponse))
 
-type Primitive = bigint | boolean | null | number | string | symbol | undefined
+type Primitive = bigint | boolean | Nullish | number | string | symbol
 
 /**
  * Converts a snake_case string literal into its camelCase equivalent.

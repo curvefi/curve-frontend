@@ -5,7 +5,7 @@ import curve from '@curvefi/api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { CRVUSD_ADDRESS } from '@evm-ui/utils'
+import { ARC_USDC_ADDRESS, CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { Chain } from '@primitives/network.utils'
 
 export const defaultNetworks = Object.entries({
@@ -242,12 +242,20 @@ const poolRewardsUpgradedChains = [Chain.Taiko, Chain.Etherlink]
 /** Networks that has FXSwap enabled in pool creation */
 const fxSwapUpgradedChains = [Chain.Etherlink]
 
+const liteCreateQuickList: Record<number, NetworkConfig['createQuickList']> = {
+  [Chain.Arc]: [{ address: ARC_USDC_ADDRESS, haveSameTokenName: false, symbol: 'USDC' }],
+}
+const liteSwap: Record<number, NetworkConfig['swap']> = {
+  [Chain.Arc]: { fromAddress: ethAddress, toAddress: ARC_USDC_ADDRESS },
+}
+
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
   const liteNetworks = Object.values(resp).reduce((prev, { id: blockchainId, chainId, ...config }) => {
     const isUpgraded = !isLiteChain(chainId) // Upgraded means this is a lite network but is not classified as such any longer
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
     const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)
+
     prev[chainId] = {
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
@@ -274,6 +282,8 @@ export async function getNetworks() {
       tricryptoFactory: true,
       fxswapFactory: isLiteFxswapEnabled,
       isCrvRewardsEnabled: isUpgraded,
+      createQuickList: liteCreateQuickList?.[chainId],
+      swap: liteSwap?.[chainId],
       ...(isOnlyPoolRewardsUpgraded && { isCrvRewardsEnabled: true }),
     }
     return prev

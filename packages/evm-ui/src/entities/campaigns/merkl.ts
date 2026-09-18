@@ -2,6 +2,7 @@ import { capitalize, groupBy } from 'lodash'
 import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { IS_CYPRESS } from '@ui/lib/env'
 import type { RewardsAction } from '@external-rewards'
 import type { CampaignRewards } from './types'
@@ -94,7 +95,7 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity) => {
  *
  * API is also available in the browser for testing and experimenting at https://api.merkl.xyz/docs
  */
-export const fetchMerklRewards = async (params: Record<string, string | number | boolean | null | undefined>) => {
+export const fetchMerklRewards = async (params: Record<string, string | number | boolean | Nullish>) => {
   const fetchPage = async (page: number, items: number) => {
     const url = `/api/merkl/v1/opportunities${addQueryString({ ...params, items, page })}`
     const resp = await fetch(url, { method: 'GET' })

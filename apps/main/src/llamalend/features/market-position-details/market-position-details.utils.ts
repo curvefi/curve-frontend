@@ -1,5 +1,6 @@
 import type { Theme } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 
 /** Health percentage thresholds used for color coding and label display */
 export const HEALTH_THRESHOLDS = {
@@ -21,7 +22,7 @@ export const getHealthValueColor = ({
   health,
   prevHealth,
 }: {
-  health: Decimal | null | undefined
+  health: Decimal | Nullish
   prevHealth?: Decimal | null
   isFullRepay?: boolean
   theme: Theme
@@ -39,7 +40,7 @@ export const getHealthTrackColor = ({
   },
   isFullRepay,
 }: {
-  health: number | undefined | null
+  health: number | Nullish
   softLiquidation?: boolean | null
   isFullRepay?: boolean
   theme: Theme

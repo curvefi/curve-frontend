@@ -310,7 +310,9 @@ export type V2PoolSortField = z.infer<typeof v2PoolSortField>
 export type SortDirection = z.infer<typeof sortDirection>
 
 const v2PoolChain = z.object({ chain_id: z.number(), name: z.string() }).transform(camelizeKeys)
-const litePoolChain = z.object({ chain_id: z.number(), name: z.string() }).transform(camelizeKeys)
+const litePoolChain = z
+  .object({ chain_id: z.union([z.number(), z.string()]), name: z.string() })
+  .transform(camelizeKeys)
 
 const litePoolCoin = z
   .object({

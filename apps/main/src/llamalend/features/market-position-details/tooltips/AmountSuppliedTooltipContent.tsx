@@ -1,7 +1,7 @@
 import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import type { QueryProp } from '@ui/features/queries/util'
 import { decimalDiv, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
@@ -9,16 +9,12 @@ import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 import type { SupplyAsset } from '../SupplyPositionDetails'
 
-const formatAmount = (
-  percentage: Decimal | null | undefined,
-  depositedAmount: Decimal | null | undefined,
-  symbol: string | null | undefined,
-) =>
+const formatAmount = (percentage: Decimal | Nullish, depositedAmount: Decimal | Nullish, symbol: string | Nullish) =>
   maybes([percentage, depositedAmount, symbol], (percentage, depositedAmount, symbol) =>
     formatToken(decimalMultiply(percentage, depositedAmount), symbol),
   )
 
-const formatPercentageDisplay = (percentage: Decimal | null | undefined) =>
+const formatPercentageDisplay = (percentage: Decimal | Nullish) =>
   maybe(percentage, p => formatNumber(decimalMultiply(p, '100'), 'percent.rate')) ?? UNAVAILABLE_NOTATION
 
 export const AmountSuppliedTooltipContent = ({

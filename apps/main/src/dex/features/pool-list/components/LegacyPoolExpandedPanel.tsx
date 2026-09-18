@@ -8,6 +8,7 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { isSortedBy } from '@ui/features/tables/data-table.utils'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -23,7 +24,7 @@ const ListInfoItem = ({
   value,
   children,
   ...props
-}: Omit<MetricProps, 'value' | 'category'> & { value: number | string | undefined | null; children?: ReactNode }) => (
+}: Omit<MetricProps, 'value' | 'category'> & { value: number | string | Nullish; children?: ReactNode }) => (
   <Grid size={6}>
     <Metric category="dex.legacyPoolListMobileExpanded" value={decimal(value)} {...props} />
     {children}

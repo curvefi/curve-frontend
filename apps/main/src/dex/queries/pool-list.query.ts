@@ -97,7 +97,7 @@ export const { useQuery: usePoolChains, queryKey: getPoolChainsQueryKey } = quer
 })
 
 export const { useQuery: useLitePoolChains, queryKey: getLitePoolChainsQueryKey } = queryFactory({
-  queryKey: () => ['listLitePoolChains'] as const,
+  queryKey: () => ['listLitePoolChains', 'v2'] as const,
   queryFn: () => listLitePoolChains(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.network',

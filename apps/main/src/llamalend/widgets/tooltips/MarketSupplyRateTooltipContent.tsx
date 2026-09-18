@@ -2,6 +2,7 @@ import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { formatCappedRatePercent, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
+import type { Nullish } from '@primitives/objects.utils'
 import {
   TooltipDescription,
   TooltipFooter,
@@ -16,21 +17,21 @@ import { RewardsTooltipItems } from './RewardTooltipItems'
 type SupplyBoostType = 'market' | 'user'
 type SupplyBoost = {
   type: SupplyBoostType
-  apy: number | null | undefined
-  totalApy: number | null | undefined
-  totalAverageApy: number | null | undefined
+  apy: number | Nullish
+  totalApy: number | Nullish
+  totalAverageApy: number | Nullish
 }
 type MarketSupplyRateTooltipContentProps = {
-  supplyApy: number | null | undefined
-  averageSupplyApy: number | null | undefined
+  supplyApy: number | Nullish
+  averageSupplyApy: number | Nullish
   periodLabel: string
   extraRewards: CampaignRewards[]
   extraIncentives: ExtraIncentive[]
-  totalApy: number | null | undefined
-  totalAverageApy: number | null | undefined
+  totalApy: number | Nullish
+  totalAverageApy: number | Nullish
   boost: SupplyBoost
-  rebasingYieldApy: number | null | undefined
-  rebasingSymbol?: string | null | undefined
+  rebasingYieldApy: number | Nullish
+  rebasingSymbol?: string | Nullish
   isLoading: boolean
 }
 

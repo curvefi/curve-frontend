@@ -1,5 +1,5 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, range } from '@primitives/objects.utils'
+import { type Nullish, maybe, range } from '@primitives/objects.utils'
 
 export type PoolAmountField = `amount_${number}`
 export type PoolMaxAmountField = `maxAmount_${number}`
@@ -16,7 +16,7 @@ export type PoolForm = PoolTokenFields & { isBalanced: boolean; decimals: (numbe
 export const poolAmountField = (index: number): PoolAmountField => `amount_${index}`
 export const poolMaxAmountField = (index: number): PoolMaxAmountField => `maxAmount_${index}`
 export const poolTokenFields = (index: number) => [poolAmountField(index), poolMaxAmountField(index)] as const
-export const allTokenFields = <T extends number | null | undefined>(count: T) =>
+export const allTokenFields = <T extends number | Nullish>(count: T) =>
   maybe(count, c => range(c).flatMap(index => poolTokenFields(index)))
 
 /** Keep contract amounts in pool token order, regardless of form field insertion order. */

@@ -4,6 +4,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MarketType } from '@evm-ui/types/market'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { FieldValues, UseFormHandleSubmit } from '@ui/features/forms'
 import { q } from '@ui/features/queries/util'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -16,10 +17,10 @@ type Props<T extends FieldValues, ChainId extends IChainId> = {
   handleFormSubmit: UseFormHandleSubmit<T>
 }
 
-const isLowSolvencyActionBlocked = (solvencyPercent: number | null | undefined) =>
+const isLowSolvencyActionBlocked = (solvencyPercent: number | Nullish) =>
   solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.low
 
-const requiresLowSolvencyModalConfirmation = (solvencyPercent: number | null | undefined) =>
+const requiresLowSolvencyModalConfirmation = (solvencyPercent: number | Nullish) =>
   solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.solvent
 
 export const useFormLowSolvency = <T extends FieldValues, ChainId extends IChainId>({

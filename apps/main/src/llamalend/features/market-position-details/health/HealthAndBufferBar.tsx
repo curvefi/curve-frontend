@@ -6,7 +6,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { Accordion } from '@ui/components/Accordion'
 import { Badge } from '@ui/components/Badge'
 import { ErrorIconButton } from '@ui/components/ErrorIconButton'
@@ -44,9 +44,9 @@ const SEGMENT_CONFIG: Record<
   {
     size: 'lg' | 'sm'
     tooltip: typeof HEALTH_TOOLTIP | typeof LIQUIDATION_BUFFER_TOOLTIP
-    getValue: (data: QueryData<typeof useUserHealthValues>) => Decimal | null | undefined
-    getColor: (value: Decimal | null | undefined) => (theme: Theme) => string | undefined
-    getPercentage: (value: Decimal | null | undefined) => number
+    getValue: (data: QueryData<typeof useUserHealthValues>) => Decimal | Nullish
+    getColor: (value: Decimal | Nullish) => (theme: Theme) => string | undefined
+    getPercentage: (value: Decimal | Nullish) => number
   }
 > = {
   liquidationBuffer: {

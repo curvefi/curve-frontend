@@ -20,6 +20,7 @@ import { llamaApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-valid
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import { marketIdValidationGroup } from '@evm-ui/lib/model/query/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { MakeOptional } from '@ui/features/queries/util'
 import { enforce } from '@ui/lib/validation/enforce-extension'
@@ -57,11 +58,11 @@ const validateBorrowMoreFieldsForMarket = ({
   debt,
   userBorrowed,
 }: {
-  marketId: string | null | undefined
-  leverageEnabled: boolean | null | undefined
-  routeId: string | null | undefined
-  debt: Decimal | null | undefined
-  userBorrowed: Decimal | null | undefined
+  marketId: string | Nullish
+  leverageEnabled: boolean | Nullish
+  routeId: string | Nullish
+  debt: Decimal | Nullish
+  userBorrowed: Decimal | Nullish
 }) => {
   const market = tryGetMarket(marketId)
   skipWhen(!market, () => {

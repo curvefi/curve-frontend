@@ -1,5 +1,6 @@
 import { MAINNET_CRV } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 
@@ -7,8 +8,8 @@ export const CrvRateTooltipContent = ({
   maximumRate,
   unboostedRate,
 }: {
-  maximumRate: number | null | undefined
-  unboostedRate: number | null | undefined
+  maximumRate: number | Nullish
+  unboostedRate: number | Nullish
 }) => (
   <TooltipWrapper>
     <TooltipDescription text={t`CRV gauge reward APR ranges from the unboosted rate to the maximum boosted rate.`} />

@@ -3,13 +3,13 @@ import { LARGE_RATE } from '@/dex/constants'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber, type NumberFormatCategory } from '@primitives/number.utils'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 
 const MAX_CRV_BOOST = '2.5x'
 const MAX_POINTS_CAMPAIGNS = 4
-type MissingAmount = null | undefined | ''
+type MissingAmount = Nullish | ''
 
 /**
  * Formats a V2 pool-list value like `formatNumber`, but uses the configured fallback for zero.
@@ -18,7 +18,7 @@ type MissingAmount = null | undefined | ''
 export const formatCellValue = (value: Amount | MissingAmount, category: NumberFormatCategory) =>
   formatNumber(value != null && value !== '' && Number(value) === 0 ? null : value, category)
 
-export const isVolatileRate = (rate: number | null | undefined) => rate != null && rate > LARGE_RATE
+export const isVolatileRate = (rate: number | Nullish) => rate != null && rate > LARGE_RATE
 
 export const getBaseApr = (pool: PoolRow, period: 'daily' | 'weekly') =>
   period === 'daily' ? pool.baseDailyApr : pool.baseWeeklyApr

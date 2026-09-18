@@ -4,20 +4,17 @@ import { getMarket, hasLeverage, hasLeverageValue, tryGetMarket } from '@/llamal
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { assertRouteProvider, getRouteQueryData, isZapV2RouterCalldataTooLarge } from '@evm-ui/entities/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 
-export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
+export const validateUserBorrowed = (userBorrowed: Decimal | Nullish) => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
     enforce(userBorrowed).isDecimal().gte(0)
   })
 }
 
-export const validateUserCollateral = (
-  userCollateral: Decimal | undefined | null,
-  { required }: { required: boolean },
-) => {
+export const validateUserCollateral = (userCollateral: Decimal | Nullish, { required }: { required: boolean }) => {
   skipWhen(!required, () => {
     test('userCollateral', 'Collateral amount is required', () => {
       enforce(userCollateral).isNotEmpty()
@@ -30,7 +27,7 @@ export const validateUserCollateral = (
   })
 }
 
-export const validateDebt = (debt: Decimal | undefined | null, { required = true }: { required?: boolean } = {}) => {
+export const validateDebt = (debt: Decimal | Nullish, { required = true }: { required?: boolean } = {}) => {
   skipWhen(!required, () => {
     test('debt', 'Debt is required', () => {
       enforce(debt).isNotEmpty()
@@ -43,15 +40,15 @@ export const validateDebt = (debt: Decimal | undefined | null, { required = true
   })
 }
 
-export const validateRange = (range: number | null | undefined, { MaxLtv, Safe } = PRESET_RANGES) => {
+export const validateRange = (range: number | Nullish, { MaxLtv, Safe } = PRESET_RANGES) => {
   test('range', `Range must be number between ${MaxLtv} and ${Safe}`, () => {
     enforce(range).isNumeric().gte(MaxLtv).lte(Safe)
   })
 }
 
 export const validateMaxDebt = (
-  debt: Decimal | undefined | null,
-  maxDebt: Decimal | undefined | null,
+  debt: Decimal | Nullish,
+  maxDebt: Decimal | Nullish,
   { required }: { required: boolean },
 ) => {
   skipWhen(!required, () => {
@@ -66,10 +63,7 @@ export const validateMaxDebt = (
   })
 }
 
-export const validateLeverageEnabled = (
-  leverageEnabled: boolean | undefined | null,
-  { required }: { required: boolean },
-) => {
+export const validateLeverageEnabled = (leverageEnabled: boolean | Nullish, { required }: { required: boolean }) => {
   skipWhen(!required, () => {
     test('leverageEnabled', 'Leverage must be enabled', () => {
       enforce(leverageEnabled).equals(true)
@@ -78,7 +72,7 @@ export const validateLeverageEnabled = (
 }
 
 export const validateLeverageSupported = (
-  marketId: MarketTemplate | string | null | undefined,
+  marketId: MarketTemplate | string | Nullish,
   { required }: { required: boolean },
 ) => {
   const market = tryGetMarket(marketId)
@@ -90,10 +84,7 @@ export const validateLeverageSupported = (
   })
 }
 
-export const validateLeverageValuesSupported = (
-  marketId: MarketTemplate | string | null | undefined,
-  required = true,
-) => {
+export const validateLeverageValuesSupported = (marketId: MarketTemplate | string | Nullish, required = true) => {
   const market = tryGetMarket(marketId)
   skipWhen(!market || !required, () => {
     test('marketId', 'Market does not support leverage values', () => {
@@ -102,7 +93,7 @@ export const validateLeverageValuesSupported = (
   })
 }
 
-export const validateRoute = (routeId: string | null | undefined, isRequired: boolean) => {
+export const validateRoute = (routeId: string | Nullish, isRequired: boolean) => {
   skipWhen(!isRequired && !routeId, () => {
     test('routeId', 'Route is required', () => {
       enforce(routeId).isTruthy()
@@ -110,7 +101,7 @@ export const validateRoute = (routeId: string | null | undefined, isRequired: bo
   })
 }
 
-export const validateRouteCalldata = (routeId: string | null | undefined) => {
+export const validateRouteCalldata = (routeId: string | Nullish) => {
   skipWhen(!routeId, () => {
     test(
       'routeId',
@@ -124,7 +115,7 @@ export const validateRouteCalldata = (routeId: string | null | undefined) => {
 }
 
 export const validateRouteProvider = (
-  routeId: string | null | undefined,
+  routeId: string | Nullish,
   providers: readonly RouteProvider[] | undefined,
   isRequired: boolean,
 ) => {
@@ -136,8 +127,8 @@ export const validateRouteProvider = (
 }
 
 export const validateMaxBorrowed = (
-  userBorrowed: Decimal | undefined | null,
-  { maxBorrowed, label, required }: { label: string; maxBorrowed: Decimal | undefined | null; required: boolean },
+  userBorrowed: Decimal | Nullish,
+  { maxBorrowed, label, required }: { label: string; maxBorrowed: Decimal | Nullish; required: boolean },
 ) => {
   skipWhen(!required || !userBorrowed, () => {
     test('maxBorrowed', 'Maximum borrow must be calculated before it can be validated', () => {
@@ -152,8 +143,8 @@ export const validateMaxBorrowed = (
 }
 
 export const validateMaxCollateral = (
-  userCollateral: Decimal | undefined | null,
-  maxCollateral: Decimal | undefined | null,
+  userCollateral: Decimal | Nullish,
+  maxCollateral: Decimal | Nullish,
   { required }: { required: boolean },
 ) => {
   skipWhen(!required || !userCollateral, () => {
@@ -169,8 +160,8 @@ export const validateMaxCollateral = (
 }
 
 export const validateMaxStateCollateral = (
-  stateCollateral: Decimal | null | undefined,
-  maxStateCollateral: Decimal | null | undefined,
+  stateCollateral: Decimal | Nullish,
+  maxStateCollateral: Decimal | Nullish,
   { required }: { required: boolean },
 ) => {
   skipWhen(!required || !stateCollateral, () => {
@@ -185,7 +176,7 @@ export const validateMaxStateCollateral = (
   })
 }
 
-export const validateIsFull = (value: boolean | undefined | null) => {
+export const validateIsFull = (value: boolean | Nullish) => {
   test('isFull', `isFull must be calculated`, () => {
     enforce(value).isBoolean()
   })

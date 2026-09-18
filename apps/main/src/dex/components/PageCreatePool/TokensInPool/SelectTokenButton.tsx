@@ -66,10 +66,15 @@ export const SelectTokenButton = ({
   const [filterValue, setFilterValue] = useState('')
   const [filterBasepools, setFilterBasepools] = useState(false)
 
-  const favorites = [
-    { address: nativeToken?.address ?? '', symbol: nativeToken?.symbol ?? '' },
+  const favorites = notFalsy(
+    nativeToken &&
+      nativeToken.wrappedAddress !== zeroAddress && {
+        address: nativeToken.wrappedAddress ?? '',
+        symbol: nativeToken.wrappedSymbol ?? '',
+        haveSameTokenName: false,
+      },
     ...network.createQuickList,
-  ].map(({ address, symbol }) => ({ chain: blockchainId, address: address as Address, symbol }))
+  ).map(({ address, symbol }) => ({ chain: blockchainId, address: address as Address, symbol }))
 
   if (!overlayTriggerState.isOpen) {
     visibleTokensRef.current = {}
