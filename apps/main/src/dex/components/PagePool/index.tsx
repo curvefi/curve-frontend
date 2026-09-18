@@ -111,7 +111,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
-  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.hasVyperVulnerability })
+  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.pool.hasVyperVulnerability() })
   const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
 
