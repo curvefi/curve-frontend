@@ -55,7 +55,6 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
     pool: p,
 
     // stats
-    hasVyperVulnerability: p.hasVyperVulnerability(),
     hasWrapped: isWrappedOnly ?? !(p?.isPlain || p?.isFake),
     isWrapped: isWrappedOnly ?? false,
     tokenAddressesAll,

@@ -53,7 +53,6 @@ export type PoolData = {
   idx?: number
   pool: Pool
   hasWrapped: boolean
-  hasVyperVulnerability: boolean
   isWrapped: boolean
   tokenAddresses: string[]
   tokenAddressesAll: string[]
