@@ -115,6 +115,9 @@ const MarketPriceMetrics = () => {
       <Metric
         category={METRIC_CATEGORY}
         label={t`Oracle price`}
+        labelTooltip={{
+          title: t`The price source that determines your collateral value, health, and when your position moves toward soft liquidation.`,
+        }}
         value={fallbackQ(
           q(useMarketOraclePrice({ chainId, marketId })),
           mapQuery(apiMarket, market => decimal(market.oraclePrice)),
@@ -125,6 +128,9 @@ const MarketPriceMetrics = () => {
       <Metric
         category={METRIC_CATEGORY}
         label={t`Current price`}
+        labelTooltip={{
+          title: t`The current price of the collateral token in the LLAMMA, which may differ from the oracle price.`,
+        }}
         value={fallbackQ(
           q(useMarketPrice({ chainId, marketId })),
           mapQuery(apiMarket, market => (market.ammPrice === 0 ? undefined : market.ammPrice)),
