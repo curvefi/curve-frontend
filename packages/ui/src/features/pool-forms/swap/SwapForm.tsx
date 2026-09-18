@@ -37,6 +37,7 @@ export const SwapForm = ({
     <Stack sx={{ gap: Spacing.xxs }}>
       <SwapTokenInput form={form} tokens={tokens} side="pay" balance={inputAmount} disabled={isPending} />
       <IconButton
+        type="button"
         disabled={isPending || !tokens.data}
         onClick={() => form.update(reverseSwap(form.getValues()))}
         data-testid="pool-swap-reverse"

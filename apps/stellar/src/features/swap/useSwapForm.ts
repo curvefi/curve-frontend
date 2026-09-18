@@ -88,8 +88,10 @@ export function useSwapForm(poolParams: PoolQuery) {
     maybe(params.decimals?.[toIndex], precision => calculateMinimumReceived(value, params.slippage, precision)),
   )
   useFormSync(form, { decimals: decimals.data, maxAmount, maxOutput, slippage, minimum: minimum.data })
-  useFormSync(form, { inputAmount: inputAmount.data }, editedSide === 'receive')
-  useFormSync(form, { outputAmount: outputAmount.data }, editedSide === 'pay')
+
+  // Don't overwrite form while a changed pair or amount is being debounced
+  useFormSync(form, { inputAmount: inputAmount.data }, !isDebouncing && editedSide === 'receive')
+  useFormSync(form, { outputAmount: outputAmount.data }, !isDebouncing && editedSide === 'pay')
 
   const {
     onSubmit,

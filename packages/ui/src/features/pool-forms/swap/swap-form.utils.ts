@@ -41,12 +41,11 @@ export const SWAP_FIELDS = {
 export const reverseSwap = ({
   fromIndex,
   toIndex,
-  inputAmount,
   outputAmount,
-}: Pick<SwapFormValues, 'fromIndex' | 'toIndex' | 'inputAmount' | 'outputAmount'>) => ({
+}: Pick<SwapFormValues, 'fromIndex' | 'toIndex' | 'outputAmount'>) => ({
   fromIndex: toIndex,
   toIndex: fromIndex,
   inputAmount: outputAmount,
-  outputAmount: inputAmount,
+  outputAmount: undefined, // previous input is not the quote, leave it empty to avoid layout shifts
   editedSide: 'pay' as const,
 })
