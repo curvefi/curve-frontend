@@ -23,6 +23,7 @@ import {
 } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
+import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
@@ -49,7 +50,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
   )
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
-  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolData.pool.id])
+  const { data: rewardsApy } = usePoolRewardsApy({ chainId, poolId })
   const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
   const fetchStepDepositStake = useStore(state => state.poolDeposit.fetchStepDepositStake)

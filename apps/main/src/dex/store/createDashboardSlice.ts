@@ -12,6 +12,7 @@ import type {
 } from '@/dex/components/PageDashboard/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { curvejsApi } from '@/dex/lib/curvejs'
+import { fetchPoolRewardsApy, getPoolRewardsApyQueryData } from '@/dex/queries/pool-rewards-apy.query'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
 import { fulfilledValue, getStorageValue, setStorageValue } from '@/dex/utils'
@@ -113,7 +114,6 @@ export const createDashboardSlice = (
     },
     fetchDashboardData: async (curve, walletAddress, poolDataMapper) => {
       const {
-        pools: poolsState,
         [SLICE_KEY]: { activeKey, ...sliceState },
       } = get()
 
@@ -137,9 +137,6 @@ export const createDashboardSlice = (
 
         // get pool's
         const poolDatas = poolList.map((poolId: string) => poolDataMapper[poolId])
-
-        // get missing rewards
-        await poolsState.fetchMissingPoolsRewardsApy(chainId, poolDatas)
 
         // get searched address's dashboard data
         const dashboardDataMapper: DashboardDataMapper = {}
@@ -203,14 +200,14 @@ export const createDashboardSlice = (
       } else if (sortBy === SORT_ID.userCrvApy) {
         return orderBy(poolDatas, ({ userCrvApy }) => userCrvApy || 0, [order])
       } else if (sortBy.startsWith('reward')) {
-        const rewardsApy = get().pools.rewardsApyMapper[chainId]
+        const rewardsApy = (poolId: string) => getPoolRewardsApyQueryData({ chainId, poolId, useApi: true })
 
         if (sortBy === SORT_ID.rewardBase) {
-          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.base || '0'), [order])
+          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy(poolId)?.base ?? '0'), [order])
         }
 
         if (sortBy === SORT_ID.rewardOthers) {
-          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.other?.[0]?.apy || '0'), [order])
+          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy(poolId)?.other?.[0]?.apy || '0'), [order])
         }
       }
       return []
@@ -294,6 +291,9 @@ export const createDashboardSlice = (
 
       // sort
       let dashboardDatas = Object.values(dashboardDataMapper)
+      await Promise.allSettled(
+        dashboardDatas.map(({ poolId }) => fetchPoolRewardsApy({ chainId, poolId, useApi: true })),
+      )
       dashboardDatas = sliceState.sortFn(chainId, sortBy, sortByOrder, dashboardDatas)
 
       // update result

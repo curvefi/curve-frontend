@@ -13,6 +13,7 @@ import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboa
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolsRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { userPoolBoost } from '@/dex/queries/user-pool-boost.query'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
 import { useStore } from '@/dex/store/useStore'
@@ -50,7 +51,7 @@ export const Dashboard = ({
   const isLoading = useStore(state => state.dashboard.loading)
   const isXSmDown = useLayoutStore(state => state.isXSmDown)
   const poolsMapper = useStore(state => state.pools.poolsMapper[rChainId])
-  const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[rChainId])
+  const { data: rewardsApyMapper } = usePoolsRewardsApy({ chainId: rChainId, poolIds: dashboardDataPoolIds ?? [] })
   const setFormValues = useStore(state => state.dashboard.setFormValues)
 
   const { chainId, signerAddress } = curve ?? {}

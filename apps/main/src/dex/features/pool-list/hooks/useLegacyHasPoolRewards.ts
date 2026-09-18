@@ -1,5 +1,5 @@
 import { sum } from 'lodash'
-import type { RewardsApy } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import type { Address } from '@primitives/address.utils'
 import type { LegacyPoolRow } from '../types'

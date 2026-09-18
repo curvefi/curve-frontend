@@ -30,8 +30,7 @@ import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
-import { invalidateUserPoolInfo } from '../queries/invalidation'
-import { invalidatePoolParameters } from '../queries/pool-parameters.query'
+import { invalidatePoolInfo, invalidateUserPoolInfo } from '../queries/invalidation'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -446,14 +445,8 @@ export const createPoolSwapSlice = (
             formValues: cFormValues,
           })
 
-          // re-fetch data
-          await invalidateUserPoolInfo({
-            chainId: curve.chainId,
-            poolId: poolData.pool.id,
-            userAddress: curve.signerAddress,
-          })
-          await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: poolData.pool.id })
+          const params = { chainId: curve.chainId, poolId: poolData.pool.id, userAddress: curve.signerAddress }
+          await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
         return resp
       }
