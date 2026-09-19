@@ -17,7 +17,6 @@ import {
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
-import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'
@@ -28,6 +27,7 @@ import { formatDate } from '@primitives/date.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
+import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'

@@ -1,12 +1,11 @@
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
+import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
+import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
-import { PageHeader } from '@evm-ui/widgets/PageHeader'
-import { TokenIcons } from '@ui/components/TokenIcons'
-import { WithSkeleton } from '@ui/components/WithSkeleton'
-import { t } from '@ui/lib/i18n'
-import { PoolMetricsRow } from './PoolMetricsRow'
-
-const ICON_SIZE = 35
+import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
+import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
+import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
+import { amount } from '@ui/lib/decimal'
 
 export const PoolPageHeader = ({
   chainId,
@@ -28,22 +27,30 @@ export const PoolPageHeader = ({
   backHref?: string
 }) => {
   const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
+  const tvl = usePoolTvl({ chainId, poolId })
+  const volume = usePoolVolume({ chainId, poolId })
 
   return (
-    <PageHeader
+    <PoolDetailsHeader
       backHref={backHref}
-      title={title ?? 'Pool'}
-      titleLoading={isLoading}
-      subtitle={tokenList?.map(({ symbol }) => symbol).join(' / ') ?? (isLoading ? t`Token symbols` : undefined)}
-      subtitleLoading={isLoading}
-      icon={
-        (isLoading || (tokenList && tokenList.length > 0)) && (
-          <WithSkeleton loading={isLoading} variant="rectangular" width={ICON_SIZE} height={ICON_SIZE}>
-            <TokenIcons blockchainId={blockchainId} tokens={tokenList} overflowMode="stack" />
-          </WithSkeleton>
+      title={title}
+      tokens={tokenList}
+      blockchainId={blockchainId}
+      isLoading={isLoading}
+      rightItems={
+        poolId && (
+          <PoolHeaderMetrics
+            tvl={fallbackQ(
+              mapQuery(tvl, data => amount(data)),
+              constQ(amount(pricesApiPoolData?.tvlUsd)),
+            )}
+            volume24h={fallbackQ(
+              mapQuery(volume, data => amount(data)),
+              constQ(amount(pricesApiPoolData?.tradingVolume24h)),
+            )}
+          />
         )
       }
-      rightItems={poolId && <PoolMetricsRow chainId={chainId} poolId={poolId} pricesApiPoolData={pricesApiPoolData} />}
     />
   )
 }

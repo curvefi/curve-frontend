@@ -1,10 +1,10 @@
-import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
+import { TokenCell } from '@ui/components/TokenCell'
 import { TokenInfo, type TokenInfoTokenIconProps } from '@ui/components/TokenInfo'
 import { Tooltip } from '@ui/components/Tooltip'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
@@ -14,6 +14,7 @@ import { PoolCompositionColumnId } from './columns.enum'
 
 export type PoolCompositionRow = {
   source: TokenInfoTokenIconProps
+  displayAddress: string
   explorerUrl?: string
   marketShare?: number
   amount?: number
@@ -41,7 +42,13 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
   columnHelper.accessor('source', {
     id: PoolCompositionColumnId.Asset,
     header: headers[PoolCompositionColumnId.Asset],
-    cell: ({ getValue, row }) => <TokenCell source={getValue()} explorerUrl={row.original.explorerUrl} />,
+    cell: ({ getValue, row }) => (
+      <TokenCell
+        source={getValue()}
+        explorerUrl={row.original.explorerUrl}
+        displayAddress={row.original.displayAddress}
+      />
+    ),
     enableSorting: false,
   }),
   columnHelper.accessor('price', {

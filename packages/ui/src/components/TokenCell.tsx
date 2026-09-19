@@ -1,9 +1,8 @@
 import type { ReactNode } from 'react'
-import { getAddress } from 'viem'
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { shortenAddress } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
+import type { Address } from '@primitives/address.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenInfo, type TokenInfoProps } from '@ui/components/TokenInfo'
 import { Tooltip } from '@ui/components/Tooltip'
 import { CLICKABLE_IN_ROW_CLASS } from '@ui/features/tables/data-table.utils'
@@ -17,7 +16,9 @@ const { Spacing } = SizesAndSpaces
 type TokenCellProps = {
   source: TokenInfoProps
   /** Used when a custom source icon does not include a token address. */
-  address?: string
+  address?: Address
+  /** The address to display in the cell. */
+  displayAddress: string | undefined
   /** Optional explorer URL for the displayed address. */
   explorerUrl?: string
   /** Optional content rendered after the token information, such as a badge. */
@@ -25,9 +26,9 @@ type TokenCellProps = {
 }
 
 /** Displays token information with copy-address and optional explorer interactions. */
-export const TokenCell = ({ source, address, explorerUrl, endAdornment }: TokenCellProps) => {
+export const TokenCell = ({ source, address, explorerUrl, endAdornment, displayAddress }: TokenCellProps) => {
   address = address ?? ('address' in source ? source.address : undefined)
-  const copyAddress = useCopyToClipboard({ copyText: address, format: getAddress })
+  const copyAddress = useCopyToClipboard({ copyText: address })
 
   return (
     <InlineTableCell>
@@ -43,7 +44,7 @@ export const TokenCell = ({ source, address, explorerUrl, endAdornment }: TokenC
             boldPrimary
             secondary={
               !useIsMobile() &&
-              address && (
+              displayAddress && (
                 <Box
                   component="span"
                   className={CLICKABLE_IN_ROW_CLASS}
@@ -53,7 +54,7 @@ export const TokenCell = ({ source, address, explorerUrl, endAdornment }: TokenC
                   }}
                   sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
                 >
-                  {shortenAddress(address)}
+                  {displayAddress}
                 </Box>
               )
             }

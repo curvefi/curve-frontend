@@ -1,5 +1,5 @@
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { TimestampCell, AddressCell, LlammaTokenAmount } from '../cells'
