@@ -1,7 +1,5 @@
-import lodash from 'lodash'
 import type { ExchangeOutput, FormStatus, FormValues } from '@/dex/components/PagePool/Swap/types'
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
-import { Token, TokensMapper, PoolData } from '@/dex/types/main.types'
 
 export const DEFAULT_EST_GAS: FormEstGas = { estimatedGas: 0, loading: false }
 
@@ -34,19 +32,4 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   toAmount: '',
   toError: '',
   toToken: '',
-}
-
-export function getSwapTokens(tokensMapper: TokensMapper, poolData: PoolData) {
-  const { tokenAddresses, tokensCountBy } = poolData
-  const swapTokensMapper: Record<string, Token> = {}
-
-  for (const address of tokenAddresses) {
-    const token = lodash.cloneDeep(tokensMapper[address])
-
-    if (token) {
-      swapTokensMapper[address] = { ...token, haveSameTokenName: tokensCountBy[token.symbol] > 1 }
-    }
-  }
-
-  return { selectList: lodash.sortBy(swapTokensMapper, t => t.symbol), swapTokensMapper }
 }

@@ -1,8 +1,8 @@
 import { noop } from 'lodash'
 import { QuickSwap } from '@/dex/components/PageRouterSwap'
 import { useNetworksQuery } from '@/dex/entities/networks'
-import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { defaultNetworks } from '@/dex/lib/networks'
+import { useToken } from '@/dex/queries/tokens.query'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
@@ -29,19 +29,18 @@ function QuickSwapTest({
   toAddress: Address
 }) {
   const { curveApi = null } = useCurve()
-  const { tokensMapper, tokensMapperStr } = useTokensMapper(chainId)
+  const { data: fromToken } = useToken({ chainId, tokenAddress: fromAddress })
+  const { data: toToken } = useToken({ chainId, tokenAddress: toAddress })
   const { isPending } = useNetworksQuery() // `useNetworks` throws while networks are loading
   return isPending ? (
     <Loading />
   ) : (
     <QuickSwap
       curve={curveApi}
-      pageLoaded={!!(curveApi && tokensMapper[fromAddress] && tokensMapper[toAddress])}
+      pageLoaded={!!(curveApi && fromToken && toToken)}
       params={{ network: defaultNetworks[chainId].blockchainId }}
       searchedParams={{ fromAddress, toAddress }}
       rChainId={chainId}
-      tokensMapper={tokensMapper}
-      tokensMapperStr={tokensMapperStr}
       redirect={noop}
     />
   )

@@ -124,7 +124,7 @@ export type CreatePoolSlice = {
     updateOracleState: (tokenId: TokenId, status: OracleType) => void
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => void
     updateOracleFunction: (tokenId: TokenId, oracleFunction: string) => void
-    updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean, basePool: boolean) => void
+    updateUserAddedTokens: (address: string, symbol: string, basePool: boolean) => void
     updateInitialPrice: (priceA: number, priceB: number, priceC: number) => void
     updateTokenPrice: (tokenId: TokenId, price: number) => void
     refreshInitialPrice: (curve: CurveApi) => void
@@ -504,14 +504,13 @@ export const createCreatePoolSlice = (
           state.createPool.tokensInPool.tokenAmount = amount
         }),
       ),
-    updateUserAddedTokens: (address, symbol, haveSameTokenName, basePool) =>
+    updateUserAddedTokens: (address, symbol, basePool) =>
       set(
         produce((state: State) => {
           // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
           state.createPool.userAddedTokens.push({
             address: address.toLowerCase(),
             symbol,
-            haveSameTokenName,
             userAddedToken: true,
             basePool,
           })

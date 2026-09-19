@@ -6,7 +6,6 @@ import { zeroAddress } from 'viem'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useTokenVolumes } from '@/dex/hooks/useTokenVolumes'
 import { useBasePools } from '@/dex/queries/base-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
@@ -21,9 +20,8 @@ import { Checkbox } from '@legacy-ui/Checkbox'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Chip } from '@legacy-ui/Typography'
 import type { Address } from '@primitives/address.utils'
-import { mapKeys, notFalsy } from '@primitives/objects.utils'
+import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
-import { useMappedQuery } from '@ui/features/queries/util'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 
@@ -71,7 +69,6 @@ export const SelectTokenButton = ({
       nativeToken.wrappedAddress !== zeroAddress && {
         address: nativeToken.wrappedAddress ?? '',
         symbol: nativeToken.wrappedSymbol ?? '',
-        haveSameTokenName: false,
       },
     ...network.createQuickList,
   ).map(({ address, symbol }) => ({ chain: blockchainId, address: address as Address, symbol }))
@@ -80,10 +77,10 @@ export const SelectTokenButton = ({
     visibleTokensRef.current = {}
   }
 
-  // We have to map the token addresses to lower case because this page is absolutely scuffed.
-  const tokenVolumes = useMappedQuery(
-    useTokenVolumes({ chainId }),
-    useCallback(volumes => mapKeys(volumes, key => key.toLowerCase()), []),
+  const tokenVolumes = useMemo(
+    () =>
+      fromEntries(tokens.filter(({ volume }) => volume).map(({ address, volume }) => [address.toLowerCase(), volume!])),
+    [tokens],
   )
 
   // handles search/filtering
@@ -124,7 +121,7 @@ export const SelectTokenButton = ({
           const token = await curve.getCoinsData([filterValueLowerCase])
           const isBasePool = !!basePools?.some(basepool => basepool.token.toLowerCase() === filterValueLowerCase)
 
-          updateUserAddedTokens(filterValueLowerCase, token[0].symbol, false, isBasePool)
+          updateUserAddedTokens(filterValueLowerCase, token[0].symbol, isBasePool)
         } catch (error) {
           console.warn(error)
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
@@ -187,7 +184,7 @@ export const SelectTokenButton = ({
         <TokenSelectorModal isOpen compact={false} onClose={handleClose}>
           <TokenList
             tokens={options}
-            volumes={tokenVolumes.data}
+            volumes={tokenVolumes}
             favorites={favorites}
             error={error}
             disabledTokens={disabledKeys}
