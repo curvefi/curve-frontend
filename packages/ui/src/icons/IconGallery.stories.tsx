@@ -60,13 +60,14 @@ const IconCard = ({ children, name }: { children: ReactNode; name: string }) => 
   <Stack
     sx={{
       alignItems: 'center',
-      flexDirection: 'column',
       gap: SizesAndSpaces.Spacing.xs,
       justifyContent: 'center',
-      padding: 2,
+      padding: SizesAndSpaces.Padding.Card.sm,
     }}
   >
-    <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center' }}>{children}</Box>
+    <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'center' }}>
+      {children}
+    </Stack>
     <Typography align="center">{name}</Typography>
   </Stack>
 )
