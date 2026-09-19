@@ -14,7 +14,7 @@ import {
   type LegendItem,
   type LineSeriesConfig,
 } from '@evm-ui/shared/ui/Chart'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import { MarketType } from '@evm-ui/types/market'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'

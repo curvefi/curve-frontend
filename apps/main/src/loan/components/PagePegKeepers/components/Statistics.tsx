@@ -1,4 +1,4 @@
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import { CardContent } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'

@@ -1,6 +1,6 @@
 import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'

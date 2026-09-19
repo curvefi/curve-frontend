@@ -1,6 +1,6 @@
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
-import { Metric, type MetricProps } from '@evm-ui/shared/ui/Metric'
+import { Metric, type MetricProps } from '@ui/components/Metric'
 import type { MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory, formatCappedRateValue } from '@evm-ui/utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'

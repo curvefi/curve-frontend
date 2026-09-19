@@ -1,12 +1,12 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { ALIGNMENTS, Metric  } from '@ui/components/Metric'
+import { METRIC_CATEGORIES } from '@ui/components/metric-categories'
 import { constQ, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { FireIcon } from '@ui/icons/FireIcon'
 import { borderStyle } from '@ui/lib/mui'
-import { ALIGNMENTS, Metric } from '../Metric'
-import { METRIC_CATEGORIES } from '../metric-categories'
 
 const { Spacing } = SizesAndSpaces
 const CATEGORIES = Object.keys(METRIC_CATEGORIES)

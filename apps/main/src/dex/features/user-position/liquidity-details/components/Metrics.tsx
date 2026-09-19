@@ -1,5 +1,5 @@
 import type { ChainId } from '@/dex/types/main.types'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import Grid from '@mui/material/Grid'
 import { Chain } from '@primitives/network.utils'
 import { mapQuery } from '@ui/features/queries/util'

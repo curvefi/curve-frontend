@@ -16,7 +16,7 @@ import {
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils/address'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'

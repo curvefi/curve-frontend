@@ -1,5 +1,5 @@
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import { fromWei } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'

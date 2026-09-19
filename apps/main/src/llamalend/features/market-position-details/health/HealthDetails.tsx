@@ -1,6 +1,6 @@
 import type { UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'

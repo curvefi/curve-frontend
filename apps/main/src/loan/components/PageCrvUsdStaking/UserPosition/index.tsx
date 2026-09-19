@@ -4,7 +4,7 @@ import { useScrvUsdExchangeRate } from '@/loan/entities/scrvusd-exchange-rate.qu
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
 import type { ChainId } from '@/loan/types/loan.types'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { MetricsGrid } from '@ui/components/MetricsGrid'

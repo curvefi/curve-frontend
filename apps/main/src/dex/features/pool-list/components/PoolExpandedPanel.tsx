@@ -1,5 +1,5 @@
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
-import { Metric, type MetricProps } from '@evm-ui/shared/ui/Metric'
+import { Metric, type MetricProps } from '@ui/components/Metric'
 import { formatCappedRateValue } from '@evm-ui/utils/rates'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'

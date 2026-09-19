@@ -1,5 +1,5 @@
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import Typography from '@mui/material/Typography'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { t } from '@ui/lib/i18n'
 import type { MarketEventRow } from '../types'
 

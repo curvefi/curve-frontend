@@ -16,7 +16,7 @@ import {
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
