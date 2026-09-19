@@ -1,6 +1,5 @@
-import type { TokenOption as Option } from '@evm-ui/features/select-token'
 import { blacklist } from '@evm-ui/features/select-token/blacklist'
-import { TokenOption } from '@evm-ui/features/select-token/ui/modal/TokenOption'
+import { shortenAddress } from '@evm-ui/utils'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -9,6 +8,8 @@ import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
 import { Spinner } from '@ui/components/Spinner'
+import type { TokenOption as Option } from '@ui/features/select-token/types'
+import { TokenOption } from '@ui/features/select-token/ui/modal/TokenOption'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
@@ -84,6 +85,7 @@ export const TokenSection = <T extends Option = Option>({
             <TokenOption
               key={token.address}
               {...token}
+              addressLabel={shortenAddress(token.address)}
               balance={balances?.[token.address]}
               tokenPrice={tokenPrices?.[token.address]}
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.

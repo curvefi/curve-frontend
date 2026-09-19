@@ -77,7 +77,7 @@ export const readContract = async <T>(
   args: ContractArgument[] = [],
 ) => (await simulateContractCall<T>(network, contractId, method, args)).result
 
-export async function sendStellarTransaction(transaction: StellarTransaction) {
+export async function sendStellarTransaction<T>(transaction: StellarTransaction<T>) {
   const sent = await transaction.signAndSend({
     signTransaction: (transaction, options) => StellarWalletsKit.signTransaction(transaction, options),
     watcher: {}, // we could change the watcher to log submission and confirmation events

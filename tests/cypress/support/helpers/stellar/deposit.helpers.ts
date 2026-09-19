@@ -1,20 +1,48 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
+import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { fetchExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { type PoolAmounts, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
+import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import {
+  checkPoolPriceImpact,
+  checkPoolSlippage,
+  type PoolAmounts,
+  poolInput,
+  type PoolState,
+  TEST_NETWORK,
+} from '@cy/support/helpers/stellar/pool.helpers'
+import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
-import { decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
+import { decimalMinus, decimalMultiply, decimalSum, toWei } from '@ui/lib/decimal'
 
 export const BASE_DEPOSIT_AMOUNT = '0.01' satisfies Decimal
 
 export const allCoinDeposit = (coins: PoolState['coins']): PoolAmounts =>
   fromEntries(coins.map((coin, index) => [coin.symbol, decimalMultiply(BASE_DEPOSIT_AMOUNT, index + 1)]))
+
+/** Seed a fresh test pool without mounting a deposit form. */
+export const seedTestPool = async (pool: StellarContract, { coins, deployer: { address: account } }: TestnetConfig) => {
+  const amounts = await Promise.all(
+    coins.map(async (token, index) => {
+      const decimals = await fetchTokenDecimals({ network: TEST_NETWORK, token })
+      return BigInt(toWei(decimalMultiply(BASE_DEPOSIT_AMOUNT, index + 1), decimals))
+    }),
+  )
+  const transaction = await simulateContractCall<bigint>(
+    TEST_NETWORK,
+    pool,
+    'add_liquidity',
+    [account, amounts, 0n, account],
+    account,
+  )
+  return sendStellarTransaction(transaction)
+}
 
 export const fetchDepositPreview = async (
   pool: StellarContract,
@@ -76,8 +104,9 @@ export const checkDepositBalances = ({ coins, lp }: PoolState) => {
 }
 
 export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
+  getActionValue('pool-deposit-expected-lp').should(value => expect(+value!).to.be.greaterThan(0))
   depositSubmit().click(LOAD_TIMEOUT)
-  cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).should('contain.text', 'Deposit confirmed')
+  cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('contain.text', 'Deposit confirmed')
   coins.forEach(({ address }) => {
     poolInput(address).find('input').should('have.value', '')
   })
@@ -90,3 +119,19 @@ export const checkDepositResult = (state: PoolState, amounts: PoolAmounts, proje
     lp: { ...state.lp, balance: projectedLp },
     coins: state.coins.map(coin => ({ ...coin, balance: decimalMinus(coin.balance, amounts[coin.symbol]) })),
   })
+
+/** Check the preview, confirm the deposit, and verify its effect on the wallet and pool. */
+export const submitDepositAndCheck = (pool: StellarContract, state: PoolState, amounts: PoolAmounts) =>
+  cy
+    .then(LOAD_TIMEOUT, () => fetchDepositPreview(pool, state, amounts))
+    .then(({ expected, minimum, projected }) => {
+      checkDepositDetail('expected-lp', expected)
+      checkDepositDetail('minimum-lp', minimum)
+      checkDepositDetail('projected-lp', projected)
+      checkEstimatedTxCost()
+      checkPoolSlippage()
+      if (+state.supply) checkPoolPriceImpact()
+      submitDepositForm(state)
+      checkDepositResult(state, amounts, projected)
+      checkDepositSupply(pool, state, expected)
+    })

@@ -4,8 +4,9 @@ import { useShallow } from 'zustand/react/shallow'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
-import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
+import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
@@ -17,14 +18,14 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
-import { getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
+import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { combineQueryState, useCombinedQueries } from '@ui/features/queries/combine'
+import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { fromWei } from '@ui/lib/decimal'
-import { useWithdrawPreview, type WithdrawPreviewParams } from './useWithdrawPreview'
+import type { WithdrawFormQuery } from './types'
 
 const formOptions = {
   validation: withdrawFormValidationSuite,
@@ -36,7 +37,6 @@ const formOptions = {
     supply: undefined,
     seedLock: undefined,
     maximumBurn: undefined,
-    quote: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -68,17 +68,10 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const { formState, reset } = form
 
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
-  useFormSync(form, {
-    slippage,
-    decimals: decimals.data,
-    supply: supply.data,
-    seedLock: config.data?.seedLock,
-    maxLpAmount: lpBalance.data,
-  })
 
   // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
   const values = useShallow(identity<WithdrawFormValues>)(form.watchValues())
-  const [params, isDebouncing] = useFormDebounce<WithdrawPreviewParams, PoolAmountField | 'lpAmount'>(
+  const [params, isDebouncing] = useFormDebounce<WithdrawFormQuery, PoolAmountField | 'lpAmount'>(
     useMemo(
       () => ({
         ...values,
@@ -109,10 +102,18 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     ),
     userDefaultValues,
   )
-  const preview = useWithdrawPreview(params)
-  const { quote, expected, maximum, priceImpact, fee } = preview
+  const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: false })
+  const expected = mapQuery(quote, calculateExpectedBurn)
+  const maximum = mapQuery(expected, value => calculateMaximumBurn(value, params.slippage))
 
-  useFormSync(form, { quote: quote.data, maximumBurn: isDebouncing ? undefined : maximum.data })
+  useFormSync(form, {
+    slippage,
+    decimals: decimals.data,
+    supply: supply.data,
+    seedLock: config.data?.seedLock,
+    maxLpAmount: lpBalance.data,
+    maximumBurn: maximum.data,
+  })
 
   const {
     onSubmit,
@@ -122,23 +123,11 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     ...poolParams,
     account,
     tokens: tokens.data ?? [],
+    quote: quote.data,
     onReset: () => reset(userDefaultValues),
   })
 
   const isPending = formState.isSubmitting || isWithdrawing
-  const { error, isLoading } = combineQueryState(
-    tokenInputs,
-    reserves,
-    supply,
-    decimals,
-    maxAmounts,
-    lpBalance,
-    quote,
-    expected,
-    maximum,
-    priceImpact,
-    fee,
-  )
   return {
     form,
     reserves: q(reserves),
@@ -146,18 +135,16 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     lpTokenDecimals: LP_TOKEN_DECIMALS,
     maxAmounts,
     params,
-    preview,
     supply: q(supply),
     lpBalance: q(lpBalance),
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
-    isDisabled: isPending || isDebouncing || !formState.isValid || !!error || !fee.data,
-    isLoading: isPending || isLoading,
+    isDisabled: isPending || isDebouncing || !formState.isValid,
+    isLoading: isPending,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
-    error: withdrawError ?? error,
+    error: withdrawError,
     formErrors: formState.visibleErrors,
     tokens: tokenInputs,
-    priceImpact,
   }
 }

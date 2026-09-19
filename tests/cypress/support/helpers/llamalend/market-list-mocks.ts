@@ -21,6 +21,7 @@ export const blockUnmockedApis = () => {
     'api.merkl.xyz',
     'api2.curve.finance',
     'prices.curve.finance',
+    'api.testnet.stellarindex.io',
   ].forEach(hostname => void cy.intercept({ hostname }, UnexpectedApiRequest))
   cy.intercept('/api/merkl/*', UnexpectedApiRequest)
 }
