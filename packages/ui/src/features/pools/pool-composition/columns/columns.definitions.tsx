@@ -14,6 +14,7 @@ import { PoolCompositionColumnId } from './columns.enum'
 
 export type PoolCompositionRow = {
   source: TokenInfoTokenIconProps
+  displayAddress: string
   explorerUrl?: string
   marketShare?: number
   amount?: number
@@ -41,7 +42,13 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
   columnHelper.accessor('source', {
     id: PoolCompositionColumnId.Asset,
     header: headers[PoolCompositionColumnId.Asset],
-    cell: ({ getValue, row }) => <TokenCell source={getValue()} explorerUrl={row.original.explorerUrl} />,
+    cell: ({ getValue, row }) => (
+      <TokenCell
+        source={getValue()}
+        explorerUrl={row.original.explorerUrl}
+        displayAddress={row.original.displayAddress}
+      />
+    ),
     enableSorting: false,
   }),
   columnHelper.accessor('price', {

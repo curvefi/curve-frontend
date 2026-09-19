@@ -1,10 +1,12 @@
 import { sum } from 'lodash'
+import { getAddress } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolData } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { shortenAddress } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
@@ -49,11 +51,12 @@ export const usePoolComposition = ({
 
     return {
       source: {
-        address: tokenAddress,
+        address: getAddress(tokenAddress),
         blockchainId: network.blockchainId,
         iconPosition: 'left' as const,
         primary: symbol,
       },
+      displayAddress: shortenAddress(tokenAddress),
       explorerUrl: scanTokenPath(chainId, tokenAddress),
       marketShare: maybe(reserve?.percentShareInPool, x => +x),
       amount: reserve?.balance,
