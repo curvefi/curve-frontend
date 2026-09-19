@@ -1,4 +1,4 @@
-import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+import { TokenCell } from '@ui/components/TokenCell'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'

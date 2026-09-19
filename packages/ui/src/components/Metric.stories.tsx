@@ -1,7 +1,7 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ALIGNMENTS, Metric  } from '@ui/components/Metric'
+import { ALIGNMENTS, Metric } from '@ui/components/Metric'
 import { METRIC_CATEGORIES } from '@ui/components/metric-categories'
 import { constQ, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -12,7 +12,7 @@ const { Spacing } = SizesAndSpaces
 const CATEGORIES = Object.keys(METRIC_CATEGORIES)
 
 const meta: Meta<typeof Metric> = {
-  title: 'EVM UI/Shared UI/Metric',
+  title: 'UI/Components/Metric',
   component: Metric,
   argTypes: {
     category: {

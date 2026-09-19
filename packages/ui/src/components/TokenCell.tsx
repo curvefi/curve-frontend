@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
-import { getAddress } from 'viem'
-import { shortenAddress } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
+import { shortenString } from '@primitives/string.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenInfo, type TokenInfoProps } from '@ui/components/TokenInfo'
@@ -27,7 +26,7 @@ type TokenCellProps = {
 /** Displays token information with copy-address and optional explorer interactions. */
 export const TokenCell = ({ source, address, explorerUrl, endAdornment }: TokenCellProps) => {
   address = address ?? ('address' in source ? source.address : undefined)
-  const copyAddress = useCopyToClipboard({ copyText: address, format: getAddress })
+  const copyAddress = useCopyToClipboard({ copyText: address })
 
   return (
     <InlineTableCell>
@@ -53,7 +52,7 @@ export const TokenCell = ({ source, address, explorerUrl, endAdornment }: TokenC
                   }}
                   sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
                 >
-                  {shortenAddress(address)}
+                  {shortenString(address)}
                 </Box>
               )
             }

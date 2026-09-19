@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { PoolComposition } from '@/dex/features/pool-information/components/PoolComposition'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { useStore } from '@/dex/store/useStore'
 import type { PoolAlert } from '@/dex/types/main.types'
@@ -13,7 +14,6 @@ import { usePoolContext } from '../pool-context'
 import { Alerts } from './components/Alerts'
 import { Metrics } from './components/Metrics'
 import { PointsCampaigns } from './components/points-campaigns'
-import { PoolComposition } from './components/pool-composition'
 import { YieldBreakdown } from './components/yield-breakdown'
 
 type PoolInformation = { poolAlert: PoolAlert | null; pricesApiPoolData?: PricesApiPool }
@@ -45,3 +45,4 @@ export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformatio
     </Stack>
   )
 }
+export { PoolComposition } from '@/dex/features/pool-information/components/PoolComposition'

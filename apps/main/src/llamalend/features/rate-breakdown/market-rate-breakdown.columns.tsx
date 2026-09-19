@@ -1,4 +1,5 @@
-import { TokenCell, TokenPriceCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+import { TokenPriceCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+import { TokenCell } from '@ui/components/TokenCell'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'

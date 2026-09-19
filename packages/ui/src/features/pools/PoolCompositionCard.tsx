@@ -1,20 +1,30 @@
-import { usePoolContext } from '@/dex/features/pool-context'
-import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
-import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
+import { DataTable } from '@ui/features/tables/DataTable'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
-import { usePoolComposition } from '../../hooks/usePoolComposition'
-import { POOL_COMPOSITION_COLUMNS, POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY } from './columns/columns.definitions'
-import { FooterRow } from './FooterRow'
+import {
+  POOL_COMPOSITION_COLUMNS,
+  POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY,
+  type PoolCompositionRow,
+} from './pool-composition/columns/columns.definitions'
+import { FooterRow } from './pool-composition/FooterRow'
 
-export const PoolComposition = ({ pricesApiPoolData }: { pricesApiPoolData?: PricesApiPool }) => {
-  const { chainId, poolId, poolData } = usePoolContext()
+/** Chain-neutral pool composition presentation. Apps map their data sources into rows. */
+export const PoolCompositionCard = ({
+  rows,
+  totalUsd,
+  isLoading,
+  error,
+}: {
+  rows: PoolCompositionRow[]
+  totalUsd: string | undefined
+  isLoading: boolean
+  error: Error | null
+}) => {
   const isMobile = useIsMobile()
-  const { isLoading, error, rows, totalUsd } = usePoolComposition({ chainId, poolData, poolId, pricesApiPoolData })
   const table = useCurveTable({
     query: q({ data: rows, isLoading, error }),
     columns: POOL_COMPOSITION_COLUMNS,
@@ -24,7 +34,7 @@ export const PoolComposition = ({ pricesApiPoolData }: { pricesApiPoolData?: Pri
   return (
     <Card size="small">
       <CardHeader title={t`Composition`} />
-      <EvmDataTable
+      <DataTable
         category="detail"
         table={table}
         emptyState={{ title: t`No market composition found` }}
@@ -34,7 +44,7 @@ export const PoolComposition = ({ pricesApiPoolData }: { pricesApiPoolData?: Pri
               visibleColumns={table.getVisibleLeafColumns()}
               isLoading={isLoading}
               totalUsd={totalUsd}
-              hasBalance={rows.some(row => row.amount)}
+              hasBalance={rows.some(row => row.amount != null)}
             />
           )
         }

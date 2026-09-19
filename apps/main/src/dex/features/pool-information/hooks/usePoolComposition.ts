@@ -7,7 +7,7 @@ import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { maybe } from '@primitives/objects.utils'
-import type { PoolCompositionRow } from '../components/pool-composition/columns/columns.definitions'
+import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
 
 export const usePoolComposition = ({
   chainId,
