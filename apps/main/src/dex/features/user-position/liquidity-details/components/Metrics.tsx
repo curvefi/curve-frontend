@@ -1,7 +1,7 @@
 import type { ChainId } from '@/dex/types/main.types'
-import { Metric } from '@ui/components/Metric'
 import Grid from '@mui/material/Grid'
 import { Chain } from '@primitives/network.utils'
+import { Metric } from '@ui/components/Metric'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { amount } from '@ui/lib/decimal'

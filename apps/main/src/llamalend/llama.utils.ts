@@ -12,7 +12,6 @@ import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } fr
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet'
-import { type MetricProps } from '@ui/components/Metric'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
 import { type Address, Hex } from '@primitives/address.utils'
@@ -27,6 +26,7 @@ import {
   notFalsy,
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
+import { type MetricProps } from '@ui/components/Metric'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { QueryProp, toQuery } from '@ui/features/queries/util'
