@@ -10,6 +10,7 @@ import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-valid
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { queryFactory } from '@ui/features/queries/factory'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -71,8 +72,8 @@ const {
           ? '0'
           : ((useUsdBalances ? cr.balanceUsd / totalUsd : cr.balance / total) * 100).toFixed(2),
       })),
-      total: total.toString(),
-      totalUsd: totalUsd.toString(),
+      total: decimal(total),
+      totalUsd: decimal(totalUsd),
     }
   },
   validationSuite: createValidationSuite((params: PoolCurrencyReservesParams) => {
