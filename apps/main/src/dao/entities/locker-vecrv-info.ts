@@ -23,7 +23,7 @@ const lockerVecrvValidationSuite = createValidationSuite(({ chainId, userAddress
   evmAddressValidationGroup({ evmAddress: userAddress })
 })
 
-export const { useQuery: useLockerCrv, invalidate: invalidateLockerCrv } = queryFactory({
+const { useQuery: useLockerCrv, invalidate: invalidateLockerCrv } = queryFactory({
   queryKey: ({ chainId, userAddress }: LockerVecrvParams) =>
     [...rootKeys.userChain({ chainId, userAddress }), 'boosting.getCrv'] as const,
   queryFn: async ({ userAddress }: LockerVecrvQuery) =>
@@ -32,7 +32,7 @@ export const { useQuery: useLockerCrv, invalidate: invalidateLockerCrv } = query
   validationSuite: lockerVecrvValidationSuite,
 })
 
-export const { useQuery: useLockerLockedAmountAndUnlockTime, invalidate: invalidateLockerLockedAmountAndUnlockTime } =
+const { useQuery: useLockerLockedAmountAndUnlockTime, invalidate: invalidateLockerLockedAmountAndUnlockTime } =
   queryFactory({
     queryKey: ({ chainId, userAddress }: LockerVecrvParams) =>
       [...rootKeys.userChain({ chainId, userAddress }), 'boosting.getLockedAmountAndUnlockTime'] as const,
@@ -42,7 +42,7 @@ export const { useQuery: useLockerLockedAmountAndUnlockTime, invalidate: invalid
     validationSuite: lockerVecrvValidationSuite,
   })
 
-export const { useQuery: useLockerVeCrv, invalidate: invalidateLockerVeCrv } = queryFactory({
+const { useQuery: useLockerVeCrv, invalidate: invalidateLockerVeCrv } = queryFactory({
   queryKey: ({ chainId, userAddress }: LockerVecrvParams) =>
     [...rootKeys.userChain({ chainId, userAddress }), 'boosting.getVeCrv'] as const,
   queryFn: async ({ userAddress }: LockerVecrvQuery) =>
@@ -50,6 +50,8 @@ export const { useQuery: useLockerVeCrv, invalidate: invalidateLockerVeCrv } = q
   category: 'dao.user',
   validationSuite: lockerVecrvValidationSuite,
 })
+
+export { useLockerCrv, useLockerVeCrv, useLockerLockedAmountAndUnlockTime }
 
 export const invalidateVeCrvQueries = async ({ chainId, userAddress }: LockerVecrvParams) =>
   await Promise.all([

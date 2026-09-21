@@ -31,7 +31,7 @@ const getIncentivesItems = (pool: PoolRow) => {
     }
 }
 
-export const NetRateIncentivesTooltipItems = ({
+const NetRateIncentivesTooltipItems = ({
   items: { incentivesRate, extraRewards, campaigns, unboostedCrvRate },
   blockchainId,
 }: {
