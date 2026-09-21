@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { type AddressDisplay } from '@evm-ui/shared/ui/AddressActionInfo'
 import { ViewMoreButton } from '@evm-ui/shared/ui/ViewMoreButton'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -26,8 +27,7 @@ export const AdvancedDetails = ({
   poolId,
   info,
   contracts,
-  formatAddress,
-  scanAddressPath,
+  addressDisplay,
   managePoolLink,
   addGaugeLink,
 }: {
@@ -49,8 +49,7 @@ export const AdvancedDetails = ({
     gaugeIsKilled: boolean
     oracles: { address: Address; title: string }[]
   }
-  formatAddress: (address: Address) => string
-  scanAddressPath: (chainId: number, address: Address) => string | undefined
+  addressDisplay: AddressDisplay
   managePoolLink: ReactNode
   addGaugeLink: ReactNode
 }) => {
@@ -64,24 +63,13 @@ export const AdvancedDetails = ({
           <Grid container columnSpacing={Spacing.md}>
             <Grid size={GRID_SIZE}>
               <Stack>
-                <Contracts
-                  chainId={chainId}
-                  {...contracts}
-                  formatAddress={formatAddress}
-                  scanAddressPath={scanAddressPath}
-                />
+                <Contracts chainId={chainId} {...contracts} addressDisplay={addressDisplay} />
                 {!contracts.hasGauge && addGaugeLink}
               </Stack>
             </Grid>
 
             <Grid size={GRID_SIZE}>
-              <Info
-                chainId={chainId}
-                poolId={poolId}
-                {...info}
-                formatAddress={formatAddress}
-                scanAddressPath={scanAddressPath}
-              />
+              <Info chainId={chainId} poolId={poolId} {...info} addressDisplay={addressDisplay} />
             </Grid>
           </Grid>
 

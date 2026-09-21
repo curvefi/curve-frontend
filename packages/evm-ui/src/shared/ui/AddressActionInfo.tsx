@@ -7,15 +7,19 @@ import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 import { t } from '@ui/lib/i18n'
 
+/** Addresses are normalized by the caller; this only controls their presentation. */
+export type AddressDisplay = {
+  formatAddress: (address: Address) => string
+  scanAddressPath: (chainId: number, address: Address) => string | undefined
+}
+
 export type AddressActionInfoProps = {
   chainId: number
   title: ReactNode
   labelTooltip?: ActionInfoProps['labelTooltip']
   size?: ActionInfoProps['size']
   address: Address | undefined
-  /** Addresses are normalized by the caller; this only controls their presentation. */
-  formatAddress: (address: Address) => string
-  scanAddressPath: (chainId: number, address: Address) => string | undefined
+  display: AddressDisplay
   isBorderBottom?: boolean
   hideTooltip?: boolean
   testId?: string
@@ -32,8 +36,7 @@ export const AddressActionInfo = ({
   labelTooltip,
   size = 'medium',
   address,
-  formatAddress,
-  scanAddressPath,
+  display: { formatAddress, scanAddressPath },
   isBorderBottom,
   hideTooltip = false,
   testId,

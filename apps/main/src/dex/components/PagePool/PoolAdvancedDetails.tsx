@@ -7,8 +7,7 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { useBasePools } from '@/dex/queries/base-pools.query'
 import type { PoolData } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
-import { shortenAddress } from '@evm-ui/utils'
-import { scanAddressPath } from '@legacy-ui/utils'
+import { evmAddressDisplay } from '@evm-ui/utils'
 import { t } from '@ui/lib/i18n'
 
 const getPoolType = ({
@@ -81,8 +80,7 @@ export const PoolAdvancedDetails = () => {
             ]
           }) ?? [],
       }}
-      formatAddress={shortenAddress}
-      scanAddressPath={scanAddressPath}
+      addressDisplay={evmAddressDisplay}
       managePoolLink={<ManagePoolLink chainId={chainId} poolAddress={getAddress(poolAddress)} />}
       addGaugeLink={<AddGaugeLink />}
     />

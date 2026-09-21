@@ -14,8 +14,7 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
-import { shortenAddress } from '@evm-ui/utils'
-import { scanAddressPath } from '@legacy-ui/utils'
+import { evmAddressDisplay } from '@evm-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -95,8 +94,7 @@ const AssetRow = ({
         />
       }
       address={token?.address}
-      formatAddress={shortenAddress}
-      scanAddressPath={scanAddressPath}
+      display={evmAddressDisplay}
     />
   </Stack>
 )
@@ -204,8 +202,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
                     title={label}
                     labelTooltip={labelTooltip}
                     address={address}
-                    formatAddress={shortenAddress}
-                    scanAddressPath={scanAddressPath}
+                    display={evmAddressDisplay}
                   />
                 ),
               )}

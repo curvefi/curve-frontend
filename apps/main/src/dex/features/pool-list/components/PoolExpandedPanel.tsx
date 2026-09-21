@@ -1,7 +1,6 @@
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
-import { shortenAddress } from '@evm-ui/utils'
+import { evmAddressDisplay } from '@evm-ui/utils'
 import { formatCappedRateValue } from '@evm-ui/utils/rates'
-import { scanAddressPath } from '@legacy-ui/utils'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -64,8 +63,7 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
             />
           }
           address={address}
-          formatAddress={shortenAddress}
-          scanAddressPath={scanAddressPath}
+          display={evmAddressDisplay}
           hideTooltip
           testId={`pool-token-${address}`}
         />

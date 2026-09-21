@@ -1,4 +1,4 @@
-import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
+import { AddressActionInfo, type AddressDisplay } from '@evm-ui/shared/ui/AddressActionInfo'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -18,8 +18,7 @@ export const Info = ({
   basePoolAddress,
   registryAddress,
   vyperVersion,
-  formatAddress,
-  scanAddressPath,
+  addressDisplay,
 }: {
   chainId: number
   poolId: string
@@ -29,8 +28,7 @@ export const Info = ({
   basePoolAddress: Address | undefined
   registryAddress: Address | undefined
   vyperVersion: string | undefined
-  formatAddress: (address: Address) => string
-  scanAddressPath: (chainId: number, address: Address) => string | undefined
+  addressDisplay: AddressDisplay
 }) => (
   <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Info`} />
@@ -41,13 +39,7 @@ export const Info = ({
       />
 
       {maybe(basePoolAddress, address => (
-        <AddressActionInfo
-          chainId={chainId}
-          title={t`Basepool`}
-          address={address}
-          formatAddress={formatAddress}
-          scanAddressPath={scanAddressPath}
-        />
+        <AddressActionInfo chainId={chainId} title={t`Basepool`} address={address} display={addressDisplay} />
       ))}
 
       {maybe(vyperVersion, x => (
@@ -55,13 +47,7 @@ export const Info = ({
       ))}
 
       {maybe(registryAddress, address => (
-        <AddressActionInfo
-          chainId={chainId}
-          title={t`Registry`}
-          address={address}
-          formatAddress={formatAddress}
-          scanAddressPath={scanAddressPath}
-        />
+        <AddressActionInfo chainId={chainId} title={t`Registry`} address={address} display={addressDisplay} />
       ))}
       <ActionInfo label={t`ID`} value={fakeLoadingQ(poolId)} />
     </CardContent>
