@@ -6,12 +6,16 @@ import { StellarWalletsKit } from '@creit-tech/stellar-wallets-kit/sdk'
 import { activeModule } from '@creit-tech/stellar-wallets-kit/state'
 import { type ISupportedWallet, KitEventType } from '@creit-tech/stellar-wallets-kit/types'
 import { assert } from '@primitives/objects.utils'
+import { retry } from '@primitives/promise.utils'
 import { Address, contract, nativeToScVal, Networks, type rpc, scValToNative, StrKey, xdr } from '@stellar/stellar-sdk'
 
 export type WalletConnector = ISupportedWallet
 export type StellarHex = string & { readonly __stellarHex: unique symbol } // Stellar hashes are hex strings without an 0x prefix.
 export type StellarTransaction<T = bigint> = contract.AssembledTransaction<T>
 export type StellarTransactionResponse = Omit<rpc.Api.SendTransactionResponse, 'hash'> & { hash: StellarHex }
+
+const TRANSACTION_SUBMISSION_RETRIES = 3
+const TRANSACTION_SUBMISSION_RETRY_DELAY_MS = 5000
 
 export const initWallet = async () => {
   StellarWalletsKit.init({ modules: defaultModules() })
@@ -77,11 +81,19 @@ export const readContract = async <T>(
   args: ContractArgument[] = [],
 ) => (await simulateContractCall<T>(network, contractId, method, args)).result
 
-export async function sendStellarTransaction(transaction: StellarTransaction) {
-  const sent = await transaction.signAndSend({
-    signTransaction: (transaction, options) => StellarWalletsKit.signTransaction(transaction, options),
-    watcher: {}, // we could change the watcher to log submission and confirmation events
-  })
+export async function sendStellarTransaction<T>(transaction: StellarTransaction<T>) {
+  const sent = await retry(
+    () =>
+      transaction.signAndSend({
+        signTransaction: (transaction, options) => StellarWalletsKit.signTransaction(transaction, options),
+        watcher: {}, // we could change the watcher to log submission and confirmation events
+      }),
+    {
+      retries: TRANSACTION_SUBMISSION_RETRIES,
+      delay: () => TRANSACTION_SUBMISSION_RETRY_DELAY_MS,
+      shouldRetry: error => (error as Error).message.includes('TRY_AGAIN_LATER'),
+    },
+  )
   void sent.result // Reading the result checks confirmed execution, not just submission.
   return assert(sent.sendTransactionResponse, 'Missing submission response') as StellarTransactionResponse
 }

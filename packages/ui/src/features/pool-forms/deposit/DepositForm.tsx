@@ -3,7 +3,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type ErrorKey } from '@ui/features/forms'
 import { Form } from '@ui/features/forms/components/Form'
-import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
+import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { FormButton } from '@ui/features/forms/FormButton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -11,7 +11,6 @@ import type { PoolFormProps } from '../pool-form.types'
 import { allTokenFields, type PoolForm, type PoolTokenField } from '../pool-form.utils'
 import { PoolTokenInputs } from '../PoolTokenInputs'
 import { BalancedDepositCheckbox } from './BalancedDepositCheckbox'
-export type { PoolTokenFields } from '../pool-form.utils'
 
 export type DepositFormProps<TValues extends PoolForm = PoolForm> = PoolFormProps<TValues> & {
   reserves: QueryProp<Decimal[]>
@@ -31,7 +30,6 @@ export const DepositForm = <TValues extends PoolForm>({
   error,
   formErrors,
   footer,
-  priceImpact,
   isSeed,
 }: DepositFormProps<TValues>) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
@@ -47,7 +45,6 @@ export const DepositForm = <TValues extends PoolForm>({
       isConnected={wallet.isConnected}
       disabled={isPending || isSeed.data !== false}
     />
-    <HighPriceImpactAlert priceImpact={priceImpact} />
     <FormButton
       {...wallet}
       pending={isPending}

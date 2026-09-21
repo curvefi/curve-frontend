@@ -15,7 +15,6 @@ import {
   type LegendItem,
   type LineSeriesConfig,
 } from '@evm-ui/shared/ui/Chart'
-import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketType } from '@evm-ui/types/market'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
@@ -23,6 +22,7 @@ import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'

@@ -16,7 +16,6 @@ import {
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
-import { Metric } from '@evm-ui/shared/ui/Metric'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils/address'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'
@@ -26,6 +25,7 @@ import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import { Chain } from '@primitives/network.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
+import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'

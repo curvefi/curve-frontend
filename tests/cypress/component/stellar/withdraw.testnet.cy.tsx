@@ -2,10 +2,10 @@ import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { DepositTab } from '@/stellar/features/deposit/DepositTab'
 import { WithdrawTab } from '@/stellar/features/withdraw/WithdrawTab'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { allCoinDeposit, submitDepositForm } from '@cy/support/helpers/stellar/deposit.helpers'
 import {
-  checkPoolGasEstimate,
   readPoolAmounts,
   poolInput,
   TEST_NETWORK,
@@ -27,9 +27,8 @@ import {
   type WithdrawState,
   writeWithdrawLp,
 } from '@cy/support/helpers/stellar/withdraw.helpers'
-import { LOAD_TIMEOUT, skipTestsAfterFailure, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { queryClient } from '@ui/features/queries/query-client'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { decimalSum, fromWei } from '@ui/lib/decimal'
 
@@ -44,22 +43,17 @@ describe('Stellar testnet withdraw', () => {
   let state: WithdrawState
 
   before(() => {
-    queryClient.clear()
     getTestnetConfig()
       .then(config => {
         testnetConfig = config
         return connectTestWallet(config)
       })
-      .then(TRANSACTION_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
+      .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
   })
 
   beforeEach(() => {
-    queryClient.clear()
-    cy.intercept('GET', 'https://api.testnet.stellarindex.io/v1/price*', { statusCode: 404 })
-    cy.then(() => connectTestWallet(testnetConfig))
-      .then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig))
-      .then(freshState => (state = freshState))
+    cy.then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig)).then(freshState => (state = freshState))
   })
 
   const mountWithdraw = ({ connected = true } = {}) => {
@@ -180,11 +174,13 @@ describe('Stellar testnet withdraw', () => {
       it(`withdraws ${label} and refreshes balances and supply`, () => {
         mountWithdraw()
         writeWithdrawLp(WITHDRAW_LP_AMOUNT)
-        if (singleCoin) {
-          state.coins.forEach(({ address }, index) =>
-            writePoolAmount(address, index === 0 ? SINGLE_COIN_OUTPUT_AMOUNT : '0'),
-          )
-        }
+        readPoolAmounts(state.coins).then(() => {
+          if (singleCoin) {
+            state.coins.forEach(({ address }, index) =>
+              writePoolAmount(address, index === 0 ? SINGLE_COIN_OUTPUT_AMOUNT : '0'),
+            )
+          }
+        })
         withdrawSubmit().should('be.enabled')
         readPoolAmounts(state.coins).then(amounts =>
           cy
@@ -194,7 +190,7 @@ describe('Stellar testnet withdraw', () => {
               checkWithdrawDetail('maximum-lp', maximum)
               checkWithdrawDetail('projected-lp', projected)
               expect(+maximum).to.be.at.most(+WITHDRAW_LP_AMOUNT)
-              checkPoolGasEstimate()
+              checkEstimatedTxCost()
               submitWithdrawForm(state)
               checkWithdrawDetail('current-lp', projected)
               cy.then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig)).then(fresh => {

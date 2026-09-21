@@ -20,7 +20,6 @@ import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/Chart
 import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
-import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -29,6 +28,7 @@ import { type Token } from '@primitives/address.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { Tabs } from '@ui/components/Tabs/Tabs'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
@@ -300,10 +300,7 @@ export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAn
   </Stack>
 )
 
-export const LegacyMarketPriceChartLayout = ({
-  chart,
-  bands,
-}: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
+const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
   const { tokenPair, isMarketLoading } = useMarketTokenPair()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()

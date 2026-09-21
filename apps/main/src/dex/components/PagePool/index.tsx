@@ -26,17 +26,17 @@ import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
-import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import { PoolPageHeader } from '@/dex/widgets/page-header'
+import { PoolPageHeader } from '@/dex/widgets/page-header/PoolPageHeader'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { constQ } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useLocation } from '@ui/hooks/router'
 import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
@@ -114,8 +114,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
-  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.hasVyperVulnerability })
-  const { tokensMapper } = useTokensMapper(chainId)
+  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData.hasVyperVulnerability })
   const chainIdPoolId = getChainPoolIdActiveKey(chainId, poolId)
   const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
@@ -137,7 +136,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   // is seed
   useEffect(() => {
-    if (!poolData || !currencyReserves) return
+    if (!currencyReserves) return
 
     const isSeed = Number(currencyReserves.total) === 0
 
@@ -145,23 +144,22 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolData?.pool?.id, currencyReserves?.total])
+  }, [poolData.pool.id, currencyReserves?.total])
 
   const tabParams = useMemo(
-    () =>
-      poolData && {
-        params,
-        poolAlert,
-        maxSlippage,
-        seed,
-        tokensMapper,
-        isGaugeKilled: poolData.gauge.isKilled ?? undefined,
-        isGaugeManager: maybes([gaugeManager, signerAddress], isAddressEqual),
-        isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
-          Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
-        ),
-      },
-    [poolData, params, poolAlert, maxSlippage, seed, tokensMapper, gaugeManager, signerAddress, rewardDistributors],
+    () => ({
+      params,
+      poolAlert,
+      maxSlippage,
+      seed,
+
+      isGaugeKilled: poolData.gauge.isKilled ?? undefined,
+      isGaugeManager: maybes([gaugeManager, signerAddress], isAddressEqual),
+      isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
+        Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
+      ),
+    }),
+    [poolData, params, poolAlert, maxSlippage, seed, gaugeManager, signerAddress, rewardDistributors],
   )
 
   return (
@@ -180,15 +178,17 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             chainId={chainId}
             blockchainId={blockchainId}
             poolIdOrAddress={poolId}
-            title={poolData.pool.name}
-            tokenList={useMemo(
+            // for now the page only renders when pool data has already loaded, it's not lazy yet.
+            title={constQ(poolData.pool.name)}
+            tokens={useMemo(
               () =>
-                poolData?.tokens
-                  .map((symbol, index) => ({ symbol, address: poolData.tokenAddresses[index] ?? '' }))
-                  .filter(({ address }) => address) ?? [],
-              [poolData.tokenAddresses, poolData?.tokens],
+                constQ(
+                  poolData.tokens
+                    .map((symbol, index) => ({ symbol, address: poolData.tokenAddresses[index] ?? '' }))
+                    .filter(({ address }) => address),
+                ),
+              [poolData.tokenAddresses, poolData.tokens],
             )}
-            isLoading={false} // for now the page only renders when pool data has already loaded, it's not lazy yet.
             pricesApiPoolData={pricesApiPoolData}
             backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
           />

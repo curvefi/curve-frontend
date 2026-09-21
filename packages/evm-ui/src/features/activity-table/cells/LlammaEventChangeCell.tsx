@@ -1,7 +1,7 @@
 import type { Chain } from '@curvefi/prices-api'
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { MarketEventRow } from '../types'
 import { LlammaTokenAmount } from './LlammaTokenAmount'

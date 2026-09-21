@@ -88,7 +88,7 @@ const getVisibleTabs = <Value extends TabValue, Props extends object>(
   params: Props,
 ) => tabs?.filter(({ visible }) => applyFnOrValue(visible, params) !== false) ?? []
 
-export const findTab = <Value extends TabValue, Props extends object>(
+const findTab = <Value extends TabValue, Props extends object>(
   tabs: readonly TabItem<Value, Props>[],
   value: Value | undefined,
 ): TabItem<Value, Props> | undefined => tabs.find(tab => tab.value === value) ?? tabs[0]
