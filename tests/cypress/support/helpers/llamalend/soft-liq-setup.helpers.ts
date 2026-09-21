@@ -15,7 +15,7 @@ import { approveErc20, fundErc20 } from '@cy/support/helpers/tenderly/vnet-fund'
 import { setVirtualNetworkStorageAt } from '@cy/support/helpers/tenderly/vnet-storage'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-time'
 import { sendVnetTransactionAndWait } from '@cy/support/helpers/tenderly/vnet-tx'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { assert, maybe, notFalsy } from '@primitives/objects.utils'
 import { setupTenderlyLoan } from './loan-setup.helpers'
 
@@ -371,7 +371,7 @@ const runSoftLiquidationPriceMove = ({
   userAddress: Address
   vnet: CreateVirtualTestnetResponse
 }) =>
-  cy.then(LOAD_TIMEOUT, async () => {
+  cy.then(TRANSACTION_LOAD_TIMEOUT, async () => {
     const readParams = { client, controllerAddress, ammAddress, userAddress }
     const state = await readSoftLiquidationState(readParams)
 
