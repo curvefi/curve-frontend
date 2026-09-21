@@ -72,14 +72,20 @@ export const MarketActivityComp = ({ rateType }: { rateType: MarketRateType }) =
     chainId,
     blockchainId,
     ammAddress,
+    vaultToken,
     tokens: { collateralToken, borrowToken },
   } = useMarketContext<ChainId>()
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       <MarketParticipantsTabs rateType={rateType} />
-      <MarketActivityLayout
-        activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'lending' }}
-      />
+      {rateType === MarketRateType.Borrow ? (
+        <MarketActivityLayout
+          rateType={rateType}
+          activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'lending' }}
+        />
+      ) : (
+        <MarketActivityLayout rateType={rateType} activity={{ chainId, blockchainId, borrowToken, vaultToken }} />
+      )}
     </Stack>
   )
 }
