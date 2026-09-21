@@ -6,6 +6,7 @@ type UseTableScrollOptions<TData extends RowData> = {
   table: ReactTable<CurveTableFeatures, TData>
   tableTopRef?: RefObject<HTMLElement | null>
   containerRef?: RefObject<HTMLElement | null>
+  enablePageChangeScroll?: boolean
 }
 
 const scrollTableTopIntoView = (tableTopRef: RefObject<HTMLElement | null>) => {
@@ -38,16 +39,17 @@ export function useScrollToTopOnFilterChange<TData extends RowData>({
   })
 }
 
-/** Scrolls to the top of the table whenever the page changes. */
+/** Resets the table's scroll container, or optionally scrolls the document to the table, after pagination changes. */
 export function useScrollToTopOnPageChange<TData extends RowData>({
   table,
   tableTopRef,
   containerRef,
+  enablePageChangeScroll = false,
 }: UseTableScrollOptions<TData>) {
   const { pageIndex } = table.state.pagination
   useEffectOnValueChange(pageIndex, () => {
     // scroll after the user changes pages
     if (containerRef?.current) containerRef.current.scrollTo({ top: 0, behavior: 'smooth' })
-    else if (tableTopRef) scrollTableTopIntoView(tableTopRef)
+    else if (enablePageChangeScroll && tableTopRef) scrollTableTopIntoView(tableTopRef)
   })
 }
