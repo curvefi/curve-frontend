@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import { type MarketRates, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
+import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
@@ -27,7 +27,7 @@ import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
-import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -42,10 +42,14 @@ export type RateChartPoint = { timestamp: number; rate: number; movingAverage: n
 
 type RateSeriesKey = 'rate' | 'movingAverage' | 'totalAverage'
 
-type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
+export type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
 type RateValue = Amount | Nullish
 
-type MarketHistoricalRatesChartProps = { rateMode: MarketRateType; timeOption: TimeOption }
+type MarketHistoricalRatesChartProps = {
+  rateMode: MarketRateType
+  timeOption: TimeOption
+  snapshots: QueryProp<RateSnapshot[]>
+}
 
 type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
 type RateModeConfig = {
@@ -108,8 +112,8 @@ const getAverageRates = (ratePoints: { rate: number; timestamp: number }[]) => (
   hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_WINDOW_DAYS.year),
 })
 
-export const MarketHistoricalRatesChart = ({ rateMode, timeOption }: MarketHistoricalRatesChartProps) => {
-  const { chainId, blockchainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
+export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: MarketHistoricalRatesChartProps) => {
+  const { chainId, marketId, controllerAddress, apiMarket } = useMarketContext()
   const modeConfig = RATE_MODE_CONFIG[rateMode]
   const activeSeriesConfig = modeConfig.series
   const [visibleSeries, setVisibleSeries] = useState<RateSeriesKey[]>(() => activeSeriesConfig.map(({ key }) => key))
@@ -118,13 +122,6 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption }: MarketHisto
   } = useTheme()
 
   const marketRates = q(useMarketRates({ chainId, marketId }))
-
-  const snapshots = useMarketSnapshots({
-    controllerAddress,
-    marketType,
-    blockchainId,
-    range: { kind: 'timeRange', timeOption: '1Y' },
-  })
 
   const ratePoints = useMappedQuery(
     snapshots,

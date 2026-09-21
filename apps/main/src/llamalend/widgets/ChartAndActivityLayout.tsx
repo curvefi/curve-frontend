@@ -133,7 +133,7 @@ const MarketPriceMetrics = () => {
         }}
         value={fallbackQ(
           q(useMarketPrice({ chainId, marketId })),
-          mapQuery(apiMarket, market => (market.ammPrice === 0 ? undefined : market.ammPrice)),
+          mapQuery(apiMarket, market => market.ammPrice || undefined),
         )}
         valueOptions={valueOptions}
         testId="market-price-chart-current-metric"

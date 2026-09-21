@@ -140,7 +140,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
   const oracleAddress = market ? onChainOracleAddress : apiMarket.data?.oracleAddress
 
   const infraAddressItems = notFalsy<AddressItem>(
-    (market ?? oracleAddress) && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
+    oracleAddress && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
     hasContractData && { key: 'amm', label: t`AMM`, address: getAmmAddress(market, apiMarket.data) },
     vaultAddress && { key: 'vault', label: t`Vault`, address: vaultAddress },
     hasContractData && {
