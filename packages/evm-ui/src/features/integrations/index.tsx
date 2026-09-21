@@ -1,12 +1,11 @@
 import { useState } from 'react'
-import { LegacyTableSearchField } from '@evm-ui/shared/ui/DataTable/LegacyTableSearchField'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { InlineLink } from '@ui/components/InlineLink'
+import { SearchField } from '@ui/components/SearchField'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useParams } from '@ui/hooks/router'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { useSwitch } from '@ui/hooks/useSwitch'
 import { t, Trans } from '@ui/lib/i18n'
 import { IntegrationsList } from './components/IntegrationsList'
 
@@ -15,12 +14,7 @@ const { Spacing, Sizing } = SizesAndSpaces
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 export const Integrations = () => {
   const { network } = useParams<{ network: string }>()
-
   const [searchText, setSearchText] = useState('')
-  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
-  const isExpandedOrValue = Boolean(isSearchExpanded || searchText)
-  const isMobile = useIsMobile()
-  const hideTitle = isExpandedOrValue && isMobile
 
   return (
     <Stack
@@ -45,14 +39,8 @@ export const Integrations = () => {
           paddingBlockEnd: Spacing.sm,
         }}
       >
-        {!hideTitle && <Typography variant="headingSBold">{t`Curve Integrations`}</Typography>}
-        <LegacyTableSearchField
-          value={searchText}
-          placeholder={t`Search by integration name`}
-          onChange={setSearchText}
-          toggleExpanded={toggleSearchExpanded}
-          isExpanded={isExpandedOrValue}
-        />
+        {!useIsMobile() && <Typography variant="headingSBold">{t`Curve Integrations`}</Typography>}
+        <SearchField value={searchText} placeholder={t`Search by integration name`} onSearch={setSearchText} />
       </Stack>
       <Typography variant="bodySRegular">
         <Trans>

@@ -5,12 +5,8 @@ import type { StoreApi } from 'zustand'
 import { fetchPoolIds } from '@/dex/lib/pool-ids'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, Wallet } from '@/dex/types/main.types'
-import { isDexPoolListV2 } from '@evm-ui/hooks/useFeatureFlags'
-import { notFalsy } from '@primitives/objects.utils'
-import type { ReleaseChannel } from '@ui/lib/env'
 import { log } from '@ui/lib/logging'
 import { formatTimeDiff } from '@ui/lib/time'
-import { refetchPoolTvls } from '../queries/pool-tvl.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -22,7 +18,6 @@ export type GlobalSlice = {
     curveApi: CurveApi | undefined,
     prevCurveApi: CurveApi | undefined,
     wallet: Wallet | undefined,
-    releaseChannel: ReleaseChannel,
   ) => Promise<void>
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => void
@@ -32,13 +27,12 @@ export type GlobalSlice = {
 }
 
 export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
-  hydrate: async (_config, curveApi, prevCurveApi, _wallet, releaseChannel) => {
+  hydrate: async (_config, curveApi, prevCurveApi, _wallet) => {
     if (!curveApi) return
 
     const state = get()
     const isNetworkSwitched = prevCurveApi?.chainId !== curveApi.chainId
     const isUserSwitched = prevCurveApi?.signerAddress !== curveApi.signerAddress
-    const { chainId } = curveApi
     const start = new Date()
     log('Hydrating DEX', curveApi?.chainId, { isNetworkSwitched, isUserSwitched, hasRPC: !curveApi.isNoRPC })
 
@@ -50,17 +44,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       state.dashboard.resetState()
     }
 
-    const isLegacy = isDexPoolListV2(releaseChannel)
     const poolIds = await fetchPoolIds(curveApi)
-
-    // After pool bootstrap is completed above, any future query refactored
-    // out of `fetchPools` that depends on all pool ids should be manually invalidated.
-    // You could argue that hooks with 'isHydrated' in the `enabled` parameter would suffice,
-    // but we're still encountering situations where not all data is properly loaded.
-    await Promise.all([
-      // Legacy TVL/gauge enrichment is skipped there because the v2 pool list uses backend data.
-      ...notFalsy(isLegacy && refetchPoolTvls({ chainId })),
-    ])
     state.pools.fetchPools(curveApi, poolIds)
 
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
