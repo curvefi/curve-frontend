@@ -36,7 +36,7 @@ export type StakeForm = AllowUndefined<StakeMutation, 'stakeShares'> &
 
 export type StakeQuery<ChainId = number> = UserMarketQuery<ChainId> & StakeMutation
 export type StakeParams<ChainId = number> = FieldsOf<StakeQuery<ChainId>>
-export type StakeFormQuery<ChainId = number> = StakeQuery<ChainId> & { stakeAssets: Decimal }
+type StakeFormQuery<ChainId = number> = StakeQuery<ChainId> & { stakeAssets: Decimal }
 export type StakeFormParams<ChainId = number> = FieldsOf<StakeFormQuery<ChainId>>
 
 export type UnstakeMutation = { unstakeShares: Decimal; isFull: boolean }
@@ -47,7 +47,7 @@ export type UnstakeForm = AllowUndefined<UnstakeMutation, 'unstakeShares'> &
 
 export type UnstakeQuery<ChainId = number> = UserMarketQuery<ChainId> & UnstakeMutation
 export type UnstakeParams<ChainId = number> = FieldsOf<UnstakeQuery<ChainId>>
-export type UnstakeFormQuery<ChainId = number> = UnstakeQuery<ChainId> & { unstakeAssets: Decimal }
+type UnstakeFormQuery<ChainId = number> = UnstakeQuery<ChainId> & { unstakeAssets: Decimal }
 export type UnstakeFormParams<ChainId = number> = FieldsOf<UnstakeFormQuery<ChainId>>
 
 export type AssetsToSharesQuery<ChainId = number> = UserMarketQuery<ChainId> & { assets: Decimal }

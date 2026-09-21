@@ -20,7 +20,7 @@ export type PoolsFiltersProps = FilterProps<PoolFilterId> & { poolTypeFilters: t
 
 type PoolsColumnFilters = PartialRecord<PoolFilterId, string>
 
-export const getPoolsApiParams = (columnFiltersById: PoolsColumnFilters): PoolsApiParams => {
+const getPoolsApiParams = (columnFiltersById: PoolsColumnFilters): PoolsApiParams => {
   const [minApy, maxApy] = parsePoolsRangeFilter(columnFiltersById[PoolFilterId.Apy])
   const [minTvl, maxTvl] = parsePoolsRangeFilter(columnFiltersById[PoolFilterId.Tvl])
   const [minVolume, maxVolume] = parsePoolsRangeFilter(columnFiltersById[PoolFilterId.Volume])

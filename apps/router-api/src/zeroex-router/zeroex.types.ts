@@ -34,7 +34,7 @@ export type ZeroExQuoteResponse = {
   zid: string
 }
 
-export type ZeroExVolumeFee = {
+type ZeroExVolumeFee = {
   amount: Decimal
   token: Address
   type: 'volume' // identifies a trade-volume fee rather than a gas fee
