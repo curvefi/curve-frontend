@@ -199,7 +199,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
                   ),
                 )}
               </Stack>
-              <MarketIdRow marketId={market?.id ?? apiMarket.data?.controllerAddress} />
+              <MarketIdRow chainId={chainId} marketId={market?.id ?? apiMarket.data?.controllerAddress} />
             </Stack>
           </WithSkeleton>
         </CardContent>
