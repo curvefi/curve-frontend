@@ -6,6 +6,7 @@ import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
 import { FormDeposit } from '@/dex/components/PagePool/Deposit/components/FormDeposit'
 import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
 import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
+import { PoolAdvancedDetails } from '@/dex/components/PagePool/PoolAdvancedDetails'
 import { Swap } from '@/dex/components/PagePool/Swap'
 import type { PageTransferProps, Seed, TransferTabsParams } from '@/dex/components/PagePool/types'
 import {
@@ -19,7 +20,6 @@ import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormU
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
-import { AdvancedDetails } from '@/dex/features/advanced-details'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
@@ -203,7 +203,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         )}
         {!isLiteChain(chainId) && <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />}
         <PoolInformation poolAlert={poolAlert} pricesApiPoolData={pricesApiPoolData} />
-        <AdvancedDetails />
+        <PoolAdvancedDetails />
       </DetailPageLayout>
     </>
   )

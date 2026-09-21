@@ -1,6 +1,8 @@
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import type { ChainId } from '@/loan/types/loan.types'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
+import { shortenAddress } from '@evm-ui/utils'
+import { scanAddressPath } from '@legacy-ui/utils'
 import { Card, CardContent, CardHeader } from '@mui/material'
 import { t } from '@ui/lib/i18n'
 
@@ -8,7 +10,13 @@ export const AdvancedDetails = ({ chainId }: { chainId: ChainId }) => (
   <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Advanced Details`} />
     <CardContent>
-      <AddressActionInfo chainId={chainId} title={t`Vault Contract Address`} address={SCRVUSD_VAULT_ADDRESS} />
+      <AddressActionInfo
+        chainId={chainId}
+        title={t`Vault Contract Address`}
+        address={SCRVUSD_VAULT_ADDRESS}
+        formatAddress={shortenAddress}
+        scanAddressPath={scanAddressPath}
+      />
     </CardContent>
   </Card>
 )

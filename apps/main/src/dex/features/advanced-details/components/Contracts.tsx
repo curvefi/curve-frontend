@@ -1,78 +1,84 @@
-import { isAddressEqual, zeroAddress, type Address } from 'viem'
 import { ChipInactive } from '@/dex/components/ChipInactive'
-import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
-import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { notFalsy } from '@primitives/objects.utils'
+import type { Address } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
-import { usePoolContext } from '../../pool-context'
 import { Section } from './Section'
 
-export const Contracts = () => {
-  const { chainId, blockchainId, poolAddress, poolData } = usePoolContext()
+export const Contracts = ({
+  chainId,
+  poolAddress,
+  lpTokenAddress,
+  gaugeAddress,
+  gaugeIsKilled,
+  hasGauge,
+  oracles,
+  formatAddress,
+  scanAddressPath,
+}: {
+  chainId: number
+  poolAddress: Address
+  lpTokenAddress: Address
+  gaugeAddress: Address
+  gaugeIsKilled: boolean
+  hasGauge: boolean
+  oracles: { address: Address; title: string }[]
+  formatAddress: (address: Address) => string
+  scanAddressPath: (chainId: number, address: Address) => string | undefined
+}) => (
+  <Card size="extraSmall" variant="inline">
+    <CardHeader title={t`Contracts`} />
+    <CardContent component={Stack}>
+      <Section>
+        {poolAddress && (
+          <AddressActionInfo
+            chainId={chainId}
+            address={poolAddress}
+            formatAddress={formatAddress}
+            scanAddressPath={scanAddressPath}
+            title={poolAddress === lpTokenAddress ? t`Pool / Token` : t`Pool`}
+          />
+        )}
 
-  const lpTokenAddress = poolData.pool.lpToken as Address
-  const gaugeAddress = poolData.pool.gauge.address as Address
-  const gaugeIsKilled = !!poolData.gauge.isKilled
-  const isSameAddress = isAddressEqual(poolAddress, lpTokenAddress)
+        {lpTokenAddress && poolAddress !== lpTokenAddress && (
+          <AddressActionInfo
+            chainId={chainId}
+            address={lpTokenAddress}
+            title={t`Token`}
+            formatAddress={formatAddress}
+            scanAddressPath={scanAddressPath}
+          />
+        )}
 
-  const { data: metadata } = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
-  const oracles = notFalsy(
-    ...(metadata?.assetTypes?.map((assetType, index) => {
-      const oracleAddress = metadata.oracles?.[index]?.oracleAddress
-      const symbol = metadata.coins[index]?.symbol
+        {hasGauge && (
+          <AddressActionInfo
+            chainId={chainId}
+            address={gaugeAddress}
+            formatAddress={formatAddress}
+            scanAddressPath={scanAddressPath}
+            title={
+              <>
+                {t`Gauge`} {gaugeIsKilled && <ChipInactive>Inactive</ChipInactive>}
+              </>
+            }
+          />
+        )}
+      </Section>
 
-      return (
-        assetType === 1 &&
-        oracleAddress &&
-        !isAddressEqual(oracleAddress, zeroAddress) && {
-          address: oracleAddress,
-          title: symbol ? `${symbol} ${t`Oracle`}` : t`Oracle ${index + 1}`,
-        }
-      )
-    }) ?? []),
-  )
-
-  return (
-    <Card size="extraSmall" variant="inline">
-      <CardHeader title={t`Contracts`} />
-      <CardContent component={Stack}>
-        <Section>
-          {poolAddress && (
-            <AddressActionInfo
-              chainId={chainId}
-              address={poolAddress}
-              title={isSameAddress ? t`Pool / Token` : t`Pool`}
-            />
-          )}
-
-          {!isSameAddress && lpTokenAddress && (
-            <AddressActionInfo chainId={chainId} address={lpTokenAddress} title={t`Token`} />
-          )}
-
-          {!isAddressEqual(gaugeAddress, zeroAddress) && (
-            <AddressActionInfo
-              chainId={chainId}
-              address={gaugeAddress}
-              title={
-                <>
-                  {t`Gauge`} {gaugeIsKilled && <ChipInactive>Inactive</ChipInactive>}
-                </>
-              }
-            />
-          )}
-        </Section>
-
-        <Section>
-          {oracles.map(oracle => (
-            <AddressActionInfo key={oracle.address} chainId={chainId} {...oracle} />
-          ))}
-        </Section>
-      </CardContent>
-    </Card>
-  )
-}
+      <Section>
+        {oracles.map(oracle => (
+          <AddressActionInfo
+            key={oracle.address}
+            chainId={chainId}
+            {...oracle}
+            formatAddress={formatAddress}
+            scanAddressPath={scanAddressPath}
+          />
+        ))}
+      </Section>
+    </CardContent>
+  </Card>
+)
