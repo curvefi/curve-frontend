@@ -18,7 +18,7 @@ import { getUserMintMarketsOptions } from './mint-markets'
 export type UserHasPosition = Record<MarketRateType, boolean>
 export type UserHasPositions = Record<MarketType, UserHasPosition>
 
-export type LlamaMarketPositions = {
+type LlamaMarketPositions = {
   userBorrows: PartialRecord<Chain, Set<Address>>
   userMints: PartialRecord<Chain, Set<Address>>
   userSuppliesByChain: PartialRecord<Chain, Record<Address, LendingPosition>>

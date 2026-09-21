@@ -13,7 +13,7 @@ const participantQueryKey = (
   { blockchainId, contractAddress, page, perPage }: MarketParticipantsParams,
 ) => [...rootKeys.contract({ blockchainId, contractAddress }), type, { page }, { perPage }] as const
 
-export const { useQuery: useMarketBorrowers, queryKey: getMarketBorrowersKey } = queryFactory({
+export const { useQuery: useMarketBorrowers } = queryFactory({
   queryKey: (params: MarketParticipantsParams) => participantQueryKey('borrowers', params),
   queryFn: ({ blockchainId, contractAddress, page, perPage }: MarketParticipantsQuery) =>
     getMarketBorrowers(blockchainId, contractAddress, { page, perPage }),
@@ -21,7 +21,7 @@ export const { useQuery: useMarketBorrowers, queryKey: getMarketBorrowersKey } =
   validationSuite: contractValidationSuite,
 })
 
-export const { useQuery: useMarketSuppliers, queryKey: getMarketSuppliersKey } = queryFactory({
+export const { useQuery: useMarketSuppliers } = queryFactory({
   queryKey: (params: MarketParticipantsParams) => participantQueryKey('suppliers', params),
   queryFn: ({ blockchainId, contractAddress, page, perPage }: MarketParticipantsQuery) =>
     getVaultDepositors(blockchainId, contractAddress, { page, perPage }),

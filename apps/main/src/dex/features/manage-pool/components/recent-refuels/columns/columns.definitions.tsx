@@ -7,7 +7,7 @@ import { getTokenAmountColumnId, RecentRefuelsColumnId } from './columns.enum'
 
 export type RecentRefuelsToken = { symbol: string; address: Address; decimals: number }
 
-export type RecentRefuelRow = {
+type RecentRefuelRow = {
   timestamp: number
   donor?: Address | null
   donorUrl?: string

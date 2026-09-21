@@ -16,7 +16,7 @@ import { decimal } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
-export type BorrowMoreMaxReceiveResult = {
+type BorrowMoreMaxReceiveResult = {
   maxDebt: Decimal
   router?: RouteProvider
   maxTotalCollateral?: Decimal
@@ -27,7 +27,7 @@ export type BorrowMoreMaxReceiveResult = {
 }
 
 type BorrowMoreMaxReceiveQuery<ChainId = number> = BorrowMoreQuery<ChainId> & { router: RouteProvider | null }
-export type BorrowMoreMaxReceiveQueryParams<ChainId = number> = FieldsOf<BorrowMoreMaxReceiveQuery<ChainId>>
+type BorrowMoreMaxReceiveQueryParams<ChainId = number> = FieldsOf<BorrowMoreMaxReceiveQuery<ChainId>>
 
 export type BorrowMoreMaxReceiveParams<ChainId = number> = Omit<BorrowMoreMaxReceiveQueryParams<ChainId>, 'router'> & {
   leverageProviders?: readonly RouteProvider[] | undefined

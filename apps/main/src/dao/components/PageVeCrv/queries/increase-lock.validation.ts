@@ -7,7 +7,7 @@ import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { IncreaseLockQuery } from './increase-lock.types'
 
-export const validateIncreaseLockAmount = (lockedAmount: Decimal | undefined) => {
+const validateIncreaseLockAmount = (lockedAmount: Decimal | undefined) => {
   test('lockedAmount', t`Enter an amount to lock`, () => {
     enforce(lockedAmount).isNotEmpty()
   })

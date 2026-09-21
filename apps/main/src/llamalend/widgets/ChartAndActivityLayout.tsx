@@ -202,10 +202,7 @@ export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAn
   </Stack>
 )
 
-export const LegacyMarketPriceChartLayout = ({
-  chart,
-  bands,
-}: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
+const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
