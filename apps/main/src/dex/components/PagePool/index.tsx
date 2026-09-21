@@ -37,6 +37,7 @@ import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { constQ } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useLocation } from '@ui/hooks/router'
 import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
@@ -114,7 +115,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
-  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData?.hasVyperVulnerability })
+  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData.hasVyperVulnerability })
   const { tokensMapper } = useTokensMapper(chainId)
   const chainIdPoolId = getChainPoolIdActiveKey(chainId, poolId)
   const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
@@ -137,7 +138,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   // is seed
   useEffect(() => {
-    if (!poolData || !currencyReserves) return
+    if (!currencyReserves) return
 
     const isSeed = Number(currencyReserves.total) === 0
 
@@ -145,22 +146,21 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolData?.pool?.id, currencyReserves?.total])
+  }, [poolData.pool.id, currencyReserves?.total])
 
   const tabParams = useMemo(
-    () =>
-      poolData && {
-        params,
-        poolAlert,
-        maxSlippage,
-        seed,
-        tokensMapper,
-        isGaugeKilled: poolData.gauge.isKilled ?? undefined,
-        isGaugeManager: maybes([gaugeManager, signerAddress], isAddressEqual),
-        isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
-          Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
-        ),
-      },
+    () => ({
+      params,
+      poolAlert,
+      maxSlippage,
+      seed,
+      tokensMapper,
+      isGaugeKilled: poolData.gauge.isKilled ?? undefined,
+      isGaugeManager: maybes([gaugeManager, signerAddress], isAddressEqual),
+      isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
+        Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
+      ),
+    }),
     [poolData, params, poolAlert, maxSlippage, seed, tokensMapper, gaugeManager, signerAddress, rewardDistributors],
   )
 
@@ -180,15 +180,17 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             chainId={chainId}
             blockchainId={blockchainId}
             poolIdOrAddress={poolId}
-            title={poolData.pool.name}
-            tokenList={useMemo(
+            // for now the page only renders when pool data has already loaded, it's not lazy yet.
+            title={constQ(poolData.pool.name)}
+            tokens={useMemo(
               () =>
-                poolData?.tokens
-                  .map((symbol, index) => ({ symbol, address: poolData.tokenAddresses[index] ?? '' }))
-                  .filter(({ address }) => address) ?? [],
-              [poolData.tokenAddresses, poolData?.tokens],
+                constQ(
+                  poolData.tokens
+                    .map((symbol, index) => ({ symbol, address: poolData.tokenAddresses[index] ?? '' }))
+                    .filter(({ address }) => address),
+                ),
+              [poolData.tokenAddresses, poolData.tokens],
             )}
-            isLoading={false} // for now the page only renders when pool data has already loaded, it's not lazy yet.
             pricesApiPoolData={pricesApiPoolData}
             backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
           />
