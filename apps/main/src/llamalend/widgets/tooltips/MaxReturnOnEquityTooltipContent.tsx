@@ -4,14 +4,14 @@ import { maybes } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 
-export type MaxRoe = {
+export type MaxReturnOnEquity = {
   value: number | undefined
   leverage: number | null
   collateralApy: number | null
   borrowApy: number | null
 }
 
-export const MaxRoeTooltipContent = ({
+export const MaxReturnOnEquityTooltipContent = ({
   market,
   leverage = market?.leverage,
   collateralApy = market?.assets.collateral.rebasingYield,
