@@ -48,7 +48,7 @@ export function useDexRoutes({ chainId }: NetworkDef) {
   )
 }
 
-function _createSwapPath(routerDefault: Record<string, string>) {
+function _createSwapPath(routerDefault?: Record<string, string>) {
   const from = routerDefault?.fromAddress
   const to = routerDefault?.toAddress
   return `${ROUTE.PAGE_SWAP}/${from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''}`
