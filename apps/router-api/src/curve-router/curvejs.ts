@@ -5,8 +5,9 @@ import { resolveRpc } from './network-metadata'
 
 export type CurveJS = typeof curveApi
 type ChainId = number
+type CurveInstance = { curve: CurveJS; blacklist: Set<string> }
 
-const instances: Partial<Record<ChainId, Promise<CurveJS>>> = {}
+const instances: Partial<Record<ChainId, Promise<CurveInstance>>> = {}
 
 const FACTORIES = [
   'factory',
@@ -20,9 +21,10 @@ const FACTORIES = [
 const ONE_MINUTE = 60000
 
 /**
- * Fetch pools from all Curve factories and set up periodic refresh for a given CurveJS instance.
+ * Fetch pools and their blacklist, keeping the shared instance updated with periodic refreshes.
  */
-async function fetchPools(curve: CurveJS, log: FastifyBaseLogger) {
+async function fetchPools(instance: CurveInstance, log: FastifyBaseLogger) {
+  const { curve } = instance
   const factories = FACTORIES.map(key => curve[key])
   const fetchAllPools = async ({ initial = false }: { initial?: boolean } = {}) => {
     try {
@@ -34,11 +36,11 @@ async function fetchPools(curve: CurveJS, log: FastifyBaseLogger) {
         }),
       ])
 
-      curve.router.setBlacklist(
-        poolFilters
-          .filter(({ chain }) => chain === curve.getNetworkConstants().NETWORK_NAME)
-          .map(({ address }) => address.toLowerCase()),
-      )
+      const blacklist = poolFilters
+        .filter(({ chainId }) => chainId === curve.chainId)
+        .map(({ address }) => address.toLowerCase())
+      curve.router.setBlacklist(blacklist)
+      instance.blacklist = new Set(blacklist)
     } catch (e) {
       log.error({ message: 'Error fetching pools', error: e, chainId: curve.chainId })
       if (initial) throw e // make sure the request fails if fetching pools fails
@@ -52,16 +54,17 @@ async function fetchPools(curve: CurveJS, log: FastifyBaseLogger) {
 }
 
 /**
- * Get a Curve.js instance for a specific chain ID, initializing it if necessary.
- * The instance is cached for future use. Automatically fetches and refreshes pool data.
+ * Get a shared Curve.js instance and its latest pool blacklist, initializing them if necessary.
+ * The result is cached per chain. Pool data and the blacklist refresh automatically.
  */
 export const loadCurve = (chainId: number, log: FastifyBaseLogger) => {
   instances[chainId] ??= (async () => {
     const curve = createCurve()
     const { url } = await resolveRpc(chainId, curve)
     await curve.init('JsonRpc', { url }, { chainId })
-    await fetchPools(curve, log)
-    return curve
+    const instance: CurveInstance = { curve, blacklist: new Set() }
+    await fetchPools(instance, log)
+    return instance
   })()
   return instances[chainId]
 }
