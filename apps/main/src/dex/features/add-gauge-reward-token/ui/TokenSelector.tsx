@@ -1,17 +1,18 @@
-import { useEffect, useMemo } from 'react'
-import { ethAddress, isAddressEqual, zeroAddress, getAddress } from 'viem'
+import { useCallback, useEffect } from 'react'
+import { ethAddress, getAddress, isAddressEqual, zeroAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
-import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useTokens } from '@/dex/queries/tokens.query'
 import { ChainId } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { TokenList } from '@evm-ui/features/select-token'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
-import { notFalsy, objectKeys } from '@primitives/objects.utils'
+import { maybe, notFalsy, objectKeys, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
+import { useMappedQuery } from '@ui/features/queries/util'
 import { TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector as TokenSelectorUIKit } from '@ui/features/select-token/ui/TokenSelector'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -32,36 +33,34 @@ export const TokenSelector = ({
   userAddress: Address | undefined
 }) => {
   const { curveApi } = useCurve()
-  const crvAddress = curveApi?.getNetworkConstants()?.ALIASES?.crv as Address
+  const crvAddress = maybe(curveApi?.getNetworkConstants()?.ALIASES?.crv, crv => getAddress(crv))
   const { update: updateForm, watchValue } = useFormContext<AddRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
-  const { tokensMapper } = useTokensMapper(chainId)
   const [isOpen, openModal, closeModal] = useSwitch()
 
   const { data: gaugeRewardsDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
 
-  const filteredTokens = useMemo(
-    () =>
-      notFalsy(...Object.values(tokensMapper))
-        .filter(
-          token =>
-            // Roman: "There are calculation errors for coins with small decimals, including USDC. Though, new cross chain gauges are good with it, so it depends which gauge do you ask"
-            // I fixed it here: https://github.com/curvefi/curve-xchain-factory/blob/3e03f19d49826cad7c1e84829b35cc34955b046e/contracts/implementations/ChildGauge.vy#L117
-            token.decimals == 18 &&
-            !!crvAddress &&
-            ![
-              ...objectKeys(gaugeRewardsDistributors ?? {}), // Tokens already added as reward
-              zeroAddress,
-              ethAddress,
-              crvAddress,
-            ].some(rewardToken => isAddressEqual(rewardToken, token.address as Address)),
-        )
-        .map<TokenOption>(token => ({
-          address: getAddress(token.address),
-          symbol: token.symbol,
-          chain: network?.blockchainId,
-        })),
-    [gaugeRewardsDistributors, tokensMapper, crvAddress, network.blockchainId],
+  const { data: filteredTokens = [] } = useMappedQuery(
+    useTokens({ chainId }),
+    useCallback(
+      tokens =>
+        recordEntries(tokens)
+          .filter(
+            ([address, token]) =>
+              // Roman: "There are calculation errors for coins with small decimals, including USDC. Though, new cross chain gauges are good with it, so it depends which gauge do you ask"
+              // I fixed it here: https://github.com/curvefi/curve-xchain-factory/blob/3e03f19d49826cad7c1e84829b35cc34955b046e/contracts/implementations/ChildGauge.vy#L117
+              token.decimals == 18 &&
+              !!crvAddress &&
+              !notFalsy(
+                ...objectKeys(gaugeRewardsDistributors ?? {}), // Tokens already added as reward
+                zeroAddress,
+                ethAddress,
+                crvAddress,
+              ).some(rewardToken => isAddressEqual(rewardToken, address)),
+          )
+          .map<TokenOption>(([address, { symbol }]) => ({ address, symbol, chain: network?.blockchainId })),
+      [gaugeRewardsDistributors, crvAddress, network.blockchainId],
+    ),
   )
 
   const rewardTokenId = watchValue('rewardTokenId')

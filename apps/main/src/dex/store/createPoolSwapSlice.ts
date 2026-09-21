@@ -11,7 +11,7 @@ import {
   DEFAULT_FORM_VALUES,
 } from '@/dex/components/PagePool/Swap/utils'
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
-import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
+import type { RoutesAndOutput } from '@/dex/components/PageRouterSwap/types'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -155,11 +155,7 @@ export const createPoolSwapSlice = (
           formValues: cloneDeep(cFormValues),
           formStatus: { ...cFormStatus, warning: resp.isExchangeRateLow ? 'warning-exchange-rate-low' : '' },
           exchangeOutput: {
-            [activeKey]: {
-              ...resp,
-              loading: false,
-              modal: getRouterWarningModal(resp, maxSlippage, cFormValues) as RoutesAndOutputModal | null,
-            },
+            [activeKey]: { ...resp, loading: false, modal: getRouterWarningModal(resp, maxSlippage, cFormValues) },
           },
         })
 
