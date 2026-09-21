@@ -4,11 +4,11 @@ import { ethAddress, type Address } from 'viem'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { Button, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { TokenOption } from '@ui/features/select-token/types'
+import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
-import type { TokenOption } from './types'
 import { TokenList, type TokenListProps } from './ui/modal/TokenList'
-import { TokenSelector } from './'
 
 const { Spacing } = SizesAndSpaces
 

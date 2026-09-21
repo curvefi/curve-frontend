@@ -1,23 +1,28 @@
 import { useCallback } from 'react'
+import type {
+  DepositForm,
+  DepositMutation,
+  DepositMutationContext,
+  DepositMutationOptions,
+} from '@/stellar/features/deposit/types'
 import { fetchDepositSimulation, invalidateDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
 import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { rootKeys } from '@/stellar/queries/root-keys'
-import {
-  depositMutationValidationSuite,
-  type DepositMutation,
-  type DepositForm,
-  type DepositFormQuery,
-} from '@/stellar/queries/validation/deposit.validation'
+import { depositMutationValidationSuite } from '@/stellar/queries/validation/deposit.validation'
 import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { t } from '@ui/lib/i18n'
-import type { FieldsOf } from '@ui/lib/validation/types'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
-type DepositMutationContext = Pick<DepositFormQuery, 'network' | 'pool' | 'account' | 'tokens' | 'quote' | 'minMint'>
-type DepositOptions = FieldsOf<DepositMutationContext> & { onReset: () => void }
-
-export const useDepositMutation = ({ network, pool, account, tokens, quote, minMint, onReset }: DepositOptions) => {
+export const useDepositMutation = ({
+  network,
+  pool,
+  account,
+  tokens,
+  quote,
+  minMint,
+  onReset,
+}: DepositMutationOptions) => {
   const { mutate, error, isPending } = useStellarMutation<DepositMutation, DepositMutationContext>({
     mutationKey: [...rootKeys.userPool({ network, pool, account }), 'deposit'],
     buildContext: (_, baseContext) =>

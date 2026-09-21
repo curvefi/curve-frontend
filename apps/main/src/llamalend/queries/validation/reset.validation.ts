@@ -8,7 +8,7 @@ import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'
-import type { MakeOptional } from '@ui/features/queries/util'
+import type { AllowUndefined } from '@ui/features/queries/util'
 import { decimalGreaterThan } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -32,7 +32,7 @@ type ResetCalculatedValues = {
   resetAvailable: boolean | undefined
 }
 
-export type ResetForm = MakeOptional<ResetInputs, 'convertedBorrowed' | 'userBorrowed'> & ResetCalculatedValues
+export type ResetForm = AllowUndefined<ResetInputs, 'convertedBorrowed' | 'userBorrowed'> & ResetCalculatedValues
 
 export type ResetQuery<ChainId = IChainId> = UserMarketQuery<ChainId> & ResetInputs & ResetCalculatedValues
 export type ResetParams<ChainId = IChainId> = FieldsOf<ResetQuery<ChainId>>

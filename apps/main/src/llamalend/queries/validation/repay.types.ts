@@ -1,7 +1,7 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { MakeOptional } from '@ui/features/queries/util'
+import type { AllowUndefined } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type CompleteRepayForm = {
@@ -19,7 +19,7 @@ type RepayCalculatedValues = {
   isFull: boolean | undefined
 }
 
-export type RepayFormData = MakeOptional<CompleteRepayForm, 'userCollateral' | 'userBorrowed' | 'stateCollateral'> &
+export type RepayFormData = AllowUndefined<CompleteRepayForm, 'userCollateral' | 'userBorrowed' | 'stateCollateral'> &
   RepayCalculatedValues
 export type RepayFormParams = RepayFormData & UserMarketParams<IChainId>
 

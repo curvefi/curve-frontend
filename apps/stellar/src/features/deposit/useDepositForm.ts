@@ -4,21 +4,22 @@ import { useShallow } from 'zustand/react/shallow'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
+import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { useDepositMutation } from '@/stellar/mutations/deposit.mutation'
+import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery } from '@/stellar/queries/root-keys'
-import { depositFormValidationSuite, type DepositForm } from '@/stellar/queries/validation/deposit.validation'
+import { depositFormValidationSuite } from '@/stellar/queries/validation/deposit.validation'
 import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
-import { getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
-import { combineQueryState } from '@ui/features/queries/combine'
+import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { useDepositPreview, type DepositPreviewParams } from './useDepositPreview'
+import type { DepositForm, DepositFormQuery } from './types'
 
 const formOptions = {
   validation: depositFormValidationSuite,
@@ -51,7 +52,7 @@ export function useDepositForm(poolParams: PoolQuery) {
 
   // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
   const values = useShallow(identity<DepositForm>)(form.watchValues())
-  const [params, isDebouncing] = useFormDebounce<DepositPreviewParams, PoolAmountField>(
+  const [params, isDebouncing] = useFormDebounce<DepositFormQuery, PoolAmountField>(
     useMemo(
       () => ({
         ...values,
@@ -68,8 +69,8 @@ export function useDepositForm(poolParams: PoolQuery) {
     ),
     userDefaultValues,
   )
-  const preview = useDepositPreview(params)
-  const { quote, minimum, priceImpact, gas } = preview
+  const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })
+  const minimum = mapQuery(quote, value => calculateMinimumMint(value, params.slippage))
 
   const {
     onSubmit,
@@ -85,33 +86,19 @@ export function useDepositForm(poolParams: PoolQuery) {
   })
 
   const isPending = formState.isSubmitting || isDepositing
-  const { error, isLoading } = combineQueryState(
-    tokenInputs,
-    supply,
-    reserves,
-    decimals,
-    maxAmounts,
-    quote,
-    minimum,
-    priceImpact,
-    gas,
-  )
   return {
     form,
     reserves: q(reserves),
     params,
-    preview,
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
-    isDisabled:
-      isPending || isDebouncing || !formState.isValid || !!error || !quote.data || minimum.data == null || !gas.data,
-    isLoading: isPending || isLoading,
+    isDisabled: isPending || isDebouncing || !formState.isValid,
+    isLoading: isPending,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
-    error: depositError ?? error,
+    error: depositError,
     formErrors: formState.visibleErrors,
     tokens: tokenInputs,
-    priceImpact,
     isSeed: mapQuery(supply, supply => !+supply),
   }
 }
