@@ -38,7 +38,7 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE, getSlippageType } from '../../utils'
 
-export const FormWithdraw = ({ maxSlippage, seed, tokensMapper }: TransferProps) => {
+export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   const { chainId, blockchainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
@@ -372,7 +372,6 @@ export const FormWithdraw = ({ maxSlippage, seed, tokensMapper }: TransferProps)
                   poolData={poolData}
                   selectedTokenAddress={formValues.selectedTokenAddress}
                   tokens={poolData.tokens}
-                  tokensMapper={tokensMapper}
                   tokenAddresses={poolData.tokenAddresses}
                   handleChanged={({ token, tokenAddress }) => {
                     updateFormValues(
@@ -392,7 +391,6 @@ export const FormWithdraw = ({ maxSlippage, seed, tokensMapper }: TransferProps)
                   loading={slippage.loading}
                   poolData={poolData}
                   tokens={poolData.tokens}
-                  tokensMapper={tokensMapper}
                   tokenAddresses={poolData.tokenAddresses}
                 />
               )}
@@ -416,7 +414,7 @@ export const FormWithdraw = ({ maxSlippage, seed, tokensMapper }: TransferProps)
                         isWithdraw
                         blockchainId={blockchainId}
                         token={token}
-                        tokenAddress={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
+                        tokenAddress={tokenAddress}
                         handleAmountChange={handleAmountChange}
                         hideMaxButton
                       />

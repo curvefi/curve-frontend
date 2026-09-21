@@ -26,7 +26,6 @@ import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
-import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
@@ -116,7 +115,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
   const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: poolData.hasVyperVulnerability })
-  const { tokensMapper } = useTokensMapper(chainId)
   const chainIdPoolId = getChainPoolIdActiveKey(chainId, poolId)
   const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
@@ -154,14 +152,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       poolAlert,
       maxSlippage,
       seed,
-      tokensMapper,
+
       isGaugeKilled: poolData.gauge.isKilled ?? undefined,
       isGaugeManager: maybes([gaugeManager, signerAddress], isAddressEqual),
       isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
         Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
       ),
     }),
-    [poolData, params, poolAlert, maxSlippage, seed, tokensMapper, gaugeManager, signerAddress, rewardDistributors],
+    [poolData, params, poolAlert, maxSlippage, seed, gaugeManager, signerAddress, rewardDistributors],
   )
 
   return (
