@@ -5,6 +5,7 @@ import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-
 import type { UserChainQuery } from '@evm-ui/lib/model/query/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
+import type { AllowUndefined } from '@ui/features/queries/util'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
@@ -33,7 +34,7 @@ export type ScrvUsdWithdrawMutation = {
   maxWithdrawAmount: Decimal
 }
 
-export type ScrvUsdWithdrawForm = Partial<ScrvUsdWithdrawMutation> & { maxWithdrawAmount?: Decimal }
+export type ScrvUsdWithdrawForm = AllowUndefined<ScrvUsdWithdrawMutation>
 
 export type ScrvUsdUserParams = FieldsOf<ScrvUsdUserQuery>
 export type ScrvUsdDepositParams = FieldsOf<ScrvUsdDepositQuery>

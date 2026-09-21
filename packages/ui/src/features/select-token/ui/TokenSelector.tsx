@@ -41,6 +41,7 @@ function checkChildProps<T extends TokenOption>({ onToken }: { onToken: (token: 
 
 export const TokenSelector = <T extends TokenOption = TokenOption>({
   selectedToken,
+  title,
   isOpen,
   disabled = false,
   compact = false,
@@ -53,8 +54,15 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
   const { onToken } = checkChildProps(children.props)
   return (
     <>
-      <TokenSelectButton token={selectedToken} disabled={disabled} size={size} testId={testId} onClick={onOpen} />
-      <TokenSelectorModal isOpen={isOpen} compact={compact} onClose={onClose}>
+      <TokenSelectButton
+        token={selectedToken}
+        disabled={disabled}
+        size={size}
+        testId={testId}
+        label={title}
+        onClick={onOpen}
+      />
+      <TokenSelectorModal isOpen={isOpen} title={title} compact={compact} onClose={onClose}>
         {/* eslint-disable-next-line @eslint-react/no-clone-element -- Existing violation before enabling this rule. */}
         {cloneElement(children, {
           onToken: (token: T) => {

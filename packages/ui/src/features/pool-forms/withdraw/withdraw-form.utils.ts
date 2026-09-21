@@ -1,5 +1,5 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import type { MakeOptional } from '@ui/features/queries/util'
+import type { AllowUndefined } from '@ui/features/queries/util'
 import type { PoolTokenFields } from '../pool-form.utils'
 
 export type WithdrawMutation = {
@@ -16,8 +16,8 @@ export type WithdrawMutation = {
   quote: Decimal
 }
 
-export type WithdrawFormValues = MakeOptional<
-  Omit<WithdrawMutation, 'amounts' | 'maxAmounts'>,
-  'decimals' | 'lpAmount' | 'maxLpAmount' | 'supply' | 'seedLock' | 'maximumBurn' | 'quote'
+export type WithdrawFormValues = AllowUndefined<
+  Omit<WithdrawMutation, 'amounts' | 'maxAmounts' | 'quote'>,
+  'decimals' | 'lpAmount' | 'maxLpAmount' | 'supply' | 'seedLock' | 'maximumBurn'
 > &
   PoolTokenFields & { decimals: number[] | undefined }
