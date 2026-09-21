@@ -9,16 +9,15 @@ export type Route = { name: string; routeUrlId: string } & IRouteStep
 
 export type ExchangeRate = { from: string; to: string; fromAddress: string; value: Decimal; label: string }
 
-export type RoutesAndOutputModal = Record<
-  string,
-  | { lowExchangeRate: boolean; title: string; exchangeRate: string }
-  | { priceImpact: boolean; title: string; value: string }
-  | { priceImpactLowExchangeRate: boolean; title: string; value: string; exchangeRate: string }
->
+export type RoutesAndOutputModal = { title: string; toAmount: string; toToken: string } & (
+  | { lowExchangeRate: boolean; exchangeRate: string }
+  | { priceImpact: boolean; value: number | null }
+  | { priceImpactLowExchangeRate: boolean; value: number | null; exchangeRate: string }
+)
 
-export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
+export type RawRoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
   loading: boolean
-  exchangeRate: ExchangeRate
+  exchangeRates: [Decimal, Decimal]
   isExchangeRateLow: boolean
   isHighSlippage: boolean
   isStableswapRoute: boolean
@@ -27,8 +26,9 @@ export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
   toAmountOutput: string
   fromAmount: string
   fetchedToAmount: string
-  modal: RoutesAndOutputModal | null
 }
+
+export type RoutesAndOutput = RawRoutesAndOutput & { exchangeRate: ExchangeRate; modal: RoutesAndOutputModal | null }
 
 export type FormEstGas = { estimatedGas: number; loading: boolean }
 

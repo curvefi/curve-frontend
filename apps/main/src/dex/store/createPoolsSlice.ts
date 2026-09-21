@@ -1,6 +1,5 @@
 import { produce } from 'immer'
-import { chunk, countBy, groupBy, isNaN } from 'lodash'
-import { zeroAddress } from 'viem'
+import { chunk, countBy, isNaN } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
@@ -13,7 +12,6 @@ import {
   PoolData,
   PoolDataMapper,
   RewardsApyMapper,
-  TokensMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Chain } from '@curvefi/prices-api'
@@ -23,7 +21,6 @@ import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
-import { invalidatePoolVolumesQuery } from '../queries/pool-volume.query'
 import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -79,19 +76,17 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     ...DEFAULT_STATE,
 
     fetchPools: async (curve, poolIds, { includeGaugeData }) => {
-      const { pools, tokens } = get()
+      const { pools } = get()
       const { chainId } = curve
 
       // if no pools found for network, set tvl, volume and pools state to empty object
       if (!poolIds.length) {
         pools.setEmptyPoolListDefault(chainId)
-        tokens.setEmptyPoolListDefault(curve)
         return
       }
 
       const networks = await fetchNetworks()
       const { blockchainId } = networks[chainId]
-      const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
       try {
         set(
@@ -108,31 +103,11 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         set(
           produce((state: State) => {
             state.pools.poolsMapper[chainId] = poolsMapper
-            state.tokens.tokensNameMapper[chainId] = {
-              ...(nativeToken && {
-                [nativeToken.address]: nativeToken.symbol,
-                [nativeToken.wrappedAddress]:
-                  nativeToken.wrappedAddress !== zeroAddress
-                    ? nativeToken.wrappedSymbol
-                    : (undefined as unknown as string),
-              }),
-              ...parsedTokensNameMapper(poolDatas),
-            }
             state.pools.haveAllPools[chainId] = true
           }),
         )
 
-        // New pools mapper means new tokens that need their volumes fetched
-        void invalidatePoolVolumesQuery({ chainId })
-
-        const partialPoolDatas = Object.keys(poolsMapper).map(poolId => poolsMapper[poolId])
-
-        if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
-
-        // fetch tokens
-        tokens.setTokensMapper(curve, partialPoolDatas)
-
-        return { poolsMapper, poolDatas: partialPoolDatas }
+        return { poolsMapper, poolDatas }
       } catch (error) {
         console.error(error)
 
@@ -152,7 +127,8 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.stableNgFactory.fetchNewPools(),
       ])
       const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId], { includeGaugeData: true })
-      return resp?.poolsMapper?.[poolId]
+      const poolData = resp?.poolsMapper?.[poolId]
+      return poolData
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
       const { ...sliceState } = get()[SLICE_KEY]
@@ -323,41 +299,3 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     },
   },
 })
-// check for duplicate token name
-export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
-  const grouped = groupBy(tokensMapper, v => v!.symbol)
-  const duplicatedTokenNames = Object.entries(grouped)
-    .filter(([_, v]) => v.length > 1)
-    .map(v => v[0])
-
-  if (duplicatedTokenNames.length === 0) return tokensMapper
-
-  return Object.keys(tokensMapper).reduce((prev, key) => {
-    const tokenObj = tokensMapper[key]
-    if (!tokenObj) return prev
-
-    prev[key] = { ...tokenObj, haveSameTokenName: duplicatedTokenNames.includes(tokenObj.symbol) }
-    return prev
-  }, {} as TokensMapper)
-}
-
-function parsedTokensNameMapper(poolDatas: PoolData[]) {
-  const tokensNameMapper: Record<string, string> = {}
-
-  // eslint-disable-next-line @typescript-eslint/no-for-in-array
-  for (const idx in poolDatas) {
-    const { underlyingCoinAddresses, underlyingCoins, wrappedCoinAddresses, wrappedCoins, id, lpToken } =
-      poolDatas[idx].pool
-    const addresses = [...underlyingCoinAddresses, ...wrappedCoinAddresses]
-    const tokens = [...underlyingCoins, ...wrappedCoins]
-
-    addresses.map((address, idx) => {
-      tokensNameMapper[address] = tokens[idx]
-    })
-
-    if (lpToken !== zeroAddress) {
-      tokensNameMapper[lpToken] = `${id} LP`
-    }
-  }
-  return tokensNameMapper
-}
