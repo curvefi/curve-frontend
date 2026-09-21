@@ -164,7 +164,10 @@ export const QuickSwap = ({
   const { data: tokens = [] } = useMappedQuery(
     tokensMapper,
     useCallback(
-      tokens => recordEntries(tokens).map(([address, token]) => ({ ...token, address, chain: network?.blockchainId })),
+      tokens =>
+        recordEntries(tokens)
+          .filter(([, token]) => !token.lp)
+          .map(([address, token]) => ({ ...token, address, chain: network?.blockchainId })),
       [network?.blockchainId],
     ),
   )
