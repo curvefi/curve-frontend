@@ -1,6 +1,7 @@
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
-import { q } from '@ui/features/queries/util'
+import type { Decimal } from '@primitives/decimal.utils'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { DataTable } from '@ui/features/tables/DataTable'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
@@ -16,17 +17,13 @@ import { FooterRow } from './pool-composition/FooterRow'
 export const PoolCompositionCard = ({
   rows,
   totalUsd,
-  isLoading,
-  error,
 }: {
-  rows: PoolCompositionRow[]
-  totalUsd: string | undefined
-  isLoading: boolean
-  error: Error | null
+  rows: QueryProp<PoolCompositionRow[]>
+  totalUsd: QueryProp<Decimal>
 }) => {
   const isMobile = useIsMobile()
   const table = useCurveTable({
-    query: q({ data: rows, isLoading, error }),
+    query: rows,
     columns: POOL_COMPOSITION_COLUMNS,
     state: { columnVisibility: isMobile ? POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY : undefined },
   })
@@ -39,12 +36,11 @@ export const PoolCompositionCard = ({
         table={table}
         emptyState={{ title: t`No market composition found` }}
         footerRow={
-          rows.length > 0 && (
+          !!rows.data?.length && (
             <FooterRow
               visibleColumns={table.getVisibleLeafColumns()}
-              isLoading={isLoading}
               totalUsd={totalUsd}
-              hasBalance={rows.some(row => row.amount)}
+              hasBalance={mapQuery(rows, data => data.some(row => row.amount))}
             />
           )
         }

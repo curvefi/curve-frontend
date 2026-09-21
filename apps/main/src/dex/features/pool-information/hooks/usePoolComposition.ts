@@ -10,6 +10,8 @@ import { shortenAddress } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
+import { q } from '@ui/features/queries/util'
+import { decimal } from '@ui/lib/decimal'
 
 export const usePoolComposition = ({
   chainId,
@@ -65,11 +67,10 @@ export const usePoolComposition = ({
     }
   })
 
-  return {
-    error: null, // TODO: correctly handle error and loading state
-    // this isn't a proper loading check, but we need a bigger refactor for that later on
-    isLoading: usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves,
-    rows,
-    totalUsd: usePricesApiReserves ? pricesApiTotalUsd?.toString() : currencyReserves?.totalUsd,
-  }
+  const totalUsd = decimal(usePricesApiReserves ? pricesApiTotalUsd : currencyReserves?.totalUsd)
+
+  // this isn't a proper loading check, but we need a bigger refactor for that later on
+  const isLoading = usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves
+  const error = null // TODO: correctly handle error and loading state
+  return { rows: q({ data: rows, isLoading, error }), totalUsd: q({ data: totalUsd, isLoading, error }) }
 }
