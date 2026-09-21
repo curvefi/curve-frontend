@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
-import { PoolData } from '@/dex/types/main.types'
+import { TokensMapper, PoolData } from '@/dex/types/main.types'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Loader } from '@legacy-ui/Loader'
@@ -17,6 +17,7 @@ export const SelectedLpTokenExpected = ({
   loading,
   poolData,
   tokens,
+  tokensMapper,
   tokenAddresses,
 }: {
   amounts: Amount[]
@@ -24,6 +25,7 @@ export const SelectedLpTokenExpected = ({
   loading: boolean
   poolData: PoolData
   tokens: string[]
+  tokensMapper: TokensMapper
   tokenAddresses: string[]
 }) => (
   <Box as="ul" grid gridRowGap={2}>
@@ -33,7 +35,12 @@ export const SelectedLpTokenExpected = ({
 
       return (
         <Box key={tokenAddress} as="li" flex flexAlignItems="center">
-          <StyledTokenIcon blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} /> {symbol}
+          <StyledTokenIcon
+            blockchainId={blockchainId}
+            tooltip={symbol}
+            address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
+          />{' '}
+          {symbol}
           {haveSameTokenName && <Chip>{shortenAddress(tokenAddress)}</Chip>}
           <Spacer />
           {loading ? (

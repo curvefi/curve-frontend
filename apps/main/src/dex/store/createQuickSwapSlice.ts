@@ -6,7 +6,8 @@ import type {
   FormEstGas,
   FormStatus,
   FormValues,
-  RawRoutesAndOutput,
+  RoutesAndOutput,
+  RoutesAndOutputModal,
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageRouterSwap/utils'
@@ -14,6 +15,7 @@ import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
+import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
@@ -30,7 +32,7 @@ type SliceState = {
   formStatus: FormStatus
   formValues: FormValues
   isMaxLoading: boolean
-  routesAndOutput: Record<string, RawRoutesAndOutput>
+  routesAndOutput: Record<string, RoutesAndOutput>
 }
 
 const SLICE_KEY = 'quickSwap'
@@ -169,6 +171,7 @@ export const createQuickSwapSlice = (
 
       const cFormValues = cloneDeep(sliceState.formValues)
       const cFormStatus = cloneDeep(sliceState.formStatus)
+      const tokensNameMapper = state.tokens.tokensNameMapper[chainId]
 
       if ((cFormValues.isFrom && +cFormValues.fromAmount <= 0) || (!cFormValues.isFrom && +cFormValues.toAmount <= 0))
         return
@@ -210,7 +213,18 @@ export const createQuickSwapSlice = (
                 ...resp,
                 router: 'curve',
                 loading: false,
-                exchangeRates: [exchangeRates[0] ?? '0', exchangeRates[1] ?? '0'] as [Decimal, Decimal],
+                exchangeRate: getRouterSwapsExchangeRate(
+                  exchangeRates as [Decimal, Decimal],
+                  searchedParams,
+                  tokensNameMapper,
+                ),
+                fetchedToAmount: '',
+                modal: getRouterWarningModal(
+                  resp,
+                  searchedParams,
+                  maxSlippage,
+                  tokensNameMapper,
+                ) as RoutesAndOutputModal | null,
               },
             },
           })
@@ -490,4 +504,59 @@ function getRouterActiveKey(
   const parsedToAddress = toAddress ? toAddress.slice(toAddress.length - 4) : ''
 
   return `${chainId}-${parsedSignerAddress}-${parsedFromAddress}-${parsedToAddress}-${fromAmount}-${maxSlippage}`
+}
+
+function getRouterSwapsExchangeRate(
+  [value]: [Decimal, Decimal],
+  { fromAddress, toAddress }: SearchedParams,
+  tokensNameMapper: Record<string, string>,
+) {
+  const fromToken = tokensNameMapper[fromAddress]
+  const toToken = tokensNameMapper[toAddress]
+  return { from: fromToken, to: toToken, fromAddress, value, label: `${fromToken}/${toToken}` }
+}
+
+export function getRouterWarningModal(
+  {
+    isExchangeRateLow,
+    priceImpact,
+    toAmount,
+    toAmountOutput,
+    fromAmount,
+    fetchedToAmount,
+  }: Pick<
+    RoutesAndOutput,
+    'isExchangeRateLow' | 'priceImpact' | 'toAmount' | 'toAmountOutput' | 'fromAmount' | 'fetchedToAmount'
+  >,
+  { toAddress }: SearchedParams,
+  maxSlippage: string,
+  storedTokensNameMapper: Record<string, string>,
+) {
+  const { isHighImpact, isExpectedToAmount } = getSlippageImpact({
+    maxSlippage,
+    toAmount,
+    priceImpact,
+    fetchedToAmount,
+  })
+  const parsedToAmount = isExpectedToAmount ? toAmountOutput : toAmount
+  const swapModalProps = getSwapActionModalType(isHighImpact, isExchangeRateLow)
+  const toToken = storedTokensNameMapper[toAddress] ?? ''
+  const exchangeRate = (+parsedToAmount / +fromAmount).toString()
+  const exchangeValues = { toAmount: parsedToAmount, toToken }
+  const modalTypeObj = { ...exchangeValues, title: swapModalProps.title }
+  const modalType = {
+    lowExchangeRate: { ...modalTypeObj, lowExchangeRate: true as boolean, exchangeRate },
+    priceImpact: { ...modalTypeObj, priceImpact: true as boolean, value: priceImpact },
+    priceImpactLowExchangeRate: {
+      ...modalTypeObj,
+      priceImpactLowExchangeRate: true as boolean,
+      value: priceImpact,
+      exchangeRate,
+    },
+  } as const
+
+  if (swapModalProps.type && swapModalProps.type in modalType) {
+    return modalType[swapModalProps.type]
+  }
+  return null
 }

@@ -24,7 +24,7 @@ export type NetworkConfig = {
   poolFilters: string[]
   swap: Record<string, string>
   swapCustomRouteRedirect: Record<string, string>
-  createQuickList: { address: string; symbol: string }[]
+  createQuickList: { address: string; haveSameTokenName: boolean; symbol: string }[]
   createDisabledTokens: string[]
   stableswapFactoryOld: boolean
   stableswapFactory: boolean
@@ -68,6 +68,15 @@ export type RewardsApy = {
   error: Record<string, boolean>
 }
 export type RewardsApyMapper = Record<string, RewardsApy>
+export type Token = {
+  address: string
+  ethAddress?: string
+  symbol: string
+  decimals: number
+  haveSameTokenName: boolean // use to display token address if duplicated token names
+}
+export type TokensMapper = Record<string, Token | undefined>
+export type TokensNameMapper = Record<string, string>
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
 type Gauge = { status: GaugeStatus | null; isKilled: boolean | null }

@@ -3,7 +3,7 @@ import { isAddressEqual, zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
-import { getToken, useTokens } from '@/dex/queries/tokens.query'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
 import { TokenList, type TokenOption, TokenSelector } from '@evm-ui/features/select-token'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
@@ -36,7 +36,7 @@ export const AmountTokenInput = ({
   const [isOpen, openModal, closeModal] = useSwitch()
 
   const { address: userAddress } = useConnection()
-  const { data: tokens } = useTokens({ chainId })
+  const { tokensMapper } = useTokensMapper(chainId)
 
   const { data: rewardDistributors, isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
@@ -54,9 +54,9 @@ export const AmountTokenInput = ({
     return activeRewardTokens.map(address => ({
       chain: blockchainId,
       address,
-      symbol: getToken(tokens, address)?.symbol ?? shortenAddress(address),
+      symbol: tokensMapper[address.toLowerCase()]?.symbol ?? shortenAddress(address),
     }))
-  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokens, blockchainId])
+  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, blockchainId])
 
   useEffect(() => {
     if (

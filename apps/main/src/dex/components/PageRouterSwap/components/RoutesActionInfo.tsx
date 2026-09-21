@@ -1,7 +1,6 @@
 import { DetailInfoTradeRouteRoute } from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
-import type { TokenMapper } from '@/dex/queries/tokens.query'
-import type { NetworkUrlParams, PoolDataMapper } from '@/dex/types/main.types'
+import { type NetworkUrlParams, type PoolDataMapper, TokensNameMapper } from '@/dex/types/main.types'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
@@ -12,13 +11,13 @@ import { t } from '@ui/lib/i18n'
 export const RoutesActionInfo = ({
   params,
   routes,
-  tokens,
+  tokensNameMapper,
   poolDataMapper,
   swapCustomRouteRedirect,
 }: {
   params: NetworkUrlParams
   routes: QueryProp<Route[]>
-  tokens: TokenMapper | undefined
+  tokensNameMapper: TokensNameMapper
   poolDataMapper: PoolDataMapper | undefined
   swapCustomRouteRedirect: Record<string, string> | undefined
 }) => (
@@ -31,7 +30,7 @@ export const RoutesActionInfo = ({
           <DetailInfoTradeRouteRoute
             params={params}
             route={routes[0]}
-            tokens={tokens}
+            tokensNameMapper={tokensNameMapper}
             poolData={poolDataMapper?.[routes[0].poolId]}
             swapCustomRouteRedirect={swapCustomRouteRedirect?.[routes[0].poolId]}
           />
@@ -67,7 +66,7 @@ export const RoutesActionInfo = ({
               key={`${route.poolId}-${route.outputCoinAddress}`}
               params={params}
               route={route}
-              tokens={tokens}
+              tokensNameMapper={tokensNameMapper}
               poolData={poolDataMapper?.[route.poolId]}
               swapCustomRouteRedirect={swapCustomRouteRedirect?.[route.poolId]}
             />

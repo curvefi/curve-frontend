@@ -2,8 +2,7 @@ import { zip } from 'lodash'
 import { zeroAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
-import { getToken, type TokenMapper } from '@/dex/queries/tokens.query'
-import type { PoolData, UrlParams } from '@/dex/types/main.types'
+import { type PoolData, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
@@ -18,19 +17,19 @@ const { Spacing } = SizesAndSpaces
 export const DetailInfoTradeRouteRoute = ({
   params,
   route,
-  tokens,
+  tokensNameMapper,
   poolData,
   swapCustomRouteRedirect,
 }: {
   params: UrlParams
   route: Route
-  tokens: TokenMapper | undefined
+  tokensNameMapper: Record<string, string>
   poolData: PoolData | undefined
   swapCustomRouteRedirect: string | undefined
 }) => {
-  const inputToken = getToken(tokens, route.inputCoinAddress)?.symbol ?? shortenAddress(route.inputCoinAddress)
-  const outputToken = getToken(tokens, route.outputCoinAddress)?.symbol ?? shortenAddress(route.outputCoinAddress)
-  const { tokenAddresses, tokens: poolTokens } = poolData ?? {}
+  const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenAddress(route.inputCoinAddress) ?? ''
+  const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenAddress(route.outputCoinAddress) ?? ''
+  const { tokenAddresses, tokens } = poolData ?? {}
   return (
     <ActionInfo
       size="small"
@@ -41,10 +40,10 @@ export const DetailInfoTradeRouteRoute = ({
           </ExternalLink>
         ) : route.routeUrlId ? (
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
-            {poolTokens && (
+            {tokens && (
               <TokenIcons
                 blockchainId={params.network}
-                tokens={zip(poolTokens, tokenAddresses).map(([symbol = '?', address = zeroAddress]) => ({
+                tokens={zip(tokens, tokenAddresses).map(([symbol = '?', address = zeroAddress]) => ({
                   symbol,
                   address,
                 }))}

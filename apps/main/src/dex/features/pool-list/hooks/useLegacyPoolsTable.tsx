@@ -3,12 +3,14 @@ import { useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
 import { usePoolTvls } from '@/dex/queries/pool-tvl.query'
+import { usePoolVolumes } from '@/dex/queries/pool-volume.query'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { NetworkConfig, PoolData, PoolDataMapper } from '@/dex/types/main.types'
 import type { Pool } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useCurve } from '@evm-ui/features/connect-wallet'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { notFalsy, recordValues } from '@primitives/objects.utils'
 import type { DeepKeys } from '@tanstack/table-core'
@@ -56,12 +58,17 @@ export function useLegacyPoolsTable({ blockchainId: network, chainId }: NetworkC
   const fetchPoolsRewardsApy = useStore(state => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore(state => state.pools.fetchMissingPoolsRewardsApy)
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
+  const isLite = isLiteChain(chainId)
 
   const { address: userAddress } = useConnection()
   const { data: userPools } = useUserPools({ chainId, userAddress })
+  const { data: volumes, isLoading: isVolumesLoading } = usePoolVolumes({ chainId })
   const { data: tvls, isLoading: isTvlsLoading } = usePoolTvls({ chainId })
 
-  const isLoading = !poolsData || isTvlsLoading
+  const isLoading = useMemo(
+    () => !poolsData || isTvlsLoading || (!isLite && isVolumesLoading),
+    [poolsData, isTvlsLoading, isLite, isVolumesLoading],
+  )
 
   useEffect(
     () => poolsData && void fetchMissingPoolsRewardsApy(chainId, poolsData),
@@ -90,7 +97,7 @@ export function useLegacyPoolsTable({ blockchainId: network, chainId }: NetworkC
                 ...item,
                 totalAPR: sum(notFalsy(boostedCrvRewards, ...otherRewardsApr).filter(v => !isNaN(v))),
                 rewards,
-                volume: undefined,
+                volume: decimal(volumes?.[item.pool.id]),
                 tvl: decimal(tvls?.[item.pool.id]),
                 hasPosition,
                 network,
@@ -98,7 +105,7 @@ export function useLegacyPoolsTable({ blockchainId: network, chainId }: NetworkC
                 tags: getLegacyPoolTags(!!hasPosition, item),
               }
             }),
-      [isLoading, poolsData, rewardsApyMapper, userPools, tvls, network],
+      [isLoading, poolsData, rewardsApyMapper, userPools, tvls, volumes, network],
     ),
   }
 }
