@@ -1,7 +1,7 @@
 import type { PoolLiquidityEventType } from '@curvefi/prices-api/pools'
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { DownloadIcon } from '@ui/icons/DownloadIcon'
 import { UploadIcon } from '@ui/icons/UploadIcon'

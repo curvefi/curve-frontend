@@ -1,6 +1,6 @@
 import { ClaimableReward } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { formatNumber } from '@primitives/number.utils'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'

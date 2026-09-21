@@ -1,12 +1,16 @@
 import { sum } from 'lodash'
+import { getAddress } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import type { ChainId, PoolData } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { shortenAddress } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { maybe } from '@primitives/objects.utils'
-import type { PoolCompositionRow } from '../components/pool-composition/columns/columns.definitions'
+import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
+import { q } from '@ui/features/queries/util'
+import { decimal } from '@ui/lib/decimal'
 
 export const usePoolComposition = ({
   chainId,
@@ -48,11 +52,12 @@ export const usePoolComposition = ({
 
     return {
       source: {
-        address: tokenAddress,
+        address: getAddress(tokenAddress),
         blockchainId: network.blockchainId,
         iconPosition: 'left' as const,
         primary: symbol,
       },
+      displayAddress: shortenAddress(tokenAddress),
       explorerUrl: scanTokenPath(chainId, tokenAddress),
       marketShare: maybe(reserve?.percentShareInPool, x => +x),
       amount: reserve?.balance,
@@ -61,11 +66,10 @@ export const usePoolComposition = ({
     }
   })
 
-  return {
-    error: null, // TODO: correctly handle error and loading state
-    // this isn't a proper loading check, but we need a bigger refactor for that later on
-    isLoading: usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves,
-    rows,
-    totalUsd: usePricesApiReserves ? pricesApiTotalUsd?.toString() : currencyReserves?.totalUsd,
-  }
+  const totalUsd = decimal(usePricesApiReserves ? pricesApiTotalUsd : currencyReserves?.totalUsd)
+
+  // this isn't a proper loading check, but we need a bigger refactor for that later on
+  const isLoading = usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves
+  const error = null // TODO: correctly handle error and loading state
+  return { rows: q({ data: rows, isLoading, error }), totalUsd: q({ data: totalUsd, isLoading, error }) }
 }

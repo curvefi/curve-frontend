@@ -11,7 +11,7 @@ import { usePoolContext } from '../pool-context'
 import { Alerts } from './components/Alerts'
 import { Metrics } from './components/Metrics'
 import { PointsCampaigns } from './components/points-campaigns'
-import { PoolComposition } from './components/pool-composition'
+import { PoolComposition } from './components/PoolComposition'
 import { YieldBreakdown } from './components/yield-breakdown'
 
 type PoolInformation = { poolAlert: PoolAlert | null; pricesApiPoolData?: PricesApiPool }
