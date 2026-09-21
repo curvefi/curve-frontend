@@ -6,7 +6,7 @@ import { useIncreaseLockIsApproved } from './increase-lock-approved.query'
 import type { IncreaseLockParams, IncreaseLockQuery } from './increase-lock.types'
 import { increaseLockQueryValidationSuite } from './increase-lock.validation'
 
-export const { useQuery: useIncreaseLockApproveEstimateGas } = queryFactory({
+const { useQuery: useIncreaseLockApproveEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) =>
     [...rootKeys.userChain({ chainId, userAddress }), 'boosting.estimateGas.approve', { lockedAmount }] as const,
   queryFn: async ({ lockedAmount }: IncreaseLockQuery) =>
@@ -15,7 +15,7 @@ export const { useQuery: useIncreaseLockApproveEstimateGas } = queryFactory({
   validationSuite: increaseLockQueryValidationSuite,
 })
 
-export const { useQuery: useIncreaseLockEstimateGas } = queryFactory({
+const { useQuery: useIncreaseLockEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) =>
     [...rootKeys.userChain({ chainId, userAddress }), 'boosting.estimateGas.increaseAmount', { lockedAmount }] as const,
   queryFn: async ({ lockedAmount }: IncreaseLockQuery) =>

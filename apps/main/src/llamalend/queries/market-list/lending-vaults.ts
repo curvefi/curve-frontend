@@ -66,7 +66,6 @@ const {
 
 const {
   getQueryOptions: getUserLendingVaultStatsOptions,
-  useQuery: useUserLendingVaultStats,
   invalidate: invalidateUserLendingVaultStats,
   reset: resetUserLendingVaultStats,
 } = queryFactory({
@@ -143,7 +142,6 @@ export {
   getUserLendingSuppliesOptions,
   getUserLendingVaultsOptions,
   getUserLendingVaultStatsOptions,
-  useUserLendingVaultStats,
   invalidateUserLendingSupplies,
   resetUserLendingSupplies,
 }

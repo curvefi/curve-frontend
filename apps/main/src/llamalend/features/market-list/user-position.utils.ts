@@ -38,7 +38,7 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
 
 export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
 
-export const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
+const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied
   const usdRate = positionQueries.prices.borrowed.data
   return maybes([supplied, usdRate], (amount, rate) => amount * rate)

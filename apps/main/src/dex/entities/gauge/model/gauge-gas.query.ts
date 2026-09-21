@@ -21,7 +21,7 @@ import {
   useGaugeDepositRewardIsApproved,
 } from './gauge.query'
 
-export const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
+const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
   queryKey: ({ rewardTokenId, amount, userBalance, ...gaugeParams }: DepositRewardApproveParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
@@ -38,7 +38,7 @@ export const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
   category: 'dex.deployGauge',
 })
 
-export const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
+const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
   queryKey: ({ rewardTokenId, distributorId, ...gaugeParams }: AddRewardParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
@@ -55,7 +55,7 @@ export const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
   category: 'dex.deployGauge',
 })
 
-export const { useQuery: useEstimateGasDepositReward } = queryFactory({
+const { useQuery: useEstimateGasDepositReward } = queryFactory({
   queryKey: ({ rewardTokenId, amount, epoch, userBalance, ...gaugeParams }: DepositRewardParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
