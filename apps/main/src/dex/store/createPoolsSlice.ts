@@ -43,7 +43,7 @@ const getPoolData = (p: Pool) => {
     : [...p.underlyingCoinAddresses, ...p.wrappedCoinAddresses]
   const tokensCountBy = countBy(tokens)
 
-  const poolData: PoolData = {
+  return {
     pool: p,
 
     // stats
@@ -53,8 +53,6 @@ const getPoolData = (p: Pool) => {
     tokens,
     tokensCountBy,
   }
-
-  return poolData
 }
 
 export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
