@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { fetchPoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
@@ -8,6 +9,8 @@ import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helper
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { cyMap, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
+import { useUserProfileStore } from '@ui/features/user-profile'
 
 export const TEST_NETWORK = 'stellar-testnet'
 
@@ -28,6 +31,7 @@ export const fetchPoolState = async (pool: StellarContract, { deployer }: Testne
   ])
   return { coins, lp, supply, config }
 }
+
 export type PoolState = Awaited<ReturnType<typeof fetchPoolState>>
 export type PoolAmounts = Record<string, Decimal>
 
@@ -41,13 +45,17 @@ export const writePoolAmount = (address: StellarContract, amount: Decimal | unde
   poolInput(address).find('input').blur()
 }
 
-export const checkPoolGasEstimate = () => {
-  cy.get('[data-testid="estimated-tx-cost-value"]', LOAD_TIMEOUT).should('be.visible')
-  getActionValue('estimated-tx-cost').should(value => {
-    expect(value).to.include('XLM')
-    expect(Number.parseFloat(value!)).to.be.greaterThan(0)
+export const checkPoolSlippage = () =>
+  getActionValue('borrow-slippage').should(
+    'equal',
+    formatNumber(useUserProfileStore.getState().maxSlippage.stable, 'percent.rate'),
+  )
+
+export const checkPoolPriceImpact = () =>
+  getActionValue('pool-price-impact').should(value => {
+    expect(value).to.include('%')
+    expect(Number.parseFloat(value!)).to.be.finite
   })
-}
 
 export const writePoolForm = (coins: Pick<PoolState['coins'][number], 'address' | 'symbol'>[], amounts: PoolAmounts) =>
   coins.forEach(({ address, symbol }) => {
@@ -66,5 +74,5 @@ export const readPoolAmounts = (coins: PoolState['coins']) =>
       .find('input')
       .should('not.have.value', '')
       .invoke('val')
-      .then(value => String(value) as Decimal),
+      .then(value => value as Decimal),
   )

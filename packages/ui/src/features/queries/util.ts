@@ -52,7 +52,8 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>
 
 export type MakeRequired<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> }
 
-export type AllowUndefined<T> = { [P in keyof T]: T[P] | undefined }
+/** Allows undefined values for selected fields while keeping their keys required. */
+export type AllowUndefined<T, K extends keyof T = keyof T> = Omit<T, K> & { [P in K]: T[P] | undefined }
 
 /**
  * A generic type representing the result of a query operation.

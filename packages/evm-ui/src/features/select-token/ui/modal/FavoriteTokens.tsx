@@ -2,9 +2,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SelectableChip } from '@ui/components/SelectableChip'
 import { TokenIcon } from '@ui/components/TokenIcon'
+import type { TokenOption } from '@ui/features/select-token/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import type { TokenOption } from '../../types'
 
 const { Spacing } = SizesAndSpaces
 

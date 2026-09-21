@@ -5,7 +5,7 @@ import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { defaultNetworks, getNetworks as getNetworksLib } from '../lib/networks'
 
 const { useQuery, fetchQuery, getQueryData } = queryFactory({
-  queryKey: () => ['networks', 'v3'] as const,
+  queryKey: () => ['networks', 'v4'] as const,
   queryFn: getNetworksLib,
   validationSuite: EmptyValidationSuite, // no args
   category: 'dex.network',

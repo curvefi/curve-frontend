@@ -8,7 +8,7 @@ import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
 import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
 import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
-import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
+import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT } from '@/dex/components/PagePool/Swap/utils'
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
@@ -17,10 +17,11 @@ import { useNetworks } from '@/dex/entities/networks'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
-import { TokenList, TokenSelector, type TokenOption } from '@evm-ui/features/select-token'
+import { CurveApi, PoolAlert, PoolData } from '@/dex/types/main.types'
+import { TokenList } from '@evm-ui/features/select-token'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { shortenAddress } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { Icon } from '@legacy-ui/Icon'
@@ -40,6 +41,8 @@ import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { useLayoutStore } from '@ui/features/layout/store'
 import { q, toQuery } from '@ui/features/queries/util'
+import { type TokenOption } from '@ui/features/select-token/types'
+import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
@@ -54,13 +57,7 @@ export const Swap = ({
   maxSlippage,
   poolAlert,
   seed,
-  tokensMapper,
-}: Pick<PageTransferProps, 'params'> & {
-  poolAlert: PoolAlert | null
-  maxSlippage: Decimal
-  seed: Seed
-  tokensMapper: TokensMapper
-}) => {
+}: Pick<PageTransferProps, 'params'> & { poolAlert: PoolAlert | null; maxSlippage: Decimal; seed: Seed }) => {
   const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
@@ -110,20 +107,17 @@ export const Swap = ({
 
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: formValues.toAddress }, !!formValues.toAddress)
 
-  const { selectList, swapTokensMapper } = useMemo(() => {
-    const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolData)
-    return {
-      selectList: selectList.map<TokenOption>(token => ({
-        address: token.address as Address, // not checksummed!
-        symbol: token.symbol,
+  const tokens = useMemo(
+    () =>
+      poolData.tokenAddresses.map<TokenOption>((address, index) => ({
+        address: address as Address, // not checksummed!
+        symbol: poolData.tokens[index] || shortenAddress(address),
         chain: network?.blockchainId,
       })),
-      swapTokensMapper,
-    }
-  }, [poolData, tokensMapper, network?.blockchainId])
-
-  const fromToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
-  const toToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.toAddress)
+    [poolData.tokenAddresses, poolData.tokens, network?.blockchainId],
+  )
+  const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
+  const toToken = tokens.find(x => x.address.toLocaleLowerCase() == formValues.toAddress)
 
   const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
   const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
@@ -384,7 +378,7 @@ export const Swap = ({
           tokenSelector={
             <TokenSelector
               selectedToken={fromToken}
-              disabled={isDisabled || selectList.length === 0}
+              disabled={isDisabled || tokens.length === 0}
               compact
               onClose={closeModalFromToken}
               isOpen={!!isOpenFromToken}
@@ -392,15 +386,15 @@ export const Swap = ({
               size="small"
             >
               <TokenList
-                tokens={selectList}
+                tokens={tokens}
                 disableSearch
                 onToken={({ address, symbol }) =>
                   updateFormValues(
                     {
                       ...formValues,
                       ...(address === formValues.toAddress && {
-                        toAddress: formValues.fromAddress,
-                        toToken: swapTokensMapper[formValues.fromAddress].symbol,
+                        toAddress: fromToken?.address,
+                        toToken: fromToken?.symbol,
                       }),
                       fromAddress: address,
                       fromToken: symbol,
@@ -456,7 +450,7 @@ export const Swap = ({
           tokenSelector={
             <TokenSelector
               selectedToken={toToken}
-              disabled={isDisabled || selectList.length === 0}
+              disabled={isDisabled || tokens.length === 0}
               compact
               isOpen={!!isOpenToToken}
               onOpen={openModalToToken}
@@ -464,15 +458,15 @@ export const Swap = ({
               size="small"
             >
               <TokenList
-                tokens={selectList}
+                tokens={tokens}
                 disableSearch
                 onToken={({ address, symbol }) =>
                   updateFormValues(
                     {
                       ...formValues,
                       ...(address === formValues.fromAddress && {
-                        fromAddress: formValues.toAddress,
-                        fromToken: swapTokensMapper[formValues.toAddress].symbol,
+                        fromAddress: toToken?.address,
+                        fromToken: toToken?.symbol,
                       }),
                       toAddress: address,
                       toToken: symbol,

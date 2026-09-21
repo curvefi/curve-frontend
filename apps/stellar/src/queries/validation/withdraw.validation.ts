@@ -1,39 +1,18 @@
 import { skipWhen, test } from 'vest'
+import type { WithdrawSimulationParams } from '@/stellar/features/withdraw/types'
 import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
-import type { PoolQuery, UserQuery } from '@/stellar/queries/root-keys'
-import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
-import type { WithdrawFormValues, WithdrawMutation } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import type { DeepPartial } from '@ui/features/queries/util'
+import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import type { FieldsOf } from '@ui/lib/validation/types'
 import {
   validateAmount,
   validateLiquidityInputs,
   validateReserveAmounts,
   validateSlippage,
-  type QuoteQuery,
 } from './liquidity.validation'
 import { validateAccount, validatePool } from './pool.validation'
-
-export type { WithdrawMutation } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-
-export type WithdrawQuery = PoolQuery & UserQuery & WithdrawMutation
-export type WithdrawParams = FieldsOf<DeepPartial<WithdrawQuery>>
-
-export type WithdrawSimulationQuery = QuoteQuery &
-  UserQuery & {
-    lpAmount: Decimal
-    maxLpAmount: Decimal
-    seedLock: Decimal
-    maxAmounts: (Decimal | undefined)[]
-    quote: Decimal
-    maximumBurn: Decimal
-    slippage: Decimal
-  }
-export type WithdrawSimulationParams = FieldsOf<DeepPartial<WithdrawSimulationQuery>>
 
 const validateOutputs = ({
   amounts,

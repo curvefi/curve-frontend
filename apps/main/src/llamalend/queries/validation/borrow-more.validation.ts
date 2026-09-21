@@ -22,7 +22,7 @@ import { marketIdValidationGroup } from '@evm-ui/lib/model/query/market-id-valid
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import type { MakeOptional } from '@ui/features/queries/util'
+import type { AllowUndefined } from '@ui/features/queries/util'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
@@ -43,7 +43,7 @@ type CalculatedValues = {
   maxBorrowed: Decimal | undefined
 }
 
-export type BorrowMoreForm = MakeOptional<BorrowMoreMutation, 'userCollateral' | 'userBorrowed' | 'debt'> &
+export type BorrowMoreForm = AllowUndefined<BorrowMoreMutation, 'userCollateral' | 'userBorrowed' | 'debt'> &
   CalculatedValues
 
 export type BorrowMoreQuery<ChainId = number> = UserMarketQuery<ChainId> &

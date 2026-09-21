@@ -1,10 +1,10 @@
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { ExpectedExchangeRate } from '@cy/support/helpers/swap/swap.helpers'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('DEX Swap', () => {
   const FROM_USDT = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
   const TO_ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+  const ExpectedExchangeRate = /1 ETH = \d+(?:\.\d{2,4})?k USDT/
 
   it('shows quotes via router API when disconnected', () => {
     cy.visitWithoutTestConnector(`dex/ethereum/swap?from=${FROM_USDT}&to=${TO_ETH}`)
