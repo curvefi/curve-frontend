@@ -42,13 +42,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
   columnHelper.accessor('source', {
     id: PoolCompositionColumnId.Asset,
     header: headers[PoolCompositionColumnId.Asset],
-    cell: ({ getValue, row }) => (
-      <TokenCell
-        source={getValue()}
-        explorerUrl={row.original.explorerUrl}
-        displayAddress={row.original.displayAddress}
-      />
-    ),
+    cell: ({ getValue, row }) => <TokenCell source={getValue()} explorerUrl={row.original.explorerUrl} />,
     enableSorting: false,
   }),
   columnHelper.accessor('price', {

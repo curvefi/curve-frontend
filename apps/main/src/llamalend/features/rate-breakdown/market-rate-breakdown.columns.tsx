@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import { TokenPriceCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
 import { shortenAddress } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -28,9 +29,9 @@ const rateColumns = (rateHeader: string) =>
         return (
           <TokenCell
             source={tokenInfo}
-            address={address}
+            address={maybe(address, getAddress)}
             explorerUrl={explorerUrl}
-            displayAddress={shortenAddress(address)}
+            displayAddress={maybe(address, shortenAddress)}
             endAdornment={
               yieldBearing && <Badge size="extraSmall" label={t`Yield bearing`} sx={{ alignSelf: 'flex-end' }} />
             }

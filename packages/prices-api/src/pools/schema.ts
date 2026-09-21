@@ -496,14 +496,14 @@ export const getPoolSnapshotsResponse = z
 export const getPoolMetadataResponse = z
   .object({
     name: z.string(),
-    registry: z.string(),
+    registry: address,
     registry_type: z.string(),
     lp_token_address: address,
     coins: z.array(metadataCoin),
     gauges: z.array(z.string()),
     pool_type: poolType,
     metapool: z.boolean(),
-    base_pool: z.string().nullable(),
+    base_pool: address.nullable(),
     asset_types: z.array(z.number()).nullable(),
     oracles: z.array(oracle.nullable()).nullable(),
     vyper_version: z.string().nullable(),

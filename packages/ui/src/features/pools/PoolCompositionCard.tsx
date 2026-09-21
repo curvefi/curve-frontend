@@ -44,7 +44,7 @@ export const PoolCompositionCard = ({
               visibleColumns={table.getVisibleLeafColumns()}
               isLoading={isLoading}
               totalUsd={totalUsd}
-              hasBalance={rows.some(row => row.amount != null)}
+              hasBalance={rows.some(row => row.amount)}
             />
           )
         }

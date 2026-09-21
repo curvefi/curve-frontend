@@ -18,7 +18,7 @@ type TokenCellProps = {
   /** Used when a custom source icon does not include a token address. */
   address?: Address
   /** The address to display in the cell. */
-  displayAddress: string | undefined
+  displayAddress?: string
   /** Optional explorer URL for the displayed address. */
   explorerUrl?: string
   /** Optional content rendered after the token information, such as a badge. */
