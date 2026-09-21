@@ -4,6 +4,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
+import { useWithdrawPriceImpact } from '@/stellar/features/withdraw/useWithdrawPriceImpact'
 import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
@@ -22,9 +23,9 @@ import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/
 import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { useUserProfileStore } from '@ui/features/user-profile'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { fromWei } from '@ui/lib/decimal'
+import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { WithdrawFormQuery } from './types'
 
 const formOptions = {
@@ -55,7 +56,6 @@ export function useWithdrawForm(poolParams: PoolQuery) {
 
   const { inputs: tokenInputs, decimals } = usePoolTokens({ ...poolParams, account, tokens })
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
-  const slippage = useUserProfileStore(state => state.maxSlippage.stable)
   const maxAmounts = useCombinedQueries([reserves, decimals], getReserveAmounts)
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), lpAmount: undefined }),
@@ -80,7 +80,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         account,
         tokenCount,
         decimals: decimals.data,
-        slippage,
+        slippage: values.slippage,
         supply: supply.data,
         seedLock: config.data?.seedLock,
         maxLpAmount: lpBalance.data,
@@ -93,7 +93,6 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         account,
         tokenCount,
         decimals.data,
-        slippage,
         supply.data,
         config.data?.seedLock,
         lpBalance.data,
@@ -105,9 +104,12 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: false })
   const expected = mapQuery(quote, calculateExpectedBurn)
   const maximum = mapQuery(expected, value => calculateMaximumBurn(value, params.slippage))
+  const priceImpact = useWithdrawPriceImpact(
+    { ...params, amounts: getPoolAmounts(params, params.tokenCount) },
+    expected,
+  )
 
   useFormSync(form, {
-    slippage,
     decimals: decimals.data,
     supply: supply.data,
     seedLock: config.data?.seedLock,
@@ -139,12 +141,16 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     lpBalance: q(lpBalance),
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
-    isDisabled: isPending || isDebouncing || !formState.isValid,
+    isDisabled:
+      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, { leverageEnabled: true }),
     isLoading: isPending,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: withdrawError,
     formErrors: formState.visibleErrors,
+    priceImpact,
+    slippage: values.slippage,
+    onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens: tokenInputs,
   }
 }

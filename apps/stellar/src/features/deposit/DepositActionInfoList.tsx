@@ -1,4 +1,3 @@
-import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { useGasEstimation } from '@/stellar/lib/gas'
 import { useDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
@@ -14,10 +13,9 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalEqual, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { DepositFormQuery } from './types'
-import { useDepositPriceImpact } from './useDepositPriceImpact'
 
 export const DepositActionInfoList = (params: DepositFormQuery) => {
-  const { account, pool, slippage, tokenCount } = params
+  const { pool, slippage, tokenCount } = params
   const queryParams = { ...params, amounts: getPoolAmounts(params, tokenCount) }
   const quote = useExpectedLp({ ...queryParams, isDeposit: true })
   const minimum = mapQuery(quote, value => calculateMinimumMint(value, slippage))
@@ -41,11 +39,8 @@ export const DepositActionInfoList = (params: DepositFormQuery) => {
       projectedLp={combineQueries([lpBalance, quote], decimalSum)}
       projectedLpLabel={t`Projected LP balance`}
       projectedLpTestId="pool-deposit-projected-lp"
-      priceImpact={useDepositPriceImpact(queryParams, q(quote))}
       seedLock={seedLock}
       gas={useGasEstimation(params, simulation)}
-      slippage={slippage}
-      userAddress={asAddress(account)}
     />
   )
 }

@@ -2,13 +2,14 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Form } from '@ui/features/forms/components/Form'
-import { FormAlerts } from '@ui/features/forms/FormAlerts'
+import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { FormButton } from '@ui/features/forms/FormButton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ArrowsHorizontalIcon } from '@ui/icons/ArrowsHorizontalIcon'
 import { t } from '@ui/lib/i18n'
 import type { PoolFormProps } from '../pool-form.types'
+import { PoolActionSettings } from '../PoolActionSettings'
 import { reverseSwap, type SwapFormValues } from './swap-form.utils'
 import { SwapTokenInput } from './SwapTokenInput'
 export type SwapFormProps = PoolFormProps<SwapFormValues> & {
@@ -32,6 +33,9 @@ export const SwapForm = ({
   error,
   formErrors,
   footer,
+  priceImpact,
+  slippage,
+  onSlippageChange,
 }: SwapFormProps) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
     <Stack sx={{ gap: Spacing.xxs }}>
@@ -47,6 +51,13 @@ export const SwapForm = ({
       </IconButton>
       <SwapTokenInput form={form} tokens={tokens} side="receive" balance={outputAmount} disabled={isPending} />
     </Stack>
+    <PoolActionSettings
+      priceImpact={priceImpact}
+      slippage={slippage}
+      onSlippageChange={onSlippageChange}
+      userAddress={userAddress}
+    />
+    <HighPriceImpactAlert priceImpact={priceImpact} />
     <FormButton
       {...wallet}
       pending={isPending}

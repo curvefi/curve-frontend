@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
+import { useDepositPriceImpact } from '@/stellar/features/deposit/useDepositPriceImpact'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
 import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { useDepositMutation } from '@/stellar/mutations/deposit.mutation'
@@ -12,13 +13,14 @@ import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery } from '@/stellar/queries/root-keys'
 import { depositFormValidationSuite } from '@/stellar/queries/validation/deposit.validation'
+import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { useUserProfileStore } from '@ui/features/user-profile'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
+import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { DepositForm, DepositFormQuery } from './types'
 
 const formOptions = {
@@ -36,7 +38,6 @@ export function useDepositForm(poolParams: PoolQuery) {
   const tokenCount = tokens.data?.length
 
   const { inputs: tokenInputs, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokens })
-  const slippage = useUserProfileStore(state => state.maxSlippage.stable)
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), isBalanced: false }),
     [tokenCount],
@@ -47,7 +48,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   })
   const { formState, reset } = form
 
-  useFormSync(form, { slippage, decimals: decimals.data, supply: supply.data })
+  useFormSync(form, { decimals: decimals.data, supply: supply.data })
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
 
   // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
@@ -61,16 +62,17 @@ export function useDepositForm(poolParams: PoolQuery) {
         account,
         tokenCount,
         decimals: decimals.data,
-        slippage,
+        slippage: values.slippage,
         supply: supply.data,
         maxAmounts: maxAmounts.data,
       }),
-      [values, network, pool, account, tokenCount, decimals.data, slippage, supply.data, maxAmounts.data],
+      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts.data],
     ),
     userDefaultValues,
   )
   const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })
   const minimum = mapQuery(quote, value => calculateMinimumMint(value, params.slippage))
+  const priceImpact = useDepositPriceImpact({ ...params, amounts: getPoolAmounts(params, params.tokenCount) }, q(quote))
 
   const {
     onSubmit,
@@ -92,12 +94,16 @@ export function useDepositForm(poolParams: PoolQuery) {
     params,
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
-    isDisabled: isPending || isDebouncing || !formState.isValid,
+    isDisabled:
+      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, { leverageEnabled: true }),
     isLoading: isPending,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: depositError,
     formErrors: formState.visibleErrors,
+    priceImpact,
+    slippage: values.slippage,
+    onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens: tokenInputs,
     isSeed: mapQuery(supply, supply => !+supply),
   }

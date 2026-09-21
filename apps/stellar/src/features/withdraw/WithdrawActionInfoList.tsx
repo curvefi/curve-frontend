@@ -1,4 +1,3 @@
-import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { useGasEstimation } from '@/stellar/lib/gas'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
@@ -11,7 +10,6 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { WithdrawFormQuery } from './types'
-import { useWithdrawPriceImpact } from './useWithdrawPriceImpact'
 
 export const WithdrawActionInfoList = (params: WithdrawFormQuery) => {
   const queryParams = { ...params, amounts: getPoolAmounts(params, params.tokenCount) }
@@ -32,10 +30,7 @@ export const WithdrawActionInfoList = (params: WithdrawFormQuery) => {
       projectedLp={combineQueries([lpBalance, expected], decimalMinus)}
       projectedLpLabel={t`Expected remaining LP balance`}
       projectedLpTestId="pool-withdraw-projected-lp"
-      priceImpact={useWithdrawPriceImpact(queryParams, expected)}
       gas={useGasEstimation(params, simulation)}
-      slippage={params.slippage}
-      userAddress={asAddress(params.account)}
     />
   )
 }
