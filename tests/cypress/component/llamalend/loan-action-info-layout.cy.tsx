@@ -4,7 +4,7 @@ import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { getActionInfo, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
@@ -104,6 +104,27 @@ allViewports().forEach(([width, height, viewport]) => {
 })
 
 describe('leverage action info', () => {
+  it('hides the previous return on equity when creating a loan', () => {
+    cy.mount(
+      <ComponentTestWrapper config={mockedWagmiConfig}>
+        <LoanActionInfoList
+          isOpen
+          leverageEnabled
+          prevLeverageValue={constQ('0')}
+          leverageValue={constQ('3')}
+          prevRates={constQ({ borrowApy: '2' })}
+          rates={constQ({ borrowApy: '4' })}
+          collateralApy={constQ(5)}
+          oraclePrice={constQ(null)}
+          gas={constQ(null)}
+        />
+      </ComponentTestWrapper>,
+    )
+
+    getActionInfo('borrow-return-on-equity', 'previous').should('have.text', '')
+    getActionValue('borrow-return-on-equity').should('equal', formatNumber(7, 'percent.rate'))
+  })
+
   it('shows the current and future return on equity', () => {
     cy.mount(
       <ComponentTestWrapper config={mockedWagmiConfig}>
