@@ -84,6 +84,7 @@ export const DataTable = <TData extends RowData>({
     increasingLength = 'default',
     emptyStateSize = 'md',
     emptyStateRowSize = 'sm',
+    enablePageChangeScroll = false,
   }: DataTableCategoryConfig = DATA_TABLE_CATEGORIES[category]
   const { table } = rowProps
   const { isLoading, error } = table
@@ -102,7 +103,7 @@ export const DataTable = <TData extends RowData>({
   const containerRef = useRef<HTMLDivElement>(null)
   const { shouldStickyHeader, tableRef, tableWrapperRef } = useTableStickyHeader({ disableStickyHeader, isLimited })
   useScrollToTopOnFilterChange({ table, tableTopRef })
-  useScrollToTopOnPageChange({ table, tableTopRef, containerRef })
+  useScrollToTopOnPageChange({ table, tableTopRef, containerRef, enablePageChangeScroll })
   useResetPageOnResultChange(table)
   const tableHeaderSx = (t: Theme) => ({
     ...(shouldStickyHeader && {

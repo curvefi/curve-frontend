@@ -35,7 +35,12 @@ const createMarketsColumnOptions = ({
         active: !onlyPositions,
         enabled: true,
       },
-      { label: MARKET_TITLES[MarketColumnId.MaxRoe], columns: [MarketColumnId.MaxRoe], active: false, enabled: true },
+      {
+        label: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
+        columns: [MarketColumnId.MaxReturnOnEquity],
+        active: false,
+        enabled: true,
+      },
       {
         label: MARKET_TITLES[MarketColumnId.LiquidityUsd],
         columns: [MarketColumnId.LiquidityUsd],

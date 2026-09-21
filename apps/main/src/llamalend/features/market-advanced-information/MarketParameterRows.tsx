@@ -1,7 +1,9 @@
+import { isAddress } from 'viem'
 import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { fakeLoadingQ, fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
@@ -56,6 +58,11 @@ export const MarketPricesRows = ({
   )
 }
 
-export const MarketIdRow = ({ marketId }: { marketId: string | undefined }) => (
-  <ActionInfo testId="market-id" label={t`Market ID`} value={fakeLoadingQ(marketId)} />
-)
+const MARKET_ID = { testId: 'market-id', label: t`Market ID` }
+
+export const MarketIdRow = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) =>
+  marketId && isAddress(marketId) ? (
+    <AddressActionInfo chainId={chainId} testId={MARKET_ID.testId} title={MARKET_ID.label} address={marketId} />
+  ) : (
+    <ActionInfo testId={MARKET_ID.testId} label={MARKET_ID.label} value={fakeLoadingQ(marketId)} />
+  )

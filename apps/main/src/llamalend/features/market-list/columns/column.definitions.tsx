@@ -1,6 +1,6 @@
-import { getMaxRoE } from '@/llamalend/llama.utils'
+import { getMaxReturnOnEquity } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { MaxRoeTooltipContent, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
+import { MaxReturnOnEquityTooltipContent, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@evm-ui/shared/ui/DataTable/filters'
 import { MarketRateType } from '@evm-ui/types/market'
 import type { DeepKeys } from '@tanstack/table-core'
@@ -14,7 +14,7 @@ import {
   LtvCell,
   MarketTitleCell,
   MaxLeverageCell,
-  MaxRoeCell,
+  MaxReturnOnEquityCell,
   PercentCell,
   PriceCell,
   RateCell,
@@ -151,14 +151,14 @@ export const MARKET_COLUMNS = columnHelper.columns([
       sortUndefined: 'last',
     },
   ),
-  columnHelper.accessor(getMaxRoE, {
-    id: MarketColumnId.MaxRoe,
-    header: MARKET_TITLES[MarketColumnId.MaxRoe],
-    cell: MaxRoeCell,
+  columnHelper.accessor(getMaxReturnOnEquity, {
+    id: MarketColumnId.MaxReturnOnEquity,
+    header: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
+    cell: MaxReturnOnEquityCell,
     meta: {
       type: 'numeric',
       unit: 'percentage',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.MaxRoe], body: <MaxRoeTooltipContent /> },
+      tooltip: { title: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity], body: <MaxReturnOnEquityTooltipContent /> },
     },
     sortUndefined: 'last',
   }),

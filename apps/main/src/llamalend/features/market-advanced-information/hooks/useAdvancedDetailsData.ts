@@ -3,7 +3,7 @@ import {
   calculateLendMarketTvlUsd,
   calculateMintMarketTvlUsd,
   getControllerAddress,
-  getRoE,
+  getReturnOnEquity,
   getTokens,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
@@ -24,8 +24,8 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
-const maxRoe = (leverage: number | null, collateralApy: number | null, borrowApy: number | null) => ({
-  value: getRoE(leverage, collateralApy, borrowApy),
+const maxReturnOnEquity = (leverage: number | null, collateralApy: number | null, borrowApy: number | null) => ({
+  value: getReturnOnEquity(leverage, collateralApy, borrowApy),
   leverage,
   collateralApy,
   borrowApy,
@@ -119,14 +119,14 @@ export const useAdvancedDetailsData = ({
       mapQuery(maxLeverage, value => ({ value })),
       mapQuery(apiMarket, ({ leverage }) => maybe(leverage, value => ({ value }))),
     ),
-    maxRoe: fallbackQ(
+    maxReturnOnEquity: fallbackQ(
       combineQueries([maxLeverage, snapshots], (leverage, snapshots) =>
         maybe(snapshots.at(-1), ({ borrowApy, collateralToken }) =>
-          maxRoe(+leverage, collateralToken.rebasingYield, borrowApy),
+          maxReturnOnEquity(+leverage, collateralToken.rebasingYield, borrowApy),
         ),
       ),
       mapQuery(apiMarket, ({ leverage, assets, rates }) =>
-        maxRoe(leverage, assets.collateral.rebasingYield, rates.borrowApy),
+        maxReturnOnEquity(leverage, assets.collateral.rebasingYield, rates.borrowApy),
       ),
     ),
     availableLiquidity: fallbackQ(

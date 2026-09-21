@@ -12,13 +12,13 @@ import { formatDate } from '@primitives/date.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
+import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { usePoolContext } from '../../pool-context'
-import { Section } from './Section'
 
 const { Spacing } = SizesAndSpaces
 
@@ -45,8 +45,8 @@ export const Parameters = () => {
   return (
     <Card size="extraSmall" variant="inline">
       <CardHeader title={t`Parameters`} />
-      <CardContent component={Stack}>
-        <Section>
+      <CardContent>
+        <SectionContentCard>
           <ActionInfo
             label={t`AMM fee`}
             value={mapQuery(
@@ -90,9 +90,9 @@ export const Parameters = () => {
             )}
             valueTooltip={t`Measures pool growth; this is not a dollar value`}
           />
-        </Section>
+        </SectionContentCard>
 
-        <Section>
+        <SectionContentCard>
           {(A != null || snapshotData?.a != null) && (
             <ActionInfo
               label={t`Amplification factor`}
@@ -129,9 +129,9 @@ export const Parameters = () => {
           {maybe(snapshotData?.offpegFeeMultiplier, x => (
             <ActionInfo label={t`Off peg multiplier`} value={formatNumber(x / 10 ** 10, 'pool.parameter')} />
           ))}
-        </Section>
+        </SectionContentCard>
 
-        <Section>
+        <SectionContentCard>
           {maybe(snapshotData?.midFee, x => (
             <ActionInfo label={t`Mid fee`} value={formatNumber(x / 10 ** 8, 'pool.parameter')} />
           ))}
@@ -139,9 +139,9 @@ export const Parameters = () => {
           {maybe(snapshotData?.outFee, x => (
             <ActionInfo label={t`Out fee`} value={formatNumber(x / 10 ** 8, 'pool.parameter')} />
           ))}
-        </Section>
+        </SectionContentCard>
 
-        <Section>
+        <SectionContentCard>
           {gamma && (
             <ActionInfo
               label={t`Gamma`}
@@ -156,9 +156,9 @@ export const Parameters = () => {
           {maybe(snapshotData?.allowedExtraProfit, x => (
             <ActionInfo label={t`Allowed extra profit`} value={formatNumber(x / 10 ** 18, 'pool.parameter')} />
           ))}
-        </Section>
+        </SectionContentCard>
 
-        <Section>
+        <SectionContentCard>
           {maybe(snapshotData?.adjustmentStep, x => (
             <ActionInfo label={t`Adjustment step`} value={formatNumber(x / 10 ** 18, 'pool.parameter')} />
           ))}
@@ -169,7 +169,7 @@ export const Parameters = () => {
               value={formatNumber(x, { useGrouping: false, abbreviate: false })}
             />
           ))}
-        </Section>
+        </SectionContentCard>
       </CardContent>
     </Card>
   )
