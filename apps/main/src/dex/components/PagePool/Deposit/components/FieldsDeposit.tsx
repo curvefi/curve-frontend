@@ -5,6 +5,7 @@ import { useConnection } from 'wagmi'
 import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
+import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
@@ -62,6 +63,7 @@ export const FieldsDeposit = ({
   formValues,
   haveSigner,
   isSeed,
+  tokensMapper,
   updateFormValues,
 }: {
   chainId: number | undefined
@@ -75,7 +77,7 @@ export const FieldsDeposit = ({
     loadMaxAmount: LoadMaxAmount | null,
     updatedMaxSlippage: string | null,
   ) => void
-}) => {
+} & Pick<TransferProps, 'tokensMapper'>) => {
   const { chainId, blockchainId, poolId, poolData } = usePoolContext()
   const { data: network } = useNetworkByChain({ chainId })
   const maxLoading = useStore(state => state.poolDeposit.maxLoading)
@@ -130,6 +132,7 @@ export const FieldsDeposit = ({
         poolData.tokens.map((token, idx) => {
           const tokenAddress = poolData.tokenAddresses[idx]
           const addressBalanceAmount = userPoolBalances.data?.[tokenAddress] ?? '0'
+          const { ethAddress = tokenAddress } = tokensMapper[tokenAddress] ?? {}
           const haveSameTokenName = poolData.tokensCountBy[token] > 1
           const { value } = amountsInput[idx]
           const isDisableInput = isSeed === null || formProcessing || (isSeed && idx !== 0)
@@ -148,7 +151,7 @@ export const FieldsDeposit = ({
               blockchainId={blockchainId}
               isMaxLoading={maxLoading === idx}
               token={token}
-              tokenAddress={tokenAddress}
+              tokenAddress={ethAddress}
               handleAmountChange={handleFormAmountChange}
               afterMaxClick={afterMaxClick}
             />

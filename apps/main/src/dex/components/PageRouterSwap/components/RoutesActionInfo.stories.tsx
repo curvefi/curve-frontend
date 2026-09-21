@@ -1,18 +1,13 @@
 import type { ComponentProps } from 'react'
-import { ethAddress, getAddress } from 'viem'
+import { ethAddress } from 'viem'
 import { Route } from '@/dex/components/PageRouterSwap/types'
-import type { TokenMapper } from '@/dex/queries/tokens.query'
-import { PoolDataMapper } from '@/dex/types/main.types'
+import { PoolDataMapper, TokensNameMapper } from '@/dex/types/main.types'
 import { CRVUSD_ADDRESS, REUSD_ADDRESS } from '@evm-ui/utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { q } from '@ui/features/queries/util'
 import { RoutesActionInfo } from './RoutesActionInfo'
 
-const tokens: TokenMapper = {
-  [getAddress(REUSD_ADDRESS)]: { decimals: 18, symbol: 'reUSD' },
-  [getAddress(ethAddress)]: { decimals: 18, symbol: 'ETH' },
-  [getAddress(CRVUSD_ADDRESS)]: { decimals: 18, symbol: 'crvUSD' },
-}
+const tokensNameMapper: TokensNameMapper = { [REUSD_ADDRESS]: 'reUSD', [ethAddress]: 'ETH', [CRVUSD_ADDRESS]: 'crvUSD' }
 
 const poolDataMapper = {
   'pool-1': {
@@ -62,7 +57,7 @@ const meta: Meta<typeof RoutesActionInfoStory> = {
     routes: undefined,
     loading: false,
     errorMessage: '',
-    tokens,
+    tokensNameMapper,
     poolDataMapper: poolDataMapper as unknown as PoolDataMapper,
     swapCustomRouteRedirect: undefined,
   },

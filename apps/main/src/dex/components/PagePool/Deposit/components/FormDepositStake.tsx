@@ -36,7 +36,7 @@ import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/Slippag
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
-export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps) => {
+export const FormDepositStake = ({ poolAlert, maxSlippage, seed, tokensMapper }: TransferProps) => {
   const { chainId, blockchainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
@@ -259,6 +259,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
         haveSigner={haveSigner}
         blockchainId={blockchainId}
         isSeed={seed.isSeed}
+        tokensMapper={tokensMapper}
         updateFormValues={updateFormValues}
       />
 

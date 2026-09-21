@@ -18,8 +18,9 @@ import type { Decimal } from '@primitives/decimal.utils'
 export type CreateToken = {
   address: string
   symbol: string
+  ethAddress?: string
+  haveSameTokenName: boolean
   balance?: string
-  volume?: number
   userAddedToken: boolean
   basePool?: boolean
 }

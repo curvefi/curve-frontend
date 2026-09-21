@@ -1,4 +1,4 @@
-import { uniqBy } from 'lodash'
+import lodash from 'lodash'
 import { useMemo, useCallback } from 'react'
 import { styled } from 'styled-components'
 import { SwitchTokensButton } from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
@@ -22,8 +22,8 @@ import { SetOracle } from '@/dex/components/PageCreatePool/TokensInPool/SetOracl
 import { CreateToken, TokenId, TokensInPoolState, type TokenState } from '@/dex/components/PageCreatePool/types'
 import { containsOracle } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { useBasePools } from '@/dex/queries/base-pools.query'
-import { getToken, useTokens } from '@/dex/queries/tokens.query'
 import {
   DEFAULT_CREATE_POOL_STATE,
   DEFAULT_ERC4626_STATUS,
@@ -35,7 +35,6 @@ import type { QueryData } from '@evm-ui/lib'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { DEFAULT_DECIMALS } from '@primitives/units.util'
-import { useMappedQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
 type BasePool = QueryData<typeof useBasePools>[number]
@@ -71,6 +70,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const updateSwapType = useStore(state => state.createPool.updateSwapType)
   const updateNgAssetType = useStore(state => state.createPool.updateNgAssetType)
   const { data: basePools = [] } = useBasePools({ chainId })
+  const { tokensMapper } = useTokensMapper(chainId)
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
   const {
     data: { createDisabledTokens, stableswapFactory, tricryptoFactory, twocryptoFactory, createQuickList },
@@ -82,46 +82,37 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   )
 
   // prepares list of tokens
-  const tokens = useTokens({ chainId })
-  const { data: selTokens = uniqBy(userAddedTokens, token => token.address) } = useMappedQuery(
-    tokens,
-    useCallback(
-      (tokens): CreateToken[] => {
-        const catalogTokens = Object.entries(tokens)
-          .map(([address, token]) => ({
-            ...token,
-            address: address.toLowerCase(),
-            userAddedToken: false,
-            basePool: basePools.some(pool => pool.token.toLowerCase() === address.toLowerCase()),
-          }))
-          .concat(
-            createQuickList.map(token => ({
-              ...token,
-              userAddedToken: false,
-              basePool: false,
-              decimals: DEFAULT_DECIMALS,
-            })),
-          )
-          .filter(token => token.symbol !== '' && token.address !== '')
-        return uniqBy([...userAddedTokens, ...catalogTokens], token => token.address)
-      },
-      [basePools, createQuickList, userAddedTokens],
-    ),
-  )
+  const selTokens: CreateToken[] = useMemo(() => {
+    const tokensArray = Object.entries(tokensMapper)
+      .map(token => ({
+        ...token[1]!,
+        userAddedToken: false,
+        basePool: basePools.some(pool => pool.token.toLowerCase() === token[0].toLowerCase()),
+      }))
+      .concat(
+        createQuickList.map(token => ({
+          ...token,
+          userAddedToken: false,
+          basePool: false,
+          decimals: DEFAULT_DECIMALS,
+        })),
+      )
+      .filter(token => token.symbol !== '' && token.address !== '')
+
+    return lodash.uniqBy([...userAddedTokens, ...tokensArray], o => o.address)
+  }, [tokensMapper, createQuickList, userAddedTokens, basePools])
 
   const findSymbol = useCallback(
     (address: string) => {
       if (address !== '') {
-        const token = getToken(tokens.data, address)
-        if (token) return token.symbol
-
+        if (tokensMapper[address]) return tokensMapper[address].symbol
         //search through user added tokens
         const addedToken = userAddedTokens.find(userToken => userToken.address === address)
         if (addedToken) return addedToken.symbol
       }
       return ''
     },
-    [tokens.data, userAddedTokens],
+    [tokensMapper, userAddedTokens],
   )
 
   const handleInpChange = useCallback(

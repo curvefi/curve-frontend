@@ -3,7 +3,7 @@ import { QuickSwap } from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
-import { getToken, useTokens } from '@/dex/queries/tokens.query'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
@@ -23,20 +23,18 @@ export const PageRouterSwap = () => {
   const searchParams = useSearchParams()
   const searchParamsString = searchParams?.toString() || ''
   const { curveApi = null, connectState } = useCurve()
-  const chainId = useChainId(props.network)
+  const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
-  const { data: network } = useNetworkByChain({ chainId })
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
 
+  const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
 
   const hasRouter = curveApi?.hasRouter()
   const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
-
-  const { data: tokens } = useTokens({ chainId })
-
   const searchedParams = useMemo(
     () => ({ fromAddress: paramsFromAddress, toAddress: paramsToAddress }),
     [paramsFromAddress, paramsToAddress],
@@ -56,17 +54,24 @@ export const PageRouterSwap = () => {
   useEffect(() => {
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setLoaded(false)
-    if (!isConnecting && chainId && hasRouter != null) {
+    if (!isConnecting && rChainId && hasRouter != null) {
       if (!hasRouter) {
         push(getPath(props, `${ROUTE.PAGE_POOLS}`))
         return
       }
 
       const routerDefault = network.swap
-      if (routerDefault && tokens) {
-        const fromToken = getToken(tokens, paramsFromAddress)
-        const toToken = getToken(tokens, paramsToAddress)
-        if (!fromToken || !toToken || paramsToAddress === paramsFromAddress) {
+      if (Object.keys(tokensMapper).length && !!routerDefault) {
+        const isValidParamsFromAddress = !!paramsFromAddress && !!tokensMapper[paramsFromAddress]
+        const isValidParamsToAddress = !!paramsToAddress && !!tokensMapper[paramsToAddress]
+
+        if (
+          !paramsFromAddress ||
+          !paramsToAddress ||
+          !isValidParamsFromAddress ||
+          !isValidParamsToAddress ||
+          paramsToAddress === paramsFromAddress
+        ) {
           const fromAddress = routerDefault.fromAddress
           const toAddress = routerDefault.toAddress
           if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
@@ -76,18 +81,8 @@ export const PageRouterSwap = () => {
         }
       }
     }
-  }, [
-    isConnecting,
-    hasRouter,
-    paramsFromAddress,
-    paramsToAddress,
-    chainId,
-    tokens,
-    network.swap,
-    push,
-    props,
-    redirect,
-  ])
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+  }, [isConnecting, hasRouter, paramsFromAddress, paramsToAddress, rChainId, tokensMapperStr])
   return (
     <Card
       size="small"
@@ -96,13 +91,15 @@ export const PageRouterSwap = () => {
     >
       <CardHeader title={t`Swap`} />
       <CardContent>
-        {chainId && (
+        {rChainId && (
           <QuickSwap
             curve={curveApi}
             pageLoaded={loaded}
             params={props}
             searchedParams={searchedParams}
-            rChainId={chainId}
+            rChainId={rChainId}
+            tokensMapper={tokensMapper}
+            tokensMapperStr={tokensMapperStr}
             redirect={redirect}
           />
         )}
