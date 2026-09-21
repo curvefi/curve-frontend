@@ -87,7 +87,7 @@ export const Proposals = () => {
 
   const navHeight = useLayoutStore(state => state.navHeight)
   const tableTopRef = useRef<HTMLDivElement>(null)
-  useScrollToTopOnPageChange({ table, tableTopRef, enablePageChangeScroll: true })
+  useScrollToTopOnPageChange({ table, tableTopRef })
 
   const push = useNavigate()
   const handleProposalClick = useCallback(
