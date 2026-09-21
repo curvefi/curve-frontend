@@ -111,7 +111,7 @@ const MarketPriceMetrics = () => {
   }
 
   return (
-    <MetricsGrid>
+    <MetricsGrid variant="fill">
       <Metric
         category={METRIC_CATEGORY}
         label={t`Oracle price`}

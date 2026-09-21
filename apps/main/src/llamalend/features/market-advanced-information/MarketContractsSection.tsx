@@ -22,6 +22,7 @@ import Typography from '@mui/material/Typography'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
 import { ExternalLink } from '@ui/components/ExternalLink'
+import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
@@ -166,14 +167,14 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
     <Stack data-testid="market-contracts-section">
       <Card size="extraSmall" variant="inline" data-testid="market-assets-section">
         <CardHeader title={t`Assets`} />
-        <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+        <CardContent component={SectionContentCard}>
           <MarketAssets chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket} />
         </CardContent>
       </Card>
 
       <Card size="extraSmall" variant="inline">
         <CardHeader title={t`Contracts`} />
-        <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+        <CardContent component={SectionContentCard}>
           <WithSkeleton loading={contractsLoading} variant="rectangular" height="8lh" width="100%">
             <Stack spacing={Spacing.sm}>
               <Stack>
