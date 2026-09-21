@@ -13,8 +13,11 @@ import { PoolActionSettings } from '../PoolActionSettings'
 import { reverseSwap, type SwapFormValues } from './swap-form.utils'
 import { SwapTokenInput } from './SwapTokenInput'
 export type SwapFormProps = PoolFormProps<SwapFormValues> & {
+  exchangeRate: QueryProp<Decimal>
+  fromSymbol: string | undefined
   inputAmount: QueryProp<Decimal | undefined>
   outputAmount: QueryProp<Decimal | undefined>
+  toSymbol: string | undefined
 }
 
 const { Spacing } = SizesAndSpaces
@@ -24,6 +27,9 @@ export const SwapForm = ({
   tokens,
   inputAmount,
   outputAmount,
+  exchangeRate,
+  fromSymbol,
+  toSymbol,
   onSubmit,
   isPending,
   isLoading,
@@ -56,6 +62,9 @@ export const SwapForm = ({
       slippage={slippage}
       onSlippageChange={onSlippageChange}
       userAddress={userAddress}
+      exchangeRate={exchangeRate}
+      fromSymbol={fromSymbol}
+      toSymbol={toSymbol}
     />
     <HighPriceImpactAlert priceImpact={priceImpact} />
     <FormButton

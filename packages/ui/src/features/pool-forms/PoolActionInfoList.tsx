@@ -20,9 +20,7 @@ type PoolActionInfoListProps = {
   projectedLpLabel?: string
   projectedLpTestId?: string
   seedLock?: QueryProp<Decimal | null>
-  exchangeRate?: QueryProp<Decimal>
   minimumReceived?: QueryProp<Decimal>
-  fromSymbol?: string | undefined
   toSymbol?: string | undefined
 }
 
@@ -39,9 +37,7 @@ export const PoolActionInfoList = ({
   projectedLpLabel,
   projectedLpTestId,
   seedLock,
-  exchangeRate,
   minimumReceived,
-  fromSymbol,
   toSymbol,
 }: PoolActionInfoListProps) => (
   <Stack>
@@ -90,16 +86,6 @@ export const PoolActionInfoList = ({
         testId="pool-deposit-seed-lock"
         label={t`Permanently locked LP`}
         value={mapQuery(seedLock, value => formatNumber(value, 'token.balance'))}
-        size="small"
-      />
-    )}
-    {exchangeRate && (
-      <ActionInfo
-        testId="pool-swap-exchange-rate"
-        label={t`Exchange rate`}
-        value={mapQuery(exchangeRate, value =>
-          [formatToken(1, fromSymbol), formatToken(value, toSymbol, 'balance')].join(' = '),
-        )}
         size="small"
       />
     )}

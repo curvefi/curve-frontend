@@ -61,7 +61,7 @@ export const getPriceImpactSeverity = (priceImpact: PriceImpact | Decimal | Null
  */
 export const shouldBlockTransaction = (
   priceImpact: Query<PriceImpact | Decimal | null>,
-  { leverageEnabled }: { leverageEnabled: boolean | undefined },
+  { leverageEnabled }: { leverageEnabled: boolean | undefined } = { leverageEnabled: true },
 ) =>
   (leverageEnabled == true && priceImpact.data == null && !priceImpact.error) ||
   (getPriceImpactSeverity(priceImpact.data) === 'error' && isPriceImpactSignificant(priceImpact.data))

@@ -141,9 +141,8 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     lpBalance: q(lpBalance),
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
-    isDisabled:
-      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, { leverageEnabled: true }),
-    isLoading: isPending,
+    isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
+    isLoading: isPending || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: withdrawError,

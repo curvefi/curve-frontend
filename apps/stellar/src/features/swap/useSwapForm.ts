@@ -15,9 +15,10 @@ import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import type { SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
+import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { fromWei } from '@ui/lib/decimal'
+import { decimalDiv, fromWei } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { SwapFormQuery } from './types'
 
@@ -85,6 +86,7 @@ export function useSwapForm(poolParams: PoolQuery) {
   )
 
   const { inputAmount, outputAmount } = useQuoteQueries(params)
+  const exchangeRate = combineQueries([inputAmount, outputAmount], (input, output) => decimalDiv(output, input))
   const priceImpact = useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, outputAmount)
   const minimum = mapQuery(outputAmount, value =>
     maybe(params.decimals?.[toIndex], precision => calculateMinimumReceived(value, params.slippage, precision)),
@@ -107,14 +109,14 @@ export function useSwapForm(poolParams: PoolQuery) {
     tokens: tokenInputs,
     fromSymbol: tokenInputs.data?.[fromIndex]?.symbol,
     toSymbol: tokenInputs.data?.[toIndex]?.symbol,
+    exchangeRate,
     slippage: values.slippage,
     params,
     inputAmount,
     outputAmount,
     isPending,
-    isDisabled:
-      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, { leverageEnabled: true }),
-    isLoading: isPending,
+    isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
+    isLoading: isPending || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: swapError,
