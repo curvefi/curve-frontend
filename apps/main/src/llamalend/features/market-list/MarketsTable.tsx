@@ -34,7 +34,7 @@ export const MarketsTable = ({
   tableQuery,
   tableQuery: { data: queryData, isLoading },
 }: {
-  onReload: () => void
+  onReload: () => Promise<unknown>
   tableQuery: QueryProp<LlamaMarketsTableResult>
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}

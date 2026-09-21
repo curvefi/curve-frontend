@@ -1,13 +1,9 @@
 import { getCampaignsExternalQueryKey } from '@evm-ui/entities/campaigns/campaigns-external'
 import { getCampaignsPoolsMerklQueryKey } from '@evm-ui/entities/campaigns/campaigns-pools-merkl'
 import type { UserChainParams, UserPoolParams } from '@evm-ui/lib/model'
+import { getLitePoolListQueryKey } from '@ui/features/pool-list/lite-pool-list.query'
 import { queryClient } from '@ui/features/queries/query-client'
-import {
-  getLitePoolListQueryKey,
-  getPoolListRootQueryKey,
-  getPoolChainsQueryKey,
-  getLitePoolChainsQueryKey,
-} from './pool-list.query'
+import { getPoolListRootQueryKey, getPoolChainsQueryKey, getLitePoolChainsQueryKey } from './pool-list.query'
 import { invalidateUserPoolBalancesQuery } from './user-pool-balances.query'
 import { invalidateUserPoolBoostQuery } from './user-pool-boost.query'
 import { invalidateUserPoolLiquidityUsdQuery } from './user-pool-liquidity-usd.query'
