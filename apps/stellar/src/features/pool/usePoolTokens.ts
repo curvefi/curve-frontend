@@ -16,19 +16,19 @@ import { q, type QueryProp } from '@ui/features/queries/util'
 export function usePoolTokens({
   network,
   account,
-  tokens: tokenQuery,
-}: NetworkParams & UserParams & { tokens: QueryProp<StellarContract[]> }) {
-  const tokens = tokenQuery.data ?? [] // useQueries doesn't accept undefined
+  tokenAddresses: tokenAddresses,
+}: NetworkParams & UserParams & { tokenAddresses: QueryProp<StellarContract[]> }) {
+  const addresses = tokenAddresses.data ?? [] // useQueries doesn't accept undefined
   const decimals = useQueries({
-    queries: tokens.map(token => getTokenDecimalsQueryOptions({ network, token })),
+    queries: addresses.map(token => getTokenDecimalsQueryOptions({ network, token })),
     combine: aggregateQueries,
   })
   const symbols = useQueries({
-    queries: tokens.map(token => getTokenSymbolQueryOptions({ network, token })),
+    queries: addresses.map(token => getTokenSymbolQueryOptions({ network, token })),
     combine: aggregateQueries,
   })
   const names = useQueries({
-    queries: tokens.map(token => getTokenNameQueryOptions({ network, token })),
+    queries: addresses.map(token => getTokenNameQueryOptions({ network, token })),
     combine: aggregateQueries,
   })
   const metadata = combineQueries([decimals, symbols, names], (decimals, symbols, names) =>
@@ -37,13 +37,13 @@ export function usePoolTokens({
   const { balances, maxAmounts } = useQueries({
     queries:
       maybe(decimals.data, decimals =>
-        zip(tokens, decimals).map(([token, decimals]) =>
+        zip(addresses, decimals).map(([token, decimals]) =>
           getTokenBalanceQueryOptions({ network, token, account, decimals }),
         ),
       ) ?? [],
     combine: results => ({ balances: results.map(q), maxAmounts: aggregateQueries(results) }),
   })
-  const inputs = combineQueries([tokenQuery, metadata], (addresses, metadata) =>
+  const tokens = combineQueries([tokenAddresses, metadata], (addresses, metadata) =>
     zip(addresses, metadata, balances).map(([address, metadata, balance]) => ({
       blockchainId: network ?? undefined,
       address: asAddress(address),
@@ -51,5 +51,5 @@ export function usePoolTokens({
       balance,
     })),
   )
-  return { inputs, decimals, maxAmounts }
+  return { tokens, decimals, maxAmounts }
 }

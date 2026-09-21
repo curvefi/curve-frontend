@@ -50,10 +50,10 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const config = usePoolConfig(poolParams)
   const supply = usePoolSupply(poolParams)
   const reserves = usePoolReserves(poolParams)
-  const tokens = mapQuery(config, config => config.tokens)
-  const tokenCount = tokens.data?.length
+  const tokenAddresses = mapQuery(config, config => config.tokens)
+  const tokenCount = tokenAddresses.data?.length
 
-  const { inputs: tokenInputs, decimals } = usePoolTokens({ ...poolParams, account, tokens })
+  const { tokens, decimals } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
   const slippage = useUserProfileStore(state => state.maxSlippage.stable)
   const maxAmounts = useCombinedQueries([reserves, decimals], getReserveAmounts)
@@ -122,7 +122,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   } = useWithdrawMutation({
     ...poolParams,
     account,
-    tokens: tokens.data ?? [],
+    tokens: tokenAddresses.data,
     quote: quote.data,
     onReset: () => reset(userDefaultValues),
   })
@@ -145,6 +145,6 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     userAddress: asAddress(account),
     error: withdrawError,
     formErrors: formState.visibleErrors,
-    tokens: tokenInputs,
+    tokens,
   }
 }
