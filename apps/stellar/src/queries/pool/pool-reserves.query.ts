@@ -1,6 +1,6 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { rootKeys } from '@/stellar/queries/root-keys'
-import { poolValidationSuite, type PoolQuery, type PoolParams } from '@/stellar/queries/validation/pool.validation'
+import { PoolParams, PoolQuery, rootKeys } from '@/stellar/queries/root-keys'
+import { poolValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
