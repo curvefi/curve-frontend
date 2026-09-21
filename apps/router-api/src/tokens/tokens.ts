@@ -1,14 +1,37 @@
 import type { FastifyRequest } from 'fastify'
 import { type Address, getAddress, zeroAddress, isAddressEqual } from 'viem'
+import { getPoolFilters, type PoolFilter } from '@curvefi/prices-api/chains'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { loadCurve } from '../curve-router/curvejs'
 import type { TokensQuery } from './tokens.schemas'
+
+const BLACKLIST_CACHE_DURATION = 10 * 60 * 1000 // 10 minutes
+
+let poolFiltersCache: { expiresAt: number; promise: Promise<Partial<Record<number, PoolFilter[]>>> } | undefined
 
 /** Build the token catalog with metadata and available trading volumes from the shared Curve.js instance. */
 export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQuery }>) => {
   const curve = await loadCurve(request.query.chainId, request.log)
   const { NATIVE_TOKEN: nativeToken, DECIMALS: decimals } = curve.getNetworkConstants()
-  const pools = curve.getPoolList().map(id => curve.getPool(id))
+
+  // Quick and dirty blacklist cache. Can be removed when we migrate to Prices API as it's applied internally there.
+  if (!poolFiltersCache || Date.now() >= poolFiltersCache.expiresAt) {
+    const previous = poolFiltersCache?.promise
+    poolFiltersCache = {
+      expiresAt: Date.now() + BLACKLIST_CACHE_DURATION,
+      promise: getPoolFilters()
+        .then(filters => Object.groupBy(filters, ({ chainId }) => chainId))
+        .catch(error => {
+          request.log.error({ message: 'Error fetching pool filters', error })
+          return previous ?? {}
+        }),
+    }
+  }
+  const blacklist = (await poolFiltersCache.promise)[curve.chainId] ?? []
+  const pools = curve
+    .getPoolList()
+    .map(id => curve.getPool(id))
+    .filter(pool => !blacklist.some(({ address }) => isAddressEqual(address, pool.address as Address)))
 
   const poolVolumes = curve.getIsLiteChain()
     ? undefined
