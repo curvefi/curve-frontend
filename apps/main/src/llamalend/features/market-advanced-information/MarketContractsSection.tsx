@@ -19,6 +19,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
 import { TokenIcon, type TokenIconProps } from '@ui/components/TokenIcon'
@@ -35,7 +36,7 @@ const { Spacing } = SizesAndSpaces
 type AddressItem = {
   key: string
   label: ReactNode
-  address?: string
+  address?: Address
   fallbackValue?: ReactNode
   labelTooltip?: ActionInfoProps['labelTooltip']
 }
@@ -73,7 +74,7 @@ const AssetRow = ({
   title: ReactNode
   chainId: number
   blockchainId: string
-  token: { symbol?: string; address?: string } | undefined
+  token: { symbol?: string; address?: Address } | undefined
   testId: string
 }) => (
   <Stack>
@@ -163,7 +164,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
       (gaugeAddress === zeroAddress
         ? { key: 'gauge', label: t`Gauge`, fallbackValue: t`No gauge` }
         : { key: 'gauge', label: <GaugeLabel />, address: gaugeAddress }),
-    (market ?? oracleAddress) && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
+    (market ?? oracleAddress) && { key: 'oracle', label: t`Oracle`, address: oracleAddress as Address | undefined },
   )
 
   return (

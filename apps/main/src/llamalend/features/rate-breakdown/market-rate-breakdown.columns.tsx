@@ -1,9 +1,12 @@
-import { TokenCell, TokenPriceCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { getAddress } from 'viem'
+import { TokenPriceCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+import { shortenAddress } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { Badge } from '@ui/components/Badge'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
+import { TokenCell } from '@ui/components/TokenCell'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
@@ -26,8 +29,9 @@ const rateColumns = (rateHeader: string) =>
         return (
           <TokenCell
             source={tokenInfo}
-            address={address}
+            address={maybe(address, getAddress)}
             explorerUrl={explorerUrl}
+            displayAddress={maybe(address, shortenAddress)}
             endAdornment={
               yieldBearing && <Badge size="extraSmall" label={t`Yield bearing`} sx={{ alignSelf: 'flex-end' }} />
             }

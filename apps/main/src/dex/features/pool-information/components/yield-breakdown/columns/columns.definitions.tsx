@@ -1,10 +1,13 @@
-import { TokenCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { getAddress } from 'viem'
+import { shortenAddress } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import type { Address } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
+import { TokenCell } from '@ui/components/TokenCell'
 import { TokenInfo, type TokenInfoProps } from '@ui/components/TokenInfo'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
@@ -13,7 +16,7 @@ import { YieldBreakdownColumnId } from './columns.enum'
 
 export type YieldBreakdownRow = {
   source: TokenInfoProps
-  address?: string
+  address?: Address
   explorerUrl?: string
   price?: number
   rate?: number
@@ -40,7 +43,12 @@ export const YIELD_BREAKDOWN_COLUMNS = columnHelper.columns([
     id: YieldBreakdownColumnId.Source,
     header: headers[YieldBreakdownColumnId.Source],
     cell: ({ getValue, row }) => (
-      <TokenCell source={getValue()} address={row.original.address} explorerUrl={row.original.explorerUrl} />
+      <TokenCell
+        source={getValue()}
+        address={maybe(row.original.address, getAddress)}
+        displayAddress={maybe(row.original.address, shortenAddress)}
+        explorerUrl={row.original.explorerUrl}
+      />
     ),
     enableSorting: false,
   }),

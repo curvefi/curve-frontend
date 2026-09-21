@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import type { Column } from '@tanstack/react-table'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import type { QueryProp } from '@ui/features/queries/util'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { PoolCompositionRow } from './columns/columns.definitions'
 import { PoolCompositionColumnId } from './columns/columns.enum'
@@ -15,9 +16,8 @@ const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
   visibleColumns: Column<CurveTableFeatures, PoolCompositionRow>[]
-  isLoading: boolean
-  totalUsd: string
-  hasBalance: boolean
+  totalUsd: QueryProp<Decimal>
+  hasBalance: QueryProp<boolean>
 }
 
 type FooterCellProps = FooterRowProps & { columnId: PoolCompositionColumnId }
@@ -31,13 +31,13 @@ const footerCellByColumnId: Record<PoolCompositionColumnId, (props: FooterCellPr
   [PoolCompositionColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
   [PoolCompositionColumnId.Balance]: ({ columnId, hasBalance }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.sm, paddingBlock: Spacing.sm, textAlign: 'right' }}>
-      <Typography variant="tableCellMBold">{hasBalance ? '100%' : '-'}</Typography>
+      <Typography variant="tableCellMBold">{hasBalance.data ? '100%' : '-'}</Typography>
     </TableCell>
   ),
-  [PoolCompositionColumnId.TokenAmount]: ({ columnId, isLoading, totalUsd }: FooterCellProps) => (
+  [PoolCompositionColumnId.TokenAmount]: ({ columnId, totalUsd }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
-      <WithSkeleton loading={isLoading} sx={{ justifySelf: 'end' }}>
-        <Typography variant="tableCellMBold">{formatNumber(amount(totalUsd), 'usd.notional')}</Typography>
+      <WithSkeleton loading={totalUsd.isLoading} sx={{ justifySelf: 'end' }}>
+        <Typography variant="tableCellMBold">{formatNumber(totalUsd.data, 'usd.notional')}</Typography>
       </WithSkeleton>
     </TableCell>
   ),
