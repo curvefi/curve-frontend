@@ -187,7 +187,7 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
           sum_debt_squared: totalDebt * totalDebt,
           timestamp: new Date(Date.UTC(2024, 11, 24) - i * 4 * HOUR).toISOString(), // 4h intervals
           extra_rewards_apr: [],
-          collateral_token: oneApiToken(collateral),
+          collateral_token: { ...oneApiToken(collateral), rebasing_yield: 5, rebasing_yield_apr: 5 },
           borrowed_token: oneApiToken(borrowed),
           max_ltv: 75,
         }

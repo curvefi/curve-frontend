@@ -1,18 +1,28 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
+import { useMarketSnapshots } from '@/llamalend/queries/market'
+import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
+import { MarketHistoricalRatesChart, type RateSnapshot } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
+import { SelectTimeOption } from '@evm-ui/shared/ui/Chart'
 import { MarketRateType } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { useTabs } from '@ui/hooks/useTabs'
+import { t } from '@ui/lib/i18n'
 import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { buildBorrowRateBreakdown, buildSupplyRateBreakdown } from './market-rate-breakdown.utils'
 import { PointsCampaignsCard, RateBreakdownTable } from './MarketRateBreakdownCards'
 
-export const MarketBorrowRateBreakdown = () => {
+type HistoricalRatesTabProps = { timeOption: TimeOption; snapshots: QueryProp<RateSnapshot[]> }
+
+const MarketBorrowHistoricalRates = ({ timeOption, snapshots }: HistoricalRatesTabProps) => {
   const {
     chainId,
     blockchainId,
@@ -27,16 +37,17 @@ export const MarketBorrowRateBreakdown = () => {
   )
 
   return (
-    <>
+    <Stack sx={stackedCardHeadersSx}>
+      <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} timeOption={timeOption} snapshots={snapshots} />
       <RateBreakdownTable rateType={MarketRateType.Borrow} query={borrowQuery} />
       {!!borrowQuery.data?.points.length && (
         <PointsCampaignsCard rateType={MarketRateType.Borrow} rows={borrowQuery.data.points} />
       )}
-    </>
+    </Stack>
   )
 }
 
-export const MarketSupplyRateBreakdown = () => {
+const MarketSupplyHistoricalRates = ({ timeOption, snapshots }: HistoricalRatesTabProps) => {
   const {
     chainId,
     blockchainId,
@@ -70,10 +81,51 @@ export const MarketSupplyRateBreakdown = () => {
 
   return (
     <Stack sx={stackedCardHeadersSx}>
+      <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} timeOption={timeOption} snapshots={snapshots} />
       <RateBreakdownTable rateType={MarketRateType.Supply} query={supplyQuery} />
       {!!supplyQuery.data?.points.length && (
         <PointsCampaignsCard rateType={MarketRateType.Supply} rows={supplyQuery.data.points} />
       )}
+    </Stack>
+  )
+}
+
+const HISTORICAL_RATE_TABS = {
+  [MarketRateType.Borrow]: { label: t`Borrow rate`, component: MarketBorrowHistoricalRates },
+  [MarketRateType.Supply]: { label: t`Supply rate`, component: MarketSupplyHistoricalRates },
+}
+
+export const MarketHistoricalRatesTabs = ({ rateType }: { rateType: MarketRateType }) => {
+  const { marketType, controllerAddress, blockchainId } = useMarketContext()
+  const [timeOption, setTimeOption] = useState<TimeOption>('1M')
+  const snapshots = q(
+    useMarketSnapshots({ controllerAddress, marketType, blockchainId, range: { kind: 'timeRange', timeOption: '1Y' } }),
+  )
+  const { types, defaultValue } = getMarketRateTypeTabConfig({ marketType, rateType })
+  const { tab, tabs, onChange, content } = useTabs({
+    menu: types.map(type => ({ ...HISTORICAL_RATE_TABS[type], value: type })),
+    params: { timeOption, snapshots },
+    defaultValue,
+  })
+
+  return (
+    <Stack>
+      <Stack direction="row" sx={{ alignItems: 'end', justifyContent: 'space-between' }}>
+        <TabsSwitcher
+          variant="contained"
+          value={tab.value}
+          onChange={onChange}
+          options={tabs}
+          testIdPrefix="historical-rate-tab"
+        />
+        <SelectTimeOption<TimeOption>
+          options={timeOptions}
+          activeOption={timeOption}
+          setActiveOption={setTimeOption}
+          isLoading={snapshots.isLoading}
+        />
+      </Stack>
+      {content}
     </Stack>
   )
 }
