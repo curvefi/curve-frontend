@@ -1,5 +1,10 @@
 import { ethAddress, zeroAddress } from 'viem'
-import type { Route } from '@/dex/components/PageRouterSwap/types'
+import type {
+  RawRoutesAndOutput,
+  Route,
+  RoutesAndOutputModal,
+  SearchedParams,
+} from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
@@ -7,6 +12,7 @@ import { Decimal } from '@primitives/decimal.utils'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { isHighPriceImpact } from '@ui/lib/price-impact.util'
+import { getToken, type TokenMapper } from '../queries/tokens.query'
 
 const LOW_EXCHANGE_RATE = 0.98
 
@@ -189,4 +195,59 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveApi, toA
   const toStoredRate = ratesWithAddresses.find(r => r.coinAddress === toAddress.toLowerCase())?.rate
 
   return toStoredRate
+}
+
+export function getRouterSwapsExchangeRate(
+  [value]: [Decimal, Decimal],
+  { fromAddress, toAddress }: SearchedParams,
+  tokens: TokenMapper | undefined,
+) {
+  const fromToken = getToken(tokens, fromAddress)?.symbol ?? fromAddress
+  const toToken = getToken(tokens, toAddress)?.symbol ?? toAddress
+  return { from: fromToken, to: toToken, fromAddress, value, label: `${fromToken}/${toToken}` }
+}
+
+export function getRouterWarningModal(
+  {
+    isExchangeRateLow,
+    priceImpact,
+    toAmount,
+    toAmountOutput,
+    fromAmount,
+    fetchedToAmount,
+  }: Pick<
+    RawRoutesAndOutput,
+    'isExchangeRateLow' | 'priceImpact' | 'toAmount' | 'toAmountOutput' | 'fromAmount' | 'fetchedToAmount'
+  >,
+  { toAddress }: SearchedParams,
+  maxSlippage: string,
+  tokens: TokenMapper | undefined,
+): RoutesAndOutputModal | null {
+  const { isHighImpact, isExpectedToAmount } = getSlippageImpact({
+    maxSlippage,
+    toAmount,
+    priceImpact,
+    fetchedToAmount,
+  })
+  const parsedToAmount = isExpectedToAmount ? toAmountOutput : toAmount
+  const swapModalProps = getSwapActionModalType(isHighImpact, isExchangeRateLow)
+  const toToken = getToken(tokens, toAddress)?.symbol ?? ''
+  const exchangeRate = (+parsedToAmount / +fromAmount).toString()
+  const exchangeValues = { toAmount: parsedToAmount, toToken }
+  const modalTypeObj = { ...exchangeValues, title: swapModalProps.title }
+  const modalType = {
+    lowExchangeRate: { ...modalTypeObj, lowExchangeRate: true as boolean, exchangeRate },
+    priceImpact: { ...modalTypeObj, priceImpact: true as boolean, value: priceImpact },
+    priceImpactLowExchangeRate: {
+      ...modalTypeObj,
+      priceImpactLowExchangeRate: true as boolean,
+      value: priceImpact,
+      exchangeRate,
+    },
+  } as const
+
+  if (swapModalProps.type && swapModalProps.type in modalType) {
+    return modalType[swapModalProps.type]
+  }
+  return null
 }
