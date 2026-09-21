@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Address } from '@primitives/address.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { applySxProps, SxProps } from '@ui/lib/mui'
 import { TokenIcon, type Size } from './TokenIcon'
@@ -16,7 +17,7 @@ type TokenInfoBaseProps = {
 }
 
 export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
-  address: string
+  address: Address
   blockchainId: string
   showChainIcon?: boolean
   iconSize?: Size

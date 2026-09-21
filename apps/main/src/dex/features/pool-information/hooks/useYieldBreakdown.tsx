@@ -1,6 +1,6 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import { type Address } from 'viem'
+import { type Address, getAddress } from 'viem'
 import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -73,10 +73,11 @@ export const useYieldBreakdown = ({
     }
 
     rewards?.other?.forEach(({ apy: rate, symbol, tokenAddress, tokenPrice }) => {
+      const address = getAddress(tokenAddress)
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
-        source: { address: tokenAddress, blockchainId: network?.blockchainId, iconPosition: 'left', primary: symbol },
-        address: tokenAddress,
+        source: { address, blockchainId: network?.blockchainId, iconPosition: 'left', primary: symbol },
+        address,
         explorerUrl: scanTokenPath(chainId, tokenAddress),
         price: tokenPrice ?? fallbackTokenRates?.[tokenAddress],
         rate,

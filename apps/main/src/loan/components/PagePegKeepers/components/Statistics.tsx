@@ -1,7 +1,7 @@
-import { Metric } from '@evm-ui/shared/ui/Metric'
 import { CardContent } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
+import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { t } from '@ui/lib/i18n'
 import { CRVUSD_UNIT } from '../constants'

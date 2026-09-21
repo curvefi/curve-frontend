@@ -19,6 +19,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Address } from '@primitives/address.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
 import { ExternalLink } from '@ui/components/ExternalLink'
@@ -37,7 +38,7 @@ const { Spacing } = SizesAndSpaces
 type AddressItem = {
   key: string
   label: ReactNode
-  address?: string
+  address?: Address
   fallbackValue?: ReactNode
   labelTooltip?: ActionInfoProps['labelTooltip']
 }
@@ -68,7 +69,7 @@ const AssetRow = ({
   title: ReactNode
   chainId: number
   blockchainId: string
-  token: { symbol?: string; address?: string } | undefined
+  token: { symbol?: string; address?: Address } | undefined
   testId: string
 }) => {
   const address = token?.address
@@ -141,7 +142,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
   const oracleAddress = market ? onChainOracleAddress : apiMarket.data?.oracleAddress
 
   const infraAddressItems = notFalsy<AddressItem>(
-    oracleAddress && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
+    oracleAddress && { key: 'oracle', label: t`Oracle`, address: oracleAddress as Address },
     hasContractData && { key: 'amm', label: t`AMM`, address: getAmmAddress(market, apiMarket.data) },
     vaultAddress && { key: 'vault', label: t`Vault`, address: vaultAddress },
     hasContractData && {
