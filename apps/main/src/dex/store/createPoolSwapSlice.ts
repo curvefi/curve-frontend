@@ -304,6 +304,7 @@ export const createPoolSwapSlice = (
           chainId: curve.chainId,
           poolId,
           isWrapped: poolData.isWrapped,
+          useApi: !curve.signerAddress,
         })
 
         if (Array.isArray(currencyReserve?.tokens)) {

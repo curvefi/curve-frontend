@@ -15,7 +15,7 @@ import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
-type PoolCurrencyReservesQuery = PoolQuery & { isWrapped: boolean }
+type PoolCurrencyReservesQuery = PoolQuery & { isWrapped: boolean; useApi: boolean }
 type PoolCurrencyReservesParams = FieldsOf<PoolCurrencyReservesQuery>
 
 const poolBalances = async (p: PoolTemplate, isWrapped: boolean) => {
@@ -36,8 +36,8 @@ const {
   invalidate: invalidatePoolCurrencyReservesQuery,
 } = queryFactory({
   category: 'dex.pool',
-  queryKey: ({ chainId, poolId, isWrapped }: PoolCurrencyReservesParams) =>
-    [...rootKeys.pool({ chainId, poolId }), 'stats.currencyReserves', { isWrapped }] as const,
+  queryKey: ({ chainId, poolId, isWrapped, useApi }: PoolCurrencyReservesParams) =>
+    [...rootKeys.pool({ chainId, poolId }), 'stats.currencyReserves', { isWrapped }, { useApi }] as const,
   queryFn: async ({ chainId, poolId, isWrapped }: PoolCurrencyReservesQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     const tokens = isWrapped ? pool.wrappedCoins : pool.underlyingCoins
@@ -82,19 +82,26 @@ const {
     test('isWrapped', () => {
       enforce(params.isWrapped).isBoolean()
     })
+    test('useApi', () => {
+      enforce(params.useApi).isBoolean()
+    })
   }),
 })
 
 export { fetchPoolCurrencyReserves }
 
-/** Invalidate both representations so switching wrapped mode cannot reuse reserves from before a transaction. */
+/** Invalidate all wrapped and API modes so switching modes cannot reuse reserves from before a transaction. */
 export const invalidatePoolCurrencyReserves = (params: PoolParams) =>
-  Promise.all([false, true].map(isWrapped => invalidatePoolCurrencyReservesQuery({ ...params, isWrapped })))
+  Promise.all(
+    [false, true].flatMap(isWrapped =>
+      [false, true].map(useApi => invalidatePoolCurrencyReservesQuery({ ...params, isWrapped, useApi })),
+    ),
+  )
 
 /** Hook to fetch reserves for the selected pool token representation. */
-export function usePoolCurrencyReserves(params: PoolCurrencyReservesParams) {
-  const { isHydrated } = useCurve()
-  return usePoolCurrencyReservesQuery(params, isHydrated)
+export function usePoolCurrencyReserves(params: Omit<PoolCurrencyReservesParams, 'useApi'>) {
+  const { curveApi, isHydrated } = useCurve()
+  return usePoolCurrencyReservesQuery({ ...params, useApi: !curveApi?.signerAddress }, isHydrated)
 }
 
 export type CurrencyReserves = QueryData<typeof usePoolCurrencyReservesQuery>
