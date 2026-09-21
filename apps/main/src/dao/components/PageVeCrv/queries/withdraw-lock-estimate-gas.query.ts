@@ -5,7 +5,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 import type { WithdrawLockParams, WithdrawLockQuery } from './withdraw-lock.types'
 import { withdrawLockValidationSuite } from './withdraw-lock.validation'
 
-export const { useQuery: useWithdrawLockEstimateGasQuery } = queryFactory({
+const { useQuery: useWithdrawLockEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, userAddress }: WithdrawLockParams) =>
     [...rootKeys.userChain({ chainId, userAddress }), 'boosting.estimateGas.withdrawLockedCrv'] as const,
   queryFn: async (_query: WithdrawLockQuery) => await requireLib('curveApi').boosting.estimateGas.withdrawLockedCrv(),

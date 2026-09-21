@@ -4,7 +4,6 @@ import type { Address } from '@primitives/address.utils'
 
 export type { CurveApi } from '@evm-ui/features/connect-wallet'
 export type { GaugeFormattedData, GaugeMapper } from '../queries/gauges.query'
-export type { Provider } from '@evm-ui/lib/ethers'
 
 export type ChainId = number
 export type NetworkEnum = INetworkName
@@ -17,7 +16,6 @@ export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParam
 
 export type NetworkConfig = NetworkDef<NetworkEnum, ChainId>
 
-export type EstimatedGas = number | number[] | null
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 
 export type GaugeVotesResponse = { votes: GaugeVoteData[] }

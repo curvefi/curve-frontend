@@ -15,7 +15,7 @@ export type PoolForm = PoolTokenFields & { isBalanced: boolean; decimals: (numbe
 
 export const poolAmountField = (index: number): PoolAmountField => `amount_${index}`
 export const poolMaxAmountField = (index: number): PoolMaxAmountField => `maxAmount_${index}`
-export const poolTokenFields = (index: number) => [poolAmountField(index), poolMaxAmountField(index)] as const
+const poolTokenFields = (index: number) => [poolAmountField(index), poolMaxAmountField(index)] as const
 export const allTokenFields = <T extends number | Nullish>(count: T) =>
   maybe(count, c => range(c).flatMap(index => poolTokenFields(index)))
 

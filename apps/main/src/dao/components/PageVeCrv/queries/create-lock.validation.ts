@@ -8,7 +8,7 @@ import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { CreateLockQuery } from './create-lock.types'
 
-export const validateCreateLockAmount = (lockedAmount: Decimal | undefined) => {
+const validateCreateLockAmount = (lockedAmount: Decimal | undefined) => {
   test('lockedAmount', t`Enter an amount to lock`, () => {
     enforce(lockedAmount).isNotEmpty()
   })
@@ -17,7 +17,7 @@ export const validateCreateLockAmount = (lockedAmount: Decimal | undefined) => {
   })
 }
 
-export const validateCreateLockDays = (days: number) => {
+const validateCreateLockDays = (days: number) => {
   test('days', t`Select a valid unlock date`, () => {
     enforce(days).gt(0)
   })
