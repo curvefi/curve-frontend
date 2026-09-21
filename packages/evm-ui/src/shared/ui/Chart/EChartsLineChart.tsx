@@ -211,7 +211,7 @@ export const EChartsLineChart = <
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         option={option}
         notMerge
-        // echarts-for-react's autoResize can miss parent width changes in Firefox, so observe the parent instead.
+        // autoResize can miss parent width changes, so observe the parent instead.
         autoResize={false}
         style={{ width: width || '100%', height }}
       />
