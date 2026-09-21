@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
+import { useMarketSnapshots } from '@/llamalend/queries/market'
 import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
-import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
+import { MarketHistoricalRatesChart, type RateSnapshot } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
@@ -12,16 +13,16 @@ import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { useTabs } from '@ui/hooks/useTabs'
 import { t } from '@ui/lib/i18n'
 import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { buildBorrowRateBreakdown, buildSupplyRateBreakdown } from './market-rate-breakdown.utils'
 import { PointsCampaignsCard, RateBreakdownTable } from './MarketRateBreakdownCards'
 
-type HistoricalRatesTabProps = { timeOption: TimeOption }
+type HistoricalRatesTabProps = { timeOption: TimeOption; snapshots: QueryProp<RateSnapshot[]> }
 
-const MarketBorrowHistoricalRates = ({ timeOption }: HistoricalRatesTabProps) => {
+const MarketBorrowHistoricalRates = ({ timeOption, snapshots }: HistoricalRatesTabProps) => {
   const {
     chainId,
     blockchainId,
@@ -37,7 +38,7 @@ const MarketBorrowHistoricalRates = ({ timeOption }: HistoricalRatesTabProps) =>
 
   return (
     <Stack sx={stackedCardHeadersSx}>
-      <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} timeOption={timeOption} />
+      <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} timeOption={timeOption} snapshots={snapshots} />
       <RateBreakdownTable rateType={MarketRateType.Borrow} query={borrowQuery} />
       {!!borrowQuery.data?.points.length && (
         <PointsCampaignsCard rateType={MarketRateType.Borrow} rows={borrowQuery.data.points} />
@@ -46,7 +47,7 @@ const MarketBorrowHistoricalRates = ({ timeOption }: HistoricalRatesTabProps) =>
   )
 }
 
-const MarketSupplyHistoricalRates = ({ timeOption }: HistoricalRatesTabProps) => {
+const MarketSupplyHistoricalRates = ({ timeOption, snapshots }: HistoricalRatesTabProps) => {
   const {
     chainId,
     blockchainId,
@@ -80,7 +81,7 @@ const MarketSupplyHistoricalRates = ({ timeOption }: HistoricalRatesTabProps) =>
 
   return (
     <Stack sx={stackedCardHeadersSx}>
-      <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} timeOption={timeOption} />
+      <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} timeOption={timeOption} snapshots={snapshots} />
       <RateBreakdownTable rateType={MarketRateType.Supply} query={supplyQuery} />
       {!!supplyQuery.data?.points.length && (
         <PointsCampaignsCard rateType={MarketRateType.Supply} rows={supplyQuery.data.points} />
@@ -95,12 +96,15 @@ const HISTORICAL_RATE_TABS = {
 }
 
 export const MarketHistoricalRatesTabs = ({ rateType }: { rateType: MarketRateType }) => {
-  const { marketType, controllerAddress } = useMarketContext()
+  const { marketType, controllerAddress, blockchainId } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
+  const snapshots = q(
+    useMarketSnapshots({ controllerAddress, marketType, blockchainId, range: { kind: 'timeRange', timeOption: '1Y' } }),
+  )
   const { types, defaultValue } = getMarketRateTypeTabConfig({ marketType, rateType })
   const { tab, tabs, onChange, content } = useTabs({
     menu: types.map(type => ({ ...HISTORICAL_RATE_TABS[type], value: type })),
-    params: { timeOption },
+    params: { timeOption, snapshots },
     defaultValue,
   })
 
@@ -118,7 +122,7 @@ export const MarketHistoricalRatesTabs = ({ rateType }: { rateType: MarketRateTy
           options={timeOptions}
           activeOption={timeOption}
           setActiveOption={setTimeOption}
-          isLoading={!controllerAddress}
+          isLoading={snapshots.isLoading}
         />
       </Stack>
       {content}

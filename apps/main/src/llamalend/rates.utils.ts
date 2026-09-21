@@ -43,7 +43,7 @@ export const computeTotalRate = (rate: number, rebasingYield: number, campaignsR
   rate - rebasingYield - campaignsRate
 
 /** Annualized return on equity at the given leverage. Input APYs and output are percentage. */
-export const getRoE = (
+export const getReturnOnEquity = (
   leverage: number | Nullish,
   collateralApy: number | Nullish,
   borrowApy: number | Nullish,
@@ -54,17 +54,18 @@ export const getRoE = (
   )
 
 /** Return on equity at the market's maximum leverage. */
-export const getMaxRoE = ({
+export const getMaxReturnOnEquity = ({
   leverage,
   assets: {
     collateral: { rebasingYield },
   },
   rates: { borrowApy },
-}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => getRoE(leverage, rebasingYield, borrowApy)
+}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined =>
+  getReturnOnEquity(leverage, rebasingYield, borrowApy)
 
 export type BorrowRates = { borrowApr?: Decimal; borrowApy?: Decimal }
 
-export const formatRoE = (
+export const formatReturnOnEquity = (
   leverage: QueryProp<Decimal | null> | undefined,
   rates: QueryProp<BorrowRates | null> | undefined,
   collateralApy: QueryProp<number | null>,
@@ -72,10 +73,10 @@ export const formatRoE = (
   mapQuery(
     combineQueries([leverage ?? DISABLED_Q, rates ?? DISABLED_Q, collateralApy], (leverage, rates, collateralApy) =>
       maybes([leverage, collateralApy, rates?.borrowApy], (leverage, collateralApy, borrowApy) =>
-        getRoE(+leverage, collateralApy, +borrowApy),
+        getReturnOnEquity(+leverage, collateralApy, +borrowApy),
       ),
     ),
-    roe => formatNumber(roe, 'percent.rate'),
+    returnOnEquity => formatNumber(returnOnEquity, 'percent.rate'),
   )
 
 export const getSnapshotBorrowApr = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr

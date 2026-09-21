@@ -201,6 +201,12 @@ const preciseFormatter = (value: Amount) => {
   )
 }
 
+const PRECISE_NUMBER_FORMAT = {
+  abbreviate: false,
+  fallback: UNAVAILABLE_NOTATION,
+  formatter: preciseFormatter,
+} as const
+
 const NUMBER_FORMAT_CATEGORIES = {
   health: {
     abbreviate: false,
@@ -227,10 +233,10 @@ const NUMBER_FORMAT_CATEGORIES = {
   },
   'token.amount': { abbreviate: false, fallback: UNAVAILABLE_NOTATION },
   'token.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
-  'token.balance': { abbreviate: false, fallback: UNAVAILABLE_NOTATION, formatter: preciseFormatter },
-  'token.precise': { unit: 'none', abbreviate: false, fallback: UNAVAILABLE_NOTATION, decimals: 5 },
+  'token.balance': PRECISE_NUMBER_FORMAT,
+  'token.precise': PRECISE_NUMBER_FORMAT,
   'usd.amount': { unit: 'dollar', abbreviate: false, fallback: UNAVAILABLE_NOTATION },
-  'usd.precise': { unit: 'dollar', abbreviate: false, fallback: UNAVAILABLE_NOTATION, formatter: preciseFormatter },
+  'usd.precise': { ...PRECISE_NUMBER_FORMAT, unit: 'dollar' },
   'usd.notional': { unit: 'dollar', abbreviate: true, fallback: UNAVAILABLE_NOTATION },
   'percent.value': { unit: 'percentage', abbreviate: false, fallback: UNAVAILABLE_NOTATION },
   'percent.price-impact': {

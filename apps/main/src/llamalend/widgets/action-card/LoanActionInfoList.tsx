@@ -1,5 +1,5 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
-import { type BorrowRates, formatRoE } from '@/llamalend/rates.utils'
+import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
 import { formatCappedRatePercent } from '@evm-ui/utils'
@@ -227,15 +227,15 @@ export const LoanActionInfoList = ({
           {collateralApy && (
             <ActionInfo
               label={t`Return on Equity (RoE)`}
-              value={formatRoE(prevLeverageValue, prevRates, collateralApy)}
-              futureValue={formatRoE(
+              value={formatReturnOnEquity(prevLeverageValue, prevRates, collateralApy)}
+              futureValue={formatReturnOnEquity(
                 leverageValue,
-                /** Collateral-only actions have no future rate query, so future RoE uses the unchanged current rate. */
+                /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
                 rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
                 collateralApy,
               )}
               size="small"
-              testId="borrow-roe"
+              testId="borrow-return-on-equity"
             />
           )}
           {(prevLeverageCollateral ?? leverageCollateral) && (

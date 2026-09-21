@@ -1,6 +1,6 @@
 import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { MaxRoe } from '@/llamalend/widgets/tooltips/MaxRoeTooltipContent'
+import { MaxReturnOnEquity } from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MarketType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
@@ -8,13 +8,11 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { SectionContentCard } from '@ui/components/SectionContentCard'
 import type { QueryProp } from '@ui/features/queries/util'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { MarketLoanParameters } from './MarketLoanParameters'
 import { MarketPricesRows } from './MarketParameterRows'
-
-const { Spacing } = SizesAndSpaces
 
 type MarketParametersProps = {
   chainId: IChainId
@@ -23,7 +21,7 @@ type MarketParametersProps = {
   apiMarket: QueryProp<LlamaMarket>
   tokens: MarketTokensOrEmpty
   maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
-  maxRoe?: QueryProp<MaxRoe>
+  maxReturnOnEquity?: QueryProp<MaxReturnOnEquity>
 }
 
 export const MarketParametersSection = ({
@@ -33,12 +31,12 @@ export const MarketParametersSection = ({
   apiMarket,
   tokens,
   maxLeverage,
-  maxRoe,
+  maxReturnOnEquity,
 }: MarketParametersProps) => (
   <Stack>
     <Card size="extraSmall" variant="inline" data-testid="market-prices-section">
       <CardHeader title={t`Prices`} />
-      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+      <CardContent component={SectionContentCard}>
         <MarketPricesRows
           chainId={chainId}
           marketId={marketId}
@@ -51,13 +49,13 @@ export const MarketParametersSection = ({
 
     <Card size="extraSmall" variant="inline" data-testid="market-parameters-section">
       <CardHeader title={t`Parameters`} />
-      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+      <CardContent component={SectionContentCard}>
         <MarketLoanParameters
           chainId={chainId}
           marketId={marketId}
           apiMarket={apiMarket}
           maxLeverage={maxLeverage}
-          maxRoe={maxRoe}
+          maxReturnOnEquity={maxReturnOnEquity}
         />
       </CardContent>
     </Card>

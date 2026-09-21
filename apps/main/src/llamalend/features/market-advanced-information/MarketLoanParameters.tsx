@@ -1,6 +1,6 @@
 import { useMarketParameters } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { MaxLeverageTooltip, MaxRoe, MaxRoeTooltipContent } from '@/llamalend/widgets/tooltips'
+import { MaxLeverageTooltip, MaxReturnOnEquity, MaxReturnOnEquityTooltipContent } from '@/llamalend/widgets/tooltips'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -15,13 +15,13 @@ export const MarketLoanParameters = ({
   marketId,
   apiMarket,
   maxLeverage,
-  maxRoe,
+  maxReturnOnEquity,
 }: {
   chainId: IChainId
   marketId: string | undefined
   apiMarket: QueryProp<LlamaMarket>
   maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
-  maxRoe?: QueryProp<MaxRoe>
+  maxReturnOnEquity?: QueryProp<MaxReturnOnEquity>
 }) => {
   const parameters = useMarketParameters({ chainId, marketId })
   return (
@@ -115,14 +115,14 @@ export const MarketLoanParameters = ({
             labelTooltip={{
               title: t`Max RoE`,
               body: (
-                <MaxRoeTooltipContent
-                  leverage={maxRoe?.data?.leverage}
-                  collateralApy={maxRoe?.data?.collateralApy}
-                  borrowApy={maxRoe?.data?.borrowApy}
+                <MaxReturnOnEquityTooltipContent
+                  leverage={maxReturnOnEquity?.data?.leverage}
+                  collateralApy={maxReturnOnEquity?.data?.collateralApy}
+                  borrowApy={maxReturnOnEquity?.data?.borrowApy}
                 />
               ),
             }}
-            value={maxRoe && mapQuery(maxRoe, ({ value }) => formatNumber(value, 'percent.rate'))}
+            value={maxReturnOnEquity && mapQuery(maxReturnOnEquity, ({ value }) => formatNumber(value, 'percent.rate'))}
           />
         </>
       )}

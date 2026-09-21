@@ -104,7 +104,7 @@ allViewports().forEach(([width, height, viewport]) => {
 })
 
 describe('leverage action info', () => {
-  it('shows the current and future RoE', () => {
+  it('shows the current and future return on equity', () => {
     cy.mount(
       <ComponentTestWrapper config={mockedWagmiConfig}>
         <LoanActionInfoList
@@ -121,8 +121,8 @@ describe('leverage action info', () => {
       </ComponentTestWrapper>,
     )
 
-    getActionValue('borrow-roe', 'previous').should('equal', formatNumber(8, 'percent.rate'))
-    getActionValue('borrow-roe').should('equal', formatNumber(7, 'percent.rate'))
+    getActionValue('borrow-return-on-equity', 'previous').should('equal', formatNumber(8, 'percent.rate'))
+    getActionValue('borrow-return-on-equity').should('equal', formatNumber(7, 'percent.rate'))
   })
 })
 
