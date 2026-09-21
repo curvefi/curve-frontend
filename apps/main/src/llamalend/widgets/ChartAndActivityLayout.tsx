@@ -35,6 +35,7 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { TabItem } from '@ui/hooks/useTabs'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit } from '@ui/lib/tokens'
@@ -79,40 +80,45 @@ type ChartAndActivityLayoutProps = {
   activity: LlammaActivityProps
 }
 
-type MarketActivityLayoutProps =
-  | { rateType: MarketRateType.Borrow; activity: LlammaActivityProps }
-  | { rateType: MarketRateType.Supply; activity: VaultActivityProps }
+type MarketActivityProps = { [MarketRateType.Borrow]: LlammaActivityProps; [MarketRateType.Supply]: VaultActivityProps }
+type MarketActivityTabsParams<T extends MarketRateType> = { activity: MarketActivityProps[T] }
 
-type MarketActivityTabsParams = { activity: LlammaActivityProps }
-
-const MarketActivityEventsTab = ({ activity }: MarketActivityTabsParams) => <LlammaActivityEvents {...activity} />
-const MarketActivityTradesTab = ({ activity }: MarketActivityTabsParams) => <LlammaActivityTrades {...activity} />
-const MarketActivityTab = (props: MarketActivityLayoutProps) =>
-  props.rateType === MarketRateType.Borrow ? (
-    <LlammaActivityEvents {...props.activity} />
-  ) : (
-    <VaultActivityEvents {...props.activity} />
-  )
-const MarketBorrowActivityTradesTab = (props: MarketActivityLayoutProps) =>
-  props.rateType === MarketRateType.Borrow ? <LlammaActivityTrades {...props.activity} /> : null
-const LegacyMarketPriceChartTab = ({ chart, bands }: ChartAndActivityLayoutProps) => (
-  <LegacyMarketPriceChartLayout chart={chart} bands={bands} />
+const MarketBorrowActivityEventsTab = ({ activity }: MarketActivityTabsParams<MarketRateType.Borrow>) => (
+  <LlammaActivityEvents {...activity} />
+)
+const MarketBorrowActivityTradesTab = ({ activity }: MarketActivityTabsParams<MarketRateType.Borrow>) => (
+  <LlammaActivityTrades {...activity} />
 )
 
-const MARKET_ACTIVITY_MENU = [
-  {
-    value: 'trades',
-    label: t`Swaps`,
-    component: MarketBorrowActivityTradesTab,
-    visible: ({ rateType }: MarketActivityLayoutProps) => rateType === MarketRateType.Borrow,
-  },
-  { value: 'events', label: t`Activity`, component: MarketActivityTab },
-]
+const buildMarketActivityMenu = <T extends MarketRateType>(rateType: T) =>
+  (
+    ({
+      [MarketRateType.Borrow]: [
+        { value: 'trades', label: t`Swaps`, component: MarketBorrowActivityTradesTab },
+        { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
+      ],
+      [MarketRateType.Supply]: [
+        {
+          value: 'events',
+          label: t`Activity`,
+          component: ({ activity }: MarketActivityTabsParams<MarketRateType.Supply>) => (
+            <VaultActivityEvents {...activity} />
+          ),
+        },
+      ],
+    }) as { [K in MarketRateType]: readonly Omit<TabItem<string, MarketActivityTabsParams<K>>, 'subTabs'>[] }
+  )[rateType]
 
-const CHART_AND_ACTIVITY_MENU = [
-  { value: 'chart', label: t`Chart`, component: LegacyMarketPriceChartTab },
-  { value: 'trades', label: t`Swaps`, component: MarketActivityTradesTab },
-  { value: 'events', label: t`Activity`, component: MarketActivityEventsTab },
+const LEGACY_CHART_AND_ACTIVITY_MENU = [
+  {
+    value: 'chart',
+    label: t`Chart`,
+    component: ({ chart, bands }: ChartAndActivityLayoutProps) => (
+      <LegacyMarketPriceChartLayout chart={chart} bands={bands} />
+    ),
+  },
+  { value: 'trades', label: t`Swaps`, component: MarketBorrowActivityTradesTab },
+  { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
 ]
 
 const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
@@ -161,9 +167,24 @@ const MarketPriceMetrics = () => {
   )
 }
 
-export const MarketActivityLayout = (props: MarketActivityLayoutProps) => (
-  <Stack data-testid={props.rateType === MarketRateType.Borrow ? 'market-activity' : 'market-vault-activity'}>
-    <Tabs menu={MARKET_ACTIVITY_MENU} params={props} variant="contained" ContentWrapper={ActivityTabsContent} />
+export const MarketActivityLayout = <T extends MarketRateType>({
+  rateType,
+  activity,
+}: {
+  rateType: T
+  activity: MarketActivityProps[NoInfer<T>]
+}) => (
+  <Stack
+    data-testid={
+      { [MarketRateType.Borrow]: 'market-activity', [MarketRateType.Supply]: 'market-vault-activity' }[rateType]
+    }
+  >
+    <Tabs
+      menu={buildMarketActivityMenu(rateType)}
+      params={{ activity }}
+      variant="contained"
+      ContentWrapper={ActivityTabsContent}
+    />
   </Stack>
 )
 
@@ -271,7 +292,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
 export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => (
   <Stack data-testid="market-chart-and-activity">
     <Tabs
-      menu={CHART_AND_ACTIVITY_MENU}
+      menu={LEGACY_CHART_AND_ACTIVITY_MENU}
       params={useMemo(() => ({ chart, bands, activity }), [chart, bands, activity])}
       variant="contained"
       ContentWrapper={ActivityTabsContent}

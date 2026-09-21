@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
@@ -75,17 +76,25 @@ export const MarketActivityComp = ({ rateType }: { rateType: MarketRateType }) =
     vaultToken,
     tokens: { collateralToken, borrowToken },
   } = useMarketContext<ChainId>()
+  const marketActivity = {
+    [MarketRateType.Borrow]: (
+      <MarketActivityLayout
+        rateType={MarketRateType.Borrow}
+        activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'lending' }}
+      />
+    ),
+    [MarketRateType.Supply]: (
+      <MarketActivityLayout
+        rateType={MarketRateType.Supply}
+        activity={{ chainId, blockchainId, borrowToken, vaultToken }}
+      />
+    ),
+  } satisfies Record<MarketRateType, ReactElement>
+
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       <MarketParticipantsTabs rateType={rateType} />
-      {rateType === MarketRateType.Borrow ? (
-        <MarketActivityLayout
-          rateType={rateType}
-          activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'lending' }}
-        />
-      ) : (
-        <MarketActivityLayout rateType={rateType} activity={{ chainId, blockchainId, borrowToken, vaultToken }} />
-      )}
+      {marketActivity[rateType]}
     </Stack>
   )
 }
