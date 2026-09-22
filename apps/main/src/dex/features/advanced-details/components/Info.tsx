@@ -3,11 +3,11 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import type { Address } from '@primitives/address.utils'
-import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe, notFalsy, type Nullish } from '@primitives/objects.utils'
+import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { fakeLoadingQ } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { Section } from './Section'
 
 export const Info = ({
   chainId,
@@ -32,7 +32,7 @@ export const Info = ({
 }) => (
   <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Info`} />
-    <CardContent component={Section}>
+    <CardContent component={SectionContentCard}>
       <ActionInfo
         label={t`Pool type`}
         value={notFalsy(poolType ?? '-', isMetapool && t`Metapool`, isBasePool && t`Basepool`).join(', ')}

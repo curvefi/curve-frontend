@@ -12,7 +12,7 @@ type CompleteWithdrawForm = Omit<WithdrawFormValues, 'decimals'> &
 
 export type WithdrawFormQuery = PoolQuery & UserParams & CompleteWithdrawForm
 
-export type WithdrawQuery = PoolQuery & UserQuery & WithdrawMutation
+type WithdrawQuery = PoolQuery & UserQuery & WithdrawMutation
 
 export type WithdrawSimulationQuery = QuoteQuery &
   UserQuery & {

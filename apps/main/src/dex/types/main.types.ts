@@ -13,9 +13,9 @@ export type ChainId = IChainId
 export type NetworkEnum = INetworkName
 
 export type NetworkUrlParams = { network: INetworkName }
-export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
+export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string }
 export type PoolAddressParams = NetworkUrlParams & { poolAddress: Address }
-type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
+type CrvLockerUrlParams = NetworkUrlParams
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
 export type NetworkConfig = {
@@ -46,7 +46,6 @@ export type CurrencyReservesToken = {
 }
 export type CurrencyReserves = { poolId: string; tokens: CurrencyReservesToken[]; total: string; totalUsd: string }
 export type CurrencyReservesMapper = Record<string, CurrencyReserves>
-export type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
 export type Pool = PoolTemplate
 export type ClaimableReward = { token: string; symbol: string; amount: string; price: number }
 export type RewardBase = { day: string; week: string }

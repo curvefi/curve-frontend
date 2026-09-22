@@ -7,7 +7,7 @@ import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { ExtendLockQuery } from './extend-lock.types'
 
-export const validateExtendLockDays = (days: number) => {
+const validateExtendLockDays = (days: number) => {
   test('days', t`Select a valid unlock date`, () => {
     enforce(days).gt(0)
   })

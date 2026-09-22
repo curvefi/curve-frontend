@@ -3,10 +3,9 @@ import { AddressActionInfo, type AddressDisplay } from '@evm-ui/shared/ui/Addres
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
-import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
+import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { t } from '@ui/lib/i18n'
-import { Section } from './Section'
 
 export const Contracts = ({
   chainId,
@@ -29,8 +28,8 @@ export const Contracts = ({
 }) => (
   <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Contracts`} />
-    <CardContent component={Stack}>
-      <Section>
+    <CardContent>
+      <SectionContentCard>
         {poolAddress && (
           <AddressActionInfo
             chainId={chainId}
@@ -56,13 +55,13 @@ export const Contracts = ({
             }
           />
         )}
-      </Section>
+      </SectionContentCard>
 
-      <Section>
+      <SectionContentCard>
         {oracles.map(oracle => (
           <AddressActionInfo key={oracle.address} chainId={chainId} {...oracle} display={addressDisplay} />
         ))}
-      </Section>
+      </SectionContentCard>
     </CardContent>
   </Card>
 )

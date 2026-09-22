@@ -1,28 +1,24 @@
 /// <reference types="./mui-card-header.d.ts" />
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
-import { handleBreakpoints } from '@ui/features/themes/basic-theme'
+import { handleBreakpoints, Responsive } from '@ui/features/themes/basic-theme'
 import { DesignSystem } from '@ui/features/themes/design'
 import { TRANSPARENT } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { CARD_SIZES, type CardSize } from '../card-sizes'
 
-const { ButtonSize, Spacing, Sizing: ResponsiveSizing, Tab } = SizesAndSpaces
+const { Spacing, Sizing, Tab } = SizesAndSpaces
 
 const CARD_HEADER_SIZES = {
   extraSmall: {
-    minHeight: ButtonSize.xs,
+    minHeight: Sizing.md,
     typography: 'headingXsBold',
     color: design => design.Tabs.Contained.Current.Label,
   },
-  small: {
-    minHeight: ButtonSize.sm,
-    typography: 'headingXsBold',
-    color: design => design.Tabs.Contained.Current.Label,
-  },
-  medium: { minHeight: ButtonSize.sm, typography: 'headingSBold', color: design => design.Text.TextColors.Secondary },
+  small: { minHeight: Sizing.lg, typography: 'headingXsBold', color: design => design.Tabs.Contained.Current.Label },
+  medium: { minHeight: Sizing.lg, typography: 'headingSBold', color: design => design.Text.TextColors.Secondary },
 } as const satisfies Record<
   CardSize,
-  { minHeight: string; typography: keyof TypographyVariantsOptions; color: (design: DesignSystem) => string }
+  { minHeight: Responsive; typography: keyof TypographyVariantsOptions; color: (design: DesignSystem) => string }
 >
 
 export const createHeaderStyle = (design: DesignSystem, typography: TypographyVariantsOptions, size: CardSize) => {
@@ -34,8 +30,7 @@ export const createHeaderStyle = (design: DesignSystem, typography: TypographyVa
       flex: '0 1 auto',
       flexDirection: 'column',
       justifyContent: 'center',
-      minHeight,
-      ...handleBreakpoints({ paddingInline: Spacing[Tab.Padding.medium.inline] }),
+      ...handleBreakpoints({ paddingInline: Spacing[Tab.Padding.medium.inline], minHeight }),
     },
     '& .MuiCardHeader-action': handleBreakpoints({
       alignSelf: 'end',
@@ -60,7 +55,7 @@ export const defineMuiCardHeader = (
   styleOverrides: {
     root: {
       padding: 0,
-      ...handleBreakpoints({ paddingBlockEnd: Spacing.xs, minHeight: ResponsiveSizing.xl, gap: Spacing.xs }),
+      ...handleBreakpoints({ paddingBlockEnd: Spacing.xs, minHeight: Sizing.xl, gap: Spacing.xs }),
       '& .MuiCardHeader-title': { color: design.Text.TextColors.Secondary },
       '& .MuiCardHeader-avatar': handleBreakpoints({ marginRight: Spacing.md }),
       alignItems: 'end',

@@ -57,6 +57,7 @@ export type LlamaMarket = {
   maxLtv: number | null
   loans: number
   oraclePrice?: number
+  ammPrice: number
   monetaryPolicyAddress?: Address
   oracleAddress?: Address
   parameters: { A: number | null; loanDiscount: Decimal; liquidationDiscount: Decimal; adminFee: Decimal }
@@ -137,6 +138,7 @@ const convertLendingVault = (
     version,
     nLoans,
     priceOracle,
+    ammPrice,
     policy,
     oracle,
     adminFee,
@@ -181,6 +183,7 @@ const convertLendingVault = (
     maxBand,
     loans: nLoans,
     oraclePrice: priceOracle,
+    ammPrice,
     monetaryPolicyAddress: policy,
     oracleAddress: oracle,
     parameters: {
@@ -259,6 +262,7 @@ const convertMintMarket = (
     monetaryPolicyAddress,
     oracle,
     priceOracle,
+    ammPrice,
     ammA,
     loanDiscount,
     liquidationDiscount,
@@ -318,6 +322,7 @@ const convertMintMarket = (
     maxBand,
     loans,
     oraclePrice: priceOracle,
+    ammPrice,
     monetaryPolicyAddress,
     oracleAddress: oracle,
     parameters: {

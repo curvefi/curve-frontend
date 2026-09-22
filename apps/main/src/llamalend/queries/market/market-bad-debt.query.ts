@@ -1,4 +1,5 @@
-import { type Endpoint, getBadDebt } from '@curvefi/prices-api/liquidations'
+import { getMarketEndpoint } from '@/llamalend/llama.utils'
+import { getBadDebt } from '@curvefi/prices-api/liquidations'
 import { MarketType } from '@evm-ui/types/market'
 import { recordValues } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -6,14 +7,9 @@ import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 type BadDebtParams = { type: MarketType }
 
-const endpointFromMarketType: Record<MarketType, Endpoint> = {
-  [MarketType.Lend]: 'lending',
-  [MarketType.Mint]: 'crvusd',
-}
-
 const { getQueryOptions: getBadDebtMarketsOptionsQuery, reset: resetBadDebtMarketsQuery } = queryFactory({
   queryKey: ({ type }: BadDebtParams) => ['getBadDebt', { type }, 'v1'] as const,
-  queryFn: ({ type }: BadDebtParams) => getBadDebt({ endpoint: endpointFromMarketType[type] }),
+  queryFn: ({ type }: BadDebtParams) => getBadDebt({ endpoint: getMarketEndpoint(type) }),
   category: 'llamalend.market',
   validationSuite: EmptyValidationSuite,
 })

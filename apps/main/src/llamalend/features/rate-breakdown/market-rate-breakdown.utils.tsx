@@ -13,12 +13,7 @@ import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { aprToApy } from '@ui/lib/rates.utils'
 
-export type BreakdownSource = {
-  tokenInfo: TokenInfoProps
-  address?: Address
-  explorerUrl?: string
-  yieldBearing?: boolean
-}
+type BreakdownSource = { tokenInfo: TokenInfoProps; address?: Address; explorerUrl?: string; yieldBearing?: boolean }
 
 export type RateBreakdownRow = {
   source: BreakdownSource

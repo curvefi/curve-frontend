@@ -11,7 +11,6 @@ import type { PoolFormProps } from '../pool-form.types'
 import { allTokenFields, type PoolForm, type PoolTokenField } from '../pool-form.utils'
 import { PoolTokenInputs } from '../PoolTokenInputs'
 import { BalancedDepositCheckbox } from './BalancedDepositCheckbox'
-export type { PoolTokenFields } from '../pool-form.utils'
 
 export type DepositFormProps<TValues extends PoolForm = PoolForm> = PoolFormProps<TValues> & {
   reserves: QueryProp<Decimal[]>
