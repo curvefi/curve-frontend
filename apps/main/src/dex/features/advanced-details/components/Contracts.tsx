@@ -4,8 +4,20 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import type { Address } from '@primitives/address.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { t } from '@ui/lib/i18n'
+
+export type ContractsProps = {
+  chainId: number
+  poolAddress: Address
+  lpTokenAddress: Address
+  gaugeAddress: Address
+  gaugeIsKilled: boolean | Nullish
+  hasGauge: boolean
+  oracles: { address: Address; title: string }[] | undefined
+  addressDisplay: AddressDisplay
+}
 
 export const Contracts = ({
   chainId,
@@ -16,16 +28,7 @@ export const Contracts = ({
   hasGauge,
   oracles,
   addressDisplay,
-}: {
-  chainId: number
-  poolAddress: Address
-  lpTokenAddress: Address
-  gaugeAddress: Address
-  gaugeIsKilled: boolean
-  hasGauge: boolean
-  oracles: { address: Address; title: string }[]
-  addressDisplay: AddressDisplay
-}) => (
+}: ContractsProps) => (
   <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Contracts`} />
     <CardContent>
@@ -58,7 +61,7 @@ export const Contracts = ({
       </SectionContentCard>
 
       <SectionContentCard>
-        {oracles.map(oracle => (
+        {oracles?.map(oracle => (
           <AddressActionInfo key={oracle.address} chainId={chainId} {...oracle} display={addressDisplay} />
         ))}
       </SectionContentCard>

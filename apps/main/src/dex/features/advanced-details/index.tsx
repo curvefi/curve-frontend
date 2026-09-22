@@ -7,15 +7,13 @@ import CardHeader from '@mui/material/CardHeader'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
-import type { Nullish } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { Contracts } from './components/Contracts'
-import { Info } from './components/Info'
-import { Parameters } from './components/Parameters'
-import { Prices } from './components/Prices'
+import { Contracts, type ContractsProps } from './components/Contracts'
+import { Info, type InfoProps } from './components/Info'
+import { Parameters, type ParametersProps } from './components/Parameters'
+import { Prices, type PricesProps } from './components/Prices'
 
 const { Spacing } = SizesAndSpaces
 
@@ -27,28 +25,18 @@ export const AdvancedDetails = ({
   poolId,
   info,
   contracts,
+  prices,
+  parameters,
   addressDisplay,
   managePoolLink,
   addGaugeLink,
 }: {
   chainId: number
   poolId: string
-  info: {
-    poolType: string | Nullish
-    isMetapool: boolean
-    isBasePool: boolean
-    basePoolAddress: Address | undefined
-    registryAddress: Address | undefined
-    vyperVersion: string | undefined
-  }
-  contracts: {
-    poolAddress: Address
-    lpTokenAddress: Address
-    gaugeAddress: Address
-    hasGauge: boolean
-    gaugeIsKilled: boolean
-    oracles: { address: Address; title: string }[]
-  }
+  info: Omit<InfoProps, 'chainId' | 'poolId' | 'addressDisplay'>
+  contracts: Omit<ContractsProps, 'chainId' | 'addressDisplay'>
+  prices: PricesProps
+  parameters: ParametersProps
   addressDisplay: AddressDisplay
   managePoolLink: ReactNode
   addGaugeLink: ReactNode
@@ -76,11 +64,11 @@ export const AdvancedDetails = ({
           <Collapse in={isOpen}>
             <Grid container columnSpacing={Spacing.md}>
               <Grid size={GRID_SIZE}>
-                <Parameters />
+                <Parameters {...parameters} />
               </Grid>
 
               <Grid size={GRID_SIZE}>
-                <Prices />
+                <Prices {...prices} />
               </Grid>
             </Grid>
           </Collapse>

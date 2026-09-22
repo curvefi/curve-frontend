@@ -9,6 +9,18 @@ import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { fakeLoadingQ } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
+export type InfoProps = {
+  chainId: number
+  poolId: string
+  poolType: string | Nullish
+  isMetapool: boolean | undefined
+  isBasePool: boolean | undefined
+  basePoolAddress: Address | undefined
+  registryAddress: Address | undefined
+  vyperVersion: string | Nullish
+  addressDisplay: AddressDisplay
+}
+
 export const Info = ({
   chainId,
   poolId,
@@ -19,17 +31,7 @@ export const Info = ({
   registryAddress,
   vyperVersion,
   addressDisplay,
-}: {
-  chainId: number
-  poolId: string
-  poolType: string | Nullish
-  isMetapool: boolean
-  isBasePool: boolean
-  basePoolAddress: Address | undefined
-  registryAddress: Address | undefined
-  vyperVersion: string | undefined
-  addressDisplay: AddressDisplay
-}) => (
+}: InfoProps) => (
   <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Info`} />
     <CardContent component={SectionContentCard}>
