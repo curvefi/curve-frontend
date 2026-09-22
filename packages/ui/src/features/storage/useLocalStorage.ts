@@ -44,9 +44,6 @@ export const useReleaseChannel = () =>
     oldKey: 'beta',
   })
 
-export const useFilterExpanded = (tableTitle: string) =>
-  useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
-
 type RateType = 'borrow' | 'supply'
 
 export const useShowNetRate = (type: RateType) =>

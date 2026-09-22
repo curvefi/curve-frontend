@@ -13,9 +13,9 @@ import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import { useNetworks } from '@/dex/entities/networks'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
+import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData } from '@/dex/types/main.types'
 import { TokenList } from '@evm-ui/features/select-token'
@@ -58,7 +58,7 @@ export const Swap = ({
   poolAlert,
   seed,
 }: Pick<PageTransferProps, 'params'> & { poolAlert: PoolAlert | null; maxSlippage: Decimal; seed: Seed }) => {
-  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { blockchainId, chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolSwap.activeKey)
@@ -73,8 +73,6 @@ export const Swap = ({
   const resetState = useStore(state => state.poolSwap.resetState)
   const setFormValues = useStore(state => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
-  const { data: networks } = useNetworks()
-  const network = (chainId && networks[chainId]) || null
 
   const priceImpact = toQuery(decimal(exchangeOutput.priceImpact), { isLoading: exchangeOutput.loading })
 
@@ -112,9 +110,9 @@ export const Swap = ({
       poolData.tokenAddresses.map<TokenOption>((address, index) => ({
         address: address as Address, // not checksummed!
         symbol: poolData.tokens[index] || shortenAddress(address),
-        chain: network?.blockchainId,
+        chain: blockchainId,
       })),
-    [poolData.tokenAddresses, poolData.tokens, network?.blockchainId],
+    [poolData.tokenAddresses, poolData.tokens, blockchainId],
   )
   const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
   const toToken = tokens.find(x => x.address.toLocaleLowerCase() == formValues.toAddress)
@@ -482,10 +480,10 @@ export const Swap = ({
           walletBalance={{ balance: q(userToBalance), symbol: toToken?.symbol, usdRate: toUsdRate }}
         />
 
-        {poolData?.hasWrapped && formValues.isWrapped !== null && (
+        {hasWrapped(poolData.pool) && formValues.isWrapped !== null && (
           <div>
             <Checkbox
-              isDisabled={isDisabled || !poolData || network?.poolIsWrappedOnly[poolData?.pool.id]}
+              isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
               isSelected={formValues.isWrapped}
               onChange={isWrapped => {
                 if (poolData) {
@@ -556,7 +554,7 @@ export const Swap = ({
         <AlertBox alertType="error">{t`The entered amount exceeds the available currency reserves.`}</AlertBox>
       ) : null}
       {/* actions*/}
-      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>

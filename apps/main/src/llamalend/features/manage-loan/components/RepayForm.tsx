@@ -195,7 +195,7 @@ export const RepayForm = <ChainId extends IChainId>({
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, { leverageEnabled: isRepayLeveraged(values) })}
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, isRepayLeveraged(values))}
         label={[
           isApproved.data === false && t`Approve`,
           notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),

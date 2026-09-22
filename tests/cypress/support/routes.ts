@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
 import {
@@ -9,6 +10,7 @@ import {
   LLAMALEND_ROUTES,
 } from '@evm-ui/shared/routes'
 import { recordValues, assert } from '@primitives/objects.utils'
+import { createMemoryHistory, createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
 import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
 
 const WBTC_LEND_POOL = '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617'
@@ -105,4 +107,22 @@ export const getRouteTestId = (route: AppRoute) => {
   const [, testId] = Object.entries(appRoutes).find(([route]) => afterNetwork.startsWith(route)) ?? []
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
   return assert(testId, `No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`)
+}
+
+export const createComponentTestRouter = ({
+  component,
+  initialEntry,
+  path,
+}: {
+  component: () => ReactNode
+  initialEntry: string
+  path: string
+}) => {
+  const rootRoute = createRootRoute()
+  const componentRoute = createRoute({ getParentRoute: () => rootRoute, path, component })
+
+  return createRouter({
+    routeTree: rootRoute.addChildren([componentRoute]),
+    history: createMemoryHistory({ initialEntries: [initialEntry] }),
+  })
 }

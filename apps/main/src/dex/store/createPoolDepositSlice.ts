@@ -42,8 +42,8 @@ import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { t } from '@ui/lib/i18n'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
-import { invalidateUserPoolInfo } from '../queries/invalidation'
-import { invalidatePoolParameters } from '../queries/pool-parameters.query'
+import { hasWrapped } from '../pool.utils'
+import { invalidatePoolInfo, invalidateUserPoolInfo } from '../queries/invalidation'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -152,13 +152,13 @@ export const createPoolDepositSlice = (
       return cFormValues.amounts
     },
     fetchSeedAmount: async (poolData, formValues) => {
-      const { hasWrapped, pool } = poolData
+      const { pool } = poolData
       const { underlyingCoins, underlyingCoinAddresses, wrappedCoins, wrappedCoinAddresses } = pool
 
       const firstAmount = formValues.amounts[0].value
       const haveFirstAmount = Number(firstAmount) > 0
-      const tokens = hasWrapped ? wrappedCoins : underlyingCoins
-      const tokenAddresses = hasWrapped ? wrappedCoinAddresses : underlyingCoinAddresses
+      const tokens = hasWrapped(pool) ? wrappedCoins : underlyingCoins
+      const tokenAddresses = hasWrapped(pool) ? wrappedCoinAddresses : underlyingCoinAddresses
 
       try {
         const seedAmounts = haveFirstAmount ? await pool.getSeedAmounts(firstAmount, !hasWrapped) : null
@@ -168,7 +168,7 @@ export const createPoolDepositSlice = (
             tokenAddress: tokenAddresses[idx],
             value: seedAmounts?.[idx] || '',
           })),
-          isWrapped: hasWrapped,
+          isWrapped: hasWrapped(pool),
         }
       } catch (error) {
         console.error('Api error getSeedAmounts', error)
@@ -178,7 +178,7 @@ export const createPoolDepositSlice = (
             const value = idx === 0 ? formValues.amounts[idx].value : ''
             return { token, tokenAddress: tokenAddresses[idx], value }
           }),
-          isWrapped: hasWrapped,
+          isWrapped: hasWrapped(pool),
         }
       }
     },
@@ -450,10 +450,8 @@ export const createPoolDepositSlice = (
           cFormStatus.formTypeCompleted = 'DEPOSIT'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          // re-fetch data
-          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
-          await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
+          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 
         return resp
@@ -491,10 +489,8 @@ export const createPoolDepositSlice = (
           cFormStatus.formTypeCompleted = 'DEPOSIT_STAKE'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          // re-fetch data
-          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
-          await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
+          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 
         return resp
@@ -558,10 +554,8 @@ export const createPoolDepositSlice = (
           cFormStatus.formTypeCompleted = 'STAKE'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          // re-fetch data
-          await invalidateUserPoolInfo({ chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress })
-          await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
+          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 
         return resp

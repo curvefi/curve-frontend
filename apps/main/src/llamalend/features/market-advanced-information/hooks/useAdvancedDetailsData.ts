@@ -3,7 +3,6 @@ import {
   calculateLendMarketTvlUsd,
   calculateMintMarketTvlUsd,
   getControllerAddress,
-  getReturnOnEquity,
   getTokens,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
@@ -15,6 +14,7 @@ import {
   useMarketTotalCollateral,
 } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { getReturnOnEquity } from '@/llamalend/rates.utils'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@evm-ui/lib/model/query/root-keys'
 import { MarketType } from '@evm-ui/types/market'

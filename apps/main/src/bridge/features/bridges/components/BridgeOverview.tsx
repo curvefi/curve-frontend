@@ -1,13 +1,12 @@
 import Fuse from 'fuse.js'
 import { useMemo, useState } from 'react'
-import { LegacyTableSearchField } from '@evm-ui/shared/ui/DataTable/LegacyTableSearchField'
 import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import type { Partner } from '@evm-ui/shared/ui/PartnerCard'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { SearchField } from '@ui/components/SearchField'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { BridgeGrid } from './BridgeGrid'
 
@@ -30,12 +29,7 @@ function filterBridges<T extends Partner>(searchText: string, bridges: T[]): T[]
 
 export const BridgeOverview = ({ bridges, title }: { bridges: Partner[]; title: string }) => {
   const [searchText, setSearchText] = useState('')
-  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
-  const isExpandedOrValue = Boolean(isSearchExpanded || searchText)
-  const isMobile = useIsMobile()
-
   const filteredBridges = useMemo(() => filterBridges(searchText, bridges), [bridges, searchText])
-  const hideTitle = isExpandedOrValue && isMobile
 
   return (
     <Stack>
@@ -50,14 +44,8 @@ export const BridgeOverview = ({ bridges, title }: { bridges: Partner[]; title: 
           paddingBlockEnd: Spacing.sm,
         }}
       >
-        {!hideTitle && <Typography variant="headingSBold">{title}</Typography>}
-        <LegacyTableSearchField
-          value={searchText}
-          placeholder={t`Search by bridge name`}
-          onChange={setSearchText}
-          toggleExpanded={toggleSearchExpanded}
-          isExpanded={isExpandedOrValue}
-        />
+        {!useIsMobile() && <Typography variant="headingSBold">{title}</Typography>}
+        <SearchField value={searchText} placeholder={t`Search by bridge name`} onSearch={setSearchText} />
       </Stack>
       {filteredBridges.length ? (
         <BridgeGrid bridges={filteredBridges} sx={{ paddingBlock: Spacing.md }} />

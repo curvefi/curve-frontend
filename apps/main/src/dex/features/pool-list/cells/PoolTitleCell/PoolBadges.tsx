@@ -1,12 +1,13 @@
-import { useMemo } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import type { AlertType, PoolAlert } from '@/dex/types/main.types'
-import { AlertIcons } from '@/dex/utils/alerts'
 import Stack from '@mui/material/Stack'
 import { Badge, type BadgeProps } from '@ui/components/Badge'
 import { Tooltip } from '@ui/components/Tooltip'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'
+import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../../types'
 import { poolTypeClassifications, type PoolClassification } from './classifications'
@@ -24,6 +25,14 @@ const alertTypeToBadgeColor: Record<AlertType, BadgeProps['color']> = {
   warning: 'warning',
   error: 'alert',
   danger: 'alert',
+}
+
+const AlertIcons: Record<AlertType, ReactElement> = {
+  info: <InfoCircledIcon />,
+  warning: <ExclamationTriangleIcon />,
+  error: <ExclamationTriangleIcon />,
+  '': <InfoCircledIcon />,
+  danger: <ExclamationTriangleIcon />,
 }
 
 const PoolBadge = (props: Omit<BadgeProps, 'size'>) => <Badge size="extraSmall" {...props} />

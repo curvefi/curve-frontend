@@ -14,6 +14,8 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
+import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
@@ -29,13 +31,14 @@ import { t } from '@ui/lib/i18n'
 
 export const FormStake = ({ seed }: TransferProps) => {
   const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
-  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolData.pool.id])
+  const { data: rewardsApy } = usePoolRewardsApy({ chainId, poolId })
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepStakeApprove)
   const fetchStepStake = useStore(state => state.poolDeposit.fetchStepStake)
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
@@ -167,7 +170,7 @@ export const FormStake = ({ seed }: TransferProps) => {
 
   return (
     <FormContent>
-      {poolData.gauge.isKilled && <AlertGaugeKilled />}
+      {gauge?.isKilled && <AlertGaugeKilled />}
       {/* input fields */}
       <FieldsWrapper>
         <FieldLpToken
@@ -191,7 +194,7 @@ export const FormStake = ({ seed }: TransferProps) => {
         )}
       </div>
 
-      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         {formStatus.error === 'lpToken-too-much' ? (
           <AlertBox alertType="error">{t`Not enough LP Tokens balances.`}</AlertBox>
         ) : formStatus.error ? (
