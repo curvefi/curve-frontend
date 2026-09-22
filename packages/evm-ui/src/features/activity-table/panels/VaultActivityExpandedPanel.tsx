@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { t } from '@ui/lib/i18n'
 import { LlammaTokenAmount } from '../cells'
@@ -13,28 +13,29 @@ export const VaultActivityExpandedPanel: ExpandedPanelComponent<VaultActivityRow
     <Stack>
       {amounts && (
         <>
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="bodyMRegular" color="textSecondary">{t`Assets`}</Typography>
-            <LlammaTokenAmount
-              amount={sign * amounts.assets}
-              blockchainId={event.blockchainId}
-              token={event.borrowToken}
-            />
-          </Stack>
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="bodyMRegular" color="textSecondary">{t`Shares`}</Typography>
-            <LlammaTokenAmount
-              amount={sign * amounts.shares}
-              blockchainId={event.blockchainId}
-              token={event.vaultToken}
-            />
-          </Stack>
+          <ActionInfo
+            label={t`Assets`}
+            value={
+              <LlammaTokenAmount
+                amount={sign * amounts.assets}
+                blockchainId={event.blockchainId}
+                token={event.borrowToken}
+              />
+            }
+          />
+          <ActionInfo
+            label={t`Shares`}
+            value={
+              <LlammaTokenAmount
+                amount={sign * amounts.shares}
+                blockchainId={event.blockchainId}
+                token={event.vaultToken}
+              />
+            }
+          />
         </>
       )}
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-        <Typography variant="tableCellMBold">{shortenString(event.provider)}</Typography>
-      </Stack>
+      <ActionInfo label={t`User`} value={shortenString(event.provider)} />
     </Stack>
   )
 }
