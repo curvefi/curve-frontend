@@ -15,15 +15,16 @@ export type DataTableCategoryConfig = {
   increasingLength?: IncreasingLengthCategory
   emptyStateSize?: NonNullable<EmptyStateCardProps['size']>
   emptyStateRowSize?: EmptyStateRowSize
+  enablePageChangeScroll?: boolean // defaults to false; scroll the document to the table after pagination changes
 }
 
 export type DataTableCategory = keyof typeof DATA_TABLE_CATEGORIES
 
 export const DATA_TABLE_CATEGORIES = {
   // default full-list table, e.g. MarketsTable or PoolListTable.
-  list: { emptyStateRowSize: 'lg' },
+  list: { emptyStateRowSize: 'lg', enablePageChangeScroll: true },
   // preview table that starts with a few rows, e.g. UserPositionsMarketRateTable.
-  limited: { defaultVisibleRows: 3, increasingLength: 'limited', emptyStateSize: 'sm' },
+  limited: { defaultVisibleRows: 3, increasingLength: 'limited', emptyStateSize: 'sm', enablePageChangeScroll: true },
   // table with many rows constrained inside a scrollable viewport, e.g. ActivityTable or UserEventsTable.
   scrollable: { height: Height.table.events, emptyStateRowSize: 'lg' },
   // compact detail table inside a secondary card or advanced-details section, e.g. PoolComposition or YieldBreakdown.

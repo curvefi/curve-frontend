@@ -4,8 +4,8 @@ import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
-import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
+import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -37,7 +37,7 @@ export const Prices = () => {
       {!!priceOracleData?.length && (
         <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Price Oracle`} />
-          <CardContent component={Stack}>
+          <CardContent component={SectionContentCard}>
             {priceRows.map(({ key, label, index }) => (
               <ActionInfo
                 key={`price-oracle-${key}`}
@@ -52,7 +52,7 @@ export const Prices = () => {
       {!!priceScaleData?.length && (
         <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Price Scale`} />
-          <CardContent component={Stack}>
+          <CardContent component={SectionContentCard}>
             {priceRows.map(({ key, label, index }) => (
               <ActionInfo
                 key={`price-scale-${key}`}
@@ -67,7 +67,7 @@ export const Prices = () => {
       {(snapshotData?.xcpProfit != null || snapshotData?.xcpProfitA != null) && (
         <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Xcp Profit`} />
-          <CardContent component={Stack}>
+          <CardContent component={SectionContentCard}>
             {snapshotData?.xcpProfit != null && (
               <ActionInfo
                 label={t`Xcp Profit`}

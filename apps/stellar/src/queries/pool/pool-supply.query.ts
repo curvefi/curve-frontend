@@ -1,7 +1,8 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import type { PoolParams, PoolQuery } from '@/stellar/queries/root-keys'
 import { rootKeys } from '@/stellar/queries/root-keys'
-import { poolValidationSuite, type PoolQuery, type PoolParams } from '@/stellar/queries/validation/pool.validation'
+import { poolValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei } from '@ui/lib/decimal'
 

@@ -7,11 +7,10 @@ import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
-import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
+import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { t } from '@ui/lib/i18n'
 import { usePoolContext } from '../../pool-context'
-import { Section } from './Section'
 
 export const Contracts = () => {
   const { chainId, blockchainId, poolId, poolAddress, poolData } = usePoolContext()
@@ -42,8 +41,8 @@ export const Contracts = () => {
   return (
     <Card size="extraSmall" variant="inline">
       <CardHeader title={t`Contracts`} />
-      <CardContent component={Stack}>
-        <Section>
+      <CardContent>
+        <SectionContentCard>
           {poolAddress && (
             <AddressActionInfo
               chainId={chainId}
@@ -67,13 +66,13 @@ export const Contracts = () => {
               }
             />
           )}
-        </Section>
+        </SectionContentCard>
 
-        <Section>
+        <SectionContentCard>
           {oracles.map(oracle => (
             <AddressActionInfo key={oracle.address} chainId={chainId} {...oracle} />
           ))}
-        </Section>
+        </SectionContentCard>
       </CardContent>
     </Card>
   )

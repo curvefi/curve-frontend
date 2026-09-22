@@ -39,7 +39,7 @@ const STACK_ICON_SIZE = {
 
 export type TokenIconsProps = {
   blockchainId: string
-  tokens: { symbol: string; address: string }[] | undefined
+  tokens: { symbol: string | undefined; address: string }[] | undefined
   /** Size of the complete token group, not the individual token icons. */
   size?: TokenIconsSize
   showChainIcon?: boolean

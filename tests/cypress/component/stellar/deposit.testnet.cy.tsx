@@ -43,17 +43,19 @@ describe('Stellar testnet deposit', () => {
 
   before(() => {
     getTestnetConfig()
-      .then(config => {
+      .then(async config => {
         testnetConfig = config
-        return connectTestWallet(config)
+        await connectTestWallet(config)
       })
-      .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
+      .then(API_LOAD_TIMEOUT, async () => await deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
   })
 
-  beforeEach(() => {
-    cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(freshState => (state = freshState))
-  })
+  beforeEach(() =>
+    cy
+      .then(LOAD_TIMEOUT, async () => await fetchPoolState(pool, testnetConfig))
+      .then(freshState => (state = freshState)),
+  )
 
   const mountDeposit = ({ connected = true } = {}) => {
     cy.mount(

@@ -1,12 +1,7 @@
 import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
-import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
-import {
-  MarketBorrowRateBreakdown,
-  MarketSupplyRateBreakdown,
-} from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
-import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
+import { MarketHistoricalRatesTabs } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
@@ -19,7 +14,6 @@ import { PAGE_SPACING } from '@ui/features/layout/DetailPageLayout/constants'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import type { Range } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { stackedCardHeadersSx } from '@ui/lib/mui'
 
 type MarketInformationCompProps = { rateType: MarketRateType; previewPrices?: Range<Decimal> | undefined }
 
@@ -32,30 +26,18 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      {isNewLlamaMarketDetailPage && (
-        <MarketSection id="market-overview">
-          <MarketOverviewCard />
-        </MarketSection>
-      )}
       {isBorrow && (
         <MarketSection id="price-chart">
           <ChartAndActivityComp previewPrices={previewPrices} />
         </MarketSection>
       )}
-      <MarketSection id="historical-rates">
-        <Stack sx={{ gap: PAGE_SPACING }}>
-          <Stack sx={stackedCardHeadersSx}>
-            {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
-            <MarketBorrowRateBreakdown />
-          </Stack>
-          <MarketSupplyRateBreakdown />
-          <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
-          <MarketRateCurveChart />
-        </Stack>
+      <MarketSection id="historical-rates" component={Stack} sx={{ gap: PAGE_SPACING }}>
+        <MarketHistoricalRatesTabs rateType={rateType} />
+        <MarketRateCurveChart />
       </MarketSection>
       {isNewLlamaMarketDetailPage && (
         <MarketSection id="market-activity">
-          <MarketActivityComp />
+          <MarketActivityComp rateType={rateType} />
         </MarketSection>
       )}
       <MarketSection id="market-parameters">
