@@ -1,11 +1,11 @@
 import {
+  type Address,
   createPublicClient,
   encodeFunctionData,
   http,
   numberToHex,
   parseAbi,
   parseUnits,
-  type Address,
   type PublicClient,
 } from 'viem'
 import { loadTenderlyAccount } from '@cy/support/helpers/tenderly/account'
@@ -15,8 +15,8 @@ import { approveErc20, fundErc20 } from '@cy/support/helpers/tenderly/vnet-fund'
 import { setVirtualNetworkStorageAt } from '@cy/support/helpers/tenderly/vnet-storage'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-time'
 import { sendVnetTransactionAndWait } from '@cy/support/helpers/tenderly/vnet-tx'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
-import { assert, maybe, notFalsy } from '@primitives/objects.utils'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { assert, maybe, notFalsy, range } from '@primitives/objects.utils'
 import { setupTenderlyLoan } from './loan-setup.helpers'
 
 const AMM_ABI = parseAbi([
@@ -211,22 +211,20 @@ const prepareBorrowedForSoftLiquidationActions = ({
 }
 
 const findOracleStorageLayout = async ({ client, oracleState }: { client: PublicClient; oracleState: OracleState }) => {
-  const slots = Array.from({ length: ORACLE_STORAGE_SCAN_SLOT_COUNT }, (_, index) => BigInt(index))
+  const { storedObservationTimestamp, oracleAddress, answer, storedPrice } = oracleState
   const slotValues = await Promise.all(
-    slots.map(async slot => {
-      const value = await client.getStorageAt({
-        address: oracleState.oracleAddress,
-        slot: numberToHex(slot, { size: 32 }),
-      })
+    range(ORACLE_STORAGE_SCAN_SLOT_COUNT).map(async index => {
+      const slot = BigInt(index)
+      const value = await client.getStorageAt({ address: oracleAddress, slot: numberToHex(slot, { size: 32 }) })
       return [slot, value ? BigInt(value) : 0n] as const
     }),
   )
   const findSlot = (expected: bigint) => slotValues.find(([, value]) => value === expected)?.[0]
-  const answerSlot = findSlot(oracleState.answer)
-  const storedObservationTimestampSlot = findSlot(oracleState.storedObservationTimestamp)
-  const storedPriceSlot = findSlot(oracleState.storedPrice)
+  const answerSlot = findSlot(answer)
+  const storedObservationTimestampSlot = findSlot(storedObservationTimestamp)
+  const storedPriceSlot = findSlot(storedPrice)
 
-  if (storedPriceSlot === undefined) {
+  if (storedPriceSlot == null) {
     // for some unknown reason assert() doens't work?
     throw new Error(
       `Unable to locate storedPrice storage slot: ${stringifySetupDetails({
@@ -371,7 +369,7 @@ const runSoftLiquidationPriceMove = ({
   userAddress: Address
   vnet: CreateVirtualTestnetResponse
 }) =>
-  cy.then(LOAD_TIMEOUT, async () => {
+  cy.then(TRANSACTION_LOAD_TIMEOUT, async () => {
     const readParams = { client, controllerAddress, ammAddress, userAddress }
     const state = await readSoftLiquidationState(readParams)
 
@@ -395,15 +393,15 @@ const runSoftLiquidationPriceMove = ({
       targetPrice,
       timestamp: oracleObservationTimestamp,
     })
-      .then(() => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
-      .then(async () => {
+      .then(LOAD_TIMEOUT, () => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
+      .then(LOAD_TIMEOUT, async () => {
         const oracle = await readOracleState({ client, ammAddress })
         assert(
           oracle.answer === targetPrice && oracle.storedPrice === targetPrice,
           `Oracle storage override did not reach target: ${stringifySetupDetails({ oracle, targetBand, targetPrice })}`,
         )
       })
-      .then(() =>
+      .then(LOAD_TIMEOUT, () =>
         moveAmmToOraclePrice({
           ammAddress,
           borrowedAddress,
@@ -414,7 +412,7 @@ const runSoftLiquidationPriceMove = ({
           vnet,
         }),
       )
-      .then(async quote => {
+      .then(LOAD_TIMEOUT, async quote => {
         const { oracle, state } = await readSoftLiquidationSetup(readParams)
         assert(
           isSoftLiquidationState(state) && state.health > 0n,
@@ -428,7 +426,7 @@ const runSoftLiquidationPriceMove = ({
         )
         return state
       })
-      .then(state =>
+      .then(LOAD_TIMEOUT, state =>
         fundErc20({
           adminRpcUrl: getRpcUrls(vnet).adminRpcUrl,
           amountWei: `0x${state.debt.toString(16)}`,

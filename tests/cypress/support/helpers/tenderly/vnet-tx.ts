@@ -1,8 +1,11 @@
 import type { Hash, Hex, PublicClient, RpcTransactionRequest } from 'viem'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Address } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
+
+// Tenderly virtual networks mine transactions quickly. Viem otherwise derives a 4s interval from the chain block time.
+const VNET_RECEIPT_POLLING_INTERVAL = 250
 
 /** Sends an eth_sendTransaction request through the Tenderly VNet admin RPC and waits for success. */
 export const sendAdminTransaction = ({
@@ -25,9 +28,10 @@ export const sendAdminTransaction = ({
       body: { jsonrpc: '2.0', method: 'eth_sendTransaction', params: [{ from, to, data }], id: 2 },
       ...LOAD_TIMEOUT,
     })
-    .then(({ body }) =>
+    .then(TRANSACTION_LOAD_TIMEOUT, ({ body }) =>
       client.waitForTransactionReceipt({
         hash: assert(body.result, `Failed to send available balance transaction: ${JSON.stringify(body.error)}`),
+        pollingInterval: VNET_RECEIPT_POLLING_INTERVAL,
       }),
     )
     .then(({ status }) => assert(status == 'success', 'Failed to set available balance'))
@@ -76,7 +80,10 @@ export const sendVnetTransactionAndWait = async ({
   tx: RpcTransactionRequest
 }) => {
   const txHash = await sendVnetTransaction({ tenderly, tx })
-  const receipt = await client.waitForTransactionReceipt({ hash: txHash })
+  const receipt = await client.waitForTransactionReceipt({
+    hash: txHash,
+    pollingInterval: VNET_RECEIPT_POLLING_INTERVAL,
+  })
   if (receipt.status !== 'success') {
     throw new Error(`${errorMessage}: ${txHash}`)
   }
