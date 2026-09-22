@@ -73,6 +73,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })
   const minimum = mapQuery(quote, value => calculateMinimumMint(value, params.slippage))
   const priceImpact = useDepositPriceImpact({ ...params, amounts: getPoolAmounts(params, params.tokenCount) }, q(quote))
+  const isSeed = mapQuery(supply, supply => !+supply)
 
   const {
     onSubmit,
@@ -94,7 +95,8 @@ export function useDepositForm(poolParams: PoolQuery) {
     params,
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
-    isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
+    isDisabled:
+      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data === false),
     isLoading: isPending || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
@@ -104,6 +106,6 @@ export function useDepositForm(poolParams: PoolQuery) {
     slippage: values.slippage,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens: tokenInputs,
-    isSeed: mapQuery(supply, supply => !+supply),
+    isSeed,
   }
 }

@@ -46,7 +46,7 @@ export const PoolActionSettings = ({
         userAddress={userAddress}
         size="small"
       />
-      {exchangeRate && fromSymbol && toSymbol && (
+      {exchangeRate && (
         <ActionInfo
           label={t`Exchange rate`}
           value={mapQuery(exchangeRate, value =>
