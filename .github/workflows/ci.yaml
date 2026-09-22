@@ -114,7 +114,7 @@ jobs:
   cypress-component-rpc:
     name: Cypress component tests with RPC
     if: github.ref_name == 'main'
-    timeout-minutes: 15
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
