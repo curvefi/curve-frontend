@@ -16,14 +16,14 @@ const { Spacing } = SizesAndSpaces
 
 export type ParametersProps = {
   a: number | Nullish
-  adjustmentStep: number | Nullish
-  allowedExtraProfit: number | Nullish
-  feeGamma: number | Nullish
-  maHalfTime: number | Nullish
-  midFee: number | Nullish
+  adjustmentStep?: number | null
+  allowedExtraProfit?: number | null
+  feeGamma?: number | null
+  maHalfTime?: number | null
+  midFee?: number | null
   offpegFeeMultiplier: number | Nullish
-  outFee: number | Nullish
-  A: Decimal | Nullish
+  outFee?: number | null
+  A?: Decimal | null
   initial_A: Decimal | Nullish
   initial_A_time: number | Nullish
   future_A: Decimal | Nullish
@@ -32,9 +32,9 @@ export type ParametersProps = {
   rampADetails: { isFutureATimePassedToday: boolean; isRampUp: boolean } | undefined
   ammFee: QueryProp<Amount>
   daoFee: QueryProp<Amount>
-  eywaFee: QueryProp<Amount | null>
+  eywaFee?: QueryProp<Amount | null>
   virtualPrice: QueryProp<Amount>
-  gamma: Amount | undefined
+  gamma?: Amount
 }
 
 export const Parameters = ({
@@ -78,7 +78,7 @@ export const Parameters = ({
           )}
         />
 
-        {eywaFee.data != null && <ActionInfo label={t`EYWA fee`} value={eywaFee} />}
+        {eywaFee?.data != null && <ActionInfo label={t`EYWA fee`} value={eywaFee} />}
 
         <ActionInfo
           label={t`Virtual price`}
