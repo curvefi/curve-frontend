@@ -396,7 +396,7 @@ const runSoftLiquidationPriceMove = ({
       timestamp: oracleObservationTimestamp,
     })
       .then(() => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
-      .then(async () => {
+      .then(TRANSACTION_LOAD_TIMEOUT, async () => {
         const oracle = await readOracleState({ client, ammAddress })
         assert(
           oracle.answer === targetPrice && oracle.storedPrice === targetPrice,
