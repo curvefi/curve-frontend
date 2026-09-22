@@ -33,6 +33,7 @@ import { PoolPageHeader } from '@/dex/widgets/page-header/PoolPageHeader'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import type { Address } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
@@ -184,7 +185,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               () =>
                 constQ(
                   poolData.tokens
-                    .map((symbol, index) => ({ symbol, address: poolData.tokenAddresses[index] ?? '' }))
+                    .map((symbol, index) => ({ symbol, address: poolData.tokenAddresses[index] as Address }))
                     .filter(({ address }) => address),
                 ),
               [poolData.tokenAddresses, poolData.tokens],
