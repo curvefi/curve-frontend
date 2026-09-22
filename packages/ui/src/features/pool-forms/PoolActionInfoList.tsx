@@ -66,22 +66,6 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
-    {minimumLp && (
-      <ActionInfo
-        testId="pool-deposit-minimum-lp"
-        label={t`Minimum LP received`}
-        value={mapQuery(minimumLp, value => formatNumber(value, 'token.balance'))}
-        size="small"
-      />
-    )}
-    {maximumLp && (
-      <ActionInfo
-        testId="pool-withdraw-maximum-lp"
-        label={t`Maximum LP burned`}
-        value={mapQuery(maximumLp, value => formatNumber(value, 'token.balance'))}
-        size="small"
-      />
-    )}
     {currentLp && currentLpTestId && (
       <ActionInfo
         testId={currentLpTestId}
@@ -106,6 +90,19 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
+    <SlippageToleranceActionInfo
+      maxSlippage={slippage}
+      onChanged={({ stable }) => onSlippageChange(stable)}
+      type="stable"
+      userAddress={userAddress}
+      size="small"
+    />
+    <PriceImpactActionInfo
+      testId="pool-price-impact"
+      priceImpact={priceImpact}
+      value={mapQuery(priceImpact, value => formatNumber(value, 'percent.price-impact'))}
+      size="small"
+    />
     {exchangeRate && (
       <ActionInfo
         testId="pool-swap-exchange-rate"
@@ -124,19 +121,22 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
-    <PriceImpactActionInfo
-      testId="pool-price-impact"
-      priceImpact={priceImpact}
-      value={mapQuery(priceImpact, value => formatNumber(value, 'percent.price-impact'))}
-      size="small"
-    />
-    <SlippageToleranceActionInfo
-      maxSlippage={slippage}
-      onChanged={({ stable }) => onSlippageChange(stable)}
-      type="stable"
-      userAddress={userAddress}
-      size="small"
-    />
+    {minimumLp && (
+      <ActionInfo
+        testId="pool-deposit-minimum-lp"
+        label={t`Minimum LP received`}
+        value={mapQuery(minimumLp, value => formatNumber(value, 'token.balance'))}
+        size="small"
+      />
+    )}
+    {maximumLp && (
+      <ActionInfo
+        testId="pool-withdraw-maximum-lp"
+        label={t`Maximum LP burned`}
+        value={mapQuery(maximumLp, value => formatNumber(value, 'token.balance'))}
+        size="small"
+      />
+    )}
     <ActionInfoGasEstimate gas={gas} />
   </Stack>
 )
