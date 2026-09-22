@@ -318,27 +318,6 @@ export const calculateLtv = (
   return (debtValue / collateralValue) * 100
 }
 
-/** Annualized return on equity at the given leverage. Input APYs and output are percentage  */
-export const getReturnOnEquity = (
-  leverage: number | Nullish,
-  collateralApy: number | Nullish,
-  borrowApy: number | Nullish,
-): number | undefined =>
-  // Total collateral / equity = leverage, so debt / equity = leverage - 1.
-  maybes([leverage, collateralApy, borrowApy], (lev, colApy, borApy) =>
-    lev < 1 ? undefined : lev * colApy - (lev - 1) * borApy,
-  )
-
-/** Return on equity at the market's maximum leverage. */
-export const getMaxReturnOnEquity = ({
-  leverage,
-  assets: {
-    collateral: { rebasingYield },
-  },
-  rates: { borrowApy },
-}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined =>
-  getReturnOnEquity(leverage, rebasingYield, borrowApy)
-
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,
   collateralBalanceUsd,

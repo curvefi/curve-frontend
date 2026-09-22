@@ -8,7 +8,7 @@ import { BlockchainIds } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { q, Query, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q, Query, type QueryProp } from '@ui/features/queries/util'
 import { decimal, decimalMinus } from '@ui/lib/decimal'
 
 /**
@@ -50,5 +50,11 @@ export function useBorrowRates<ChainId extends IChainId>(
   // Without `debt`, `rates`/`netBorrowApr` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netBorrowApr] = addNetApr(useMarketFutureRates({ chainId, marketId, debtDelta }, enabled), snapshots)
   const [prevRates, prevNetBorrowApr] = addNetApr(useMarketRates({ chainId, marketId }, enabled), snapshots)
-  return { prevRates, rates, prevNetBorrowApr, netBorrowApr }
+  return {
+    prevRates,
+    rates,
+    prevNetBorrowApr,
+    netBorrowApr,
+    collateralApy: mapQuery(snapshots, data => data.at(-1)?.collateralToken.rebasingYield),
+  }
 }

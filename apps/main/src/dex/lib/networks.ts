@@ -10,7 +10,6 @@ import { Chain } from '@primitives/network.utils'
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
-    poolIsWrappedOnly: { pax: true, busd: true, y: true },
     swap: { fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7', toAddress: ethAddress },
     swapCustomRouteRedirect: { 'sfrxeth-llamma': getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_MARKETS) },
     createDisabledTokens: [
@@ -231,7 +230,7 @@ const fxSwapUpgradedChains = [Chain.Etherlink]
 const liteCreateQuickList: Record<number, NetworkConfig['createQuickList']> = {
   [Chain.Arc]: [{ address: ARC_USDC_ADDRESS, symbol: 'USDC' }],
 }
-const liteSwap: Record<number, NetworkConfig['swap']> = {
+const liteSwap: Record<number, NonNullable<NetworkConfig['swap']>> = {
   [Chain.Arc]: { fromAddress: ethAddress, toAddress: ARC_USDC_ADDRESS },
 }
 
@@ -269,7 +268,7 @@ export async function getNetworks() {
       fxswapFactory: isLiteFxswapEnabled,
       isCrvRewardsEnabled: isUpgraded,
       createQuickList: liteCreateQuickList?.[chainId] ?? [],
-      swap: liteSwap?.[chainId],
+      ...(liteSwap[chainId] && { swap: liteSwap[chainId] }),
       ...(isOnlyPoolRewardsUpgraded && { isCrvRewardsEnabled: true }),
     }
     return prev

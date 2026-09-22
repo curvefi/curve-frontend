@@ -1,5 +1,6 @@
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
+import { ChainId, PoolData } from '@/dex/types/main.types'
 
 type UserBaseProfit = { day: string; week: string; month: string; year: string }
 

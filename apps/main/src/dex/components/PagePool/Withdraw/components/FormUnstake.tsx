@@ -147,7 +147,7 @@ export const FormUnstake = ({ seed }: TransferProps) => {
         </div>
       )}
 
-      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
         {txInfoBar}
         <Stepper steps={steps} />

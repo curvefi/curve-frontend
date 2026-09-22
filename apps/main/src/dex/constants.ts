@@ -20,8 +20,6 @@ export const ROUTE = {
 
 export const DEFAULT_NETWORK_CONFIG = {
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
-  poolIsWrappedOnly: {}, // show only wrapped pool data
-  swap: { fromAddress: '', toAddress: '' },
   swapCustomRouteRedirect: {},
   createQuickList: [],
   createDisabledTokens: [],
@@ -36,11 +34,3 @@ export const DEFAULT_NETWORK_CONFIG = {
 
 // List of characters that are not allowed in pool names. See getPoolName() in @curvefi/api
 export const INVALID_POOLS_NAME_CHARACTERS = [':'] as const satisfies string[]
-
-export const CROSS_CHAIN_ADDRESSES = [
-  '0x939721ce04332ca04b100154e0c8fcbb4ebaf695',
-  '0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c',
-  '0x6bb9a6b7066445da6bef268b91810ae750431587',
-  '0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2',
-  '0x6e0dc5a4ef555277db3435703f0e287040013763',
-]

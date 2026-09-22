@@ -44,17 +44,19 @@ describe('Stellar testnet withdraw', () => {
 
   before(() => {
     getTestnetConfig()
-      .then(config => {
+      .then(async config => {
         testnetConfig = config
-        return connectTestWallet(config)
+        await connectTestWallet(config)
       })
-      .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
+      .then(API_LOAD_TIMEOUT, async () => await deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
   })
 
-  beforeEach(() => {
-    cy.then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig)).then(freshState => (state = freshState))
-  })
+  beforeEach(() =>
+    cy
+      .then(LOAD_TIMEOUT, async () => await fetchWithdrawState(pool, testnetConfig))
+      .then(freshState => (state = freshState)),
+  )
 
   const mountWithdraw = ({ connected = true } = {}) => {
     cy.mount(
@@ -91,9 +93,7 @@ describe('Stellar testnet withdraw', () => {
 
     it('requires a connected wallet', () => {
       mountWithdraw({ connected: false })
-      state.coins.forEach(({ address }) => {
-        poolInput(address).should('be.visible')
-      })
+      state.coins.map(({ address }) => poolInput(address).should('be.visible'))
       cy.get('[data-testid="pool-withdraw-connect-wallet"]', LOAD_TIMEOUT).should('be.enabled')
       withdrawSubmit().should('not.exist')
     })
@@ -120,14 +120,14 @@ describe('Stellar testnet withdraw', () => {
       withdrawLpInput().find('[data-testid="input-chip-Max"]').click()
       withdrawLpInput().find('input').should('have.value', state.lp.balance)
       const slippage = +useUserProfileStore.getState().maxSlippage.stable
-      state.coins.forEach(({ address, decimals }, index) => {
+      state.coins.map(({ address, decimals }, index) =>
         poolInput(address)
           .find('input')
           .should(input => {
             const expected = (+state.reserves[index] * +state.lp.balance) / +state.supply / (1 + slippage / 100)
             expect(+input.val()!).to.be.closeTo(expected, 10 ** -decimals)
-          })
-      })
+          }),
+      )
       writePoolAmount(state.coins[0].address, SINGLE_COIN_OUTPUT_AMOUNT)
       withdrawLpInput().find('input').should('have.value', state.lp.balance)
       withdrawSubmit().should('be.enabled')
@@ -160,9 +160,9 @@ describe('Stellar testnet withdraw', () => {
       withdrawSubmit().should('be.disabled')
       poolInput(state.coins[0].address).find('input').should('have.value', overBudgetOutput)
       writePoolAmount(state.coins[0].address, SINGLE_COIN_OUTPUT_AMOUNT)
-      state.coins.forEach(({ address }) => {
-        poolInput(address).find('[data-testid="helper-message-error"]').should('not.exist')
-      })
+      state.coins.map(({ address }) =>
+        poolInput(address).find('[data-testid="helper-message-error"]').should('not.exist'),
+      )
       cy.get('[data-testid="loan-form-error-root"]').should('not.exist')
       withdrawSubmit().should('be.enabled')
     })

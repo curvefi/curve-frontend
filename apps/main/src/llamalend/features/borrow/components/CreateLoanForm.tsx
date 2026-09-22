@@ -164,7 +164,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
         label={[isApproved?.data === false && t`Approve`, t`Borrow`]}
         testId="create-loan-submit-button"
         connectWalletTestId="form-market-page"
