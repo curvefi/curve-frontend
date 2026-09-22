@@ -12,7 +12,7 @@ import {
   getDefaultLegacyPoolsSort,
 } from '../columns'
 
-export type LegacyPoolColumnVariant = keyof typeof LEGACY_POOLS_COLUMN_OPTIONS
+type LegacyPoolColumnVariant = keyof typeof LEGACY_POOLS_COLUMN_OPTIONS
 
 const migration: MigrationOptions<Record<LegacyPoolColumnVariant, VisibilityGroup<LegacyPoolColumnId>[]>> = {
   version: 1,

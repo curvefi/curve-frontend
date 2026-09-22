@@ -1,11 +1,13 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useMemo, type ReactNode } from 'react'
+import { useMemo, useRef, type ReactNode } from 'react'
 import { useLatestValueRef } from '@evm-ui/hooks/useLatestValueRef'
 import type { ChartLineDashPattern } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
+import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import { maybe } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useResizeObserver } from '@ui/hooks/useResizeObserver'
 
 const { FontSize } = SizesAndSpaces
 
@@ -69,6 +71,8 @@ export const EChartsLineChart = <
   /** Sets the padding ratio for the y-axis, used to add space above and below the data points */
   yPaddingRatio?: number
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [width] = useResizeObserver(containerRef, { dimension: 'width' })
   const theme = useTheme()
   const {
     design: { Color, Text },
@@ -201,6 +205,16 @@ export const EChartsLineChart = <
     ],
   )
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
-  return <ReactECharts option={option} notMerge autoResize style={{ width: '100%', height }} />
+  return (
+    <Box ref={containerRef}>
+      <ReactECharts
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
+        option={option}
+        notMerge
+        // autoResize can miss parent width changes, so observe the parent instead.
+        autoResize={false}
+        style={{ width: width || '100%', height }}
+      />
+    </Box>
+  )
 }

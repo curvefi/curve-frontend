@@ -2,7 +2,7 @@ import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
 
-export const MAX_DISPLAY_RATE_PERCENT = 5000
+const MAX_DISPLAY_RATE_PERCENT = 5000
 
 /**
  * Formats a percentage rate without its unit. This is useful for components that render the percentage symbol

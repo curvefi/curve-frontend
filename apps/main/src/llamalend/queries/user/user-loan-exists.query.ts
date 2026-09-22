@@ -1,12 +1,8 @@
-import { identity } from 'lodash'
 import { getMarket } from '@/llamalend/llama.utils'
-import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
-import { combineQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import { QueryProp } from '@ui/features/queries/util'
 
 export const { useQuery: useLoanExists } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'loanExists'] as const,
@@ -19,21 +15,3 @@ export const { useQuery: useLoanExists } = queryFactory({
   category: 'llamalend.user',
   validationSuite: userMarketValidationSuite,
 })
-
-export const useHasLoan = ({
-  chainId,
-  marketId,
-  marketQuery,
-  userAddress,
-}: UserMarketParams & { marketQuery: QueryProp<MarketTemplate> }) =>
-  // todo: it's much simpler to add 'dependencies' to `useLoanExists` but that hook cannot access the loading code in the separate apps
-  combineQueries(
-    [
-      useLoanExists(
-        { chainId, marketId, userAddress },
-        !!marketQuery.data, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
-      ),
-      marketQuery, // combine with market query to inherit error/loading state
-    ],
-    identity, // take only the exists result, we don't care about the market in this query
-  )

@@ -183,6 +183,9 @@ export const getMarketType = <T extends MarketTemplate | Nullish>(
     m => m.type,
   )
 
+export const getMarketEndpoint = (marketType: MarketType) =>
+  (({ [MarketType.Mint]: 'crvusd', [MarketType.Lend]: 'lending' }) as const)[marketType]
+
 export const getTokens = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
@@ -316,7 +319,7 @@ export const calculateLtv = (
 }
 
 /** Annualized return on equity at the given leverage. Input APYs and output are percentage  */
-export const getRoE = (
+export const getReturnOnEquity = (
   leverage: number | Nullish,
   collateralApy: number | Nullish,
   borrowApy: number | Nullish,
@@ -327,13 +330,14 @@ export const getRoE = (
   )
 
 /** Return on equity at the market's maximum leverage. */
-export const getMaxRoE = ({
+export const getMaxReturnOnEquity = ({
   leverage,
   assets: {
     collateral: { rebasingYield },
   },
   rates: { borrowApy },
-}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => getRoE(leverage, rebasingYield, borrowApy)
+}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined =>
+  getReturnOnEquity(leverage, rebasingYield, borrowApy)
 
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,

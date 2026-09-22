@@ -21,13 +21,13 @@ type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'd
   userAddress: Address
   router: RouteProvider | null
 }
-export type CreateLoanMaxReceiveQueryParams = FieldsOf<CreateLoanMaxReceiveQuery>
+type CreateLoanMaxReceiveQueryParams = FieldsOf<CreateLoanMaxReceiveQuery>
 
 export type CreateLoanMaxReceiveParams = Omit<CreateLoanMaxReceiveQueryParams, 'router'> & {
   leverageProviders?: readonly RouteProvider[] | undefined
 }
 
-export type CreateLoanMaxReceiveResult = {
+type CreateLoanMaxReceiveResult = {
   maxDebt: Decimal
   router?: RouteProvider
   maxTotalCollateral?: Decimal

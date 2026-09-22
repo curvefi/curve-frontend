@@ -12,6 +12,7 @@ import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { StellarUrls } from '../../routes/routes'
 import { DepositTab } from '../deposit/DepositTab'
+import { SwapTab } from '../swap/SwapTab'
 import { WithdrawTab } from '../withdraw/WithdrawTab'
 import { usePoolComposition } from './usePoolComposition'
 import { usePoolTokens } from './usePoolTokens'
@@ -19,6 +20,7 @@ import { usePoolTokens } from './usePoolTokens'
 const menu = [
   { value: 'deposit', label: t`Deposit`, component: DepositTab },
   { value: 'withdraw', label: t`Withdraw`, component: WithdrawTab },
+  { value: 'swap', label: t`Swap`, component: SwapTab },
 ]
 
 export const PoolPage = () => {

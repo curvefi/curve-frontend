@@ -3,20 +3,19 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { FieldsOf } from '@ui/lib/validation/types'
 
-export type AddReward = { rewardTokenId: Address; distributorId: Address }
+type AddReward = { rewardTokenId: Address; distributorId: Address }
 export type AddRewardQuery = GaugeQuery & AddReward
 export type AddRewardParams = FieldsOf<AddRewardQuery>
 export type AddRewardMutation = AddReward
 
-export type DepositRewardApprove = { rewardTokenId: Address; amount: number | string; userBalance?: Decimal }
+type DepositRewardApprove = { rewardTokenId: Address; amount: number | string; userBalance?: Decimal }
 export type GaugeDistributorsQuery = GaugeQuery & UserQuery
 export type GaugeDistributorsParams = FieldsOf<GaugeDistributorsQuery>
 
 export type DepositRewardApproveQuery = GaugeQuery & DepositRewardApprove
 export type DepositRewardApproveParams = FieldsOf<DepositRewardApproveQuery>
-export type DepositRewardApproveMutation = DepositRewardApprove
 
-export type DepositReward = DepositRewardApprove & { epoch: number | string }
+type DepositReward = DepositRewardApprove & { epoch: number | string }
 export type DepositRewardQuery = GaugeQuery & DepositReward
 export type DepositRewardParams = FieldsOf<DepositRewardQuery>
 export type DepositRewardMutation = DepositReward

@@ -25,7 +25,7 @@ type GaugeWeightSeriesKey = 'weightRelative'
 
 type GaugeWeightHistoryChartProps = { gaugeAddress: Address; height?: number }
 
-export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }: GaugeWeightHistoryChartProps) => {
+export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart.lg }: GaugeWeightHistoryChartProps) => {
   const lineColor = useTheme().design.Chart.Lines[1]
   const { data = [], isLoading, isSuccess, error, refetch } = useGaugeWeightHistoryQuery({ gaugeAddress })
 

@@ -64,7 +64,6 @@ export const getUserMintMarketsOptions = getUserMintMarketsQueryOptions
 
 const {
   getQueryOptions: getUserMintMarketStatsQueryOptions,
-  useQuery: useUserMintMarketStatsQuery,
   invalidate: invalidateUserMintMarketStats,
   reset: resetUserMintMarketStats,
 } = queryFactory({
@@ -98,5 +97,4 @@ export const resetAllUserMintMarkets = async (userAddress: Address | Nullish) =>
   await Promise.all(resetContracts)
 }
 
-export const useUserMintMarketStats = useUserMintMarketStatsQuery
 export const getUserMintMarketsStatsOptions = getUserMintMarketStatsQueryOptions
