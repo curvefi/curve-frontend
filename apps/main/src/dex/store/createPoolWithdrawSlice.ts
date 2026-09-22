@@ -15,7 +15,6 @@ import {
   FnStepApproveResponse,
   FnStepEstGasApprovalResponse,
   FnStepResponse,
-  Pool,
 } from '@/dex/types/main.types'
 import { isBonus, isHighSlippage } from '@/dex/utils'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -56,12 +55,12 @@ export type PoolWithdrawSlice = {
     fetchWithdrawToken: (props: FetchWithdrawProps) => Promise<void>
     fetchWithdrawLpToken: (props: FetchWithdrawProps) => Promise<void>
     fetchWithdrawCustom: (props: FetchWithdrawProps) => Promise<void>
-    fetchClaimable: (activeKey: string, chainId: ChainId, pool: Pool) => Promise<void>
+    fetchClaimable: (activeKey: string, chainId: ChainId, pool: PoolTemplate) => Promise<void>
     setFormValues: (formType: FormType, config: Config, curve: CurveApi | null, poolId: string, pool: PoolTemplate | undefined, updatedFormValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
 
     // steps
-    fetchEstGasApproval: (activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>
-    fetchStepApprove: (activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<FnStepApproveResponse | undefined>
+    fetchEstGasApproval: (activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>
+    fetchStepApprove: (activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepApproveResponse | undefined>
     fetchStepWithdraw: (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepResponse | undefined>
     fetchStepUnstake: (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues) => Promise<FnStepResponse | undefined>
     fetchStepClaim: (activeKey: string, curve: CurveApi, pool: PoolTemplate) => Promise<FnStepResponse | undefined>

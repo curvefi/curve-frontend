@@ -35,7 +35,6 @@ export type NetworkConfig = {
 } & NetworkDef<NetworkEnum>
 
 export type Networks = Record<ChainId, NetworkConfig>
-export type Pool = PoolTemplate
 export type ClaimableReward = { token: string; symbol: string; amount: string; price: number }
 export type RewardBase = { day: string; week: string }
 export type RewardCrv = number

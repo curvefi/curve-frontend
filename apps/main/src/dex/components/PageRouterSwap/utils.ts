@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import type { FormValues, FormStatus, Route } from '@/dex/components/PageRouterSwap/types'
-import { Pool } from '@/dex/types/main.types'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { log, LogStatus } from '@ui/lib/logging'
@@ -19,7 +18,7 @@ export const DEFAULT_FORM_VALUES: FormValues = { isFrom: null, fromAmount: '', f
 export function parseRouterRoutes(
   routes: IRouteStep[],
   poolsMapper: Record<string, PoolTemplate>,
-  getPool: (poolId: string) => Pool,
+  getPool: (poolId: string) => PoolTemplate,
 ) {
   let haveCryptoRoutes = false
   let parsedRoutes: Route[] = []

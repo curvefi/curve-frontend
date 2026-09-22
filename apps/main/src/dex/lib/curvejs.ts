@@ -1,15 +1,7 @@
 import { isUndefined } from 'lodash'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-import {
-  ChainId,
-  ClaimableReward,
-  claimButtonsKey,
-  CurveApi,
-  EstimatedGas,
-  Pool,
-  Provider,
-} from '@/dex/types/main.types'
+import { ChainId, ClaimableReward, claimButtonsKey, CurveApi, EstimatedGas, Provider } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import {
   _parseRoutesAndOutput,
@@ -24,6 +16,8 @@ import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
 import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { log } from '@ui/lib/logging'
+
+type Pool = PoolTemplate
 
 const helpers = { waitForTransaction, waitForTransactions }
 

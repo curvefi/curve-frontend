@@ -25,7 +25,7 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, Pool } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -92,7 +92,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
   )
 
   const handleApproveClick = useCallback(
-    async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => {
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => {
       const notifyMessage = t`Please approve spending your ${tokensDescription(formValues.amounts)}.`
       const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, 'DEPOSIT_STAKE', pool, formValues, maxSlippage)

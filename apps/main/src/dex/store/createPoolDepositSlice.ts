@@ -30,7 +30,6 @@ import {
   FnStepApproveResponse,
   FnStepEstGasApprovalResponse,
   FnStepResponse,
-  Pool,
 } from '@/dex/types/main.types'
 import { isBonus, isHighSlippage } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
@@ -63,18 +62,18 @@ const SLICE_KEY = 'poolDeposit'
 // prettier-ignore
 export type PoolDepositSlice = {
   [SLICE_KEY]: SliceState & {
-    fetchExpected: (activeKey: string, formType: FormType, pool: Pool, formValues: FormValues) => Promise<void>
-    fetchMaxAmount: (config: Config, activeKey: string, chainId: ChainId, userAddress: Address, pool: Pool, loadMaxAmount: LoadMaxAmount, maxSlippage: string) => Promise<Amount[]>
+    fetchExpected: (activeKey: string, formType: FormType, pool: PoolTemplate, formValues: FormValues) => Promise<void>
+    fetchMaxAmount: (config: Config, activeKey: string, chainId: ChainId, userAddress: Address, pool: PoolTemplate, loadMaxAmount: LoadMaxAmount, maxSlippage: string) => Promise<Amount[]>
     fetchSeedAmount: (pool: PoolTemplate, formValues: FormValues) => Promise<Pick<FormValues, 'amounts' | 'isWrapped'>>
-    fetchSlippage: (activeKey: string, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<void>
+    fetchSlippage: (activeKey: string, formType: FormType, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<void>
     setFormValues: (formType: FormType, config: Config, curve: CurveApi | null, poolId: string, pool: PoolTemplate | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
 
     // steps
-    fetchEstGasApproval: (activeKey: string, chainId: ChainId, formType: FormType, pool: Pool, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse>
-    fetchStepApprove: (activeKey: string, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<FnStepApproveResponse | undefined>
+    fetchEstGasApproval: (activeKey: string, chainId: ChainId, formType: FormType, pool: PoolTemplate, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse>
+    fetchStepApprove: (activeKey: string, curve: CurveApi, formType: FormType, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepApproveResponse | undefined>
     fetchStepDeposit: (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepResponse | undefined>
     fetchStepDepositStake: (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepResponse | undefined>
-    fetchStepStakeApprove: (activeKey: string, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues) => Promise<FnStepApproveResponse | undefined>
+    fetchStepStakeApprove: (activeKey: string, curve: CurveApi, formType: FormType, pool: PoolTemplate, formValues: FormValues) => Promise<FnStepApproveResponse | undefined>
     fetchStepStake: (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues) => Promise<FnStepResponse | undefined>
 
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void

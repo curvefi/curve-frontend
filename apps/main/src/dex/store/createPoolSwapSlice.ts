@@ -21,7 +21,6 @@ import {
   FnStepApproveResponse,
   FnStepEstGasApprovalResponse,
   FnStepResponse,
-  Pool,
 } from '@/dex/types/main.types'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
@@ -50,14 +49,14 @@ const SLICE_KEY = 'poolSwap'
 // prettier-ignore
 export type PoolSwapSlice = {
   [SLICE_KEY]: SliceState & {
-    fetchIgnoreExchangeRateCheck: (pool: Pool) => Promise<boolean>
-    fetchExchangeOutput: (activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<void>
-    fetchMaxAmount: (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<string>
+    fetchIgnoreExchangeRateCheck: (pool: PoolTemplate) => Promise<boolean>
+    fetchExchangeOutput: (activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<void>
+    fetchMaxAmount: (activeKey: string, config: Config, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<string>
     setFormValues: (config: Config, curve: CurveApi | null, poolId: string, pool: PoolTemplate | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
 
     // steps
-    fetchEstGasApproval: (activeKey: string, chainId: ChainId, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>
-    fetchStepApprove: (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, globalMaxSlippage: string) => Promise<FnStepApproveResponse | undefined>
+    fetchEstGasApproval: (activeKey: string, chainId: ChainId, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>
+    fetchStepApprove: (activeKey: string, config: Config, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, globalMaxSlippage: string) => Promise<FnStepApproveResponse | undefined>
     fetchStepSwap: (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepResponse | undefined>
 
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
@@ -85,7 +84,7 @@ export const createPoolSwapSlice = (
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    fetchIgnoreExchangeRateCheck: async (pool: Pool) => {
+    fetchIgnoreExchangeRateCheck: async (pool: PoolTemplate) => {
       const state = get()
       const sliceState = state[SLICE_KEY]
 
@@ -213,7 +212,7 @@ export const createPoolSwapSlice = (
       activeKey: string,
       config: Config,
       curve: CurveApi,
-      pool: Pool,
+      pool: PoolTemplate,
       formValues: FormValues,
       maxSlippage: string,
     ) => {

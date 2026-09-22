@@ -17,7 +17,7 @@ import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBala
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, Pool } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -72,7 +72,7 @@ export const FormStake = ({ seed }: TransferProps) => {
   )
 
   const handleApproveClick = useCallback(
-    async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
       const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, 'STAKE', pool, formValues)

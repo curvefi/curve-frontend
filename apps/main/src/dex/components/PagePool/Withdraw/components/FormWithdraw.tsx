@@ -20,7 +20,7 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, Pool } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Box } from '@legacy-ui/Box'
@@ -101,7 +101,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
       activeKey: string,
       config: Config,
       curve: CurveApi,
-      pool: Pool,
+      pool: PoolTemplate,
       formValues: FormValues,
       maxSlippage: string,
     ) => {
