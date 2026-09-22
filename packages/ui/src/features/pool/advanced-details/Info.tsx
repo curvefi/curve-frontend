@@ -1,4 +1,3 @@
-import { AddressActionInfo, type AddressDisplay } from '@evm-ui/shared/ui/AddressActionInfo'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -6,6 +5,7 @@ import type { Address } from '@primitives/address.utils'
 import { maybe, notFalsy, type Nullish } from '@primitives/objects.utils'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
+import { AddressActionInfo, type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
 import { fakeLoadingQ } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

@@ -1,19 +1,19 @@
 import type { ReactNode } from 'react'
-import { type AddressDisplay } from '@evm-ui/shared/ui/AddressActionInfo'
-import { ViewMoreButton } from '@evm-ui/shared/ui/ViewMoreButton'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
+import { type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
+import { ViewMoreButton } from '@ui/features/pool/advanced-details/ViewMoreButton'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { Contracts, type ContractsProps } from './components/Contracts'
-import { Info, type InfoProps } from './components/Info'
-import { Parameters, type ParametersProps } from './components/Parameters'
-import { Prices, type PricesProps } from './components/Prices'
+import { Contracts, type ContractsProps } from './Contracts'
+import { Info, type InfoProps } from './Info'
+import { Parameters, type ParametersProps } from './Parameters'
+import { Prices, type PricesProps } from './Prices'
 
 const { Spacing } = SizesAndSpaces
 
@@ -22,7 +22,6 @@ const GRID_SIZE = { mobile: 12, desktop: 6 } as const
 
 export const AdvancedDetails = ({
   chainId,
-  poolId,
   info,
   contracts,
   prices,
@@ -32,8 +31,7 @@ export const AdvancedDetails = ({
   addGaugeLink,
 }: {
   chainId: number
-  poolId: string
-  info: Omit<InfoProps, 'chainId' | 'poolId' | 'addressDisplay'>
+  info: Omit<InfoProps, 'chainId' | 'addressDisplay'>
   contracts: Omit<ContractsProps, 'chainId' | 'addressDisplay'>
   prices: PricesProps
   parameters: ParametersProps
@@ -57,7 +55,7 @@ export const AdvancedDetails = ({
             </Grid>
 
             <Grid size={GRID_SIZE}>
-              <Info chainId={chainId} poolId={poolId} {...info} addressDisplay={addressDisplay} />
+              <Info chainId={chainId} {...info} addressDisplay={addressDisplay} />
             </Grid>
           </Grid>
 
