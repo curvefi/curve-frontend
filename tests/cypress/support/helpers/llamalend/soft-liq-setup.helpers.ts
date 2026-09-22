@@ -395,15 +395,15 @@ const runSoftLiquidationPriceMove = ({
       targetPrice,
       timestamp: oracleObservationTimestamp,
     })
-      .then(() => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
-      .then(TRANSACTION_LOAD_TIMEOUT, async () => {
+      .then(LOAD_TIMEOUT, () => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
+      .then(LOAD_TIMEOUT, async () => {
         const oracle = await readOracleState({ client, ammAddress })
         assert(
           oracle.answer === targetPrice && oracle.storedPrice === targetPrice,
           `Oracle storage override did not reach target: ${stringifySetupDetails({ oracle, targetBand, targetPrice })}`,
         )
       })
-      .then(() =>
+      .then(LOAD_TIMEOUT, () =>
         moveAmmToOraclePrice({
           ammAddress,
           borrowedAddress,
@@ -414,7 +414,7 @@ const runSoftLiquidationPriceMove = ({
           vnet,
         }),
       )
-      .then(async quote => {
+      .then(LOAD_TIMEOUT, async quote => {
         const { oracle, state } = await readSoftLiquidationSetup(readParams)
         assert(
           isSoftLiquidationState(state) && state.health > 0n,
@@ -428,7 +428,7 @@ const runSoftLiquidationPriceMove = ({
         )
         return state
       })
-      .then(state =>
+      .then(LOAD_TIMEOUT, state =>
         fundErc20({
           adminRpcUrl: getRpcUrls(vnet).adminRpcUrl,
           amountWei: `0x${state.debt.toString(16)}`,
