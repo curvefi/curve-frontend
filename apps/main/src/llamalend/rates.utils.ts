@@ -1,4 +1,5 @@
 import { sumBy } from 'lodash'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
@@ -9,7 +10,8 @@ import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, maybes, notFalsy, recordValues } from '@primitives/objects.utils'
-import type { Range } from '@ui/features/queries/util'
+import { combineQueries } from '@ui/features/queries/combine'
+import { DISABLED_Q, mapQuery, type QueryProp, type Range } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
 
@@ -39,6 +41,43 @@ type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = 
 
 export const computeTotalRate = (rate: number, rebasingYield: number, campaignsRate: number) =>
   rate - rebasingYield - campaignsRate
+
+/** Annualized return on equity at the given leverage. Input APYs and output are percentage. */
+export const getReturnOnEquity = (
+  leverage: number | Nullish,
+  collateralApy: number | Nullish,
+  borrowApy: number | Nullish,
+): number | undefined =>
+  // Total collateral / equity = leverage, so debt / equity = leverage - 1.
+  maybes([leverage, collateralApy, borrowApy], (lev, colApy, borApy) =>
+    lev < 1 ? undefined : lev * colApy - (lev - 1) * borApy,
+  )
+
+/** Return on equity at the market's maximum leverage. */
+export const getMaxReturnOnEquity = ({
+  leverage,
+  assets: {
+    collateral: { rebasingYield },
+  },
+  rates: { borrowApy },
+}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined =>
+  getReturnOnEquity(leverage, rebasingYield, borrowApy)
+
+export type BorrowRates = { borrowApr?: Decimal; borrowApy?: Decimal }
+
+export const formatReturnOnEquity = (
+  leverage: QueryProp<Decimal | null> | undefined,
+  rates: QueryProp<BorrowRates | null> | undefined,
+  collateralApy: QueryProp<number | null>,
+) =>
+  mapQuery(
+    combineQueries([leverage ?? DISABLED_Q, rates ?? DISABLED_Q, collateralApy], (leverage, rates, collateralApy) =>
+      maybes([leverage, collateralApy, rates?.borrowApy], (leverage, collateralApy, borrowApy) =>
+        getReturnOnEquity(+leverage, collateralApy, +borrowApy),
+      ),
+    ),
+    returnOnEquity => formatNumber(returnOnEquity, 'percent.rate'),
+  )
 
 export const getSnapshotBorrowApr = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr
 export const getSnapshotCollateralRebasingYieldApr = <

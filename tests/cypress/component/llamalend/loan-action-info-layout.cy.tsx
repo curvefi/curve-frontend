@@ -4,15 +4,17 @@ import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
 import type { NetworkDef } from '@legacy-ui/utils'
+import { formatNumber } from '@primitives/number.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
-import { q } from '@ui/features/queries/util'
+import { constQ, q } from '@ui/features/queries/util'
 
 const getHeight = (testId: string, subelement?: string) =>
   cy
@@ -98,6 +100,29 @@ allViewports().forEach(([width, height, viewport]) => {
         getHeight('route-provider-accordion', 'img').should('equal', expectedIconHeight)
       })
     })
+  })
+})
+
+describe('leverage action info', () => {
+  it('shows the current and future return on equity', () => {
+    cy.mount(
+      <ComponentTestWrapper config={mockedWagmiConfig}>
+        <LoanActionInfoList
+          isOpen
+          leverageEnabled
+          prevLeverageValue={constQ('2')}
+          leverageValue={constQ('3')}
+          prevRates={constQ({ borrowApy: '2' })}
+          rates={constQ({ borrowApy: '4' })}
+          collateralApy={constQ(5)}
+          oraclePrice={constQ(null)}
+          gas={constQ(null)}
+        />
+      </ComponentTestWrapper>,
+    )
+
+    getActionValue('borrow-return-on-equity', 'previous').should('equal', formatNumber(8, 'percent.rate'))
+    getActionValue('borrow-return-on-equity').should('equal', formatNumber(7, 'percent.rate'))
   })
 })
 
