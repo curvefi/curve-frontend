@@ -19,7 +19,7 @@ export const TransferActions = ({
 
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { isHydrated } = useCurve()
-  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
+  const currencyReserves = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
 
   const { address: userAddress } = useConnection()
   const { isLoading: walletBalancesLoading, error: walletBalancesError } = usePoolTokenBalances({
@@ -32,7 +32,7 @@ export const TransferActions = ({
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     loading ||
     typeof poolData === 'undefined' ||
-    typeof currencyReserves === 'undefined' ||
+    currencyReserves.isLoading ||
     !isHydrated ||
     !seed.loaded ||
     walletBalancesLoading
