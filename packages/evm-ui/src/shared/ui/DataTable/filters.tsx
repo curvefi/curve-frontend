@@ -51,8 +51,6 @@ export const boolFilterFn: FilterFunction = (row, columnId, filterValue?: string
   !filterValue || Boolean(row.getValue<boolean>(columnId)) === Boolean(filterValue !== 'no')
 export const listNotEmptyFilterFn: FilterFunction = (row, columnId, filterValue?: string) =>
   !filterValue || row.getValue<unknown[]>(columnId).length > 0 === Boolean(filterValue)
-export const inListFilterFn: FilterFunction = (row, columnId, filterValue?: string) =>
-  !filterValue || row.getValue<unknown[]>(columnId)?.includes(filterValue)
 export const rangeFilterFn: FilterFunction = (row, columnId, filterValue?: string) => {
   const [min, max] = parseRangeFilter(filterValue) ?? []
   const value = row.getValue<number>(columnId)

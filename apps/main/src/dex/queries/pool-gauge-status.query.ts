@@ -1,7 +1,6 @@
 import { fulfilledValue } from '@/dex/utils'
 import type { IGaugesDataFromApi } from '@curvefi/api/lib/interfaces'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import type { QueryData } from '@evm-ui/lib'
 import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
@@ -38,5 +37,3 @@ export function usePoolGaugeStatus(params: PoolParams) {
   const { isHydrated } = useCurve()
   return usePoolGaugeStatusQuery(params, isHydrated)
 }
-
-export type PoolGaugeStatus = QueryData<typeof usePoolGaugeStatusQuery>
