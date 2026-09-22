@@ -8,6 +8,7 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Withdraw/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -27,6 +28,7 @@ import { t, Trans } from '@ui/lib/i18n'
 
 export const FormClaim = ({ seed }: TransferProps) => {
   const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -43,7 +45,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const haveSigner = !!signerAddress
-  const { rewardsNeedNudging } = poolData?.gauge.status ?? {}
+  const { rewardsNeedNudging } = gauge?.status ?? {}
   const haveClaimableCrv = +formValues.claimableCrv > 0
   const haveClaimableRewards = +formValues.claimableRewards.length > 0
 
@@ -181,11 +183,11 @@ export const FormClaim = ({ seed }: TransferProps) => {
     }
   }
 
-  const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !poolData?.gauge.isKilled
+  const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !gauge?.isKilled
 
   return (
     <FormContent>
-      <TransferActions loading={!chainId || !steps.length || seed.isSeed === null} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         <ClaimableTokensWrapper>
           {haveClaimableCrv || haveClaimableRewards ? (
             <>

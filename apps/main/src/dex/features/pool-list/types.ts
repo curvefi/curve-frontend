@@ -1,5 +1,3 @@
-import type { PoolData, RewardsApy } from '@/dex/types/main.types'
-import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -70,17 +68,3 @@ export type PoolRow = PoolRowData & PoolRowContext
 
 export type PoolTableVariant = keyof typeof POOLS_COLUMN_OPTIONS
 export type PoolTableMeta = TableMeta<CurveTableFeatures, PoolRow> & { variant: PoolTableVariant }
-
-export type LegacyPoolTag =
-  'btc' | 'crypto' | 'kava' | 'eth' | 'usd' | 'others' | 'user' | 'crvusd' | 'tricrypto' | 'stableng' | 'cross-chain'
-
-export type LegacyPoolRow = PoolData & {
-  rewards: RewardsApy | undefined
-  volume: Decimal | undefined
-  tvl: Decimal | undefined
-  hasPosition: boolean | undefined
-  network: INetworkName
-  url: string
-  tags: LegacyPoolTag[]
-  totalAPR: number
-}

@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { RewardsApy } from '@/dex/types/main.types'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@primitives/number.utils'
 

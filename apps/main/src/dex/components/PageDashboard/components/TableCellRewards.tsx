@@ -5,8 +5,9 @@ import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 import type { SortId } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
-import { PoolData, RewardsApy } from '@/dex/types/main.types'
-import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
+import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
+import { PoolData } from '@/dex/types/main.types'
 import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { WithWrapper } from '@ui/components/WithWrapper'
@@ -14,6 +15,15 @@ import { TableCellRewardsBase } from '../../TableCellRewardsBase'
 import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 const Bold = ({ children }: { children: ReactNode }) => <strong>{children}</strong>
+
+function haveRewardsApy({ base, other, crv }: Partial<RewardsApy>) {
+  const haveBase = base !== undefined
+  const [crvMin, crvMax] = crv ?? ['', '']
+  const haveCrv = Number(crvMin) > 0 || Number(crvMax) > 0
+  const haveOther = Array.isArray(other) && other.length > 0
+
+  return { haveBase, haveCrv, haveOther }
+}
 
 export const TableCellRewards = ({
   poolData,
@@ -30,12 +40,13 @@ export const TableCellRewards = ({
   userCrvApy?: number
   fetchUserPoolBoost: (() => Promise<string>) | null
 }) => {
+  const { data: gauge } = usePoolGaugeStatus({ chainId: poolData.pool.curve.chainId, poolId: poolData.pool.id })
   const { base, crv } = rewardsApy ?? {}
   const { haveCrv, haveOther } = haveRewardsApy(rewardsApy ?? {})
   const haveRewards = haveCrv || haveOther
   const boostedCrvApy = haveCrv && crv?.[1]
   const haveUserCrvApy = userCrvApy && !Number.isNaN(userCrvApy)
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status ?? {}
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = gauge?.status ?? {}
   const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
   const rewards = haveRewards && (

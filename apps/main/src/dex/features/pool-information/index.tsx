@@ -1,6 +1,4 @@
-import { useEffect } from 'react'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
-import { useStore } from '@/dex/store/useStore'
 import type { PoolAlert } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import Card from '@mui/material/Card'
@@ -19,16 +17,8 @@ import { YieldBreakdown } from './components/yield-breakdown'
 type PoolInformation = { poolAlert: PoolAlert | null; pricesApiPoolData?: PricesApiPool }
 
 export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformation) => {
-  const { poolData, api: curve } = usePoolContext()
-  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
+  const { poolData } = usePoolContext()
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll)
-
-  // Preserve the legacy stats fetch path; forms still rely on these store-backed values.
-  useEffect(() => {
-    if (curve && poolData) {
-      void fetchPoolStats(curve, poolData)
-    }
-  }, [curve, fetchPoolStats, poolData])
 
   return (
     <Stack sx={stackedCardHeadersSx}>

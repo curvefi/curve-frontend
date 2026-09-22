@@ -1,10 +1,9 @@
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type ChainParams, type PoolParams, type PoolQuery } from '@evm-ui/lib/model'
+import { rootKeys, type PoolParams, type PoolQuery } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import PromisePool from '@supercharge/promise-pool'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 
@@ -26,38 +25,4 @@ const { useQuery: usePoolTvlQuery } = queryFactory({
 export function usePoolTvl({ chainId, poolId }: PoolParams) {
   const { isHydrated } = useCurve()
   return usePoolTvlQuery({ chainId, poolId }, isHydrated)
-}
-
-const { useQuery: usePoolTvlsQuery, refetchQuery: refetchPoolTvls } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'stats.tvl'] as const,
-  queryFn: async () => {
-    const poolIds = requireLib('curveApi').getPoolList()
-    const { results } = await PromisePool.withConcurrency(10)
-      .for(poolIds)
-      .process(async poolId => [poolId, await getPoolTvlFromLib({ poolId })] as const)
-
-    return Object.fromEntries(results)
-  },
-  category: 'dex.pools',
-  validationSuite: createValidationSuite((params: ChainParams) => {
-    curveApiValidationGroup(params)
-    chainValidationGroup(params)
-  }),
-})
-
-export { refetchPoolTvls }
-
-/**
- * Hook to fetch TVLs for multiple pools on the same chain.
- *
- * @remarks
- * Uses a single query keyed only by `chainId` (not per pool) to avoid 1000+ individual query
- * entries that slow down the front-end. Pools are fetched with `PromisePool` at concurrency 10
- * (multicall is not available for tvl data, as the data comes from an API endpoint).
- * The poolIds are explicitly not part of the query key. The query reads the currently hydrated
- * curve instance directly, so DEX hydration must manually refetch this query after pool bootstrap.
- */
-export function usePoolTvls({ chainId }: ChainParams) {
-  const { isHydrated } = useCurve()
-  return usePoolTvlsQuery({ chainId }, isHydrated)
 }

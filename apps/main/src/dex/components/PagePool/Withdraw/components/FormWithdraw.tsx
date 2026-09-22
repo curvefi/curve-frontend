@@ -16,9 +16,9 @@ import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Withdraw/types'
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
-import { useNetworks } from '@/dex/entities/networks'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
+import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -52,8 +52,6 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const resetState = useStore(state => state.poolWithdraw.resetState)
-  const { data: networks } = useNetworks()
-  const network = (chainId && networks[chainId]) || null
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -425,9 +423,9 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
           )}
         </TokensSelectorWrapper>
 
-        {poolData.hasWrapped && formValues.isWrapped !== null && (
+        {hasWrapped(poolData.pool) && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly[poolData.pool.id]}
+            isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
             isSelected={formValues.isWrapped}
             onChange={isWrapped => {
               if (poolData) {
@@ -470,7 +468,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, null)} />
       )}
 
-      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estUsdAmountTotalReceive} />
         {txInfoBar}
         <Stepper steps={steps} />

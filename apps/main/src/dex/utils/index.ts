@@ -1,5 +1,4 @@
 import { zeroAddress } from 'viem'
-import type { ChainId } from '@/dex/types/main.types'
 
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 
@@ -28,6 +27,3 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
 }
 
 export const delayAction = <T extends () => unknown>(cb: T) => setTimeout(() => cb(), 50)
-
-export const getChainPoolIdActiveKey = (chainId: ChainId | null, poolId: string | undefined) =>
-  chainId && poolId ? `${chainId}-${poolId}` : ''
