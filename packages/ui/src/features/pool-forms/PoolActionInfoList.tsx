@@ -8,7 +8,6 @@ import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpac
 import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
-import { useUserProfileStore } from '@ui/features/user-profile'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 
@@ -16,6 +15,7 @@ type PoolActionInfoListProps = {
   priceImpact: QueryProp<Decimal | null>
   gas: QueryProp<TxGasInfo | null>
   slippage: Decimal
+  onSlippageChange: (slippage: Decimal) => void
   userAddress: Address | undefined
   expectedLp?: QueryProp<Decimal>
   expectedLpLabel?: string
@@ -38,6 +38,7 @@ export const PoolActionInfoList = ({
   priceImpact,
   gas,
   slippage,
+  onSlippageChange,
   userAddress,
   expectedLp,
   expectedLpLabel,
@@ -65,22 +66,6 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
-    {minimumLp && (
-      <ActionInfo
-        testId="pool-deposit-minimum-lp"
-        label={t`Minimum LP received`}
-        value={mapQuery(minimumLp, value => formatNumber(value, 'token.balance'))}
-        size="small"
-      />
-    )}
-    {maximumLp && (
-      <ActionInfo
-        testId="pool-withdraw-maximum-lp"
-        label={t`Maximum LP burned`}
-        value={mapQuery(maximumLp, value => formatNumber(value, 'token.balance'))}
-        size="small"
-      />
-    )}
     {currentLp && currentLpTestId && (
       <ActionInfo
         testId={currentLpTestId}
@@ -105,6 +90,19 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
+    <SlippageToleranceActionInfo
+      maxSlippage={slippage}
+      onChanged={({ stable }) => onSlippageChange(stable)}
+      type="stable"
+      userAddress={userAddress}
+      size="small"
+    />
+    <PriceImpactActionInfo
+      testId="pool-price-impact"
+      priceImpact={priceImpact}
+      value={mapQuery(priceImpact, value => formatNumber(value, 'percent.price-impact'))}
+      size="small"
+    />
     {exchangeRate && (
       <ActionInfo
         testId="pool-swap-exchange-rate"
@@ -123,19 +121,22 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
-    <PriceImpactActionInfo
-      testId="pool-price-impact"
-      priceImpact={priceImpact}
-      value={mapQuery(priceImpact, value => formatNumber(value, 'percent.price-impact'))}
-      size="small"
-    />
-    <SlippageToleranceActionInfo
-      maxSlippage={slippage}
-      onChanged={useUserProfileStore(state => state.setMaxSlippage)}
-      type="stable"
-      userAddress={userAddress}
-      size="small"
-    />
+    {minimumLp && (
+      <ActionInfo
+        testId="pool-deposit-minimum-lp"
+        label={t`Minimum LP received`}
+        value={mapQuery(minimumLp, value => formatNumber(value, 'token.balance'))}
+        size="small"
+      />
+    )}
+    {maximumLp && (
+      <ActionInfo
+        testId="pool-withdraw-maximum-lp"
+        label={t`Maximum LP burned`}
+        value={mapQuery(maximumLp, value => formatNumber(value, 'token.balance'))}
+        size="small"
+      />
+    )}
     <ActionInfoGasEstimate gas={gas} />
   </Stack>
 )

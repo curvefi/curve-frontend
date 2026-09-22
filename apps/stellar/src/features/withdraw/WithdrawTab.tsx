@@ -4,6 +4,8 @@ import { useWithdrawForm } from './useWithdrawForm'
 import { WithdrawActionInfoList } from './WithdrawActionInfoList'
 
 export const WithdrawTab = (params: PoolQuery) => {
-  const { params: queryParams, ...form } = useWithdrawForm(params)
-  return <WithdrawForm {...form} footer={<WithdrawActionInfoList {...queryParams} />} />
+  const { params: queryParams, onSlippageChange, ...form } = useWithdrawForm(params)
+  return (
+    <WithdrawForm {...form} footer={<WithdrawActionInfoList {...queryParams} onSlippageChange={onSlippageChange} />} />
+  )
 }

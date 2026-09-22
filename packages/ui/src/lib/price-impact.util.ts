@@ -59,9 +59,6 @@ export const getPriceImpactSeverity = (priceImpact: PriceImpact | Decimal | Null
  * Returns true if the price impact exceeds the critical threshold or if the price impact data is null (query loading or disabled).
  * We don't check the isLoading property as the query will be disabled until maxDebt is calculated.
  */
-export const shouldBlockTransaction = (
-  priceImpact: Query<PriceImpact | Decimal | null>,
-  { leverageEnabled }: { leverageEnabled: boolean | undefined },
-) =>
-  (leverageEnabled == true && priceImpact.data == null && !priceImpact.error) ||
+export const shouldBlockTransaction = (priceImpact: Query<PriceImpact | Decimal | null>, required = true) =>
+  (required && priceImpact.data == null && !priceImpact.error) ||
   (getPriceImpactSeverity(priceImpact.data) === 'error' && isPriceImpactSignificant(priceImpact.data))

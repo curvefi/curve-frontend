@@ -156,7 +156,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, { leverageEnabled: params.leverageEnabled })}
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
         label={[Number(values.userCollateral) && t`Add`, isApproved?.data === false && t`Approve`, t`Borrow More`]}
         testId="borrow-more-submit-button"
       >
