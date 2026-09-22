@@ -9,22 +9,19 @@ import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
-import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
+import { usePoolReserves, useScaleReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery } from '@/stellar/queries/root-keys'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { withdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
-import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { fromWei } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { WithdrawFormQuery } from './types'
 
@@ -42,21 +39,18 @@ const formOptions = {
   },
 }
 
-const getReserveAmounts = (reserves: Decimal[], decimals: (number | undefined)[]) =>
-  zip(reserves, decimals).map(([amount, decimals]) => maybe(decimals, d => fromWei(amount, d)))
-
 export function useWithdrawForm(poolParams: PoolQuery) {
   const { network, pool } = poolParams
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const config = usePoolConfig(poolParams)
   const supply = usePoolSupply(poolParams)
-  const reserves = usePoolReserves(poolParams)
-  const tokens = mapQuery(config, config => config.tokens)
-  const tokenCount = tokens.data?.length
+  const tokenAddresses = mapQuery(config, config => config.tokens)
+  const tokenCount = tokenAddresses.data?.length
 
-  const { inputs: tokenInputs, decimals } = usePoolTokens({ ...poolParams, account, tokens })
+  const { tokens, decimals } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
-  const maxAmounts = useCombinedQueries([reserves, decimals], getReserveAmounts)
+  const reserves = usePoolReserves(poolParams)
+  const maxAmounts = useScaleReserves(reserves, decimals)
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), lpAmount: undefined }),
     [tokenCount],
@@ -124,7 +118,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   } = useWithdrawMutation({
     ...poolParams,
     account,
-    tokens: tokens.data ?? [],
+    tokens: tokenAddresses.data,
     quote: quote.data,
     onReset: () => reset(userDefaultValues),
   })
@@ -148,6 +142,6 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     error: withdrawError,
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
-    tokens: tokenInputs,
+    tokens,
   }
 }
