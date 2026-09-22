@@ -14,7 +14,7 @@ import { formatToken } from '@ui/lib/tokens'
 
 const { Spacing } = SizesAndSpaces
 
-/** Pool counterpart to LlamaLend's LoanActionSettings. */
+/** Displays settings for pool actions. */
 export const PoolActionSettings = ({
   priceImpact,
   slippage,

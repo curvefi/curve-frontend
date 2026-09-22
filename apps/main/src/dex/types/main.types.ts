@@ -22,7 +22,7 @@ export type NetworkConfig = {
   isCrvRewardsEnabled: boolean
   poolIsWrappedOnly: Record<string, boolean>
   poolFilters: string[]
-  swap: Record<string, string>
+  swap?: Record<string, string>
   swapCustomRouteRedirect: Record<string, string>
   createQuickList: { address: string; symbol: string }[]
   createDisabledTokens: string[]
