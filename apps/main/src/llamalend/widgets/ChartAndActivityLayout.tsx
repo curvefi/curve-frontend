@@ -4,13 +4,15 @@ import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import {
-  LlammaActivityEvents,
+  LlammaActivityEventsTable,
   type LlammaActivityProps,
-  LlammaActivityTrades,
+  LlammaActivityTradesTable,
 } from '@/llamalend/features/llamma-activity'
 import { useMarketContext } from '@/llamalend/features/market-context'
+import { VaultActivityEventsTable } from '@/llamalend/features/vault-activity/VaultActivityEventsTable'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
 import { useMarketOraclePrice, useMarketPrice } from '@/llamalend/queries/market'
+import type { VaultActivityProps } from '@evm-ui/features/activity-table'
 import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
@@ -19,6 +21,7 @@ import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/Chart
 import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
+import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
@@ -33,6 +36,7 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { TabItem } from '@ui/hooks/useTabs'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit } from '@ui/lib/tokens'
@@ -77,23 +81,45 @@ type ChartAndActivityLayoutProps = {
   activity: LlammaActivityProps
 }
 
-type MarketActivityTabsParams = { activity: LlammaActivityProps }
+type MarketActivityProps = { [MarketRateType.Borrow]: LlammaActivityProps; [MarketRateType.Supply]: VaultActivityProps }
+type MarketActivityTabsParams<T extends MarketRateType> = { activity: MarketActivityProps[T] }
 
-const MarketActivityEventsTab = ({ activity }: MarketActivityTabsParams) => <LlammaActivityEvents {...activity} />
-const MarketActivityTradesTab = ({ activity }: MarketActivityTabsParams) => <LlammaActivityTrades {...activity} />
-const LegacyMarketPriceChartTab = ({ chart, bands }: ChartAndActivityLayoutProps) => (
-  <LegacyMarketPriceChartLayout chart={chart} bands={bands} />
+const MarketBorrowActivityEventsTab = ({ activity }: MarketActivityTabsParams<MarketRateType.Borrow>) => (
+  <LlammaActivityEventsTable {...activity} />
+)
+const MarketBorrowActivityTradesTab = ({ activity }: MarketActivityTabsParams<MarketRateType.Borrow>) => (
+  <LlammaActivityTradesTable {...activity} />
 )
 
-const MARKET_ACTIVITY_MENU = [
-  { value: 'trades', label: t`Swaps`, component: MarketActivityTradesTab },
-  { value: 'events', label: t`Activity`, component: MarketActivityEventsTab },
-]
+const buildMarketActivityMenu = <T extends MarketRateType>(rateType: T) =>
+  (
+    ({
+      [MarketRateType.Borrow]: [
+        { value: 'trades', label: t`Swaps`, component: MarketBorrowActivityTradesTab },
+        { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
+      ],
+      [MarketRateType.Supply]: [
+        {
+          value: 'events',
+          label: t`Activity`,
+          component: ({ activity }: MarketActivityTabsParams<MarketRateType.Supply>) => (
+            <VaultActivityEventsTable {...activity} />
+          ),
+        },
+      ],
+    }) as { [K in MarketRateType]: readonly Omit<TabItem<string, MarketActivityTabsParams<K>>, 'subTabs'>[] }
+  )[rateType]
 
-const CHART_AND_ACTIVITY_MENU = [
-  { value: 'chart', label: t`Chart`, component: LegacyMarketPriceChartTab },
-  { value: 'trades', label: t`Swaps`, component: MarketActivityTradesTab },
-  { value: 'events', label: t`Activity`, component: MarketActivityEventsTab },
+const LEGACY_CHART_AND_ACTIVITY_MENU = [
+  {
+    value: 'chart',
+    label: t`Chart`,
+    component: ({ chart, bands }: ChartAndActivityLayoutProps) => (
+      <LegacyMarketPriceChartLayout chart={chart} bands={bands} />
+    ),
+  },
+  { value: 'trades', label: t`Swaps`, component: MarketBorrowActivityTradesTab },
+  { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
 ]
 
 const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
@@ -142,11 +168,21 @@ const MarketPriceMetrics = () => {
   )
 }
 
-export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutProps, 'activity'>) => (
-  <Stack data-testid="market-activity">
+export const MarketActivityLayout = <T extends MarketRateType>({
+  rateType,
+  activity,
+}: {
+  rateType: T
+  activity: MarketActivityProps[NoInfer<T>]
+}) => (
+  <Stack
+    data-testid={
+      { [MarketRateType.Borrow]: 'market-activity', [MarketRateType.Supply]: 'market-vault-activity' }[rateType]
+    }
+  >
     <Tabs
-      menu={MARKET_ACTIVITY_MENU}
-      params={useMemo(() => ({ activity }), [activity])}
+      menu={buildMarketActivityMenu(rateType)}
+      params={{ activity }}
       variant="contained"
       ContentWrapper={ActivityTabsContent}
     />
@@ -257,7 +293,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
 export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => (
   <Stack data-testid="market-chart-and-activity">
     <Tabs
-      menu={CHART_AND_ACTIVITY_MENU}
+      menu={LEGACY_CHART_AND_ACTIVITY_MENU}
       params={useMemo(() => ({ chart, bands, activity }), [chart, bands, activity])}
       variant="contained"
       ContentWrapper={ActivityTabsContent}

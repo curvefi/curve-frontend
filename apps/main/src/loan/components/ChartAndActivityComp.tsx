@@ -78,6 +78,7 @@ export const MarketActivityComp = () => {
     <Stack sx={{ gap: PAGE_SPACING }}>
       <MarketParticipantsTabs rateType={MarketRateType.Borrow} />
       <MarketActivityLayout
+        rateType={MarketRateType.Borrow}
         activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'crvusd' }}
       />
     </Stack>

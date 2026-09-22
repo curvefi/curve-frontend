@@ -103,7 +103,7 @@ export const DataTable = <TData extends RowData>({
   const containerRef = useRef<HTMLDivElement>(null)
   const { shouldStickyHeader, tableRef, tableWrapperRef } = useTableStickyHeader({ disableStickyHeader, isLimited })
   useScrollToTopOnFilterChange({ table, tableTopRef })
-  useScrollToTopOnPageChange({ table, tableTopRef, containerRef, enablePageChangeScroll })
+  useScrollToTopOnPageChange({ table, tableTopRef, containerRef }, enablePageChangeScroll)
   useResetPageOnResultChange(table)
   const tableHeaderSx = (t: Theme) => ({
     ...(shouldStickyHeader && {
