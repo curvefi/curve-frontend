@@ -3,6 +3,7 @@ import { getAddress } from 'viem'
 import { shortenAddress } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { Typography } from '@mui/material'
+import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
@@ -14,7 +15,7 @@ type AddressActionInfoProps = {
   title: ReactNode
   labelTooltip?: ActionInfoProps['labelTooltip']
   size?: ActionInfoProps['size']
-  address: string | undefined
+  address: Address | undefined
   isBorderBottom?: boolean
   hideTooltip?: boolean
   testId?: string

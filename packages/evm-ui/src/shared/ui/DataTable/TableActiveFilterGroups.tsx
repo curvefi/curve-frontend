@@ -9,7 +9,7 @@ import { TableSelectedFilterChips } from './TableSelectedFilterChips'
 
 const { Spacing } = SizesAndSpaces
 
-export type TableActiveFilterGroupRemove = (labelOrLabels: string | string[]) => void
+type TableActiveFilterGroupRemove = (labelOrLabels: string | string[]) => void
 
 export type TableActiveFilterGroupChipsProps = { labels: string[]; onRemove: TableActiveFilterGroupRemove }
 

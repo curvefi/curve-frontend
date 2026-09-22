@@ -12,7 +12,6 @@ import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } fr
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet'
-import { MetricProps } from '@evm-ui/shared/ui/Metric'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
 import { type Address, Hex } from '@primitives/address.utils'
@@ -27,6 +26,7 @@ import {
   notFalsy,
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
+import { type MetricProps } from '@ui/components/Metric'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { QueryProp, toQuery } from '@ui/features/queries/util'
@@ -183,6 +183,9 @@ export const getMarketType = <T extends MarketTemplate | Nullish>(
     m => m.type,
   )
 
+export const getMarketEndpoint = (marketType: MarketType) =>
+  (({ [MarketType.Mint]: 'crvusd', [MarketType.Lend]: 'lending' }) as const)[marketType]
+
 export const getTokens = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
@@ -316,7 +319,7 @@ export const calculateLtv = (
 }
 
 /** Annualized return on equity at the given leverage. Input APYs and output are percentage  */
-export const getRoE = (
+export const getReturnOnEquity = (
   leverage: number | Nullish,
   collateralApy: number | Nullish,
   borrowApy: number | Nullish,
@@ -327,13 +330,14 @@ export const getRoE = (
   )
 
 /** Return on equity at the market's maximum leverage. */
-export const getMaxRoE = ({
+export const getMaxReturnOnEquity = ({
   leverage,
   assets: {
     collateral: { rebasingYield },
   },
   rates: { borrowApy },
-}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => getRoE(leverage, rebasingYield, borrowApy)
+}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined =>
+  getReturnOnEquity(leverage, rebasingYield, borrowApy)
 
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,

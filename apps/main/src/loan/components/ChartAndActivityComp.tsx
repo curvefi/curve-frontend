@@ -1,4 +1,5 @@
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
+import { MarketParticipantsTabs } from '@/llamalend/features/market-participants/MarketParticipantsCards'
 import {
   LegacyChartAndActivityLayout,
   MarketActivityLayout,
@@ -7,7 +8,10 @@ import {
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import type { ChainId } from '@/loan/types/loan.types'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
+import { MarketRateType } from '@evm-ui/types/market'
+import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { PAGE_SPACING } from '@ui/features/layout/DetailPageLayout/constants'
 import type { Range } from '@ui/features/queries/util'
 import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 import { useMarketContext } from '../../llamalend/features/market-context'
@@ -71,8 +75,11 @@ export const MarketActivityComp = () => {
     tokens: { collateralToken, borrowToken },
   } = useMarketContext<ChainId>()
   return (
-    <MarketActivityLayout
-      activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'crvusd' }}
-    />
+    <Stack sx={{ gap: PAGE_SPACING }}>
+      <MarketParticipantsTabs rateType={MarketRateType.Borrow} />
+      <MarketActivityLayout
+        activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'crvusd' }}
+      />
+    </Stack>
   )
 }

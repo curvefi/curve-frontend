@@ -28,7 +28,7 @@ type PoolListParams = FieldsOf<PoolListQuery>
 export const getPoolListRootQueryKey = ({ chainId }: ChainParams) =>
   [...rootKeys.chain({ chainId }), 'listPools'] as const
 
-export const { useQuery: usePoolList, queryKey: getPoolListQueryKey } = queryFactory({
+export const { useQuery: usePoolList } = queryFactory({
   queryKey: ({
     chainId,
     page,

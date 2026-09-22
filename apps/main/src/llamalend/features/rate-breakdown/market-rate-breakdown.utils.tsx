@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { getPointsCampaignRows, type PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
@@ -12,12 +13,7 @@ import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { aprToApy } from '@ui/lib/rates.utils'
 
-export type BreakdownSource = {
-  tokenInfo: TokenInfoProps
-  address?: Address
-  explorerUrl?: string
-  yieldBearing?: boolean
-}
+type BreakdownSource = { tokenInfo: TokenInfoProps; address?: Address; explorerUrl?: string; yieldBearing?: boolean }
 
 export type RateBreakdownRow = {
   source: BreakdownSource
@@ -132,12 +128,12 @@ export const buildSupplyRateBreakdown = ({
     maybes([rate.rebasingYield, borrowToken], (rebasingYield, borrowToken) => ({
       source: {
         tokenInfo: {
-          address: borrowToken.address,
+          address: getAddress(borrowToken.address),
           blockchainId,
           iconPosition: 'left' as const,
           primary: borrowToken.symbol,
         },
-        address: borrowToken.address,
+        address: getAddress(borrowToken.address),
         explorerUrl: scanTokenPath(chainId, borrowToken.address),
         yieldBearing: true,
       },
@@ -151,8 +147,8 @@ export const buildSupplyRateBreakdown = ({
       ...crvRow,
       ...directIncentives.map(({ address, blockchainId, percentage, title }) => ({
         source: {
-          tokenInfo: { address, blockchainId, iconPosition: 'left' as const, primary: title },
-          address: address as Address,
+          tokenInfo: { address: getAddress(address), blockchainId, iconPosition: 'left' as const, primary: title },
+          address: getAddress(address),
           explorerUrl: scanTokenPath(chainId, address),
         },
         price: mapQuery(prices, prices => prices[address]),
@@ -165,7 +161,7 @@ export const buildSupplyRateBreakdown = ({
             iconPosition: 'left' as const,
             primary: symbol ?? platform,
           },
-          address: reward.address,
+          address: getAddress(reward.address),
           explorerUrl: scanTokenPath(chainId, reward.address),
         },
         price: constQ(reward.price),

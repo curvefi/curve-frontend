@@ -8,7 +8,6 @@ import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
-export type { PoolQuery, PoolParams, TokenQuery, TokenParams } from '@/stellar/queries/root-keys'
 export type BalanceQuery = TokenQuery & UserQuery & { decimals: number }
 export type BalanceParams = FieldsOf<BalanceQuery>
 

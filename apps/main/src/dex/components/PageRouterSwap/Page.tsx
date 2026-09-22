@@ -62,13 +62,11 @@ export const PageRouterSwap = () => {
         return
       }
 
-      const routerDefault = network.swap
-      if (routerDefault && tokens) {
+      if (tokens) {
         const fromToken = getToken(tokens, paramsFromAddress)
         const toToken = getToken(tokens, paramsToAddress)
         if (!fromToken || !toToken || paramsToAddress === paramsFromAddress) {
-          const fromAddress = routerDefault.fromAddress
-          const toAddress = routerDefault.toAddress
+          const { fromAddress, toAddress } = network?.swap ?? {}
           if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
         } else {
           // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.

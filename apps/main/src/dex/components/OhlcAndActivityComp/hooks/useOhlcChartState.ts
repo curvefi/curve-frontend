@@ -51,7 +51,7 @@ export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartSt
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: false,
-    chartHeight: Height.chart,
+    chartHeight: Height.chart.lg,
     isLoading,
     isEmpty,
     emptyMessage: t`No OHLC data found. Data may be unavailable for this pool.`,

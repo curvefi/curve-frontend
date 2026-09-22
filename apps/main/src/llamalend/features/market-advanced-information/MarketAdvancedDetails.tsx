@@ -5,9 +5,9 @@ import {
   TotalCollateralTooltip,
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
-import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
+import { Metric } from '@ui/components/Metric'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'

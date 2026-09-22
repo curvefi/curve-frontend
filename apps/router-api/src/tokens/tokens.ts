@@ -6,9 +6,13 @@ import type { TokensQuery } from './tokens.schemas'
 
 /** Build the token catalog with metadata and available trading volumes from the shared Curve.js instance. */
 export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQuery }>) => {
-  const curve = await loadCurve(request.query.chainId, request.log)
+  const { curve, blacklist } = await loadCurve(request.query.chainId, request.log)
   const { NATIVE_TOKEN: nativeToken, DECIMALS: decimals } = curve.getNetworkConstants()
-  const pools = curve.getPoolList().map(id => curve.getPool(id))
+
+  const pools = curve
+    .getPoolList()
+    .map(id => curve.getPool(id))
+    .filter(pool => !blacklist.has(pool.address.toLowerCase()))
 
   const poolVolumes = curve.getIsLiteChain()
     ? undefined

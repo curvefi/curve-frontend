@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { zeroAddress } from 'viem'
+import { getAddress, zeroAddress } from 'viem'
 import {
   getAmmAddress,
   getControllerAddress,
@@ -12,22 +12,25 @@ import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
+import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { notFalsy } from '@primitives/objects.utils'
+import type { Address } from '@primitives/address.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
-import { TokenIcon, type TokenIconProps } from '@ui/components/TokenIcon'
+import { ExternalLink } from '@ui/components/ExternalLink'
+import { SectionContentCard } from '@ui/components/SectionContentCard'
+import { TokenLabel } from '@ui/components/TokenLabel'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
+import { MarketIdRow } from './MarketParameterRows'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,7 +38,7 @@ const { Spacing } = SizesAndSpaces
 type AddressItem = {
   key: string
   label: ReactNode
-  address?: string
+  address?: Address
   fallbackValue?: ReactNode
   labelTooltip?: ActionInfoProps['labelTooltip']
 }
@@ -56,13 +59,6 @@ const GaugeLabel = () => (
   </Stack>
 )
 
-const TokenLabel = ({ blockchainId, address, label, tooltip }: TokenIconProps & { label: string }) => (
-  <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
-    <TokenIcon blockchainId={blockchainId} address={address} tooltip={tooltip} size="mui-md" />
-    <Typography variant="bodyMRegular">{label}</Typography>
-  </Stack>
-)
-
 const AssetRow = ({
   title,
   chainId,
@@ -73,34 +69,37 @@ const AssetRow = ({
   title: ReactNode
   chainId: number
   blockchainId: string
-  token: { symbol?: string; address?: string } | undefined
+  token: { symbol?: string; address?: Address } | undefined
   testId: string
-}) => (
-  <Stack>
-    <Typography variant="bodyMBold" color="textSecondary">
-      {title}
-    </Typography>
-    <AddressActionInfo
+}) => {
+  const address = token?.address
+  return (
+    <ActionInfo
       testId={testId}
-      chainId={chainId}
-      title={
+      label={title}
+      value={
         <TokenLabel
           blockchainId={blockchainId}
           tooltip={token?.symbol}
-          address={token?.address}
+          address={address}
           label={token?.symbol ?? ''}
+          size="mui-md"
         />
       }
-      address={token?.address}
+      copyValue={address}
+      format={getAddress}
+      valueTooltip={maybe(address && scanAddressPath(chainId, address), link => (
+        <ExternalLink href={link} label={t`View on explorer`} />
+      ))}
     />
-  </Stack>
-)
+  )
+}
 
-export const MarketOverviewSkeleton = ({
+const MarketDataSkeleton = ({
   market,
   apiMarket,
   children,
-}: MarketContractsProps & { children: ReactNode }) => (
+}: Pick<MarketContractsProps, 'market' | 'apiMarket'> & { children: ReactNode }) => (
   <WithSkeleton loading={!market && !apiMarket.data} variant="rectangular" height="4lh" width="100%">
     <Stack>{children}</Stack>
   </WithSkeleton>
@@ -110,7 +109,7 @@ export const MarketAssets = ({ chainId, blockchainId, market, apiMarket }: Marke
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
 
   return (
-    <MarketOverviewSkeleton chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket}>
+    <MarketDataSkeleton market={market} apiMarket={apiMarket}>
       <AssetRow
         testId="market-contract-collateral-token"
         chainId={chainId}
@@ -125,12 +124,11 @@ export const MarketAssets = ({ chainId, blockchainId, market, apiMarket }: Marke
         title={t`Borrowed`}
         token={borrowToken}
       />
-    </MarketOverviewSkeleton>
+    </MarketDataSkeleton>
   )
 }
 
 export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarket }: MarketContractsProps) => {
-  const isMobile = useIsMobile()
   const { data: onChainOracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
     chainId,
     marketId: market?.id,
@@ -144,6 +142,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
   const oracleAddress = market ? onChainOracleAddress : apiMarket.data?.oracleAddress
 
   const infraAddressItems = notFalsy<AddressItem>(
+    oracleAddress && { key: 'oracle', label: t`Oracle`, address: oracleAddress as Address },
     hasContractData && { key: 'amm', label: t`AMM`, address: getAmmAddress(market, apiMarket.data) },
     vaultAddress && { key: 'vault', label: t`Vault`, address: vaultAddress },
     hasContractData && {
@@ -153,7 +152,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
     },
     (market ?? monetaryPolicyAddress) && {
       key: 'monetary-policy',
-      label: t`Rate policy`,
+      label: t`Monetary Policy`,
       labelTooltip: {
         title: t`The rule set that controls how fast borrow costs rise or fall as market conditions change.`,
       },
@@ -163,45 +162,45 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
       (gaugeAddress === zeroAddress
         ? { key: 'gauge', label: t`Gauge`, fallbackValue: t`No gauge` }
         : { key: 'gauge', label: <GaugeLabel />, address: gaugeAddress }),
-    (market ?? oracleAddress) && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
   )
 
   return (
     <Stack data-testid="market-contracts-section">
-      {!useNewLlamaMarketDetailPage() && (
-        <Card size="extraSmall" variant="inline" data-testid="market-assets-section">
-          <CardHeader title={t`Assets`} />
-          <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-            <MarketAssets chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket} />
-          </CardContent>
-        </Card>
-      )}
+      <Card size="extraSmall" variant="inline" data-testid="market-assets-section">
+        <CardHeader title={t`Assets`} />
+        <CardContent component={SectionContentCard}>
+          <MarketAssets chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket} />
+        </CardContent>
+      </Card>
 
       <Card size="extraSmall" variant="inline">
-        <CardHeader title={isMobile ? t`Market Contracts` : t`Contracts`} />
-        <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+        <CardHeader title={t`Contracts`} />
+        <CardContent component={SectionContentCard}>
           <WithSkeleton loading={contractsLoading} variant="rectangular" height="8lh" width="100%">
-            <Stack>
-              {infraAddressItems.map(({ key, label, labelTooltip, address, fallbackValue }) =>
-                fallbackValue != null ? (
-                  <ActionInfo
-                    key={key}
-                    testId={`market-contract-${key}`}
-                    label={label}
-                    labelTooltip={labelTooltip}
-                    value={fallbackValue}
-                  />
-                ) : (
-                  <AddressActionInfo
-                    key={key}
-                    testId={`market-contract-${key}`}
-                    chainId={chainId}
-                    title={label}
-                    labelTooltip={labelTooltip}
-                    address={address}
-                  />
-                ),
-              )}
+            <Stack spacing={Spacing.sm}>
+              <Stack>
+                {infraAddressItems.map(({ key, label, labelTooltip, address, fallbackValue }) =>
+                  fallbackValue != null ? (
+                    <ActionInfo
+                      key={key}
+                      testId={`market-contract-${key}`}
+                      label={label}
+                      labelTooltip={labelTooltip}
+                      value={fallbackValue}
+                    />
+                  ) : (
+                    <AddressActionInfo
+                      key={key}
+                      testId={`market-contract-${key}`}
+                      chainId={chainId}
+                      title={label}
+                      labelTooltip={labelTooltip}
+                      address={address}
+                    />
+                  ),
+                )}
+              </Stack>
+              <MarketIdRow chainId={chainId} marketId={market?.id ?? apiMarket.data?.controllerAddress} />
             </Stack>
           </WithSkeleton>
         </CardContent>

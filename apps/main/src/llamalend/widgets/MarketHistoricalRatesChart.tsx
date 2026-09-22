@@ -1,11 +1,11 @@
 import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import { type MarketRates, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
+import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
-import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
+import { type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
@@ -15,21 +15,19 @@ import {
   EChartsLineChart,
   type LegendItem,
   type LineSeriesConfig,
-  SelectTimeOption,
 } from '@evm-ui/shared/ui/Chart'
-import { Metric } from '@evm-ui/shared/ui/Metric'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
+import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
-import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -44,14 +42,17 @@ export type RateChartPoint = { timestamp: number; rate: number; movingAverage: n
 
 type RateSeriesKey = 'rate' | 'movingAverage' | 'totalAverage'
 
-type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
+export type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
 type RateValue = Amount | Nullish
 
-type MarketHistoricalRatesChartProps = { rateMode: MarketRateType }
+type MarketHistoricalRatesChartProps = {
+  rateMode: MarketRateType
+  timeOption: TimeOption
+  snapshots: QueryProp<RateSnapshot[]>
+}
 
 type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
 type RateModeConfig = {
-  chartTitle: string
   currentRateLabel: string
   averageRateLabels: { week: string; month: string; year: string }
   series: RateSeriesConfig[]
@@ -76,7 +77,6 @@ const toSnapshotRatePoints = (
 
 const RATE_MODE_CONFIG = {
   [MarketRateType.Borrow]: {
-    chartTitle: t`Historical Borrow Rate`,
     currentRateLabel: t`Current APR`,
     averageRateLabels: { week: t`1W average APR`, month: t`1M average APR`, year: t`1Y average APR` },
     series: [
@@ -89,7 +89,6 @@ const RATE_MODE_CONFIG = {
     getSnapshotRate: snapshot => snapshot.borrowApr,
   },
   [MarketRateType.Supply]: {
-    chartTitle: t`Historical Supply Rate`,
     currentRateLabel: t`Current APY`,
     averageRateLabels: { week: t`1W average APY`, month: t`1M average APY`, year: t`1Y average APY` },
     series: [
@@ -113,9 +112,8 @@ const getAverageRates = (ratePoints: { rate: number; timestamp: number }[]) => (
   hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_WINDOW_DAYS.year),
 })
 
-export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesChartProps) => {
-  const { chainId, blockchainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
-  const [timeOption, setTimeOption] = useState<TimeOption>('1M')
+export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: MarketHistoricalRatesChartProps) => {
+  const { chainId, marketId, controllerAddress, apiMarket } = useMarketContext()
   const modeConfig = RATE_MODE_CONFIG[rateMode]
   const activeSeriesConfig = modeConfig.series
   const [visibleSeries, setVisibleSeries] = useState<RateSeriesKey[]>(() => activeSeriesConfig.map(({ key }) => key))
@@ -124,13 +122,6 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
   } = useTheme()
 
   const marketRates = q(useMarketRates({ chainId, marketId }))
-
-  const snapshots = useMarketSnapshots({
-    controllerAddress,
-    marketType,
-    blockchainId,
-    range: { kind: 'timeRange', timeOption: '1Y' },
-  })
 
   const ratePoints = useMappedQuery(
     snapshots,
@@ -182,17 +173,6 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
 
   return (
     <Card size="small" data-testid={`historical-${rateMode.toLowerCase()}-rate-chart`}>
-      <CardHeader
-        title={modeConfig.chartTitle}
-        action={
-          <SelectTimeOption
-            options={timeOptions}
-            activeOption={timeOption}
-            setActiveOption={setTimeOption}
-            isLoading={snapshots.isLoading || !controllerAddress}
-          />
-        }
-      />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <MetricsGrid>
           <Metric
@@ -227,14 +207,14 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
           )}
         </MetricsGrid>
         <EvmChartStateWrapper
-          height={Height.shortChart}
+          height={Height.chart.sm}
           isLoading={snapshots.isLoading || !controllerAddress}
           error={snapshots.error}
           errorMessage={t`Unable to fetch historical rates data.`}
         >
           <EChartsLineChart<RateChartPoint, RateSeriesKey, 'timestamp'>
             data={chartData}
-            height={Height.shortChart}
+            height={Height.chart.sm}
             xKey="timestamp"
             series={series}
             visibleSeries={visibleSeries}

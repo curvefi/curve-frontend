@@ -67,11 +67,16 @@ export const getPoolFiltersResponse = z
     data: z.array(
       z.object({
         chain: z.string(), // API proxies Lite API filters for integrators, so chains are not limited to package support
+        chain_id: z.number(),
         pools: z.array(z.object({ name: z.string(), address })),
       }),
     ),
   })
-  .transform(({ data }) => data.flatMap(item => item.pools.map(pool => ({ chain: item.chain, address: pool.address }))))
+  .transform(({ data }) =>
+    data.flatMap(item =>
+      item.pools.map(pool => ({ chain: item.chain, chainId: item.chain_id, address: pool.address })),
+    ),
+  )
 
 export type ChainInfo = z.infer<typeof getChainInfoResponse>
 export type Activity = z.infer<typeof activity>

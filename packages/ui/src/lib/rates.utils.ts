@@ -1,9 +1,9 @@
 import { type Nullish, maybe } from '@primitives/objects.utils'
 
 /** Number of compounding periods per year. */
-export const COMPOUNDING_FREQUENCIES = { daily: 365, weekly: 365 / 7, continuous: Infinity } as const
+const COMPOUNDING_FREQUENCIES = { daily: 365, weekly: 365 / 7, continuous: Infinity } as const
 
-export const COMPOUNDING_PRESETS = {
+const COMPOUNDING_PRESETS = {
   daily: { frequency: COMPOUNDING_FREQUENCIES.daily, adjective: 'daily' },
   weekly: { frequency: COMPOUNDING_FREQUENCIES.weekly, adjective: 'weekly' },
   continuous: { frequency: COMPOUNDING_FREQUENCIES.continuous, adjective: 'continuous' },

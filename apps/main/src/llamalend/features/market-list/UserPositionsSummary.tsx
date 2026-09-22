@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { parseListFilter } from '@evm-ui/shared/ui/DataTable/filters'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { getUserPositionsSummary } from './user-position.utils'

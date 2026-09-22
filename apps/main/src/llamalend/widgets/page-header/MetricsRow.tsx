@@ -1,14 +1,13 @@
-import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { tokenMetric } from '@/llamalend/llama.utils'
+import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
-import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
-import { Metric } from '@evm-ui/shared/ui/Metric'
+import { AvailableLiquidityMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
+import { MarketSupplyRateTooltipContent, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, formatCappedRateValue } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
+import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
-import { t } from '@ui/lib/i18n'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const METRIC_CATEGORY = 'llamalend.marketHeader'
@@ -80,36 +79,21 @@ export const MetricsRow = ({
   const liquidityMetrics = (
     <>
       {marketType === MarketType.Lend && (
-        <Metric
+        <TotalLiquidityMetric
           category={METRIC_CATEGORY}
           testId="market-total-liquidity"
-          label={t`Total liquidity`}
-          {...tokenMetric({
-            value: availableLiquidity.total,
-            symbol: borrowToken?.symbol,
-            usdRate: availableLiquidity.usdRate,
-          })}
-          valueTooltip={{
-            title: t`Total liquidity`,
-            body: t`Total liquidity is the total amount of the borrow token supplied to this lending market, including both available and borrowed liquidity.`,
-            ...TooltipOptions,
-          }}
+          value={availableLiquidity.total}
+          symbol={borrowToken?.symbol}
+          usdRate={availableLiquidity.usdRate}
         />
       )}
-      <Metric
+      <AvailableLiquidityMetric
         category={METRIC_CATEGORY}
         testId="market-available-liquidity"
-        label={t`Available liquidity`}
-        {...tokenMetric({
-          value: availableLiquidity.value,
-          symbol: borrowToken?.symbol,
-          usdRate: availableLiquidity.usdRate,
-        })}
-        valueTooltip={{
-          title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
-          body: <AvailableLiquidityTooltip marketType={marketType} />,
-          ...TooltipOptions,
-        }}
+        marketType={marketType}
+        value={availableLiquidity.value}
+        symbol={borrowToken?.symbol}
+        usdRate={availableLiquidity.usdRate}
       />
     </>
   )
