@@ -7,6 +7,7 @@ import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { useTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
+import type { Decimal } from '@primitives/decimal.utils'
 import { getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
 import { combineQueries } from '@ui/features/queries/combine'
@@ -16,7 +17,10 @@ import { t } from '@ui/lib/i18n'
 import type { DepositFormQuery } from './types'
 import { useDepositPriceImpact } from './useDepositPriceImpact'
 
-export const DepositActionInfoList = (params: DepositFormQuery) => {
+export const DepositActionInfoList = ({
+  onSlippageChange,
+  ...params
+}: DepositFormQuery & { onSlippageChange: (slippage: Decimal) => void }) => {
   const { account, pool, slippage, tokenCount } = params
   const queryParams = { ...params, amounts: getPoolAmounts(params, tokenCount) }
   const quote = useExpectedLp({ ...queryParams, isDeposit: true })
@@ -45,6 +49,7 @@ export const DepositActionInfoList = (params: DepositFormQuery) => {
       seedLock={seedLock}
       gas={useGasEstimation(params, simulation)}
       slippage={slippage}
+      onSlippageChange={onSlippageChange}
       userAddress={asAddress(account)}
     />
   )

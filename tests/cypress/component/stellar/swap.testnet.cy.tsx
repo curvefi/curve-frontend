@@ -41,18 +41,16 @@ describe('Stellar testnet swap', () => {
 
   before(() => {
     getTestnetConfig()
-      .then(config => {
+      .then(async config => {
         testnetConfig = config
-        return connectTestWallet(config)
+        await connectTestWallet(config)
       })
-      .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
+      .then(API_LOAD_TIMEOUT, async () => await deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
-      .then(API_LOAD_TIMEOUT, () => seedTestPool(pool, testnetConfig))
+      .then(API_LOAD_TIMEOUT, async () => await seedTestPool(pool, testnetConfig))
   })
 
-  beforeEach(() => {
-    cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(fresh => (state = fresh))
-  })
+  beforeEach(() => cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(fresh => (state = fresh)))
 
   const mountSwap = ({ connected = true } = {}) => {
     cy.mount(

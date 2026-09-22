@@ -296,7 +296,7 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}
 
-      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estLpTokenReceivedUsdAmount} />
         {formStatus.error && (
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, null, null)} />

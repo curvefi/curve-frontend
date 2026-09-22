@@ -1,4 +1,5 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
+import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
 import { formatCappedRatePercent } from '@evm-ui/utils'
@@ -25,8 +26,9 @@ export type LoanActionInfoListProps = {
   isFullRepay?: boolean
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
-  rates?: QueryProp<{ borrowApr?: Decimal } | null>
-  prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
+  rates?: QueryProp<BorrowRates | null>
+  prevRates?: QueryProp<BorrowRates | null>
+  collateralApy?: QueryProp<number | null>
   oraclePrice: QueryProp<Decimal | null>
   loanToValue?: QueryProp<Decimal | null>
   prevLoanToValue?: QueryProp<Decimal | null>
@@ -65,6 +67,7 @@ export const LoanActionInfoList = ({
   prevPrices,
   prevRates,
   rates,
+  collateralApy,
   oraclePrice,
   loanToValue,
   prevLoanToValue,
@@ -219,6 +222,20 @@ export const LoanActionInfoList = ({
               futureValue={mapQuery(leverageValue ?? DISABLED_Q, data => formatLeverage(data))}
               size="small"
               testId="borrow-leverage"
+            />
+          )}
+          {collateralApy && (
+            <ActionInfo
+              label={t`Return on Equity (RoE)`}
+              value={formatReturnOnEquity(prevLeverageValue, prevRates, collateralApy)}
+              futureValue={formatReturnOnEquity(
+                leverageValue,
+                /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
+                rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
+                collateralApy,
+              )}
+              size="small"
+              testId="borrow-return-on-equity"
             />
           )}
           {(prevLeverageCollateral ?? leverageCollateral) && (

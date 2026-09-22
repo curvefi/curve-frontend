@@ -13,6 +13,7 @@ import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboa
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolsRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { userPoolBoost } from '@/dex/queries/user-pool-boost.query'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
 import { useStore } from '@/dex/store/useStore'
@@ -47,11 +48,10 @@ export const Dashboard = ({
   const dashboardDataActiveKey = getDashboardDataActiveKey(rChainId, formValues.walletAddress)
   const dashboardDataMapper = useStore(state => state.dashboard.dashboardDatasMapper[dashboardDataActiveKey])
   const noResult = useStore(state => state.dashboard.noResult)
-  const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
   const isLoading = useStore(state => state.dashboard.loading)
   const isXSmDown = useLayoutStore(state => state.isXSmDown)
   const poolsMapper = useStore(state => state.pools.poolsMapper[rChainId])
-  const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[rChainId])
+  const { data: rewardsApyMapper } = usePoolsRewardsApy({ chainId: rChainId, poolIds: dashboardDataPoolIds ?? [] })
   const setFormValues = useStore(state => state.dashboard.setFormValues)
 
   const { chainId, signerAddress } = curve ?? {}
@@ -91,7 +91,7 @@ export const Dashboard = ({
   useEffect(() => {
     updateFormValues({})
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, !pageLoaded, haveAllPools, poolsMapper])
+  }, [chainId, !pageLoaded, poolsMapper])
 
   // signerAddress
   useEffect(() => {

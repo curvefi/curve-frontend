@@ -202,7 +202,7 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
   ],
 } as const
 
-const { useQuery: usePricesApiBlacklist, fetchQuery: fetchPricesApiBlacklist } = queryFactory({
+const { useQuery: usePricesApiBlacklist } = queryFactory({
   queryKey: () => ['pools-blacklist'] as const,
   queryFn: async () => await getPoolFilters(),
   validationSuite: EmptyValidationSuite,
@@ -220,6 +220,3 @@ export const usePoolsBlacklist = ({ blockchainId }: ChainNameParams) =>
     usePricesApiBlacklist({}),
     useCallback(blacklist => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined), [blockchainId]),
   )
-
-export const fetchPoolsBlacklist = async ({ blockchainId }: ChainNameParams) =>
-  blockchainId ? getBlacklist(await fetchPricesApiBlacklist({}), blockchainId) : []

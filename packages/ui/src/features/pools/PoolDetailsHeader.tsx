@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { Address } from '@primitives/address.utils'
 import { PageHeader } from '@ui/components/PageHeader'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
@@ -15,7 +16,7 @@ export const PoolDetailsHeader = ({
   rightItems,
 }: {
   title: QueryProp<string>
-  tokens: QueryProp<{ symbol: string; address: string }[]>
+  tokens: QueryProp<{ symbol: string | undefined; address: Address }[]>
   blockchainId: string
   backHref: string
   rightItems: ReactNode

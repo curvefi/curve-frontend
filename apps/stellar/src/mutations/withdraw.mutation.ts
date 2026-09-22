@@ -16,7 +16,7 @@ import { useStellarMutation } from './useStellarMutation'
 export const useWithdrawMutation = ({ onReset, tokens, quote, ...params }: WithdrawMutationOptions) => {
   const { mutate, error, isPending } = useStellarMutation<WithdrawMutation, WithdrawMutationContext>({
     mutationKey: [...rootKeys.userPool(params), 'withdraw'],
-    buildContext: (_, baseContext) => ({ ...baseContext, ...params, quote }) as WithdrawMutationContext,
+    buildContext: (_, baseContext) => ({ ...baseContext, ...params, quote, tokens }) as WithdrawMutationContext,
     createTransaction: (values, context) => fetchWithdrawSimulation({ ...values, ...context }, { staleTime: 0 }),
     validationParams: { ...params, quote },
     validationSuite: withdrawValidationSuite,
@@ -26,7 +26,7 @@ export const useWithdrawMutation = ({ onReset, tokens, quote, ...params }: Withd
     onSuccess: async (_, values, context) => {
       const submitted = { ...values, ...context }
       await Promise.allSettled([
-        invalidatePoolLiquidity({ ...submitted, tokens }),
+        invalidatePoolLiquidity(submitted),
         invalidateExpectedLp({ ...submitted, isDeposit: false }),
         invalidateWithdrawSimulation(submitted),
       ])
