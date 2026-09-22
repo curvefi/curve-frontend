@@ -230,7 +230,7 @@ const fxSwapUpgradedChains = [Chain.Etherlink]
 const liteCreateQuickList: Record<number, NetworkConfig['createQuickList']> = {
   [Chain.Arc]: [{ address: ARC_USDC_ADDRESS, symbol: 'USDC' }],
 }
-const liteSwap: Record<number, NetworkConfig['swap']> = {
+const liteSwap: Record<number, NonNullable<NetworkConfig['swap']>> = {
   [Chain.Arc]: { fromAddress: ethAddress, toAddress: ARC_USDC_ADDRESS },
 }
 
@@ -268,7 +268,7 @@ export async function getNetworks() {
       fxswapFactory: isLiteFxswapEnabled,
       isCrvRewardsEnabled: isUpgraded,
       createQuickList: liteCreateQuickList?.[chainId] ?? [],
-      swap: liteSwap?.[chainId],
+      ...(liteSwap[chainId] && { swap: liteSwap[chainId] }),
       ...(isOnlyPoolRewardsUpgraded && { isCrvRewardsEnabled: true }),
     }
     return prev

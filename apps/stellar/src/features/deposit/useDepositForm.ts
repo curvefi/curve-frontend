@@ -32,10 +32,10 @@ export function useDepositForm(poolParams: PoolQuery) {
   const config = usePoolConfig(poolParams)
   const supply = usePoolSupply(poolParams)
   const reserves = usePoolReserves(poolParams)
-  const tokens = mapQuery(config, config => config.tokens)
-  const tokenCount = tokens.data?.length
+  const tokenAddresses = mapQuery(config, config => config.tokens)
+  const tokenCount = tokenAddresses.data?.length
 
-  const { inputs: tokenInputs, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokens })
+  const { tokens, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const slippage = useUserProfileStore(state => state.maxSlippage.stable)
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), isBalanced: false }),
@@ -79,7 +79,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   } = useDepositMutation({
     ...poolParams,
     account,
-    tokens: tokens.data,
+    tokens: tokenAddresses.data,
     quote: quote.data,
     minMint: minimum.data,
     onReset: () => reset(userDefaultValues),
@@ -98,7 +98,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     userAddress: asAddress(account),
     error: depositError,
     formErrors: formState.visibleErrors,
-    tokens: tokenInputs,
+    tokens,
     isSeed: mapQuery(supply, supply => !+supply),
   }
 }

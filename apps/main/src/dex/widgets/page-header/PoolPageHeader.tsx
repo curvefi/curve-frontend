@@ -2,6 +2,7 @@ import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
+import type { Address } from '@primitives/address.utils'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { constQ, fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -20,7 +21,7 @@ export const PoolPageHeader = ({
   blockchainId: string
   poolIdOrAddress: string
   title: QueryProp<string>
-  tokens: QueryProp<{ symbol: string; address: string }[]>
+  tokens: QueryProp<{ symbol: string | undefined; address: Address }[]>
   pricesApiPoolData: PricesApiPool | undefined
   backHref: string
 }) => {

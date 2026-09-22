@@ -25,10 +25,9 @@ export type WithdrawSimulationQuery = QuoteQuery &
     slippage: Decimal
   }
 export type WithdrawSimulationParams = FieldsOf<DeepPartial<WithdrawSimulationQuery>>
-export type WithdrawMutationContext = Pick<WithdrawQuery, 'network' | 'pool' | 'account' | 'quote'>
-
-export type WithdrawMutationOptions = FieldsOf<WithdrawMutationContext> & {
-  account: StellarAddress | undefined
+export type WithdrawMutationContext = Pick<WithdrawQuery, 'network' | 'pool' | 'account' | 'quote'> & {
+  account: StellarAddress
   tokens: StellarContract[]
-  onReset: () => void
 }
+
+export type WithdrawMutationOptions = FieldsOf<WithdrawMutationContext> & { onReset: () => void }

@@ -14,7 +14,6 @@ import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapp
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
 import { Box, useTheme } from '@mui/material'
 import { type Nullish, notFalsy } from '@primitives/objects.utils'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { getChartOptions } from './chartOptions'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -22,8 +21,6 @@ import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
 import { TooltipContent } from './TooltipContent'
-
-const { Height } = SizesAndSpaces
 
 type BandsChartProps = {
   collateralToken: BandsChartToken
@@ -36,7 +33,7 @@ type BandsChartProps = {
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
   oraclePrice?: string
-  height?: number
+  height: number
   priceRange?: { min: number; max: number }
 }
 
@@ -155,7 +152,7 @@ const BandsChartComponent = ({
   liqRangeCurrentVisible = true,
   liqRangeNewVisible = true,
   oraclePrice,
-  height = Height.chart,
+  height,
   priceRange,
 }: BandsChartProps) => {
   const isChartDataPending = !error && chartData === undefined

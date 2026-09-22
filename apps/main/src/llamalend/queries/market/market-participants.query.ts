@@ -1,12 +1,15 @@
+import { getMarketEndpoint } from '@/llamalend/llama.utils'
 import { getMarketBorrowers, getVaultDepositors, type PaginatedOptions } from '@curvefi/prices-api/llamalend'
 import { rootKeys } from '@evm-ui/lib/model/query'
 import { contractValidationSuite } from '@evm-ui/lib/model/query/contract-validation'
 import type { ContractQuery } from '@evm-ui/lib/model/query/root-keys'
+import { MarketType } from '@evm-ui/types/market'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type MarketParticipantsQuery = ContractQuery & Required<Pick<PaginatedOptions, 'page' | 'perPage'>>
 type MarketParticipantsParams = FieldsOf<MarketParticipantsQuery>
+type MarketBorrowersQuery = MarketParticipantsQuery & { marketType: MarketType }
 
 const participantQueryKey = (
   type: 'borrowers' | 'suppliers',
@@ -14,9 +17,11 @@ const participantQueryKey = (
 ) => [...rootKeys.contract({ blockchainId, contractAddress }), type, { page }, { perPage }] as const
 
 export const { useQuery: useMarketBorrowers } = queryFactory({
-  queryKey: (params: MarketParticipantsParams) => participantQueryKey('borrowers', params),
-  queryFn: ({ blockchainId, contractAddress, page, perPage }: MarketParticipantsQuery) =>
-    getMarketBorrowers(blockchainId, contractAddress, { page, perPage }),
+  queryKey: ({ marketType, ...params }: FieldsOf<MarketBorrowersQuery>) =>
+    [...participantQueryKey('borrowers', params), { marketType }] as const,
+  queryFn: ({ blockchainId, contractAddress, marketType, page, perPage }: MarketBorrowersQuery) =>
+    getMarketBorrowers(blockchainId, contractAddress, { endpoint: getMarketEndpoint(marketType), page, perPage }),
+
   category: 'llamalend.market',
   validationSuite: contractValidationSuite,
 })
