@@ -1,4 +1,5 @@
 export { MarketTradesExpandedPanel } from './MarketTradesExpandedPanel'
 export { MarketEventsExpandedPanel } from './MarketEventsExpandedPanel'
+export { VaultActivityExpandedPanel } from './VaultActivityExpandedPanel'
 export { PoolTradesExpandedPanel } from './PoolTradesExpandedPanel'
 export { PoolLiquidityExpandedPanel } from './PoolLiquidityExpandedPanel'

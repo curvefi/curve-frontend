@@ -9,9 +9,10 @@ import {
   LlammaActivityTradesTable,
 } from '@/llamalend/features/llamma-activity'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { VaultActivityEvents, type VaultActivityProps } from '@/llamalend/features/vault-activity/VaultActivityEvents'
+import { VaultActivityEventsTable } from '@/llamalend/features/vault-activity/VaultActivityEventsTable'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
 import { useMarketOraclePrice, useMarketPrice } from '@/llamalend/queries/market'
+import type { VaultActivityProps } from '@evm-ui/features/activity-table'
 import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
@@ -102,7 +103,7 @@ const buildMarketActivityMenu = <T extends MarketRateType>(rateType: T) =>
           value: 'events',
           label: t`Activity`,
           component: ({ activity }: MarketActivityTabsParams<MarketRateType.Supply>) => (
-            <VaultActivityEvents {...activity} />
+            <VaultActivityEventsTable {...activity} />
           ),
         },
       ],
