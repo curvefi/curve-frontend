@@ -10,13 +10,13 @@ import {
   TimestampCell,
   useManualPagination,
 } from '@evm-ui/features/activity-table'
-import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Token } from '@primitives/address.utils'
 import { shortenString } from '@primitives/string.utils'
+import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fakeLoadingQ } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'

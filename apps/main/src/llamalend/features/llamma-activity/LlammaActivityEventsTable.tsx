@@ -1,8 +1,8 @@
 import { ActivityTable, MarketEventsExpandedPanel } from '@evm-ui/features/activity-table'
 import { useLlammaActivityEventsConfig } from './hooks/useLlammaActivityEventsConfig'
-import { LlammaActivityProps } from './'
+import { LlammaActivityProps } from '.'
 
-export const LlammaActivityEvents = ({
+export const LlammaActivityEventsTable = ({
   chainId,
   blockchainId,
   collateralToken,

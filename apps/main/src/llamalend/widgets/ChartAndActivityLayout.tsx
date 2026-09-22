@@ -4,9 +4,9 @@ import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import {
-  LlammaActivityEvents,
+  LlammaActivityEventsTable,
   type LlammaActivityProps,
-  LlammaActivityTrades,
+  LlammaActivityTradesTable,
 } from '@/llamalend/features/llamma-activity'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { VaultActivityEvents, type VaultActivityProps } from '@/llamalend/features/vault-activity/VaultActivityEvents'
@@ -84,10 +84,10 @@ type MarketActivityProps = { [MarketRateType.Borrow]: LlammaActivityProps; [Mark
 type MarketActivityTabsParams<T extends MarketRateType> = { activity: MarketActivityProps[T] }
 
 const MarketBorrowActivityEventsTab = ({ activity }: MarketActivityTabsParams<MarketRateType.Borrow>) => (
-  <LlammaActivityEvents {...activity} />
+  <LlammaActivityEventsTable {...activity} />
 )
 const MarketBorrowActivityTradesTab = ({ activity }: MarketActivityTabsParams<MarketRateType.Borrow>) => (
-  <LlammaActivityTrades {...activity} />
+  <LlammaActivityTradesTable {...activity} />
 )
 
 const buildMarketActivityMenu = <T extends MarketRateType>(rateType: T) =>

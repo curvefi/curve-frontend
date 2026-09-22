@@ -4,7 +4,12 @@ import { LlammaActivityProps } from './'
 
 export type LlammaActivityTradesProps = Omit<LlammaActivityProps, 'borrowToken' | 'collateralToken'>
 
-export const LlammaActivityTrades = ({ chainId, blockchainId, ammAddress, endpoint }: LlammaActivityTradesProps) => {
+export const LlammaActivityTradesTable = ({
+  chainId,
+  blockchainId,
+  ammAddress,
+  endpoint,
+}: LlammaActivityTradesProps) => {
   const { table, emptyState, errorState } = useLlammaActivityTradesConfig({
     chainId,
     blockchainId,
