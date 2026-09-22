@@ -1,14 +1,22 @@
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
+import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
+import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
+import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 
 type PoolActionInfoListProps = {
+  priceImpact: QueryProp<Decimal | null>
   gas: QueryProp<TxGasInfo | null>
+  slippage: Decimal
+  onSlippageChange: (slippage: Decimal) => void
+  userAddress: Address | undefined
   expectedLp?: QueryProp<Decimal>
   expectedLpLabel?: string
   expectedLpTestId?: string
@@ -20,12 +28,18 @@ type PoolActionInfoListProps = {
   projectedLpLabel?: string
   projectedLpTestId?: string
   seedLock?: QueryProp<Decimal | null>
+  exchangeRate?: QueryProp<Decimal>
   minimumReceived?: QueryProp<Decimal>
+  fromSymbol?: string | undefined
   toSymbol?: string | undefined
 }
 
 export const PoolActionInfoList = ({
+  priceImpact,
   gas,
+  slippage,
+  onSlippageChange,
+  userAddress,
   expectedLp,
   expectedLpLabel,
   expectedLpTestId,
@@ -37,10 +51,13 @@ export const PoolActionInfoList = ({
   projectedLpLabel,
   projectedLpTestId,
   seedLock,
+  exchangeRate,
   minimumReceived,
+  fromSymbol,
   toSymbol,
 }: PoolActionInfoListProps) => (
   <Stack>
+    <HighPriceImpactAlert priceImpact={priceImpact} />
     {expectedLp && expectedLpLabel && expectedLpTestId && (
       <ActionInfo
         testId={expectedLpTestId}
@@ -89,6 +106,16 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
+    {exchangeRate && (
+      <ActionInfo
+        testId="pool-swap-exchange-rate"
+        label={t`Exchange rate`}
+        value={mapQuery(exchangeRate, value =>
+          [formatToken(1, fromSymbol), formatToken(value, toSymbol, 'balance')].join(' = '),
+        )}
+        size="small"
+      />
+    )}
     {minimumReceived && (
       <ActionInfo
         testId="pool-swap-minimum-received"
@@ -97,6 +124,19 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
+    <PriceImpactActionInfo
+      testId="pool-price-impact"
+      priceImpact={priceImpact}
+      value={mapQuery(priceImpact, value => formatNumber(value, 'percent.price-impact'))}
+      size="small"
+    />
+    <SlippageToleranceActionInfo
+      maxSlippage={slippage}
+      onChanged={({ stable }) => onSlippageChange(stable)}
+      type="stable"
+      userAddress={userAddress}
+      size="small"
+    />
     <ActionInfoGasEstimate gas={gas} />
   </Stack>
 )

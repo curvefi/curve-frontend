@@ -147,8 +147,6 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     userAddress: asAddress(account),
     error: withdrawError,
     formErrors: formState.visibleErrors,
-    priceImpact,
-    slippage: values.slippage,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens: tokenInputs,
   }

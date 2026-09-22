@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import type { FieldValues, FormSubmitHandler, UseFormReturn, VisibleErrors } from '@ui/features/forms'
 import type { FormButtonProps } from '@ui/features/forms/FormButton'
@@ -19,7 +18,4 @@ export type PoolFormProps<TValues extends FieldValues> = {
   error: Error | Nullish
   formErrors: VisibleErrors<TValues>
   footer: ReactNode
-  priceImpact: QueryProp<Decimal | null>
-  slippage: Decimal
-  onSlippageChange: (slippage: Decimal) => void
 }

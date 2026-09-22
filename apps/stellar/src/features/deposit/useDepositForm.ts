@@ -102,8 +102,6 @@ export function useDepositForm(poolParams: PoolQuery) {
     userAddress: asAddress(account),
     error: depositError,
     formErrors: formState.visibleErrors,
-    priceImpact,
-    slippage: values.slippage,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens: tokenInputs,
     isSeed,
