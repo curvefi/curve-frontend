@@ -22,7 +22,6 @@ const GRID_SIZE = { mobile: 12, desktop: 6 } as const
 
 export const AdvancedDetails = ({
   chainId,
-  poolId,
   info,
   contracts,
   prices,
@@ -32,8 +31,7 @@ export const AdvancedDetails = ({
   addGaugeLink,
 }: {
   chainId: number
-  poolId: string
-  info: Omit<InfoProps, 'chainId' | 'poolId' | 'addressDisplay'>
+  info: Omit<InfoProps, 'chainId' | 'addressDisplay'>
   contracts: Omit<ContractsProps, 'chainId' | 'addressDisplay'>
   prices: PricesProps
   parameters: ParametersProps
@@ -57,7 +55,7 @@ export const AdvancedDetails = ({
             </Grid>
 
             <Grid size={GRID_SIZE}>
-              <Info chainId={chainId} poolId={poolId} {...info} addressDisplay={addressDisplay} />
+              <Info chainId={chainId} {...info} addressDisplay={addressDisplay} />
             </Grid>
           </Grid>
 
