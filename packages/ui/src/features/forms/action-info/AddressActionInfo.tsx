@@ -1,7 +1,4 @@
 import { ReactNode } from 'react'
-import { getAddress } from 'viem'
-import { shortenAddress } from '@evm-ui/utils'
-import { scanAddressPath } from '@legacy-ui/utils'
 import { Typography } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -10,12 +7,19 @@ import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 import { t } from '@ui/lib/i18n'
 
-type AddressActionInfoProps = {
+/** Addresses are normalized by the caller; this only controls their presentation. */
+export type AddressDisplay = {
+  formatAddress: (address: Address) => string
+  scanAddressPath: (chainId: number, address: Address) => string | undefined
+}
+
+export type AddressActionInfoProps = {
   chainId: number
   title: ReactNode
   labelTooltip?: ActionInfoProps['labelTooltip']
   size?: ActionInfoProps['size']
   address: Address | undefined
+  display: AddressDisplay
   isBorderBottom?: boolean
   hideTooltip?: boolean
   testId?: string
@@ -32,6 +36,7 @@ export const AddressActionInfo = ({
   labelTooltip,
   size = 'medium',
   address,
+  display: { formatAddress, scanAddressPath },
   isBorderBottom,
   hideTooltip = false,
   testId,
@@ -44,10 +49,9 @@ export const AddressActionInfo = ({
     value={
       /** TODO: Clarify: The design has this typography component as as semi-bold,
        * should Bold typography variants have an updated font-weight? 🤔 */
-      <Typography variant={VALUE_SIZE[size]}>{shortenAddress(address)}</Typography>
+      <Typography variant={VALUE_SIZE[size]}>{address ? formatAddress(address) : '-'}</Typography>
     }
     copyValue={address}
-    format={getAddress}
     valueTooltip={
       !hideTooltip &&
       maybe(address && scanAddressPath(chainId, address), link => (

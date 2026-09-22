@@ -4,15 +4,15 @@ import {
   getAmmAddress,
   getControllerAddress,
   getGaugeAddress,
+  getMonetaryPolicy,
   getTokens,
   getVaultAddress,
-  getMonetaryPolicy,
 } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
+import { evmAddressDisplay } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -27,6 +27,7 @@ import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
+import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -196,6 +197,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
                       title={label}
                       labelTooltip={labelTooltip}
                       address={address}
+                      display={evmAddressDisplay}
                     />
                   ),
                 )}

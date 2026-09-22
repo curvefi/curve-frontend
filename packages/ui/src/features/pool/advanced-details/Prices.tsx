@@ -1,26 +1,32 @@
-import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
-import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
-import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
+import type { Address } from '@primitives/address.utils'
+import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { usePoolContext } from '../../pool-context'
 
-export const Prices = () => {
-  const { chainId, blockchainId, poolId, poolAddress, tokens, tokenAddresses } = usePoolContext()
-  const { data: parameters } = usePoolParameters({ chainId, poolId })
-  const { data: snapshots } = usePoolSnapshots({ chain: blockchainId as BlockchainId, poolAddress })
-  const { priceOracle, priceScale } = parameters ?? {}
-  const snapshotData = snapshots?.[0]
-  // Prices API snapshot values are 1e18-scaled, while pool parameters are already human-scale.
-  const priceOracleData = priceOracle?.length ? priceOracle : snapshotData?.priceOracle?.map(price => price / 10 ** 18)
-  const priceScaleData = priceScale?.length ? priceScale : snapshotData?.priceScale?.map(price => price / 10 ** 18)
+export type PricesProps = {
+  tokens: string[]
+  tokenAddresses: Address[]
+  priceOracleData: Amount[] | undefined
+  priceScaleData: Amount[] | undefined
+  xcpProfit: number | Nullish
+  xcpProfitA: number | Nullish
+}
 
+export const Prices = ({
+  tokens,
+  tokenAddresses,
+  priceOracleData,
+  priceScaleData,
+  xcpProfit,
+  xcpProfitA,
+}: PricesProps) => {
   // Curve price oracle/scale arrays omit the base token, so value index 0 belongs to token index 1.
   const priceRows = tokens
     .slice(1)
@@ -58,20 +64,17 @@ export const Prices = () => {
         </Card>
       )}
 
-      {(snapshotData?.xcpProfit != null || snapshotData?.xcpProfitA != null) && (
+      {(xcpProfit != null || xcpProfitA != null) && (
         <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Xcp Profit`} />
           <CardContent component={SectionContentCard}>
-            {snapshotData?.xcpProfit != null && (
-              <ActionInfo
-                label={t`Xcp Profit`}
-                value={formatNumber(amount(snapshotData.xcpProfit / 10 ** 18), 'pool.parameter')}
-              />
+            {xcpProfit != null && (
+              <ActionInfo label={t`Xcp Profit`} value={formatNumber(amount(xcpProfit / 10 ** 18), 'pool.parameter')} />
             )}
-            {snapshotData?.xcpProfitA != null && (
+            {xcpProfitA != null && (
               <ActionInfo
                 label={t`Xcp Profit A`}
-                value={formatNumber(amount(snapshotData.xcpProfitA / 10 ** 18), 'pool.parameter')}
+                value={formatNumber(amount(xcpProfitA / 10 ** 18), 'pool.parameter')}
               />
             )}
           </CardContent>

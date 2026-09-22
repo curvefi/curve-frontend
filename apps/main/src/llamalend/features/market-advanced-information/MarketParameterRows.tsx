@@ -3,9 +3,10 @@ import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
+import { evmAddressDisplay } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
+import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
 import { fakeLoadingQ, fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -62,7 +63,13 @@ const MARKET_ID = { testId: 'market-id', label: t`Market ID` }
 
 export const MarketIdRow = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) =>
   marketId && isAddress(marketId) ? (
-    <AddressActionInfo chainId={chainId} testId={MARKET_ID.testId} title={MARKET_ID.label} address={marketId} />
+    <AddressActionInfo
+      chainId={chainId}
+      testId={MARKET_ID.testId}
+      title={MARKET_ID.label}
+      address={marketId}
+      display={evmAddressDisplay}
+    />
   ) : (
     <ActionInfo testId={MARKET_ID.testId} label={MARKET_ID.label} value={fakeLoadingQ(marketId)} />
   )
