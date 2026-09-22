@@ -42,7 +42,7 @@ type TableEmptyState = { testId?: string } & Pick<
   'title' | 'description' | 'button' | 'secondaryButton'
 >
 
-type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
+type TableErrorState = { onReload?: () => Promise<unknown> } & Pick<EmptyStateCardProps, 'title' | 'description'>
 
 export type DataTableProps<TData extends RowData> = {
   category?: DataTableCategory
