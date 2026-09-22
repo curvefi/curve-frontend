@@ -269,6 +269,21 @@ const vaultDepositor = z
   })
   .transform(camelizeKeys)
 
+const vaultLiquidityAmounts = z.object({ assets: z.number(), shares: z.number() })
+
+const vaultEvent = z
+  .object({
+    provider: address,
+    deposit: vaultLiquidityAmounts.nullable(),
+    withdrawal: vaultLiquidityAmounts.nullable(),
+    block_number: z.number(),
+    timestamp,
+    transaction_hash: hex,
+    log_index: z.number().nullable(),
+  })
+  .transform(camelizeKeys)
+  .transform(({ transactionHash, ...event }) => ({ ...event, txHash: transactionHash }))
+
 const marketBorrower = z
   .object({
     address,
@@ -454,6 +469,11 @@ export const getVaultDepositorsResponse = z
   })
   .transform(camelizeKeys)
 
+export const getVaultEventsResponse = z
+  .object({ chain, address, page: z.number(), count: z.number(), data: z.array(vaultEvent) })
+  .transform(camelizeKeys)
+  .transform(({ data: events, ...response }) => ({ ...response, events }))
+
 export const getUserMarketSnapshotsResponse = z
   .object({ user: address, data: z.array(userMarketStats), page: z.number(), per_page: z.number(), count: z.number() })
   .transform(({ data }) => data)
@@ -530,6 +550,7 @@ export type MarketBorrower = z.infer<typeof marketBorrower>
 export type MarketBorrowers = z.infer<typeof getMarketBorrowersResponse>
 export type VaultDepositor = z.infer<typeof vaultDepositor>
 export type VaultDepositors = z.infer<typeof getVaultDepositorsResponse>
+export type VaultEvent = z.infer<typeof vaultEvent>
 export type UserMarketSnapshots = z.infer<typeof getUserMarketSnapshotsResponse>
 export type MarketUser = z.infer<typeof marketUser>
 export type MarketUsers = z.infer<typeof getMarketUsersResponse>

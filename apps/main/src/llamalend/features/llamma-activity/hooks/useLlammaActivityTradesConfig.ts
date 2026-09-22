@@ -11,7 +11,7 @@ import { maybe } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
-import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
+import { LlammaActivityTradesProps } from '../LlammaActivityTradesTable'
 
 export const useLlammaActivityTradesConfig = ({
   chainId,
