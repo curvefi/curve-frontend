@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import type { Seed } from '@/dex/components/PagePool/types'
 import { usePoolContext } from '@/dex/features/pool-context'
+import { hasWrapped } from '@/dex/pool.utils'
 import { PoolData } from '@/dex/types/main.types'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { formatNumber } from '@primitives/number.utils'
@@ -16,10 +17,10 @@ export const AlertSeedAmounts = ({ seed }: { seed: Seed }) => {
 
   const getSeedRatio = useCallback(async (poolData: PoolData) => {
     try {
-      const { pool, hasWrapped } = poolData
+      const { pool } = poolData
 
-      const tokens = hasWrapped ? pool.wrappedCoins : pool.underlyingCoins
-      const useUnderlying = !hasWrapped
+      const tokens = hasWrapped(pool) ? pool.wrappedCoins : pool.underlyingCoins
+      const useUnderlying = !hasWrapped(pool)
 
       const seedAmounts = await pool.getSeedAmounts('1', useUnderlying)
 

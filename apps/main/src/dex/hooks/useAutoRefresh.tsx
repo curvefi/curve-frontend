@@ -15,8 +15,8 @@ export const useAutoRefresh = (chainId: number | undefined) => {
 
   useGasInfoAndUpdateLib({ chainId })
 
-  usePageVisibleInterval(async () => {
+  usePageVisibleInterval(() => {
     if (!curveApi || !poolIds || !chainId) return
-    await fetchPools(curveApi, poolIds, { includeGaugeData: true })
+    fetchPools(curveApi, poolIds)
   }, REFRESH_INTERVAL['15m'])
 }

@@ -13,10 +13,10 @@ import {
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
 import type { RoutesAndOutput } from '@/dex/components/PageRouterSwap/types'
 import { curvejsApi } from '@/dex/lib/curvejs'
+import { fetchPoolCurrencyReserves, type CurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
-  CurrencyReserves,
   CurveApi,
   FnStepApproveResponse,
   FnStepEstGasApprovalResponse,
@@ -30,8 +30,7 @@ import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
-import { invalidateUserPoolInfo } from '../queries/invalidation'
-import { invalidatePoolParameters } from '../queries/pool-parameters.query'
+import { invalidatePoolInfo, invalidateUserPoolInfo } from '../queries/invalidation'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -301,8 +300,12 @@ export const createPoolSwapSlice = (
 
       // validate toAmount: If have toAmount and isFrom is false, confirm toAmount is not bigger than currency reserves
       if (+cFormValues.toAmount > 0 && !cFormValues.isFrom) {
-        const { currencyReserves, fetchPoolCurrenciesReserves } = get().pools
-        const currencyReserve = currencyReserves[poolId] ?? (await fetchPoolCurrenciesReserves(curve, poolData))
+        const currencyReserve = await fetchPoolCurrencyReserves({
+          chainId: curve.chainId,
+          poolId,
+          isWrapped: poolData.isWrapped,
+          useApi: !curve.signerAddress,
+        })
 
         if (Array.isArray(currencyReserve?.tokens)) {
           cFormValues.toError = getReservesBalanceError(currencyReserve, cFormValues.toAddress, cFormValues.toAmount)
@@ -443,14 +446,8 @@ export const createPoolSwapSlice = (
             formValues: cFormValues,
           })
 
-          // re-fetch data
-          await invalidateUserPoolInfo({
-            chainId: curve.chainId,
-            poolId: poolData.pool.id,
-            userAddress: curve.signerAddress,
-          })
-          await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: poolData.pool.id })
+          const params = { chainId: curve.chainId, poolId: poolData.pool.id, userAddress: curve.signerAddress }
+          await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
         return resp
       }

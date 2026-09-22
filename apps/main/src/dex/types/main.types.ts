@@ -20,7 +20,6 @@ export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlP
 
 export type NetworkConfig = {
   isCrvRewardsEnabled: boolean
-  poolIsWrappedOnly: Record<string, boolean>
   poolFilters: string[]
   swap?: Record<string, string>
   swapCustomRouteRedirect: Record<string, string>
@@ -44,48 +43,18 @@ export type CurrencyReservesToken = {
   usdRate: number
   percentShareInPool: string
 }
-export type CurrencyReserves = { poolId: string; tokens: CurrencyReservesToken[]; total: string; totalUsd: string }
-export type CurrencyReservesMapper = Record<string, CurrencyReserves>
 export type Pool = PoolTemplate
 export type ClaimableReward = { token: string; symbol: string; amount: string; price: number }
 export type RewardBase = { day: string; week: string }
 export type RewardCrv = number
-export type RewardOther = {
-  apy: number
-  decimals?: number
-  gaugeAddress: string
-  name?: string
-  symbol: string
-  tokenAddress: string
-  tokenPrice?: number
-}
-export type RewardsApy = {
-  poolId: string
-  base: RewardBase
-  other: RewardOther[]
-  crv: RewardCrv[]
-  error: Record<string, boolean>
-}
-export type RewardsApyMapper = Record<string, RewardsApy>
-export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
-
-type Gauge = { status: GaugeStatus | null; isKilled: boolean | null }
-
 export type PoolData = {
   idx?: number
-  chainId: ChainId
   pool: Pool
-  gauge: Gauge
-  hasWrapped: boolean
-  hasVyperVulnerability: boolean
   isWrapped: boolean
   tokenAddresses: string[]
   tokenAddressesAll: string[]
-  tokenDecimalsAll: number[]
   tokens: string[]
   tokensCountBy: Record<string, number>
-  tokensAll: string[]
-  tokensLowercase: string[]
 }
 
 export type PoolDataMapper = Record<string, PoolData>
