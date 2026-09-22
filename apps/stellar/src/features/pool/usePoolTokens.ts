@@ -16,7 +16,7 @@ import { q, type QueryProp } from '@ui/features/queries/util'
 export function usePoolTokens({
   network,
   account,
-  tokenAddresses: tokenAddresses,
+  tokenAddresses,
 }: NetworkParams & UserParams & { tokenAddresses: QueryProp<StellarContract[]> }) {
   const addresses = tokenAddresses.data ?? [] // useQueries doesn't accept undefined
   const decimals = useQueries({

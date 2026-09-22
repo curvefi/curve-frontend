@@ -20,20 +20,20 @@ describe('Stellar testnet pool page', () => {
 
   before(() => {
     getTestnetConfig()
-      .then(config => {
+      .then(async config => {
         testnetConfig = config
-        return connectTestWallet(config)
+        await connectTestWallet(config)
       })
       .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
-      .then(LOAD_TIMEOUT, deployedPool => {
+      .then(LOAD_TIMEOUT, async deployedPool => {
         pool = deployedPool
-        return seedTestPool(pool, testnetConfig)
+        await seedTestPool(pool, testnetConfig)
       })
   })
 
-  beforeEach(() => {
-    cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(freshState => (state = freshState))
-  })
+  beforeEach(() =>
+    cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(freshState => (state = freshState)),
+  )
 
   it('loads a seeded live pool and switches between liquidity actions', () => {
     cy.mount(

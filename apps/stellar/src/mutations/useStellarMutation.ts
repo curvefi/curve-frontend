@@ -55,7 +55,11 @@ export function useStellarMutation<
         createTransaction(variables, context),
         pendingMessage(variables, context),
       )
-      return withPendingToast(sendStellarTransaction(transaction), confirmingMessage(variables, context))
+      const { response } = await withPendingToast(
+        sendStellarTransaction(transaction),
+        confirmingMessage(variables, context),
+      )
+      return response
     },
   })
 }

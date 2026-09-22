@@ -39,8 +39,8 @@ export function useSwapForm(poolParams: PoolQuery) {
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const config = usePoolConfig(poolParams)
   const reserves = usePoolReserves(poolParams)
-  const tokens = mapQuery(config, config => config.tokens)
-  const { inputs: tokenInputs, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokens })
+  const tokenAddresses = mapQuery(config, config => config.tokens)
+  const { tokens, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const slippage = useUserProfileStore(state => state.maxSlippage.stable)
   const form = useForm<SwapFormValues>(formOptions)
   const { formState, reset } = form
@@ -97,14 +97,19 @@ export function useSwapForm(poolParams: PoolQuery) {
     onSubmit,
     isPending: isSwapping,
     error: swapError,
-  } = useSwapMutation({ ...poolParams, account, tokens: tokens.data ?? [], onReset: () => reset(userDefaultValues) })
+  } = useSwapMutation({
+    ...poolParams,
+    account,
+    tokens: tokenAddresses.data ?? [],
+    onReset: () => reset(userDefaultValues),
+  })
 
   const isPending = isSwapping || formState.isSubmitting
   return {
     form,
-    tokens: tokenInputs,
-    fromSymbol: tokenInputs.data?.[fromIndex]?.symbol,
-    toSymbol: tokenInputs.data?.[toIndex]?.symbol,
+    tokens,
+    fromSymbol: tokens.data?.[fromIndex]?.symbol,
+    toSymbol: tokens.data?.[toIndex]?.symbol,
     slippage,
     params,
     inputAmount,
