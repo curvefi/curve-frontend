@@ -49,11 +49,11 @@ export const PoolAdvancedDetails = () => {
     poolId,
     poolAddress,
     poolData: {
-      tokenAddresses,
       pool,
       pool: { lpToken, gauge },
-      tokens,
     },
+    tokens,
+    tokenAddresses,
   } = usePoolContext()
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
