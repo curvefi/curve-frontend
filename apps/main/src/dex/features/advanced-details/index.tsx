@@ -1,6 +1,5 @@
-import { isAddressEqual, zeroAddress, type Address } from 'viem'
-import { AddGaugeLink } from '@/dex/components/PagePool/components/AddGaugeLink'
-import { ManagePoolLink } from '@/dex/components/PagePool/components/ManagePoolLink'
+import type { ReactNode } from 'react'
+import { type AddressDisplay } from '@evm-ui/shared/ui/AddressActionInfo'
 import { ViewMoreButton } from '@evm-ui/shared/ui/ViewMoreButton'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -11,55 +10,65 @@ import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { usePoolContext } from '../pool-context'
-import { Contracts } from './components/Contracts'
-import { Info } from './components/Info'
-import { Parameters } from './components/Parameters'
-import { Prices } from './components/Prices'
+import { Contracts, type ContractsProps } from './components/Contracts'
+import { Info, type InfoProps } from './components/Info'
+import { Parameters, type ParametersProps } from './components/Parameters'
+import { Prices, type PricesProps } from './components/Prices'
 
 const { Spacing } = SizesAndSpaces
 
 /** Two columns on desktop, one on mobile and desktop */
 const GRID_SIZE = { mobile: 12, desktop: 6 } as const
 
-export const AdvancedDetails = () => {
-  const {
-    chainId,
-    poolData: { pool },
-  } = usePoolContext()
-  const gaugeAddress = pool.gauge.address as Address
-
+export const AdvancedDetails = ({
+  chainId,
+  poolId,
+  info,
+  contracts,
+  prices,
+  parameters,
+  addressDisplay,
+  managePoolLink,
+  addGaugeLink,
+}: {
+  chainId: number
+  poolId: string
+  info: Omit<InfoProps, 'chainId' | 'poolId' | 'addressDisplay'>
+  contracts: Omit<ContractsProps, 'chainId' | 'addressDisplay'>
+  prices: PricesProps
+  parameters: ParametersProps
+  addressDisplay: AddressDisplay
+  managePoolLink: ReactNode
+  addGaugeLink: ReactNode
+}) => {
   const [isOpen, , , toggleOpen] = useSwitch(false)
 
   return (
     <Stack>
       <Card size="small">
-        <CardHeader
-          title={t`Advanced Details`}
-          action={<ManagePoolLink chainId={chainId} poolAddress={pool.address} />}
-        />
+        <CardHeader title={t`Advanced Details`} action={managePoolLink} />
         <CardContent>
           <Grid container columnSpacing={Spacing.md}>
             <Grid size={GRID_SIZE}>
               <Stack>
-                <Contracts />
-                {isAddressEqual(gaugeAddress, zeroAddress) && <AddGaugeLink />}
+                <Contracts chainId={chainId} {...contracts} addressDisplay={addressDisplay} />
+                {!contracts.hasGauge && addGaugeLink}
               </Stack>
             </Grid>
 
             <Grid size={GRID_SIZE}>
-              <Info />
+              <Info chainId={chainId} poolId={poolId} {...info} addressDisplay={addressDisplay} />
             </Grid>
           </Grid>
 
           <Collapse in={isOpen}>
             <Grid container columnSpacing={Spacing.md}>
               <Grid size={GRID_SIZE}>
-                <Parameters />
+                <Parameters {...parameters} />
               </Grid>
 
               <Grid size={GRID_SIZE}>
-                <Prices />
+                <Prices {...prices} />
               </Grid>
             </Grid>
           </Collapse>

@@ -1,79 +1,70 @@
-import { isAddressEqual, zeroAddress, type Address } from 'viem'
-import { ChipInactive } from '@/dex/components/ChipInactive'
-import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
-import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
-import type { Chain as BlockchainId } from '@curvefi/prices-api'
-import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
+import { AddressActionInfo, type AddressDisplay } from '@evm-ui/shared/ui/AddressActionInfo'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
-import { notFalsy } from '@primitives/objects.utils'
+import type { Address } from '@primitives/address.utils'
+import type { Nullish } from '@primitives/objects.utils'
+import { Badge } from '@ui/components/Badge'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { t } from '@ui/lib/i18n'
-import { usePoolContext } from '../../pool-context'
 
-export const Contracts = () => {
-  const { chainId, blockchainId, poolId, poolAddress, poolData } = usePoolContext()
-  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
-
-  const lpTokenAddress = poolData.pool.lpToken as Address
-  const gaugeAddress = poolData.pool.gauge.address as Address
-  const gaugeIsKilled = !!gauge?.isKilled
-  const isSameAddress = isAddressEqual(poolAddress, lpTokenAddress)
-
-  const { data: metadata } = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
-  const oracles = notFalsy(
-    ...(metadata?.assetTypes?.map((assetType, index) => {
-      const oracleAddress = metadata.oracles?.[index]?.oracleAddress
-      const symbol = metadata.coins[index]?.symbol
-
-      return (
-        assetType === 1 &&
-        oracleAddress &&
-        !isAddressEqual(oracleAddress, zeroAddress) && {
-          address: oracleAddress,
-          title: symbol ? `${symbol} ${t`Oracle`}` : t`Oracle ${index + 1}`,
-        }
-      )
-    }) ?? []),
-  )
-
-  return (
-    <Card size="extraSmall" variant="inline">
-      <CardHeader title={t`Contracts`} />
-      <CardContent>
-        <SectionContentCard>
-          {poolAddress && (
-            <AddressActionInfo
-              chainId={chainId}
-              address={poolAddress}
-              title={isSameAddress ? t`Pool / Token` : t`Pool`}
-            />
-          )}
-
-          {!isSameAddress && lpTokenAddress && (
-            <AddressActionInfo chainId={chainId} address={lpTokenAddress} title={t`Token`} />
-          )}
-
-          {!isAddressEqual(gaugeAddress, zeroAddress) && (
-            <AddressActionInfo
-              chainId={chainId}
-              address={gaugeAddress}
-              title={
-                <>
-                  {t`Gauge`} {gaugeIsKilled && <ChipInactive>Inactive</ChipInactive>}
-                </>
-              }
-            />
-          )}
-        </SectionContentCard>
-
-        <SectionContentCard>
-          {oracles.map(oracle => (
-            <AddressActionInfo key={oracle.address} chainId={chainId} {...oracle} />
-          ))}
-        </SectionContentCard>
-      </CardContent>
-    </Card>
-  )
+export type ContractsProps = {
+  chainId: number
+  poolAddress: Address
+  lpTokenAddress: Address
+  gaugeAddress: Address
+  gaugeIsKilled: boolean | Nullish
+  hasGauge: boolean
+  oracles: { address: Address; title: string }[] | undefined
+  addressDisplay: AddressDisplay
 }
+
+export const Contracts = ({
+  chainId,
+  poolAddress,
+  lpTokenAddress,
+  gaugeAddress,
+  gaugeIsKilled,
+  hasGauge,
+  oracles,
+  addressDisplay,
+}: ContractsProps) => (
+  <Card size="extraSmall" variant="inline">
+    <CardHeader title={t`Contracts`} />
+    <CardContent>
+      <SectionContentCard>
+        {poolAddress && (
+          <AddressActionInfo
+            chainId={chainId}
+            address={poolAddress}
+            display={addressDisplay}
+            title={poolAddress === lpTokenAddress ? t`Pool / Token` : t`Pool`}
+          />
+        )}
+
+        {lpTokenAddress && poolAddress !== lpTokenAddress && (
+          <AddressActionInfo chainId={chainId} address={lpTokenAddress} title={t`Token`} display={addressDisplay} />
+        )}
+
+        {hasGauge && (
+          <AddressActionInfo
+            chainId={chainId}
+            address={gaugeAddress}
+            display={addressDisplay}
+            title={
+              <>
+                {t`Gauge`} {gaugeIsKilled && <Badge disabled size="small" label={t`Inactive`} />}
+              </>
+            }
+          />
+        )}
+      </SectionContentCard>
+
+      <SectionContentCard>
+        {oracles?.map(oracle => (
+          <AddressActionInfo key={oracle.address} chainId={chainId} {...oracle} display={addressDisplay} />
+        ))}
+      </SectionContentCard>
+    </CardContent>
+  </Card>
+)

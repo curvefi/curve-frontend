@@ -1,4 +1,5 @@
 import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
+import { evmAddressDisplay } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
@@ -45,6 +46,7 @@ export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
                 />
               }
               address={address}
+              display={evmAddressDisplay}
               size="small"
             />
           ))}
@@ -52,9 +54,21 @@ export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
 
         <TooltipItems secondary extraMargin>
           <TooltipItem title={t`Contracts`} />
-          <AddressActionInfo chainId={pool.chainId} title={t`Pool`} address={pool.address} size="small" />
+          <AddressActionInfo
+            chainId={pool.chainId}
+            title={t`Pool`}
+            address={pool.address}
+            size="small"
+            display={evmAddressDisplay}
+          />
           {maybe(pool.gauge, gauge => (
-            <AddressActionInfo chainId={pool.chainId} title={t`Gauge`} address={gauge.address} size="small" />
+            <AddressActionInfo
+              chainId={pool.chainId}
+              title={t`Gauge`}
+              address={gauge.address}
+              size="small"
+              display={evmAddressDisplay}
+            />
           ))}
         </TooltipItems>
       </Stack>
