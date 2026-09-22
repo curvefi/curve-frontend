@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useMarketVaultEvents } from '@/llamalend/queries/market/market-vault-events.query'
 import {
   ActivityTable,
@@ -17,7 +17,7 @@ import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import Typography from '@mui/material/Typography'
 import { recordEntries } from '@primitives/objects.utils'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
-import { mapQuery } from '@ui/features/queries/util'
+import { useMappedQuery } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
@@ -120,8 +120,12 @@ export const VaultActivityEventsTable = ({ chainId, blockchainId, borrowToken, v
     perPage: DEFAULT_PAGE_SIZE,
   })
   const table = useCurveTable({
-    query: mapQuery(eventsQuery, ({ events }) =>
-      events.map(event => ({ ...event, chainId, blockchainId, borrowToken, vaultToken })),
+    query: useMappedQuery(
+      eventsQuery,
+      useCallback(
+        ({ events }) => events.map(event => ({ ...event, chainId, blockchainId, borrowToken, vaultToken })),
+        [chainId, blockchainId, borrowToken, vaultToken],
+      ),
     ),
     columns: VAULT_ACTIVITY_COLUMNS,
     state: { columnVisibility, pagination },
