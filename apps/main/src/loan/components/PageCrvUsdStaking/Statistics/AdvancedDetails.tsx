@@ -1,8 +1,8 @@
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import type { ChainId } from '@/loan/types/loan.types'
-import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import { evmAddressDisplay } from '@evm-ui/utils'
 import { Card, CardContent, CardHeader } from '@mui/material'
+import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
 import { t } from '@ui/lib/i18n'
 
 export const AdvancedDetails = ({ chainId }: { chainId: ChainId }) => (
