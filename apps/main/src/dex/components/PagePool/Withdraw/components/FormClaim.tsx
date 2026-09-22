@@ -187,7 +187,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
 
   return (
     <FormContent>
-      <TransferActions loading={!chainId || !steps.length || seed.isSeed === null} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         <ClaimableTokensWrapper>
           {haveClaimableCrv || haveClaimableRewards ? (
             <>

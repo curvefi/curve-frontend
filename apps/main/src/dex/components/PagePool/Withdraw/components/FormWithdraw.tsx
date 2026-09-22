@@ -468,7 +468,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, null)} />
       )}
 
-      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estUsdAmountTotalReceive} />
         {txInfoBar}
         <Stepper steps={steps} />

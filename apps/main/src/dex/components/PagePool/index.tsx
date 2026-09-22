@@ -136,15 +136,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   // is seed
   useEffect(() => {
-    if (!currencyReserves) return
+    if (currencyReserves == null) return
 
     const isSeed = Number(currencyReserves.total) === 0
 
     if (isSeed && hasWrapped(poolData.pool)) setPoolIsWrapped(poolData, true)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolData.pool.id, currencyReserves?.total])
+  }, [poolData.pool.id, currencyReserves, poolData, setPoolIsWrapped])
 
   const tabParams = useMemo(
     () => ({

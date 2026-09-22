@@ -35,6 +35,7 @@ export const TransferActions = ({
     currencyReserves.isLoading ||
     !isHydrated ||
     !seed.loaded ||
+    seed.isSeed == null ||
     walletBalancesLoading
 
   return (

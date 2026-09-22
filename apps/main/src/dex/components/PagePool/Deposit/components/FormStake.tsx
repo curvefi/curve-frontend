@@ -194,7 +194,7 @@ export const FormStake = ({ seed }: TransferProps) => {
         )}
       </div>
 
-      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         {formStatus.error === 'lpToken-too-much' ? (
           <AlertBox alertType="error">{t`Not enough LP Tokens balances.`}</AlertBox>
         ) : formStatus.error ? (

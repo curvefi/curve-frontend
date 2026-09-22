@@ -554,7 +554,7 @@ export const Swap = ({
         <AlertBox alertType="error">{t`The entered amount exceeds the available currency reserves.`}</AlertBox>
       ) : null}
       {/* actions*/}
-      <TransferActions loading={!chainId || !steps.length || !seed.loaded} seed={seed}>
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>
