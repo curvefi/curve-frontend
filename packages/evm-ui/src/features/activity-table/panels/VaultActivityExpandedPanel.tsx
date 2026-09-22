@@ -9,28 +9,23 @@ import { getVaultEventChange } from '../utils'
 
 export const VaultActivityExpandedPanel: ExpandedPanelComponent<VaultActivityRow> = ({ row: { original: event } }) => {
   const { amounts, sign } = getVaultEventChange(event)
+  const valueColor = sign > 0 ? 'success' : 'error'
   return (
     <Stack>
       {amounts && (
         <>
           <ActionInfo
             label={t`Assets`}
+            valueColor={valueColor}
             value={
-              <LlammaTokenAmount
-                amount={sign * amounts.assets}
-                blockchainId={event.blockchainId}
-                token={event.borrowToken}
-              />
+              <LlammaTokenAmount amount={amounts.assets} blockchainId={event.blockchainId} token={event.borrowToken} />
             }
           />
           <ActionInfo
             label={t`Shares`}
+            valueColor={valueColor}
             value={
-              <LlammaTokenAmount
-                amount={sign * amounts.shares}
-                blockchainId={event.blockchainId}
-                token={event.vaultToken}
-              />
+              <LlammaTokenAmount amount={amounts.shares} blockchainId={event.blockchainId} token={event.vaultToken} />
             }
           />
         </>
