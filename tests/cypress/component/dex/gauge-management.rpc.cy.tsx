@@ -1,10 +1,11 @@
-import { parseUnits } from 'viem'
+import { getAddress, parseUnits } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { PoolContextProvider } from '@/dex/features/pool-context'
 import { defaultNetworks } from '@/dex/lib/networks'
+import type { TokenMapper } from '@/dex/queries/tokens.query'
 import { useStore } from '@/dex/store/useStore'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import {
@@ -115,6 +116,13 @@ describe('Gauge Management (RPC)', () => {
   })
 
   beforeEach(() => {
+    cy.intercept('GET', `**/api/router/v1/tokens?chainId=${CHAIN_ID}`, {
+      body: {
+        [getAddress('0x6B175474E89094C44Da98b954EedeAC495271d0F')]: { decimals: 18, symbol: 'DAI' },
+        [getAddress(REWARD_TOKEN_ADDRESS)]: { decimals: 18, symbol: REWARD_TOKEN_SYMBOL },
+        [getAddress(DEPOSIT_REWARD_TOKEN_ADDRESS)]: { decimals: 6, symbol: 'USDT' },
+      } satisfies TokenMapper,
+    })
     adminRpcUrl = getRpcUrls(getVirtualNetwork()).adminRpcUrl
     fundEth({ adminRpcUrl, amountWei: FUND_AMOUNT, recipientAddresses: [address] })
     fundErc20({
@@ -128,7 +136,11 @@ describe('Gauge Management (RPC)', () => {
   it('adds a gauge reward token', () => {
     cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} privateKey={privateKey} form="addReward" />)
 
-    cy.get('[data-testid="add-reward-token-selector"]', LOAD_TIMEOUT).should('contain', 'DAI').click()
+    cy.get('[data-testid="add-reward-token-selector"]', LOAD_TIMEOUT)
+      .should('contain', 'DAI')
+      .find('[role="combobox"]', LOAD_TIMEOUT)
+      .should('not.have.attr', 'aria-disabled', 'true')
+      .click()
     cy.get('input[name="tokenName"]').type(REWARD_TOKEN_SYMBOL)
     cy.get(`[data-testid="token-option-${REWARD_TOKEN_ADDRESS.toLowerCase()}"]`).click()
     cy.get('[data-testid="add-reward-distributor-input"]').clear()

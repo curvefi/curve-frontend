@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
@@ -16,9 +17,9 @@ export type PoolCompositionRow = {
   source: TokenInfoTokenIconProps
   displayAddress: string
   explorerUrl?: string
-  marketShare?: number
-  amount?: number
-  amountUsd?: number
+  marketShare?: Amount
+  amount?: Amount
+  amountUsd?: Amount
   price?: number
 }
 

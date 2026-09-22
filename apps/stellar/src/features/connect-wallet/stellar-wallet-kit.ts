@@ -94,6 +94,7 @@ export async function sendStellarTransaction<T>(transaction: StellarTransaction<
       shouldRetry: error => (error as Error).message.includes('TRY_AGAIN_LATER'),
     },
   )
-  void sent.result // Reading the result checks confirmed execution, not just submission.
-  return assert(sent.sendTransactionResponse, 'Missing submission response') as StellarTransactionResponse
+  const result = sent.result // Reading the result checks confirmed execution, not just submission.
+  const response = assert(sent.sendTransactionResponse, 'Missing submission response') as StellarTransactionResponse
+  return { result, response }
 }

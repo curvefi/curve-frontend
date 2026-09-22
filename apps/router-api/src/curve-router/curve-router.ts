@@ -87,7 +87,7 @@ export async function buildCurveRouteResponse(
     slippage,
   } = query
 
-  const curve = await loadCurve(chainId, log)
+  const { curve } = await loadCurve(chainId, log)
   const [fromDecimals, toDecimals] = getDecimals([fromToken, toToken], curve.getNetworkConstants().DECIMALS)
 
   const outAmount = fromWei(amountOut ?? '0', toDecimals)

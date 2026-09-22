@@ -19,6 +19,20 @@ const INPUT_BY_SIDE = {
 
 type SwapTokenOption = TokenOptionType & Pick<PoolToken, 'balance'> & { index: number }
 
+const SwapTokenList = ({
+  tokens,
+  onToken,
+}: {
+  tokens: SwapTokenOption[] | undefined
+  onToken: (token: SwapTokenOption) => void
+}) => (
+  <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
+    {tokens?.map(token => (
+      <TokenOption key={token.address} {...token} balance={token.balance.data} onToken={() => onToken(token)} />
+    ))}
+  </MenuList>
+)
+
 export const SwapTokenInput = ({
   form,
   tokens,
@@ -61,18 +75,10 @@ export const SwapTokenInput = ({
           onClose={onClose}
           size="small"
         >
-          <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
-            {options
-              ?.filter(option => option.index !== values[calculatedIndexField])
-              ?.map(token => (
-                <TokenOption
-                  key={token.address}
-                  {...token}
-                  balance={token.balance.data}
-                  onToken={() => form.update({ [amountIndexField]: token.index })}
-                />
-              ))}
-          </MenuList>
+          <SwapTokenList
+            tokens={options?.filter(option => option.index !== values[calculatedIndexField])}
+            onToken={token => form.update({ [amountIndexField]: token.index })}
+          />
         </TokenSelector>
       }
       balance={q({ ...balance, data: values[name], error: error ?? balance.error })}
