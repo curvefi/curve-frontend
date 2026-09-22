@@ -1,6 +1,8 @@
 import { sum } from 'lodash'
+import { useMemo } from 'react'
 import { getAddress } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { getTokens } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import type { ChainId, PoolData } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
@@ -30,9 +32,14 @@ export const usePoolComposition = ({
   const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !isLiteChain(chainId)
   const pricesApiTotalUsd = sum(pricesApiPoolData?.balancesUsd)
 
+  const { tokens, tokenAddresses } = useMemo(
+    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
+    [poolData.isWrapped, poolData.pool],
+  )
+
   // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
   const reserves = usePricesApiReserves
-    ? poolData.tokenAddresses.map((tokenAddress, index) => {
+    ? tokenAddresses.map((tokenAddress, index) => {
         const balance = pricesApiPoolData?.balances[index]
         const balanceUsd = pricesApiPoolData?.balancesUsd[index]
 
@@ -46,8 +53,8 @@ export const usePoolComposition = ({
       })
     : currencyReserves?.tokens
 
-  const rows: PoolCompositionRow[] = poolData.tokens.map((symbol, index) => {
-    const tokenAddress = poolData.tokenAddresses[index]
+  const rows: PoolCompositionRow[] = tokens.map((symbol, index) => {
+    const tokenAddress = tokenAddresses[index]
     const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
     return {

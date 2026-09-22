@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
+import { getTokens } from '@/dex/pool.utils'
 import { useUserPoolBalancesQuery } from '@/dex/queries/user-pool-balances.query'
 import { useUserPoolBoostQuery } from '@/dex/queries/user-pool-boost.query'
 import { useUserPoolLiquidityUsdQuery } from '@/dex/queries/user-pool-liquidity-usd.query'
@@ -28,14 +29,19 @@ export const useLiquidityDetails = ({ chainId, poolData, poolId }: UseLiquidityD
   const stakedPercent = combineQueries([gaugeTokenBalance, lpTokenTotal], decimalPercent)
   const unstakedPercent = combineQueries([lpTokenBalance, lpTokenTotal], decimalPercent)
 
+  const { tokens, tokenAddresses } = useMemo(
+    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
+    [poolData.isWrapped, poolData.pool],
+  )
+
   const withdrawRows = useMemo(
     () =>
-      poolData.tokenAddresses.map((address, index) => ({
+      tokenAddresses.map((address, index) => ({
         address,
         amount: userBalances.data?.[index],
-        symbol: poolData.tokens[index] ?? '',
+        symbol: tokens[index] ?? '',
       })),
-    [poolData.tokenAddresses, poolData.tokens, userBalances.data],
+    [tokenAddresses, tokens, userBalances.data],
   )
 
   return {

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { AlertSeedAmounts } from '@/dex/components/PagePool/components/AlertSeedAmounts'
@@ -6,6 +6,7 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
+import { getTokens } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -17,7 +18,12 @@ export const TransferActions = ({
 }: { loading?: boolean; children: ReactNode } & Pick<TransferProps, 'seed'>) => {
   const { chainId, userAddress: signerAddress, poolId, poolData } = usePoolContext()
 
-  const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
+  const { tokenAddressesAll } = useMemo(
+    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
+    [poolData.isWrapped, poolData.pool],
+  )
+
+  const alert = useTokenAlert(tokenAddressesAll ?? [])
   const { isHydrated } = useCurve()
   const currencyReserves = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
 

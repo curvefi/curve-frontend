@@ -3,9 +3,8 @@ import { countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { isWrappedOnly } from '@/dex/pool.utils'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, CurveApi, PoolData, PoolDataMapper, type Pool } from '@/dex/types/main.types'
+import { ChainId, CurveApi, PoolData, PoolDataMapper } from '@/dex/types/main.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { shortenAddress } from '@evm-ui/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -32,29 +31,6 @@ export type PoolsSlice = {
 
 const DEFAULT_STATE: SliceState = { poolsMapper: {} } as const
 
-const getPoolData = (p: Pool) => {
-  const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx]))
-  const tokens = isWrappedOnly(p)
-    ? tokensWrapped
-    : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx]))
-  const tokenAddresses = isWrappedOnly(p) ? p.wrappedCoinAddresses : p.underlyingCoinAddresses
-  const tokenAddressesAll = isWrappedOnly(p)
-    ? p.wrappedCoinAddresses
-    : [...p.underlyingCoinAddresses, ...p.wrappedCoinAddresses]
-  const tokensCountBy = countBy(tokens)
-
-  return {
-    pool: p,
-
-    // stats
-    isWrapped: isWrappedOnly(p),
-    tokenAddressesAll,
-    tokenAddresses,
-    tokens,
-    tokensCountBy,
-  }
-}
-
 export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
@@ -72,7 +48,8 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       try {
         const { poolsMapper } = poolIds.reduce(
           (prev, poolId): { poolsMapper: Record<string, PoolData> } => {
-            prev.poolsMapper[poolId] = getPoolData(getPool(poolId))
+            const pool = getPool(poolId)
+            prev.poolsMapper[poolId] = { pool, isWrapped: isWrappedOnly(pool) }
             return prev
           },
           { poolsMapper: {} },

@@ -1,12 +1,12 @@
 import { BigNumber } from 'bignumber.js'
-import lodash from 'lodash'
+import lodash, { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves, type CurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { useStore } from '@/dex/store/useStore'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
@@ -81,13 +81,18 @@ export const FieldsDeposit = ({
   const { data: reserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
   const isBalancedAmounts = formValues.isBalancedAmounts
 
+  const { tokens, tokenAddresses } = useMemo(
+    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
+    [poolData.isWrapped, poolData.pool],
+  )
+
   const handleFormAmountChange = useCallback(
     (value: string, changedIndex: number) => {
       const { amounts } = useStore.getState().poolDeposit.formValues
       updateFormValues(
         isBalancedAmounts && reserves
           ? {
-              amounts: calculateBalancedValues([value, changedIndex], amounts, poolData.tokenAddresses, reserves),
+              amounts: calculateBalancedValues([value, changedIndex], amounts, tokenAddresses, reserves),
               isBalancedAmounts: 'by-form',
             }
           : { amounts: amounts.map((amount, index) => (index === changedIndex ? { ...amount, value } : amount)) },
@@ -95,40 +100,36 @@ export const FieldsDeposit = ({
         null,
       )
     },
-    [updateFormValues, isBalancedAmounts, reserves, poolData.tokenAddresses],
+    [updateFormValues, isBalancedAmounts, reserves, tokenAddresses],
   )
 
   const amountsInput = useMemo(() => {
     if (formValues.amounts.length > 0) {
       return formValues.amounts
     }
-    return poolData.tokens.map((token, idx) => ({ token, tokenAddress: poolData.tokenAddresses[idx], value: '' }))
-  }, [poolData, formValues.amounts])
+    return tokens.map((token, idx) => ({ token, tokenAddress: tokenAddresses[idx], value: '' }))
+  }, [formValues.amounts, tokens, tokenAddresses])
 
   const isDisabled = isSeed === null || isSeed || formProcessing
 
   const afterMaxClick = useCallback(
     (idx: number) => {
-      const tokenAddress = poolData.tokenAddresses[idx]
+      const tokenAddress = tokenAddresses[idx]
       updateFormValues({ isBalancedAmounts: false }, { tokenAddress, idx }, null)
     },
-    [poolData.tokenAddresses, updateFormValues],
+    [tokenAddresses, updateFormValues],
   )
 
   const { address: userAddress } = useConnection()
-  const userPoolBalances = useTokenBalances({
-    chainId,
-    userAddress,
-    tokenAddresses: poolData.tokenAddresses as Address[],
-  })
+  const userPoolBalances = useTokenBalances({ chainId, userAddress, tokenAddresses: tokenAddresses as Address[] })
 
   return (
     <FieldsWrapper>
-      {poolData.tokens.length === amountsInput.length &&
-        poolData.tokens.map((token, idx) => {
-          const tokenAddress = poolData.tokenAddresses[idx]
+      {tokens.length === amountsInput.length &&
+        tokens.map((token, idx) => {
+          const tokenAddress = tokenAddresses[idx]
           const addressBalanceAmount = userPoolBalances.data?.[tokenAddress] ?? '0'
-          const haveSameTokenName = poolData.tokensCountBy[token] > 1
+          const haveSameTokenName = countBy(tokens)[token] > 1
           const { value } = amountsInput[idx]
           const isDisableInput = isSeed === null || formProcessing || (isSeed && idx !== 0)
 

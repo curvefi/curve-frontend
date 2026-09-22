@@ -11,8 +11,10 @@ import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { TooltipAlert } from '@legacy-ui/Tooltip/TooltipAlert'
 import { Chip } from '@legacy-ui/Typography'
+import { maybes } from '@primitives/objects.utils'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { getTokens } from '../pool.utils'
 
 type Props = {
   className?: string
@@ -31,13 +33,25 @@ export const PoolLabel = ({
   quickViewValue,
   onClick,
 }: Props) => {
-  const { pool } = poolData ?? {}
-  const tokens = useMemo(
+  const { pool, isWrapped } = poolData ?? {}
+
+  const {
+    tokens: poolTokens,
+    tokenAddresses,
+    tokenAddressesAll,
+  } = useMemo(
     () =>
-      lodash
-        .zip(poolData?.tokens, poolData?.tokenAddresses)
-        .map(([symbol, address]) => ({ symbol: symbol!, address: address! })),
-    [poolData?.tokens, poolData?.tokenAddresses],
+      maybes([pool, isWrapped], (pool, isWrapped) => getTokens(pool, { wrapped: isWrapped })) ?? {
+        tokens: undefined,
+        tokenAddresses: undefined,
+        tokenAddressesAll: undefined,
+      },
+    [isWrapped, pool],
+  )
+
+  const tokens = useMemo(
+    () => lodash.zip(poolTokens, tokenAddresses).map(([symbol, address]) => ({ symbol: symbol!, address: address! })),
+    [poolTokens, tokenAddresses],
   )
 
   const poolAlert = usePoolAlert({
@@ -45,7 +59,7 @@ export const PoolLabel = ({
     poolAddress: poolData?.pool.address,
     hasVyperVulnerability: poolData?.pool.hasVyperVulnerability(),
   })
-  const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
+  const tokenAlert = useTokenAlert(tokenAddressesAll ?? [])
   const isMobile = useIsMobile()
 
   const handleClick = (target: EventTarget) => {

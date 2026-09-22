@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import lodash, { countBy } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { css, styled } from 'styled-components'
 import { type Config, useConfig, useConnection } from 'wagmi'
@@ -18,7 +18,7 @@ import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -268,6 +268,11 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   const tokenAddresses = useMemo(() => formValues.amounts.map(a => a.tokenAddress), [formValues.amounts])
   const { data: usdRates } = useTokenUsdRates({ chainId, tokenAddresses })
 
+  const { tokens, tokenAddresses: poolTokenAddresses } = useMemo(
+    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
+    [poolData.isWrapped, poolData.pool],
+  )
+
   // usd amount for slippage warning
   const estUsdAmountTotalReceive = useMemo(() => {
     if (formValues.selected === 'token') {
@@ -332,8 +337,8 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                 updateFormValues(
                   {
                     selected,
-                    selectedToken: formValues.selectedToken || poolData.tokens[0],
-                    selectedTokenAddress: formValues.selectedTokenAddress || poolData.tokenAddresses[0],
+                    selectedToken: formValues.selectedToken || tokens[0],
+                    selectedTokenAddress: formValues.selectedTokenAddress || poolTokenAddresses[0],
                   },
 
                   null,
@@ -367,10 +372,9 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                   haveSigner={haveSigner}
                   blockchainId={blockchainId}
                   loading={slippage.loading}
-                  poolData={poolData}
                   selectedTokenAddress={formValues.selectedTokenAddress}
-                  tokens={poolData.tokens}
-                  tokenAddresses={poolData.tokenAddresses}
+                  tokens={tokens}
+                  tokenAddresses={poolTokenAddresses}
                   handleChanged={({ token, tokenAddress }) => {
                     updateFormValues(
                       { selectedToken: token, selectedTokenAddress: tokenAddress },
@@ -387,17 +391,16 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                   amounts={formValues.amounts}
                   blockchainId={blockchainId}
                   loading={slippage.loading}
-                  poolData={poolData}
-                  tokens={poolData.tokens}
-                  tokenAddresses={poolData.tokenAddresses}
+                  tokens={tokens}
+                  tokenAddresses={poolTokenAddresses}
                 />
               )}
 
               {/* Custom */}
               <Box grid gridRowGap="narrow">
                 {formValues.selected === 'imbalance' &&
-                  poolData.tokens.map((token, idx) => {
-                    const tokenAddress = poolData.tokenAddresses[idx]
+                  tokens.map((token, idx) => {
+                    const tokenAddress = poolTokenAddresses[idx]
                     const amount = formValues.amounts[idx]
                     return (
                       <FieldToken
@@ -408,7 +411,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                         isNotEnough={false}
                         disabled={isDisabled}
                         haveSigner={haveSigner}
-                        haveSameTokenName={poolData?.tokensCountBy[token] > 1}
+                        haveSameTokenName={countBy(tokens)[token] > 1}
                         isWithdraw
                         blockchainId={blockchainId}
                         token={token}

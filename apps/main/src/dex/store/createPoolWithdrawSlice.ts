@@ -23,6 +23,7 @@ import { useWallet } from '@evm-ui/features/connect-wallet'
 import { shortenAddress } from '@evm-ui/utils'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
+import { getTokens } from '../pool.utils'
 import { invalidatePoolInfo, invalidateUserPoolInfo } from '../queries/invalidation'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -311,13 +312,14 @@ export const createPoolWithdrawSlice = (
 
       const { pool } = poolData
       const { chainId, signerAddress } = curve
+      const { tokens, tokenAddresses } = getTokens(poolData.pool, { wrapped: poolData.isWrapped })
 
       if (formType === 'WITHDRAW') {
         // set default selected if it is empty
         if (!cFormValues.selected && +cFormValues.lpToken > 0) {
           cFormValues.selected = 'token'
-          cFormValues.selectedToken = poolData.tokens[0]
-          cFormValues.selectedTokenAddress = poolData.tokenAddresses[0]
+          cFormValues.selectedToken = tokens[0]
+          cFormValues.selectedTokenAddress = tokenAddresses[0]
           activeKey = getActiveKey(poolId, formType, cFormValues, maxSlippage)
           get()[SLICE_KEY].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
         }
@@ -581,7 +583,8 @@ export const createPoolWithdrawSlice = (
     setStateByKeys: sliceState => {
       get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
-    resetState: ({ tokens, tokenAddresses, isWrapped }) => {
+    resetState: ({ pool, isWrapped }) => {
+      const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrapped })
       get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
         formValues: {

@@ -15,7 +15,7 @@ import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/componen
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
-import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData } from '@/dex/types/main.types'
 import { TokenList } from '@evm-ui/features/select-token'
@@ -105,14 +105,19 @@ export const Swap = ({
 
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: formValues.toAddress }, !!formValues.toAddress)
 
+  const { tokens: poolTokens, tokenAddresses: poolTokenAddresses } = useMemo(
+    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
+    [poolData.isWrapped, poolData.pool],
+  )
+
   const tokens = useMemo(
     () =>
-      poolData.tokenAddresses.map<TokenOption>((address, index) => ({
+      poolTokenAddresses.map<TokenOption>((address, index) => ({
         address: address as Address, // not checksummed!
-        symbol: poolData.tokens[index] || shortenAddress(address),
+        symbol: poolTokens[index] || shortenAddress(address),
         chain: blockchainId,
       })),
-    [poolData.tokenAddresses, poolData.tokens, blockchainId],
+    [poolTokenAddresses, poolTokens, blockchainId],
   )
   const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
   const toToken = tokens.find(x => x.address.toLocaleLowerCase() == formValues.toAddress)
@@ -487,8 +492,8 @@ export const Swap = ({
               isSelected={formValues.isWrapped}
               onChange={isWrapped => {
                 if (poolData) {
-                  const fromIdx = poolData.tokenAddresses.findIndex(a => a === formValues.fromAddress)
-                  const toIdx = poolData.tokenAddresses.findIndex(a => a === formValues.toAddress)
+                  const fromIdx = poolTokenAddresses.findIndex(a => a === formValues.fromAddress)
+                  const toIdx = poolTokenAddresses.findIndex(a => a === formValues.toAddress)
                   const wrapped = setPoolIsWrapped(poolData, isWrapped)
                   const cFormValues = cloneDeep(formValues)
                   cFormValues.isWrapped = isWrapped

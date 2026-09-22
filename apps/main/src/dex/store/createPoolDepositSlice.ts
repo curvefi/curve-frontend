@@ -42,7 +42,7 @@ import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { t } from '@ui/lib/i18n'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
-import { hasWrapped } from '../pool.utils'
+import { getTokens, hasWrapped } from '../pool.utils'
 import { invalidatePoolInfo, invalidateUserPoolInfo } from '../queries/invalidation'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -262,9 +262,11 @@ export const createPoolDepositSlice = (
           if (resp.error) {
             get()[SLICE_KEY].setStateByKey('formStatus', { ...get()[SLICE_KEY].formStatus, error: resp.error })
           } else {
-            cFormValues.amounts = get().pools.poolsMapper[chainId][poolId].tokenAddresses.map((address, idx) => ({
+            const { tokens, tokenAddresses } = getTokens(poolData.pool, { wrapped: poolData.isWrapped })
+
+            cFormValues.amounts = tokenAddresses.map((address, idx) => ({
               value: resp.amounts[idx],
-              token: poolData.tokens[idx],
+              token: tokens[idx],
               tokenAddress: address,
             }))
             activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
@@ -577,7 +579,8 @@ export const createPoolDepositSlice = (
     setStateByKeys: sliceState => {
       get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
-    resetState: ({ tokens, tokenAddresses, isWrapped }) => {
+    resetState: ({ pool, isWrapped }) => {
+      const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrapped })
       get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
         formValues: {

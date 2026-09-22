@@ -26,7 +26,7 @@ import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
-import { hasWrapped } from '@/dex/pool.utils'
+import { getTokens, hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
@@ -114,6 +114,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
   const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
 
+  const { tokens, tokenAddresses } = useMemo(
+    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
+    [poolData.isWrapped, poolData.pool],
+  )
+
   const poolAlert = usePoolAlert({
     blockchainId,
     poolAddress,
@@ -180,11 +185,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             tokens={useMemo(
               () =>
                 constQ(
-                  poolData.tokens
-                    .map((symbol, index) => ({ symbol, address: poolData.tokenAddresses[index] as Address }))
+                  tokens
+                    .map((symbol, index) => ({ symbol, address: tokenAddresses[index] as Address }))
                     .filter(({ address }) => address),
                 ),
-              [poolData.tokenAddresses, poolData.tokens],
+              [tokenAddresses, tokens],
             )}
             pricesApiPoolData={pricesApiPoolData}
             backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}

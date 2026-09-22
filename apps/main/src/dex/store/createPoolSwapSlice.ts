@@ -467,18 +467,8 @@ export const createPoolSwapSlice = (
     setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
-    resetState: ({ tokens, tokenAddresses, isWrapped }) => {
-      get().resetAppState(SLICE_KEY, {
-        ...DEFAULT_STATE,
-        formValues: {
-          ...DEFAULT_FORM_VALUES,
-          isWrapped,
-          fromToken: tokens[0],
-          fromAddress: tokenAddresses[0],
-          toToken: tokens[1],
-          toAddress: tokenAddresses[1],
-        },
-      })
+    resetState: ({ isWrapped }) => {
+      get().resetAppState(SLICE_KEY, { ...DEFAULT_STATE, formValues: { ...DEFAULT_FORM_VALUES, isWrapped } })
     },
   },
 })
