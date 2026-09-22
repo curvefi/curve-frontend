@@ -8,8 +8,7 @@ import type { VaultActivityRow } from '../types'
 import { getVaultEventChange } from '../utils'
 
 export const VaultActivityExpandedPanel: ExpandedPanelComponent<VaultActivityRow> = ({ row: { original: event } }) => {
-  const { amounts, sign } = getVaultEventChange(event)
-  const valueColor = sign > 0 ? 'success' : 'error'
+  const { amounts, valueColor } = getVaultEventChange(event)
   return (
     <Stack>
       {amounts && (

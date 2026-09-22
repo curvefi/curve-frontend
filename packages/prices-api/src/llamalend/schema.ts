@@ -274,8 +274,8 @@ const vaultLiquidityAmounts = z.object({ assets: z.number(), shares: z.number() 
 const vaultEvent = z
   .object({
     provider: address,
-    deposit: vaultLiquidityAmounts.nullable().optional(),
-    withdrawal: vaultLiquidityAmounts.nullable().optional(),
+    deposit: vaultLiquidityAmounts.nullable(),
+    withdrawal: vaultLiquidityAmounts.nullable(),
     block_number: z.number(),
     timestamp,
     transaction_hash: hex,

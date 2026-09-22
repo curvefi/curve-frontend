@@ -14,8 +14,8 @@ import {
 } from '@evm-ui/features/activity-table'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
-import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { recordEntries } from '@primitives/objects.utils'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { mapQuery } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
@@ -23,6 +23,11 @@ import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 
 const columnHelper = createAppColumnHelper<VaultActivityRow>()
+
+const VAULT_ACTIVITY_ACTIONS = {
+  deposit: { label: t`Deposit`, color: 'success' },
+  withdrawal: { label: t`Withdrawal`, color: 'error' },
+} as const
 
 const VAULT_ACTIVITY_COLUMNS = columnHelper.columns([
   columnHelper.accessor('provider', {
@@ -38,12 +43,14 @@ const VAULT_ACTIVITY_COLUMNS = columnHelper.columns([
     id: 'action',
     header: t`Action`,
     cell: ({ row }) => {
-      const isDeposit = !!row.original.deposit
+      const action = recordEntries(VAULT_ACTIVITY_ACTIONS).find(([type]) => row.original[type])?.[1]
       return (
         <InlineTableCell>
-          <Typography variant="tableCellMBold" color={isDeposit ? 'success' : 'error'}>
-            {isDeposit ? t`Deposit` : t`Withdrawal`}
-          </Typography>
+          {action && (
+            <Typography variant="tableCellMBold" color={action.color}>
+              {action.label}
+            </Typography>
+          )}
         </InlineTableCell>
       )
     },
