@@ -21,7 +21,8 @@ import {
 import { useNetworks } from '@/dex/entities/networks'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, PoolData } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
@@ -34,7 +35,7 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve, isWrapped } = usePoolContext()
+  const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -74,33 +75,33 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
         'DEPOSIT',
         config,
         curve,
-        poolData?.pool.id,
-        poolData,
+        pool?.id,
+        pool,
         { isWrapped, ...updatedFormValues },
         loadMaxAmount,
         seed.isSeed,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [config, curve, isWrapped, maxSlippage, poolData, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, maxSlippage, pool, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => {
       const notifyMessage = t`Please approve spending your ${tokensDescription(formValues.amounts)}.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, curve, 'DEPOSIT', poolData.pool, formValues, maxSlippage)
+      await fetchStepApprove(activeKey, curve, 'DEPOSIT', pool, formValues, maxSlippage)
       if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepApprove],
   )
 
   const handleDepositClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm deposit of ${tokenText} at max ${maxSlippage}% slippage.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepDeposit(activeKey, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepDeposit(activeKey, curve, pool, formValues, maxSlippage)
 
       if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         const txDescription = t`Deposited ${tokenText}.`
@@ -115,7 +116,7 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
     (
       activeKey: string,
       curve: CurveApi,
-      poolData: PoolData,
+      pool: PoolTemplate,
       formValues: FormValues,
       formStatus: FormStatus,
       slippageConfirmed: boolean,
@@ -134,7 +135,7 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => void handleApproveClick(activeKey, curve, poolData, formValues, maxSlippage),
+          onClick: () => void handleApproveClick(activeKey, curve, pool, formValues, maxSlippage),
         },
         ['DEPOSIT']: {
           key: 'DEPOSIT',
@@ -161,13 +162,13 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => void handleDepositClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleDepositClick(activeKey, curve, pool, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Deposit anyway',
                 },
               }
-            : { onClick: () => void handleDepositClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleDepositClick(activeKey, curve, pool, formValues, maxSlippage) }),
         },
       }
 
@@ -195,7 +196,7 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, isWrapped)
+      resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
@@ -218,11 +219,11 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
 
   // steps
   useEffect(() => {
-    if (curve && poolData) {
+    if (curve && pool) {
       const updatedSteps = getSteps(
         activeKey,
         curve,
-        poolData,
+        pool,
         formValues,
         formStatus,
         slippageConfirmed,
@@ -236,7 +237,7 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     curve?.chainId,
-    poolData?.pool.id,
+    pool?.id,
     signerAddress,
     formValues,
     formStatus,
@@ -269,11 +270,7 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
       />
 
       <div>
-        <DetailInfoEstLpTokens
-          formLpTokenExpected={formLpTokenExpected}
-          maxSlippage={maxSlippage}
-          poolData={poolData}
-        />
+        <DetailInfoEstLpTokens formLpTokenExpected={formLpTokenExpected} maxSlippage={maxSlippage} pool={pool} />
 
         <DetailInfoSlippage {...slippage} />
 
@@ -287,7 +284,7 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
         )}
         <SlippageToleranceActionInfo
           maxSlippage={maxSlippage}
-          type={getSlippageType(poolData)}
+          type={getSlippageType(pool)}
           userAddress={signerAddress}
         />
       </div>

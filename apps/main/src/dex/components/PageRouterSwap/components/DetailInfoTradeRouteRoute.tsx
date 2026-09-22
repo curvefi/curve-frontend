@@ -5,8 +5,9 @@ import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import { getTokens, isWrappedOnly } from '@/dex/pool.utils'
 import { getToken, type TokenMapper } from '@/dex/queries/tokens.query'
-import type { PoolData, UrlParams } from '@/dex/types/main.types'
+import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
 import Stack from '@mui/material/Stack'
@@ -22,24 +23,24 @@ export const DetailInfoTradeRouteRoute = ({
   params,
   route,
   tokens,
-  poolData,
+  pool,
   swapCustomRouteRedirect,
 }: {
   params: UrlParams
   route: Route
   tokens: TokenMapper | undefined
-  poolData: PoolData | undefined
+  pool: PoolTemplate | undefined
   swapCustomRouteRedirect: string | undefined
 }) => {
   const inputToken = getToken(tokens, route.inputCoinAddress)?.symbol ?? shortenAddress(route.inputCoinAddress)
   const outputToken = getToken(tokens, route.outputCoinAddress)?.symbol ?? shortenAddress(route.outputCoinAddress)
   const { tokens: poolTokens, tokenAddresses } = useMemo(
     () =>
-      maybe(poolData, ({ pool }) => getTokens(pool, { wrapped: isWrappedOnly(pool) })) ?? {
+      maybe(pool, pool => getTokens(pool, { wrapped: isWrappedOnly(pool) })) ?? {
         tokens: undefined,
         tokenAddresses: undefined,
       },
-    [poolData],
+    [pool],
   )
   return (
     <ActionInfo

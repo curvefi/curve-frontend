@@ -1,13 +1,14 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { getTokens } from '@/dex/pool.utils'
-import type { CurveApi, PoolData } from '@/dex/types/main.types'
+import type { CurveApi } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from '@primitives/address.utils'
 
 export const createPoolContextValue = ({
   chainId,
   blockchainId,
   userAddress,
-  poolData,
+  pool,
   api,
   isWrapped,
   setIsWrapped,
@@ -15,7 +16,7 @@ export const createPoolContextValue = ({
   chainId: number
   blockchainId: string
   userAddress: Address | undefined
-  poolData: PoolData
+  pool: PoolTemplate
   api: CurveApi | null
   isWrapped: boolean
   setIsWrapped: Dispatch<SetStateAction<boolean>>
@@ -23,13 +24,13 @@ export const createPoolContextValue = ({
   chainId,
   blockchainId,
   userAddress,
-  poolData,
-  poolId: poolData.pool.id,
-  poolAddress: poolData.pool.address as Address, // not checksummed!
+  pool,
+  poolId: pool.id,
+  poolAddress: pool.address as Address, // not checksummed!
   api,
   isWrapped,
   setIsWrapped,
-  ...getTokens(poolData.pool, { wrapped: isWrapped }),
+  ...getTokens(pool, { wrapped: isWrapped }),
 })
 
 export type PoolContextValue = ReturnType<typeof createPoolContextValue>

@@ -8,7 +8,6 @@ import {
   CurveApi,
   EstimatedGas,
   Pool,
-  PoolData,
   Provider,
 } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
@@ -20,6 +19,7 @@ import {
   routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
 import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
@@ -72,7 +72,7 @@ const router = {
   routesAndOutput: async (
     activeKey: string,
     curve: CurveApi,
-    poolsMapper: Record<string, PoolData>,
+    poolsMapper: Record<string, PoolTemplate>,
     formValues: FormValues,
     searchedParams: SearchedParams,
   ) => {

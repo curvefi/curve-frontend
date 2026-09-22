@@ -140,10 +140,10 @@ export const Dashboard = ({
             ) : dashboardDataPoolIds?.length > 0 ? (
               <>
                 {dashboardDataPoolIds.map(poolId => {
-                  const poolData = poolsMapper?.[poolId]
+                  const pool = poolsMapper?.[poolId]
                   const dashboardData = dashboardDataMapper?.[poolId]
 
-                  if (!poolData || !dashboardData) return null
+                  if (!pool || !dashboardData) return null
 
                   const tableRowProps: DashboardTableRowProps = {
                     rChainId,
@@ -152,11 +152,11 @@ export const Dashboard = ({
                     fetchBoost: {
                       fetchUserPoolBoost:
                         rChainId === 1
-                          ? () => userPoolBoost(rChainId, poolData.pool, walletAddress as Address).then(r => r ?? '')
+                          ? () => userPoolBoost(rChainId, pool, walletAddress as Address).then(r => r ?? '')
                           : null,
                     },
                     formValues,
-                    poolData,
+                    pool,
                     poolRewardsApy: rewardsApyMapper?.[poolId],
                     dashboardData,
                     updatePath,

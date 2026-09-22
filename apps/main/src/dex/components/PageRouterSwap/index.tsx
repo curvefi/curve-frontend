@@ -19,7 +19,7 @@ import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import { useToken, useTokens } from '@/dex/queries/tokens.query'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type NetworkUrlParams, PoolsMapper } from '@/dex/types/main.types'
 import { getRouterSwapsExchangeRate, getRouterWarningModal, getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
@@ -88,7 +88,7 @@ export const QuickSwap = ({
   const { fromAddress, toAddress } = searchedParams
   const { data: fromToken, isLoading: fromTokenLoading } = useToken({ chainId, tokenAddress: fromAddress })
   const { data: toToken, isLoading: toTokenLoading } = useToken({ chainId, tokenAddress: toAddress })
-  const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
+  const poolsMapper = useStore((state): PoolsMapper | undefined => state.pools.poolsMapper[chainId])
   const activeKey = useStore(state => state.quickSwap.activeKey)
   const formEstGas = useStore(state => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore(state => state.quickSwap.formStatus)
@@ -635,7 +635,7 @@ export const QuickSwap = ({
             params={params}
             routes={mapQuery(routes, r => r.routes)}
             tokens={tokensMapper.data}
-            poolDataMapper={poolDataMapper}
+            poolsMapper={poolsMapper}
             swapCustomRouteRedirect={network?.swapCustomRouteRedirect}
           />
         </Stack>

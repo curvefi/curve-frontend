@@ -19,14 +19,14 @@ export const PoolContextProvider = ({
   const { address: userAddress } = useConnection()
   const { curveApi: api = null } = useCurve()
   const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
-  const poolData = useStore(state => state.pools.poolsMapper[chainId]?.[poolId ?? ''])
-  const [isWrapped, setIsWrapped] = useState(() => isWrappedOnly(poolData.pool))
+  const pool = useStore(state => state.pools.poolsMapper[chainId]?.[poolId ?? ''])
+  const [isWrapped, setIsWrapped] = useState(() => isWrappedOnly(pool))
 
   return (
     <PoolContext
       value={useMemo(
-        () => createPoolContextValue({ chainId, blockchainId, userAddress, poolData, api, isWrapped, setIsWrapped }),
-        [chainId, blockchainId, poolData, userAddress, api, isWrapped, setIsWrapped],
+        () => createPoolContextValue({ chainId, blockchainId, userAddress, pool, api, isWrapped, setIsWrapped }),
+        [chainId, blockchainId, pool, userAddress, api, isWrapped, setIsWrapped],
       )}
     >
       {children}

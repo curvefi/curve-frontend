@@ -1,21 +1,19 @@
 import { produce } from 'immer'
 import type { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, CurveApi, PoolData, PoolDataMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, PoolsMapper } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = { poolsMapper: Record<string, PoolDataMapper> }
+type SliceState = { poolsMapper: Record<string, PoolsMapper> }
 
 const SLICE_KEY = 'pools'
 
 export type PoolsSlice = {
   [SLICE_KEY]: SliceState & {
-    fetchPools: (
-      curve: CurveApi,
-      poolIds: string[],
-    ) => { poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined
-    fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
+    fetchPools: (curve: CurveApi, poolIds: string[]) => { poolsMapper: PoolsMapper } | undefined
+    fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolTemplate | undefined>
     setEmptyPoolListDefault: (chainId: ChainId) => void
 
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
@@ -43,14 +41,12 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       try {
         const { poolsMapper } = poolIds.reduce(
-          (prev, poolId): { poolsMapper: Record<string, PoolData> } => {
-            const pool = getPool(poolId)
-            prev.poolsMapper[poolId] = { pool }
+          (prev, poolId): { poolsMapper: Record<string, PoolTemplate> } => {
+            prev.poolsMapper[poolId] = getPool(poolId)
             return prev
           },
           { poolsMapper: {} },
         )
-        const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
 
         set(
           produce((state: State) => {
@@ -58,7 +54,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           }),
         )
 
-        return { poolsMapper, poolDatas }
+        return { poolsMapper }
       } catch (error) {
         console.error(error)
       }
@@ -72,8 +68,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.stableNgFactory.fetchNewPools(),
       ])
       const resp = get()[SLICE_KEY].fetchPools(curve, [poolId])
-      const poolData = resp?.poolsMapper?.[poolId]
-      return poolData
+      return resp?.poolsMapper?.[poolId]
     },
     setEmptyPoolListDefault: (chainId: number) => {
       const sliceState = get().pools

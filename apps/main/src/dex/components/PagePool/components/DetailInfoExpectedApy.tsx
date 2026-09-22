@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { usePoolTotalStaked } from '@/dex/queries/pool-total-staked.query'
-import { PoolData } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { weiToEther } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
@@ -13,13 +13,13 @@ import { t } from '@ui/lib/i18n'
 export const DetailInfoExpectedApy = ({
   crvApr,
   lpTokenAmount,
-  poolData,
+  pool,
 }: {
   crvApr: number | undefined
   lpTokenAmount: string
-  poolData: PoolData
+  pool: PoolTemplate
 }) => {
-  const { data: staked } = usePoolTotalStaked({ chainId: poolData.pool.curve.chainId, poolId: poolData.pool.id })
+  const { data: staked } = usePoolTotalStaked({ chainId: pool.curve.chainId, poolId: pool.id })
   const { gaugeTotalSupply } = staked ?? {}
 
   const [newCrvApr, setNewCrvApr] = useState<{ ratio: number; apr: number } | null>(null)

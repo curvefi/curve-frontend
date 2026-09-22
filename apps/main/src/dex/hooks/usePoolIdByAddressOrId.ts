@@ -7,7 +7,7 @@ import { useStore } from '../store/useStore'
  * Might get rewritten when we refactor out the pool stores and its mappers for a tanstack query.
  */
 export function usePoolIdByAddressOrId({ chainId, poolIdOrAddress }: { chainId: number; poolIdOrAddress: string }) {
-  const poolData = useStore(state => state.pools.poolsMapper[chainId])
+  const pools = useStore(state => state.pools.poolsMapper[chainId])
 
   return useMemo(() => {
     // If not an address format, assume it's already a pool ID
@@ -16,10 +16,10 @@ export function usePoolIdByAddressOrId({ chainId, poolIdOrAddress }: { chainId: 
     }
 
     // Check current pool data first
-    const currentMatch = Object.values(poolData ?? {}).find(({ pool: { address } }) =>
+    const currentMatch = Object.values(pools ?? {}).find(({ address }) =>
       isAddressEqual(address as Address, poolIdOrAddress),
     )
 
-    if (currentMatch) return currentMatch.pool.id
-  }, [poolIdOrAddress, poolData])
+    if (currentMatch) return currentMatch.id
+  }, [poolIdOrAddress, pools])
 }

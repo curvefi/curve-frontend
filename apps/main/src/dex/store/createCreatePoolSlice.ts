@@ -816,12 +816,12 @@ export const createCreatePoolSlice = (
             }),
           )
 
-          const poolData = await fetchNewPool(curve, poolId)
-          if (poolData) {
+          const pool = await fetchNewPool(curve, poolId)
+          if (pool) {
             set(
               produce((state: State) => {
                 state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                state.createPool.transactionState.lpTokenAddress = pool.lpToken
               }),
             )
           }
@@ -894,12 +894,12 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
+            const pool = await fetchNewPool(curve, poolId)
+            if (pool) {
               set(
                 produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                  state.createPool.transactionState.lpTokenAddress = pool.lpToken
                 }),
               )
             }
@@ -976,12 +976,12 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
+            const pool = await fetchNewPool(curve, poolId)
+            if (pool) {
               set(
                 produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                  state.createPool.transactionState.lpTokenAddress = pool.lpToken
                 }),
               )
             }
@@ -1077,12 +1077,12 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
+            const pool = await fetchNewPool(curve, poolId)
+            if (pool) {
               set(
                 produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                  state.createPool.transactionState.lpTokenAddress = pool.lpToken
                 }),
               )
             }
@@ -1169,12 +1169,12 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
+            const pool = await fetchNewPool(curve, poolId)
+            if (pool) {
               set(
                 produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                  state.createPool.transactionState.lpTokenAddress = pool.lpToken
                 }),
               )
             }

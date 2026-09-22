@@ -20,7 +20,8 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
+import { CurveApi, Pool } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { Box } from '@legacy-ui/Box'
 import { Checkbox } from '@legacy-ui/Checkbox'
@@ -44,7 +45,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
     blockchainId,
     userAddress: signerAddress,
     poolId,
-    poolData,
+    pool,
     api: curve,
     isWrapped,
     setIsWrapped,
@@ -85,14 +86,14 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         config,
         curve,
         poolId,
-        poolData,
+        pool,
         { isWrapped, ...updatedFormValues },
         null,
         seed.isSeed,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, isWrapped, poolData, poolId, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, isWrapped, pool, poolId, seed.isSeed, maxSlippage],
   )
 
   const handleApproveClick = useCallback(
@@ -113,11 +114,11 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   )
 
   const handleWithdrawClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm withdrawal of ${formValues.lpToken} LP Tokens at max ${maxSlippage}% slippage.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepWithdraw(activeKey, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepWithdraw(activeKey, curve, pool, formValues, maxSlippage)
 
       if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
@@ -133,7 +134,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
       activeKey: string,
       config: Config,
       curve: CurveApi,
-      poolData: PoolData,
+      pool: PoolTemplate,
       formValues: FormValues,
       formStatus: FormStatus,
       slippageConfirmed: boolean,
@@ -160,7 +161,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => void handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
+          onClick: () => void handleApproveClick(activeKey, config, curve, pool, formValues, maxSlippage),
         },
         WITHDRAW: {
           key: 'WITHDRAW',
@@ -187,13 +188,13 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => void handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleWithdrawClick(activeKey, curve, pool, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Withdraw anyway',
                 },
               }
-            : { onClick: () => void handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleWithdrawClick(activeKey, curve, pool, formValues, maxSlippage) }),
         },
       }
 
@@ -221,7 +222,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, isWrapped)
+      resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
@@ -244,12 +245,12 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
   // steps
   useEffect(() => {
-    if (curve && poolData && seed.isSeed !== null) {
+    if (curve && pool && seed.isSeed !== null) {
       const updatedSteps = getSteps(
         activeKey,
         config,
         curve,
-        poolData,
+        pool,
         formValues,
         formStatus,
         slippageConfirmed,
@@ -361,7 +362,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
             <Radio aria-label="Withdraw as balanced amounts" value="lpToken">
               {t`Balanced`}
             </Radio>
-            {!poolData.pool.isCrypto && (
+            {!pool.isCrypto && (
               <Radio aria-label="Custom withdraw" value="imbalance">
                 {t`Custom`}
               </Radio>
@@ -431,24 +432,22 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
           )}
         </TokensSelectorWrapper>
 
-        {hasWrapped(poolData.pool) && formValues.isWrapped !== null && (
+        {hasWrapped(pool) && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
+            isDisabled={isDisabled || isWrappedOnly(pool)}
             isSelected={isWrapped}
             onChange={nextIsWrapped => {
-              if (poolData) {
-                const wrapped = getTokens(poolData.pool, { wrapped: nextIsWrapped })
-                setIsWrapped(nextIsWrapped)
-                const cFormValues = lodash.cloneDeep(formValues)
+              const wrapped = getTokens(pool, { wrapped: nextIsWrapped })
+              setIsWrapped(nextIsWrapped)
+              const cFormValues = lodash.cloneDeep(formValues)
 
-                cFormValues.isWrapped = nextIsWrapped
-                cFormValues.amounts = wrapped.tokens.map((token, idx) => ({
-                  token,
-                  tokenAddress: wrapped.tokenAddresses[idx],
-                  value: '',
-                }))
-                updateFormValues(cFormValues, null)
-              }
+              cFormValues.isWrapped = nextIsWrapped
+              cFormValues.amounts = wrapped.tokens.map((token, idx) => ({
+                token,
+                tokenAddress: wrapped.tokenAddresses[idx],
+                value: '',
+              }))
+              updateFormValues(cFormValues, null)
             }}
           >
             {t`Withdraw Wrapped`}
@@ -466,11 +465,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <SlippageToleranceActionInfo
-          maxSlippage={maxSlippage}
-          type={getSlippageType(poolData)}
-          userAddress={userAddress}
-        />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(pool)} userAddress={userAddress} />
       </div>
 
       {formStatus.error && (

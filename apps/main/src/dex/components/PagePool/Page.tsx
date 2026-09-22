@@ -24,18 +24,18 @@ export const PagePool = () => {
   const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress: rPoolIdOrAddress })
 
   const fetchNewPool = useStore(state => state.pools.fetchNewPool)
-  const poolData = useStore(state => state.pools.poolsMapper[chainId]?.[poolId ?? ''])
+  const pool = useStore(state => state.pools.poolsMapper[chainId]?.[poolId ?? ''])
   const { data: network } = useNetworkByChain({ chainId })
   const [poolNotFound, setPoolNotFound] = useState(false)
 
   // Legacy jank to refetch new pools. If we're fully hydrated yet the pool's missing it's probably a new one.
   useEffect(() => {
-    if (!poolData && poolId && curveApi && isHydrated) {
+    if (!pool && poolId && curveApi && isHydrated) {
       fetchNewPool(curveApi, poolId)
         .then(found => setPoolNotFound(!found))
         .catch(() => setPoolNotFound(true))
     }
-  }, [curveApi, fetchNewPool, isHydrated, poolData, poolId])
+  }, [curveApi, fetchNewPool, isHydrated, pool, poolId])
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
@@ -53,7 +53,7 @@ export const PagePool = () => {
       userAddress={curveApi?.signerAddress}
     />
   ) : (
-    poolId && poolData?.pool?.id === poolId && isHydrated && (
+    poolId && pool?.id === poolId && isHydrated && (
       <PoolContextProvider key={`${chainId}:${poolId}`} network={network} poolIdOrAddress={rPoolIdOrAddress}>
         <Transfer params={props} />
       </PoolContextProvider>

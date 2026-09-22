@@ -116,7 +116,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     blockchainId,
     poolId,
     poolAddress,
-    poolData,
+    pool,
     api: curve,
     isWrapped,
     setIsWrapped,
@@ -124,14 +124,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     tokenAddresses,
   } = usePoolContext()
 
-  const poolAlert = usePoolAlert({
-    blockchainId,
-    poolAddress,
-    hasVyperVulnerability: poolData.pool.hasVyperVulnerability(),
-  })
+  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: pool.hasVyperVulnerability() })
   const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
 
-  const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(poolData) ?? 'stable'])
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(pool) ?? 'stable'])
 
   const { signerAddress } = curve ?? {}
   const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
@@ -149,10 +145,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
     const isSeed = Number(currencyReserves.total) === 0
 
-    if (isSeed && hasWrapped(poolData.pool)) setIsWrapped(true)
+    if (isSeed && hasWrapped(pool)) setIsWrapped(true)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
-  }, [currencyReserves, poolData, setIsWrapped])
+  }, [currencyReserves, pool, setIsWrapped])
 
   const tabParams = useMemo(
     () => ({
@@ -185,7 +181,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             blockchainId={blockchainId}
             poolIdOrAddress={poolId}
             // for now the page only renders when pool data has already loaded, it's not lazy yet.
-            title={constQ(poolData.pool.name)}
+            title={constQ(pool.name)}
             tokens={useMemo(
               () =>
                 constQ(

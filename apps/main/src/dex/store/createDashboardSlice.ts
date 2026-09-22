@@ -14,7 +14,7 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/compone
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { fetchPoolRewardsApy, getPoolRewardsApyQueryData } from '@/dex/queries/pool-rewards-apy.query'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
+import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolsMapper } from '@/dex/types/main.types'
 import { fulfilledValue, getStorageValue, setStorageValue } from '@/dex/utils'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { useWallet } from '@evm-ui/features/connect-wallet'
@@ -50,9 +50,9 @@ const SLICE_KEY = 'dashboard'
 export type DashboardSlice = {
   [SLICE_KEY]: SliceState & {
     fetchVeCrvAndClaimables: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<void>
-    fetchDashboardData: (curve: CurveApi, walletAddress: string, poolDataMapper: PoolDataMapper) => Promise<{ dashboardDataMapper: DashboardDataMapper, error: string }>
+    fetchDashboardData: (curve: CurveApi, walletAddress: string, poolsMapper: PoolsMapper) => Promise<{ dashboardDataMapper: DashboardDataMapper, error: string }>
     sortFn: (chainId: ChainId, sortBy: SortId, sortByOrder: Order, walletPoolDatas: WalletPoolData[]) => WalletPoolData[]
-    setFormValues: (rChainId: ChainId, curve: CurveApi | null, poolDataMapper: PoolDataMapper | undefined, formValues: Partial<FormValues>) => void
+    setFormValues: (rChainId: ChainId, curve: CurveApi | null, poolsMapper: PoolsMapper | undefined, formValues: Partial<FormValues>) => void
     setFormStatusClaimFees: (formStatusClaimFees: Partial<FormStatus>) => void
     setFormStatusVecrv: (formStatusVecrv: Partial<FormStatus>) => void
 
@@ -112,7 +112,7 @@ export const createDashboardSlice = (
         formStatus: { ...formStatus, loading: false, formType, error },
       })
     },
-    fetchDashboardData: async (curve, walletAddress, poolDataMapper) => {
+    fetchDashboardData: async (curve, walletAddress, poolsMapper) => {
       const {
         [SLICE_KEY]: { activeKey, ...sliceState },
       } = get()
@@ -136,13 +136,13 @@ export const createDashboardSlice = (
         const userClaimables = fulfilledValue(userClaimableResult)
 
         // get pool's
-        const poolDatas = poolList.map((poolId: string) => poolDataMapper[poolId])
+        const pools = poolList.map((poolId: string) => poolsMapper[poolId])
 
         // get searched address's dashboard data
         const dashboardDataMapper: DashboardDataMapper = {}
-        await PromisePool.for(poolDatas)
+        await PromisePool.for(pools)
           .withConcurrency(10)
-          .process(async ({ pool }, idx) => {
+          .process(async (pool, idx) => {
             const [userCrvApyResult, profitsResults, lpTokenBalancesResult] = await Promise.allSettled([
               userPoolRewardCrvApy(pool, walletAddress as Address),
               wallet.userPoolRewardProfit(pool, walletAddress, chainId),
@@ -186,34 +186,34 @@ export const createDashboardSlice = (
         return { dashboardDataMapper: {}, error: errorKey }
       }
     },
-    sortFn: (chainId, sort, order, poolDatas) => {
+    sortFn: (chainId, sort, order, pools) => {
       const sortBy = sort as SORT_ID
 
       if (sortBy === SORT_ID.poolName) {
-        return orderBy(poolDatas, ({ poolName }) => poolName.toLowerCase(), [order])
+        return orderBy(pools, ({ poolName }) => poolName.toLowerCase(), [order])
       } else if (sortBy === SORT_ID.liquidityUsd) {
-        return orderBy(poolDatas, ({ liquidityUsd }) => Number(liquidityUsd || 0), [order])
+        return orderBy(pools, ({ liquidityUsd }) => Number(liquidityUsd || 0), [order])
       } else if (sortBy === SORT_ID.profits) {
-        return orderBy(poolDatas, ({ profitsTotalUsd }) => profitsTotalUsd, [order])
+        return orderBy(pools, ({ profitsTotalUsd }) => profitsTotalUsd, [order])
       } else if (sortBy === SORT_ID.claimables) {
-        return orderBy(poolDatas, ({ claimablesTotalUsd }) => claimablesTotalUsd, [order])
+        return orderBy(pools, ({ claimablesTotalUsd }) => claimablesTotalUsd, [order])
       } else if (sortBy === SORT_ID.userCrvApy) {
-        return orderBy(poolDatas, ({ userCrvApy }) => userCrvApy || 0, [order])
+        return orderBy(pools, ({ userCrvApy }) => userCrvApy || 0, [order])
       } else if (sortBy.startsWith('reward')) {
         const rewardsApy = (poolId: string) => getPoolRewardsApyQueryData({ chainId, poolId, useApi: true })
 
         if (sortBy === SORT_ID.rewardBase) {
-          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy(poolId)?.base ?? '0'), [order])
+          return orderBy(pools, ({ poolId }) => Number(rewardsApy(poolId)?.base ?? '0'), [order])
         }
 
         if (sortBy === SORT_ID.rewardOthers) {
-          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy(poolId)?.other?.[0]?.apy || '0'), [order])
+          return orderBy(pools, ({ poolId }) => Number(rewardsApy(poolId)?.other?.[0]?.apy || '0'), [order])
         }
       }
       return []
     },
     // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-    setFormValues: async (rChainId, curve, poolDataMapper, updatedFormValues) => {
+    setFormValues: async (rChainId, curve, poolsMapper, updatedFormValues) => {
       const {
         [SLICE_KEY]: {
           activeKey: storedActiveKey,
@@ -241,14 +241,14 @@ export const createDashboardSlice = (
         error: '',
       })
 
-      if (!curve || !poolDataMapper) return
+      if (!curve || !poolsMapper) return
 
       const { chainId, signerAddress } = curve
 
       // if form's wallet address if empty and signer exists, update form's wallet address to signer address
       if (formValues.walletAddress == '' && signerAddress) {
         if (Object.keys(storedDashboardDatasMapper).length !== 0) await sleep(3000)
-        sliceState.setFormValues(rChainId, curve, poolDataMapper, { walletAddress: signerAddress })
+        sliceState.setFormValues(rChainId, curve, poolsMapper, { walletAddress: signerAddress })
         return
       }
 
@@ -276,7 +276,7 @@ export const createDashboardSlice = (
 
       // get dashboard data if it does not exists in store
       if (Object.keys(dashboardDataMapper ?? {}).length === 0) {
-        const resp = await sliceState.fetchDashboardData(curve, walletAddress, poolDataMapper)
+        const resp = await sliceState.fetchDashboardData(curve, walletAddress, poolsMapper)
 
         if (resp.error) {
           sliceState.setStateByKeys({ loading: false, noResult: true })
@@ -346,8 +346,8 @@ export const createDashboardSlice = (
       })
 
       if (key === claimButtonsKey['3CRV']) {
-        const storedPoolDataMapper = pools.poolsMapper[chainId]
-        void sliceState.fetchDashboardData(curve, walletAddress, storedPoolDataMapper)
+        const storedPoolsMapper = pools.poolsMapper[chainId]
+        void sliceState.fetchDashboardData(curve, walletAddress, storedPoolsMapper)
       }
 
       return resp

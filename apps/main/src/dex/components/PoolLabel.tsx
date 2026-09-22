@@ -5,8 +5,8 @@ import { ChipPool } from '@/dex/components/ChipPool'
 import { ChipToken } from '@/dex/components/ChipToken'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
-import { PoolData } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { TooltipAlert } from '@legacy-ui/Tooltip/TooltipAlert'
@@ -20,21 +20,12 @@ type Props = {
   className?: string
   blockchainId: INetworkName
   isVisible?: boolean
-  poolData: PoolData | undefined
+  pool: PoolTemplate | undefined
   quickViewValue?: ReactNode
   onClick?: (target: EventTarget) => void
 }
 
-export const PoolLabel = ({
-  className = '',
-  blockchainId,
-  isVisible = true,
-  poolData,
-  quickViewValue,
-  onClick,
-}: Props) => {
-  const pool = poolData?.pool
-
+export const PoolLabel = ({ className = '', blockchainId, isVisible = true, pool, quickViewValue, onClick }: Props) => {
   const {
     tokens: poolTokens,
     tokenAddresses,
@@ -56,8 +47,8 @@ export const PoolLabel = ({
 
   const poolAlert = usePoolAlert({
     blockchainId,
-    poolAddress: poolData?.pool.address,
-    hasVyperVulnerability: poolData?.pool.hasVyperVulnerability(),
+    poolAddress: pool?.address,
+    hasVyperVulnerability: pool?.hasVyperVulnerability(),
   })
   const tokenAlert = useTokenAlert(tokenAddressesAll ?? [])
   const isMobile = useIsMobile()
