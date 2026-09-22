@@ -13,12 +13,14 @@ import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboa
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolsMapper } from '@/dex/hooks/usePoolsMapper'
 import { usePoolsRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { userPoolBoost } from '@/dex/queries/user-pool-boost.query'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Table } from '@legacy-ui/Table'
 import { breakpoints } from '@legacy-ui/utils'
@@ -40,6 +42,7 @@ export const Dashboard = ({
 }) => {
   const isSubscribedRef = useRef(false)
   const push = useNavigate()
+  const { isHydrated } = useCurve()
 
   const activeKey = useStore(state => state.dashboard.activeKey)
   const formValues = useStore(state => state.dashboard.formValues)
@@ -50,7 +53,7 @@ export const Dashboard = ({
   const noResult = useStore(state => state.dashboard.noResult)
   const isLoading = useStore(state => state.dashboard.loading)
   const isXSmDown = useLayoutStore(state => state.isXSmDown)
-  const poolsMapper = useStore(state => state.pools.poolsMapper[rChainId])
+  const poolsMapper = usePoolsMapper()
   const { data: rewardsApyMapper } = usePoolsRewardsApy({ chainId: rChainId, poolIds: dashboardDataPoolIds ?? [] })
   const setFormValues = useStore(state => state.dashboard.setFormValues)
 
@@ -73,9 +76,9 @@ export const Dashboard = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, pageLoaded ? curve : null, poolsMapper, updatedFormValues)
+      setFormValues(rChainId, pageLoaded && isHydrated ? curve : null, poolsMapper, updatedFormValues)
     },
-    [curve, pageLoaded, poolsMapper, rChainId, setFormValues],
+    [curve, isHydrated, pageLoaded, poolsMapper, rChainId, setFormValues],
   )
 
   // onMount

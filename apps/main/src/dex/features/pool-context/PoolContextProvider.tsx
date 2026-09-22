@@ -1,8 +1,7 @@
 import { type ReactNode, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { isWrappedOnly } from '@/dex/pool.utils'
-import { useStore } from '@/dex/store/useStore'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { PoolContext } from './PoolContext'
 import { createPoolContextValue } from './PoolContextValue'
@@ -10,16 +9,14 @@ import { createPoolContextValue } from './PoolContextValue'
 export const PoolContextProvider = ({
   children,
   network: { chainId, blockchainId },
-  poolIdOrAddress,
+  pool,
 }: {
   children: ReactNode
   network: { chainId: number; blockchainId: string }
-  poolIdOrAddress: string
+  pool: PoolTemplate
 }) => {
   const { address: userAddress } = useConnection()
   const { curveApi: api = null } = useCurve()
-  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
-  const pool = useStore(state => state.pools.poolsMapper[chainId]?.[poolId ?? ''])
   const [isWrapped, setIsWrapped] = useState(() => isWrappedOnly(pool))
 
   return (

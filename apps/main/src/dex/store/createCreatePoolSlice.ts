@@ -38,6 +38,8 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
 import { fetchNetworks, getNetworks } from '../entities/networks'
+import { fetchNewPools } from '../lib/curvejs'
+import { tryGetPool } from '../pool.utils'
 import { getBasePools } from '../queries/base-pools.query'
 
 type SliceState = {
@@ -718,7 +720,6 @@ export const createCreatePoolSlice = (
     deployPool: async (curve: CurveApi) => {
       const chainId = curve.chainId
       const {
-        pools: { fetchNewPool },
         createPool: {
           poolSymbol,
           swapType,
@@ -816,7 +817,8 @@ export const createCreatePoolSlice = (
             }),
           )
 
-          const pool = await fetchNewPool(curve, poolId)
+          await fetchNewPools(curve) // not sure if this is still necessary but keeping it for safety, will be replaced in the future anyway
+          const pool = tryGetPool(poolId)
           if (pool) {
             set(
               produce((state: State) => {
@@ -894,7 +896,8 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const pool = await fetchNewPool(curve, poolId)
+            await fetchNewPools(curve)
+            const pool = tryGetPool(poolId)
             if (pool) {
               set(
                 produce((state: State) => {
@@ -976,7 +979,8 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const pool = await fetchNewPool(curve, poolId)
+            await fetchNewPools(curve)
+            const pool = tryGetPool(poolId)
             if (pool) {
               set(
                 produce((state: State) => {
@@ -1077,7 +1081,8 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const pool = await fetchNewPool(curve, poolId)
+            await fetchNewPools(curve)
+            const pool = tryGetPool(poolId)
             if (pool) {
               set(
                 produce((state: State) => {
@@ -1169,7 +1174,8 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const pool = await fetchNewPool(curve, poolId)
+            await fetchNewPools(curve)
+            const pool = tryGetPool(poolId)
             if (pool) {
               set(
                 produce((state: State) => {

@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
-import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
@@ -39,7 +38,6 @@ export type ClaimableReward = { token: string; symbol: string; amount: string; p
 export type RewardBase = { day: string; week: string }
 export type RewardCrv = number
 
-export type PoolsMapper = Record<string, PoolTemplate>
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
 export type PoolAlert = {

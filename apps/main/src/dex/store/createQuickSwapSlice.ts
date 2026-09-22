@@ -10,6 +10,7 @@ import type {
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageRouterSwap/utils'
+import type { PoolsMapper } from '@/dex/hooks/usePoolsMapper'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
@@ -43,12 +44,14 @@ export type QuickSwapSlice = {
     fetchMaxAmount: (
       config: Config,
       curve: CurveApi,
+      poolsMapper: PoolsMapper,
       searchedParams: SearchedParams,
       maxSlippage: string,
     ) => Promise<void>
     fetchRoutesAndOutput: (
       config: Config,
       curve: CurveApi,
+      poolsMapper: PoolsMapper,
       searchedParams: SearchedParams,
       maxSlippage: string,
     ) => Promise<void>
@@ -57,6 +60,7 @@ export type QuickSwapSlice = {
     setFormValues: (
       config: Config,
       curve: CurveApi | null,
+      poolsMapper: PoolsMapper,
       updatedFormValues: Partial<FormValues>,
       searchedParams: SearchedParams,
       maxSlippage: Decimal | undefined,
@@ -70,6 +74,7 @@ export type QuickSwapSlice = {
       activeKey: string,
       config: Config,
       curve: CurveApi,
+      poolsMapper: PoolsMapper,
       formValues: FormValues,
       searchedParams: SearchedParams,
       maxSlippage: Decimal,
@@ -106,7 +111,7 @@ export const createQuickSwapSlice = (
   [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    fetchMaxAmount: async (config, curve, searchedParams, maxSlippage) => {
+    fetchMaxAmount: async (config, curve, poolsMapper, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[SLICE_KEY]
 
@@ -133,7 +138,6 @@ export const createQuickSwapSlice = (
           if (typeof firstBasePlusPriority !== 'undefined' && +userBalance > 0) {
             sliceState.setStateByKey('isMaxLoading', true)
             // must call routesAndOutput first before estGas
-            const poolsMapper = state.pools.poolsMapper[chainId]
             await curvejsApi.router.routesAndOutput(activeKey, curve, poolsMapper, cFormValues, searchedParams)
 
             const resp = await curvejsApi.router.estGasApproval(
@@ -160,12 +164,10 @@ export const createQuickSwapSlice = (
         isMaxLoading: false,
       })
     },
-    fetchRoutesAndOutput: async (config, curve, searchedParams, maxSlippage) => {
+    fetchRoutesAndOutput: async (config, curve, poolsMapper, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[SLICE_KEY]
-
       const activeKey = sliceState.activeKey
-      const { chainId, signerAddress } = curve
 
       const cFormValues = cloneDeep(sliceState.formValues)
       const cFormStatus = cloneDeep(sliceState.formStatus)
@@ -173,9 +175,8 @@ export const createQuickSwapSlice = (
       if ((cFormValues.isFrom && +cFormValues.fromAmount <= 0) || (!cFormValues.isFrom && +cFormValues.toAmount <= 0))
         return
 
-      if (!signerAddress) return // If no signer, routing handled via `useRouterApi`
+      if (!curve.signerAddress) return // If no signer, routing handled via `useRouterApi`
 
-      const poolsMapper = state.pools.poolsMapper[chainId]
       // allow UI to paint first
       await sleep(100)
       const { exchangeRates, ...resp } = await curvejsApi.router.routesAndOutput(
@@ -273,6 +274,7 @@ export const createQuickSwapSlice = (
     setFormValues: async (
       config,
       curve,
+      poolsMapper,
       updatedFormValues,
       searchedParams,
       maxSlippage,
@@ -334,15 +336,15 @@ export const createQuickSwapSlice = (
 
       // get max if MAX button is clicked
       maxSlippage ??= DEFAULT_SLIPPAGE
-      if (isGetMaxFrom) await sliceState.fetchMaxAmount(config, curve, searchedParams, maxSlippage)
+      if (isGetMaxFrom) await sliceState.fetchMaxAmount(config, curve, poolsMapper, searchedParams, maxSlippage)
 
       // api calls
-      await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, maxSlippage)
+      await sliceState.fetchRoutesAndOutput(config, curve, poolsMapper, searchedParams, maxSlippage)
       void sliceState.fetchEstGasApproval(curve, searchedParams, maxSlippage)
     },
 
     // steps
-    fetchStepApprove: async (activeKey, config, curve, formValues, searchedParams, maxSlippage) => {
+    fetchStepApprove: async (activeKey, config, curve, poolsMapper, formValues, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[SLICE_KEY]
 
@@ -377,7 +379,7 @@ export const createQuickSwapSlice = (
 
           // re-fetch est gas, approval, routes and output
           maxSlippage ??= DEFAULT_SLIPPAGE
-          await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, maxSlippage)
+          await sliceState.fetchRoutesAndOutput(config, curve, poolsMapper, searchedParams, maxSlippage)
           void sliceState.fetchEstGasApproval(curve, searchedParams, maxSlippage)
         }
 

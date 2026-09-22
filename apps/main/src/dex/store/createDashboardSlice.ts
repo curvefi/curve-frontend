@@ -11,10 +11,11 @@ import type {
   WalletPoolData,
 } from '@/dex/components/PageDashboard/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
+import type { PoolsMapper } from '@/dex/hooks/usePoolsMapper'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { fetchPoolRewardsApy, getPoolRewardsApyQueryData } from '@/dex/queries/pool-rewards-apy.query'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolsMapper } from '@/dex/types/main.types'
+import { ChainId, claimButtonsKey, CurveApi, FnStepResponse } from '@/dex/types/main.types'
 import { fulfilledValue, getStorageValue, setStorageValue } from '@/dex/utils'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { useWallet } from '@evm-ui/features/connect-wallet'
@@ -56,7 +57,7 @@ export type DashboardSlice = {
     setFormStatusClaimFees: (formStatusClaimFees: Partial<FormStatus>) => void
     setFormStatusVecrv: (formStatusVecrv: Partial<FormStatus>) => void
 
-    fetchStepClaimFees: (activeKey: string, curve: CurveApi, walletAddress: string, key: claimButtonsKey) => Promise<FnStepResponse | undefined>
+    fetchStepClaimFees: (activeKey: string, curve: CurveApi, poolsMapper: PoolsMapper, walletAddress: string, key: claimButtonsKey) => Promise<FnStepResponse | undefined>
     fetchStepWithdrawVecrv: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<{ walletAddress: string, hash: string, error: string } | undefined>
 
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
@@ -312,13 +313,10 @@ export const createDashboardSlice = (
     },
 
     // steps
-    fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
-      const { pools } = get()
+    fetchStepClaimFees: async (activeKey, curve, poolsMapper, walletAddress, key) => {
       const { claimableFees, ...sliceState } = get()[SLICE_KEY]
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[SLICE_KEY])
-
-      const { chainId } = curve
 
       // loading state
       const formStatus: FormStatus = {
@@ -346,8 +344,7 @@ export const createDashboardSlice = (
       })
 
       if (key === claimButtonsKey['3CRV']) {
-        const storedPoolsMapper = pools.poolsMapper[chainId]
-        void sliceState.fetchDashboardData(curve, walletAddress, storedPoolsMapper)
+        void sliceState.fetchDashboardData(curve, walletAddress, poolsMapper)
       }
 
       return resp
