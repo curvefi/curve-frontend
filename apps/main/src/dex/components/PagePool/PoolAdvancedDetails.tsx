@@ -82,8 +82,8 @@ export const PoolAdvancedDetails = () => {
   return (
     <AdvancedDetails
       chainId={chainId}
-      poolId={poolId}
       info={{
+        poolId,
         poolType: getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }),
         isMetapool: metapool,
         isBasePool: basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)),
