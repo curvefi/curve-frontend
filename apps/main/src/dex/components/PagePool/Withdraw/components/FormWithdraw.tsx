@@ -39,7 +39,18 @@ import { t } from '@ui/lib/i18n'
 import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE, getSlippageType } from '../../utils'
 
 export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
-  const { chainId, blockchainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const {
+    chainId,
+    blockchainId,
+    userAddress: signerAddress,
+    poolId,
+    poolData,
+    api: curve,
+    isWrapped,
+    setIsWrapped,
+    tokens,
+    tokenAddresses: poolTokenAddresses,
+  } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -50,7 +61,6 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   const fetchStepApprove = useStore(state => state.poolWithdraw.fetchStepApprove)
   const fetchStepWithdraw = useStore(state => state.poolWithdraw.fetchStepWithdraw)
   const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
-  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const resetState = useStore(state => state.poolWithdraw.resetState)
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
@@ -76,13 +86,13 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         curve,
         poolId,
         poolData,
-        updatedFormValues,
+        { isWrapped, ...updatedFormValues },
         null,
         seed.isSeed,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, poolData, poolId, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, isWrapped, poolData, poolId, seed.isSeed, maxSlippage],
   )
 
   const handleApproveClick = useCallback(
@@ -211,7 +221,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData)
+      resetState(poolData, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
@@ -267,11 +277,6 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
   const tokenAddresses = useMemo(() => formValues.amounts.map(a => a.tokenAddress), [formValues.amounts])
   const { data: usdRates } = useTokenUsdRates({ chainId, tokenAddresses })
-
-  const { tokens, tokenAddresses: poolTokenAddresses } = useMemo(
-    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
-    [poolData.isWrapped, poolData.pool],
-  )
 
   // usd amount for slippage warning
   const estUsdAmountTotalReceive = useMemo(() => {
@@ -429,13 +434,14 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         {hasWrapped(poolData.pool) && formValues.isWrapped !== null && (
           <Checkbox
             isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
-            isSelected={formValues.isWrapped}
-            onChange={isWrapped => {
+            isSelected={isWrapped}
+            onChange={nextIsWrapped => {
               if (poolData) {
-                const wrapped = setPoolIsWrapped(poolData, isWrapped)
+                const wrapped = getTokens(poolData.pool, { wrapped: nextIsWrapped })
+                setIsWrapped(nextIsWrapped)
                 const cFormValues = lodash.cloneDeep(formValues)
 
-                cFormValues.isWrapped = isWrapped
+                cFormValues.isWrapped = nextIsWrapped
                 cFormValues.amounts = wrapped.tokens.map((token, idx) => ({
                   token,
                   tokenAddress: wrapped.tokenAddresses[idx],

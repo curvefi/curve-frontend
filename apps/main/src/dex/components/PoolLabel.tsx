@@ -11,10 +11,10 @@ import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { TooltipAlert } from '@legacy-ui/Tooltip/TooltipAlert'
 import { Chip } from '@legacy-ui/Typography'
-import { maybes } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { getTokens } from '../pool.utils'
+import { getTokens, isWrappedOnly } from '../pool.utils'
 
 type Props = {
   className?: string
@@ -33,7 +33,7 @@ export const PoolLabel = ({
   quickViewValue,
   onClick,
 }: Props) => {
-  const { pool, isWrapped } = poolData ?? {}
+  const pool = poolData?.pool
 
   const {
     tokens: poolTokens,
@@ -41,12 +41,12 @@ export const PoolLabel = ({
     tokenAddressesAll,
   } = useMemo(
     () =>
-      maybes([pool, isWrapped], (pool, isWrapped) => getTokens(pool, { wrapped: isWrapped })) ?? {
+      maybe(pool, pool => getTokens(pool, { wrapped: isWrappedOnly(pool) })) ?? {
         tokens: undefined,
         tokenAddresses: undefined,
         tokenAddressesAll: undefined,
       },
-    [isWrapped, pool],
+    [pool],
   )
 
   const tokens = useMemo(

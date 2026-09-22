@@ -80,7 +80,7 @@ export type PoolDepositSlice = {
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
     setStateByKey: <T>(key: StateKey, value: T) => void
     setStateByKeys: (SliceState: Partial<SliceState>) => void
-    resetState: (poolData: PoolData) => void
+    resetState: (poolData: PoolData, isWrapped: boolean) => void
   }
 }
 
@@ -262,7 +262,7 @@ export const createPoolDepositSlice = (
           if (resp.error) {
             get()[SLICE_KEY].setStateByKey('formStatus', { ...get()[SLICE_KEY].formStatus, error: resp.error })
           } else {
-            const { tokens, tokenAddresses } = getTokens(poolData.pool, { wrapped: poolData.isWrapped })
+            const { tokens, tokenAddresses } = getTokens(poolData.pool, { wrapped: cFormValues.isWrapped })
 
             cFormValues.amounts = tokenAddresses.map((address, idx) => ({
               value: resp.amounts[idx],
@@ -579,7 +579,7 @@ export const createPoolDepositSlice = (
     setStateByKeys: sliceState => {
       get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
-    resetState: ({ pool, isWrapped }) => {
+    resetState: ({ pool }, isWrapped) => {
       const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrapped })
       get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,

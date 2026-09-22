@@ -39,7 +39,15 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps) => {
-  const { chainId, blockchainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const {
+    chainId,
+    blockchainId,
+    userAddress: signerAddress,
+    poolId,
+    poolData,
+    api: curve,
+    isWrapped,
+  } = usePoolContext()
   const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
   const isSubscribedRef = useRef(false)
 
@@ -81,13 +89,13 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
         curve,
         poolData.pool.id,
         poolData,
-        updatedFormValues,
+        { isWrapped, ...updatedFormValues },
         loadMaxAmount,
         seed.isSeed,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [config, curve, maxSlippage, poolData, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, maxSlippage, poolData, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -200,7 +208,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData)
+      resetState(poolData, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])

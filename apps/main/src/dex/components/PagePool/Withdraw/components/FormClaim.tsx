@@ -27,7 +27,7 @@ import { amount as toAmount } from '@ui/lib/decimal'
 import { t, Trans } from '@ui/lib/i18n'
 
 export const FormClaim = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve, isWrapped } = usePoolContext()
   const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
   const isSubscribedRef = useRef(false)
 
@@ -56,8 +56,8 @@ export const FormClaim = ({ seed }: TransferProps) => {
     setTxInfoBar(null)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSlippageConfirmed(false)
-    void setFormValues('CLAIM', config, curve, poolData?.pool.id, poolData, {}, null, seed.isSeed, '')
-  }, [config, curve, poolData, seed.isSeed, setFormValues])
+    void setFormValues('CLAIM', config, curve, poolData?.pool.id, poolData, { isWrapped }, null, seed.isSeed, '')
+  }, [config, curve, isWrapped, poolData, seed.isSeed, setFormValues])
 
   const handleClaimClick = useCallback(
     async (
@@ -137,7 +137,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData)
+      resetState(poolData, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])

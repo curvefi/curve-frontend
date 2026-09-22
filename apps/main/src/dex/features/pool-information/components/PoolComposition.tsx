@@ -4,6 +4,10 @@ import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { PoolCompositionCard } from '@ui/features/pools/PoolCompositionCard'
 
 export const PoolComposition = ({ pricesApiPoolData }: { pricesApiPoolData?: PricesApiPool }) => {
-  const { chainId, poolId, poolData } = usePoolContext()
-  return <PoolCompositionCard {...usePoolComposition({ chainId, poolData, poolId, pricesApiPoolData })} />
+  const { chainId, poolId, isWrapped, tokens, tokenAddresses } = usePoolContext()
+  return (
+    <PoolCompositionCard
+      {...usePoolComposition({ chainId, poolId, isWrapped, tokens, tokenAddresses, pricesApiPoolData })}
+    />
+  )
 }

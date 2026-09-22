@@ -1,6 +1,4 @@
-import { useMemo } from 'react'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
-import { getTokens } from '@/dex/pool.utils'
 import type { PoolAlert } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import Card from '@mui/material/Card'
@@ -19,11 +17,7 @@ import { YieldBreakdown } from './components/yield-breakdown'
 type PoolInformation = { poolAlert: PoolAlert | null; pricesApiPoolData?: PricesApiPool }
 
 export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformation) => {
-  const { poolData } = usePoolContext()
-  const { tokenAddressesAll } = useMemo(
-    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
-    [poolData.isWrapped, poolData.pool],
-  )
+  const { tokenAddressesAll } = usePoolContext()
   const tokenAlert = useTokenAlert(tokenAddressesAll)
 
   return (

@@ -69,7 +69,7 @@ export type PoolWithdrawSlice = {
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
     setStateByKey: <T>(key: StateKey, value: T) => void
     setStateByKeys: (SliceState: Partial<SliceState>) => void
-    resetState: (poolData: PoolData) => void
+    resetState: (poolData: PoolData, isWrapped: boolean) => void
   }
 }
 
@@ -312,7 +312,7 @@ export const createPoolWithdrawSlice = (
 
       const { pool } = poolData
       const { chainId, signerAddress } = curve
-      const { tokens, tokenAddresses } = getTokens(poolData.pool, { wrapped: poolData.isWrapped })
+      const { tokens, tokenAddresses } = getTokens(poolData.pool, { wrapped: cFormValues.isWrapped })
 
       if (formType === 'WITHDRAW') {
         // set default selected if it is empty
@@ -583,7 +583,7 @@ export const createPoolWithdrawSlice = (
     setStateByKeys: sliceState => {
       get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
-    resetState: ({ pool, isWrapped }) => {
+    resetState: ({ pool }, isWrapped) => {
       const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrapped })
       get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,

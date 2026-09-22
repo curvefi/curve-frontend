@@ -1,6 +1,4 @@
-import { useMemo } from 'react'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
-import { getTokens } from '@/dex/pool.utils'
 import { useBasePools } from '@/dex/queries/base-pools.query'
 import type { PoolData } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
@@ -42,12 +40,12 @@ export const Info = () => {
     blockchainId,
     poolId,
     poolAddress,
-    poolData: { pool, isWrapped },
+    poolData: { pool },
+    tokens,
   } = usePoolContext()
   const { data: basePools } = useBasePools({ chainId })
   const { data: metadata } = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
   const isFxSwap = metadata?.hasDonations ?? false
-  const { tokens } = useMemo(() => getTokens(pool, { wrapped: isWrapped }), [isWrapped, pool])
   const poolType =
     getPoolType({ pool, isFxSwap, tokenCount: metadata?.coins.length ?? tokens.length }) || metadata?.poolType || '-'
 

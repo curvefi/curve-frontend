@@ -1,6 +1,4 @@
-import { useMemo } from 'react'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
-import { getTokens } from '@/dex/pool.utils'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
@@ -14,13 +12,7 @@ import { t } from '@ui/lib/i18n'
 import { usePoolContext } from '../../pool-context'
 
 export const Prices = () => {
-  const {
-    chainId,
-    blockchainId,
-    poolId,
-    poolAddress,
-    poolData: { pool, isWrapped },
-  } = usePoolContext()
+  const { chainId, blockchainId, poolId, poolAddress, tokens, tokenAddresses } = usePoolContext()
   const { data: parameters } = usePoolParameters({ chainId, poolId })
   const { data: snapshots } = usePoolSnapshots({ chain: blockchainId as BlockchainId, poolAddress })
   const { priceOracle, priceScale } = parameters ?? {}
@@ -28,8 +20,6 @@ export const Prices = () => {
   // Prices API snapshot values are 1e18-scaled, while pool parameters are already human-scale.
   const priceOracleData = priceOracle?.length ? priceOracle : snapshotData?.priceOracle?.map(price => price / 10 ** 18)
   const priceScaleData = priceScale?.length ? priceScale : snapshotData?.priceScale?.map(price => price / 10 ** 18)
-
-  const { tokens, tokenAddresses } = useMemo(() => getTokens(pool, { wrapped: isWrapped }), [isWrapped, pool])
 
   // Curve price oracle/scale arrays omit the base token, so value index 0 belongs to token index 1.
   const priceRows = tokens

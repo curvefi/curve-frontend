@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import {
   STABLESWAP,
   STABLESWAPOLD,
@@ -7,7 +6,6 @@ import {
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { getTokens } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -19,14 +17,13 @@ import { t } from '@ui/lib/i18n'
 export const AddGaugeLink = () => {
   const {
     chainId,
-    poolData: { pool, isWrapped },
+    poolData: { pool },
+    tokens,
   } = usePoolContext()
   const setCurrentPoolType = useStore(state => state.deployGauge.setCurrentPoolType)
   const setSidechainGauge = useStore(state => state.deployGauge.setSidechainGauge)
   const setPoolAddress = useStore(state => state.deployGauge.setPoolAddress)
   const setLpTokenAddress = useStore(state => state.deployGauge.setLpTokenAddress)
-
-  const { tokens } = useMemo(() => getTokens(pool, { wrapped: isWrapped }), [isWrapped, pool])
 
   const params = useParams<PoolUrlParams>()
   const deployGaugePath = getPath(params, `/deploy-gauge`)

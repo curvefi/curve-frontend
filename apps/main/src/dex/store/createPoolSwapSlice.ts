@@ -63,7 +63,7 @@ export type PoolSwapSlice = {
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
     setStateByKey: <T>(key: StateKey, value: T) => void
     setStateByKeys: (SliceState: Partial<SliceState>) => void
-    resetState: (poolData: PoolData) => void
+    resetState: (isWrapped: boolean) => void
   }
 }
 
@@ -303,7 +303,7 @@ export const createPoolSwapSlice = (
         const currencyReserve = await fetchPoolCurrencyReserves({
           chainId: curve.chainId,
           poolId,
-          isWrapped: poolData.isWrapped,
+          isWrapped: cFormValues.isWrapped,
           useApi: !curve.signerAddress,
         })
 
@@ -467,7 +467,7 @@ export const createPoolSwapSlice = (
     setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
-    resetState: ({ isWrapped }) => {
+    resetState: isWrapped => {
       get().resetAppState(SLICE_KEY, { ...DEFAULT_STATE, formValues: { ...DEFAULT_FORM_VALUES, isWrapped } })
     },
   },

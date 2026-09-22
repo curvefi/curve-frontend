@@ -58,7 +58,18 @@ export const Swap = ({
   poolAlert,
   seed,
 }: Pick<PageTransferProps, 'params'> & { poolAlert: PoolAlert | null; maxSlippage: Decimal; seed: Seed }) => {
-  const { blockchainId, chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const {
+    blockchainId,
+    chainId,
+    userAddress: signerAddress,
+    poolId,
+    poolData,
+    api: curve,
+    isWrapped,
+    setIsWrapped,
+    tokens: poolTokens,
+    tokenAddresses: poolTokenAddresses,
+  } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolSwap.activeKey)
@@ -72,7 +83,6 @@ export const Swap = ({
   const fetchStepSwap = useStore(state => state.poolSwap.fetchStepSwap)
   const resetState = useStore(state => state.poolSwap.resetState)
   const setFormValues = useStore(state => state.poolSwap.setFormValues)
-  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
 
   const priceImpact = toQuery(decimal(exchangeOutput.priceImpact), { isLoading: exchangeOutput.loading })
 
@@ -105,11 +115,6 @@ export const Swap = ({
 
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: formValues.toAddress }, !!formValues.toAddress)
 
-  const { tokens: poolTokens, tokenAddresses: poolTokenAddresses } = useMemo(
-    () => getTokens(poolData.pool, { wrapped: poolData.isWrapped }),
-    [poolData.isWrapped, poolData.pool],
-  )
-
   const tokens = useMemo(
     () =>
       poolTokenAddresses.map<TokenOption>((address, index) => ({
@@ -137,13 +142,13 @@ export const Swap = ({
         curve,
         poolData.pool.id,
         poolData,
-        updatedFormValues,
+        { isWrapped, ...updatedFormValues },
         isGetMaxFrom,
         seed.isSeed,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, poolData, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, isWrapped, poolData, seed.isSeed, maxSlippage],
   )
 
   const handleSwapClick = useCallback(
@@ -284,7 +289,7 @@ export const Swap = ({
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData)
+      resetState(isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
@@ -489,14 +494,15 @@ export const Swap = ({
           <div>
             <Checkbox
               isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
-              isSelected={formValues.isWrapped}
-              onChange={isWrapped => {
+              isSelected={isWrapped}
+              onChange={nextIsWrapped => {
                 if (poolData) {
                   const fromIdx = poolTokenAddresses.findIndex(a => a === formValues.fromAddress)
                   const toIdx = poolTokenAddresses.findIndex(a => a === formValues.toAddress)
-                  const wrapped = setPoolIsWrapped(poolData, isWrapped)
+                  const wrapped = getTokens(poolData.pool, { wrapped: nextIsWrapped })
+                  setIsWrapped(nextIsWrapped)
                   const cFormValues = cloneDeep(formValues)
-                  cFormValues.isWrapped = isWrapped
+                  cFormValues.isWrapped = nextIsWrapped
                   cFormValues.fromToken = wrapped.tokens[fromIdx]
                   cFormValues.fromAddress = wrapped.tokenAddresses[fromIdx]
                   cFormValues.toToken = wrapped.tokens[toIdx]
