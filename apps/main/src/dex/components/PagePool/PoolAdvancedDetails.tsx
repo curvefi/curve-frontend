@@ -96,7 +96,7 @@ export const PoolAdvancedDetails = () => {
         }),
       }}
       prices={{
-        tokens,
+        tokenSymbols: tokens,
         tokenAddresses: tokenAddresses.map(getAddress),
         // Prices API snapshot values are 1e18-scaled, while pool parameters are already human-scale.
         priceOracleData: priceOracle?.length
