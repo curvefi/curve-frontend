@@ -1,7 +1,9 @@
+import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { TableMeta } from '@tanstack/react-table'
+import type { QueryProp } from '@ui/features/queries/util'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import type { POOLS_COLUMN_OPTIONS } from './columns/column.options'
 
@@ -51,6 +53,7 @@ type PoolUserPosition = {
   /** Both staked and unstaked */
   lpBalance: Decimal
   depositsUsd?: Decimal
+  claimables?: QueryProp<PoolClaimables>
 }
 
 /** Additional pool context not in the main pool data (contextual information sourced with external sources) */

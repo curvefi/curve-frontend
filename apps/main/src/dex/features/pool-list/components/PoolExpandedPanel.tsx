@@ -8,18 +8,20 @@ import { type Nullish, maybe } from '@primitives/objects.utils'
 import { Metric, type MetricProps } from '@ui/components/Metric'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
-import { toQuery } from '@ui/features/queries/util'
+import { mapQuery, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { relativeTime } from '@ui/lib/time'
 import { formatToken } from '@ui/lib/tokens'
+import { ClaimablesTooltipContent } from '../cells/ClaimablesTooltipContent'
 import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
-import { RewardIcons } from '../cells/RewardIcons'
+import { ClaimablesIcons, RewardIcons } from '../cells/RewardIcons'
 import { getBaseApr, getNetApr, isVolatileRate } from '../cells/utils'
 import { POOL_TITLES, PoolColumnId } from '../columns'
 import type { PoolRow, PoolTableVariant } from '../types'
+import { claimablesTotalUsd } from '../utils'
 
 const { Spacing } = SizesAndSpaces
 const PRIMARY_METRIC_CATEGORY = 'dex.poolListMobileExpanded'
@@ -77,6 +79,7 @@ export const PoolExpandedPanel = ({ pool, variant }: { pool: PoolRow; variant: P
   const baseRate = getBaseApr(pool, 'daily')
   const netRate = getNetApr(pool)
   const volatileBaseRate = isVolatileRate(baseRate)
+  const claimables = pool.userPosition.claimables
 
   return (
     <Grid container spacing={Spacing.md}>
@@ -123,16 +126,38 @@ export const PoolExpandedPanel = ({ pool, variant }: { pool: PoolRow; variant: P
         </Grid>
       )}
       {variant === 'userPositions' && (
-        <Grid size={PRIMARY_METRIC_SIZE}>
-          <Metric
-            category={PRIMARY_METRIC_CATEGORY}
-            label={POOL_TITLES[PoolColumnId.Deposits]}
-            value={pool.userPosition.depositsUsd}
-            valueOptions={{ unit: 'dollar' }}
-            notional={toQuery(formatToken(pool.userPosition.lpBalance, 'LP', 'balance'))}
-            testId="pool-deposits"
-          />
-        </Grid>
+        <>
+          <Grid size={PRIMARY_METRIC_SIZE}>
+            <Metric
+              category={PRIMARY_METRIC_CATEGORY}
+              label={POOL_TITLES[PoolColumnId.Deposits]}
+              value={pool.userPosition.depositsUsd}
+              valueOptions={{ unit: 'dollar' }}
+              notional={toQuery(formatToken(pool.userPosition.lpBalance, 'LP', 'balance'))}
+              testId="pool-deposits"
+            />
+          </Grid>
+          {claimables?.data && (
+            <Grid size={PRIMARY_METRIC_SIZE}>
+              <Metric
+                category={PRIMARY_METRIC_CATEGORY}
+                label={POOL_TITLES[PoolColumnId.Claimables]}
+                value={mapQuery(claimables, rewards => claimablesTotalUsd(rewards))}
+                valueOptions={{ unit: 'dollar' }}
+                valueTooltip={{
+                  body: <ClaimablesTooltipContent claimables={claimables.data} blockchainId={pool.blockchainId} />,
+                  clickable: true,
+                  placement: 'top',
+                  title: POOL_TITLES[PoolColumnId.Claimables],
+                }}
+                icon={maybe(claimables.data, rewards => (
+                  <ClaimablesIcons claimables={rewards} blockchainId={pool.blockchainId} />
+                ))}
+                testId="pool-claimables"
+              />
+            </Grid>
+          )}
+        </>
       )}
 
       <Grid size={12}>

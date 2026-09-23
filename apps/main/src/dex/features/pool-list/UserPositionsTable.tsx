@@ -50,7 +50,7 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
     mobileColumn: PoolColumnId.Deposits,
   })
 
-  const { tableQuery, totalLiquidityUsd, isFetching, onReload } = useUserPositionsTable({ network })
+  const { tableQuery, totalLiquidityUsd, claimablesTotalUsd, isFetching, onReload } = useUserPositionsTable({ network })
 
   const globalFilterFn = usePoolsGlobalFilterFn(tableQuery.data ?? EMPTY_POOL_ROWS, searchText)
 
@@ -87,6 +87,13 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
                   label={t`Total liquidity provided`}
                   value={totalLiquidityUsd}
                   valueOptions={{ unit: 'dollar' }}
+                />
+                <Metric
+                  category="dex.poolListSummary"
+                  label={t`Claimable rewards`}
+                  value={claimablesTotalUsd}
+                  valueOptions={{ unit: 'dollar' }}
+                  testId="user-claimable-rewards"
                 />
               </MetricsGrid>
               <EvmDataTable
