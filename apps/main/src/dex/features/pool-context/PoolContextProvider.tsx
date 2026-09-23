@@ -20,6 +20,9 @@ export const PoolContextProvider = ({
   const { curveApi: api = null } = useCurve()
   const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
   const poolData = useStore(state => state.pools.poolsMapper[chainId]?.[poolId ?? ''])
+
+  // This is a global pool page toggle that changes many things on the pool page itself, whose toggle sits inside the forms.
+  // Alternatives would be prop drilling or yet another zustand store, neither sound pleasant.
   const [isWrapped, setIsWrapped] = useState(() => isWrappedOnly(poolData.pool))
 
   return (
