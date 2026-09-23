@@ -29,7 +29,6 @@ import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
-import { useStore } from '@/dex/store/useStore'
 import { PoolPageHeader } from '@/dex/widgets/page-header/PoolPageHeader'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
@@ -112,15 +111,25 @@ type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
-  const { chainId, blockchainId, poolId, poolAddress, poolData, api: curve } = usePoolContext()
+  const {
+    chainId,
+    blockchainId,
+    poolId,
+    poolAddress,
+    poolData,
+    api: curve,
+    isWrapped,
+    setIsWrapped,
+    tokens,
+    tokenAddresses,
+  } = usePoolContext()
 
   const poolAlert = usePoolAlert({
     blockchainId,
     poolAddress,
     hasVyperVulnerability: poolData.pool.hasVyperVulnerability(),
   })
-  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
-  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
+  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(poolData) ?? 'stable'])
 
@@ -140,10 +149,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
     const isSeed = Number(currencyReserves.total) === 0
 
-    if (isSeed && hasWrapped(poolData.pool)) setPoolIsWrapped(poolData, true)
+    if (isSeed && hasWrapped(poolData.pool)) setIsWrapped(true)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
-  }, [poolData.pool.id, currencyReserves, poolData, setPoolIsWrapped])
+  }, [currencyReserves, poolData, setIsWrapped])
 
   const tabParams = useMemo(
     () => ({
@@ -180,11 +189,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             tokens={useMemo(
               () =>
                 constQ(
-                  poolData.tokens
-                    .map((symbol, index) => ({ symbol, address: poolData.tokenAddresses[index] as Address }))
+                  tokens
+                    .map((symbol, index) => ({ symbol, address: tokenAddresses[index] as Address }))
                     .filter(({ address }) => address),
                 ),
-              [poolData.tokenAddresses, poolData.tokens],
+              [tokenAddresses, tokens],
             )}
             pricesApiPoolData={pricesApiPoolData}
             backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}

@@ -17,9 +17,6 @@ export const LegacyTooltipBaseApy = ({
 
   if (poolData?.pool.isLending) {
     label = t`Pool APY + Lending APY`
-  } else if (poolData?.tokenAddresses?.includes('0xae7ab96520de3a18e5e111b5eaab095312d7fe84')) {
-    // hard coding steth label, not defined in pool object
-    label = t`Pool APY + Staking APY`
   } else if (
     poolData?.pool?.implementation === '0x36dc03c0e12a1c241306a6a8f327fe28ba2be5b0' ||
     poolData?.pool?.implementation === '0x7ca46a636b02d4abc66883d7ff164bde506dc66a'

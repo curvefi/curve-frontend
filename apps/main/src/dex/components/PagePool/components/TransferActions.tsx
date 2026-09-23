@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { AlertSeedAmounts } from '@/dex/components/PagePool/components/AlertSeedAmounts'
@@ -15,11 +15,11 @@ export const TransferActions = ({
   seed,
   loading,
 }: { loading?: boolean; children: ReactNode } & Pick<TransferProps, 'seed'>) => {
-  const { chainId, userAddress: signerAddress, poolId, poolData } = usePoolContext()
+  const { chainId, userAddress: signerAddress, poolId, poolData, isWrapped, tokenAddressesAll } = usePoolContext()
 
-  const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
+  const alert = useTokenAlert(tokenAddressesAll ?? [])
   const { isHydrated } = useCurve()
-  const currencyReserves = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
+  const currencyReserves = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
 
   const { address: userAddress } = useConnection()
   const { isLoading: walletBalancesLoading, error: walletBalancesError } = usePoolTokenBalances({
