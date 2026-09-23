@@ -15,7 +15,7 @@ import { borderStyle, directChildrenAfterFirst } from '@ui/lib/mui'
 import { UserPositionsMarketRateTable } from './UserPositionsMarketRateTable'
 import { UserPositionSummary } from './UserPositionsSummary'
 
-type UserPositionsTableProps = { onReload: () => void; tableQuery: QueryProp<LlamaMarketsTableResult> }
+type UserPositionsTableProps = { onReload: () => Promise<unknown>; tableQuery: QueryProp<LlamaMarketsTableResult> }
 
 const buildVaultUrl = (market: LlamaMarket) =>
   getInternalUrl(

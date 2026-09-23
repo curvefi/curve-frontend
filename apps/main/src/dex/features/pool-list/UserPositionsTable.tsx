@@ -69,7 +69,7 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
 
   return (
     <Stack data-testid="user-pool-positions">
-      <TableHeader title={t`Your positions`} onReload={() => void onReload()} isLoading={isFetching} />
+      <TableHeader title={t`Your positions`} onReload={onReload} isLoading={isFetching} />
       <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         {address ? (
           tableQuery.data?.length ? (
