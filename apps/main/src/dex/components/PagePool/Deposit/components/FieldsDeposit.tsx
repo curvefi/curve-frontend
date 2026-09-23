@@ -116,6 +116,7 @@ export const FieldsDeposit = ({
 
   const { address: userAddress } = useConnection()
   const userPoolBalances = useTokenBalances({ chainId, userAddress, tokenAddresses: tokenAddresses as Address[] })
+  const tokenCount = useMemo(() => countBy(tokens), [tokens])
 
   return (
     <FieldsWrapper>
@@ -123,7 +124,7 @@ export const FieldsDeposit = ({
         tokens.map((token, idx) => {
           const tokenAddress = tokenAddresses[idx]
           const addressBalanceAmount = userPoolBalances.data?.[tokenAddress] ?? '0'
-          const haveSameTokenName = countBy(tokens)[token] > 1
+          const haveSameTokenName = tokenCount[token] > 1
           const { value } = amountsInput[idx]
           const isDisableInput = isSeed === null || formProcessing || (isSeed && idx !== 0)
 
