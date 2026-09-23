@@ -117,11 +117,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   )
 
   /** Internal debounced value state for slider and inputs during drag and typing */
-  const [internalValue, setInternalValue, cancelDebounce] = useDebounce<T>({
-    initialValue: value,
-    debounceMs,
-    callback: onChange,
-  })
+  const [internalValue, setInternalValue] = useDebounce<T>({ initialValue: value, debounceMs, callback: onChange })
 
   /** The current display values for slider and inputs */
   const displayValue = useMemo((): T => internalValue ?? value, [internalValue, value])
@@ -137,11 +133,10 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
     (nextValue: T | undefined) => {
       if (nextValue == null) return
       setInternalValue(nextValue)
-      cancelDebounce()
       if (Array.isArray(nextValue) && nextValue.find(v => v == null)) return
       onChange(nextValue)
     },
-    [cancelDebounce, onChange, setInternalValue],
+    [onChange, setInternalValue],
   )
 
   /**Converts slider's numeric value to Decimal and maps back to original value space */

@@ -43,7 +43,7 @@ import type { RouterRouteResponse } from '@primitives/router.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { useLayoutStore } from '@ui/features/layout/store'
@@ -518,7 +518,7 @@ export const QuickSwap = ({
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       {/* SWAP FROM */}
-      <LargeTokenInput
+      <DebouncedLargeTokenInput
         label={t`Sell`}
         balance={q({
           data: decimal(formValues.fromAmount),
@@ -575,7 +575,7 @@ export const QuickSwap = ({
         <Icon name="ArrowsVertical" size={24} />
       </IconButton>
       {/* SWAP TO */}
-      <LargeTokenInput
+      <DebouncedLargeTokenInput
         label={t`Buy`}
         balance={decimal(formValues.toAmount)}
         inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}

@@ -11,7 +11,7 @@ type DebouncedValueOptions<T> = { defaultValue?: T; debounceMs?: number }
  * @param debounceMs - The debouncing period in milliseconds
  * @param callback - Callback function that is called after the debounce period
  * @param onChange - Optional callback function that is called immediately when the value changes
- * @returns A tuple containing the debounced function and a cancel function
+ * @returns A debounced function
  */
 export function useDebounced<T extends unknown[]>(
   callback: (...value: T) => void,
@@ -21,22 +21,19 @@ export function useDebounced<T extends unknown[]>(
   const timerRef = useRef<number | null>(null)
   const cancel = useCallback(() => void (timerRef.current && clearTimeout(timerRef.current)), [])
   useEffect(() => cancel, [cancel])
-  return [
-    useCallback(
-      (...newValue: T) => {
-        cancel()
-        onChange?.(...newValue)
+  return useCallback(
+    (...newValue: T) => {
+      cancel()
+      onChange?.(...newValue)
 
-        // Initiate a new timer
-        timerRef.current = window.setTimeout(() => {
-          callback(...newValue)
-          timerRef.current = null
-        }, debounceMs)
-      },
-      [callback, cancel, debounceMs, onChange],
-    ),
-    cancel,
-  ] as const
+      // Initiate a new timer
+      timerRef.current = window.setTimeout(() => {
+        callback(...newValue)
+        timerRef.current = null
+      }, debounceMs)
+    },
+    [callback, cancel, debounceMs, onChange],
+  )
 }
 
 /**
@@ -80,26 +77,7 @@ export function useDebounce<T>({
   const [value, setValue] = useState<T>(initialValue)
   // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setValue(initialValue), [initialValue])
-  return [value, ...useDebounced(callback, debounceMs, setValue)] as const
-}
-
-/**
- * A hook that returns a debounced version of the given value.
- * The debounced value only updates after the specified debounce period has elapsed
- * since the last change to the given value.
- * This is useful for delaying updates to a value that changes frequently,
- * such as user input, to avoid excessive computations or side effects.
- */
-export function useDebouncedValue<T>(
-  givenValue: T,
-  { defaultValue = givenValue, debounceMs = Duration.FormDebounce }: DebouncedValueOptions<T> = {},
-) {
-  const [value, setValue] = useState<T>(defaultValue)
-  useEffect(() => {
-    const timer = setTimeout(() => setValue(givenValue), debounceMs)
-    return () => clearTimeout(timer)
-  }, [debounceMs, givenValue])
-  return value
+  return [value, useDebounced(callback, debounceMs, setValue)] as const
 }
 
 /**
@@ -111,10 +89,15 @@ export function useDebouncedValue<T>(
 export function useFormDebounce<T extends object, TDefaultKey extends keyof T>(
   values: T,
   userDefaultValues: Pick<T, TDefaultKey>,
-  options?: DebouncedValueOptions<Pick<T, TDefaultKey>>,
+  { debounceMs = Duration.FormDebounce }: DebouncedValueOptions<Pick<T, TDefaultKey>> = {},
 ) {
   const valuesToDebounce = useMemo(() => pick(values, objectKeys(userDefaultValues)), [values, userDefaultValues])
-  const debouncedValue = useDebouncedValue(valuesToDebounce, options)
+  const [debouncedValue, setDebouncedValue] = useState<Pick<T, TDefaultKey>>(valuesToDebounce)
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(valuesToDebounce), debounceMs)
+    return () => clearTimeout(timer)
+  }, [debounceMs, valuesToDebounce])
+
   const isDebouncing = !isEqual(debouncedValue, valuesToDebounce)
 
   const value = useMemo(() => ({ ...values, ...debouncedValue }), [values, debouncedValue])
@@ -122,28 +105,15 @@ export function useFormDebounce<T extends object, TDefaultKey extends keyof T>(
   return [value, isDebouncing] as const
 }
 
-/**
- * A hook that debounces a value and only calls the callback when the value has actually changed.
- * This prevents unnecessary callback executions when the debounced value hasn't changed.
- *
- * @param defaultValue - The initial value to use
- * @param callback - Function called when the debounced value changes
- * @param debounceMs - The debounce period in milliseconds (default: 166ms)
- * @param equals - Optional custom equality function to compare values
- * @param sanitize - Optional custom cleaning function to transform values before comparison (default: identity)
- * @returns A tuple containing the current value and a setter function
- */
-export function useUniqueDebounce<T>({
+export function useUnique<T>({
   defaultValue,
   callback: onChange,
-  debounceMs = Duration.FormDebounce,
-  equals = isEqual,
+  equals,
   sanitize = identity,
 }: {
   defaultValue: T
   callback: ((value: T) => void) | undefined
-  debounceMs?: number
-  equals?: (a: T, b: T) => boolean
+  equals: (a: T, b: T) => boolean
   sanitize?: (value: T) => T
 }) {
   const [value, setValue] = useState<T>(defaultValue)
@@ -164,10 +134,11 @@ export function useUniqueDebounce<T>({
       if (!equals(value, lastCallbackValueRef.current)) {
         lastCallbackValueRef.current = value
         onChange?.(value)
+        setValue(value)
       }
     },
     [onChange, sanitize, equals],
   )
 
-  return [value, ...useDebounced(callback, debounceMs, setValue)] as const
+  return [value, callback] as const
 }

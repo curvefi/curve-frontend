@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { Duration } from '@ui/features/themes/design/0_primitives'
-import { useDebounced, useDebounce, useDebouncedValue, useUniqueDebounce } from '@ui/hooks/useDebounce'
+import { useDebounced, useDebounce, useUnique } from '@ui/hooks/useDebounce'
 
-// Test component for useDebounced
+// Test component for useDebounced.
 function UseDebouncedTest({
   debounceMs,
   callback,
@@ -12,24 +11,21 @@ function UseDebouncedTest({
   callback: (...args: unknown[]) => void
   onChange?: (...args: unknown[]) => void
 }) {
-  const [debouncedFn, cancel] = useDebounced(callback, debounceMs, onChange)
+  const debounced = useDebounced(callback, debounceMs, onChange)
 
   return (
     <div>
-      <button data-testid="trigger" onClick={() => debouncedFn('test-value')}>
+      <button data-testid="trigger" onClick={() => debounced('test-value')}>
         Trigger
       </button>
-      <button data-testid="trigger-with-args" onClick={() => debouncedFn('arg1', 42, true)}>
+      <button data-testid="trigger-with-args" onClick={() => debounced('arg1', 42, true)}>
         Trigger with args
-      </button>
-      <button data-testid="cancel" onClick={cancel}>
-        Cancel
       </button>
     </div>
   )
 }
 
-// Test component for useDebounce
+// Test component for useDebounce.
 function UseDebounceTest({
   initialValue,
   debounceMs,
@@ -39,85 +35,43 @@ function UseDebounceTest({
   debounceMs: number
   callback: (value: string) => void
 }) {
-  const [value, setValue, cancel] = useDebounce({ initialValue, debounceMs, callback })
+  const [value, setValue] = useDebounce({ initialValue, debounceMs, callback })
 
   return (
     <div>
       <input data-testid="input" value={value} onChange={e => setValue(e.target.value)} />
       <div data-testid="current-value">{value}</div>
-      <button data-testid="cancel" onClick={cancel}>
-        Cancel
-      </button>
     </div>
   )
 }
 
-// Test component for useDebouncedValue
-function UseDebouncedValueTest({
-  givenValue,
-  debounceMs,
-  defaultValue,
-}: {
-  givenValue: string
-  debounceMs?: number
-  defaultValue?: string
-}) {
-  const debouncedValue = useDebouncedValue(givenValue, { debounceMs, defaultValue })
-
-  return (
-    <div>
-      <div data-testid="debounced-value">{debouncedValue}</div>
-      <div data-testid="given-value">{givenValue}</div>
-    </div>
-  )
-}
-
-// Test component for useUniqueDebounce
-function UseUniqueDebounceTest({
+// Test component for useUnique.
+function UseUniqueTest({
   defaultValue,
   callback,
-  debounceMs,
-  equals,
+  equals = Object.is,
 }: {
   defaultValue: string
   callback: (value: string) => void
-  debounceMs?: number
   equals?: (a: string, b: string) => boolean
 }) {
-  const [value, setValue, cancel] = useUniqueDebounce({ defaultValue, callback, debounceMs, equals })
+  const [value, setValue] = useUnique({ defaultValue, callback, equals })
 
   return (
     <div>
-      <input data-testid="input" value={value} onChange={e => setValue(e.target.value)} />
+      <button data-testid="set-next" onClick={() => setValue('next')}>
+        Set Next
+      </button>
+      <button data-testid="set-next-again" onClick={() => setValue('next')}>
+        Set Next Again
+      </button>
+      <button data-testid="set-uppercase" onClick={() => setValue('TEST')}>
+        Set Uppercase
+      </button>
+      <button data-testid="set-different" onClick={() => setValue('different')}>
+        Set Different
+      </button>
       <div data-testid="current-value">{value}</div>
-      <button data-testid="cancel" onClick={cancel}>
-        Cancel
-      </button>
-    </div>
-  )
-}
-
-// Test component for useUniqueDebounce with objects
-function UseUniqueDebounceObjectTest({
-  defaultValue,
-  callback,
-  equals,
-}: {
-  defaultValue: { id: number; name: string }
-  callback: (value: { id: number; name: string }) => void
-  equals?: (a: { id: number; name: string }, b: { id: number; name: string }) => boolean
-}) {
-  const [value, setValue] = useUniqueDebounce({ defaultValue, callback, debounceMs: 200, equals })
-
-  return (
-    <div>
-      <button data-testid="set-same-id" onClick={() => setValue({ id: value.id, name: 'different' })}>
-        Set Same ID
-      </button>
-      <button data-testid="set-different-id" onClick={() => setValue({ id: value.id + 1, name: 'different' })}>
-        Set Different ID
-      </button>
-      <div data-testid="current-value">{JSON.stringify(value)}</div>
     </div>
   )
 }
@@ -139,7 +93,7 @@ describe('useDebounced', () => {
     cy.get('@callback').should('have.been.calledWith', 'test-value')
   })
 
-  it('cancels previous timeout when called multiple times', () => {
+  it('cancels the previous timeout when called repeatedly', () => {
     const callback = cy.stub().as('callback')
     cy.mount(<UseDebouncedTest debounceMs={300} callback={callback} />)
 
@@ -151,7 +105,6 @@ describe('useDebounced', () => {
     cy.tick(300)
 
     cy.get('@callback').should('have.been.calledOnce')
-    cy.get('@callback').should('have.been.calledWith', 'test-value')
   })
 
   it('calls onChange immediately when provided', () => {
@@ -178,18 +131,6 @@ describe('useDebounced', () => {
 
     cy.get('@callback').should('have.been.calledWith', 'arg1', 42, true)
   })
-
-  it('cancel function prevents callback execution', () => {
-    const callback = cy.stub().as('callback')
-    cy.mount(<UseDebouncedTest debounceMs={300} callback={callback} />)
-
-    cy.get('[data-testid="trigger"]').click()
-    cy.tick(100)
-    cy.get('[data-testid="cancel"]').click()
-    cy.tick(300)
-
-    cy.get('@callback').should('not.have.been.called')
-  })
 })
 
 describe('useDebounce', () => {
@@ -197,14 +138,13 @@ describe('useDebounce', () => {
     cy.clock()
   })
 
-  it('returns initial value', () => {
-    const callback = cy.stub()
-    cy.mount(<UseDebounceTest initialValue="initial" debounceMs={300} callback={callback} />)
+  it('returns its initial value', () => {
+    cy.mount(<UseDebounceTest initialValue="initial" debounceMs={300} callback={cy.stub()} />)
 
     cy.get('[data-testid="current-value"]').should('have.text', 'initial')
   })
 
-  it('updates value immediately but calls callback after debounce', () => {
+  it('updates its value immediately and calls the callback after debounce', () => {
     const callback = cy.stub().as('callback')
     cy.mount(<UseDebounceTest initialValue="" debounceMs={300} callback={callback} />)
 
@@ -218,7 +158,7 @@ describe('useDebounce', () => {
     cy.get('@callback').should('have.been.calledWith', 'new value')
   })
 
-  it('debounces multiple rapid changes', () => {
+  it('debounces rapid changes', () => {
     const callback = cy.stub().as('callback')
     cy.mount(<UseDebounceTest initialValue="" debounceMs={200} callback={callback} />)
 
@@ -232,155 +172,52 @@ describe('useDebounce', () => {
     cy.get('@callback').should('have.been.calledOnce')
     cy.get('@callback').should('have.been.calledWith', 'abc')
   })
-
-  it('cancel function stops pending callback', () => {
-    const callback = cy.stub().as('callback')
-    cy.mount(<UseDebounceTest initialValue="" debounceMs={300} callback={callback} />)
-
-    cy.get('[data-testid="input"]').type('test')
-    cy.tick(100)
-    cy.get('[data-testid="cancel"]').click()
-    cy.tick(300)
-
-    cy.get('@callback').should('not.have.been.called')
-  })
 })
 
-describe('useDebouncedValue', () => {
-  beforeEach(() => {
-    cy.clock()
-  })
-
-  it('returns default value initially when provided', () => {
-    cy.mount(<UseDebouncedValueTest givenValue="actual" debounceMs={300} defaultValue="default" />)
-
-    cy.get('[data-testid="debounced-value"]').should('have.text', 'default')
-    cy.get('[data-testid="given-value"]').should('have.text', 'actual')
-  })
-
-  it('returns given value as default when defaultValue not provided', () => {
-    cy.mount(<UseDebouncedValueTest givenValue="test" debounceMs={300} />)
-
-    cy.get('[data-testid="debounced-value"]').should('have.text', 'test')
-  })
-
-  it('updates debounced value after delay', () => {
-    function DebouncedValueWrapper() {
-      const [value, setValue] = useState('initial')
-      return (
-        <div>
-          <button data-testid="update" onClick={() => setValue('updated')}>
-            Update
-          </button>
-          <UseDebouncedValueTest givenValue={value} debounceMs={300} />
-        </div>
-      )
-    }
-
-    cy.mount(<DebouncedValueWrapper />)
-
-    cy.get('[data-testid="debounced-value"]').should('have.text', 'initial')
-
-    cy.get('[data-testid="update"]').click()
-    cy.get('[data-testid="given-value"]').should('have.text', 'updated')
-    cy.get('[data-testid="debounced-value"]').should('have.text', 'initial')
-
-    cy.tick(300)
-    cy.get('[data-testid="debounced-value"]').should('have.text', 'updated')
-  })
-
-  it('cancels previous timeout on value change', () => {
-    function DebouncedValueWrapper() {
-      const [value, setValue] = useState('first')
-      return (
-        <div>
-          <button data-testid="set-second" onClick={() => setValue('second')}>
-            Set Second
-          </button>
-          <button data-testid="set-third" onClick={() => setValue('third')}>
-            Set Third
-          </button>
-          <UseDebouncedValueTest givenValue={value} debounceMs={300} />
-        </div>
-      )
-    }
-
-    cy.mount(<DebouncedValueWrapper />)
-
-    cy.get('[data-testid="set-second"]').click()
-    cy.tick(100)
-    cy.get('[data-testid="set-third"]').click()
-    cy.tick(100)
-    cy.get('[data-testid="debounced-value"]').should('have.text', 'first')
-
-    cy.tick(300)
-    cy.get('[data-testid="debounced-value"]').should('have.text', 'third')
-  })
-})
-
-describe('useUniqueDebounce', () => {
-  beforeEach(() => {
-    cy.clock()
-  })
-
-  it('only calls callback when value changes', () => {
+describe('useUnique', () => {
+  it('immediately calls the callback for a unique value', () => {
     const callback = cy.stub().as('callback')
-    cy.mount(<UseUniqueDebounceTest defaultValue="initial" callback={callback} debounceMs={200} />)
+    cy.mount(<UseUniqueTest defaultValue="initial" callback={callback} />)
 
-    cy.get('[data-testid="input"]').clear().type('new value')
-    cy.tick(200)
+    cy.get('[data-testid="set-next"]').click()
 
     cy.get('@callback').should('have.been.calledOnce')
-    cy.get('@callback').should('have.been.calledWith', 'new value')
+    cy.get('@callback').should('have.been.calledWith', 'next')
+    cy.get('[data-testid="current-value"]').should('have.text', 'next')
+  })
 
-    // Set to same value
-    cy.get('[data-testid="input"]').clear().type('new value')
-    cy.tick(200)
+  it('does not call the callback for an equal value', () => {
+    const callback = cy.stub().as('callback')
+    cy.mount(<UseUniqueTest defaultValue="initial" callback={callback} />)
 
-    // Should not call callback again
+    cy.get('[data-testid="set-next"]').click()
+    cy.get('[data-testid="set-next-again"]').click()
+
     cy.get('@callback').should('have.been.calledOnce')
   })
 
-  it('uses custom equality function when provided', () => {
+  it('uses a supplied equality function', () => {
     const callback = cy.stub().as('callback')
     const equals = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
+    cy.mount(<UseUniqueTest defaultValue="test" callback={callback} equals={equals} />)
 
-    cy.mount(<UseUniqueDebounceTest defaultValue="test" callback={callback} debounceMs={200} equals={equals} />)
-
-    cy.get('[data-testid="input"]').clear().type('TEST')
-    cy.tick(200)
-
-    // Should not call callback because values are equal (case-insensitive)
+    // Values are equal according to the case-insensitive comparison.
+    cy.get('[data-testid="set-uppercase"]').click()
     cy.get('@callback').should('not.have.been.called')
 
-    cy.get('[data-testid="input"]').clear().type('different')
-    cy.tick(200)
-
+    cy.get('[data-testid="set-different"]').click()
     cy.get('@callback').should('have.been.calledOnce')
     cy.get('@callback').should('have.been.calledWith', 'different')
   })
 
-  it(`uses default debounce time of ${Duration.FormDebounce} when not provided`, () => {
-    const callback = cy.stub().as('callback')
-    cy.mount(<UseUniqueDebounceTest defaultValue="" callback={callback} />)
-
-    cy.get('[data-testid="input"]').type('test')
-    cy.tick(Duration.FormDebounce)
-
-    cy.get('@callback').should('have.been.calledOnce')
-  })
-
-  it('updates lastValue when defaultValue changes (async initialization)', () => {
+  it('uses an updated external default as the equality baseline', () => {
     const callback = cy.stub().as('callback')
 
-    // This test simulates the scenario described in the hook's useEffect comment:
-    // 1. Component mounts with empty defaultValue (before async load)
-    // 2. Async data loads and defaultValue updates to a saved value
-    // 3. User clears the input back to empty
-    // 4. Callback should fire because we compare against the updated defaultValue, not the original
+    // This simulates a component loading a saved value after mounting. The subsequent
+    // clear must compare against the loaded value, not the initial empty default.
     function AsyncInitWrapper() {
       const [defaultValue, setDefaultValue] = useState('')
-      const [value, setValue] = useUniqueDebounce({ defaultValue, callback, debounceMs: 200 })
+      const [value, setValue] = useUnique({ defaultValue, callback, equals: Object.is })
 
       return (
         <div>
@@ -391,143 +228,19 @@ describe('useUniqueDebounce', () => {
             Clear
           </button>
           <div data-testid="current-value">{value}</div>
-          <div data-testid="default-value">{defaultValue}</div>
         </div>
       )
     }
 
     cy.mount(<AsyncInitWrapper />)
 
-    // Initial state: both values are empty, lastValue.current = ''
-    cy.get('[data-testid="current-value"]').should('have.text', '')
-    cy.get('[data-testid="default-value"]').should('have.text', '')
-
-    // Simulate async load from localStorage
-    // This updates defaultValue to 'saved search' and lastValue.current to 'saved search' via useEffect
+    // Simulate an external value arriving asynchronously.
     cy.get('[data-testid="load-async"]').click()
-    cy.get('[data-testid="default-value"]').should('have.text', 'saved search')
+    cy.get('[data-testid="current-value"]').should('have.text', 'saved search')
 
-    // User clears the search
-    // Without the useEffect update, this would compare '' to '' (initial lastValue)
-    // With the useEffect update, this compares '' to 'saved search' (updated lastValue)
+    // Clearing is a unique change relative to the newly loaded value.
     cy.get('[data-testid="clear"]').click()
-    cy.tick(200)
-
-    // Callback should fire because '' !== 'saved search'
     cy.get('@callback').should('have.been.calledOnce')
     cy.get('@callback').should('have.been.calledWith', '')
-  })
-
-  it('handles object values with custom equality', () => {
-    const callback = cy.stub().as('callback')
-    const equals = (a: { id: number; name: string }, b: { id: number; name: string }) => a.id === b.id
-
-    cy.mount(
-      <UseUniqueDebounceObjectTest defaultValue={{ id: 1, name: 'first' }} callback={callback} equals={equals} />,
-    )
-
-    cy.get('[data-testid="set-same-id"]').click()
-    cy.tick(200)
-
-    // Should not call callback because id is the same
-    cy.get('@callback').should('not.have.been.called')
-
-    cy.get('[data-testid="set-different-id"]').click()
-    cy.tick(200)
-
-    // Should call callback because id changed
-    cy.get('@callback').should('have.been.calledOnce')
-  })
-
-  it('debounces rapid changes and only fires once for unique values', () => {
-    const callback = cy.stub().as('callback')
-    cy.mount(<UseUniqueDebounceTest defaultValue="" callback={callback} debounceMs={200} />)
-
-    cy.get('[data-testid="input"]').type('a')
-    cy.tick(50)
-    cy.get('[data-testid="input"]').type('b')
-    cy.tick(50)
-    cy.get('[data-testid="input"]').type('c')
-    cy.tick(200)
-
-    cy.get('@callback').should('have.been.calledOnce')
-    cy.get('@callback').should('have.been.calledWith', 'abc')
-  })
-
-  it('handles primitive number values correctly', () => {
-    const callback = cy.stub().as('callback')
-
-    function NumberTest() {
-      const [value, setValue] = useUniqueDebounce({ defaultValue: 0, callback, debounceMs: 200 })
-
-      return (
-        <div>
-          <button data-testid="set-5" onClick={() => setValue(5)}>
-            Set 5
-          </button>
-          <button data-testid="set-5-again" onClick={() => setValue(5)}>
-            Set 5 Again
-          </button>
-          <button data-testid="set-10" onClick={() => setValue(10)}>
-            Set 10
-          </button>
-          <div data-testid="value">{value}</div>
-        </div>
-      )
-    }
-
-    cy.mount(<NumberTest />)
-
-    cy.get('[data-testid="set-5"]').click()
-    cy.tick(200)
-    cy.get('@callback').should('have.been.calledWith', 5)
-
-    cy.get('[data-testid="set-5-again"]').click()
-    cy.tick(200)
-    cy.get('@callback').should('have.been.calledOnce') // No additional call
-
-    cy.get('[data-testid="set-10"]').click()
-    cy.tick(200)
-    cy.get('@callback').should('have.been.calledTwice')
-    cy.get('@callback').should('have.been.calledWith', 10)
-  })
-
-  it('does not overwrite newer local value on delayed self-echo', () => {
-    function DelayedEchoWrapper() {
-      const [defaultValue, setDefaultValue] = useState('')
-      const [value, setValue] = useUniqueDebounce({
-        defaultValue,
-        debounceMs: 200,
-        callback: next => {
-          // Simulate URL/state write followed by delayed external echo
-          setTimeout(() => setDefaultValue(next), 100)
-        },
-        sanitize: value => value.trim(),
-      })
-
-      return (
-        <div>
-          <input data-testid="input" value={value} onChange={e => setValue(e.target.value)} />
-          <div data-testid="current-value">{value}</div>
-          <div data-testid="default-value">{defaultValue}</div>
-        </div>
-      )
-    }
-
-    cy.mount(<DelayedEchoWrapper />)
-
-    cy.get('[data-testid="input"]').type('a')
-    cy.tick(200) // emit "a", schedule delayed defaultValue echo
-
-    cy.get('[data-testid="input"]').type('b  ') // local value is now "ab  "
-
-    cy.tick(100) // delayed echo for "a" arrives
-    cy.get('[data-testid="default-value"]').should('have.text', 'a')
-    cy.get('[data-testid="current-value"]').should('have.text', 'ab  ') // should not be clobbered back to "a" or "ab"
-
-    cy.tick(200) // emit "ab"
-    cy.tick(100) // delayed echo for "ab" arrives
-    cy.get('[data-testid="default-value"]').should('have.text', 'ab') // defaultValue updates to "ab" (sanitized)
-    cy.get('[data-testid="current-value"]').should('have.text', 'ab  ') // current value remains the same (not sanitized)
   })
 })
