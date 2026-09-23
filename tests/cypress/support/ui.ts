@@ -47,7 +47,7 @@ export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'crvusd'
 export type AppPath = ReturnType<typeof oneAppPath>
 
 export const LOAD_TIMEOUT = { timeout: 30000 }
-export const TRANSACTION_LOAD_TIMEOUT = { timeout: 60000 } // higher timeout in case confirmations are slow
+export const TRANSACTION_LOAD_TIMEOUT = { timeout: 90000 } // higher timeout in case confirmations are slow
 export const API_LOAD_TIMEOUT = { timeout: 120000 } // unfortunately the prices API can be REAL SLOW 😭
 
 /** Intercept callback for blocking the backend for testing. We use 510 to avoid the HTTP retries for some 5xx errors */

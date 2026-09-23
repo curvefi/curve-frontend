@@ -15,7 +15,8 @@ export const asAddress = <T extends StellarAddress | StellarContract | Nullish>(
   maybe(address, a => a as string as Address)
 
 /** Restores the Stellar contract type after crossing a shared EVM-address UI boundary. */
-export const asStellarContract = (address: Address) => address as string as StellarContract
+export const asStellarContract = <T extends Address | Nullish>(address: T) =>
+  maybe(address, a => a as string as StellarContract)
 
 export const shortenAddress = <T extends StellarAddress | StellarContract | Nullish>(address: T) =>
   maybe(address, shortenString)

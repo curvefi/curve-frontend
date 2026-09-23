@@ -13,7 +13,7 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { approveErc20, fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { sendVnetTransactionAndWait } from '@cy/support/helpers/tenderly/vnet-tx'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 
 const CONTROLLER_ABI = parseAbi(['function create_loan(uint256 collateral, uint256 debt, uint256 N)'])
@@ -110,7 +110,7 @@ export const setupTenderlyLoan = ({
   fundUserForLoanSetup({ vnet, userAddress, collateralAddress, collateralAmountWei: fundedCollateral })
 
   // the call above uses cy.request, but to use async we need cy.then()
-  loadTenderlyAccount().then(LOAD_TIMEOUT, async tenderlyAccount => {
+  loadTenderlyAccount().then(TRANSACTION_LOAD_TIMEOUT, async tenderlyAccount => {
     await approveErc20({
       client,
       tenderly: { ...tenderlyAccount, vnetId: vnet.id },

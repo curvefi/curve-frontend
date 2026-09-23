@@ -31,15 +31,17 @@ export const useMarketsTable = (address: Address | undefined) => {
 
   return {
     tableQuery,
-    onReload: useCallback(() => {
-      void Promise.all([
-        resetLendingVaults({}),
-        resetMintMarkets({}),
-        resetBadDebtMarkets(),
-        resetAllUserLendingVaults(address),
-        resetUserLendingSupplies({ userAddress: address }),
-        resetAllUserMintMarkets(address),
-      ])
-    }, [address]),
+    onReload: useCallback(
+      () =>
+        Promise.all([
+          resetLendingVaults({}),
+          resetMintMarkets({}),
+          resetBadDebtMarkets(),
+          resetAllUserLendingVaults(address),
+          resetUserLendingSupplies({ userAddress: address }),
+          resetAllUserMintMarkets(address),
+        ]),
+      [address],
+    ),
   }
 }
