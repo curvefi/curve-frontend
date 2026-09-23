@@ -17,6 +17,9 @@ export const PoolContextProvider = ({
 }) => {
   const { address: userAddress } = useConnection()
   const { curveApi: api = null } = useCurve()
+
+  // This is a global pool page toggle that changes many things on the pool page itself, whose toggle sits inside the forms.
+  // Alternatives would be prop drilling or yet another zustand store, neither sound pleasant.
   const [isWrapped, setIsWrapped] = useState(() => isWrappedOnly(pool))
 
   return (

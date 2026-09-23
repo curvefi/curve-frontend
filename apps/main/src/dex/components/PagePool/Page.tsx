@@ -48,7 +48,7 @@ export const PagePool = () => {
     />
   ) : (
     pool && isHydrated && (
-      <PoolContextProvider key={`${chainId}:${poolIdOrAddress}`} network={network} pool={pool}>
+      <PoolContextProvider network={network} pool={pool}>
         <Transfer params={props} />
       </PoolContextProvider>
     )

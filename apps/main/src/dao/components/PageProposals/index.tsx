@@ -105,7 +105,7 @@ export const Proposals = () => {
       >
         <TableHeader
           title={t`Proposals`}
-          onReload={() => void onReload()}
+          onReload={onReload}
           isLoading={proposalsQuery.isFetching}
           testId="proposal-title"
         />

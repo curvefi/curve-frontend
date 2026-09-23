@@ -1,15 +1,11 @@
 import { getCampaignsExternalQueryKey } from '@evm-ui/entities/campaigns/campaigns-external'
 import { getCampaignsPoolsMerklQueryKey } from '@evm-ui/entities/campaigns/campaigns-pools-merkl'
 import type { PoolParams, UserChainParams, UserPoolParams } from '@evm-ui/lib/model'
+import { getLitePoolListQueryKey } from '@ui/features/pool-list/lite-pool-list.query'
 import { queryClient } from '@ui/features/queries/query-client'
 import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'
 import { invalidatePoolGaugeStatus } from './pool-gauge-status.query'
-import {
-  getLitePoolListQueryKey,
-  getPoolListRootQueryKey,
-  getPoolChainsQueryKey,
-  getLitePoolChainsQueryKey,
-} from './pool-list.query'
+import { getPoolListRootQueryKey, getPoolChainsQueryKey, getLitePoolChainsQueryKey } from './pool-list.query'
 import { invalidatePoolParameters } from './pool-parameters.query'
 import { invalidatePoolRewardsApy } from './pool-rewards-apy.query'
 import { invalidatePoolTotalStaked } from './pool-total-staked.query'

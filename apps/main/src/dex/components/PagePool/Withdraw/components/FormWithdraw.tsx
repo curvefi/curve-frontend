@@ -317,6 +317,8 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
     [updateFormValues],
   )
 
+  const tokenCount = useMemo(() => countBy(tokens), [tokens])
+
   return (
     <FormContent>
       <FieldLpToken
@@ -417,7 +419,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                         isNotEnough={false}
                         disabled={isDisabled}
                         haveSigner={haveSigner}
-                        haveSameTokenName={countBy(tokens)[token] > 1}
+                        haveSameTokenName={tokenCount[token] > 1}
                         isWithdraw
                         blockchainId={blockchainId}
                         token={token}

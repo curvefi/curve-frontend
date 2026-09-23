@@ -45,7 +45,9 @@ export const readSwapAmounts = () =>
   ).then(([inputAmount, outputAmount]) => ({ inputAmount, outputAmount }))
 
 export const readSwapMinimum = () =>
-  getActionValue('pool-swap-minimum-received').then(value => value!.match(DECIMAL_REGEX)![0] as Decimal)
+  getActionValue('pool-swap-minimum-received')
+    .should('match', DECIMAL_REGEX)
+    .then(value => value!.match(DECIMAL_REGEX)![0] as Decimal)
 
 export const checkSwapDetails = (
   { inputAmount, outputAmount }: { inputAmount: Decimal; outputAmount: Decimal },

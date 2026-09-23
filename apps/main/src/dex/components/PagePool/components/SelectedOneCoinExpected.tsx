@@ -1,4 +1,5 @@
 import { countBy } from 'lodash'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { shortenAddress } from '@evm-ui/utils'
@@ -35,13 +36,14 @@ export const SelectedOneCoinExpected = ({
     const idx = tokenAddresses.findIndex(tokenAddress => tokenAddress === selectedTokenAddress)
     handleChanged({ token: tokens[idx], tokenAddress: selectedTokenAddress })
   }
+  const tokenCount = useMemo(() => countBy(tokens), [tokens])
 
   return (
     <StyledRadioGroup aria-label="Withdraw from one coin" value={selectedTokenAddress} onChange={handleRadioChange}>
       {selectedTokenAddress ? (
         tokenAddresses.map((tokenAddress, idx) => {
           const symbol = tokens[idx]
-          const haveSameTokenName = countBy(tokens)[symbol] > 1
+          const haveSameTokenName = tokenCount[symbol] > 1
 
           return (
             <Radio
