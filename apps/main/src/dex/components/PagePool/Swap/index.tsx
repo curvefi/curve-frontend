@@ -289,10 +289,9 @@ export const Swap = ({
 
   useEffect(() => {
     if (poolId) {
-      resetState(isWrapped)
+      resetState(poolData, isWrapped)
     }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [isWrapped, poolData, poolId, resetState])
 
   // get user balances
   useEffect(() => {
