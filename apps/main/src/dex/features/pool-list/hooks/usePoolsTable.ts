@@ -85,6 +85,7 @@ export const usePoolsTable = ({
             lpBalance:
               positions.data?.positions.find(({ address }) => isAddressEqual(address, pool.address))?.totalBalance ??
               '0',
+            depositsUsd: undefined,
           }),
         ),
       [network, campaigns.data, positions.data],

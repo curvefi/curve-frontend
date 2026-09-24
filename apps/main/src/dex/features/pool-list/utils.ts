@@ -80,7 +80,7 @@ export const enrichPoolRow = (
   pool: PoolRowData,
   { chainId, blockchainId }: NetworkConfig,
   campaignsByAddress: Record<string, CampaignRewards[]> | Nullish,
-  userPosition: PoolRow['userPosition'] = { lpBalance: '0' },
+  userPosition: PoolRow['userPosition'],
 ): PoolRow => ({
   ...pool,
   chainId,

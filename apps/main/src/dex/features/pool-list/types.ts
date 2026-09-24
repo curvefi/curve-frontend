@@ -52,7 +52,7 @@ export type PoolRowData = {
 type PoolUserPosition = {
   /** Both staked and unstaked */
   lpBalance: Decimal
-  depositsUsd?: Decimal
+  depositsUsd: Decimal | undefined
   claimables?: QueryProp<PoolClaimables>
 }
 
