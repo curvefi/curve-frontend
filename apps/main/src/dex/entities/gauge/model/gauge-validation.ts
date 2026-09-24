@@ -1,5 +1,9 @@
 import { group, test } from 'vest'
-import { addressValidationFn, amountValidationFn, tokenIdValidationFn } from '@evm-ui/queries/validation/basic-validation'
+import {
+  addressValidationFn,
+  amountValidationFn,
+  tokenIdValidationFn,
+} from '@evm-ui/queries/validation/basic-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
