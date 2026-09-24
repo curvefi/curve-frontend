@@ -107,23 +107,19 @@ describe('llama market constants', () => {
     }
   })
 
-  it('uses stable leverage slippage for stable markets', () => {
-    const stableAddresses = getMarketAddressesByAssetsType(MarketAssetsType.Stable)
-    for (const [chainId, chainMarkets] of recordEntries(MARKET_ASSETS_TYPE_BY_CONTROLLER)) {
-      for (const address of stableAddresses.filter(address => chainMarkets[address] === MarketAssetsType.Stable)) {
-        expect(getMarketLeverageSlippage(Number(chainId), address)).to.eq(SLIPPAGE.stable.default)
+  for (const [assetsType, expectedSlippage] of [
+    [MarketAssetsType.Stable, SLIPPAGE.stable.default],
+    [MarketAssetsType.Volatile, SLIPPAGE.leverage.default],
+  ] as const) {
+    it(`uses the expected leverage slippage for ${assetsType} markets`, () => {
+      const addresses = getMarketAddressesByAssetsType(assetsType)
+      for (const [chainId, chainMarkets] of recordEntries(MARKET_ASSETS_TYPE_BY_CONTROLLER)) {
+        for (const address of addresses.filter(address => chainMarkets[address] === assetsType)) {
+          expect(getMarketLeverageSlippage(Number(chainId), address)).to.eq(expectedSlippage)
+        }
       }
-    }
-  })
-
-  it('uses default leverage slippage for volatile markets', () => {
-    const volatileAddresses = getMarketAddressesByAssetsType(MarketAssetsType.Volatile)
-    for (const [chainId, chainMarkets] of recordEntries(MARKET_ASSETS_TYPE_BY_CONTROLLER)) {
-      for (const address of volatileAddresses.filter(address => chainMarkets[address] === MarketAssetsType.Volatile)) {
-        expect(getMarketLeverageSlippage(Number(chainId), address)).to.eq(SLIPPAGE.leverage.default)
-      }
-    }
-  })
+    })
+  }
 
   it('resolves configured market providers by release channel', () => {
     expect(getMarketLeverageProviders(Chain.Ethereum, PROVIDER_TEST_CONTROLLER, ReleaseChannel.Beta)).to.deep.eq(
