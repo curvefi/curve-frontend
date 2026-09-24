@@ -42,7 +42,11 @@ const getRateValueOptions = (
   ...(volatile && { color: 'error', formatter: formatCappedRateValue }),
 })
 
-const PRIMARY_METRIC_SIZE = 6 as const
+const PRIMARY_METRIC_SIZE = {
+  full: 6,
+  lite: 6,
+  userPositions: 4
+} satisfies Record<PoolTableVariant, number>
 
 const PoolTokens = ({ pool }: { pool: PoolRow }) => (
   <Stack data-testid="pool-tokens" sx={{ marginBlockStart: Spacing.md, gap: Spacing.sm }}>
@@ -74,16 +78,24 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
   </Stack>
 )
 
-export const PoolExpandedPanel = ({ pool, variant }: { pool: PoolRow; variant: PoolTableVariant }) => {
+export const PoolExpandedPanel = ({
+  pool,
+  pool: {
+    userPosition: { claimables },
+  },
+  variant,
+}: {
+  pool: PoolRow
+  variant: PoolTableVariant
+}) => {
   const currentDate = useCurrentDate()
   const baseRate = getBaseApr(pool, 'daily')
   const netRate = getNetApr(pool)
   const volatileBaseRate = isVolatileRate(baseRate)
-  const claimables = pool.userPosition.claimables
 
   return (
     <Grid container spacing={Spacing.md}>
-      <Grid size={PRIMARY_METRIC_SIZE}>
+      <Grid size={PRIMARY_METRIC_SIZE[variant]}>
         <Metric
           category={PRIMARY_METRIC_CATEGORY}
           label={POOL_TITLES[PoolColumnId.NetRate]}
@@ -104,7 +116,7 @@ export const PoolExpandedPanel = ({ pool, variant }: { pool: PoolRow; variant: P
         />
       </Grid>
       {variant === 'full' && (
-        <Grid size={PRIMARY_METRIC_SIZE}>
+        <Grid size={PRIMARY_METRIC_SIZE[variant]}>
           <Metric
             category={PRIMARY_METRIC_CATEGORY}
             label={t`24h Volume`}
@@ -115,7 +127,7 @@ export const PoolExpandedPanel = ({ pool, variant }: { pool: PoolRow; variant: P
         </Grid>
       )}
       {variant === 'lite' && (
-        <Grid size={PRIMARY_METRIC_SIZE}>
+        <Grid size={PRIMARY_METRIC_SIZE[variant]}>
           <Metric
             category={PRIMARY_METRIC_CATEGORY}
             label={t`TVL`}
@@ -127,7 +139,7 @@ export const PoolExpandedPanel = ({ pool, variant }: { pool: PoolRow; variant: P
       )}
       {variant === 'userPositions' && (
         <>
-          <Grid size={PRIMARY_METRIC_SIZE}>
+          <Grid size={PRIMARY_METRIC_SIZE[variant]}>
             <Metric
               category={PRIMARY_METRIC_CATEGORY}
               label={POOL_TITLES[PoolColumnId.Deposits]}
@@ -137,19 +149,21 @@ export const PoolExpandedPanel = ({ pool, variant }: { pool: PoolRow; variant: P
               testId="pool-deposits"
             />
           </Grid>
-          {claimables?.data && (
-            <Grid size={PRIMARY_METRIC_SIZE}>
+          {claimables && (
+            <Grid size={PRIMARY_METRIC_SIZE[variant]}>
               <Metric
                 category={PRIMARY_METRIC_CATEGORY}
                 label={POOL_TITLES[PoolColumnId.Claimables]}
                 value={mapQuery(claimables, rewards => claimablesTotalUsd(rewards))}
                 valueOptions={{ unit: 'dollar' }}
-                valueTooltip={{
-                  body: <ClaimablesTooltipContent claimables={claimables.data} blockchainId={pool.blockchainId} />,
-                  clickable: true,
-                  placement: 'top',
-                  title: POOL_TITLES[PoolColumnId.Claimables],
-                }}
+                valueTooltip={
+                  claimables.data && {
+                    body: <ClaimablesTooltipContent claimables={claimables.data} blockchainId={pool.blockchainId} />,
+                    clickable: true,
+                    placement: 'top',
+                    title: POOL_TITLES[PoolColumnId.Claimables],
+                  }
+                }
                 icon={maybe(claimables.data, rewards => (
                   <ClaimablesIcons claimables={rewards} blockchainId={pool.blockchainId} />
                 ))}
