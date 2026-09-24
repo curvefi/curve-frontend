@@ -13,8 +13,8 @@ import {
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
-import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
+import { getGasConfig } from '@evm-ui/queries/gas-info.query'
+import { waitForTransaction, waitForTransactions } from '@evm-ui/utils/ethers'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { log } from '@ui/lib/logging'
 

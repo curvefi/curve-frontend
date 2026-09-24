@@ -1,21 +1,20 @@
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { resetPoolLists } from '@/dex/queries/invalidation'
-import { useUserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
-import { useUserPoolPositions } from '@/dex/queries/user-pool-positions.query'
+import { useUserPoolClaimables, type UserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
+import { useUserPoolPositions, type UserPoolPosition } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import { useCampaigns } from '@evm-ui/entities/campaigns'
-import type { QueryData } from '@evm-ui/lib'
-import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useCampaigns } from '@evm-ui/queries/campaigns'
+import { useTokenUsdRates, type TokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, type Query, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { claimablesTotalUsd, enrichPoolRow, poolToRowData } from '../utils'
 
 const getPoolUserPosition = (
-  position: QueryData<typeof useUserPoolPositions>['positions'][number],
-  tokenRates: QueryData<typeof useTokenUsdRates> | undefined,
-  claimables: Query<QueryData<typeof useUserPoolClaimables>>,
+  position: UserPoolPosition['positions'][number],
+  tokenRates: TokenUsdRates | undefined,
+  claimables: Query<UserPoolClaimables>,
 ) => ({
   lpBalance: position.totalBalance,
   depositsUsd: maybe(tokenRates?.[position.lpTokenAddress], price => decimalMultiply(position.totalBalance, price)),

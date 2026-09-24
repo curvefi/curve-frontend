@@ -6,8 +6,8 @@ import {
   getSnapshotCollateralRebasingYieldApr,
   getSupplyApyAverageMetrics,
 } from '@/llamalend/rates.utils'
-import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@evm-ui/entities/crvusd-snapshots'
-import { LendingSnapshot, useLendingSnapshots } from '@evm-ui/entities/lending-snapshots'
+import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@evm-ui/queries/crvusd-snapshots.query'
+import { LendingSnapshot, useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
 

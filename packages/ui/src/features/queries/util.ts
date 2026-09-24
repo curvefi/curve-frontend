@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { objectKeys } from '@primitives/objects.utils'
-import type { UseQueryResult } from '@tanstack/react-query'
+import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
 
@@ -61,7 +61,12 @@ export type QueryOrValue<T> = QueryProp<T> | T
  */
 export const q = <T>({ data, isLoading, error }: Query<T>) => ({ data, isLoading, error }) as QueryProp<T>
 
-type QueryData<TQuery> = TQuery extends Query<infer TData> ? TData : never
+/** Extracts the data type from a query hook, preserving nullable results. */
+export type QueryData<TQuery> = TQuery extends (...args: never[]) => Query<infer TData> ? TData : never
+
+/** Extracts the data type from query hook options */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type QueryOptionsData<T> = T extends UseQueryOptions<infer TData, any, any, any> ? TData : never
 
 /**
  * Takes the first query with data, then the first query with an error, then the first query that is loading,
@@ -71,7 +76,7 @@ export const fallbackQ = <const TQueries extends readonly QueryProp<unknown>[]>(
   (queries.find(q => q.data != null) ??
     queries.find(q => q.error) ??
     queries.find(q => q.isLoading) ??
-    queries[0]) as QueryProp<QueryData<TQueries[number]>>
+    queries[0]) as QueryProp<TQueries[number]['data']>
 
 /**
  * Maps a Query type to extract partial data from it.

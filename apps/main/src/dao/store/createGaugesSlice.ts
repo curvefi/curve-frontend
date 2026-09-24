@@ -14,7 +14,7 @@ import {
   TransactionState,
 } from '@/dao/types/dao.types'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
-import { waitForTransaction } from '@evm-ui/lib/ethers'
+import { waitForTransaction } from '@evm-ui/utils/ethers'
 import { Chain } from '@primitives/network.utils'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'

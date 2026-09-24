@@ -1,5 +1,5 @@
 import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'

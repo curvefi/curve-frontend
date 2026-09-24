@@ -6,7 +6,7 @@ import { CampaignTooltipContent } from '@/dex/features/pool-list/cells/RewardIco
 import { RewardsRateTooltipContent } from '@/dex/features/pool-list/cells/RewardsRateTooltipContent'
 import type { PoolRow } from '@/dex/features/pool-list/types'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { Chain } from '@primitives/network.utils'
 import { constQ } from '@ui/features/queries/util'
 

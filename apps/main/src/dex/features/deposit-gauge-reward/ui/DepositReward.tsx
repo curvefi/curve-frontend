@@ -8,7 +8,7 @@ import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/typ
 import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import { maybes } from '@primitives/objects.utils'

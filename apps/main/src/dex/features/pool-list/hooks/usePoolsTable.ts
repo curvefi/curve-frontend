@@ -3,7 +3,7 @@ import { isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import { resetPoolLists } from '@/dex/queries/invalidation'
 import { useLitePoolChains, usePoolChains, usePoolList } from '@/dex/queries/pool-list.query'
-import { useUserPoolPositions } from '@/dex/queries/user-pool-positions.query'
+import { useUserPoolPositions, type UserPoolPosition } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import type {
   LitePool,
@@ -11,9 +11,8 @@ import type {
   V2Pool,
   V2PoolSortField as PoolSortField,
 } from '@curvefi/prices-api/pools'
-import { useCampaigns } from '@evm-ui/entities/campaigns'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import type { QueryData } from '@evm-ui/lib'
+import { useCampaigns } from '@evm-ui/queries/campaigns'
 import type { Address } from '@primitives/address.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { constQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
@@ -31,7 +30,7 @@ class UnsupportedPoolListError extends Error {
 const litePoolsToRows = ({ pools }: { pools: LitePool[] }) => pools.map(litePoolToRowData)
 const poolsToRows = ({ pools }: { pools: V2Pool[] }) => pools.map(poolToRowData)
 
-const getPoolUserPosition = (poolAddress: Address, positions: QueryData<typeof useUserPoolPositions> | undefined) => ({
+const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPosition | undefined) => ({
   lpBalance: positions?.positions.find(({ address }) => isAddressEqual(address, poolAddress))?.totalBalance ?? '0',
   depositsUsd: undefined,
   claimables: constQ([]),

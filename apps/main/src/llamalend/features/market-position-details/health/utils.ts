@@ -1,5 +1,4 @@
-import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
-import { QueryData } from '@evm-ui/lib'
+import type { HealthValues } from '@/llamalend/queries/user/user-health.query'
 import type { Theme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, maybe, maybes, recordEntries, recordValues } from '@primitives/objects.utils'
@@ -77,7 +76,7 @@ export const getLiquidationBufferPercent = (liquidationBuffer: Decimal | Nullish
     ? 0
     : clampPercentage((+liquidationBuffer / recordValues(LIQUIDATION_BUFFER_THRESHOLDS).at(-1)!) * 100)
 
-export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValues> | undefined) => {
+export const getHealthDetailsState = (healthData: HealthValues | undefined) => {
   const { health, liquidationBuffer } = healthData ?? {}
   // it returns the current type of the position, to either show the "health" or the "liquidationBuffer"
   const type: HealthType =

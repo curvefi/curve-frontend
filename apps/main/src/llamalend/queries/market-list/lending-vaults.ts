@@ -10,14 +10,14 @@ import {
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
 import { paginate } from '@curvefi/prices-api/paginate'
-import { type ChainNameQuery, type UserParams, type UserQuery } from '@evm-ui/lib/model/query'
-import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
-import { pricesApiChainNameValidationGroup } from '@evm-ui/lib/model/query/prices-chain-validation'
+import { type ChainNameQuery, type UserParams, type UserQuery } from '@evm-ui/queries/root-keys'
+import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
+import { pricesApiChainNameValidationGroup } from '@evm-ui/queries/validation/prices-chain-validation'
 import {
   type UserContractParams,
   type UserContractQuery,
   userContractValidationSuite,
-} from '@evm-ui/lib/model/query/user-contract'
+} from '@evm-ui/queries/validation/user-contract-validation'
 import type { Address } from '@primitives/address.utils'
 import { type Nullish, fromEntries } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'

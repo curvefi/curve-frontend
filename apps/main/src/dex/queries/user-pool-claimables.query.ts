@@ -2,14 +2,14 @@ import { groupBy } from 'lodash'
 import { useCallback } from 'react'
 import type { ClaimableReward } from '@/dex/types/main.types'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/lib/model'
-import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
-import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/queries/root-keys'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { q, useMappedQuery } from '@ui/features/queries/util'
+import { q, useMappedQuery, type QueryData } from '@ui/features/queries/util'
 import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -89,3 +89,5 @@ export function useUserPoolClaimables(params: UserChainParams, positions: Return
     isFetching: query.isFetching,
   }
 }
+
+export type UserPoolClaimables = QueryData<typeof useUserPoolClaimables>

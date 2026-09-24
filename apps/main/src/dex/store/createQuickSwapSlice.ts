@@ -17,7 +17,7 @@ import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/mai
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
+import { fetchGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
 import type { Decimal } from '@primitives/decimal.utils'
 import { sleep } from '@primitives/promise.utils'

@@ -1,9 +1,10 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getUserPoolPositions, MAX_USER_POOL_PAGE_SIZE } from '@curvefi/prices-api/pools'
-import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/lib/model'
-import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
-import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/queries/root-keys'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { queryFactory } from '@ui/features/queries/factory'
+import type { QueryData } from '@ui/features/queries/util'
 import { decimalDiv, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 
@@ -35,3 +36,5 @@ export const {
   }),
   category: 'dex.user',
 })
+
+export type UserPoolPosition = QueryData<typeof useUserPoolPositions>
