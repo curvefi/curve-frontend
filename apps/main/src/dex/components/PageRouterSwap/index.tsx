@@ -642,7 +642,6 @@ export const QuickSwap = ({
             params={params}
             routes={mapQuery(routes, r => r.routes)}
             tokens={tokensMapper.data}
-            poolsMapper={poolsMapper}
             swapCustomRouteRedirect={network?.swapCustomRouteRedirect}
           />
         </Stack>
