@@ -142,11 +142,7 @@ export const POOL_COLUMNS = columnHelper.columns([
     id: PoolColumnId.Claimables,
     header: POOL_TITLES[PoolColumnId.Claimables],
     cell: ({ row }) => (
-      <ClaimablesCell
-        blockchainId={row.original.blockchainId}
-        // Assuming this cell is only used for user table which always has a claimable query prop.
-        claimables={row.original.userPosition.claimables!}
-      />
+      <ClaimablesCell blockchainId={row.original.blockchainId} claimables={row.original.userPosition.claimables} />
     ),
     meta: {
       type: 'numeric',
