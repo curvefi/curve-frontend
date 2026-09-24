@@ -4,6 +4,9 @@ import { type MakeOptional } from '@ui/features/queries/util'
 import { useDebounced } from '@ui/hooks/useDebounce'
 import { LargeTokenInput, type LargeTokenInputProps } from './LargeTokenInput'
 
+/**
+ * @deprecated Use the form-level debouncing built into new forms instead. This is retained for legacy DEX forms.
+ */
 export const DebouncedLargeTokenInput = ({
   balance,
   onBalance: callback,
