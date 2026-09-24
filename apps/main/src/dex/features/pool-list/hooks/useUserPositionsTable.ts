@@ -5,16 +5,17 @@ import { useUserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import { useUserPoolPositions } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCampaigns } from '@evm-ui/entities/campaigns'
+import type { QueryData } from '@evm-ui/lib'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { maybe } from '@primitives/objects.utils'
-import { mapQuery, useMappedQuery } from '@ui/features/queries/util'
+import { mapQuery, type Query, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { claimablesTotalUsd, enrichPoolRow, poolToRowData } from '../utils'
 
 const getPoolUserPosition = (
-  position: NonNullable<ReturnType<typeof useUserPoolPositions>['data']>['positions'][number],
-  tokenRates: ReturnType<typeof useTokenUsdRates>['data'],
-  claimables: Pick<ReturnType<typeof useUserPoolClaimables>, 'data' | 'isLoading' | 'error'>,
+  position: QueryData<typeof useUserPoolPositions>['positions'][number],
+  tokenRates: QueryData<typeof useTokenUsdRates> | undefined,
+  claimables: Query<QueryData<typeof useUserPoolClaimables>>,
 ) => ({
   lpBalance: position.totalBalance,
   depositsUsd: maybe(tokenRates?.[position.lpTokenAddress], price => decimalMultiply(position.totalBalance, price)),
