@@ -3,7 +3,6 @@ import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import svgr from 'vite-plugin-svgr'
-import vercel from 'vite-plugin-vercel'
 
 const {
   SENTRY_AUTH_TOKEN,
@@ -22,7 +21,6 @@ export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     svgr(),
-    vercel(),
     ...(SENTRY_PROJECT
       ? sentryVitePlugin({
           applicationKey: SENTRY_APPLICATION_KEY,
