@@ -1,7 +1,7 @@
 import { group, test } from 'vest'
+import { ChainNameParams } from '@evm-ui/queries/root-keys'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import { ChainNameParams } from './root-keys'
 
 export const pricesApiChainNameValidationGroup = ({ blockchainId }: ChainNameParams) =>
   group('chainNameValidation', () => {

@@ -1,6 +1,6 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { type ChainParams, type ChainQuery, rootKeys } from '@evm-ui/lib/model'
 import { llamaApiValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
+import { type ChainParams, type ChainQuery, rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 

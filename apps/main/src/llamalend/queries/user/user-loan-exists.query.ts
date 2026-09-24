@@ -1,7 +1,7 @@
 import { getMarket } from '@/llamalend/llama.utils'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
+import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useLoanExists } = queryFactory({

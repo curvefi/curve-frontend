@@ -8,7 +8,6 @@ import {
   USER_MARKETS_FIRST_PAGE,
 } from '@curvefi/prices-api/crvusd'
 import { paginate } from '@curvefi/prices-api/paginate'
-import { type ChainNameQuery, type UserQuery } from '@evm-ui/lib/model/query'
 import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import { pricesApiChainNameValidationGroup } from '@evm-ui/lib/model/query/prices-chain-validation'
 import {
@@ -16,6 +15,7 @@ import {
   UserContractQuery,
   userContractValidationSuite,
 } from '@evm-ui/lib/model/query/user-contract'
+import { type ChainNameQuery, type UserQuery } from '@evm-ui/queries/root-keys'
 import type { Address } from '@primitives/address.utils'
 import { type Nullish, recordEntries } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'

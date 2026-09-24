@@ -15,7 +15,7 @@ import {
 } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getReturnOnEquity } from '@/llamalend/rates.utils'
-import type { MarketParams } from '@evm-ui/lib/model/query/root-keys'
+import type { MarketParams } from '@evm-ui/queries/root-keys'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
 import { requireBlockchainId } from '@evm-ui/utils/network'

@@ -1,7 +1,7 @@
 import { isAddress, type Address } from 'viem'
 import { getPools } from '@curvefi/prices-api/pools'
-import { rootKeys, type ChainNameParams, type ChainNameQuery } from '@evm-ui/lib/model'
 import { pricesApiChainValidationSuite } from '@evm-ui/lib/model/query/prices-chain-validation'
+import { rootKeys, type ChainNameParams, type ChainNameQuery } from '@evm-ui/queries/root-keys'
 import { fromEntries, maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { mapQuery } from '@ui/features/queries/util'

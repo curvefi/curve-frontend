@@ -1,6 +1,6 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type ChainParams } from '@evm-ui/lib/model'
 import { curveApiWithWalletValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
+import { rootKeys, type ChainParams } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData } from '@ui/features/queries/util'
 

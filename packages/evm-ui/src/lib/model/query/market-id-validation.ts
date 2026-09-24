@@ -1,9 +1,9 @@
 import { group, test } from 'vest'
+import { MarketParams } from '@evm-ui/queries/root-keys'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { chainValidationGroup } from './chain-validation'
 import { llamaApiValidationGroup } from './curve-api-validation'
-import { MarketParams } from './root-keys'
 
 export const marketIdValidationGroup = ({ marketId }: Pick<MarketParams, 'marketId'>) =>
   group('marketIdValidation', () => {

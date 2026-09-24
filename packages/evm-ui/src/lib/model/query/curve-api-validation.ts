@@ -1,9 +1,9 @@
 import { group, test } from 'vest'
 import { getLib } from '@evm-ui/features/connect-wallet'
+import { ChainParams } from '@evm-ui/queries/root-keys'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { chainValidationGroup } from './chain-validation'
-import { ChainParams } from './root-keys'
 
 type CurveApiOptions = { requireRpc?: boolean }
 

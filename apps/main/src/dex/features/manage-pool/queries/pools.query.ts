@@ -1,7 +1,7 @@
 import { isAddressEqual } from 'viem'
 import { getRefuelPools } from '@curvefi/prices-api/refuel'
-import { rootKeys, type ChainNameParams, type ChainNameQuery } from '@evm-ui/lib/model'
 import { pricesApiChainValidationSuite } from '@evm-ui/lib/model/query/prices-chain-validation'
+import { rootKeys, type ChainNameParams, type ChainNameQuery } from '@evm-ui/queries/root-keys'
 import type { Address } from '@primitives/address.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'

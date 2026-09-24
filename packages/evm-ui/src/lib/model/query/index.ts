@@ -1,1 +1,1 @@
-export * from './root-keys'
+export * from '@evm-ui/queries/root-keys'

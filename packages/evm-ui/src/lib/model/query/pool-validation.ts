@@ -1,8 +1,8 @@
 import { group, test } from 'vest'
+import { PoolParams } from '@evm-ui/queries/root-keys'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { chainValidationGroup } from './chain-validation'
-import { PoolParams } from './root-keys'
 
 export const poolValidationGroup = ({ chainId, poolId }: PoolParams) =>
   group('poolValidation', () => {

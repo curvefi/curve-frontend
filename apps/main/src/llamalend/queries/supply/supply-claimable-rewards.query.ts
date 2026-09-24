@@ -1,5 +1,5 @@
 import { Address } from 'viem'
-import { rootKeys, UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, UserMarketParams, UserMarketQuery } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { claimableRewardsValidationSuite, requireGauge } from '../validation/supply.validation'

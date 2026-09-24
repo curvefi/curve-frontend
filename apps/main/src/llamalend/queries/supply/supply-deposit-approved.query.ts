@@ -1,4 +1,4 @@
-import { rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { DepositParams, DepositQuery, depositValidationSuite, requireVault } from '../validation/supply.validation'
 

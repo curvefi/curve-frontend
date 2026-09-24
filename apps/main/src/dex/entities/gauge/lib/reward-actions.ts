@@ -15,7 +15,7 @@ import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { getToken, useTokens } from '@/dex/queries/tokens.query'
 import { useEvmMutation } from '@evm-ui/lib/model/mutation/useEvmMutation'
-import { type GaugeQuery, rootKeys } from '@evm-ui/lib/model/query'
+import { type GaugeQuery, rootKeys } from '@evm-ui/queries/root-keys'
 import { waitForApproval } from '@evm-ui/utils'
 import type { Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'

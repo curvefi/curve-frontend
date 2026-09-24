@@ -1,6 +1,6 @@
-import type { PoolParams, UserChainParams, UserPoolParams } from '@evm-ui/lib/model'
 import { getCampaignsExternalQueryKey } from '@evm-ui/queries/campaigns/campaigns-external.query'
 import { getCampaignsPoolsMerklQueryKey } from '@evm-ui/queries/campaigns/campaigns-pools-merkl.query'
+import type { PoolParams, UserChainParams, UserPoolParams } from '@evm-ui/queries/root-keys'
 import { getLitePoolListQueryKey } from '@ui/features/pool-list/lite-pool-list.query'
 import { queryClient } from '@ui/features/queries/query-client'
 import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'

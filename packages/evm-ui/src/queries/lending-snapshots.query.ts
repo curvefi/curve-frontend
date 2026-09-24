@@ -1,7 +1,7 @@
 import { getSnapshots, Snapshot } from '@curvefi/prices-api/llamalend'
-import { ContractQuery, rootKeys } from '@evm-ui/lib/model/query'
 import { contractValidationSuite } from '@evm-ui/lib/model/query/contract-validation'
 import type { TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
+import { ContractQuery, rootKeys } from '@evm-ui/queries/root-keys'
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
 import { TIME_OPTION_MS } from '@ui/lib/time'
 import { type FieldsOf } from '@ui/lib/validation/types'

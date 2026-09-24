@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys } from '@evm-ui/lib/model'
 import { type OnTransactionSuccess, useEvmMutation } from '@evm-ui/lib/model/mutation/useEvmMutation'
+import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
 import type { ExtendLockMutation } from '../queries/extend-lock.types'
