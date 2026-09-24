@@ -14,8 +14,7 @@ import type {
 import { useCampaigns } from '@evm-ui/entities/campaigns'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
-import { useCombinedQueries } from '@ui/features/queries/combine'
-import { constQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import type { PoolsApiParams } from '../filters/utils'
 import { enrichPoolRow, litePoolToRowData, poolToRowData } from '../utils'
 import { POOLS_PAGE_SIZE } from './usePoolsPagination'
@@ -77,18 +76,18 @@ export const usePoolsTable = ({
   const litePoolRows = useMappedQuery(litePoolList, litePoolsToRows)
   const poolRows = useMappedQuery(poolList, poolsToRows)
 
-  // constQ suppresses loading state, and ?? null allows useCombinedQueries to run even when data is not yet loaded or present.
-  const enrichedPools = useCombinedQueries(
-    [isLite ? litePoolRows : poolRows, constQ(network), constQ(campaigns.data), constQ(positions.data ?? null)],
+  const enrichedPools = useMappedQuery(
+    isLite ? litePoolRows : poolRows,
     useCallback(
-      (pools, network, campaigns, positions) =>
+      pools =>
         pools.map(pool =>
-          enrichPoolRow(pool, network, campaigns, {
+          enrichPoolRow(pool, network, campaigns.data, {
             lpBalance:
-              positions?.positions.find(({ address }) => isAddressEqual(address, pool.address))?.totalBalance ?? '0',
+              positions.data?.positions.find(({ address }) => isAddressEqual(address, pool.address))?.totalBalance ??
+              '0',
           }),
         ),
-      [],
+      [network, campaigns.data, positions.data],
     ),
   )
 
