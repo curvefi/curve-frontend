@@ -1040,27 +1040,6 @@ const poolWithdraw = {
 }
 
 const wallet = {
-  getUserLiquidityUSD: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
-    log('getUserLiquidityUSD', poolIds, walletAddress)
-    return await curve.getUserLiquidityUSD(poolIds, walletAddress)
-  },
-  getUserClaimable: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
-    log('getUserClaimable', poolIds, walletAddress)
-    const fetchedUserClaimable = await curve.getUserClaimable(poolIds, walletAddress)
-    if (curve.chainId === 8453) {
-      return fetchedUserClaimable.map(poolClaimables => {
-        if (Array.isArray(poolClaimables)) {
-          const crvClaimables = poolClaimables.filter(c => c.symbol === 'CRV')
-          // Base chain show too many CRV
-          if (crvClaimables.length === 2) {
-            return [crvClaimables[0]]
-          }
-        }
-        return poolClaimables
-      })
-    }
-    return fetchedUserClaimable
-  },
   userClaimableFees: async (curve: CurveApi, activeKey: string, walletAddress: string) => {
     log('userClaimableFees', activeKey, walletAddress)
     const resp = { activeKey, '3CRV': '', crvUSD: '', error: '' }

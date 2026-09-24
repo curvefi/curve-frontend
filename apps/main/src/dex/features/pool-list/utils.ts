@@ -1,9 +1,11 @@
+import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { LitePool, V2Pool } from '@curvefi/prices-api/pools'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { type Nullish, notFalsy } from '@primitives/objects.utils'
+import { decimalSum } from '@ui/lib/decimal'
 import { isVyperVulnerablePool } from './alerts'
 import type { PoolRow, PoolRowData } from './types'
 
@@ -78,7 +80,7 @@ export const enrichPoolRow = (
   pool: PoolRowData,
   { chainId, blockchainId }: NetworkConfig,
   campaignsByAddress: Record<string, CampaignRewards[]> | Nullish,
-  userPosition: PoolRow['userPosition'] = { lpBalance: '0' },
+  userPosition: PoolRow['userPosition'],
 ): PoolRow => ({
   ...pool,
   chainId,
@@ -88,3 +90,5 @@ export const enrichPoolRow = (
   url: getPath({ network: blockchainId }, `${DEX_ROUTES.PAGE_POOLS}/${pool.address}`),
   userPosition,
 })
+
+export const claimablesTotalUsd = (claimables: PoolClaimables) => decimalSum(...claimables.map(r => r.amountUsd))

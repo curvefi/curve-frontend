@@ -1,3 +1,4 @@
+import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import { MAINNET_CRV } from '@evm-ui/utils'
@@ -215,3 +216,17 @@ export const RewardIcons = ({
     </IconStack>
   )
 }
+
+export const ClaimablesIcons = ({
+  claimables,
+  blockchainId,
+}: {
+  claimables: PoolClaimables
+  blockchainId: PoolRow['blockchainId']
+}) => (
+  <IconStack iconSize="sm">
+    {claimables.map(reward => (
+      <TokenIcon key={reward.token} blockchainId={blockchainId} address={reward.token} size="mui-sm" />
+    ))}
+  </IconStack>
+)
