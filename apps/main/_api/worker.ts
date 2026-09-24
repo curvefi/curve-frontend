@@ -5,19 +5,19 @@ import { createRouterApiServer } from 'router-api/src/server'
 // disable request logging in production, pino is not supported in CF and already logs every request.
 const routerApi = createRouterApiServer({ logger: false })
 
-routerApi.addHook('onError', (request, _reply, error) => {
-  console.error(`[router-api] ${request.method} ${request.url} failed`, error)
-})
-
-await routerApi.ready()
+routerApi.addHook('onError', ({ method, url }, _reply, err) =>
+  console.error(`[router-api] ${method} ${url} failed`, err),
+)
 
 const routerApiHandler = httpServerHandler(routerApi.server)
+const isRouterReady = routerApi.ready()
 
 export default {
   async fetch(request: Request): Promise<Response> {
     const { pathname } = new URL(request.url)
+    await isRouterReady
     return pathname.startsWith('/api/router/')
-      ? routerApiHandler.fetch(request)
+      ? await routerApiHandler.fetch(request)
       : new Response('Not Found', { status: 404 })
   },
 }
