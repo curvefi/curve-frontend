@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { objectKeys } from '@primitives/objects.utils'
-import type { UseQueryResult } from '@tanstack/react-query'
+import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
 
@@ -63,6 +63,10 @@ export const q = <T>({ data, isLoading, error }: Query<T>) => ({ data, isLoading
 
 /** Extracts the data type from a query hook, preserving nullable results. */
 export type QueryData<TQuery> = TQuery extends (...args: never[]) => Query<infer TData> ? TData : never
+
+/** Extracts the data type from query hook options */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type QueryOptionsData<T> = T extends UseQueryOptions<infer TData, any, any, any> ? TData : never
 
 /**
  * Takes the first query with data, then the first query with an error, then the first query that is loading,
