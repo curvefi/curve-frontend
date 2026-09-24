@@ -633,7 +633,7 @@ __metadata:
     "@coinbase/wallet-sdk": "npm:4.3.7"
     "@curvefi/api": "npm:2.69.17"
     "@curvefi/legacy-ui": "workspace:^"
-    "@curvefi/llamalend-api": "npm:2.5.2"
+    "@curvefi/llamalend-api": "npm:2.6.0"
     "@curvefi/ui": "workspace:^"
     "@metamask/connect-evm": "npm:2.1.1"
     "@safe-global/safe-apps-provider": "npm:0.18.6"
@@ -666,15 +666,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@curvefi/llamalend-api@npm:2.5.2":
-  version: 2.5.2
-  resolution: "@curvefi/llamalend-api@npm:2.5.2"
+"@curvefi/llamalend-api@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@curvefi/llamalend-api@npm:2.6.0"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.20"
     bignumber.js: "npm:9.3.1"
     ethers: "npm:6.17.0"
     memoizee: "npm:0.4.17"
-  checksum: 10c0/18dd656d929670db6ed04ff42a4e731d9ffeeef3312ba9aeaf03eb92dca5a20c9664e26c210e4c4cc795af634eaad3552492846e45c3e96438dc959e012562df
+  checksum: 10c0/6c5acee6f780773926a83d40645976b1adbd656e60ee1f7a81d72c16def799bfe0e0f715c10953f9ff77b6f93bf5024994b205032a8a1ed7b30eb760660e041a
   languageName: node
   linkType: hard
 
