@@ -9,14 +9,16 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import { AdvancedDetails } from '@ui/features/pool/advanced-details/AdvancedDetails'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
 import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { fromWei } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 const FEE_DECIMALS = 10
 
-const hasRampFinished = (futureATime: number) => futureATime < new Date().valueOf()
+const hasRampFinished = (futureATime: number, currentDate: Date) => futureATime < currentDate.valueOf()
 
 export const PoolAdvancedDetails = ({ network, pool, tokens }: PoolQuery & { tokens: QueryProp<PoolToken[]> }) => {
+  const currentDate = useCurrentDate()
   const params = { network, pool }
   const a = usePoolA(params)
   const config = usePoolConfig(params)
@@ -48,7 +50,7 @@ export const PoolAdvancedDetails = ({ network, pool, tokens }: PoolQuery & { tok
         future_A_time: futureATime,
         formatADisplay: value => formatNumber(value, 'pool.parameter'),
         rampADetails: maybes([futureATime, future_a, initial_a], (futureATime, future_a, initial_a) => ({
-          isFutureATimePassedToday: hasRampFinished(futureATime),
+          isFutureATimePassedToday: hasRampFinished(futureATime, currentDate),
           isRampUp: future_a > initial_a,
         })),
         ammFee: mapQuery(config, ({ fee }) => fromWei(fee, FEE_DECIMALS)),
