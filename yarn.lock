@@ -763,6 +763,7 @@ __metadata:
     storybook: "npm:10.5.10"
     vite: "npm:7.3.5"
     vite-plugin-svgr: "npm:5.2.0"
+    wrangler: "npm:^4.136.2"
   languageName: unknown
   linkType: soft
 

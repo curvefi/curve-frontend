@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "curve-frontend",
-  "compatibility_date": "2026-09-23",
+  "compatibility_date": "2026-09-24",
   "assets": { "directory": "./dist", "not_found_handling": "single-page-application" }
 }
