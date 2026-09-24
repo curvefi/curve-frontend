@@ -1,6 +1,6 @@
-import { createApprovedEstimateGasHook } from '@evm-ui/entities/gas-info'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { rootKeys } from '@evm-ui/lib/model'
+import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { queryFactory } from '@ui/features/queries/factory'
 import { useScrvUsdDepositIsApproved } from './scrvusd-deposit-is-approved.query'
 import type { ScrvUsdDepositParams, ScrvUsdDepositQuery } from './scrvusd.validation'

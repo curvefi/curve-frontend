@@ -13,9 +13,9 @@ import {
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type CampaignRewards, useCampaignsByAddress } from '@evm-ui/entities/campaigns'
-import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
 import type { UserMarketParams } from '@evm-ui/lib/model'
+import { type CampaignRewards, useCampaignsByAddress } from '@evm-ui/queries/campaigns'
+import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { MarketType } from '@evm-ui/types/market'
 import { BlockchainIds } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'

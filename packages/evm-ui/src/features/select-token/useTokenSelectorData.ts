@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useConfig } from 'wagmi'
-import { useTokenUsdRates } from '@evm-ui/entities/token-usd-rate'
 import { prefetchTokenBalances, useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
+import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import type { Address } from '@primitives/address.utils'
 import { recordEntries } from '@primitives/objects.utils'
 import type { TokenOption } from '@ui/features/select-token/types'

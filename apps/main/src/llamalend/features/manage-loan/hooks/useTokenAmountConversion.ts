@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
-import { useTokenUsdRate } from '@evm-ui/entities/token-usd-rate'
+import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'

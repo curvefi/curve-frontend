@@ -1,5 +1,5 @@
-import { CampaignRewards } from '@evm-ui/entities/campaigns'
-import { isMerkl } from '@evm-ui/entities/campaigns/merkl'
+import { CampaignRewards } from '@evm-ui/queries/campaigns'
+import { isMerkl } from '@evm-ui/queries/campaigns/merkl'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'

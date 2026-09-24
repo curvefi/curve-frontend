@@ -1,5 +1,5 @@
 import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { TableMeta } from '@tanstack/react-table'

@@ -1,6 +1,6 @@
-import { createEstimateGasHook } from '@evm-ui/entities/gas-info'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { rootKeys } from '@evm-ui/lib/model'
+import { createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { ExtendLockParams, ExtendLockQuery } from './extend-lock.types'
 import { extendLockQueryValidationSuite } from './extend-lock.validation'

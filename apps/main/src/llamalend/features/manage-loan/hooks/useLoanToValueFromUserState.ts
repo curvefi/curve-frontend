@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { useUserState } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useTokenUsdRate } from '@evm-ui/entities/token-usd-rate'
+import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'

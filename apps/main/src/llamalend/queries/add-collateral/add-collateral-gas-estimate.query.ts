@@ -1,7 +1,7 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { createApprovedEstimateGasHook } from '@evm-ui/entities/gas-info'
 import { rootKeys } from '@evm-ui/lib/model'
+import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type FieldsOf } from '@ui/lib/validation/types'
 import type { CollateralQuery } from '../validation/manage-loan.types'

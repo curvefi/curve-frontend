@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { test } from 'vest'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { createHash } from '@evm-ui/entities/router-api/router-api.utils'
+import { createHash } from '@evm-ui/queries/router-api/router-api.utils'
 import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, maybe, notFalsy, pick } from '@primitives/objects.utils'

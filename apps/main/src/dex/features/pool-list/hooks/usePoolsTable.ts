@@ -11,8 +11,8 @@ import type {
   V2Pool,
   V2PoolSortField as PoolSortField,
 } from '@curvefi/prices-api/pools'
-import { useCampaigns } from '@evm-ui/entities/campaigns'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { useCampaigns } from '@evm-ui/queries/campaigns'
 import type { Address } from '@primitives/address.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { constQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'

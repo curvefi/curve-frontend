@@ -5,9 +5,9 @@ import { type Nullish, fromEntries, notFalsy, objectKeys } from '@primitives/obj
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { useMappedQuery } from '@ui/features/queries/util'
-import { getCampaignsExternalOptions } from './campaigns-external'
-import { getCampaignsMarketsMerklOptions } from './campaigns-markets-merkl'
-import { getCampaignsPoolsMerklOptions } from './campaigns-pools-merkl'
+import { getCampaignsExternalOptions } from './campaigns-external.query'
+import { getCampaignsMarketsMerklOptions } from './campaigns-markets-merkl.query'
+import { getCampaignsPoolsMerklOptions } from './campaigns-pools-merkl.query'
 import type { Campaigns } from './types'
 
 /**

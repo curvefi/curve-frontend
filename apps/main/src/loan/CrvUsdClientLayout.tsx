@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { useGasInfoAndUpdateLib } from '@evm-ui/entities/gas-info'
 import { useRedirectToEth } from '@evm-ui/hooks/useRedirectToEth'
+import { useGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { Outlet } from '@tanstack/react-router'
 import { useParams } from '@ui/hooks/router'
 import { networksIdMapper } from './networks'

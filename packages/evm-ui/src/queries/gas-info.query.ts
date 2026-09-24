@@ -20,7 +20,7 @@ import { formatToken } from '@ui/lib/tokens'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
-import { useTokenUsdRate } from './token-usd-rate'
+import { useTokenUsdRate } from './token-usd-rate.query'
 
 type ChainGasConfig = { gasL2: boolean; gasPricesUnit: string; gasPricesUrl: string; gasPricesDefault: number }
 
