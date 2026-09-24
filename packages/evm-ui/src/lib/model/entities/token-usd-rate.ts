@@ -5,7 +5,6 @@ import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { getLib } from '@evm-ui/features/connect-wallet'
 import type { LibKey } from '@evm-ui/features/connect-wallet/lib/types'
 import { getWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
-import { QueryData } from '@evm-ui/lib'
 import { type ChainParams, rootKeys, type TokenParams, type TokenQuery } from '@evm-ui/lib/model/query'
 import { tokenValidationGroup } from '@evm-ui/lib/model/query/token-validation'
 import { BlockchainIds, REUSD_ADDRESS, SREUSD_ADDRESS } from '@evm-ui/utils'
@@ -14,6 +13,7 @@ import { Chain } from '@primitives/network.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { combineQueriesToObject } from '@ui/features/queries/combine'
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
+import type { QueryData } from '@ui/features/queries/util'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { readContract } from '@wagmi/core'
 
@@ -121,7 +121,6 @@ export const {
 })
 
 type UseTokenOptions = ReturnType<typeof getTokenUsdRateQueryOptions>
-export type TokenUsdRate = QueryData<typeof useTokenUsdRate>
 
 /** Hook to fetch USD rates for multiple tokens on a specific blockchain. */
 export const useTokenUsdRates = (
@@ -141,3 +140,6 @@ export const useTokenUsdRates = (
     ),
   })
 }
+
+export type TokenUsdRate = QueryData<typeof useTokenUsdRate>
+export type TokenUsdRates = QueryData<typeof useTokenUsdRates>

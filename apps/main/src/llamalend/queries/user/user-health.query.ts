@@ -1,12 +1,11 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
-import type { QueryData } from '@evm-ui/lib/queries/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import type { QueryProp } from '@ui/features/queries/util'
+import type { QueryData, QueryProp } from '@ui/features/queries/util'
 import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateIsFull } from '../validation/borrow-fields.validation'
@@ -99,4 +98,5 @@ export const useUserHealthValues = (params: UserMarketParams, enabled = true) =>
   }
 }
 
-export type HealthQuery = QueryProp<QueryData<typeof useUserHealthValues>>
+export type HealthValues = QueryData<typeof useUserHealthValues>
+export type HealthQuery = QueryProp<HealthValues>

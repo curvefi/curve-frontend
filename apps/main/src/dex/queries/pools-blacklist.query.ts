@@ -2,10 +2,9 @@ import { useCallback } from 'react'
 import { getAddress, type Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import { getPoolFilters } from '@curvefi/prices-api/chains'
-import { type QueryData } from '@evm-ui/lib'
 import { type ChainNameParams } from '@evm-ui/lib/model'
 import { queryFactory } from '@ui/features/queries/factory'
-import { useMappedQuery } from '@ui/features/queries/util'
+import { useMappedQuery, type QueryData } from '@ui/features/queries/util'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 // List from api.curve.finance: https://raw.githubusercontent.com/curvefi/curve-api/eed5dd84492b3e5611a34504a98bc1fa256defa5/routes/v1/getHiddenPools.js
@@ -209,7 +208,9 @@ const { useQuery: usePricesApiBlacklist } = queryFactory({
   category: 'dex.poolParams',
 })
 
-const getBlacklist = (blacklistPricesApi: QueryData<typeof usePricesApiBlacklist>, blockchainId: ChainBlacklist) =>
+type Blacklist = QueryData<typeof usePricesApiBlacklist>
+
+const getBlacklist = (blacklistPricesApi: Blacklist, blockchainId: ChainBlacklist) =>
   [
     ...(blacklist[blockchainId] ?? []),
     ...blacklistPricesApi.filter(({ chain }) => chain === blockchainId).map(({ address }) => address),

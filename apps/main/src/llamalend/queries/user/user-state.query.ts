@@ -1,9 +1,9 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
-import type { QueryData } from '@evm-ui/lib/queries'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
+import type { QueryData } from '@ui/features/queries/util'
 
 export const {
   useQuery: useUserState,

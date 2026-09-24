@@ -2,6 +2,7 @@ import { requireLib } from '@evm-ui/features/connect-wallet'
 import { rootKeys, type ChainParams } from '@evm-ui/lib/model'
 import { curveApiWithWalletValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
 import { queryFactory } from '@ui/features/queries/factory'
+import type { QueryData } from '@ui/features/queries/util'
 
 export const { useQuery: useBasePools, getQueryData: getBasePools } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'base-pools'] as const,
@@ -9,3 +10,5 @@ export const { useQuery: useBasePools, getQueryData: getBasePools } = queryFacto
   validationSuite: curveApiWithWalletValidationSuite,
   category: 'dex.poolParams',
 })
+
+export type BasePool = QueryData<typeof useBasePools>[number]

@@ -9,7 +9,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { q, useMappedQuery } from '@ui/features/queries/util'
+import { q, useMappedQuery, type QueryData } from '@ui/features/queries/util'
 import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -89,3 +89,5 @@ export function useUserPoolClaimables(params: UserChainParams, positions: Return
     isFetching: query.isFetching,
   }
 }
+
+export type UserPoolClaimables = QueryData<typeof useUserPoolClaimables>
