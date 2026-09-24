@@ -15,8 +15,6 @@ import type {
   StepKey,
 } from '@/dex/components/PageRouterSwap/types'
 import { useNetworks } from '@/dex/entities/networks'
-import { usePoolsMapper } from '@/dex/hooks/usePoolsMapper'
-import type { PoolsMapper } from '@/dex/hooks/usePoolsMapper'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import { useToken, useTokens } from '@/dex/queries/tokens.query'
@@ -115,8 +113,6 @@ export const QuickSwap = ({
     error: apiRoutesError,
   } = useRouterApi({ chainId, userAddress, searchedParams }, !userAddress)
   const gas = useEstimateGasValue(chainId, formEstGas?.estimatedGas, !!userAddress)
-
-  const poolsMapper = usePoolsMapper()
 
   const quote = userAddress ? rpcRoutesAndOutput : apiRoutes
   const slippageType = quote && getSlippageType(quote)
@@ -217,7 +213,6 @@ export const QuickSwap = ({
       void setFormValues(
         config,
         pageLoaded && fromToken && toToken && (!userAddress || isHydrated) && !isBlacklistLoading ? curve : null,
-        poolsMapper,
         updatedFormValues ?? {},
         searchedParams,
         maxSlippage,
@@ -229,7 +224,6 @@ export const QuickSwap = ({
     [
       config,
       curve,
-      poolsMapper,
       isBlacklistLoading,
       isHydrated,
       maxSlippage,
@@ -295,7 +289,6 @@ export const QuickSwap = ({
     (
       activeKey: string,
       curve: CurveApi,
-      poolsMapper: PoolsMapper,
       routesAndOutput: RoutesAndOutput | undefined,
       formStatus: FormStatus,
       formValues: FormValues,
@@ -322,7 +315,7 @@ export const QuickSwap = ({
             const notifyMessage = t`Please approve spending your ${fromSymbol}.`
             const { dismiss } = notify(notifyMessage, 'pending')
             const slippage = assert(maxSlippage, `Max slippage must be set once we a route is found`)
-            await fetchStepApprove(activeKey, config, curve, poolsMapper, formValues, searchedParams, slippage)
+            await fetchStepApprove(activeKey, config, curve, formValues, searchedParams, slippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -484,7 +477,6 @@ export const QuickSwap = ({
     const updatedSteps = getSteps(
       activeKey,
       curve,
-      poolsMapper,
       routesAndOutput,
       isReady ? formStatus : { ...formStatus, formProcessing: true },
       formValues,
@@ -495,7 +487,7 @@ export const QuickSwap = ({
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSteps(prev => (isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve, poolsMapper])
+  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
   const isDisable = formStatus.formProcessing || !fromToken || !toToken
   const routesAndOutputLoading =

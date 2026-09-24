@@ -97,7 +97,6 @@ const router = {
   routesAndOutput: async (
     activeKey: string,
     curve: CurveApi,
-    poolsMapper: Record<string, PoolTemplate>,
     formValues: FormValues,
     searchedParams: SearchedParams,
   ) => {
@@ -140,7 +139,6 @@ const router = {
             routes,
             priceImpact,
             output,
-            poolsMapper,
             fetchedToAmount,
             toAddress,
             toStoredRate,
@@ -173,7 +171,6 @@ const router = {
             routes,
             priceImpact,
             output,
-            poolsMapper,
             toAmount,
             toAddress,
             toStoredRate,
