@@ -24,6 +24,15 @@ type UserPoolClaimablesParams = FieldsOf<UserPoolClaimablesQuery>
 export const getUserPoolClaimablesQueryKey = (params: UserChainParams) =>
   [...rootKeys.userChain(params), 'userPoolClaimables'] as const
 
+/**
+ * Including pool addresses in the query key makes refetching straightforward, but a position
+ * change can refetch all pools. Per-pool queries would avoid this but lose multicall batching.
+ *
+ * We could batch-prefetch and manually populate each pool's TanStack Query cache, as in
+ * prefetchTokenBalances. However, likely >90% of users have fewer than 10 active positions,
+ * so the expected gains don't justify the extra work and complexity. Keep one multicall batch.
+ *
+ */
 const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
   queryKey: (params: UserPoolClaimablesParams) =>
     [...getUserPoolClaimablesQueryKey(params), { poolAddresses: params.poolAddresses }] as const,
