@@ -1,14 +1,17 @@
-type Env = { ASSETS: { fetch(request: Request): Promise<Response> } }
+// eslint-disable-next-line import-x/no-unresolved, local/isolated-packages -- Cloudflare provides this Worker runtime module.
+import { httpServerHandler } from 'cloudflare:node'
+import { createRouterApiServer } from 'router-api/src/server'
+
+const routerApi = createRouterApiServer()
+await routerApi.ready()
+
+const routerApiHandler = httpServerHandler(routerApi.server)
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request): Promise<Response> {
     const { pathname } = new URL(request.url)
-
-    if (pathname === '/api/router/v1/routes') {
-      return Response.json([])
-    }
-    console.log('Worker fetch request', request.url, request.method, request.headers.get('referer'))
-
-    return env.ASSETS.fetch(request)
+    return pathname.startsWith('/api/router/')
+      ? routerApiHandler.fetch(request)
+      : new Response('Not Found', { status: 404 })
   },
 }

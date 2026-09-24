@@ -21,6 +21,7 @@
     "@curvefi/evm-ui": "workspace:^",
     "@curvefi/legacy-ui": "workspace:^",
     "@curvefi/ui": "workspace:^",
+    "router-api": "workspace:^",
     "vest": "5.4.6",
     "wrangler": "^4.136.2"
   },

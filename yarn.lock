@@ -11586,6 +11586,7 @@ __metadata:
     "@types/lodash": "npm:4.17.25"
     "@vitejs/plugin-react": "npm:5.1.2"
     pinst: "npm:3.0.0"
+    router-api: "workspace:^"
     vest: "npm:5.4.6"
     vite: "npm:7.3.5"
     vite-plugin-svgr: "npm:5.2.0"
@@ -13348,7 +13349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"router-api@workspace:apps/router-api":
+"router-api@workspace:^, router-api@workspace:apps/router-api":
   version: 0.0.0-use.local
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
