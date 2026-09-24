@@ -32,6 +32,7 @@ export const BridgeForm = ({
     form,
     values: { fromChainId, amount },
     loading,
+    isDebouncing,
     walletBalance,
     supportedNetworks,
     isPending,
@@ -78,6 +79,7 @@ export const BridgeForm = ({
         inputBalanceUsd={inputBalanceUsd}
         bridgeDisabledAlert={bridgeDisabledAlert}
         loading={!supportedNetworks.length || loading}
+        isDebouncing={isDebouncing}
         isPending={isPending}
         isApproved={isApproved?.data}
         isConnected={isConnected}

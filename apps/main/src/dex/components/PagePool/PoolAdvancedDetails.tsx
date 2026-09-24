@@ -8,7 +8,7 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { useBasePools } from '@/dex/queries/base-pools.query'
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
-import type { PoolData } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { evmAddressDisplay } from '@evm-ui/utils'
@@ -21,15 +21,7 @@ import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { amount, decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
-const getPoolType = ({
-  pool,
-  tokenCount,
-  isFxSwap,
-}: {
-  pool: PoolData['pool']
-  tokenCount: number
-  isFxSwap: boolean
-}) => {
+const getPoolType = ({ pool, tokenCount, isFxSwap }: { pool: PoolTemplate; tokenCount: number; isFxSwap: boolean }) => {
   if (isFxSwap) return t`FXSwap`
   if ('isLlamma' in pool && pool.isLlamma) return 'Llamma'
   if (!pool.isCrypto && !pool.isNg) return t`Stableswap`
@@ -48,12 +40,10 @@ export const PoolAdvancedDetails = () => {
     blockchainId,
     poolId,
     poolAddress,
-    poolData: {
-      tokenAddresses,
-      pool,
-      pool: { lpToken, gauge },
-      tokens,
-    },
+    pool,
+    pool: { lpToken, gauge },
+    tokens,
+    tokenAddresses,
   } = usePoolContext()
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
@@ -106,7 +96,7 @@ export const PoolAdvancedDetails = () => {
         }),
       }}
       prices={{
-        tokens,
+        tokenSymbols: tokens,
         tokenAddresses: tokenAddresses.map(getAddress),
         // Prices API snapshot values are 1e18-scaled, while pool parameters are already human-scale.
         priceOracleData: priceOracle?.length

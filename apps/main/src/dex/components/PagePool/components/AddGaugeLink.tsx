@@ -15,10 +15,7 @@ import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
 export const AddGaugeLink = () => {
-  const {
-    chainId,
-    poolData: { pool, tokens },
-  } = usePoolContext()
+  const { chainId, pool, tokens } = usePoolContext()
   const setCurrentPoolType = useStore(state => state.deployGauge.setCurrentPoolType)
   const setSidechainGauge = useStore(state => state.deployGauge.setSidechainGauge)
   const setPoolAddress = useStore(state => state.deployGauge.setPoolAddress)

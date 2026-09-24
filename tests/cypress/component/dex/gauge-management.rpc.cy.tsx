@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { getAddress, parseUnits } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { useNetworksQuery } from '@/dex/entities/networks'
@@ -5,6 +6,7 @@ import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { PoolContextProvider } from '@/dex/features/pool-context'
 import { defaultNetworks } from '@/dex/lib/networks'
+import { tryGetPool } from '@/dex/pool.utils'
 import type { TokenMapper } from '@/dex/queries/tokens.query'
 import { useStore } from '@/dex/store/useStore'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
@@ -25,6 +27,7 @@ import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { CurveProvider, useCurve } from '@evm-ui/features/connect-wallet'
 import { Chain } from '@primitives/network.utils'
+import { maybe } from '@primitives/objects.utils'
 import { Loading } from '@ui/components/Loading'
 import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 
@@ -46,13 +49,18 @@ type GaugeManagementForm = keyof typeof gaugeManagementForms
 
 function GaugeManagementFormTest({ form }: { form: GaugeManagementForm }) {
   const { isPending } = useNetworksQuery()
-  const { isHydrated } = useCurve()
+  const { curveApi, isHydrated } = useCurve()
+  const pool = useMemo(
+    () => maybe(curveApi, curveApi => tryGetPool(POOL_ADDRESS, curveApi)),
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+    [curveApi, isHydrated],
+  )
   const Form = gaugeManagementForms[form]
 
-  return isPending || !isHydrated ? (
+  return isPending || !isHydrated || pool == null ? (
     <Loading />
   ) : (
-    <PoolContextProvider network={defaultNetworks[CHAIN_ID]} poolIdOrAddress={POOL_ADDRESS}>
+    <PoolContextProvider network={defaultNetworks[CHAIN_ID]} pool={pool}>
       <Form />
     </PoolContextProvider>
   )

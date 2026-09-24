@@ -2,7 +2,7 @@ import { RefObject, useCallback, useRef } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import TextField, { type TextFieldProps } from '@mui/material/TextField'
-import { useUniqueDebounce } from '@ui/hooks/useDebounce'
+import { useDebounce } from '@ui/hooks/useDebounce'
 import { SearchIcon } from '@ui/icons/SearchIcon'
 import { t } from '@ui/lib/i18n'
 
@@ -28,7 +28,10 @@ export const SearchField = ({
   disableAutoFocus,
   ...props
 }: SearchFieldProps) => {
-  const [search, setSearch] = useUniqueDebounce<string>({ defaultValue, callback, sanitize })
+  const [search, setSearch] = useDebounce({
+    initialValue: defaultValue,
+    callback: useCallback((value: string) => callback(sanitize(value)), [callback]),
+  })
   const localInputRef = useRef<HTMLInputElement | null>(null)
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const ref = inputRef || localInputRef

@@ -6,8 +6,8 @@ import { t } from '@ui/lib/i18n'
 import { usePointsCampaigns } from '../../hooks/usePointsCampaigns'
 
 export const PointsCampaigns = () => {
-  const { chainId, poolData } = usePoolContext()
-  const { rows } = usePointsCampaigns({ chainId, poolData })
+  const { chainId, pool } = usePoolContext()
+  const { rows } = usePointsCampaigns({ chainId, pool })
 
   return (
     rows.length > 0 && (

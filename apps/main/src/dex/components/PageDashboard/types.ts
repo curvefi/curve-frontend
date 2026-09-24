@@ -1,6 +1,7 @@
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
-import { ChainId, PoolData } from '@/dex/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 
 type UserBaseProfit = { day: string; week: string; month: string; year: string }
 
@@ -51,7 +52,7 @@ export type DashboardTableRowProps = {
   blockchainId: string
   tableLabel: TableLabel
   formValues: FormValues
-  poolData: PoolData
+  pool: PoolTemplate
   poolRewardsApy: RewardsApy | undefined
   dashboardData: WalletPoolData
   fetchBoost: { fetchUserPoolBoost: (() => Promise<string>) | null }

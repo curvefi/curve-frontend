@@ -7,7 +7,7 @@ import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import type { RewardsApy } from '@/dex/queries/pool-rewards-apy.query'
-import { PoolData } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { WithWrapper } from '@ui/components/WithWrapper'
@@ -26,28 +26,28 @@ function haveRewardsApy({ base, other, crv }: Partial<RewardsApy>) {
 }
 
 export const TableCellRewards = ({
-  poolData,
+  pool,
   rewardsApy,
   rewardsApyKey,
   userCrvApy,
   sortBy,
   fetchUserPoolBoost,
 }: {
-  poolData: PoolData
+  pool: PoolTemplate
   rewardsApy: RewardsApy | undefined
   rewardsApyKey: 'all' | 'baseApy' | 'rewardsApy'
   sortBy: SortId
   userCrvApy?: number
   fetchUserPoolBoost: (() => Promise<string>) | null
 }) => {
-  const { data: gauge } = usePoolGaugeStatus({ chainId: poolData.pool.curve.chainId, poolId: poolData.pool.id })
+  const { data: gauge } = usePoolGaugeStatus({ chainId: pool.curve.chainId, poolId: pool.id })
   const { base, crv } = rewardsApy ?? {}
   const { haveCrv, haveOther } = haveRewardsApy(rewardsApy ?? {})
   const haveRewards = haveCrv || haveOther
   const boostedCrvApy = haveCrv && crv?.[1]
   const haveUserCrvApy = userCrvApy && !Number.isNaN(userCrvApy)
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = gauge?.status ?? {}
-  const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
+  const showUserCrvRewards = !!pool && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
   const rewards = haveRewards && (
     <>
@@ -77,7 +77,7 @@ export const TableCellRewards = ({
           </Chip>
         ) : null
       ) : (
-        <PoolRewardsCrv rewardsApy={rewardsApy} poolData={poolData} />
+        <PoolRewardsCrv rewardsApy={rewardsApy} pool={pool} />
       )}
       {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
       <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />
@@ -88,7 +88,7 @@ export const TableCellRewards = ({
     return (
       <RewardsWrapper>
         {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
-        <TableCellRewardsBase base={rewardsApy?.base} isHighlight={sortBy === SORT_ID.rewardBase} poolData={poolData} />
+        <TableCellRewardsBase base={rewardsApy?.base} isHighlight={sortBy === SORT_ID.rewardBase} pool={pool} />
       </RewardsWrapper>
     )
   } else if (rewardsApyKey === 'rewardsApy') {
@@ -102,7 +102,7 @@ export const TableCellRewards = ({
               base={rewardsApy?.base}
               // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
               isHighlight={sortBy === SORT_ID.rewardBase}
-              poolData={poolData}
+              pool={pool}
             />
           </div>
         ) : (

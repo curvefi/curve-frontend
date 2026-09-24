@@ -3,7 +3,7 @@ import { ethAddress } from 'viem'
 import { shortenAddress } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -53,7 +53,7 @@ export const FieldToken = ({
   }, [idx, afterMaxClick, handleAmountChange, balance.data])
 
   return (
-    <LargeTokenInput
+    <DebouncedLargeTokenInput
       name={token}
       disabled={disabled}
       {...(showAvailableBalance && {

@@ -94,7 +94,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
 
   return (
     <Stack>
-      <TableHeader title={t`Pools`} onReload={() => void onReload()} isLoading={isFetching} />
+      <TableHeader title={t`Pools`} onReload={onReload} isLoading={isFetching} />
       <EvmDataTable
         table={table}
         emptyState={{

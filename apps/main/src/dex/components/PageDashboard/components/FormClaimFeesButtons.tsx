@@ -11,8 +11,10 @@ import {
 } from 'react'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
+import { usePoolsMapper } from '@/dex/hooks/usePoolsMapper'
 import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { Button } from '@legacy-ui/Button'
 import type { ButtonProps } from '@legacy-ui/Button/types'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
@@ -37,7 +39,8 @@ export const FormClaimFeesButtons = ({
   setSteps: Dispatch<SetStateAction<Step[]>>
   setTxInfoBar: Dispatch<SetStateAction<ReactNode>>
 }) => {
-  const { curve, isValidAddress } = useDashboardContext()
+  const { isValidAddress } = useDashboardContext()
+  const { curveApi: curve } = useCurve()
   const claimFeesAmounts = useStore(state => state.dashboard.claimableFees[activeKey])
   const formProcessing = useStore(state => state.dashboard.formStatus.formProcessing)
   const fetchStepClaimFees = useStore(state => state.dashboard.fetchStepClaimFees)
@@ -45,6 +48,8 @@ export const FormClaimFeesButtons = ({
 
   const { chainId, signerAddress } = curve ?? {}
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')
+
+  const poolsMapper = usePoolsMapper()
 
   const claimButtons = useMemo(() => {
     const loadingClaimFees = loading && !!walletAddress && typeof claimFeesAmounts === 'undefined'
@@ -77,7 +82,7 @@ export const FormClaimFeesButtons = ({
       setSteps([])
       setTxInfoBar(null)
 
-      const resp = await fetchStepClaimFees(activeKey, curve, walletAddress, key)
+      const resp = await fetchStepClaimFees(activeKey, curve, poolsMapper, walletAddress, key)
 
       if (!resp || resp?.activeKey !== activeKey) return
 
@@ -104,7 +109,7 @@ export const FormClaimFeesButtons = ({
         />,
       )
     },
-    [activeKey, curve, fetchStepClaimFees, setFormStatus, setSteps, setTxInfoBar, walletAddress, chainId],
+    [activeKey, curve, fetchStepClaimFees, setFormStatus, setSteps, setTxInfoBar, walletAddress, chainId, poolsMapper],
   )
 
   return (

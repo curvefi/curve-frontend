@@ -1,16 +1,8 @@
 import { isUndefined } from 'lodash'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-import {
-  ChainId,
-  ClaimableReward,
-  claimButtonsKey,
-  CurveApi,
-  EstimatedGas,
-  Pool,
-  PoolData,
-  Provider,
-} from '@/dex/types/main.types'
+import { invalidatePoolsMapper } from '@/dex/hooks/usePoolsMapper'
+import { ChainId, ClaimableReward, claimButtonsKey, CurveApi, EstimatedGas, Provider } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import {
   _parseRoutesAndOutput,
@@ -20,12 +12,45 @@ import {
   routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
 import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { log } from '@ui/lib/logging'
 
+type Pool = PoolTemplate
+
 const helpers = { waitForTransaction, waitForTransactions }
+
+const USE_API = true
+
+export const fetchNewPools = async (curve: CurveApi) =>
+  await Promise.all(
+    [
+      curve.factory.fetchNewPools(),
+      curve.cryptoFactory.fetchNewPools(),
+      curve.twocryptoFactory.fetchNewPools(),
+      curve.tricryptoFactory.fetchNewPools(),
+      curve.stableNgFactory.fetchNewPools(),
+    ].map(promise => promise.finally(() => invalidatePoolsMapper(curve))),
+  )
+
+export const fetchPools = async (curve: CurveApi) => {
+  await Promise.all(
+    [
+      curve.factory.fetchPools(USE_API),
+      curve.cryptoFactory.fetchPools(USE_API),
+      curve.twocryptoFactory.fetchPools(USE_API),
+      curve.crvUSDFactory.fetchPools(USE_API),
+      curve.tricryptoFactory.fetchPools(USE_API),
+      curve.stableNgFactory.fetchPools(USE_API),
+    ].map(promise => promise.finally(() => invalidatePoolsMapper(curve))),
+  )
+
+  if (!curve.isNoRPC) {
+    await fetchNewPools(curve)
+  }
+}
 
 // curve
 const network = {
@@ -72,7 +97,7 @@ const router = {
   routesAndOutput: async (
     activeKey: string,
     curve: CurveApi,
-    poolsMapper: Record<string, PoolData>,
+    poolsMapper: Record<string, PoolTemplate>,
     formValues: FormValues,
     searchedParams: SearchedParams,
   ) => {

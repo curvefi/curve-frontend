@@ -38,7 +38,7 @@ const TABLE_CONFIG = {
 type UserPositionsTableProps = {
   tableQuery: QueryProp<LlamaMarketRow[]>
   marketRateType: MarketRateType
-  onReload: () => void
+  onReload: () => Promise<unknown>
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
