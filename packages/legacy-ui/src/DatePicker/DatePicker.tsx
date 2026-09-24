@@ -28,7 +28,7 @@ import {
   useDatePickerState,
 } from 'react-stately'
 import { styled } from 'styled-components'
-import { dayjs } from '@evm-ui/lib/dayjs'
+import { dayjs } from '@evm-ui/utils/dayjs'
 import { createCalendar, getWeeksInMonth } from '@internationalized/date'
 import { Box } from '@legacy-ui/Box'
 import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
