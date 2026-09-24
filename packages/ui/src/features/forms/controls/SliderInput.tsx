@@ -112,13 +112,10 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   )
 
   /** Local display value while dragging or typing, synchronized with external resets. */
-  const [internalValue, setInternalValue] = useState<T>(value)
+  const [displayValue, setDisplayValue] = useState<T>(value)
 
   // eslint-disable-next-line @eslint-react/set-state-in-effect -- Keep local interaction state in sync with controlled value changes.
-  useEffect(() => setInternalValue(value), [value])
-
-  /** The current display values for slider and inputs */
-  const displayValue = internalValue
+  useEffect(() => setDisplayValue(value), [value])
 
   /** The slider's numeric value with sliderValueTransform mapping if provided (e.g. logarithmic scales) */
   const sliderValue = useMemo(
@@ -130,11 +127,11 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   const commitValue = useCallback(
     (nextValue: T | undefined) => {
       if (nextValue == null) return
-      setInternalValue(nextValue)
+      setDisplayValue(nextValue)
       if (Array.isArray(nextValue) && nextValue.find(v => v == null)) return
       onChange(nextValue)
     },
-    [onChange, setInternalValue],
+    [onChange, setDisplayValue],
   )
 
   /**Converts slider's numeric value to Decimal and maps back to original value space */
@@ -150,10 +147,10 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
     (_e, newValue) => {
       const next = computeSliderValue(newValue as SliderValue)
       if (next != null) {
-        setInternalValue(next)
+        setDisplayValue(next)
       }
     },
-    [computeSliderValue, setInternalValue],
+    [computeSliderValue, setDisplayValue],
   )
 
   const handleSliderCommit = useCallback<NonNullable<SliderProps['onChangeCommitted']>>(
@@ -180,12 +177,12 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
           // the user first types "8" which can be smaller than the first input.
           else return
         }
-        setInternalValue([decimal(nextFirst), decimal(nextSecond)] as T)
+        setDisplayValue([decimal(nextFirst), decimal(nextSecond)] as T)
         return
       }
-      setInternalValue(decimal(numericValue) as T)
+      setDisplayValue(decimal(numericValue) as T)
     },
-    [displayValue, isRange, setInternalValue],
+    [displayValue, isRange, setDisplayValue],
   )
 
   const handleInputBlur = useCallback(

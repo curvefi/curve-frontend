@@ -88,6 +88,7 @@ function useColumnFilters<TColumnId extends string>({
  * Returns the filter value, a setter, and a reset function.
  *
  * @param key URL query parameter name. Defaults to `"search"`. Override to avoid conflicts with other filters.
+ * @param resetPageOnChange Clear the page query parameter when the global filter changes.
  */
 function useGlobalFilter(key = DEFAULT_SEARCH_KEY, resetPageOnChange?: boolean) {
   const searchParams = useSearchParams()
