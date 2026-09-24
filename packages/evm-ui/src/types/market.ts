@@ -3,10 +3,10 @@ export enum MarketType {
   Lend = 'Lend',
 }
 
-/** Describes how a market's assets move in price relative to one another. */
 export enum MarketAssetsType {
-  Stable = 'stable',
+  Correlated = 'correlated',
   Volatile = 'volatile',
+  LongTail = 'long-tail',
 }
 
 export enum MarketVersion {

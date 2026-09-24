@@ -56,9 +56,11 @@ export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Ad
   const assetsType = getMarketAssetsType(chainId, controllerAddress)
 
   return assetsType
-    ? { [MarketAssetsType.Stable]: SLIPPAGE.stable.default, [MarketAssetsType.Volatile]: SLIPPAGE.leverage.default }[
-        assetsType
-      ]
+    ? {
+        [MarketAssetsType.Correlated]: SLIPPAGE.stable.default,
+        [MarketAssetsType.Volatile]: SLIPPAGE.leverage.default,
+        [MarketAssetsType.LongTail]: SLIPPAGE.leverage.default,
+      }[assetsType]
     : SLIPPAGE.leverage.default
 }
 
