@@ -42,11 +42,7 @@ const getRateValueOptions = (
   ...(volatile && { color: 'error', formatter: formatCappedRateValue }),
 })
 
-const PRIMARY_METRIC_SIZE = {
-  full: 6,
-  lite: 6,
-  userPositions: 4
-} satisfies Record<PoolTableVariant, number>
+const PRIMARY_METRIC_SIZE = { full: 6, lite: 6, userPositions: 4 } satisfies Record<PoolTableVariant, number>
 
 const PoolTokens = ({ pool }: { pool: PoolRow }) => (
   <Stack data-testid="pool-tokens" sx={{ marginBlockStart: Spacing.md, gap: Spacing.sm }}>
