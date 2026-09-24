@@ -47,7 +47,7 @@ export const defineMuiAlert = (
       color: TextColors.Secondary,
       [ICON_SELECTOR]: { opacity: 1 },
       '&.MuiAlert-colorInfo': {
-        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.Highlight },
+        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.Feedback.Info },
         borderColor: Highlight.Outline,
       },
       '&.MuiAlert-colorSuccess': {

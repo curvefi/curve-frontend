@@ -16,6 +16,34 @@ export const HEALTH_THRESHOLDS = {
   GOOD: 50,
 } as const
 
+type HealthColorRole = 'fill' | 'text'
+type HealthFeedbackKey = 'Error' | 'Warning' | 'Danger' | 'Success'
+
+const healthFeedbackColor = (theme: Theme, role: HealthColorRole, key: HealthFeedbackKey) =>
+  role === 'fill' ? theme.design.Layer.Feedback[key] : theme.design.Text.TextColors.Feedback[key]
+
+const resolveHealthFeedbackKey = ({
+  health,
+  softLiquidation,
+  isFullRepay,
+}: {
+  health: number | Nullish
+  softLiquidation?: boolean | null
+  isFullRepay?: boolean
+}): HealthFeedbackKey => {
+  if (isFullRepay) return 'Success'
+  if (health == null) return softLiquidation ? 'Warning' : 'Success'
+  if (softLiquidation) {
+    if (health < HEALTH_THRESHOLDS.CRITICAL) return 'Error'
+    if (health < HEALTH_THRESHOLDS.SOFT_LIQUIDATION_DANGER) return 'Danger'
+    return 'Warning'
+  }
+  if (health < HEALTH_THRESHOLDS.CRITICAL) return 'Error'
+  if (health < HEALTH_THRESHOLDS.RISKY) return 'Danger'
+  if (health < HEALTH_THRESHOLDS.GOOD) return 'Warning'
+  return 'Success'
+}
+
 export const getHealthValueColor = ({
   theme,
   isFullRepay,
@@ -29,38 +57,22 @@ export const getHealthValueColor = ({
   colorBackground?: boolean
 }) => {
   const value = health ?? prevHealth
-  return getHealthTrackColor({ health: value == null ? value : Number(value), isFullRepay, theme })
+  return healthFeedbackColor(
+    theme,
+    'text',
+    resolveHealthFeedbackKey({ health: value == null ? value : Number(value), isFullRepay }),
+  )
 }
 
+/** Bar and track fills. Health figures use `getHealthValueColor`. */
 export const getHealthTrackColor = ({
   health,
   softLiquidation,
-  theme: {
-    design: { Layer },
-  },
+  theme,
   isFullRepay,
 }: {
   health: number | Nullish
   softLiquidation?: boolean | null
   isFullRepay?: boolean
   theme: Theme
-}) => {
-  const red = Layer.Feedback.Error
-  const yellow = Layer.Feedback.Warning
-  const orange = Layer.Feedback.Danger
-  const green = Layer.Feedback.Success
-
-  if (isFullRepay) return green
-  if (health == null) {
-    return softLiquidation ? Layer.Feedback.Warning : green
-  }
-  if (softLiquidation) {
-    if (health < HEALTH_THRESHOLDS.CRITICAL) return red
-    if (health < HEALTH_THRESHOLDS.SOFT_LIQUIDATION_DANGER) return orange
-    return yellow
-  }
-  if (health < HEALTH_THRESHOLDS.CRITICAL) return red
-  if (health < HEALTH_THRESHOLDS.RISKY) return orange
-  if (health < HEALTH_THRESHOLDS.GOOD) return yellow
-  return green
-}
+}) => healthFeedbackColor(theme, 'fill', resolveHealthFeedbackKey({ health, softLiquidation, isFullRepay }))

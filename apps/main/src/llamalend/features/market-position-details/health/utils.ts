@@ -44,6 +44,7 @@ export const getLiquidationBufferState = (liquidationBuffer: number): Liquidatio
   recordEntries(LIQUIDATION_BUFFER_THRESHOLDS).find(([, threshold]) => liquidationBuffer <= threshold)?.[0] ??
   LIQ_BUFFER_UPPER_BOUND_STATE
 
+/** Bar fills. Text uses the matching `*TextColor` helpers. */
 export const getHealthColor = (state: HealthState | undefined) => (theme: Theme) => {
   const { Layer } = theme.design
   const colors = {
@@ -57,6 +58,20 @@ export const getHealthColor = (state: HealthState | undefined) => (theme: Theme)
   return maybe(state, s => colors[s])
 }
 
+export const getHealthTextColor = (state: HealthState | undefined) => (theme: Theme) => {
+  const { Feedback } = theme.design.Text.TextColors
+  const colors = {
+    pristine: Feedback.Info,
+    good: Feedback.Success,
+    caution: Feedback.Caution,
+    tight: Feedback.Error,
+    softLiquidation: Feedback.Error,
+  } satisfies Record<HealthState, string | undefined>
+
+  return maybe(state, s => colors[s])
+}
+
+/** Bar fills. Text uses `getLiquidationBufferTextColor`. */
 export const getLiquidationBufferColor = (state: LiquidationBufferState | undefined) => (theme: Theme) => {
   const { Layer } = theme.design
   const colors = {
@@ -64,6 +79,18 @@ export const getLiquidationBufferColor = (state: LiquidationBufferState | undefi
     risky: Layer.Feedback.Warning,
     critical: Layer.Feedback.Error,
     hardLiquidation: Layer.Feedback.Error,
+  } satisfies Record<LiquidationBufferState, string | undefined>
+
+  return maybe(state, s => colors[s])
+}
+
+export const getLiquidationBufferTextColor = (state: LiquidationBufferState | undefined) => (theme: Theme) => {
+  const { Feedback } = theme.design.Text.TextColors
+  const colors = {
+    light: Feedback.Info,
+    risky: Feedback.Warning,
+    critical: Feedback.Error,
+    hardLiquidation: Feedback.Error,
   } satisfies Record<LiquidationBufferState, string | undefined>
 
   return maybe(state, s => colors[s])
