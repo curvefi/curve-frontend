@@ -3,11 +3,7 @@ import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalid
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { invalidateTokenBalances } from '@evm-ui/hooks/useTokenBalance'
-import {
-  type TransactionContext,
-  useEvmMutation,
-  type EvmMutationOptions,
-} from '@evm-ui/lib/model/mutation/useEvmMutation'
+import { type TransactionContext, useEvmMutation, type EvmMutationOptions } from '@evm-ui/queries/useEvmMutation'
 import type { Address } from '@primitives/address.utils'
 import { type Nullish, assert } from '@primitives/objects.utils'
 import { getControllerAddress, getMarket, getTokens, updateUserEventsApi } from '../llama.utils'
