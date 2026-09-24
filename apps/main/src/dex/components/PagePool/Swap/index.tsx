@@ -36,7 +36,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { FormContent } from '@ui/features/forms/components/FormContent'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { useLayoutStore } from '@ui/features/layout/store'
@@ -373,7 +373,7 @@ export const Swap = ({
   return (
     <FormContent>
       <Stack sx={{ gap: Spacing.sm }}>
-        <LargeTokenInput
+        <DebouncedLargeTokenInput
           label={t`Sell`}
           name="fromAmount"
           onBalance={setFromAmount}
@@ -448,7 +448,7 @@ export const Swap = ({
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
 
-        <LargeTokenInput
+        <DebouncedLargeTokenInput
           label={t`Buy`}
           name="toAmount"
           onBalance={setToAmount}

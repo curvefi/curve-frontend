@@ -29,12 +29,6 @@ import { type CreateLoanForm } from '../types'
 import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
-const userDefaultValues = {
-  userCollateral: undefined,
-  userBorrowed: `0` satisfies Decimal,
-  debt: undefined,
-} satisfies Partial<CreateLoanForm>
-
 const validation = createLoanQueryValidationSuite({
   debtRequired: true,
   skipMarketValidation: true, // given separately to the mutation
@@ -69,6 +63,16 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   } = useMarketContext<ChainId>()
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
+  const userDefaultValues = useMemo(
+    () =>
+      ({
+        userCollateral: undefined,
+        userBorrowed: `0` satisfies Decimal,
+        debt: undefined,
+        range: PRESET_RANGES[preset],
+      }) satisfies Partial<CreateLoanForm>,
+    [preset],
+  )
   const formOptions = {
     validation,
     defaultValues: {
@@ -76,7 +80,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       routeId: undefined,
       leverageEnabled: false,
       slippage: defaultSlippage,
-      range: PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,
     },
