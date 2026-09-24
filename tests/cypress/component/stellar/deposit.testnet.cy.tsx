@@ -2,7 +2,7 @@ import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { DepositTab } from '@/stellar/features/deposit/DepositTab'
 import { oneOf } from '@cy/support/generators'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
+import { connectTestWallet, createFundedTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import {
   allCoinDeposit,
   BASE_DEPOSIT_AMOUNT,
@@ -45,7 +45,7 @@ describe('Stellar testnet deposit', () => {
     getTestnetConfig()
       .then(async config => {
         testnetConfig = config
-        await connectTestWallet(config)
+        await connectTestWallet(config.deployer)
       })
       .then(API_LOAD_TIMEOUT, async () => await deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
@@ -57,13 +57,13 @@ describe('Stellar testnet deposit', () => {
       .then(freshState => (state = freshState)),
   )
 
-  const mountDeposit = ({ connected = true } = {}) => {
+  const mountDeposit = ({ connected = true, address = testnetConfig.deployer.address } = {}) => {
     cy.mount(
-      <StellarTestWrapper address={connected ? testnetConfig.deployer.address : undefined}>
+      <StellarTestWrapper address={connected ? address : undefined}>
         <DepositTab network={TEST_NETWORK} pool={pool} />
       </StellarTestWrapper>,
     )
-    if (connected) checkDepositBalances(state)
+    if (connected && address === testnetConfig.deployer.address) checkDepositBalances(state)
   }
 
   it('requires a connected wallet', () => {
@@ -197,5 +197,15 @@ describe('Stellar testnet deposit', () => {
       writePoolForm(state.coins, amounts)
       submitDepositAndCheck(pool, state, amounts)
     })
+  })
+
+  it('adds every missing token trustline for a new account', () => {
+    cy.then(API_LOAD_TIMEOUT, createFundedTestWallet).then(async wallet => {
+      await connectTestWallet(wallet)
+      mountDeposit({ address: wallet.address })
+    })
+    depositSubmit().should('be.disabled')
+    cy.get('[data-testid="stellar-add-trustlines"]', LOAD_TIMEOUT).should('be.visible').and('be.enabled').click()
+    cy.get('[data-testid="stellar-add-trustlines"]', API_LOAD_TIMEOUT).should('not.exist')
   })
 })

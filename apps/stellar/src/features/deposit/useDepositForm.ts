@@ -37,7 +37,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
-  const { tokens, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimals, maxAmounts, trustlineTokens } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), isBalanced: false }),
     [tokenCount],
@@ -96,7 +96,11 @@ export function useDepositForm(poolParams: PoolQuery) {
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
     isDisabled:
-      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data === false),
+      isPending ||
+      isDebouncing ||
+      !formState.isValid ||
+      trustlineTokens.length > 0 ||
+      shouldBlockTransaction(priceImpact, isSeed.data === false),
     isLoading: isPending || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
@@ -104,6 +108,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens,
+    trustlineTokens,
     isSeed,
   }
 }

@@ -47,7 +47,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
-  const { tokens, decimals } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimals, trustlineTokens } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
   const reserves = usePoolReserves(poolParams)
   const maxAmounts = useScaleReserves(reserves, decimals)
@@ -135,7 +135,12 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     lpBalance: q(lpBalance),
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
-    isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
+    isDisabled:
+      isPending ||
+      isDebouncing ||
+      !formState.isValid ||
+      trustlineTokens.length > 0 ||
+      shouldBlockTransaction(priceImpact),
     isLoading: isPending || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
@@ -143,5 +148,6 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens,
+    trustlineTokens,
   }
 }

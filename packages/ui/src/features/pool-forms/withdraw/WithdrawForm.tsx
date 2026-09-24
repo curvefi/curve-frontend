@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Form } from '@ui/features/forms/components/Form'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
@@ -17,6 +18,7 @@ type WithdrawFormProps = PoolFormProps<WithdrawFormValues> & {
   lpBalance: QueryProp<Decimal>
   supply: QueryProp<Decimal>
   lpTokenDecimals: number
+  children?: ReactNode
 }
 
 export const WithdrawForm = ({
@@ -37,6 +39,7 @@ export const WithdrawForm = ({
   decimals,
   lpTokenDecimals,
   supply,
+  children,
 }: WithdrawFormProps) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
     <LiquidityProviderInput
@@ -49,6 +52,7 @@ export const WithdrawForm = ({
       isDisabled={isPending}
     />
     <PoolTokenInputs tokens={tokens} reserves={reserves} isDisabled={isPending} maxAmounts={maxAmounts} hideMaxButton />
+    {children}
     <FormButton
       {...wallet}
       pending={isPending}

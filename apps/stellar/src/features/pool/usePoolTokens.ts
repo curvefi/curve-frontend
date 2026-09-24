@@ -1,11 +1,11 @@
 import { asAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { NetworkParams, UserParams } from '@/stellar/queries/root-keys'
-import { getTokenBalanceQueryOptions } from '@/stellar/queries/token/token-balance.query'
+import { getTokenBalanceQueryOptions, isTrustlineMissingError } from '@/stellar/queries/token/token-balance.query'
 import { getTokenDecimalsQueryOptions } from '@/stellar/queries/token/token-decimals.query'
 import { getTokenNameQueryOptions } from '@/stellar/queries/token/token-name.query'
 import { getTokenSymbolQueryOptions } from '@/stellar/queries/token/token-symbol.query'
 import { zip } from '@primitives/array.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, q, type QueryProp } from '@ui/features/queries/util'
@@ -51,5 +51,6 @@ export function usePoolTokens({
       balance,
     })),
   )
-  return { tokens, decimals, maxAmounts }
+  const trustlineTokens = addresses.filter((_, index) => maybe(balances[index]?.error, isTrustlineMissingError))
+  return { tokens, decimals, maxAmounts, trustlineTokens }
 }

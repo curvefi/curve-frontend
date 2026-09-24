@@ -3,7 +3,7 @@ import { DepositTab } from '@/stellar/features/deposit/DepositTab'
 import { WithdrawTab } from '@/stellar/features/withdraw/WithdrawTab'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
+import { connectTestWallet, createFundedTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { allCoinDeposit, submitDepositForm } from '@cy/support/helpers/stellar/deposit.helpers'
 import {
   readPoolAmounts,
@@ -46,7 +46,7 @@ describe('Stellar testnet withdraw', () => {
     getTestnetConfig()
       .then(async config => {
         testnetConfig = config
-        await connectTestWallet(config)
+        await connectTestWallet(config.deployer)
       })
       .then(API_LOAD_TIMEOUT, async () => await deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
@@ -58,13 +58,13 @@ describe('Stellar testnet withdraw', () => {
       .then(freshState => (state = freshState)),
   )
 
-  const mountWithdraw = ({ connected = true } = {}) => {
+  const mountWithdraw = ({ connected = true, address = testnetConfig.deployer.address } = {}) => {
     cy.mount(
-      <StellarTestWrapper address={connected ? testnetConfig.deployer.address : undefined}>
+      <StellarTestWrapper address={connected ? address : undefined}>
         <WithdrawTab network={TEST_NETWORK} pool={pool} />
       </StellarTestWrapper>,
     )
-    if (connected) checkWithdrawBalances(state)
+    if (connected && address === testnetConfig.deployer.address) checkWithdrawBalances(state)
   }
 
   it('disables withdrawals from an unseeded pool', () => {
@@ -200,5 +200,15 @@ describe('Stellar testnet withdraw', () => {
         )
       })
     })
+  })
+
+  it('adds every missing token trustline for a new account', () => {
+    cy.then(API_LOAD_TIMEOUT, createFundedTestWallet).then(async wallet => {
+      await connectTestWallet(wallet)
+      mountWithdraw({ address: wallet.address })
+    })
+    withdrawSubmit().should('be.disabled')
+    cy.get('[data-testid="stellar-add-trustlines"]', LOAD_TIMEOUT).should('be.visible').and('be.enabled').click()
+    cy.get('[data-testid="stellar-add-trustlines"]', API_LOAD_TIMEOUT).should('not.exist')
   })
 })

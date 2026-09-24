@@ -22,7 +22,7 @@ describe('Stellar testnet pool page', () => {
     getTestnetConfig()
       .then(async config => {
         testnetConfig = config
-        await connectTestWallet(config)
+        await connectTestWallet(config.deployer)
       })
       .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, async deployedPool => {

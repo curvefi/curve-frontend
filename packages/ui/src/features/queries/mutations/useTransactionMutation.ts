@@ -52,8 +52,8 @@ export function useTransactionMutation<TVariables extends object, TContext exten
   // Track our own error state because errors thrown in onMutate don't populate React Query's error.
   const [error, setError] = useState<Error | null>(null)
 
-  // we use `mutate` instead of `mutateAsync` so that `onSuccess`/`onError` can be handled here
-  const { mutate, isPending } = useMutation({
+  // Most forms use `mutate`; sequential transaction flows can await `mutateAsync`.
+  const { mutate, mutateAsync, isPending } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
       setError(null) // Clear local error at the start of a new mutation attempt.
@@ -88,5 +88,5 @@ export function useTransactionMutation<TVariables extends object, TContext exten
     },
   })
 
-  return { mutate, error, isPending }
+  return { mutate, mutateAsync, error, isPending }
 }

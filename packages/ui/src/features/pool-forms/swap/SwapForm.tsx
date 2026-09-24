@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -14,6 +15,7 @@ import { SwapTokenInput } from './SwapTokenInput'
 export type SwapFormProps = PoolFormProps<SwapFormValues> & {
   inputAmount: QueryProp<Decimal | undefined>
   outputAmount: QueryProp<Decimal | undefined>
+  children?: ReactNode
 }
 
 const { Spacing } = SizesAndSpaces
@@ -32,6 +34,7 @@ export const SwapForm = ({
   error,
   formErrors,
   footer,
+  children,
 }: SwapFormProps) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
     <Stack sx={{ gap: Spacing.xxs }}>
@@ -47,6 +50,7 @@ export const SwapForm = ({
       </IconButton>
       <SwapTokenInput form={form} tokens={tokens} side="receive" balance={outputAmount} disabled={isPending} />
     </Stack>
+    {children}
     <FormButton
       {...wallet}
       pending={isPending}

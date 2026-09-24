@@ -1,10 +1,11 @@
+import { TrustlineButtons } from '@/stellar/features/trustline/TrustlineButtons'
 import type { PoolQuery } from '@/stellar/queries/root-keys'
 import { SwapForm } from '@ui/features/pool-forms/swap/SwapForm'
 import { SwapActionInfoList } from './SwapActionInfoList'
 import { useSwapForm } from './useSwapForm'
 
 export const SwapTab = (params: PoolQuery) => {
-  const { params: queryParams, fromSymbol, toSymbol, onSlippageChange, ...form } = useSwapForm(params)
+  const { params: queryParams, fromSymbol, toSymbol, onSlippageChange, trustlineTokens, ...form } = useSwapForm(params)
   return (
     <SwapForm
       {...form}
@@ -16,6 +17,8 @@ export const SwapTab = (params: PoolQuery) => {
           onSlippageChange={onSlippageChange}
         />
       }
-    />
+    >
+      <TrustlineButtons network={params.network} tokens={trustlineTokens} />
+    </SwapForm>
   )
 }

@@ -2,7 +2,7 @@ import { noop } from 'lodash'
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { SwapTab } from '@/stellar/features/swap/SwapTab'
 import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
+import { connectTestWallet, createFundedTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
 import {
   fetchPoolState,
@@ -43,7 +43,7 @@ describe('Stellar testnet swap', () => {
     getTestnetConfig()
       .then(async config => {
         testnetConfig = config
-        await connectTestWallet(config)
+        await connectTestWallet(config.deployer)
       })
       .then(API_LOAD_TIMEOUT, async () => await deployTestPool(testnetConfig))
       .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
@@ -52,13 +52,13 @@ describe('Stellar testnet swap', () => {
 
   beforeEach(() => cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(fresh => (state = fresh)))
 
-  const mountSwap = ({ connected = true } = {}) => {
+  const mountSwap = ({ connected = true, address = testnetConfig.deployer.address } = {}) => {
     cy.mount(
-      <StellarTestWrapper address={connected ? testnetConfig.deployer.address : undefined}>
+      <StellarTestWrapper address={connected ? address : undefined}>
         <SwapTab network={TEST_NETWORK} pool={pool} />
       </StellarTestWrapper>,
     )
-    if (connected) checkSwapBalances(state, 0, 1)
+    if (connected && address === testnetConfig.deployer.address) checkSwapBalances(state, 0, 1)
   }
 
   it('previews amounts without a connected wallet', () => {
@@ -134,5 +134,15 @@ describe('Stellar testnet swap', () => {
         })
       })
     })
+  })
+
+  it('adds every missing token trustline for a new account', () => {
+    cy.then(API_LOAD_TIMEOUT, createFundedTestWallet).then(async wallet => {
+      await connectTestWallet(wallet)
+      mountSwap({ address: wallet.address })
+    })
+    swapSubmit().should('be.disabled')
+    cy.get('[data-testid="stellar-add-trustlines"]', LOAD_TIMEOUT).should('be.visible').and('be.enabled').click()
+    cy.get('[data-testid="stellar-add-trustlines"]', API_LOAD_TIMEOUT).should('not.exist')
   })
 })

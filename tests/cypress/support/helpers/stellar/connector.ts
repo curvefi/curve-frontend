@@ -1,15 +1,17 @@
 /* eslint-disable no-restricted-imports -- Single SDK boundary for Stellar test wallet signing and fixture deployment. */
-import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
+import type { StellarAddress, StellarContract, StellarSecret } from '@/stellar/features/connect-wallet/address'
 import { sendStellarTransaction } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarWalletsKit } from '@creit-tech/stellar-wallets-kit/sdk'
 import { type ModuleInterface, ModuleType, Networks } from '@creit-tech/stellar-wallets-kit/types'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
-import { contract, Keypair, TransactionBuilder } from '@stellar/stellar-sdk'
+import { contract, Keypair, rpc, TransactionBuilder } from '@stellar/stellar-sdk'
+
+export type TestWallet = { address: StellarAddress; secret: StellarSecret }
 
 /** Register a real keypair wallet through the wallet kit's module interface. */
-export const connectTestWallet = ({ deployer }: TestnetConfig) => {
-  const keypair = Keypair.fromSecret(deployer.secret)
+export const connectTestWallet = ({ secret }: TestWallet) => {
+  const keypair = Keypair.fromSecret(secret)
   const wallet: ModuleInterface = {
     productId: 'cypress-stellar',
     productName: 'Cypress Stellar wallet',
@@ -30,6 +32,14 @@ export const connectTestWallet = ({ deployer }: TestnetConfig) => {
   }
   StellarWalletsKit.init({ modules: [wallet], network: Networks.TESTNET, selectedWalletId: wallet.productId })
   return StellarWalletsKit.fetchAddress()
+}
+
+/** Creates a new testnet account with XLM but without any token trustlines. */
+export const createFundedTestWallet = async (): Promise<TestWallet> => {
+  const keypair = Keypair.random()
+  const server = new rpc.Server(STELLAR_NETWORKS['stellar-testnet'].rpcUrl)
+  await server.fundAddress(keypair.publicKey())
+  return { address: keypair.publicKey() as StellarAddress, secret: keypair.secret() as StellarSecret }
 }
 
 type Factory = {

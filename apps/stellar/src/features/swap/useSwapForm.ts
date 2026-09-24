@@ -42,7 +42,7 @@ export function useSwapForm(poolParams: PoolQuery) {
   const config = usePoolConfig(poolParams)
   const reserves = usePoolReserves(poolParams)
   const tokenAddresses = mapQuery(config, config => config.tokens)
-  const { tokens, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimals, maxAmounts, trustlineTokens } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const form = useForm<SwapFormValues>(formOptions)
   const { formState, reset } = form
   const values = form.watchValues()
@@ -110,13 +110,19 @@ export function useSwapForm(poolParams: PoolQuery) {
   return {
     form,
     tokens,
+    trustlineTokens,
     fromSymbol: tokens.data?.[fromIndex]?.symbol,
     toSymbol: tokens.data?.[toIndex]?.symbol,
     params,
     inputAmount,
     outputAmount,
     isPending,
-    isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
+    isDisabled:
+      isPending ||
+      isDebouncing ||
+      !formState.isValid ||
+      trustlineTokens.length > 0 ||
+      shouldBlockTransaction(priceImpact),
     isLoading: isPending || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),

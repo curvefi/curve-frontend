@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -15,6 +16,7 @@ import { BalancedDepositCheckbox } from './BalancedDepositCheckbox'
 export type DepositFormProps<TValues extends PoolForm = PoolForm> = PoolFormProps<TValues> & {
   reserves: QueryProp<Decimal[]>
   isSeed: QueryProp<boolean>
+  children?: ReactNode
 }
 
 export const DepositForm = <TValues extends PoolForm>({
@@ -31,6 +33,7 @@ export const DepositForm = <TValues extends PoolForm>({
   formErrors,
   footer,
   isSeed,
+  children,
 }: DepositFormProps<TValues>) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
     {isSeed.data && (
@@ -45,6 +48,7 @@ export const DepositForm = <TValues extends PoolForm>({
       isConnected={wallet.isConnected}
       disabled={isPending || isSeed.data !== false}
     />
+    {children}
     <FormButton
       {...wallet}
       pending={isPending}
