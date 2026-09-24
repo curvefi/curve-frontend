@@ -141,7 +141,13 @@ export const POOL_COLUMNS = columnHelper.columns([
   columnHelper.accessor(pool => claimablesTotalUsd(pool.userPosition.claimables?.data ?? []), {
     id: PoolColumnId.Claimables,
     header: POOL_TITLES[PoolColumnId.Claimables],
-    cell: ({ row }) => <ClaimablesCell pool={row.original} />,
+    cell: ({ row }) => (
+      <ClaimablesCell
+        blockchainId={row.original.blockchainId}
+        // Assuming this cell is only used for user table which always has a claimable query prop.
+        claimables={row.original.userPosition.claimables!}
+      />
+    ),
     meta: {
       type: 'numeric',
       tooltip: { title: POOL_TITLES[PoolColumnId.Claimables], body: <ClaimablesHeaderTooltipContent /> },
