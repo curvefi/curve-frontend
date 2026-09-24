@@ -1,6 +1,7 @@
 import type { FormValues, FormStatus, Route } from '@/dex/components/PageRouterSwap/types'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { log, LogStatus } from '@ui/lib/logging'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
@@ -27,8 +28,7 @@ export function parseRouterRoutes(routes: IRouteStep[], getPool: (poolId: string
       try {
         pool = getPool(route.poolId)
       } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-        log('routerBestRouteAndOutput missing poolName', LogStatus.ERROR, route.poolId, error.message)
+        log('routerBestRouteAndOutput missing poolName', LogStatus.ERROR, route.poolId, getErrorMessage(error))
       }
       const poolName = pool ? pool.name : route.poolId
 
