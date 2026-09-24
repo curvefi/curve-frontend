@@ -43,12 +43,4 @@ export default defineConfig(({ command }) => ({
     ],
   },
   define: { 'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production') },
-  vercel: {
-    buildCommand: 'yarn build',
-    rewrites: [
-      { source: '/favicon', destination: '/favicon.ico' },
-      { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
-      { source: '/(.*)', destination: '/index.html' },
-    ],
-  },
 }))

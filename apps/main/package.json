@@ -21,10 +21,8 @@
     "@curvefi/evm-ui": "workspace:^",
     "@curvefi/legacy-ui": "workspace:^",
     "@curvefi/ui": "workspace:^",
-    "merkl-api": "workspace:^",
-    "router-api": "workspace:^",
     "vest": "5.4.6",
-    "vite-plugin-vercel": "9.1.1"
+    "wrangler": "^4.136.2"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",

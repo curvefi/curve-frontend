@@ -2,7 +2,6 @@ name: CI
 on: [push]
 env:
   DO_NOT_TRACK: 1
-  VERCEL_ALLOW_NODEJS_24: 1
   IBM_TELEMETRY_DISABLED: true
   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
   SENTRY_ORG: ${{ vars.SENTRY_ORG }}
