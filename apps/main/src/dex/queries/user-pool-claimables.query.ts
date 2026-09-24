@@ -1,6 +1,5 @@
 import { groupBy } from 'lodash'
 import { useCallback } from 'react'
-import { curvejsApi } from '@/dex/lib/curvejs'
 import type { ClaimableReward } from '@/dex/types/main.types'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/lib/model'
@@ -30,7 +29,7 @@ const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
     [...getUserPoolClaimablesQueryKey(params), { poolAddresses: params.poolAddresses }] as const,
   queryFn: async ({ userAddress, poolAddresses }: UserPoolClaimablesQuery) => {
     const curve = requireLib('curveApi')
-    const poolRewards = await curvejsApi.wallet.getUserClaimable(curve, poolAddresses, userAddress)
+    const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress)
 
     return fromEntries(
       poolAddresses.map((poolAddress, index) => {
