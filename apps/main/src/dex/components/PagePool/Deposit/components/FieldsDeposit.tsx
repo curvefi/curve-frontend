@@ -75,7 +75,7 @@ export const FieldsDeposit = ({
     updatedMaxSlippage: string | null,
   ) => void
 }) => {
-  const { chainId, blockchainId, poolId, poolData, isWrapped, setIsWrapped, tokens, tokenAddresses } = usePoolContext()
+  const { chainId, blockchainId, poolId, pool, isWrapped, setIsWrapped, tokens, tokenAddresses } = usePoolContext()
   const maxLoading = useStore(state => state.poolDeposit.maxLoading)
   const { data: reserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
   const isBalancedAmounts = formValues.isBalancedAmounts
@@ -163,14 +163,14 @@ export const FieldsDeposit = ({
         </FieldsWrapper>
       )}
 
-      {hasWrapped(poolData.pool) && formValues.isWrapped !== null && (
+      {hasWrapped(pool) && formValues.isWrapped !== null && (
         <FieldsWrapper>
           <Checkbox
-            isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
+            isDisabled={isDisabled || isWrappedOnly(pool)}
             isSelected={isWrapped}
             onChange={nextIsWrapped => {
-              if (poolData) {
-                const wrapped = getTokens(poolData.pool, { wrapped: nextIsWrapped })
+              if (pool) {
+                const wrapped = getTokens(pool, { wrapped: nextIsWrapped })
                 setIsWrapped(nextIsWrapped)
                 const cFormValues = lodash.cloneDeep(formValues)
 

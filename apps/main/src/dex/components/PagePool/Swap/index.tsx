@@ -10,14 +10,14 @@ import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT } from '@/dex/components/PagePool/Swap/utils'
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
-import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, PoolAlert, PoolData } from '@/dex/types/main.types'
+import { CurveApi, PoolAlert } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { TokenList } from '@evm-ui/features/select-token'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -50,6 +50,7 @@ import { useSwitch } from '@ui/hooks/useSwitch'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
+import { getSlippageType } from '../utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -63,7 +64,7 @@ export const Swap = ({
     chainId,
     userAddress: signerAddress,
     poolId,
-    poolData,
+    pool,
     api: curve,
     isWrapped,
     setIsWrapped,
@@ -140,29 +141,29 @@ export const Swap = ({
       void setFormValues(
         config,
         curve,
-        poolData.pool.id,
-        poolData,
+        pool.id,
+        pool,
         { isWrapped, ...updatedFormValues },
         isGetMaxFrom,
         seed.isSeed,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, isWrapped, poolData, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, isWrapped, pool, seed.isSeed, maxSlippage],
   )
 
   const handleSwapClick = useCallback(
     async (
       actionActiveKey: string,
       curve: CurveApi,
-      poolData: PoolData,
+      pool: PoolTemplate,
       formValues: FormValues,
       maxSlippage: string,
     ) => {
       const { fromAmount, fromToken, toToken } = formValues
       const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepSwap(actionActiveKey, curve, pool, formValues, maxSlippage)
 
       if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         void refetchUserFromBalance()
@@ -187,7 +188,7 @@ export const Swap = ({
       actionActiveKey: string,
       config: Config,
       curve: CurveApi,
-      poolData: PoolData,
+      pool: PoolTemplate,
       formValues: FormValues,
       formStatus: FormStatus,
       exchangeOutput: ExchangeOutput,
@@ -218,7 +219,7 @@ export const Swap = ({
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${formValues.fromToken}.`
             const { dismiss } = notify(notifyMessage, 'pending')
-            await fetchStepApprove(actionActiveKey, config, curve, poolData.pool, formValues, maxSlippage)
+            await fetchStepApprove(actionActiveKey, config, curve, pool, formValues, maxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -249,13 +250,13 @@ export const Swap = ({
                   },
                   isDismissable: false,
                   primaryBtnProps: {
-                    onClick: () => void handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleSwapClick(actionActiveKey, curve, pool, formValues, maxSlippage),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : { onClick: () => void handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleSwapClick(actionActiveKey, curve, pool, formValues, maxSlippage) }),
         },
       }
 
@@ -273,10 +274,10 @@ export const Swap = ({
   )
 
   const fetchData = useCallback(() => {
-    if (curve && poolData && isPageVisible && !formStatus.formProcessing && !formStatus.formTypeCompleted) {
+    if (curve && pool && isPageVisible && !formStatus.formProcessing && !formStatus.formTypeCompleted) {
       updateFormValues({}, null, '')
     }
-  }, [curve, formStatus.formProcessing, formStatus.formTypeCompleted, isPageVisible, poolData, updateFormValues])
+  }, [curve, formStatus.formProcessing, formStatus.formTypeCompleted, isPageVisible, pool, updateFormValues])
 
   // onMount
   useEffect(() => {
@@ -289,9 +290,9 @@ export const Swap = ({
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, isWrapped)
+      resetState(pool, isWrapped)
     }
-  }, [isWrapped, poolData, poolId, resetState])
+  }, [isWrapped, pool, poolId, resetState])
 
   // get user balances
   useEffect(() => {
@@ -316,12 +317,12 @@ export const Swap = ({
 
   // steps
   useEffect(() => {
-    if (curve && poolData && seed.isSeed !== null) {
+    if (curve && pool && seed.isSeed !== null) {
       const updatedSteps = getSteps(
         activeKey,
         config,
         curve,
-        poolData,
+        pool,
         formValues,
         formStatus,
         exchangeOutput,
@@ -489,16 +490,16 @@ export const Swap = ({
           walletBalance={{ balance: q(userToBalance), symbol: toToken?.symbol, usdRate: toUsdRate }}
         />
 
-        {hasWrapped(poolData.pool) && formValues.isWrapped !== null && (
+        {hasWrapped(pool) && formValues.isWrapped !== null && (
           <div>
             <Checkbox
-              isDisabled={isDisabled || isWrappedOnly(poolData.pool)}
+              isDisabled={isDisabled || isWrappedOnly(pool)}
               isSelected={isWrapped}
               onChange={nextIsWrapped => {
-                if (poolData) {
+                if (pool) {
                   const fromIdx = poolTokenAddresses.findIndex(a => a === formValues.fromAddress)
                   const toIdx = poolTokenAddresses.findIndex(a => a === formValues.toAddress)
-                  const wrapped = getTokens(poolData.pool, { wrapped: nextIsWrapped })
+                  const wrapped = getTokens(pool, { wrapped: nextIsWrapped })
                   setIsWrapped(nextIsWrapped)
                   const cFormValues = cloneDeep(formValues)
                   cFormValues.isWrapped = nextIsWrapped
@@ -535,11 +536,7 @@ export const Swap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <SlippageToleranceActionInfo
-          maxSlippage={maxSlippage}
-          type={getSlippageType(poolData)}
-          userAddress={userAddress}
-        />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(pool)} userAddress={userAddress} />
       </Stack>
       <HighPriceImpactAlert priceImpact={priceImpact} />
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (

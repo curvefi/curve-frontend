@@ -18,7 +18,7 @@ export const TableRow = ({
   blockchainId,
   formValues: { sortBy },
   fetchBoost,
-  poolData,
+  pool,
   poolRewardsApy,
   dashboardData,
   updatePath,
@@ -31,7 +31,7 @@ export const TableRow = ({
   return (
     <Tr ref={rowRef} onClick={() => updatePath(poolId)}>
       <Td>
-        <PoolLabel blockchainId={blockchainId} isVisible={isVisible} poolData={poolData} />
+        <PoolLabel blockchainId={blockchainId} isVisible={isVisible} pool={pool} />
       </Td>
       {isLiteChain(chainId) ? (
         <Td className="right">
@@ -41,7 +41,7 @@ export const TableRow = ({
       ) : (
         <Td className="right">
           <TableCellRewards
-            poolData={poolData}
+            pool={pool}
             rewardsApyKey="all"
             rewardsApy={poolRewardsApy}
             sortBy={sortBy}

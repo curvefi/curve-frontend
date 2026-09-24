@@ -17,8 +17,9 @@ import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBala
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
@@ -30,7 +31,7 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormStake = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve, isWrapped } = usePoolContext()
+  const { chainId, userAddress: signerAddress, poolId, pool: pool, api: curve, isWrapped } = usePoolContext()
   const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
   const isSubscribedRef = useRef(false)
 
@@ -59,19 +60,19 @@ export const FormStake = ({ seed }: TransferProps) => {
         'STAKE',
         config,
         curve,
-        poolData.pool.id,
-        poolData,
+        pool.id,
+        pool,
         { isWrapped, ...updatedFormValues },
         null,
         seed.isSeed,
         '',
       )
     },
-    [config, curve, isWrapped, poolData, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, pool, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
-    async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
       const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, 'STAKE', pool, formValues)
@@ -81,10 +82,10 @@ export const FormStake = ({ seed }: TransferProps) => {
   )
 
   const handleStakeClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues) => {
       const notifyMessage = t`Please confirm staking of ${formValues.lpToken} LP Tokens`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
+      const resp = await fetchStepStake(activeKey, curve, pool, formValues)
 
       if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
@@ -99,12 +100,12 @@ export const FormStake = ({ seed }: TransferProps) => {
     (
       activeKey: string,
       curve: CurveApi,
-      poolData: PoolData,
+      pool: PoolTemplate,
       formValues: FormValues,
       formStatus: FormStatus,
       steps: Step[],
     ) => {
-      const isValid = isValidAddress(poolData.pool.gauge.address) && !formStatus.error && +formValues.lpToken > 0
+      const isValid = isValidAddress(pool.gauge.address) && !formStatus.error && +formValues.lpToken > 0
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'STAKE'
 
@@ -114,14 +115,14 @@ export const FormStake = ({ seed }: TransferProps) => {
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid && !formStatus.formProcessing),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => void handleApproveClick(activeKey, curve, poolData.pool, formValues),
+          onClick: () => void handleApproveClick(activeKey, curve, pool, formValues),
         },
         STAKE: {
           key: 'STAKE',
           status: getStepStatus(isComplete, formStatus.step === 'STAKE', isValid && formStatus.isApproved),
           type: 'action',
           content: isComplete ? t`Stake Complete` : t`Stake`,
-          onClick: () => void handleStakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => void handleStakeClick(activeKey, curve, pool, formValues),
         },
       }
 
@@ -149,7 +150,7 @@ export const FormStake = ({ seed }: TransferProps) => {
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData, isWrapped)
+      resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
@@ -165,7 +166,7 @@ export const FormStake = ({ seed }: TransferProps) => {
   // steps
   useEffect(() => {
     if (curve && poolId) {
-      const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, steps)
+      const updatedSteps = getSteps(activeKey, curve, pool, formValues, formStatus, steps)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
@@ -193,7 +194,7 @@ export const FormStake = ({ seed }: TransferProps) => {
       </FieldsWrapper>
 
       <div>
-        <DetailInfoExpectedApy lpTokenAmount={formValues.lpToken} poolData={poolData} crvApr={rewardsApy?.crv?.[0]} />
+        <DetailInfoExpectedApy lpTokenAmount={formValues.lpToken} pool={pool} crvApr={rewardsApy?.crv?.[0]} />
 
         {haveSigner && (
           <DetailInfoEstGas
