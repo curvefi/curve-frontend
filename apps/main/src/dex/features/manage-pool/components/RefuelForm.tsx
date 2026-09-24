@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack'
 import { maybe } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { Form } from '@ui/features/forms/components/Form'
-import { DebouncedLargeTokenInput, HelperMessage } from '@ui/features/forms/controls/LargeTokenInput'
+import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -42,7 +42,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
       }
     >
       <Stack sx={{ gap: Spacing.sm }}>
-        <DebouncedLargeTokenInput
+        <LargeTokenInput
           name="tokenAAmount"
           balance={q({ data: values.tokenAAmount, isLoading: false, error: maybe(tokenA.amountError, Error) ?? null })}
           onBalance={tokenAAmount => form.update({ tokenAAmount })}
@@ -66,9 +66,9 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
               isError
             />
           )}
-        </DebouncedLargeTokenInput>
+        </LargeTokenInput>
 
-        <DebouncedLargeTokenInput
+        <LargeTokenInput
           name="tokenBAmount"
           balance={q({ data: values.tokenBAmount, isLoading: false, error: maybe(tokenB.amountError, Error) ?? null })}
           onBalance={tokenBAmount => form.update({ tokenBAmount })}
@@ -92,7 +92,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
               isError
             />
           )}
-        </DebouncedLargeTokenInput>
+        </LargeTokenInput>
       </Stack>
 
       <EvmFormButton

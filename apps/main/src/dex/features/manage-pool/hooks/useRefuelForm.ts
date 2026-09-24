@@ -8,6 +8,7 @@ import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { maybes } from '@primitives/objects.utils'
 import { useForm } from '@ui/features/forms'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useRefuelMutation } from '../mutations/refuel.mutation'
 import { useRefuelPool } from '../queries/pools.query'
 import type { RefuelFormValues, Tokens } from '../types'
@@ -54,6 +55,9 @@ export const useRefuelForm = ({
   )
 
   const form = useForm<RefuelFormValues>({ defaultValues: userDefaultValues, validation: refuelFormValidationSuite })
+  const values = form.watchValues()
+  // Keep submission unavailable until the current amount edit has settled.
+  const [, isDebouncing] = useFormDebounce(values, userDefaultValues)
 
   const {
     onSubmit: onSubmitRefuel,
@@ -67,7 +71,7 @@ export const useRefuelForm = ({
 
   return {
     form,
-    values: form.watchValues(),
+    values,
     tokenA: {
       address: coinA?.address,
       symbol: coinA?.symbol,
@@ -86,7 +90,7 @@ export const useRefuelForm = ({
     },
     poolTvl: mapQuery(pool, p => p.tvlUsd),
     isPending,
-    isDisabled: tokens == null || !formState.isValid || isPending,
+    isDisabled: tokens == null || !formState.isValid || isPending || isDebouncing,
     userAddress,
     refuelError,
     formErrors,
