@@ -5,7 +5,7 @@ import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
 import type { Chain } from '@curvefi/prices-api'
-import { getTokenUsdRateQueryOptions } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { getTokenUsdRateQueryOptions } from '@evm-ui/entities/token-usd-rate'
 import { MarketType } from '@evm-ui/types/market'
 import { requireChainId } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'

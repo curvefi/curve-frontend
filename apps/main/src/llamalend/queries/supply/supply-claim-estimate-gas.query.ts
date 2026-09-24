@@ -1,6 +1,6 @@
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import { createEstimateGasHook } from '@evm-ui/entities/gas-info'
 import { rootKeys } from '@evm-ui/lib/model'
-import { createEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
 import { combineQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'

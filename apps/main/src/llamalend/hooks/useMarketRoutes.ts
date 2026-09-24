@@ -10,7 +10,7 @@ import {
   usePinRouteById,
   useRouterQueries,
 } from '@evm-ui/entities/router-api'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useTokenUsdRate } from '@evm-ui/entities/token-usd-rate'
 import { fromWei } from '@evm-ui/utils'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { Address } from '@primitives/address.utils'

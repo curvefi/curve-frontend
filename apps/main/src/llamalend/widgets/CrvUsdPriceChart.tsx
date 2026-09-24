@@ -2,7 +2,7 @@ import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
 import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useTokenUsdRate } from '@evm-ui/entities/token-usd-rate'
 import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
   addMovingAverages,

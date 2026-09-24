@@ -5,7 +5,7 @@ import { useUserPoolClaimables, type UserPoolClaimables } from '@/dex/queries/us
 import { useUserPoolPositions, type UserPoolPosition } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCampaigns } from '@evm-ui/entities/campaigns'
-import { useTokenUsdRates, type TokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useTokenUsdRates, type TokenUsdRates } from '@evm-ui/entities/token-usd-rate'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, type Query, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum } from '@ui/lib/decimal'

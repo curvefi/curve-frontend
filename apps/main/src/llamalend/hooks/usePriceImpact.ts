@@ -1,6 +1,6 @@
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { RouteResponse } from '@evm-ui/entities/router-api'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useTokenUsdRate } from '@evm-ui/entities/token-usd-rate'
 import { fromWei } from '@evm-ui/utils'
 import { assert, maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'

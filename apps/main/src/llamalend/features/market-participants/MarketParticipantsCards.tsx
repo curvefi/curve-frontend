@@ -14,8 +14,8 @@ import {
   TotalLiquidityMetric,
 } from '@/llamalend/widgets/MarketMetrics'
 import { useAvailableLiquidity } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
+import { useTokenUsdRate } from '@evm-ui/entities/token-usd-rate'
 import { useManualPagination } from '@evm-ui/features/activity-table'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
