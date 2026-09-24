@@ -11,6 +11,16 @@ import { mapQuery, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { claimablesTotalUsd, enrichPoolRow, poolToRowData } from '../utils'
 
+const getPoolUserPosition = (
+  position: NonNullable<ReturnType<typeof useUserPoolPositions>['data']>['positions'][number],
+  tokenRates: ReturnType<typeof useTokenUsdRates>['data'],
+  claimables: Pick<ReturnType<typeof useUserPoolClaimables>, 'data' | 'isLoading' | 'error'>,
+) => ({
+  lpBalance: position.totalBalance,
+  depositsUsd: maybe(tokenRates?.[position.lpTokenAddress], price => decimalMultiply(position.totalBalance, price)),
+  claimables: mapQuery(claimables, rewards => rewards[position.address] ?? []),
+})
+
 export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) => {
   const { chainId, blockchainId } = network
   const { address: userAddress } = useConnection()
@@ -31,16 +41,16 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
       ({ positions }) =>
         positions
           .map(position =>
-            enrichPoolRow(poolToRowData(position), network, campaigns.data, {
-              lpBalance: position.totalBalance,
-              depositsUsd: maybe(tokenRates.data?.[position.lpTokenAddress], price =>
-                decimalMultiply(position.totalBalance, price),
-              ),
-              claimables: mapQuery(
-                { data: claimables.data, isLoading: claimables.isLoading, error: claimables.error },
-                rewards => rewards[position.address] ?? [],
-              ),
-            }),
+            enrichPoolRow(
+              poolToRowData(position),
+              network,
+              campaigns.data,
+              getPoolUserPosition(position, tokenRates.data, {
+                data: claimables.data,
+                isLoading: claimables.isLoading,
+                error: claimables.error,
+              }),
+            ),
           )
           .toSorted((a, b) => decimalCompare(b.userPosition.depositsUsd ?? '0', a.userPosition.depositsUsd ?? '0')),
       [network, campaigns.data, tokenRates.data, claimables.data, claimables.isLoading, claimables.error],
