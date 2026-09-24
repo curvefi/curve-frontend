@@ -1,6 +1,6 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { Range } from '@ui/features/queries/util'
 

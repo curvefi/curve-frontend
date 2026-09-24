@@ -1,6 +1,6 @@
 import { listLitePoolChains, listPoolChains, listPools, type ListPoolsParams } from '@curvefi/prices-api/pools'
-import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { rootKeys, type ChainParams, type ChainQuery } from '@evm-ui/queries/root-keys'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { getPageCount } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite, EmptyValidationSuite } from '@ui/lib/validation/lib'

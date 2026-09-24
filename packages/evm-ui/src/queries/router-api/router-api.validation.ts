@@ -1,6 +1,6 @@
 import { skipWhen, test } from 'vest'
-import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
-import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Nullish } from '@primitives/objects.utils'

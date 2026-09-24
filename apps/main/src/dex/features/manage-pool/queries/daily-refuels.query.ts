@@ -1,6 +1,6 @@
 import { getRefuelDailyDonations } from '@curvefi/prices-api/refuel'
-import { contractValidationGroup } from '@evm-ui/lib/model/query/contract-validation'
 import { rootKeys, type ChainNameQuery } from '@evm-ui/queries/root-keys'
+import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
 import type { Address } from '@primitives/address.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'

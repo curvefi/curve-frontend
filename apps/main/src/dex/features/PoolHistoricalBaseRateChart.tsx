@@ -3,7 +3,7 @@ import type { Address } from 'viem'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
-import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
+import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
 import {
   CHART_LINE_DASH_PATTERNS,
   ChartFooter,

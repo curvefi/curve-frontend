@@ -1,7 +1,7 @@
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { userPoolValidationSuite } from '@evm-ui/lib/model/query/user-pool-validation'
 import { rootKeys, type UserPoolParams, type UserPoolQuery } from '@evm-ui/queries/root-keys'
+import { userPoolValidationSuite } from '@evm-ui/queries/validation/user-pool-validation'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'

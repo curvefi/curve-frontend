@@ -1,6 +1,6 @@
-import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
 import type { MarketParams, MarketQuery } from '@evm-ui/queries/root-keys'
 import { rootKeys } from '@evm-ui/queries/root-keys'
+import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { getLendVault } from './market.query-helpers'

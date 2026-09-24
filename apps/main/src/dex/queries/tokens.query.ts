@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { getAddress, isAddress, type Address } from 'viem'
-import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { rootKeys, type ChainParams, type ChainQuery } from '@evm-ui/queries/root-keys'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { addQueryString, fetchJson } from '@primitives/fetch.utils'
 import { maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'

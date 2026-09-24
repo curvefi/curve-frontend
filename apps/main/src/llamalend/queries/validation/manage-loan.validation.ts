@@ -10,11 +10,11 @@ import type {
   CollateralHealthParams,
   CollateralParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
-import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
-import { llamaApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
-import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
-import { marketIdValidationGroup, marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
 import type { UserMarketParams } from '@evm-ui/queries/root-keys'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import { llamaApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
+import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
+import { marketIdValidationGroup, marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'

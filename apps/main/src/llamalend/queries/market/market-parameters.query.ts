@@ -1,7 +1,7 @@
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
 import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { MarketQuery, MarketParams } from '@evm-ui/queries/root-keys'
+import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { MarketVersion } from '@evm-ui/types/market'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
