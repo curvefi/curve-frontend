@@ -30,6 +30,7 @@ import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
+import { getTokens } from '../pool.utils'
 import { invalidatePoolInfo, invalidateUserPoolInfo } from '../queries/invalidation'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -63,7 +64,7 @@ export type PoolSwapSlice = {
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
     setStateByKey: <T>(key: StateKey, value: T) => void
     setStateByKeys: (SliceState: Partial<SliceState>) => void
-    resetState: (poolData: PoolData) => void
+    resetState: (poolData: PoolData, isWrapped: boolean) => void
   }
 }
 
@@ -303,7 +304,7 @@ export const createPoolSwapSlice = (
         const currencyReserve = await fetchPoolCurrencyReserves({
           chainId: curve.chainId,
           poolId,
-          isWrapped: poolData.isWrapped,
+          isWrapped: cFormValues.isWrapped,
           useApi: !curve.signerAddress,
         })
 
@@ -467,7 +468,8 @@ export const createPoolSwapSlice = (
     setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
-    resetState: ({ tokens, tokenAddresses, isWrapped }) => {
+    resetState: ({ pool }, isWrapped) => {
+      const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrapped })
       get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
         formValues: {

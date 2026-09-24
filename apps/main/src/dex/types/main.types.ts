@@ -39,15 +39,7 @@ export type Pool = PoolTemplate
 export type ClaimableReward = { token: string; symbol: string; amount: string; price: number }
 export type RewardBase = { day: string; week: string }
 export type RewardCrv = number
-export type PoolData = {
-  idx?: number
-  pool: Pool
-  isWrapped: boolean
-  tokenAddresses: string[]
-  tokenAddressesAll: string[]
-  tokens: string[]
-  tokensCountBy: Record<string, number>
-}
+export type PoolData = { pool: Pool }
 
 export type PoolDataMapper = Record<string, PoolData>
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''

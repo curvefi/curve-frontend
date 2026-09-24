@@ -2,7 +2,7 @@ import { sum } from 'lodash'
 import { getAddress } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
-import type { ChainId, PoolData } from '@/dex/types/main.types'
+import type { ChainId } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { shortenAddress } from '@evm-ui/utils'
@@ -14,17 +14,21 @@ import { decimal } from '@ui/lib/decimal'
 
 export const usePoolComposition = ({
   chainId,
-  poolData,
   poolId,
+  isWrapped,
+  tokens,
+  tokenAddresses,
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolData: PoolData
   poolId: string
+  isWrapped: boolean
+  tokens: string[]
+  tokenAddresses: string[]
   pricesApiPoolData?: PricesApiPool
 }) => {
   const { data: network } = useNetworkByChain({ chainId })
-  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped: poolData.isWrapped })
+  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
 
   // We use prices API as a fallback for non-lite networks, and currencyReserves.total is NaN when no wallet is connected.
   const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !isLiteChain(chainId)
@@ -32,7 +36,7 @@ export const usePoolComposition = ({
 
   // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
   const reserves = usePricesApiReserves
-    ? poolData.tokenAddresses.map((tokenAddress, index) => {
+    ? tokenAddresses.map((tokenAddress, index) => {
         const balance = pricesApiPoolData?.balances[index]
         const balanceUsd = pricesApiPoolData?.balancesUsd[index]
 
@@ -46,8 +50,8 @@ export const usePoolComposition = ({
       })
     : currencyReserves?.tokens
 
-  const rows: PoolCompositionRow[] = poolData.tokens.map((symbol, index) => {
-    const tokenAddress = poolData.tokenAddresses[index]
+  const rows: PoolCompositionRow[] = tokens.map((symbol, index) => {
+    const tokenAddress = tokenAddresses[index]
     const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
     return {

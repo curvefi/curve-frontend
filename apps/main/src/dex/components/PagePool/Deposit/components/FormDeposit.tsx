@@ -34,7 +34,7 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve, isWrapped } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -76,13 +76,13 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
         curve,
         poolData?.pool.id,
         poolData,
-        updatedFormValues,
+        { isWrapped, ...updatedFormValues },
         loadMaxAmount,
         seed.isSeed,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [config, curve, maxSlippage, poolData, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, maxSlippage, poolData, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -195,7 +195,7 @@ export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => 
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData)
+      resetState(poolData, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])

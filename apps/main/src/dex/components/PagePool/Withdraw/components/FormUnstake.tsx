@@ -21,7 +21,7 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormUnstake = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve, isWrapped } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -43,9 +43,19 @@ export const FormUnstake = ({ seed }: TransferProps) => {
     (updatedFormValues: Partial<FormValues>) => {
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
-      void setFormValues('UNSTAKE', config, curve, poolId, poolData, updatedFormValues, null, seed.isSeed, '')
+      void setFormValues(
+        'UNSTAKE',
+        config,
+        curve,
+        poolId,
+        poolData,
+        { isWrapped, ...updatedFormValues },
+        null,
+        seed.isSeed,
+        '',
+      )
     },
-    [config, curve, poolData, poolId, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, poolData, poolId, seed.isSeed, setFormValues],
   )
 
   const handleUnstakeClick = useCallback(
@@ -102,7 +112,7 @@ export const FormUnstake = ({ seed }: TransferProps) => {
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData)
+      resetState(poolData, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
