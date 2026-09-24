@@ -703,7 +703,6 @@ __metadata:
     "@chromatic-com/storybook": "npm:5.3.0"
     "@curvefi/evm-ui": "workspace:^"
     "@curvefi/ui": "workspace:^"
-    "@mui/material": "npm:9.4.0"
     "@storybook/addon-a11y": "npm:10.5.10"
     "@storybook/addon-docs": "npm:10.5.10"
     "@storybook/addon-themes": "npm:10.5.10"

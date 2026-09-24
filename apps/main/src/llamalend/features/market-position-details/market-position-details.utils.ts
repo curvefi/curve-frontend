@@ -17,10 +17,11 @@ export const HEALTH_THRESHOLDS = {
 } as const
 
 type HealthColorRole = 'fill' | 'text'
-type HealthFeedbackKey = 'Error' | 'Warning' | 'Danger' | 'Success'
 
-const healthFeedbackColor = (theme: Theme, role: HealthColorRole, key: HealthFeedbackKey) =>
-  role === 'fill' ? theme.design.Layer.Feedback[key] : theme.design.Text.TextColors.Feedback[key]
+const healthFeedbackColors = (theme: Theme, role: HealthColorRole) =>
+  role === 'fill' ? theme.design.Layer.Feedback : theme.design.Text.TextColors.Feedback
+
+type HealthFeedbackKey = keyof ReturnType<typeof healthFeedbackColors>
 
 const resolveHealthFeedbackKey = ({
   health,
@@ -57,11 +58,9 @@ export const getHealthValueColor = ({
   colorBackground?: boolean
 }) => {
   const value = health ?? prevHealth
-  return healthFeedbackColor(
-    theme,
-    'text',
-    resolveHealthFeedbackKey({ health: value == null ? value : Number(value), isFullRepay }),
-  )
+  return healthFeedbackColors(theme, 'text')[
+    resolveHealthFeedbackKey({ health: value == null ? value : Number(value), isFullRepay })
+  ]
 }
 
 /** Bar and track fills. Health figures use `getHealthValueColor`. */
@@ -75,4 +74,4 @@ export const getHealthTrackColor = ({
   softLiquidation?: boolean | null
   isFullRepay?: boolean
   theme: Theme
-}) => healthFeedbackColor(theme, 'fill', resolveHealthFeedbackKey({ health, softLiquidation, isFullRepay }))
+}) => healthFeedbackColors(theme, 'fill')[resolveHealthFeedbackKey({ health, softLiquidation, isFullRepay })]
