@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ButtonMenu } from '../ButtonMenu'
+import { ButtonMenu } from './ButtonMenu'
 
 const ButtonMenuWrapper = <T extends string>(args: Parameters<typeof ButtonMenu<T>>[0]) => {
   const [open, setOpen] = useState(false)

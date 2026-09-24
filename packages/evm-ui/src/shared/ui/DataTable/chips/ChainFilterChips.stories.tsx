@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ } from '@ui/features/queries/util'
-import { ChainFilterChips } from '../DataTable/chips/ChainFilterChips'
+import { ChainFilterChips } from './ChainFilterChips'
 
 const meta: Meta<typeof ChainFilterChips> = {
   title: 'EVM UI/Shared UI/ChainFilterChips',
