@@ -36,11 +36,14 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
               depositsUsd: maybe(tokenRates.data?.[position.lpTokenAddress], price =>
                 decimalMultiply(position.totalBalance, price),
               ),
-              claimables: mapQuery(claimables, rewards => rewards[position.address] ?? []),
+              claimables: mapQuery(
+                { data: claimables.data, isLoading: claimables.isLoading, error: claimables.error },
+                rewards => rewards[position.address] ?? [],
+              ),
             }),
           )
           .toSorted((a, b) => decimalCompare(b.userPosition.depositsUsd ?? '0', a.userPosition.depositsUsd ?? '0')),
-      [network, campaigns.data, tokenRates.data, claimables],
+      [network, campaigns.data, tokenRates.data, claimables.data, claimables.isLoading, claimables.error],
     ),
   )
 
