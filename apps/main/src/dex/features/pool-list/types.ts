@@ -53,7 +53,7 @@ type PoolUserPosition = {
   /** Both staked and unstaked */
   lpBalance: Decimal
   depositsUsd: Decimal | undefined
-  claimables?: QueryProp<PoolClaimables>
+  claimables: QueryProp<PoolClaimables>
 }
 
 /** Additional pool context not in the main pool data (contextual information sourced with external sources) */

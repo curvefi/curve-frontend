@@ -14,7 +14,7 @@ import type {
 import { useCampaigns } from '@evm-ui/entities/campaigns'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
-import { mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { constQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import type { PoolsApiParams } from '../filters/utils'
 import { enrichPoolRow, litePoolToRowData, poolToRowData } from '../utils'
 import { POOLS_PAGE_SIZE } from './usePoolsPagination'
@@ -86,6 +86,7 @@ export const usePoolsTable = ({
               positions.data?.positions.find(({ address }) => isAddressEqual(address, pool.address))?.totalBalance ??
               '0',
             depositsUsd: undefined,
+            claimables: constQ([])
           }),
         ),
       [network, campaigns.data, positions.data],
