@@ -8,6 +8,7 @@ import type { PoolRow } from '@/dex/features/pool-list/types'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { Chain } from '@primitives/network.utils'
+import { constQ } from '@ui/features/queries/util'
 
 const CONTENT = '[data-testid="pool-tooltip-content"]'
 const POOL_ADDRESS = '0xefc6516323fbd28e80b85a497b65a86243a54b3e'
@@ -74,7 +75,7 @@ const createPool = (): PoolRow => ({
   gauge: { address: GAUGE_ADDRESS, isKilled: false },
   gauges: [{ address: GAUGE_ADDRESS, isKilled: false }],
   campaigns: [BOLD_CAMPAIGN, BOLD_APR_CAMPAIGN],
-  userPosition: { lpBalance: '0' },
+  userPosition: { lpBalance: '0', depositsUsd: undefined, claimables: constQ([]) },
   hasVyperVulnerability: false,
   isMetapool: false,
   chainId: Chain.Ethereum,

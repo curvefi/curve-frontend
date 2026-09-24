@@ -13,6 +13,7 @@ import type {
 } from '@curvefi/prices-api/pools'
 import { useCampaigns } from '@evm-ui/entities/campaigns'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import type { Address } from '@primitives/address.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { constQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import type { PoolsApiParams } from '../filters/utils'
@@ -28,6 +29,12 @@ class UnsupportedPoolListError extends Error {
 
 const litePoolsToRows = ({ pools }: { pools: LitePool[] }) => pools.map(litePoolToRowData)
 const poolsToRows = ({ pools }: { pools: V2Pool[] }) => pools.map(poolToRowData)
+
+const getPoolUserPosition = (poolAddress: Address, positions: ReturnType<typeof useUserPoolPositions>['data']) => ({
+  lpBalance: positions?.positions.find(({ address }) => isAddressEqual(address, poolAddress))?.totalBalance ?? '0',
+  depositsUsd: undefined,
+  claimables: constQ([]),
+})
 
 /** Fetches the selected pool-list source and maps its API rows into table rows. */
 export const usePoolsTable = ({
@@ -81,13 +88,7 @@ export const usePoolsTable = ({
     useCallback(
       pools =>
         pools.map(pool =>
-          enrichPoolRow(pool, network, campaigns.data, {
-            lpBalance:
-              positions.data?.positions.find(({ address }) => isAddressEqual(address, pool.address))?.totalBalance ??
-              '0',
-            depositsUsd: undefined,
-            claimables: constQ([])
-          }),
+          enrichPoolRow(pool, network, campaigns.data, getPoolUserPosition(pool.address, positions.data)),
         ),
       [network, campaigns.data, positions.data],
     ),
