@@ -44,7 +44,7 @@ export const ClaimablesCell = ({
       clickable
       mobileDrawer
     >
-      <Stack data-testid="pool-claimables" sx={{ alignItems: 'end', gap: Spacing.xs }}>
+      <Stack sx={{ alignItems: 'end', gap: Spacing.xs }}>
         {claimables.isLoading ? (
           <>
             <Skeleton width="5rem" />

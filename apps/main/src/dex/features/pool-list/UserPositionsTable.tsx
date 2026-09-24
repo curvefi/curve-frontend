@@ -93,7 +93,6 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
                   label={t`Claimable rewards`}
                   value={claimablesTotalUsd}
                   valueOptions={{ unit: 'dollar' }}
-                  testId="user-claimable-rewards"
                 />
               </MetricsGrid>
               <EvmDataTable

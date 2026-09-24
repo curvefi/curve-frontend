@@ -146,7 +146,6 @@ export const PoolExpandedPanel = ({
               value={pool.userPosition.depositsUsd}
               valueOptions={{ unit: 'dollar' }}
               notional={toQuery(formatToken(pool.userPosition.lpBalance, 'LP', 'balance'))}
-              testId="pool-deposits"
             />
           </Grid>
           {claimables && (
@@ -167,7 +166,6 @@ export const PoolExpandedPanel = ({
                 icon={maybe(claimables.data, rewards => (
                   <ClaimablesIcons claimables={rewards} blockchainId={pool.blockchainId} />
                 ))}
-                testId="pool-claimables"
               />
             </Grid>
           )}
