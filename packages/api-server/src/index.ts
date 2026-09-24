@@ -14,20 +14,27 @@ const loadEnvFile = (path?: string) => {
   }
 }
 
-export const createApiServer = ({ serviceName, env = process.env }: { serviceName: string; env?: ApiServerEnv }) => {
+export const createApiServer = ({
+  serviceName,
+  env = process.env,
+  logger = true,
+}: {
+  serviceName: string
+  env?: ApiServerEnv
+  logger?: boolean
+}) => {
   const { LOG_LEVEL, NODE_ENV, SERVICE_NAME, npm_package_version } = env
 
-  return createFastify({ logger: { level: LOG_LEVEL || (NODE_ENV === 'production' ? 'info' : 'debug') } }).get(
-    '/health',
-    () => ({
-      status: 'ok',
-      service: SERVICE_NAME || serviceName,
-      environment: NODE_ENV || 'development',
-      version: npm_package_version || '0.0.1',
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
-    }),
-  )
+  return createFastify({
+    logger: logger && { level: LOG_LEVEL || (NODE_ENV === 'production' ? 'info' : 'debug') },
+  }).get('/health', () => ({
+    status: 'ok',
+    service: SERVICE_NAME || serviceName,
+    environment: NODE_ENV || 'development',
+    version: npm_package_version || '0.0.1',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  }))
 }
 
 /**

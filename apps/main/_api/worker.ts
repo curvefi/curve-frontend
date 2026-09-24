@@ -2,7 +2,13 @@
 import { httpServerHandler } from 'cloudflare:node'
 import { createRouterApiServer } from 'router-api/src/server'
 
-const routerApi = createRouterApiServer()
+// disable request logging in production, pino is not supported in CF and already logs every request.
+const routerApi = createRouterApiServer({ logger: false })
+
+routerApi.addHook('onError', (request, _reply, error) => {
+  console.error(`[router-api] ${request.method} ${request.url} failed`, error)
+})
+
 await routerApi.ready()
 
 const routerApiHandler = httpServerHandler(routerApi.server)
