@@ -610,7 +610,6 @@ __metadata:
     typescript: "npm:6.0.3"
     typescript-eslint: "npm:8.68.0"
     vite-plugin-svgr: "npm:5.2.0"
-    vitest: "npm:4.1.11"
   languageName: unknown
   linkType: soft
 
@@ -692,6 +691,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@curvefi/primitives@workspace:packages/primitives"
   dependencies:
+    "@vitest/ui": "npm:4.1.11"
     vitest: "npm:4.1.11"
   languageName: unknown
   linkType: soft
@@ -724,7 +724,6 @@ __metadata:
     "@cypress/react": "npm:9.0.2"
     "@cypress/vite-dev-server": "npm:7.3.4"
     "@vitejs/plugin-react": "npm:5.1.2"
-    "@vitest/ui": "npm:4.1.11"
     cypress: "npm:15.21.1"
     main: "workspace:^"
     stellar: "workspace:^"

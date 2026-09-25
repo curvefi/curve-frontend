@@ -51,8 +51,7 @@
     "prettier": "3.9.6",
     "typescript": "6.0.3",
     "typescript-eslint": "8.68.0",
-    "vite-plugin-svgr": "5.2.0",
-    "vitest": "4.1.11"
+    "vite-plugin-svgr": "5.2.0"
   },
   "packageManager": "yarn@4.17.1",
   "lint-staged": {

@@ -1,18 +1,22 @@
 name: Restore cache
-description: Restore the workspace .cache directory
+description: Restore and refresh the tool caches used by a job (Yarn downloads are cached by setup-node)
+inputs:
+  path:
+    description: Tool cache paths used by this job
+    required: true
+  key-prefix:
+    description: Cache family, including any hash that must invalidate its contents
+    default: tools
 runs:
   using: composite
   steps:
     - uses: actions/cache@v5
       with:
-        path: .cache
-        key: >-
-          cache-${{ hashFiles(
-            'yarn.lock',
-            'tsconfig*.json',
-            'apps/**/tsconfig.json',
-            'packages/**/tsconfig.json',
-            'tests/tsconfig.json',
-            'storybook/**/tsconfig.json'
-          ) }}
-        restore-keys: cache-
+        path: ${{ inputs.path }}
+        # Caches are immutable: restore by prefix, then save a fresh entry after a successful job.
+        # Matrix copies share the same tool cache; the first successful copy saves it.
+        key: cache-${{ runner.os }}-${{ inputs.key-prefix }}-${{ github.workflow }}-${{ github.job }}-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
+        restore-keys: |
+          cache-${{ runner.os }}-${{ inputs.key-prefix }}-${{ github.workflow }}-${{ github.job }}-${{ github.ref_name }}-
+          cache-${{ runner.os }}-${{ inputs.key-prefix }}-${{ github.workflow }}-${{ github.job }}-
+          cache-${{ runner.os }}-${{ inputs.key-prefix }}-
