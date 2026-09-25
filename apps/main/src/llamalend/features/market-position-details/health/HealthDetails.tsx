@@ -35,7 +35,7 @@ import { PROVISIONAL_POSITION_THRESHOLDS, resolvePositionStatus, type PositionSe
 import { bufferTooltip, healthTooltip, statusTooltip } from '../PositionMetricTooltip'
 import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import { HealthAndBufferBar, HealthAndBufferDebug } from './HealthAndBufferBar'
-import { getHealthDetailsState, getHealthColor } from './utils'
+import { getHealthDetailsState, getHealthTextColor, getLiquidationBufferTextColor } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -59,7 +59,7 @@ export const HealthDetails = ({
   const theme = useTheme()
   const market = use(MarketContext)
   if (beta && market) return <BetaHealthDetails />
-  const { state, healthState, type } = getHealthDetailsState(health.data)
+  const { state, healthState, liquidationBufferState, type } = getHealthDetailsState(health.data)
 
   return (
     <>
@@ -73,7 +73,7 @@ export const HealthDetails = ({
             value={mapQuery(health, data => data.healthFactor)}
             valueOptions={{
               abbreviate: false,
-              color: getHealthColor(healthState)(theme),
+              color: getHealthTextColor(healthState)(theme),
               formatter: value =>
                 formatNumber(value, +value < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health'),
             }}
@@ -90,7 +90,11 @@ export const HealthDetails = ({
             testId="health-details-liquidation-buffer-metric"
             value={mapQuery(health, data => data.liquidationBuffer)}
             notional={mapQuery(health, data => t`(${formatNumber(data.healthNotFull, 'percent.value')} of debt)`)}
-            valueOptions={{ abbreviate: false, formatter: value => formatNumber(value, 'percent.value') }}
+            valueOptions={{
+              abbreviate: false,
+              color: getLiquidationBufferTextColor(liquidationBufferState)(theme),
+              formatter: value => formatNumber(value, 'percent.value'),
+            }}
             valueTooltip={LIQUIDATION_BUFFER_TOOLTIP}
           />
         </Grid>

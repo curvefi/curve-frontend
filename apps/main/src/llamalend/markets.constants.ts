@@ -511,8 +511,8 @@ export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, Mark
 }
 
 /**
- * Explicit prototype assignments. PR 3285 did not approve every three-way mapping.
- * Volatile labels from that pull request are recorded here as Blue-chip and remain provisional.
+ * Controller assignments taken from the open classification pull request 3285.
+ * That pull request calls the middle group Volatile. This prototype stores those markets as Blue-chip.
  * Unmapped controllers stay unmapped. They are not silently Long-tail.
  */
 export const MARKET_ASSETS_TYPE_BY_CONTROLLER: PartialRecord<number, Record<Address, MarketAssetsType>> = {

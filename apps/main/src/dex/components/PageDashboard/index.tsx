@@ -13,7 +13,7 @@ import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboa
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { usePoolsMapper } from '@/dex/hooks/usePoolsMapper'
+import { getPool } from '@/dex/pool.utils'
 import { usePoolsRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { userPoolBoost } from '@/dex/queries/user-pool-boost.query'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
@@ -53,7 +53,6 @@ export const Dashboard = ({
   const noResult = useStore(state => state.dashboard.noResult)
   const isLoading = useStore(state => state.dashboard.loading)
   const isXSmDown = useLayoutStore(state => state.isXSmDown)
-  const poolsMapper = usePoolsMapper()
   const { data: rewardsApyMapper } = usePoolsRewardsApy({ chainId: rChainId, poolIds: dashboardDataPoolIds ?? [] })
   const setFormValues = useStore(state => state.dashboard.setFormValues)
 
@@ -76,9 +75,9 @@ export const Dashboard = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, pageLoaded && isHydrated ? curve : null, poolsMapper, updatedFormValues)
+      setFormValues(rChainId, pageLoaded && isHydrated ? curve : null, updatedFormValues)
     },
-    [curve, isHydrated, pageLoaded, poolsMapper, rChainId, setFormValues],
+    [curve, isHydrated, pageLoaded, rChainId, setFormValues],
   )
 
   // onMount
@@ -94,7 +93,7 @@ export const Dashboard = ({
   useEffect(() => {
     updateFormValues({})
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, !pageLoaded, poolsMapper])
+  }, [chainId, !pageLoaded])
 
   // signerAddress
   useEffect(() => {
@@ -140,10 +139,10 @@ export const Dashboard = ({
           <tbody>
             {noResult || error || !isValidAddress ? (
               <TableRowNoResult colSpan={colSpan} noResult={noResult} error={error} />
-            ) : dashboardDataPoolIds?.length > 0 ? (
+            ) : dashboardDataPoolIds?.length > 0 && isHydrated && curve ? (
               <>
                 {dashboardDataPoolIds.map(poolId => {
-                  const pool = poolsMapper?.[poolId]
+                  const pool = getPool(poolId, curve)
                   const dashboardData = dashboardDataMapper?.[poolId]
 
                   if (!pool || !dashboardData) return null
