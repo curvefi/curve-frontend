@@ -11,7 +11,6 @@ import {
 } from 'react'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
-import { usePoolsMapper } from '@/dex/hooks/usePoolsMapper'
 import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
@@ -49,8 +48,6 @@ export const FormClaimFeesButtons = ({
   const { chainId, signerAddress } = curve ?? {}
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')
 
-  const poolsMapper = usePoolsMapper()
-
   const claimButtons = useMemo(() => {
     const loadingClaimFees = loading && !!walletAddress && typeof claimFeesAmounts === 'undefined'
     const claim3Crv = +(claimFeesAmounts?.[claimButtonsKey['3CRV']] ?? '0')
@@ -82,7 +79,7 @@ export const FormClaimFeesButtons = ({
       setSteps([])
       setTxInfoBar(null)
 
-      const resp = await fetchStepClaimFees(activeKey, curve, poolsMapper, walletAddress, key)
+      const resp = await fetchStepClaimFees(activeKey, curve, walletAddress, key)
 
       if (!resp || resp?.activeKey !== activeKey) return
 
@@ -109,7 +106,7 @@ export const FormClaimFeesButtons = ({
         />,
       )
     },
-    [activeKey, curve, fetchStepClaimFees, setFormStatus, setSteps, setTxInfoBar, walletAddress, chainId, poolsMapper],
+    [activeKey, curve, fetchStepClaimFees, setFormStatus, setSteps, setTxInfoBar, walletAddress, chainId],
   )
 
   return (
