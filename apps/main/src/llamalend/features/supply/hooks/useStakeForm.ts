@@ -20,7 +20,7 @@ import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { queryFactory } from '@ui/features/queries/factory'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
@@ -117,7 +117,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     collateralToken,
     error: stakeError ?? solvencyError,
     max: maxStakeAssets,
-    isApproved: useStakeIsApproved(params),
+    isApproved: q(useStakeIsApproved(params)),
     hasGauge: marketHasGauge,
     formErrors: formState.visibleErrors,
     disabledAlert,

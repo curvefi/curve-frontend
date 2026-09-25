@@ -2,6 +2,7 @@ import { type ChangeEvent, useCallback } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { getFormButtonLabel } from '@/llamalend/widgets/action-card/form-button-label'
 import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/LeverageDelegationModal'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
@@ -168,11 +169,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
-        label={
-          isControllerApproved.data === false
-            ? t`Approve delegation`
-            : [isApproved?.data === false && t`Approve`, t`Borrow`]
-        }
+        label={getFormButtonLabel({ isControllerApproved, isApproved, labels: [t`Borrow`] })}
         testId="create-loan-submit-button"
         connectWalletTestId="form-market-page"
       >

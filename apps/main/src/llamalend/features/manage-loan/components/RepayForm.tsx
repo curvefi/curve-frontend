@@ -9,6 +9,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { isRepayLeveraged } from '@/llamalend/queries/repay/repay-query.helpers'
 import { useUserPrices } from '@/llamalend/queries/user'
+import { getFormButtonLabel } from '@/llamalend/widgets/action-card/form-button-label'
 import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/LeverageDelegationModal'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
@@ -199,15 +200,14 @@ export const RepayForm = <ChainId extends IChainId>({
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, isRepayLeveraged(values))}
-        label={
-          isControllerApproved.data === false
-            ? t`Approve delegation`
-            : [
-                isApproved.data === false && t`Approve`,
-                notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
-                isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
-              ]
-        }
+        label={getFormButtonLabel({
+          isControllerApproved,
+          isApproved,
+          labels: [
+            notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
+            isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
+          ],
+        })}
         testId="repay-submit-button"
       />
       {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && (

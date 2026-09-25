@@ -177,7 +177,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     repayError: isControllerApproved.error ?? repayError,
     isControllerApproved,
     delegationModal,
-    isApproved: useRepayIsApproved(params),
+    isApproved: q(useRepayIsApproved(params)),
     priceImpact: q(useRepayPriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,
