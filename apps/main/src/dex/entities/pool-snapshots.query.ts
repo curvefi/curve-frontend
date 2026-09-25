@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { getPoolSnapshots, type GetPoolSnapshotsParams } from '@curvefi/prices-api/pools'
-import { contractValidationGroup } from '@evm-ui/lib/model/query/contract-validation'
+import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { TIME_FRAMES } from '@ui/lib/time'
 import { createValidationSuite } from '@ui/lib/validation/lib'

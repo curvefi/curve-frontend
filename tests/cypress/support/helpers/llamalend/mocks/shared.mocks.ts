@@ -1,7 +1,7 @@
 import type { Address, Hex } from 'viem'
 import { LEVERAGE } from '@/llamalend/constants'
 import { oneAddress, oneDecimal } from '@cy/support/generators'
-import type { RoutesQuery } from '@evm-ui/entities/router-api'
+import type { RoutesQuery } from '@evm-ui/queries/router-api'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'

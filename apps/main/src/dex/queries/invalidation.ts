@@ -1,6 +1,6 @@
-import { getCampaignsExternalQueryKey } from '@evm-ui/entities/campaigns/campaigns-external'
-import { getCampaignsPoolsMerklQueryKey } from '@evm-ui/entities/campaigns/campaigns-pools-merkl'
-import type { PoolParams, UserChainParams, UserPoolParams } from '@evm-ui/lib/model'
+import { getCampaignsExternalQueryKey } from '@evm-ui/queries/campaigns/campaigns-external.query'
+import { getCampaignsPoolsMerklQueryKey } from '@evm-ui/queries/campaigns/campaigns-pools-merkl.query'
+import type { PoolParams, UserChainParams, UserPoolParams } from '@evm-ui/queries/root-keys'
 import { getLitePoolListQueryKey } from '@ui/features/pool-list/lite-pool-list.query'
 import { queryClient } from '@ui/features/queries/query-client'
 import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'
@@ -11,8 +11,9 @@ import { invalidatePoolRewardsApy } from './pool-rewards-apy.query'
 import { invalidatePoolTotalStaked } from './pool-total-staked.query'
 import { invalidateUserPoolBalancesQuery } from './user-pool-balances.query'
 import { invalidateUserPoolBoostQuery } from './user-pool-boost.query'
+import { getUserPoolClaimablesQueryKey } from './user-pool-claimables.query'
 import { invalidateUserPoolLiquidityUsdQuery } from './user-pool-liquidity-usd.query'
-import { getUserPoolPositionsQueryKey, invalideUserPoolPositions } from './user-pool-positions.query'
+import { getUserPoolPositionsQueryKey, invalidateUserPoolPositions } from './user-pool-positions.query'
 import { invalidateUserPoolRewardCrvApyQuery } from './user-pool-reward-crv-apy.query'
 import { invalidateUserPoolShareQuery } from './user-pool-share.query'
 
@@ -24,7 +25,8 @@ export const invalidateUserPoolInfo = async (params: UserPoolParams) => {
     invalidateUserPoolShareQuery(params),
     invalidateUserPoolRewardCrvApyQuery(params),
     invalidateUserPoolBoostQuery(params),
-    invalideUserPoolPositions(params),
+    invalidateUserPoolPositions(params),
+    queryClient.resetQueries({ queryKey: getUserPoolClaimablesQueryKey(params) }),
   ])
 }
 
@@ -44,6 +46,7 @@ export const resetPoolLists = ({ chainId, userAddress }: UserChainParams) =>
       getLitePoolListQueryKey({ chainId }),
       getPoolChainsQueryKey({}),
       getLitePoolChainsQueryKey({}),
+      getUserPoolClaimablesQueryKey({ chainId, userAddress }),
       getUserPoolPositionsQueryKey({ chainId, userAddress }),
       getCampaignsExternalQueryKey({}),
       getCampaignsPoolsMerklQueryKey({}),

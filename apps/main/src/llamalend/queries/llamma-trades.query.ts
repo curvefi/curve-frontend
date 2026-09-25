@@ -1,7 +1,7 @@
 import { test } from 'vest'
 import { getTrades, type GetTradesParams } from '@curvefi/prices-api/llamma'
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
-import { contractValidationGroup } from '@evm-ui/lib/model/query/contract-validation'
+import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'

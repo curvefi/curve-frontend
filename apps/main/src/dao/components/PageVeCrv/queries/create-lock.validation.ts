@@ -1,6 +1,6 @@
 import { skipWhen, test } from 'vest'
-import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
-import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
+import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { CalendarDate } from '@internationalized/date'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui/lib/i18n'

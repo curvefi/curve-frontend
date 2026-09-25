@@ -1,7 +1,7 @@
 import { BrowserProvider } from 'ethers'
 import { createContext, use, useEffect, useMemo, useState } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
-import type { Provider } from '@evm-ui/lib/ethers'
+import type { Provider } from '@evm-ui/utils/ethers'
 import { constQ, fakeLoadingQ } from '@ui/features/queries/util'
 import { setUser } from '@ui/features/sentry'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'

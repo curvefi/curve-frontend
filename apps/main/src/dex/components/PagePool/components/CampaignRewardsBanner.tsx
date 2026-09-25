@@ -1,5 +1,5 @@
 import { usePoolContext } from '@/dex/features/pool-context'
-import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
+import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
 import { CampaignBannerComp } from '@legacy-ui/CampaignRewards/CampaignBannerComp'
 import { t } from '@ui/lib/i18n'
 

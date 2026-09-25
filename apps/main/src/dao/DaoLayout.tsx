@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { networksIdMapper } from '@/dao/networks'
 import type { UrlParams } from '@/dao/types/dao.types'
 import { useRedirectToEth } from '@evm-ui/hooks/useRedirectToEth'
-import { useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
+import { useGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { Outlet } from '@tanstack/react-router'
 import { useParams } from '@ui/hooks/router'
 
