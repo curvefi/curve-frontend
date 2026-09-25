@@ -1,5 +1,4 @@
-import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
-import { QueryData } from '@evm-ui/lib'
+import type { HealthValues } from '@/llamalend/queries/user/user-health.query'
 import type { Theme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, maybe, maybes, recordEntries, recordValues } from '@primitives/objects.utils'
@@ -44,30 +43,36 @@ export const getLiquidationBufferState = (liquidationBuffer: number): Liquidatio
   recordEntries(LIQUIDATION_BUFFER_THRESHOLDS).find(([, threshold]) => liquidationBuffer <= threshold)?.[0] ??
   LIQ_BUFFER_UPPER_BOUND_STATE
 
-export const getHealthColor = (state: HealthState | undefined) => (theme: Theme) => {
-  const { Layer } = theme.design
-  const colors = {
-    pristine: Layer.Feedback.Info,
-    good: Layer.Feedback.Success,
-    caution: Layer.Feedback.Caution,
-    tight: Layer.Feedback.Error,
-    softLiquidation: Layer.Feedback.Error,
-  } satisfies Record<HealthState, string | undefined>
+type FeedbackKey = keyof Theme['design']['Layer']['Feedback'] & keyof Theme['design']['Text']['TextColors']['Feedback']
 
-  return maybe(state, s => colors[s])
-}
+const HEALTH_FEEDBACK_KEY = {
+  pristine: 'Info',
+  good: 'Success',
+  caution: 'Caution',
+  tight: 'Error',
+  softLiquidation: 'Error',
+} as const satisfies Record<HealthState, FeedbackKey>
 
-export const getLiquidationBufferColor = (state: LiquidationBufferState | undefined) => (theme: Theme) => {
-  const { Layer } = theme.design
-  const colors = {
-    light: Layer.Feedback.Info,
-    risky: Layer.Feedback.Warning,
-    critical: Layer.Feedback.Error,
-    hardLiquidation: Layer.Feedback.Error,
-  } satisfies Record<LiquidationBufferState, string | undefined>
+const LIQUIDATION_BUFFER_FEEDBACK_KEY = {
+  light: 'Info',
+  risky: 'Warning',
+  critical: 'Error',
+  hardLiquidation: 'Error',
+} as const satisfies Record<LiquidationBufferState, FeedbackKey>
 
-  return maybe(state, s => colors[s])
-}
+/** Bar fills. Text uses `getHealthTextColor`. */
+export const getHealthColor = (state: HealthState | undefined) => (theme: Theme) =>
+  maybe(state, s => theme.design.Layer.Feedback[HEALTH_FEEDBACK_KEY[s]])
+
+export const getHealthTextColor = (state: HealthState | undefined) => (theme: Theme) =>
+  maybe(state, s => theme.design.Text.TextColors.Feedback[HEALTH_FEEDBACK_KEY[s]])
+
+/** Bar fills. Text uses `getLiquidationBufferTextColor`. */
+export const getLiquidationBufferColor = (state: LiquidationBufferState | undefined) => (theme: Theme) =>
+  maybe(state, s => theme.design.Layer.Feedback[LIQUIDATION_BUFFER_FEEDBACK_KEY[s]])
+
+export const getLiquidationBufferTextColor = (state: LiquidationBufferState | undefined) => (theme: Theme) =>
+  maybe(state, s => theme.design.Text.TextColors.Feedback[LIQUIDATION_BUFFER_FEEDBACK_KEY[s]])
 
 export const getHealthPercent = (health: Decimal | Nullish) =>
   health == null ? 0 : clampPercentage((+health / recordValues(HEALTH_THRESHOLDS).at(-1)!) * 100)
@@ -77,7 +82,7 @@ export const getLiquidationBufferPercent = (liquidationBuffer: Decimal | Nullish
     ? 0
     : clampPercentage((+liquidationBuffer / recordValues(LIQUIDATION_BUFFER_THRESHOLDS).at(-1)!) * 100)
 
-export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValues> | undefined) => {
+export const getHealthDetailsState = (healthData: HealthValues | undefined) => {
   const { health, liquidationBuffer } = healthData ?? {}
   // it returns the current type of the position, to either show the "health" or the "liquidationBuffer"
   const type: HealthType =

@@ -13,8 +13,8 @@ import {
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
-import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
+import { getGasConfig } from '@evm-ui/queries/gas-info.query'
+import { waitForTransaction, waitForTransactions } from '@evm-ui/utils/ethers'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { log } from '@ui/lib/logging'
 
@@ -1040,27 +1040,6 @@ const poolWithdraw = {
 }
 
 const wallet = {
-  getUserLiquidityUSD: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
-    log('getUserLiquidityUSD', poolIds, walletAddress)
-    return await curve.getUserLiquidityUSD(poolIds, walletAddress)
-  },
-  getUserClaimable: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
-    log('getUserClaimable', poolIds, walletAddress)
-    const fetchedUserClaimable = await curve.getUserClaimable(poolIds, walletAddress)
-    if (curve.chainId === 8453) {
-      return fetchedUserClaimable.map(poolClaimables => {
-        if (Array.isArray(poolClaimables)) {
-          const crvClaimables = poolClaimables.filter(c => c.symbol === 'CRV')
-          // Base chain show too many CRV
-          if (crvClaimables.length === 2) {
-            return [crvClaimables[0]]
-          }
-        }
-        return poolClaimables
-      })
-    }
-    return fetchedUserClaimable
-  },
   userClaimableFees: async (curve: CurveApi, activeKey: string, walletAddress: string) => {
     log('userClaimableFees', activeKey, walletAddress)
     const resp = { activeKey, '3CRV': '', crvUSD: '', error: '' }

@@ -130,8 +130,8 @@ export const createDashboardSlice = (
 
         // get balances and claimables
         const [userPoolBalancesResult, userClaimableResult] = await Promise.allSettled([
-          wallet.getUserLiquidityUSD(curve, poolList, walletAddress),
-          wallet.getUserClaimable(curve, poolList, walletAddress),
+          curve.getUserLiquidityUSD(poolList, walletAddress),
+          curve.getUserClaimable(poolList, walletAddress),
         ])
         const userPoolBalances = fulfilledValue(userPoolBalancesResult)
         const userClaimables = fulfilledValue(userClaimableResult)

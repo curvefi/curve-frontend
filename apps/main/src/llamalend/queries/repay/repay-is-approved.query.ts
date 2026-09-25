@@ -1,7 +1,7 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { getRepayImplementation, isFullRepayFromDebtToken } from './repay-query.helpers'
 

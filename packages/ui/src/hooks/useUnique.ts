@@ -1,16 +1,13 @@
-import { identity } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export function useUnique<T>({
   defaultValue,
   callback: onChange,
   equals,
-  sanitize = identity,
 }: {
   defaultValue: T
   callback: ((value: T) => void) | undefined
   equals: (a: T, b: T) => boolean
-  sanitize?: (value: T) => T
 }) {
   const [value, setValue] = useState<T>(defaultValue)
   const lastCallbackValueRef = useRef(defaultValue)
@@ -25,15 +22,14 @@ export function useUnique<T>({
   }, [defaultValue, equals])
 
   const callback = useCallback(
-    (givenValue: T) => {
-      const value = sanitize(givenValue)
+    (value: T) => {
       if (!equals(value, lastCallbackValueRef.current)) {
         lastCallbackValueRef.current = value
         onChange?.(value)
         setValue(value)
       }
     },
-    [onChange, sanitize, equals],
+    [onChange, equals],
   )
 
   return [value, callback] as const

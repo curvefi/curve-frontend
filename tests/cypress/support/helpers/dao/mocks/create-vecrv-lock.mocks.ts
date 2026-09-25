@@ -8,7 +8,7 @@ import {
   createTransactionStub,
 } from '@cy/support/helpers/llamalend/test-stub.utils'
 import type { CurveApi } from '@evm-ui/features/connect-wallet'
-import { dayjs } from '@evm-ui/lib/dayjs'
+import { dayjs } from '@evm-ui/utils/dayjs'
 
 const CHAIN_ID = 1
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000

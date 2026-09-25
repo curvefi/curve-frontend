@@ -22,7 +22,7 @@ import { SetOracle } from '@/dex/components/PageCreatePool/TokensInPool/SetOracl
 import { CreateToken, TokenId, TokensInPoolState, type TokenState } from '@/dex/components/PageCreatePool/types'
 import { containsOracle } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useBasePools } from '@/dex/queries/base-pools.query'
+import { useBasePools, type BasePool } from '@/dex/queries/base-pools.query'
 import { getToken, useTokens } from '@/dex/queries/tokens.query'
 import {
   DEFAULT_CREATE_POOL_STATE,
@@ -31,14 +31,11 @@ import {
 } from '@/dex/store/createCreatePoolSlice'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
-import type { QueryData } from '@evm-ui/lib'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { DEFAULT_DECIMALS } from '@primitives/units.util'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-
-type BasePool = QueryData<typeof useBasePools>[number]
 
 const checkMetaPool = (address: string, basePools: BasePool[]) =>
   address === '' ? false : basePools.some(item => item.token === address)

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useDepositReward } from '@/dex/entities/gauge/lib/reward-actions'
 import { useDepositRewardEstimateGas } from '@/dex/entities/gauge/model/gauge-gas.query'
@@ -8,7 +9,7 @@ import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/typ
 import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -19,6 +20,7 @@ import { Form } from '@ui/features/forms/components/Form'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { TIME_FRAMES } from '@ui/lib/time'
@@ -29,11 +31,13 @@ const { Spacing } = SizesAndSpaces
 
 const validation = createValidationSuite((data: DepositRewardFormValues) => gaugeDepositRewardValidationGroup(data))
 
+const userDefaultValues = { amount: undefined } as const
+
 const defaultValues = {
   rewardTokenId: undefined,
-  amount: undefined,
   userBalance: undefined,
   epoch: TIME_FRAMES.WEEK,
+  ...userDefaultValues,
 } as const
 
 export const DepositReward = () => {
@@ -45,22 +49,26 @@ export const DepositReward = () => {
   const form = useForm<DepositRewardFormValues>({ validation, defaultValues })
   const { errors, isValid, visibleErrors } = form.formState
   const { rewardTokenId, amount, epoch } = form.watchValues()
-
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
   const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId })
-  const gas = useDepositRewardEstimateGas({ chainId, poolId, rewardTokenId, amount, epoch, userBalance })
+
+  const [params, isDebouncing] = useFormDebounce(
+    useMemo(
+      () => ({ chainId, poolId, rewardTokenId, amount, epoch, userBalance }),
+      [chainId, poolId, rewardTokenId, amount, epoch, userBalance],
+    ),
+    userDefaultValues,
+  )
+
+  const gas = useDepositRewardEstimateGas(params)
+  const { data: isApproved, isLoading: isLoadingApproved } = useGaugeDepositRewardIsApproved(params)
+
   const {
     onSubmit,
     error: depositRewardError,
     isPending: isPendingDepositReward,
   } = useDepositReward({ chainId, poolId, onReset: () => form.reset(defaultValues) })
-  const { data: isApproved, isLoading: isLoadingApproved } = useGaugeDepositRewardIsApproved({
-    chainId,
-    poolId,
-    rewardTokenId,
-    amount,
-    userBalance,
-  })
+
   const isPending = form.formState.isSubmitting || isPendingDepositReward
   const isLoading = isPending || isLoadingApproved
 
@@ -88,7 +96,7 @@ export const DepositReward = () => {
         <EvmFormButton
           pending={isPending}
           loading={isLoading}
-          disabled={!isValid || isLoading}
+          disabled={!isValid || isLoading || isDebouncing}
           label={[isApproved === false && t`Approve`, t`Deposit`]}
           testId="deposit-reward-submit-button"
           connectWalletTestId="deposit-reward-connect-wallet-button"

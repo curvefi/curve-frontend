@@ -1,6 +1,6 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { leverageUserMarketValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
-import { rootKeys, UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
+import { rootKeys, UserMarketParams, UserMarketQuery } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 

@@ -7,11 +7,11 @@ import { getToken, useTokens } from '@/dex/queries/tokens.query'
 import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
 import { TokenList } from '@evm-ui/features/select-token'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
-import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'
 import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
-import { DebouncedLargeTokenInput, HelperMessage } from '@ui/features/forms/controls/LargeTokenInput'
+import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { type TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
@@ -93,7 +93,7 @@ export const AmountTokenInput = ({
   )
 
   return (
-    <DebouncedLargeTokenInput
+    <LargeTokenInput
       name="amount"
       label={t`Amount to deposit`}
       balance={q({ data: decimal(amount), isLoading: false, error: amountError ? Error(amountError) : null })}
@@ -131,6 +131,6 @@ export const AmountTokenInput = ({
       }
     >
       {error && <HelperMessage message={error} isError />}
-    </DebouncedLargeTokenInput>
+    </LargeTokenInput>
   )
 }

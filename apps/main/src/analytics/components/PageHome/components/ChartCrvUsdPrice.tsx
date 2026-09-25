@@ -12,7 +12,7 @@ import {
   type Period,
 } from '@/analytics/features/charts'
 import { llama } from '@/analytics/llamadash'
-import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
+import { useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { useTheme } from '@mui/material/styles'
