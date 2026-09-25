@@ -60,8 +60,14 @@ const routeItemSchema = {
     routerFeePercentage: DecimalSchema,
     amountIn: WeiAmountArraySchema,
     amountOut: WeiAmountArraySchema,
-    gas: { anyOf: [DecimalSchema, DecimalTupleSchema, { type: 'null' }] },
-    priceImpact: { anyOf: [{ type: 'number' }, { type: 'null' }] },
+    gas: {
+      type: ['string', 'array', 'null'],
+      pattern: DECIMAL_PATTERN, // applies only to strings
+      items: DecimalSchema, // applies only to arrays
+      minItems: 2,
+      maxItems: 2,
+    },
+    priceImpact: { type: ['number', 'null'] },
     createdAt: { type: 'integer' },
     isStableswapRoute: { type: 'boolean' },
     warnings: { type: 'array', items: { type: 'string', enum: ['high-slippage', 'low-exchange-rate'] } },
