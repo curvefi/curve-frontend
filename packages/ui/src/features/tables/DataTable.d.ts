@@ -27,5 +27,7 @@ declare module '@tanstack/table-core' {
     facetedRowModelFactory?: (table: Table<TFeatures, TData>, columnId: string) => () => RowModel<TFeatures, TData>
     /** Resolve an optional navigation target for rows rendered by Curve DataTable. */
     getRowHref?: (data: TData) => string | Nullish
+    /** User borrow positions show net borrow APR under the Borrow APR figure. */
+    showNetBorrowApr?: boolean
   }
 }

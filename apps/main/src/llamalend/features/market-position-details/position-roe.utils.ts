@@ -72,6 +72,6 @@ export const yieldMultiplier = (roeAprPercent: Decimal, collateralYield: YieldIn
 export const formatYieldMultiplier = (multiplier: RoeMultiplier): string | undefined => {
   if (multiplier.kind === 'omit') return undefined
   if (multiplier.kind === 'negative') return 'Net yield negative'
-  if (multiplier.kind === 'zero') return '0× collateral yield'
-  return `${BigNumber(multiplier.value).toFixed(4)}× collateral yield`
+  if (multiplier.kind === 'zero') return '0× yield'
+  return `${BigNumber(multiplier.value).toFixed(4)}× yield`
 }

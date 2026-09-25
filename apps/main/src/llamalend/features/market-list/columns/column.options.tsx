@@ -102,6 +102,12 @@ const createMarketsColumnOptions = ({
         enabled: true,
       },
       {
+        label: MARKET_TITLES[MarketColumnId.UserReturnOnEquity],
+        columns: [MarketColumnId.UserReturnOnEquity],
+        active: onlyPositions == MarketRateType.Borrow,
+        enabled: hasPositions,
+      },
+      {
         label: t`Borrow Details`,
         columns: [
           MarketColumnId.UserHealth,

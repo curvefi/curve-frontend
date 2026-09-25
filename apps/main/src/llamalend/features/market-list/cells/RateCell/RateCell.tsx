@@ -11,6 +11,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { TooltipProps } from '@ui/components/Tooltip'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
 import { MarketColumnId } from '../../columns'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
 import { RewardsIcons } from './RewardsIcons'
@@ -36,6 +37,7 @@ export const RateCell = <TValue extends number | null>({
   row: { original: market },
   getValue,
   column: { id },
+  table,
 }: CellContext<CurveTableFeatures, LlamaMarketRow, TValue>) => {
   const rateType = assert(RateTypes[id as keyof typeof RateTypes], `RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType][market.type]
@@ -49,6 +51,11 @@ export const RateCell = <TValue extends number | null>({
             {formatCappedRatePercent(rate)}
           </Typography>
 
+          {table.options.meta?.showNetBorrowApr && (id as MarketColumnId) === MarketColumnId.BorrowRate && (
+            <Typography variant="bodyXsRegular" color="textSecondary" data-testid="user-net-borrow-apr">
+              {t`Net`} {formatCappedRatePercent(market.rates.borrowTotalApr)}
+            </Typography>
+          )}
           <RewardsIcons market={market} rateType={rateType} />
         </Stack>
       </Tooltip>

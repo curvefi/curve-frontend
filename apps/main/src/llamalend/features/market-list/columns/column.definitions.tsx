@@ -16,6 +16,7 @@ import {
   MarketTitleCell,
   MaxLeverageCell,
   MaxReturnOnEquityCell,
+  UserReturnOnEquityCell,
   PercentCell,
   PriceCell,
   RateCell,
@@ -37,6 +38,7 @@ import {
   getHealthColumnSortValue,
   getUserPositionBuffer,
   getUserPositionLtv,
+  getUserPositionRoe,
 } from '../user-position.utils'
 import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
@@ -123,6 +125,13 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.CollateralYield,
     header: MARKET_TITLES[MarketColumnId.CollateralYield],
     cell: PercentCell,
+    meta: { type: 'numeric', unit: 'percentage' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionRoe, {
+    id: MarketColumnId.UserReturnOnEquity,
+    header: MARKET_TITLES[MarketColumnId.UserReturnOnEquity],
+    cell: UserReturnOnEquityCell,
     meta: { type: 'numeric', unit: 'percentage' },
     sortUndefined: 'last',
   }),

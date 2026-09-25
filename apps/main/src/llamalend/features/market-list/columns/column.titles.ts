@@ -19,6 +19,7 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.UserBorrowed]: t`Borrow Amount`,
   [MarketColumnId.UserCollateral]: t`Collateral Amount`,
   [MarketColumnId.UserLtv]: t`LTV`,
+  [MarketColumnId.UserReturnOnEquity]: t`RoE`,
   [MarketColumnId.UserBoostMultiplier]: t`Boost`,
   [MarketColumnId.UserEarnings]: t`My Earnings`,
   [MarketColumnId.UserDeposited]: t`Supplied Amount`,

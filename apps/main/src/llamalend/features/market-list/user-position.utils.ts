@@ -1,15 +1,21 @@
 import { sum } from 'lodash'
-import { oracleHealth } from '@/llamalend/features/market-position-details/position-metrics.utils'
+import {
+  collateralTokenValue,
+  collateralValue,
+  equity,
+  oracleHealth,
+} from '@/llamalend/features/market-position-details/position-metrics.utils'
+import { positionReturnOnEquity, type YieldInput } from '@/llamalend/features/market-position-details/position-roe.utils'
 import { resolvePositionStatus } from '@/llamalend/features/market-position-details/position-status.utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { requireChainId } from '@evm-ui/utils'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
-import { decimal } from '@ui/lib/decimal'
+import { ZERO, decimal, decimalDiv, decimalEqual } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
@@ -53,6 +59,47 @@ export const getUserPositionOracleHealth = ({ positionQueries }: LlamaMarketRow)
 
 /** Card liquidation buffer: Controller userHealth(full), in percentage points. */
 export const getUserPositionBuffer = ({ positionQueries }: LlamaMarketRow) => maybe(positionQueries.risk.fullHealth.data, value => Number(value))
+
+const aprFraction = (percentagePoints: number | Nullish): YieldInput => {
+  if (percentagePoints == null) return { unavailable: true }
+  const points = decimal(percentagePoints)
+  const hundred = decimal('100')
+  if (points == undefined || hundred == undefined) return { unavailable: true }
+  const fraction = decimalDiv(points, hundred)
+  return fraction == undefined ? { unavailable: true } : { aprFraction: fraction }
+}
+
+/** Position return on equity, the same balance formula as the position card. Undefined until the inputs exist. */
+export const getUserPositionRoeResult = (row: LlamaMarketRow) => {
+  const stats = row.positionQueries.stats.data
+  if (!stats) return undefined
+  const oracle = decimal(stats.oraclePrice)
+  const collateral = decimal(stats.collateral)
+  const borrowed = decimal(stats.borrowToken)
+  const debt = decimal(stats.borrowed)
+  if (oracle == undefined || collateral == undefined || borrowed == undefined || debt == undefined) return undefined
+  const tokenValue = collateralTokenValue(collateral, oracle)
+  const equityAmount = equity(collateralValue(collateral, oracle, borrowed), debt)
+  const collateralApr = row.assets.collateral.rebasingYieldApr
+  const borrowedApr = row.assets.borrowed.rebasingYieldApr
+  const result = positionReturnOnEquity({
+    collateralValue: tokenValue,
+    borrowedValue: borrowed,
+    debt,
+    equity: equityAmount,
+    collateralYield: decimalEqual(tokenValue, ZERO) ? { unnecessary: true } : aprFraction(collateralApr),
+    borrowedYield: decimalEqual(borrowed, ZERO) ? { unnecessary: true } : aprFraction(borrowedApr),
+    borrowCost: decimalEqual(debt, ZERO) ? { unnecessary: true } : aprFraction(row.rates.borrowApr),
+    rewards: { unnecessary: true },
+  })
+  return result.status === 'value' ? result : undefined
+}
+
+/** APR percent used to sort the RoE column. Unknown positions sort last. */
+export const getUserPositionRoe = (row: LlamaMarketRow) => {
+  const result = getUserPositionRoeResult(row)
+  return result ? Number(result.aprPercent) : undefined
+}
 
 /** Beta sorts by the oracle ratio and leaves unknowns last. Flag-off keeps the old percentage. */
 export const getHealthColumnSortValue = (row: LlamaMarketRow) =>

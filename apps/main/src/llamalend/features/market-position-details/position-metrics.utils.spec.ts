@@ -80,7 +80,7 @@ describe('position metrics', () => {
     expect(roe.status).toBe('value')
     if (roe.status === 'value') {
       expect(+roe.aprPercent).toBeCloseTo(5, 8)
-      expect(formatYieldMultiplier(roe.multiplier)).toBe('1.6667× collateral yield')
+      expect(formatYieldMultiplier(roe.multiplier)).toBe('1.6667× yield')
     }
 
     const mixed = compositionShares(d(180), d(90), d(270))
@@ -100,7 +100,7 @@ describe('position metrics', () => {
     expect(mixedRoe.status).toBe('value')
     if (mixedRoe.status === 'value') {
       expect(+mixedRoe.aprPercent).toBeCloseTo(2, 6)
-      expect(formatYieldMultiplier(mixedRoe.multiplier)).toBe('0.6667× collateral yield')
+      expect(formatYieldMultiplier(mixedRoe.multiplier)).toBe('0.6667× yield')
     }
     expect(leverage(d(180), d(70)) && +leverage(d(180), d(70))!).toBeCloseTo(2.571428, 4)
 
