@@ -99,6 +99,7 @@ export const createRepayScenario = ({
     },
   }
 
+  const expectedRoute = { ...routeMutationMeta, calldata: routeCalldata ?? routeMutationMeta.calldata }
   const leverageExpected = {
     metrics: {
       stateCollateral: collateral,
@@ -106,14 +107,15 @@ export const createRepayScenario = ({
       healthIsFull: true,
       address: TEST_ADDRESS,
       ...routeMeta,
+      calldata: expectedRoute.calldata,
     },
     isApproved: { userCollateral: DEFAULT_USER_BORROWED },
-    estimateGas: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
+    estimateGas: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
     estimateGasApprove: { userCollateral: DEFAULT_USER_BORROWED },
     approve: { userCollateral: DEFAULT_USER_BORROWED },
-    submit: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
-    expectedBorrowed: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
-    futureLeverage: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
+    submit: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
+    expectedBorrowed: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
+    futureLeverage: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
   } as const
   const normalExpected = {
     health: [borrow, false] as const,
@@ -168,6 +170,8 @@ export const createRepayScenario = ({
     llamaApi: createMockLlamaApi(chainId, market),
     assertPreSubmit: leverage
       ? () => {
+          expect(controllerApproval.setControllerApproval).to.not.have.been.called
+          expect(leverageStubs.repay).to.not.have.been.called
           expect(leverageStubs.repayExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.metrics)
           expect(leverageStubs.repayIsApproved).to.have.been.calledWithMatch(leverageExpected.isApproved)
           expect(leverageStubs.repayExpectedBorrowed).to.have.been.calledWithMatch(leverageExpected.expectedBorrowed)
@@ -197,6 +201,8 @@ export const createRepayScenario = ({
         },
     assertSubmit: leverage
       ? () => {
+          expect(controllerApproval.setControllerApproval.callCount).to.equal(controllerApproved ? 0 : 1)
+          expect(leverageStubs.repay).to.have.been.calledOnce
           expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
           expect(leverageStubs.repay).to.have.been.calledWithMatch(leverageExpected.submit)
           if (approved) {

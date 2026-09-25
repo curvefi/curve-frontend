@@ -111,6 +111,7 @@ export const createBorrowMoreScenario = ({
       borrowMoreApprove: zapV2Stubs.estimateGasBorrowMoreApprove,
     },
   }
+  const expectedRoute = { ...routeMutationMeta, calldata: routeCalldata ?? routeMutationMeta.calldata }
   const zapV2Expected = {
     metrics: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED, dDebt: borrow, debt: borrow },
     maxRecv: { userCollateral: collateral },
@@ -122,28 +123,28 @@ export const createBorrowMoreScenario = ({
       userBorrowed: DEFAULT_USER_BORROWED,
       dDebt: borrow,
       debt: borrow,
-      ...routeMutationMeta,
+      ...expectedRoute,
     },
     submit: {
       userCollateral: collateral,
       userBorrowed: DEFAULT_USER_BORROWED,
       dDebt: borrow,
       debt: borrow,
-      ...routeMutationMeta,
+      ...expectedRoute,
     },
     expectedCollateral: {
       userCollateral: collateral,
       userBorrowed: DEFAULT_USER_BORROWED,
       dDebt: borrow,
       debt: borrow,
-      ...routeMutationMeta,
+      ...expectedRoute,
     },
     futureLeverage: {
       userCollateral: collateral,
       userBorrowed: DEFAULT_USER_BORROWED,
       dDebt: borrow,
       debt: borrow,
-      ...routeMutationMeta,
+      ...expectedRoute,
     },
   } as const
   const normalExpected = {
@@ -189,6 +190,8 @@ export const createBorrowMoreScenario = ({
     llamaApi: createMockLlamaApi(chainId, market),
     assertPreSubmit: () => {
       if (useZapV2) {
+        expect(controllerApproval.setControllerApproval).to.not.have.been.called
+        expect(zapV2Stubs.borrowMore).to.not.have.been.called
         expect(zapV2Stubs.maxLeverage).to.have.been.called
         expect(zapV2Stubs.borrowMoreExpectedMetrics).to.have.been.calledWithMatch(zapV2Expected.metrics)
         expect(zapV2Stubs.borrowMoreMaxRecv).to.have.been.calledWithMatch(zapV2Expected.maxRecv)
@@ -218,6 +221,8 @@ export const createBorrowMoreScenario = ({
     },
     assertSubmit: () => {
       if (useZapV2) {
+        expect(controllerApproval.setControllerApproval.callCount).to.equal(controllerApproved ? 0 : 1)
+        expect(zapV2Stubs.borrowMore).to.have.been.calledOnce
         expect(zapV2Stubs.borrowMore).to.have.been.calledWithMatch(zapV2Expected.submit)
         if (approved) {
           expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
