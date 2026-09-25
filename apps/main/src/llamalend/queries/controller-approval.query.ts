@@ -15,3 +15,12 @@ export const { useQuery: useIsControllerApproval, fetchQuery: fetchIsControllerA
   category: 'llamalend.user',
   validationSuite: userMarketValidationSuite,
 })
+
+const { useQuery: _useControllerApprovalEstimateGasQuery } = queryFactory({
+  queryKey: ({ chainId, marketId, userAddress }: Params) =>
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.setControllerApproval'] as const,
+  queryFn: async ({ marketId }: UserMarketQuery) =>
+    await getMarket(marketId).leverageZapV2.estimateGas.setControllerApproval(),
+  category: 'llamalend.user',
+  validationSuite: userMarketValidationSuite,
+})
