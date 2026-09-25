@@ -60,6 +60,8 @@ export type PositionRiskQueries = {
   /** SDK order: index 0 is the lower boundary, index 1 is the upper boundary. */
   prices: QueryProp<Range<Decimal> | null>
   fullHealth: QueryProp<Decimal>
+  /** True while the beta health column is active, including before the catalog id resolves. */
+  beta: boolean
 }
 
 type UserPositionQueries = {
@@ -68,7 +70,7 @@ type UserPositionQueries = {
   risk: PositionRiskQueries
 }
 
-const EMPTY_RISK: PositionRiskQueries = { oracle: DISABLED_Q, prices: DISABLED_Q, fullHealth: DISABLED_Q }
+const EMPTY_RISK: PositionRiskQueries = { oracle: DISABLED_Q, prices: DISABLED_Q, fullHealth: DISABLED_Q, beta: false }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   stats: DISABLED_Q,
@@ -86,7 +88,7 @@ const sameAddress = (left: string | undefined, right: string) => {
 }
 
 /** The market page looks the SDK registry up by the route key: lend uses the controller, mint uses the market name. */
-const registryKey = (market: LlamaMarket) => decodeURIComponent(market.url.split('/').pop() ?? '')
+const registryKey = (market: LlamaMarket) => decodeURIComponent(market.url.split('/').at(-1) ?? '')
 
 const controllerMarketId = (catalog: Record<string, { id?: string; addresses?: { controller?: string; amm?: string }; controller_address?: string; amm_address?: string }> | undefined, market: LlamaMarket) => {
   if (!catalog) return undefined
@@ -211,6 +213,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
           fullHealth: riskQueries[index * 3] ?? DISABLED_Q,
           oracle: riskQueries[index * 3 + 1] ?? DISABLED_Q,
           prices: riskQueries[index * 3 + 2] ?? DISABLED_Q,
+          beta: true,
         } satisfies PositionRiskQueries,
       ]),
     )
@@ -229,9 +232,9 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
             borrowed: getPriceQuery(market.chain, market.assets.borrowed.address),
             collateral: getPriceQuery(market.chain, market.assets.collateral.address),
           },
-          risk: riskByMarket.get(market) ?? EMPTY_RISK,
+          risk: { ...(riskByMarket.get(market) ?? EMPTY_RISK), beta },
         },
       }
     })
-  }, [markets, riskEntries, riskQueries, statsEntries, statsQueries, tokenPriceEntries, tokenPriceQueries])
+  }, [beta, markets, riskEntries, riskQueries, statsEntries, statsQueries, tokenPriceEntries, tokenPriceQueries])
 }

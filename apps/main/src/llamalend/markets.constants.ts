@@ -511,8 +511,9 @@ export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, Mark
 }
 
 /**
- * Explicit asset-category assignments copied from PR 3285 (`ae79a508`), translated to
- * Correlated / Blue-chip / Long-tail. Volatile entries from that pull request are Blue-chip.
+ * Explicit prototype assignments. PR 3285 did not approve every three-way mapping.
+ * Volatile labels from that pull request are recorded here as Blue-chip and remain provisional.
+ * Unmapped controllers stay unmapped. They are not silently Long-tail.
  */
 export const MARKET_ASSETS_TYPE_BY_CONTROLLER: PartialRecord<number, Record<Address, MarketAssetsType>> = {
   [Chain.Ethereum]: {

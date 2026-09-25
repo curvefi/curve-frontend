@@ -1,5 +1,6 @@
 import {
   bufferAmount,
+  collateralTokenValue,
   collateralValue,
   equity,
   leverage,
@@ -38,9 +39,10 @@ export type PositionViewInput = {
 export const derivePositionView = (input: PositionViewInput) => {
   const oracleHealthFactor = oracleHealth(input.oraclePrice, input.upperPrice)
   const distance: PriceDistance = priceDistance(input.oraclePrice, input.upperPrice, input.lowerPrice)
+  const collateralTokenExposure = collateralTokenValue(input.collateralTokenAmount, input.oraclePrice)
   const collateral = collateralValue(input.collateralTokenAmount, input.oraclePrice, input.borrowedAssetInAmm)
   const equityAmount = equity(collateral, input.debt)
-  const directionalLeverage = leverage(collateral, equityAmount)
+  const directionalLeverage = leverage(collateralTokenExposure, equityAmount)
   const liquidationBufferAmount = maybe(input.fullHealthPercentagePoints, health => bufferAmount(input.debt, health))
   const status: PositionStatus | undefined =
     distance.location === 'unavailable'
@@ -55,7 +57,7 @@ export const derivePositionView = (input: PositionViewInput) => {
           assetsType: input.assetsType,
         })
   const roe: RoeResult = positionReturnOnEquity({
-    collateralValue: collateral,
+    collateralValue: collateralTokenExposure,
     borrowedValue: input.borrowedAssetInAmm,
     debt: input.debt,
     equity: equityAmount,
@@ -68,6 +70,7 @@ export const derivePositionView = (input: PositionViewInput) => {
     oracleHealthFactor,
     distance,
     collateralValue: collateral,
+    collateralTokenValue: collateralTokenExposure,
     equity: equityAmount,
     directionalLeverage,
     liquidationBufferPct: input.fullHealthPercentagePoints,

@@ -276,7 +276,7 @@ export const LoanActionInfoList = ({
             <ActionInfo
               label={t`Return on Equity (RoE)`}
               value={positionRoe ?? formatReturnOnEquity(prevLeverageValue, prevRates, collateralApy)}
-              futureValue={formatReturnOnEquity(
+              futureValue={positionRoe ? t`Estimate unavailable` : formatReturnOnEquity(
                 leverageValue,
                 /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
                 rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,

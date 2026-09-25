@@ -54,14 +54,9 @@ export const getUserPositionOracleHealth = ({ positionQueries }: LlamaMarketRow)
 /** Card liquidation buffer: Controller userHealth(full), in percentage points. */
 export const getUserPositionBuffer = ({ positionQueries }: LlamaMarketRow) => maybe(positionQueries.risk.fullHealth.data, value => Number(value))
 
-const riskReadStarted = ({ positionQueries }: LlamaMarketRow) => {
-  const { oracle, prices, fullHealth } = positionQueries.risk
-  return [oracle, prices, fullHealth].some(query => query.isLoading || query.data != null || query.error != null)
-}
-
-/** Beta sorts by the oracle ratio. Flag-off has no risk reads, so it keeps the old percentage. */
+/** Beta sorts by the oracle ratio and leaves unknowns last. Flag-off keeps the old percentage. */
 export const getHealthColumnSortValue = (row: LlamaMarketRow) =>
-  riskReadStarted(row) ? getUserPositionOracleHealth(row) : getUserPositionHealth(row)
+  row.positionQueries.risk.beta ? getUserPositionOracleHealth(row) : getUserPositionHealth(row)
 
 export const getUserPositionStatus = (row: LlamaMarketRow) => {
   const { oracle, prices, fullHealth } = row.positionQueries.risk

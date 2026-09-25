@@ -5,7 +5,8 @@ import { type RangeLocation, priceDistance } from './position-metrics.utils'
 
 /**
  * Arbitrary prototype settings for fixture and layout review.
- * They are not calibrated risk thresholds. Edit them here; labels and colors both read this object.
+ * They are not calibrated risk thresholds. Labels, colors, and tooltips read this object.
+ * Live transaction validation does not read fixture overrides.
  */
 export const PROVISIONAL_POSITION_THRESHOLDS: Record<
   MarketAssetsType,
@@ -26,88 +27,196 @@ export type PositionStatusLabel =
   | 'Near range'
   | 'Healthy'
   | 'Above range'
-  | 'Unknown safety'
+  | 'Position closed'
+  | 'Status unavailable'
 
 export type PositionSeverity = 'liquidatable' | 'critical' | 'low' | 'converted' | 'protection' | 'near' | 'healthy' | 'neutral'
+
+export type BufferWarning = { label: 'Critical buffer' | 'Low buffer'; severity: 'critical' | 'low' }
+
+export type PositionLead = 'buffer' | 'health' | 'neither'
 
 export type PositionStatus = {
   label: PositionStatusLabel
   severity: PositionSeverity
-  lead: 'buffer' | 'health'
-  /** Factual location stays available when a warning replaces the label. */
+  lead: PositionLead
   location: RangeLocation
+  /** Advisory beside the buffer. It does not replace the main status. */
+  bufferWarning?: BufferWarning
+  bufferUnavailable: boolean
+  /** Predicate cannot support a Liquidatable or Healthy claim. */
+  liquidationUnsupported: boolean
 }
 
 export type PositionStatusInput = {
-  oraclePrice: Decimal
-  upperPrice: Decimal
-  lowerPrice: Decimal
+  oraclePrice?: Decimal
+  upperPrice?: Decimal
+  lowerPrice?: Decimal
   /** Full Controller health in percentage points. */
   fullHealth: Decimal | undefined
-  collateralQuantity: Decimal
+  collateralQuantity?: Decimal
+  /** Outstanding debt. Zero means the position is closed. */
+  debt?: Decimal
   /**
-   * `strict-negative` means Controller full health < 0.
-   * Callers pass this for the live health read. It is not a deployment-matched certificate.
+   * `strict-negative` means Controller full health < 0 is liquidatable.
+   * `unverified` keeps the number visible but does not claim Healthy or Liquidatable.
    */
   liquidationPredicate: 'strict-negative' | 'unverified'
   assetsType: MarketAssetsType | undefined
+  /** Fixture-only threshold override. Live callers omit this. */
+  thresholds?: (typeof PROVISIONAL_POSITION_THRESHOLDS)[MarketAssetsType]
 }
 
-const locationLabel = (location: RangeLocation, collateralQuantity: Decimal): Pick<PositionStatus, 'label' | 'severity' | 'lead'> => {
-  if (location === 'unavailable') return { label: 'Unknown safety', severity: 'neutral', lead: 'health' }
-  if (location === 'below' && !decimalGreaterThan(collateralQuantity, ZERO)) {
-    return { label: 'Fully converted', severity: 'converted', lead: 'health' }
+const closed = (): PositionStatus => ({
+  label: 'Position closed',
+  severity: 'neutral',
+  lead: 'neither',
+  location: 'unavailable',
+  bufferUnavailable: true,
+  liquidationUnsupported: false,
+})
+
+const factualLabel = (
+  location: RangeLocation,
+  collateralQuantity: Decimal | undefined,
+): Pick<PositionStatus, 'label' | 'severity'> => {
+  if (location === 'unavailable') return { label: 'Status unavailable', severity: 'neutral' }
+  if (location === 'below' && (collateralQuantity == undefined || !decimalGreaterThan(collateralQuantity, ZERO))) {
+    return { label: 'Fully converted', severity: 'converted' }
   }
-  if (location === 'below') return { label: 'Partially converted', severity: 'converted', lead: 'health' }
-  if (location === 'inside') return { label: 'Liquidation Protection', severity: 'protection', lead: 'buffer' }
-  return { label: 'Above range', severity: 'neutral', lead: 'health' }
+  if (location === 'below') return { label: 'Partially converted', severity: 'converted' }
+  if (location === 'inside') return { label: 'Liquidation Protection', severity: 'protection' }
+  return { label: 'Above range', severity: 'neutral' }
 }
 
+const aboveDistanceLabel = (
+  drop: Decimal | undefined,
+  thresholds: PositionStatusInput['thresholds'],
+  supported: boolean,
+): Pick<PositionStatus, 'label' | 'severity'> => {
+  if (!supported || thresholds == undefined || drop == undefined) return { label: 'Above range', severity: 'neutral' }
+  if (decimalCompare(drop, thresholds.nearRangeDropPercent) <= 0) return { label: 'Near range', severity: 'near' }
+  return { label: 'Healthy', severity: 'healthy' }
+}
+
+/** Orthogonal location, main status, leading metric, and optional buffer warning. */
 export const resolvePositionStatus = ({
   oraclePrice,
   upperPrice,
   lowerPrice,
   fullHealth,
   collateralQuantity,
+  debt,
+  liquidationPredicate,
   assetsType,
+  thresholds: thresholdOverride,
 }: PositionStatusInput): PositionStatus => {
-  const distance = priceDistance(oraclePrice, upperPrice, lowerPrice)
-  if (distance.location === 'unavailable') {
-    return { location: 'unavailable', label: 'Unknown safety', severity: 'neutral', lead: 'health' }
-  }
+  if (debt != undefined && !decimalGreaterThan(debt, ZERO)) return closed()
+
+  const distance =
+    oraclePrice != undefined && upperPrice != undefined && lowerPrice != undefined
+      ? priceDistance(oraclePrice, upperPrice, lowerPrice)
+      : ({ location: 'unavailable' as const, reason: 'Range or oracle price is missing.' })
   const location = distance.location
-  const factual = locationLabel(location, collateralQuantity)
+  const supported = liquidationPredicate === 'strict-negative'
+  const thresholds = thresholdOverride ?? (assetsType ? PROVISIONAL_POSITION_THRESHOLDS[assetsType] : undefined)
+  const factual = factualLabel(location, collateralQuantity)
+  const drop = distance.location === 'above' ? distance.percent : undefined
+
   if (fullHealth == undefined) {
+    const above = location === 'above' ? { label: 'Above range' as const, severity: 'neutral' as const } : factual
     return {
       location,
-      ...factual,
-      label: location === 'above' ? 'Unknown safety' : factual.label,
-      severity: 'neutral',
-      lead: factual.lead,
+      label: location === 'unavailable' ? 'Status unavailable' : above.label,
+      severity: location === 'unavailable' ? 'neutral' : above.severity,
+      lead: location === 'unavailable' ? 'neither' : 'health',
+      bufferUnavailable: true,
+      liquidationUnsupported: !supported,
     }
   }
 
-  const liquidatable = decimalCompare(fullHealth, ZERO) < 0
-  if (liquidatable) return { location, label: 'Liquidatable', severity: 'liquidatable', lead: location === 'inside' ? 'buffer' : 'health' }
+  if (supported && decimalCompare(fullHealth, ZERO) < 0) {
+    return {
+      location,
+      label: 'Liquidatable',
+      severity: 'liquidatable',
+      lead: 'buffer',
+      bufferUnavailable: false,
+      liquidationUnsupported: false,
+    }
+  }
 
   const exactZero = decimalEqual(fullHealth, ZERO)
-  const thresholds = assetsType ? PROVISIONAL_POSITION_THRESHOLDS[assetsType] : undefined
   const critical =
-    exactZero ||
-    (thresholds != undefined && decimalCompare(fullHealth, thresholds.criticalBufferPercent) <= 0)
-  if (critical) return { location, label: 'Critical buffer', severity: 'critical', lead: location === 'inside' ? 'buffer' : 'health' }
+    exactZero || (thresholds != undefined && decimalCompare(fullHealth, thresholds.criticalBufferPercent) <= 0)
+  const low = thresholds != undefined && decimalCompare(fullHealth, thresholds.lowBufferPercent) <= 0
+  const bufferWarning: BufferWarning | undefined = critical
+    ? { label: 'Critical buffer', severity: 'critical' }
+    : low
+      ? { label: 'Low buffer', severity: 'low' }
+      : undefined
 
-  if (thresholds != undefined && decimalCompare(fullHealth, thresholds.lowBufferPercent) <= 0) {
-    return { location, label: 'Low buffer', severity: 'low', lead: location === 'inside' ? 'buffer' : 'health' }
+  if (exactZero || (!supported && decimalCompare(fullHealth, ZERO) < 0)) {
+    return {
+      location,
+      label: exactZero ? 'Critical buffer' : factual.label,
+      severity: exactZero ? 'critical' : factual.severity,
+      lead: 'buffer',
+      bufferWarning: exactZero ? { label: 'Critical buffer', severity: 'critical' } : undefined,
+      bufferUnavailable: false,
+      liquidationUnsupported: !supported,
+    }
   }
 
-  if (location !== 'above') return { location, ...factual }
-
-  if (thresholds == undefined) return { location, label: 'Above range', severity: 'neutral', lead: 'health' }
-
-  const drop = distance.location === 'above' ? distance.percent : undefined
-  if (drop != undefined && decimalCompare(drop, thresholds.nearRangeDropPercent) <= 0) {
-    return { location, label: 'Near range', severity: 'near', lead: 'health' }
+  if (location === 'above') {
+    const main = aboveDistanceLabel(drop, thresholds, supported)
+    return {
+      location,
+      ...main,
+      lead: 'health',
+      bufferWarning,
+      bufferUnavailable: false,
+      liquidationUnsupported: !supported,
+    }
   }
-  return { location, label: 'Healthy', severity: 'healthy', lead: 'health' }
+
+  if (location === 'inside' || location === 'below') {
+    if (critical) {
+      return {
+        location,
+        label: 'Critical buffer',
+        severity: 'critical',
+        lead: 'buffer',
+        bufferUnavailable: false,
+        liquidationUnsupported: !supported,
+      }
+    }
+    if (low) {
+      return {
+        location,
+        label: 'Low buffer',
+        severity: 'low',
+        lead: 'buffer',
+        bufferUnavailable: false,
+        liquidationUnsupported: !supported,
+      }
+    }
+    return {
+      location,
+      ...factual,
+      lead: 'buffer',
+      bufferUnavailable: false,
+      liquidationUnsupported: !supported,
+    }
+  }
+
+  return {
+    location: 'unavailable',
+    label: 'Status unavailable',
+    severity: 'neutral',
+    lead: 'health',
+    bufferWarning,
+    bufferUnavailable: false,
+    liquidationUnsupported: !supported,
+  }
 }

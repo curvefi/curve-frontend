@@ -35,7 +35,7 @@ const keepDisplayedValue = <T,>(query: Query<T>) =>
   q(query.data != null && query.error != null ? { data: query.data, isLoading: query.isLoading, error: null } : query)
 const { Spacing } = SizesAndSpaces
 
-type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty; lead?: 'buffer' | 'health' }
+type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty; lead?: 'buffer' | 'health' | 'neither' }
 
 export const BorrowInformation = (props: BorrowInformationProps) =>
   useNewLlamalendHealth() ? <BetaBorrowInformation {...props} /> : <CurrentBorrowInformation {...props} />

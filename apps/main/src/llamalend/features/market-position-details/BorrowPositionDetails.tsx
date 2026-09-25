@@ -44,6 +44,7 @@ export const BorrowPositionDetails = () => {
           lowerPrice: userPrices.data[0],
           fullHealth: fullHealth.data,
           collateralQuantity: userState.data.collateral,
+          debt: userState.data.debt,
           liquidationPredicate: 'strict-negative',
           assetsType: getMarketAssetsType(chainId, controllerAddress),
         }).lead

@@ -55,7 +55,7 @@ export const HealthDetails = ({
   health: HealthQuery
   positionStatus: QueryProp<UserPositionStatus>
   /** Buffer leads only while the oracle price is inside the liquidation range. */
-  lead?: 'buffer' | 'health'
+  lead?: 'buffer' | 'health' | 'neither'
 }) => {
   const beta = useNewLlamalendHealth()
   const theme = useTheme()
@@ -168,7 +168,7 @@ const BetaHealthDetails = ({ lead }: { lead: 'buffer' | 'health' }) => {
     <>
       <Box sx={{ gridArea: 'health' }} data-testid="beta-health-details">
         <Metric
-          category={lead === 'buffer' ? 'llamalend.positionCardSupport' : 'llamalend.legacyPositionHealth'}
+          category={lead === 'health' ? 'llamalend.legacyPositionHealth' : 'llamalend.positionCardSupport'}
           label={t`Health`}
           testId="health-details-health-metric"
           value={keepDisplayedValue(healthValue)}
@@ -225,6 +225,17 @@ const BetaHealthDetails = ({ lead }: { lead: 'buffer' | 'health' }) => {
           }}
           valueTooltip={bufferTooltip({ predicate: 'strict-negative' })}
         />
+        {status?.bufferUnavailable && (
+          <Typography variant="bodyXsRegular" color="textSecondary" data-testid="buffer-unavailable">{t`Buffer unavailable`}</Typography>
+        )}
+        {status?.bufferWarning && (
+          <Badge
+            data-testid="buffer-warning"
+            size="extraSmall"
+            color={STATUS_BADGE_COLOR[status.bufferWarning.severity]}
+            label={status.bufferWarning.label}
+          />
+        )}
       </Box>
     </>
   )
