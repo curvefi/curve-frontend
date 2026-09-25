@@ -30,7 +30,7 @@ export const FormClaimFees = ({ chainId }: { chainId: ChainId }) => {
       </Stack>
 
       {CLAIM_FEES_TOKENS.map(token => ({ token, ...claimables[token] })).map(({ token, data, isLoading, error }) => (
-        <Stack key={token} sx={{ gap: Spacing.xs }}>
+        <Stack key={token} data-testid={`claim-fees-${token}`} sx={{ gap: Spacing.xs }}>
           <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm }}>
             <Stack
               direction="row"

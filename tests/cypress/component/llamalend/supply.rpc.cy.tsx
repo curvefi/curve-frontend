@@ -77,7 +77,7 @@ testCases.forEach(
           type="supply"
           tab={tab}
           vnet={getVirtualNetwork()}
-          privateKey={privateKey}
+          account={privateKey}
           chainId={chainId}
           marketId={id}
           userAddress={address}

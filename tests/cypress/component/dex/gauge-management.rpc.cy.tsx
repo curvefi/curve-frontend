@@ -68,10 +68,10 @@ function GaugeManagementFormTest({ form }: { form: GaugeManagementForm }) {
 
 const GaugeManagementTestCase = ({
   vnet,
-  privateKey,
+  account,
   form,
 }: TenderlyWagmiConfigFromVNet & { form: GaugeManagementForm }) => (
-  <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
+  <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, account })} autoConnect>
     <CurveProvider
       app="dex"
       network={defaultNetworks[CHAIN_ID]}
@@ -142,7 +142,7 @@ describe('Gauge Management (RPC)', () => {
   })
 
   it('adds a gauge reward token', () => {
-    cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} privateKey={privateKey} form="addReward" />)
+    cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} account={privateKey} form="addReward" />)
 
     cy.get('[data-testid="add-reward-token-selector"]', LOAD_TIMEOUT)
       .should('contain', 'DAI')
@@ -167,7 +167,7 @@ describe('Gauge Management (RPC)', () => {
   it('deposits a gauge reward token', () => {
     getErc20Balance({ publicRpcUrl, tokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS, accountAddress: GAUGE_ADDRESS }).then(
       initialBalance => {
-        cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} privateKey={privateKey} form="depositReward" />)
+        cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} account={privateKey} form="depositReward" />)
 
         cy.get('[data-testid="deposit-amount"]', LOAD_TIMEOUT).should('be.visible')
         cy.get('[data-testid="deposit-amount"] input[type="text"]').type(DEPOSIT_REWARD_AMOUNT)
