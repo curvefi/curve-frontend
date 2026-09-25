@@ -1,6 +1,9 @@
 import { usesZapV2 } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { useIsControllerApproval } from '@/llamalend/queries/controller-approval.query'
+import {
+  useControllerApprovalEstimateGas,
+  useIsControllerApproval,
+} from '@/llamalend/queries/controller-approval.query'
 import type { Address } from '@primitives/address.utils'
 import type { FieldValues, UseFormHandleSubmit } from '@ui/features/forms'
 import { constQ, q } from '@ui/features/queries/util'
@@ -38,6 +41,7 @@ export function useLeverageDelegation<T extends FieldValues>({
     },
     modal: {
       open: isOpen,
+      gas: q(useControllerApprovalEstimateGas({ chainId, marketId: market?.id, userAddress }, isOpen)),
       onClose: closeModal,
       onConfirm: () => {
         if (!isOpen) return
