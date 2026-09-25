@@ -22,6 +22,7 @@ function prepareApi(create: typeof createRouterApiServer, name: string) {
 const routerApi = prepareApi(createRouterApiServer, 'router-api')
 const merklApi = prepareApi(createMerklServer, 'merkl')
 
+// eslint-disable-next-line import-x/no-default-export -- default export required by cloudflare
 export default {
   fetch: async (request: Request): Promise<Response> =>
     new URL(request.url).pathname.startsWith('/api/merkl/') ? await merklApi(request) : await routerApi(request),

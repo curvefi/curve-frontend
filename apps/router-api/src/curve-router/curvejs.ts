@@ -44,8 +44,7 @@ async function fetchPools(instance: CurveInstance, log: FastifyBaseLogger) {
 
       const nextBlacklist = new Set(blacklist)
 
-      // setBlacklist() drops Curve JS's memoized route graph. Avoid rebuilding it on every refresh
-      // when the filter contents have not changed.
+      // setBlacklist() drops Curve JS's memoized route graph. Only rebuild when it actually changed.
       if (!setsEqual(instance.blacklist, nextBlacklist)) {
         curve.router.setBlacklist(blacklist)
         instance.blacklist = nextBlacklist

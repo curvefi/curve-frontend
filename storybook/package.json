@@ -24,6 +24,6 @@
     "storybook": "10.5.10",
     "vite": "7.3.5",
     "vite-plugin-svgr": "5.2.0",
-    "wrangler": "^4.136.2"
+    "wrangler": "4.135.0"
   }
 }

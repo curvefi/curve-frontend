@@ -26,11 +26,11 @@ export const createApiServer = ({
   pluginTimeout?: number
 }) => {
   const { LOG_LEVEL, NODE_ENV, SERVICE_NAME, npm_package_version } = env
-
-  return createFastify({
+  const options = {
     logger: logger && { level: LOG_LEVEL || (NODE_ENV === 'production' ? 'info' : 'debug') },
-    ...(pluginTimeout !== undefined && { pluginTimeout }),
-  }).get('/health', () => ({
+    ...(pluginTimeout != null && { pluginTimeout }),
+  }
+  return createFastify(options).get('/health', () => ({
     status: 'ok',
     service: SERVICE_NAME || serviceName,
     environment: NODE_ENV || 'development',
