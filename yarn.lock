@@ -11585,6 +11585,7 @@ __metadata:
     "@sentry/vite-plugin": "npm:5.4.0"
     "@types/lodash": "npm:4.17.25"
     "@vitejs/plugin-react": "npm:5.1.2"
+    merkl-api: "workspace:^"
     pinst: "npm:3.0.0"
     router-api: "workspace:^"
     vest: "npm:5.4.6"
@@ -11662,7 +11663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"merkl-api@workspace:apps/merkl-api":
+"merkl-api@workspace:^, merkl-api@workspace:apps/merkl-api":
   version: 0.0.0-use.local
   resolution: "merkl-api@workspace:apps/merkl-api"
   dependencies:

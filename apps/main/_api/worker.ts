@@ -1,21 +1,28 @@
 // eslint-disable-next-line import-x/no-unresolved, local/isolated-packages -- Cloudflare provides this Worker runtime module.
 import { httpServerHandler } from 'cloudflare:node'
+import { createMerklServer } from 'merkl-api/src/server'
 import { createRouterApiServer } from 'router-api/src/server'
 
-// disable request logging in production, pino is not supported in CF and already logs every request.
-// Cloudflare disallows the timer used by Fastify's default plugin timeout during module initialization.
-const routerApi = createRouterApiServer({ logger: false, pluginTimeout: 0 })
+function prepareApi(create: typeof createRouterApiServer, name: string) {
+  const api = create({
+    logger: false, // disable request logging in production, pino is not supported in CF and already logs every request.
+    pluginTimeout: 0, // Cloudflare disallows the timer used by Fastify's default plugin timeout during module initialization.
+  })
 
-routerApi.addHook('onError', async ({ method, url }, _reply, err) =>
-  console.error(`[router-api] ${method} ${url} failed`, err),
-)
+  const handler = httpServerHandler(api.server)
+  api.addHook('onError', async (r, _reply, err) => console.error(`[${name}] ${r.method} ${r.url} failed`, err))
 
-const routerApiHandler = httpServerHandler(routerApi.server)
-const routerApiReady = routerApi.ready()
+  const ready = api.ready()
+  return async (request: Request) => {
+    await ready
+    return await handler.fetch(request)
+  }
+}
+
+const routerApi = prepareApi(createRouterApiServer, 'router-api')
+const merklApi = prepareApi(createMerklServer, 'merkl')
 
 export default {
-  async fetch(request: Request): Promise<Response> {
-    await routerApiReady
-    return await routerApiHandler.fetch(request)
-  },
+  fetch: async (request: Request): Promise<Response> =>
+    new URL(request.url).pathname.startsWith('/api/merkl/') ? await merklApi(request) : await routerApi(request),
 }
