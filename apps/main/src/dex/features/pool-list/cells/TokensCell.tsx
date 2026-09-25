@@ -6,13 +6,17 @@ import type { PoolRow } from '../types'
 const { Spacing } = SizesAndSpaces
 
 export const TokensCell = ({ pool }: { pool: PoolRow }) => (
-  <Stack direction="row" data-testid="pool-tokens" sx={{ flexWrap: 'wrap', columnGap: Spacing.sm, rowGap: Spacing.xs }}>
+  <Stack
+    direction="row-reverse"
+    data-testid="pool-tokens"
+    sx={{ flexWrap: 'wrap', columnGap: Spacing.sm, rowGap: Spacing.xs }}
+  >
     {pool.tradeableCoins.map(({ address, symbol }) => (
       <TokenInfo
         key={address}
         address={address}
         blockchainId={pool.blockchainId}
-        iconPosition="left"
+        iconPosition="right"
         iconSize="mui-sm"
         primary={symbol}
       />
