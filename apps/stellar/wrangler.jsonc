@@ -1,7 +1,8 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "curve-frontend-stellar",
-  "compatibility_date": "2026-09-24",
   "assets": { "directory": "./dist", "not_found_handling": "single-page-application" },
-  "observability": { "logs": { "enabled": true, "invocation_logs": true } }
+  "compatibility_date": "2026-09-24",
+  "observability": { "logs": { "enabled": true, "invocation_logs": true } },
+  "upload_source_maps": true
 }

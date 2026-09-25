@@ -20,6 +20,8 @@ const FACTORIES = [
 
 const ONE_MINUTE = 60000
 
+const setsEqual = <T>(a: ReadonlySet<T>, b: ReadonlySet<T>) => a.size === b.size && [...a].every(value => b.has(value))
+
 /**
  * Fetch pools and their blacklist, keeping the shared instance updated with periodic refreshes.
  */
@@ -39,8 +41,15 @@ async function fetchPools(instance: CurveInstance, log: FastifyBaseLogger) {
       const blacklist = poolFilters
         .filter(({ chainId }) => chainId === curve.chainId)
         .map(({ address }) => address.toLowerCase())
-      curve.router.setBlacklist(blacklist)
-      instance.blacklist = new Set(blacklist)
+
+      const nextBlacklist = new Set(blacklist)
+
+      // setBlacklist() drops Curve JS's memoized route graph. Avoid rebuilding it on every refresh
+      // when the filter contents have not changed.
+      if (!setsEqual(instance.blacklist, nextBlacklist)) {
+        curve.router.setBlacklist(blacklist)
+        instance.blacklist = nextBlacklist
+      }
     } catch (e) {
       log.error({ message: 'Error fetching pools', error: e, chainId: curve.chainId })
       if (initial) throw e // make sure the request fails if fetching pools fails
