@@ -35,12 +35,6 @@ const userDefaultValues = {
   debt: undefined,
 } satisfies Partial<CreateLoanForm>
 
-const validation = createLoanQueryValidationSuite({
-  debtRequired: true,
-  skipMarketValidation: true, // given separately to the mutation
-  collateralRequired: true,
-})
-
 const isLeverageCreateLoanSupported = <T extends MarketTemplate | undefined>(
   market: T,
   leverageProviders: readonly RouteProvider[] | undefined,
@@ -69,6 +63,16 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   } = useMarketContext<ChainId>()
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
+  const validation = useMemo(
+    () =>
+      createLoanQueryValidationSuite({
+        debtRequired: true,
+        skipMarketValidation: true,
+        collateralRequired: true,
+        market,
+      }),
+    [market],
+  )
   const formOptions = {
     validation,
     defaultValues: {

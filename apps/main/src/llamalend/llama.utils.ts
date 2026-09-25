@@ -95,8 +95,10 @@ const hasV1Deleverage = (market: MarketTemplate) =>
 
 export const hasDeleverage = (market: MarketTemplate) => hasZapV2(market) || hasV1Deleverage(market)
 
-export const hasResetPosition = (market: MarketTemplate | Nullish): market is LendMarketTemplate<'v2'> =>
+const isV2Market = (market: MarketTemplate | Nullish): market is LendMarketTemplate<'v2'> =>
   market instanceof LendMarketTemplate && market.version === 'v2'
+
+export const hasResetPosition = (market: MarketTemplate | Nullish) => isV2Market(market)
 
 /**
  * Check if an open position is a leveraged position, using the leverage value.
@@ -120,6 +122,9 @@ export const hasVault = (market: MarketTemplate) => market instanceof LendMarket
 
 export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
+
+/** Only LLv2 markets use the upgraded ZapV2 contract for now */
+export const hasUpgradedZapV2 = (market: MarketTemplate | Nullish) => isV2Market(market)
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',

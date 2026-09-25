@@ -142,7 +142,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const { borrowToken, collateralToken } = tokens
 
   const form = useForm<BorrowMoreForm>({
-    validation: borrowMoreFormValidationSuite,
+    validation: useMemo(() => borrowMoreFormValidationSuite(market), [market]),
     defaultValues: emptyBorrowMoreForm(defaultSlippage),
   })
   useSyncMarketLeverageSlippage(form, defaultSlippage)

@@ -1,6 +1,6 @@
 import { skipWhen, test } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
-import { getMarket, hasLeverage, hasLeverageValue, tryGetMarket } from '@/llamalend/llama.utils'
+import { getMarket, hasLeverage, hasLeverageValue, hasUpgradedZapV2, tryGetMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { assertRouteProvider, getRouteQueryData, isZapV2RouterCalldataTooLarge } from '@evm-ui/entities/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -101,8 +101,8 @@ export const validateRoute = (routeId: string | Nullish, isRequired: boolean) =>
   })
 }
 
-export const validateRouteCalldata = (routeId: string | Nullish) => {
-  skipWhen(!routeId, () => {
+export const validateRouteCalldata = (routeId: string | Nullish, market: MarketTemplate | Nullish) => {
+  skipWhen(!routeId || hasUpgradedZapV2(market), () => {
     test(
       'routeId',
       'The selected route is too large to execute. Select another route provider, reduce the amount, or split the operation into multiple transactions.',

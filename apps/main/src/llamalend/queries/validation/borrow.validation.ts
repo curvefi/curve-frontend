@@ -1,5 +1,6 @@
 import { group, skipWhen, test } from 'vest'
 import { isRouterRequired, tryGetMarket } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
   validateDebt,
   validateLeverageEnabled,
@@ -39,12 +40,14 @@ const createLoanFormValidationGroup = (
     isLeverageRequired,
     collateralRequired,
     ignoreMaxCollateral,
+    market,
   }: {
     debtRequired: boolean
     isMaxDebtRequired: boolean
     isLeverageRequired: boolean
     collateralRequired: boolean
     ignoreMaxCollateral: boolean
+    market: MarketTemplate | undefined
   },
 ) =>
   group('createLoanFormValidationGroup', () => {
@@ -56,7 +59,7 @@ const createLoanFormValidationGroup = (
     validateMaxDebt(debt, maxDebt, { required: isMaxDebtRequired })
     if (!ignoreMaxCollateral) validateMaxCollateral(userCollateral, maxCollateral, { required: collateralRequired })
     validateLeverageEnabled(leverageEnabled, { required: isLeverageRequired })
-    validateRouteCalldata(routeId)
+    validateRouteCalldata(routeId, market)
   })
 
 function validateCreateLoanFieldsForMarket(
@@ -94,6 +97,7 @@ export const createLoanQueryValidationSuite = (options: {
   isLeverageRequired?: boolean
   skipMarketValidation?: boolean
   leverageProviders?: readonly RouteProvider[]
+  market?: MarketTemplate
 }) => {
   const {
     debtRequired,
@@ -114,6 +118,7 @@ export const createLoanQueryValidationSuite = (options: {
       isLeverageRequired,
       collateralRequired,
       ignoreMaxCollateral,
+      market: tryGetMarket(params.marketId ?? options.market) ?? undefined,
     })
     validateCreateLoanFieldsForMarket(params, {
       debtRequired,
