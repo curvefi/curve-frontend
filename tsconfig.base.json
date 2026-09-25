@@ -3,7 +3,7 @@
   "display": "Base Configuration for all packages",
   "compilerOptions": {
     // === Language & Output ===
-    "target": "ES2025",
+    "target": "ESNext",
     "lib": ["ES2025", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
 
