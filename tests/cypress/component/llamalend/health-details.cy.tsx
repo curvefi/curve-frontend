@@ -44,10 +44,12 @@ type HealthDetailsTestCase = {
   positionStatus?: UserPositionStatus
   expected: {
     healthFactor: string
+    healthTextColor: string
     healthColor: string
     healthBarWidth: number
     liquidationBuffer: string
     debtNotional: string
+    liquidationBufferTextColor: string
     liquidationBufferColor: string
     liquidationBufferBarWidth: number
     badge?: 'Soft Liquidation' | 'Liquidation Protection' | 'Hard Liquidation'
@@ -61,10 +63,12 @@ const testCases: HealthDetailsTestCase[] = [
     liquidationBuffer: '108',
     expected: {
       healthFactor: '5.27',
+      healthTextColor: design.Text.TextColors.Feedback.Info,
       healthColor: design.Layer.Feedback.Info,
       healthBarWidth: 100,
       liquidationBuffer: '108%',
       debtNotional: '(3.24% of debt)',
+      liquidationBufferTextColor: design.Text.TextColors.Feedback.Info,
       liquidationBufferColor: design.Layer.Feedback.Info,
       liquidationBufferBarWidth: 100,
     },
@@ -75,10 +79,12 @@ const testCases: HealthDetailsTestCase[] = [
     liquidationBuffer: '110',
     expected: {
       healthFactor: '1.24',
+      healthTextColor: design.Text.TextColors.Feedback.Success,
       healthColor: design.Layer.Feedback.Success,
       healthBarWidth: 24.1,
       liquidationBuffer: '110%',
       debtNotional: '(3.30% of debt)',
+      liquidationBufferTextColor: design.Text.TextColors.Feedback.Info,
       liquidationBufferColor: design.Layer.Feedback.Info,
       liquidationBufferBarWidth: 100,
     },
@@ -89,10 +95,12 @@ const testCases: HealthDetailsTestCase[] = [
     liquidationBuffer: '110',
     expected: {
       healthFactor: '1.079',
+      healthTextColor: design.Text.TextColors.Feedback.Caution,
       healthColor: design.Layer.Feedback.Caution,
       healthBarWidth: 7.9,
       liquidationBuffer: '110%',
       debtNotional: '(3.30% of debt)',
+      liquidationBufferTextColor: design.Text.TextColors.Feedback.Info,
       liquidationBufferColor: design.Layer.Feedback.Info,
       liquidationBufferBarWidth: 100,
     },
@@ -103,10 +111,12 @@ const testCases: HealthDetailsTestCase[] = [
     liquidationBuffer: '110',
     expected: {
       healthFactor: '1.049',
+      healthTextColor: design.Text.TextColors.Feedback.Error,
       healthColor: design.Layer.Feedback.Error,
       healthBarWidth: 4.9,
       liquidationBuffer: '110%',
       debtNotional: '(3.30% of debt)',
+      liquidationBufferTextColor: design.Text.TextColors.Feedback.Info,
       liquidationBufferColor: design.Layer.Feedback.Info,
       liquidationBufferBarWidth: 100,
     },
@@ -118,10 +128,12 @@ const testCases: HealthDetailsTestCase[] = [
     positionStatus: 'softLiquidation',
     expected: {
       healthFactor: '1.00',
+      healthTextColor: design.Text.TextColors.Feedback.Error,
       healthColor: design.Layer.Feedback.Error,
       healthBarWidth: 0,
       liquidationBuffer: '22.50%',
       debtNotional: '(0.68% of debt)',
+      liquidationBufferTextColor: design.Text.TextColors.Feedback.Warning,
       liquidationBufferColor: design.Layer.Feedback.Warning,
       liquidationBufferBarWidth: 22.5,
       badge: 'Soft Liquidation',
@@ -134,10 +146,12 @@ const testCases: HealthDetailsTestCase[] = [
     positionStatus: 'fullyConverted',
     expected: {
       healthFactor: '1.00',
+      healthTextColor: design.Text.TextColors.Feedback.Error,
       healthColor: design.Layer.Feedback.Error,
       healthBarWidth: 0,
       liquidationBuffer: '2.40%',
       debtNotional: '(0.07% of debt)',
+      liquidationBufferTextColor: design.Text.TextColors.Feedback.Error,
       liquidationBufferColor: design.Layer.Feedback.Error,
       liquidationBufferBarWidth: 2.4,
       badge: 'Liquidation Protection',
@@ -150,10 +164,12 @@ const testCases: HealthDetailsTestCase[] = [
     positionStatus: 'hardLiquidation',
     expected: {
       healthFactor: '1.00',
+      healthTextColor: design.Text.TextColors.Feedback.Error,
       healthColor: design.Layer.Feedback.Error,
       healthBarWidth: 0,
       liquidationBuffer: '0%',
       debtNotional: '(0% of debt)',
+      liquidationBufferTextColor: design.Text.TextColors.Feedback.Error,
       liquidationBufferColor: design.Layer.Feedback.Error,
       liquidationBufferBarWidth: 0,
       badge: 'Hard Liquidation',
@@ -166,10 +182,12 @@ const testCases: HealthDetailsTestCase[] = [
     positionStatus: 'hardLiquidation',
     expected: {
       healthFactor: '1.00',
+      healthTextColor: design.Text.TextColors.Feedback.Error,
       healthColor: design.Layer.Feedback.Error,
       healthBarWidth: 0,
       liquidationBuffer: '-20%',
       debtNotional: '(-0.60% of debt)',
+      liquidationBufferTextColor: design.Text.TextColors.Feedback.Error,
       liquidationBufferColor: design.Layer.Feedback.Error,
       liquidationBufferBarWidth: 0,
       badge: 'Hard Liquidation',
@@ -185,15 +203,15 @@ describe('Health details', () => {
       cy.get('[data-testid="health-details-health-metric-value"]')
         .should('have.text', expected.healthFactor)
         .find('p')
-        .should('have.css', 'color', hexToRgb(expected.healthColor))
+        .should('have.css', 'color', hexToRgb(expected.healthTextColor))
       cy.get('[data-testid="health-details-health-bar-fill"]')
         .should('have.css', 'background-color', hexToRgb(expected.healthColor))
         .then(checkBarWidth(expected.healthBarWidth))
 
-      cy.get('[data-testid="health-details-liquidation-buffer-metric-value"]').should(
-        'have.text',
-        expected.liquidationBuffer,
-      )
+      cy.get('[data-testid="health-details-liquidation-buffer-metric-value"]')
+        .should('have.text', expected.liquidationBuffer)
+        .find('p')
+        .should('have.css', 'color', hexToRgb(expected.liquidationBufferTextColor))
       cy.get('[data-testid="health-details-liquidation-buffer-metric"]').should('contain.text', expected.debtNotional)
       cy.get('[data-testid="health-details-liquidation-buffer-bar-fill"]')
         .should('have.css', 'background-color', hexToRgb(expected.liquidationBufferColor))
