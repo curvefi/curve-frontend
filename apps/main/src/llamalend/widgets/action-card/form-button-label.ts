@@ -1,4 +1,4 @@
-import { type Nullish, notFalsy } from '@primitives/objects.utils'
+import { type Falsy, notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -10,7 +10,7 @@ export const getFormButtonLabel = ({
 }: {
   isControllerApproved?: QueryProp<boolean>
   isApproved?: QueryProp<boolean>
-  labels: (string | false | 0 | Nullish)[]
+  labels: (string | Exclude<Falsy, ''>)[]
 }) =>
   isControllerApproved?.data === false
     ? t`Approve delegation`
