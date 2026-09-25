@@ -151,7 +151,7 @@ export const QuickSwap = ({
   const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
   const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
-  const isReady = pageLoaded && isPageVisible
+  const isReady = pageLoaded && isPageVisible && isHydrated // API needs to be hydrated as the router will need to access pool data from curve-js
 
   useEffect(() => {
     if (curve && userAddress && blacklist) {
