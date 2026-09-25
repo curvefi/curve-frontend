@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { MarketBorrower, VaultDepositor } from '@curvefi/prices-api/llamalend'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { TokenAmount } from '@evm-ui/shared/ui/TokenAmount'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -41,9 +42,14 @@ export const Percentage = ({ value }: { value: number | Nullish }) => (
   <Typography variant="tableCellMBold">{formatNumber(value, 'percent.value')}</Typography>
 )
 
-export const Health = ({ health }: Pick<BorrowerRow, 'health'>) => (
-  <Typography variant="tableCellMRegular">{formatNumber(health, 'percent.value')}</Typography>
-)
+export const Health = ({ health }: Pick<BorrowerRow, 'health'>) => {
+  const beta = useNewLlamalendHealth()
+  return (
+    <Typography variant="tableCellMRegular">
+      {beta ? t`Unavailable` : formatNumber(health, 'percent.value')}
+    </Typography>
+  )
+}
 
 const ExpandedMetric = ({ label, children }: { label: string; children: ReactNode }) => (
   <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>

@@ -55,7 +55,7 @@ export const MarketSupplyRateTooltipContent = ({
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`The net supply rate is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`}
+        text={t`Supply APY is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`}
       />
 
       <Stack>

@@ -142,15 +142,14 @@ export const getUserCollateralEventsResponse = z
   })
   .transform(camelizeKeys)
   .transform(
-    ({
-      chain: _chain,
-      count: _count,
-      data: events,
-      page: _page,
-      pagination: _pagination,
-      totalDepositFromUserUsdValue,
-      ...data
-    }) => ({ ...data, totalBorrowedUsdValue: totalDepositFromUserUsdValue, events }),
+    ({ chain: _chain, data: events, totalDepositFromUserUsdValue, count, page, pagination, ...data }) => ({
+      ...data,
+      count,
+      page,
+      pagination,
+      totalBorrowedUsdValue: totalDepositFromUserUsdValue,
+      events,
+    }),
   )
 
 const rateCurvePoint = z

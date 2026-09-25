@@ -13,6 +13,7 @@ import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSe
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { CRVUSD } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
@@ -68,6 +69,7 @@ export const RepayForm = <ChainId extends IChainId>({
   collateralEvents: QueryProp<UserCollateralEvents>
   isInSoftLiquidation?: boolean
 }) => {
+  const betaMetrics = useNewLlamalendHealth()
   const { chainId, controllerAddress, market, tokens: marketTokens, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const {
@@ -199,7 +201,7 @@ export const RepayForm = <ChainId extends IChainId>({
         label={[
           isApproved.data === false && t`Approve`,
           notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
-          isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
+          isFull.data ? t`Close Position` : isInSoftLiquidation && (betaMetrics ? t`Increase buffer` : t`Increase Health`),
         ]}
         testId="repay-submit-button"
       />

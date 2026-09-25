@@ -4,7 +4,11 @@ import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-va
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
-export const { useQuery: useMarketOraclePrice, queryKey: getMarketOraclePriceKey } = queryFactory({
+export const {
+  useQuery: useMarketOraclePrice,
+  getQueryOptions: getMarketOraclePriceOptions,
+  queryKey: getMarketOraclePriceKey,
+} = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'oraclePrice'] as const,
   queryFn: async ({ marketId }: MarketQuery) => (await getPricesImplementation(marketId).oraclePrice()) as Decimal,
   category: 'llamalend.market',

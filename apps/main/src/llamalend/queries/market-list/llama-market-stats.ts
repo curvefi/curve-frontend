@@ -4,13 +4,16 @@ import { getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalen
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
+import { getPositionRiskOptions, type PositionRisk } from '@/llamalend/queries/market-list/position-risk.query'
 import type { Chain } from '@curvefi/prices-api'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { getTokenUsdRateQueryOptions } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
 import { requireChainId } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useQueries } from '@tanstack/react-query'
-import { DISABLED_Q, mapQuery, q, type QueryOptionsData, type QueryProp } from '@ui/features/queries/util'
+import { DISABLED_Q, mapQuery, q, type QueryOptionsData, type QueryProp, type Range } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
 type LendBorrowStats = QueryOptionsData<ReturnType<typeof getUserLendingVaultStatsOptions>>
@@ -33,6 +36,9 @@ const normalizeMarketStats = (stats: BorrowStats) => {
       decimal(collateralBorrowTokenAmount),
     ),
     health: getDisplayHealth(stats.healthFull, stats.health) ?? undefined,
+    /** Raw Controller full health in percentage points. Distinct from the display health above. */
+    healthFull: stats.healthFull,
+    oraclePrice: stats.oraclePrice,
     borrowed: stats.debt,
     collateral: stats.collateral,
     /**
@@ -44,14 +50,28 @@ const normalizeMarketStats = (stats: BorrowStats) => {
 
 export type MarketStats = ReturnType<typeof normalizeMarketStats>
 
+/** Same reads as the position card: oracle, user range, and Controller health(full). */
+export type PositionRiskQueries = {
+  oracle: QueryProp<Decimal>
+  /** SDK order: index 0 is the lower boundary, index 1 is the upper boundary. */
+  prices: QueryProp<Range<Decimal> | null>
+  fullHealth: QueryProp<Decimal>
+  /** True while the beta health column is active, including before the catalog id resolves. */
+  beta: boolean
+}
+
 type UserPositionQueries = {
   stats: QueryProp<MarketStats>
   prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
+  risk: PositionRiskQueries
 }
+
+const EMPTY_RISK: PositionRiskQueries = { oracle: DISABLED_Q, prices: DISABLED_Q, fullHealth: DISABLED_Q, beta: false }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   stats: DISABLED_Q,
   prices: { borrowed: DISABLED_Q, collateral: DISABLED_Q },
+  risk: EMPTY_RISK,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -95,8 +115,10 @@ const createTokenPriceEntries = (markets: LlamaMarket[]) =>
  * as queries resolve invalidates TanStack's row value cache so asynchronously loaded values are re-sorted.
  */
 export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address | undefined): LlamaMarketRow[] => {
+  const beta = useNewLlamalendHealth()
   const statsEntries = useMemo(() => createStatsEntries(markets, userAddress), [markets, userAddress])
   const tokenPriceEntries = useMemo(() => createTokenPriceEntries(markets), [markets])
+  const borrowMarkets = useMemo(() => markets.filter(market => market.userHasPositions?.Borrow), [markets])
 
   const statsQueries = useQueries({
     queries: useMemo(() => statsEntries.map(({ options }) => options), [statsEntries]),
@@ -106,11 +128,41 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
     combine: results => results.map(result => q<TokenPrice>(result)),
   })
+  const riskEntries = useMemo(() => {
+    if (!beta || !userAddress) return []
+    return borrowMarkets.map(market => ({
+      market,
+      options: getPositionRiskOptions({
+        chainId: requireChainId(market.chain),
+        userAddress,
+        controllerAddress: market.controllerAddress,
+        ammAddress: market.ammAddress,
+      }),
+    }))
+  }, [beta, borrowMarkets, userAddress])
+  const riskQueries = useQueries({
+    queries: useMemo(() => riskEntries.map(entry => entry.options), [riskEntries]),
+    combine: results => results.map(result => q<PositionRisk>(result)),
+  })
 
   return useMemo(() => {
     const statsByMarket = new Map(statsEntries.map(({ market }, index) => [market, statsQueries[index]]))
     const pricesByToken = new Map(
       tokenPriceEntries.map((entry, index) => [getTokenPriceKey(entry), tokenPriceQueries[index]]),
+    )
+    const riskByMarket = new Map(
+      riskEntries.map(({ market }, index) => {
+        const risk = riskQueries[index] ?? DISABLED_Q
+        return [
+          market,
+          {
+            fullHealth: mapQuery(risk, data => data.fullHealth),
+            oracle: mapQuery(risk, data => data.oracle),
+            prices: mapQuery(risk, data => data.prices),
+            beta: true,
+          } satisfies PositionRiskQueries,
+        ] as const
+      }),
     )
 
     const getPriceQuery = (chain: Chain, tokenAddress: Address) =>
@@ -127,8 +179,9 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
             borrowed: getPriceQuery(market.chain, market.assets.borrowed.address),
             collateral: getPriceQuery(market.chain, market.assets.collateral.address),
           },
+          risk: { ...(riskByMarket.get(market) ?? EMPTY_RISK), beta },
         },
       }
     })
-  }, [markets, statsEntries, statsQueries, tokenPriceEntries, tokenPriceQueries])
+  }, [beta, markets, riskEntries, riskQueries, statsEntries, statsQueries, tokenPriceEntries, tokenPriceQueries])
 }

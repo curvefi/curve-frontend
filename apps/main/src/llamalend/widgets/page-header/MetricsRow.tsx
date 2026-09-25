@@ -1,4 +1,3 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { AvailableLiquidityMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { MarketSupplyRateTooltipContent, TooltipOptions } from '@/llamalend/widgets/tooltips'
@@ -8,6 +7,7 @@ import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { t } from '@ui/lib/i18n'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const METRIC_CATEGORY = 'llamalend.marketHeader'
@@ -39,19 +39,19 @@ export const MetricsRow = ({
     <Metric
       category={METRIC_CATEGORY}
       testId="market-net-supply-apy"
-      label={NET_SUPPLY_RATE_TITLE}
-      value={mapQuery(supplyRate, ({ totalMinBoost }) => totalMinBoost)}
+      label={t`Supply APY`}
+      value={mapQuery(supplyRate, ({ supplyApy }) => supplyApy)}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
-      notional={mapQuery(supplyRate, ({ totalAverageMinBoost }) =>
-        maybe(totalAverageMinBoost, value => ({
+      notional={mapQuery(supplyRate, ({ totalMinBoost }) =>
+        maybe(totalMinBoost, value => ({
           value,
           abbreviate: false,
           formatter: formatCappedRateValue,
-          unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
+          unit: { symbol: `% ${t`Net supply APY`}`, position: 'suffix' as const },
         })),
       )}
       valueTooltip={{
-        title: NET_SUPPLY_RATE_TITLE,
+        title: t`Supply APY`,
         body: (
           <MarketSupplyRateTooltipContent
             supplyApy={supplyRate.data?.supplyApy}

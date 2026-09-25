@@ -261,8 +261,11 @@ export const getUserCollateralEventsResponse = z
     data: z.array(collateralEvent),
   })
   .transform(camelizeKeys)
-  .transform(({ chain: _chain, count: _count, data: events, page: _page, pagination: _pagination, ...data }) => ({
+  .transform(({ chain: _chain, data: events, count, page, pagination, ...data }) => ({
     ...data,
+    count,
+    page,
+    pagination,
     events,
   }))
 

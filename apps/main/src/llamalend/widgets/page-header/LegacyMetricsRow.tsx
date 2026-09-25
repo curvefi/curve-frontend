@@ -1,4 +1,4 @@
-import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { MarketTypeSuffix } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
@@ -51,17 +51,17 @@ export const LegacyMetricsRow = ({
         <Metric
           category={METRIC_CATEGORY}
           testId="market-net-supply-apy"
-          label={NET_SUPPLY_RATE_TITLE}
-          value={mapQuery(supplyRate, supplyRate => supplyRate.totalMinBoost)}
+          label={t`Supply APY`}
+          value={mapQuery(supplyRate, ({ supplyApy }) => supplyApy)}
           valueOptions={{ unit: 'percentage' }}
-          notional={mapQuery(supplyRate, ({ totalAverageMinBoost: data }) =>
-            maybe(data, value => ({
+          notional={mapQuery(supplyRate, ({ totalMinBoost }) =>
+            maybe(totalMinBoost, value => ({
               value,
-              unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
+              unit: { symbol: `% ${t`Net supply APY`}`, position: 'suffix' as const },
             })),
           )}
           valueTooltip={{
-            title: NET_SUPPLY_RATE_TITLE,
+            title: t`Supply APY`,
             body: (
               // todo: implement loading/error states for tooltip
               <MarketSupplyRateTooltipContent
