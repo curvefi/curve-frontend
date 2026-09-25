@@ -28,7 +28,7 @@ export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutat
   const getRewardTokenSymbol = ({ rewardTokenId }: AddRewardMutation) => getToken(tokens, rewardTokenId)?.symbol ?? ''
 
   const { mutate, error, isPending } = useEvmMutation<AddRewardMutation>({
-    mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'addRewardToken'] as const,
+    mutationKey: [{ ...rootKeys.gauge({ chainId, poolId }), name: 'addRewardToken' }] as const,
     mutationFn: async ({ rewardTokenId, distributorId }) => ({
       hash: (await getGauge(poolId).addReward(rewardTokenId, distributorId)) as Hex,
     }),
@@ -56,7 +56,7 @@ export const useDepositReward = ({ chainId, poolId, onReset }: GaugeRewardMutati
     getToken(tokens, rewardTokenId)?.symbol ?? ''
 
   const { mutate, error, isPending } = useEvmMutation<DepositRewardMutation>({
-    mutationKey: [...rootKeys.gauge({ chainId, poolId }), 'depositReward'] as const,
+    mutationKey: [{ ...rootKeys.gauge({ chainId, poolId }), name: 'depositReward' }] as const,
     mutationFn: async ({ amount, rewardTokenId, epoch, userBalance }) => {
       await waitForApproval({
         isApproved: async () =>

@@ -8,7 +8,7 @@ export type ClaimableReward = { token: Address; symbol: string; amount: Decimal 
 
 export const { useQuery: useClaimableRewards, fetchQuery: fetchClaimableRewards } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimableRewards'] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'claimableRewards' }] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireGauge(marketId).vault.claimableRewards(userAddress)) as ClaimableReward[],
   category: 'llamalend.supply',
@@ -17,7 +17,7 @@ export const { useQuery: useClaimableRewards, fetchQuery: fetchClaimableRewards 
 
 export const { useQuery: useClaimableCrv, fetchQuery: fetchClaimableCrv } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimableCrv'] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'claimableCrv' }] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireGauge(marketId).vault.claimableCrv(userAddress)) as Decimal,
   category: 'llamalend.supply',

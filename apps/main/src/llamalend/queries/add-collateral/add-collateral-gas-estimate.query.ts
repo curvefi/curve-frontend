@@ -14,9 +14,8 @@ type AddCollateralGasParams<T = IChainId> = FieldsOf<AddCollateralGasQuery<T>>
 const { useQuery: useAddCollateralApproveGasEstimate } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'estimateGas.addCollateralApprove',
-      { userCollateral },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'estimateGas.addCollateralApprove', userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) =>
     await getLoanImplementation(marketId).estimateGas.addCollateralApprove(userCollateral),
@@ -27,9 +26,8 @@ const { useQuery: useAddCollateralApproveGasEstimate } = queryFactory({
 const { useQuery: useAddCollateralGasEstimate } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'estimateGas.addCollateral',
-      { userCollateral },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'estimateGas.addCollateral', userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) =>
     await getLoanImplementation(marketId).estimateGas.addCollateral(userCollateral),

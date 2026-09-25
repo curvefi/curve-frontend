@@ -20,7 +20,7 @@ export const userPoolBoost = async (
 
 export const { useQuery: useUserPoolBoostQuery, invalidate: invalidateUserPoolBoostQuery } = queryFactory({
   queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
-    [...rootKeys.userPool({ chainId, poolId, userAddress }), 'userBoost'] as const,
+    [rootKeys.userPool({ chainId, poolId, userAddress }), { name: 'userBoost' }] as const,
   category: 'dex.user',
   queryFn: async ({ chainId, poolId, userAddress }: UserPoolQuery) =>
     await userPoolBoost(chainId, requireLib('curveApi').getPool(poolId), userAddress),

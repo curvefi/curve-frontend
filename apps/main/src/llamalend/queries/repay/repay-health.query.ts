@@ -20,14 +20,8 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     routeId,
   }: RepayHealthParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayHealth',
-      { stateCollateral },
-      { userCollateral },
-      { userBorrowed },
-      { isHealthFull },
-      { slippage },
-      { routeId },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'repayHealth', stateCollateral, userCollateral, userBorrowed, isHealthFull, slippage, routeId },
     ] as const,
   queryFn: async ({
     marketId,

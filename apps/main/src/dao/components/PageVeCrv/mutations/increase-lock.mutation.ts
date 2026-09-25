@@ -24,7 +24,7 @@ export const useIncreaseLockMutation = ({
 }) => {
   const config = useConfig()
   const { mutate, error, isPending } = useEvmMutation<IncreaseLockMutation>({
-    mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.increase'] as const,
+    mutationKey: [{ ...rootKeys.userChain({ chainId, userAddress }), name: 'lockCrv.increase' }] as const,
     mutationFn: async ({ lockedAmount }) => {
       const params = { chainId, userAddress, lockedAmount }
       const curveApi = requireLib('curveApi')

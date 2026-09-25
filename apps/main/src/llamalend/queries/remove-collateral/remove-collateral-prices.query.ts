@@ -9,7 +9,10 @@ import { maxRemovableCollateralKey } from './remove-collateral-max-removable.que
 
 export const { useQuery: useRemoveCollateralPrices } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'removeCollateralPrices', { userCollateral }] as const,
+    [
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'removeCollateralPrices', userCollateral },
+    ] as const,
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
     (await getLoanImplementation(marketId).removeCollateralPrices(userCollateral)) as Range<Decimal>,
   category: 'llamalend.removeCollateral',

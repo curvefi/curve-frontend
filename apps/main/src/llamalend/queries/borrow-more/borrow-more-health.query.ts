@@ -24,15 +24,8 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
     routeId,
   }: BorrowMoreParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'borrowMoreHealth',
-      { userCollateral },
-      { userBorrowed },
-      { debt },
-      { maxDebt },
-      { leverageEnabled },
-      { slippage },
-      { routeId },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'borrowMoreHealth', userCollateral, userBorrowed, debt, maxDebt, leverageEnabled, slippage, routeId },
     ] as const,
   queryFn: async ({
     marketId,

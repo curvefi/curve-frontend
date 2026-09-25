@@ -55,7 +55,7 @@ const _getScrvUsdRevenue = async (): Promise<ScrvUsdRevenue> => {
 }
 
 export const { useQuery: useScrvUsdRevenue } = queryFactory({
-  queryKey: () => ['scrvUsdRevenue'] as const,
+  queryKey: () => [{ name: 'scrvUsdRevenue' }] as const,
   queryFn: _getScrvUsdRevenue,
   validationSuite: EmptyValidationSuite,
   category: 'savings.stats',

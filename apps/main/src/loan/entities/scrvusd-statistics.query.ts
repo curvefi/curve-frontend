@@ -49,7 +49,7 @@ async function _fetchSavingsStatistics(): Promise<Omit<Statistics, 'lastUpdated'
 }
 
 export const { useQuery: useScrvUsdStatistics } = queryFactory({
-  queryKey: () => ['scrvUsdStatistics'] as const,
+  queryKey: () => [{ name: 'scrvUsdStatistics' }] as const,
   queryFn: _fetchSavingsStatistics,
   validationSuite: EmptyValidationSuite,
   category: 'savings.stats',

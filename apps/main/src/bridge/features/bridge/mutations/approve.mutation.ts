@@ -19,7 +19,7 @@ type BridgeApproveOptions = {
 
 export const useBridgeApproveMutation = ({ chainId, onApproved, ...props }: BridgeApproveOptions) => {
   const { mutate, error, isPending } = useEvmMutation<BridgeApproveMutation>({
-    mutationKey: [...rootKeys.chain({ chainId }), 'bridge-approve'] as const,
+    mutationKey: [{ ...rootKeys.chain({ chainId }), name: 'bridge-approve' }] as const,
     mutationFn: async ({ amount }) =>
       await requireLib('curveApi')
         .fastBridge.approve(amount)

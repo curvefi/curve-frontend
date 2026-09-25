@@ -9,7 +9,7 @@ type AssetPriceResponse = { _embedded: { records: { asset: string; price: number
 const STELLAR_EXPERT_PATHS = { stellar: 'public', 'stellar-testnet': 'testnet' }
 
 export const { useQuery: useTokenUsdRate, getQueryOptions: getTokenUsdRateQueryOptions } = queryFactory({
-  queryKey: (params: TokenParams) => [...rootKeys.token(params), 'usdRate'] as const,
+  queryKey: (params: TokenParams) => [rootKeys.token(params), { name: 'usdRate' }] as const,
   queryFn: async ({ network, token }: TokenQuery) => {
     const { nativeCurrency: nativeCurrency, isTestnet } = STELLAR_NETWORKS[network]
     const { address: nativeAddress, symbol: nativeSymbol } = nativeCurrency

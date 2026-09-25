@@ -14,7 +14,7 @@ export const {
   invalidate: invalidateUserPoolPositions,
 } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'getUserPoolPositions', 'v2'] as const,
+    [rootKeys.userChain({ chainId, userAddress }), { name: 'getUserPoolPositions', version: 'v2' }] as const,
   queryFn: async ({ chainId, userAddress }: UserChainQuery) => {
     const positions = await paginate(
       async (page, pagination) => (await getUserPoolPositions({ chainId, userAddress, page, pagination })).positions,

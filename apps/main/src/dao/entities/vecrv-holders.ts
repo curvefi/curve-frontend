@@ -13,7 +13,7 @@ export type VeCrvHolder = Omit<Locker, 'locked' | 'weight' | 'weightRatio'> & {
 }
 
 export const { useQuery: useVeCrvHoldersQuery } = queryFactory({
-  queryKey: () => ['vecrv-holders'] as const,
+  queryKey: () => [{ name: 'vecrv-holders' }] as const,
   queryFn: async () =>
     (await getLockers()).map(({ locked, weight, weightRatio, ...holder }): VeCrvHolder => ({
       ...holder,

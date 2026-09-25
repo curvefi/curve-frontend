@@ -12,7 +12,7 @@ const NOT_AVAILABLE = { totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' } as 
 
 const { useQuery: usePoolTotalStakedQuery, invalidate: invalidatePoolTotalStaked } = queryFactory({
   category: 'dex.pool',
-  queryKey: (params: PoolParams) => [...rootKeys.pool(params), 'totalStaked'] as const,
+  queryKey: (params: PoolParams) => [rootKeys.pool(params), { name: 'totalStaked' }] as const,
   queryFn: async ({ poolId }: PoolQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     if (!isValidAddress(pool.gauge.address)) return NOT_AVAILABLE

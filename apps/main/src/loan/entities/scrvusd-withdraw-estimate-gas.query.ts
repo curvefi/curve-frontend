@@ -8,11 +8,8 @@ import { scrvUsdWithdrawMaxValidationSuite } from './scrvusd.validation'
 const { useQuery: useScrvUsdWithdrawEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, userAddress, withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawParams) =>
     [
-      ...rootKeys.userChain({ chainId, userAddress }),
-      'st_crvUSD.estimateGas.withdraw',
-      { withdrawAmount },
-      { isFull },
-      { maxWithdrawAmount },
+      rootKeys.userChain({ chainId, userAddress }),
+      { name: 'st_crvUSD.estimateGas.withdraw', withdrawAmount, isFull, maxWithdrawAmount },
     ] as const,
   queryFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawQuery) =>
     await requireLib('llamaApi').st_crvUSD.estimateGas.redeem(isFull ? maxWithdrawAmount : withdrawAmount),

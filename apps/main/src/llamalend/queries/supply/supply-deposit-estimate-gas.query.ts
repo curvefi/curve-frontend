@@ -7,9 +7,8 @@ import { useDepositIsApproved } from './supply-deposit-approved.query'
 const { useQuery: useDepositApproveEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'estimateGas.depositApprove',
-      { depositAmount },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'estimateGas.depositApprove', depositAmount },
     ] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.estimateGas.depositApprove(depositAmount),
@@ -19,7 +18,7 @@ const { useQuery: useDepositApproveEstimateGasQuery } = queryFactory({
 
 const { useQuery: useDepositEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.deposit', { depositAmount }] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'estimateGas.deposit', depositAmount }] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.estimateGas.deposit(depositAmount),
   category: 'llamalend.supply',

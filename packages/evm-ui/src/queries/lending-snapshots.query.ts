@@ -12,13 +12,10 @@ type Query = ContractQuery & { timeOption?: TimeOption; limit?: number }
 type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useLendingSnapshots } = queryFactory({
-  queryKey: ({ contractAddress, blockchainId, timeOption, limit }: QueryParams) =>
+  queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) =>
     [
-      ...rootKeys.contract({ contractAddress, blockchainId }),
-      'lendingSnapshots',
-      'v5',
-      { timeOption },
-      { limit },
+      rootKeys.contract({ contractAddress, blockchainId }),
+      { name: 'lendingSnapshots', version: 'v5', timeOption, limit },
     ] as const,
   queryFn: async ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<LendingSnapshot[]> => {
     const now = Date.now()

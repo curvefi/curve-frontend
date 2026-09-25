@@ -9,7 +9,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 /** Returns the amount of (borrow) tokens required at minimum in the user's wallet in order to repay with shrink. */
 export const { useQuery: useTokensToShrink } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'tokensToShrink'] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'tokensToShrink' }] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery<IChainId>) =>
     // First parameter of tokensToShrink called dCollateral is for leverage, but we don't support that yet so we set it to zero for now.
     (await getResetImplementation(marketId).tokensToShrink('0', userAddress)) as Decimal,

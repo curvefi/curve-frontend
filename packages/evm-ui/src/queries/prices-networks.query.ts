@@ -7,7 +7,7 @@ import { type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 const { useQuery: usePricesNetworks } = queryFactory({
-  queryKey: () => ['prices', 'networks'] as const,
+  queryKey: () => [{ name: 'prices.getSupportedChains' }] as const,
   queryFn: getSupportedChains,
   validationSuite: EmptyValidationSuite, // no args
   category: 'global.networks',

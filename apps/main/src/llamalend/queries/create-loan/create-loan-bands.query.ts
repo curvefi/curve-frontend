@@ -24,15 +24,8 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
     routeId,
   }: CreateLoanDebtParams) =>
     [
-      ...rootKeys.market({ chainId, marketId }),
-      'createLoanBands',
-      { userCollateral },
-      { userBorrowed },
-      { debt },
-      { leverageEnabled },
-      { range },
-      { maxDebt },
-      { routeId },
+      rootKeys.market({ chainId, marketId }),
+      { name: 'createLoanBands', userCollateral, userBorrowed, debt, leverageEnabled, range, maxDebt, routeId },
     ] as const,
   queryFn: async ({
     marketId,

@@ -10,7 +10,7 @@ import {
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
 import { paginate } from '@curvefi/prices-api/paginate'
-import { type ChainNameQuery, type UserParams, type UserQuery } from '@evm-ui/queries/root-keys'
+import { rootKeys, type ChainNameQuery, type UserParams, type UserQuery } from '@evm-ui/queries/root-keys'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { pricesApiChainNameValidationGroup } from '@evm-ui/queries/validation/prices-chain-validation'
 import {
@@ -35,7 +35,7 @@ const userChainNameValidationSuite = createValidationSuite((params: UserChainNam
 export type LendingVault = Market & { chain: ChainName }
 
 export const { getQueryOptions: getLendingVaultsOptions, reset: resetLendingVaults } = queryFactory({
-  queryKey: () => ['lending-vaults', 'v5'] as const,
+  queryKey: () => [{ name: 'lending-vaults', version: 'v5' }] as const,
   queryFn: async (): Promise<LendingVault[]> =>
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
       markets.map(market => ({ ...market, chain: chain as ChainName })),
@@ -51,7 +51,7 @@ const {
   reset: resetUserLendingVaultsQuery,
 } = queryFactory({
   queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
-    ['user-lending-vaults', { blockchainId }, { userAddress }, 'v3'] as const,
+    [{ name: 'user-lending-vaults', blockchainId, userAddress, version: 'v3' }] as const,
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
     (
       await paginate(
@@ -70,7 +70,11 @@ const {
   reset: resetUserLendingVaultStats,
 } = queryFactory({
   queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) =>
-    ['user-lending-vault', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
+    [
+      rootKeys.contract({ blockchainId, contractAddress }),
+      rootKeys.user({ userAddress }),
+      { name: 'getUserMarketStats', version: 'v1' },
+    ] as const,
   queryFn: async ({ userAddress, contractAddress, blockchainId }: UserContractQuery): Promise<UserMarketStats> =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
   category: 'llamalend.user',
@@ -112,7 +116,7 @@ const {
   reset: resetUserLendingSuppliesQuery,
 } = queryFactory({
   queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
-    ['user-lending-supplies', { blockchainId }, { userAddress }, 'v6'] as const,
+    [{ name: 'user-lending-supplies', blockchainId, userAddress, version: 'v6' }] as const,
   category: 'llamalend.user',
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<UserLendingSupplies> => {
     const positions = await paginate(

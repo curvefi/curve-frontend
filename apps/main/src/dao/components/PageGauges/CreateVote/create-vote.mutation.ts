@@ -60,7 +60,7 @@ export const useCreateVoteMutation = ({ onReset }: { onReset: () => void }) => {
   const config = useConfig()
 
   const { mutate, error, isPending } = useEvmMutation<CreateVoteMutation>({
-    mutationKey: [...rootKeys.chain({ chainId: mainnet.id }), 'create-gauge-vote'] as const,
+    mutationKey: [{ ...rootKeys.chain({ chainId: mainnet.id }), name: 'create-gauge-vote' }] as const,
     mutationFn: async ({ gaugeAddress, description, pinataJwt }) => {
       const evmScript = buildEvmScript(gaugeAddress as Address)
       const ipfsHash = await uploadDescriptionToIpfs(description, pinataJwt)

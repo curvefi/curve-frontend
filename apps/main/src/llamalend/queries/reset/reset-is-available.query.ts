@@ -6,7 +6,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useResetIsAvailable, queryKey: resetIsAvailableQueryKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'resetIsAvailable'] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'resetIsAvailable' }] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery<IChainId>) =>
     await getResetImplementation(marketId).isRepayWithShrinkAvailable(userAddress),
   category: 'llamalend.repay',

@@ -15,10 +15,12 @@ export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUs
   queryFactory({
     queryKey: (params: UserGaugeParams) =>
       [
-        'user-gauge-vote-next-time',
-        { chainId: params.chainId },
-        { gaugeAddress: params.gaugeAddress },
-        { userAddress: params.userAddress },
+        {
+          name: 'user-gauge-vote-next-time',
+          chainId: params.chainId,
+          gaugeAddress: params.gaugeAddress,
+          userAddress: params.userAddress,
+        },
       ] as const,
     queryFn: ({ gaugeAddress }: UserGaugeQuery) => requireLib('curveApi').dao.voteForGaugeNextTime(gaugeAddress),
     category: 'dao.user',

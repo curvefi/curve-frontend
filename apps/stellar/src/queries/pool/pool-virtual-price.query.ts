@@ -8,7 +8,8 @@ import { fromWei } from '@ui/lib/decimal'
 
 /** The current value of one LP token, normalized to the pool LP-token precision. */
 export const { useQuery: usePoolVirtualPrice, invalidate: invalidatePoolVirtualPrice } = queryFactory({
-  queryKey: ({ network, pool }: PoolParams) => [...rootKeys.pool({ network, pool }), 'get_virtual_price'] as const,
+  queryKey: ({ network, pool }: PoolParams) =>
+    [rootKeys.pool({ network, pool }), { name: 'get_virtual_price' }] as const,
   queryFn: async ({ network, pool }: PoolQuery) =>
     fromWei(await readContract<bigint>(network, pool, 'get_virtual_price'), LP_TOKEN_DECIMALS),
   category: 'dex.pool',

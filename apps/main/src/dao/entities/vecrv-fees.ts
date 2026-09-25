@@ -11,7 +11,7 @@ type VeCrvFeesParams = FieldsOf<VeCrvFeesQuery>
 export type VeCrvFee = Omit<Distribution, 'feesUsd'> & { feesUsd: Decimal }
 
 export const { useQuery: useVeCrvFeesQuery } = queryFactory({
-  queryKey: ({ weeks }: VeCrvFeesParams) => ['vecrv-fees', { weeks }] as const,
+  queryKey: ({ weeks }: VeCrvFeesParams) => [{ name: 'vecrv-fees', weeks }] as const,
   queryFn: async ({ weeks }: VeCrvFeesQuery) => {
     const distributions = await (weeks ? getDistributionsPage({ per_page: weeks }) : getDistributions())
 

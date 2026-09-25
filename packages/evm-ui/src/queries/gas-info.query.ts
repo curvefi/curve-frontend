@@ -103,7 +103,7 @@ const {
   setQueryData: setGasInfoAndUpdateLibBase,
 } = queryFactory({
   queryKey: ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
-    [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const,
+    [rootKeys.chain(params), { name: 'gasInfo', gasPricesUrl, gasPricesUrlL2 }] as const,
   queryFn: async ({ chainId: chain, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const chainId = chain as Chain

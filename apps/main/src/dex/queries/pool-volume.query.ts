@@ -10,7 +10,8 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({
   category: 'dex.pools',
-  queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'stats.volume'] as const,
+  queryKey: ({ chainId, poolId }: PoolParams) =>
+    [rootKeys.pool({ chainId, poolId }), { name: 'stats.volume' }] as const,
   queryFn: async ({ poolId }: PoolQuery) => (await requireLib('curveApi').getPool(poolId).stats.volume()) as Decimal,
   validationSuite: createValidationSuite((params: PoolParams) => {
     curveApiValidationGroup(params)

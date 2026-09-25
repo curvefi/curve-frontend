@@ -15,9 +15,8 @@ type RemoveCollateralGasParams<T = IChainId> = FieldsOf<RemoveCollateralGasQuery
 const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: RemoveCollateralGasParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'estimateGas.removeCollateral',
-      { userCollateral },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'estimateGas.removeCollateral', userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: RemoveCollateralGasQuery) => {
     const market = getMarket(marketId)

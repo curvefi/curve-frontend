@@ -12,7 +12,7 @@ type VeCrvLocksParams = FieldsOf<VeCrvLocksQuery>
 export type VeCrvLock = Omit<LocksDaily, 'amount'> & { amount: Decimal }
 
 export const { useQuery: useVeCrvLocksQuery } = queryFactory({
-  queryKey: ({ days }: VeCrvLocksParams) => ['vecrv-locks', { days }] as const,
+  queryKey: ({ days }: VeCrvLocksParams) => [{ name: 'vecrv-locks', days }] as const,
   queryFn: async ({ days }: VeCrvLocksQuery) =>
     (await getLocksDaily(days)).map(({ amount, ...lock }): VeCrvLock => ({
       ...lock,

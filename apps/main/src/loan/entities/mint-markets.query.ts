@@ -51,7 +51,7 @@ const getMarketData = ({
 })
 
 export const { useQuery: useMintMarkets } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'getMintMarkets'] as const,
+  queryKey: ({ chainId }: ChainParams) => [rootKeys.chain({ chainId }), { name: 'getMintMarkets' }] as const,
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   queryFn: async (): Promise<Record<string | Address, MintMarketData>> => {
     const api = requireLib('llamaApi')

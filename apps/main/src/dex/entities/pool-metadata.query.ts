@@ -7,7 +7,7 @@ import { type FieldsOf } from '@ui/lib/validation/types'
 type PoolMetadataParams = FieldsOf<GetPoolMetadataParams>
 
 export const { useQuery: usePoolMetadata } = queryFactory({
-  queryKey: ({ chain, poolAddress }: PoolMetadataParams) => ['pool-metadata', { chain }, { poolAddress }] as const,
+  queryKey: ({ chain, poolAddress }: PoolMetadataParams) => [{ name: 'pool-metadata', chain, poolAddress }] as const,
   queryFn: async ({ chain, poolAddress }: GetPoolMetadataParams) => getPoolMetadata({ chain, poolAddress }),
   validationSuite: createValidationSuite(({ chain, poolAddress }: PoolMetadataParams) => {
     contractValidationGroup({ blockchainId: chain, contractAddress: poolAddress })

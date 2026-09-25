@@ -22,13 +22,8 @@ type RefuelTimeseriesParams = FieldsOf<RefuelTimeseriesQuery>
 export const { useQuery: useRefuelTimeseries } = queryFactory({
   queryKey: ({ blockchainId, poolAddress, start, end, page, pageSize }: RefuelTimeseriesParams) =>
     [
-      ...rootKeys.chainName({ blockchainId }),
-      'getRefuelTimeseries',
-      { poolAddress },
-      { start },
-      { end },
-      { page },
-      { pageSize },
+      rootKeys.chainName({ blockchainId }),
+      { name: 'getRefuelTimeseries', poolAddress, start, end, page, pageSize },
     ] as const,
   queryFn: async ({
     blockchainId,

@@ -5,7 +5,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData } from '@ui/features/queries/util'
 
 export const { useQuery: useBasePools, getQueryData: getBasePools } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'base-pools'] as const,
+  queryKey: ({ chainId }: ChainParams) => [rootKeys.chain({ chainId }), { name: 'base-pools' }] as const,
   queryFn: async () => await requireLib('curveApi').getBasePools(),
   validationSuite: curveApiWithWalletValidationSuite,
   category: 'dex.poolParams',

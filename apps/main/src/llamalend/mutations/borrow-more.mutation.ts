@@ -73,7 +73,7 @@ export const useBorrowMoreMutation = ({
   const { mutate, error, isPending } = useMarketMutation<BorrowMoreMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'borrowMore'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'borrowMore' }] as const,
     mutationFn: async (variables, { market }) => {
       await waitForApproval({
         isApproved: async () =>

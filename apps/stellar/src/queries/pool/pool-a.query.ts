@@ -6,7 +6,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 /** Current human-scale amplification, including any active ramp. */
 export const { useQuery: usePoolA, invalidate: invalidatePoolA } = queryFactory({
-  queryKey: ({ network, pool }: PoolParams) => [...rootKeys.pool({ network, pool }), 'a'] as const,
+  queryKey: ({ network, pool }: PoolParams) => [rootKeys.pool({ network, pool }), { name: 'a' }] as const,
   queryFn: async ({ network, pool }: PoolQuery) => Number(await readContract<bigint>(network, pool, 'a')),
   category: 'dex.pool',
   validationSuite: poolValidationSuite,

@@ -24,7 +24,7 @@ export const useDepositMutation = ({
   onReset,
 }: DepositMutationOptions) => {
   const { mutate, error, isPending } = useStellarMutation<DepositMutation, DepositMutationContext>({
-    mutationKey: [...rootKeys.userPool({ network, pool, account }), 'deposit'],
+    mutationKey: [{ ...rootKeys.userPool({ network, pool, account }), name: 'deposit' }],
     buildContext: (_, baseContext) =>
       ({ ...baseContext, network, pool, tokens, quote, minMint }) as DepositMutationContext,
     createTransaction: (values, context) => fetchDepositSimulation({ ...values, ...context }, { staleTime: 0 }),

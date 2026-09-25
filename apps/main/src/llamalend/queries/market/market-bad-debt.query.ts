@@ -8,7 +8,7 @@ import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 type BadDebtParams = { type: MarketType }
 
 const { getQueryOptions: getBadDebtMarketsOptionsQuery, reset: resetBadDebtMarketsQuery } = queryFactory({
-  queryKey: ({ type }: BadDebtParams) => ['getBadDebt', { type }, 'v1'] as const,
+  queryKey: ({ type }: BadDebtParams) => [{ name: 'getBadDebt', type, version: 'v1' }] as const,
   queryFn: ({ type }: BadDebtParams) => getBadDebt({ endpoint: getMarketEndpoint(type) }),
   category: 'llamalend.market',
   validationSuite: EmptyValidationSuite,

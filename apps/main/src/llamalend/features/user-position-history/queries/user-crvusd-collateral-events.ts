@@ -6,7 +6,7 @@ import { userCollateralEventsValidationSuite } from './validation/user-collatera
 export const { useQuery: useUserCrvUsdCollateralEventsQuery, invalidate: invalidateUserCrvUsdCollateralEventsQuery } =
   queryFactory({
     queryKey: ({ blockchainId, userAddress, contractAddress }: UserContractParams) =>
-      ['userCrvUsdCollateralEvents', { blockchainId }, { userAddress }, { contractAddress }, 'v1'] as const,
+      [{ name: 'userCrvUsdCollateralEvents', blockchainId, userAddress, contractAddress, version: 'v1' }] as const,
     queryFn: ({ blockchainId, contractAddress, userAddress }: UserContractQuery): Promise<UserCollateralEvents> =>
       getUserMarketCollateralEvents(userAddress, blockchainId, contractAddress),
     category: 'llamalend.user',

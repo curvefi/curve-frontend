@@ -27,14 +27,8 @@ const {
     routeId,
   }: RepayParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'estimateGas.repay',
-      { stateCollateral },
-      { userCollateral },
-      { userBorrowed },
-      { isFull },
-      { slippage },
-      { routeId },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'estimateGas.repay', stateCollateral, userCollateral, userBorrowed, isFull, slippage, routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -86,14 +80,8 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     routeId,
   }: RepayParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'estimateGas.repayApprove',
-      { stateCollateral },
-      { userCollateral },
-      { userBorrowed },
-      { isFull },
-      { slippage },
-      { routeId },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'estimateGas.repayApprove', stateCollateral, userCollateral, userBorrowed, isFull, slippage, routeId },
     ] as const,
   queryFn: async ({
     marketId,

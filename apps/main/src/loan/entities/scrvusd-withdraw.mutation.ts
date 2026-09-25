@@ -21,7 +21,7 @@ type ScrvUsdWithdrawOptions = {
 export const useScrvUsdWithdrawMutation = ({ chainId, userAddress, onSuccess, ...props }: ScrvUsdWithdrawOptions) => {
   const config = useConfig()
   const { mutate, error, isPending } = useEvmMutation<ScrvUsdWithdrawMutation>({
-    mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.withdraw'] as const,
+    mutationKey: [{ ...rootKeys.userChain({ chainId, userAddress }), name: 'st_crvUSD.withdraw' }] as const,
     mutationFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }) => {
       const { st_crvUSD } = requireLib('llamaApi')
       const shares = isFull ? maxWithdrawAmount : withdrawAmount
