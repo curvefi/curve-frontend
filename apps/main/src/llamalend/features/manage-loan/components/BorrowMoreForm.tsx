@@ -58,7 +58,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     exchangeRate,
     priceImpact,
     disabledAlert,
-    solvencyModal: { onConfirm, onClose, isOpen },
+    solvencyModal,
   } = useBorrowMoreForm({ networks, onPricesUpdated, collateralEvents })
 
   const { update: updateForm } = form
@@ -162,13 +162,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </EvmFormButton>
-      <LowSolvencyActionModal
-        action="borrow"
-        open={isOpen}
-        onClose={onClose}
-        onConfirm={onConfirm}
-        tokenSymbol={collateralToken?.symbol}
-      />
+      <LowSolvencyActionModal {...solvencyModal} action="borrow" tokenSymbol={collateralToken?.symbol} />
       <FormAlerts
         error={error}
         formErrors={formErrors}

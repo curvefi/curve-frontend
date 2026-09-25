@@ -65,7 +65,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     leverage,
     exchangeRate,
     priceImpact,
-    solvencyModal: { onConfirm, onClose, isOpen },
+    solvencyModal,
     isHighLiquidationRisk,
     isLeverageSupported,
   } = useCreateLoanForm({ networks, preset, onPricesUpdated })
@@ -171,13 +171,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </EvmFormButton>
-      <LowSolvencyActionModal
-        action="borrow"
-        open={isOpen}
-        onClose={onClose}
-        onConfirm={onConfirm}
-        tokenSymbol={collateralToken?.symbol}
-      />
+      <LowSolvencyActionModal {...solvencyModal} action="borrow" tokenSymbol={collateralToken?.symbol} />
       <FormAlerts
         error={error}
         formErrors={formErrors}

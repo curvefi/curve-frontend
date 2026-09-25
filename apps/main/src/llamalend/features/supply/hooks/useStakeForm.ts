@@ -89,9 +89,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
     onSubmit,
-    onConfirm,
-    onClose,
-    isOpen,
+    modal: solvencyModal,
   } = useFormLowSolvency({
     controllerAddress,
     marketType: MarketType.Lend,
@@ -123,6 +121,6 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     hasGauge: marketHasGauge,
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: { isOpen, onClose, onConfirm },
+    solvencyModal,
   }
 }

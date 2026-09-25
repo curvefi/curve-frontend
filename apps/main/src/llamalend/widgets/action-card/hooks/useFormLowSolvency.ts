@@ -36,14 +36,16 @@ export const useFormLowSolvency = <T extends FieldValues, ChainId extends IChain
   return {
     solvency: q(solvency),
     solvencyDisabledAlert: isLowSolvencyActionBlocked(solvency.data?.solvencyPercent) ? DEFAULT_ALERT : undefined,
-    onConfirm: () => {
-      closeModal()
-      void handleFormSubmit(onSubmit)()
-    },
     onSubmit: requiresLowSolvencyModalConfirmation(solvency.data?.solvencyPercent)
       ? handleFormSubmit(() => openModal())
       : handleFormSubmit(onSubmit),
-    onClose: closeModal,
-    isOpen,
+    modal: {
+      open: isOpen,
+      onClose: closeModal,
+      onConfirm: () => {
+        closeModal()
+        void handleFormSubmit(onSubmit)()
+      },
+    },
   }
 }

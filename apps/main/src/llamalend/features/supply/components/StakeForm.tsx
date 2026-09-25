@@ -37,7 +37,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
     hasGauge,
     max,
     disabledAlert,
-    solvencyModal: { onConfirm, onClose, isOpen },
+    solvencyModal,
   } = useStakeForm({ network })
 
   return (
@@ -76,13 +76,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         {hasGauge ? disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm> : <AlertNoGauge />}
       </EvmFormButton>
 
-      <LowSolvencyActionModal
-        action="stake"
-        open={isOpen}
-        onClose={onClose}
-        onConfirm={onConfirm}
-        tokenSymbol={borrowToken?.symbol}
-      />
+      <LowSolvencyActionModal {...solvencyModal} action="stake" tokenSymbol={borrowToken?.symbol} />
 
       <FormAlerts
         error={error}

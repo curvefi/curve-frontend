@@ -165,9 +165,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
     onSubmit,
-    onConfirm,
-    onClose,
-    isOpen,
+    modal: solvencyModal,
   } = useFormLowSolvency({
     controllerAddress,
     marketType,
@@ -199,7 +197,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isApproved: useBorrowMoreIsApproved(params),
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: { isOpen, onClose, onConfirm },
+    solvencyModal,
     priceImpact: q(useBorrowMorePriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,

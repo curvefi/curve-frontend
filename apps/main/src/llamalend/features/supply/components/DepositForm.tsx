@@ -32,7 +32,7 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
     isApproved,
     max,
     disabledAlert,
-    solvencyModal: { onConfirm, onClose, isOpen },
+    solvencyModal,
   } = useDepositForm({ network })
 
   return (
@@ -69,13 +69,7 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </EvmFormButton>
-      <LowSolvencyActionModal
-        action="deposit"
-        open={isOpen}
-        onClose={onClose}
-        onConfirm={onConfirm}
-        tokenSymbol={borrowToken?.symbol}
-      />
+      <LowSolvencyActionModal {...solvencyModal} action="deposit" tokenSymbol={borrowToken?.symbol} />
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} userAddress={userAddress} />
     </Form>
   )

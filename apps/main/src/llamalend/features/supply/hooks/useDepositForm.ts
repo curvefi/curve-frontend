@@ -48,9 +48,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
     onSubmit,
-    onConfirm,
-    onClose,
-    isOpen,
+    modal: solvencyModal,
   } = useFormLowSolvency({
     controllerAddress,
     marketType,
@@ -77,6 +75,6 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
     isApproved: useDepositIsApproved(params),
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: { isOpen, onClose, onConfirm },
+    solvencyModal,
   }
 }
