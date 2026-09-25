@@ -4,6 +4,7 @@ import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageIn
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/LeverageDelegationModal'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -48,6 +49,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     collateralToken,
     error,
     isApproved,
+    isControllerApproved,
+    delegationModal,
     userAddress,
     formErrors,
     routes,
@@ -157,12 +160,17 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
-        label={[Number(values.userCollateral) && t`Add`, isApproved?.data === false && t`Approve`, t`Borrow More`]}
+        label={
+          isControllerApproved.data === false
+            ? t`Approve delegation`
+            : [Number(values.userCollateral) && t`Add`, isApproved?.data === false && t`Approve`, t`Borrow More`]
+        }
         testId="borrow-more-submit-button"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </EvmFormButton>
       <LowSolvencyActionModal {...solvencyModal} action="borrow" tokenSymbol={collateralToken?.symbol} />
+      <LeverageDelegationModal {...delegationModal} />
       <FormAlerts
         error={error}
         formErrors={formErrors}

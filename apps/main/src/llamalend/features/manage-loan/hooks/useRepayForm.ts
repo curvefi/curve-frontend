@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
-import { getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
+import { getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -14,6 +14,7 @@ import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/qu
 import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
+import { useLeverageDelegation } from '@/llamalend/widgets/action-card/hooks/useLeverageDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/entities/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -117,10 +118,15 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
   const values = form.watchValues()
+  const isZapSelection =
+    !!market &&
+    hasZapV2(market) &&
+    !Number(values.userBorrowed) &&
+    !!(Number(values.stateCollateral) || Number(values.userCollateral))
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
-    onSubmit,
+    onSubmit: onMutationSubmit,
     isPending: isRepaying,
     error: repayError,
   } = useRepayMutation({
@@ -129,6 +135,19 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     onReset: () => form.reset({ ...userDefaultValues, routeId: undefined }),
     userAddress,
     leverageProviders,
+  })
+
+  const {
+    isControllerApproved,
+    onSubmit,
+    modal: delegationModal,
+  } = useLeverageDelegation<RepayFormData>({
+    chainId,
+    userAddress,
+    market,
+    leverageEnabled: isZapSelection,
+    handleFormSubmit: form.handleSubmit,
+    onSubmit: onMutationSubmit,
   })
 
   useCallbackSync(useRepayPrices(params), onPricesUpdated)
@@ -149,13 +168,15 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: !market,
+    isLoading: !market || isControllerApproved.isLoading,
     isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
     userAddress,
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,
-    repayError,
+    repayError: isControllerApproved.error ?? repayError,
+    isControllerApproved,
+    delegationModal,
     isApproved: useRepayIsApproved(params),
     priceImpact: q(useRepayPriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({

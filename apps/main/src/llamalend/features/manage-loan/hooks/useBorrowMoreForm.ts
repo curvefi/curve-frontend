@@ -24,6 +24,7 @@ import {
   borrowMoreFormValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
+import { useLeverageDelegation } from '@/llamalend/widgets/action-card/hooks/useLeverageDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/entities/router-api'
 import type { Address } from '@primitives/address.utils'
@@ -162,6 +163,18 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   })
 
   const {
+    isControllerApproved,
+    onSubmit: onDelegationSubmit,
+    modal: delegationModal,
+  } = useLeverageDelegation<BorrowMoreForm>({
+    chainId,
+    userAddress,
+    market,
+    leverageEnabled: !!values.leverageEnabled,
+    handleFormSubmit: form.handleSubmit,
+    onSubmit: onMutationSubmit,
+  })
+  const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
     onSubmit,
@@ -170,7 +183,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     controllerAddress,
     marketType,
     chainId,
-    onSubmit: onMutationSubmit,
+    onSubmit: onDelegationSubmit,
     handleFormSubmit: form.handleSubmit,
   })
 
@@ -187,14 +200,16 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: isPending || !market || isSolvencyLoading,
+    isLoading: isPending || !market || isSolvencyLoading || isControllerApproved.isLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     userAddress,
     borrowToken,
     collateralToken,
-    error: borrowError ?? solvencyError,
+    error: isControllerApproved.error ?? borrowError ?? solvencyError,
     isApproved: useBorrowMoreIsApproved(params),
+    isControllerApproved,
+    delegationModal,
     formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal,

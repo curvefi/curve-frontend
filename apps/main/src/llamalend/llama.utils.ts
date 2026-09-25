@@ -126,6 +126,9 @@ export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
 /** Only LLv2 markets use the upgraded ZapV2 contract for now */
 export const hasUpgradedZapV2 = (market: MarketTemplate | Nullish) => isV2Market(market)
 
+export const usesZapV2 = (marketId: MarketTemplate | string | Nullish, leverageEnabled: boolean | Nullish) =>
+  !!leverageEnabled && !!hasZapV2(tryGetMarket(marketId))
+
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
 ) => type == 'zapV2'

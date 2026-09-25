@@ -9,6 +9,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { isRepayLeveraged } from '@/llamalend/queries/repay/repay-query.helpers'
 import { useUserPrices } from '@/llamalend/queries/user'
+import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/LeverageDelegationModal'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -81,6 +82,8 @@ export const RepayForm = <ChainId extends IChainId>({
     borrowToken,
     collateralToken,
     repayError,
+    isControllerApproved,
+    delegationModal,
     isApproved,
     userAddress,
     routes,
@@ -196,11 +199,15 @@ export const RepayForm = <ChainId extends IChainId>({
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, isRepayLeveraged(values))}
-        label={[
-          isApproved.data === false && t`Approve`,
-          notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
-          isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
-        ]}
+        label={
+          isControllerApproved.data === false
+            ? t`Approve delegation`
+            : [
+                isApproved.data === false && t`Approve`,
+                notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
+                isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
+              ]
+        }
         testId="repay-submit-button"
       />
       {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && (
@@ -212,6 +219,7 @@ export const RepayForm = <ChainId extends IChainId>({
         handledErrors={notFalsy(selectedField, max[selectedField]?.fieldName)}
         userAddress={userAddress}
       />
+      <LeverageDelegationModal {...delegationModal} />
     </Form>
   )
 }
