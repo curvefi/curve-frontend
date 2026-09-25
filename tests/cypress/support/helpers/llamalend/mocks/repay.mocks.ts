@@ -7,6 +7,7 @@ import { createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
   createMockLendLoanMarket,
+  createControllerApprovalStubs,
   DEFAULT_COLLATERAL_ADDRESS,
   DEFAULT_USER_BORROWED,
   expectedBorrowedMetrics,
@@ -23,11 +24,13 @@ export const createRepayScenario = ({
   approved,
   leverage = false,
   routeCalldata,
+  controllerApproved = true,
 }: {
   chainId: number
   approved: boolean
   leverage?: boolean
   routeCalldata?: Hex
+  controllerApproved?: boolean
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(0.5, 20, 2)
@@ -39,6 +42,7 @@ export const createRepayScenario = ({
   }
   const repayApproveStub = createTransactionStub(TEST_TX_HASH)
   const repayLeverageApproveStub = createTransactionStub(TEST_TX_HASH)
+  const controllerApproval = createControllerApprovalStubs(controllerApproved)
   const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
   const normalStubs = {
@@ -77,6 +81,8 @@ export const createRepayScenario = ({
 
   const leverageZapV2 = {
     hasLeverage: () => true,
+    isControllerApproved: controllerApproval.isControllerApproved,
+    setControllerApproval: controllerApproval.setControllerApproval,
     repayExpectedMetrics: leverageStubs.repayExpectedMetrics,
     repayIsApproved: leverageStubs.repayIsApproved,
     repayIsAvailable: leverageStubs.repayIsAvailable,
@@ -86,7 +92,11 @@ export const createRepayScenario = ({
     repayExpectedBorrowed: leverageStubs.repayExpectedBorrowed,
     repayFutureLeverage: leverageStubs.repayFutureLeverage,
     calcMinRecv: leverageStubs.calcMinRecv,
-    estimateGas: { repay: leverageStubs.estimateGasRepay, repayApprove: leverageStubs.estimateGasRepayApprove },
+    estimateGas: {
+      repay: leverageStubs.estimateGasRepay,
+      repayApprove: leverageStubs.estimateGasRepayApprove,
+      setControllerApproval: controllerApproval.estimateGasSetControllerApproval,
+    },
   }
 
   const leverageExpected = {
@@ -149,6 +159,7 @@ export const createRepayScenario = ({
       })
 
   return {
+    controllerApproval,
     borrow,
     collateral,
     currentDebt,

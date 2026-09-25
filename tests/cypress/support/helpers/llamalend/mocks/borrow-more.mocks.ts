@@ -7,6 +7,7 @@ import { createMockLlamaApi, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
   createBorrowMoreMintMarket,
+  createControllerApprovalStubs,
   createMockLendLoanMarket,
   DEFAULT_COLLATERAL_ADDRESS,
   DEFAULT_USER_BORROWED,
@@ -25,6 +26,7 @@ export const createBorrowMoreScenario = ({
   leverage = false,
   leverageImplementation,
   routeCalldata,
+  controllerApproved = true,
 }: {
   chainId: number
   approved: boolean
@@ -32,6 +34,7 @@ export const createBorrowMoreScenario = ({
   leverage?: boolean
   leverageImplementation?: 'zapV2'
   routeCalldata?: Hex
+  controllerApproved?: boolean
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(1, 45, 2)
@@ -40,6 +43,7 @@ export const createBorrowMoreScenario = ({
 
   const borrowMoreApprove = createTransactionStub(TEST_TX_HASH)
   const borrowMoreLeverageApprove = createTransactionStub(TEST_TX_HASH)
+  const controllerApproval = createControllerApprovalStubs(controllerApproved)
   const normalStubs = {
     parameters: createStub(oneRatePair()),
     estimateGasBorrowMore: createStub(oneInt(120_000, 240_000)),
@@ -90,6 +94,8 @@ export const createBorrowMoreScenario = ({
 
   const leverageZapV2 = {
     hasLeverage: () => true,
+    isControllerApproved: controllerApproval.isControllerApproved,
+    setControllerApproval: controllerApproval.setControllerApproval,
     maxLeverage: zapV2Stubs.maxLeverage,
     borrowMoreExpectedMetrics: zapV2Stubs.borrowMoreExpectedMetrics,
     borrowMoreMaxRecv: zapV2Stubs.borrowMoreMaxRecv,
@@ -100,6 +106,7 @@ export const createBorrowMoreScenario = ({
     borrowMoreFutureLeverage: zapV2Stubs.borrowMoreFutureLeverage,
     calcMinRecv: zapV2Stubs.calcMinRecv,
     estimateGas: {
+      setControllerApproval: controllerApproval.estimateGasSetControllerApproval,
       borrowMore: zapV2Stubs.estimateGasBorrowMore,
       borrowMoreApprove: zapV2Stubs.estimateGasBorrowMoreApprove,
     },
@@ -174,6 +181,7 @@ export const createBorrowMoreScenario = ({
     : createBorrowMoreMintMarket({ normalStubs, expectedCurrentDebt })
 
   return {
+    controllerApproval,
     borrow,
     expectedCurrentDebt,
     expectedFutureDebt,

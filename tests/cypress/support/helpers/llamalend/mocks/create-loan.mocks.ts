@@ -17,6 +17,7 @@ import {
   routeMutationMeta,
   seedMarketBalances,
   createMockLendLoanMarket,
+  createControllerApprovalStubs,
 } from './shared.mocks'
 
 export const createCreateLoanScenario = ({
@@ -25,12 +26,14 @@ export const createCreateLoanScenario = ({
   approved,
   leverage = false,
   routeCalldata,
+  controllerApproved = true,
 }: {
   chainId: number
   presetRange?: number
   approved: boolean
   leverage?: boolean
   routeCalldata?: Hex
+  controllerApproved?: boolean
 }) => {
   const collateral = oneDecimal(0.05, 1.2, 3)
   const borrow = oneDecimal(5, 140, 2)
@@ -38,6 +41,7 @@ export const createCreateLoanScenario = ({
   const lowPrice = oneDecimal(900, 2300, 2)
   const createLoanApprove = createTransactionStub(TEST_TX_HASH)
   const createLoanLeverageApprove = createTransactionStub(TEST_TX_HASH)
+  const controllerApproval = createControllerApprovalStubs(controllerApproved)
   const maxLeverage = oneDecimal(1.5, 10, 2)
 
   const normalStubs = {
@@ -89,6 +93,8 @@ export const createCreateLoanScenario = ({
 
   const leverageZapV2 = {
     hasLeverage: () => true,
+    isControllerApproved: controllerApproval.isControllerApproved,
+    setControllerApproval: controllerApproval.setControllerApproval,
     maxLeverage: leverageStubs.maxLeverage,
     createLoanExpectedMetrics: leverageStubs.createLoanExpectedMetrics,
     createLoanMaxRecv: leverageStubs.createLoanMaxRecv,
@@ -98,6 +104,7 @@ export const createCreateLoanScenario = ({
     createLoanExpectedCollateral: leverageStubs.createLoanExpectedCollateral,
     calcMinRecv: leverageStubs.calcMinRecv,
     estimateGas: {
+      setControllerApproval: controllerApproval.estimateGasSetControllerApproval,
       createLoan: leverageStubs.estimateGasCreateLoan,
       createLoanApprove: leverageStubs.estimateGasCreateLoanApprove,
     },
@@ -159,6 +166,8 @@ export const createCreateLoanScenario = ({
       })
 
   return {
+    controllerApproval,
+    leverageStubs,
     collateral,
     borrow,
     market,

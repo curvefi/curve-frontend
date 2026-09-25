@@ -6,10 +6,24 @@ import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
-import { TEST_ADDRESS } from '../mock-loan-test-data'
+import { TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockLendMarket, createMockLendStats, createMockMintMarket } from '../mock-market.helpers'
 import { seedErc20BalanceForAddresses } from '../query-cache.helpers'
-import { createStub, createSyncStub, type TestStub, type TestStubArg } from '../test-stub.utils'
+import { createStub, createSyncStub, createTransactionStub, type TestStub, type TestStubArg } from '../test-stub.utils'
+
+export const createControllerApprovalStubs = (approved = true) => {
+  const setControllerApproval = createTransactionStub([TEST_TX_HASH])
+  return {
+    isControllerApproved: cy
+      .stub()
+      .callsFake(() => Promise.resolve(approved || setControllerApproval.callCount > 0)) as TestStub<
+      readonly TestStubArg[],
+      Promise<boolean>
+    >,
+    setControllerApproval,
+    estimateGasSetControllerApproval: createStub('100000'),
+  }
+}
 
 /** Seed token balances for both collateral and borrow (crvUSD) tokens so useReadContracts doesn't make real RPC calls */
 export const seedMarketBalances = (chainId: number, collateralAddress: Address) => {

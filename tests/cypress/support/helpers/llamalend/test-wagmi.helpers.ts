@@ -1,4 +1,4 @@
-import { custom, fallback, http, type RpcTransactionReceipt, zeroAddress } from 'viem'
+import { custom, fallback, http, type Hex, type RpcTransactionReceipt, zeroAddress } from 'viem'
 import { createChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { defaultGetRpcUrls, WAGMI_HTTP_OPTIONS } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
 import { createWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
@@ -23,9 +23,25 @@ const testTransactionReceipt: RpcTransactionReceipt = {
   type: '0x2',
 }
 
+let heldReceipt: { hash: Hex; promise: Promise<RpcTransactionReceipt>; requested: boolean } | undefined
+
+export const holdMockedTransactionReceipt = (hash: Hex) => {
+  let release!: () => void
+  const promise = new Promise<RpcTransactionReceipt>(resolve => {
+    release = () => resolve({ ...testTransactionReceipt, transactionHash: hash })
+  })
+  const receipt = { hash, promise, requested: false }
+  heldReceipt = receipt
+  return { release, wasRequested: () => receipt.requested }
+}
+
 const mockedReceiptTransport = custom({
   request: ({ method, params }: { method: string; params?: unknown[] }): Promise<unknown> => {
     const [hash] = params ?? []
+    if (method === 'eth_getTransactionReceipt' && hash === heldReceipt?.hash) {
+      heldReceipt.requested = true
+      return heldReceipt.promise
+    }
     if (method === 'eth_getTransactionReceipt' && hash === TEST_TX_HASH) return Promise.resolve(testTransactionReceipt)
     return Promise.reject(new Error(`Unsupported method: ${method}, http fallback is used`))
   },

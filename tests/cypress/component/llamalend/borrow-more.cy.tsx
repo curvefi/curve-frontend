@@ -15,10 +15,12 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
+import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { Chain } from '@primitives/network.utils'
 import { constQ } from '@ui/features/queries/util'
 
 const chainId = Chain.Ethereum
+const OVERSIZED_CALLDATA = `0x${'00'.repeat(9_401)}` as const
 
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)', withCollateral: false, buttonText: 'Borrow More' },
@@ -33,7 +35,7 @@ const testCases = [
     approved: false,
     title: 'fills with collateral, approves and submits',
     withCollateral: true,
-    buttonText: 'Add, Approve & Borrow More',
+    buttonText: 'Approve, Add & Borrow More',
   },
 ].flatMap(testCase => [
   { ...testCase, hasLeverageManagement: false, leverageEnabled: false, leverageImplementation: undefined },
@@ -50,6 +52,44 @@ describe('BorrowMoreForm (mocked)', () => {
   beforeEach(() => {
     setupMockedLlamalendComponentTest()
     mockMintSnapshots({ limit: 1 })
+  })
+
+  it('approves delegation and borrows more on LLv2 with oversized calldata', () => {
+    const { borrow, controllerApproval, llamaApi, market } = createBorrowMoreScenario({
+      chainId,
+      approved: true,
+      leverage: true,
+      leverageImplementation: 'zapV2',
+      controllerApproved: false,
+      routeCalldata: OVERSIZED_CALLDATA,
+    })
+    Object.assign(market, { version: 'v2' })
+    setLlamaApi(llamaApi)
+    setGasInfo({ chainId })
+    cy.mount(
+      <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+        <BorrowMoreForm
+          networks={llamaNetworks}
+          onPricesUpdated={cy.spy()}
+          collateralEvents={constQ(fakeCollateralEvents)}
+        />
+      </MockLoanTestWrapper>,
+    )
+    writeBorrowMoreForm({ debt: borrow, hasLeverageManagement: true, leverageEnabled: true, waitForRoutes: true })
+    const borrowMore = market.leverageZapV2.borrowMore as unknown as ReturnType<typeof cy.stub>
+    cy.get('[data-testid="loan-form-error-routeId"]').should('not.exist')
+    cy.get('[data-testid="borrow-more-submit-button"]')
+      .should('be.enabled')
+      .and('have.text', 'Approve & Borrow More')
+      .click()
+    cy.get('[data-testid="leverage-delegation-modal"]').should('be.visible')
+    cy.then(() => expect(borrowMore.callCount).to.equal(0))
+    cy.get('[data-testid="leverage-delegation-approve"]').click()
+    cy.contains('[data-testid="toast-success"]', 'Borrowed more!', TRANSACTION_LOAD_TIMEOUT)
+    cy.then(() => {
+      expect(controllerApproval.setControllerApproval.callCount).to.equal(1)
+      expect(borrowMore.callCount).to.equal(1)
+    })
   })
 
   testCases.forEach(
