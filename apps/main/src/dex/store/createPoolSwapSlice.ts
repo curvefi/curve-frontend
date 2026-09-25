@@ -176,37 +176,6 @@ export const createPoolSwapSlice = (
             void get()[SLICE_KEY].fetchEstGasApproval(activeKey, curve.chainId, pool, cFormValues, maxSlippage)
           }
         }
-
-        // TODO: add feature to also check router swap
-        // const poolsMapper = get().pools.poolsMapper[curve.chainId]
-        // const routesAndOutputFn = curvejsApi.router.routesAndOutput
-        // const {
-        //   activeKey: routerSwapRespActiveKey,
-        //   exchangeRates: routerSwapRespExchangeRates,
-        //   ...routerSwapResp
-        // } = await routesAndOutputFn(activeKey, curve, poolsMapper, cFormValues, maxSlippage)
-        //
-        // if (+routerSwapResp.toAmount > +cFormValues.toAmount) {
-        //   let isApproved = null
-        //   if (curve.signerAddress) {
-        //     const estGasApprovalFn = curvejsApi.router.estGasApproval
-        //     const resp = await estGasApprovalFn(
-        //       activeKey,
-        //       curve,
-        //       cFormValues.fromAddress,
-        //       cFormValues.toAddress,
-        //       cFormValues.fromAmount
-        //     )
-        //     isApproved = resp.isApproved
-        //   }
-        //   get()[SLICE_KEY].setStateByKey('routerSwapOutput', {
-        //     [routerSwapRespActiveKey]: {
-        //       ...routerSwapResp,
-        //       exchangeRates: getRouterSwapsExchangeRates(routerSwapRespExchangeRates, cFormValues),
-        //       isApproved,
-        //     },
-        //   })
-        // }
       }
     },
     fetchMaxAmount: async (
