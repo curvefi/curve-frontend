@@ -12,7 +12,7 @@ import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } fr
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet'
-import { MarketType, MarketVersion } from '@evm-ui/types/market'
+import { MarketAssetsType, MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
@@ -34,6 +34,7 @@ import { decimal, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/deci
 import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
+import { getMarketAssetsType } from './market-assets-type.utils'
 import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 
 /**
@@ -50,10 +51,18 @@ export const getMarket = (id: string | MarketTemplate, lib = requireLib('llamaAp
 export const tryGetMarket = (marketId: MarketTemplate | string | Nullish) =>
   typeof marketId === 'object' ? marketId : maybes([marketId, getLib('llamaApi')], getMarket)
 
-/** Returns the market-specific slippage, falling back to the default leverage slippage. */
-export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Address | undefined) =>
-  (controllerAddress && MARKETS_LEVERAGE_CONFIG[chainId]?.[getAddress(controllerAddress)]?.slippage) ??
-  SLIPPAGE.leverage.default
+/** Returns the leverage slippage for the market's assets type, falling back to the default for unmapped markets. */
+export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Address | undefined) => {
+  const assetsType = getMarketAssetsType(chainId, controllerAddress)
+
+  return assetsType
+    ? {
+        [MarketAssetsType.Correlated]: SLIPPAGE.stable.default,
+        [MarketAssetsType.Volatile]: SLIPPAGE.leverage.default,
+        [MarketAssetsType.LongTail]: SLIPPAGE.leverage.default,
+      }[assetsType]
+    : SLIPPAGE.leverage.default
+}
 
 /**
  * Resolves leverage providers from the market whitelist: approved markets get every provider on Beta and only their

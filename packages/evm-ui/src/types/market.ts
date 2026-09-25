@@ -3,6 +3,12 @@ export enum MarketType {
   Lend = 'Lend',
 }
 
+export enum MarketAssetsType {
+  Correlated = 'correlated',
+  Volatile = 'volatile',
+  LongTail = 'long-tail',
+}
+
 export enum MarketVersion {
   v1 = 'v1',
   v2 = 'v2',

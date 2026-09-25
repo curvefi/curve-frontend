@@ -1,21 +1,27 @@
 import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { getMarketLeverageProviders, getMarketLeverageSlippage } from '@/llamalend/llama.utils'
+import { getMarketAddressesByAssetsType } from '@/llamalend/market-assets-type.utils'
 import {
   DEPRECATED_LLAMAS,
+  // eslint-disable-next-line no-restricted-imports
+  MARKET_ASSETS_TYPE_BY_CONTROLLER,
   MARKETS_ALERTS,
   MARKETS_LEVERAGE_CONFIG,
   NO_LEVERAGE_LEND,
 } from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
-import { MarketType } from '@evm-ui/types/market'
+import { MarketAssetsType, MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { ReleaseChannel } from '@ui/lib/env'
+
+// Ethereum Lend market: sfrxUSD/crvUSD v2.
+const PROVIDER_TEST_CONTROLLER = '0x3cD4d86a2c65e57ce4b4121b67E2D2224BA41bbe'
 
 function MarketAlertHookTest({
   chainId,
@@ -43,11 +49,6 @@ const mountMarketAlert = ({
 
 const ALL_MARKET_ALERTS = recordValues(MARKETS_ALERTS)
 const ALL_DEPRECATED_LLAMAS = recordValues(DEPRECATED_LLAMAS)
-const STABLE_LEVERAGE_MARKETS = {
-  [Chain.Ethereum]: ['0x3cD4d86a2c65e57ce4b4121b67E2D2224BA41bbe', '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0'],
-  [Chain.Optimism]: ['0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9'],
-} as const
-
 /** Get a list of all alerts for each market type, and chain */
 const ALERT_CASES = recordEntries(MARKETS_ALERTS).flatMap(([marketType, marketAlerts]) =>
   recordEntries(marketAlerts).flatMap(([chainId, chainAlerts]) =>
@@ -98,19 +99,34 @@ describe('llama market constants', () => {
     }
   })
 
-  it('gets the configured market slippage with a leverage fallback', () => {
-    for (const [chainId, controllerAddresses] of recordEntries(STABLE_LEVERAGE_MARKETS)) {
-      for (const controllerAddress of controllerAddresses) {
-        expect(getMarketLeverageSlippage(Number(chainId), controllerAddress)).to.eq(SLIPPAGE.stable.default)
+  it('keeps every market assets type address checksummed', () => {
+    for (const chainMarkets of recordValues(MARKET_ASSETS_TYPE_BY_CONTROLLER)) {
+      for (const [controllerAddress] of recordEntries(chainMarkets)) {
+        expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
       }
     }
-    expect(getMarketLeverageSlippage(Chain.Ethereum, zeroAddress)).to.eq(SLIPPAGE.leverage.default)
   })
 
+  for (const [assetsType, expectedSlippage] of [
+    [MarketAssetsType.Correlated, SLIPPAGE.stable.default],
+    [MarketAssetsType.Volatile, SLIPPAGE.leverage.default],
+    [MarketAssetsType.LongTail, SLIPPAGE.leverage.default],
+  ] as const) {
+    it(`uses the expected leverage slippage for ${assetsType} markets`, () => {
+      const addresses = getMarketAddressesByAssetsType(assetsType)
+      for (const [chainId, chainMarkets] of recordEntries(MARKET_ASSETS_TYPE_BY_CONTROLLER)) {
+        for (const address of addresses.filter(address => chainMarkets[address] === assetsType)) {
+          expect(getMarketLeverageSlippage(Number(chainId), address)).to.eq(expectedSlippage)
+        }
+      }
+    })
+  }
+
   it('resolves configured market providers by release channel', () => {
-    const controller = STABLE_LEVERAGE_MARKETS[Chain.Ethereum][0]
-    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Beta)).to.deep.eq(RouteProviders)
-    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq([
+    expect(getMarketLeverageProviders(Chain.Ethereum, PROVIDER_TEST_CONTROLLER, ReleaseChannel.Beta)).to.deep.eq(
+      RouteProviders,
+    )
+    expect(getMarketLeverageProviders(Chain.Ethereum, PROVIDER_TEST_CONTROLLER, ReleaseChannel.Stable)).to.deep.eq([
       'enso',
       'curve-solver',
       'curve',

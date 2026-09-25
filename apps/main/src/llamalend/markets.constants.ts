@@ -1,15 +1,13 @@
 import { ReactNode } from 'react'
 import { type Chain as ApiChain } from '@curvefi/prices-api'
-import { MarketType } from '@evm-ui/types/market'
+import { MarketAssetsType, MarketType } from '@evm-ui/types/market'
 import { AlertType } from '@legacy-ui/AlertBox/types'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { BannerProps } from '@ui/features/banners/Banner'
-import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { t } from '@ui/lib/i18n'
 
 type MarketAlert = TooltipProps & {
@@ -400,16 +398,56 @@ export const NO_LEVERAGE_LEND: PartialRecord<ApiChain, Address[]> = {
   ],
 }
 
-type MarketLeverageConfig = { providers: readonly RouteProvider[]; slippage?: Decimal }
+/** Assets types for markets shown in the default Mint and Lend lists. Unlisted markets have no defined assets type. */
+export const MARKET_ASSETS_TYPE_BY_CONTROLLER: PartialRecord<number, Record<Address, MarketAssetsType>> = {
+  [Chain.Ethereum]: {
+    // Lend markets
+    '0xFd85e847cDd2549f213E276e4B57B0690169F043': MarketAssetsType.LongTail, // svZCHF/crvUSD
+    '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675': MarketAssetsType.Correlated, // syrupUSDC/crvUSD
+    '0x3cD4d86a2c65e57ce4b4121b67E2D2224BA41bbe': MarketAssetsType.Correlated, // sfrxUSD/crvUSD v2
+    '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0': MarketAssetsType.Correlated, // sDOLA/crvUSD v2
+    '0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9': MarketAssetsType.Correlated, // sreUSD/crvUSD
+    '0x8035b16053560b3C351b665b10f6C7dBDb6A1E05': MarketAssetsType.Correlated, // fxSAVE/crvUSD
+    '0x2dA313f6DCEE04BA46466E100c4656618E5d3dDd': MarketAssetsType.Correlated, // sUSDS/crvUSD
+    '0x3DE37c38739dFb83b7A902842bF5393040f7BF50': MarketAssetsType.Correlated, // sfrxUSD/crvUSD
+    '0xB4544e705665e0856961a51F7E86Ccf633404b86': MarketAssetsType.LongTail, // XAUM/crvUSD
+    '0x5756A035F276a8095A922931F224F4ed06149608': MarketAssetsType.Volatile, // wstETH/crvUSD
+    '0x23F5a668A9590130940eF55964ead9787976f2CC': MarketAssetsType.Volatile, // WETH/crvUSD
+    '0xB536FEa3a01c95Dd09932440eC802A75410139D6': MarketAssetsType.Correlated, // sUSDe/crvUSD
+    '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617': MarketAssetsType.Volatile, // WBTC/crvUSD
+    '0x413FD2511BAD510947a91f5c6c79EBD8138C29Fc': MarketAssetsType.Volatile, // tBTC/crvUSD
+    '0xaade9230AA9161880E13a38C83400d3D1995267b': MarketAssetsType.Volatile, // WETH/crvUSD
+    // Mint markets
+    '0xf8C786b1064889fFd3c8A08B48D5e0c159F4cBe3': MarketAssetsType.Volatile, // cbBTC/crvUSD
+    '0x652aEa6B22310C89DCc506710CaD24d2Dba56B11': MarketAssetsType.Volatile, // weETH/crvUSD
+    '0x1C91da0223c763d2e0173243eAdaA0A2ea47E704': MarketAssetsType.Volatile, // tBTC/crvUSD
+    '0xEC0820EfafC41D8943EE8dE495fC9Ba8495B15cf': MarketAssetsType.Volatile, // sfrxETH/crvUSD
+    '0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635': MarketAssetsType.Volatile, // WETH/crvUSD
+    '0x4e59541306910aD6dC1daC0AC9dFB29bD9F15c67': MarketAssetsType.Volatile, // WBTC/crvUSD
+    '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE': MarketAssetsType.Volatile, // wstETH/crvUSD
+  },
+  [Chain.Optimism]: {
+    '0xb5EC7A3D591877A66BE4f3eafdC4205E98A1BCAA': MarketAssetsType.Volatile, // wstETH/USDC v2
+    '0x9fC15ac3EF97093832f49B7997A58E29b49C56dE': MarketAssetsType.Volatile, // WBTC/USDC v2
+    '0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9': MarketAssetsType.Correlated, // wstETH/WETH v2
+  },
+  [Chain.Arbitrum]: {
+    '0xb9aDddCf4e01c2f64F8F2CD9a050DC35585ea053': MarketAssetsType.Volatile, // WBTC/crvUSD
+    '0xB5c6082d3307088C98dA8D79991501E113e6365d': MarketAssetsType.Volatile, // WETH/crvUSD
+    '0x88f88e937Db48bBfe8E3091718576430704e47Ab': MarketAssetsType.LongTail, // CRV/crvUSD
+    '0x013be86e1cdb0f384dAF24Bd974FE75EdFfe6B68': MarketAssetsType.Volatile, // WBTC/crvUSD
+    '0xB5B6f0E69c283AA32425FA18220e64283B51F0A4': MarketAssetsType.Volatile, // WETH/crvUSD
+  },
+  [Chain.Fraxtal]: {
+    '0xB4EbF87A474569d8eB7f7182B4beBD8aE79ae675': MarketAssetsType.Correlated, // sfrxUSD/crvUSD
+    '0xc68f91FfA2B27147F9AB153267018f5Fe4b6850F': MarketAssetsType.Volatile, // sfrxETH/crvUSD
+  },
+}
 
-// Default is the most commonly used configuration.
+type MarketLeverageConfig = { providers: readonly RouteProvider[] }
+
 const DEFAULT_LEVERAGE_CONFIG = { providers: ['enso', 'curve-solver', 'curve'] } satisfies MarketLeverageConfig
-const DEFAULT_STABLE_LEVERAGE_CONFIG = { ...DEFAULT_LEVERAGE_CONFIG, slippage: SLIPPAGE.stable.default }
-// For stable markets where Curve providers are not supported.
-const STABLE_ROUTER_LEVERAGE_CONFIG = {
-  ...DEFAULT_STABLE_LEVERAGE_CONFIG,
-  providers: ['enso'],
-} satisfies MarketLeverageConfig
+const ENSO_ONLY_LEVERAGE_CONFIG = { providers: ['enso'] } satisfies MarketLeverageConfig
 
 // This is a leverage allowlist: unlisted markets remain disabled until their leverage routes are tested and approved
 export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, MarketLeverageConfig>> = {
@@ -421,14 +459,14 @@ export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, Mark
     '0xFd85e847cDd2549f213E276e4B57B0690169F043': DEFAULT_LEVERAGE_CONFIG, // svZCHF-crvUSD v2
     '0x652aEa6B22310C89DCc506710CaD24d2Dba56B11': DEFAULT_LEVERAGE_CONFIG, // weETH Mint
     '0xf8C786b1064889fFd3c8A08B48D5e0c159F4cBe3': DEFAULT_LEVERAGE_CONFIG, // cbBTC Mint
-    '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675': STABLE_ROUTER_LEVERAGE_CONFIG, // syrupUSDC-crvUSD
-    '0x3cD4d86a2c65e57ce4b4121b67E2D2224BA41bbe': DEFAULT_STABLE_LEVERAGE_CONFIG, // sfrxUSD-crvUSD v2
-    '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0': DEFAULT_STABLE_LEVERAGE_CONFIG, // sDOLA-crvUSD v2
-    '0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9': DEFAULT_STABLE_LEVERAGE_CONFIG, // sreUSD-crvUSD
-    '0x8035b16053560b3C351b665b10f6C7dBDb6A1E05': DEFAULT_STABLE_LEVERAGE_CONFIG, // fxSAVE-crvUSD
-    '0x2dA313f6DCEE04BA46466E100c4656618E5d3dDd': DEFAULT_STABLE_LEVERAGE_CONFIG, // sUSDS-crvUSD
-    '0x3DE37c38739dFb83b7A902842bF5393040f7BF50': DEFAULT_STABLE_LEVERAGE_CONFIG, // sfrxUSD-crvUSD
-    '0xB536FEa3a01c95Dd09932440eC802A75410139D6': DEFAULT_STABLE_LEVERAGE_CONFIG, // sUSDe-crvUSD
+    '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675': ENSO_ONLY_LEVERAGE_CONFIG, // syrupUSDC-crvUSD
+    '0x3cD4d86a2c65e57ce4b4121b67E2D2224BA41bbe': DEFAULT_LEVERAGE_CONFIG, // sfrxUSD-crvUSD v2
+    '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0': DEFAULT_LEVERAGE_CONFIG, // sDOLA-crvUSD v2
+    '0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9': DEFAULT_LEVERAGE_CONFIG, // sreUSD-crvUSD
+    '0x8035b16053560b3C351b665b10f6C7dBDb6A1E05': DEFAULT_LEVERAGE_CONFIG, // fxSAVE-crvUSD
+    '0x2dA313f6DCEE04BA46466E100c4656618E5d3dDd': DEFAULT_LEVERAGE_CONFIG, // sUSDS-crvUSD
+    '0x3DE37c38739dFb83b7A902842bF5393040f7BF50': DEFAULT_LEVERAGE_CONFIG, // sfrxUSD-crvUSD
+    '0xB536FEa3a01c95Dd09932440eC802A75410139D6': DEFAULT_LEVERAGE_CONFIG, // sUSDe-crvUSD
     // Deprecated ZapV2 markets remain enabled so existing positions can deleverage.
     '0x4f87158350c296955966059C50263F711cE0817C': DEFAULT_LEVERAGE_CONFIG,
     '0x74f88Baa966407b50c10B393bBD789639EFfE78B': DEFAULT_LEVERAGE_CONFIG,
@@ -463,7 +501,7 @@ export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, Mark
     '0x8aca5A776a878Ea1F8967e70a23b8563008f58Ef': DEFAULT_LEVERAGE_CONFIG,
   },
   [Chain.Optimism]: {
-    '0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9': DEFAULT_STABLE_LEVERAGE_CONFIG, // wstETH-WETH v2
+    '0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9': DEFAULT_LEVERAGE_CONFIG, // wstETH-WETH v2
     '0x9fC15ac3EF97093832f49B7997A58E29b49C56dE': DEFAULT_LEVERAGE_CONFIG,
     '0xb5EC7A3D591877A66BE4f3eafdC4205E98A1BCAA': DEFAULT_LEVERAGE_CONFIG,
     '0x9dba46e6a06FBf24CA11f8912B44338fe1b28Ea9': DEFAULT_LEVERAGE_CONFIG,
@@ -473,7 +511,7 @@ export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, Mark
     '0x88aa928B906b745009B53A31034701Fc377b7C89': DEFAULT_LEVERAGE_CONFIG,
   },
   [Chain.Fraxtal]: {
-    '0xB4EbF87A474569d8eB7f7182B4beBD8aE79ae675': DEFAULT_STABLE_LEVERAGE_CONFIG, // sfrxUSD-crvUSD
+    '0xB4EbF87A474569d8eB7f7182B4beBD8aE79ae675': DEFAULT_LEVERAGE_CONFIG, // sfrxUSD-crvUSD
     '0xc68f91FfA2B27147F9AB153267018f5Fe4b6850F': DEFAULT_LEVERAGE_CONFIG,
     '0xf0922934f16DbE5Df9f90F729b2023D5e1FC2F15': DEFAULT_LEVERAGE_CONFIG,
     '0x99d5b47D431f1963940F72ffa6F25bC0B9849CbF': DEFAULT_LEVERAGE_CONFIG,
