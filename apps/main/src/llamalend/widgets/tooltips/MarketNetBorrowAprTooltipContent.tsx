@@ -1,5 +1,5 @@
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
-import { MarketType } from '@evm-ui/types/market'
+import type { MarketType } from '@evm-ui/types/market'
 import { formatCappedRatePercent } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Nullish } from '@primitives/objects.utils'
@@ -20,13 +20,7 @@ export type MarketNetBorrowAprTooltipContentProps = {
   isLoading?: boolean
 }
 
-const messages: Record<MarketType, string> = {
-  [MarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the monetary policy of the market.`,
-  [MarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`,
-}
-
 export const MarketNetBorrowAprTooltipContent = ({
-  marketType,
   borrowApr,
   totalBorrowApr,
   totalAverageBorrowApr,
@@ -38,13 +32,12 @@ export const MarketNetBorrowAprTooltipContent = ({
   isLoading,
 }: MarketNetBorrowAprTooltipContentProps) => (
   <TooltipWrapper>
-    <TooltipDescription text={messages[marketType]} />
-
-    {!!rebasingYieldApr && (
-      <TooltipDescription
-        text={t`Net borrow APR represents your effective borrowing cost after yields and incentives.`}
-      />
-    )}
+    <TooltipDescription
+      text={t`Borrow APR is the interest charged on the debt. It follows the market’s monetary policy. On mint markets it also follows crvUSD’s peg and borrow incentives. It does not include collateral yield.`}
+    />
+    <TooltipDescription
+      text={t`Estimated net borrow APR subtracts collateral yield and incentives from Borrow APR. That estimate is a same-asset comparison only when the yield is paid in the debt asset. When it is not, as with wstETH yield against crvUSD debt, it is not the borrow cost.`}
+    />
 
     <Stack>
       <TooltipItems secondary>
@@ -78,7 +71,7 @@ export const MarketNetBorrowAprTooltipContent = ({
 
       {totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) && (
         <TooltipItems>
-          <TooltipItem variant="primary" title={t`Net borrow APR`}>
+          <TooltipItem variant="primary" title={t`Estimated net borrow APR`}>
             {formatCappedRatePercent(totalBorrowApr)}
           </TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>

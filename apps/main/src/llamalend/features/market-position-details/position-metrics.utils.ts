@@ -86,6 +86,18 @@ export const equity = (assets: Decimal, debt: Decimal): Decimal => decimalMinus(
 export const leverage = (collateralValueAmount: Decimal, equityAmount: Decimal): Decimal | undefined =>
   decimalGreaterThan(equityAmount, ZERO) ? decimalDiv(collateralValueAmount, equityAmount) : undefined
 
+/** Card leverage: collateral token value divided by equity. Not the SDK deposit multiple. */
+export const equityLeverage = (
+  collateralQuantity: Decimal,
+  oraclePrice: Decimal,
+  stablecoin: Decimal,
+  debt: Decimal,
+): Decimal | undefined => {
+  const tokenValue = collateralTokenValue(collateralQuantity, oraclePrice)
+  const assets = collateralValue(collateralQuantity, oraclePrice, stablecoin)
+  return leverage(tokenValue, equity(assets, debt))
+}
+
 /**
  * Current-value shares that sum to 100 at the displayed precision.
  * Underlying ratios stay exact on the returned `exact` fields.

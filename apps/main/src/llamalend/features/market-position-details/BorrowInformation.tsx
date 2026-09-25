@@ -1,7 +1,5 @@
 import { BigNumber } from 'bignumber.js'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { useUserCrvUsdCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-crvusd-collateral-events'
-import { useUserLendCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-lend-collateral-events'
 import { formatCollateralNotional, isPositionLeveraged, tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
@@ -12,7 +10,6 @@ import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtT
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
-import { MarketType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -26,8 +23,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalDiv, decimalEqual, decimalGreaterThan, decimalMultiply, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
-import { currentLoanLeverageEligibility } from './leverage-eligibility.utils'
-import { collateralTokenValue, compositionShares, equity, formatDistancePercent, leverage, priceDistance } from './position-metrics.utils'
+import { collateralTokenValue, compositionShares, equity, equityLeverage, formatDistancePercent, priceDistance } from './position-metrics.utils'
 import { formatYieldMultiplier, positionReturnOnEquity } from './position-roe.utils'
 import { collateralTooltip, debtTooltip, leverageTooltip, rangeTooltip, roeTooltip } from './PositionMetricTooltip'
 import { LiquidationThresholdTooltipContent } from './'
@@ -39,7 +35,7 @@ const keepDisplayedValue = <T,>(query: Query<T>) =>
   q(query.data != null && query.error != null ? { data: query.data, isLoading: query.isLoading, error: null } : query)
 const { Spacing } = SizesAndSpaces
 
-type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
+type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty; lead?: 'buffer' | 'health' }
 
 export const BorrowInformation = (props: BorrowInformationProps) =>
   useNewLlamalendHealth() ? <BetaBorrowInformation {...props} /> : <CurrentBorrowInformation {...props} />
@@ -140,17 +136,10 @@ const CurrentBorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   )
 }
 
-const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
-  const { marketType, blockchainId, controllerAddress, userAddress } = useMarketContext()
+const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken }, lead }: BorrowInformationProps) => {
+  const detailCategory = lead === 'buffer' ? 'llamalend.positionCardSupport' : METRIC_CATEGORY
+  const { blockchainId, controllerAddress, marketType } = useMarketContext()
   const userState = useUserState(params)
-  const collateralHistory = useUserLendCollateralEventsQuery(
-    { blockchainId, contractAddress: controllerAddress, userAddress },
-    marketType === MarketType.Lend && userAddress != null && controllerAddress != null,
-  )
-  const mintHistory = useUserCrvUsdCollateralEventsQuery(
-    { blockchainId, contractAddress: controllerAddress, userAddress },
-    marketType === MarketType.Mint && userAddress != null && controllerAddress != null,
-  )
   const oraclePrice = useMarketOraclePrice(params)
   const userPrices = useUserPrices(params)
   const userBands = useUserBands(params)
@@ -170,8 +159,8 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
     collateralTokenValue(state.collateral, price),
   )
   const equityValue = combineQueries([collateralValue, userState], (assets, state) => equity(assets, state.debt))
-  const leverageValue = combineQueries([collateralAssets, equityValue], (assets, equityAmount) =>
-    leverage(assets, equityAmount),
+  const leverageValue = combineQueries([oraclePrice, userState], (price, state) =>
+    equityLeverage(state.collateral, price, state.stablecoin, state.debt),
   )
   const composition = combineQueries([collateralAssets, userState, collateralValue], (assets, state, total) =>
     compositionShares(assets, state.stablecoin, total),
@@ -210,20 +199,6 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
     },
   )
   const priceUnit = getTokenPairUnit([collateralToken?.symbol, borrowToken?.symbol])
-  const historyPage = marketType === MarketType.Mint ? mintHistory.data : collateralHistory.data
-  const leverageEligibility = maybe(historyPage, page =>
-    currentLoanLeverageEligibility({
-          events: page.events.map(event => ({
-            timestamp: event.timestamp,
-            isPositionClosed: event.isPositionClosed,
-            leverage: 'leverage' in event && event.leverage ? { eventType: event.leverage.eventType } : null,
-          })),
-          count: page.count,
-          page: page.page,
-          pagination: page.pagination,
-          nullMeansOrdinaryBorrow: false,
-        }),
-  )
   const compositionLabels = composition.data
     ? {
         collateral: BigNumber(composition.data.collateralLabel).toFixed(2),
@@ -234,7 +209,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
     <>
       <Box sx={{ gridArea: 'range' }} data-testid="beta-borrow-information">
         <Metric
-          category={METRIC_CATEGORY}
+          category={detailCategory}
           label={t`Liquidation range`}
           testId="liquidation-range"
           value={keepDisplayedValue(mapQuery(userPrices, prices => prices?.[1]))}
@@ -266,7 +241,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
       </Box>
       <Stack sx={{ gridArea: 'collateral', gap: Spacing.xxs }}>
         <Metric
-          category={METRIC_CATEGORY}
+          category={detailCategory}
           label={t`Collateral value`}
           value={keepDisplayedValue(collateralValue)}
           valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
@@ -291,7 +266,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
       </Stack>
       <Box sx={{ gridArea: 'debt' }}>
         <Metric
-          category={METRIC_CATEGORY}
+          category={detailCategory}
           label={t`Total debt`}
           {...tokenMetric({
             value: keepDisplayedValue(mapQuery(userState, ({ debt }) => debt)),
@@ -302,20 +277,12 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
         />
       </Box>
       <Box sx={{ gridArea: 'leverage' }}>
-        {leverageEligibility?.eligibility === 'yes' && (
+        {isPositionLeveraged(leverageValue.data) && (
           <Metric
-            category={METRIC_CATEGORY}
+            category={detailCategory}
             label={t`Leverage`}
             value={keepDisplayedValue(leverageValue)}
             valueOptions={{ unit: 'multiplier' }}
-            valueTooltip={leverageTooltip()}
-          />
-        )}
-        {leverageEligibility?.eligibility === 'unknown' && (
-          <Metric
-            category={METRIC_CATEGORY}
-            label={t`Leverage`}
-            value={q({ data: undefined, isLoading: false, error: new Error(leverageEligibility.reason) })}
             valueTooltip={leverageTooltip()}
           />
         )}
@@ -323,7 +290,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
       {roe.data?.kind !== 'hidden' && (
       <Box sx={{ gridArea: 'roe' }}>
         <Metric
-          category={METRIC_CATEGORY}
+          category={detailCategory}
           label={t`Return on equity`}
           testId="position-roe"
           value={keepDisplayedValue(
@@ -336,9 +303,9 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
                   : roe.error,
             }),
           )}
-          notional={
-            roe.data?.kind === 'value' ? formatYieldMultiplier(roe.data.result.multiplier) : undefined
-          }
+          notional={maybe(roe.data?.kind === 'value' ? formatYieldMultiplier(roe.data.result.multiplier) : undefined, text =>
+            q({ data: text, isLoading: false, error: null }),
+          )}
           valueOptions={{ unit: { symbol: '% APR', position: 'suffix' } }}
           valueTooltip={roeTooltip()}
         />

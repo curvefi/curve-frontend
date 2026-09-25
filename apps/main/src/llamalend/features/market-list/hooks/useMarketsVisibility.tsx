@@ -20,9 +20,16 @@ import {
 type MarketColumnVariant = keyof typeof MARKETS_COLUMN_OPTIONS
 
 const migration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 7,
+  version: 10,
   migrate: (oldValue, initialValue) =>
-    mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
+    mapRecord(initialValue, (variant, currentGroups) =>
+      preserveVisibilityChoices(oldValue[variant], currentGroups, (preservedActive, option) =>
+        option.columns.length === 1 &&
+        (option.columns[0] === MarketColumnId.BorrowRate || option.columns[0] === MarketColumnId.NetBorrowRate)
+          ? option.active
+          : preservedActive,
+      ),
+    ),
 }
 
 export const getMarketsColumnVariant = (

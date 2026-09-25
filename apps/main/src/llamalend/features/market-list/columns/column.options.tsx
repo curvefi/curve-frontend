@@ -84,14 +84,20 @@ const createMarketsColumnOptions = ({
     label: t`Borrow`,
     options: [
       {
-        label: MARKET_TITLES[MarketColumnId.NetBorrowRate],
-        columns: [MarketColumnId.NetBorrowRate],
+        label: MARKET_TITLES[MarketColumnId.BorrowRate],
+        columns: [MarketColumnId.BorrowRate],
         active: onlyPositions != MarketRateType.Supply,
         enabled: true,
       },
       {
-        label: MARKET_TITLES[MarketColumnId.BorrowRate],
-        columns: [MarketColumnId.BorrowRate],
+        label: MARKET_TITLES[MarketColumnId.NetBorrowRate],
+        columns: [MarketColumnId.NetBorrowRate],
+        active: false,
+        enabled: true,
+      },
+      {
+        label: MARKET_TITLES[MarketColumnId.CollateralYield],
+        columns: [MarketColumnId.CollateralYield],
         active: false,
         enabled: true,
       },
@@ -104,6 +110,12 @@ const createMarketsColumnOptions = ({
           MarketColumnId.UserLtv,
         ],
         active: onlyPositions == MarketRateType.Borrow,
+        enabled: hasPositions,
+      },
+      {
+        label: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
+        columns: [MarketColumnId.UserLiquidationBuffer],
+        active: false,
         enabled: hasPositions,
       },
       { label: t`Chart`, columns: [MarketColumnId.BorrowChart], active: false, enabled: true },

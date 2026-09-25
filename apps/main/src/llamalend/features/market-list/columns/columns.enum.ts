@@ -1,6 +1,7 @@
 export enum MarketColumnId {
   Assets = 'assets',
   UserHealth = 'userHealth',
+  UserLiquidationBuffer = 'userLiquidationBuffer',
   UserBorrowed = 'userBorrowed',
   UserBoostMultiplier = 'userBoostMultiplier', // only for supply positions
   UserCollateral = 'userCollateral',
@@ -9,6 +10,7 @@ export enum MarketColumnId {
   UserDeposited = 'userDeposited', // only for lend markets
   BorrowRate = 'rates_borrow',
   NetBorrowRate = 'rates_net_borrow',
+  CollateralYield = 'collateralYield',
   BorrowChart = 'borrowChart',
   LendRate = 'rates_lend',
   MaxLtv = 'maxLtv',

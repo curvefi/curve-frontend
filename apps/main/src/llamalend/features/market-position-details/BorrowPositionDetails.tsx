@@ -2,12 +2,10 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { observationTime, riskProvenance } from '@/llamalend/position-metrics/provenance'
-import { usePositionSnapshot } from '@/llamalend/position-metrics/snapshot.query'
-import { snapshotValue } from '@/llamalend/position-metrics/snapshot.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserState } from '@/llamalend/queries/user'
-import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
+import { useUserHealth, useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { useUserPrices } from '@/llamalend/queries/user/user-prices.query'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
@@ -34,31 +32,29 @@ export const BorrowPositionDetails = () => {
   const liquidationStatus = useLiquidationStatus(params)
   const useNewHealth = useNewLlamalendHealth()
   const health = useUserHealthValues(params, useNewHealth)
-  const snapshot = usePositionSnapshot(params, useNewHealth)
+  const fullHealth = useUserHealth({ ...params, isFull: true }, useNewHealth)
   const oracle = useMarketOraclePrice(params)
   const userPrices = useUserPrices(params)
   const userState = useUserState(params)
-  const snapshotOracle = snapshotValue(snapshot.data?.oraclePrice)
-  const snapshotUpper = snapshotValue(snapshot.data?.upperPrice)
-  const snapshotLower = snapshotValue(snapshot.data?.lowerPrice)
-  const snapshotCollateral = snapshotValue(snapshot.data?.collateralTokenAmount)
   const lead =
-    snapshotOracle && snapshotUpper && snapshotLower && snapshotCollateral
+    oracle.data && userPrices.data && userState.data
       ? resolvePositionStatus({
-          oraclePrice: snapshotOracle,
-          upperPrice: snapshotUpper,
-          lowerPrice: snapshotLower,
-          fullHealth: snapshotValue(snapshot.data?.fullHealthPercentagePoints),
-          collateralQuantity: snapshotCollateral,
-          liquidationPredicate: snapshot.data?.liquidationPredicate ?? 'unverified',
+          oraclePrice: oracle.data,
+          upperPrice: userPrices.data[1],
+          lowerPrice: userPrices.data[0],
+          fullHealth: fullHealth.data,
+          collateralQuantity: userState.data.collateral,
+          liquidationPredicate: 'strict-negative',
           assetsType: getMarketAssetsType(chainId, controllerAddress),
         }).lead
       : 'health'
-  const watched = [snapshot, oracle, userPrices, userState]
+  const watched = [fullHealth, oracle, userPrices, userState]
   const refreshFailed = watched.some(query => query.error != null && query.data != null)
-  const provenance = snapshot.data
-    ? { oldestAt: snapshot.data.observedAt, complete: true }
-    : riskProvenance([observationTime(oracle), observationTime(userState), undefined, undefined])
+  const provenance = riskProvenance([
+    observationTime(fullHealth),
+    observationTime(oracle),
+    observationTime(userState),
+  ])
   const statusContent =
     liquidationStatus.data &&
     getPositionStatusContent(collateralToken?.symbol, borrowToken?.symbol)[liquidationStatus.data]
@@ -74,15 +70,15 @@ export const BorrowPositionDetails = () => {
             columnGap: Spacing.md,
             rowGap: Spacing.sm,
             alignItems: 'start',
-            gridTemplateColumns: { mobile: '1fr 1fr', tablet: 'minmax(7rem,0.9fr) minmax(12rem,1.6fr) minmax(9rem,1.1fr) minmax(11rem,1.3fr)' },
+            gridTemplateColumns: { mobile: '1fr 1fr', tablet: 'repeat(4, minmax(0, 1fr))' },
             gridTemplateAreas: {
               mobile: lead === 'buffer' ? MOBILE_BUFFER_AREAS : MOBILE_HEALTH_AREAS,
               tablet: lead === 'buffer' ? BUFFER_LEAD_AREAS : HEALTH_LEAD_AREAS,
             },
           }}
         >
-          <HealthDetails health={health} positionStatus={liquidationStatus} />
-          <BorrowInformation params={params} tokens={tokens} />
+          <HealthDetails health={health} positionStatus={liquidationStatus} lead={lead} />
+          <BorrowInformation params={params} tokens={tokens} lead={lead} />
         </Box>
         {refreshFailed && (
           <Typography variant="bodyXsRegular" color="textSecondary" data-testid="position-update-failed">

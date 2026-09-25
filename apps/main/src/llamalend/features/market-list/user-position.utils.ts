@@ -1,10 +1,15 @@
 import { sum } from 'lodash'
+import { oracleHealth } from '@/llamalend/features/market-position-details/position-metrics.utils'
+import { resolvePositionStatus } from '@/llamalend/features/market-position-details/position-status.utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
+import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { requireChainId } from '@evm-ui/utils'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
@@ -37,6 +42,42 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
 }
 
 export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
+
+/** Card Health: max(oracle / user-range upper, 1). Undefined until those reads settle. */
+export const getUserPositionOracleHealth = ({ positionQueries }: LlamaMarketRow) => {
+  const oracle = positionQueries.risk.oracle.data
+  const prices = positionQueries.risk.prices.data
+  if (!oracle || !prices) return undefined
+  return maybe(oracleHealth(oracle, prices[1]), value => Number(value))
+}
+
+/** Card liquidation buffer: Controller userHealth(full), in percentage points. */
+export const getUserPositionBuffer = ({ positionQueries }: LlamaMarketRow) => maybe(positionQueries.risk.fullHealth.data, value => Number(value))
+
+const riskReadStarted = ({ positionQueries }: LlamaMarketRow) => {
+  const { oracle, prices, fullHealth } = positionQueries.risk
+  return [oracle, prices, fullHealth].some(query => query.isLoading || query.data != null || query.error != null)
+}
+
+/** Beta sorts by the oracle ratio. Flag-off has no risk reads, so it keeps the old percentage. */
+export const getHealthColumnSortValue = (row: LlamaMarketRow) =>
+  riskReadStarted(row) ? getUserPositionOracleHealth(row) : getUserPositionHealth(row)
+
+export const getUserPositionStatus = (row: LlamaMarketRow) => {
+  const { oracle, prices, fullHealth } = row.positionQueries.risk
+  const collateral = row.positionQueries.stats.data?.collateral
+  const quantity = decimal(collateral)
+  if (!oracle.data || !prices.data || fullHealth.data == undefined || quantity == undefined) return undefined
+  return resolvePositionStatus({
+    oraclePrice: oracle.data,
+    upperPrice: prices.data[1],
+    lowerPrice: prices.data[0],
+    fullHealth: fullHealth.data,
+    collateralQuantity: quantity,
+    liquidationPredicate: 'strict-negative',
+    assetsType: getMarketAssetsType(requireChainId(row.chain), row.controllerAddress),
+  })
+}
 
 const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied

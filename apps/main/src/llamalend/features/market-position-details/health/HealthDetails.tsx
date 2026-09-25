@@ -2,11 +2,9 @@ import { use } from 'react'
 import { MarketContext, useMarketContext } from '@/llamalend/features/market-context'
 import type { UserPositionStatus } from '@/llamalend/llamalend.types'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
-import { usePositionSnapshot } from '@/llamalend/position-metrics/snapshot.query'
-import { snapshotValue } from '@/llamalend/position-metrics/snapshot.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserState } from '@/llamalend/queries/user'
-import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
+import { useUserHealth, type HealthQuery } from '@/llamalend/queries/user/user-health.query'
 import { useUserPrices } from '@/llamalend/queries/user/user-prices.query'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Box from '@mui/material/Box'
@@ -16,10 +14,12 @@ import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { mapRecord } from '@primitives/objects.utils'
+import { Badge } from '@ui/components/Badge'
 import { Metric } from '@ui/components/Metric'
 import { Tooltip } from '@ui/components/Tooltip'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
+import type { ChipColors } from '@ui/features/themes/components/chip/colors'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -30,7 +30,7 @@ import {
   formatSignedPercent,
   oracleHealth,
 } from '../position-metrics.utils'
-import { resolvePositionStatus, type PositionSeverity } from '../position-status.utils'
+import { PROVISIONAL_POSITION_THRESHOLDS, resolvePositionStatus, type PositionSeverity } from '../position-status.utils'
 import { bufferTooltip, healthTooltip, statusTooltip } from '../PositionMetricTooltip'
 import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import { HealthAndBufferBar, HealthAndBufferDebug } from './HealthAndBufferBar'
@@ -50,14 +50,17 @@ const HEALTH_PRECISION_THRESHOLD = 1.1
 export const HealthDetails = ({
   health,
   positionStatus,
+  lead = 'health',
 }: {
   health: HealthQuery
   positionStatus: QueryProp<UserPositionStatus>
+  /** Buffer leads only while the oracle price is inside the liquidation range. */
+  lead?: 'buffer' | 'health'
 }) => {
   const beta = useNewLlamalendHealth()
   const theme = useTheme()
   const market = use(MarketContext)
-  if (beta && market) return <BetaHealthDetails />
+  if (beta && market) return <BetaHealthDetails lead={lead} />
   const { state, healthState, type } = getHealthDetailsState(health.data)
 
   return (
@@ -104,33 +107,25 @@ export const HealthDetails = ({
   )
 }
 
-const STATUS_FEEDBACK = {
-  healthy: 'Success',
-  near: 'Warning',
-  protection: 'Warning',
-  low: 'Danger',
-  critical: 'Error',
-  liquidatable: 'Error',
-  converted: 'Info',
-  neutral: 'Info',
-} as const satisfies Record<PositionSeverity, 'Success' | 'Warning' | 'Danger' | 'Error' | 'Info'>
+const STATUS_BADGE_COLOR: Record<PositionSeverity, ChipColors> = {
+  healthy: 'active',
+  near: 'warning',
+  protection: 'highlight',
+  low: 'warning',
+  critical: 'alert',
+  liquidatable: 'alert',
+  converted: 'accent',
+  neutral: 'default',
+}
 
-/** Beta card content. Full health comes from the block-tagged snapshot, not the discount bundle. */
-const BetaHealthDetails = () => {
+/** Beta card content. Full health is the same Controller health(full) read the rest of the market uses. */
+const BetaHealthDetails = ({ lead }: { lead: 'buffer' | 'health' }) => {
   const { chainId, marketId, userAddress, controllerAddress, tokens } = useMarketContext()
   const params = { chainId, marketId, userAddress }
-  const snapshot = usePositionSnapshot(params)
   const oracle = useMarketOraclePrice(params)
   const userPrices = useUserPrices(params)
   const userState = useUserState(params)
-  const fullHealth = q({
-    data: snapshotValue(snapshot.data?.fullHealthPercentagePoints),
-    isLoading: snapshot.isLoading,
-    error:
-      snapshot.data?.fullHealthPercentagePoints.status === 'unavailable'
-        ? new Error(snapshot.data.fullHealthPercentagePoints.reason)
-        : snapshot.error,
-  })
+  const fullHealth = useUserHealth({ ...params, isFull: true })
   const healthValue = combineQueries([oracle, userPrices], (price, prices) =>
     prices ? oracleHealth(price, prices[1]) : undefined,
   )
@@ -151,10 +146,12 @@ const BetaHealthDetails = () => {
           lowerPrice: userPrices.data[0],
           fullHealth: fullHealth.data,
           collateralQuantity: userState.data.collateral,
-          liquidationPredicate: snapshot.data?.liquidationPredicate ?? 'unverified',
+          liquidationPredicate: 'strict-negative',
           assetsType: getMarketAssetsType(chainId, controllerAddress),
         })
       : undefined
+  const assetsType = getMarketAssetsType(chainId, controllerAddress)
+  const assetsThresholds = assetsType ? PROVISIONAL_POSITION_THRESHOLDS[assetsType] : undefined
   const textFeedback =
     status?.severity === 'healthy'
       ? 'Success'
@@ -166,14 +163,12 @@ const BetaHealthDetails = () => {
             ? 'Error'
             : undefined
   const healthColor = textFeedback ? theme.design.Text.TextColors.Feedback[textFeedback] : undefined
-  const bufferColor = textFeedback ? theme.design.Text.TextColors.Feedback[textFeedback] : undefined
-  const badgeFill = status ? STATUS_FEEDBACK[status.severity] : undefined
-  const badgeTextKey = badgeFill === 'Error' || badgeFill === 'Danger' ? 'Alert' : badgeFill === 'Info' ? 'Info' : badgeFill
+  const bufferColor = healthColor
   return (
     <>
       <Box sx={{ gridArea: 'health' }} data-testid="beta-health-details">
         <Metric
-          category="llamalend.legacyPositionHealth"
+          category={lead === 'buffer' ? 'llamalend.positionCardSupport' : 'llamalend.legacyPositionHealth'}
           label={t`Health`}
           testId="health-details-health-metric"
           value={keepDisplayedValue(healthValue)}
@@ -189,31 +184,33 @@ const BetaHealthDetails = () => {
         />
       </Box>
       <Box sx={{ gridArea: 'status' }}>
-      <Tooltip {...statusTooltip()}>
-      <Stack sx={{ gap: Spacing.xxs }} data-testid="position-status">
+      <Tooltip
+        {...statusTooltip({
+          label: status?.label,
+          category: getMarketAssetsType(chainId, controllerAddress),
+          nearRange: assetsThresholds ? `${assetsThresholds.nearRangeDropPercent}%` : undefined,
+          lowBuffer: assetsThresholds ? `${assetsThresholds.lowBufferPercent}%` : undefined,
+          criticalBuffer: assetsThresholds ? `${assetsThresholds.criticalBufferPercent}%` : undefined,
+          predicate: 'strict-negative',
+          observedAt: fullHealth.dataUpdatedAt > 0 ? fullHealth.dataUpdatedAt : undefined,
+        })}
+      >
+      <Stack sx={{ gap: Spacing.xxs, alignItems: 'flex-start' }} data-testid="position-status">
         <Typography variant="bodyXsRegular" color="textSecondary">{t`Status`}</Typography>
         {status && (
-          <Typography
+          <Badge
             data-testid="position-status-label"
-            variant="bodyXsBold"
-            sx={{
-              alignSelf: 'flex-start',
-              px: Spacing.xs,
-              py: Spacing.xxs,
-              borderRadius: '2px',
-              backgroundColor: badgeFill ? theme.design.Layer.Feedback[badgeFill] : undefined,
-              color: badgeTextKey ? theme.design.Text.TextColors.FilledFeedback[badgeTextKey].Primary : undefined,
-            }}
-          >
-            {status.label}
-          </Typography>
+            size="extraSmall"
+            color={STATUS_BADGE_COLOR[status.severity]}
+            label={status.label}
+          />
         )}
       </Stack>
       </Tooltip>
       </Box>
       <Box sx={{ gridArea: 'buffer' }}>
         <Metric
-          category="llamalend.positionBorrowDetails"
+          category={lead === 'buffer' ? 'llamalend.legacyPositionHealth' : 'llamalend.positionBorrowDetails'}
           label={t`Liquidation buffer`}
           testId="health-details-liquidation-buffer-metric"
           value={keepDisplayedValue(bufferValue)}
@@ -226,7 +223,7 @@ const BetaHealthDetails = () => {
               return parsed == undefined ? '' : formatSignedPercent(parsed)
             },
           }}
-          valueTooltip={bufferTooltip()}
+          valueTooltip={bufferTooltip({ predicate: 'strict-negative' })}
         />
       </Box>
     </>

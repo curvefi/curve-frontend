@@ -18,7 +18,11 @@ type UserPricesParams = FieldsOf<UserPricesQuery>
 const calculatePriceDropToLiquidationThreshold = (currentPrice: Decimal, [, liquidationThreshold]: Range<Decimal>) =>
   decimalMultiply(decimalDiv(decimalMinus(currentPrice, liquidationThreshold), currentPrice), `100`)
 
-const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactory({
+const {
+  useQuery: useUserPricesQuery,
+  getQueryOptions: getUserPricesOptions,
+  queryKey: getUserPricesKey,
+} = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userPrices', { loanExists }] as const,
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<Range<Decimal>> =>
@@ -49,4 +53,4 @@ export function useRangeToLiquidation({ params }: { params: UserMarketParams }) 
   return { rangeToLiquidation, userPrices }
 }
 
-export { getUserPricesKey }
+export { getUserPricesKey, getUserPricesOptions }

@@ -19,7 +19,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   marketType,
   controllerAddress,
   params,
-  values: { leverageEnabled, userCollateral, debt },
+  values: { leverageEnabled },
   collateralToken,
   borrowToken,
   form,
@@ -48,17 +48,17 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       gas={q(useCreateLoanEstimateGas(params, isOpen))}
       leverageEnabled={leverageEnabled}
       prevCollateral={constQ('0')}
-      debt={constQ(debt)}
+      debt={constQ(params.debt)}
       prevDebt={constQ('0')}
       {...getLeverageInfoFields({
         leverageEnabled,
-        collateralDelta: userCollateral,
+        collateralDelta: params.userCollateral,
         leverageValue: mapQuery(expectedCollateral, data => data.leverage),
         prevLeverageValue: constQ('0'),
         prevCollateral: constQ('0'),
         leverageTotalCollateral: mapQuery(expectedCollateral, data => data.totalCollateral),
       })}
-      {...useBorrowRates({ params, marketType, controllerAddress, debtDelta: debt }, isOpen)}
+      {...useBorrowRates({ params, marketType, controllerAddress, debtDelta: params.debt }, isOpen)}
     />
   )
 }

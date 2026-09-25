@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { decimal } from '@ui/lib/decimal'
+import { derivePositionView } from '@/llamalend/position-metrics/derive'
 import { MarketAssetsType } from '@evm-ui/types/market'
+import { decimal } from '@ui/lib/decimal'
+import { currentLoanLeverageEligibility } from './leverage-eligibility.utils'
 import {
   bufferAmount,
   collateralValue,
@@ -16,7 +18,6 @@ import {
 } from './position-metrics.utils'
 import { positionReturnOnEquity, formatYieldMultiplier } from './position-roe.utils'
 import { resolvePositionStatus } from './position-status.utils'
-import { currentLoanLeverageEligibility } from './leverage-eligibility.utils'
 
 const d = (value: string | number) => {
   const parsed = decimal(value)
@@ -129,6 +130,64 @@ describe('position metrics', () => {
         rewards: { unnecessary: true },
       }).status,
     ).toBe('unavailable')
+  })
+})
+
+describe('shared position view', () => {
+  const view = derivePositionView({
+    oraclePrice: d(120),
+    upperPrice: d(100),
+    lowerPrice: d(80),
+    debt: d(200),
+    collateralTokenAmount: d(300 / 120),
+    borrowedAssetInAmm: d(0),
+    fullHealthPercentagePoints: d(50),
+    liquidationPredicate: 'strict-negative',
+    assetsType: MarketAssetsType.Correlated,
+    collateralYield: { aprFraction: d('0.03') },
+    borrowedYield: { unnecessary: true },
+    borrowCost: { aprFraction: d('0.02') },
+    rewards: { unnecessary: true },
+  })
+
+  it('asserts the result before reading the fixture values', () => {
+    expect(view.oracleHealthFactor).toBeDefined()
+    expect(view.distance.location).toBe('above')
+    expect(view.roeApr.status).toBe('value')
+    expect(view.status?.label).toBe('Healthy')
+  })
+
+  it('matches the canonical health, leverage, and buffer amount', () => {
+    expect(view.oracleHealthFactor).toBe('1.2')
+    if (view.distance.location === 'above') expect(+view.distance.percent).toBeCloseTo(16.666666, 4)
+    expect(+view.collateralValue).toBeCloseTo(300, 6)
+    expect(+view.equity).toBeCloseTo(100, 6)
+    expect(+(view.directionalLeverage ?? 0)).toBeCloseTo(3, 6)
+    expect(view.liquidationBufferAmount).toBe('100')
+    if (view.roeApr.status === 'value') expect(+view.roeApr.aprPercent).toBeCloseTo(5, 6)
+  })
+
+  it('does not turn a zero oracle into a range location', () => {
+    const invalid = derivePositionView({
+      ...{
+        oraclePrice: d(0),
+        upperPrice: d(100),
+        lowerPrice: d(80),
+        debt: d(1),
+        collateralTokenAmount: d(1),
+        borrowedAssetInAmm: d(0),
+        fullHealthPercentagePoints: d(1),
+        liquidationPredicate: 'strict-negative' as const,
+        assetsType: MarketAssetsType.Correlated,
+        collateralYield: { unnecessary: true as const },
+        borrowedYield: { unnecessary: true as const },
+        borrowCost: { unnecessary: true as const },
+        rewards: { unnecessary: true as const },
+      },
+    })
+    expect(invalid.oracleHealthFactor).toBeUndefined()
+    expect(invalid.distance.location).toBe('unavailable')
+    expect(invalid.status).toBeUndefined()
   })
 })
 

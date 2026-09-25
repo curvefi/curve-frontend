@@ -1,7 +1,9 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
+import { formatOracleHealth, formatSignedPercent, oracleHealth } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { formatCappedRatePercent } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -11,12 +13,31 @@ import { maybe, notFalsy } from '@primitives/objects.utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
-import { mapQuery, type QueryProp, type Range, DISABLED_Q } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp, type Range, DISABLED_Q } from '@ui/features/queries/util'
 import { useShowNetRate } from '@ui/features/storage/useLocalStorage'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { ACTION_INFO_GROUP_SX, formatAmount, formatLeverage } from './info-actions.helpers'
+
+/** Health on the action list is the same oracle ratio as the card, using the range this form already previews. */
+const oracleRatio = (oracle: QueryProp<Decimal | null>, range: QueryProp<Range<Decimal> | null> | undefined) => {
+  const upper = range?.data?.[1]
+  const ratio = oracle.data && upper ? oracleHealth(oracle.data, upper) : undefined
+  const pending = ratio == undefined
+  return q({
+    data: maybe(ratio, formatOracleHealth),
+    isLoading: pending && Boolean(oracle.isLoading || range?.isLoading),
+    error: pending ? (oracle.error ?? range?.error ?? null) : null,
+  })
+}
+
+/** Buffer is the preview health those forms already load, in percentage points. */
+const signedHealth = (health: QueryProp<Decimal | null> | undefined) =>
+  health
+    ? mapQuery(health, data => maybe(decimal(data), formatSignedPercent))
+    : DISABLED_Q
 
 export type LoanActionInfoListProps = {
   isOpen: boolean
@@ -50,6 +71,8 @@ export type LoanActionInfoListProps = {
   borrowSymbol?: string
   /** Whether to show leverage-related fields (leverage value, leverage collateral...) */
   leverageEnabled?: boolean
+  /** Card return on equity. When set, it replaces the leverage-times-APY estimate. */
+  positionRoe?: QueryProp<string | undefined>
 }
 
 /**
@@ -88,7 +111,10 @@ export const LoanActionInfoList = ({
   collateralSymbol,
   borrowSymbol,
   leverageEnabled,
+  positionRoe,
 }: LoanActionInfoListProps) => {
+  const betaMetrics = useNewLlamalendHealth()
+  const theme = useTheme()
   const shouldShowNetBorrowApr = useShouldShowNetRate({
     tokenSymbol: collateralSymbol,
     prevNetRate: prevNetBorrowApr,
@@ -140,24 +166,46 @@ export const LoanActionInfoList = ({
         <Stack>
           <ActionInfo
             label={t`Health`}
-            value={prevHealth ? mapQuery(prevHealth, data => formatNumber(data, 'health.compact')) : DISABLED_Q}
-            futureValue={
-              // todo: do not ignore loading state for health - some forms/tests expect the fallback when the query is disabled
-              isFullRepay
-                ? '∞'
-                : health?.data === undefined
-                  ? '-'
-                  : mapQuery(health, data => formatNumber(data, 'health.compact'))
+            value={
+              betaMetrics
+                ? oracleRatio(oraclePrice, prevPrices)
+                : prevHealth
+                  ? mapQuery(prevHealth, data => formatNumber(data, 'health.compact'))
+                  : DISABLED_Q
             }
-            valueColor={getHealthValueColor({
-              health: health?.data,
-              prevHealth: prevHealth?.data,
-              theme: useTheme(),
-              isFullRepay,
-            })}
+            futureValue={
+              betaMetrics
+                ? isFullRepay
+                  ? t`Position closed`
+                  : oracleRatio(oraclePrice, prices)
+                : isFullRepay
+                  ? '∞'
+                  : health?.data === undefined
+                    ? '-'
+                    : mapQuery(health, data => formatNumber(data, 'health.compact'))
+            }
+            valueColor={
+              betaMetrics
+                ? undefined
+                : getHealthValueColor({
+                    health: health?.data,
+                    prevHealth: prevHealth?.data,
+                    theme,
+                    isFullRepay,
+                  })
+            }
             size="small"
             testId="borrow-health"
           />
+          {betaMetrics && (
+            <ActionInfo
+              label={t`Liquidation buffer`}
+              value={signedHealth(prevHealth)}
+              futureValue={isFullRepay ? t`Not applicable` : signedHealth(health)}
+              size="small"
+              testId="borrow-buffer"
+            />
+          )}
           {(loanToValue ?? prevLoanToValue) && (
             <ActionInfo
               label={
@@ -227,7 +275,7 @@ export const LoanActionInfoList = ({
           {collateralApy && (
             <ActionInfo
               label={t`Return on Equity (RoE)`}
-              value={formatReturnOnEquity(prevLeverageValue, prevRates, collateralApy)}
+              value={positionRoe ?? formatReturnOnEquity(prevLeverageValue, prevRates, collateralApy)}
               futureValue={formatReturnOnEquity(
                 leverageValue,
                 /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */

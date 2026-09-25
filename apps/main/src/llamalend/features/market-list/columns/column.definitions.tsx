@@ -1,5 +1,5 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { getMaxReturnOnEquity } from '@/llamalend/rates.utils'
+import { maxRoeSortValue } from '@/llamalend/rates.utils'
 import { MaxReturnOnEquityTooltipContent, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@evm-ui/shared/ui/DataTable/filters'
 import { MarketRateType } from '@evm-ui/types/market'
@@ -9,6 +9,7 @@ import {
   BoostCell,
   CompactUsdCell,
   HealthCell,
+  LiquidationBufferCell,
   LineGraphCell,
   LiquidityUsdCell,
   LtvCell,
@@ -33,7 +34,8 @@ import {
 import {
   getUserBorrowedUsd,
   getUserCollateralUsd,
-  getUserPositionHealth,
+  getHealthColumnSortValue,
+  getUserPositionBuffer,
   getUserPositionLtv,
 } from '../user-position.utils'
 import { MARKET_TITLES } from './column.titles'
@@ -98,7 +100,11 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.BorrowRate,
     header: MARKET_TITLES[MarketColumnId.BorrowRate],
     cell: RateCell,
-    meta: { type: 'numeric', unit: 'percentage' },
+    meta: {
+      type: 'numeric',
+      unit: 'percentage',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.BorrowRate], body: <NetBorrowAprHeaderTooltipContent /> },
+    },
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
@@ -108,8 +114,16 @@ export const MARKET_COLUMNS = columnHelper.columns([
     cell: RateCell,
     meta: {
       type: 'numeric',
+      unit: 'percentage',
       tooltip: { title: MARKET_TITLES[MarketColumnId.NetBorrowRate], body: <NetBorrowAprHeaderTooltipContent /> },
     },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(row => row.assets.collateral.rebasingYieldApr ?? undefined, {
+    id: MarketColumnId.CollateralYield,
+    header: MARKET_TITLES[MarketColumnId.CollateralYield],
+    cell: PercentCell,
+    meta: { type: 'numeric', unit: 'percentage' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionLtv, {
@@ -119,10 +133,17 @@ export const MARKET_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(getUserPositionHealth, {
+  columnHelper.accessor(getHealthColumnSortValue, {
     id: MarketColumnId.UserHealth,
     header: MARKET_TITLES[MarketColumnId.UserHealth],
     cell: HealthCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionBuffer, {
+    id: MarketColumnId.UserLiquidationBuffer,
+    header: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
+    cell: LiquidationBufferCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
@@ -151,7 +172,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
       sortUndefined: 'last',
     },
   ),
-  columnHelper.accessor(getMaxReturnOnEquity, {
+  columnHelper.accessor(maxRoeSortValue, {
     id: MarketColumnId.MaxReturnOnEquity,
     header: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
     cell: MaxReturnOnEquityCell,

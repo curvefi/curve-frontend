@@ -46,8 +46,8 @@ export type PositionStatusInput = {
   fullHealth: Decimal | undefined
   collateralQuantity: Decimal
   /**
-   * Verified third-party predicate. `strict-negative` means health < 0.
-   * Unverified implementations must not claim Healthy or Liquidatable.
+   * `strict-negative` means Controller full health < 0.
+   * Callers pass this for the live health read. It is not a deployment-matched certificate.
    */
   liquidationPredicate: 'strict-negative' | 'unverified'
   assetsType: MarketAssetsType | undefined
@@ -56,9 +56,9 @@ export type PositionStatusInput = {
 const locationLabel = (location: RangeLocation, collateralQuantity: Decimal): Pick<PositionStatus, 'label' | 'severity' | 'lead'> => {
   if (location === 'unavailable') return { label: 'Unknown safety', severity: 'neutral', lead: 'health' }
   if (location === 'below' && !decimalGreaterThan(collateralQuantity, ZERO)) {
-    return { label: 'Fully converted', severity: 'converted', lead: 'buffer' }
+    return { label: 'Fully converted', severity: 'converted', lead: 'health' }
   }
-  if (location === 'below') return { label: 'Partially converted', severity: 'converted', lead: 'buffer' }
+  if (location === 'below') return { label: 'Partially converted', severity: 'converted', lead: 'health' }
   if (location === 'inside') return { label: 'Liquidation Protection', severity: 'protection', lead: 'buffer' }
   return { label: 'Above range', severity: 'neutral', lead: 'health' }
 }
@@ -69,7 +69,6 @@ export const resolvePositionStatus = ({
   lowerPrice,
   fullHealth,
   collateralQuantity,
-  liquidationPredicate,
   assetsType,
 }: PositionStatusInput): PositionStatus => {
   const distance = priceDistance(oraclePrice, upperPrice, lowerPrice)
@@ -78,7 +77,7 @@ export const resolvePositionStatus = ({
   }
   const location = distance.location
   const factual = locationLabel(location, collateralQuantity)
-  if (fullHealth == undefined || liquidationPredicate === 'unverified') {
+  if (fullHealth == undefined) {
     return {
       location,
       ...factual,
@@ -88,18 +87,18 @@ export const resolvePositionStatus = ({
     }
   }
 
-  const liquidatable = liquidationPredicate === 'strict-negative' && decimalCompare(fullHealth, ZERO) < 0
-  if (liquidatable) return { location, label: 'Liquidatable', severity: 'liquidatable', lead: 'buffer' }
+  const liquidatable = decimalCompare(fullHealth, ZERO) < 0
+  if (liquidatable) return { location, label: 'Liquidatable', severity: 'liquidatable', lead: location === 'inside' ? 'buffer' : 'health' }
 
   const exactZero = decimalEqual(fullHealth, ZERO)
   const thresholds = assetsType ? PROVISIONAL_POSITION_THRESHOLDS[assetsType] : undefined
   const critical =
-    (liquidationPredicate === 'strict-negative' && exactZero) ||
+    exactZero ||
     (thresholds != undefined && decimalCompare(fullHealth, thresholds.criticalBufferPercent) <= 0)
-  if (critical) return { location, label: 'Critical buffer', severity: 'critical', lead: 'buffer' }
+  if (critical) return { location, label: 'Critical buffer', severity: 'critical', lead: location === 'inside' ? 'buffer' : 'health' }
 
   if (thresholds != undefined && decimalCompare(fullHealth, thresholds.lowBufferPercent) <= 0) {
-    return { location, label: 'Low buffer', severity: 'low', lead: 'buffer' }
+    return { location, label: 'Low buffer', severity: 'low', lead: location === 'inside' ? 'buffer' : 'health' }
   }
 
   if (location !== 'above') return { location, ...factual }

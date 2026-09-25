@@ -6,7 +6,6 @@ import { type Nullish, maybe } from '@primitives/objects.utils'
 import { Metric, type MetricProps } from '@ui/components/Metric'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { getBorrowRateTooltipTitle } from '../llama.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips'
 
 type BorrowRateMetric = {
@@ -28,29 +27,24 @@ type BorrowAprMetricProps = {
 
 export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alignment }: BorrowAprMetricProps) => {
   const averageRatePeriod = AVERAGE_CATEGORIES[borrowRate.data?.averageCategory ?? 'llamalend.market.rate'].period
-  const title = getBorrowRateTooltipTitle({
-    totalBorrowApr: borrowRate.data?.totalBorrowRate,
-    extraRewards: borrowRate.data?.extraRewards ?? [],
-    rebasingYieldApr: borrowRate.data?.rebasingYield,
-  })
   return (
     <Metric
       category="llamalend.marketHeader"
       alignment={alignment}
       testId="market-net-borrow-apr"
-      label={t`Net Borrow APR`}
-      value={mapQuery(borrowRate, ({ totalBorrowRate }) => totalBorrowRate)}
+      label={t`Borrow APR`}
+      value={mapQuery(borrowRate, ({ rate }) => rate)}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
-      notional={mapQuery(borrowRate, ({ totalAverageBorrowRate: data }) =>
-        maybe(data, value => ({
+      notional={mapQuery(borrowRate, ({ totalBorrowRate }) =>
+        maybe(totalBorrowRate, value => ({
           value,
           abbreviate: false,
           formatter: formatCappedRateValue,
-          unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' as const },
+          unit: { symbol: `% ${t`Net borrow APR`}`, position: 'suffix' as const },
         })),
       )}
       valueTooltip={{
-        title,
+        title: t`Borrow APR`,
         body: (
           <MarketNetBorrowAprTooltipContent
             marketType={marketType}

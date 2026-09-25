@@ -12,7 +12,9 @@ import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, maybes, notFalsy, recordValues } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, mapQuery, type QueryProp, type Range } from '@ui/features/queries/util'
+import { getReleaseChannel } from '@ui/features/storage/useLocalStorage'
 import { decimal } from '@ui/lib/decimal'
+import { ReleaseChannel } from '@ui/lib/env'
 import { aprToApy } from '@ui/lib/rates.utils'
 
 /** Returns the rate tabs available for a market and the tab selected by default */
@@ -62,6 +64,33 @@ export const getMaxReturnOnEquity = ({
   rates: { borrowApy },
 }: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined =>
   getReturnOnEquity(leverage, rebasingYield, borrowApy)
+
+export type MaxRoeApr =
+  | { status: 'not-applicable' }
+  | { status: 'unavailable' }
+  | { status: 'value'; aprPercent: number }
+
+/** Idealized zero-conversion start: equity 1, collateral M, borrowed assets 0, debt M−1. Gross borrow APR. */
+export const maxRoeAtMaxLeverageApr = ({
+  leverage,
+  assets: {
+    collateral: { rebasingYieldApr },
+  },
+  rates: { borrowApr },
+}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): MaxRoeApr => {
+  if (rebasingYieldApr == null) return { status: 'not-applicable' }
+  if (leverage == null || leverage < 1) return { status: 'unavailable' }
+  return { status: 'value', aprPercent: leverage * rebasingYieldApr - (leverage - 1) * borrowApr }
+}
+
+/** Beta sorts the APR scenario. Other channels keep the existing APY accessor. */
+export const maxRoeSortValue = (market: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => {
+  if (typeof window !== 'undefined' && getReleaseChannel() === ReleaseChannel.Beta) {
+    const apr = maxRoeAtMaxLeverageApr(market)
+    return apr.status === 'value' ? apr.aprPercent : undefined
+  }
+  return getMaxReturnOnEquity(market)
+}
 
 export type BorrowRates = { borrowApr?: Decimal; borrowApy?: Decimal }
 

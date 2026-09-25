@@ -1,36 +1,16 @@
 /* eslint-disable react-refresh/only-export-components -- tooltip option builders, not a rendered module */
 import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-const LEARN_MORE_URL = 'https://docs.curve.finance/user/llamalend/liquidation-protection/how-it-works'
-
 const tooltipChrome = { placement: 'top' as const, arrow: false, clickable: true }
 
-const LearnMore = () => (
-  <Button
-    component={Link}
-    href={LEARN_MORE_URL}
-    target="_blank"
-    rel="noopener noreferrer"
-    color="ghost"
-    variant="link"
-    size="small"
-    endIcon={<ArrowTopRightIcon />}
-    sx={{ alignSelf: 'flex-start', px: 0 }}
-  >
-    {t`Learn More`}
-  </Button>
-)
 
 /** Stacked fraction. Kept local so tooltips can show a formula without a math typesetting dependency. */
 const Fraction = ({ numerator, denominator }: { numerator: ReactNode; denominator: ReactNode }) => (
@@ -86,76 +66,88 @@ export const healthTooltip = () => ({
   title: t`Health`,
   body: (
     <TooltipWrapper>
-      <TooltipDescription text={t`Shows how far your position is from the Liquidation Range.`} />
       <TooltipDescription
-        text={t`At 1, Liquidation Protection is active. Once active, monitor your Liquidation buffer.`}
+        text={t`Proximity to the start of the Liquidation range. Health remains 1.00 at or below the upper edge. Monitor the Liquidation buffer after that.`}
       />
       <Equation>
-        {t`Health = max`}(
-        <Fraction numerator={t`Oracle price`} denominator={t`Top of the liquidation range`} />
-        , 1)
+        {t`Health`}
+        {' = max('}
+        <Fraction numerator={t`Oracle price`} denominator={t`Upper boundary`} />
+        {', 1)'}
       </Equation>
-      <LearnMore />
     </TooltipWrapper>
   ),
 })
 
-export const bufferTooltip = () => ({
+export const bufferTooltip = (_options: { predicate?: 'strict-negative' | 'unverified' } = {}) => ({
   ...tooltipChrome,
   title: t`Liquidation buffer`,
   body: (
     <TooltipWrapper>
-      <TooltipDescription text={t`Shows how much liquidation-adjusted value remains above your debt.`} />
-      <TooltipDescription text={t`A 5% buffer means your position has value equal to 105% of its debt.`} />
       <TooltipDescription
-        text={t`At 0%, there is no buffer left and the position becomes eligible for hard liquidation.`}
+        text={t`Debt-relative liquidation-adjusted margin. This is not a price-drop allowance and it is not withdrawable equity.`}
       />
       <Equation>
-        {t`Buffer`}
-        <Fraction numerator={t`Liquidation-adjusted value − Debt`} denominator={t`Debt`} />
-        × 100
+        {t`Buffer %`}
+        {' = '}
+        <Fraction numerator={t`Adjusted value − Debt`} denominator={t`Debt`} />
+        {' × 100'}
       </Equation>
-      <LearnMore />
+      <Equation>
+        {t`Buffer amount`}
+        {' = '}
+        <Fraction numerator={t`Debt × Buffer %`} denominator="100" />
+      </Equation>
+      <TooltipDescription
+        text={
+          t`This uses the same Controller full-health read as the rest of the market. Liquidatable means that value is strictly below 0. Exact zero is critical, not liquidatable. Self and approved close use a different check. This is not a deployment-matched safety certificate.`
+        }
+      />
     </TooltipWrapper>
   ),
 })
 
-export const statusTooltip = () => ({
+export const statusTooltip = ({
+  label,
+  category,
+  nearRange,
+  lowBuffer,
+  criticalBuffer,
+  observedAt,
+}: {
+  label?: string
+  category?: string
+  nearRange?: string
+  lowBuffer?: string
+  criticalBuffer?: string
+  predicate?: 'strict-negative' | 'unverified'
+  observedAt?: number
+} = {}) => ({
   ...tooltipChrome,
   title: t`Status`,
   body: (
     <TooltipWrapper>
-      <TooltipDescription
-        text={t`Summarizes the current state of your position based on its Liquidation range and remaining Liquidation buffer.`}
-      />
-      <Stack
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '0.53fr 1fr',
-          gap: Spacing.xs,
-          p: Spacing.sm,
-          bgcolor: theme => theme.design.Layer[2].Fill,
-        }}
-      >
-        {(
-          [
-            [t`Healthy`, t`Above the Liquidation range with buffer remaining.`],
-            [t`Liquidation Protection`, t`In the range; LLAMMA conversions can occur.`],
-            [t`Below range`, t`Below the range, but the position remains open while buffer remains.`],
-            [t`Hard liquidation`, t`Liquidation buffer is exhausted and the position is eligible for hard liquidation.`],
-          ] as const
-        ).map(([label, description]) => (
-          <Stack key={label} sx={{ display: 'contents' }}>
-            <Typography variant="bodySRegular" color="textPrimary">
-              {label}
-            </Typography>
-            <Typography variant="bodySRegular" color="textSecondary">
-              {description}
-            </Typography>
-          </Stack>
-        ))}
-      </Stack>
-      <LearnMore />
+      <TooltipDescription text={label ? t`Resolved status: ${label}` : t`Status is not resolved yet.`} />
+      <TooltipItems secondary>
+        <TooltipItem title={t`Category`} variant="independent">
+          {category ?? t`Uncategorized`}
+        </TooltipItem>
+        <TooltipItem title={t`Near range`} variant="subItem">
+          {nearRange ?? t`Provisional`}
+        </TooltipItem>
+        <TooltipItem title={t`Low buffer`} variant="subItem">
+          {lowBuffer ?? t`Provisional`}
+        </TooltipItem>
+        <TooltipItem title={t`Critical buffer`} variant="subItem">
+          {criticalBuffer ?? t`Provisional`}
+        </TooltipItem>
+        <TooltipItem title={t`Predicate`} variant="subItem">
+          {t`Controller full health < 0. Exact zero is critical, not liquidatable.`}
+        </TooltipItem>
+        <TooltipItem title={t`Observed`} variant="subItem">
+          {observedAt != null ? new Date(observedAt).toLocaleString() : t`Unavailable`}
+        </TooltipItem>
+      </TooltipItems>
     </TooltipWrapper>
   ),
 })
@@ -166,9 +158,17 @@ export const collateralTooltip = () => ({
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Current value of the assets securing your debt. During Liquidation Protection, LLAMMA can convert collateral into the borrowed asset, changing the position’s composition and value.`}
+        text={t`Remaining collateral and converted borrowed assets backing the debt. A zero total is unavailable, not 100% cash.`}
       />
-      <LearnMore />
+      <Equation>
+        {t`Collateral value`}
+        {' = q × p + b'}
+      </Equation>
+      <Equation>
+        {t`Value share`}
+        {' = '}
+        <Fraction numerator={t`Token value`} denominator={t`Collateral value`} />
+      </Equation>
     </TooltipWrapper>
   ),
 })
@@ -179,9 +179,8 @@ export const debtTooltip = () => ({
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Total amount currently owed, including accrued borrowing interest. Debt increases over time according to the market’s borrow rate.`}
+        text={t`Current Controller debt, including accrued interest. The token and the snapshot time are the ones on this card.`}
       />
-      <LearnMore />
     </TooltipWrapper>
   ),
 })
@@ -192,18 +191,13 @@ export const leverageTooltip = () => ({
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Your current exposure relative to your own equity. Higher leverage amplifies both gains and losses. Only shown for multiplied positions.`}
+        text={t`Remaining collateral exposure over equity. It amplifies relative-price gains and losses and potential collateral yield, less borrowing costs. It is not the yield multiplier.`}
       />
       <Equation>
         {t`Leverage`}
-        <Fraction numerator={t`Exposure`} denominator={t`Equity`} />
-      </Equation>
-      <Equation>
-        {t`Equity`}
         {' = '}
-        {t`Position value − Debt`}
+        <Fraction numerator="q × p" denominator="q × p + b − d" />
       </Equation>
-      <LearnMore />
     </TooltipWrapper>
   ),
 })
@@ -214,15 +208,25 @@ export const roeTooltip = () => ({
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Estimated annualized return on your own capital from collateral yield minus borrowing costs, amplified by leverage. Positive means yield exceeds financing costs; negative means borrowing costs exceed yield.`}
+        text={t`Current composition and rates, as an APR with no assumed reinvestment. Excludes price movement and conversion profit or loss.`}
       />
       <Equation>
-        {t`ROE`}
-        <Fraction numerator={t`Annual asset yield − Annual borrowing costs`} denominator={t`Equity`} />
-        × 100
+        {t`ROE APR`}
+        {' = '}
+        <Fraction
+          numerator={t`Annual asset yield + eligible rewards − gross borrowing costs`}
+          denominator={t`Equity`}
+        />
+        {' × 100'}
       </Equation>
-      <TooltipDescription text={t`Excludes asset-price changes and LLAMMA conversion losses.`} />
-      <LearnMore />
+      <Equation>
+        {t`Yield multiplier`}
+        {' = '}
+        <Fraction numerator={t`ROE APR`} denominator={t`Unleveraged collateral APR`} />
+      </Equation>
+      <TooltipDescription
+        text={t`The multiplier uses the same collateral yield as the estimate. It is not exposure leverage. Lender CRV rewards are not borrower income.`}
+      />
     </TooltipWrapper>
   ),
 })
@@ -245,11 +249,20 @@ export const rangeTooltip = ({
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`The oracle-price range where LLAMMA converts collateral. Conversions can cause losses and deplete the liquidation buffer.`}
+        text={t`Conversions may occur both ways. Losses need not recover when the price recovers. The lower edge is not the hard-liquidation price.`}
       />
-      <Typography variant="bodySRegular" color="textSecondary">
-        {t`The lower edge is`} <u>{t`not`}</u> {t`a hard-liquidation price.`}
-      </Typography>
+      <Equation>
+        {t`Above`}
+        {' = '}
+        <Fraction numerator="p − u" denominator="p" />
+        {' × 100'}
+      </Equation>
+      <Equation>
+        {t`Below`}
+        {' = '}
+        <Fraction numerator="l − p" denominator="p" />
+        {' × 100'}
+      </Equation>
       <TooltipItems secondary>
         <TooltipItem title={t`Range details`} variant="independent">
           {pair}
@@ -267,7 +280,6 @@ export const rangeTooltip = ({
           {bandRange}
         </TooltipItem>
       </TooltipItems>
-      <LearnMore />
     </TooltipWrapper>
   ),
 })

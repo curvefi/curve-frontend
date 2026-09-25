@@ -79,7 +79,7 @@ export function RepayLoanInfoList({
   controllerAddress,
   marketType,
   params,
-  values: { stateCollateral, userCollateral, userBorrowed, isFull },
+  values: { isFull },
   tokens: { collateralToken, borrowToken },
   showLeverage,
   form,
@@ -101,7 +101,7 @@ export function RepayLoanInfoList({
   const { prevCollateral, prevDebt } = prevLoanState
   const { debt, debtDelta } = useRepayRemainingDebt(
     { params, showLeverage, prevDebt },
-    { isFull, userBorrowed },
+    { isFull, userBorrowed: params.userBorrowed },
     isOpen,
   )
 
@@ -123,7 +123,7 @@ export function RepayLoanInfoList({
             userAddress: params.userAddress,
             collateralToken,
             borrowToken,
-            collateralDelta: userCollateral && decimalNegate(userCollateral),
+            collateralDelta: params.userCollateral && decimalNegate(params.userCollateral),
             expectedBorrowed: debt?.data,
           },
           isOpen,
@@ -140,10 +140,10 @@ export function RepayLoanInfoList({
         prevLeverageValue: useUserCurrentLeverage(params, isOpen),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
-          isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
+          isFull ? decimal(0) : decimal(new BigNumber(prev).minus(params.stateCollateral ?? '0')),
         ),
         // routeImage: useRepayRouteImage(params, isOpen),
-        collateralDelta: userCollateral,
+        collateralDelta: params.userCollateral,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta }, isOpen)}
       {...prevLoanState}
