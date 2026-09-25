@@ -10,7 +10,7 @@ import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/entities/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
@@ -28,12 +28,6 @@ import { useMarketContext } from '../../market-context'
 import { type CreateLoanForm } from '../types'
 import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
-
-const userDefaultValues = {
-  userCollateral: undefined,
-  userBorrowed: `0` satisfies Decimal,
-  debt: undefined,
-} satisfies Partial<CreateLoanForm>
 
 const validation = createLoanQueryValidationSuite({
   debtRequired: true,
@@ -69,6 +63,16 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   } = useMarketContext<ChainId>()
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
+  const userDefaultValues = useMemo(
+    () =>
+      ({
+        userCollateral: undefined,
+        userBorrowed: `0` satisfies Decimal,
+        debt: undefined,
+        range: PRESET_RANGES[preset],
+      }) satisfies Partial<CreateLoanForm>,
+    [preset],
+  )
   const formOptions = {
     validation,
     defaultValues: {
@@ -76,7 +80,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       routeId: undefined,
       leverageEnabled: false,
       slippage: defaultSlippage,
-      range: PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,
     },

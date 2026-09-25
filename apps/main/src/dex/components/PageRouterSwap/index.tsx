@@ -15,18 +15,20 @@ import type {
   StepKey,
 } from '@/dex/components/PageRouterSwap/types'
 import { useNetworks } from '@/dex/entities/networks'
+import { usePoolsMapper } from '@/dex/hooks/usePoolsMapper'
+import type { PoolsMapper } from '@/dex/hooks/usePoolsMapper'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import { useToken, useTokens } from '@/dex/queries/tokens.query'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getRouterSwapsExchangeRate, getRouterWarningModal, getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { TokenList, useTokenSelectorData } from '@evm-ui/features/select-token'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { useEstimateGasValue } from '@evm-ui/lib/model/entities/gas-info'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useEstimateGasValue } from '@evm-ui/queries/gas-info.query'
+import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -43,7 +45,7 @@ import type { RouterRouteResponse } from '@primitives/router.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { useLayoutStore } from '@ui/features/layout/store'
@@ -88,7 +90,6 @@ export const QuickSwap = ({
   const { fromAddress, toAddress } = searchedParams
   const { data: fromToken, isLoading: fromTokenLoading } = useToken({ chainId, tokenAddress: fromAddress })
   const { data: toToken, isLoading: toTokenLoading } = useToken({ chainId, tokenAddress: toAddress })
-  const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const activeKey = useStore(state => state.quickSwap.activeKey)
   const formEstGas = useStore(state => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore(state => state.quickSwap.formStatus)
@@ -114,6 +115,8 @@ export const QuickSwap = ({
     error: apiRoutesError,
   } = useRouterApi({ chainId, userAddress, searchedParams }, !userAddress)
   const gas = useEstimateGasValue(chainId, formEstGas?.estimatedGas, !!userAddress)
+
+  const poolsMapper = usePoolsMapper()
 
   const quote = userAddress ? rpcRoutesAndOutput : apiRoutes
   const slippageType = quote && getSlippageType(quote)
@@ -214,6 +217,7 @@ export const QuickSwap = ({
       void setFormValues(
         config,
         pageLoaded && fromToken && toToken && (!userAddress || isHydrated) && !isBlacklistLoading ? curve : null,
+        poolsMapper,
         updatedFormValues ?? {},
         searchedParams,
         maxSlippage,
@@ -225,6 +229,7 @@ export const QuickSwap = ({
     [
       config,
       curve,
+      poolsMapper,
       isBlacklistLoading,
       isHydrated,
       maxSlippage,
@@ -290,6 +295,7 @@ export const QuickSwap = ({
     (
       activeKey: string,
       curve: CurveApi,
+      poolsMapper: PoolsMapper,
       routesAndOutput: RoutesAndOutput | undefined,
       formStatus: FormStatus,
       formValues: FormValues,
@@ -316,7 +322,7 @@ export const QuickSwap = ({
             const notifyMessage = t`Please approve spending your ${fromSymbol}.`
             const { dismiss } = notify(notifyMessage, 'pending')
             const slippage = assert(maxSlippage, `Max slippage must be set once we a route is found`)
-            await fetchStepApprove(activeKey, config, curve, formValues, searchedParams, slippage)
+            await fetchStepApprove(activeKey, config, curve, poolsMapper, formValues, searchedParams, slippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -478,6 +484,7 @@ export const QuickSwap = ({
     const updatedSteps = getSteps(
       activeKey,
       curve,
+      poolsMapper,
       routesAndOutput,
       isReady ? formStatus : { ...formStatus, formProcessing: true },
       formValues,
@@ -488,7 +495,7 @@ export const QuickSwap = ({
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSteps(prev => (isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
+  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve, poolsMapper])
 
   const isDisable = formStatus.formProcessing || !fromToken || !toToken
   const routesAndOutputLoading =
@@ -518,7 +525,7 @@ export const QuickSwap = ({
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       {/* SWAP FROM */}
-      <LargeTokenInput
+      <DebouncedLargeTokenInput
         label={t`Sell`}
         balance={q({
           data: decimal(formValues.fromAmount),
@@ -575,7 +582,7 @@ export const QuickSwap = ({
         <Icon name="ArrowsVertical" size={24} />
       </IconButton>
       {/* SWAP TO */}
-      <LargeTokenInput
+      <DebouncedLargeTokenInput
         label={t`Buy`}
         balance={decimal(formValues.toAmount)}
         inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
@@ -635,7 +642,7 @@ export const QuickSwap = ({
             params={params}
             routes={mapQuery(routes, r => r.routes)}
             tokens={tokensMapper.data}
-            poolDataMapper={poolDataMapper}
+            poolsMapper={poolsMapper}
             swapCustomRouteRedirect={network?.swapCustomRouteRedirect}
           />
         </Stack>

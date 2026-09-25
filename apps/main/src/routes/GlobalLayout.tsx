@@ -6,9 +6,9 @@ import { networks as lendNetworks } from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
 import { useLlamalendRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
 import { networks as crvusdNetworks } from '@/loan/networks'
-import { type TvlSource, useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConnectModal'
+import { type TvlSource, useNetworksTVL } from '@evm-ui/queries/prices-networks.query'
 import {
   APP_LINK,
   AppMenuOption,

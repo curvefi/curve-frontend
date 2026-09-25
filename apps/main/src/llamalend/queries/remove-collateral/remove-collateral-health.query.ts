@@ -1,5 +1,5 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type CollateralHealthParams, type CollateralHealthQuery } from '../validation/manage-loan.types'

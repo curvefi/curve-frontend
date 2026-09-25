@@ -1,3 +1,5 @@
+import { fromEntries, recordEntries } from '@primitives/objects.utils'
+
 export const STELLAR_NETWORKS = {
   stellar: {
     name: 'Stellar',
@@ -31,5 +33,9 @@ export const STELLAR_NETWORKS = {
     ],
   },
 } as const
+
+export const STELLAR_NETWORKS_BY_ID = fromEntries(
+  recordEntries(STELLAR_NETWORKS).map(([blockchainId, network]) => [network.chainId, { blockchainId, ...network }]),
+)
 
 export type StellarNetwork = keyof typeof STELLAR_NETWORKS

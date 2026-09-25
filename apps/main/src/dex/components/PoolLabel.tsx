@@ -5,47 +5,52 @@ import { ChipPool } from '@/dex/components/ChipPool'
 import { ChipToken } from '@/dex/components/ChipToken'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
-import { PoolData } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { TooltipAlert } from '@legacy-ui/Tooltip/TooltipAlert'
 import { Chip } from '@legacy-ui/Typography'
+import { maybe } from '@primitives/objects.utils'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { getTokens, isWrappedOnly } from '../pool.utils'
 
 type Props = {
   className?: string
   blockchainId: INetworkName
   isVisible?: boolean
-  poolData: PoolData | undefined
+  pool: PoolTemplate | undefined
   quickViewValue?: ReactNode
   onClick?: (target: EventTarget) => void
 }
 
-export const PoolLabel = ({
-  className = '',
-  blockchainId,
-  isVisible = true,
-  poolData,
-  quickViewValue,
-  onClick,
-}: Props) => {
-  const { pool } = poolData ?? {}
-  const tokens = useMemo(
+export const PoolLabel = ({ className = '', blockchainId, isVisible = true, pool, quickViewValue, onClick }: Props) => {
+  const {
+    tokens: poolTokens,
+    tokenAddresses,
+    tokenAddressesAll,
+  } = useMemo(
     () =>
-      lodash
-        .zip(poolData?.tokens, poolData?.tokenAddresses)
-        .map(([symbol, address]) => ({ symbol: symbol!, address: address! })),
-    [poolData?.tokens, poolData?.tokenAddresses],
+      maybe(pool, pool => getTokens(pool, { wrapped: isWrappedOnly(pool) })) ?? {
+        tokens: undefined,
+        tokenAddresses: undefined,
+        tokenAddressesAll: undefined,
+      },
+    [pool],
+  )
+
+  const tokens = useMemo(
+    () => lodash.zip(poolTokens, tokenAddresses).map(([symbol, address]) => ({ symbol: symbol!, address: address! })),
+    [poolTokens, tokenAddresses],
   )
 
   const poolAlert = usePoolAlert({
     blockchainId,
-    poolAddress: poolData?.pool.address,
-    hasVyperVulnerability: poolData?.pool.hasVyperVulnerability(),
+    poolAddress: pool?.address,
+    hasVyperVulnerability: pool?.hasVyperVulnerability(),
   })
-  const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
+  const tokenAlert = useTokenAlert(tokenAddressesAll ?? [])
   const isMobile = useIsMobile()
 
   const handleClick = (target: EventTarget) => {

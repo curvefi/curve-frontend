@@ -1,4 +1,4 @@
-import { GaugeQuery, type UserQuery } from '@evm-ui/lib/model/query'
+import { GaugeQuery, type UserQuery } from '@evm-ui/queries/root-keys'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { FieldsOf } from '@ui/lib/validation/types'

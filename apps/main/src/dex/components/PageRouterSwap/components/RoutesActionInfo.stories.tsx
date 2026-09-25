@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react'
 import { ethAddress, getAddress } from 'viem'
 import { Route } from '@/dex/components/PageRouterSwap/types'
 import type { TokenMapper } from '@/dex/queries/tokens.query'
-import { PoolDataMapper } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { CRVUSD_ADDRESS, REUSD_ADDRESS } from '@evm-ui/utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { q } from '@ui/features/queries/util'
@@ -14,7 +14,7 @@ const tokens: TokenMapper = {
   [getAddress(CRVUSD_ADDRESS)]: { decimals: 18, symbol: 'crvUSD' },
 }
 
-const poolDataMapper = {
+const poolsMapper = {
   'pool-1': {
     chainId: 1,
     tokenAddresses: [REUSD_ADDRESS, ethAddress],
@@ -63,7 +63,7 @@ const meta: Meta<typeof RoutesActionInfoStory> = {
     loading: false,
     errorMessage: '',
     tokens,
-    poolDataMapper: poolDataMapper as unknown as PoolDataMapper,
+    poolsMapper: poolsMapper as unknown as Record<string, PoolTemplate>,
     swapCustomRouteRedirect: undefined,
   },
 }

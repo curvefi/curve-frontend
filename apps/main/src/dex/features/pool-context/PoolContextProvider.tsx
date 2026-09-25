@@ -1,7 +1,7 @@
-import { type ReactNode, useMemo } from 'react'
+import { type ReactNode, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import { useStore } from '@/dex/store/useStore'
+import { isWrappedOnly } from '@/dex/pool.utils'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { PoolContext } from './PoolContext'
 import { createPoolContextValue } from './PoolContextValue'
@@ -9,22 +9,24 @@ import { createPoolContextValue } from './PoolContextValue'
 export const PoolContextProvider = ({
   children,
   network: { chainId, blockchainId },
-  poolIdOrAddress,
+  pool,
 }: {
   children: ReactNode
   network: { chainId: number; blockchainId: string }
-  poolIdOrAddress: string
+  pool: PoolTemplate
 }) => {
   const { address: userAddress } = useConnection()
   const { curveApi: api = null } = useCurve()
-  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
-  const poolData = useStore(state => state.pools.poolsMapper[chainId]?.[poolId ?? ''])
+
+  // This is a global pool page toggle that changes many things on the pool page itself, whose toggle sits inside the forms.
+  // Alternatives would be prop drilling or yet another zustand store, neither sound pleasant.
+  const [isWrapped, setIsWrapped] = useState(() => isWrappedOnly(pool))
 
   return (
     <PoolContext
       value={useMemo(
-        () => createPoolContextValue({ chainId, blockchainId, userAddress, poolData, api }),
-        [chainId, blockchainId, poolData, userAddress, api],
+        () => createPoolContextValue({ chainId, blockchainId, userAddress, pool, api, isWrapped, setIsWrapped }),
+        [chainId, blockchainId, pool, userAddress, api, isWrapped, setIsWrapped],
       )}
     >
       {children}

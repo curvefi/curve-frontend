@@ -1,12 +1,11 @@
 import { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
-import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { BannerProps } from '@ui/features/banners/Banner'
 
-export type { Provider } from '@evm-ui/lib/ethers'
+export type { Provider } from '@evm-ui/utils/ethers'
 export type { CurveApi, Wallet } from '@evm-ui/features/connect-wallet'
 
 export type ChainId = IChainId
@@ -35,21 +34,10 @@ export type NetworkConfig = {
 } & NetworkDef<NetworkEnum>
 
 export type Networks = Record<ChainId, NetworkConfig>
-export type Pool = PoolTemplate
 export type ClaimableReward = { token: string; symbol: string; amount: string; price: number }
 export type RewardBase = { day: string; week: string }
 export type RewardCrv = number
-export type PoolData = {
-  idx?: number
-  pool: Pool
-  isWrapped: boolean
-  tokenAddresses: string[]
-  tokenAddressesAll: string[]
-  tokens: string[]
-  tokensCountBy: Record<string, number>
-}
 
-export type PoolDataMapper = Record<string, PoolData>
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
 export type PoolAlert = {

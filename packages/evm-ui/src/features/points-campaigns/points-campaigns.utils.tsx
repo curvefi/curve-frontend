@@ -1,4 +1,4 @@
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import { formatNumber } from '@primitives/number.utils'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'

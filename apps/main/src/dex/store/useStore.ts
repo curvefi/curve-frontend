@@ -5,13 +5,11 @@ import { DashboardSlice, createDashboardSlice } from '@/dex/store/createDashboar
 import { DeployGaugeSlice, createDeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
 import { GlobalSlice, createGlobalSlice } from '@/dex/store/createGlobalSlice'
 import { PoolDepositSlice, createPoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
-import { PoolsSlice, createPoolsSlice } from '@/dex/store/createPoolsSlice'
 import { PoolSwapSlice, createPoolSwapSlice } from '@/dex/store/createPoolSwapSlice'
 import { PoolWithdrawSlice, createPoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
 import { QuickSwapSlice, createQuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 
 export type State = GlobalSlice &
-  PoolsSlice &
   PoolDepositSlice &
   PoolWithdrawSlice &
   PoolSwapSlice &
@@ -22,7 +20,6 @@ export type State = GlobalSlice &
 
 const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
   ...createGlobalSlice(set, get),
-  ...createPoolsSlice(set, get),
   ...createPoolDepositSlice(set, get),
   ...createPoolWithdrawSlice(set, get),
   ...createPoolSwapSlice(set, get),

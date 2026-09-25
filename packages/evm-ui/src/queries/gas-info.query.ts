@@ -1,0 +1,449 @@
+import { useCallback } from 'react'
+import { group, test } from 'vest'
+import { ethAddress } from 'viem'
+import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
+import { AnyCurveApi } from '@evm-ui/features/connect-wallet/lib/types'
+import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { type ChainQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import { gweiToEther, gweiToWai, weiToGwei } from '@evm-ui/utils'
+import type { Provider } from '@evm-ui/utils/ethers'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { Chain } from '@primitives/network.utils'
+import { formatNumber } from '@primitives/number.utils'
+import { type Nullish, assert, maybe, maybes, type PartialRecord } from '@primitives/objects.utils'
+import type { TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
+import { combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
+import { queryFactory } from '@ui/features/queries/factory'
+import { constQ, type Query as QueryResult } from '@ui/features/queries/util'
+import { formatToken } from '@ui/lib/tokens'
+import { enforce } from '@ui/lib/validation/enforce-extension'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+import { type FieldsOf } from '@ui/lib/validation/types'
+import { useTokenUsdRate } from './token-usd-rate.query'
+
+type ChainGasConfig = { gasL2: boolean; gasPricesUnit: string; gasPricesUrl: string; gasPricesDefault: number }
+
+const BASE_CHAIN_GAS_CONFIG: ChainGasConfig = {
+  gasL2: false,
+  gasPricesUnit: 'GWEI',
+  gasPricesUrl: '',
+  gasPricesDefault: 0,
+}
+
+const CHAIN_GAS_CONFIGS: PartialRecord<Chain, Partial<ChainGasConfig>> = {
+  [Chain.Ethereum]: { gasPricesUrl: 'https://api.curve.finance/api/getGas', gasPricesDefault: 1 },
+  [Chain.Optimism]: { gasL2: true },
+  [Chain.Polygon]: { gasPricesUrl: 'https://gasstation.polygon.technology/v2', gasPricesDefault: 0 },
+  [Chain.Kava]: { gasPricesUnit: 'UKAVA' },
+  [Chain.Avalanche]: {
+    gasPricesUnit: 'nAVAX',
+    gasPricesUrl: 'https://api.avax.network/ext/bc/C/rpc',
+    gasPricesDefault: 0,
+  },
+  [Chain.Base]: { gasL2: true },
+} as const
+
+export const getGasConfig = (chainId: Chain) => ({ ...BASE_CHAIN_GAS_CONFIG, ...CHAIN_GAS_CONFIGS[chainId] })
+
+type GasInfoQuery<T = number> = ChainQuery<T> & {
+  /** Network dependent url for fetching the latest gas prices */
+  gasPricesUrl: string
+  /** Network dependent url for fetching the latest gas prices for L2 prices (if network is an L2) */
+  gasPricesUrlL2?: string
+}
+
+type GasInfoParams<T = number> = FieldsOf<GasInfoQuery<T>>
+
+export type GasInfo = {
+  gasPrice: number | null
+  max: number[]
+  priority: number[]
+  basePlusPriority: number[]
+  basePlusPriorityL1?: number[] | undefined
+  l1GasPriceWei?: number
+  l2GasPriceWei?: number
+}
+
+/* List of L2 networks with different gas pricing */
+const L2_NETWORKS_WITH_GAS_PRICE = [Chain.Arbitrum, Chain.XLayer, Chain.Mantle] as const
+
+/** Small utility function to immediately convert fetch results into a JSON response. */
+const httpFetcher = (uri: string) => fetch(uri).then(res => res.json())
+
+const getAnyCurve = (chainId: number): AnyCurveApi | undefined => {
+  const curveApi = getLib('curveApi')
+  if (curveApi?.chainId === chainId) return curveApi
+  const llamaApi = getLib('llamaApi')
+  if (llamaApi?.chainId === chainId) return llamaApi
+}
+
+const getProvider = () =>
+  assert(
+    useWallet.getState().provider,
+    'Provider not available, make sure the wallet is connected before calling this query',
+  )
+
+/**
+ * We're dealing with a query here that's not read-only and has side effects.
+ * Specifically, `curve.setCustomFeeData` is being called which affects the gas prices used in
+ * plenty of (all?) CurveJS contract calls.
+ *
+ * Untangling this mess is *not* part of the current ticket at the time of writing.
+ * The goal here is to simply use TanStack's caching ability to prevent unnecessary gas fetches.
+ * At a later point we can remove the side effect and perhaps post it in a `useEffect` at the layout level.
+ *
+ * As a result, you might find `fetchGasInfoAndUpdateLib` calls sprinkled in places where
+ * the data returned is not being used, simply for its side effect.
+ * The exported function names have the 'andUpdateLib' suffix to indicate this behavior.
+ */
+const {
+  useQuery: useGasInfoAndUpdateLibBase,
+  fetchQuery: fetchGasInfoAndUpdateLibBase,
+  setQueryData: setGasInfoAndUpdateLibBase,
+} = queryFactory({
+  queryKey: ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
+    [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const,
+  queryFn: async ({ chainId: chain, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const chainId = chain as Chain
+    const curve = getAnyCurve(chainId)!
+    const provider = getProvider()
+
+    let parsedGasInfo
+
+    if (chainId === Chain.Ethereum) {
+      // Ethereum uses api
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
+      const json = await httpFetcher(gasPricesUrl)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+      const { eip1559Gas: gasInfo, gas } = json?.data ?? {}
+
+      if (gasInfo) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
+        parsedGasInfo = parseEthereumGasInfo(gasInfo, gas)
+      }
+    } else if (chainId === Chain.Polygon) {
+      // Polygon uses api
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
+      const json: PolygonGasInfo = await httpFetcher(gasPricesUrl)
+      if (json?.fast) {
+        parsedGasInfo = parsePolygonGasInfo(json)
+      }
+      if (json) {
+        curve.setCustomFeeData({ maxFeePerGas: json.fast.maxFee, maxPriorityFeePerGas: json.fast.maxPriorityFee })
+      }
+    } else if (chainId === Chain.XLayer) {
+      const { l2GasPrice } = await fetchL2GasPrice(curve)
+      parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
+
+      if (parsedGasInfo) {
+        parsedGasInfo.gasInfo.l2GasPriceWei = gweiToWai(l2GasPrice)
+      }
+
+      if (l2GasPrice) {
+        const maxFeePerGas = null as unknown as undefined // todo: fix `undefined` type in curvejs, it actually checks `=== null`
+        curve.setCustomFeeData({ gasPrice: l2GasPrice /*in gwei*/, maxFeePerGas, maxPriorityFeePerGas: maxFeePerGas })
+      }
+    } else if (chainId === Chain.Arbitrum || chainId === Chain.Mantle) {
+      const { customFeeData } = await fetchCustomGasFees(curve)
+      parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
+
+      if (parsedGasInfo && customFeeData?.maxFeePerGas && customFeeData?.maxPriorityFeePerGas) {
+        parsedGasInfo.gasInfo.max = [gweiToWai(customFeeData.maxFeePerGas)]
+        parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
+        curve.setCustomFeeData(customFeeData)
+      }
+    } else if (chainId === Chain.Fraxtal || chainId === Chain.Base) {
+      // TODO: remove this hardcode value once it api is fixed
+      parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
+
+      if (parsedGasInfo) {
+        curve.setCustomFeeData({ maxFeePerGas: 0.1, maxPriorityFeePerGas: 0.001 })
+      }
+    } else if (chainId === Chain.Optimism) {
+      // TODO: remove this hardcode value once it api is fixed
+      parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
+
+      if (parsedGasInfo) {
+        curve.setCustomFeeData({ maxFeePerGas: 0.2, maxPriorityFeePerGas: 0.001 })
+      }
+    }
+
+    return (parsedGasInfo ?? (await parseGasInfo(curve, provider, gasPricesUrlL2))).gasInfo
+  },
+  category: 'global.gasInfo',
+  validationSuite: createValidationSuite(<TChainId extends number>({ chainId }: GasInfoParams<TChainId>) => {
+    chainValidationGroup({ chainId })
+    group('libValidation', () => {
+      test('lib', 'library loaded', () => {
+        if (chainId) enforce(getAnyCurve(chainId)?.chainId).message('Library should be loaded').equals(chainId)
+      })
+    })
+  }),
+})
+
+async function fetchCustomGasFees(curve: AnyCurveApi) {
+  const resp: { customFeeData: Record<string, number | null> | null; error: string } = {
+    customFeeData: null,
+    error: '',
+  }
+  try {
+    resp.customFeeData = await curve.getGasInfoForL2()
+    return resp
+  } catch (error) {
+    console.error(error)
+    resp.error = 'error-get-gas'
+    return resp
+  }
+}
+
+async function fetchL2GasPrice(curve: AnyCurveApi) {
+  const resp = { l2GasPrice: 0, error: '' }
+  try {
+    resp.l2GasPrice = await curve.getGasPriceFromL2()
+    return resp
+  } catch (error) {
+    console.error(error)
+    resp.error = 'error-get-gas'
+    return resp
+  }
+}
+
+async function fetchL1AndL2GasPrice(curve: AnyCurveApi) {
+  const resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
+  try {
+    const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([curve.getGasPriceFromL2(), curve.getGasPriceFromL1()])
+    resp.l2GasPriceWei = l2GasPriceWei
+    resp.l1GasPriceWei = l1GasPriceWei
+    return resp
+  } catch (error) {
+    console.error(error)
+    resp.error = 'error-get-gas'
+    return resp
+  }
+}
+
+function parseEthereumGasInfo(gasInfo: { base: number; prio: number[]; max: number[] }, gas: { rapid: number }) {
+  if (gasInfo.base && gasInfo.prio && gasInfo.max) {
+    const base = Math.trunc(gasInfo.base)
+    const priority = gasInfo.prio.map(Math.trunc)
+    const max = gasInfo.max.map(Math.trunc)
+
+    return {
+      gasInfo: {
+        gasPrice: gas?.rapid || null,
+        base,
+        priority,
+        max,
+        basePlusPriority: priority.map((p: number) => base + p),
+      },
+      label: ['fastest', 'fast', 'medium', 'slow'],
+    }
+  }
+}
+
+type PolygonGasInfo = {
+  estimatedBaseFee: number
+  safeLow: { maxFee: number; maxPriorityFee: number }
+  standard: { maxFee: number; maxPriorityFee: number }
+  fast: { maxFee: number; maxPriorityFee: number }
+}
+
+function parsePolygonGasInfo(gasInfo: PolygonGasInfo) {
+  const { estimatedBaseFee, safeLow, standard, fast } = gasInfo
+
+  if (estimatedBaseFee && safeLow && standard && fast) {
+    const base = gweiToWai(estimatedBaseFee)
+    const max = [fast.maxFee, standard.maxFee, safeLow.maxFee].map(gweiToWai)
+    const priority = [fast.maxPriorityFee, standard.maxPriorityFee, safeLow.maxPriorityFee].map(gweiToWai)
+
+    return {
+      gasInfo: { gasPrice: null, base, max, priority, basePlusPriority: priority.map(p => base + p) },
+      label: ['fast', 'medium', 'slow'],
+    }
+  }
+}
+
+async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: string) {
+  // Returns the current recommended FeeData to use in a transaction.
+  // For an EIP-1559 transaction, the maxFeePerGas and maxPriorityFeePerGas should be used.
+  // For legacy transactions and networks which do not support EIP-1559, the gasPrice should be used.
+  const gasFeeData = await provider.getFeeData()
+  const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasFeeData
+
+  const gasFeeDataWei = {
+    gasPrice: gasPrice ? +BigInt(gasPrice).toString() : null,
+    max: maxFeePerGas ? [+BigInt(maxFeePerGas).toString()] : [],
+    priority: maxPriorityFeePerGas ? [+BigInt(maxPriorityFeePerGas).toString()] : [],
+  }
+
+  const baseInfo: Pick<GasInfo, 'basePlusPriority' | 'basePlusPriorityL1' | 'l1GasPriceWei' | 'l2GasPriceWei'> = {
+    basePlusPriority: [] as number[],
+  }
+
+  if (l2GasUrl) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
+    const fetchedData = await httpFetcher(l2GasUrl)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+    const { eip1559Gas: gasInfo } = fetchedData?.data ?? {}
+
+    baseInfo.basePlusPriority = gasFeeDataWei.gasPrice ? [gasFeeDataWei.gasPrice] : []
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+    baseInfo.basePlusPriorityL1 = [gasInfo.base * 6000]
+
+    const { l2GasPriceWei, l1GasPriceWei } = await fetchL1AndL2GasPrice(curve)
+    baseInfo.l1GasPriceWei = l1GasPriceWei
+    baseInfo.l2GasPriceWei = l2GasPriceWei
+  } else if (gasFeeDataWei.gasPrice) {
+    baseInfo.basePlusPriority = [+gasFeeDataWei.gasPrice]
+  }
+
+  return { gasInfo: { ...gasFeeDataWei, ...baseInfo }, label: ['fast'] }
+}
+
+export type GasInfoQueryOptions<TChainId extends number = number> = { chainId?: TChainId | null }
+
+/** Helper function to create required query options based on network configs. */
+function createGasInfoQueryOptions<TChainId extends number>({
+  chainId,
+}: GasInfoQueryOptions<TChainId>): GasInfoParams<TChainId> {
+  const { gasPricesUrl, gasL2 } = maybe(chainId, chainId => getGasConfig(chainId)) ?? {}
+  return {
+    chainId,
+    gasPricesUrl,
+    // It seems that in the original code the Ethereum mainnet gas prices URL was used for L2 price fetching.
+    // I do not question whether this is right or not. I just re-use what was already being used.
+    gasPricesUrlL2: gasL2 ? CHAIN_GAS_CONFIGS[Chain.Ethereum]!.gasPricesUrl : undefined,
+  }
+}
+
+/**
+ * Fetches gas info and updates the library. This wrapper exists as the base query requires query options
+ * derived from network config objects. Having to import and use `createGasInfoQueryOptions` is cumbersome.
+ */
+export const fetchGasInfoAndUpdateLib = <TChainId extends number>({ chainId }: GasInfoQueryOptions<TChainId>) =>
+  fetchGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId }))
+
+/**
+ * Fetches gas info and updates the library. This wrapper exists as the base query requires query options
+ * derived from network config objects. Having to import and use `createGasInfoQueryOptions` is cumbersome.
+ */
+export const useGasInfoAndUpdateLib = <TChainId extends number>(
+  { chainId }: GasInfoQueryOptions<TChainId>,
+  enabled?: boolean,
+) => {
+  const { provider } = useWallet() // validate provider manually because otherwise query won't get enabled when connected
+  return useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId }), !!provider && enabled)
+}
+
+/** Sets gas info query data directly in the query cache. */
+export const setGasInfoAndUpdateLib = <TChainId extends number>(
+  { chainId }: GasInfoQueryOptions<TChainId>,
+  gasInfo: GasInfo,
+) => setGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId }), gasInfo)
+
+// calculates L1+L2 gas for optimistic rollups
+const calculateOptimisticRollupGas = (
+  [l2Gas, l1Gas]: number[] | [Decimal, Decimal],
+  [l2GasPriceWei, l1GasPriceWei]: [number, number],
+) => +l2Gas * l2GasPriceWei + +l1Gas * l1GasPriceWei
+
+/**
+ * Calculate estimated gas costs with ETH+USD conversion and tooltip
+ */
+export function calculateGas(
+  estimatedGas: Amount | [Decimal, Decimal] | number[] | Nullish,
+  gasInfo: GasInfo | undefined,
+  chainTokenUsdRate: number | undefined,
+  chainId: number,
+  networkSymbol: string | undefined,
+): TxGasInfo {
+  const { gasPricesUnit, gasL2, gasPricesDefault } = getGasConfig(chainId)
+  const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
+  if (!estimatedGas || !basePlusPriority) {
+    return {}
+  }
+
+  const { l1GasPriceWei, l2GasPriceWei } = gasInfo
+  const gasCostInWei =
+    L2_NETWORKS_WITH_GAS_PRICE.includes(chainId) && l2GasPriceWei && !Array.isArray(estimatedGas)
+      ? l2GasPriceWei * +estimatedGas
+      : gasL2 && Array.isArray(estimatedGas) && l2GasPriceWei && l1GasPriceWei
+        ? calculateOptimisticRollupGas(estimatedGas, [l2GasPriceWei, l1GasPriceWei])
+        : Array.isArray(estimatedGas)
+          ? 0
+          : basePlusPriority * +estimatedGas // Default calculation for regular networks
+
+  const estGasCost = gweiToEther(weiToGwei(gasCostInWei))
+  const tooltip =
+    `${formatToken(estGasCost, networkSymbol, 'amount')} at ` +
+    `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2, abbreviate: false })} ${gasPricesUnit}`
+  return {
+    estGasCost,
+    nativeSymbol: networkSymbol,
+    tooltip,
+    ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }),
+  }
+}
+
+type GasEstimate = Amount | [Decimal, Decimal] | number[] | Nullish
+
+/** Converts an existing gas estimate query into native/USD gas cost info. */
+const useEstimateGas = (chainId: number | Nullish, estimate: QueryResult<GasEstimate>, enabled?: boolean) => {
+  const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
+  const gasInfo = useGasInfoAndUpdateLib({ chainId }, enabled)
+  const networkSymbol = maybe(chainId, chainId => getChainNativeCurrency(chainId)?.symbol)
+  return useCombinedQueries(
+    [estimate, gasInfo, ethRate],
+    useCallback(
+      (estimate, gasInfo, ethRate) =>
+        maybes([chainId, networkSymbol], (chainId, networkSymbol) =>
+          calculateGas(estimate, gasInfo, ethRate, chainId, networkSymbol),
+        ),
+      [chainId, networkSymbol],
+    ),
+  )
+}
+
+/**
+ * Converts a raw gas estimate value into native/USD gas cost info.
+ * @deprecated Prefer `createEstimateGasHook`.
+ */
+export const useEstimateGasValue = (chainId: number | Nullish, estimate: GasEstimate, enabled?: boolean) =>
+  useEstimateGas(chainId, constQ(estimate), enabled)
+
+type EstimateValue = number | number[] | Nullish
+
+type WithOptionalChainId = { chainId?: number | Nullish }
+
+/** Builds a reusable gas-cost hook from a single estimate-gas query hook. */
+export const createEstimateGasHook =
+  <Query extends WithOptionalChainId, Estimate extends EstimateValue>(
+    useEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
+  ) =>
+  (query: Query & { chainId?: number | Nullish }, enabled = true) => {
+    const estimate = useEstimate(query, enabled)
+    const converted = useEstimateGas(query.chainId, estimate, enabled)
+    return combineQueries([converted, estimate], data => data)
+  }
+
+/** Builds a reusable gas-cost hook for actions that may need approval first. */
+export const createApprovedEstimateGasHook =
+  <Query extends WithOptionalChainId, Estimate extends EstimateValue>({
+    useIsApproved,
+    useApproveEstimate,
+    useActionEstimate,
+  }: {
+    useIsApproved: (query: Query, enabled?: boolean) => QueryResult<boolean>
+    useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
+    useActionEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
+  }) =>
+  (query: Query & { chainId?: number | Nullish }, enabled = true) => {
+    const isApproved = useIsApproved(query, enabled)
+    const approveEstimate = useApproveEstimate(query, enabled && isApproved.data === false)
+    const actionEstimate = useActionEstimate(query, enabled && isApproved.data === true)
+    const estimate = isApproved.data ? actionEstimate : approveEstimate
+    const gas = useEstimateGas(query.chainId, estimate, enabled)
+    return combineQueries([isApproved, gas], (_, gas) => gas)
+  }

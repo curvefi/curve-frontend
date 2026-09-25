@@ -3,9 +3,9 @@ import { useCallback, useMemo, useState } from 'react'
 import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
-import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
-import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
-import { type TimeOption } from '@evm-ui/lib/model/query/time-option-validation'
+import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
+import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
+import { type TimeOption } from '@evm-ui/queries/validation/time-option-validation'
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,

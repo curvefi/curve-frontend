@@ -13,20 +13,21 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { SelectableChip } from '@ui/components/SelectableChip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
-import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
 import { SliderInput, SliderInputProps } from '@ui/features/forms/controls/SliderInput'
 import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
 import { chipSizeClickable } from '@ui/features/themes/components/chip'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { useUniqueDebounce } from '@ui/hooks/useDebounce'
+import { useUnique } from '@ui/hooks/useUnique'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { BalanceTextField } from './BalanceTextField'
+import { HelperMessage } from './HelperMessage'
+import { bigNumEquals } from './large-token-input.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -130,7 +131,7 @@ export type LargeTokenInputProps = {
    * Callback function triggered when the balance changes. It may be omitted when read-only.
    * @param balance The new balance value
    */
-  onBalance?: (balance: Decimal | undefined) => void
+  onBalance: (balance: Decimal | undefined) => void
 
   /** Optional props forwarded to the slider */
   sliderProps?: SliderInputProps<Decimal>['sliderProps']
@@ -174,9 +175,6 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
-/** Converts two decimals to BigNumber for comparison */
-const bigNumEquals = (a?: Decimal, b?: Decimal) => a == b || (a != null && b != null && new BigNumber(a).isEqualTo(b))
-
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
@@ -195,7 +193,7 @@ export const LargeTokenInput = ({
 }: LargeTokenInputProps) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const { data: externalBalance, error } = toQuery(balanceProp)
-  const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
+  const [balance, setBalance] = useUnique({
     defaultValue: externalBalance,
     callback: onBalance,
     // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
@@ -222,26 +220,10 @@ export const LargeTokenInput = ({
     (newBalance: string | undefined) => {
       // We sanitize values in NumericTextField, but temporary invalid states can still occur (e.g., "-" while typing)
       const decimalBalance = decimal(newBalance)
-      if (decimalBalance == null) {
-        // Cancel the debounce to prevent the input from resetting while the user is still typing
-        // if the previous value was valid but the current one is temporarily invalid
-        cancelSetBalance()
-
-        /**
-         * When the balance has been made empty, we don't set the internal balance state to 0, but we do emit the onBalance event
-         * with undefined. This allows the UI to transition from a previously valid state to indicating "no value",
-         * rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
-         * remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
-         */
-        if (!newBalance) onBalance?.(undefined)
-
-        return
-      }
-
       setBalance(decimalBalance)
-      setPercentage(maxBalanceValue && newBalance ? calculateNewPercentage(decimalBalance, maxBalanceValue) : undefined)
+      setPercentage(maybes([decimalBalance, maxBalanceValue], calculateNewPercentage))
     },
-    [maxBalanceValue, setBalance, cancelSetBalance, onBalance],
+    [maxBalanceValue, setBalance],
   )
 
   const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
@@ -395,7 +377,7 @@ export const LargeTokenInput = ({
         )}
       </Stack>
       {/** Fourth row containing optional helper (or error) message */}
-      {message && <HelperMessage onNumberClick={onBalance} message={message} isError={isError} />}
+      {message && <HelperMessage onNumberClick={setBalance} message={message} isError={isError} />}
       {children}
     </Stack>
   )

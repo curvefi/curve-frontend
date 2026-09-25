@@ -2,11 +2,11 @@ import { produce } from 'immer'
 import { isEqual } from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
-import { fetchPoolIds } from '@/dex/lib/pool-ids'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui/lib/logging'
 import { formatTimeDiff } from '@ui/lib/time'
+import { fetchPools } from '../lib/curvejs'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -27,26 +27,23 @@ export type GlobalSlice = {
 }
 
 export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
-  hydrate: async (_config, curveApi, prevCurveApi, _wallet) => {
-    if (!curveApi) return
+  hydrate: async (_config, curve, prevCurve, _wallet) => {
+    if (!curve) return
 
     const state = get()
-    const isNetworkSwitched = prevCurveApi?.chainId !== curveApi.chainId
-    const isUserSwitched = prevCurveApi?.signerAddress !== curveApi.signerAddress
+    const isNetworkSwitched = prevCurve?.chainId !== curve.chainId
+    const isUserSwitched = prevCurve?.signerAddress !== curve.signerAddress
     const start = new Date()
-    log('Hydrating DEX', curveApi?.chainId, { isNetworkSwitched, isUserSwitched, hasRPC: !curveApi.isNoRPC })
+    log('Hydrating DEX', curve?.chainId, { isNetworkSwitched, isUserSwitched, hasRPC: !curve.isNoRPC })
 
     // reset store
     if (isNetworkSwitched) {
-      state.pools.resetState()
       state.quickSwap.resetState()
       state.createPool.resetState()
       state.dashboard.resetState()
     }
 
-    const poolIds = await fetchPoolIds(curveApi)
-    state.pools.fetchPools(curveApi, poolIds)
-
+    await fetchPools(curve) // hydrates the lib with pool data required for curve.getPool(poolIdOrAddress)
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {

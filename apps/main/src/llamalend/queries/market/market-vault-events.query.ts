@@ -1,7 +1,7 @@
 import { getVaultEvents, type PaginatedOptions } from '@curvefi/prices-api/llamalend'
-import { rootKeys } from '@evm-ui/lib/model/query'
-import { contractValidationSuite } from '@evm-ui/lib/model/query/contract-validation'
-import type { ContractQuery } from '@evm-ui/lib/model/query/root-keys'
+import { rootKeys } from '@evm-ui/queries/root-keys'
+import type { ContractQuery } from '@evm-ui/queries/root-keys'
+import { contractValidationSuite } from '@evm-ui/queries/validation/contract-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { FieldsOf } from '@ui/lib/validation/types'
 

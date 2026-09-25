@@ -1,14 +1,15 @@
 import { LARGE_RATE } from '@/dex/constants'
-import { RewardBase, PoolData } from '@/dex/types/main.types'
+import { RewardBase } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { amount } from '@ui/lib/decimal'
 import { ChipVolatileBaseApy } from './ChipVolatileBaseApy'
 import { LegacyTooltipBaseApy } from './LegacyTooltipBaseApy'
 
-type Props = { base: RewardBase | undefined; isHighlight: boolean; poolData: PoolData | undefined }
+type Props = { base: RewardBase | undefined; isHighlight: boolean; pool: PoolTemplate | undefined }
 
-export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) =>
+export const TableCellRewardsBase = ({ base, isHighlight, pool }: Props) =>
   typeof base !== 'undefined' &&
   (+base.day > LARGE_RATE ? (
     <ChipVolatileBaseApy isBold={isHighlight} />
@@ -16,7 +17,7 @@ export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) =>
     <Chip
       isBold={isHighlight}
       size="md"
-      tooltip={base ? <LegacyTooltipBaseApy poolData={poolData} baseApy={base} /> : null}
+      tooltip={base ? <LegacyTooltipBaseApy pool={pool} baseApy={base} /> : null}
       tooltipProps={{
         placement: 'bottom-end',
         textAlign: 'left',

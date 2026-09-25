@@ -21,10 +21,20 @@ const createVisibility = (active: PoolColumnId[], disabled: PoolColumnId[]): Vis
 ]
 
 export const POOLS_COLUMN_OPTIONS = {
-  full: createVisibility([PoolColumnId.Volume, PoolColumnId.Tvl], [PoolColumnId.Deposits]),
+  full: createVisibility([PoolColumnId.Volume, PoolColumnId.Tvl], [PoolColumnId.Deposits, PoolColumnId.Claimables]),
   lite: createVisibility(
     [PoolColumnId.Tvl],
-    [PoolColumnId.BaseRate, PoolColumnId.WeeklyBaseRate, PoolColumnId.Volume, PoolColumnId.Age, PoolColumnId.Deposits],
+    [
+      PoolColumnId.BaseRate,
+      PoolColumnId.WeeklyBaseRate,
+      PoolColumnId.Volume,
+      PoolColumnId.Age,
+      PoolColumnId.Deposits,
+      PoolColumnId.Claimables,
+    ],
   ),
-  userPositions: createVisibility([PoolColumnId.Deposits], [PoolColumnId.Volume, PoolColumnId.Tvl, PoolColumnId.Age]),
+  userPositions: createVisibility(
+    [PoolColumnId.Deposits, PoolColumnId.Claimables],
+    [PoolColumnId.Volume, PoolColumnId.Tvl, PoolColumnId.Age],
+  ),
 }

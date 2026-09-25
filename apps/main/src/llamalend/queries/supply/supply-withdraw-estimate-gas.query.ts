@@ -1,5 +1,5 @@
-import { rootKeys } from '@evm-ui/lib/model'
-import { createEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
+import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { requireVault, WithdrawParams, WithdrawQuery, withdrawValidationSuite } from '../validation/supply.validation'
 
