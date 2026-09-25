@@ -3,6 +3,7 @@ import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import svgr from 'vite-plugin-svgr'
+import vercel from 'vite-plugin-vercel'
 
 const {
   SENTRY_AUTH_TOKEN,
@@ -11,6 +12,7 @@ const {
   GITHUB_SHA,
   SENTRY_APPLICATION_KEY = 'curve-stellar',
 } = process.env
+const isVercelDeployment = process.env.VERCEL === '1'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
@@ -21,6 +23,7 @@ export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     svgr(),
+    ...(isVercelDeployment ? [vercel()] : []),
     ...(SENTRY_PROJECT
       ? sentryVitePlugin({
           applicationKey: SENTRY_APPLICATION_KEY,
@@ -43,4 +46,14 @@ export default defineConfig(({ command }) => ({
     ],
   },
   define: { 'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production') },
+  ...(isVercelDeployment && {
+    vercel: {
+      buildCommand: 'yarn build',
+      rewrites: [
+        { source: '/favicon', destination: '/favicon.ico' },
+        { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
+        { source: '/(.*)', destination: '/index.html' },
+      ],
+    },
+  }),
 }))
