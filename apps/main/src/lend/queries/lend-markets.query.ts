@@ -27,7 +27,7 @@ const getMarketData = ({
 }: LendMarketTemplate): LendMarketData => ({ id, name, version, addresses, borrowed_token, collateral_token })
 
 export const { useQuery: useLendMarkets } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'getLendMarkets'] as const,
+  queryKey: ({ chainId }: ChainParams) => [rootKeys.chain({ chainId }), { name: 'getLendMarkets' }] as const,
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- type is for documentation purposes
   queryFn: async (): Promise<Record<string | Address, LendMarketData>> => {
     const api = requireLib('llamaApi')

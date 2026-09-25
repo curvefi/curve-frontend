@@ -16,13 +16,15 @@ export const {
 } = queryFactory({
   queryKey: ({ network, pool, amounts, decimals, supply, isDeposit, maxAmounts }: ExpectedLpParams) =>
     [
-      ...rootKeys.pool({ network, pool }),
-      'calc_token_amount',
-      { amounts },
-      { decimals },
-      { supply },
-      { isDeposit },
-      { maxAmounts: isDeposit ? undefined : maxAmounts },
+      rootKeys.pool({ network, pool }),
+      {
+        name: 'calc_token_amount',
+        amounts,
+        decimals,
+        supply,
+        isDeposit,
+        maxAmounts: isDeposit ? undefined : maxAmounts,
+      },
     ] as const,
   queryFn: async ({ network, pool, amounts, decimals, isDeposit }: ExpectedLpQuery) =>
     fromWei(

@@ -4,7 +4,7 @@ import { DepositParams, DepositQuery, depositValidationSuite, requireVault } fro
 
 export const { useQuery: useDepositIsApproved, fetchQuery: fetchDepositIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'depositIsApproved', { depositAmount }] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'depositIsApproved', depositAmount }] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.depositIsApproved(depositAmount),
   category: 'llamalend.supply',

@@ -9,7 +9,7 @@ const INTEGRATIONS_TAGS_URL = `${CURVE_CDN_URL}/curve-external-integrations/inte
 type IntegrationTag = { id: string; displayName: string; color: string }
 
 export const { useQuery: useIntegrationsTags } = queryFactory({
-  queryKey: () => ['integrations-tags'] as const,
+  queryKey: () => [{ name: 'integrations-tags' }] as const,
   queryFn: async () => {
     const resp = await fetchJson<IntegrationTag[]>(INTEGRATIONS_TAGS_URL)
     return parseIntegrationsTags(resp)

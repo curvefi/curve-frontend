@@ -14,7 +14,7 @@ type ClaimEstimateQuery = UserMarketQuery
 
 const { useQuery: useClaimCrvEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.claimCrv'] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'estimateGas.claimCrv' }] as const,
   queryFn: async ({ marketId }: ClaimEstimateQuery) => await requireVault(marketId).vault.estimateGas.claimCrv(),
   category: 'llamalend.supply',
   validationSuite: claimableRewardsValidationSuite,
@@ -22,7 +22,7 @@ const { useQuery: useClaimCrvEstimateGasQuery } = queryFactory({
 
 const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.claimRewards'] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'estimateGas.claimRewards' }] as const,
   queryFn: async ({ marketId }: ClaimEstimateQuery) => await requireGauge(marketId).vault.estimateGas.claimRewards(),
   category: 'llamalend.supply',
   validationSuite: claimableRewardsValidationSuite,

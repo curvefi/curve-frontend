@@ -11,7 +11,7 @@ type LlammaEventsParams = FieldsOf<GetEventsParams>
 
 export const { useQuery: useLlammaEvents } = queryFactory({
   queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaEventsParams) =>
-    ['llamma-events', { chain }, { llamma }, { endpoint }, { page }, { perPage }] as const,
+    [{ name: 'llamma-events', chain, llamma, endpoint, page, perPage }] as const,
   queryFn: async ({
     chain,
     llamma,

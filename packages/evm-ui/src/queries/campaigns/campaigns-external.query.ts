@@ -47,7 +47,7 @@ const REWARDS = groupBy(
  * @returns TanStack Query result with all active campaigns grouped by pool address
  */
 export const { getQueryOptions: getCampaignsExternalOptions, queryKey: getCampaignsExternalQueryKey } = queryFactory({
-  queryKey: () => ['campaigns-external'] as const,
+  queryKey: () => [{ name: 'campaigns-external' }] as const,
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async () => {
     const now = Date.now() // refresh is handled by refetchInterval

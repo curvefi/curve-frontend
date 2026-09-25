@@ -13,7 +13,7 @@ type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useGaugeWeightHistoryQuery } = queryFactory({
   queryKey: ({ gaugeAddress }: QueryParams) =>
-    ['gauge-getWeightHistory', { gaugeAddress: gaugeAddress?.toLowerCase() }] as const,
+    [{ name: 'gauge-getWeightHistory', gaugeAddress: gaugeAddress?.toLowerCase() }] as const,
   queryFn: async ({ gaugeAddress }: Query) => sortBy(await getWeightHistory(gaugeAddress), 'timestamp'),
   category: 'dao.gauges',
   validationSuite: createValidationSuite(({ gaugeAddress }: QueryParams) => {

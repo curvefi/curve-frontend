@@ -9,7 +9,7 @@ type ChainQuery = { chainId: number }
 type ChainParams = FieldsOf<ChainQuery>
 
 export const { useQuery: useLitePoolList, queryKey: getLitePoolListQueryKey } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => ['chain', { chainId }, 'listLitePools'] as const,
+  queryKey: ({ chainId }: ChainParams) => [{ name: 'listLitePools', chainId }] as const,
   queryFn: (params: ChainQuery) => listLitePools(params),
   validationSuite: createValidationSuite(({ chainId }: ChainQuery) =>
     group('chainValidation', () => {

@@ -44,15 +44,17 @@ export const {
     routeId,
   }: BorrowMoreParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'borrowMoreExpectedCollateral',
-      { userCollateral },
-      { userBorrowed },
-      { debt },
-      { maxDebt },
-      { slippage },
-      { leverageEnabled },
-      { routeId },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      {
+        name: 'borrowMoreExpectedCollateral',
+        userCollateral,
+        userBorrowed,
+        debt,
+        maxDebt,
+        slippage,
+        leverageEnabled,
+        routeId,
+      },
     ] as const,
   queryFn: async ({
     marketId,

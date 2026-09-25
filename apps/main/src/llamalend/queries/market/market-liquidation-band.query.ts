@@ -5,7 +5,7 @@ import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-va
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useMarketLiquidationBand } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'liquidationBand'] as const,
+  queryKey: (params: MarketParams) => [rootKeys.market(params), { name: 'liquidationBand' }] as const,
   queryFn: async ({ marketId }: MarketQuery): Promise<number | null> => {
     const market = getMarket(marketId)
     return market instanceof LendMarketTemplate

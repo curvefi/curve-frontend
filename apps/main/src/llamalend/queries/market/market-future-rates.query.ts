@@ -31,7 +31,7 @@ const fetchFutureRates = async (marketId: string, reserves: Decimal, debtDelta: 
 /** Calculates future borrow/lend rates when debt changes (e.g., borrowing more or repaying) - used for borrow operations */
 export const { useQuery: useMarketFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, debtDelta }: BorrowFutureApyParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'futureRates', { debtDelta }] as const,
+    [rootKeys.market({ chainId, marketId }), { name: 'futureRates', debtDelta }] as const,
   queryFn: async ({ marketId, debtDelta }: BorrowApyQuery) => await fetchFutureRates(marketId, RESERVES, debtDelta),
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, debtDelta }: BorrowFutureApyParams) => {
@@ -47,7 +47,7 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
 /** Calculates future borrow/lend rates when reserves change (e.g., depositing or withdrawing) - used for supply operations */
 export const { useQuery: useMarketSupplyFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, reserves }: SupplyFutureApyParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'futureRates', { reserves }] as const,
+    [rootKeys.market({ chainId, marketId }), { name: 'futureRates', reserves }] as const,
   queryFn: async ({ marketId, reserves }: SupplyApyQuery) => await fetchFutureRates(marketId, reserves, DEBT),
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, reserves }: SupplyFutureApyParams) => {

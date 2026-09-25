@@ -15,7 +15,7 @@ export const {
   invalidate: invalidateTokenBalance,
 } = queryFactory({
   queryKey: ({ network, token, account, decimals }: BalanceParams) =>
-    [...rootKeys.token({ network, token }), ...rootKeys.user({ account }), 'balance', { decimals }] as const,
+    [rootKeys.token({ network, token }), rootKeys.user({ account }), { name: 'balance', decimals }] as const,
   queryFn: async ({ network, token, account, decimals }: BalanceQuery) =>
     fromWei(
       await readContract<bigint>(network, token, 'balance', [account]).catch(error => {

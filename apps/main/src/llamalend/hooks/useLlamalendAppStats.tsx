@@ -14,7 +14,7 @@ import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
 const { useQuery: useAppStatsDailyVolume } = queryFactory({
-  queryKey: () => ['appStatsDailyVolume'] as const,
+  queryKey: () => [{ name: 'appStatsDailyVolume' }] as const,
   queryFn: async () => {
     const resp = await fetchJson<{ data: { totalVolume: number } }>(
       'https://api.curve.finance/api/getVolumes/ethereum/crvusd-amms',

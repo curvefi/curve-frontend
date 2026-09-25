@@ -12,7 +12,7 @@ const getPoolTvlFromLib = async ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
 
 const { useQuery: usePoolTvlQuery } = queryFactory({
   category: 'dex.pools',
-  queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'stats.tvl'] as const,
+  queryKey: ({ chainId, poolId }: PoolParams) => [rootKeys.pool({ chainId, poolId }), { name: 'stats.tvl' }] as const,
   queryFn: async ({ poolId }: PoolQuery) => await getPoolTvlFromLib({ poolId }),
   validationSuite: createValidationSuite((params: PoolParams) => {
     curveApiValidationGroup(params)

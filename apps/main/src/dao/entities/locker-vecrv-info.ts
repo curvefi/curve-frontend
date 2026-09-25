@@ -25,7 +25,7 @@ const lockerVecrvValidationSuite = createValidationSuite(({ chainId, userAddress
 
 const { useQuery: useLockerCrv, invalidate: invalidateLockerCrv } = queryFactory({
   queryKey: ({ chainId, userAddress }: LockerVecrvParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'boosting.getCrv'] as const,
+    [rootKeys.userChain({ chainId, userAddress }), { name: 'boosting.getCrv' }] as const,
   queryFn: async ({ userAddress }: LockerVecrvQuery) =>
     (await requireLib('curveApi').boosting.getCrv([userAddress])) as Decimal,
   category: 'dao.user',
@@ -35,7 +35,7 @@ const { useQuery: useLockerCrv, invalidate: invalidateLockerCrv } = queryFactory
 const { useQuery: useLockerLockedAmountAndUnlockTime, invalidate: invalidateLockerLockedAmountAndUnlockTime } =
   queryFactory({
     queryKey: ({ chainId, userAddress }: LockerVecrvParams) =>
-      [...rootKeys.userChain({ chainId, userAddress }), 'boosting.getLockedAmountAndUnlockTime'] as const,
+      [rootKeys.userChain({ chainId, userAddress }), { name: 'boosting.getLockedAmountAndUnlockTime' }] as const,
     queryFn: async ({ userAddress }: LockerVecrvQuery) =>
       (await requireLib('curveApi').boosting.getLockedAmountAndUnlockTime([userAddress])) as LockedAmountAndUnlockTime,
     category: 'dao.user',
@@ -44,7 +44,7 @@ const { useQuery: useLockerLockedAmountAndUnlockTime, invalidate: invalidateLock
 
 const { useQuery: useLockerVeCrv, invalidate: invalidateLockerVeCrv } = queryFactory({
   queryKey: ({ chainId, userAddress }: LockerVecrvParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'boosting.getVeCrv'] as const,
+    [rootKeys.userChain({ chainId, userAddress }), { name: 'boosting.getVeCrv' }] as const,
   queryFn: async ({ userAddress }: LockerVecrvQuery) =>
     (await requireLib('curveApi').boosting.getVeCrv([userAddress])) as Decimal,
   category: 'dao.user',

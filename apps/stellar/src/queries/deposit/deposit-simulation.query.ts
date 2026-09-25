@@ -13,14 +13,8 @@ export const {
 } = queryFactory({
   queryKey: ({ network, pool, amounts, decimals, account, minMint, supply, maxAmounts }: DepositParams) =>
     [
-      ...rootKeys.pool({ network, pool }),
-      'add_liquidity',
-      { amounts },
-      { decimals },
-      { account },
-      { minMint },
-      { supply },
-      { maxAmounts },
+      rootKeys.pool({ network, pool }),
+      { name: 'add_liquidity', amounts, decimals, account, minMint, supply, maxAmounts },
     ] as const,
   queryFn: ({ network, pool, account, amounts, decimals, minMint }: DepositQuery) =>
     simulateContractCall<bigint>(

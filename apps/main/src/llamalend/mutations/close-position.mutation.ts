@@ -36,7 +36,7 @@ export const useClosePositionMutation = ({
   const config = useConfig()
   const { mutate, error, isPending } = useMarketMutation<CloseLoanMutation>({
     network,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'close-position'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'close-position' }] as const,
     marketId,
     mutationFn: async ({ slippage }, { market }) => {
       await waitForApproval({

@@ -13,7 +13,7 @@ const defaultEnd = () => Math.floor(Date.now() / 1000)
 
 const { useQuery: usePoolSnapshotsQuery } = queryFactory({
   queryKey: ({ chain, poolAddress, start, end, unit }: PoolSnapshotsParams) =>
-    ['pool-snapshots', { chain }, { poolAddress }, { start }, { end }, { unit }] as const,
+    [{ name: 'pool-snapshots', chain, poolAddress, start, end, unit }] as const,
   queryFn: async ({ chain, poolAddress, start, end, unit = 'none' }: GetPoolSnapshotsParams) =>
     getPoolSnapshots({ chain, poolAddress, start, end, unit }),
   validationSuite: createValidationSuite(({ chain, poolAddress }: PoolSnapshotsParams) => {

@@ -30,7 +30,7 @@ export const useResetMutation = ({ network, network: { chainId }, marketId, user
   const { mutate, error, isPending } = useMarketMutation<ResetMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'reset'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'reset' }] as const,
     mutationFn: async (variables, { market, userAddress }) => {
       const debt = variables.userBorrowed ?? '0' // The reset amount paid from wallet.
       await waitForApproval({

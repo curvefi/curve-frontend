@@ -11,7 +11,7 @@ import { useStellarMutation } from './useStellarMutation'
 
 export const useSwapMutation = ({ tokens, onReset, ...params }: SwapMutationOptions) => {
   const { mutate, error, isPending } = useStellarMutation<SwapMutation>({
-    mutationKey: [...rootKeys.userPool(params), 'swap'],
+    mutationKey: [{ ...rootKeys.userPool(params), name: 'swap' }],
     createTransaction: (values, { account }) =>
       fetchSwapSimulation({ ...values, ...params, account }, { staleTime: 0 }),
     validationSuite: swapValidationSuite,
@@ -24,7 +24,7 @@ export const useSwapMutation = ({ tokens, onReset, ...params }: SwapMutationOpti
       await Promise.allSettled([
         invalidatePoolLiquidity({ ...submitted, tokens }),
         // Both quote directions and small reference trades depend on the changed reserves.
-        queryClient.invalidateQueries({ queryKey: [...rootKeys.pool(submitted), 'swap-quote'] }),
+        queryClient.invalidateQueries({ queryKey: [{ ...rootKeys.pool(submitted), name: 'swap-quote' }] }),
         invalidateSwapSimulation(submitted),
       ])
     },

@@ -19,7 +19,7 @@ type IntegrationsResponse = {
 }[]
 
 export const { useQuery: useIntegrations } = queryFactory({
-  queryKey: () => ['integrations'] as const,
+  queryKey: () => [{ name: 'integrations' }] as const,
   queryFn: async () => {
     const resp = await fetchJson<IntegrationsResponse>(INTEGRATIONS_URL)
     return parseIntegrationsList(resp)

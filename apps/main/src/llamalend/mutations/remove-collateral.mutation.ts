@@ -28,7 +28,7 @@ export const useRemoveCollateralMutation = ({
   const { mutate, error, isPending } = useMarketMutation<RemoveCollateralMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'remove-collateral'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'remove-collateral' }] as const,
     mutationFn: async ({ userCollateral }, { market }) => ({
       hash: (await getLoanImplementation(market).removeCollateral(userCollateral)) as Hex,
     }),

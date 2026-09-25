@@ -14,7 +14,7 @@ type TokenMetadata = { decimals: number; symbol: string; lp?: true; volume?: num
 export type TokenMapper = Record<Address, TokenMetadata>
 
 export const { useQuery: useTokens } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'tokens'] as const,
+  queryKey: ({ chainId }: ChainParams) => [rootKeys.chain({ chainId }), { name: 'tokens' }] as const,
   queryFn: ({ chainId }: ChainQuery) => fetchJson<TokenMapper>(`/api/router/v1/tokens${addQueryString({ chainId })}`),
   validationSuite: createValidationSuite(chainValidationGroup),
   category: 'dex.pools',

@@ -12,7 +12,7 @@ import { scrvUsdDepositValidationSuite, scrvUsdWithdrawValidationSuite } from '.
 
 export const { useQuery: useScrvUsdPreviewDeposit } = queryFactory({
   queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.previewDeposit', { depositAmount }] as const,
+    [rootKeys.userChain({ chainId, userAddress }), { name: 'st_crvUSD.previewDeposit', depositAmount }] as const,
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
     (await requireLib('llamaApi').st_crvUSD.previewDeposit(depositAmount)) as Decimal,
   category: 'savings.user',
@@ -22,11 +22,8 @@ export const { useQuery: useScrvUsdPreviewDeposit } = queryFactory({
 export const { useQuery: useScrvUsdPreviewWithdraw } = queryFactory({
   queryKey: ({ chainId, userAddress, withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawParams) =>
     [
-      ...rootKeys.userChain({ chainId, userAddress }),
-      'st_crvUSD.previewWithdraw',
-      { withdrawAmount },
-      { isFull },
-      { maxWithdrawAmount },
+      rootKeys.userChain({ chainId, userAddress }),
+      { name: 'st_crvUSD.previewRedeem', withdrawAmount, isFull, maxWithdrawAmount },
     ] as const,
   queryFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawQuery) => {
     const { st_crvUSD } = requireLib('llamaApi')

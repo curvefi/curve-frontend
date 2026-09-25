@@ -20,11 +20,8 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
   queryFactory({
     queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
       [
-        ...rootKeys.market({ chainId, marketId }),
-        'estimateGas.createLoanApprove',
-        { userBorrowed },
-        { userCollateral },
-        { leverageEnabled },
+        rootKeys.market({ chainId, marketId }),
+        { name: 'estimateGas.createLoanApprove', userBorrowed, userCollateral, leverageEnabled },
       ] as const,
     queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanEstimateGasQuery) => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
@@ -58,15 +55,8 @@ const {
     routeId,
   }: GasEstimateParams) =>
     [
-      ...rootKeys.market({ chainId, marketId }),
-      'estimateGas.createLoan',
-      { userBorrowed },
-      { userCollateral },
-      { debt },
-      { leverageEnabled },
-      { range },
-      { slippage },
-      { routeId },
+      rootKeys.market({ chainId, marketId }),
+      { name: 'estimateGas.createLoan', userBorrowed, userCollateral, debt, leverageEnabled, range, slippage, routeId },
     ] as const,
   queryFn: async ({
     marketId,

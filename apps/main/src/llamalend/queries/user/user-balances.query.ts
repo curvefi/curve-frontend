@@ -15,7 +15,7 @@ type LendBalances = { collateral: Decimal; borrowed: Decimal; vaultShares: Decim
 
 export const { useQuery: useUserBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserBalancesParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'wallet.balances'] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'wallet.balances' }] as const,
   queryFn: async ({ marketId }: UserBalancesQuery) => {
     const market = getMarket(marketId)
     if (market instanceof LendMarketTemplate) {

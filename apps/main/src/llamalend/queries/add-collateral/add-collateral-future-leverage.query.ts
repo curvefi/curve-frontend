@@ -13,9 +13,8 @@ import { leverageCollateralValidationSuite } from '../validation/manage-loan.val
 export const { useQuery: useAddCollateralFutureLeverage } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'addCollateralFutureLeverage',
-      { userCollateral },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'addCollateralFutureLeverage', userCollateral },
     ] as const,
   queryFn: async ({ marketId, userAddress, userCollateral }: CollateralQuery) =>
     decimal(await getLoanImplementation(marketId).addCollateralFutureLeverage(userCollateral, userAddress)) ?? null,

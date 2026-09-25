@@ -28,7 +28,7 @@ export const useStakeMutation = ({ network, network: { chainId }, marketId, user
   const { mutate, error, isPending } = useMarketMutation<StakeMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stake'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'stake' }] as const,
     mutationFn: async ({ stakeShares, isFull }, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({

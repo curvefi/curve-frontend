@@ -6,13 +6,7 @@ import { bridgeValidationSuite } from '../validation/bridge.validation'
 
 export const { useQuery: useBridgeIsApproved, invalidate: invalidateBridgeIsApproved } = queryFactory({
   queryKey: ({ chainId, userAddress, amount }: BridgeParams) =>
-    [
-      ...rootKeys.chain({ chainId }),
-      ...rootKeys.user({ userAddress }),
-      'amount',
-      { amount },
-      'fastBridge.isApproved',
-    ] as const,
+    [rootKeys.chain({ chainId }), rootKeys.user({ userAddress }), { name: 'fastBridge.isApproved', amount }] as const,
   queryFn: async ({ amount }: BridgeQuery) => await requireLib('curveApi').fastBridge.isApproved(amount),
   category: 'bridge.user',
   validationSuite: bridgeValidationSuite,

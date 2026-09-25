@@ -9,7 +9,7 @@ type PoolTradesParams = FieldsOf<GetAllPoolTradesParams>
 
 export const { useQuery: usePoolTrades } = queryFactory({
   queryKey: ({ chain, poolAddress, page, perPage, includeState }: PoolTradesParams) =>
-    ['pool-trades', { chain }, { poolAddress }, { page }, { perPage }, { includeState }] as const,
+    [{ name: 'pool-trades', chain, poolAddress, page, perPage, includeState }] as const,
   queryFn: async ({
     chain,
     poolAddress,

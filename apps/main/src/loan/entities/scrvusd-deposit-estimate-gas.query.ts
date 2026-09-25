@@ -9,9 +9,8 @@ import { scrvUsdDepositMaxValidationSuite } from './scrvusd.validation'
 const { useQuery: useScrvUsdDepositApproveEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) =>
     [
-      ...rootKeys.userChain({ chainId, userAddress }),
-      'st_crvUSD.estimateGas.depositApprove',
-      { depositAmount },
+      rootKeys.userChain({ chainId, userAddress }),
+      { name: 'st_crvUSD.estimateGas.depositApprove', depositAmount },
     ] as const,
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
     await requireLib('llamaApi').st_crvUSD.estimateGas.depositApprove(depositAmount),
@@ -21,7 +20,7 @@ const { useQuery: useScrvUsdDepositApproveEstimateGas } = queryFactory({
 
 const { useQuery: useScrvUsdDepositEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.estimateGas.deposit', { depositAmount }] as const,
+    [rootKeys.userChain({ chainId, userAddress }), { name: 'st_crvUSD.estimateGas.deposit', depositAmount }] as const,
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
     await requireLib('llamaApi').st_crvUSD.estimateGas.deposit(depositAmount),
   category: 'savings.user',

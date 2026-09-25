@@ -10,7 +10,7 @@ type MarketVaultEventsParams = FieldsOf<MarketVaultEventsQuery>
 
 export const { useQuery: useMarketVaultEvents } = queryFactory({
   queryKey: ({ blockchainId, contractAddress, page, perPage }: MarketVaultEventsParams) =>
-    [...rootKeys.contract({ blockchainId, contractAddress }), 'vault-events', { page }, { perPage }] as const,
+    [rootKeys.contract({ blockchainId, contractAddress }), { name: 'vault-events', page, perPage }] as const,
   queryFn: ({ blockchainId, contractAddress, page, perPage }: MarketVaultEventsQuery) =>
     getVaultEvents(blockchainId, contractAddress, { page, perPage }),
   category: 'llamalend.market',

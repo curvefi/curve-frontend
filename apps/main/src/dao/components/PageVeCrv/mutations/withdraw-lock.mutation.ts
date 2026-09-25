@@ -24,7 +24,7 @@ export const useWithdrawLockMutation = ({
   onWithdrawn: OnTransactionSuccess<WithdrawLockMutation>
 }) => {
   const { mutate, error, isPending } = useEvmMutation<WithdrawLockMutation>({
-    mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'lockCrv.withdraw'] as const,
+    mutationKey: [{ ...rootKeys.userChain({ chainId, userAddress }), name: 'lockCrv.withdraw' }] as const,
     mutationFn: async () => ({ hash: (await requireLib('curveApi').boosting.withdrawLockedCrv()) as Hex }),
     validationSuite: withdrawLockValidationSuite,
     validationParams: { chainId, lockedAmount, unlockTime },

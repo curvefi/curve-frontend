@@ -12,9 +12,8 @@ type AddCollateralIsApprovedParams<T = IChainId> = FieldsOf<AddCollateralIsAppro
 export const { useQuery: useAddCollateralIsApproved, fetchQuery: fetchAddCollateralIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralIsApprovedParams) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'addCollateralIsApproved',
-      { userCollateral },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      { name: 'addCollateralIsApproved', userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralIsApprovedQuery): Promise<boolean> =>
     await getLoanImplementation(marketId).addCollateralIsApproved(userCollateral),

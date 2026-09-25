@@ -11,7 +11,7 @@ type LlammaTradesParams = FieldsOf<GetTradesParams>
 
 export const { useQuery: useLlammaTrades } = queryFactory({
   queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaTradesParams) =>
-    ['llamma-trades', { chain }, { llamma }, { endpoint }, { page }, { perPage }] as const,
+    [{ name: 'llamma-trades', chain, llamma, endpoint, page, perPage }] as const,
   queryFn: async ({
     chain,
     llamma,

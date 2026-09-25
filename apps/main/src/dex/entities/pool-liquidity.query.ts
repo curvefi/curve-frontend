@@ -9,7 +9,7 @@ type PoolLiquidityEventsParams = FieldsOf<GetPoolLiquidityEventsParams>
 
 export const { useQuery: usePoolLiquidityEvents } = queryFactory({
   queryKey: ({ chain, poolAddress, page, perPage }: PoolLiquidityEventsParams) =>
-    ['pool-liquidity-events', { chain }, { poolAddress }, { page }, { perPage }] as const,
+    [{ name: 'pool-liquidity-events', chain, poolAddress, page, perPage }] as const,
   queryFn: async ({
     chain,
     poolAddress,

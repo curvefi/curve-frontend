@@ -7,7 +7,7 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSupportedNetworkGroup } from '../validation/bridge.validation'
 
 export const { useQuery: useBridgeCost, fetchQuery: fetchBridgeCost } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'fastBridge.bridgeCost'] as const,
+  queryKey: ({ chainId }: ChainParams) => [rootKeys.chain({ chainId }), { name: 'fastBridge.bridgeCost' }] as const,
   queryFn: async () => await requireLib('curveApi').fastBridge.bridgeCost(),
   category: 'bridge.cost',
   validationSuite: createValidationSuite((params: ChainParams) => {

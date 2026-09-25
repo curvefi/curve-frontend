@@ -12,7 +12,7 @@ import { multicall } from '@wagmi/core'
 export type VeCrvStats = { totalVeCrv: Decimal; totalLockedCrv: Decimal; totalCrv: Decimal; lockedPercentage: Decimal }
 
 export const { useQuery: useStatsVecrvQuery } = queryFactory({
-  queryKey: () => ['stats-vecrv'] as const,
+  queryKey: () => [{ name: 'stats-vecrv' }] as const,
   queryFn: async (): Promise<VeCrvStats> => {
     const config = getWagmiConfig()
     if (!config) throw new Error('Wagmi config is not initialized')

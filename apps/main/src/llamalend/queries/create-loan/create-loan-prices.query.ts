@@ -29,15 +29,8 @@ export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPr
     routeId,
   }: CreateLoanPricesReceiveParams) =>
     [
-      ...rootKeys.market({ chainId, marketId }),
-      'createLoanPrices',
-      { userCollateral },
-      { userBorrowed },
-      { debt },
-      { leverageEnabled },
-      { range },
-      { maxDebt },
-      { routeId },
+      rootKeys.market({ chainId, marketId }),
+      { name: 'createLoanPrices', userCollateral, userBorrowed, debt, leverageEnabled, range, maxDebt, routeId },
     ] as const,
   queryFn: async ({
     marketId,

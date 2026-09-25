@@ -12,7 +12,7 @@ import type { Range } from '@ui/features/queries/util'
 
 export const { useQuery: useResetPrices } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'resetPrices', { userBorrowed }] as const,
+    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'resetPrices', userBorrowed }] as const,
   queryFn: async ({ marketId, userAddress, ...params }: ResetQuery) =>
     (await getResetImplementation(marketId).repayPrices({
       debt: params.userBorrowed,
