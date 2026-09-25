@@ -8,10 +8,11 @@ function createLightSurfaces() {
     Disabled: Grays[500],
     Highlight: Blues[500],
     Feedback: {
-      Success: Greens[600],
-      Caution: Yellows[700],
-      Warning: Oranges[600],
+      Success: Greens[700],
+      Caution: Yellows[950],
+      Warning: Oranges[800],
       Error: Reds[600],
+      Info: Blues[600],
       Danger: Oranges[600],
       Inverted: Grays[50],
     },
@@ -99,8 +100,9 @@ function createDarkSurfaces() {
     Feedback: {
       Success: Greens[400],
       Caution: Yellows[500],
-      Warning: Oranges[500],
-      Error: Reds[500],
+      Warning: Oranges[400],
+      Error: Reds[300],
+      Info: Blues[300],
       Danger: Oranges[500],
       Inverted: Grays[950],
     },
@@ -166,11 +168,12 @@ function createDarkSurfaces() {
 function createChadSurfaces() {
   const Text = {
     Feedback: {
-      Caution: Yellows[700],
-      Warning: Oranges[600],
-      Success: Greens[600],
+      Caution: Oranges[950],
+      Warning: Oranges[900],
+      Success: Greens[700],
       Danger: Oranges[500],
-      Error: Reds[500],
+      Error: Reds[700],
+      Info: Blues[700],
       Inverted: Grays[50],
     },
     FilledFeedback: {
@@ -254,8 +257,9 @@ function createLightInvertedSurfaces() {
     Feedback: {
       Success: Greens[300],
       Caution: Yellows[500],
-      Warning: Oranges[500],
-      Error: Reds[600],
+      Warning: Oranges[300],
+      Error: Reds[100],
+      Info: Blues[200],
       Danger: Oranges[500],
       Inverted: Grays[50],
     },
@@ -341,9 +345,10 @@ function createDarkInvertedSurfaces() {
     },
     Feedback: {
       Success: Greens[600],
-      Caution: Yellows[500],
-      Warning: Oranges[500],
-      Error: Reds[500],
+      Caution: Yellows[950],
+      Warning: Oranges[800],
+      Error: Reds[600],
+      Info: Blues[600],
       Danger: Oranges[500],
       Inverted: Grays[950],
     },
@@ -409,10 +414,11 @@ function createDarkInvertedSurfaces() {
 function createChadInvertedSurfaces() {
   const Text = {
     Feedback: {
-      Caution: Yellows[500],
-      Warning: Yellows[500],
-      Success: Greens[500],
-      Error: Reds[500],
+      Caution: Yellows[400],
+      Warning: Oranges[100],
+      Success: Greens[200],
+      Error: Reds[50],
+      Info: Blues[100],
       Danger: Yellows[500],
       Inverted: Grays[50],
     },

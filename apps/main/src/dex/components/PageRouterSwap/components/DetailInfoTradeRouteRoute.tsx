@@ -3,11 +3,10 @@ import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
-import { getTokens, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, isWrappedOnly, tryGetPool } from '@/dex/pool.utils'
 import { getToken, type TokenMapper } from '@/dex/queries/tokens.query'
 import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
 import Stack from '@mui/material/Stack'
@@ -23,17 +22,19 @@ export const DetailInfoTradeRouteRoute = ({
   params,
   route,
   tokens,
-  pool,
+  poolId,
   swapCustomRouteRedirect,
 }: {
   params: UrlParams
   route: Route
   tokens: TokenMapper | undefined
-  pool: PoolTemplate | undefined
+  poolId: string
   swapCustomRouteRedirect: string | undefined
 }) => {
   const inputToken = getToken(tokens, route.inputCoinAddress)?.symbol ?? shortenAddress(route.inputCoinAddress)
   const outputToken = getToken(tokens, route.outputCoinAddress)?.symbol ?? shortenAddress(route.outputCoinAddress)
+
+  const pool = useMemo(() => tryGetPool(poolId), [poolId])
   const { tokens: poolTokens, tokenAddresses } = useMemo(
     () =>
       maybe(pool, pool => getTokens(pool, { wrapped: isWrappedOnly(pool) })) ?? {
