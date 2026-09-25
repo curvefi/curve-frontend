@@ -35,7 +35,7 @@ const keepDisplayedValue = <T,>(query: Query<T>) =>
   q(query.data != null && query.error != null ? { data: query.data, isLoading: query.isLoading, error: null } : query)
 const { Spacing } = SizesAndSpaces
 
-type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty; lead?: 'buffer' | 'health' | 'neither' }
+type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
 export const BorrowInformation = (props: BorrowInformationProps) =>
   useNewLlamalendHealth() ? <BetaBorrowInformation {...props} /> : <CurrentBorrowInformation {...props} />
@@ -136,8 +136,7 @@ const CurrentBorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   )
 }
 
-const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken }, lead }: BorrowInformationProps) => {
-  const detailCategory = lead === 'buffer' ? 'llamalend.positionCardSupport' : METRIC_CATEGORY
+const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const { blockchainId, controllerAddress, marketType } = useMarketContext()
   const userState = useUserState(params)
   const oraclePrice = useMarketOraclePrice(params)
@@ -209,7 +208,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
     <>
       <Box sx={{ gridArea: 'range' }} data-testid="beta-borrow-information">
         <Metric
-          category={detailCategory}
+          category={METRIC_CATEGORY}
           label={t`Liquidation range`}
           testId="liquidation-range"
           value={keepDisplayedValue(mapQuery(userPrices, prices => prices?.[1]))}
@@ -241,7 +240,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
       </Box>
       <Stack sx={{ gridArea: 'collateral', gap: Spacing.xxs }}>
         <Metric
-          category={detailCategory}
+          category={METRIC_CATEGORY}
           label={t`Collateral value`}
           value={keepDisplayedValue(collateralValue)}
           valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
@@ -266,7 +265,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
       </Stack>
       <Box sx={{ gridArea: 'debt' }}>
         <Metric
-          category={detailCategory}
+          category={METRIC_CATEGORY}
           label={t`Total debt`}
           {...tokenMetric({
             value: keepDisplayedValue(mapQuery(userState, ({ debt }) => debt)),
@@ -279,7 +278,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
       <Box sx={{ gridArea: 'leverage' }}>
         {isPositionLeveraged(leverageValue.data) && (
           <Metric
-            category={detailCategory}
+            category={METRIC_CATEGORY}
             label={t`Leverage`}
             value={keepDisplayedValue(leverageValue)}
             valueOptions={{ unit: 'multiplier' }}
@@ -290,7 +289,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
       {roe.data?.kind !== 'hidden' && (
       <Box sx={{ gridArea: 'roe' }}>
         <Metric
-          category={detailCategory}
+          category={METRIC_CATEGORY}
           label={t`Return on equity`}
           testId="position-roe"
           value={keepDisplayedValue(

@@ -26,6 +26,7 @@ import { t } from '@ui/lib/i18n'
 import {
   bufferAmount,
   formatOracleHealth,
+  isOracleHealthFloor,
   formatSignedAmount,
   formatSignedPercent,
   oracleHealth,
@@ -50,17 +51,14 @@ const HEALTH_PRECISION_THRESHOLD = 1.1
 export const HealthDetails = ({
   health,
   positionStatus,
-  lead = 'health',
 }: {
   health: HealthQuery
   positionStatus: QueryProp<UserPositionStatus>
-  /** Buffer leads only while the oracle price is inside the liquidation range. */
-  lead?: 'buffer' | 'health' | 'neither'
 }) => {
   const beta = useNewLlamalendHealth()
   const theme = useTheme()
   const market = use(MarketContext)
-  if (beta && market) return <BetaHealthDetails lead={lead} />
+  if (beta && market) return <BetaHealthDetails />
   const { state, healthState, type } = getHealthDetailsState(health.data)
 
   return (
@@ -119,7 +117,7 @@ const STATUS_BADGE_COLOR: Record<PositionSeverity, ChipColors> = {
 }
 
 /** Beta card content. Full health is the same Controller health(full) read the rest of the market uses. */
-const BetaHealthDetails = ({ lead }: { lead: 'buffer' | 'health' }) => {
+const BetaHealthDetails = () => {
   const { chainId, marketId, userAddress, controllerAddress, tokens } = useMarketContext()
   const params = { chainId, marketId, userAddress }
   const oracle = useMarketOraclePrice(params)
@@ -162,13 +160,17 @@ const BetaHealthDetails = ({ lead }: { lead: 'buffer' | 'health' }) => {
           : status?.severity === 'critical' || status?.severity === 'liquidatable'
             ? 'Error'
             : undefined
-  const healthColor = textFeedback ? theme.design.Text.TextColors.Feedback[textFeedback] : undefined
-  const bufferColor = healthColor
+  const statusColor = textFeedback ? theme.design.Text.TextColors.Feedback[textFeedback] : undefined
+  const healthColor =
+    healthValue.data != undefined && isOracleHealthFloor(healthValue.data)
+      ? theme.design.Text.TextColors.Feedback.Error
+      : statusColor
+  const bufferColor = statusColor
   return (
     <>
       <Box sx={{ gridArea: 'health' }} data-testid="beta-health-details">
         <Metric
-          category={lead === 'health' ? 'llamalend.legacyPositionHealth' : 'llamalend.positionCardSupport'}
+          category="llamalend.legacyPositionHealth"
           label={t`Health`}
           testId="health-details-health-metric"
           value={keepDisplayedValue(healthValue)}
@@ -210,7 +212,7 @@ const BetaHealthDetails = ({ lead }: { lead: 'buffer' | 'health' }) => {
       </Box>
       <Box sx={{ gridArea: 'buffer' }}>
         <Metric
-          category={lead === 'buffer' ? 'llamalend.legacyPositionHealth' : 'llamalend.positionBorrowDetails'}
+          category="llamalend.positionBorrowDetails"
           label={t`Liquidation buffer`}
           testId="health-details-liquidation-buffer-metric"
           value={keepDisplayedValue(bufferValue)}

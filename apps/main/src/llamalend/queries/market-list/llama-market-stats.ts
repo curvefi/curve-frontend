@@ -1,14 +1,10 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
-import { getAddress } from 'viem'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
-import { getMarketOraclePriceOptions } from '@/llamalend/queries/market/market-oracle-price.query'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
-import { getLendMarketCatalogOptions, getMintMarketCatalogOptions } from '@/llamalend/queries/market-list/sdk-market-catalog'
-import { getUserHealthOptions } from '@/llamalend/queries/user/user-health.query'
-import { getUserPricesOptions } from '@/llamalend/queries/user/user-prices.query'
+import { getPositionRiskOptions, type PositionRisk } from '@/llamalend/queries/market-list/position-risk.query'
 import type { Chain } from '@curvefi/prices-api'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { getTokenUsdRateQueryOptions } from '@evm-ui/queries/token-usd-rate.query'
@@ -78,37 +74,6 @@ const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   risk: EMPTY_RISK,
 }
 
-const sameAddress = (left: string | undefined, right: string) => {
-  if (!left) return false
-  try {
-    return getAddress(left) === getAddress(right)
-  } catch {
-    return false
-  }
-}
-
-/** The market page looks the SDK registry up by the route key: lend uses the controller, mint uses the market name. */
-const registryKey = (market: LlamaMarket) => decodeURIComponent(market.url.split('/').at(-1) ?? '')
-
-const controllerMarketId = (catalog: Record<string, { id?: string; addresses?: { controller?: string; amm?: string }; controller_address?: string; amm_address?: string }> | undefined, market: LlamaMarket) => {
-  if (!catalog) return undefined
-  const routeKey = registryKey(market)
-  const direct = catalog[routeKey]
-  if (direct?.id) return direct.id
-  const controller = market.controllerAddress
-  for (const [key, entry] of Object.entries(catalog)) {
-    const matched =
-      key === routeKey ||
-      sameAddress(key, controller) ||
-      sameAddress(entry.addresses?.controller, controller) ||
-      sameAddress(entry.controller_address, controller) ||
-      sameAddress(entry.addresses?.amm, market.ammAddress) ||
-      sameAddress(entry.amm_address, market.ammAddress)
-    if (matched && entry.id) return entry.id
-  }
-  return undefined
-}
-
 /** Internal market-list row shape; API market data remains free of view/query state. */
 export type LlamaMarketRow = LlamaMarket & { positionQueries: UserPositionQueries }
 export type LlamaMarketsTableResult = Omit<LlamaMarketsResult, 'markets'> & { markets: LlamaMarketRow[] }
@@ -154,10 +119,6 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
   const statsEntries = useMemo(() => createStatsEntries(markets, userAddress), [markets, userAddress])
   const tokenPriceEntries = useMemo(() => createTokenPriceEntries(markets), [markets])
   const borrowMarkets = useMemo(() => markets.filter(market => market.userHasPositions?.Borrow), [markets])
-  const chainIds = useMemo(
-    () => [...new Set(borrowMarkets.map(market => requireChainId(market.chain)))],
-    [borrowMarkets],
-  )
 
   const statsQueries = useQueries({
     queries: useMemo(() => statsEntries.map(({ options }) => options), [statsEntries]),
@@ -167,38 +128,21 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
     combine: results => results.map(result => q<TokenPrice>(result)),
   })
-  const catalogQueries = useQueries({
-    queries: useMemo(
-      () =>
-        beta
-          ? chainIds.flatMap(chainId => [getMintMarketCatalogOptions({ chainId }), getLendMarketCatalogOptions({ chainId })])
-          : [],
-      [beta, chainIds],
-    ),
-    combine: results => results.map(result => q<Record<string, { id: string }>>(result)),
-  })
   const riskEntries = useMemo(() => {
     if (!beta || !userAddress) return []
-    return borrowMarkets.map(market => {
-      const chainId = requireChainId(market.chain)
-      const catalogIndex = chainIds.indexOf(chainId)
-      const catalog = (
-        market.type === MarketType.Lend ? catalogQueries[catalogIndex * 2 + 1] : catalogQueries[catalogIndex * 2]
-      )?.data
-      const marketId = controllerMarketId(catalog, market)
-      const params = { chainId, marketId: marketId ?? market.controllerAddress, userAddress }
-      const enabled = marketId != null
-      return {
-        market,
-        health: getUserHealthOptions({ ...params, isFull: true }, enabled),
-        oracle: getMarketOraclePriceOptions(params, enabled),
-        prices: getUserPricesOptions({ ...params, loanExists: true }, enabled),
-      }
-    })
-  }, [beta, borrowMarkets, catalogQueries, chainIds, userAddress])
+    return borrowMarkets.map(market => ({
+      market,
+      options: getPositionRiskOptions({
+        chainId: requireChainId(market.chain),
+        userAddress,
+        controllerAddress: market.controllerAddress,
+        ammAddress: market.ammAddress,
+      }),
+    }))
+  }, [beta, borrowMarkets, userAddress])
   const riskQueries = useQueries({
-    queries: useMemo(() => riskEntries.flatMap(entry => [entry.health, entry.oracle, entry.prices]), [riskEntries]),
-    combine: results => results.map(result => q(result)),
+    queries: useMemo(() => riskEntries.map(entry => entry.options), [riskEntries]),
+    combine: results => results.map(result => q<PositionRisk>(result)),
   })
 
   return useMemo(() => {
@@ -207,15 +151,18 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
       tokenPriceEntries.map((entry, index) => [getTokenPriceKey(entry), tokenPriceQueries[index]]),
     )
     const riskByMarket = new Map(
-      riskEntries.map(({ market }, index) => [
-        market,
-        {
-          fullHealth: riskQueries[index * 3] ?? DISABLED_Q,
-          oracle: riskQueries[index * 3 + 1] ?? DISABLED_Q,
-          prices: riskQueries[index * 3 + 2] ?? DISABLED_Q,
-          beta: true,
-        } satisfies PositionRiskQueries,
-      ]),
+      riskEntries.map(({ market }, index) => {
+        const risk = riskQueries[index] ?? DISABLED_Q
+        return [
+          market,
+          {
+            fullHealth: mapQuery(risk, data => data.fullHealth),
+            oracle: mapQuery(risk, data => data.oracle),
+            prices: mapQuery(risk, data => data.prices),
+            beta: true,
+          } satisfies PositionRiskQueries,
+        ] as const
+      }),
     )
 
     const getPriceQuery = (chain: Chain, tokenAddress: Address) =>

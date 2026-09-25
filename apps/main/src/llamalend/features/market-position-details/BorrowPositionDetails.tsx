@@ -1,6 +1,5 @@
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
-import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { observationTime, riskProvenance } from '@/llamalend/position-metrics/provenance'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
@@ -16,17 +15,14 @@ import { t } from '@ui/lib/i18n'
 import { BorrowInformation } from './BorrowInformation'
 import { HealthDetails } from './health/HealthDetails'
 import { LegacyHealthDetails } from './health/LegacyHealthDetails'
-import { resolvePositionStatus } from './position-status.utils'
 
 const { Spacing } = SizesAndSpaces
 
 const HEALTH_LEAD_AREAS = `"health range buffer collateral" "status debt leverage roe"`
-const BUFFER_LEAD_AREAS = `"buffer range health collateral" "status debt leverage roe"`
 const MOBILE_HEALTH_AREAS = `"health status" "range range" "buffer buffer" "collateral collateral" "debt debt" "leverage leverage" "roe roe"`
-const MOBILE_BUFFER_AREAS = `"buffer status" "range range" "health health" "collateral collateral" "debt debt" "leverage leverage" "roe roe"`
 
 export const BorrowPositionDetails = () => {
-  const { chainId, marketId, tokens, userAddress, controllerAddress } = useMarketContext()
+  const { chainId, marketId, tokens, userAddress } = useMarketContext()
   const { collateralToken, borrowToken } = tokens
   const params = { chainId, marketId, userAddress }
   const liquidationStatus = useLiquidationStatus(params)
@@ -36,19 +32,6 @@ export const BorrowPositionDetails = () => {
   const oracle = useMarketOraclePrice(params)
   const userPrices = useUserPrices(params)
   const userState = useUserState(params)
-  const lead =
-    oracle.data && userPrices.data && userState.data
-      ? resolvePositionStatus({
-          oraclePrice: oracle.data,
-          upperPrice: userPrices.data[1],
-          lowerPrice: userPrices.data[0],
-          fullHealth: fullHealth.data,
-          collateralQuantity: userState.data.collateral,
-          debt: userState.data.debt,
-          liquidationPredicate: 'strict-negative',
-          assetsType: getMarketAssetsType(chainId, controllerAddress),
-        }).lead
-      : 'health'
   const watched = [fullHealth, oracle, userPrices, userState]
   const refreshFailed = watched.some(query => query.error != null && query.data != null)
   const provenance = riskProvenance([
@@ -73,13 +56,13 @@ export const BorrowPositionDetails = () => {
             alignItems: 'start',
             gridTemplateColumns: { mobile: '1fr 1fr', tablet: 'repeat(4, minmax(0, 1fr))' },
             gridTemplateAreas: {
-              mobile: lead === 'buffer' ? MOBILE_BUFFER_AREAS : MOBILE_HEALTH_AREAS,
-              tablet: lead === 'buffer' ? BUFFER_LEAD_AREAS : HEALTH_LEAD_AREAS,
+              mobile: MOBILE_HEALTH_AREAS,
+              tablet: HEALTH_LEAD_AREAS,
             },
           }}
         >
-          <HealthDetails health={health} positionStatus={liquidationStatus} lead={lead} />
-          <BorrowInformation params={params} tokens={tokens} lead={lead} />
+          <HealthDetails health={health} positionStatus={liquidationStatus} />
+          <BorrowInformation params={params} tokens={tokens} />
         </Box>
         {refreshFailed && (
           <Typography variant="bodyXsRegular" color="textSecondary" data-testid="position-update-failed">

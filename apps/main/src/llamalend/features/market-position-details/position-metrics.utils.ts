@@ -116,6 +116,9 @@ export const compositionShares = (collateralAssets: Decimal, borrowedAssets: Dec
   }
 }
 
+/** Displayed 1.00 means the oracle is at or below the top of the range, so conversion can erode collateral. */
+export const isOracleHealthFloor = (health: Decimal) => !decimalGreaterThan(health, d(1))
+
 /** Any value above 1 must not collapse to the boundary label 1.00. */
 export const formatOracleHealth = (health: Decimal): string => {
   if (!decimalGreaterThan(health, d(1))) return '1.00'
