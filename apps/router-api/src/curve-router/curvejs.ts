@@ -20,7 +20,7 @@ const FACTORIES = [
 
 const ONE_MINUTE = 60000
 
-const setsEqual = <T>(a: ReadonlySet<T>, b: ReadonlySet<T>) => a.size === b.size && [...a].every(value => b.has(value))
+const setsEqual = <T>(a: ReadonlySet<T>, b: ReadonlySet<T>) => a.size === b.size && !a.difference(b).size
 
 /**
  * Fetch pools and their blacklist, keeping the shared instance updated with periodic refreshes.

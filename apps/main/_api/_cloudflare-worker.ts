@@ -1,3 +1,4 @@
+/** This file is the entry point for the Cloudflare Worker runtime. It is prefixed with _ so it's ignored by Vercel. */
 // eslint-disable-next-line import-x/no-unresolved, local/isolated-packages -- Cloudflare provides this Worker runtime module.
 import { httpServerHandler } from 'cloudflare:node'
 import { createMerklServer } from 'merkl-api/src/server'
@@ -22,7 +23,6 @@ function prepareApi(create: typeof createRouterApiServer, name: string) {
 const routerApi = prepareApi(createRouterApiServer, 'router-api')
 const merklApi = prepareApi(createMerklServer, 'merkl')
 
-// eslint-disable-next-line import-x/no-default-export -- default export required by cloudflare
 export default {
   fetch: async (request: Request): Promise<Response> =>
     new URL(request.url).pathname.startsWith('/api/merkl/') ? await merklApi(request) : await routerApi(request),
