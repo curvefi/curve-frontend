@@ -28,7 +28,7 @@ export const LeverageDelegationModal = ({
     footer={
       <Stack sx={{ flexGrow: 1 }}>
         <Button onClick={onConfirm} data-testid="leverage-delegation-approve">
-          {t`Approve delegation`}
+          {t`Approve delegation & Continue`}
         </Button>
       </Stack>
     }

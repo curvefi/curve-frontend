@@ -12,6 +12,6 @@ export const getFormButtonLabel = ({
   isApproved?: QueryProp<boolean>
   labels: (string | Exclude<Falsy, ''>)[]
 }) =>
-  isControllerApproved?.data === false
-    ? t`Approve delegation`
-    : joinButtonText(...notFalsy(isApproved?.data === false && t`Approve`, ...labels))
+  joinButtonText(
+    ...notFalsy((isControllerApproved?.data === false || isApproved?.data === false) && t`Approve`, ...labels),
+  )
