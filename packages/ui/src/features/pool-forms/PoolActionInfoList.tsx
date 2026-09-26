@@ -6,6 +6,7 @@ import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
 import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
+import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -17,6 +18,7 @@ type PoolActionInfoListProps = {
   slippage: Decimal
   onSlippageChange: (slippage: Decimal) => void
   userAddress: Address | undefined
+  slippageType?: SlippageType
   expectedLp?: QueryProp<Decimal>
   expectedLpLabel?: string
   expectedLpTestId?: string
@@ -40,6 +42,7 @@ export const PoolActionInfoList = ({
   slippage,
   onSlippageChange,
   userAddress,
+  slippageType = 'stable',
   expectedLp,
   expectedLpLabel,
   expectedLpTestId,
@@ -92,8 +95,8 @@ export const PoolActionInfoList = ({
     )}
     <SlippageToleranceActionInfo
       maxSlippage={slippage}
-      onChanged={({ stable }) => onSlippageChange(stable)}
-      type="stable"
+      onChanged={slippage => onSlippageChange(slippage[slippageType])}
+      type={slippageType}
       userAddress={userAddress}
       size="small"
     />

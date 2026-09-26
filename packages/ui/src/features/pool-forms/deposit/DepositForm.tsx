@@ -8,16 +8,21 @@ import { FormButton } from '@ui/features/forms/FormButton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import type { PoolFormProps } from '../pool-form.types'
-import { allTokenFields, type PoolForm, type PoolTokenField } from '../pool-form.utils'
+import { allTokenFields, type PoolDepositForm, type PoolTokenField } from '../pool-form.utils'
 import { PoolTokenInputs } from '../PoolTokenInputs'
 import { BalancedDepositCheckbox } from './BalancedDepositCheckbox'
+import { WrappedDepositCheckbox } from './WrappedDepositCheckbox'
 
-export type DepositFormProps<TValues extends PoolForm = PoolForm> = PoolFormProps<TValues> & {
+export type DepositFormProps<TValues extends PoolDepositForm = PoolDepositForm> = PoolFormProps<TValues> & {
   reserves: QueryProp<Decimal[]>
   isSeed: QueryProp<boolean>
+  canDepositWrapped?: boolean
+  isWrappedOnly?: boolean
+  enableFirstOnly?: boolean
+  maxAmounts?: QueryProp<(Decimal | undefined)[]>
 }
 
-export const DepositForm = <TValues extends PoolForm>({
+export const DepositForm = <TValues extends PoolDepositForm>({
   form,
   tokens,
   onSubmit,
@@ -31,6 +36,10 @@ export const DepositForm = <TValues extends PoolForm>({
   formErrors,
   footer,
   isSeed,
+  canDepositWrapped = false,
+  isWrappedOnly = false,
+  enableFirstOnly = false,
+  maxAmounts,
 }: DepositFormProps<TValues>) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
     {isSeed.data && (
@@ -39,7 +48,14 @@ export const DepositForm = <TValues extends PoolForm>({
         {t`The seed lock is permanent; expected LP is the net amount you receive.`}
       </Alert>
     )}
-    <PoolTokenInputs tokens={tokens} reserves={reserves} isDisabled={isPending} />
+    <PoolTokenInputs
+      tokens={tokens}
+      reserves={reserves}
+      isDisabled={isPending}
+      maxAmounts={maxAmounts}
+      enableFirstOnly={enableFirstOnly}
+    />
+    {canDepositWrapped && <WrappedDepositCheckbox disabled={isPending || isWrappedOnly || enableFirstOnly} />}
     <BalancedDepositCheckbox
       reserves={reserves}
       isConnected={wallet.isConnected}
