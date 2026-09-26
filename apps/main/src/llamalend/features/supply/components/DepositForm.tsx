@@ -1,4 +1,5 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { getFormButtonLabel } from '@/llamalend/widgets/action-card/form-button-label'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -32,7 +33,7 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
     isApproved,
     max,
     disabledAlert,
-    solvencyModal: { onConfirm, onClose, isOpen },
+    solvencyModal,
   } = useDepositForm({ network })
 
   return (
@@ -63,19 +64,13 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled}
-        label={[isApproved.data === false && t`Approve`, t`Deposit`]}
+        label={getFormButtonLabel({ isApproved, labels: [t`Deposit`] })}
         testId={`${TEST_ID_PREFIX}-submit-button`}
         connectWalletTestId="form-market-page"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </EvmFormButton>
-      <LowSolvencyActionModal
-        action="deposit"
-        open={isOpen}
-        onClose={onClose}
-        onConfirm={onConfirm}
-        tokenSymbol={borrowToken?.symbol}
-      />
+      <LowSolvencyActionModal {...solvencyModal} action="deposit" tokenSymbol={borrowToken?.symbol} />
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} userAddress={userAddress} />
     </Form>
   )

@@ -12,6 +12,7 @@ import {
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useForm } from '@ui/features/forms'
+import { q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useMarketContext } from '../../market-context'
 
@@ -48,9 +49,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
     onSubmit,
-    onConfirm,
-    onClose,
-    isOpen,
+    modal: solvencyModal,
   } = useFormLowSolvency({
     controllerAddress,
     marketType,
@@ -74,9 +73,9 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
     borrowToken,
     error: depositError ?? solvencyError,
     max: useMaxDepositTokenValues({ params, borrowToken: borrowToken?.address, form }),
-    isApproved: useDepositIsApproved(params),
+    isApproved: q(useDepositIsApproved(params)),
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: { isOpen, onClose, onConfirm },
+    solvencyModal,
   }
 }

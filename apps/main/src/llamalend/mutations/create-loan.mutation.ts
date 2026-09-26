@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
+import { ensureControllerApproval } from '@/llamalend/mutations/ensure-controller-approval'
 import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
@@ -71,8 +72,11 @@ export const useCreateLoanMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,
-    mutationFn: async (variables, { market }) => {
+    mutationFn: async (variables, { market, userAddress: walletAddress }) => {
       const params = { ...variables, chainId, marketId }
+      if (getCreateLoanImplementation(market, variables.leverageEnabled)[0] === 'zapV2') {
+        await ensureControllerApproval({ market, chainId, userAddress: walletAddress, config })
+      }
       await waitForApproval({
         isApproved: async () => await fetchCreateLoanIsApproved(params, { staleTime: 0 }),
         onApprove: () => approve(market, variables),

@@ -2,6 +2,8 @@ import { type ChangeEvent, useCallback } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { getFormButtonLabel } from '@/llamalend/widgets/action-card/form-button-label'
+import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/LeverageDelegationModal'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -52,6 +54,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     form,
     formErrors,
     isApproved,
+    isControllerApproved,
+    delegationModal,
     isPending,
     isLoading,
     isDisabled,
@@ -65,7 +69,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     leverage,
     exchangeRate,
     priceImpact,
-    solvencyModal: { onConfirm, onClose, isOpen },
+    solvencyModal,
     isHighLiquidationRisk,
     isLeverageSupported,
   } = useCreateLoanForm({ networks, preset, onPricesUpdated })
@@ -165,19 +169,14 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
-        label={[isApproved?.data === false && t`Approve`, t`Borrow`]}
+        label={getFormButtonLabel({ isControllerApproved, isApproved, labels: [t`Borrow`] })}
         testId="create-loan-submit-button"
         connectWalletTestId="form-market-page"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </EvmFormButton>
-      <LowSolvencyActionModal
-        action="borrow"
-        open={isOpen}
-        onClose={onClose}
-        onConfirm={onConfirm}
-        tokenSymbol={collateralToken?.symbol}
-      />
+      <LowSolvencyActionModal {...solvencyModal} action="borrow" tokenSymbol={collateralToken?.symbol} />
+      <LeverageDelegationModal {...delegationModal} />
       <FormAlerts
         error={error}
         formErrors={formErrors}

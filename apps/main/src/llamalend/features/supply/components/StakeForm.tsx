@@ -1,4 +1,5 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { getFormButtonLabel } from '@/llamalend/widgets/action-card/form-button-label'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -37,7 +38,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
     hasGauge,
     max,
     disabledAlert,
-    solvencyModal: { onConfirm, onClose, isOpen },
+    solvencyModal,
   } = useStakeForm({ network })
 
   return (
@@ -70,19 +71,13 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled}
-        label={[isApproved.data === false && t`Approve`, t`Stake`]}
+        label={getFormButtonLabel({ isApproved, labels: [t`Stake`] })}
         testId={`${TEST_ID_PREFIX}-submit-button`}
       >
         {hasGauge ? disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm> : <AlertNoGauge />}
       </EvmFormButton>
 
-      <LowSolvencyActionModal
-        action="stake"
-        open={isOpen}
-        onClose={onClose}
-        onConfirm={onConfirm}
-        tokenSymbol={borrowToken?.symbol}
-      />
+      <LowSolvencyActionModal {...solvencyModal} action="stake" tokenSymbol={borrowToken?.symbol} />
 
       <FormAlerts
         error={error}

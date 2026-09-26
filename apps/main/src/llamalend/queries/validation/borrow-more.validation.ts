@@ -1,5 +1,6 @@
 import { skipWhen, test } from 'vest'
 import { isRouterRequired, tryGetMarket } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
@@ -77,29 +78,30 @@ const validateBorrowMoreFieldsForMarket = ({
 }
 
 // Form validation suite (for real-time form validation)
-export const borrowMoreFormValidationSuite = createValidationSuite(
-  ({
-    userCollateral = '0',
-    userBorrowed = '0',
-    debt,
-    maxBorrowed,
-    maxCollateral,
-    maxDebt,
-    slippage,
-    leverageEnabled,
-    routeId,
-  }: BorrowMoreForm) => {
-    validateUserCollateral(userCollateral, { required: false })
-    validateMaxCollateral(userCollateral, maxCollateral, { required: false })
-    validateUserBorrowed(userBorrowed)
-    validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed, required: true })
-    validateDebt(debt, { required: true })
-    validateMaxDebt(debt, maxDebt, { required: true })
-    validateSlippage({ slippage })
-    validateLeverageEnabled(leverageEnabled, { required: false })
-    validateRouteCalldata(routeId)
-  },
-)
+export const borrowMoreFormValidationSuite = (market: MarketTemplate | undefined) =>
+  createValidationSuite(
+    ({
+      userCollateral = '0',
+      userBorrowed = '0',
+      debt,
+      maxBorrowed,
+      maxCollateral,
+      maxDebt,
+      slippage,
+      leverageEnabled,
+      routeId,
+    }: BorrowMoreForm) => {
+      validateUserCollateral(userCollateral, { required: false })
+      validateMaxCollateral(userCollateral, maxCollateral, { required: false })
+      validateUserBorrowed(userBorrowed)
+      validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed, required: true })
+      validateDebt(debt, { required: true })
+      validateMaxDebt(debt, maxDebt, { required: true })
+      validateSlippage({ slippage })
+      validateLeverageEnabled(leverageEnabled, { required: false })
+      validateRouteCalldata(routeId, market)
+    },
+  )
 
 // Query validation suite (for API queries)
 export const borrowMoreValidationGroup = <IChainId extends number>(
@@ -131,7 +133,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateDebt(debt, { required: debtRequired })
   if (!ignoreMaxDebt) validateMaxDebt(debt, maxDebt, { required: maxDebtRequired })
   validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debt, userBorrowed })
-  validateRouteCalldata(routeId)
+  validateRouteCalldata(routeId, tryGetMarket(marketId))
   validateSlippage({ slippage })
   validateLeverageEnabled(leverageEnabled, { required: leverageRequired })
   validateLeverageSupported(marketId, { required: leverageRequired })

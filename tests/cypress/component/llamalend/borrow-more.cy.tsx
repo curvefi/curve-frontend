@@ -1,3 +1,4 @@
+import type { Hex } from 'viem'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { oneDecimal } from '@cy/support/generators'
 import {
@@ -19,32 +20,53 @@ import { Chain } from '@primitives/network.utils'
 import { constQ } from '@ui/features/queries/util'
 
 const chainId = Chain.Ethereum
+const OVERSIZED_CALLDATA = `0x${'00'.repeat(9_401)}` as const
 
-const testCases = [
-  { approved: true, title: 'fills and submits (already approved)', withCollateral: false, buttonText: 'Borrow More' },
+const testCases: {
+  approved: boolean
+  title: string
+  withCollateral: boolean
+  buttonText: string
+  leverage: boolean
+  controllerApproved?: boolean
+  marketVersion?: 'v2'
+  routeCalldata?: Hex
+}[] = [
+  ...[
+    { approved: true, title: 'fills and submits (already approved)', withCollateral: false, buttonText: 'Borrow More' },
+    {
+      approved: false,
+      title: 'fills, approves, and submits',
+      withCollateral: false,
+      buttonText: 'Approve & Borrow More',
+    },
+    {
+      approved: true,
+      title: 'fills with collateral and submits',
+      withCollateral: true,
+      buttonText: 'Add & Borrow More',
+    },
+    {
+      approved: false,
+      title: 'fills with collateral, approves and submits',
+      withCollateral: true,
+      buttonText: 'Approve, Add & Borrow More',
+    },
+  ].flatMap(testCase => [
+    { ...testCase, leverage: false },
+    { ...testCase, title: `${testCase.title} with zapV2 leverage`, leverage: true },
+  ]),
   {
-    approved: false,
-    title: 'fills, approves, and submits',
+    title: 'approves delegation and borrows more on LLv2 with oversized calldata',
+    approved: true,
     withCollateral: false,
     buttonText: 'Approve & Borrow More',
+    leverage: true,
+    controllerApproved: false,
+    marketVersion: 'v2',
+    routeCalldata: OVERSIZED_CALLDATA,
   },
-  { approved: true, title: 'fills with collateral and submits', withCollateral: true, buttonText: 'Add & Borrow More' },
-  {
-    approved: false,
-    title: 'fills with collateral, approves and submits',
-    withCollateral: true,
-    buttonText: 'Add, Approve & Borrow More',
-  },
-].flatMap(testCase => [
-  { ...testCase, hasLeverageManagement: false, leverageEnabled: false, leverageImplementation: undefined },
-  {
-    ...testCase,
-    title: `${testCase.title} with zapV2 leverage`,
-    hasLeverageManagement: true,
-    leverageEnabled: true,
-    leverageImplementation: 'zapV2' as const,
-  },
-])
+]
 
 describe('BorrowMoreForm (mocked)', () => {
   beforeEach(() => {
@@ -57,10 +79,11 @@ describe('BorrowMoreForm (mocked)', () => {
       approved,
       title,
       withCollateral,
-      hasLeverageManagement,
-      leverageEnabled,
-      leverageImplementation,
+      leverage,
       buttonText,
+      controllerApproved = true,
+      marketVersion,
+      routeCalldata,
     }) => {
       it(title, () => {
         const userCollateral = withCollateral ? oneDecimal(0.01, 0.5, 3) : undefined
@@ -69,9 +92,12 @@ describe('BorrowMoreForm (mocked)', () => {
             chainId,
             approved,
             collateral: userCollateral,
-            leverage: hasLeverageManagement,
-            leverageImplementation,
+            leverage,
+            leverageImplementation: leverage ? 'zapV2' : undefined,
+            controllerApproved,
+            routeCalldata,
           })
+        if (marketVersion) Object.assign(market, { version: marketVersion })
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId })
@@ -88,20 +114,20 @@ describe('BorrowMoreForm (mocked)', () => {
         writeBorrowMoreForm({
           debt: borrow,
           userCollateral,
-          hasLeverageManagement,
-          leverageEnabled,
-          waitForRoutes: leverageImplementation === 'zapV2',
+          hasLeverageManagement: leverage,
+          leverageEnabled: leverage,
+          waitForRoutes: leverage,
         })
         checkBorrowMoreDetailsLoaded({
           expectedCurrentDebt,
           expectedFutureDebt,
-          leverageEnabled,
+          leverageEnabled: leverage,
           borrowedSymbol: 'crvUSD',
         })
-        cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
+        cy.get('[data-testid="borrow-more-submit-button"]').should('be.enabled').and('have.text', buttonText)
 
         cy.then(assertPreSubmit)
-        submitBorrowMoreForm().then(assertSubmit)
+        submitBorrowMoreForm(controllerApproved ? undefined : assertPreSubmit).then(assertSubmit)
       })
     },
   )
