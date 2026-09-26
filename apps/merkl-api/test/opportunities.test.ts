@@ -18,7 +18,7 @@ const getFetchInit = (fetchMock: ReturnType<typeof vi.fn<typeof fetch>>) => {
 }
 
 const createServer = (MERKL_API_KEY = 'test-merkl-key') =>
-  createMerklServer({ NODE_ENV: 'test', LOG_LEVEL: 'silent', MERKL_API_KEY })
+  createMerklServer({ env: { NODE_ENV: 'test', LOG_LEVEL: 'silent', MERKL_API_KEY } })
 
 describe('GET opportunities', () => {
   afterEach(() => {
@@ -73,7 +73,7 @@ describe('GET opportunities', () => {
   })
 
   it('requires a Merkl API key', () => {
-    expect(() => createMerklServer({ NODE_ENV: 'test', LOG_LEVEL: 'silent' })).toThrow(
+    expect(() => createMerklServer({ env: { NODE_ENV: 'test', LOG_LEVEL: 'silent' } })).toThrow(
       'Missing required environment variable MERKL_API_KEY',
     )
   })

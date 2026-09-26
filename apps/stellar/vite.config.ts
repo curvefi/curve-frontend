@@ -12,6 +12,7 @@ const {
   GITHUB_SHA,
   SENTRY_APPLICATION_KEY = 'curve-stellar',
 } = process.env
+const isVercelDeployment = process.env.VERCEL === '1'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
@@ -22,7 +23,7 @@ export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     svgr(),
-    vercel(),
+    ...(isVercelDeployment ? [vercel()] : []),
     ...(SENTRY_PROJECT
       ? sentryVitePlugin({
           applicationKey: SENTRY_APPLICATION_KEY,
@@ -45,12 +46,14 @@ export default defineConfig(({ command }) => ({
     ],
   },
   define: { 'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production') },
-  vercel: {
-    buildCommand: 'yarn build',
-    rewrites: [
-      { source: '/favicon', destination: '/favicon.ico' },
-      { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
-      { source: '/(.*)', destination: '/index.html' },
-    ],
-  },
+  ...(isVercelDeployment && {
+    vercel: {
+      buildCommand: 'yarn build',
+      rewrites: [
+        { source: '/favicon', destination: '/favicon.ico' },
+        { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
+        { source: '/(.*)', destination: '/index.html' },
+      ],
+    },
+  }),
 }))
