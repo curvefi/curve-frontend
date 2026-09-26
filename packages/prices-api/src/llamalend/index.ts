@@ -156,6 +156,17 @@ export async function getVaultDepositors(chain: Chain, vaultAddress: string, opt
   return Schema.getVaultDepositorsResponse.parse(response)
 }
 
+export async function getVaultEvents(chain: Chain, vaultAddress: string, options: PaginatedOptions = {}) {
+  const { page = 1, perPage = 10, ...requestOptions } = options
+  const host = getHost(requestOptions)
+  const response = await fetch(
+    `${host}/v1/lending/vault_events/${chain}/${vaultAddress}${addQueryString({ page, per_page: perPage })}`,
+    { signal: requestOptions.signal },
+  )
+
+  return Schema.getVaultEventsResponse.parse(response)
+}
+
 export async function getUserMarketSnapshots(
   userAddr: string,
   chain: Chain,

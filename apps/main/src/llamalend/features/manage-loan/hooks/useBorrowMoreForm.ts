@@ -26,7 +26,7 @@ import {
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import { useLeverageDelegation } from '@/llamalend/widgets/action-card/hooks/useLeverageDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/entities/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'

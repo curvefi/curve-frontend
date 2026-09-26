@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -18,7 +18,7 @@ export const FieldLpToken = ({
   isNotEnough: boolean
   handleAmountChange: (val: string) => void
 }) => (
-  <LargeTokenInput
+  <DebouncedLargeTokenInput
     name="lpTokens"
     disabled={disabled}
     walletBalance={{ balance: mapQuery(balance, decimal), symbol: t`LP Tokens` }}

@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 import { isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import { resetPoolLists } from '@/dex/queries/invalidation'
-import { useLitePoolChains, useLitePoolList, usePoolChains, usePoolList } from '@/dex/queries/pool-list.query'
-import { useUserPoolPositions } from '@/dex/queries/user-pool-positions.query'
+import { useLitePoolChains, usePoolChains, usePoolList } from '@/dex/queries/pool-list.query'
+import { useUserPoolPositions, type UserPoolPosition } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import type {
   LitePool,
@@ -11,9 +11,10 @@ import type {
   V2Pool,
   V2PoolSortField as PoolSortField,
 } from '@curvefi/prices-api/pools'
-import { useCampaigns } from '@evm-ui/entities/campaigns'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { useCombinedQueries } from '@ui/features/queries/combine'
+import { useCampaigns } from '@evm-ui/queries/campaigns'
+import type { Address } from '@primitives/address.utils'
+import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { constQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import type { PoolsApiParams } from '../filters/utils'
 import { enrichPoolRow, litePoolToRowData, poolToRowData } from '../utils'
@@ -28,6 +29,12 @@ class UnsupportedPoolListError extends Error {
 
 const litePoolsToRows = ({ pools }: { pools: LitePool[] }) => pools.map(litePoolToRowData)
 const poolsToRows = ({ pools }: { pools: V2Pool[] }) => pools.map(poolToRowData)
+
+const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPosition | undefined) => ({
+  lpBalance: positions?.positions.find(({ address }) => isAddressEqual(address, poolAddress))?.totalBalance ?? '0',
+  depositsUsd: undefined,
+  claimables: constQ([]),
+})
 
 /** Fetches the selected pool-list source and maps its API rows into table rows. */
 export const usePoolsTable = ({
@@ -76,18 +83,14 @@ export const usePoolsTable = ({
   const litePoolRows = useMappedQuery(litePoolList, litePoolsToRows)
   const poolRows = useMappedQuery(poolList, poolsToRows)
 
-  // constQ suppresses loading state, and ?? null allows useCombinedQueries to run even when data is not yet loaded or present.
-  const enrichedPools = useCombinedQueries(
-    [isLite ? litePoolRows : poolRows, constQ(network), constQ(campaigns.data), constQ(positions.data ?? null)],
+  const enrichedPools = useMappedQuery(
+    isLite ? litePoolRows : poolRows,
     useCallback(
-      (pools, network, campaigns, positions) =>
+      pools =>
         pools.map(pool =>
-          enrichPoolRow(pool, network, campaigns, {
-            lpBalance:
-              positions?.positions.find(({ address }) => isAddressEqual(address, pool.address))?.totalBalance ?? '0',
-          }),
+          enrichPoolRow(pool, network, campaigns.data, getPoolUserPosition(pool.address, positions.data)),
         ),
-      [],
+      [network, campaigns.data, positions.data],
     ),
   )
 

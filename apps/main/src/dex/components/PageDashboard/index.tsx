@@ -13,12 +13,14 @@ import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboa
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { getPool } from '@/dex/pool.utils'
 import { usePoolsRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { userPoolBoost } from '@/dex/queries/user-pool-boost.query'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Table } from '@legacy-ui/Table'
 import { breakpoints } from '@legacy-ui/utils'
@@ -40,6 +42,7 @@ export const Dashboard = ({
 }) => {
   const isSubscribedRef = useRef(false)
   const push = useNavigate()
+  const { isHydrated } = useCurve()
 
   const activeKey = useStore(state => state.dashboard.activeKey)
   const formValues = useStore(state => state.dashboard.formValues)
@@ -50,7 +53,6 @@ export const Dashboard = ({
   const noResult = useStore(state => state.dashboard.noResult)
   const isLoading = useStore(state => state.dashboard.loading)
   const isXSmDown = useLayoutStore(state => state.isXSmDown)
-  const poolsMapper = useStore(state => state.pools.poolsMapper[rChainId])
   const { data: rewardsApyMapper } = usePoolsRewardsApy({ chainId: rChainId, poolIds: dashboardDataPoolIds ?? [] })
   const setFormValues = useStore(state => state.dashboard.setFormValues)
 
@@ -73,9 +75,9 @@ export const Dashboard = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, pageLoaded ? curve : null, poolsMapper, updatedFormValues)
+      setFormValues(rChainId, pageLoaded && isHydrated ? curve : null, updatedFormValues)
     },
-    [curve, pageLoaded, poolsMapper, rChainId, setFormValues],
+    [curve, isHydrated, pageLoaded, rChainId, setFormValues],
   )
 
   // onMount
@@ -91,7 +93,7 @@ export const Dashboard = ({
   useEffect(() => {
     updateFormValues({})
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, !pageLoaded, poolsMapper])
+  }, [chainId, !pageLoaded])
 
   // signerAddress
   useEffect(() => {
@@ -137,13 +139,13 @@ export const Dashboard = ({
           <tbody>
             {noResult || error || !isValidAddress ? (
               <TableRowNoResult colSpan={colSpan} noResult={noResult} error={error} />
-            ) : dashboardDataPoolIds?.length > 0 ? (
+            ) : dashboardDataPoolIds?.length > 0 && isHydrated && curve ? (
               <>
                 {dashboardDataPoolIds.map(poolId => {
-                  const poolData = poolsMapper?.[poolId]
+                  const pool = getPool(poolId, curve)
                   const dashboardData = dashboardDataMapper?.[poolId]
 
-                  if (!poolData || !dashboardData) return null
+                  if (!pool || !dashboardData) return null
 
                   const tableRowProps: DashboardTableRowProps = {
                     rChainId,
@@ -152,11 +154,11 @@ export const Dashboard = ({
                     fetchBoost: {
                       fetchUserPoolBoost:
                         rChainId === 1
-                          ? () => userPoolBoost(rChainId, poolData.pool, walletAddress as Address).then(r => r ?? '')
+                          ? () => userPoolBoost(rChainId, pool, walletAddress as Address).then(r => r ?? '')
                           : null,
                     },
                     formValues,
-                    poolData,
+                    pool,
                     poolRewardsApy: rewardsApyMapper?.[poolId],
                     dashboardData,
                     updatePath,

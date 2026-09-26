@@ -1,12 +1,6 @@
-import {
-  listLitePoolChains,
-  listLitePools,
-  listPoolChains,
-  listPools,
-  type ListPoolsParams,
-} from '@curvefi/prices-api/pools'
-import { rootKeys, type ChainParams, type ChainQuery } from '@evm-ui/lib/model'
-import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
+import { listLitePoolChains, listPoolChains, listPools, type ListPoolsParams } from '@curvefi/prices-api/pools'
+import { rootKeys, type ChainParams, type ChainQuery } from '@evm-ui/queries/root-keys'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { getPageCount } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite, EmptyValidationSuite } from '@ui/lib/validation/lib'
@@ -77,16 +71,6 @@ export const { useQuery: usePoolList } = queryFactory({
   validationSuite: createValidationSuite(chainValidationGroup),
   category: 'dex.pools',
   keepPreviousData: true,
-})
-
-type LitePoolListQuery = ChainQuery
-type LitePoolListParams = FieldsOf<LitePoolListQuery>
-
-export const { useQuery: useLitePoolList, queryKey: getLitePoolListQueryKey } = queryFactory({
-  queryKey: ({ chainId }: LitePoolListParams) => [...rootKeys.chain({ chainId }), 'listLitePools'] as const,
-  queryFn: (params: LitePoolListQuery) => listLitePools(params),
-  validationSuite: createValidationSuite(chainValidationGroup),
-  category: 'dex.pools',
 })
 
 export const { useQuery: usePoolChains, queryKey: getPoolChainsQueryKey } = queryFactory({

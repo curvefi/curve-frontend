@@ -1,5 +1,5 @@
 import { useLegacyUserHealthValue } from '@/llamalend/queries/user/user-health.query'
-import type { UserMarketParams } from '@evm-ui/lib/model'
+import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import { Stack, useTheme } from '@mui/material'
 import { Metric } from '@ui/components/Metric'
 import { Tooltip } from '@ui/components/Tooltip'

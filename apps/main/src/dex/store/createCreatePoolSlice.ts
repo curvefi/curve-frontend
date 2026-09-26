@@ -31,13 +31,15 @@ import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { TwoCryptoImplementation } from '@curvefi/api/lib/constants/twoCryptoImplementations'
-import { fetchTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { fetchTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { scanTxPath } from '@legacy-ui/utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
 import { fetchNetworks, getNetworks } from '../entities/networks'
+import { fetchNewPools } from '../lib/curvejs'
+import { tryGetPool } from '../pool.utils'
 import { getBasePools } from '../queries/base-pools.query'
 
 type SliceState = {
@@ -718,7 +720,6 @@ export const createCreatePoolSlice = (
     deployPool: async (curve: CurveApi) => {
       const chainId = curve.chainId
       const {
-        pools: { fetchNewPool },
         createPool: {
           poolSymbol,
           swapType,
@@ -816,12 +817,13 @@ export const createCreatePoolSlice = (
             }),
           )
 
-          const poolData = await fetchNewPool(curve, poolId)
-          if (poolData) {
+          await fetchNewPools(curve) // not sure if this is still necessary but keeping it for safety, will be replaced in the future anyway
+          const pool = tryGetPool(poolId)
+          if (pool) {
             set(
               produce((state: State) => {
                 state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                state.createPool.transactionState.lpTokenAddress = pool.lpToken
               }),
             )
           }
@@ -894,12 +896,13 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
+            await fetchNewPools(curve)
+            const pool = tryGetPool(poolId)
+            if (pool) {
               set(
                 produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                  state.createPool.transactionState.lpTokenAddress = pool.lpToken
                 }),
               )
             }
@@ -976,12 +979,13 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
+            await fetchNewPools(curve)
+            const pool = tryGetPool(poolId)
+            if (pool) {
               set(
                 produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                  state.createPool.transactionState.lpTokenAddress = pool.lpToken
                 }),
               )
             }
@@ -1077,12 +1081,13 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
+            await fetchNewPools(curve)
+            const pool = tryGetPool(poolId)
+            if (pool) {
               set(
                 produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                  state.createPool.transactionState.lpTokenAddress = pool.lpToken
                 }),
               )
             }
@@ -1169,12 +1174,13 @@ export const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
+            await fetchNewPools(curve)
+            const pool = tryGetPool(poolId)
+            if (pool) {
               set(
                 produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+                  state.createPool.transactionState.lpTokenAddress = pool.lpToken
                 }),
               )
             }

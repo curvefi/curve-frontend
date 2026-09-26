@@ -15,7 +15,7 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/queries/root-keys'
 import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useForm, useFormSync } from '@ui/features/forms'

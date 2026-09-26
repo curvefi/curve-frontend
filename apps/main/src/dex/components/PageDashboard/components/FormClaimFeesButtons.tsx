@@ -13,6 +13,7 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { Button } from '@legacy-ui/Button'
 import type { ButtonProps } from '@legacy-ui/Button/types'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
@@ -37,7 +38,8 @@ export const FormClaimFeesButtons = ({
   setSteps: Dispatch<SetStateAction<Step[]>>
   setTxInfoBar: Dispatch<SetStateAction<ReactNode>>
 }) => {
-  const { curve, isValidAddress } = useDashboardContext()
+  const { isValidAddress } = useDashboardContext()
+  const { curveApi: curve } = useCurve()
   const claimFeesAmounts = useStore(state => state.dashboard.claimableFees[activeKey])
   const formProcessing = useStore(state => state.dashboard.formStatus.formProcessing)
   const fetchStepClaimFees = useStore(state => state.dashboard.fetchStepClaimFees)

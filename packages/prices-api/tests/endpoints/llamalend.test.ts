@@ -74,6 +74,9 @@ runEndpointCases('llamalend', [
   endpointCase('getVaultDepositors', () =>
     llamalend.getVaultDepositors(llamalendMarketSeed().chain, llamalendMarketSeed().vault, requestOptions),
   ),
+  endpointCase('getVaultEvents', () =>
+    llamalend.getVaultEvents(llamalendMarketSeed().chain, llamalendMarketSeed().vault, requestOptions),
+  ),
   endpointCase('getUserMarketSnapshots', () =>
     llamalend.getUserMarketSnapshots(
       llamalendUserSeed().user,

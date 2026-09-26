@@ -6,7 +6,7 @@ import type {
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
-import { CurveApi, PoolData } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
 import { Decimal } from '@primitives/decimal.utils'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
@@ -105,7 +105,6 @@ export function _parseRoutesAndOutput(
   routes: IRoute,
   priceImpact: number,
   output: string,
-  poolsMapper: Record<string, PoolData>,
   toAmount: string,
   toAddress: string,
   toStoredRate: string | undefined,
@@ -113,7 +112,7 @@ export function _parseRoutesAndOutput(
   fromAddress: string,
   fetchedToAmount?: string,
 ) {
-  const { routes: parseRoutes, haveCryptoRoutes } = parseRouterRoutes(routes, poolsMapper, curve.getPool)
+  const { routes: parseRoutes, haveCryptoRoutes } = parseRouterRoutes(routes, curve.getPool)
   const exchangeRates = getExchangeRates(toAmount, fromAmount)
 
   return {

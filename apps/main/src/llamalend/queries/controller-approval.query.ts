@@ -1,8 +1,7 @@
 import { getMarket } from '@/llamalend/llama.utils'
-import type { UserMarketQuery } from '@evm-ui/lib/model'
-import { rootKeys } from '@evm-ui/lib/model'
-import { createEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
-import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
+import { createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
+import { rootKeys, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { FieldsOf } from '@ui/lib/validation/types'
 

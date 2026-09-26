@@ -19,14 +19,14 @@ import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import { useToken, useTokens } from '@/dex/queries/tokens.query'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getRouterSwapsExchangeRate, getRouterWarningModal, getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { TokenList, useTokenSelectorData } from '@evm-ui/features/select-token'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { useEstimateGasValue } from '@evm-ui/lib/model/entities/gas-info'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useEstimateGasValue } from '@evm-ui/queries/gas-info.query'
+import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -43,7 +43,7 @@ import type { RouterRouteResponse } from '@primitives/router.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { useLayoutStore } from '@ui/features/layout/store'
@@ -88,7 +88,6 @@ export const QuickSwap = ({
   const { fromAddress, toAddress } = searchedParams
   const { data: fromToken, isLoading: fromTokenLoading } = useToken({ chainId, tokenAddress: fromAddress })
   const { data: toToken, isLoading: toTokenLoading } = useToken({ chainId, tokenAddress: toAddress })
-  const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const activeKey = useStore(state => state.quickSwap.activeKey)
   const formEstGas = useStore(state => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore(state => state.quickSwap.formStatus)
@@ -152,7 +151,7 @@ export const QuickSwap = ({
   const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
   const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
-  const isReady = pageLoaded && isPageVisible
+  const isReady = pageLoaded && isPageVisible && isHydrated // API needs to be hydrated as the router will need to access pool data from curve-js
 
   useEffect(() => {
     if (curve && userAddress && blacklist) {
@@ -518,7 +517,7 @@ export const QuickSwap = ({
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       {/* SWAP FROM */}
-      <LargeTokenInput
+      <DebouncedLargeTokenInput
         label={t`Sell`}
         balance={q({
           data: decimal(formValues.fromAmount),
@@ -575,7 +574,7 @@ export const QuickSwap = ({
         <Icon name="ArrowsVertical" size={24} />
       </IconButton>
       {/* SWAP TO */}
-      <LargeTokenInput
+      <DebouncedLargeTokenInput
         label={t`Buy`}
         balance={decimal(formValues.toAmount)}
         inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
@@ -635,7 +634,6 @@ export const QuickSwap = ({
             params={params}
             routes={mapQuery(routes, r => r.routes)}
             tokens={tokensMapper.data}
-            poolDataMapper={poolDataMapper}
             swapCustomRouteRedirect={network?.swapCustomRouteRedirect}
           />
         </Stack>

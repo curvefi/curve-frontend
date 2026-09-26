@@ -9,7 +9,7 @@ permissions:
 jobs:
   cypress-component-rpc:
     name: Cypress component tests with RPC
-    timeout-minutes: 15
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -30,6 +30,7 @@ jobs:
           yarn run cy:run:rpc --browser electron 2>&1 | \
             tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null # rpc tests are expensive, stick to one browser
         working-directory: tests
+        timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
           NODE_ENV: test

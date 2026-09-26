@@ -1,4 +1,4 @@
-import { isMerkl } from '@evm-ui/entities/campaigns/merkl'
+import { isMerkl } from '@evm-ui/queries/campaigns/merkl'
 import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'

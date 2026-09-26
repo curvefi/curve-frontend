@@ -1,4 +1,4 @@
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { formatCappedRatePercent, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'

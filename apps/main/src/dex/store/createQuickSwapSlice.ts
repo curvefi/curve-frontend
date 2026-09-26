@@ -16,7 +16,7 @@ import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/mai
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
+import { fetchGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
 import type { Decimal } from '@primitives/decimal.utils'
 import { sleep } from '@primitives/promise.utils'
@@ -133,8 +133,7 @@ export const createQuickSwapSlice = (
           if (typeof firstBasePlusPriority !== 'undefined' && +userBalance > 0) {
             sliceState.setStateByKey('isMaxLoading', true)
             // must call routesAndOutput first before estGas
-            const poolsMapper = state.pools.poolsMapper[chainId]
-            await curvejsApi.router.routesAndOutput(activeKey, curve, poolsMapper, cFormValues, searchedParams)
+            await curvejsApi.router.routesAndOutput(activeKey, curve, cFormValues, searchedParams)
 
             const resp = await curvejsApi.router.estGasApproval(
               activeKey,
@@ -163,9 +162,7 @@ export const createQuickSwapSlice = (
     fetchRoutesAndOutput: async (config, curve, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[SLICE_KEY]
-
       const activeKey = sliceState.activeKey
-      const { chainId, signerAddress } = curve
 
       const cFormValues = cloneDeep(sliceState.formValues)
       const cFormStatus = cloneDeep(sliceState.formStatus)
@@ -173,15 +170,13 @@ export const createQuickSwapSlice = (
       if ((cFormValues.isFrom && +cFormValues.fromAmount <= 0) || (!cFormValues.isFrom && +cFormValues.toAmount <= 0))
         return
 
-      if (!signerAddress) return // If no signer, routing handled via `useRouterApi`
+      if (!curve.signerAddress) return // If no signer, routing handled via `useRouterApi`
 
-      const poolsMapper = state.pools.poolsMapper[chainId]
       // allow UI to paint first
       await sleep(100)
       const { exchangeRates, ...resp } = await curvejsApi.router.routesAndOutput(
         activeKey,
         curve,
-        poolsMapper,
         cFormValues,
         searchedParams,
       )

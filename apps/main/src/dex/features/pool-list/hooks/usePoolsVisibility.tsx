@@ -11,7 +11,7 @@ import { POOL_COLUMNS, POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
 import type { PoolTableVariant } from '../types'
 
 const migration: MigrationOptions<Record<PoolTableVariant, VisibilityGroup<PoolColumnId>[]>> = {
-  version: 6,
+  version: 7,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
 }

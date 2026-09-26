@@ -20,7 +20,7 @@ export const TableRowMobile = ({
   blockchainId,
   formValues,
   dashboardData,
-  poolData,
+  pool,
   poolRewardsApy,
   tableLabel,
   fetchBoost,
@@ -43,7 +43,7 @@ export const TableRowMobile = ({
               <PoolLabel
                 isVisible={isVisible}
                 blockchainId={blockchainId}
-                poolData={poolData}
+                pool={pool}
                 onClick={() => updatePath(poolId)}
               />
             )}
@@ -69,7 +69,7 @@ export const TableRowMobile = ({
                   <div>
                     <TableTitle>{tableLabel.rewardBase.name}</TableTitle>
                     <TableCellRewards
-                      poolData={poolData}
+                      pool={pool}
                       rewardsApyKey="baseApy"
                       rewardsApy={poolRewardsApy}
                       sortBy={sortBy}
@@ -79,7 +79,7 @@ export const TableRowMobile = ({
                   <div>
                     <TableTitle>{tableLabel.userCrvApy.name}</TableTitle>
                     <TableCellRewards
-                      poolData={poolData}
+                      pool={pool}
                       rewardsApyKey="rewardsApy"
                       rewardsApy={poolRewardsApy}
                       sortBy={sortBy}

@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash'
 import { getWeightHistory } from '@curvefi/prices-api/gauge'
-import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'

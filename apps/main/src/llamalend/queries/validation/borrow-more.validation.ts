@@ -15,11 +15,11 @@ import {
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
-import { type UserMarketQuery } from '@evm-ui/lib/model'
-import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
-import { llamaApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
-import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
-import { marketIdValidationGroup } from '@evm-ui/lib/model/query/market-id-validation'
+import { type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import { llamaApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
+import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
+import { marketIdValidationGroup } from '@evm-ui/queries/validation/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'

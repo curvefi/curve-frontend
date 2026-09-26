@@ -1,4 +1,5 @@
 import { getAddress, zeroAddress } from 'viem'
+import { scanAddressPath } from '@legacy-ui/utils'
 import { type Address } from '@primitives/address.utils'
 
 type ShortenAddressOptions = {
@@ -65,3 +66,5 @@ export const MAINNET_CRV = {
   name: 'CRV',
   chain: 'ethereum',
 } as const
+
+export const evmAddressDisplay = { formatAddress: shortenAddress, scanAddressPath }

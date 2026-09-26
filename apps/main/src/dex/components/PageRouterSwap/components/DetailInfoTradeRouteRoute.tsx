@@ -1,13 +1,16 @@
 import { zip } from 'lodash'
+import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
+import { getTokens, isWrappedOnly, tryGetPool } from '@/dex/pool.utils'
 import { getToken, type TokenMapper } from '@/dex/queries/tokens.query'
-import type { PoolData, UrlParams } from '@/dex/types/main.types'
+import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import { RouterLink } from '@ui/components/RouterLink'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
@@ -19,18 +22,27 @@ export const DetailInfoTradeRouteRoute = ({
   params,
   route,
   tokens,
-  poolData,
+  poolId,
   swapCustomRouteRedirect,
 }: {
   params: UrlParams
   route: Route
   tokens: TokenMapper | undefined
-  poolData: PoolData | undefined
+  poolId: string
   swapCustomRouteRedirect: string | undefined
 }) => {
   const inputToken = getToken(tokens, route.inputCoinAddress)?.symbol ?? shortenAddress(route.inputCoinAddress)
   const outputToken = getToken(tokens, route.outputCoinAddress)?.symbol ?? shortenAddress(route.outputCoinAddress)
-  const { tokenAddresses, tokens: poolTokens } = poolData ?? {}
+
+  const pool = useMemo(() => tryGetPool(poolId), [poolId])
+  const { tokens: poolTokens, tokenAddresses } = useMemo(
+    () =>
+      maybe(pool, pool => getTokens(pool, { wrapped: isWrappedOnly(pool) })) ?? {
+        tokens: undefined,
+        tokenAddresses: undefined,
+      },
+    [pool],
+  )
   return (
     <ActionInfo
       size="small"

@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { ExternalLink } from '@legacy-ui/Link'
 import { RCPointsIcon } from '@ui/images'
 import { RewardsCompSmall } from './CampaignRewardsComp'

@@ -1,6 +1,6 @@
 import { test } from 'vest'
-import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
-import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
+import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { t } from '@ui/lib/i18n'
 import { enforce } from '@ui/lib/validation/enforce-extension'

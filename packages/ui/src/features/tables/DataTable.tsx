@@ -42,7 +42,7 @@ type TableEmptyState = { testId?: string } & Pick<
   'title' | 'description' | 'button' | 'secondaryButton'
 >
 
-type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
+type TableErrorState = { onReload?: () => Promise<unknown> } & Pick<EmptyStateCardProps, 'title' | 'description'>
 
 export type DataTableProps<TData extends RowData> = {
   category?: DataTableCategory
@@ -103,7 +103,7 @@ export const DataTable = <TData extends RowData>({
   const containerRef = useRef<HTMLDivElement>(null)
   const { shouldStickyHeader, tableRef, tableWrapperRef } = useTableStickyHeader({ disableStickyHeader, isLimited })
   useScrollToTopOnFilterChange({ table, tableTopRef })
-  useScrollToTopOnPageChange({ table, tableTopRef, containerRef, enablePageChangeScroll })
+  useScrollToTopOnPageChange({ table, tableTopRef, containerRef }, enablePageChangeScroll)
   useResetPageOnResultChange(table)
   const tableHeaderSx = (t: Theme) => ({
     ...(shouldStickyHeader && {

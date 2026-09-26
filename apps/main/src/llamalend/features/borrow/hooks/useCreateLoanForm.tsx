@@ -11,7 +11,7 @@ import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import { useLeverageDelegation } from '@/llamalend/widgets/action-card/hooks/useLeverageDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/entities/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
@@ -29,12 +29,6 @@ import { useMarketContext } from '../../market-context'
 import { type CreateLoanForm } from '../types'
 import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
-
-const userDefaultValues = {
-  userCollateral: undefined,
-  userBorrowed: `0` satisfies Decimal,
-  debt: undefined,
-} satisfies Partial<CreateLoanForm>
 
 const isLeverageCreateLoanSupported = <T extends MarketTemplate | undefined>(
   market: T,
@@ -74,6 +68,16 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       }),
     [market],
   )
+  const userDefaultValues = useMemo(
+    () =>
+      ({
+        userCollateral: undefined,
+        userBorrowed: `0` satisfies Decimal,
+        debt: undefined,
+        range: PRESET_RANGES[preset],
+      }) satisfies Partial<CreateLoanForm>,
+    [preset],
+  )
   const formOptions = {
     validation,
     defaultValues: {
@@ -81,7 +85,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       routeId: undefined,
       leverageEnabled: false,
       slippage: defaultSlippage,
-      range: PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,
     },

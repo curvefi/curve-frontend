@@ -39,7 +39,7 @@ const STACK_ICON_SIZE = {
 
 export type TokenIconsProps = {
   blockchainId: string
-  tokens: { symbol: string | undefined; address: string }[] | undefined
+  tokens: { symbol?: string | null; address: string }[] | undefined
   /** Size of the complete token group, not the individual token icons. */
   size?: TokenIconsSize
   showChainIcon?: boolean
@@ -81,7 +81,7 @@ export function TokenIcons({
       <TokenIcon
         blockchainId={blockchainId}
         address={address}
-        {...(showTooltips && { tooltip: symbol })}
+        {...(showTooltips && symbol && { tooltip: symbol })}
         showChainIcon={showChainIcon}
         sx={{ width: IconSize[size], height: IconSize[size] }}
       />
@@ -99,7 +99,7 @@ export function TokenIcons({
             key={address}
             blockchainId={blockchainId}
             address={address}
-            {...(showTooltips && { tooltip: symbol })}
+            {...(showTooltips && symbol && { tooltip: symbol })}
             showChainIcon={showChainIcon && index === 0}
             sx={{
               width: IconSize[STACK_ICON_SIZE[size]],
@@ -134,7 +134,7 @@ export function TokenIcons({
           <TokenIcon
             blockchainId={blockchainId}
             address={address}
-            {...(showTooltips && { tooltip: symbol })}
+            {...(showTooltips && symbol && { tooltip: symbol })}
             showChainIcon={showChainIcon && index === 0}
             sx={{ width: '100%', height: '100%' }}
           />
