@@ -5,7 +5,13 @@ import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarket
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
-import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
+import {
+  canLeverageUserBorrowed,
+  getMarketLeverageSlippage,
+  hasZapV2,
+  isRouterRequired,
+  usesZapV2,
+} from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
@@ -23,8 +29,8 @@ import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
+import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
-import { useLeverageDelegation } from '@/llamalend/widgets/action-card/hooks/useLeverageDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/queries/router-api'
 import type { Address } from '@primitives/address.utils'
@@ -166,11 +172,11 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isControllerApproved,
     onSubmit: onDelegationSubmit,
     modal: delegationModal,
-  } = useLeverageDelegation<BorrowMoreForm>({
+  } = useControllerDelegation<BorrowMoreForm>({
     chainId,
     userAddress,
-    market,
-    leverageEnabled: !!values.leverageEnabled,
+    marketId,
+    actionUsesZapV2: usesZapV2(market, values.leverageEnabled),
     handleFormSubmit: form.handleSubmit,
     onSubmit: onMutationSubmit,
   })

@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
-import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2, usesZapV2 } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
+import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
-import { useLeverageDelegation } from '@/llamalend/widgets/action-card/hooks/useLeverageDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -149,11 +149,11 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isControllerApproved,
     onSubmit: onDelegationSubmit,
     modal: delegationModal,
-  } = useLeverageDelegation<CreateLoanForm>({
+  } = useControllerDelegation<CreateLoanForm>({
     chainId,
     userAddress,
-    market,
-    leverageEnabled: values.leverageEnabled,
+    marketId,
+    actionUsesZapV2: usesZapV2(market, values.leverageEnabled),
     handleFormSubmit: form.handleSubmit,
     onSubmit: onMutationSubmit,
   })

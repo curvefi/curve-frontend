@@ -14,7 +14,7 @@ import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/qu
 import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { useLeverageDelegation } from '@/llamalend/widgets/action-card/hooks/useLeverageDelegation'
+import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -118,7 +118,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
   const values = form.watchValues()
-  const isZapSelection =
+  const repaysWithZapV2 =
     !!market &&
     hasZapV2(market) &&
     !Number(values.userBorrowed) &&
@@ -141,11 +141,11 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isControllerApproved,
     onSubmit,
     modal: delegationModal,
-  } = useLeverageDelegation<RepayFormData>({
+  } = useControllerDelegation<RepayFormData>({
     chainId,
     userAddress,
-    market,
-    leverageEnabled: isZapSelection,
+    marketId,
+    actionUsesZapV2: repaysWithZapV2,
     handleFormSubmit: form.handleSubmit,
     onSubmit: onMutationSubmit,
   })

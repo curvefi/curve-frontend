@@ -1,5 +1,3 @@
-import { usesZapV2 } from '@/llamalend/llama.utils'
-import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
   useControllerApprovalEstimateGas,
   useIsControllerApproval,
@@ -9,39 +7,35 @@ import type { FieldValues, UseFormHandleSubmit } from '@ui/features/forms'
 import { constQ, q } from '@ui/features/queries/util'
 import { useSwitch } from '@ui/hooks/useSwitch'
 
-export function useLeverageDelegation<T extends FieldValues>({
+export function useControllerDelegation<T extends FieldValues>({
   chainId,
   userAddress,
-  market,
-  leverageEnabled,
+  marketId,
+  actionUsesZapV2,
   handleFormSubmit,
   onSubmit,
 }: {
   chainId: number
   userAddress: Address | undefined
-  market: MarketTemplate | undefined
-  leverageEnabled: boolean
+  marketId: string | undefined
+  actionUsesZapV2: boolean
   handleFormSubmit: UseFormHandleSubmit<T>
   onSubmit: (values: T) => void | Promise<void>
 }) {
   const [isOpen, openModal, closeModal] = useSwitch(false)
-  const isZapV2Enabled = usesZapV2(market, leverageEnabled)
-  const isControllerApprovalQuery = useIsControllerApproval(
-    { chainId, marketId: market?.id, userAddress },
-    isZapV2Enabled,
-  )
+  const isControllerApprovalQuery = useIsControllerApproval({ chainId, marketId, userAddress }, actionUsesZapV2)
   // Disabling the query does not clear cached approval data or errors from an earlier ZapV2 selection.
-  const isControllerApproved = isZapV2Enabled ? q(isControllerApprovalQuery) : constQ(undefined)
+  const isControllerApproved = actionUsesZapV2 ? q(isControllerApprovalQuery) : constQ(undefined)
 
   return {
     isControllerApproved,
     onSubmit: (values: T) => {
-      if (!isZapV2Enabled || isControllerApproved.data === true) void onSubmit(values)
+      if (!actionUsesZapV2 || isControllerApproved.data === true) void onSubmit(values)
       else openModal()
     },
     modal: {
       open: isOpen,
-      gas: q(useControllerApprovalEstimateGas({ chainId, marketId: market?.id, userAddress }, isOpen)),
+      gas: q(useControllerApprovalEstimateGas({ chainId, marketId, userAddress }, isOpen)),
       onClose: closeModal,
       onConfirm: () => {
         if (!isOpen) return
