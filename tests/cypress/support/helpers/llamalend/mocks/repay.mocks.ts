@@ -166,7 +166,6 @@ export const createRepayScenario = ({
       })
 
   return {
-    controllerApproval,
     borrow,
     collateral,
     currentDebt,
@@ -175,6 +174,7 @@ export const createRepayScenario = ({
     llamaApi: createMockLlamaApi(chainId, market),
     assertPreSubmit: leverage
       ? () => {
+          expect(controllerApproval.isControllerApproved).to.have.been.calledWithExactly(TEST_ADDRESS)
           expect(controllerApproval.setControllerApproval).to.not.have.been.called
           expect(leverageStubs.repay).to.not.have.been.called
           expect(leverageStubs.repayExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.metrics)

@@ -4,7 +4,7 @@ import type { Hex } from 'viem'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
 import { MarketVersion } from '@evm-ui/types/market'
 import { decimal } from '@ui/lib/decimal'
-import { createMockLlamaApi, TEST_TX_HASH } from '../mock-loan-test-data'
+import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
@@ -173,14 +173,15 @@ export const createCreateLoanScenario = ({
       })
 
   return {
-    controllerApproval,
-    leverageStubs,
     collateral,
     borrow,
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     assertPreSubmit: leverage
       ? () => {
+          expect(controllerApproval.isControllerApproved).to.have.been.calledWithExactly(TEST_ADDRESS)
+          expect(controllerApproval.setControllerApproval).to.not.have.been.called
+          expect(leverageStubs.createLoan).to.not.have.been.called
           expect(leverageStubs.createLoanExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.expectedMetrics)
           expect(leverageStubs.createLoanMaxRecv).to.have.been.calledWithMatch(leverageExpected.maxRecv)
           expect(leverageStubs.createLoanIsApproved).to.have.been.calledWithMatch(leverageExpected.approved)

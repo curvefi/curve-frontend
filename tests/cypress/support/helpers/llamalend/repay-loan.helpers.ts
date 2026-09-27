@@ -1,8 +1,9 @@
-import { submitLoanForm, waitForRoutesLoaded } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { waitForRoutesLoaded } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { checkDebt, checkEstimatedTxCost, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
+import { submitLoanForm } from './loan-form.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 

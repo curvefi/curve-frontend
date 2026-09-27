@@ -1,12 +1,12 @@
 import {
   checkLeverageCheckbox,
-  submitLoanForm,
   toggleLeverage,
   waitForRoutesLoaded,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LOAD_TIMEOUT } from '../../ui'
 import { checkDebt, checkEstimatedTxCost, DECIMAL_REGEX, getActionValue, touchInput } from './action-info.helpers'
+import { submitLoanForm } from './loan-form.helpers'
 
 type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 
