@@ -2,6 +2,7 @@ import type { Address, Hex } from 'viem'
 import { LEVERAGE } from '@/llamalend/constants'
 import { oneAddress, oneDecimal } from '@cy/support/generators'
 import type { RoutesQuery } from '@evm-ui/queries/router-api'
+import { MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -111,6 +112,7 @@ export const mockRouterRoutes = (chainId: number, calldata: Hex = ROUTER_CALLDAT
 }
 
 export const createMockLendLoanMarket = ({
+  version = MarketVersion.v1,
   loan,
   leverage,
   leverageZapV2,
@@ -120,6 +122,7 @@ export const createMockLendLoanMarket = ({
   userPrices,
   loanExists,
 }: {
+  version?: MarketVersion
   loan: object
   leverage?: object
   leverageZapV2: object
@@ -130,6 +133,7 @@ export const createMockLendLoanMarket = ({
   loanExists?: TestStub<readonly TestStubArg[], unknown>
 }) =>
   createMockLendMarket({
+    version,
     collateral_token: { symbol: 'wstETH', address: DEFAULT_COLLATERAL_ADDRESS, decimals: 18 },
     borrowed_token: { symbol: 'crvUSD', address: CRVUSD_ADDRESS, decimals: 18 },
     coinDecimals: [18, 18],

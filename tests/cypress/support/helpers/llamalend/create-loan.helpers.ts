@@ -228,16 +228,18 @@ export function submitLoanForm({
   form,
   message,
   beforeDelegation,
+  approveDelegation = false,
 }: {
   form: string
   message: string
   beforeDelegation?: () => void
+  approveDelegation?: boolean
 }) {
   cy.get('[data-testid="toast-success"]', LOAD_TIMEOUT).should('not.exist') // wait previous confirmations are gone
   cy.get(`[data-testid="${form}-submit-button"]`).click(LOAD_TIMEOUT)
-  if (beforeDelegation) {
+  if (approveDelegation || beforeDelegation) {
     cy.get('[data-testid="leverage-delegation-modal"]').should('be.visible')
-    cy.then(beforeDelegation)
+    if (beforeDelegation) cy.then(beforeDelegation)
     cy.get('[data-testid="leverage-delegation-approve"]').click()
   }
   cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
@@ -247,4 +249,5 @@ export function submitLoanForm({
 /**
  * Submit the create loan form and wait for the button to be re-enabled.
  */
-export const submitCreateLoanForm = () => submitLoanForm({ form: 'create-loan', message: 'Loan created' })
+export const submitCreateLoanForm = ({ controllerApproved = true }: { controllerApproved?: boolean } = {}) =>
+  submitLoanForm({ form: 'create-loan', message: 'Loan created', approveDelegation: !controllerApproved })
