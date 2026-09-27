@@ -38,7 +38,7 @@ export const holdMockedTransactionReceipt = (hash: Hex) => {
 const mockedReceiptTransport = custom({
   request: ({ method, params }: { method: string; params?: unknown[] }): Promise<unknown> => {
     const [hash] = params ?? []
-    if (method === 'eth_getTransactionReceipt' && hash === heldReceipt?.hash) {
+    if (method === 'eth_getTransactionReceipt' && heldReceipt && hash === heldReceipt.hash) {
       heldReceipt.requested = true
       return heldReceipt.promise
     }
