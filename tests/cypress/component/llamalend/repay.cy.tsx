@@ -17,21 +17,24 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { constQ } from '@ui/features/queries/util'
 
 const CHAIN_ID = 1
 const OVERSIZED_CALLDATA = `0x${'00'.repeat(9_401)}` as const
-const testCases: {
+type RepayTestCase = {
   approved: boolean
   title: string
   leverage: boolean
   repayToken: 'borrowed' | 'collateral'
   controllerApproved?: boolean
-  marketVersion?: 'v2'
+  marketVersion?: MarketVersion
   routeCalldata?: Hex
   buttonText?: string
-}[] = [
+}
+
+const testCases: RepayTestCase[] = [
   ...[
     { approved: true, title: 'fills and submits (already approved)' },
     { approved: false, title: 'fills, approves, and submits' },
@@ -45,7 +48,7 @@ const testCases: {
     leverage: true,
     repayToken: 'collateral',
     controllerApproved: false,
-    marketVersion: 'v2',
+    marketVersion: MarketVersion.v2,
     routeCalldata: OVERSIZED_CALLDATA,
     buttonText: 'Approve & Repay from Position',
   },
@@ -67,8 +70,14 @@ describe('RepayForm (mocked)', () => {
     }) => {
       it(title, () => {
         const { borrow, collateral, currentDebt, futureDebt, llamaApi, market, assertPreSubmit, assertSubmit } =
-          createRepayScenario({ chainId: CHAIN_ID, approved, leverage, controllerApproved, routeCalldata })
-        if (marketVersion) Object.assign(market, { version: marketVersion })
+          createRepayScenario({
+            chainId: CHAIN_ID,
+            approved,
+            leverage,
+            controllerApproved,
+            marketVersion,
+            routeCalldata,
+          })
 
         const onPricesUpdated = cy.spy().as('onPricesUpdated')
         const amount = repayToken === 'collateral' ? collateral : borrow
@@ -102,7 +111,7 @@ describe('RepayForm (mocked)', () => {
 
         if (buttonText) cy.get('[data-testid="repay-submit-button"]').should('be.enabled').and('have.text', buttonText)
         cy.then(assertPreSubmit)
-        submitRepayForm(controllerApproved ? undefined : assertPreSubmit).then(assertSubmit)
+        submitRepayForm({ controllerApproved }).then(assertSubmit)
       })
     },
   )

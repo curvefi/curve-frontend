@@ -74,5 +74,5 @@ export function checkBorrowMoreDetailsLoaded({
   }
 }
 
-export const submitBorrowMoreForm = (beforeDelegation?: () => void) =>
-  submitLoanForm({ form: 'borrow-more', message: 'Borrowed more!', beforeDelegation })
+export const submitBorrowMoreForm = ({ controllerApproved = true }: { controllerApproved?: boolean } = {}) =>
+  submitLoanForm({ form: 'borrow-more', message: 'Borrowed more!', approveDelegation: !controllerApproved })

@@ -16,22 +16,25 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
+import { MarketVersion } from '@evm-ui/types/market'
 import { Chain } from '@primitives/network.utils'
 import { constQ } from '@ui/features/queries/util'
 
 const chainId = Chain.Ethereum
 const OVERSIZED_CALLDATA = `0x${'00'.repeat(9_401)}` as const
 
-const testCases: {
+type BorrowMoreTestCase = {
   approved: boolean
   title: string
   withCollateral: boolean
   buttonText: string
   leverage: boolean
   controllerApproved?: boolean
-  marketVersion?: 'v2'
+  marketVersion?: MarketVersion
   routeCalldata?: Hex
-}[] = [
+}
+
+const testCases: BorrowMoreTestCase[] = [
   ...[
     { approved: true, title: 'fills and submits (already approved)', withCollateral: false, buttonText: 'Borrow More' },
     {
@@ -63,7 +66,7 @@ const testCases: {
     buttonText: 'Approve & Borrow More',
     leverage: true,
     controllerApproved: false,
-    marketVersion: 'v2',
+    marketVersion: MarketVersion.v2,
     routeCalldata: OVERSIZED_CALLDATA,
   },
 ]
@@ -95,9 +98,9 @@ describe('BorrowMoreForm (mocked)', () => {
             leverage,
             leverageImplementation: leverage ? 'zapV2' : undefined,
             controllerApproved,
+            marketVersion,
             routeCalldata,
           })
-        if (marketVersion) Object.assign(market, { version: marketVersion })
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId })
@@ -127,7 +130,7 @@ describe('BorrowMoreForm (mocked)', () => {
         cy.get('[data-testid="borrow-more-submit-button"]').should('be.enabled').and('have.text', buttonText)
 
         cy.then(assertPreSubmit)
-        submitBorrowMoreForm(controllerApproved ? undefined : assertPreSubmit).then(assertSubmit)
+        submitBorrowMoreForm({ controllerApproved }).then(assertSubmit)
       })
     },
   )

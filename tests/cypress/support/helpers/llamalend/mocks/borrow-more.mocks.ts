@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { Hex } from 'viem'
 import { oneDecimal, oneInt } from '@cy/support/generators'
+import { MarketVersion } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { decimalSum } from '@ui/lib/decimal'
 import { createMockLlamaApi, TEST_TX_HASH } from '../mock-loan-test-data'
@@ -27,6 +28,7 @@ export const createBorrowMoreScenario = ({
   leverageImplementation,
   routeCalldata,
   controllerApproved = true,
+  marketVersion = MarketVersion.v1,
 }: {
   chainId: number
   approved: boolean
@@ -35,6 +37,7 @@ export const createBorrowMoreScenario = ({
   leverageImplementation?: 'zapV2'
   routeCalldata?: Hex
   controllerApproved?: boolean
+  marketVersion?: MarketVersion
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(1, 45, 2)
@@ -170,6 +173,7 @@ export const createBorrowMoreScenario = ({
   }
   const market = useZapV2
     ? createMockLendLoanMarket({
+        version: marketVersion,
         loan,
         leverage: { maxLeverage: zapV2Stubs.maxLeverage },
         leverageZapV2,
@@ -179,7 +183,7 @@ export const createBorrowMoreScenario = ({
         loanExists: normalStubs.loanExists,
         userPrices: normalStubs.userPrices,
       })
-    : createBorrowMoreMintMarket({ normalStubs, expectedCurrentDebt })
+    : createBorrowMoreMintMarket({ normalStubs, expectedCurrentDebt, version: marketVersion })
 
   return {
     controllerApproval,

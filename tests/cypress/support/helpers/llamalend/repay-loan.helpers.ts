@@ -62,5 +62,5 @@ export function checkRepayDetailsLoaded({
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
-export const submitRepayForm = (beforeDelegation?: () => void) =>
-  submitLoanForm({ form: 'repay', message: 'Loan repaid!', beforeDelegation })
+export const submitRepayForm = ({ controllerApproved = true }: { controllerApproved?: boolean } = {}) =>
+  submitLoanForm({ form: 'repay', message: 'Loan repaid!', approveDelegation: !controllerApproved })
