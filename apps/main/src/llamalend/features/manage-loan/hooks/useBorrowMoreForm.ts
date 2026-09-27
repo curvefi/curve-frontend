@@ -5,13 +5,7 @@ import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarket
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
-import {
-  canLeverageUserBorrowed,
-  getMarketLeverageSlippage,
-  hasZapV2,
-  isRouterRequired,
-  usesZapV2,
-} from '@/llamalend/llama.utils'
+import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
@@ -25,6 +19,7 @@ import {
   isLeverageBorrowMore,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { invalidateBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
+import { useBorrowMoreControllerApproval } from '@/llamalend/queries/controller-approval.query'
 import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
@@ -168,18 +163,22 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     leverageProviders,
   })
 
-  const {
-    isControllerApproved,
-    onSubmit: onDelegationSubmit,
-    modal: delegationModal,
-  } = useControllerDelegation<BorrowMoreForm>({
+  const isControllerApproved = useBorrowMoreControllerApproval({
+    chainId,
+    marketId,
+    userAddress,
+    leverageEnabled: values.leverageEnabled,
+  })
+
+  const { onSubmit: onDelegationSubmit, modal: delegationModal } = useControllerDelegation<BorrowMoreForm>({
     chainId,
     userAddress,
     marketId,
-    actionUsesZapV2: usesZapV2(market, values.leverageEnabled),
+    approvalQuery: q(isControllerApproved),
     handleFormSubmit: form.handleSubmit,
     onSubmit: onMutationSubmit,
   })
+
   const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,

@@ -2,13 +2,13 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
-import { ensureControllerApproval } from '@/llamalend/mutations/ensure-controller-approval'
 import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import {
   getBorrowMoreImplementation,
   getBorrowMoreImplementationArgs,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { fetchBorrowMoreControllerApproval } from '@/llamalend/queries/controller-approval.query'
 import {
   type BorrowMoreForm,
   BorrowMoreMutation,
@@ -76,9 +76,16 @@ export const useBorrowMoreMutation = ({
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'borrowMore'] as const,
     mutationFn: async (variables, { market, userAddress: walletAddress }) => {
-      if (getBorrowMoreImplementation(market, variables.leverageEnabled)[0] === 'zapV2') {
-        await ensureControllerApproval({ market, chainId, userAddress: walletAddress, config })
-      }
+      await waitForApproval({
+        isApproved: () =>
+          fetchBorrowMoreControllerApproval(
+            { chainId, marketId, userAddress: walletAddress, leverageEnabled: variables.leverageEnabled },
+            { staleTime: 0 },
+          ),
+        onApprove: async () => (await market.leverageZapV2.setControllerApproval()) as Hex[],
+        message: t`Approved leverage delegation`,
+        config,
+      })
       await waitForApproval({
         isApproved: async () =>
           await fetchBorrowMoreIsApproved({ marketId, chainId, userAddress, ...variables }, { staleTime: 0 }),

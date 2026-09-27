@@ -2,15 +2,11 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
-import { ensureControllerApproval } from '@/llamalend/mutations/ensure-controller-approval'
 import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
+import { fetchRepayControllerApproval } from '@/llamalend/queries/controller-approval.query'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
-import {
-  getRepayImplementation,
-  getRepayImplementationType,
-  isFullRepayFromDebtToken,
-} from '@/llamalend/queries/repay/repay-query.helpers'
+import { getRepayImplementation, isFullRepayFromDebtToken } from '@/llamalend/queries/repay/repay-query.helpers'
 import type { RepayFormData } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -109,9 +105,23 @@ export const useRepayMutation = ({
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
     mutationFn: async (variables, { market, userAddress: walletAddress }) => {
-      if (getRepayImplementationType(market, variables) === 'zapV2') {
-        await ensureControllerApproval({ market, chainId, userAddress: walletAddress, config })
-      }
+      await waitForApproval({
+        isApproved: () =>
+          fetchRepayControllerApproval(
+            {
+              chainId,
+              marketId,
+              userAddress: walletAddress,
+              stateCollateral: variables.stateCollateral,
+              userCollateral: variables.userCollateral,
+              userBorrowed: variables.userBorrowed,
+            },
+            { staleTime: 0 },
+          ),
+        onApprove: async () => (await market.leverageZapV2.setControllerApproval()) as Hex[],
+        message: t`Approved leverage delegation`,
+        config,
+      })
       await waitForApproval({
         isApproved: async () =>
           await fetchRepayIsApproved({ marketId, chainId, userAddress, ...variables }, { staleTime: 0 }),

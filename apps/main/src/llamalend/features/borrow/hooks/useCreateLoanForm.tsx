@@ -2,8 +2,9 @@ import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
-import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2, usesZapV2 } from '@/llamalend/llama.utils'
+import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { useCreateLoanControllerApproval } from '@/llamalend/queries/controller-approval.query'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
@@ -145,15 +146,18 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     leverageProviders,
   })
 
-  const {
-    isControllerApproved,
-    onSubmit: onDelegationSubmit,
-    modal: delegationModal,
-  } = useControllerDelegation<CreateLoanForm>({
+  const isControllerApproved = useCreateLoanControllerApproval({
+    chainId,
+    marketId,
+    userAddress,
+    leverageEnabled: values.leverageEnabled,
+  })
+
+  const { onSubmit: onDelegationSubmit, modal: delegationModal } = useControllerDelegation<CreateLoanForm>({
     chainId,
     userAddress,
     marketId,
-    actionUsesZapV2: usesZapV2(market, values.leverageEnabled),
+    approvalQuery: q(isControllerApproved),
     handleFormSubmit: form.handleSubmit,
     onSubmit: onMutationSubmit,
   })

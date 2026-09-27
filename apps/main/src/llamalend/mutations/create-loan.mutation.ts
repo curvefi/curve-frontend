@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { ensureControllerApproval } from '@/llamalend/mutations/ensure-controller-approval'
 import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
+import { fetchCreateLoanControllerApproval } from '@/llamalend/queries/controller-approval.query'
 import { fetchCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
@@ -11,7 +11,7 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { rootKeys } from '@evm-ui/queries/root-keys'
 import { parseMutationRoute } from '@evm-ui/queries/router-api'
 import { waitForApproval } from '@evm-ui/utils'
-import type { Address } from '@primitives/address.utils'
+import type { Address, Hex } from '@primitives/address.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { t } from '@ui/lib/i18n'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
@@ -74,9 +74,13 @@ export const useCreateLoanMutation = ({
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,
     mutationFn: async (variables, { market, userAddress: walletAddress }) => {
       const params = { ...variables, chainId, marketId }
-      if (getCreateLoanImplementation(market, variables.leverageEnabled)[0] === 'zapV2') {
-        await ensureControllerApproval({ market, chainId, userAddress: walletAddress, config })
-      }
+      await waitForApproval({
+        isApproved: () =>
+          fetchCreateLoanControllerApproval({ ...params, userAddress: walletAddress }, { staleTime: 0 }),
+        onApprove: async () => (await market.leverageZapV2.setControllerApproval()) as Hex[],
+        message: t`Approved leverage delegation`,
+        config,
+      })
       await waitForApproval({
         isApproved: async () => await fetchCreateLoanIsApproved(params, { staleTime: 0 }),
         onApprove: () => approve(market, variables),

@@ -2,9 +2,10 @@ import { useMemo } from 'react'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
-import { getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
+import { getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
+import { useRepayControllerApproval } from '@/llamalend/queries/controller-approval.query'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
@@ -118,11 +119,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
   const values = form.watchValues()
-  const repaysWithZapV2 =
-    !!market &&
-    hasZapV2(market) &&
-    !Number(values.userBorrowed) &&
-    !!(Number(values.stateCollateral) || Number(values.userCollateral))
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
@@ -137,15 +133,13 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     leverageProviders,
   })
 
-  const {
-    isControllerApproved,
-    onSubmit,
-    modal: delegationModal,
-  } = useControllerDelegation<RepayFormData>({
+  const isControllerApproved = useRepayControllerApproval({ chainId, marketId, userAddress, ...values })
+
+  const { onSubmit, modal: delegationModal } = useControllerDelegation<RepayFormData>({
     chainId,
     userAddress,
     marketId,
-    actionUsesZapV2: repaysWithZapV2,
+    approvalQuery: q(isControllerApproved),
     handleFormSubmit: form.handleSubmit,
     onSubmit: onMutationSubmit,
   })
