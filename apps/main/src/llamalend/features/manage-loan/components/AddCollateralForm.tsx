@@ -1,6 +1,6 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { getFormButtonLabel } from '@/llamalend/widgets/action-card/form-button-label'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
+import { getFormButtonLabel } from '@/llamalend/widgets/action-card/utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
