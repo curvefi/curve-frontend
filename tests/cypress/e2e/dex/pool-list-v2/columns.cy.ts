@@ -135,13 +135,13 @@ describe('V2 pool-list columns', () => {
 
     expectHeaderOrder([
       PoolColumnId.PoolName,
+      PoolColumnId.Tokens,
       PoolColumnId.NetRate,
       PoolColumnId.BaseRate,
       PoolColumnId.WeeklyBaseRate,
       PoolColumnId.CrvRate,
       PoolColumnId.RewardsRate,
       PoolColumnId.Points,
-      PoolColumnId.Tokens,
       PoolColumnId.Volume,
       PoolColumnId.Tvl,
       PoolColumnId.Age,
@@ -213,11 +213,11 @@ describe('V2 pool-list columns', () => {
     showV2PoolColumns(OPTIONAL_LITE_COLUMNS)
     expectHeaderOrder([
       PoolColumnId.PoolName,
+      PoolColumnId.Tokens,
       PoolColumnId.NetRate,
       PoolColumnId.CrvRate,
       PoolColumnId.RewardsRate,
       PoolColumnId.Points,
-      PoolColumnId.Tokens,
       PoolColumnId.Tvl,
     ])
 

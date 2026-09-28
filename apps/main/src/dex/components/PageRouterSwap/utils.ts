@@ -1,7 +1,7 @@
-import lodash from 'lodash'
 import type { FormValues, FormStatus, Route } from '@/dex/components/PageRouterSwap/types'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { log, LogStatus } from '@ui/lib/logging'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
@@ -15,27 +15,21 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
 
 export const DEFAULT_FORM_VALUES: FormValues = { isFrom: null, fromAmount: '', fromError: '', toAmount: '' }
 
-export function parseRouterRoutes(
-  routes: IRouteStep[],
-  poolsMapper: Record<string, PoolTemplate>,
-  getPool: (poolId: string) => PoolTemplate,
-) {
+export function parseRouterRoutes(routes: IRouteStep[], getPool: (poolId: string) => PoolTemplate) {
   let haveCryptoRoutes = false
   let parsedRoutes: Route[] = []
 
   if (Array.isArray(routes) && routes.length > 0) {
     parsedRoutes = routes.map(route => {
-      let pool = poolsMapper[route.poolId]
+      let pool: PoolTemplate | undefined
 
-      if (lodash.isUndefined(pool)) {
-        try {
-          pool = getPool(route.poolId)
-        } catch (error) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-          log('routerBestRouteAndOutput missing poolName', LogStatus.ERROR, route.poolId, error.message)
-        }
+      // Try catch is needed for non-existent router pool IDs like "WETH wrapper".
+      // Possibly worth fixing, but this seems to be production-build behavior we shouldn't break.
+      try {
+        pool = getPool(route.poolId)
+      } catch (error) {
+        log('routerBestRouteAndOutput missing poolName', LogStatus.ERROR, route.poolId, getErrorMessage(error))
       }
-
       const poolName = pool ? pool.name : route.poolId
 
       if (pool?.isCrypto) {

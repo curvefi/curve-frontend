@@ -11,7 +11,6 @@ import type {
   WalletPoolData,
 } from '@/dex/components/PageDashboard/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
-import type { PoolsMapper } from '@/dex/hooks/usePoolsMapper'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { fetchPoolRewardsApy, getPoolRewardsApyQueryData } from '@/dex/queries/pool-rewards-apy.query'
 import type { State } from '@/dex/store/useStore'
@@ -23,9 +22,11 @@ import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { shortenAccount } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { sleep } from '@primitives/promise.utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
+import { tryGetPool } from '../pool.utils'
 import { userPoolRewardCrvApy } from '../queries/user-pool-reward-crv-apy.query'
 import { fetchUserPools } from '../queries/user-pools.query'
 
@@ -51,13 +52,13 @@ const SLICE_KEY = 'dashboard'
 export type DashboardSlice = {
   [SLICE_KEY]: SliceState & {
     fetchVeCrvAndClaimables: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<void>
-    fetchDashboardData: (curve: CurveApi, walletAddress: string, poolsMapper: PoolsMapper) => Promise<{ dashboardDataMapper: DashboardDataMapper, error: string }>
+    fetchDashboardData: (curve: CurveApi, walletAddress: string) => Promise<{ dashboardDataMapper: DashboardDataMapper, error: string }>
     sortFn: (chainId: ChainId, sortBy: SortId, sortByOrder: Order, walletPoolDatas: WalletPoolData[]) => WalletPoolData[]
-    setFormValues: (rChainId: ChainId, curve: CurveApi | null, poolsMapper: PoolsMapper | undefined, formValues: Partial<FormValues>) => void
+    setFormValues: (rChainId: ChainId, curve: CurveApi | null, formValues: Partial<FormValues>) => void
     setFormStatusClaimFees: (formStatusClaimFees: Partial<FormStatus>) => void
     setFormStatusVecrv: (formStatusVecrv: Partial<FormStatus>) => void
 
-    fetchStepClaimFees: (activeKey: string, curve: CurveApi, poolsMapper: PoolsMapper, walletAddress: string, key: claimButtonsKey) => Promise<FnStepResponse | undefined>
+    fetchStepClaimFees: (activeKey: string, curve: CurveApi, walletAddress: string, key: claimButtonsKey) => Promise<FnStepResponse | undefined>
     fetchStepWithdrawVecrv: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<{ walletAddress: string, hash: string, error: string } | undefined>
 
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
@@ -113,7 +114,7 @@ export const createDashboardSlice = (
         formStatus: { ...formStatus, loading: false, formType, error },
       })
     },
-    fetchDashboardData: async (curve, walletAddress, poolsMapper) => {
+    fetchDashboardData: async (curve, walletAddress) => {
       const {
         [SLICE_KEY]: { activeKey, ...sliceState },
       } = get()
@@ -136,8 +137,8 @@ export const createDashboardSlice = (
         const userPoolBalances = fulfilledValue(userPoolBalancesResult)
         const userClaimables = fulfilledValue(userClaimableResult)
 
-        // get pool's
-        const pools = poolList.map((poolId: string) => poolsMapper[poolId])
+        // This function can be called before hydration, and will be called again after hydration by the dashboard page, hence the try variant.
+        const pools = notFalsy(...poolList.map((poolId: string) => tryGetPool(poolId, curve)))
 
         // get searched address's dashboard data
         const dashboardDataMapper: DashboardDataMapper = {}
@@ -214,7 +215,7 @@ export const createDashboardSlice = (
       return []
     },
     // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-    setFormValues: async (rChainId, curve, poolsMapper, updatedFormValues) => {
+    setFormValues: async (rChainId, curve, updatedFormValues) => {
       const {
         [SLICE_KEY]: {
           activeKey: storedActiveKey,
@@ -242,14 +243,14 @@ export const createDashboardSlice = (
         error: '',
       })
 
-      if (!curve || !poolsMapper) return
+      if (!curve) return
 
       const { chainId, signerAddress } = curve
 
       // if form's wallet address if empty and signer exists, update form's wallet address to signer address
       if (formValues.walletAddress == '' && signerAddress) {
         if (Object.keys(storedDashboardDatasMapper).length !== 0) await sleep(3000)
-        sliceState.setFormValues(rChainId, curve, poolsMapper, { walletAddress: signerAddress })
+        sliceState.setFormValues(rChainId, curve, { walletAddress: signerAddress })
         return
       }
 
@@ -277,7 +278,7 @@ export const createDashboardSlice = (
 
       // get dashboard data if it does not exists in store
       if (Object.keys(dashboardDataMapper ?? {}).length === 0) {
-        const resp = await sliceState.fetchDashboardData(curve, walletAddress, poolsMapper)
+        const resp = await sliceState.fetchDashboardData(curve, walletAddress)
 
         if (resp.error) {
           sliceState.setStateByKeys({ loading: false, noResult: true })
@@ -313,7 +314,7 @@ export const createDashboardSlice = (
     },
 
     // steps
-    fetchStepClaimFees: async (activeKey, curve, poolsMapper, walletAddress, key) => {
+    fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
       const { claimableFees, ...sliceState } = get()[SLICE_KEY]
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[SLICE_KEY])
@@ -344,7 +345,7 @@ export const createDashboardSlice = (
       })
 
       if (key === claimButtonsKey['3CRV']) {
-        void sliceState.fetchDashboardData(curve, walletAddress, poolsMapper)
+        void sliceState.fetchDashboardData(curve, walletAddress)
       }
 
       return resp
