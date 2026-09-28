@@ -1,4 +1,4 @@
-import { defineChain, http, type Hex } from 'viem'
+import { defineChain, http, type Address } from 'viem'
 import { arbitrum, mainnet, optimism } from 'viem/chains'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 import { createWagmiConfig } from '@evm-ui/features/connect-wallet'
@@ -8,7 +8,7 @@ import { createTenderlyConnector } from './connector'
 /** Configuration options for creating a test Wagmi config */
 type Options = {
   /** A 32-byte private key or a 20-byte address to impersonate */
-  account: Hex
+  account: Address
   /** RPC URL for the Ethereum network */
   rpcUrl: string
   /** Block explorer URL for the network */
