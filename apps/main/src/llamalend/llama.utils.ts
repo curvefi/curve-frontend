@@ -51,18 +51,17 @@ export const getMarket = (id: string | MarketTemplate, lib = requireLib('llamaAp
 export const tryGetMarket = (marketId: MarketTemplate | string | Nullish) =>
   typeof marketId === 'object' ? marketId : maybes([marketId, getLib('llamaApi')], getMarket)
 
-/** Returns the leverage slippage for the market's assets type, falling back to the default for unmapped markets. */
-export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Address | undefined) => {
-  const assetsType = getMarketAssetsType(chainId, controllerAddress)
+const SLIPPAGE_KEY_BY_ASSETS_TYPE = {
+  [MarketAssetsType.Correlated]: 'stable',
+  [MarketAssetsType.Volatile]: 'leverage',
+  [MarketAssetsType.LongTail]: 'leverage',
+} satisfies Record<MarketAssetsType, keyof typeof SLIPPAGE>
 
-  return assetsType
-    ? {
-        [MarketAssetsType.Correlated]: SLIPPAGE.stable.default,
-        [MarketAssetsType.Volatile]: SLIPPAGE.leverage.default,
-        [MarketAssetsType.LongTail]: SLIPPAGE.leverage.default,
-      }[assetsType]
-    : SLIPPAGE.leverage.default
-}
+/** Returns the leverage slippage for the market's assets type, falling back to the default for unmapped markets. */
+export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Address | undefined) =>
+  SLIPPAGE[
+    maybe(getMarketAssetsType(chainId, controllerAddress), type => SLIPPAGE_KEY_BY_ASSETS_TYPE[type]) ?? 'leverage'
+  ].default
 
 /**
  * Resolves leverage providers from the market whitelist: approved markets get every provider on Beta and only their
