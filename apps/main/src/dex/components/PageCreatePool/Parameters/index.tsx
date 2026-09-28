@@ -354,20 +354,20 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateGamma}
                   />
                   <NumberField
-                    label={t`${allowedExtraProfitLabel} (${cryptoswapMinMax.allowedExtraProfit.min} - ${cryptoswapMinMax.allowedExtraProfit.max})`}
-                    value={+allowedExtraProfit}
-                    minValue={cryptoswapMinMax.allowedExtraProfit.min}
-                    maxValue={cryptoswapMinMax.allowedExtraProfit.max}
-                    formatOptions={CRYPTO_FORMAT_OPTIONS}
-                    onChange={updateAllowedExtraProfit}
-                  />
-                  <NumberField
                     label={t`Fee Gamma (${cryptoswapMinMax.feeGamma.min} - ${cryptoswapMinMax.feeGamma.max})`}
                     value={+feeGamma}
                     minValue={cryptoswapMinMax.feeGamma.min}
                     maxValue={cryptoswapMinMax.feeGamma.max}
                     formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateFeeGamma}
+                  />
+                  <NumberField
+                    label={t`${allowedExtraProfitLabel} (${cryptoswapMinMax.allowedExtraProfit.min} - ${cryptoswapMinMax.allowedExtraProfit.max})`}
+                    value={+allowedExtraProfit}
+                    minValue={cryptoswapMinMax.allowedExtraProfit.min}
+                    maxValue={cryptoswapMinMax.allowedExtraProfit.max}
+                    formatOptions={CRYPTO_FORMAT_OPTIONS}
+                    onChange={updateAllowedExtraProfit}
                   />
                   <NumberField
                     label={t`${adjustmentStepLabel} (${cryptoswapMinMax.adjustmentStep.min} - ${cryptoswapMinMax.adjustmentStep.max})`}
