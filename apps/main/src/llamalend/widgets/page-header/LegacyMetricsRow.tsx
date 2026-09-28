@@ -1,7 +1,8 @@
-import { MarketTypeSuffix } from '@/llamalend/constants'
+import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
@@ -31,6 +32,7 @@ export const LegacyMetricsRow = ({
   collateral: { symbol: string } | undefined
   borrowToken: { symbol: string } | undefined
 }) => {
+  const beta = useNewLlamalendHealth()
   const supplyRatePeriod = supplyRate?.data ? AVERAGE_CATEGORIES[supplyRate.data.averageCategory].period : null
 
   return (
@@ -51,17 +53,20 @@ export const LegacyMetricsRow = ({
         <Metric
           category={METRIC_CATEGORY}
           testId="market-net-supply-apy"
-          label={t`Supply APY`}
-          value={mapQuery(supplyRate, ({ supplyApy }) => supplyApy)}
+          label={beta ? t`Supply APY` : NET_SUPPLY_RATE_TITLE}
+          value={mapQuery(supplyRate, ({ supplyApy, totalMinBoost }) => (beta ? supplyApy : totalMinBoost))}
           valueOptions={{ unit: 'percentage' }}
-          notional={mapQuery(supplyRate, ({ totalMinBoost }) =>
-            maybe(totalMinBoost, value => ({
+          notional={mapQuery(supplyRate, ({ totalMinBoost, totalAverageMinBoost }) =>
+            maybe(beta ? totalMinBoost : totalAverageMinBoost, value => ({
               value,
-              unit: { symbol: `% ${t`Net supply APY`}`, position: 'suffix' as const },
+              unit: {
+                symbol: beta ? `% ${t`Net supply APY`}` : `% ${supplyRatePeriod} Avg`,
+                position: 'suffix' as const,
+              },
             })),
           )}
           valueTooltip={{
-            title: t`Supply APY`,
+            title: beta ? t`Supply APY` : NET_SUPPLY_RATE_TITLE,
             body: (
               // todo: implement loading/error states for tooltip
               <MarketSupplyRateTooltipContent

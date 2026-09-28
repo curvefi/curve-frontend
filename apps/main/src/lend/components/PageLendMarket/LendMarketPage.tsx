@@ -10,6 +10,7 @@ import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utils
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
+import { PrototypeTour } from '@/llamalend/features/prototype-intro/PrototypeTour'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/llama.utils'
@@ -112,6 +113,7 @@ export const LendMarketPage = () => {
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
         {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
+        <PrototypeTour surface="borrow" ready={!isLoading && !isLoanExistsLoading && loanExists === true} />
         <MarketBanners
           chainId={chainId}
           market={market}

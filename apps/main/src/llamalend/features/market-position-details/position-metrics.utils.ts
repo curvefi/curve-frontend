@@ -44,7 +44,11 @@ export const oracleHealth = (oraclePrice: Decimal, upperPrice: Decimal): Decimal
   return decimalGreaterThan(ratio, d(1)) ? ratio : d(1)
 }
 
-export const rangeLocation = (oraclePrice: Decimal, upperPrice: Decimal, lowerPrice: Decimal): RangeLocation => {
+export const rangeLocation = (
+  oraclePrice: Decimal,
+  upperPrice: Decimal,
+  lowerPrice: Decimal,
+): Exclude<RangeLocation, 'unavailable'> => {
   if (decimalGreaterThan(oraclePrice, upperPrice)) return 'above'
   if (decimalCompare(oraclePrice, lowerPrice) < 0) return 'below'
   return 'inside'

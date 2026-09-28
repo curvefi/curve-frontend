@@ -52,7 +52,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prevDebt={constQ('0')}
       {...getLeverageInfoFields({
         leverageEnabled,
-        collateralDelta: params.userCollateral,
+        collateralDelta: params.userCollateral ?? undefined,
         leverageValue: mapQuery(expectedCollateral, data => data.leverage),
         prevLeverageValue: constQ('0'),
         prevCollateral: constQ('0'),

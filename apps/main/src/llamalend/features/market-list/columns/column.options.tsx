@@ -1,5 +1,5 @@
 import { MarketRateType } from '@evm-ui/types/market'
-import { fromEntries, recordValues } from '@primitives/objects.utils'
+import { fromEntries, notFalsy, recordValues } from '@primitives/objects.utils'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { t } from '@ui/lib/i18n'
 import { MARKET_TITLES } from './column.titles'
@@ -22,9 +22,11 @@ export const createMarketsMobileColumns = (sortBy: MarketColumnId) =>
 const createMarketsColumnOptions = ({
   hasPositions,
   onlyPositions,
+  beta,
 }: {
   hasPositions: boolean
   onlyPositions?: MarketRateType
+  beta: boolean
 }): VisibilityGroup<MarketColumnId>[] => [
   {
     label: t`Markets`,
@@ -83,30 +85,46 @@ const createMarketsColumnOptions = ({
   {
     label: t`Borrow`,
     options: [
+      ...notFalsy(
+        beta && {
+          label: MARKET_TITLES[MarketColumnId.BorrowRate],
+          columns: [MarketColumnId.BorrowRate],
+          active: onlyPositions != MarketRateType.Supply,
+          enabled: true,
+        },
+      ),
       {
-        label: MARKET_TITLES[MarketColumnId.BorrowRate],
-        columns: [MarketColumnId.BorrowRate],
-        active: onlyPositions != MarketRateType.Supply,
-        enabled: true,
-      },
-      {
-        label: MARKET_TITLES[MarketColumnId.NetBorrowRate],
+        label: beta ? MARKET_TITLES[MarketColumnId.NetBorrowRate] : t`Net borrow APR`,
         columns: [MarketColumnId.NetBorrowRate],
-        active: false,
+        active: !beta && onlyPositions != MarketRateType.Supply,
         enabled: true,
       },
-      {
-        label: MARKET_TITLES[MarketColumnId.CollateralYield],
-        columns: [MarketColumnId.CollateralYield],
-        active: false,
-        enabled: true,
-      },
-      {
-        label: MARKET_TITLES[MarketColumnId.UserReturnOnEquity],
-        columns: [MarketColumnId.UserReturnOnEquity],
-        active: onlyPositions == MarketRateType.Borrow,
-        enabled: hasPositions,
-      },
+      ...notFalsy(
+        beta
+          ? undefined
+          : {
+              label: MARKET_TITLES[MarketColumnId.BorrowRate],
+              columns: [MarketColumnId.BorrowRate],
+              active: false,
+              enabled: true,
+            },
+      ),
+      ...(beta
+        ? [
+            {
+              label: MARKET_TITLES[MarketColumnId.CollateralYield],
+              columns: [MarketColumnId.CollateralYield],
+              active: false,
+              enabled: true,
+            },
+            {
+              label: MARKET_TITLES[MarketColumnId.UserReturnOnEquity],
+              columns: [MarketColumnId.UserReturnOnEquity],
+              active: onlyPositions == MarketRateType.Borrow,
+              enabled: hasPositions,
+            },
+          ]
+        : []),
       {
         label: t`Borrow Details`,
         columns: [
@@ -118,12 +136,14 @@ const createMarketsColumnOptions = ({
         active: onlyPositions == MarketRateType.Borrow,
         enabled: hasPositions,
       },
-      {
-        label: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
-        columns: [MarketColumnId.UserLiquidationBuffer],
-        active: false,
-        enabled: hasPositions,
-      },
+      ...notFalsy(
+        beta && {
+          label: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
+          columns: [MarketColumnId.UserLiquidationBuffer],
+          active: false,
+          enabled: hasPositions,
+        },
+      ),
       { label: t`Chart`, columns: [MarketColumnId.BorrowChart], active: false, enabled: true },
     ],
   },
@@ -147,9 +167,17 @@ const createMarketsColumnOptions = ({
 ]
 
 /** We keep visibility settings separately when the user has positions, since more columns are available. */
-export const MARKETS_COLUMN_OPTIONS = {
-  [MarketRateType.Borrow]: createMarketsColumnOptions({ hasPositions: true, onlyPositions: MarketRateType.Borrow }),
-  [MarketRateType.Supply]: createMarketsColumnOptions({ hasPositions: true, onlyPositions: MarketRateType.Supply }),
-  hasPositions: createMarketsColumnOptions({ hasPositions: true }),
-  noPositions: createMarketsColumnOptions({ hasPositions: false }),
-}
+export const getMarketsColumnOptions = (beta: boolean) => ({
+  [MarketRateType.Borrow]: createMarketsColumnOptions({
+    hasPositions: true,
+    onlyPositions: MarketRateType.Borrow,
+    beta,
+  }),
+  [MarketRateType.Supply]: createMarketsColumnOptions({
+    hasPositions: true,
+    onlyPositions: MarketRateType.Supply,
+    beta,
+  }),
+  hasPositions: createMarketsColumnOptions({ hasPositions: true, beta }),
+  noPositions: createMarketsColumnOptions({ hasPositions: false, beta }),
+})

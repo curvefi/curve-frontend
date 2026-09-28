@@ -2,7 +2,7 @@ import { useConnection } from 'wagmi'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
+import { useNewLlamaMarketDetailPage, useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
 import { MarketAssetsType, MarketType, MarketRateType } from '@evm-ui/types/market'
 import IconButton from '@mui/material/IconButton'
@@ -37,6 +37,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
   } = useMarketContext()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader()
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
+  const beta = useNewLlamalendHealth()
 
   const title = (collateralToken && borrowToken && `${collateralToken.symbol} • ${borrowToken.symbol}`) ?? t`Market`
 
@@ -80,7 +81,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
               <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
                 <ChainIcon blockchainId={blockchainId} />
                 <Badge size="extraSmall" label={t`${marketType}`} />
-                <CategoryBadge chainId={chainId} controllerAddress={controllerAddress} />
+                {beta && <CategoryBadge chainId={chainId} controllerAddress={controllerAddress} />}
               </Stack>
             </WithSkeleton>
 
@@ -119,7 +120,9 @@ const CategoryBadge = ({ chainId, controllerAddress }: { chainId: number; contro
   const category = getMarketAssetsType(chainId, controllerAddress)
   const label = category ? CATEGORY_LABEL[category] : 'Category unavailable'
   return (
-    <Tooltip title={t`Market category: ${label}. Position warnings use thresholds for this category. These thresholds are provisional.`}>
+    <Tooltip
+      title={t`Market category: ${label}. Position warnings use thresholds for this category. These thresholds are provisional.`}
+    >
       <Badge size="extraSmall" label={label} data-testid="market-category-badge" />
     </Tooltip>
   )

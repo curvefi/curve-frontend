@@ -1,6 +1,11 @@
 import { BigNumber } from 'bignumber.js'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { formatCollateralNotional, isPositionLeveraged, tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import {
+  formatCollateralNotional,
+  isPositionLeveraged,
+  tokenMetric,
+  type MarketTokensOrEmpty,
+} from '@/llamalend/llama.utils'
 import { useMarketOraclePrice, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
@@ -13,6 +18,7 @@ import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
@@ -20,10 +26,25 @@ import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { decimal, decimalDiv, decimalEqual, decimalGreaterThan, decimalMultiply, decimalSum, ZERO } from '@ui/lib/decimal'
+import {
+  decimal,
+  decimalDiv,
+  decimalEqual,
+  decimalGreaterThan,
+  decimalMultiply,
+  decimalSum,
+  ZERO,
+} from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
-import { collateralTokenValue, compositionShares, equity, equityLeverage, formatDistancePercent, priceDistance } from './position-metrics.utils'
+import {
+  collateralTokenValue,
+  compositionShares,
+  equity,
+  equityLeverage,
+  formatDistancePercent,
+  priceDistance,
+} from './position-metrics.utils'
 import { formatYieldMultiplier, positionReturnOnEquity } from './position-roe.utils'
 import { collateralTooltip, debtTooltip, leverageTooltip, rangeTooltip, roeTooltip } from './PositionMetricTooltip'
 import { LiquidationThresholdTooltipContent } from './'
@@ -167,7 +188,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
   const distance = combineQueries([oraclePrice, userPrices], (price, prices) =>
     prices ? priceDistance(price, prices[1], prices[0]) : undefined,
   )
-  const aprFraction = (percentagePoints: number) => {
+  const aprFraction = (percentagePoints: Decimal | number) => {
     const points = decimal(percentagePoints)
     const hundred = decimal('100')
     if (points == undefined || hundred == undefined) return { unavailable: true as const }
@@ -188,9 +209,12 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
         borrowedValue: state.stablecoin,
         debt: state.debt,
         equity: equityAmount,
-        collateralYield: decimalEqual(assets, ZERO) || collateralApr == null ? { unnecessary: true } : aprFraction(collateralApr),
+        collateralYield:
+          decimalEqual(assets, ZERO) || collateralApr == null ? { unnecessary: true } : aprFraction(collateralApr),
         borrowedYield:
-          decimalEqual(state.stablecoin, ZERO) || borrowedApr == null ? { unnecessary: true } : aprFraction(borrowedApr),
+          decimalEqual(state.stablecoin, ZERO) || borrowedApr == null
+            ? { unnecessary: true }
+            : aprFraction(borrowedApr),
         borrowCost: decimalEqual(state.debt, ZERO) ? { unnecessary: true } : aprFraction(rates.borrowApr),
         rewards: { unnecessary: true },
       })
@@ -223,7 +247,8 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
           }}
           sx={{ whiteSpace: 'nowrap' }}
           notional={mapQuery(distance, value => {
-            if (!value || value.location === 'unavailable') return value?.location === 'unavailable' ? t`Unavailable` : undefined
+            if (!value || value.location === 'unavailable')
+              return value?.location === 'unavailable' ? t`Unavailable` : undefined
             if (value.location === 'inside') return t`In range`
             return `${formatDistancePercent(value.percent)} ${value.label}`
           })}
@@ -242,6 +267,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
         <Metric
           category={METRIC_CATEGORY}
           label={t`Collateral value`}
+          testId="position-collateral-value"
           value={keepDisplayedValue(collateralValue)}
           valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
           valueTooltip={collateralTooltip()}
@@ -249,8 +275,18 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
         {compositionLabels && (
           <Stack data-testid="collateral-composition" sx={{ gap: Spacing.xxs }}>
             <Stack direction="row" sx={{ height: 4 }}>
-              <Box sx={theme => ({ width: `${compositionLabels.collateral}%`, bgcolor: theme.design.Layer.Feedback.Success })} />
-              <Box sx={theme => ({ width: `${compositionLabels.borrowed}%`, bgcolor: theme.design.Layer.Feedback.Warning })} />
+              <Box
+                sx={theme => ({
+                  width: `${compositionLabels.collateral}%`,
+                  bgcolor: theme.design.Layer.Feedback.Success,
+                })}
+              />
+              <Box
+                sx={theme => ({
+                  width: `${compositionLabels.borrowed}%`,
+                  bgcolor: theme.design.Layer.Feedback.Warning,
+                })}
+              />
             </Stack>
             <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
               <Typography variant="bodyXsRegular" color="textSecondary">
@@ -280,6 +316,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
           <Metric
             category={METRIC_CATEGORY}
             label={t`Leverage`}
+            testId="position-leverage"
             value={keepDisplayedValue(leverageValue)}
             valueOptions={{ unit: 'multiplier' }}
             valueTooltip={leverageTooltip()}
@@ -287,28 +324,29 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
         )}
       </Box>
       {roe.data?.kind !== 'hidden' && (
-      <Box sx={{ gridArea: 'roe' }}>
-        <Metric
-          category={METRIC_CATEGORY}
-          label={t`Return on equity`}
-          testId="position-roe"
-          value={keepDisplayedValue(
-            q({
-              data: roe.data?.kind === 'value' ? roe.data.result.aprPercent : undefined,
-              isLoading: roe.isLoading,
-              error:
-                roe.data?.kind === 'unavailable'
-                  ? new Error('A required yield or borrow rate is unavailable.')
-                  : roe.error,
-            }),
-          )}
-          notional={maybe(roe.data?.kind === 'value' ? formatYieldMultiplier(roe.data.result.multiplier) : undefined, text =>
-            q({ data: text, isLoading: false, error: null }),
-          )}
-          valueOptions={{ unit: { symbol: '% APR', position: 'suffix' } }}
-          valueTooltip={roeTooltip()}
-        />
-      </Box>
+        <Box sx={{ gridArea: 'roe' }}>
+          <Metric
+            category={METRIC_CATEGORY}
+            label={t`Return on equity`}
+            testId="position-roe"
+            value={keepDisplayedValue(
+              q({
+                data: roe.data?.kind === 'value' ? roe.data.result.aprPercent : undefined,
+                isLoading: roe.isLoading,
+                error:
+                  roe.data?.kind === 'unavailable'
+                    ? new Error('A required yield or borrow rate is unavailable.')
+                    : roe.error,
+              }),
+            )}
+            notional={maybe(
+              roe.data?.kind === 'value' ? formatYieldMultiplier(roe.data.result.multiplier) : undefined,
+              text => q({ data: text, isLoading: false, error: null }),
+            )}
+            valueOptions={{ unit: { symbol: '% APR', position: 'suffix' } }}
+            valueTooltip={roeTooltip()}
+          />
+        </Box>
       )}
     </>
   )

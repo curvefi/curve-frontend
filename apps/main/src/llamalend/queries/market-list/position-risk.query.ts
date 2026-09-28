@@ -1,6 +1,5 @@
 import { formatUnits, parseAbi } from 'viem'
 import { getWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
-import type { ChainParams } from '@evm-ui/queries/root-keys'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
@@ -17,11 +16,7 @@ const RISK_ABI = parseAbi([
   'function health(address user, bool full) view returns (int256)',
 ])
 
-type PositionRiskParams = ChainParams & {
-  userAddress: Address
-  controllerAddress: Address
-  ammAddress: Address
-}
+type PositionRiskParams = { chainId: number; userAddress: Address; controllerAddress: Address; ammAddress: Address }
 
 export type PositionRisk = {
   oracle: Decimal
@@ -32,7 +27,7 @@ export type PositionRisk = {
 
 const formatSignedUnits = (value: bigint) => {
   const negative = value < 0n
-  const text = formatUnits(negative ? -value : value)
+  const text = formatUnits(negative ? -value : value, 18)
   return `${negative ? '-' : ''}${text}`
 }
 
@@ -42,8 +37,13 @@ const formatSignedUnits = (value: bigint) => {
  */
 export const { getQueryOptions: getPositionRiskOptions } = queryFactory({
   queryKey: ({ chainId, userAddress, controllerAddress, ammAddress }: PositionRiskParams) =>
-    ['llamalend', 'position-risk', { chainId, userAddress, controllerAddress, ammAddress }] as const,
-  queryFn: async ({ chainId, userAddress, controllerAddress, ammAddress }: PositionRiskParams): Promise<PositionRisk> => {
+    ['llamalend', 'position-risk', { chainId }, { userAddress }, { controllerAddress }, { ammAddress }] as const,
+  queryFn: async ({
+    chainId,
+    userAddress,
+    controllerAddress,
+    ammAddress,
+  }: PositionRiskParams): Promise<PositionRisk> => {
     const config = getWagmiConfig()
     if (!config) throw new Error('Chain client is not ready')
     const [oracle, prices, health] = await readContracts(config, {
@@ -55,9 +55,9 @@ export const { getQueryOptions: getPositionRiskOptions } = queryFactory({
       ],
     })
     const [contractUpper, contractLower] = prices
-    const oraclePrice = decimal(formatUnits(oracle))
-    const lower = decimal(formatUnits(contractLower))
-    const upper = decimal(formatUnits(contractUpper))
+    const oraclePrice = decimal(formatUnits(oracle, 18))
+    const lower = decimal(formatUnits(contractLower, 18))
+    const upper = decimal(formatUnits(contractUpper, 18))
     const fullHealth = decimal(formatSignedUnits(health * 100n))
     if (oraclePrice == undefined || lower == undefined || upper == undefined || fullHealth == undefined) {
       throw new Error('Position risk read could not be parsed')

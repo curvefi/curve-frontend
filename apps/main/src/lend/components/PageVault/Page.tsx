@@ -7,6 +7,7 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
+import { PrototypeTour } from '@/llamalend/features/prototype-intro/PrototypeTour'
 import { useUserVaultEvents } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getTokens, getVaultToken } from '@/llamalend/llama.utils'
@@ -84,6 +85,7 @@ export const Page = () => {
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
         {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
+        <PrototypeTour surface="supply" ready={!isLoading && !!(market ?? apiMarket.data)} />
         <MarketBanners
           chainId={chainId}
           market={market}

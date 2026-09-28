@@ -11,9 +11,8 @@ const { Spacing } = SizesAndSpaces
 
 const tooltipChrome = { placement: 'top' as const, arrow: false, clickable: true }
 
-
 /** Stacked fraction. Kept local so tooltips can show a formula without a math typesetting dependency. */
-const Fraction = ({ numerator, denominator }: { numerator: ReactNode; denominator: ReactNode }) => (
+export const Fraction = ({ numerator, denominator }: { numerator: ReactNode; denominator: ReactNode }) => (
   <Stack
     component="span"
     sx={{
@@ -28,14 +27,17 @@ const Fraction = ({ numerator, denominator }: { numerator: ReactNode; denominato
     <Typography variant="bodyXsRegular" color="textSecondary" component="span">
       {numerator}
     </Typography>
-    <Box component="span" sx={{ alignSelf: 'stretch', borderTop: '1px solid', borderColor: 'text.secondary', minWidth: '100%' }} />
+    <Box
+      component="span"
+      sx={{ alignSelf: 'stretch', borderTop: '1px solid', borderColor: 'text.secondary', minWidth: '100%' }}
+    />
     <Typography variant="bodyXsRegular" color="textSecondary" component="span">
       {denominator}
     </Typography>
   </Stack>
 )
 
-const Equation = ({ children }: { children: ReactNode }) => (
+export const Equation = ({ children }: { children: ReactNode }) => (
   <Typography
     variant="bodySRegular"
     color="textSecondary"
@@ -69,15 +71,19 @@ export const healthTooltip = () => ({
       <TooltipDescription
         text={t`Proximity to the start of the Liquidation range. Health remains 1.00 at or below the upper edge. Monitor the Liquidation buffer after that.`}
       />
-      <Equation>
-        {t`Health`}
-        {' = max('}
-        <Fraction numerator={t`Oracle price`} denominator={t`Upper boundary`} />
-        {', 1)'}
-      </Equation>
+      <HealthEquation />
     </TooltipWrapper>
   ),
 })
+
+export const HealthEquation = () => (
+  <Equation>
+    {t`Health`}
+    {' = max('}
+    <Fraction numerator={t`Oracle price`} denominator={t`Upper boundary`} />
+    {', 1)'}
+  </Equation>
+)
 
 export const bufferTooltip = (_options: { predicate?: 'strict-negative' | 'unverified' } = {}) => ({
   ...tooltipChrome,
@@ -87,25 +93,29 @@ export const bufferTooltip = (_options: { predicate?: 'strict-negative' | 'unver
       <TooltipDescription
         text={t`Debt-relative liquidation-adjusted margin. This is not a price-drop allowance and it is not withdrawable equity.`}
       />
-      <Equation>
-        {t`Buffer %`}
-        {' = '}
-        <Fraction numerator={t`Adjusted value − Debt`} denominator={t`Debt`} />
-        {' × 100'}
-      </Equation>
-      <Equation>
-        {t`Buffer amount`}
-        {' = '}
-        <Fraction numerator={t`Debt × Buffer %`} denominator="100" />
-      </Equation>
+      <BufferEquations />
       <TooltipDescription
-        text={
-          t`This uses the same Controller full-health read as the rest of the market. Liquidatable means that value is strictly below 0. Exact zero is critical, not liquidatable. Self and approved close use a different check. This is not a deployment-matched safety certificate.`
-        }
+        text={t`This uses the same Controller full-health read as the rest of the market. Liquidatable means that value is strictly below 0. Exact zero is critical, not liquidatable. Self and approved close use a different check. This is not a deployment-matched safety certificate.`}
       />
     </TooltipWrapper>
   ),
 })
+
+export const BufferEquations = () => (
+  <>
+    <Equation>
+      {t`Buffer %`}
+      {' = '}
+      <Fraction numerator={t`Adjusted value − Debt`} denominator={t`Debt`} />
+      {' × 100'}
+    </Equation>
+    <Equation>
+      {t`Buffer amount`}
+      {' = '}
+      <Fraction numerator={t`Debt × Buffer %`} denominator="100" />
+    </Equation>
+  </>
+)
 
 export const statusTooltip = ({
   label,
@@ -160,18 +170,24 @@ export const collateralTooltip = () => ({
       <TooltipDescription
         text={t`Remaining collateral and converted borrowed assets backing the debt. A zero total is unavailable, not 100% cash.`}
       />
-      <Equation>
-        {t`Collateral value`}
-        {' = q × p + b'}
-      </Equation>
-      <Equation>
-        {t`Value share`}
-        {' = '}
-        <Fraction numerator={t`Token value`} denominator={t`Collateral value`} />
-      </Equation>
+      <CollateralEquations />
     </TooltipWrapper>
   ),
 })
+
+export const CollateralEquations = () => (
+  <>
+    <Equation>
+      {t`Collateral value`}
+      {' = q × p + b'}
+    </Equation>
+    <Equation>
+      {t`Value share`}
+      {' = '}
+      <Fraction numerator={t`Token value`} denominator={t`Collateral value`} />
+    </Equation>
+  </>
+)
 
 export const debtTooltip = () => ({
   ...tooltipChrome,
@@ -193,14 +209,18 @@ export const leverageTooltip = () => ({
       <TooltipDescription
         text={t`Remaining collateral exposure over equity. It amplifies relative-price gains and losses and potential collateral yield, less borrowing costs. It is not the yield multiplier.`}
       />
-      <Equation>
-        {t`Leverage`}
-        {' = '}
-        <Fraction numerator="q × p" denominator="q × p + b − d" />
-      </Equation>
+      <LeverageEquation />
     </TooltipWrapper>
   ),
 })
+
+export const LeverageEquation = () => (
+  <Equation>
+    {t`Leverage`}
+    {' = '}
+    <Fraction numerator="q × p" denominator="q × p + b − d" />
+  </Equation>
+)
 
 export const roeTooltip = () => ({
   ...tooltipChrome,
@@ -210,26 +230,29 @@ export const roeTooltip = () => ({
       <TooltipDescription
         text={t`Current composition and rates, as an APR with no assumed reinvestment. Excludes price movement and conversion profit or loss.`}
       />
-      <Equation>
-        {t`ROE APR`}
-        {' = '}
-        <Fraction
-          numerator={t`Annual asset yield + eligible rewards − gross borrowing costs`}
-          denominator={t`Equity`}
-        />
-        {' × 100'}
-      </Equation>
-      <Equation>
-        {t`Yield multiplier`}
-        {' = '}
-        <Fraction numerator={t`ROE APR`} denominator={t`Unleveraged collateral APR`} />
-      </Equation>
+      <RoeEquations />
       <TooltipDescription
         text={t`The multiplier uses the same collateral yield as the estimate. It is not exposure leverage. Lender CRV rewards are not borrower income.`}
       />
     </TooltipWrapper>
   ),
 })
+
+export const RoeEquations = () => (
+  <>
+    <Equation>
+      {t`ROE APR`}
+      {' = '}
+      <Fraction numerator={t`Annual asset yield + eligible rewards − gross borrowing costs`} denominator={t`Equity`} />
+      {' × 100'}
+    </Equation>
+    <Equation>
+      {t`Yield multiplier`}
+      {' = '}
+      <Fraction numerator={t`ROE APR`} denominator={t`Unleveraged collateral APR`} />
+    </Equation>
+  </>
+)
 
 export const rangeTooltip = ({
   pair,
@@ -251,18 +274,7 @@ export const rangeTooltip = ({
       <TooltipDescription
         text={t`Conversions may occur both ways. Losses need not recover when the price recovers. The lower edge is not the hard-liquidation price.`}
       />
-      <Equation>
-        {t`Above`}
-        {' = '}
-        <Fraction numerator="p − u" denominator="p" />
-        {' × 100'}
-      </Equation>
-      <Equation>
-        {t`Below`}
-        {' = '}
-        <Fraction numerator="l − p" denominator="p" />
-        {' × 100'}
-      </Equation>
+      <RangeEquations />
       <TooltipItems secondary>
         <TooltipItem title={t`Range details`} variant="independent">
           {pair}
@@ -283,3 +295,20 @@ export const rangeTooltip = ({
     </TooltipWrapper>
   ),
 })
+
+export const RangeEquations = () => (
+  <>
+    <Equation>
+      {t`Above`}
+      {' = '}
+      <Fraction numerator="p − u" denominator="p" />
+      {' × 100'}
+    </Equation>
+    <Equation>
+      {t`Below`}
+      {' = '}
+      <Fraction numerator="l − p" denominator="p" />
+      {' × 100'}
+    </Equation>
+  </>
+)

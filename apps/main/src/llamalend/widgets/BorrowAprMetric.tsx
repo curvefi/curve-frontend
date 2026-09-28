@@ -1,4 +1,6 @@
+import { getBorrowRateTooltipTitle } from '@/llamalend/llama.utils'
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory, formatCappedRateValue } from '@evm-ui/utils'
@@ -26,25 +28,31 @@ type BorrowAprMetricProps = {
 }
 
 export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alignment }: BorrowAprMetricProps) => {
+  const beta = useNewLlamalendHealth()
   const averageRatePeriod = AVERAGE_CATEGORIES[borrowRate.data?.averageCategory ?? 'llamalend.market.rate'].period
+  const legacyTitle = getBorrowRateTooltipTitle({
+    totalBorrowApr: borrowRate.data?.totalBorrowRate,
+    extraRewards: borrowRate.data?.extraRewards ?? [],
+    rebasingYieldApr: borrowRate.data?.rebasingYield,
+  })
   return (
     <Metric
       category="llamalend.marketHeader"
       alignment={alignment}
       testId="market-net-borrow-apr"
-      label={t`Borrow APR`}
-      value={mapQuery(borrowRate, ({ rate }) => rate)}
+      label={beta ? t`Borrow APR` : t`Net Borrow APR`}
+      value={mapQuery(borrowRate, ({ rate, totalBorrowRate }) => (beta ? rate : totalBorrowRate))}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
-      notional={mapQuery(borrowRate, ({ totalBorrowRate }) =>
-        maybe(totalBorrowRate, value => ({
+      notional={mapQuery(borrowRate, ({ totalBorrowRate, totalAverageBorrowRate }) =>
+        maybe(beta ? totalBorrowRate : totalAverageBorrowRate, value => ({
           value,
           abbreviate: false,
           formatter: formatCappedRateValue,
-          unit: { symbol: `% ${t`Net borrow APR`}`, position: 'suffix' as const },
+          unit: { symbol: beta ? `% ${t`Net borrow APR`}` : `% ${averageRatePeriod} Avg`, position: 'suffix' as const },
         })),
       )}
       valueTooltip={{
-        title: t`Borrow APR`,
+        title: beta ? t`Borrow APR` : legacyTitle,
         body: (
           <MarketNetBorrowAprTooltipContent
             marketType={marketType}

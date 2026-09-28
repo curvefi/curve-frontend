@@ -1,6 +1,8 @@
+import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { AvailableLiquidityMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { MarketSupplyRateTooltipContent, TooltipOptions } from '@/llamalend/widgets/tooltips'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, formatCappedRateValue } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
@@ -29,6 +31,7 @@ export const MetricsRow = ({
   borrowToken: { symbol: string } | undefined
   rateType: MarketRateType
 }) => {
+  const beta = useNewLlamalendHealth()
   const supplyRatePeriod = supplyRate?.data ? AVERAGE_CATEGORIES[supplyRate.data.averageCategory].period : null
 
   const borrowRateMetric = (
@@ -39,19 +42,19 @@ export const MetricsRow = ({
     <Metric
       category={METRIC_CATEGORY}
       testId="market-net-supply-apy"
-      label={t`Supply APY`}
-      value={mapQuery(supplyRate, ({ supplyApy }) => supplyApy)}
+      label={beta ? t`Supply APY` : NET_SUPPLY_RATE_TITLE}
+      value={mapQuery(supplyRate, ({ supplyApy, totalMinBoost }) => (beta ? supplyApy : totalMinBoost))}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
-      notional={mapQuery(supplyRate, ({ totalMinBoost }) =>
-        maybe(totalMinBoost, value => ({
+      notional={mapQuery(supplyRate, ({ totalMinBoost, totalAverageMinBoost }) =>
+        maybe(beta ? totalMinBoost : totalAverageMinBoost, value => ({
           value,
           abbreviate: false,
           formatter: formatCappedRateValue,
-          unit: { symbol: `% ${t`Net supply APY`}`, position: 'suffix' as const },
+          unit: { symbol: beta ? `% ${t`Net supply APY`}` : `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
         })),
       )}
       valueTooltip={{
-        title: t`Supply APY`,
+        title: beta ? t`Supply APY` : NET_SUPPLY_RATE_TITLE,
         body: (
           <MarketSupplyRateTooltipContent
             supplyApy={supplyRate.data?.supplyApy}

@@ -1,0 +1,87 @@
+.llamalend-prototype-tour {
+  box-sizing: border-box;
+  width: min(380px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  border-radius: 8px;
+  padding: 16px;
+  font-family: inherit;
+}
+
+.llamalend-prototype-tour .driver-popover-title {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.llamalend-prototype-tour .driver-popover-description {
+  font-size: 14px;
+  line-height: 1.5;
+  max-height: min(60vh, 420px);
+  overflow-y: auto;
+}
+
+.llamalend-prototype-tour .driver-popover-description p {
+  margin: 0;
+}
+
+.llamalend-prototype-tour .driver-popover-description > * {
+  max-width: 100%;
+}
+
+.llamalend-prototype-tour .llamalend-tour-math {
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+
+.llamalend-prototype-tour .driver-popover-footer-btn,
+.llamalend-prototype-tour .driver-popover-close-btn {
+  background: transparent;
+  color: inherit;
+  border-color: currentColor;
+}
+
+.llamalend-prototype-tour .driver-popover-arrow-side-left {
+  border-left-color: var(--llamalend-tour-surface);
+}
+
+.llamalend-prototype-tour .driver-popover-arrow-side-right {
+  border-right-color: var(--llamalend-tour-surface);
+}
+
+.llamalend-prototype-tour .driver-popover-arrow-side-top {
+  border-top-color: var(--llamalend-tour-surface);
+}
+
+.llamalend-prototype-tour .driver-popover-arrow-side-bottom {
+  border-bottom-color: var(--llamalend-tour-surface);
+}
+
+.llamalend-prototype-tour .driver-popover-footer-btn:focus-visible,
+.llamalend-prototype-tour .driver-popover-close-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.llamalend-prototype-guide {
+  position: fixed;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  left: calc(16px + env(safe-area-inset-left));
+  z-index: 1300;
+  width: 148px;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
+}
+
+.llamalend-prototype-guide .MuiButton-root {
+  align-self: flex-start;
+  min-width: 0;
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  .llamalend-prototype-guide {
+    bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+}

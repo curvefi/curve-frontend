@@ -1,5 +1,9 @@
 import { HealthBar } from '@/llamalend/features/market-position-details'
-import { formatOracleHealth, formatSignedPercent, isOracleHealthFloor } from '@/llamalend/features/market-position-details/position-metrics.utils'
+import {
+  formatOracleHealth,
+  formatSignedPercent,
+  isOracleHealthFloor,
+} from '@/llamalend/features/market-position-details/position-metrics.utils'
 import type { PositionSeverity } from '@/llamalend/features/market-position-details/position-status.utils'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
@@ -49,11 +53,12 @@ export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, Ll
     const ratio = decimal(getUserPositionOracleHealth(row.original))
     const positionStatus = getUserPositionStatus(row.original)
     return (
-      <Stack sx={{ gap: Spacing.xs, alignItems: 'flex-end' }}>
+      <Stack data-testid="user-position-health" sx={{ gap: Spacing.xs, alignItems: 'flex-end' }}>
         {maybe(ratio, value => (
           <Typography
             component="span"
             variant="bodySRegular"
+            data-testid="user-position-health-value"
             sx={{ color: isOracleHealthFloor(value) ? theme.design.Text.TextColors.Feedback.Error : undefined }}
           >
             {formatOracleHealth(value)}

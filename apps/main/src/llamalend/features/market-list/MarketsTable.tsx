@@ -15,7 +15,7 @@ import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { MarketsChips } from './chips/MarketsChips'
-import { DEFAULT_SORT, MARKET_COLUMNS, MarketColumnId } from './columns'
+import { DEFAULT_SORT, MarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useMarketsGlobalFilterFn } from './filters/hooks/useMarketsGlobalFilter'
 import { getMarketFacetedRowModel } from './filters/marketFaceting'
@@ -49,7 +49,7 @@ export const MarketsTable = ({
   )
   const globalFilterFn = useMarketsGlobalFilterFn(data, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useMarketsVisibility(
+  const { columnSettings, columnVisibility, toggleVisibility, sortField, tableSorting, columns } = useMarketsVisibility(
     LOCAL_STORAGE_KEY,
     sorting,
     getMarketsColumnVariant(userHasPositions),
@@ -58,9 +58,9 @@ export const MarketsTable = ({
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useCurveTable({
-    columns: MARKET_COLUMNS,
+    columns,
     query: mapQuery(tableQuery, d => d.markets),
-    state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
+    state: { expanded, sorting: tableSorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     getRowId: row => row.controllerAddress,
     onSortingChange,
@@ -72,7 +72,7 @@ export const MarketsTable = ({
   const hasActiveFilters = !!table.state.columnFilters.length
 
   return (
-    <Stack>
+    <Stack data-testid="llamalend-markets-table">
       <TableHeader title={t`Markets`} onReload={onReload} isLoading={isLoading} />
       <EvmDataTable
         table={table}
