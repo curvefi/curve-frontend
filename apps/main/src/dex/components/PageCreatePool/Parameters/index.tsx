@@ -214,6 +214,10 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     return initialPrice.initialPrice[0] === '0'
   }, [initialPrice.initialPrice, tokensInPool.tokenAmount])
 
+  // At the request of smart people, FXSwap V3 specifically needs some inputs relabled. They probably have good reasons.
+  const allowedExtraProfitLabel = poolPresetIndex === 10 ? t`Adjustment Step Min` : t`Allowed Extra Profit`
+  const adjustmentStepLabel = poolPresetIndex === 10 ? t`Adjustment Step Max` : t`Adjustment Step`
+
   return (
     <>
       <Wrapper>
@@ -350,7 +354,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateGamma}
                   />
                   <NumberField
-                    label={t`Allowed Extra Profit (${cryptoswapMinMax.allowedExtraProfit.min} - ${cryptoswapMinMax.allowedExtraProfit.max})`}
+                    label={t`${allowedExtraProfitLabel} (${cryptoswapMinMax.allowedExtraProfit.min} - ${cryptoswapMinMax.allowedExtraProfit.max})`}
                     value={+allowedExtraProfit}
                     minValue={cryptoswapMinMax.allowedExtraProfit.min}
                     maxValue={cryptoswapMinMax.allowedExtraProfit.max}
@@ -366,7 +370,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateFeeGamma}
                   />
                   <NumberField
-                    label={t`Adjustment Step (${cryptoswapMinMax.adjustmentStep.min} - ${cryptoswapMinMax.adjustmentStep.max})`}
+                    label={t`${adjustmentStepLabel} (${cryptoswapMinMax.adjustmentStep.min} - ${cryptoswapMinMax.adjustmentStep.max})`}
                     value={+adjustmentStep}
                     minValue={cryptoswapMinMax.adjustmentStep.min}
                     maxValue={cryptoswapMinMax.adjustmentStep.max}
