@@ -218,6 +218,8 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const allowedExtraProfitLabel = poolPresetIndex === 10 ? t`Adjustment Step Min` : t`Allowed Extra Profit`
   const adjustmentStepLabel = poolPresetIndex === 10 ? t`Adjustment Step Max` : t`Adjustment Step`
 
+  const irrelevancyLabel = poolPresetIndex === 10 ? ` (${t`irrelevant for FXSwap V3`})` : ''
+
   return (
     <>
       <Wrapper>
@@ -354,7 +356,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateGamma}
                   />
                   <NumberField
-                    label={t`Fee Gamma (${cryptoswapMinMax.feeGamma.min} - ${cryptoswapMinMax.feeGamma.max})`}
+                    label={t`Fee Gamma (${cryptoswapMinMax.feeGamma.min} - ${cryptoswapMinMax.feeGamma.max})${irrelevancyLabel}`}
                     value={+feeGamma}
                     minValue={cryptoswapMinMax.feeGamma.min}
                     maxValue={cryptoswapMinMax.feeGamma.max}
