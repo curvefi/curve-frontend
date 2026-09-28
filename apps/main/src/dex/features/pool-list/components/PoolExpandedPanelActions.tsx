@@ -1,7 +1,7 @@
 import { getAddress } from 'viem'
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
+import { ExpandedPanelActions } from '@ui/features/tables/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { copyToClipboardWithToast } from '@ui/hooks/useCopyToClipboard'
 import { t } from '@ui/lib/i18n'

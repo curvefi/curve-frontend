@@ -1,7 +1,7 @@
 import type { ListPoolsParams, V2PoolFilterType } from '@curvefi/prices-api/pools'
-import { parseRangeFilter } from '@evm-ui/shared/ui/DataTable/filters'
 import { maybe } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
+import { parseRangeFilter } from '@ui/features/tables/filters'
 import { t } from '@ui/lib/i18n'
 
 // Omitted "main" and "factory" from available filters.
