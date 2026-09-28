@@ -6,7 +6,10 @@ import {
   submitBorrowMoreForm,
   writeBorrowMoreForm,
 } from '@cy/support/helpers/llamalend/borrow-more.helpers'
-import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
+import {
+  fakeCollateralEvents,
+  ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
+} from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/mocks/borrow-more.mocks'
 import {
@@ -21,7 +24,6 @@ import { Chain } from '@primitives/network.utils'
 import { constQ } from '@ui/features/queries/util'
 
 const chainId = Chain.Ethereum
-const OVERSIZED_CALLDATA = `0x${'00'.repeat(9_401)}` as const
 
 type BorrowMoreTestCase = {
   approved: boolean
@@ -67,7 +69,7 @@ const testCases: BorrowMoreTestCase[] = [
     leverage: true,
     controllerApproved: false,
     marketVersion: MarketVersion.v2,
-    routeCalldata: OVERSIZED_CALLDATA,
+    routeCalldata: ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
   },
 ]
 

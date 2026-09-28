@@ -6,6 +6,7 @@ import {
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/mocks/create-loan.mocks'
 import {
@@ -27,7 +28,6 @@ type CreateLoanTestCase = {
 }
 
 const CHAIN_ID = 1
-const OVERSIZED_CALLDATA = `0x${'00'.repeat(9_401)}` as const
 
 const testCases: CreateLoanTestCase[] = [
   ...[
@@ -44,7 +44,7 @@ const testCases: CreateLoanTestCase[] = [
     leverageEnabled: true,
     controllerApproved: false,
     marketVersion: MarketVersion.v2,
-    routeCalldata: OVERSIZED_CALLDATA,
+    routeCalldata: ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
   },
 ]
 

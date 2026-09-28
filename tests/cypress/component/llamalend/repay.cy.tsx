@@ -1,7 +1,11 @@
 import type { Hex } from 'viem'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { getTokens } from '@/llamalend/llama.utils'
-import { fakeCollateralEvents, TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
+import {
+  fakeCollateralEvents,
+  TEST_ADDRESS,
+  ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
+} from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createRepayScenario } from '@cy/support/helpers/llamalend/mocks/repay.mocks'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
@@ -22,7 +26,6 @@ import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { constQ } from '@ui/features/queries/util'
 
 const CHAIN_ID = 1
-const OVERSIZED_CALLDATA = `0x${'00'.repeat(9_401)}` as const
 type RepayTestCase = {
   approved: boolean
   title: string
@@ -49,7 +52,7 @@ const testCases: RepayTestCase[] = [
     repayToken: 'collateral',
     controllerApproved: false,
     marketVersion: MarketVersion.v2,
-    routeCalldata: OVERSIZED_CALLDATA,
+    routeCalldata: ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
     buttonText: 'Approve & Repay from Position',
   },
 ]
