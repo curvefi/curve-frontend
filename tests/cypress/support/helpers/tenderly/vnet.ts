@@ -34,7 +34,7 @@ export const getRpcUrls = (
 
 export type TenderlyWagmiConfigFromVNet = {
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
-  /** A 32-byte private key or a 20-byte address to impersonate, including the 0x prefix. */
+  /** A 32-byte private key or a 20-byte address to impersonate */
   account?: Hex
 }
 

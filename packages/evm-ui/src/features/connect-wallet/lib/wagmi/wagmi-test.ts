@@ -20,12 +20,12 @@ type ConnectResult<T> = { accounts: readonly T[]; chainId: number }
 type Account = { address: Address; capabilities: Record<string, unknown> }
 type TestAccount = PrivateKeyAccount | JsonRpcAccount
 
-/** Default transport for Cypress E2E test wallets. */
+/** Default custom transport for Cypress E2E tests, read-only */
 const cypressTransport = (account: TestAccount, chain: Chain) => {
-  // Local accounts sign transactions; JSON-RPC accounts delegate to the test RPC.
+  // Dedicated local-account writer so eth_sendTransaction is signed with the provided private key.
   const writeClient = createWalletClient({ account, chain, transport: http(chain.rpcUrls.default.http[0]) })
   return custom({
-    request: async ({ method, params: [param] = [] }): Promise<unknown> => {
+    request: async ({ method, params: [param] }): Promise<unknown> => {
       if (method === 'eth_accounts') return [account.address]
       if (method === 'eth_sendTransaction') return writeClient.sendTransaction(param as SendTransactionParameters)
       throw new Error(`Unsupported method: ${method}, http fallback is used`)
@@ -44,7 +44,7 @@ export type CreateTestConnectorOptions = {
    * This is necessary because our code under test uses a BrowserProvider with http transport,
    * which relies on RPC methods not always available to retrieve accounts and send transactions.
    *
-   * Defaults to the Cypress test-wallet transport.
+   * Defaults to a read-only custom transport for Cypress.
    */
   transport?: (account: TestAccount) => CustomTransport
 }
@@ -53,7 +53,7 @@ export type CreateTestConnectorOptions = {
  * Creates a wagmi test connector for Cypress.
  *
  * This connector is designed for use in test environments (e.g., Cypress) with optionally a testnet chain.
- * It creates a wallet using a private key or a JSON-RPC account to test contract read and write calls
+ * It creates a wallet using a private key or address to impersonate to test contract read and write calls
  * without relying on third-party browser extensions like MetaMask.
  */
 export function createTestConnector({

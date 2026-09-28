@@ -56,6 +56,6 @@ export const FormCrvLocker = ({
       canUnlock: getIsLockExpired(lockedAmount, unlockTime),
       hasLockedCrv: decimalGreaterThan(lockedAmount, ZERO),
     }}
-    overflow="kebab"
+    overflow="fullWidth"
   />
 )

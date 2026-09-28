@@ -25,7 +25,7 @@ export const FormClaimFees = ({ chainId }: { chainId: ChainId }) => {
       <Stack sx={{ gap: Spacing.xs }}>
         <Typography variant="headingXsBold">{t`veCRV rewards`}</Typography>
         <Typography variant="bodySRegular" color="textSecondary">
-          {t`Trading fees distributed to CRV lockers.`}
+          {t`DAO fees distributed to CRV lockers.`}
         </Typography>
       </Stack>
 

@@ -1,7 +1,6 @@
-import { custom, type RpcTransactionRequest } from 'viem'
+import { custom, type Address, type RpcTransactionRequest } from 'viem'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 import { createTestConnector, CreateTestConnectorOptions } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test'
-import type { Address } from '@primitives/address.utils'
 import { sendVnetTransaction } from './vnet-tx'
 
 /**
@@ -10,7 +9,7 @@ import { sendVnetTransaction } from './vnet-tx'
  */
 const tenderlyTransport = (address: Address, tenderly: TenderlyConfig) =>
   custom({
-    request: async ({ method, params: [param] = [] }): Promise<unknown> => {
+    request: async ({ method, params: [param] }): Promise<unknown> => {
       if (method === 'eth_accounts') {
         return [address]
       }
