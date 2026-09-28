@@ -1,10 +1,10 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { getMaxReturnOnEquity } from '@/llamalend/rates.utils'
 import { MaxReturnOnEquityTooltipContent, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
-import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@evm-ui/shared/ui/DataTable/filters'
 import { MarketRateType } from '@evm-ui/types/market'
 import type { DeepKeys } from '@tanstack/table-core'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
+import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
 import {
   BoostCell,
   CompactUsdCell,

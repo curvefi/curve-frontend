@@ -3,8 +3,8 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { RouterLink } from '@ui/components/RouterLink'
 import { CLICKABLE_IN_ROW_CLASS } from '@ui/features/tables/data-table.utils'
+import { responsiveTitleEllipsisSx } from '@ui/features/tables/titleTruncate'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { responsiveTitleEllipsisSx } from '../titleTruncate'
 
 /** Title as in, the name of the pool or market, used in the corresponding title cell */
 export function TableRowTitle({ title, url, testId }: { title: ReactNode; url: string; testId: string }) {

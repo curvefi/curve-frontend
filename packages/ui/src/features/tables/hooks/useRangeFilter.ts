@@ -1,11 +1,7 @@
 import { useCallback, useMemo } from 'react'
-import {
-  normalizeRangeFilterDefaults,
-  parseRangeFilter,
-  serializeRangeFilter,
-} from '@evm-ui/shared/ui/DataTable/filters'
 import { Range } from '@ui/features/queries/util'
 import type { FilterProps } from '@ui/features/tables/data-table.utils'
+import { normalizeRangeFilterDefaults, parseRangeFilter, serializeRangeFilter } from '@ui/features/tables/filters'
 import { useDebounced } from '@ui/hooks/useDebounce'
 
 export const useRangeFilter = <TColumnId extends string>({
