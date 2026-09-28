@@ -1,5 +1,5 @@
 import { EvmDataTable, type EvmDataTableProps } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
-import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
+import { ExpandedPanelActions } from '@ui/features/tables/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { getTransactionActions } from './utils'
 
