@@ -181,7 +181,10 @@ export const createRepayScenario = ({
           expect(leverageStubs.repayIsApproved).to.have.been.calledWithMatch(leverageExpected.isApproved)
           expect(leverageStubs.repayExpectedBorrowed).to.have.been.calledWithMatch(leverageExpected.expectedBorrowed)
           expect(leverageStubs.repayFutureLeverage).to.have.been.calledWithMatch(leverageExpected.futureLeverage)
-          if (approved) {
+          if (!controllerApproved) {
+            expect(leverageStubs.estimateGasRepay).to.not.have.been.called
+            expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
+          } else if (approved) {
             expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
             expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
           } else {

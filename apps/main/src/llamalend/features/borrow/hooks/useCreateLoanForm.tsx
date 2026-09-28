@@ -228,7 +228,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         form.update({ routeId: route?.id })
         await invalidateCreateLoanRouteQueries(route, params)
       },
-      getRouteGasOptions: (routeId: string | undefined) => getCreateLoanEstimateGasOptions({ ...params, routeId }),
+      getRouteGasOptions: (routeId: string | undefined) =>
+        getCreateLoanEstimateGasOptions({ ...params, routeId }, isControllerApproved.data === true),
       networks,
       zapAddress,
       providers: leverageProviders,

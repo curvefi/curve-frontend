@@ -188,7 +188,10 @@ export const createCreateLoanScenario = ({
           expect(leverageStubs.createLoanExpectedCollateral).to.have.been.calledWithMatch(
             leverageExpected.expectedCollateral,
           )
-          if (approved) {
+          if (!controllerApproved) {
+            expect(leverageStubs.estimateGasCreateLoan).to.not.have.been.called
+            expect(leverageStubs.estimateGasCreateLoanApprove).to.not.have.been.called
+          } else if (approved) {
             expect(leverageStubs.estimateGasCreateLoan).to.have.been.calledWithMatch(leverageExpected.estimateGas)
             expect(leverageStubs.estimateGasCreateLoanApprove).to.not.have.been.called
           } else {

@@ -243,7 +243,10 @@ export const createBorrowMoreScenario = ({
         expect(zapV2Stubs.borrowMoreIsApproved).to.have.been.calledWithMatch(zapV2Expected.isApproved)
         expect(zapV2Stubs.borrowMoreExpectedCollateral).to.have.been.calledWithMatch(zapV2Expected.expectedCollateral)
         expect(zapV2Stubs.borrowMoreFutureLeverage).to.have.been.calledWithMatch(zapV2Expected.futureLeverage)
-        if (approved) {
+        if (!controllerApproved) {
+          expect(zapV2Stubs.estimateGasBorrowMore).to.not.have.been.called
+          expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+        } else if (approved) {
           expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
           expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
         } else {
