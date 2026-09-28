@@ -24,6 +24,7 @@ import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLev
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
   values: { userCollateral, debt },
+  isControllerApproved,
   tokens: { collateralToken, borrowToken },
   leverageEnabled,
   form,
@@ -32,6 +33,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
+  isControllerApproved: boolean | undefined
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   controllerAddress: Address | undefined
   marketType: MarketType
@@ -49,7 +51,8 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
-      gas={q(useBorrowMoreEstimateGas(params, isOpen))}
+      // Gas estimation reverts if ZapV2 controller delegation is false
+      gas={q(useBorrowMoreEstimateGas(params, isOpen && isControllerApproved === true))}
       health={q(useBorrowMoreHealth(params, isOpen))}
       prices={q(useBorrowMorePrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}

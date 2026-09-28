@@ -213,7 +213,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     collateralToken,
     error: isControllerApproved.error ?? borrowError ?? solvencyError,
     isApproved: q(useBorrowMoreIsApproved(params)),
-    isControllerApproved,
+    isControllerApproved: q(isControllerApproved),
     delegationModal,
     formErrors: formState.visibleErrors,
     disabledAlert,

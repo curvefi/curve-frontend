@@ -20,6 +20,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   controllerAddress,
   params,
   values: { leverageEnabled, userCollateral, debt },
+  isControllerApproved,
   collateralToken,
   borrowToken,
   form,
@@ -28,6 +29,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   controllerAddress: Address | undefined
   params: CreateLoanFormQueryParams<ChainId>
   values: CreateLoanForm
+  isControllerApproved: boolean | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   form: UseFormReturn<CreateLoanForm>
@@ -45,7 +47,8 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       loanToValue={q(useLoanToValue({ params, collateralToken, borrowToken }, isOpen))}
       prevLoanToValue={constQ('0')}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
-      gas={q(useCreateLoanEstimateGas(params, isOpen))}
+      // Gas estimation reverts if ZapV2 controller delegation is false
+      gas={q(useCreateLoanEstimateGas(params, isOpen && isControllerApproved === true))}
       leverageEnabled={leverageEnabled}
       prevCollateral={constQ('0')}
       debt={constQ(debt)}

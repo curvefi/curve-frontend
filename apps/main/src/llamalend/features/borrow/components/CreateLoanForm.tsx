@@ -97,6 +97,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           form={form}
           params={params}
           values={values}
+          isControllerApproved={isControllerApproved.data}
           collateralToken={collateralToken}
           borrowToken={borrowToken}
         />

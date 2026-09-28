@@ -208,7 +208,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     },
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     isApproved: q(useCreateLoanIsApproved(params)),
-    isControllerApproved,
+    isControllerApproved: q(isControllerApproved),
     delegationModal,
     isHighLiquidationRisk,
     isLeverageSupported,
