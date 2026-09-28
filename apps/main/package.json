@@ -24,7 +24,8 @@
     "merkl-api": "workspace:^",
     "router-api": "workspace:^",
     "vest": "5.4.6",
-    "vite-plugin-vercel": "9.1.1"
+    "vite-plugin-vercel": "9.1.1",
+    "wrangler": "4.135.0"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
