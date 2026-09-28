@@ -26,18 +26,16 @@ export const LeverageDelegationModal = ({
     compact
     testId="leverage-delegation-modal"
     footer={
-      <Stack sx={{ flexGrow: 1 }}>
-        <Button onClick={onConfirm} data-testid="leverage-delegation-approve">
-          {t`Approve delegation & Continue`}
-        </Button>
-      </Stack>
+      <Button onClick={onConfirm} data-testid="leverage-delegation-approve" fullWidth>
+        {t`Approve delegation & Continue`}
+      </Button>
     }
   >
     <Stack spacing={Spacing.md}>
-      <Typography variant="bodyMRegular">
+      <Typography>
         {t`Enable Zap V2 to make the borrow and repay calls needed for leveraged operations in this market. This one-time market approval has no amount limit.`}
       </Typography>
-      <Typography variant="bodyMRegular">{t`Token spending approval is a separate transaction.`}</Typography>
+      <Typography>{t`Token spending approval is a separate transaction.`}</Typography>
       <Typography variant="bodySRegular" color="textTertiary">
         {t`Delegations need to be done once per market when using leverage.`}
       </Typography>
