@@ -7,7 +7,11 @@ import { Icon } from '@legacy-ui/Icon/Icon'
 import { SelectBtn } from '@legacy-ui/Select/SelectBtn'
 import { SelectModal } from '@legacy-ui/Select/SelectModal'
 import { SelectModalFull } from '@legacy-ui/Select/SelectModalFull'
-import { getIsFullScreen } from '@legacy-ui/utils'
+
+function getIsFullScreen() {
+  const classList = document?.body?.classList
+  return classList?.contains('page-small-x') || classList?.contains('page-small-xx')
+}
 
 export type SelectProps<T extends object> = {
   buttonStyles?: CSSProperties
