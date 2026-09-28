@@ -185,7 +185,8 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
         form.update({ routeId: route?.id })
         await invalidateRepayRouteQueries(route, params)
       },
-      getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
+      getRouteGasOptions: (routeId: string | undefined) =>
+        getRepayLoanEstimateGasOptions({ ...params, routeId }, isControllerApproved.data === true),
       networks,
       zapAddress,
       providers: leverageProviders,

@@ -231,7 +231,8 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
         form.update({ routeId: route?.id })
         await invalidateBorrowMoreRouteQueries(route, params)
       },
-      getRouteGasOptions: (routeId: string | undefined) => getBorrowMoreGasEstimateQueryOptions({ ...params, routeId }),
+      getRouteGasOptions: (routeId: string | undefined) =>
+        getBorrowMoreGasEstimateQueryOptions({ ...params, routeId }, isControllerApproved.data === true),
       networks,
       zapAddress,
       providers: leverageProviders,
