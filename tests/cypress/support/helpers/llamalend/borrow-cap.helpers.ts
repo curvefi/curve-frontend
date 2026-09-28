@@ -16,7 +16,7 @@ const CONTROLLER_V2_ABI = parseAbi([
 /** keccak("SKIP_CONFIG") sentinel for leaving admin_percentage unchanged when calling configure_lend. */
 const SKIP_CONFIG_UINT256 = 34683848501677104821777960696933802007602333377339998839659032476042327981902n
 
-export const setControllerBorrowCap = ({
+const setControllerBorrowCap = ({
   adminRpcUrl,
   publicRpcUrl,
   controllerAddress,

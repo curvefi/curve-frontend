@@ -4,7 +4,7 @@ import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice }
 import { oneToken } from '@cy/support/helpers/tokens'
 import { DEFAULT_DECIMALS, fromEntries, range } from '@primitives/objects.utils'
 
-export const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
+const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
 export type Chain = (typeof LendingChains)[number]
 
 // keep the general pool TVL below the special HighTVL row to guarantee ordering in tests
