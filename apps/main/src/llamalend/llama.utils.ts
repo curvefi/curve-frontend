@@ -53,7 +53,7 @@ export const tryGetMarket = (marketId: MarketTemplate | string | Nullish) =>
 
 const SLIPPAGE_KEY_BY_ASSETS_TYPE = {
   [MarketAssetsType.Correlated]: 'stable',
-  [MarketAssetsType.Volatile]: 'leverage',
+  [MarketAssetsType.BlueChip]: 'leverage',
   [MarketAssetsType.LongTail]: 'leverage',
 } satisfies Record<MarketAssetsType, keyof typeof SLIPPAGE>
 

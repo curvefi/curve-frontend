@@ -4,9 +4,9 @@ export enum MarketType {
 }
 
 export enum MarketAssetsType {
-  Correlated = 'correlated',
-  Volatile = 'volatile',
-  LongTail = 'long-tail',
+  Correlated = 'correlated', // Assets expected to maintain a close price relationship.
+  BlueChip = 'blue-chip', // A pair of established assets with deep and reliable liquidity and substantial trading activity.
+  LongTail = 'long-tail', // A pair involving at least one less-established asset with relatively shallow liquidity and limited trading activity.
 }
 
 export enum MarketVersion {

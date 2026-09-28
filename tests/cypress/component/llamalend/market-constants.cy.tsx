@@ -109,7 +109,7 @@ describe('llama market constants', () => {
 
   for (const [assetsType, expectedSlippage] of [
     [MarketAssetsType.Correlated, SLIPPAGE.stable.default],
-    [MarketAssetsType.Volatile, SLIPPAGE.leverage.default],
+    [MarketAssetsType.BlueChip, SLIPPAGE.leverage.default],
     [MarketAssetsType.LongTail, SLIPPAGE.leverage.default],
   ] as const) {
     it(`uses the expected leverage slippage for ${assetsType} markets`, () => {
