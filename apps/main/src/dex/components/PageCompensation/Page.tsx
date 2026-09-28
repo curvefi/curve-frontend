@@ -20,7 +20,7 @@ export const PageCompensation = () => {
   const isConnecting = isLoading(connectState)
   const { connect: connectWallet, provider } = useWallet()
   const [contracts, setContracts] = useState<EtherContract[]>([])
-  const rChainId = useChainId(network)
+  const chainId = useChainId(network)
 
   const fetchData = useCallback(async (provider: Provider) => {
     const signer = await provider.getSigner()
@@ -50,17 +50,17 @@ export const PageCompensation = () => {
       </BoxHeader>
 
       <Content grid gridRowGap={3} padding>
-        {rChainId !== 1 ? (
+        {chainId !== 1 ? (
           <strong>
             <i>Claimable compensation is only available on Ethereum network.</i>
           </strong>
         ) : provider ? (
-          !rChainId || contracts.length === 0 ? (
+          !chainId || contracts.length === 0 ? (
             <SpinnerWrapper>
               <Spinner />
             </SpinnerWrapper>
           ) : (
-            <FormCompensation curve={curveApi} rChainId={rChainId} contracts={contracts} provider={provider} />
+            <FormCompensation curve={curveApi} chainId={chainId} contracts={contracts} provider={provider} />
           )
         ) : (
           <>
