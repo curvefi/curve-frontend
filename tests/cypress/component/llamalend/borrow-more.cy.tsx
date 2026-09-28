@@ -128,6 +128,7 @@ describe('BorrowMoreForm (mocked)', () => {
           expectedFutureDebt,
           leverageEnabled: leverage,
           borrowedSymbol: 'crvUSD',
+          controllerApproved,
         })
         cy.get('[data-testid="borrow-more-submit-button"]').should('be.enabled').and('have.text', buttonText)
 

@@ -75,7 +75,7 @@ describe('CreateLoanForm (mocked)', () => {
         )
 
         writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage, waitForRoutes: leverageEnabled })
-        checkLoanDetailsLoaded({ leverageEnabled })
+        checkLoanDetailsLoaded({ leverageEnabled, controllerApproved })
 
         cy.then(assertPreSubmit)
         submitCreateLoanForm({ controllerApproved }).then(assertSubmit)

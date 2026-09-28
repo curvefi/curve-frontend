@@ -120,17 +120,19 @@ export function checkLoanDetailsLoaded({
   leverageEnabled,
   expectError,
   hasApi = true,
+  controllerApproved = true,
 }: {
   leverageEnabled: boolean
   expectError?: string
   hasApi?: boolean
+  controllerApproved?: boolean
 }) {
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should(hasApi ? 'include' : 'equal', hasApi ? '%' : '-')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
-  checkEstimatedTxCost({ hasValue: hasApi && !expectError })
+  checkEstimatedTxCost({ hasValue: hasApi && !expectError && controllerApproved })
 
   if (leverageEnabled) {
     cy.get('[data-testid="loan-action-settings"]').within(() => {

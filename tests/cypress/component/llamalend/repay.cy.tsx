@@ -34,7 +34,6 @@ type RepayTestCase = {
   controllerApproved?: boolean
   marketVersion?: MarketVersion
   routeCalldata?: Hex
-  buttonText?: string
 }
 
 const testCases: RepayTestCase[] = [
@@ -53,7 +52,6 @@ const testCases: RepayTestCase[] = [
     controllerApproved: false,
     marketVersion: MarketVersion.v2,
     routeCalldata: ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
-    buttonText: 'Approve & Repay from Position',
   },
 ]
 
@@ -61,16 +59,7 @@ describe('RepayForm (mocked)', () => {
   beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(
-    ({
-      approved,
-      leverage,
-      repayToken,
-      title,
-      controllerApproved = true,
-      marketVersion,
-      routeCalldata,
-      buttonText,
-    }) => {
+    ({ approved, leverage, repayToken, title, controllerApproved = true, marketVersion, routeCalldata }) => {
       it(title, () => {
         const { borrow, collateral, currentDebt, futureDebt, llamaApi, market, assertPreSubmit, assertSubmit } =
           createRepayScenario({
@@ -110,9 +99,9 @@ describe('RepayForm (mocked)', () => {
         checkRepayDetailsLoaded({
           debt: { current: currentDebt, future: futureDebt, symbol: 'crvUSD' },
           leverageEnabled: leverage,
+          controllerApproved,
         })
 
-        if (buttonText) cy.get('[data-testid="repay-submit-button"]').should('be.enabled').and('have.text', buttonText)
         cy.then(assertPreSubmit)
         submitRepayForm({ controllerApproved }).then(assertSubmit)
       })

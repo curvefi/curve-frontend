@@ -49,17 +49,19 @@ export function checkBorrowMoreDetailsLoaded({
   expectedCurrentDebt,
   borrowedSymbol,
   hasApi = true,
+  controllerApproved = true,
 }: {
   expectedFutureDebt: Decimal
   expectedCurrentDebt: Decimal
   leverageEnabled: boolean
   borrowedSymbol: string
   hasApi?: boolean
+  controllerApproved?: boolean
 }) {
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-health').should('match', DECIMAL_REGEX)
   getActionValue('borrow-health', 'previous').should('match', DECIMAL_REGEX)
-  checkEstimatedTxCost({ hasValue: hasApi })
+  checkEstimatedTxCost({ hasValue: hasApi && controllerApproved })
   checkDebt(
     { current: expectedCurrentDebt, future: expectedFutureDebt, symbol: borrowedSymbol },
     { checkLoanToValue: hasApi },
