@@ -9,6 +9,7 @@ import {
   type JsonRpcAccount,
   type PrivateKeyAccount,
   type SendTransactionParameters,
+  isAddress,
 } from 'viem'
 import { privateKeyToAccount, toAccount } from 'viem/accounts'
 import { createConnector, type CreateConnectorFn } from 'wagmi'
@@ -61,7 +62,7 @@ export function createTestConnector({
   chain,
   transport,
 }: CreateTestConnectorOptions): CreateConnectorFn {
-  const account = accountHex.length === 42 ? toAccount(accountHex) : privateKeyToAccount(accountHex)
+  const account = isAddress(accountHex, { strict: false}) ? toAccount(accountHex) : privateKeyToAccount(accountHex)
 
   const client = createWalletClient({
     account,
