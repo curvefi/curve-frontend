@@ -29,6 +29,8 @@ type Props = { curve: CurveApi; chainId: ChainId; haveSigner: boolean }
 const FEE_FORMAT_OPTIONS = { maximumFractionDigits: 8 }
 const CRYPTO_FORMAT_OPTIONS = { maximumSignificantDigits: 21, maximumFractionDigits: 21 }
 
+const FXSWAP_V3_INDEX = 10
+
 export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const advanced = useStore(state => state.createPool.advanced)
   const midFee = useStore(state => state.createPool.parameters.midFee)
@@ -215,10 +217,10 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   }, [initialPrice.initialPrice, tokensInPool.tokenAmount])
 
   // At the request of smart people, FXSwap V3 specifically needs some inputs relabled. They probably have good reasons.
-  const allowedExtraProfitLabel = poolPresetIndex === 10 ? t`Adjustment Step Min` : t`Allowed Extra Profit`
-  const adjustmentStepLabel = poolPresetIndex === 10 ? t`Adjustment Step Max` : t`Adjustment Step`
+  const allowedExtraProfitLabel = poolPresetIndex === FXSWAP_V3_INDEX ? t`Adjustment Step Min` : t`Allowed Extra Profit`
+  const adjustmentStepLabel = poolPresetIndex === FXSWAP_V3_INDEX ? t`Adjustment Step Max` : t`Adjustment Step`
 
-  const irrelevancyLabel = poolPresetIndex === 10 ? ` (${t`irrelevant for FXSwap V3`})` : ''
+  const irrelevancyLabel = poolPresetIndex === FXSWAP_V3_INDEX ? ` (${t`irrelevant for FXSwap V3`})` : ''
 
   return (
     <>
