@@ -511,9 +511,8 @@ export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, Mark
 }
 
 /**
- * Controller assignments taken from the open classification pull request 3285.
- * That pull request calls the middle group Volatile. This prototype stores those markets as Blue-chip.
- * Unmapped controllers stay unmapped. They are not silently Long-tail.
+ * Controller assignments follow the markets classified in PR #3285.
+ * Unmapped controllers have no explicit assets type.
  */
 export const MARKET_ASSETS_TYPE_BY_CONTROLLER: PartialRecord<number, Record<Address, MarketAssetsType>> = {
   [Chain.Ethereum]: {
