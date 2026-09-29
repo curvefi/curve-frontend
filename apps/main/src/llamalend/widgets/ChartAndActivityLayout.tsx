@@ -203,13 +203,13 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
     )
   }, [])
 
-  const showBands = bands && isBandsVisible && isConnected
+  const showBands = bands && isBandsVisible
   const hasUserBands = !!bands?.userBandsBalances?.length
   const collateralSymbol = bands?.collateralToken?.symbol
   const borrowSymbol = bands?.borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
     () =>
-      showBands && hasUserBands
+      showBands && isConnected && hasUserBands
         ? notFalsy<LegendItem>(
             ...chart.legendSets,
             collateralSymbol && { label: collateralSymbol, box: { fill: bandsPalette.userCollateralShareColor } },
@@ -218,6 +218,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
         : chart.legendSets,
     [
       showBands,
+      isConnected,
       hasUserBands,
       chart.legendSets,
       collateralSymbol,
@@ -243,7 +244,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
               setActiveOption={chart.setTimeOption}
               isLoading={chart.isLoading}
             />
-            {isConnected && bands && (
+            {bands && (
               <ToggleBandsChartButton
                 label={t`Bands`}
                 tooltip={t`The price ranges your position can move through during soft liquidation.`}
@@ -261,6 +262,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
           sx={{
             display: showBands ? 'grid' : undefined,
             gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
+            gap: showBands && !isConnected ? Spacing.md : undefined,
           }}
         >
           <ChartWrapper
@@ -315,13 +317,13 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
     )
   }, [])
 
-  const showBands = bands && isBandsVisible && isConnected
+  const showBands = bands && isBandsVisible
   const hasUserBands = !!bands?.userBandsBalances?.length
   const collateralSymbol = bands?.collateralToken?.symbol
   const borrowSymbol = bands?.borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
     () =>
-      showBands && hasUserBands
+      showBands && isConnected && hasUserBands
         ? notFalsy<LegendItem>(
             ...chart.legendSets,
             collateralSymbol && { label: collateralSymbol, box: { fill: bandsPalette.userCollateralShareColor } },
@@ -330,6 +332,7 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
         : chart.legendSets,
     [
       showBands,
+      isConnected,
       hasUserBands,
       chart.legendSets,
       collateralSymbol,
@@ -360,7 +363,6 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
         }}
         isLoading={chart.isLoading || isMarketLoading}
         customButton={
-          isConnected &&
           bands && (
             <ToggleBandsChartButton
               label={t`Bands`}
@@ -374,7 +376,12 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
       <Stack
         sx={{
           display: showBands ? 'grid' : undefined,
-          gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
+          gridTemplateColumns: showBands
+            ? isConnected
+              ? { mobile: '5fr 1fr', tablet: '7fr 1fr' }
+              : { mobile: '1fr', tablet: '2fr 1fr' }
+            : undefined,
+          gap: showBands && !isConnected ? Spacing.md : undefined,
         }}
       >
         <ChartWrapper

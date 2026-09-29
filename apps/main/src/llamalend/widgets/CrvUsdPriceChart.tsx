@@ -164,7 +164,7 @@ export const CrvUsdPriceChart = () => {
           height={Height.chart.sm}
           isLoading={showLoading}
           error={priceHistory.error}
-          errorMessage={t`Unable to fetch historical crvUSD peg data.`}
+          errorState={{ description: t`Unable to fetch historical crvUSD peg data.` }}
         >
           <EChartsLineChart<CrvUsdPriceChartPoint, PriceSeriesKey, 'timestamp'>
             data={chartData}

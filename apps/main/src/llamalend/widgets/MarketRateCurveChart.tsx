@@ -155,7 +155,7 @@ export const MarketRateCurveChart = () => {
           height={Height.chart.sm}
           isLoading={chartData.isLoading}
           error={chartData.error}
-          errorMessage={t`Unable to fetch rate curve data.`}
+          errorState={{ description: t`Unable to fetch rate curve data.` }}
         >
           <EChartsLineChart<RateCurveChartPoint, RateCurveSeriesKey, 'utilization'>
             data={chartData.data ?? []}

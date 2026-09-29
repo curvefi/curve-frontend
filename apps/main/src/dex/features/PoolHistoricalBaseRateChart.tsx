@@ -138,7 +138,7 @@ export const PoolHistoricalBaseRateChart = ({
           height={CHART_HEIGHT}
           isLoading={ratePoints.isLoading}
           error={ratePoints.error}
-          errorMessage={t`Unable to fetch historical base rate data.`}
+          errorState={{ description: t`Unable to fetch historical base rate data.` }}
         >
           <EChartsLineChart<BaseRateChartPoint, BaseRateSeriesKey, 'timestamp'>
             data={ratePoints.data ?? []}

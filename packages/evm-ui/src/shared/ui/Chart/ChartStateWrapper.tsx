@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { ChartEmpty } from '@evm-ui/shared/ui/Chart/ChartEmpty'
-import { ChartError } from '@evm-ui/shared/ui/Chart/ChartError'
+import { ChartEmpty, type ChartEmptyState } from '@evm-ui/shared/ui/Chart/ChartEmpty'
+import { ChartError, type ChartErrorState } from '@evm-ui/shared/ui/Chart/ChartError'
 import { ChartLoading } from '@evm-ui/shared/ui/Chart/ChartLoading'
 import type { Address } from '@primitives/address.utils'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
@@ -9,10 +9,9 @@ type ChartStateWrapperProps = {
   height: number
   isLoading: boolean
   isEmpty?: boolean
-  emptyMessage?: ReactNode
+  emptyState?: ChartEmptyState
   error?: Error | null
-  errorMessage: string
-  refreshData?: () => Promise<unknown> | void
+  errorState?: ChartErrorState
   children: ReactNode
   userAddress?: Address
 }
@@ -23,32 +22,22 @@ export const ChartStateWrapper = ({
   height,
   isLoading,
   isEmpty,
-  emptyMessage,
+  emptyState,
   error,
-  errorMessage,
-  refreshData,
+  errorState,
   children,
   userAddress,
 }: ChartStateWrapperProps) => {
+  if (error) return <ChartError height={height} error={error} errorState={errorState} userAddress={userAddress} />
   if (isLoading) return <ChartLoading height={height} />
-  if (error)
-    return (
-      <ChartError
-        height={height}
-        error={error}
-        errorMessage={errorMessage}
-        refreshData={refreshData}
-        userAddress={userAddress}
-      />
-    )
-  if (isEmpty) return <ChartEmpty height={height} message={emptyMessage} />
+  if (isEmpty) return <ChartEmpty height={height} emptyState={emptyState} />
 
   return (
     <ErrorBoundary
       title="Chart Error"
       inline
       subtitle="Something went wrong when rendering the chart."
-      refreshData={refreshData}
+      refreshData={errorState?.onReload}
       userAddress={userAddress}
     >
       {children}

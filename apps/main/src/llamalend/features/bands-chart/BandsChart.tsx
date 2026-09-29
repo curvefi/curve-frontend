@@ -1,5 +1,6 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useMemo, memo } from 'react'
+import { useConnection } from 'wagmi'
 import type {
   BandsChartOption,
   BandsChartToken,
@@ -155,6 +156,7 @@ const BandsChartComponent = ({
   height,
   priceRange,
 }: BandsChartProps) => {
+  const { isConnected } = useConnection()
   const isChartDataPending = !error && chartData === undefined
 
   return (
@@ -170,11 +172,15 @@ const BandsChartComponent = ({
     >
       <EvmChartStateWrapper
         height={height}
-        isLoading={isLoading || isChartDataPending}
-        isEmpty={chartData?.length === 0}
-        emptyMessage={t`No active bands for this market`}
+        isLoading={isConnected && (isLoading || isChartDataPending)}
+        isEmpty={!isConnected || chartData?.length === 0}
         error={error}
-        errorMessage={t`Failed to load bands chart data`}
+        emptyState={{
+          title: isConnected ? t`No active bands for this market` : t`Connect wallet to view bands`,
+          size: 'sm',
+          ...(!isConnected && { button: { type: 'connect-wallet' } }),
+        }}
+        errorState={{ title: t`Failed to load bands chart data` }}
       >
         {chartData != null && (
           <BandsChartContent
