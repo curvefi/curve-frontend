@@ -23,7 +23,7 @@ export const UserDistanceToRangeCell = ({
       value={distance ? formatPriceDistanceHeadline(distance) : undefined}
       support={
         range && (
-          <Typography variant="bodyXsRegular" color="textSecondary">
+          <Typography variant="bodySRegular" color="textSecondary">
             {formatRangeLabel(range[1], range[0], unit)}
           </Typography>
         )

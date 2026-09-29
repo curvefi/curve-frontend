@@ -8,17 +8,24 @@ export const LinearProgress = ({
   percent,
   size,
   barColor,
+  trackColor,
 }: {
   percent: number
   size: keyof typeof SIZE_MAPPING
   barColor?: string | ((t: Theme) => string)
+  /** Track fill behind the bar. Defaults to the theme track. */
+  trackColor?: string | ((t: Theme) => string)
 }) => {
   const [value, setValue] = useState(0)
   // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setValue(percent), [percent]) // set value via effect so it animates on load
   return (
     <MuiLinearProgress
-      sx={{ height: SIZE_MAPPING[size], '& .MuiLinearProgress-bar': { backgroundColor: barColor } }}
+      sx={{
+        height: SIZE_MAPPING[size],
+        ...(trackColor != null ? { backgroundColor: trackColor } : {}),
+        '& .MuiLinearProgress-bar': { backgroundColor: barColor },
+      }}
       value={value}
       variant="determinate"
     />

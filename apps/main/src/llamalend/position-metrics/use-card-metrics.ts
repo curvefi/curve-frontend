@@ -18,7 +18,7 @@ import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { DISABLED_Q, type QueryProp } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
 
 /** Current card leverage, collateral value over equity. */
@@ -59,7 +59,7 @@ export function useBorrowMoreCardLeverage(params: BorrowMoreParams, enabled = tr
   const preview = params.leverageEnabled ? leveragedPreview : plainPreview
   const hasAddedSize =
     (params.userCollateral != null && params.userCollateral !== '0') || (params.debt != null && params.debt !== '0')
-  if (!beta) return q({ data: undefined, isLoading: false, error: null })
+  if (!beta) return DISABLED_Q
   return hasAddedSize && preview.data != null ? preview : current
 }
 

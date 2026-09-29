@@ -63,9 +63,7 @@ export const Equation = ({ children }: { children: ReactNode }) => (
 const FormulaTerms = ({ terms }: { terms: string[] }) => (
   <Stack sx={{ gap: Spacing.xxs }}>
     {terms.map(term => (
-      <Typography key={term} variant="bodyXsRegular" color="textSecondary" component="div">
-        {term}
-      </Typography>
+      <TooltipDescription key={term} text={term} />
     ))}
   </Stack>
 )

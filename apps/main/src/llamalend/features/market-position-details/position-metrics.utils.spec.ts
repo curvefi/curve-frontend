@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { derivePositionView } from '@/llamalend/position-metrics/derive'
 import { MarketAssetsType } from '@evm-ui/types/market'
+import { maybe } from '@primitives/objects.utils'
 import { decimal } from '@ui/lib/decimal'
 import {
   bufferAmount,
+  collateralTokenValue,
   collateralValue,
   compositionShares,
   equity,
@@ -23,6 +24,54 @@ const d = (value: string | number) => {
   const parsed = decimal(value)
   if (parsed == undefined) throw new Error(`bad decimal ${value}`)
   return parsed
+}
+
+/** Assembles the public metric functions for the fixture cases below. */
+const derivePositionView = (input: {
+  oraclePrice: ReturnType<typeof d>
+  upperPrice: ReturnType<typeof d>
+  lowerPrice: ReturnType<typeof d>
+  debt: ReturnType<typeof d>
+  collateralTokenAmount: ReturnType<typeof d>
+  borrowedAssetInAmm: ReturnType<typeof d>
+  fullHealthPercentagePoints: ReturnType<typeof d> | undefined
+  liquidationPredicate: 'strict-negative' | 'unverified'
+  assetsType: MarketAssetsType | undefined
+  collateralYield: Parameters<typeof positionReturnOnEquity>[0]['collateralYield']
+  borrowedYield: Parameters<typeof positionReturnOnEquity>[0]['borrowedYield']
+  borrowCost: Parameters<typeof positionReturnOnEquity>[0]['borrowCost']
+  rewards: Parameters<typeof positionReturnOnEquity>[0]['rewards']
+}) => {
+  const collateralTokenExposure = collateralTokenValue(input.collateralTokenAmount, input.oraclePrice)
+  const collateral = collateralValue(input.collateralTokenAmount, input.oraclePrice, input.borrowedAssetInAmm)
+  const equityAmount = equity(collateral, input.debt)
+  return {
+    oracleHealthFactor: oracleHealth(input.oraclePrice, input.upperPrice),
+    distance: priceDistance(input.oraclePrice, input.upperPrice, input.lowerPrice),
+    collateralValue: collateral,
+    equity: equityAmount,
+    directionalLeverage: leverage(collateralTokenExposure, equityAmount),
+    liquidationBufferAmount: maybe(input.fullHealthPercentagePoints, health => bufferAmount(input.debt, health)),
+    roeApr: positionReturnOnEquity({
+      collateralValue: collateralTokenExposure,
+      borrowedValue: input.borrowedAssetInAmm,
+      debt: input.debt,
+      equity: equityAmount,
+      collateralYield: input.collateralYield,
+      borrowedYield: input.borrowedYield,
+      borrowCost: input.borrowCost,
+      rewards: input.rewards,
+    }),
+    status: resolvePositionStatus({
+      oraclePrice: input.oraclePrice,
+      upperPrice: input.upperPrice,
+      lowerPrice: input.lowerPrice,
+      fullHealth: input.fullHealthPercentagePoints,
+      debt: input.debt,
+      liquidationPredicate: input.liquidationPredicate,
+      assetsType: input.assetsType,
+    }),
+  }
 }
 
 describe('position metrics', () => {
@@ -81,7 +130,7 @@ describe('position metrics', () => {
       expect(formatYieldMultiplier(roe.multiplier)).toBe('1.6667× yield')
     }
 
-    const mixed = compositionShares(d(180), d(90), d(270))
+    const mixed = compositionShares(d(180), d(270))
     expect(+(mixed?.collateralLabel ?? 0)).toBeCloseTo(66.6667, 4)
     expect(+(mixed?.borrowedLabel ?? 0)).toBeCloseTo(33.3333, 4)
     expect(

@@ -22,7 +22,7 @@ export const UserCollateralCompositionCell = ({
       }
       support={
         composition && (
-          <Typography variant="bodyXsRegular" color="textSecondary">
+          <Typography variant="bodySRegular" color="textSecondary">
             {`${formatShareLabel(composition.borrowedLabel)}% ${borrowed.symbol}`}
           </Typography>
         )

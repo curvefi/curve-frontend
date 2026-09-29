@@ -1,4 +1,10 @@
-import { formatShareLabel } from '@/llamalend/features/market-position-details/position-metrics.utils'
+import {
+  formatBandSpan,
+  formatPriceDistanceHeadline,
+  formatRangeLabel,
+  formatShareLabel,
+  inclusiveBandCount,
+} from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { formatYieldMultiplier } from '@/llamalend/features/market-position-details/position-roe.utils'
 import { collateralTooltip, debtTooltip, leverageTooltip, rangeTooltip, roeTooltip } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import { isPositionLeveraged, tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
@@ -7,9 +13,11 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
+import { LinearProgress } from '@ui/components/LinearProgress'
 import { Metric } from '@ui/components/Metric'
-import { q } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
@@ -48,16 +56,18 @@ export const BetaBorrowInformation = ({
           category="llamalend.positionCardTop"
           label={t`Distance to range`}
           testId="liquidation-range"
-          value={view.distanceLabel}
+          value={mapQuery(view.distance, formatPriceDistanceHeadline)}
           valueOptions={{ abbreviate: false }}
           sx={{ whiteSpace: { mobile: 'normal', tablet: 'nowrap' } }}
-          notional={view.rangeLabel}
+          notional={mapQuery(view.userPrices, prices =>
+            prices ? formatRangeLabel(prices[1], prices[0], view.priceUnit) : undefined,
+          )}
           valueTooltip={rangeTooltip({
             pair: view.priceUnit,
-            upper: view.upperLabel,
-            lower: view.lowerLabel,
-            bandCount: view.bandCount,
-            bandRange: view.bandRange,
+            upper: view.userPrices.data ? formatNumber(view.userPrices.data[1], { abbreviate: true }) : undefined,
+            lower: view.userPrices.data ? formatNumber(view.userPrices.data[0], { abbreviate: true }) : undefined,
+            bandCount: view.bands ? inclusiveBandCount(view.bands[0], view.bands[1]) : undefined,
+            bandRange: view.bands ? formatBandSpan(view.bands[0], view.bands[1]) : undefined,
           })}
         />
       </Box>
@@ -72,18 +82,20 @@ export const BetaBorrowInformation = ({
         />
         {compositionLabels && shares && (
           <Stack data-testid="collateral-composition" sx={{ gap: Spacing.xxs }}>
-            <Stack direction="row" sx={{ height: 4 }}>
-              <Box sx={{ width: `${shares.collateralLabel}%`, bgcolor: theme.design.Layer.Feedback.Success }} />
-              <Box sx={{ width: `${shares.borrowedLabel}%`, bgcolor: theme.design.Layer.Feedback.Warning }} />
-            </Stack>
+            <LinearProgress
+              percent={Number(shares.collateralLabel)}
+              size="small"
+              barColor={theme.design.Layer.Feedback.Success}
+              trackColor={theme.design.Layer.Feedback.Warning}
+            />
             <Stack
               direction="row"
               sx={{ justifyContent: 'space-between', display: { mobile: 'none', tablet: 'flex' } }}
             >
-              <Typography variant="bodyXsRegular" color="textSecondary">
+              <Typography variant="highlightXsNotional" color="textTertiary">
                 {`${compositionLabels.collateral}% ${collateralToken?.symbol ?? ''}`}
               </Typography>
-              <Typography variant="bodyXsRegular" color="textSecondary">
+              <Typography variant="highlightXsNotional" color="textTertiary">
                 {`${compositionLabels.borrowed}% ${borrowSymbol}`}
               </Typography>
             </Stack>

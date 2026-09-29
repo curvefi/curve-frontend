@@ -25,7 +25,7 @@ export const UserLeverageCell = ({
       valueTestId="user-position-leverage-value"
       support={
         maxLeverage != null && (
-          <Typography variant="bodyXsRegular" color="textSecondary" data-testid="user-position-max-leverage">
+          <Typography variant="bodySRegular" color="textSecondary" data-testid="user-position-max-leverage">
             {t`Max`} {formatNumber(maxLeverage, leverageFormat)}
           </Typography>
         )

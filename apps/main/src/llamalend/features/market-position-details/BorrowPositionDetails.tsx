@@ -6,11 +6,11 @@ import { useBorrowPositionView } from '@/llamalend/position-metrics/use-borrow-p
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
-import Box from '@mui/material/Box'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { HealthDetails } from './health/HealthDetails'
+import { BetaHealthDetails } from './health/BetaHealthDetails'
 import { LegacyHealthDetails } from './health/LegacyHealthDetails'
 
 const { Spacing } = SizesAndSpaces
@@ -27,26 +27,24 @@ const BetaBorrowPositionDetails = () => {
   const { provenance, refreshFailed } = view
   return (
     <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
-      <Box
+      <MetricsGrid
         data-testid="beta-position-card"
         sx={{
-          display: 'grid',
-          columnGap: Spacing.md,
-          rowGap: Spacing.sm,
           alignItems: 'start',
-          gridTemplateColumns: { mobile: '1fr 1fr', tablet: 'repeat(4, minmax(0, 1fr))' },
           gridTemplateAreas: { mobile: MOBILE_HEALTH_AREAS, tablet: HEALTH_LEAD_AREAS },
         }}
       >
-        <HealthDetails view={view} />
+        <BetaHealthDetails view={view} borrowSymbol={tokens.borrowToken?.symbol ?? ''} />
         <BetaBorrowInformation view={view} tokens={tokens} />
-      </Box>
+      </MetricsGrid>
       {refreshFailed && (
-        <Typography variant="bodyXsRegular" color="textSecondary" data-testid="position-update-failed">
-          {provenance.complete && provenance.oldestAt != null
-            ? t`Update failed. Numbers are from the oldest required read at ${new Date(provenance.oldestAt).toLocaleTimeString()}.`
-            : t`Update failed. A required input has no observation time, so these numbers are not freshly verified.`}
-        </Typography>
+        <Alert data-testid="position-update-failed" variant="outlined" severity="warning">
+          <Typography variant="bodyXsRegular">
+            {provenance.complete && provenance.oldestAt != null
+              ? t`Update failed. Numbers are from the oldest required read at ${new Date(provenance.oldestAt).toLocaleTimeString()}.`
+              : t`Update failed. A required input has no observation time, so these numbers are not freshly verified.`}
+          </Typography>
+        </Alert>
       )}
     </Stack>
   )

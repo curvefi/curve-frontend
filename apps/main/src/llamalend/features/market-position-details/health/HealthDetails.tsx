@@ -1,9 +1,5 @@
-import { use } from 'react'
-import { MarketContext } from '@/llamalend/features/market-context'
 import type { UserPositionStatus } from '@/llamalend/llamalend.types'
-import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
 import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
-import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
@@ -13,7 +9,6 @@ import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
-import { BetaHealthDetails, BetaHealthDetailsGate } from './BetaHealthDetails'
 import { HealthAndBufferBar, HealthAndBufferDebug } from './HealthAndBufferBar'
 import { getHealthDetailsState, getHealthTextColor, getLiquidationBufferTextColor } from './utils'
 
@@ -27,17 +22,11 @@ const HEALTH_PRECISION_THRESHOLD = 1.1
 export const HealthDetails = ({
   health,
   positionStatus,
-  view,
 }: {
   health?: HealthQuery
   positionStatus?: QueryProp<UserPositionStatus>
-  view?: BorrowPositionView
 }) => {
-  const beta = useNewLlamalendHealth()
   const theme = useTheme()
-  const market = use(MarketContext)
-  if (view) return <BetaHealthDetails view={view} />
-  if (beta && market) return <BetaHealthDetailsGate />
   if (!health || !positionStatus) return null
   const { state, healthState, liquidationBufferState, type } = getHealthDetailsState(health.data)
 

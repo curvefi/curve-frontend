@@ -1,11 +1,9 @@
-import { BetaBorrowInformation } from '@/llamalend/features/market-position-details/BetaBorrowInformation'
 import {
   formatCollateralNotional,
   isPositionLeveraged,
   tokenMetric,
   type MarketTokensOrEmpty,
 } from '@/llamalend/llama.utils'
-import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
@@ -25,12 +23,9 @@ import { LiquidationThresholdTooltipContent } from './'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 
-type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty; view?: BorrowPositionView }
+type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
-export const BorrowInformation = ({ view, ...props }: BorrowInformationProps) =>
-  view ? <BetaBorrowInformation view={view} tokens={props.tokens} /> : <CurrentBorrowInformation {...props} />
-
-const CurrentBorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
+export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const userState = useUserState(params)
   const { data: userStateValue } = userState
   const leverage = useUserCurrentLeverage(params)

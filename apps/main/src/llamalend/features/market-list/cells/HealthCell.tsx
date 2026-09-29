@@ -12,7 +12,6 @@ import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { requireChainId } from '@evm-ui/utils'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
@@ -25,6 +24,7 @@ import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getUserPositionOracleHealth, getUserPositionStatus } from '../user-position.utils'
 import { ErrorCell } from './ErrorCell'
+import { PositionMetricCell } from './PositionMetricCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -38,20 +38,25 @@ export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, Ll
   const riskError = risk.oracle.error ?? risk.prices.error ?? risk.fullHealth.error
 
   if (beta) {
-    if (riskError && getUserPositionOracleHealth(row.original) == undefined) return <ErrorCell error={riskError} />
-    const ratio = decimal(getUserPositionOracleHealth(row.original))
+    const oracleHealthValue = getUserPositionOracleHealth(row.original)
     const positionStatus = getUserPositionStatus(row.original)
     return (
-      <Stack data-testid="user-position-health" sx={{ gap: Spacing.xs, alignItems: 'flex-end' }}>
-        {maybe(ratio, value => (
-          <Typography component="span" variant="bodySRegular" data-testid="user-position-health-value">
-            {formatOracleHealth(value)}
-          </Typography>
-        ))}
-        {positionStatus && (
-          <Badge size="extraSmall" color={STATUS_BADGE_COLOR[positionStatus.severity]} label={positionStatus.label} />
-        )}
-      </Stack>
+      <PositionMetricCell
+        error={riskError}
+        hasData={oracleHealthValue != undefined}
+        testId="user-position-health"
+        valueTestId="user-position-health-value"
+        value={maybe(decimal(oracleHealthValue), formatOracleHealth)}
+        support={
+          positionStatus && (
+            <Badge
+              size="extraSmall"
+              color={STATUS_BADGE_COLOR[positionStatus.severity]}
+              label={positionStatus.label}
+            />
+          )
+        }
+      />
     )
   }
 
@@ -78,12 +83,13 @@ export const LiquidationBufferCell = ({
   const error = row.original.positionQueries.risk.fullHealth.error
   const buffer = getValue()
   const theme = useTheme()
-  if (error && buffer == undefined) return <ErrorCell error={error} />
-  return maybe(decimal(buffer), value => (
-    <Typography
-      component="span"
-      variant="bodySRegular"
-      sx={{
+  const value = decimal(buffer)
+  return (
+    <PositionMetricCell
+      error={error}
+      hasData={value != undefined}
+      value={maybe(value, formatSignedPercent)}
+      valueSx={{
         color: isCriticalBuffer(
           value,
           getMarketAssetsType(requireChainId(row.original.chain), row.original.controllerAddress),
@@ -91,8 +97,6 @@ export const LiquidationBufferCell = ({
           ? theme.design.Text.TextColors.Feedback.Error
           : undefined,
       }}
-    >
-      {formatSignedPercent(value)}
-    </Typography>
-  ))
+    />
+  )
 }

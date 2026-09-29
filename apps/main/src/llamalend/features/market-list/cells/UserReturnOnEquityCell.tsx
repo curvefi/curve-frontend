@@ -26,7 +26,7 @@ export const UserReturnOnEquityCell = ({
       valueSx={{ color: negative ? theme.design.Text.TextColors.Feedback.Error : undefined }}
       support={
         multiplier && (
-          <Typography variant="bodyXsRegular" color="textSecondary" data-testid="user-position-yield-multiplier">
+          <Typography variant="bodySRegular" color="textSecondary" data-testid="user-position-yield-multiplier">
             {multiplier}
           </Typography>
         )

@@ -119,7 +119,7 @@ const readBorrowAmounts = (row: LlamaMarketRow) => {
 export const getUserPositionComposition = (row: LlamaMarketRow) => {
   const amounts = readCollateralAmounts(row)
   if (!amounts) return undefined
-  return compositionShares(amounts.tokenValue, amounts.borrowed, amounts.assets)
+  return compositionShares(amounts.tokenValue, amounts.assets)
 }
 
 /** Collateral share of the position's current value, used to sort composition. */

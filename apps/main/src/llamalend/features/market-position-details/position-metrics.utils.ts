@@ -46,7 +46,7 @@ export const oracleHealth = (oraclePrice: Decimal, upperPrice: Decimal): Decimal
   return decimalGreaterThan(ratio, d(1)) ? ratio : d(1)
 }
 
-export const rangeLocation = (
+const rangeLocation = (
   oraclePrice: Decimal,
   upperPrice: Decimal,
   lowerPrice: Decimal,
@@ -100,19 +100,14 @@ export const equityLeverage = (
   return leverage(tokenValue, equity(assets, debt))
 }
 
-/**
- * Current-value shares that sum to 100 at the displayed precision.
- * Underlying ratios stay exact on the returned `exact` fields.
- */
-export const compositionShares = (collateralAssets: Decimal, borrowedAssets: Decimal, totalAssets: Decimal) => {
+/** Labels sum to 100 at 4dp. `collateralExact` stays unrounded for sorting. */
+export const compositionShares = (collateralAssets: Decimal, totalAssets: Decimal) => {
   if (!decimalGreaterThan(totalAssets, ZERO)) return undefined
   const collateralExact = decimalMultiply(decimalDiv(collateralAssets, totalAssets), d(100))
-  const borrowedExact = decimalMultiply(decimalDiv(borrowedAssets, totalAssets), d(100))
   const collateralLabel = BigNumber(collateralExact).decimalPlaces(4, BigNumber.ROUND_HALF_UP)
   const borrowedLabel = BigNumber(100).minus(collateralLabel)
   return {
     collateralExact,
-    borrowedExact,
     collateralLabel: d(collateralLabel.toFixed(4)),
     borrowedLabel: d(borrowedLabel.toFixed(4)),
   }

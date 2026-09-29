@@ -3,7 +3,6 @@ import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-marke
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
-import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit } from '@ui/lib/tokens'
 import { PositionMetricCell } from './PositionMetricCell'
 
@@ -12,17 +11,16 @@ export const UserLiquidationRangeCell = ({
 }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const { data: prices, error, isLoading } = row.original.positionQueries.risk.prices
   const { collateral, borrowed } = row.original.assets
+  const settledEmpty = prices == null && !isLoading && error == null
   return (
     <PositionMetricCell
       error={error}
-      hasData={prices != null}
+      hasData={prices != null || settledEmpty}
       testId="user-position-liquidation-range"
-      value={
-        prices ? formatRangeBounds(prices[1], prices[0]) : !isLoading && !error ? t`Unavailable` : undefined
-      }
+      value={prices ? formatRangeBounds(prices[1], prices[0]) : undefined}
       support={
         prices && (
-          <Typography variant="bodyXsRegular" color="textSecondary">
+          <Typography variant="bodySRegular" color="textSecondary">
             {getTokenPairUnit([collateral.symbol, borrowed.symbol])}
           </Typography>
         )

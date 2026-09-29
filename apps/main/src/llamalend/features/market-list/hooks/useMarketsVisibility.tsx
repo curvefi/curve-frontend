@@ -61,8 +61,16 @@ const columnOrder = (variant: MarketColumnVariant) => {
   return MARKET_COLUMNS.map(column => column.id as MarketColumnId)
 }
 
+/** Visibility only reads id and hidden. Header overrides widen `meta` past that shape. */
+const toVisibilityColumns = <T extends { id?: string }>(columns: readonly T[]) =>
+  columns.map(column => {
+    const meta = 'meta' in column && column.meta != null && typeof column.meta === 'object' ? column.meta : undefined
+    const hidden = meta != null && 'hidden' in meta && typeof meta.hidden === 'boolean' ? meta.hidden : undefined
+    return { id: column.id, meta: { hidden } }
+  })
+
 /** Header, accessor, and visibility overrides for one markets-table variant. */
-export const columnsForVariant = (variant: MarketColumnVariant, beta: boolean): typeof MARKET_COLUMNS => {
+const columnsForVariant = (variant: MarketColumnVariant, beta: boolean) => {
   if (!beta) {
     return MARKET_COLUMNS.filter(column => !BETA_ONLY_COLUMNS.includes(column.id as MarketColumnId)).map(column => {
       if (column.id === MarketColumnId.BorrowRate) return { ...column, meta: { ...column.meta, tooltip: undefined } }
@@ -74,7 +82,7 @@ export const columnsForVariant = (variant: MarketColumnVariant, beta: boolean): 
         }
       }
       return column
-    }) as typeof MARKET_COLUMNS
+    })
   }
   const visible = MARKET_COLUMNS.filter(
     column =>
@@ -105,7 +113,7 @@ export const columnsForVariant = (variant: MarketColumnVariant, beta: boolean): 
       return column
     }),
     columnOrder(variant),
-  ) as typeof MARKET_COLUMNS
+  )
 }
 
 const legacyMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
@@ -148,7 +156,7 @@ export const useMarketsVisibility = (title: string, sorting: SortingState, varia
     beta ? `${title} Beta` : title,
     options,
     variant,
-    columns,
+    toVisibilityColumns(columns),
     beta ? betaMigration : legacyMigration,
   )
   const columnVisibility = useMemo(() => createMarketsMobileColumns(sortField), [sortField])
