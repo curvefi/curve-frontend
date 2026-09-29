@@ -2,14 +2,22 @@
   box-sizing: border-box;
   width: min(380px, calc(100vw - 32px));
   max-width: calc(100vw - 32px);
-  border-radius: 8px;
-  padding: 16px;
+  border: 1px solid var(--llamalend-tour-border);
+  border-radius: var(--llamalend-tour-radius);
+  padding: 20px;
   font-family: inherit;
+  color: var(--llamalend-tour-text);
+  background: var(--llamalend-tour-surface);
+  box-shadow: var(--llamalend-tour-shadow);
 }
 
 .llamalend-prototype-tour .driver-popover-title {
   font-size: 16px;
-  line-height: 1.4;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.48px;
+  text-transform: uppercase;
+  padding-right: 28px;
 }
 
 .llamalend-prototype-tour .driver-popover-description {
@@ -28,16 +36,58 @@
 }
 
 .llamalend-prototype-tour .llamalend-tour-math {
-  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
-  border-radius: 4px;
-  padding: 8px 10px;
+  border: 1px solid var(--llamalend-tour-border);
+  border-radius: var(--llamalend-tour-radius);
+  background: var(--llamalend-tour-math-surface);
+  padding: 10px 12px;
 }
 
-.llamalend-prototype-tour .driver-popover-footer-btn,
-.llamalend-prototype-tour .driver-popover-close-btn {
+.llamalend-prototype-tour .driver-popover-footer {
+  gap: 12px;
+  border-top: 1px solid var(--llamalend-tour-border);
+  padding-top: 12px;
+}
+
+.llamalend-prototype-tour .driver-popover-progress-text {
+  color: var(--llamalend-tour-muted);
+}
+
+.llamalend-prototype-tour .driver-popover-footer-btn {
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 1px solid var(--llamalend-tour-border);
+  border-radius: var(--llamalend-tour-radius);
   background: transparent;
-  color: inherit;
-  border-color: currentColor;
+  color: var(--llamalend-tour-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.llamalend-prototype-tour .driver-popover-footer-btn:hover {
+  border-color: var(--llamalend-tour-focus);
+  background: var(--llamalend-tour-math-surface);
+}
+
+.llamalend-prototype-tour .driver-popover-next-btn {
+  border-color: var(--llamalend-tour-primary);
+  background: var(--llamalend-tour-primary);
+  color: var(--llamalend-tour-primary-text);
+}
+
+.llamalend-prototype-tour .driver-popover-next-btn:hover {
+  border-color: var(--llamalend-tour-primary-hover);
+  background: var(--llamalend-tour-primary-hover);
+}
+
+.llamalend-prototype-tour .driver-popover-close-btn {
+  top: 12px;
+  right: 12px;
+  color: var(--llamalend-tour-muted);
+}
+
+.llamalend-prototype-tour .driver-popover-close-btn:hover {
+  color: var(--llamalend-tour-text);
 }
 
 .llamalend-prototype-tour .driver-popover-arrow-side-left {
@@ -58,7 +108,7 @@
 
 .llamalend-prototype-tour .driver-popover-footer-btn:focus-visible,
 .llamalend-prototype-tour .driver-popover-close-btn:focus-visible {
-  outline: 2px solid currentColor;
+  outline: 2px solid var(--llamalend-tour-focus);
   outline-offset: 2px;
 }
 
@@ -68,10 +118,9 @@
   left: calc(16px + env(safe-area-inset-left));
   z-index: 1300;
   width: 148px;
-  border: 1px solid currentColor;
-  border-radius: 8px;
+  border: 1px solid;
+  border-radius: 0;
   padding: 10px 12px;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
 }
 
 .llamalend-prototype-guide .MuiButton-root {

@@ -1,5 +1,5 @@
 import { driver, type DriveStep, type Driver } from 'driver.js'
-import { type ReactNode, useEffect, useRef, useState } from 'react'
+import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import 'driver.js/dist/driver.css'
 import {
@@ -18,17 +18,20 @@ import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { notFalsy, type Nullish } from '@primitives/objects.utils'
 import { useLlamalendPrototypeTourSeen } from '@ui/features/storage/useLocalStorage'
+import { getShadow } from '@ui/features/themes/basic-theme/shadows'
 import { usePathname } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import './prototype-tour.css'
 
 type Surface = 'list' | 'borrow' | 'supply'
 type Guide = Surface | 'positions'
-type TourStep = { element: Element; title: string; content: ReactNode }
+type TourStep = { element: NonNullable<DriveStep['element']>; title: string; content: ReactNode }
 
 const CONTENT_VERSION = 3
 const target = (testId: string) => document.querySelector(`[data-testid="${testId}"]`)
 const within = (element: Element | null, testId: string) => element?.querySelector(`[data-testid="${testId}"]`)
+const targetSelector = (testId: string) => `[data-testid="${testId}"]`
+const withinSelector = (parentId: string, testId: string) => `${targetSelector(parentId)} ${targetSelector(testId)}`
 const visible = (element: Element | Nullish): element is Element => !!element && element.getClientRects().length > 0
 
 const Change = ({ children }: { children: ReactNode }) => (
@@ -54,7 +57,10 @@ const listSteps = (): TourStep[] | undefined => {
 
   return [
     {
-      element: first,
+      element: withinSelector(
+        'llamalend-markets-table',
+        visible(apr) ? 'data-table-header-rates_borrow' : 'btn-drawer-sort-lamalend-markets',
+      ),
       title: t`Borrow APR`,
       content: (
         <Change>
@@ -64,7 +70,10 @@ const listSteps = (): TourStep[] | undefined => {
     },
     ...notFalsy(
       visible(optional) && {
-        element: optional,
+        element: withinSelector(
+          'llamalend-markets-table',
+          visible(settings) ? 'btn-visibility-settings' : 'btn-drawer-sort-lamalend-markets',
+        ),
         title: t`Optional metrics`,
         content: (
           <Change>
@@ -86,7 +95,7 @@ const positionSteps = (): TourStep[] | undefined => {
   if (window.matchMedia('(max-width: 819.95px)').matches) {
     return [
       {
-        element: heading,
+        element: withinSelector('borrow-positions-table', 'borrow-positions-header'),
         title: t`Borrowing positions`,
         content: (
           <Change>
@@ -108,7 +117,7 @@ const positionSteps = (): TourStep[] | undefined => {
 
   return [
     {
-      element: apr!,
+      element: withinSelector('borrow-positions-table', 'data-table-cell-rates_borrow'),
       title: t`Borrow APR`,
       content: (
         <Change>
@@ -117,7 +126,10 @@ const positionSteps = (): TourStep[] | undefined => {
       ),
     },
     {
-      element: roe!,
+      element: () =>
+        within(target('borrow-positions-table'), 'user-position-yield-multiplier')?.closest(
+          targetSelector('data-table-cell-userRoe'),
+        ) ?? document.querySelector(withinSelector('borrow-positions-table', 'data-table-header-userRoe'))!,
       title: t`RoE and yield multiplier`,
       content: (
         <Stack spacing={1}>
@@ -132,7 +144,10 @@ const positionSteps = (): TourStep[] | undefined => {
       ),
     },
     {
-      element: health!,
+      element: () =>
+        within(target('borrow-positions-table'), 'user-position-health-value')?.closest(
+          targetSelector('data-table-cell-userHealth'),
+        ) ?? document.querySelector(withinSelector('borrow-positions-table', 'data-table-header-userHealth'))!,
       title: t`Health`,
       content: (
         <Stack spacing={1}>
@@ -166,7 +181,7 @@ const borrowSteps = (): TourStep[] | undefined => {
 
   return [
     {
-      element: health!,
+      element: withinSelector('beta-position-card', 'health-details-health-metric'),
       title: t`Health`,
       content: (
         <Stack spacing={1}>
@@ -181,7 +196,7 @@ const borrowSteps = (): TourStep[] | undefined => {
     },
     ...notFalsy(
       visible(status) && {
-        element: status,
+        element: withinSelector('beta-position-card', 'position-status'),
         title: t`Status`,
         content: (
           <Stack spacing={1}>
@@ -197,7 +212,7 @@ const borrowSteps = (): TourStep[] | undefined => {
       },
     ),
     {
-      element: range!,
+      element: withinSelector('beta-position-card', 'liquidation-range'),
       title: t`Liquidation range`,
       content: (
         <Stack spacing={1}>
@@ -212,7 +227,7 @@ const borrowSteps = (): TourStep[] | undefined => {
       ),
     },
     {
-      element: buffer!,
+      element: withinSelector('beta-position-card', 'health-details-liquidation-buffer-metric'),
       title: t`Liquidation buffer`,
       content: (
         <Stack spacing={1}>
@@ -225,7 +240,7 @@ const borrowSteps = (): TourStep[] | undefined => {
     },
     ...notFalsy(
       visible(collateral) && {
-        element: collateral,
+        element: withinSelector('beta-position-card', 'position-collateral-value'),
         title: t`Collateral value`,
         content: (
           <Stack spacing={1}>
@@ -242,7 +257,7 @@ const borrowSteps = (): TourStep[] | undefined => {
     ),
     ...notFalsy(
       visible(leverage) && {
-        element: leverage,
+        element: withinSelector('beta-position-card', 'position-leverage'),
         title: t`Leverage`,
         content: (
           <Stack spacing={1}>
@@ -259,7 +274,7 @@ const borrowSteps = (): TourStep[] | undefined => {
     ),
     ...notFalsy(
       visible(roe) && {
-        element: roe,
+        element: withinSelector('beta-position-card', 'position-roe'),
         title: t`Return on equity`,
         content: (
           <Stack spacing={1}>
@@ -274,7 +289,7 @@ const borrowSteps = (): TourStep[] | undefined => {
     ),
     ...notFalsy(
       visible(apr) && {
-        element: apr,
+        element: targetSelector('market-net-borrow-apr'),
         title: t`Borrow APR`,
         content: (
           <Change>
@@ -283,7 +298,13 @@ const borrowSteps = (): TourStep[] | undefined => {
         ),
       },
     ),
-    ...notFalsy(visible(apy) && { element: apy, title: t`Supply APY`, content: <SupplyApyCopy /> }),
+    ...notFalsy(
+      visible(apy) && {
+        element: targetSelector('market-net-supply-apy'),
+        title: t`Supply APY`,
+        content: <SupplyApyCopy />,
+      },
+    ),
   ]
 }
 
@@ -295,7 +316,9 @@ const SupplyApyCopy = () => (
 
 const supplySteps = (): TourStep[] | undefined => {
   const apy = target('market-net-supply-apy')
-  return visible(apy) ? [{ element: apy, title: t`Supply APY`, content: <SupplyApyCopy /> }] : undefined
+  return visible(apy)
+    ? [{ element: targetSelector('market-net-supply-apy'), title: t`Supply APY`, content: <SupplyApyCopy /> }]
+    : undefined
 }
 
 const getSteps = (guide: Guide) =>
@@ -327,6 +350,26 @@ export const PrototypeTour = ({
   const positionTriggerRef = useRef<HTMLButtonElement>(null)
   const tourRef = useRef<Driver | null>(null)
 
+  // Driver measures the popover before React inserts the copy.
+  useLayoutEffect(() => {
+    const popover = portal?.element.closest<HTMLElement>('.driver-popover')
+    if (!popover) return
+    const { design } = theme
+    popover.style.setProperty('--llamalend-tour-surface', design.Layer[1].Fill)
+    popover.style.setProperty('--llamalend-tour-border', design.Layer[1].Outline)
+    popover.style.setProperty('--llamalend-tour-math-surface', design.Layer[2].Fill)
+    popover.style.setProperty('--llamalend-tour-text', design.Text.TextColors.Primary)
+    popover.style.setProperty('--llamalend-tour-muted', design.Text.TextColors.Secondary)
+    popover.style.setProperty('--llamalend-tour-primary', design.Button.Primary.Default.Fill)
+    popover.style.setProperty('--llamalend-tour-primary-text', design.Button.Primary.Default.Label)
+    popover.style.setProperty('--llamalend-tour-primary-hover', design.Button.Primary.Hover.Fill)
+    popover.style.setProperty('--llamalend-tour-focus', design.Button.Focus_Outline)
+    popover.style.setProperty('--llamalend-tour-radius', design.Button.Radius.sm)
+    popover.style.setProperty('--llamalend-tour-shadow', getShadow(design, 2))
+    popover.style.fontFamily = theme.typography.fontFamily ?? 'inherit'
+    tourRef.current?.refresh()
+  }, [portal, theme])
+
   useEffect(() => {
     if (!beta || !ready) return
     const guide: Guide | null =
@@ -334,6 +377,20 @@ export const PrototypeTour = ({
     if (!guide || (guide === 'positions' && !positionsReady)) return
     let cleanup = false
     const observer = new MutationObserver(begin)
+    // Query refreshes can replace a highlighted node without changing its selector.
+    const activeObserver = new MutationObserver(() => {
+      const tour = tourRef.current
+      const active = tour?.getActiveElement()
+      if (!tour || !active || active.isConnected) return
+      const element = tour.getActiveStep()?.element
+      const replacement =
+        typeof element === 'string'
+          ? document.querySelector(element)
+          : typeof element === 'function'
+            ? element()
+            : element
+      if (visible(replacement)) tour.moveTo(tour.getActiveIndex() ?? 0)
+    })
 
     function begin() {
       if (tourRef.current) return
@@ -342,8 +399,8 @@ export const PrototypeTour = ({
       observer.disconnect()
       const tour = driver({
         steps: steps.map(({ element, title }): DriveStep => ({ element, popover: { title, description: ' ' } })),
-        animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-        smoothScroll: !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        animate: false,
+        smoothScroll: false,
         popoverClass: 'llamalend-prototype-tour',
         showProgress: steps.length > 1,
         allowKeyboardControl: true,
@@ -364,13 +421,11 @@ export const PrototypeTour = ({
         },
         onPopoverRender: popover => {
           popover.wrapper.setAttribute('aria-modal', 'true')
-          popover.wrapper.style.setProperty('--llamalend-tour-surface', theme.design.Layer[1].Fill)
-          popover.wrapper.style.backgroundColor = theme.design.Layer[1].Fill
-          popover.wrapper.style.color = theme.design.Text.TextColors.Primary
           const index = tourRef.current?.getActiveIndex() ?? 0
           setPortal({ element: popover.description, content: steps[index]?.content })
         },
         onDestroyed: () => {
+          activeObserver.disconnect()
           tourRef.current = null
           setPortal(null)
           if (!cleanup) {
@@ -385,6 +440,7 @@ export const PrototypeTour = ({
       })
       tourRef.current = tour
       tour.drive()
+      activeObserver.observe(document.body, { childList: true, subtree: true })
     }
 
     begin()
@@ -392,10 +448,11 @@ export const PrototypeTour = ({
     return () => {
       cleanup = true
       observer.disconnect()
+      activeObserver.disconnect()
       tourRef.current?.destroy()
       tourRef.current = null
     }
-  }, [beta, pathname, ready, positionsReady, positionsSeen, replay, seen, setPositionsSeen, setSeen, surface, theme])
+  }, [beta, pathname, ready, positionsReady, positionsSeen, replay, seen, setPositionsSeen, setSeen, surface])
 
   if (!beta) return null
   return (
@@ -405,7 +462,12 @@ export const PrototypeTour = ({
         <Stack
           className="llamalend-prototype-guide"
           spacing={0.5}
-          sx={{ backgroundColor: theme.design.Layer[1].Fill, color: theme.design.Text.TextColors.Primary }}
+          sx={{
+            backgroundColor: theme.design.Layer[1].Fill,
+            borderColor: theme.design.Layer[1].Outline,
+            color: theme.design.Text.TextColors.Primary,
+            boxShadow: getShadow(theme.design, 1),
+          }}
         >
           <Typography variant="bodyXsRegular">{t`What changed`}</Typography>
           {seen && (
