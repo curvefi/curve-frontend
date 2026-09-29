@@ -3,12 +3,12 @@ import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
+import { fetchBorrowMoreControllerApproval } from '@/llamalend/queries/borrow-more/borrow-more-controller-approval.query'
 import { fetchBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import {
   getBorrowMoreImplementation,
   getBorrowMoreImplementationArgs,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
-import { fetchBorrowMoreControllerApproval } from '@/llamalend/queries/controller-approval.query'
 import {
   type BorrowMoreForm,
   BorrowMoreMutation,

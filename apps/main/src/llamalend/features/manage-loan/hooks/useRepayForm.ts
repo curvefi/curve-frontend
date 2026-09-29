@@ -5,7 +5,7 @@ import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLe
 import { getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
-import { useRepayControllerApproval } from '@/llamalend/queries/controller-approval.query'
+import { useRepayControllerApproval } from '@/llamalend/queries/repay/repay-controller-approval.query'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'

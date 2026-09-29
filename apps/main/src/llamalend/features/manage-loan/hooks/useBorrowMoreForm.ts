@@ -8,6 +8,7 @@ import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLe
 import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
+import { useBorrowMoreControllerApproval } from '@/llamalend/queries/borrow-more/borrow-more-controller-approval.query'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { getBorrowMoreGasEstimateQueryOptions } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
@@ -19,7 +20,6 @@ import {
   isLeverageBorrowMore,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { invalidateBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
-import { useBorrowMoreControllerApproval } from '@/llamalend/queries/controller-approval.query'
 import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
