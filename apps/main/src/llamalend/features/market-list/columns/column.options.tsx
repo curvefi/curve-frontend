@@ -123,6 +123,12 @@ const createMarketsColumnOptions = ({
               active: onlyPositions == MarketRateType.Borrow,
               enabled: hasPositions,
             },
+            {
+              label: MARKET_TITLES[MarketColumnId.UserLeverage],
+              columns: [MarketColumnId.UserLeverage],
+              active: onlyPositions == MarketRateType.Borrow,
+              enabled: hasPositions,
+            },
           ]
         : []),
       {

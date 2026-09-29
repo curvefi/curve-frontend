@@ -3,9 +3,13 @@ import {
   collateralTokenValue,
   collateralValue,
   equity,
+  equityLeverage,
   oracleHealth,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
-import { positionReturnOnEquity, type YieldInput } from '@/llamalend/features/market-position-details/position-roe.utils'
+import {
+  positionReturnOnEquity,
+  type YieldInput,
+} from '@/llamalend/features/market-position-details/position-roe.utils'
 import { resolvePositionStatus } from '@/llamalend/features/market-position-details/position-status.utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
@@ -58,7 +62,8 @@ export const getUserPositionOracleHealth = ({ positionQueries }: LlamaMarketRow)
 }
 
 /** Card liquidation buffer: Controller userHealth(full), in percentage points. */
-export const getUserPositionBuffer = ({ positionQueries }: LlamaMarketRow) => maybe(positionQueries.risk.fullHealth.data, value => Number(value))
+export const getUserPositionBuffer = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.risk.fullHealth.data, value => Number(value))
 
 const aprFraction = (percentagePoints: number | Nullish): YieldInput => {
   if (percentagePoints == null) return { unavailable: true }
@@ -99,6 +104,18 @@ export const getUserPositionRoeResult = (row: LlamaMarketRow) => {
 export const getUserPositionRoe = (row: LlamaMarketRow) => {
   const result = getUserPositionRoeResult(row)
   return result ? Number(result.aprPercent) : undefined
+}
+
+/** Uses the position card's collateral exposure over equity formula. */
+export const getUserPositionLeverage = ({ positionQueries }: LlamaMarketRow) => {
+  const stats = positionQueries.stats.data
+  if (!stats) return undefined
+  const collateral = decimal(stats.collateral)
+  const oracle = decimal(stats.oraclePrice)
+  const borrowed = decimal(stats.borrowToken)
+  const debt = decimal(stats.borrowed)
+  if (collateral == undefined || oracle == undefined || borrowed == undefined || debt == undefined) return undefined
+  return maybe(equityLeverage(collateral, oracle, borrowed, debt), value => Number(value))
 }
 
 /** Beta sorts by the oracle ratio and leaves unknowns last. Flag-off keeps the old percentage. */

@@ -7,6 +7,7 @@ export enum MarketColumnId {
   UserCollateral = 'userCollateral',
   UserLtv = 'userLtv',
   UserReturnOnEquity = 'userRoe',
+  UserLeverage = 'userLeverage',
   UserEarnings = 'userEarnings', // only for lend markets
   UserDeposited = 'userDeposited', // only for lend markets
   BorrowRate = 'rates_borrow',

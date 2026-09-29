@@ -1,3 +1,4 @@
+import { leverageTooltip } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { maxRoeSortValue } from '@/llamalend/rates.utils'
 import { MaxReturnOnEquityTooltipContent, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
@@ -16,6 +17,7 @@ import {
   MarketTitleCell,
   MaxLeverageCell,
   MaxReturnOnEquityCell,
+  UserLeverageCell,
   UserReturnOnEquityCell,
   PercentCell,
   PriceCell,
@@ -37,6 +39,7 @@ import {
   getUserCollateralUsd,
   getHealthColumnSortValue,
   getUserPositionBuffer,
+  getUserPositionLeverage,
   getUserPositionLtv,
   getUserPositionRoe,
 } from '../user-position.utils'
@@ -133,6 +136,13 @@ export const MARKET_COLUMNS = columnHelper.columns([
     header: MARKET_TITLES[MarketColumnId.UserReturnOnEquity],
     cell: UserReturnOnEquityCell,
     meta: { type: 'numeric', unit: 'percentage' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionLeverage, {
+    id: MarketColumnId.UserLeverage,
+    header: MARKET_TITLES[MarketColumnId.UserLeverage],
+    cell: UserLeverageCell,
+    meta: { type: 'numeric', tooltip: leverageTooltip() },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionLtv, {

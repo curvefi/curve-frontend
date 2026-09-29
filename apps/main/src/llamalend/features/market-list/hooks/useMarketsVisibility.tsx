@@ -23,10 +23,15 @@ type MarketColumnVariant = keyof ReturnType<typeof getMarketsColumnOptions>
 const BETA_ONLY_COLUMNS = [
   MarketColumnId.CollateralYield,
   MarketColumnId.UserReturnOnEquity,
+  MarketColumnId.UserLeverage,
   MarketColumnId.UserLiquidationBuffer,
 ]
 
-const betaMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = { version: 1 }
+const betaMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
+  version: 2,
+  migrate: (oldValue, initialValue) =>
+    mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
+}
 
 const legacyMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
   version: 7,
@@ -83,6 +88,10 @@ export const useMarketsVisibility = (title: string, sorting: SortingState, varia
     columns,
     beta ? betaMigration : legacyMigration,
   )
-  const columnVisibility = useMemo(() => createMarketsMobileColumns(sortField), [sortField])
+  const columnVisibility = useMemo(() => {
+    const mobileColumns = createMarketsMobileColumns(sortField)
+    if (beta && variant === MarketRateType.Borrow) mobileColumns[MarketColumnId.UserLeverage] = true
+    return mobileColumns
+  }, [beta, sortField, variant])
   return { sortField, tableSorting, columns, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }

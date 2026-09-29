@@ -28,6 +28,7 @@ type Guide = Surface | 'positions'
 type TourStep = { element: NonNullable<DriveStep['element']>; title: string; content: ReactNode }
 
 const CONTENT_VERSION = 3
+const POSITION_CONTENT_VERSION = 4
 const target = (testId: string) => document.querySelector(`[data-testid="${testId}"]`)
 const within = (element: Element | null, testId: string) => element?.querySelector(`[data-testid="${testId}"]`)
 const targetSelector = (testId: string) => `[data-testid="${testId}"]`
@@ -78,8 +79,8 @@ const listSteps = (): TourStep[] | undefined => {
         content: (
           <Change>
             {visible(settings)
-              ? t`Previously, table settings did not offer collateral yield, liquidation buffer, or position RoE. Now you can reveal them there and open a position to see each calculation.`
-              : t`Previously, mobile sort did not offer collateral yield, liquidation buffer, or position RoE. Now you can choose these metrics there and open a position to see each calculation.`}
+              ? t`Previously, table settings did not offer collateral yield, liquidation buffer, position RoE, or position leverage. Now you can reveal them there and open a position to see each calculation.`
+              : t`Previously, mobile sort did not offer collateral yield, liquidation buffer, or position leverage. Now you can choose these metrics there and open a position to see each calculation.`}
           </Change>
         ),
       },
@@ -99,7 +100,7 @@ const positionSteps = (): TourStep[] | undefined => {
         title: t`Borrowing positions`,
         content: (
           <Change>
-            {t`Your Borrowing positions now lead with Borrow APR rather than Net borrow APR; add estimated RoE and its yield multiplier; and show range-based Health with position status. Open a market for the full metric explanations.`}
+            {t`Your Borrowing positions now lead with Borrow APR rather than Net borrow APR; add estimated RoE, its yield multiplier, and position leverage; and show range-based Health with position status. Leverage is remaining collateral exposure over equity. Open a market for the full metric explanations.`}
           </Change>
         ),
       },
@@ -111,6 +112,10 @@ const positionSteps = (): TourStep[] | undefined => {
   const roe =
     multiplier?.closest('[data-testid="data-table-cell-userRoe"]') ?? within(table, 'data-table-header-userRoe')
   const healthValue = within(table, 'user-position-health-value')
+  const leverageValue = within(table, 'user-position-leverage-value')
+  const leverage =
+    leverageValue?.closest('[data-testid="data-table-cell-userLeverage"]') ??
+    within(table, 'data-table-header-userLeverage')
   const health =
     healthValue?.closest('[data-testid="data-table-cell-userHealth"]') ?? within(table, 'data-table-header-userHealth')
   if (![apr, roe, health].every(visible)) return undefined
@@ -143,6 +148,26 @@ const positionSteps = (): TourStep[] | undefined => {
         </Stack>
       ),
     },
+    ...notFalsy(
+      visible(leverage) && {
+        element: () =>
+          within(target('borrow-positions-table'), 'user-position-leverage-value')?.closest(
+            targetSelector('data-table-cell-userLeverage'),
+          ) ?? document.querySelector(withinSelector('borrow-positions-table', 'data-table-header-userLeverage'))!,
+        title: t`Leverage`,
+        content: (
+          <Stack spacing={1}>
+            <Change>
+              {t`This column was absent in Stable. Now it shows remaining collateral exposure over equity, using the same calculation as the position card. It amplifies relative-price gains and losses and potential collateral yield, less borrowing costs. It is not the yield multiplier.`}
+            </Change>
+            <MathBlock>
+              <LeverageEquation />
+            </MathBlock>
+            <Change>{t`q: remaining collateral quantity; p: oracle price; b: converted borrowed assets; d: debt.`}</Change>
+          </Stack>
+        ),
+      },
+    ),
     {
       element: () =>
         within(target('borrow-positions-table'), 'user-position-health-value')?.closest(
@@ -343,7 +368,7 @@ export const PrototypeTour = ({
   const pathname = usePathname()
   const theme = useTheme()
   const [seen, setSeen] = useLlamalendPrototypeTourSeen(surface, CONTENT_VERSION)
-  const [positionsSeen, setPositionsSeen] = useLlamalendPrototypeTourSeen('positions', CONTENT_VERSION)
+  const [positionsSeen, setPositionsSeen] = useLlamalendPrototypeTourSeen('positions', POSITION_CONTENT_VERSION)
   const [replay, setReplay] = useState<Guide | null>(null)
   const [portal, setPortal] = useState<{ element: HTMLElement; content: ReactNode } | null>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
