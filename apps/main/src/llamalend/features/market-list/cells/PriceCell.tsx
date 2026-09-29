@@ -16,7 +16,7 @@ import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { MarketColumnId } from '../columns'
+import { MarketColumnId, POSITION_COLUMN_LABELS } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -56,13 +56,19 @@ const getAssetValues = (
     }) as Partial<Record<MarketColumnId, [number, number | undefined]>>
   )[columnId]
 
-/** Gets the tooltip title for a given column. */
 const getTooltipTitle = (columnId: MarketColumnId) =>
   (
     ({ [MarketColumnId.UserBorrowed]: t`Borrowed`, [MarketColumnId.UserCollateral]: t`Collateral` }) as Partial<
       Record<MarketColumnId, string>
     >
   )[columnId]
+
+/** Borrow-position tables rename the amount columns. Markets list keeps the short titles. */
+const amountTooltipTitle = (columnId: MarketColumnId, beta: boolean) => {
+  if (beta && columnId === MarketColumnId.UserBorrowed) return POSITION_COLUMN_LABELS.totalDebt
+  if (beta && columnId === MarketColumnId.UserCollateral) return POSITION_COLUMN_LABELS.collateralValue
+  return getTooltipTitle(columnId)
+}
 
 /**
  * Gets the tooltip body content for columns that require detailed breakdowns.
@@ -140,11 +146,7 @@ export const PriceCell = ({
   }
 
   const tooltipTitle =
-    (beta && columnId === MarketColumnId.UserBorrowed
-      ? t`Total debt`
-      : beta && columnId === MarketColumnId.UserCollateral
-        ? t`Collateral value`
-        : getTooltipTitle(columnId)) ??
+    amountTooltipTitle(columnId, beta) ??
     `${formatNumber(primaryValue, { decimals: 5, abbreviate: false })} ${primaryAsset.symbol}`
   const totalValue = maybe(market.oraclePrice, oraclePrice =>
     decimal((stats?.collateral ?? 0) * oraclePrice + (stats?.borrowToken ?? 0)),

@@ -9,9 +9,7 @@ import {
   oracleHealth,
   priceDistance,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
-import {
-  listedPositionRoe,
-} from '@/llamalend/features/market-position-details/position-roe.utils'
+import { listedPositionRoe } from '@/llamalend/features/market-position-details/position-roe.utils'
 import { resolvePositionStatus } from '@/llamalend/features/market-position-details/position-status.utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
@@ -143,10 +141,8 @@ export const getUserPositionRoeResult = (row: LlamaMarketRow) => {
 }
 
 /** APR percent used to sort the RoE column. Unknown positions sort last. */
-export const getUserPositionRoe = (row: LlamaMarketRow) => {
-  const result = getUserPositionRoeResult(row)
-  return result ? Number(result.aprPercent) : undefined
-}
+export const getUserPositionRoe = (row: LlamaMarketRow) =>
+  maybe(getUserPositionRoeResult(row), result => Number(result.aprPercent))
 
 /** Uses the position card's collateral exposure over equity formula. */
 export const getUserPositionLeverage = (row: LlamaMarketRow) => {
@@ -187,7 +183,8 @@ export const getUserSupplyShare = (row: LlamaMarketRow) => {
 export const getSupplyIncentivesApr = (row: LlamaMarketRow) => {
   const unboosted = row.rates.lendCrvAprUnboosted
   const boost = row.lendingPosition?.boostMultiplier
-  const crvApr = unboosted == null ? 0 : boost != null && boost > 0 ? unboosted * boost : unboosted
+  const boostedCrvApr = boost != null && boost > 0 && unboosted != null ? unboosted * boost : unboosted
+  const crvApr = boostedCrvApr ?? 0
   const extraApr = sum(row.rates.incentives.map(incentive => incentive.percentage))
   const campaignsApr = sumCampaignsApr(row.rewards.filter(reward => reward.action === 'supply')) ?? 0
   return crvApr + extraApr + campaignsApr

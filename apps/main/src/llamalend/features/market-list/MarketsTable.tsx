@@ -43,6 +43,7 @@ export const MarketsTable = ({
   const filterChipRef = useRef<HTMLDivElement>(null)
   const visibilitySettingsRef = useRef<HTMLButtonElement>(null)
   const isMobile = useIsMobile()
+  const isTablet = useIsTablet()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
     { columns: MarketColumnId },
@@ -83,7 +84,7 @@ export const MarketsTable = ({
         }}
         errorState={{ title: t`Could not load markets`, onReload }}
         expandedPanel={{ Body: MarketExpandedPanel, Actions: MarketExpandedPanelActions }}
-        shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
+        shouldStickFirstColumn={isTablet && userHasPositions != null}
       >
         <TableFilters
           testIdPrefix={LOCAL_STORAGE_KEY}

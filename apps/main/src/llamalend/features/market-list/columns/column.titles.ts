@@ -45,3 +45,11 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.TotalDebt]: t`Total Debt`,
   [MarketColumnId.TotalCollateralUsd]: t`Total Collateral`,
 } as const
+
+/** Borrow-position table renames. The markets list keeps `MARKET_TITLES`. */
+export const POSITION_COLUMN_LABELS = {
+  totalDebt: t`Total debt`,
+  collateralValue: t`Collateral value`,
+  netBorrowApr: t`Net borrow APR`,
+  marketSolvency: t`Market solvency`,
+} as const

@@ -47,7 +47,7 @@ export const UserPositionsTables = ({
         {address ? (
           hasUserPositions ? (
             <>
-              <UserPositionSummary markets={queryData?.markets} selectedChains={undefined} />
+              <UserPositionSummary markets={queryData?.markets} />
               {[hasUserPositions?.[MarketRateType.Borrow], error].some(Boolean) && (
                 <UserPositionsMarketRateTable
                   tableQuery={mapQuery(tableQuery, ({ markets }) =>

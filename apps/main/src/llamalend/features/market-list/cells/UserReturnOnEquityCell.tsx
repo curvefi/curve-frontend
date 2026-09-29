@@ -15,7 +15,7 @@ export const UserReturnOnEquityCell = ({
   const theme = useTheme()
   const stats = row.original.positionQueries.stats
   const roe = getUserPositionRoeResult(row.original)
-  const multiplier = roe ? formatYieldMultiplier(roe.multiplier) : undefined
+  const multiplier = maybe(roe, result => formatYieldMultiplier(result.multiplier))
   const negative = roe?.multiplier.kind === 'negative'
   return (
     <PositionMetricCell

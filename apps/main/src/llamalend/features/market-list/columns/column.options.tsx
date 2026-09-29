@@ -2,7 +2,7 @@ import { MarketRateType } from '@evm-ui/types/market'
 import { fromEntries, notFalsy, recordValues } from '@primitives/objects.utils'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { t } from '@ui/lib/i18n'
-import { MARKET_TITLES } from './column.titles'
+import { MARKET_TITLES, POSITION_COLUMN_LABELS } from './column.titles'
 import { MarketColumnId } from './columns.enum'
 
 /**
@@ -94,7 +94,7 @@ const createMarketsColumnOptions = ({
         },
       ),
       {
-        label: t`Net borrow APR`,
+        label: POSITION_COLUMN_LABELS.netBorrowApr,
         columns: [MarketColumnId.NetBorrowRate],
         active: !beta && onlyPositions != MarketRateType.Supply,
         enabled: true,
@@ -139,9 +139,14 @@ const createMarketsColumnOptions = ({
               active: true,
               enabled: hasPositions,
             },
-            { label: t`Total debt`, columns: [MarketColumnId.UserBorrowed], active: true, enabled: hasPositions },
             {
-              label: t`Collateral value`,
+              label: POSITION_COLUMN_LABELS.totalDebt,
+              columns: [MarketColumnId.UserBorrowed],
+              active: true,
+              enabled: hasPositions,
+            },
+            {
+              label: POSITION_COLUMN_LABELS.collateralValue,
               columns: [MarketColumnId.UserCollateral],
               active: true,
               enabled: hasPositions,
@@ -229,7 +234,7 @@ const supplyPositionColumnOptions = (): VisibilityGroup<MarketColumnId>[] => [
       option(MarketColumnId.SupplyIncentivesApr, false),
       option(MarketColumnId.LiquidityUsd, false, t`Available liquidity`),
       option(MarketColumnId.UtilizationPercent, false),
-      option(MarketColumnId.SolvencyPercent, false, t`Market solvency`),
+      option(MarketColumnId.SolvencyPercent, false, POSITION_COLUMN_LABELS.marketSolvency),
     ],
   },
 ]

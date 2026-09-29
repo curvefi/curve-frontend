@@ -1,6 +1,7 @@
 import { formatShareLabel } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import Typography from '@mui/material/Typography'
+import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { getUserPositionComposition } from '../user-position.utils'
@@ -17,9 +18,7 @@ export const UserCollateralCompositionCell = ({
       error={stats.error}
       hasData={stats.data != null}
       testId="user-position-composition"
-      value={
-        composition ? `${formatShareLabel(composition.collateralLabel)}% ${collateral.symbol}` : undefined
-      }
+      value={maybe(composition, shares => `${formatShareLabel(shares.collateralLabel)}% ${collateral.symbol}`)}
       support={
         composition && (
           <Typography variant="bodySRegular" color="textSecondary">

@@ -18,6 +18,7 @@ import {
   MARKET_COLUMNS,
   getMarketsColumnOptions,
   MarketColumnId,
+  POSITION_COLUMN_LABELS,
   createMarketsMobileColumns,
   BORROW_POSITION_COLUMN_ORDER,
   SUPPLY_POSITION_COLUMN_ORDER,
@@ -45,14 +46,10 @@ const orderColumns = <T extends { id?: string }>(columns: readonly T[], order: r
   return order.flatMap(id => notFalsy(byId.get(id)))
 }
 
-const withSupplyApy = <T extends { id?: string }>(column: T) => {
+const withSupplyApy = <T extends { id?: string; accessorKey?: string }>(column: T) => {
   if (column.id !== MarketColumnId.LendRate) return column
-  const { accessorKey: _accessorKey, ...rest } = column as T & { accessorKey?: string }
-  return {
-    ...rest,
-    header: t`Supply APY`,
-    accessorFn: (row: LlamaMarketRow) => row.rates.lendApy ?? undefined,
-  }
+  const { accessorKey: _accessorKey, ...rest } = column
+  return { ...rest, header: t`Supply APY`, accessorFn: (row: LlamaMarketRow) => row.rates.lendApy ?? undefined }
 }
 
 const columnOrder = (variant: MarketColumnVariant) => {
@@ -77,8 +74,8 @@ const columnsForVariant = (variant: MarketColumnVariant, beta: boolean) => {
       if (column.id === MarketColumnId.NetBorrowRate) {
         return {
           ...column,
-          header: t`Net borrow APR`,
-          meta: { ...column.meta, tooltip: { ...column.meta?.tooltip, title: t`Net borrow APR` } },
+          header: POSITION_COLUMN_LABELS.netBorrowApr,
+          meta: { ...column.meta, tooltip: { ...column.meta?.tooltip, title: POSITION_COLUMN_LABELS.netBorrowApr } },
         }
       }
       return column
@@ -94,16 +91,16 @@ const columnsForVariant = (variant: MarketColumnVariant, beta: boolean) => {
   return orderColumns(
     visible.map(column => {
       if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserBorrowed)
-        return { ...column, header: t`Total debt` }
+        return { ...column, header: POSITION_COLUMN_LABELS.totalDebt }
       if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserCollateral)
-        return { ...column, header: t`Collateral value` }
+        return { ...column, header: POSITION_COLUMN_LABELS.collateralValue }
       if (variant === MarketRateType.Supply && column.id === MarketColumnId.LendRate) return withSupplyApy(column)
       if (variant === MarketRateType.Supply && column.id === MarketColumnId.UserEarnings) {
         const { hidden: _hidden, ...meta } = column.meta ?? {}
         return { ...column, meta }
       }
       if (variant === MarketRateType.Supply && column.id === MarketColumnId.SolvencyPercent)
-        return { ...column, header: t`Market solvency` }
+        return { ...column, header: POSITION_COLUMN_LABELS.marketSolvency }
       if (column.id === MarketColumnId.MaxLeverage) {
         return {
           ...column,

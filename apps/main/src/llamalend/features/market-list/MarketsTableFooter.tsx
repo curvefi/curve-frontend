@@ -21,7 +21,7 @@ const GridItem = ({ children, title, icon: Icon }: { children: ReactNode; title:
     <Typography variant="headingXsBold" sx={{ marginBlock: Spacing.sm }}>
       {title}
     </Typography>
-    <Typography variant="bodyMRegular" sx={{ color: 'text.secondary' }}>
+    <Typography variant="bodyMRegular" color="textSecondary">
       {children}
     </Typography>
   </Grid>

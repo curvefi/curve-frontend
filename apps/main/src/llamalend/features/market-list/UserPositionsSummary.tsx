@@ -1,25 +1,13 @@
-import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
-import { parseListFilter } from '@ui/features/tables/filters'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { getUserPositionsSummary } from './user-position.utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const UserPositionSummary = ({
-  markets,
-  selectedChains,
-}: {
-  markets: LlamaMarketRow[] | undefined
-  selectedChains: string | undefined // the table filter for the chains column, unserialized from the url
-}) => {
-  const filteredMarkets = useMemo(() => {
-    const chains = parseListFilter(selectedChains)
-    return chains ? markets?.filter(market => chains.includes(market.chain)) : markets
-  }, [markets, selectedChains])
-  const summary = getUserPositionsSummary(filteredMarkets)
+export const UserPositionSummary = ({ markets }: { markets: LlamaMarketRow[] | undefined }) => {
+  const summary = getUserPositionsSummary(markets)
   return (
     <MetricsGrid
       variant="fillMobile"

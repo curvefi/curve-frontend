@@ -58,7 +58,7 @@ export const RateCell = <TValue extends number | null>({
             <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
               <Typography
                 variant="bodySRegular"
-                sx={{ color: 'text.secondary' }}
+                color="textSecondary"
                 data-testid={netBorrow ? 'user-net-borrow-apr' : 'user-net-supply-apy'}
               >
                 {t`Net`}{' '}

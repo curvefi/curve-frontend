@@ -4,7 +4,7 @@ import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
-import { MarketColumnId } from '../columns'
+import { MarketColumnId, POSITION_COLUMN_LABELS } from '../columns'
 
 type Option<T = string> = { id: T; label: ReactNode }
 
@@ -28,11 +28,11 @@ export const useMarketsSortOptions = () => {
           { id: MarketColumnId.UserBoostMultiplier, label: t`Boost` },
         ]
       : []),
-    ...notFalsy(beta ? undefined : { id: MarketColumnId.NetBorrowRate, label: t`Net borrow APR` }),
+    ...notFalsy(!beta && { id: MarketColumnId.NetBorrowRate, label: POSITION_COLUMN_LABELS.netBorrowApr }),
     { id: MarketColumnId.BorrowRate, label: t`Borrow APR` },
     ...(beta
       ? [
-          { id: MarketColumnId.NetBorrowRate, label: t`Net borrow APR` },
+          { id: MarketColumnId.NetBorrowRate, label: POSITION_COLUMN_LABELS.netBorrowApr },
           { id: MarketColumnId.CollateralYield, label: t`Collateral yield` },
         ]
       : []),

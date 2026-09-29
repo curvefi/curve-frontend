@@ -53,6 +53,7 @@ const pagination = { pageIndex: 0, pageSize: 50 }
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const beta = useNewLlamalendHealth()
   const isMobile = useIsMobile()
+  const isTablet = useIsTablet()
   const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnSettings, columnVisibility, columns, tableSorting, toggleVisibility } = useMarketsVisibility(
@@ -103,7 +104,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
         viewAllLabel={t`View all ${rowCount} ${label} positions`}
         errorState={{ title: t`Could not load ${label} positions`, onReload }}
         expandedPanel={{ Body: MarketExpandedPanel, Actions: UserPositionExpandedPanelActions }}
-        shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
+        shouldStickFirstColumn={isTablet && rowCount > 0}
       >
         <Stack
           direction="row"
