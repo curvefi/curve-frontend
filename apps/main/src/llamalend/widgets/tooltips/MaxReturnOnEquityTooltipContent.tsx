@@ -1,3 +1,4 @@
+import { getMaxPositionLeverage } from '@/llamalend/max-leverage.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { formatNumber } from '@primitives/number.utils'
@@ -24,29 +25,32 @@ export const MaxReturnOnEquityTooltipContent = ({
   borrowApy?: number | null
 }) => {
   const beta = useNewLlamalendHealth()
-  const collateralShown = beta ? market?.assets.collateral.rebasingYieldApr : collateralApy
-  const borrowShown = beta ? market?.rates.borrowApr : borrowApy
+  const leverageShown = beta && market ? getMaxPositionLeverage(market) : leverage
+  const collateralShown = beta ? (market?.assets.collateral.rebasingYieldApr ?? collateralApy) : collateralApy
+  const borrowShown = beta ? (market?.rates.borrowApr ?? borrowApy) : borrowApy
   return (
-  <TooltipWrapper>
-    <TooltipDescription
-      text={
-        beta
-          ? t`ROE at max leverage is the APR on equity 1 in a zero-conversion start: collateral equals the leverage limit, converted borrowed assets are 0, and debt is that limit minus 1. It excludes swap costs and price movement. It is not a live position.`
-          : t`The Maximum Return on Equity is an estimated annualized return on your own capital at maximum leverage, after borrowing costs.`
-      }
-    />
-    <TooltipDescription text={beta ? t`ROE APR = M × collateral APR − (M − 1) × gross borrow APR` : t`Max RoE = M × C − (M − 1) × B`} />
-    {maybes([leverage, collateralShown, borrowShown], (lev, collateralRate, borrowRate) => (
-      <TooltipItems secondary>
-        <TooltipItem title={t`Max multiplier (M)`}>{formatNumber(lev, 'multiplier')}</TooltipItem>
-        <TooltipItem title={beta ? t`Collateral APR` : t`Collateral APY (C)`}>
-          {formatNumber(collateralRate, 'percent.rate')}
-        </TooltipItem>
-        <TooltipItem title={beta ? t`Gross borrow APR` : t`Borrow APY (B)`}>
-          {formatNumber(borrowRate, 'percent.rate')}
-        </TooltipItem>
-      </TooltipItems>
-    ))}
-  </TooltipWrapper>
+    <TooltipWrapper>
+      <TooltipDescription
+        text={
+          beta
+            ? t`ROE at max leverage is the APR on equity 1 in a zero-conversion start: collateral equals the leverage limit, converted borrowed assets are 0, and debt is that limit minus 1. It excludes swap costs and price movement. It is not a live position.`
+            : t`The Maximum Return on Equity is an estimated annualized return on your own capital at maximum leverage, after borrowing costs.`
+        }
+      />
+      <TooltipDescription
+        text={beta ? t`ROE APR = M × collateral APR − (M − 1) × gross borrow APR` : t`Max RoE = M × C − (M − 1) × B`}
+      />
+      {maybes([leverageShown, collateralShown, borrowShown], (lev, collateralRate, borrowRate) => (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Max multiplier (M)`}>{formatNumber(lev, 'multiplier')}</TooltipItem>
+          <TooltipItem title={beta ? t`Collateral APR` : t`Collateral APY (C)`}>
+            {formatNumber(collateralRate, 'percent.rate')}
+          </TooltipItem>
+          <TooltipItem title={beta ? t`Gross borrow APR` : t`Borrow APY (B)`}>
+            {formatNumber(borrowRate, 'percent.rate')}
+          </TooltipItem>
+        </TooltipItems>
+      ))}
+    </TooltipWrapper>
   )
 }

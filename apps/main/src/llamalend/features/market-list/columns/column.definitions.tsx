@@ -1,8 +1,9 @@
 import { leverageTooltip } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { maxRoeSortValue } from '@/llamalend/rates.utils'
+import { getMaxLeverageSortValue, maxRoeSortValue } from '@/llamalend/rates.utils'
 import { MaxReturnOnEquityTooltipContent, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { MarketRateType } from '@evm-ui/types/market'
+import type { Nullish } from '@primitives/objects.utils'
 import type { DeepKeys } from '@tanstack/table-core'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
@@ -18,6 +19,7 @@ import {
   MaxLeverageCell,
   MaxReturnOnEquityCell,
   UserLeverageCell,
+  UserLiquidationRangeCell,
   UserReturnOnEquityCell,
   PercentCell,
   PriceCell,
@@ -40,6 +42,7 @@ import {
   getHealthColumnSortValue,
   getUserPositionBuffer,
   getUserPositionLeverage,
+  getUserPositionRangeUpper,
   getUserPositionLtv,
   getUserPositionRoe,
 } from '../user-position.utils'
@@ -166,6 +169,13 @@ export const MARKET_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
+  columnHelper.accessor(getUserPositionRangeUpper, {
+    id: MarketColumnId.UserLiquidationRange,
+    header: MARKET_TITLES[MarketColumnId.UserLiquidationRange],
+    cell: UserLiquidationRangeCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
   columnHelper.accessor('rates.lendTotalApyMinBoosted', {
     id: MarketColumnId.LendRate,
     header: MARKET_TITLES[MarketColumnId.LendRate],
@@ -181,16 +191,13 @@ export const MARKET_COLUMNS = columnHelper.columns([
     header: MARKET_TITLES[MarketColumnId.BorrowChart],
     cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
-  columnHelper.accessor<(row: LlamaMarketRow) => LlamaMarketRow['leverage'], LlamaMarketRow['leverage']>(
-    row => row.leverage,
-    {
-      id: MarketColumnId.MaxLeverage,
-      header: MARKET_TITLES[MarketColumnId.MaxLeverage],
-      cell: MaxLeverageCell,
-      meta: { type: 'numeric' },
-      sortUndefined: 'last',
-    },
-  ),
+  columnHelper.accessor<(row: LlamaMarketRow) => number | Nullish, number | Nullish>(getMaxLeverageSortValue, {
+    id: MarketColumnId.MaxLeverage,
+    header: MARKET_TITLES[MarketColumnId.MaxLeverage],
+    cell: MaxLeverageCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
   columnHelper.accessor(maxRoeSortValue, {
     id: MarketColumnId.MaxReturnOnEquity,
     header: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],

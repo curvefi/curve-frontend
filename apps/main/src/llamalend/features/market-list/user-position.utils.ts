@@ -65,6 +65,9 @@ export const getUserPositionOracleHealth = ({ positionQueries }: LlamaMarketRow)
 export const getUserPositionBuffer = ({ positionQueries }: LlamaMarketRow) =>
   maybe(positionQueries.risk.fullHealth.data, value => Number(value))
 
+export const getUserPositionRangeUpper = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.risk.prices.data?.[1], value => Number(value))
+
 const aprFraction = (percentagePoints: number | Nullish): YieldInput => {
   if (percentagePoints == null) return { unavailable: true }
   const points = decimal(percentagePoints)

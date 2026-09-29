@@ -1,4 +1,5 @@
 import { sumBy } from 'lodash'
+import { getMaxPositionLeverage } from '@/llamalend/max-leverage.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
@@ -55,6 +56,11 @@ export const getReturnOnEquity = (
     lev < 1 ? undefined : lev * colApy - (lev - 1) * borApy,
   )
 
+export const getMaxLeverageSortValue = (market: Pick<LlamaMarket, 'leverage' | 'maxLtv'>): number | Nullish =>
+  typeof window !== 'undefined' && getReleaseChannel() === ReleaseChannel.Beta
+    ? getMaxPositionLeverage(market)
+    : market.leverage
+
 /** Return on equity at the market's maximum leverage. */
 export const getMaxReturnOnEquity = ({
   leverage,
@@ -66,25 +72,27 @@ export const getMaxReturnOnEquity = ({
   getReturnOnEquity(leverage, rebasingYield, borrowApy)
 
 export type MaxRoeApr =
-  | { status: 'not-applicable' }
-  | { status: 'unavailable' }
-  | { status: 'value'; aprPercent: number }
+  { status: 'not-applicable' } | { status: 'unavailable' } | { status: 'value'; aprPercent: number }
 
 /** Idealized zero-conversion start: equity 1, collateral M, borrowed assets 0, debt M−1. Gross borrow APR. */
 export const maxRoeAtMaxLeverageApr = ({
   leverage,
+  maxLtv,
   assets: {
     collateral: { rebasingYieldApr },
   },
   rates: { borrowApr },
-}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): MaxRoeApr => {
+}: Pick<LlamaMarket, 'leverage' | 'maxLtv' | 'assets' | 'rates'>): MaxRoeApr => {
   if (rebasingYieldApr == null) return { status: 'not-applicable' }
-  if (leverage == null || leverage < 1) return { status: 'unavailable' }
-  return { status: 'value', aprPercent: leverage * rebasingYieldApr - (leverage - 1) * borrowApr }
+  const maxLeverage = getMaxPositionLeverage({ leverage, maxLtv })
+  if (maxLeverage == null || maxLeverage < 1) return { status: 'unavailable' }
+  return { status: 'value', aprPercent: maxLeverage * rebasingYieldApr - (maxLeverage - 1) * borrowApr }
 }
 
 /** Beta sorts the APR scenario. Other channels keep the existing APY accessor. */
-export const maxRoeSortValue = (market: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined => {
+export const maxRoeSortValue = (
+  market: Pick<LlamaMarket, 'leverage' | 'maxLtv' | 'assets' | 'rates'>,
+): number | undefined => {
   if (typeof window !== 'undefined' && getReleaseChannel() === ReleaseChannel.Beta) {
     const apr = maxRoeAtMaxLeverageApr(market)
     return apr.status === 'value' ? apr.aprPercent : undefined

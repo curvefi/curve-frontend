@@ -8,7 +8,7 @@ import { type Nullish, maybe } from '@primitives/objects.utils'
 import { Metric, type MetricProps } from '@ui/components/Metric'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { formatCappedRateValue } from '@ui/lib/rates.utils'
+import { formatCappedRatePercent, formatCappedRateValue } from '@ui/lib/rates.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips'
 
 type BorrowRateMetric = {
@@ -45,12 +45,14 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
       value={mapQuery(borrowRate, ({ rate, totalBorrowRate }) => (beta ? rate : totalBorrowRate))}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
       notional={mapQuery(borrowRate, ({ totalBorrowRate, totalAverageBorrowRate }) =>
-        maybe(beta ? totalBorrowRate : totalAverageBorrowRate, value => ({
-          value,
-          abbreviate: false,
-          formatter: formatCappedRateValue,
-          unit: { symbol: beta ? `% ${t`Net borrow APR`}` : `% ${averageRatePeriod} Avg`, position: 'suffix' as const },
-        })),
+        beta
+          ? maybe(totalBorrowRate, value => t`Net ${formatCappedRatePercent(value)}`)
+          : maybe(totalAverageBorrowRate, value => ({
+              value,
+              abbreviate: false,
+              formatter: formatCappedRateValue,
+              unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' as const },
+            })),
       )}
       valueTooltip={{
         title: beta ? t`Borrow APR` : legacyTitle,

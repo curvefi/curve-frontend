@@ -4,6 +4,7 @@ import { type LlamaMarketRow, type MarketStats } from '@/llamalend/queries/marke
 import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { TokenAmount } from '@evm-ui/shared/ui/TokenAmount'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -121,6 +122,7 @@ export const PriceCell = ({
   column,
 }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const market = row.original
+  const beta = useNewLlamalendHealth()
   const { assets, lendingPosition } = market
   const columnId = column.id as MarketColumnId
 
@@ -138,7 +140,11 @@ export const PriceCell = ({
   }
 
   const tooltipTitle =
-    getTooltipTitle(columnId) ??
+    (beta && columnId === MarketColumnId.UserBorrowed
+      ? t`Total debt`
+      : beta && columnId === MarketColumnId.UserCollateral
+        ? t`Collateral value`
+        : getTooltipTitle(columnId)) ??
     `${formatNumber(primaryValue, { decimals: 5, abbreviate: false })} ${primaryAsset.symbol}`
   const totalValue = maybe(market.oraclePrice, oraclePrice =>
     decimal((stats?.collateral ?? 0) * oraclePrice + (stats?.borrowToken ?? 0)),

@@ -137,7 +137,7 @@ const createMarketsColumnOptions = ({
           MarketColumnId.UserHealth,
           MarketColumnId.UserBorrowed,
           MarketColumnId.UserCollateral,
-          MarketColumnId.UserLtv,
+          ...notFalsy(!(beta && onlyPositions === MarketRateType.Borrow) && MarketColumnId.UserLtv),
         ],
         active: onlyPositions == MarketRateType.Borrow,
         enabled: hasPositions,
@@ -146,7 +146,15 @@ const createMarketsColumnOptions = ({
         beta && {
           label: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
           columns: [MarketColumnId.UserLiquidationBuffer],
-          active: false,
+          active: onlyPositions === MarketRateType.Borrow,
+          enabled: hasPositions,
+        },
+      ),
+      ...notFalsy(
+        beta && {
+          label: MARKET_TITLES[MarketColumnId.UserLiquidationRange],
+          columns: [MarketColumnId.UserLiquidationRange],
+          active: onlyPositions === MarketRateType.Borrow,
           enabled: hasPositions,
         },
       ),

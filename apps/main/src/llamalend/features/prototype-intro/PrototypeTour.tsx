@@ -6,6 +6,7 @@ import {
   BufferEquations,
   CollateralEquations,
   Equation,
+  Fraction,
   HealthEquation,
   LeverageEquation,
   RangeEquations,
@@ -27,8 +28,7 @@ type Surface = 'list' | 'borrow' | 'supply'
 type Guide = Surface | 'positions'
 type TourStep = { element: NonNullable<DriveStep['element']>; title: string; content: ReactNode }
 
-const CONTENT_VERSION = 3
-const POSITION_CONTENT_VERSION = 4
+const CONTENT_VERSIONS: Record<Guide, number> = { list: 4, positions: 5, borrow: 4, supply: 3 }
 const target = (testId: string) => document.querySelector(`[data-testid="${testId}"]`)
 const within = (element: Element | null, testId: string) => element?.querySelector(`[data-testid="${testId}"]`)
 const targetSelector = (testId: string) => `[data-testid="${testId}"]`
@@ -52,6 +52,7 @@ const listSteps = (): TourStep[] | undefined => {
   const apr = within(list, 'data-table-header-rates_borrow')
   const mobileSort = within(list, 'btn-drawer-sort-lamalend-markets')
   const settings = within(list, 'btn-visibility-settings')
+  const maxLeverage = within(list, 'data-table-header-maxLeverage')
   const first = visible(apr) ? apr : mobileSort
   const optional = visible(settings) ? settings : mobileSort
   if (!visible(first)) return undefined
@@ -79,9 +80,33 @@ const listSteps = (): TourStep[] | undefined => {
         content: (
           <Change>
             {visible(settings)
-              ? t`Previously, table settings did not offer collateral yield, liquidation buffer, position RoE, or position leverage. Now you can reveal them there and open a position to see each calculation.`
-              : t`Previously, mobile sort did not offer collateral yield, liquidation buffer, or position leverage. Now you can choose these metrics there and open a position to see each calculation.`}
+              ? t`Previously, table settings did not offer collateral yield, Liquidation range, Liquidation buffer, position RoE, or position leverage. Now you can reveal them there and open a position to see each calculation.`
+              : t`Previously, mobile sort did not offer collateral yield, Liquidation range, Liquidation buffer, or position leverage. Now you can choose these metrics there and open a position to see each calculation.`}
           </Change>
+        ),
+      },
+    ),
+    ...notFalsy(
+      (visible(maxLeverage) || visible(mobileSort)) && {
+        element: withinSelector(
+          'llamalend-markets-table',
+          visible(maxLeverage) ? 'data-table-header-maxLeverage' : 'btn-drawer-sort-lamalend-markets',
+        ),
+        title: t`Max leverage`,
+        content: (
+          <Stack spacing={1}>
+            <Change>
+              {t`Previously, Max leverage used the market's supplied leverage figure. Now it uses remaining collateral exposure over equity at Max LTV, assuming no conversion into borrowed assets. It excludes swap costs and price movement.`}
+            </Change>
+            <MathBlock>
+              <LeverageEquation />
+              <Equation>
+                {t`Max leverage`}
+                {' = '}
+                <Fraction numerator="100%" denominator={t`100% − Max LTV`} />
+              </Equation>
+            </MathBlock>
+          </Stack>
         ),
       },
     ),
@@ -100,7 +125,7 @@ const positionSteps = (): TourStep[] | undefined => {
         title: t`Borrowing positions`,
         content: (
           <Change>
-            {t`Your Borrowing positions now lead with Borrow APR rather than Net borrow APR; add estimated RoE, its yield multiplier, and position leverage; and show range-based Health with position status. Leverage is remaining collateral exposure over equity. Open a market for the full metric explanations.`}
+            {t`On mobile, Borrowing positions show Total debt and leverage. The desktop table also shows Borrow APR, estimated RoE, range-based Health with status, Liquidation range, and Liquidation buffer. LTV has been removed. Open a market for the full metric explanations.`}
           </Change>
         ),
       },
@@ -108,10 +133,13 @@ const positionSteps = (): TourStep[] | undefined => {
   }
 
   const apr = within(table, 'data-table-cell-rates_borrow')
+  const debt = within(table, 'data-table-cell-userBorrowed')
   const multiplier = within(table, 'user-position-yield-multiplier')
   const roe =
     multiplier?.closest('[data-testid="data-table-cell-userRoe"]') ?? within(table, 'data-table-header-userRoe')
   const healthValue = within(table, 'user-position-health-value')
+  const range = within(table, 'data-table-cell-userLiquidationRange')
+  const buffer = within(table, 'data-table-cell-userLiquidationBuffer')
   const leverageValue = within(table, 'user-position-leverage-value')
   const leverage =
     leverageValue?.closest('[data-testid="data-table-cell-userLeverage"]') ??
@@ -130,6 +158,17 @@ const positionSteps = (): TourStep[] | undefined => {
         </Change>
       ),
     },
+    ...notFalsy(
+      visible(debt) && {
+        element: withinSelector('borrow-positions-table', 'data-table-cell-userBorrowed'),
+        title: t`Total debt`,
+        content: (
+          <Change>
+            {t`Previously, this column was Borrow Amount and the table also showed LTV. It now reads Total debt: the amount borrowed in the debt token, including accrued interest. LTV is removed to match the position card.`}
+          </Change>
+        ),
+      },
+    ),
     {
       element: () =>
         within(target('borrow-positions-table'), 'user-position-yield-multiplier')?.closest(
@@ -188,6 +227,39 @@ const positionSteps = (): TourStep[] | undefined => {
         </Stack>
       ),
     },
+    ...notFalsy(
+      visible(range) && {
+        element: withinSelector('borrow-positions-table', 'data-table-cell-userLiquidationRange'),
+        title: t`Liquidation range`,
+        content: (
+          <Stack spacing={1}>
+            <Change>
+              {t`This range was absent from the Stable Borrowing table. Now it shows both edges where conversions may occur. Losses need not recover when price recovers, and the lower edge is not the hard-liquidation price.`}
+            </Change>
+            <MathBlock>
+              <RangeEquations />
+            </MathBlock>
+            <Change>{t`p: oracle price; u: upper boundary; l: lower boundary.`}</Change>
+          </Stack>
+        ),
+      },
+    ),
+    ...notFalsy(
+      visible(buffer) && {
+        element: withinSelector('borrow-positions-table', 'data-table-cell-userLiquidationBuffer'),
+        title: t`Liquidation buffer`,
+        content: (
+          <Stack spacing={1}>
+            <Change>
+              {t`This separate debt-relative buffer was absent from the Stable Borrowing table. It is liquidation-adjusted margin, not a price-drop allowance or withdrawable equity.`}
+            </Change>
+            <MathBlock>
+              <BufferEquations />
+            </MathBlock>
+          </Stack>
+        ),
+      },
+    ),
   ]
 }
 
@@ -287,7 +359,7 @@ const borrowSteps = (): TourStep[] | undefined => {
         content: (
           <Stack spacing={1}>
             <Change>
-              {t`Previously, the card displayed the SDK’s current leverage value. Now it calculates remaining collateral exposure over equity. It amplifies relative-price gains and losses and potential collateral yield, less borrowing costs. It is not the yield multiplier.`}
+              {t`Previously, the card displayed the SDK’s current leverage value. Now it calculates remaining collateral exposure over equity. It amplifies relative-price gains and losses and potential collateral yield, less borrowing costs. Market Max leverage uses the same ratio at Max LTV; it is not the yield multiplier.`}
             </Change>
             <MathBlock>
               <LeverageEquation />
@@ -318,7 +390,7 @@ const borrowSteps = (): TourStep[] | undefined => {
         title: t`Borrow APR`,
         content: (
           <Change>
-            {t`Previously, Net Borrow APR led the header, with its average beneath it. Now Borrow APR leads: interest charged on debt before collateral yield. Estimated net borrow APR sits below and subtracts collateral yield and incentives. Yield paid in another asset is not a same-asset borrowing cost.`}
+            {t`Previously, Net Borrow APR led the header, with its average beneath it. Now Borrow APR leads: interest charged on debt before collateral yield. The smaller line starts with Net and shows the estimated net borrow rate after collateral yield and incentives. Yield paid in another asset is not a same-asset borrowing cost.`}
           </Change>
         ),
       },
@@ -367,8 +439,8 @@ export const PrototypeTour = ({
   const beta = useNewLlamalendHealth()
   const pathname = usePathname()
   const theme = useTheme()
-  const [seen, setSeen] = useLlamalendPrototypeTourSeen(surface, CONTENT_VERSION)
-  const [positionsSeen, setPositionsSeen] = useLlamalendPrototypeTourSeen('positions', POSITION_CONTENT_VERSION)
+  const [seen, setSeen] = useLlamalendPrototypeTourSeen(surface, CONTENT_VERSIONS[surface])
+  const [positionsSeen, setPositionsSeen] = useLlamalendPrototypeTourSeen('positions', CONTENT_VERSIONS.positions)
   const [replay, setReplay] = useState<Guide | null>(null)
   const [portal, setPortal] = useState<{ element: HTMLElement; content: ReactNode } | null>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)

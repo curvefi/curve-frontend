@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import { MaxLeverageTooltip } from '@/llamalend/widgets/tooltips'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import { mapRecord } from '@primitives/objects.utils'
@@ -25,12 +26,29 @@ const BETA_ONLY_COLUMNS = [
   MarketColumnId.UserReturnOnEquity,
   MarketColumnId.UserLeverage,
   MarketColumnId.UserLiquidationBuffer,
+  MarketColumnId.UserLiquidationRange,
 ]
 
 const betaMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 2,
+  version: 3,
   migrate: (oldValue, initialValue) =>
-    mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
+    mapRecord(initialValue, (variant, currentGroups) =>
+      preserveVisibilityChoices(
+        oldValue[variant]?.map(group => ({
+          ...group,
+          options: group.options.map(option =>
+            variant === MarketRateType.Borrow && option.columns.includes(MarketColumnId.UserLtv)
+              ? { ...option, columns: option.columns.filter(column => column !== MarketColumnId.UserLtv) }
+              : option,
+          ),
+        })),
+        currentGroups,
+        (preservedActive, option) =>
+          variant === MarketRateType.Borrow && option.columns.includes(MarketColumnId.UserLiquidationBuffer)
+            ? true
+            : preservedActive,
+      ),
+    ),
 }
 
 const legacyMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
@@ -60,13 +78,31 @@ export const useMarketsVisibility = (title: string, sorting: SortingState, varia
         ? DEFAULT_SORT_SUPPLY
         : DEFAULT_SORT
   const tableSorting =
-    !beta && sorting.some(({ id }) => BETA_ONLY_COLUMNS.includes(id as MarketColumnId)) ? defaultSort : sorting
+    (!beta && sorting.some(({ id }) => BETA_ONLY_COLUMNS.includes(id as MarketColumnId))) ||
+    (beta &&
+      variant === MarketRateType.Borrow &&
+      sorting.some(({ id }) => (id as MarketColumnId) === MarketColumnId.UserLtv))
+      ? defaultSort
+      : sorting
   const sortField = (tableSorting.length ? tableSorting : defaultSort)[0].id as MarketColumnId
   const options = useMemo(() => getMarketsColumnOptions(beta), [beta])
   const columns = useMemo(
     () =>
       beta
-        ? MARKET_COLUMNS
+        ? MARKET_COLUMNS.filter(
+            column => variant !== MarketRateType.Borrow || column.id !== MarketColumnId.UserLtv,
+          ).map(column => {
+            if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserBorrowed)
+              return { ...column, header: t`Total debt` }
+            if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserCollateral)
+              return { ...column, header: t`Collateral value` }
+            if (column.id === MarketColumnId.MaxLeverage)
+              return {
+                ...column,
+                meta: { ...column.meta, tooltip: { title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> } },
+              }
+            return column
+          })
         : MARKET_COLUMNS.filter(column => !BETA_ONLY_COLUMNS.includes(column.id as MarketColumnId)).map(column => {
             if (column.id === MarketColumnId.BorrowRate)
               return { ...column, meta: { ...column.meta, tooltip: undefined } }
@@ -79,7 +115,7 @@ export const useMarketsVisibility = (title: string, sorting: SortingState, varia
             }
             return column
           }),
-    [beta],
+    [beta, variant],
   )
   const visibilitySettings = useVisibilitySettings(
     beta ? `${title} Beta` : title,

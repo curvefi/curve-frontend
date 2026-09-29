@@ -18,6 +18,7 @@ export const useMarketsSortOptions = () => {
       ? [
           { id: MarketColumnId.UserHealth, label: t`Health` },
           ...notFalsy(beta && { id: MarketColumnId.UserLiquidationBuffer, label: t`Liquidation buffer` }),
+          ...notFalsy(beta && { id: MarketColumnId.UserLiquidationRange, label: t`Liquidation range` }),
           { id: MarketColumnId.UserBorrowed, label: t`Borrow Amount` },
           { id: MarketColumnId.UserCollateral, label: t`Collateral Amount` },
           { id: MarketColumnId.UserLtv, label: t`LTV` },
