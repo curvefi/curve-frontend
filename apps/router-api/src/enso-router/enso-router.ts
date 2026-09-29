@@ -68,7 +68,7 @@ export const buildEnsoRouteResponse = async (
       : slippage != null && { slippage: new BigNumber(slippage).times(100).toString() }),
     ...maybe(
       // Enso rejects an explicit fee=0, so omit fee parameters when fees are disabled.
-      ROUTER_FEE_BPS === '0' ? undefined : ROUTER_FEE_RECEIVER_BY_CHAIN_ID[chainId],
+      +ROUTER_FEE_BPS ? ROUTER_FEE_RECEIVER_BY_CHAIN_ID.enso[chainId] : undefined,
       feeReceiver => ({ fee: ROUTER_FEE_BPS, feeReceiver }),
     ),
   })}`

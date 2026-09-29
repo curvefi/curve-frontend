@@ -80,7 +80,7 @@ export const buildZeroExRouteResponse = async (
     buyToken,
     sellAmount: amountIn,
     taker,
-    ...maybe(ROUTER_FEE_RECEIVER_BY_CHAIN_ID[chainId], swapFeeRecipient => ({
+    ...maybe(ROUTER_FEE_RECEIVER_BY_CHAIN_ID['0x'][chainId], swapFeeRecipient => ({
       swapFeeRecipient,
       swapFeeBps: ROUTER_FEE_BPS,
       swapFeeToken: sellToken,
