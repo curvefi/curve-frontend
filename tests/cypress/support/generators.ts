@@ -43,8 +43,7 @@ export const shuffle = <T>(...options: T[]): T[] => {
   return result
 }
 
-export const oneTokenType = () => oneOf('collateral', 'borrowed')
-export type TokenType = ReturnType<typeof oneTokenType>
+export type TokenType = 'collateral' | 'borrowed'
 
 export const oneDate = ({
   minDate = new Date(Date.now() - TIME_FRAMES.YEAR_MS), // 1 year ago

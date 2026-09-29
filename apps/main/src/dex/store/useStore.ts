@@ -1,7 +1,6 @@
 import { create, StoreApi } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { CreatePoolSlice, createCreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
-import { DashboardSlice, createDashboardSlice } from '@/dex/store/createDashboardSlice'
 import { DeployGaugeSlice, createDeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
 import { GlobalSlice, createGlobalSlice } from '@/dex/store/createGlobalSlice'
 import { PoolDepositSlice, createPoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
@@ -14,7 +13,6 @@ export type State = GlobalSlice &
   PoolWithdrawSlice &
   PoolSwapSlice &
   QuickSwapSlice &
-  DashboardSlice &
   CreatePoolSlice &
   DeployGaugeSlice
 
@@ -23,7 +21,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createPoolDepositSlice(set, get),
   ...createPoolWithdrawSlice(set, get),
   ...createPoolSwapSlice(set, get),
-  ...createDashboardSlice(set, get),
   ...createQuickSwapSlice(set, get),
   ...createCreatePoolSlice(set, get),
   ...createDeployGaugeSlice(set, get),

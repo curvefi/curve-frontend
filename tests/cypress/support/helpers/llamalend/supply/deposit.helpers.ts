@@ -16,7 +16,7 @@ export const submitDepositForm = ({ solvencyPercent = 100 }: { solvencyPercent?:
   return submitSupplyForm('deposit', 'Deposit successful!')
 }
 
-export const confirmLowSolvencyDepositForm = () => {
+const confirmLowSolvencyDepositForm = () => {
   cy.get('[data-testid="supply-deposit-submit-button"]').click(LOAD_TIMEOUT)
   cy.get('[data-testid="low-solvency-action-checkbox"]').click()
   cy.get('[data-testid="low-solvency-action-submit-button"]').click()

@@ -6,7 +6,7 @@ import { maybes, type Nullish } from '@primitives/objects.utils'
 const WRAPPED_ONLY_POOL_IDS = ['pax', 'busd', 'y']
 
 /** Gets a pool by its ID, throws an error if no pool is found with the given ID. */
-export const getPool = (poolIdOrAddress: string | PoolTemplate, lib = requireLib('curveApi')): PoolTemplate =>
+const getPool = (poolIdOrAddress: string | PoolTemplate, lib = requireLib('curveApi')): PoolTemplate =>
   typeof poolIdOrAddress === 'string' ? lib.getPool(poolIdOrAddress) : poolIdOrAddress
 
 export const tryGetPool = (poolIdOrAddress: PoolTemplate | string | Nullish, lib = getLib('curveApi')) =>

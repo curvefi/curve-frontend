@@ -1,5 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "exclude": ["dependencies", "unlisted"],
-  "ignoreWorkspaces": ["packages/prices-api", "packages/external-rewards", "tests"]
+  "ignoreWorkspaces": ["packages/prices-api", "packages/external-rewards"],
+  "workspaces": {
+    "tests": {
+      "entry": ["cypress/component/**/*.cy.{ts,tsx}"]
+    }
+  }
 }

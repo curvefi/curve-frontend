@@ -5,9 +5,10 @@ import type { RoutesQuery } from '@evm-ui/queries/router-api'
 import { MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { toArray } from '@primitives/array.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
-import { createMockLendMarket, createMockLendStats } from '../mock-market.helpers'
+import { createMockLendMarket, createMockLendStats, createMockMintMarket } from '../mock-market.helpers'
 import { seedErc20BalanceForAddresses } from '../query-cache.helpers'
 import { createStub, createSyncStub, createTransactionStub, type TestStub, type TestStubArg } from '../test-stub.utils'
 
@@ -172,3 +173,45 @@ export const expectedBorrowedMetrics = () => ({
   userBorrowed: oneDecimal(0.2, 20, 2),
   avgPrice: oneDecimal(900, 2300, 2),
 })
+
+const createLoanPositionStubs = ({ collateral, debt }: { collateral: Decimal; debt: Decimal }) => ({
+  userState: createStub({ collateral, stablecoin: '0', debt }),
+  userHealth: createStub(oneDecimal(20, 80, 2)),
+})
+
+export const createBorrowMoreMintMarket = ({
+  normalStubs,
+  expectedCurrentDebt,
+}: {
+  normalStubs: {
+    parameters: object
+    estimateGasBorrowMore: object
+    estimateGasBorrowMoreApprove: object
+    borrowMoreHealth: object
+    borrowMoreMaxRecv: object
+    borrowMoreIsApproved: object
+    borrowMoreApprove: object
+    borrowMore: object
+    borrowMorePrices: object
+    loanExists: object
+    userPrices: object
+  }
+  expectedCurrentDebt: Decimal
+}) =>
+  createMockMintMarket({
+    collateral: DEFAULT_COLLATERAL_ADDRESS,
+    stats: { parameters: normalStubs.parameters },
+    estimateGas: {
+      borrowMore: normalStubs.estimateGasBorrowMore,
+      borrowMoreApprove: normalStubs.estimateGasBorrowMoreApprove,
+    },
+    ...createLoanPositionStubs({ collateral: '1', debt: expectedCurrentDebt }),
+    borrowMoreHealth: normalStubs.borrowMoreHealth,
+    borrowMoreMaxRecv: normalStubs.borrowMoreMaxRecv,
+    borrowMoreIsApproved: normalStubs.borrowMoreIsApproved,
+    borrowMoreApprove: normalStubs.borrowMoreApprove,
+    borrowMore: normalStubs.borrowMore,
+    borrowMorePrices: normalStubs.borrowMorePrices,
+    loanExists: normalStubs.loanExists,
+    userPrices: normalStubs.userPrices,
+  })

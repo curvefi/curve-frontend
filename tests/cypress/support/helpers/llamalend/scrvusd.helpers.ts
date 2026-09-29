@@ -11,9 +11,8 @@ type ScrvUsdFormType = 'deposit' | 'withdraw'
 const getScrvUsdInput = (type: ScrvUsdFormType) =>
   cy.get(`[data-testid="scrvusd-${type}-input"] input[type="text"]`, LOAD_TIMEOUT)
 
-export const writeScrvUsdDepositForm = (amount: Decimal) => writeScrvUsdInput('deposit', amount)
-
-export const writeScrvUsdWithdrawForm = (amount: Decimal) => writeScrvUsdInput('withdraw', amount)
+const writeScrvUsdDepositForm = (amount: Decimal) => writeScrvUsdInput('deposit', amount)
+const writeScrvUsdWithdrawForm = (amount: Decimal) => writeScrvUsdInput('withdraw', amount)
 
 const writeScrvUsdInput = (type: ScrvUsdFormType, amount: Decimal) => {
   getScrvUsdInput(type).clear()
@@ -88,7 +87,7 @@ export const checkScrvUsdDepositAllowance = ({
     expect(decimalCompare(allowance, approveInfinite ? depositAmount : '0')).to.equal(approveInfinite ? 1 : 0),
   )
 
-export const checkNoFormErrors = () => {
+const checkNoFormErrors = () => {
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   cy.get('body').should('not.contain', 'Amount exceeds maximum of')
 }
