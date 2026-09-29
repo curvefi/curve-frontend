@@ -6,7 +6,6 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
-import { recordValues } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
@@ -30,43 +29,41 @@ export const FormClaimFees = ({ chainId }: { chainId: ChainId }) => {
         </Typography>
       </Stack>
 
-      {recordValues(CLAIM_FEES_TOKENS)
-        .map(token => ({ token, ...claimables[token] }))
-        .map(({ token, data, isLoading, error }) => (
-          <Stack key={token} data-testid={`claim-fees-${token}`} sx={{ gap: Spacing.xs }}>
-            <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm }}>
-              <Stack
-                direction="row"
-                sx={{ flexGrow: 1, alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm }}
-              >
-                <TokenLabel
-                  blockchainId="ethereum"
-                  address={CLAIM_TOKEN_ADDRESSES[token]}
-                  label={token}
-                  size="sm"
-                  typographyVariant="bodyMRegular"
-                />
-                <WithSkeleton loading={isLoading}>
-                  <Typography>{formatNumber(data, 'token.balance')}</Typography>
-                </WithSkeleton>
-              </Stack>
-              <Button
-                type="button"
-                size="small"
-                disabled={isPending || !!error || !decimalGreaterThan(data ?? ZERO, ZERO)}
-                loading={isPending && claimingToken === token}
-                onClick={() => onSubmit(token)}
-              >
-                {t`Claim`}
-              </Button>
+      {CLAIM_FEES_TOKENS.map(token => ({ token, ...claimables[token] })).map(({ token, data, isLoading, error }) => (
+        <Stack key={token} data-testid={`claim-fees-${token}`} sx={{ gap: Spacing.xs }}>
+          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm }}>
+            <Stack
+              direction="row"
+              sx={{ flexGrow: 1, alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm }}
+            >
+              <TokenLabel
+                blockchainId="ethereum"
+                address={CLAIM_TOKEN_ADDRESSES[token]}
+                label={token}
+                size="sm"
+                typographyVariant="bodyMRegular"
+              />
+              <WithSkeleton loading={isLoading}>
+                <Typography>{formatNumber(data, 'token.balance')}</Typography>
+              </WithSkeleton>
             </Stack>
-            {error && (
-              <Alert severity="error">
-                {t`Unable to load ${token} fees.`} {getErrorMessage(error)}
-              </Alert>
-            )}
+            <Button
+              type="button"
+              size="small"
+              disabled={isPending || !!error || !decimalGreaterThan(data ?? ZERO, ZERO)}
+              loading={isPending && claimingToken === token}
+              onClick={() => onSubmit(token)}
+            >
+              {t`Claim`}
+            </Button>
           </Stack>
-        ))}
+          {error && (
+            <Alert severity="error">
+              {t`Unable to load ${token} fees.`} {getErrorMessage(error)}
+            </Alert>
+          )}
+        </Stack>
+      ))}
 
       <FormAlerts error={error} formErrors={[]} handledErrors={[]} userAddress={userAddress} />
     </FormContent>
