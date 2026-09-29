@@ -102,7 +102,7 @@ export const validateRoute = (routeId: string | Nullish, isRequired: boolean) =>
 }
 
 export const validateRouteCalldata = (routeId: string | Nullish, market: MarketTemplate | Nullish) => {
-  skipWhen(!routeId || hasUpgradedZapV2(market), () => {
+  skipWhen(!routeId || !!hasUpgradedZapV2(market), () => {
     test(
       'routeId',
       'The selected route is too large to execute. Select another route provider, reduce the amount, or split the operation into multiple transactions.',
