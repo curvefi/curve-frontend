@@ -67,11 +67,15 @@ const { getQueryOptions: getBorrowMoreMaxReceiveOptions, invalidate: invalidateB
       leverageEnabled,
       slippage,
       router,
-    }: BorrowMoreMaxReceiveQueryParams) =>
-      [
-        rootKeys.userMarket({ chainId, marketId, userAddress }),
-        { name: 'borrowMoreMaxRecv', userCollateral, userBorrowed, leverageEnabled, slippage, router },
-      ] as const,
+    }: BorrowMoreMaxReceiveQueryParams) => ({
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      name: 'borrowMoreMaxRecv',
+      userCollateral,
+      userBorrowed,
+      leverageEnabled,
+      slippage,
+      router,
+    }),
     queryFn: async ({
       marketId,
       userCollateral = '0',

@@ -19,34 +19,11 @@ import { formatTimeDiff } from '@ui/lib/time'
 import { validate } from '@ui/lib/validation/lib'
 import { FieldName, FieldsOf } from '@ui/lib/validation/types'
 
-/** One scope or query-specific part of a query key. */
-type QueryKeyPart = Readonly<Record<string, unknown>>
-
-/** Source key parts, which are merged into one cache-key object. */
-type QueryKeyParts = readonly [QueryKeyPart, ...QueryKeyPart[]]
+/** Scope and query-specific properties identifying a query. */
+type QueryKeyObject = Readonly<Record<string, unknown> & { name: string }>
 
 /** The one-object key shape passed to TanStack Query. */
-type NormalizedQueryKey = readonly [QueryKeyPart]
-
-type DuplicateKey<Parts extends readonly QueryKeyPart[], Seen extends PropertyKey = never> = Parts extends readonly [
-  infer First extends QueryKeyPart,
-  ...infer Rest extends QueryKeyPart[],
-]
-  ? Extract<keyof First, Seen> | DuplicateKey<Rest, Seen | keyof First>
-  : never
-
-type UniqueQueryKeyParts<Parts extends QueryKeyParts> = DuplicateKey<Parts> extends never ? Parts : never
-
-type PartKeys<Parts extends QueryKeyParts> = Parts[number] extends infer Part
-  ? Part extends QueryKeyPart
-    ? keyof Part
-    : never
-  : never
-
-type ValidQueryKeyParts<Parts extends QueryKeyParts> =
-  UniqueQueryKeyParts<Parts> extends never ? never : 'name' extends PartKeys<Parts> ? Parts : never
-
-const mergeQueryKey = (parts: QueryKeyParts): NormalizedQueryKey => [Object.assign({}, ...parts)]
+type NormalizedQueryKey<TKey extends QueryKeyObject = QueryKeyObject> = readonly [TKey]
 
 /** Specific class of errors thrown from inside queryFn to skip query retries on failure */
 export class NoRetryError extends Error {
@@ -90,7 +67,7 @@ async function runQuery<TData, TQuery>(
 
 export function queryFactory<
   TQuery extends object,
-  const TKeyParts extends QueryKeyParts,
+  const TKey extends QueryKeyObject,
   TData,
   TParams extends FieldsOf<DeepPartial<TQuery>> = FieldsOf<TQuery>,
   TField extends string = FieldName<TQuery>,
@@ -105,7 +82,7 @@ export function queryFactory<
   keepPreviousData: shouldKeepPreviousData,
   ...options
 }: {
-  queryKey: (params: TParams) => ValidQueryKeyParts<TKeyParts>
+  queryKey: (params: TParams) => TKey
   validationSuite: Suite<TField, string, TCallback>
   queryFn: (params: TQuery) => Promise<TData>
   category: QueryCategory
@@ -115,13 +92,13 @@ export function queryFactory<
   disableLog?: true
   keepPreviousData?: boolean
 }) {
-  const getQueryKey = (params: TParams) => mergeQueryKey(queryKey(params))
+  const getQueryKey = (params: TParams): NormalizedQueryKey<TKey> => [queryKey(params)]
   const getQueryOptions = (params: TParams, enabled = true) =>
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryOptions({
       ...QUERY_CATEGORIES[category],
       queryKey: getQueryKey(params),
-      queryFn: async ({ queryKey }: QueryFunctionContext<NormalizedQueryKey>) =>
+      queryFn: async ({ queryKey }: QueryFunctionContext<NormalizedQueryKey<TKey>>) =>
         await runQuery(queryKey, queryFn, disableLog),
       enabled:
         enabled &&
@@ -142,9 +119,9 @@ export function queryFactory<
     setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(getQueryKey(params), data),
     fetchQuery: (
       params: TParams,
-      options?: Partial<QueryExecuteOptions<TData, DefaultError, TData, TData, NormalizedQueryKey>>,
+      options?: Partial<QueryExecuteOptions<TData, DefaultError, TData, TData, NormalizedQueryKey<TKey>>>,
     ) =>
-      queryClient.query<TData, DefaultError, TData, TData, NormalizedQueryKey>({
+      queryClient.query<TData, DefaultError, TData, TData, NormalizedQueryKey<TKey>>({
         ...getQueryOptions(params),
         ...options,
       }),
@@ -154,7 +131,7 @@ export function queryFactory<
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
     refetchQuery: (params: TParams) =>
-      queryClient.query<TData, DefaultError, TData, TData, NormalizedQueryKey>({
+      queryClient.query<TData, DefaultError, TData, TData, NormalizedQueryKey<TKey>>({
         ...getQueryOptions(params),
         ...options,
         staleTime: 0,

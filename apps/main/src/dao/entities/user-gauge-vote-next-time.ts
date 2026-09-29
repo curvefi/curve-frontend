@@ -13,15 +13,12 @@ type UserGaugeParams = FieldsOf<UserGaugeQuery>
 
 export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUserGaugeVoteNextTimeQuery } =
   queryFactory({
-    queryKey: (params: UserGaugeParams) =>
-      [
-        {
-          name: 'user-gauge-vote-next-time',
-          chainId: params.chainId,
-          gaugeAddress: params.gaugeAddress,
-          userAddress: params.userAddress,
-        },
-      ] as const,
+    queryKey: (params: UserGaugeParams) => ({
+      name: 'user-gauge-vote-next-time',
+      chainId: params.chainId,
+      gaugeAddress: params.gaugeAddress,
+      userAddress: params.userAddress,
+    }),
     queryFn: ({ gaugeAddress }: UserGaugeQuery) => requireLib('curveApi').dao.voteForGaugeNextTime(gaugeAddress),
     category: 'dao.user',
     validationSuite: createValidationSuite(({ chainId, userAddress, gaugeAddress }: UserGaugeParams) => {

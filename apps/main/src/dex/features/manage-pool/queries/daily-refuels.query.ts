@@ -11,8 +11,13 @@ type RefuelDailyDonationsQuery = ChainNameQuery & { poolAddress: Address; start?
 type RefuelDailyDonationsParams = FieldsOf<RefuelDailyDonationsQuery>
 
 export const { useQuery: useRefuelDailyRefuels } = queryFactory({
-  queryKey: ({ blockchainId, poolAddress, start, end }: RefuelDailyDonationsParams) =>
-    [rootKeys.chainName({ blockchainId }), { name: 'getRefuelDailyDonations', poolAddress, start, end }] as const,
+  queryKey: ({ blockchainId, poolAddress, start, end }: RefuelDailyDonationsParams) => ({
+    ...rootKeys.chainName({ blockchainId }),
+    name: 'getRefuelDailyDonations',
+    poolAddress,
+    start,
+    end,
+  }),
   queryFn: async ({ blockchainId, poolAddress, start, end }: RefuelDailyDonationsQuery) =>
     getRefuelDailyDonations({ chain: blockchainId, poolAddress, start, end }),
   validationSuite: createValidationSuite(({ blockchainId, poolAddress }: RefuelDailyDonationsParams) => {

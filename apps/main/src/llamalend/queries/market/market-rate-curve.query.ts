@@ -8,8 +8,11 @@ type Query = ContractQuery
 type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useRateCurve } = queryFactory({
-  queryKey: ({ contractAddress, blockchainId }: QueryParams) =>
-    [rootKeys.contract({ contractAddress, blockchainId }), { name: 'rateCurve', version: 'v1' }] as const,
+  queryKey: ({ contractAddress, blockchainId }: QueryParams) => ({
+    ...rootKeys.contract({ contractAddress, blockchainId }),
+    name: 'rateCurve',
+    version: 1,
+  }),
   queryFn: ({ blockchainId, contractAddress }: Query): Promise<RateCurve> =>
     NoRetryError.catch404(async () => await getRateCurve(blockchainId, contractAddress)),
   validationSuite: contractValidationSuite,

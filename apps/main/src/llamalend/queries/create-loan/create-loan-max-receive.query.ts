@@ -71,11 +71,16 @@ const {
     leverageEnabled,
     slippage,
     router,
-  }: CreateLoanMaxReceiveQueryParams) =>
-    [
-      rootKeys.userMarket({ chainId, marketId, userAddress }),
-      { name: 'createLoanMaxRecv', userBorrowed, userCollateral, range, leverageEnabled, slippage, router },
-    ] as const,
+  }: CreateLoanMaxReceiveQueryParams) => ({
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    name: 'createLoanMaxRecv',
+    userBorrowed,
+    userCollateral,
+    range,
+    leverageEnabled,
+    slippage,
+    router,
+  }),
   queryFn: async ({
     chainId,
     marketId,

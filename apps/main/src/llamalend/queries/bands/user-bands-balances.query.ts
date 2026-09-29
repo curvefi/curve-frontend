@@ -23,11 +23,12 @@ const userBandsBalancesValidationSuite = createValidationSuite((params: UserBand
 })
 
 export const { useQuery: useUserBandsBalances } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: UserBandsBalancesParams) =>
-    [
-      rootKeys.userMarket({ chainId, marketId, userAddress }),
-      { name: QUERY_KEY, loanExists, liquidationBand },
-    ] as const,
+  queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: UserBandsBalancesParams) => ({
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    name: QUERY_KEY,
+    loanExists,
+    liquidationBand,
+  }),
   queryFn: async ({ marketId, userAddress, liquidationBand }: UserBandsBalancesQuery) => {
     const market = getMarket(marketId)
     const userBandsBalances = normalizeBands(await getUserPositionImplementation(market).userBandsBalances(userAddress))

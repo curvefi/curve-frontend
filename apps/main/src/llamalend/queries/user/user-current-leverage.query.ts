@@ -13,8 +13,10 @@ export const {
   queryKey: getUserCurrentLeverageKey,
   reset: resetUserCurrentLeverage,
 } = queryFactory({
-  queryKey: ({ chainId, userAddress, marketId }: UserMarketParams) =>
-    [rootKeys.userMarket({ chainId, userAddress, marketId }), { name: 'currentLeverage' }] as const,
+  queryKey: ({ chainId, userAddress, marketId }: UserMarketParams) => ({
+    ...rootKeys.userMarket({ chainId, userAddress, marketId }),
+    name: 'currentLeverage',
+  }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     decimal(await getUserPositionImplementation(marketId).currentLeverage(userAddress)) ?? '0', // return 0 when there is no loan, as usually done by llamalend.js
   category: 'llamalend.user',

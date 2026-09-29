@@ -7,8 +7,10 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 
 export const { useQuery: usePoolParameters, invalidate: invalidatePoolParameters } = queryFactory({
-  queryKey: ({ chainId, poolId }: PoolParams) =>
-    [rootKeys.pool({ chainId, poolId }), { name: 'pool.stats.parameters' }] as const,
+  queryKey: ({ chainId, poolId }: PoolParams) => ({
+    ...rootKeys.pool({ chainId, poolId }),
+    name: 'pool.stats.parameters',
+  }),
   queryFn: async ({ poolId }: PoolQuery) => await requireLib('curveApi').getPool(poolId).stats.parameters(),
   validationSuite: createValidationSuite((params: PoolParams) => {
     curveApiValidationGroup(params, { requireRpc: true })

@@ -4,7 +4,7 @@ import { fetchMerklRewards } from './merkl'
 
 export const { getQueryOptions: getCampaignsPoolsMerklOptions, queryKey: getCampaignsPoolsMerklQueryKey } =
   queryFactory({
-    queryKey: () => [{ name: 'campaigns-pools-merkl' }] as const,
+    queryKey: () => ({ name: 'campaigns-pools-merkl' }),
     queryFn: async () =>
       await fetchMerklRewards({ mainProtocolId: 'curve', test: false, status: 'LIVE', action: 'POOL' }),
     validationSuite: EmptyValidationSuite,

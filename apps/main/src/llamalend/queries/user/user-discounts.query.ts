@@ -5,7 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useUserDiscounts, queryKey: getUserDiscountsKey } = queryFactory({
-  queryKey: (params: UserMarketParams) => [rootKeys.userMarket(params), { name: 'userDiscounts' }] as const,
+  queryKey: (params: UserMarketParams) => ({ ...rootKeys.userMarket(params), name: 'userDiscounts' }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const { loanDiscount, liquidationDiscount } =
       await getUserPositionImplementation(marketId).userDiscounts(userAddress)

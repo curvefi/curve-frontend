@@ -8,7 +8,7 @@ type CrvUsdSupplyParams = FieldsOf<CrvUsdSupplyQuery>
 
 export const { useQuery: useCrvUsdSupply } = queryFactory({
   category: 'analytics.chart',
-  queryKey: ({ days }: CrvUsdSupplyParams) => [{ name: 'crvusd-supply', days }] as const,
+  queryKey: ({ days }: CrvUsdSupplyParams) => ({ name: 'crvusd-supply', days }),
   queryFn: ({ days }: CrvUsdSupplyQuery) => getCrvUsdSupply('ethereum', days),
   validationSuite: EmptyValidationSuite,
   keepPreviousData: true,

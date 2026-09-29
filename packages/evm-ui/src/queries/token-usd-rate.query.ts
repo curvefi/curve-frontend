@@ -111,7 +111,7 @@ export const {
   getQueryOptions: getTokenUsdRateQueryOptions,
   queryKey: getTokenUsdRateKey,
 } = queryFactory({
-  queryKey: (params: TokenParams) => [rootKeys.token(params), { name: 'usdRate' }] as const,
+  queryKey: (params: TokenParams) => ({ ...rootKeys.token(params), name: 'usdRate' }),
   queryFn: async ({ chainId, tokenAddress }: TokenQuery) => await fetchUsdRate(chainId, tokenAddress),
   validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) =>
     tokenValidationGroup({ chainId, tokenAddress }),

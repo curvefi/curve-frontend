@@ -9,11 +9,11 @@ type LeverageQuery = UserMarketQuery & { leverageEnabled: boolean }
 
 export const { useQuery: useCreateLoanControllerApproval, fetchQuery: fetchCreateLoanControllerApproval } =
   queryFactory({
-    queryKey: ({ chainId, marketId, userAddress, leverageEnabled = false }: LeverageParams) =>
-      [
-        rootKeys.userMarket({ chainId, marketId, userAddress }),
-        { name: 'createLoanIsControllerApproved', leverageEnabled },
-      ] as const,
+    queryKey: ({ chainId, marketId, userAddress, leverageEnabled = false }: LeverageParams) => ({
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      name: 'createLoanIsControllerApproved',
+      leverageEnabled,
+    }),
     queryFn: async ({ marketId, userAddress, leverageEnabled }: LeverageQuery) => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       return type !== 'zapV2' || (await impl.isControllerApproved(userAddress))

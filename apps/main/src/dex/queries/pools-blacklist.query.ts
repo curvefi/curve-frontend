@@ -202,7 +202,7 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
 } as const
 
 const { useQuery: usePricesApiBlacklist } = queryFactory({
-  queryKey: () => [{ name: 'pools-blacklist' }] as const,
+  queryKey: () => ({ name: 'pools-blacklist' }),
   queryFn: async () => await getPoolFilters(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.poolParams',

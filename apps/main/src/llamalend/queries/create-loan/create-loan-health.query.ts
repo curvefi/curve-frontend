@@ -21,11 +21,17 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
     range,
     maxDebt,
     routeId,
-  }: CreateLoanDebtParams) =>
-    [
-      rootKeys.market({ chainId, marketId }),
-      { name: 'createLoanHealth', userCollateral, userBorrowed, debt, leverageEnabled, range, maxDebt, routeId },
-    ] as const,
+  }: CreateLoanDebtParams) => ({
+    ...rootKeys.market({ chainId, marketId }),
+    name: 'createLoanHealth',
+    userCollateral,
+    userBorrowed,
+    debt,
+    leverageEnabled,
+    range,
+    maxDebt,
+    routeId,
+  }),
   queryFn: async ({
     marketId,
     userCollateral = '0',

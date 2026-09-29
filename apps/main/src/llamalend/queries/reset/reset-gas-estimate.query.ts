@@ -12,8 +12,11 @@ import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 
 const { useQuery: useResetLoanEstimateGas } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) =>
-    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'estimateGas.reset', userBorrowed }] as const,
+  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) => ({
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    name: 'estimateGas.reset',
+    userBorrowed,
+  }),
   queryFn: async ({ marketId, userAddress, ...params }: ResetQuery): Promise<TGas> =>
     await getResetImplementation(marketId).estimateGas.repay({
       debt: params.userBorrowed,
@@ -26,11 +29,11 @@ const { useQuery: useResetLoanEstimateGas } = queryFactory({
 })
 
 const { useQuery: useResetApproveGasEstimate } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) =>
-    [
-      rootKeys.userMarket({ chainId, marketId, userAddress }),
-      { name: 'estimateGas.resetApprove', userBorrowed },
-    ] as const,
+  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) => ({
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    name: 'estimateGas.resetApprove',
+    userBorrowed,
+  }),
   queryFn: async ({ marketId, ...params }: ResetQuery): Promise<TGas> =>
     await getResetImplementation(marketId).estimateGas.repayApprove(params.userBorrowed),
   category: 'llamalend.repay',

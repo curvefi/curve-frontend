@@ -24,7 +24,7 @@ const {
   setQueryData: setRouteQueryData,
   useQuery: useRouteByIdQuery,
 } = queryFactory({
-  queryKey: ({ routeId }: RouteByIdParams) => [{ name: 'routerApi.routes', routeId }] as const,
+  queryKey: ({ routeId }: RouteByIdParams) => ({ name: 'routerApi.routes', routeId }),
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async (_params: RouteByIdQuery): Promise<RouteResponse> => {
     throw new NoRetryError('router route-by-id cache is write-through only')
@@ -77,22 +77,19 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
     userAddress,
     zapAddress,
     slippage,
-  }: RoutesParams) =>
-    [
-      {
-        name: 'routerApi.routes',
-        chainId,
-        tokenIn,
-        tokenOut,
-        amountIn,
-        amountOut,
-        blacklist,
-        router,
-        userAddress,
-        zapAddress,
-        slippage,
-      },
-    ] as const,
+  }: RoutesParams) => ({
+    name: 'routerApi.routes',
+    chainId,
+    tokenIn,
+    tokenOut,
+    amountIn,
+    amountOut,
+    blacklist,
+    router,
+    userAddress,
+    zapAddress,
+    slippage,
+  }),
   queryFn: async ({
     chainId,
     tokenIn,

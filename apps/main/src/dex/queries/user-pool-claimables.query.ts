@@ -34,8 +34,11 @@ export const getUserPoolClaimablesQueryKey = (params: UserChainParams) =>
  *
  */
 const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
-  queryKey: (params: UserPoolClaimablesParams) =>
-    [rootKeys.userChain(params), { name: 'userPoolClaimables', poolAddresses: params.poolAddresses }] as const,
+  queryKey: (params: UserPoolClaimablesParams) => ({
+    ...rootKeys.userChain(params),
+    name: 'userPoolClaimables',
+    poolAddresses: params.poolAddresses,
+  }),
   queryFn: async ({ userAddress, poolAddresses }: UserPoolClaimablesQuery) => {
     const curve = requireLib('curveApi')
     const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress)

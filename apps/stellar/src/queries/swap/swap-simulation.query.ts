@@ -11,11 +11,27 @@ export const {
   getQueryOptions: getSwapSimulationQueryOptions,
   invalidate: invalidateSwapSimulation,
 } = queryFactory({
-  queryKey: ({ network, pool, account, fromIndex, toIndex, inputAmount, decimals, minimum, maxAmount }: SwapParams) =>
-    [
-      rootKeys.pool({ network, pool }),
-      { name: 'exchange', account, fromIndex, toIndex, inputAmount, decimals, minimum, maxAmount },
-    ] as const,
+  queryKey: ({
+    network,
+    pool,
+    account,
+    fromIndex,
+    toIndex,
+    inputAmount,
+    decimals,
+    minimum,
+    maxAmount,
+  }: SwapParams) => ({
+    ...rootKeys.pool({ network, pool }),
+    name: 'exchange',
+    account,
+    fromIndex,
+    toIndex,
+    inputAmount,
+    decimals,
+    minimum,
+    maxAmount,
+  }),
   queryFn: ({ network, pool, account, fromIndex, toIndex, inputAmount, decimals, minimum }: SwapQuery) =>
     simulateContractCall<bigint>(
       network,

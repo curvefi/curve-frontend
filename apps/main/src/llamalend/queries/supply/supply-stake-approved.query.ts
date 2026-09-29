@@ -3,8 +3,11 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { StakeParams, StakeQuery, stakeValidationSuite, requireVault } from '../validation/supply.validation'
 
 export const { useQuery: useStakeIsApproved, fetchQuery: fetchStakeIsApproved } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) =>
-    [rootKeys.userMarket({ chainId, marketId, userAddress }), { name: 'stakeIsApproved', stakeShares }] as const,
+  queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) => ({
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    name: 'stakeIsApproved',
+    stakeShares,
+  }),
   queryFn: async ({ marketId, stakeShares }: StakeQuery) =>
     await requireVault(marketId).vault.stakeIsApproved(stakeShares),
   category: 'llamalend.supply',

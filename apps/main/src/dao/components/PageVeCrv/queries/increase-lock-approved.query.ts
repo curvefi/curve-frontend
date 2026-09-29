@@ -5,8 +5,11 @@ import type { IncreaseLockParams, IncreaseLockQuery } from './increase-lock.type
 import { increaseLockQueryValidationSuite } from './increase-lock.validation'
 
 export const { useQuery: useIncreaseLockIsApproved, fetchQuery: fetchIncreaseLockIsApproved } = queryFactory({
-  queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) =>
-    [rootKeys.userChain({ chainId, userAddress }), { name: 'boosting.isApproved', lockedAmount }] as const,
+  queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) => ({
+    ...rootKeys.userChain({ chainId, userAddress }),
+    name: 'boosting.isApproved',
+    lockedAmount,
+  }),
   queryFn: async ({ lockedAmount }: IncreaseLockQuery) =>
     await requireLib('curveApi').boosting.isApproved(lockedAmount),
   category: 'dao.user',

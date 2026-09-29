@@ -6,11 +6,12 @@ import { type CollateralHealthParams, type CollateralHealthQuery } from '../vali
 import { collateralHealthValidationSuite } from '../validation/manage-loan.validation'
 
 export const { getQueryOptions: getRemoveCollateralHealthOptions } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral, isFull }: CollateralHealthParams) =>
-    [
-      rootKeys.userMarket({ chainId, marketId, userAddress }),
-      { name: 'removeCollateralHealth', userCollateral, isFull },
-    ] as const,
+  queryKey: ({ chainId, marketId, userAddress, userCollateral, isFull }: CollateralHealthParams) => ({
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    name: 'removeCollateralHealth',
+    userCollateral,
+    isFull,
+  }),
   queryFn: async ({ marketId, userCollateral, isFull }: CollateralHealthQuery) =>
     (await getLoanImplementation(marketId).removeCollateralHealth(userCollateral, isFull)) as Decimal,
   category: 'llamalend.removeCollateral',

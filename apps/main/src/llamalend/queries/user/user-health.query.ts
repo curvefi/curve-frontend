@@ -37,8 +37,11 @@ export const {
   getQueryOptions: getUserHealthOptions,
   queryKey: getUserHealthKey,
 } = queryFactory({
-  queryKey: ({ isFull, ...params }: UserHealthParams) =>
-    [rootKeys.userMarket(params), { name: 'userHealth', isFull }] as const,
+  queryKey: ({ isFull, ...params }: UserHealthParams) => ({
+    ...rootKeys.userMarket(params),
+    name: 'userHealth',
+    isFull,
+  }),
   queryFn: async ({ marketId, userAddress, isFull }: UserHealthQuery) =>
     (await getUserPositionImplementation(marketId).userHealth(isFull, userAddress)) as Decimal,
   category: 'llamalend.user',

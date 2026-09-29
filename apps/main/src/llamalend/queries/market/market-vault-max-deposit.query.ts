@@ -7,7 +7,7 @@ import { getLendVault } from './market.query-helpers'
 
 /** Queries the current maximum deposit allowed by the vault. */
 export const { useQuery: useMarketVaultMaxDeposit } = queryFactory({
-  queryKey: (params: MarketParams) => [rootKeys.market(params), { name: 'maxDeposit', version: 'v1' }] as const,
+  queryKey: (params: MarketParams) => ({ ...rootKeys.market(params), name: 'maxDeposit', version: 1 }),
   queryFn: async ({ marketId }: MarketQuery) => (await getLendVault(marketId).maxDeposit()) as Decimal,
   category: 'llamalend.supply',
   validationSuite: marketIdValidationSuite,

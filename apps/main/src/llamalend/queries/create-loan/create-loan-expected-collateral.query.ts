@@ -56,20 +56,17 @@ export const {
     leverageEnabled,
     maxDebt,
     routeId,
-  }: CreateLoanDebtParams) =>
-    [
-      rootKeys.market({ chainId, marketId }),
-      {
-        name: 'createLoanExpectedCollateral',
-        userCollateral,
-        userBorrowed,
-        debt,
-        slippage,
-        leverageEnabled,
-        maxDebt,
-        routeId,
-      },
-    ] as const,
+  }: CreateLoanDebtParams) => ({
+    ...rootKeys.market({ chainId, marketId }),
+    name: 'createLoanExpectedCollateral',
+    userCollateral,
+    userBorrowed,
+    debt,
+    slippage,
+    leverageEnabled,
+    maxDebt,
+    routeId,
+  }),
   queryFn: async ({
     marketId,
     userBorrowed = '0',

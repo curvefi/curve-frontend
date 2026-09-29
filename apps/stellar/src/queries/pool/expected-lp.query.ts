@@ -14,18 +14,15 @@ export const {
   invalidate: invalidateExpectedLp,
   fetchQuery: fetchExpectedLp,
 } = queryFactory({
-  queryKey: ({ network, pool, amounts, decimals, supply, isDeposit, maxAmounts }: ExpectedLpParams) =>
-    [
-      rootKeys.pool({ network, pool }),
-      {
-        name: 'calc_token_amount',
-        amounts,
-        decimals,
-        supply,
-        isDeposit,
-        maxAmounts: isDeposit ? undefined : maxAmounts,
-      },
-    ] as const,
+  queryKey: ({ network, pool, amounts, decimals, supply, isDeposit, maxAmounts }: ExpectedLpParams) => ({
+    ...rootKeys.pool({ network, pool }),
+    name: 'calc_token_amount',
+    amounts,
+    decimals,
+    supply,
+    isDeposit,
+    maxAmounts: isDeposit ? undefined : maxAmounts,
+  }),
   queryFn: async ({ network, pool, amounts, decimals, isDeposit }: ExpectedLpQuery) =>
     fromWei(
       await readContract<bigint>(network, pool, 'calc_token_amount', [

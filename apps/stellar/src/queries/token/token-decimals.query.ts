@@ -8,7 +8,7 @@ export const {
   getQueryOptions: getTokenDecimalsQueryOptions,
   fetchQuery: fetchTokenDecimals,
 } = queryFactory({
-  queryKey: ({ network, token }: TokenParams) => [rootKeys.token({ network, token }), { name: 'decimals' }] as const,
+  queryKey: ({ network, token }: TokenParams) => ({ ...rootKeys.token({ network, token }), name: 'decimals' }),
   queryFn: ({ network, token }: TokenQuery) => readContract<number>(network, token, 'decimals'),
   category: 'dex.poolParams',
   validationSuite: tokenValidationSuite,

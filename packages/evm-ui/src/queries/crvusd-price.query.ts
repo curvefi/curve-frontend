@@ -13,7 +13,7 @@ type CrvUsdPriceParams = FieldsOf<CrvUsdPriceQuery>
 
 export const { useQuery: useCrvUsdPriceHistory } = queryFactory({
   category: 'analytics.chart',
-  queryKey: ({ days }: CrvUsdPriceParams) => [{ name: 'crvusd-price', version: 'v2', days }] as const,
+  queryKey: ({ days }: CrvUsdPriceParams) => ({ name: 'crvusd-price', version: 2, days }),
   queryFn: ({ days }: CrvUsdPriceQuery) =>
     fetchChunkedTimeSeries({
       range: getTimeRange(days),
