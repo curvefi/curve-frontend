@@ -63,7 +63,7 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled}
-        label={[isApproved?.data === false && t`Approve`, t`Deposit`]}
+        label={[isApproved.data === false && t`Approve`, t`Deposit`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
         connectWalletTestId="form-market-page"
       >

@@ -17,7 +17,7 @@ export const { useQuery: useCreateLoanControllerApproval, fetchQuery: fetchCreat
       ] as const,
     queryFn: async ({ marketId, userAddress, leverageEnabled }: LeverageQuery) => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
-      return type === 'zapV2' ? await impl.isControllerApproved(userAddress) : true
+      return type !== 'zapV2' || (await impl.isControllerApproved(userAddress))
     },
     category: 'llamalend.user',
     validationSuite: userMarketValidationSuite,

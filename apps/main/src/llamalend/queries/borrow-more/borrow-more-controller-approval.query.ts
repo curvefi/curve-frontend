@@ -17,7 +17,7 @@ export const { useQuery: useBorrowMoreControllerApproval, fetchQuery: fetchBorro
       ] as const,
     queryFn: async ({ marketId, userAddress, leverageEnabled }: LeverageQuery) => {
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
-      return type === 'zapV2' ? await impl.isControllerApproved(userAddress) : true
+      return type !== 'zapV2' || (await impl.isControllerApproved(userAddress))
     },
     category: 'llamalend.user',
     validationSuite: userMarketValidationSuite,

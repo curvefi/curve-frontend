@@ -169,7 +169,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
-        label={[(isControllerApproved?.data === false || isApproved?.data === false) && t`Approve`, t`Borrow`]}
+        label={[[isControllerApproved.data, isApproved.data].includes(false) && t`Approve`, t`Borrow`]}
         testId="create-loan-submit-button"
         connectWalletTestId="form-market-page"
       >

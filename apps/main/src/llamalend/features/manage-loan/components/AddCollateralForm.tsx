@@ -78,7 +78,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         pending={isPending}
         loading={!marketId}
         disabled={isDisabled}
-        label={[isApproved?.data === false && t`Approve`, t`Add collateral`]}
+        label={[isApproved.data === false && t`Approve`, t`Add collateral`]}
         testId="add-collateral-submit-button"
       />
     </Form>

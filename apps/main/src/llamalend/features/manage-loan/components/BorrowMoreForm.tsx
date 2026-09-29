@@ -162,7 +162,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
         label={[
-          (isControllerApproved?.data === false || isApproved?.data === false) && t`Approve`,
+          [isControllerApproved.data, isApproved.data].includes(false) && t`Approve`,
           Number(values.userCollateral) && t`Add`,
           t`Borrow More`,
         ]}

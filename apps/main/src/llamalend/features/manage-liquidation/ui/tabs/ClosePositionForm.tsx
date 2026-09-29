@@ -79,7 +79,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         pending={isPending}
         disabled={isDisabled}
         label={[
-          isApproved?.data === false && t`Approve`,
+          isApproved.data === false && t`Approve`,
           hasBadDebt ? t`Repay bad debt` : t`Repay debt`,
           !hasBadDebt && t`Recover collateral`,
         ]}

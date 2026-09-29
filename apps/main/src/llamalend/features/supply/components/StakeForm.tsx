@@ -70,7 +70,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled}
-        label={[isApproved?.data === false && t`Approve`, t`Stake`]}
+        label={[isApproved.data === false && t`Approve`, t`Stake`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
       >
         {hasGauge ? disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm> : <AlertNoGauge />}

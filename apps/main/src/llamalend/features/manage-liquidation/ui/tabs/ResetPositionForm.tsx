@@ -77,7 +77,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled}
-        label={[isApproved?.data === false && t`Approve`, t`Reset position`]}
+        label={[isApproved.data === false && t`Approve`, t`Reset position`]}
         testId="reset-position-submit-button"
       />
 

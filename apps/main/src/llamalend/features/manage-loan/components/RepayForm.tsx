@@ -201,7 +201,7 @@ export const RepayForm = <ChainId extends IChainId>({
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, isRepayLeveraged(values))}
         label={[
-          (isControllerApproved?.data === false || isApproved?.data === false) && t`Approve`,
+          [isControllerApproved.data, isApproved.data].includes(false) && t`Approve`,
           notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
           isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
         ]}
