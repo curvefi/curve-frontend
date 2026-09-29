@@ -27,7 +27,6 @@ export function useControllerDelegation<T extends FieldValues>({
       gas: q(useControllerApprovalEstimateGas({ chainId, marketId, userAddress }, isOpen)),
       onClose: closeModal,
       onConfirm: async () => {
-        if (!isOpen) return
         await handleFormSubmit(onSubmit)()
         closeModal()
       },
