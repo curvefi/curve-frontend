@@ -111,8 +111,7 @@ export function RepayLoanInfoList({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
-      // Gas estimation reverts if ZapV2 controller delegation is false
-      gas={q(useRepayEstimateGas(params, isOpen && isControllerApproved === true))}
+      gas={q(useRepayEstimateGas({ ...params, isControllerApproved }, isOpen))}
       health={q(useHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={prices}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}

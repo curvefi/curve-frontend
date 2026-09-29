@@ -25,7 +25,7 @@ import { LEVERAGE, LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
 import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
-import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
+import { createLoanFormValidationSuite } from '../../../queries/validation/borrow.validation'
 import { useMarketContext } from '../../market-context'
 import { type CreateLoanForm } from '../types'
 import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
@@ -59,16 +59,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   } = useMarketContext<ChainId>()
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
-  const validation = useMemo(
-    () =>
-      createLoanQueryValidationSuite({
-        debtRequired: true,
-        skipMarketValidation: true,
-        collateralRequired: true,
-        market,
-      }),
-    [market],
-  )
+  const validation = useMemo(() => createLoanFormValidationSuite(marketId), [marketId])
   const userDefaultValues = useMemo(
     () =>
       ({
@@ -229,7 +220,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         await invalidateCreateLoanRouteQueries(route, params)
       },
       getRouteGasOptions: (routeId: string | undefined) =>
-        getCreateLoanEstimateGasOptions({ ...params, routeId }, isControllerApproved.data === true),
+        getCreateLoanEstimateGasOptions({ ...params, routeId, isControllerApproved: isControllerApproved.data }),
       networks,
       zapAddress,
       providers: leverageProviders,

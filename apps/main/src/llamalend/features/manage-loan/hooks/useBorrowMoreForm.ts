@@ -232,7 +232,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
         await invalidateBorrowMoreRouteQueries(route, params)
       },
       getRouteGasOptions: (routeId: string | undefined) =>
-        getBorrowMoreGasEstimateQueryOptions({ ...params, routeId }, isControllerApproved.data === true),
+        getBorrowMoreGasEstimateQueryOptions({ ...params, routeId, isControllerApproved: isControllerApproved.data }),
       networks,
       zapAddress,
       providers: leverageProviders,

@@ -51,8 +51,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
-      // Gas estimation reverts if ZapV2 controller delegation is false
-      gas={q(useBorrowMoreEstimateGas(params, isOpen && isControllerApproved === true))}
+      gas={q(useBorrowMoreEstimateGas({ ...params, isControllerApproved }, isOpen))}
       health={q(useBorrowMoreHealth(params, isOpen))}
       prices={q(useBorrowMorePrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}

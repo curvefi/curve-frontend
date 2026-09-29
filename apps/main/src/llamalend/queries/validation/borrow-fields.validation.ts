@@ -71,6 +71,17 @@ export const validateLeverageEnabled = (leverageEnabled: boolean | Nullish, { re
   })
 }
 
+export const validateControllerApproval = (
+  isControllerApproved: boolean | Nullish,
+  { required }: { required: boolean },
+) => {
+  skipWhen(!required, () => {
+    test('isControllerApproved', 'Controller approval is required for gas estimation', () => {
+      enforce(isControllerApproved).equals(true)
+    })
+  })
+}
+
 export const validateLeverageSupported = (
   marketId: MarketTemplate | string | Nullish,
   { required }: { required: boolean },

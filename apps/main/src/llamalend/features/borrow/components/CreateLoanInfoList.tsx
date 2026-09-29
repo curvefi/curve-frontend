@@ -47,8 +47,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       loanToValue={q(useLoanToValue({ params, collateralToken, borrowToken }, isOpen))}
       prevLoanToValue={constQ('0')}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
-      // Gas estimation reverts if ZapV2 controller delegation is false
-      gas={q(useCreateLoanEstimateGas(params, isOpen && isControllerApproved === true))}
+      gas={q(useCreateLoanEstimateGas({ ...params, isControllerApproved }, isOpen))}
       leverageEnabled={leverageEnabled}
       prevCollateral={constQ('0')}
       debt={constQ(debt)}
