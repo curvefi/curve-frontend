@@ -21,7 +21,7 @@ export function useControllerDelegation<T extends FieldValues>({
 }) {
   const [isOpen, openModal, closeModal] = useSwitch(false)
   return {
-    onSubmit: (values: T) => (approval.data ? onSubmit(values) : openModal()),
+    onSubmit: (values: T) => (approval.data ? void onSubmit(values) : openModal()),
     modal: {
       open: isOpen,
       gas: q(useControllerApprovalEstimateGas({ chainId, marketId, userAddress }, isOpen)),
