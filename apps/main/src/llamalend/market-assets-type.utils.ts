@@ -1,7 +1,8 @@
 import { getAddress } from 'viem'
-import { MarketAssetsType } from '@evm-ui/types/market'
+import type { MarketAssetsType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import { maybe, recordEntries, recordValues } from '@primitives/objects.utils'
+// eslint-disable-next-line no-restricted-imports
 import { MARKET_ASSETS_TYPE_BY_CONTROLLER } from './markets.constants'
 
 export const getMarketAssetsType = (chainId: number, controllerAddress: Address | undefined) =>

@@ -1,7 +1,7 @@
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { ExtraIncentive } from '@evm-ui/types/market'
-import { formatCappedRatePercent, MAINNET_CRV } from '@evm-ui/utils'
+import { MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Nullish } from '@primitives/objects.utils'
 import {
@@ -12,7 +12,7 @@ import {
   TooltipWrapper,
 } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
-import { COMPOUNDING_CATEGORIES } from '@ui/lib/rates.utils'
+import { COMPOUNDING_CATEGORIES, formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 type SupplyBoostType = 'market' | 'user'

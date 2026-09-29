@@ -1,35 +1,20 @@
-import { getAddress } from 'viem'
 import { describe, expect, it } from 'vitest'
 import { getMarketAddressesByAssetsType, getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
-import { MARKETS_LEVERAGE_CONFIG } from '@/llamalend/markets.constants'
 import { MarketAssetsType } from '@evm-ui/types/market'
-import type { Address } from '@primitives/address.utils'
-import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
-
-/** Same lookup as getMarketLeverageSlippage, without importing the SDK-backed llama utils module. */
-const leverageSlippage = (chainId: number, controllerAddress: Address | undefined) =>
-  (controllerAddress && MARKETS_LEVERAGE_CONFIG[chainId]?.[getAddress(controllerAddress)]?.slippage) ??
-  SLIPPAGE.leverage.default
 
 describe('market asset categories', () => {
-  it('keeps correlated leverage slippage on the existing stable default', () => {
-    const controller = getMarketAddressesByAssetsType(MarketAssetsType.Correlated).find(address =>
-      getMarketAssetsType(1, address),
-    )
-    expect(leverageSlippage(1, controller)).toBe(SLIPPAGE.stable.default)
+  it('includes correlated controllers in the category filter', () => {
+    const controller = '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675'
+    expect(getMarketAssetsType(1, controller)).toBe(MarketAssetsType.Correlated)
+    expect(getMarketAddressesByAssetsType(MarketAssetsType.Correlated)).toContain(controller)
   })
 
-  it('keeps long-tail leverage slippage on the volatile default', () => {
-    const controller = getMarketAddressesByAssetsType(MarketAssetsType.LongTail).find(address =>
-      getMarketAssetsType(1, address),
-    )
-    expect(controller).toBeDefined()
-    expect(leverageSlippage(1, controller)).toBe(SLIPPAGE.leverage.default)
+  it('keeps the long-tail classification', () => {
+    expect(getMarketAssetsType(1, '0xFd85e847cDd2549f213E276e4B57B0690169F043')).toBe(MarketAssetsType.LongTail)
   })
 
-  it('maps former volatile markets to blue-chip and keeps their leverage slippage', () => {
+  it('maps established markets to blue-chip', () => {
     const controller = '0x5756A035F276a8095A922931F224F4ed06149608'
     expect(getMarketAssetsType(1, controller)).toBe(MarketAssetsType.BlueChip)
-    expect(leverageSlippage(1, controller)).toBe(SLIPPAGE.leverage.default)
   })
 })

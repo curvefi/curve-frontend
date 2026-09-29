@@ -1,14 +1,11 @@
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
-import {
-  preserveVisibilityChoices,
-  useVisibilitySettings,
-} from '@evm-ui/shared/ui/DataTable/hooks/useVisibilitySettings'
 import { MarketRateType } from '@evm-ui/types/market'
 import { mapRecord } from '@primitives/objects.utils'
 import { SortingState } from '@tanstack/react-table'
 import type { MigrationOptions } from '@ui/features/storage/useStoredState'
+import { preserveVisibilityChoices, useVisibilitySettings } from '@ui/features/tables/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'

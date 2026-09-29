@@ -1,5 +1,4 @@
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { formatCappedRatePercent } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -8,6 +7,7 @@ import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action
 import { mapQuery, DISABLED_Q, type QueryProp } from '@ui/features/queries/util'
 import { useShowNetRate } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
+import { formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { formatAmount, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
