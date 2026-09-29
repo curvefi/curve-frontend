@@ -31,8 +31,8 @@ const fetchFutureRates = async (marketId: string, reserves: Decimal, debtDelta: 
 /** Calculates future borrow/lend rates when debt changes (e.g., borrowing more or repaying) - used for borrow operations */
 export const { useQuery: useMarketFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, debtDelta }: BorrowFutureApyParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'futureRates',
+    ...rootKeys.market({ chainId, marketId }),
     debtDelta,
   }),
   queryFn: async ({ marketId, debtDelta }: BorrowApyQuery) => await fetchFutureRates(marketId, RESERVES, debtDelta),
@@ -50,8 +50,8 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
 /** Calculates future borrow/lend rates when reserves change (e.g., depositing or withdrawing) - used for supply operations */
 export const { useQuery: useMarketSupplyFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, reserves }: SupplyFutureApyParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'futureRates',
+    ...rootKeys.market({ chainId, marketId }),
     reserves,
   }),
   queryFn: async ({ marketId, reserves }: SupplyApyQuery) => await fetchFutureRates(marketId, reserves, DEBT),

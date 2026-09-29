@@ -15,9 +15,9 @@ export const {
   invalidate: invalidateTokenBalance,
 } = queryFactory({
   queryKey: ({ network, token, account, decimals }: BalanceParams) => ({
+    name: 'balance',
     ...rootKeys.token({ network, token }),
     ...rootKeys.user({ account }),
-    name: 'balance',
     decimals,
   }),
   queryFn: async ({ network, token, account, decimals }: BalanceQuery) =>

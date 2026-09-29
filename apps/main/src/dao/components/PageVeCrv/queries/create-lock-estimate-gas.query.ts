@@ -8,8 +8,8 @@ import { createLockApprovalQueryValidationSuite, createLockQueryValidationSuite 
 
 const { useQuery: useCreateLockApproveEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount }: CreateLockParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'boosting.estimateGas.approve',
+    ...rootKeys.userChain({ chainId, userAddress }),
     lockedAmount,
   }),
   queryFn: async ({ lockedAmount }: CreateLockQuery) =>
@@ -20,8 +20,8 @@ const { useQuery: useCreateLockApproveEstimateGas } = queryFactory({
 
 const { useQuery: useCreateLockEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount, days }: CreateLockParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'boosting.estimateGas.createLock',
+    ...rootKeys.userChain({ chainId, userAddress }),
     lockedAmount,
     days,
   }),

@@ -7,8 +7,8 @@ import { collateralHealthValidationSuite } from '../validation/manage-loan.valid
 
 export const { getQueryOptions: getAddCollateralHealthOptions } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral, isFull }: CollateralHealthParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'addCollateralHealth',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userCollateral,
     isFull,
   }),

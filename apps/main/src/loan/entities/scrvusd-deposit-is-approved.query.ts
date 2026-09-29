@@ -10,8 +10,8 @@ export const {
   invalidate: invalidateScrvUsdDepositIsApproved,
 } = queryFactory({
   queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'st_crvUSD.depositIsApproved',
+    ...rootKeys.userChain({ chainId, userAddress }),
     depositAmount,
   }),
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>

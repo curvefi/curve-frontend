@@ -13,9 +13,9 @@ type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useCrvUsdSnapshots } = queryFactory({
   queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) => ({
-    ...rootKeys.contract({ contractAddress, blockchainId }),
     name: 'getSnapshots',
     version: 3,
+    ...rootKeys.contract({ contractAddress, blockchainId }),
     timeOption,
     limit,
   }),

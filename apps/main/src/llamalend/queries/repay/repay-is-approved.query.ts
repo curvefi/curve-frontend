@@ -21,8 +21,8 @@ export const {
     slippage,
     routeId,
   }: RepayParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'repayIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stateCollateral,
     userCollateral,
     userBorrowed,

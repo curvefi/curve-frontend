@@ -6,8 +6,8 @@ import { createLockApprovalQueryValidationSuite } from './create-lock.validation
 
 export const { useQuery: useCreateLockIsApproved, fetchQuery: fetchCreateLockIsApproved } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount }: CreateLockParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'boosting.isApproved',
+    ...rootKeys.userChain({ chainId, userAddress }),
     lockedAmount,
   }),
   queryFn: async ({ lockedAmount }: CreateLockQuery) => await requireLib('curveApi').boosting.isApproved(lockedAmount),

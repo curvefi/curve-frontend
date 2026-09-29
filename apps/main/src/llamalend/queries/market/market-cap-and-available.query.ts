@@ -8,9 +8,9 @@ import { IS_GETTER, USE_API } from './market.constants'
 
 export const { useQuery: useMarketCapAndAvailable } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'capAndAvailable',
     version: 1,
+    ...rootKeys.market({ chainId, marketId }),
   }),
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)

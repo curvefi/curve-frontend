@@ -25,8 +25,8 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
       userCollateral = '0',
       leverageEnabled,
     }: GasEstimateParams) => ({
-      ...rootKeys.market({ chainId, marketId }),
       name: 'estimateGas.createLoanApprove',
+      ...rootKeys.market({ chainId, marketId }),
       userBorrowed,
       userCollateral,
       leverageEnabled,
@@ -66,8 +66,8 @@ const {
     slippage,
     routeId,
   }: GasEstimateParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'estimateGas.createLoan',
+    ...rootKeys.market({ chainId, marketId }),
     userBorrowed,
     userCollateral,
     debt,

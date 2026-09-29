@@ -5,8 +5,8 @@ import { requireVault, UnstakeParams, UnstakeQuery, unstakeValidationSuite } fro
 
 const { useQuery: useUnstakeEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, unstakeShares }: UnstakeParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.unstake',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     unstakeShares,
   }),
   queryFn: async ({ marketId, unstakeShares }: UnstakeQuery) =>

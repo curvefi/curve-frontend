@@ -40,12 +40,13 @@ export const {
     editedSide,
     maxOutput,
   }: SwapQuoteParams) => ({
-    ...rootKeys.pool({ network, pool }),
     name: 'swap-quote',
+    ...rootKeys.pool({ network, pool }),
     editedSide,
     fromIndex,
     toIndex,
     decimals,
+    // use only the key fields relevant to the side being quoted
     inputAmount: editedSide === 'pay' ? inputAmount : undefined,
     outputAmount: editedSide === 'receive' ? outputAmount : undefined,
     maxOutput: editedSide === 'receive' ? maxOutput : undefined,

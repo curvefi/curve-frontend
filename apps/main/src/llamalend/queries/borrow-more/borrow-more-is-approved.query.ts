@@ -18,8 +18,8 @@ export const {
     leverageEnabled,
     routeId,
   }: BorrowMoreParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'borrowMoreIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userCollateral,
     userBorrowed,
     leverageEnabled,

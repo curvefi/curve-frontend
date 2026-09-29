@@ -6,8 +6,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useCloseLoanIsApproved, fetchQuery: fetchCloseIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'selfLiquidateIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
   }),
   queryFn: async ({ marketId }: UserMarketQuery<IChainId>): Promise<boolean> =>
     await getLoanImplementation(marketId).selfLiquidateIsApproved(),

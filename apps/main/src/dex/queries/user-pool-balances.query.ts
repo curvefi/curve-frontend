@@ -5,8 +5,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useUserPoolBalancesQuery, invalidate: invalidateUserPoolBalancesQuery } = queryFactory({
   queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) => ({
-    ...rootKeys.userPool({ chainId, poolId, userAddress }),
     name: 'userBalances',
+    ...rootKeys.userPool({ chainId, poolId, userAddress }),
   }),
   category: 'dex.user',
   queryFn: async ({ poolId, userAddress }: UserPoolQuery) =>

@@ -12,8 +12,8 @@ import { leverageCollateralValidationSuite } from '../validation/manage-loan.val
  */
 export const { useQuery: useRemoveCollateralFutureLeverage } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'removeCollateralFutureLeverage',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userCollateral,
   }),
   queryFn: async ({ marketId, userAddress, userCollateral }: CollateralQuery) =>

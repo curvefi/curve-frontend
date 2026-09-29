@@ -11,10 +11,10 @@ export const { useQuery: useUserLendCollateralEventsQuery, invalidate: invalidat
   queryFactory({
     queryKey: ({ blockchainId, userAddress, contractAddress }: UserLendCollateralEventsParams) => ({
       name: 'userLendCollateralEvents',
+      version: 1,
       blockchainId,
       userAddress,
       contractAddress,
-      version: 1,
     }),
     queryFn: ({
       blockchainId,

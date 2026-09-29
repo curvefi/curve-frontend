@@ -36,8 +36,8 @@ const emptyStakeForm = (): StakeForm => ({
 
 const { useQuery: useStakeAssetsToShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'stake.assetsToShares',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     assets,
   }),
   queryFn: async ({ marketId, assets }: AssetsToSharesQuery) =>

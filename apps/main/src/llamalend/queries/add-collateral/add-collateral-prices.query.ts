@@ -8,8 +8,8 @@ import { collateralValidationSuite } from '../validation/manage-loan.validation'
 
 export const { useQuery: useAddCollateralPrices } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'addCollateralPrices',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userCollateral,
   }),
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>

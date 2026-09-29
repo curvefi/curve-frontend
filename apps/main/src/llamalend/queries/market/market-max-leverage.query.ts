@@ -14,8 +14,8 @@ type MaxLeverageParams = FieldsOf<MaxLeverageQuery>
 
 export const { useQuery: useMarketMaxLeverage } = queryFactory({
   queryKey: ({ chainId, marketId, range }: MaxLeverageParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'maxLeverage',
+    ...rootKeys.market({ chainId, marketId }),
     range,
   }),
   queryFn: async ({ marketId, range }: MaxLeverageQuery): Promise<Decimal> => {

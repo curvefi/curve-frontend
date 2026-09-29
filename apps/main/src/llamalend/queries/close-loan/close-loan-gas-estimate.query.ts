@@ -9,8 +9,8 @@ import { closeLoanValidationSuite } from '../validation/manage-loan.validation'
 
 const { useQuery: useCloseLoanEstimateGas } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, slippage }: CloseLoanParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.selfLiquidate',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     slippage,
   }),
   queryFn: async ({ marketId, slippage }: CloseLoanQuery): Promise<TGas> =>
@@ -21,8 +21,8 @@ const { useQuery: useCloseLoanEstimateGas } = queryFactory({
 
 const { useQuery: useCloseApproveGasEstimate } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: CloseLoanParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.selfLiquidateApprove',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
   }),
   queryFn: async ({ marketId }: UserMarketQuery): Promise<TGas> =>
     await getLoanImplementation(marketId).estimateGas.selfLiquidateApprove(),

@@ -52,9 +52,9 @@ const {
 } = queryFactory({
   queryKey: ({ userAddress, blockchainId }: UserChainNameParams) => ({
     name: 'user-lending-vaults',
+    version: 3,
     blockchainId,
     userAddress,
-    version: 3,
   }),
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
     (
@@ -74,10 +74,10 @@ const {
   reset: resetUserLendingVaultStats,
 } = queryFactory({
   queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) => ({
-    ...rootKeys.contract({ blockchainId, contractAddress }),
-    ...rootKeys.user({ userAddress }),
     name: 'getUserMarketStats',
     version: 1,
+    ...rootKeys.contract({ blockchainId, contractAddress }),
+    ...rootKeys.user({ userAddress }),
   }),
   queryFn: async ({ userAddress, contractAddress, blockchainId }: UserContractQuery): Promise<UserMarketStats> =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
@@ -121,9 +121,9 @@ const {
 } = queryFactory({
   queryKey: ({ userAddress, blockchainId }: UserChainNameParams) => ({
     name: 'user-lending-supplies',
+    version: 6,
     blockchainId,
     userAddress,
-    version: 6,
   }),
   category: 'llamalend.user',
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<UserLendingSupplies> => {

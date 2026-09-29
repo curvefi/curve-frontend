@@ -7,8 +7,8 @@ import { scrvUsdWithdrawMaxValidationSuite } from './scrvusd.validation'
 
 const { useQuery: useScrvUsdWithdrawEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, userAddress, withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'st_crvUSD.estimateGas.withdraw',
+    ...rootKeys.userChain({ chainId, userAddress }),
     withdrawAmount,
     isFull,
     maxWithdrawAmount,

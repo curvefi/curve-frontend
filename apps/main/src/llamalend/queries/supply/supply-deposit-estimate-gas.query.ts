@@ -6,8 +6,8 @@ import { useDepositIsApproved } from './supply-deposit-approved.query'
 
 const { useQuery: useDepositApproveEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.depositApprove',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     depositAmount,
   }),
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
@@ -18,8 +18,8 @@ const { useQuery: useDepositApproveEstimateGasQuery } = queryFactory({
 
 const { useQuery: useDepositEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.deposit',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     depositAmount,
   }),
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>

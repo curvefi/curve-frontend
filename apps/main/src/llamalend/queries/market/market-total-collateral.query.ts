@@ -8,8 +8,8 @@ import { IS_GETTER, USE_API } from './market.constants'
 
 export const { useQuery: useMarketTotalCollateral } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'totalCollateral',
+    ...rootKeys.market({ chainId, marketId }),
   }),
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)

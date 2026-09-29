@@ -15,8 +15,8 @@ export const {
   fetchQuery: fetchExpectedLp,
 } = queryFactory({
   queryKey: ({ network, pool, amounts, decimals, supply, isDeposit, maxAmounts }: ExpectedLpParams) => ({
-    ...rootKeys.pool({ network, pool }),
     name: 'calc_token_amount',
+    ...rootKeys.pool({ network, pool }),
     amounts,
     decimals,
     supply,

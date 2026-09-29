@@ -6,8 +6,8 @@ import { increaseLockQueryValidationSuite } from './increase-lock.validation'
 
 export const { useQuery: useIncreaseLockIsApproved, fetchQuery: fetchIncreaseLockIsApproved } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'boosting.isApproved',
+    ...rootKeys.userChain({ chainId, userAddress }),
     lockedAmount,
   }),
   queryFn: async ({ lockedAmount }: IncreaseLockQuery) =>

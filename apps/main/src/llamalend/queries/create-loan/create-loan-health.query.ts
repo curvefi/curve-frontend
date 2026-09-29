@@ -22,8 +22,8 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
     maxDebt,
     routeId,
   }: CreateLoanDebtParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'createLoanHealth',
+    ...rootKeys.market({ chainId, marketId }),
     userCollateral,
     userBorrowed,
     debt,

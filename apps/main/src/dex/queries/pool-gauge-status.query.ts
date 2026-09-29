@@ -10,7 +10,7 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 
 const { useQuery: usePoolGaugeStatusQuery, invalidate: invalidatePoolGaugeStatus } = queryFactory({
   category: 'dex.gauge',
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ ...rootKeys.gauge({ chainId, poolId }), name: 'status' }),
+  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'status', ...rootKeys.gauge({ chainId, poolId }) }),
   queryFn: async ({ poolId }: PoolQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     const [gaugeStatusResult, isGaugeKilledResult] = await Promise.allSettled([

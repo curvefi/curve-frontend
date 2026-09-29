@@ -5,8 +5,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useMarketOraclePriceBand, queryKey: getMarketOraclePriceBandKey } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'oraclePriceBand',
+    ...rootKeys.market({ chainId, marketId }),
   }),
   queryFn: ({ marketId }: MarketQuery): Promise<number> => getPricesImplementation(marketId).oraclePriceBand(),
   category: 'llamalend.market',

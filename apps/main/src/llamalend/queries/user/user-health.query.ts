@@ -38,8 +38,8 @@ export const {
   queryKey: getUserHealthKey,
 } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, isFull }: UserHealthParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'userHealth',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     isFull,
   }),
   queryFn: async ({ marketId, userAddress, isFull }: UserHealthQuery) =>

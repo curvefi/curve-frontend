@@ -8,9 +8,9 @@ import { requireVault } from '../validation/supply.validation'
 
 export const { useQuery: useUserSupplyBoost } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'userBoost',
     version: 1,
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
   }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery): Promise<Decimal> => {
     const { addresses, userPosition } = requireVault(marketId)

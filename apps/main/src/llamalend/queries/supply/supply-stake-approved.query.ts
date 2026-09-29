@@ -4,8 +4,8 @@ import { StakeParams, StakeQuery, stakeValidationSuite, requireVault } from '../
 
 export const { useQuery: useStakeIsApproved, fetchQuery: fetchStakeIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'stakeIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stakeShares,
   }),
   queryFn: async ({ marketId, stakeShares }: StakeQuery) =>

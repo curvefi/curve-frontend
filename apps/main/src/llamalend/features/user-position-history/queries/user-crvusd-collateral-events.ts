@@ -7,10 +7,10 @@ export const { useQuery: useUserCrvUsdCollateralEventsQuery, invalidate: invalid
   queryFactory({
     queryKey: ({ blockchainId, userAddress, contractAddress }: UserContractParams) => ({
       name: 'userCrvUsdCollateralEvents',
+      version: 1,
       blockchainId,
       userAddress,
       contractAddress,
-      version: 1,
     }),
     queryFn: ({ blockchainId, contractAddress, userAddress }: UserContractQuery): Promise<UserCollateralEvents> =>
       getUserMarketCollateralEvents(userAddress, blockchainId, contractAddress),

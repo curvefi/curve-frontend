@@ -25,8 +25,8 @@ const lockerVecrvValidationSuite = createValidationSuite(({ chainId, userAddress
 
 const { useQuery: useLockerCrv, invalidate: invalidateLockerCrv } = queryFactory({
   queryKey: ({ chainId, userAddress }: LockerVecrvParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'boosting.getCrv',
+    ...rootKeys.userChain({ chainId, userAddress }),
   }),
   queryFn: async ({ userAddress }: LockerVecrvQuery) =>
     (await requireLib('curveApi').boosting.getCrv([userAddress])) as Decimal,
@@ -37,8 +37,8 @@ const { useQuery: useLockerCrv, invalidate: invalidateLockerCrv } = queryFactory
 const { useQuery: useLockerLockedAmountAndUnlockTime, invalidate: invalidateLockerLockedAmountAndUnlockTime } =
   queryFactory({
     queryKey: ({ chainId, userAddress }: LockerVecrvParams) => ({
-      ...rootKeys.userChain({ chainId, userAddress }),
       name: 'boosting.getLockedAmountAndUnlockTime',
+      ...rootKeys.userChain({ chainId, userAddress }),
     }),
     queryFn: async ({ userAddress }: LockerVecrvQuery) =>
       (await requireLib('curveApi').boosting.getLockedAmountAndUnlockTime([userAddress])) as LockedAmountAndUnlockTime,
@@ -48,8 +48,8 @@ const { useQuery: useLockerLockedAmountAndUnlockTime, invalidate: invalidateLock
 
 const { useQuery: useLockerVeCrv, invalidate: invalidateLockerVeCrv } = queryFactory({
   queryKey: ({ chainId, userAddress }: LockerVecrvParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'boosting.getVeCrv',
+    ...rootKeys.userChain({ chainId, userAddress }),
   }),
   queryFn: async ({ userAddress }: LockerVecrvQuery) =>
     (await requireLib('curveApi').boosting.getVeCrv([userAddress])) as Decimal,

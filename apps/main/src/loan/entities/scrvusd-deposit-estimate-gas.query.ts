@@ -8,8 +8,8 @@ import { scrvUsdDepositMaxValidationSuite } from './scrvusd.validation'
 
 const { useQuery: useScrvUsdDepositApproveEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'st_crvUSD.estimateGas.depositApprove',
+    ...rootKeys.userChain({ chainId, userAddress }),
     depositAmount,
   }),
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
@@ -20,8 +20,8 @@ const { useQuery: useScrvUsdDepositApproveEstimateGas } = queryFactory({
 
 const { useQuery: useScrvUsdDepositEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'st_crvUSD.estimateGas.deposit',
+    ...rootKeys.userChain({ chainId, userAddress }),
     depositAmount,
   }),
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>

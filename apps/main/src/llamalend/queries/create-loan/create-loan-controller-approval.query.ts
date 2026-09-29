@@ -10,8 +10,8 @@ type LeverageQuery = UserMarketQuery & { leverageEnabled: boolean }
 export const { useQuery: useCreateLoanControllerApproval, fetchQuery: fetchCreateLoanControllerApproval } =
   queryFactory({
     queryKey: ({ chainId, marketId, userAddress, leverageEnabled = false }: LeverageParams) => ({
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       name: 'createLoanIsControllerApproved',
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       leverageEnabled,
     }),
     queryFn: async ({ marketId, userAddress, leverageEnabled }: LeverageQuery) => {

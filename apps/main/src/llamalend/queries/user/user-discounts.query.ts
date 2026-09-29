@@ -6,8 +6,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useUserDiscounts, queryKey: getUserDiscountsKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'userDiscounts',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
   }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const { loanDiscount, liquidationDiscount } =

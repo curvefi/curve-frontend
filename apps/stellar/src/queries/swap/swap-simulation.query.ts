@@ -22,8 +22,8 @@ export const {
     minimum,
     maxAmount,
   }: SwapParams) => ({
-    ...rootKeys.pool({ network, pool }),
     name: 'exchange',
+    ...rootKeys.pool({ network, pool }),
     account,
     fromIndex,
     toIndex,

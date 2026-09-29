@@ -12,8 +12,8 @@ export const {
   fetchQuery: fetchDepositSimulation,
 } = queryFactory({
   queryKey: ({ network, pool, amounts, decimals, account, minMint, supply, maxAmounts }: DepositParams) => ({
-    ...rootKeys.pool({ network, pool }),
     name: 'add_liquidity',
+    ...rootKeys.pool({ network, pool }),
     amounts,
     decimals,
     account,

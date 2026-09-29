@@ -6,8 +6,8 @@ import { scrvUsdUserValidationSuite } from './scrvusd.validation'
 
 export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUserBalances } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'st_crvUSD.userBalances',
+    ...rootKeys.userChain({ chainId, userAddress }),
   }),
   queryFn: async ({ userAddress }: UserChainQuery) => {
     const { crvUSD, st_crvUSD } = await requireLib('llamaApi').st_crvUSD.userBalances(userAddress)

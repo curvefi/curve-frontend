@@ -18,8 +18,8 @@ export const {
     userBorrowed = '0',
     leverageEnabled,
   }: CreateLoanFormQueryParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'createLoanIsApproved',
+    ...rootKeys.market({ chainId, marketId }),
     userCollateral,
     userBorrowed,
     leverageEnabled,

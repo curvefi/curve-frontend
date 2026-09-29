@@ -12,8 +12,8 @@ import { USE_API } from './market.constants'
  * */
 export const { useQuery: useMarketVaultOnChainRewards } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'vault.rewards',
+    ...rootKeys.market({ chainId, marketId }),
   }),
   queryFn: async ({ marketId }: MarketQuery) => {
     const { vault, addresses } = requireLib('llamaApi').getLendMarket(marketId)

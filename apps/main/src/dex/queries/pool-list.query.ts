@@ -26,7 +26,7 @@ type PoolListQuery = ChainQuery & PoolListRequestParams & { pageSize?: ListPools
 type PoolListParams = FieldsOf<PoolListQuery>
 
 export const getPoolListRootQueryKey = ({ chainId }: ChainParams) =>
-  [{ ...rootKeys.chain({ chainId }), name: 'listPools' }] as const
+  [{ name: 'listPools', ...rootKeys.chain({ chainId }) }] as const
 
 export const { useQuery: usePoolList } = queryFactory({
   queryKey: ({
@@ -46,8 +46,8 @@ export const { useQuery: usePoolList } = queryFactory({
     sortBy,
     sortDirection,
   }: PoolListParams) => ({
-    ...rootKeys.chain({ chainId }),
     name: 'listPools',
+    ...rootKeys.chain({ chainId }),
     page,
     pageSize,
     searchString,

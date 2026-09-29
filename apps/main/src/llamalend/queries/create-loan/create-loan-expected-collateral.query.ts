@@ -57,8 +57,8 @@ export const {
     maxDebt,
     routeId,
   }: CreateLoanDebtParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'createLoanExpectedCollateral',
+    ...rootKeys.market({ chainId, marketId }),
     userCollateral,
     userBorrowed,
     debt,

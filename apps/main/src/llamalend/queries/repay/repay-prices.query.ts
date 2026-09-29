@@ -20,8 +20,8 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
     routeId,
     isFull,
   }: RepayParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'repayPrices',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stateCollateral,
     userCollateral,
     userBorrowed,

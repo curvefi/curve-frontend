@@ -4,8 +4,8 @@ import { DepositParams, DepositQuery, depositValidationSuite, requireVault } fro
 
 export const { useQuery: useDepositIsApproved, fetchQuery: fetchDepositIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'depositIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     depositAmount,
   }),
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>

@@ -18,8 +18,8 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     slippage,
     routeId,
   }: RepayParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'repayIsFull',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stateCollateral,
     userCollateral,
     userBorrowed,

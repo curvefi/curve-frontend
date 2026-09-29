@@ -19,8 +19,8 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     slippage,
     routeId,
   }: RepayHealthParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'repayHealth',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stateCollateral,
     userCollateral,
     userBorrowed,

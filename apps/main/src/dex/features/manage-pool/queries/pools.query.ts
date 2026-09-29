@@ -9,8 +9,8 @@ import { mapQuery } from '@ui/features/queries/util'
 
 const { useQuery: useRefuelPools } = queryFactory({
   queryKey: ({ blockchainId }: ChainNameParams) => ({
-    ...rootKeys.chainName({ blockchainId }),
     name: 'getRefuelPools',
+    ...rootKeys.chainName({ blockchainId }),
   }),
   queryFn: async ({ blockchainId }: ChainNameQuery) => getRefuelPools(blockchainId),
   validationSuite: pricesApiChainValidationSuite,

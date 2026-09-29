@@ -24,8 +24,8 @@ const userBandsBalancesValidationSuite = createValidationSuite((params: UserBand
 
 export const { useQuery: useUserBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: UserBandsBalancesParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: QUERY_KEY,
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     loanExists,
     liquidationBand,
   }),

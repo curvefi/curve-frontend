@@ -20,8 +20,8 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
     maxDebt,
     routeId,
   }: CreateLoanDebtParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'createLoanPriceImpact',
+    ...rootKeys.market({ chainId, marketId }),
     userCollateral,
     userBorrowed,
     debt,

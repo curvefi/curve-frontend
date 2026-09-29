@@ -22,8 +22,8 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
     leverageEnabled,
     routeId,
   }: BorrowMoreParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'borrowMoreFutureLeverage',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userCollateral,
     userBorrowed,
     debt,

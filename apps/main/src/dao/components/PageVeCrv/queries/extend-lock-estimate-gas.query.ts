@@ -7,8 +7,8 @@ import { extendLockQueryValidationSuite } from './extend-lock.validation'
 
 const { useQuery: useExtendLockGasEstimateQuery } = queryFactory({
   queryKey: ({ chainId, userAddress, days }: ExtendLockParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'boosting.estimateGas.increaseUnlockTime',
+    ...rootKeys.userChain({ chainId, userAddress }),
     days,
   }),
   queryFn: async ({ days }: ExtendLockQuery) =>

@@ -72,8 +72,8 @@ const {
     slippage,
     router,
   }: CreateLoanMaxReceiveQueryParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'createLoanMaxRecv',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userBorrowed,
     userCollateral,
     range,

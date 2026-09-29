@@ -12,8 +12,8 @@ type RefuelDailyDonationsParams = FieldsOf<RefuelDailyDonationsQuery>
 
 export const { useQuery: useRefuelDailyRefuels } = queryFactory({
   queryKey: ({ blockchainId, poolAddress, start, end }: RefuelDailyDonationsParams) => ({
-    ...rootKeys.chainName({ blockchainId }),
     name: 'getRefuelDailyDonations',
+    ...rootKeys.chainName({ blockchainId }),
     poolAddress,
     start,
     end,

@@ -16,8 +16,8 @@ import {
  */
 export const { useQuery: useDepositExpectedVaultShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'previewDeposit',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     depositAmount,
   }),
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
@@ -31,8 +31,8 @@ export const { useQuery: useDepositExpectedVaultShares } = queryFactory({
  */
 export const { useQuery: useWithdrawRemovableVaultShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, withdrawAmount }: WithdrawParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'previewWithdraw',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     withdrawAmount,
   }),
   queryFn: async ({ marketId, withdrawAmount }: WithdrawQuery) =>

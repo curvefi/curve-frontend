@@ -23,8 +23,8 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
     slippage,
     routeId,
   }: BorrowMoreParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'borrowMoreHealth',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userCollateral,
     userBorrowed,
     debt,

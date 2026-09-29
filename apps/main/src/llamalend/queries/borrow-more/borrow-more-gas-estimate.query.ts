@@ -24,8 +24,8 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       leverageEnabled,
       routeId,
     }: GasEstimateParams) => ({
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       name: 'estimateGas.borrowMoreApprove',
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       userCollateral,
       userBorrowed,
       maxDebt,
@@ -65,8 +65,8 @@ const {
     leverageEnabled,
     routeId,
   }: GasEstimateParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.borrowMore',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userCollateral,
     userBorrowed,
     debt,

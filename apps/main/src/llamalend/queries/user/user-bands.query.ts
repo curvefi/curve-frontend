@@ -12,8 +12,8 @@ const reverseBands = ([low, high]: number[]): Range<number> => [high, low]
  */
 export const { useQuery: useUserBands, queryKey: getUserBandsKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'userBands',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
   }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     reverseBands(await getUserPositionImplementation(marketId).userBands(userAddress)),

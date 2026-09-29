@@ -23,8 +23,8 @@ import {
 
 const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
   queryKey: ({ chainId, poolId, rewardTokenId, amount, userBalance }: DepositRewardApproveParams) => ({
-    ...rootKeys.gauge({ chainId, poolId }),
     name: 'estimateGas.depositRewardApprove',
+    ...rootKeys.gauge({ chainId, poolId }),
     rewardTokenId,
     amount,
     userBalance,
@@ -39,8 +39,8 @@ const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
 
 const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
   queryKey: ({ chainId, poolId, rewardTokenId, distributorId }: AddRewardParams) => ({
-    ...rootKeys.gauge({ chainId, poolId }),
     name: 'estimateGas.addRewardToken',
+    ...rootKeys.gauge({ chainId, poolId }),
     rewardTokenId,
     distributorId,
   }),
@@ -55,8 +55,8 @@ const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
 
 const { useQuery: useEstimateGasDepositReward } = queryFactory({
   queryKey: ({ chainId, poolId, rewardTokenId, amount, epoch, userBalance }: DepositRewardParams) => ({
-    ...rootKeys.gauge({ chainId, poolId }),
     name: 'estimateGas.depositReward',
+    ...rootKeys.gauge({ chainId, poolId }),
     rewardTokenId,
     amount,
     epoch,

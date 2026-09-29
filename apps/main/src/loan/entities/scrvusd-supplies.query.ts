@@ -6,8 +6,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useScrvUsdSupplies } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ({
-    ...rootKeys.chain({ chainId }),
     name: 'st_crvUSD.totalSupplyAndCrvUSDLocked',
+    ...rootKeys.chain({ chainId }),
   }),
   queryFn: async (_: ChainQuery) => {
     const { crvUSD, st_crvUSD } = await requireLib('llamaApi').st_crvUSD.totalSupplyAndCrvUSDLocked()

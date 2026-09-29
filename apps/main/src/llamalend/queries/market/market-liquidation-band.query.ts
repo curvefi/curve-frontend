@@ -6,8 +6,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useMarketLiquidationBand } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'liquidationBand',
+    ...rootKeys.market({ chainId, marketId }),
   }),
   queryFn: async ({ marketId }: MarketQuery): Promise<number | null> => {
     const market = getMarket(marketId)

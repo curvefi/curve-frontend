@@ -10,8 +10,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useResetIsApproved, fetchQuery: fetchResetIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'resetIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userBorrowed,
   }),
   queryFn: async ({ marketId, ...params }: ResetQuery) =>

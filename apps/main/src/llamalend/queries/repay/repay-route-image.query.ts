@@ -15,8 +15,8 @@ export const { invalidate: invalidateRepayRouteImage } = queryFactory({
     slippage,
     routeId,
   }: RepayParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'repayRouteImage',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stateCollateral,
     userCollateral,
     userBorrowed,

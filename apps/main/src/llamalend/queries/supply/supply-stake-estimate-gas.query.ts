@@ -6,8 +6,8 @@ import { useStakeIsApproved } from './supply-stake-approved.query'
 
 const { useQuery: useStakeApproveEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.stakeApprove',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stakeShares,
   }),
   queryFn: async ({ marketId, stakeShares }: StakeQuery) =>
@@ -18,8 +18,8 @@ const { useQuery: useStakeApproveEstimateGasQuery } = queryFactory({
 
 const { useQuery: useStakeEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.stake',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stakeShares,
   }),
   queryFn: async ({ marketId, stakeShares }: StakeQuery) =>

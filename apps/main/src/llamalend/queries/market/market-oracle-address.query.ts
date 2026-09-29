@@ -5,8 +5,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useMarketOracleAddress } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'oracleAddress',
+    ...rootKeys.market({ chainId, marketId }),
   }),
   queryFn: ({ marketId }: MarketQuery): Promise<string> => getStatsImplementation(marketId).oracleAddress(),
   category: 'llamalend.marketParams',

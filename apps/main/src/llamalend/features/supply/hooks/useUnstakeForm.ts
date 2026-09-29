@@ -31,8 +31,8 @@ const emptyUnstakeForm = (): UnstakeForm => ({
 
 const { useQuery: useUnstakeAssetsToShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'unstake.assetsToShares',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     assets,
   }),
   queryFn: async ({ marketId, assets }: AssetsToSharesQuery) =>

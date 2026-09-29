@@ -21,8 +21,8 @@ export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePr
     slippage,
     routeId,
   }: BorrowMoreParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'borrowMorePrices',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userCollateral,
     userBorrowed,
     debt,

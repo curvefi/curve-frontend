@@ -48,9 +48,9 @@ const {
 } = queryFactory({
   queryKey: ({ userAddress, blockchainId }: UserChainNameParams) => ({
     name: 'user-mint-markets',
+    version: 2,
     blockchainId,
     userAddress,
-    version: 2,
   }),
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
     (
@@ -72,10 +72,10 @@ const {
   reset: resetUserMintMarketStats,
 } = queryFactory({
   queryKey: ({ userAddress, blockchainId, contractAddress }: UserContractParams) => ({
-    ...rootKeys.contract({ blockchainId, contractAddress }),
-    ...rootKeys.user({ userAddress }),
     name: 'getUserMarketStats',
     version: 1,
+    ...rootKeys.contract({ blockchainId, contractAddress }),
+    ...rootKeys.user({ userAddress }),
   }),
   queryFn: ({ userAddress, blockchainId, contractAddress }: UserContractQuery) =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),

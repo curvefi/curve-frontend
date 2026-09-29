@@ -20,8 +20,8 @@ const calculatePriceDropToLiquidationThreshold = (currentPrice: Decimal, [, liqu
 
 const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'userPrices',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     loanExists,
   }),
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<Range<Decimal>> =>

@@ -13,9 +13,9 @@ type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useLendingSnapshots } = queryFactory({
   queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) => ({
-    ...rootKeys.contract({ contractAddress, blockchainId }),
     name: 'lendingSnapshots',
     version: 5,
+    ...rootKeys.contract({ contractAddress, blockchainId }),
     timeOption,
     limit,
   }),

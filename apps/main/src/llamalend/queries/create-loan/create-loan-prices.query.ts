@@ -28,8 +28,8 @@ export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPr
     maxDebt,
     routeId,
   }: CreateLoanPricesReceiveParams) => ({
-    ...rootKeys.market({ chainId, marketId }),
     name: 'createLoanPrices',
+    ...rootKeys.market({ chainId, marketId }),
     userCollateral,
     userBorrowed,
     debt,

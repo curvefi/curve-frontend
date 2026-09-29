@@ -19,8 +19,8 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
     slippage,
     routeId,
   }: RepayParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'repayPriceImpact',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stateCollateral,
     userCollateral,
     userBorrowed,

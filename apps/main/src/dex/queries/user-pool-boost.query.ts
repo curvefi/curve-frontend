@@ -16,8 +16,8 @@ const userPoolBoost = async (chainId: number, pool: PoolTemplate, userAddress: A
 
 export const { useQuery: useUserPoolBoostQuery, invalidate: invalidateUserPoolBoostQuery } = queryFactory({
   queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) => ({
-    ...rootKeys.userPool({ chainId, poolId, userAddress }),
     name: 'userBoost',
+    ...rootKeys.userPool({ chainId, poolId, userAddress }),
   }),
   category: 'dex.user',
   queryFn: async ({ chainId, poolId, userAddress }: UserPoolQuery) =>

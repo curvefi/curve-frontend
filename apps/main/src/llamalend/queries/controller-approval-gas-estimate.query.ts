@@ -9,8 +9,8 @@ type Params = FieldsOf<UserMarketQuery>
 
 const { useQuery: useControllerApprovalEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: Params) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.setControllerApproval',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
   }),
   queryFn: async ({ marketId }: UserMarketQuery) =>
     await getMarket(marketId).leverageZapV2.estimateGas.setControllerApproval(),

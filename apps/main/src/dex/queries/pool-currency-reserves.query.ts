@@ -38,8 +38,8 @@ const {
 } = queryFactory({
   category: 'dex.pool',
   queryKey: ({ chainId, poolId, isWrapped, useApi }: PoolCurrencyReservesParams) => ({
-    ...rootKeys.pool({ chainId, poolId }),
     name: 'stats.currencyReserves',
+    ...rootKeys.pool({ chainId, poolId }),
     isWrapped,
     useApi,
   }),

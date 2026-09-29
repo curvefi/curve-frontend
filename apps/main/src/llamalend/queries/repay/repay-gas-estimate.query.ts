@@ -28,8 +28,8 @@ const {
     slippage,
     routeId,
   }: GasEstimateParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.repay',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stateCollateral,
     userCollateral,
     userBorrowed,
@@ -90,8 +90,8 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     slippage,
     routeId,
   }: GasEstimateParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.repayApprove',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     stateCollateral,
     userCollateral,
     userBorrowed,

@@ -18,8 +18,8 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
     slippage,
     routeId,
   }: BorrowMoreParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'borrowMorePriceImpact',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     userBorrowed,
     debt,
     maxDebt,

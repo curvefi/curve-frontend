@@ -26,8 +26,8 @@ export const {
     quote,
     slippage,
   }: WithdrawSimulationParams) => ({
-    ...rootKeys.pool({ network, pool }),
     name: 'remove_liquidity_imbalance',
+    ...rootKeys.pool({ network, pool }),
     amounts,
     decimals,
     account,

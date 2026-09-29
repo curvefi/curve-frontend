@@ -5,8 +5,8 @@ import { requireVault, WithdrawParams, WithdrawQuery, withdrawValidationSuite } 
 
 const { useQuery: useWithdrawEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, withdrawAmount, isFull, userVaultShares }: WithdrawParams) => ({
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'estimateGas.withdraw',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     withdrawAmount,
     isFull,
     userVaultShares,

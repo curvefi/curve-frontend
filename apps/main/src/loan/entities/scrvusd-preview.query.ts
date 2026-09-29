@@ -12,8 +12,8 @@ import { scrvUsdDepositValidationSuite, scrvUsdWithdrawValidationSuite } from '.
 
 export const { useQuery: useScrvUsdPreviewDeposit } = queryFactory({
   queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'st_crvUSD.previewDeposit',
+    ...rootKeys.userChain({ chainId, userAddress }),
     depositAmount,
   }),
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
@@ -24,8 +24,8 @@ export const { useQuery: useScrvUsdPreviewDeposit } = queryFactory({
 
 export const { useQuery: useScrvUsdPreviewWithdraw } = queryFactory({
   queryKey: ({ chainId, userAddress, withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'st_crvUSD.previewRedeem',
+    ...rootKeys.userChain({ chainId, userAddress }),
     withdrawAmount,
     isFull,
     maxWithdrawAmount,

@@ -7,8 +7,8 @@ import { claimFeesValidationSuite } from './claim-fees.validation'
 
 export const { useQuery: useClaimableFees, invalidate: invalidateClaimableFees } = queryFactory({
   queryKey: ({ chainId, userAddress, token }: ClaimFeesParams) => ({
-    ...rootKeys.userChain({ chainId, userAddress }),
     name: 'boosting.claimableFees',
+    ...rootKeys.userChain({ chainId, userAddress }),
     token,
   }),
   queryFn: async ({ userAddress, token }: ClaimFeesQuery): Promise<Decimal> => {
