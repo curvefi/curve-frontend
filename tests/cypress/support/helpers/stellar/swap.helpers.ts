@@ -1,4 +1,4 @@
-import { getActionValue, PARTIAL_DECIMAL_REGEX } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { getActionValue, DECIMAL_REGEX } from '@cy/support/helpers/llamalend/action-info.helpers'
 import type { PoolState } from '@cy/support/helpers/stellar/pool.helpers'
 import { API_LOAD_TIMEOUT, cyMap, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -46,8 +46,8 @@ export const readSwapAmounts = () =>
 
 export const readSwapMinimum = () =>
   getActionValue('pool-swap-minimum-received')
-    .should('match', PARTIAL_DECIMAL_REGEX)
-    .then(value => value!.match(PARTIAL_DECIMAL_REGEX)![0] as Decimal)
+    .should('match', DECIMAL_REGEX)
+    .then(value => value!.match(DECIMAL_REGEX)![0] as Decimal)
 
 export const checkSwapDetails = (
   { inputAmount, outputAmount }: { inputAmount: Decimal; outputAmount: Decimal },
