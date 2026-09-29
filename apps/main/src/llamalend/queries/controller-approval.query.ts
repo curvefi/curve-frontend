@@ -63,9 +63,8 @@ export const { useQuery: useRepayControllerApproval, fetchQuery: fetchRepayContr
     userCollateral,
     userBorrowed,
   }: UserMarketQuery & RepayFormFields) =>
-    getRepayImplementationType(marketId, { stateCollateral, userCollateral, userBorrowed }) === 'zapV2'
-      ? await getMarket(marketId).leverageZapV2.isControllerApproved(userAddress)
-      : true,
+    getRepayImplementationType(marketId, { stateCollateral, userCollateral, userBorrowed }) !== 'zapV2' ||
+    (await getMarket(marketId).leverageZapV2.isControllerApproved(userAddress)),
   category: 'llamalend.user',
   validationSuite: userMarketValidationSuite,
 })
