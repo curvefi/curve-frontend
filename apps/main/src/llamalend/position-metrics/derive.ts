@@ -38,7 +38,7 @@ export type PositionViewInput = {
   rewards: RewardInput
 }
 
-/** One derivation for the card, previews, and tables. Callers do not reimplement the formulas. */
+/** Formula assembly covered by position-metrics.utils.spec. The card and tables call the same pieces with their own missing-rate rules. */
 export const derivePositionView = (input: PositionViewInput) => {
   const oracleHealthFactor = oracleHealth(input.oraclePrice, input.upperPrice)
   const distance: PriceDistance = priceDistance(input.oraclePrice, input.upperPrice, input.lowerPrice)
@@ -47,17 +47,15 @@ export const derivePositionView = (input: PositionViewInput) => {
   const equityAmount = equity(collateral, input.debt)
   const directionalLeverage = leverage(collateralTokenExposure, equityAmount)
   const liquidationBufferAmount = maybe(input.fullHealthPercentagePoints, health => bufferAmount(input.debt, health))
-  const status: PositionStatus | undefined =
-    distance.location === 'unavailable'
-      ? undefined
-      : resolvePositionStatus({
-          oraclePrice: input.oraclePrice,
-          upperPrice: input.upperPrice,
-          lowerPrice: input.lowerPrice,
-          fullHealth: input.fullHealthPercentagePoints,
-          liquidationPredicate: input.liquidationPredicate,
-          assetsType: input.assetsType,
-        })
+  const status: PositionStatus = resolvePositionStatus({
+    oraclePrice: input.oraclePrice,
+    upperPrice: input.upperPrice,
+    lowerPrice: input.lowerPrice,
+    fullHealth: input.fullHealthPercentagePoints,
+    debt: input.debt,
+    liquidationPredicate: input.liquidationPredicate,
+    assetsType: input.assetsType,
+  })
   const roe: RoeResult = positionReturnOnEquity({
     collateralValue: collateralTokenExposure,
     borrowedValue: input.borrowedAssetInAmm,

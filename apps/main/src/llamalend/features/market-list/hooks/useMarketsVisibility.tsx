@@ -55,6 +55,59 @@ const withSupplyApy = <T extends { id?: string }>(column: T) => {
   }
 }
 
+const columnOrder = (variant: MarketColumnVariant) => {
+  if (variant === MarketRateType.Borrow) return BORROW_POSITION_COLUMN_ORDER
+  if (variant === MarketRateType.Supply) return SUPPLY_POSITION_COLUMN_ORDER
+  return MARKET_COLUMNS.map(column => column.id as MarketColumnId)
+}
+
+/** Header, accessor, and visibility overrides for one markets-table variant. */
+export const columnsForVariant = (variant: MarketColumnVariant, beta: boolean): typeof MARKET_COLUMNS => {
+  if (!beta) {
+    return MARKET_COLUMNS.filter(column => !BETA_ONLY_COLUMNS.includes(column.id as MarketColumnId)).map(column => {
+      if (column.id === MarketColumnId.BorrowRate) return { ...column, meta: { ...column.meta, tooltip: undefined } }
+      if (column.id === MarketColumnId.NetBorrowRate) {
+        return {
+          ...column,
+          header: t`Net borrow APR`,
+          meta: { ...column.meta, tooltip: { ...column.meta?.tooltip, title: t`Net borrow APR` } },
+        }
+      }
+      return column
+    }) as typeof MARKET_COLUMNS
+  }
+  const visible = MARKET_COLUMNS.filter(
+    column =>
+      (variant === MarketRateType.Borrow ||
+        variant === MarketRateType.Supply ||
+        !POSITION_TABLE_ONLY_COLUMNS.includes(column.id as (typeof POSITION_TABLE_ONLY_COLUMNS)[number])) &&
+      (variant !== MarketRateType.Borrow || column.id !== MarketColumnId.UserLtv),
+  )
+  return orderColumns(
+    visible.map(column => {
+      if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserBorrowed)
+        return { ...column, header: t`Total debt` }
+      if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserCollateral)
+        return { ...column, header: t`Collateral value` }
+      if (variant === MarketRateType.Supply && column.id === MarketColumnId.LendRate) return withSupplyApy(column)
+      if (variant === MarketRateType.Supply && column.id === MarketColumnId.UserEarnings) {
+        const { hidden: _hidden, ...meta } = column.meta ?? {}
+        return { ...column, meta }
+      }
+      if (variant === MarketRateType.Supply && column.id === MarketColumnId.SolvencyPercent)
+        return { ...column, header: t`Market solvency` }
+      if (column.id === MarketColumnId.MaxLeverage) {
+        return {
+          ...column,
+          meta: { ...column.meta, tooltip: { title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> } },
+        }
+      }
+      return column
+    }),
+    columnOrder(variant),
+  ) as typeof MARKET_COLUMNS
+}
+
 const legacyMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
   version: 7,
   migrate: (oldValue, initialValue) =>
@@ -90,54 +143,7 @@ export const useMarketsVisibility = (title: string, sorting: SortingState, varia
       : sorting
   const sortField = (tableSorting.length ? tableSorting : defaultSort)[0].id as MarketColumnId
   const options = useMemo(() => getMarketsColumnOptions(beta), [beta])
-  const columns = useMemo(
-    () =>
-      beta
-        ? orderColumns(
-            MARKET_COLUMNS.filter(
-              column =>
-                (variant === MarketRateType.Borrow || variant === MarketRateType.Supply ||
-                  !POSITION_TABLE_ONLY_COLUMNS.includes(column.id as (typeof POSITION_TABLE_ONLY_COLUMNS)[number])) &&
-                (variant !== MarketRateType.Borrow || column.id !== MarketColumnId.UserLtv),
-            ).map(column => {
-              if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserBorrowed)
-                return { ...column, header: t`Total debt` }
-              if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserCollateral)
-                return { ...column, header: t`Collateral value` }
-              if (variant === MarketRateType.Supply && column.id === MarketColumnId.LendRate) return withSupplyApy(column)
-              if (variant === MarketRateType.Supply && column.id === MarketColumnId.UserEarnings) {
-                const { hidden: _hidden, ...meta } = column.meta ?? {}
-                return { ...column, meta }
-              }
-              if (variant === MarketRateType.Supply && column.id === MarketColumnId.SolvencyPercent)
-                return { ...column, header: t`Market solvency` }
-              if (column.id === MarketColumnId.MaxLeverage)
-                return {
-                  ...column,
-                  meta: { ...column.meta, tooltip: { title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> } },
-                }
-              return column
-            }),
-            variant === MarketRateType.Borrow
-              ? BORROW_POSITION_COLUMN_ORDER
-              : variant === MarketRateType.Supply
-                ? SUPPLY_POSITION_COLUMN_ORDER
-                : MARKET_COLUMNS.map(column => column.id as MarketColumnId),
-          )
-        : MARKET_COLUMNS.filter(column => !BETA_ONLY_COLUMNS.includes(column.id as MarketColumnId)).map(column => {
-            if (column.id === MarketColumnId.BorrowRate)
-              return { ...column, meta: { ...column.meta, tooltip: undefined } }
-            if (column.id === MarketColumnId.NetBorrowRate) {
-              return {
-                ...column,
-                header: t`Net borrow APR`,
-                meta: { ...column.meta, tooltip: { ...column.meta?.tooltip, title: t`Net borrow APR` } },
-              }
-            }
-            return column
-          }),
-    [beta, variant],
-  )
+  const columns = useMemo(() => columnsForVariant(variant, beta), [beta, variant])
   const visibilitySettings = useVisibilitySettings(
     beta ? `${title} Beta` : title,
     options,

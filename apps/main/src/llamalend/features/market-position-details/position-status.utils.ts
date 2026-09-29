@@ -68,7 +68,7 @@ export const resolvePositionStatus = ({
   const distance =
     oraclePrice != undefined && upperPrice != undefined && lowerPrice != undefined
       ? priceDistance(oraclePrice, upperPrice, lowerPrice)
-      : { location: 'unavailable' as const, reason: 'Range or oracle price is missing.' }
+      : { location: 'unavailable' as const }
   const location = distance.location
   const supported = liquidationPredicate === 'strict-negative'
   const common = { location, bufferUnavailable: fullHealth == undefined, liquidationUnsupported: !supported }

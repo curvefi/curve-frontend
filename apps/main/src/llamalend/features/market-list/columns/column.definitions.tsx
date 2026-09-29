@@ -104,7 +104,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric', unit: 'percentage' },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(getSupplyIncentivesApr, {
+  columnHelper.accessor<(row: LlamaMarketRow) => number | undefined, number | undefined>(getSupplyIncentivesApr, {
     id: MarketColumnId.SupplyIncentivesApr,
     header: MARKET_TITLES[MarketColumnId.SupplyIncentivesApr],
     cell: PercentCell,

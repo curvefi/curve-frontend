@@ -11,7 +11,7 @@ import {
   type NumberFormatOptions,
   PLACEHOLDER_USD,
 } from '@primitives/number.utils'
-import type { Nullish } from '@primitives/objects.utils'
+import { maybe, type Nullish } from '@primitives/objects.utils'
 import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { LabelTooltipIcon } from '@ui/components/LabelTooltipIcon'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
@@ -118,15 +118,22 @@ const getTypographyColorProps = (color: TypographyProps['color']) =>
   typeof color === 'string' && color.startsWith('#') ? { sx: { color } } : { color }
 
 type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> & {
-  value: Amount | Nullish
+  value: number | string | Nullish
   size: MetricLayout['size']
   tooltip?: MetricProps['valueTooltip']
   copyValue?: () => void
 }
 
+const literalMetricValue = (value: number | string | Nullish) =>
+  typeof value === 'string' && !Number.isFinite(Number(value)) ? value : undefined
+
 const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
   const isMobile = useIsMobile()
-  const numberValue = useMemo(() => ((value || value === 0) && isFinite(Number(value)) ? Number(value) : null), [value])
+  const literalValue = literalMetricValue(value)
+  const numberValue = useMemo(() => {
+    if (literalValue != undefined) return null
+    return (value || value === 0) && Number.isFinite(Number(value)) ? Number(value) : null
+  }, [literalValue, value])
   const {
     color = 'textPrimary',
     abbreviate = true,
@@ -134,8 +141,11 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
     disableTooltip = false,
     ...formattingOptions
   } = valueOptions
-  const { prefix, mainValue, scaleSuffix, suffix } =
-    numberValue === null ? {} : decomposeNumber(numberValue, { ...formattingOptions, abbreviate })
+  const decomposed = maybe(numberValue, amount =>
+    decomposeNumber(amount, { ...formattingOptions, abbreviate }),
+  )
+  const { prefix, scaleSuffix, suffix } = decomposed ?? {}
+  const mainValue = literalValue ?? decomposed?.mainValue
 
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
@@ -160,7 +170,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
             )}
           </Stack>
         }
-        title={tooltip?.title ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
+        title={tooltip?.title ?? literalValue ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
         mobileDrawer
       >
         <Stack

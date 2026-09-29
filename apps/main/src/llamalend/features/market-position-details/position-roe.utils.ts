@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { ZERO, decimal, decimalCompare, decimalDiv, decimalEqual, decimalGreaterThan, decimalMultiply } from '@ui/lib/decimal'
 
 export type YieldInput = { aprFraction: Decimal } | { unavailable: true } | { unnecessary: true }
@@ -76,3 +77,81 @@ export const formatYieldMultiplier = (multiplier: RoeMultiplier): string | undef
   if (multiplier.kind === 'zero') return '0× yield'
   return `${BigNumber(multiplier.value).toFixed(4)}× yield`
 }
+
+type RebasingToken = { rebasingYieldApr: number | Nullish }
+
+/** Lending snapshots name the debt token `borrowedToken`. Mint snapshots name it `stablecoinToken`. */
+export const snapshotRebasingAprs = (
+  snapshot: { collateralToken: RebasingToken } & ({ borrowedToken: RebasingToken } | { stablecoinToken: RebasingToken }),
+) => ({
+  collateralApr: snapshot.collateralToken.rebasingYieldApr,
+  borrowedApr: ('borrowedToken' in snapshot ? snapshot.borrowedToken : snapshot.stablecoinToken).rebasingYieldApr,
+})
+
+type AprPoints = Decimal | number | Nullish
+
+export const aprFraction = (percentagePoints: AprPoints): YieldInput => {
+  if (percentagePoints == null) return { unavailable: true }
+  const points = decimal(percentagePoints)
+  const hundred = decimal('100')
+  if (points == undefined || hundred == undefined) return { unavailable: true }
+  const fraction = decimalDiv(points, hundred)
+  return fraction == undefined ? { unavailable: true } : { aprFraction: fraction }
+}
+
+type BalanceRoeInput = {
+  collateralValue: Decimal
+  borrowedValue: Decimal
+  debt: Decimal
+  equity: Decimal
+  collateralApr: AprPoints
+  borrowedApr: AprPoints
+  borrowApr: AprPoints
+}
+
+export type CardRoe = { status: 'hidden' } | RoeResult
+
+/** Card and previews hide the metric when collateral is earning an unknown APR. A missing borrowed APR counts as zero. */
+export const cardPositionRoe = ({
+  collateralValue,
+  borrowedValue,
+  debt,
+  equity,
+  collateralApr,
+  borrowedApr,
+  borrowApr,
+}: BalanceRoeInput): CardRoe => {
+  if (borrowApr == null) return { status: 'unavailable' }
+  if (collateralApr == null && decimalGreaterThan(collateralValue, ZERO)) return { status: 'hidden' }
+  return positionReturnOnEquity({
+    collateralValue,
+    borrowedValue,
+    debt,
+    equity,
+    collateralYield: aprFraction(collateralApr),
+    borrowedYield: borrowedApr == null ? { unnecessary: true } : aprFraction(borrowedApr),
+    borrowCost: aprFraction(borrowApr),
+    rewards: { unnecessary: true },
+  })
+}
+
+/** List rows surface a missing APR as unavailable instead of hiding the column. */
+export const listedPositionRoe = ({
+  collateralValue,
+  borrowedValue,
+  debt,
+  equity,
+  collateralApr,
+  borrowedApr,
+  borrowApr,
+}: BalanceRoeInput): RoeResult =>
+  positionReturnOnEquity({
+    collateralValue,
+    borrowedValue,
+    debt,
+    equity,
+    collateralYield: aprFraction(collateralApr),
+    borrowedYield: aprFraction(borrowedApr),
+    borrowCost: aprFraction(borrowApr),
+    rewards: { unnecessary: true },
+  })

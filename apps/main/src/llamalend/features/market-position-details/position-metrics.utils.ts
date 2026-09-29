@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import {
   ZERO,
   decimal,
@@ -10,14 +11,15 @@ import {
   decimalMinus,
   decimalMultiply,
 } from '@ui/lib/decimal'
+import { t } from '@ui/lib/i18n'
 
 export type RangeLocation = 'above' | 'inside' | 'below' | 'unavailable'
 
 export type PriceDistance =
-  | { location: 'above'; percent: Decimal; label: 'price drop to range' }
-  | { location: 'inside'; label: 'In range' }
-  | { location: 'below'; percent: Decimal; label: 'price rise to range' }
-  | { location: 'unavailable'; reason: string }
+  | { location: 'above'; percent: Decimal }
+  | { location: 'inside' }
+  | { location: 'below'; percent: Decimal }
+  | { location: 'unavailable' }
 
 const requireDecimal = (value: Decimal | undefined, label: string): Decimal => {
   if (value == undefined) throw new Error(`Expected a decimal ${label}`)
@@ -55,22 +57,18 @@ export const rangeLocation = (
 }
 
 export const priceDistance = (oraclePrice: Decimal, upperPrice: Decimal, lowerPrice: Decimal): PriceDistance => {
-  if (!finitePositive(oraclePrice) || !boundsOk(upperPrice, lowerPrice)) {
-    return { location: 'unavailable', reason: 'Oracle price or range bounds are not usable.' }
-  }
+  if (!finitePositive(oraclePrice) || !boundsOk(upperPrice, lowerPrice)) return { location: 'unavailable' }
   const location = rangeLocation(oraclePrice, upperPrice, lowerPrice)
-  if (location === 'inside') return { location: 'inside', label: 'In range' }
+  if (location === 'inside') return { location: 'inside' }
   if (location === 'above') {
     return {
       location,
       percent: decimalMultiply(decimalDiv(decimalMinus(oraclePrice, upperPrice), oraclePrice), d(100)),
-      label: 'price drop to range',
     }
   }
   return {
     location,
     percent: decimalMultiply(decimalDiv(decimalMinus(lowerPrice, oraclePrice), oraclePrice), d(100)),
-    label: 'price rise to range',
   }
 }
 
@@ -120,9 +118,6 @@ export const compositionShares = (collateralAssets: Decimal, borrowedAssets: Dec
   }
 }
 
-/** Displayed 1.00 means the oracle is at or below the top of the range, so conversion can erode collateral. */
-export const isOracleHealthFloor = (health: Decimal) => !decimalGreaterThan(health, d(1))
-
 /** Any value above 1 must not collapse to the boundary label 1.00. */
 export const formatOracleHealth = (health: Decimal): string => {
   if (!decimalGreaterThan(health, d(1))) return '1.00'
@@ -155,16 +150,42 @@ export const formatSignedAmount = (value: Decimal): string => {
   return BigNumber(value).toFixed(2)
 }
 
-/** Inside is the label. Outside is the percent plus its direction. */
-export const rangeDistanceNotional = (distance: PriceDistance): string | undefined => {
-  if (distance.location === 'unavailable') return undefined
-  if (distance.location === 'inside') return distance.label
-  return `${formatDistancePercent(distance.percent)} ${distance.label}`
-}
-
 /** Nonzero distances inside 0.01% must not look like an exact boundary. */
 export const formatDistancePercent = (percent: Decimal): string => {
   if (decimalEqual(percent, ZERO)) return '0.00%'
   if (decimalCompare(percent, TINY_PERCENT) < 0) return '<0.01%'
   return `${BigNumber(percent).toFixed(4)}%`
+}
+
+export const formatPriceDistanceHeadline = (distance: PriceDistance): string => {
+  if (distance.location === 'unavailable') return t`Unavailable`
+  if (distance.location === 'inside') return t`In range`
+  return formatDistancePercent(distance.percent)
+}
+
+export const formatRangeBounds = (
+  upper: Parameters<typeof formatNumber>[0],
+  lower: Parameters<typeof formatNumber>[0],
+) => `${formatNumber(upper, { abbreviate: true })}–${formatNumber(lower, { abbreviate: true })}`
+
+export const formatRangeLabel = (
+  upper: Parameters<typeof formatNumber>[0],
+  lower: Parameters<typeof formatNumber>[0],
+  unit: string,
+) => `${formatRangeBounds(upper, lower)} ${unit}`
+
+export const formatShareLabel = (share: Decimal) => BigNumber(share).toFixed(2)
+
+export const inclusiveBandCount = (start: number, end: number) => Math.abs(start - end) + 1
+
+export const formatBandSpan = (start: number, end: number) => `${Math.min(start, end)} to ${Math.max(start, end)}`
+
+/** Tiny and zero amounts keep their signed label. Larger amounts abbreviate. */
+export const formatBufferNotional = (amount: Decimal, symbol: string): string => {
+  const magnitude = decimalCompare(amount, ZERO) < 0 ? decimalMinus(ZERO, amount) : amount
+  const display =
+    decimalEqual(amount, ZERO) || decimalCompare(magnitude, TINY_PERCENT) < 0
+      ? formatSignedAmount(amount)
+      : formatNumber(amount, { abbreviate: true })
+  return `${display} ${symbol}`
 }

@@ -3,10 +3,8 @@ import {
   formatOracleHealth,
   formatSignedPercent,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
-import {
-  isCriticalBuffer,
-  type PositionSeverity,
-} from '@/llamalend/features/market-position-details/position-status.utils'
+import { STATUS_BADGE_COLOR } from '@/llamalend/features/market-position-details/position-status-badge'
+import { isCriticalBuffer } from '@/llamalend/features/market-position-details/position-status.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
@@ -22,7 +20,6 @@ import { Badge } from '@ui/components/Badge'
 import { Tooltip } from '@ui/components/Tooltip'
 import { TooltipDescription } from '@ui/components/TooltipComponents'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
-import type { ChipColors } from '@ui/features/themes/components/chip/colors'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -30,14 +27,6 @@ import { getUserPositionOracleHealth, getUserPositionStatus } from '../user-posi
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
-
-const STATUS_BADGE_COLOR: Record<PositionSeverity, ChipColors> = {
-  near: 'warning',
-  inRange: 'warning',
-  below: 'warning',
-  liquidatable: 'alert',
-  neutral: 'default',
-}
 
 export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const { assets } = row.original

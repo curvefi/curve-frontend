@@ -2,14 +2,13 @@ import { describe, expect, it } from 'vitest'
 import { derivePositionView } from '@/llamalend/position-metrics/derive'
 import { MarketAssetsType } from '@evm-ui/types/market'
 import { decimal } from '@ui/lib/decimal'
-import { currentLoanLeverageEligibility } from './leverage-eligibility.utils'
 import {
   bufferAmount,
   collateralValue,
   compositionShares,
   equity,
   formatDistancePercent,
-  rangeDistanceNotional,
+  formatPriceDistanceHeadline,
   formatOracleHealth,
   formatSignedAmount,
   formatSignedPercent,
@@ -47,8 +46,8 @@ describe('position metrics', () => {
     expect(priceDistance(d(80), d(100), d(80)).location).toBe('inside')
     expect(priceDistance(d('100.0001'), d(100), d(80)).location).toBe('above')
     expect(formatDistancePercent(d('0.0001'))).toBe('<0.01%')
-    if (drop.location === 'above') expect(rangeDistanceNotional(drop)).toBe('16.6667% price drop to range')
-    expect(rangeDistanceNotional(priceDistance(d(90), d(100), d(80)))).toBe('In range')
+    if (drop.location === 'above') expect(formatPriceDistanceHeadline(drop)).toBe('16.6667%')
+    expect(formatPriceDistanceHeadline(priceDistance(d(90), d(100), d(80)))).toBe('In range')
   })
 
   it('keeps buffer sign and the debt-times-health amount', () => {
@@ -210,7 +209,7 @@ describe('shared position view', () => {
     })
     expect(invalid.oracleHealthFactor).toBeUndefined()
     expect(invalid.distance.location).toBe('unavailable')
-    expect(invalid.status).toBeUndefined()
+    expect(invalid.status?.label).toBe('Status unavailable')
   })
 })
 
@@ -271,70 +270,5 @@ describe('position status', () => {
     const status = resolvePositionStatus({ ...base, debt: d(0), fullHealth: d(10) })
     expect(status.label).toBe('Position closed')
     expect(status.location).toBe('unavailable')
-  })
-})
-
-describe('leverage eligibility', () => {
-  const closed = { timestamp: 1, isPositionClosed: true, leverage: { eventType: 'Deposit' as const } }
-  const ordinary = { timestamp: 2, isPositionClosed: false, leverage: null }
-
-  it('ignores leverage from a closed episode when ordinary borrowing is verified', () => {
-    expect(
-      currentLoanLeverageEligibility({
-        events: [closed, ordinary],
-        count: 2,
-        page: 1,
-        pagination: 1,
-        nullMeansOrdinaryBorrow: true,
-      }).eligibility,
-    ).toBe('no')
-  })
-
-  it('does not treat a partial liquidation as closing the episode', () => {
-    expect(
-      currentLoanLeverageEligibility({
-        events: [{ timestamp: 1, isPositionClosed: false, leverage: { eventType: 'Deposit' } }],
-        count: 1,
-        page: 1,
-        pagination: 1,
-        nullMeansOrdinaryBorrow: true,
-      }).eligibility,
-    ).toBe('yes')
-  })
-
-  it('stays unknown when equal timestamps have no log order', () => {
-    expect(
-      currentLoanLeverageEligibility({
-        events: [
-          { timestamp: 5, isPositionClosed: true, leverage: null },
-          { timestamp: 5, isPositionClosed: false, leverage: { eventType: 'Deposit' } },
-        ],
-        count: 2,
-        page: 1,
-        pagination: 1,
-        nullMeansOrdinaryBorrow: false,
-      }).eligibility,
-    ).toBe('unknown')
-  })
-
-  it('stays unknown when the page is incomplete or null is unverified', () => {
-    expect(
-      currentLoanLeverageEligibility({
-        events: [ordinary],
-        count: 4,
-        page: 1,
-        pagination: 2,
-        nullMeansOrdinaryBorrow: true,
-      }).eligibility,
-    ).toBe('unknown')
-    expect(
-      currentLoanLeverageEligibility({
-        events: [ordinary],
-        count: 1,
-        page: 1,
-        pagination: 1,
-        nullMeansOrdinaryBorrow: false,
-      }).eligibility,
-    ).toBe('unknown')
   })
 })

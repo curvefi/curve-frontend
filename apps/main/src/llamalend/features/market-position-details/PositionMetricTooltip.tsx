@@ -109,7 +109,7 @@ export const HealthEquation = () => (
 
 export const bufferTooltip = ({
   criticalBuffer,
-}: { predicate?: 'strict-negative' | 'unverified'; criticalBuffer?: string } = {}) => ({
+}: { criticalBuffer?: string } = {}) => ({
   ...tooltipChrome,
   title: t`Liquidation buffer`,
   body: (
@@ -157,7 +157,6 @@ export const statusTooltip = ({
   category?: string
   nearRange?: string
   criticalBuffer?: string
-  predicate?: 'strict-negative' | 'unverified'
   observedAt?: number
 } = {}) => ({
   ...tooltipChrome,
