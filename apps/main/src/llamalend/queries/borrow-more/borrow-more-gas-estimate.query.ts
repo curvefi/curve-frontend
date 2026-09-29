@@ -10,6 +10,8 @@ import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 
+type GasEstimateParams = BorrowMoreParams & { isControllerApproved?: boolean }
+
 const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowMoreApproveGasEstimateQuery } =
   queryFactory({
     queryKey: ({
@@ -21,7 +23,7 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       maxDebt,
       leverageEnabled,
       routeId,
-    }: BorrowMoreParams) =>
+    }: GasEstimateParams) =>
       [
         ...rootKeys.userMarket({ chainId, marketId, userAddress }),
         'estimateGas.borrowMoreApprove',
@@ -41,7 +43,11 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       }
     },
     category: 'llamalend.borrowMore',
-    validationSuite: borrowMoreValidationSuite({ leverageRequired: false, maxDebtRequired: true }),
+    validationSuite: borrowMoreValidationSuite({
+      leverageRequired: false,
+      maxDebtRequired: true,
+      requireControllerApproval: true,
+    }),
   })
 
 const {
@@ -59,7 +65,7 @@ const {
     slippage,
     leverageEnabled,
     routeId,
-  }: BorrowMoreParams) =>
+  }: GasEstimateParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'estimateGas.borrowMore',
@@ -96,10 +102,14 @@ const {
     }
   },
   category: 'llamalend.borrowMore',
-  validationSuite: borrowMoreValidationSuite({ leverageRequired: false, maxDebtRequired: true }),
+  validationSuite: borrowMoreValidationSuite({
+    leverageRequired: false,
+    maxDebtRequired: true,
+    requireControllerApproval: true,
+  }),
 })
 
-export const useBorrowMoreEstimateGas = createApprovedEstimateGasHook({
+export const useBorrowMoreEstimateGas = createApprovedEstimateGasHook<GasEstimateParams, TGas | null>({
   useIsApproved: useBorrowMoreIsApproved,
   useApproveEstimate: useBorrowMoreApproveGasEstimate,
   useActionEstimate: useBorrowMoreGasEstimate,

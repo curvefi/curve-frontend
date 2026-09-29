@@ -2,8 +2,9 @@
 import { BigNumber } from 'bignumber.js'
 import type { Hex } from 'viem'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
+import { MarketVersion } from '@evm-ui/types/market'
 import { decimal } from '@ui/lib/decimal'
-import { createMockLlamaApi, TEST_TX_HASH } from '../mock-loan-test-data'
+import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
@@ -17,6 +18,7 @@ import {
   routeMutationMeta,
   seedMarketBalances,
   createMockLendLoanMarket,
+  createControllerApprovalStubs,
 } from './shared.mocks'
 
 export const createCreateLoanScenario = ({
@@ -25,12 +27,16 @@ export const createCreateLoanScenario = ({
   approved,
   leverage = false,
   routeCalldata,
+  controllerApproved = true,
+  marketVersion = MarketVersion.v1,
 }: {
   chainId: number
   presetRange?: number
   approved: boolean
   leverage?: boolean
   routeCalldata?: Hex
+  controllerApproved?: boolean
+  marketVersion?: MarketVersion
 }) => {
   const collateral = oneDecimal(0.05, 1.2, 3)
   const borrow = oneDecimal(5, 140, 2)
@@ -38,6 +44,7 @@ export const createCreateLoanScenario = ({
   const lowPrice = oneDecimal(900, 2300, 2)
   const createLoanApprove = createTransactionStub(TEST_TX_HASH)
   const createLoanLeverageApprove = createTransactionStub(TEST_TX_HASH)
+  const controllerApproval = createControllerApprovalStubs(controllerApproved)
   const maxLeverage = oneDecimal(1.5, 10, 2)
 
   const normalStubs = {
@@ -89,6 +96,8 @@ export const createCreateLoanScenario = ({
 
   const leverageZapV2 = {
     hasLeverage: () => true,
+    isControllerApproved: controllerApproval.isControllerApproved,
+    setControllerApproval: controllerApproval.setControllerApproval,
     maxLeverage: leverageStubs.maxLeverage,
     createLoanExpectedMetrics: leverageStubs.createLoanExpectedMetrics,
     createLoanMaxRecv: leverageStubs.createLoanMaxRecv,
@@ -98,21 +107,24 @@ export const createCreateLoanScenario = ({
     createLoanExpectedCollateral: leverageStubs.createLoanExpectedCollateral,
     calcMinRecv: leverageStubs.calcMinRecv,
     estimateGas: {
+      setControllerApproval: controllerApproval.estimateGasSetControllerApproval,
       createLoan: leverageStubs.estimateGasCreateLoan,
       createLoanApprove: leverageStubs.estimateGasCreateLoanApprove,
     },
   }
 
+  const expectedRoute = { ...routeMeta, calldata: routeCalldata ?? routeMeta.calldata }
+  const expectedMutationRoute = { ...routeMutationMeta, calldata: expectedRoute.calldata }
   const leverageExpected = {
     query: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED, debt: borrow, range: presetRange },
-    estimateGas: { userCollateral: collateral, debt: borrow, range: presetRange, ...routeMutationMeta },
+    estimateGas: { userCollateral: collateral, debt: borrow, range: presetRange, ...expectedMutationRoute },
     maxRecv: { userCollateral: collateral, range: presetRange },
     approved: { userCollateral: collateral },
     estimateGasApprove: { userCollateral: collateral },
     approve: { userCollateral: collateral },
-    submit: { userCollateral: collateral, debt: borrow, range: presetRange, ...routeMutationMeta },
-    expectedCollateral: { userCollateral: collateral, debt: borrow, ...routeMeta },
-    expectedMetrics: { userCollateral: collateral, debt: borrow, range: presetRange, ...routeMeta },
+    submit: { userCollateral: collateral, debt: borrow, range: presetRange, ...expectedMutationRoute },
+    expectedCollateral: { userCollateral: collateral, debt: borrow, ...expectedRoute },
+    expectedMetrics: { userCollateral: collateral, debt: borrow, range: presetRange, ...expectedRoute },
   } as const
   const normalExpected = {
     query: [collateral, borrow, presetRange] as const,
@@ -126,6 +138,7 @@ export const createCreateLoanScenario = ({
 
   const market = leverage
     ? createMockLendLoanMarket({
+        version: marketVersion,
         loan: {
           estimateGas: {
             createLoan: normalStubs.estimateGasCreateLoan,
@@ -143,6 +156,7 @@ export const createCreateLoanScenario = ({
         stats: { parameters: createStub(oneAprPair()) },
       })
     : createMockMintMarket({
+        version: marketVersion,
         collateral: collateralAddress,
         controller: oneAddress(),
         stats: { parameters: createStub(oneAprPair()) },
@@ -165,13 +179,19 @@ export const createCreateLoanScenario = ({
     llamaApi: createMockLlamaApi(chainId, market),
     assertPreSubmit: leverage
       ? () => {
+          expect(controllerApproval.isControllerApproved).to.have.been.calledWithExactly(TEST_ADDRESS)
+          expect(controllerApproval.setControllerApproval).to.not.have.been.called
+          expect(leverageStubs.createLoan).to.not.have.been.called
           expect(leverageStubs.createLoanExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.expectedMetrics)
           expect(leverageStubs.createLoanMaxRecv).to.have.been.calledWithMatch(leverageExpected.maxRecv)
           expect(leverageStubs.createLoanIsApproved).to.have.been.calledWithMatch(leverageExpected.approved)
           expect(leverageStubs.createLoanExpectedCollateral).to.have.been.calledWithMatch(
             leverageExpected.expectedCollateral,
           )
-          if (approved) {
+          if (!controllerApproved) {
+            expect(leverageStubs.estimateGasCreateLoan).to.not.have.been.called
+            expect(leverageStubs.estimateGasCreateLoanApprove).to.not.have.been.called
+          } else if (approved) {
             expect(leverageStubs.estimateGasCreateLoan).to.have.been.calledWithMatch(leverageExpected.estimateGas)
             expect(leverageStubs.estimateGasCreateLoanApprove).to.not.have.been.called
           } else {
@@ -196,18 +216,14 @@ export const createCreateLoanScenario = ({
         },
     assertSubmit: leverage
       ? () => {
+          expect(controllerApproval.setControllerApproval.callCount).to.equal(controllerApproved ? 0 : 1)
           expect(leverageStubs.estimateGasCreateLoan).to.have.been.calledWithMatch(leverageExpected.estimateGas)
           if (approved) {
             expect(leverageStubs.createLoanApprove).to.not.have.been.called
           } else {
             expect(leverageStubs.createLoanApprove).to.have.been.calledWithMatch({ userCollateral: collateral })
           }
-          expect(leverageStubs.createLoan).to.have.been.calledWithMatch({
-            userCollateral: collateral,
-            debt: borrow,
-            range: presetRange,
-            ...routeMutationMeta,
-          })
+          expect(leverageStubs.createLoan).to.have.been.calledWithMatch(leverageExpected.submit)
         }
       : () => {
           expect(normalStubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...normalExpected.estimateGas)
