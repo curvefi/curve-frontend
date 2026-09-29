@@ -1,3 +1,4 @@
+import { FormClaimFees } from '@/dao/components/PageVeCrv/components/FormClaimFees'
 import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate'
@@ -38,6 +39,7 @@ const menu = [
     visible: ({ hasLockedCrv }: LockerTabsParams) => !hasLockedCrv,
     component: FormLockCreate,
   },
+  { value: 'claim_fees', label: t`Claim fees`, component: FormClaimFees },
 ] as const
 
 export const FormCrvLocker = ({
