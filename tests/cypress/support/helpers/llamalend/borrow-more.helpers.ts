@@ -1,12 +1,12 @@
 import {
   checkLeverageCheckbox,
-  submitLoanForm,
   toggleLeverage,
   waitForRoutesLoaded,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LOAD_TIMEOUT } from '../../ui'
 import { checkDebt, checkEstimatedTxCost, DECIMAL_REGEX, getActionValue, touchInput } from './action-info.helpers'
+import { submitLoanForm } from './loan-form.helpers'
 
 type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 
@@ -49,17 +49,19 @@ export function checkBorrowMoreDetailsLoaded({
   expectedCurrentDebt,
   borrowedSymbol,
   hasApi = true,
+  controllerApproved = true,
 }: {
   expectedFutureDebt: Decimal
   expectedCurrentDebt: Decimal
   leverageEnabled: boolean
   borrowedSymbol: string
   hasApi?: boolean
+  controllerApproved?: boolean
 }) {
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-health').should('match', DECIMAL_REGEX)
   getActionValue('borrow-health', 'previous').should('match', DECIMAL_REGEX)
-  checkEstimatedTxCost({ hasValue: hasApi })
+  checkEstimatedTxCost({ hasValue: hasApi && controllerApproved })
   checkDebt(
     { current: expectedCurrentDebt, future: expectedFutureDebt, symbol: borrowedSymbol },
     { checkLoanToValue: hasApi },
@@ -74,4 +76,5 @@ export function checkBorrowMoreDetailsLoaded({
   }
 }
 
-export const submitBorrowMoreForm = () => submitLoanForm({ form: 'borrow-more', message: 'Borrowed more!' })
+export const submitBorrowMoreForm = ({ controllerApproved = true }: { controllerApproved?: boolean } = {}) =>
+  submitLoanForm({ form: 'borrow-more', message: 'Borrowed more!', approveDelegation: !controllerApproved })

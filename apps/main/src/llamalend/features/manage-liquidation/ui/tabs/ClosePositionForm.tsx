@@ -79,8 +79,9 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         pending={isPending}
         disabled={isDisabled}
         label={[
-          isApproved?.data === false && t`Approve`,
-          ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
+          isApproved.data === false && t`Approve`,
+          hasBadDebt ? t`Repay bad debt` : t`Repay debt`,
+          !hasBadDebt && t`Recover collateral`,
         ]}
         testId="close-position-submit-button"
       />

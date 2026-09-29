@@ -70,10 +70,13 @@ export const defineMuiCardHeader = (
     {
       props: { variant: 'modal' },
       style: {
-        ...createInlineHeaderStyle(design),
-        ...handleBreakpoints({ paddingInline: Spacing.md, paddingBlock: Spacing.sm }),
-        alignItems: 'center',
-        '& .MuiCardHeader-action': { alignSelf: 'center' },
+        // Card size styles target direct child headers, so modal styles need equal specificity.
+        '&&': {
+          ...createInlineHeaderStyle(design),
+          ...handleBreakpoints({ paddingInline: Spacing.md, paddingBlock: Spacing.sm }),
+          alignItems: 'center',
+          '& .MuiCardHeader-action': { alignSelf: 'center', paddingBlockEnd: 0 },
+        },
       },
     },
   ],

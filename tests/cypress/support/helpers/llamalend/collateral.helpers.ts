@@ -1,8 +1,8 @@
-import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { checkEstimatedTxCost, getActionValue, touchInput } from './action-info.helpers'
+import { submitLoanForm } from './loan-form.helpers'
 
 export const getCollateralInput = (testId: 'add-collateral-input' | 'remove-collateral-input') =>
   cy.get(`[data-testid="${testId}"] input[type="text"]`, LOAD_TIMEOUT).first()
