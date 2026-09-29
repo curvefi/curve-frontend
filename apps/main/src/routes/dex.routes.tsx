@@ -7,7 +7,6 @@ import { createSharedRoutes } from './shared.routes'
 const DexLayout = lazyRouteComponent(() => import('@/dex/DexLayout'), 'DexLayout')
 const PageCompensation = lazyRouteComponent(() => import('@/dex/components/PageCompensation/Page'), 'PageCompensation')
 const PageCreatePool = lazyRouteComponent(() => import('@/dex/components/PageCreatePool/Page'), 'PageCreatePool')
-const PageDashboard = lazyRouteComponent(() => import('@/dex/components/PageDashboard/Page'), 'PageDashboard')
 const PageDeployGauge = lazyRouteComponent(() => import('@/dex/components/PageDeployGauge/Page'), 'PageDeployGauge')
 const PagePoolList = lazyRouteComponent(() => import('@/dex/features/pool-list'), 'PoolsList')
 const PagePool = lazyRouteComponent(() => import('@/dex/components/PagePool/Page'), 'PagePool')
@@ -36,12 +35,6 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     path: '$network/create-pool',
     component: PageCreatePool,
     head: () => ({ meta: [{ title: 'Create Pool - Curve' }] }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/dashboard',
-    component: PageDashboard,
-    head: () => ({ meta: [{ title: 'Dashboard - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({

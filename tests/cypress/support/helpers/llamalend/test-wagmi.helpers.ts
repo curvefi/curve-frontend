@@ -35,7 +35,7 @@ const mainnet = createChain(Chain.Ethereum, defaultGetRpcUrls)
 
 export const mockedWagmiConfig = createWagmiConfig({
   chains: [mainnet],
-  connectors: [createTestConnector({ privateKey: TEST_PRIVATE_KEY, chain: mainnet })],
+  connectors: [createTestConnector({ account: TEST_PRIVATE_KEY, chain: mainnet })],
   transports: {
     [mainnet.id]: fallback([
       mockedReceiptTransport,

@@ -106,7 +106,7 @@ const MarketDataSkeleton = ({
   </WithSkeleton>
 )
 
-export const MarketAssets = ({ chainId, blockchainId, market, apiMarket }: MarketContractsProps) => {
+const MarketAssets = ({ chainId, blockchainId, market, apiMarket }: MarketContractsProps) => {
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
 
   return (

@@ -51,7 +51,7 @@ export const createMockLendStats = (): MockLendStats => ({
 
 export type MockLendWallet = { balances: MockMethod }
 
-export const createMockLendWallet = (): MockLendWallet => ({
+const createMockLendWallet = (): MockLendWallet => ({
   balances: cy.stub().resolves({ collateral: '0', borrowed: '0', vaultShares: '0', gauge: '0' }),
 })
 
@@ -67,7 +67,7 @@ export type MockLendEstimateGas = {
   claimRewards: MockMethod
 }
 
-export const createMockLendEstimateGas = (): MockLendEstimateGas => ({
+const createMockLendEstimateGas = (): MockLendEstimateGas => ({
   depositApprove: cy.stub().resolves('120000'),
   deposit: cy.stub().resolves('120000'),
   stakeApprove: cy.stub().resolves('120000'),

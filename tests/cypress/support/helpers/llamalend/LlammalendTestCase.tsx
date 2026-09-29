@@ -106,8 +106,8 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
 
 export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet
 
-export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
-  <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
+export const LlammalendTestCase = ({ vnet, account, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
+  <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, account })} autoConnect>
     <CurveProvider app="llamalend" network={llamaNetworks[chainId]} onChainUnavailable={console.error}>
       <Box sx={{ maxWidth: 520 }}>
         <FormPlacementProvider placement="inline">

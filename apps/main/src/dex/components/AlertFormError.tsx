@@ -23,7 +23,6 @@ const ALERT_FORM_ERROR_KEYS = {
   'error-deposit-withdraw-expected-bonus': 'error-deposit-withdraw-expected-bonus',
   'error-step-claim': 'error-step-claim',
   'error-get-claimable': 'error-get-claimable',
-  'error-get-dashboard-data': 'error-get-dashboard-data',
   'error-get-gas': 'error-get-gas',
   'error-get-locked-crv-info': 'error-get-locked-crv-info',
   'error-step-claim-fees': 'error-step-claim-fees',
@@ -59,7 +58,6 @@ export const AlertFormError = ({ errorKey, ...props }: Props) => {
       [ALERT_FORM_ERROR_KEYS['error-deposit-withdraw-expected']]: t`Unable to get expected`,
       [ALERT_FORM_ERROR_KEYS['error-deposit-withdraw-expected-bonus']]: t`Unable to get bonus or expected`,
       [ALERT_FORM_ERROR_KEYS['error-pool-list']]: t`Unable to get pool list`,
-      [ALERT_FORM_ERROR_KEYS['error-get-dashboard-data']]: t`Unable to get dashboard data`,
       [ALERT_FORM_ERROR_KEYS['error-get-gas']]: t`Unable to get gas price`,
 
       //  deposit
