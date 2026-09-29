@@ -1,4 +1,3 @@
-import type { Hex } from 'viem'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { oneDecimal } from '@cy/support/generators'
 import {
@@ -7,6 +6,7 @@ import {
   writeBorrowMoreForm,
 } from '@cy/support/helpers/llamalend/borrow-more.helpers'
 import {
+  DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
   fakeCollateralEvents,
   ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
 } from '@cy/support/helpers/llamalend/mock-loan-test-data'
@@ -25,33 +25,31 @@ import { constQ } from '@ui/features/queries/util'
 
 const chainId = Chain.Ethereum
 
-type BorrowMoreTestCase = {
-  approved: boolean
-  title: string
-  withCollateral: boolean
-  buttonText: string
-  leverage: boolean
-  controllerApproved?: boolean
-  marketVersion?: MarketVersion
-  routeCalldata?: Hex
-}
-
-const testCases: BorrowMoreTestCase[] = [
+const testCases = [
   ...[
-    { approved: true, title: 'fills and submits (already approved)', withCollateral: false, buttonText: 'Borrow More' },
     {
+      ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
+      approved: true,
+      title: 'fills and submits (already approved)',
+      withCollateral: false,
+      buttonText: 'Borrow More',
+    },
+    {
+      ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
       approved: false,
       title: 'fills, approves, and submits',
       withCollateral: false,
       buttonText: 'Approve & Borrow More',
     },
     {
+      ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
       approved: true,
       title: 'fills with collateral and submits',
       withCollateral: true,
       buttonText: 'Add & Borrow More',
     },
     {
+      ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
       approved: false,
       title: 'fills with collateral, approves and submits',
       withCollateral: true,

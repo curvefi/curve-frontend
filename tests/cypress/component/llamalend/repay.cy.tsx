@@ -1,7 +1,7 @@
-import type { Hex } from 'viem'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { getTokens } from '@/llamalend/llama.utils'
 import {
+  DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
   fakeCollateralEvents,
   TEST_ADDRESS,
   ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
@@ -26,20 +26,11 @@ import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { constQ } from '@ui/features/queries/util'
 
 const CHAIN_ID = 1
-type RepayTestCase = {
-  approved: boolean
-  title: string
-  leverage: boolean
-  repayToken: 'borrowed' | 'collateral'
-  controllerApproved?: boolean
-  marketVersion?: MarketVersion
-  routeCalldata?: Hex
-}
 
-const testCases: RepayTestCase[] = [
+const testCases = [
   ...[
-    { approved: true, title: 'fills and submits (already approved)' },
-    { approved: false, title: 'fills, approves, and submits' },
+    { ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE, approved: true, title: 'fills and submits (already approved)' },
+    { ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE, approved: false, title: 'fills, approves, and submits' },
   ].flatMap(testCase => [
     { ...testCase, leverage: false, repayToken: 'borrowed' as const },
     { ...testCase, title: `${testCase.title} with leverage`, leverage: true, repayToken: 'collateral' as const },

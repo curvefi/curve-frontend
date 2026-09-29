@@ -1,4 +1,4 @@
-import { type Hex, zeroAddress } from 'viem'
+import { zeroAddress } from 'viem'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import {
@@ -6,7 +6,10 @@ import {
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
-import { ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA } from '@cy/support/helpers/llamalend/mock-loan-test-data'
+import {
+  DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
+  ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
+} from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/mocks/create-loan.mocks'
 import {
@@ -17,22 +20,12 @@ import {
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { MarketVersion } from '@evm-ui/types/market'
 
-type CreateLoanTestCase = {
-  approved: boolean
-  title: string
-  hasLeverage: boolean
-  leverageEnabled: boolean
-  controllerApproved?: boolean
-  marketVersion?: MarketVersion
-  routeCalldata?: Hex
-}
-
 const CHAIN_ID = 1
 
-const testCases: CreateLoanTestCase[] = [
+const testCases = [
   ...[
-    { approved: false, title: 'fills, approves, and submits' },
-    { approved: true, title: 'fills and submits' },
+    { ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE, approved: false, title: 'fills, approves, and submits' },
+    { ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE, approved: true, title: 'fills and submits' },
   ].flatMap(testCase => [
     { ...testCase, hasLeverage: false, leverageEnabled: false },
     { ...testCase, title: `${testCase.title} with leverage`, hasLeverage: true, leverageEnabled: true },
