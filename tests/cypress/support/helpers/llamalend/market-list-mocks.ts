@@ -27,7 +27,7 @@ export const blockUnmockedApis = () => {
 }
 
 /** The cypress-wagmi-test-connector generates a fresh address at runtime, so we have to mock by pattern. */
-export const mockEmptyMarketUserData = () =>
+const mockEmptyMarketUserData = () =>
   [
     ...LEND_CHAINS.map(chain => new RegExp(`/v1/lending/users/${chain}/0x[a-fA-F0-9]{40}$`)),
     ...LEND_CHAINS.map(chain => new RegExp(`/v1/lending/users/lending_positions/${chain}/0x[a-fA-F0-9]{40}$`)),
@@ -49,7 +49,7 @@ export const mockEmptyMarketUserData = () =>
   )
 
 /** Mocks the empty response for the bad debt endpoints. */
-export const mockEmptyMarketBadDebt = () =>
+const mockEmptyMarketBadDebt = () =>
   ['/v1/crvusd/liquidations/bad_debt', '/v1/lending/liquidations/bad_debt'].map(pathname =>
     cy.intercept({ method: 'GET', pathname, query: { fetch_on_chain: 'true' } }, { body: { data: [] } }),
   )
