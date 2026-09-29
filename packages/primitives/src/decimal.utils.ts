@@ -18,4 +18,4 @@ export type Decimal = `${number}`
  */
 export type Amount = number | Decimal
 
-export const DECIMAL_REGEX = /^-?(\d+(\.\d*)?|\.\d+)$/
+export const DECIMAL_REGEX = /^-?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?$/

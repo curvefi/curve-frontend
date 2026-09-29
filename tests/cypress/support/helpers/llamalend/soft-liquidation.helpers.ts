@@ -1,11 +1,12 @@
 import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
-import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import {
   checkDebt,
   checkEstimatedTxCost,
   type DebtCheck,
   DECIMAL_RANGE_REGEX,
+  DECIMAL_REGEX,
   getActionValue,
 } from './action-info.helpers'
 

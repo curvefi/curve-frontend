@@ -1,8 +1,12 @@
-import { getActionInfo, getActionValue, getMetricValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import {
+  DECIMAL_REGEX,
+  getActionInfo,
+  getActionValue,
+  getMetricValue,
+} from '@cy/support/helpers/llamalend/action-info.helpers'
 import { clickTab } from '@cy/support/helpers/tabs'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
 import { MarketRateType } from '@evm-ui/types/market'
-import { DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
 
 type MarketDetailsOptions = { breakpoint: Breakpoint; hasWallet: boolean; hasApi?: boolean }

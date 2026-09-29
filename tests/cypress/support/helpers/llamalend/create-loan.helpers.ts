@@ -3,10 +3,16 @@ import { oneOf, oneValueOf } from '@cy/support/generators'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { MarketType } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
-import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { DEFAULT_DECIMALS } from '@primitives/units.util'
-import { checkEstimatedTxCost, DECIMAL_RANGE_REGEX, getActionInfo, getActionValue } from './action-info.helpers'
+import {
+  checkEstimatedTxCost,
+  DECIMAL_RANGE_REGEX,
+  DECIMAL_REGEX,
+  getActionInfo,
+  getActionValue,
+} from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
