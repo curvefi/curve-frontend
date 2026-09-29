@@ -1,7 +1,9 @@
+import { leverageTooltip } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { getMaxReturnOnEquity } from '@/llamalend/rates.utils'
+import { getMaxLeverageSortValue, maxRoeSortValue } from '@/llamalend/rates.utils'
 import { MaxReturnOnEquityTooltipContent, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { MarketRateType } from '@evm-ui/types/market'
+import type { Nullish } from '@primitives/objects.utils'
 import type { DeepKeys } from '@tanstack/table-core'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
@@ -9,12 +11,19 @@ import {
   BoostCell,
   CompactUsdCell,
   HealthCell,
+  LiquidationBufferCell,
   LineGraphCell,
   LiquidityUsdCell,
   LtvCell,
   MarketTitleCell,
   MaxLeverageCell,
   MaxReturnOnEquityCell,
+  UserLeverageCell,
+  UserLiquidationRangeCell,
+  UserDistanceToRangeCell,
+  UserBandCountCell,
+  UserCollateralCompositionCell,
+  UserReturnOnEquityCell,
   PercentCell,
   PriceCell,
   RateCell,
@@ -33,8 +42,17 @@ import {
 import {
   getUserBorrowedUsd,
   getUserCollateralUsd,
-  getUserPositionHealth,
+  getHealthColumnSortValue,
+  getUserPositionBuffer,
+  getUserPositionLeverage,
+  getUserPositionRangeUpper,
+  getUserPositionDistance,
+  getUserPositionBandCount,
+  getUserPositionCollateralShare,
   getUserPositionLtv,
+  getUserPositionRoe,
+  getUserSupplyShare,
+  getSupplyIncentivesApr,
 } from '../user-position.utils'
 import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
@@ -76,7 +94,21 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.UserEarnings,
     header: MARKET_TITLES[MarketColumnId.UserEarnings],
     cell: PriceCell,
-    meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
+    meta: { type: 'numeric', hidden: true }, // markets list stays off; supply positions offer this column
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserSupplyShare, {
+    id: MarketColumnId.UserSupplyShare,
+    header: MARKET_TITLES[MarketColumnId.UserSupplyShare],
+    cell: PercentCell,
+    meta: { type: 'numeric', unit: 'percentage' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getSupplyIncentivesApr, {
+    id: MarketColumnId.SupplyIncentivesApr,
+    header: MARKET_TITLES[MarketColumnId.SupplyIncentivesApr],
+    cell: PercentCell,
+    meta: { type: 'numeric', unit: 'percentage' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('lendingPosition.supplied', {
@@ -98,7 +130,11 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.BorrowRate,
     header: MARKET_TITLES[MarketColumnId.BorrowRate],
     cell: RateCell,
-    meta: { type: 'numeric', unit: 'percentage' },
+    meta: {
+      type: 'numeric',
+      unit: 'percentage',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.BorrowRate], body: <NetBorrowAprHeaderTooltipContent /> },
+    },
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
@@ -108,8 +144,30 @@ export const MARKET_COLUMNS = columnHelper.columns([
     cell: RateCell,
     meta: {
       type: 'numeric',
+      unit: 'percentage',
       tooltip: { title: MARKET_TITLES[MarketColumnId.NetBorrowRate], body: <NetBorrowAprHeaderTooltipContent /> },
     },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(row => row.assets.collateral.rebasingYieldApr ?? undefined, {
+    id: MarketColumnId.CollateralYield,
+    header: MARKET_TITLES[MarketColumnId.CollateralYield],
+    cell: PercentCell,
+    meta: { type: 'numeric', unit: 'percentage' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionRoe, {
+    id: MarketColumnId.UserReturnOnEquity,
+    header: MARKET_TITLES[MarketColumnId.UserReturnOnEquity],
+    cell: UserReturnOnEquityCell,
+    meta: { type: 'numeric', unit: 'percentage' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionLeverage, {
+    id: MarketColumnId.UserLeverage,
+    header: MARKET_TITLES[MarketColumnId.UserLeverage],
+    cell: UserLeverageCell,
+    meta: { type: 'numeric', tooltip: leverageTooltip() },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionLtv, {
@@ -119,10 +177,45 @@ export const MARKET_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(getUserPositionHealth, {
+  columnHelper.accessor(getHealthColumnSortValue, {
     id: MarketColumnId.UserHealth,
     header: MARKET_TITLES[MarketColumnId.UserHealth],
     cell: HealthCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionBuffer, {
+    id: MarketColumnId.UserLiquidationBuffer,
+    header: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
+    cell: LiquidationBufferCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionRangeUpper, {
+    id: MarketColumnId.UserLiquidationRange,
+    header: MARKET_TITLES[MarketColumnId.UserLiquidationRange],
+    cell: UserLiquidationRangeCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionDistance, {
+    id: MarketColumnId.UserDistanceToRange,
+    header: MARKET_TITLES[MarketColumnId.UserDistanceToRange],
+    cell: UserDistanceToRangeCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionBandCount, {
+    id: MarketColumnId.UserBandCount,
+    header: MARKET_TITLES[MarketColumnId.UserBandCount],
+    cell: UserBandCountCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionCollateralShare, {
+    id: MarketColumnId.UserCollateralComposition,
+    header: MARKET_TITLES[MarketColumnId.UserCollateralComposition],
+    cell: UserCollateralCompositionCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
@@ -141,17 +234,14 @@ export const MARKET_COLUMNS = columnHelper.columns([
     header: MARKET_TITLES[MarketColumnId.BorrowChart],
     cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
-  columnHelper.accessor<(row: LlamaMarketRow) => LlamaMarketRow['leverage'], LlamaMarketRow['leverage']>(
-    row => row.leverage,
-    {
-      id: MarketColumnId.MaxLeverage,
-      header: MARKET_TITLES[MarketColumnId.MaxLeverage],
-      cell: MaxLeverageCell,
-      meta: { type: 'numeric' },
-      sortUndefined: 'last',
-    },
-  ),
-  columnHelper.accessor(getMaxReturnOnEquity, {
+  columnHelper.accessor<(row: LlamaMarketRow) => number | Nullish, number | Nullish>(getMaxLeverageSortValue, {
+    id: MarketColumnId.MaxLeverage,
+    header: MARKET_TITLES[MarketColumnId.MaxLeverage],
+    cell: MaxLeverageCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(maxRoeSortValue, {
     id: MarketColumnId.MaxReturnOnEquity,
     header: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
     cell: MaxReturnOnEquityCell,

@@ -3,6 +3,7 @@ export enum MarketType {
   Lend = 'Lend',
 }
 
+/** How a market's assets move together. Missing means the market has no explicit assignment. */
 export enum MarketAssetsType {
   Correlated = 'correlated', // Assets expected to maintain a close price relationship.
   BlueChip = 'blue-chip', // A pair of established assets with deep and reliable liquidity and substantial trading activity.

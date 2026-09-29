@@ -11,7 +11,7 @@
     "lint": "eslint --cache --cache-location ../.cache/eslint/tests --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../.cache/eslint/tests --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../.cache/typecheck/tests.tsbuildinfo",
-    "test": "vitest run",
+    "test": "node ../node_modules/vitest/vitest.mjs run",
     "test:ui": "vitest --ui",
     "vitest:watch": "vitest --watch",
     "cy": "cypress",

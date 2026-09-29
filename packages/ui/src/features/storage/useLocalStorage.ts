@@ -44,6 +44,9 @@ export const useReleaseChannel = () =>
     oldKey: 'beta',
   })
 
+export const useLlamalendPrototypeTourSeen = (surface: 'list' | 'positions' | 'borrow' | 'supply', version: number) =>
+  useLocalStorage<boolean>(`llamalend-prototype-tour-${surface}`, false, { version })
+
 type RateType = 'borrow' | 'supply'
 
 export const useShowNetRate = (type: RateType) =>

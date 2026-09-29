@@ -1,3 +1,4 @@
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { MAINNET_CRV } from '@evm-ui/utils'
@@ -48,6 +49,7 @@ export const MarketSupplyRateTooltipContent = ({
   rebasingSymbol,
   isLoading,
 }: MarketSupplyRateTooltipContentProps) => {
+  const beta = useNewLlamalendHealth()
   const hasIncentives = !!(extraRewards.length || extraIncentives.length)
   const hasRebasingYield = rebasingYieldApy != null
   const showBoostRow = boost.type === 'market' && !!boost.apy
@@ -55,7 +57,11 @@ export const MarketSupplyRateTooltipContent = ({
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`The net supply rate is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`}
+        text={
+          beta
+            ? t`Supply APY is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`
+            : t`The net supply rate is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`
+        }
       />
 
       <Stack>

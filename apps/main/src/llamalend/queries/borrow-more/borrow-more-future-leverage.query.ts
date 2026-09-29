@@ -1,7 +1,9 @@
+import { useBorrowMoreCardLeverage } from '@/llamalend/position-metrics/use-card-metrics'
 import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -63,7 +65,9 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
 
 /** Returns the future leverage for borrowing more, when `params` are valid. Otherwise, returns the current leverage */
 export function useBorrowMoreLeverage(params: BorrowMoreParams) {
+  const beta = useNewLlamalendHealth()
   const current = useUserCurrentLeverage(params)
   const future = useBorrowMoreFutureLeverage(params)
-  return q(future.isEnabled ? future : current)
+  const card = useBorrowMoreCardLeverage(params)
+  return beta ? card : q(future.isEnabled ? future : current)
 }

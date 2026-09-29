@@ -1,4 +1,9 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import {
+  useCardLeverage,
+  useCardReturnOnEquity,
+  useBorrowMoreCardLeverage,
+} from '@/llamalend/position-metrics/use-card-metrics'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
@@ -12,6 +17,7 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -23,7 +29,6 @@ import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLev
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
-  values: { userCollateral, debt },
   tokens: { collateralToken, borrowToken },
   leverageEnabled,
   form,
@@ -38,10 +43,17 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   leverageEnabled: boolean | undefined
   form: UseFormReturn<BorrowMoreForm>
 }) {
+  const beta = useNewLlamalendHealth()
   const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')
+  const cardLeverage = useCardLeverage(params, isOpen && beta)
+  const cardFutureLeverage = useBorrowMoreCardLeverage(params, isOpen)
+  const cardRoe = useCardReturnOnEquity(params, isOpen && beta)
+  const sdkLeverage = useUserCurrentLeverage(params, isOpen)
+  const sdkFutureLeverage = useBorrowMoreFutureLeverage(params, isOpen)
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
 
+  const { debt, userCollateral } = params
   const expectedCollateralQuery = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
   const totalCollateral = expectedCollateralQuery.data?.totalCollateral
   const collateralDelta = leverageEnabled ? totalCollateral : userCollateral
@@ -62,22 +74,23 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             collateralToken,
             borrowToken,
             collateralDelta,
-            expectedBorrowed: prevDebt.data && decimalSum(prevDebt.data, debt),
+            expectedBorrowed: prevDebt.data && decimalSum(prevDebt.data, debt ?? undefined),
           },
           isOpen,
         ),
       )}
-      debt={mapQuery(prevDebt, stateDebt => decimalSum(stateDebt, debt))}
+      debt={mapQuery(prevDebt, stateDebt => decimalSum(stateDebt, debt ?? undefined))}
+      positionRoe={beta ? cardRoe : undefined}
       {...getLeverageInfoFields({
         leverageEnabled,
-        leverageValue: useBorrowMoreFutureLeverage(params, isOpen),
-        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        leverageValue: beta ? cardFutureLeverage : sdkFutureLeverage,
+        prevLeverageValue: beta ? cardLeverage : sdkLeverage,
         prevCollateral,
         leverageTotalCollateral: combineQueries(
           [prevCollateral, expectedCollateralQuery],
           (prevCollateral, { totalCollateral }) => maybes([totalCollateral, prevCollateral], decimalSum),
         ),
-        collateralDelta,
+        collateralDelta: collateralDelta ?? undefined,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta: debt }, isOpen)}
       {...prevLoanState}

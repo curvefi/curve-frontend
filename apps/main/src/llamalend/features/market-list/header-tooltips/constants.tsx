@@ -10,7 +10,7 @@ export const BORROW_APR_DESCRIPTION: Record<MarketType, ReactNode> = {
   ),
   [MarketType.Mint]: (
     <Trans>
-      For <strong>minting markets</strong> it varies according to the the peg of crvUSD.
+      For <strong>minting markets</strong> it varies according to the peg of crvUSD.
     </Trans>
   ),
 }

@@ -1,3 +1,4 @@
+import { useState, type ReactNode } from 'react'
 import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
@@ -17,7 +18,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { constQ, type Range } from '@ui/features/queries/util'
 import { ReleaseChannel } from '@ui/lib/env'
 import { BorrowPositionDetails } from './'
@@ -94,7 +95,7 @@ const BorrowPositionDetailsStory = ({
         },
       }}
     >
-      <TestQueryProvider
+      <OfflineQueries
         data={[
           [getMarketOraclePriceBandKey(params), oraclePriceBand],
           [getUserCurrentLeverageKey(params), '1'],
@@ -112,9 +113,35 @@ const BorrowPositionDetailsStory = ({
         ]}
       >
         <BorrowPositionDetails />
-      </TestQueryProvider>
+      </OfflineQueries>
     </MarketContext>
   )
+}
+
+/** Seeded queries stay fresh. Anything without a fixture rejects instead of calling a network. */
+const OfflineQueries = ({
+  children,
+  data,
+}: {
+  children: ReactNode
+  data: Parameters<QueryClient['setQueryData']>[]
+}) => {
+  const [client] = useState(() => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+          staleTime: Infinity,
+          refetchOnMount: false,
+          refetchOnWindowFocus: false,
+          queryFn: () => Promise.reject(new Error('Offline story has no fixture for this query.')),
+        },
+      },
+    })
+    data.forEach(([key, value]) => queryClient.setQueryData(key, value))
+    return queryClient
+  })
+  return <QueryClientProvider client={client}>{children}</QueryClientProvider>
 }
 
 const meta: Meta<typeof BorrowPositionDetailsStory> = {
@@ -149,7 +176,12 @@ type Story = StoryObj<typeof BorrowPositionDetailsStory>
 export const Healthy: Story = {
   args: baseProps,
   parameters: {
-    docs: { description: { story: 'Position above the liquidation range with a positive above-band cushion.' } },
+    docs: {
+      description: {
+        story:
+          'Sample data, not a live position. Price is above the range. Status and liquidation buffer use the seeded full Controller health.',
+      },
+    },
   },
 }
 

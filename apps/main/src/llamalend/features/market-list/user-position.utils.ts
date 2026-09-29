@@ -1,10 +1,28 @@
 import { sum } from 'lodash'
+import {
+  collateralTokenValue,
+  collateralValue,
+  compositionShares,
+  equity,
+  equityLeverage,
+  oracleHealth,
+  priceDistance,
+} from '@/llamalend/features/market-position-details/position-metrics.utils'
+import {
+  positionReturnOnEquity,
+  type YieldInput,
+} from '@/llamalend/features/market-position-details/position-roe.utils'
+import { resolvePositionStatus } from '@/llamalend/features/market-position-details/position-status.utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
+import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { sumCampaignsApr } from '@/llamalend/rates.utils'
+import { requireChainId } from '@evm-ui/utils'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
+import { ZERO, decimal, decimalDiv, decimalEqual } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
@@ -37,6 +55,153 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
 }
 
 export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
+
+/** Card Health: max(oracle / user-range upper, 1). Undefined until those reads settle. */
+export const getUserPositionOracleHealth = ({ positionQueries }: LlamaMarketRow) => {
+  const oracle = positionQueries.risk.oracle.data
+  const prices = positionQueries.risk.prices.data
+  if (!oracle || !prices) return undefined
+  return maybe(oracleHealth(oracle, prices[1]), value => Number(value))
+}
+
+/** Card liquidation buffer: Controller userHealth(full), in percentage points. */
+export const getUserPositionBuffer = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.risk.fullHealth.data, value => Number(value))
+
+export const getUserPositionRangeUpper = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.risk.prices.data?.[1], value => Number(value))
+
+export const getUserPositionPriceDistance = ({ positionQueries }: LlamaMarketRow) => {
+  const oracle = positionQueries.risk.oracle.data
+  const prices = positionQueries.risk.prices.data
+  if (!oracle || !prices) return undefined
+  return priceDistance(oracle, prices[1], prices[0])
+}
+
+/** True when the oracle is inside the user's liquidation range, including either boundary. */
+export const isUserPositionInRange = (row: LlamaMarketRow) => getUserPositionPriceDistance(row)?.location === 'inside'
+
+/** Percent away from the range. Inside is 0. Unknown positions sort last. */
+export const getUserPositionDistance = (row: LlamaMarketRow) => {
+  const distance = getUserPositionPriceDistance(row)
+  if (!distance || distance.location === 'unavailable') return undefined
+  if (distance.location === 'inside') return 0
+  return Number(distance.percent)
+}
+
+/** Inclusive band count between the user's n1 and n2 indexes. */
+export const getUserPositionBandCount = ({ positionQueries }: LlamaMarketRow) => {
+  const stats = positionQueries.stats.data
+  if (!stats) return undefined
+  return Math.abs(stats.n1 - stats.n2) + 1
+}
+
+/** Current collateral and converted-borrow shares. Undefined when the position value is zero. */
+export const getUserPositionComposition = (row: LlamaMarketRow) => {
+  const stats = row.positionQueries.stats.data
+  if (!stats) return undefined
+  const oracle = decimal(stats.oraclePrice)
+  const collateral = decimal(stats.collateral)
+  const borrowed = decimal(stats.borrowToken)
+  if (oracle == undefined || collateral == undefined || borrowed == undefined) return undefined
+  return compositionShares(collateralTokenValue(collateral, oracle), borrowed, collateralValue(collateral, oracle, borrowed))
+}
+
+/** Collateral share of the position's current value, used to sort composition. */
+export const getUserPositionCollateralShare = (row: LlamaMarketRow) =>
+  maybe(getUserPositionComposition(row), shares => Number(shares.collateralExact))
+
+const aprFraction = (percentagePoints: number | Nullish): YieldInput => {
+  if (percentagePoints == null) return { unavailable: true }
+  const points = decimal(percentagePoints)
+  const hundred = decimal('100')
+  if (points == undefined || hundred == undefined) return { unavailable: true }
+  const fraction = decimalDiv(points, hundred)
+  return fraction == undefined ? { unavailable: true } : { aprFraction: fraction }
+}
+
+/** Position return on equity, the same balance formula as the position card. Undefined until the inputs exist. */
+export const getUserPositionRoeResult = (row: LlamaMarketRow) => {
+  const stats = row.positionQueries.stats.data
+  if (!stats) return undefined
+  const oracle = decimal(stats.oraclePrice)
+  const collateral = decimal(stats.collateral)
+  const borrowed = decimal(stats.borrowToken)
+  const debt = decimal(stats.borrowed)
+  if (oracle == undefined || collateral == undefined || borrowed == undefined || debt == undefined) return undefined
+  const tokenValue = collateralTokenValue(collateral, oracle)
+  const equityAmount = equity(collateralValue(collateral, oracle, borrowed), debt)
+  const collateralApr = row.assets.collateral.rebasingYieldApr
+  const borrowedApr = row.assets.borrowed.rebasingYieldApr
+  const result = positionReturnOnEquity({
+    collateralValue: tokenValue,
+    borrowedValue: borrowed,
+    debt,
+    equity: equityAmount,
+    collateralYield: decimalEqual(tokenValue, ZERO) ? { unnecessary: true } : aprFraction(collateralApr),
+    borrowedYield: decimalEqual(borrowed, ZERO) ? { unnecessary: true } : aprFraction(borrowedApr),
+    borrowCost: decimalEqual(debt, ZERO) ? { unnecessary: true } : aprFraction(row.rates.borrowApr),
+    rewards: { unnecessary: true },
+  })
+  return result.status === 'value' ? result : undefined
+}
+
+/** APR percent used to sort the RoE column. Unknown positions sort last. */
+export const getUserPositionRoe = (row: LlamaMarketRow) => {
+  const result = getUserPositionRoeResult(row)
+  return result ? Number(result.aprPercent) : undefined
+}
+
+/** Uses the position card's collateral exposure over equity formula. */
+export const getUserPositionLeverage = ({ positionQueries }: LlamaMarketRow) => {
+  const stats = positionQueries.stats.data
+  if (!stats) return undefined
+  const collateral = decimal(stats.collateral)
+  const oracle = decimal(stats.oraclePrice)
+  const borrowed = decimal(stats.borrowToken)
+  const debt = decimal(stats.borrowed)
+  if (collateral == undefined || oracle == undefined || borrowed == undefined || debt == undefined) return undefined
+  return maybe(equityLeverage(collateral, oracle, borrowed, debt), value => Number(value))
+}
+
+/** Beta sorts by the oracle ratio and leaves unknowns last. Flag-off keeps the old percentage. */
+export const getHealthColumnSortValue = (row: LlamaMarketRow) =>
+  row.positionQueries.risk.beta ? getUserPositionOracleHealth(row) : getUserPositionHealth(row)
+
+export const getUserPositionStatus = (row: LlamaMarketRow) => {
+  const { oracle, prices, fullHealth } = row.positionQueries.risk
+  const collateral = row.positionQueries.stats.data?.collateral
+  const quantity = decimal(collateral)
+  if (!oracle.data || !prices.data || fullHealth.data == undefined || quantity == undefined) return undefined
+  return resolvePositionStatus({
+    oraclePrice: oracle.data,
+    upperPrice: prices.data[1],
+    lowerPrice: prices.data[0],
+    fullHealth: fullHealth.data,
+    collateralQuantity: quantity,
+    liquidationPredicate: 'strict-negative',
+    assetsType: getMarketAssetsType(requireChainId(row.chain), row.controllerAddress),
+  })
+}
+
+/** Supplied assets as a percent of the vault's total assets. */
+export const getUserSupplyShare = (row: LlamaMarketRow) => {
+  const supplied = row.lendingPosition?.supplied
+  if (supplied == null) return undefined
+  const totalAssets = row.liquidity + row.assets.borrowed.balance
+  if (!Number.isFinite(totalAssets) || totalAssets <= 0) return undefined
+  return (supplied / totalAssets) * 100
+}
+
+/** CRV at the user's boost, plus other supply incentive APRs. */
+export const getSupplyIncentivesApr = (row: LlamaMarketRow) => {
+  const unboosted = row.rates.lendCrvAprUnboosted
+  const boost = row.lendingPosition?.boostMultiplier
+  const crvApr = unboosted == null ? 0 : boost != null && boost > 0 ? unboosted * boost : unboosted
+  const extraApr = sum(row.rates.incentives.map(incentive => incentive.percentage))
+  const campaignsApr = sumCampaignsApr(row.rewards.filter(reward => reward.action === 'supply')) ?? 0
+  return crvApr + extraApr + campaignsApr
+}
 
 const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied
