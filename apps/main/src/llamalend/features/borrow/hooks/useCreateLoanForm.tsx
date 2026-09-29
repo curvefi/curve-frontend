@@ -157,7 +157,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     chainId,
     userAddress,
     marketId,
-    approvalQuery: q(isControllerApproved),
+    approval: q(isControllerApproved),
     handleFormSubmit: form.handleSubmit,
     onSubmit: onMutationSubmit,
   })

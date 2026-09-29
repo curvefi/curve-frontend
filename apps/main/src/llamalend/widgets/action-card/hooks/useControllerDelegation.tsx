@@ -8,22 +8,22 @@ export function useControllerDelegation<T extends FieldValues>({
   chainId,
   userAddress,
   marketId,
-  approvalQuery,
+  approval,
   handleFormSubmit,
   onSubmit,
 }: {
   chainId: number
   userAddress: Address | undefined
   marketId: string | undefined
-  approvalQuery: QueryProp<boolean>
+  approval: QueryProp<boolean>
   handleFormSubmit: UseFormHandleSubmit<T>
   onSubmit: (values: T) => void | Promise<void>
 }) {
   const [isOpen, openModal, closeModal] = useSwitch(false)
   return {
     onSubmit: (values: T) => {
-      if (approvalQuery.data === false) openModal()
-      else if (approvalQuery.data === true) void onSubmit(values)
+      if (approval.data === false) openModal()
+      else if (approval.data === true) void onSubmit(values)
     },
     modal: {
       open: isOpen,

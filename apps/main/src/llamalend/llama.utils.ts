@@ -95,10 +95,11 @@ const hasV1Deleverage = (market: MarketTemplate) =>
 
 export const hasDeleverage = (market: MarketTemplate) => hasZapV2(market) || hasV1Deleverage(market)
 
-const isV2Market = (market: MarketTemplate | Nullish): market is LendMarketTemplate<'v2'> =>
-  market instanceof LendMarketTemplate && market.version === 'v2'
+const isV2Market = (market: MarketTemplate | Nullish) =>
+  maybe(market, market => market instanceof LendMarketTemplate && market.version === 'v2')
 
-export const hasResetPosition = (market: MarketTemplate | Nullish) => isV2Market(market)
+export const hasResetPosition = (market: MarketTemplate | Nullish): market is LendMarketTemplate<'v2'> =>
+  isV2Market(market) === true
 
 /**
  * Check if an open position is a leveraged position, using the leverage value.
