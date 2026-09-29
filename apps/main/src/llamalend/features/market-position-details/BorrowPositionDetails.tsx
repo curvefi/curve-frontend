@@ -18,8 +18,8 @@ import { LegacyHealthDetails } from './health/LegacyHealthDetails'
 
 const { Spacing } = SizesAndSpaces
 
-const HEALTH_LEAD_AREAS = `"health range buffer collateral" "status debt leverage roe"`
-const MOBILE_HEALTH_AREAS = `"health status" "range range" "buffer buffer" "collateral collateral" "debt debt" "leverage leverage" "roe roe"`
+const HEALTH_LEAD_AREAS = `"health range buffer leverage" "status debt collateral roe"`
+const MOBILE_HEALTH_AREAS = `"health status" "range range" "buffer buffer" "leverage leverage" "debt debt" "collateral collateral" "roe roe"`
 
 export const BorrowPositionDetails = () => {
   const { chainId, marketId, tokens, userAddress } = useMarketContext()

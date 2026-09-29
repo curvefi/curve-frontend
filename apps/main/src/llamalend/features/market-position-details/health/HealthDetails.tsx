@@ -169,7 +169,11 @@ const BetaHealthDetails = () => {
     healthValue.data != undefined && isOracleHealthFloor(healthValue.data)
       ? theme.design.Text.TextColors.Feedback.Error
       : statusColor
-  const bufferColor = statusColor
+  const bufferIsRed =
+    status?.severity === 'critical' ||
+    status?.severity === 'liquidatable' ||
+    status?.bufferWarning?.severity === 'critical'
+  const bufferColor = bufferIsRed ? theme.design.Text.TextColors.Feedback.Error : undefined
   return (
     <>
       <Box sx={{ gridArea: 'health' }} data-testid="beta-health-details">
@@ -233,14 +237,6 @@ const BetaHealthDetails = () => {
         />
         {status?.bufferUnavailable && (
           <Typography variant="bodyXsRegular" color="textSecondary" data-testid="buffer-unavailable">{t`Buffer unavailable`}</Typography>
-        )}
-        {status?.bufferWarning && (
-          <Badge
-            data-testid="buffer-warning"
-            size="extraSmall"
-            color={STATUS_BADGE_COLOR[status.bufferWarning.severity]}
-            label={status.bufferWarning.label}
-          />
         )}
       </Box>
     </>

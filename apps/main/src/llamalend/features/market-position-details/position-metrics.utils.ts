@@ -155,7 +155,7 @@ export const formatSignedAmount = (value: Decimal): string => {
   return BigNumber(value).toFixed(2)
 }
 
-/** Same text as the position-card range notional. Inside is the label; outside is the percent plus its direction. */
+/** Inside is the label. Outside is the percent plus its direction. */
 export const rangeDistanceNotional = (distance: PriceDistance): string | undefined => {
   if (distance.location === 'unavailable') return undefined
   if (distance.location === 'inside') return distance.label

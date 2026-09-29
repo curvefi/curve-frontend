@@ -28,7 +28,7 @@ type Surface = 'list' | 'borrow' | 'supply'
 type Guide = Surface | 'positions'
 type TourStep = { element: NonNullable<DriveStep['element']>; title: string; content: ReactNode }
 
-const CONTENT_VERSIONS: Record<Guide, number> = { list: 4, positions: 9, borrow: 4, supply: 3 }
+const CONTENT_VERSIONS: Record<Guide, number> = { list: 4, positions: 9, borrow: 5, supply: 3 }
 const target = (testId: string) => document.querySelector(`[data-testid="${testId}"]`)
 const within = (element: Element | null, testId: string) => element?.querySelector(`[data-testid="${testId}"]`)
 const targetSelector = (testId: string) => `[data-testid="${testId}"]`
@@ -334,11 +334,11 @@ const borrowSteps = (): TourStep[] | undefined => {
     ),
     {
       element: withinSelector('beta-position-card', 'liquidation-range'),
-      title: t`Liquidation range`,
+      title: t`Distance to range`,
       content: (
         <Stack spacing={1}>
           <Change>
-            {t`Previously, the card showed one Liquidation threshold and its distance. Now it shows both edges of the Liquidation range. Conversions may occur both ways; losses need not recover when the price recovers. The lower edge is not the hard-liquidation price.`}
+            {t`The main figure is how far the oracle is from the range, or In range. The range itself sits underneath.`}
           </Change>
           <MathBlock>
             <RangeEquations />

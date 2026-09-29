@@ -268,7 +268,7 @@ export const rangeTooltip = ({
   bandRange?: string
 }) => ({
   ...tooltipChrome,
-  title: t`Liquidation range`,
+  title: t`Distance to range`,
   body: (
     <TooltipWrapper>
       <TooltipDescription

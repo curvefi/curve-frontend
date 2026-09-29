@@ -43,8 +43,8 @@ import {
   compositionShares,
   equity,
   equityLeverage,
+  formatDistancePercent,
   priceDistance,
-  rangeDistanceNotional,
 } from './position-metrics.utils'
 import { formatYieldMultiplier, positionReturnOnEquity } from './position-roe.utils'
 import { collateralTooltip, debtTooltip, leverageTooltip, rangeTooltip, roeTooltip } from './PositionMetricTooltip'
@@ -235,25 +235,24 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
       <Box sx={{ gridArea: 'range' }} data-testid="beta-borrow-information">
         <Metric
           category={METRIC_CATEGORY}
-          label={t`Liquidation range`}
+          label={t`Distance to range`}
           testId="liquidation-range"
-          value={keepDisplayedValue(mapQuery(userPrices, prices => prices?.[1]))}
+          value={keepDisplayedValue(mapQuery(distance, value => (value ? 1 : undefined)))}
           valueOptions={{
-            abbreviate: true,
-            unit: { symbol: priceUnit, position: 'suffix' },
+            abbreviate: false,
             formatter: () => {
-              const prices = userPrices.data
-              if (!prices) return ''
-              return `${formatNumber(prices[1], { abbreviate: true })}–${formatNumber(prices[0], { abbreviate: true })}`
+              const value = distance.data
+              if (!value || value.location === 'unavailable') return t`Unavailable`
+              if (value.location === 'inside') return t`In range`
+              return formatDistancePercent(value.percent)
             },
           }}
           sx={{ whiteSpace: 'nowrap' }}
-          notional={mapQuery(distance, value => {
-            if (!value) return undefined
-            if (value.location === 'unavailable') return t`Unavailable`
-            if (value.location === 'inside') return t`In range`
-            return rangeDistanceNotional(value)
-          })}
+          notional={mapQuery(userPrices, prices =>
+            prices
+              ? `${formatNumber(prices[1], { abbreviate: true })}–${formatNumber(prices[0], { abbreviate: true })} ${priceUnit}`
+              : undefined,
+          )}
           valueTooltip={rangeTooltip({
             pair: priceUnit,
             upper: userPrices.data ? formatNumber(userPrices.data[1], { abbreviate: true }) : undefined,
