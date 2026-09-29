@@ -5,11 +5,11 @@ import type { Hex } from '@primitives/address.utils'
 import { createWagmiConfig } from './wagmi-config'
 import { createTestConnector } from './wagmi-test'
 
-type CreateTestWagmiConfigOptions = { privateKey?: Hex }
+type CreateTestWagmiConfigOptions = { account?: Hex }
 
-export const createTestWagmiConfig = ({ privateKey = generatePrivateKey() }: CreateTestWagmiConfigOptions = {}) =>
+export const createTestWagmiConfig = ({ account = generatePrivateKey() }: CreateTestWagmiConfigOptions = {}) =>
   createWagmiConfig({
     chains: [mainnet],
-    connectors: [createTestConnector({ privateKey, chain: mainnet })],
+    connectors: [createTestConnector({ account, chain: mainnet })],
     transports: { [mainnet.id]: http() },
   })

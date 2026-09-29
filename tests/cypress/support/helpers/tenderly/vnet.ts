@@ -34,18 +34,19 @@ export const getRpcUrls = (
 
 export type TenderlyWagmiConfigFromVNet = {
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
-  privateKey?: Hex
+  /** A 32-byte private key or a 20-byte address to impersonate */
+  account?: Hex
 }
 
 export function createTenderlyWagmiConfigFromVNet({
   vnet,
-  privateKey = generatePrivateKey(),
+  account = generatePrivateKey(),
 }: TenderlyWagmiConfigFromVNet) {
   const tenderlyAccount = getTenderlyAccount()
   const { publicRpcUrl } = getRpcUrls(vnet)
   resetWagmiConfigForTests() // fixes issues with wagmi reconnect in tests
   return createTenderlyWagmiConfig({
-    privateKey,
+    account,
     rpcUrl: publicRpcUrl,
     explorerUrl: publicRpcUrl,
     chainId: vnet.fork_config.network_id,

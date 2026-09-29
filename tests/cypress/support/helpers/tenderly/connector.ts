@@ -1,4 +1,4 @@
-import { custom, PrivateKeyAccount, type RpcTransactionRequest } from 'viem'
+import { custom, type Address, type RpcTransactionRequest } from 'viem'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 import { createTestConnector, CreateTestConnectorOptions } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test'
 import { sendVnetTransaction } from './vnet-tx'
@@ -7,11 +7,11 @@ import { sendVnetTransaction } from './vnet-tx'
  * Creates a custom transport that intercepts JSON-RPC requests to handle account retrieval and
  * transaction sending via Tenderly Virtual Testnet Admin API.
  */
-const tenderlyTransport = (account: PrivateKeyAccount, tenderly: TenderlyConfig) =>
+const tenderlyTransport = (address: Address, tenderly: TenderlyConfig) =>
   custom({
     request: async ({ method, params: [param] }): Promise<unknown> => {
       if (method === 'eth_accounts') {
-        return [account.address]
+        return [address]
       }
       if (method === 'eth_sendTransaction') {
         return await sendVnetTransaction({ tenderly, tx: param as RpcTransactionRequest }).catch(err => {
@@ -27,7 +27,7 @@ const tenderlyTransport = (account: PrivateKeyAccount, tenderly: TenderlyConfig)
 export const createTenderlyConnector = ({
   tenderly,
   ...opts
-}: Pick<CreateTestConnectorOptions, 'privateKey' | 'chain'> & {
+}: Pick<CreateTestConnectorOptions, 'account' | 'chain'> & {
   /** Tenderly configuration for the Virtual Testnet */
   tenderly: TenderlyConfig
-}) => createTestConnector({ ...opts, transport: account => tenderlyTransport(account, tenderly) })
+}) => createTestConnector({ ...opts, transport: account => tenderlyTransport(account.address, tenderly) })
