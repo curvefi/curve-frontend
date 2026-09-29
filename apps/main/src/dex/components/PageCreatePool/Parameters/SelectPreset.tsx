@@ -225,6 +225,21 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
               <>
                 <SelectButtonWrapper>
                   <SelectButton
+                    selected={poolPresetIndex === 10}
+                    name={POOL_PRESETS[10].name}
+                    descriptionName={t(POOL_PRESETS[10].descriptionName)}
+                    description={t(POOL_PRESETS[10].description)}
+                    handleClick={() => {
+                      updatePoolPresetIndex(10)
+                      setMidValue(t(POOL_PRESETS[10].defaultParams.midFee))
+                      setOutValue(t(POOL_PRESETS[10].defaultParams.outFee))
+                      overlayTriggerState.close()
+                    }}
+                    paddingSize="small"
+                  />
+                </SelectButtonWrapper>
+                <SelectButtonWrapper>
+                  <SelectButton
                     selected={poolPresetIndex === 9}
                     name={POOL_PRESETS[9].name}
                     descriptionName={t(POOL_PRESETS[9].descriptionName)}

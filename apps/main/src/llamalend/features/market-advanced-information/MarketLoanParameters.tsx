@@ -130,7 +130,7 @@ export const MarketLoanParameters = ({
   )
 }
 
-export const MarketMaxLtvRow = ({
+const MarketMaxLtvRow = ({
   chainId,
   marketId,
   apiMarket,
