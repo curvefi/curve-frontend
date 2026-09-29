@@ -3,7 +3,6 @@ import { ClosePositionInfoList } from '@/llamalend/features/manage-liquidation/u
 import { useMarketContext } from '@/llamalend/features/market-context'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
-import { getFormButtonLabel } from '@/llamalend/widgets/action-card/utils'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
@@ -79,10 +78,11 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
       <EvmFormButton
         pending={isPending}
         disabled={isDisabled}
-        label={getFormButtonLabel({
-          isApproved,
-          labels: [hasBadDebt ? t`Repay bad debt` : t`Repay debt`, !hasBadDebt && t`Recover collateral`],
-        })}
+        label={[
+          isApproved?.data === false && t`Approve`,
+          hasBadDebt ? t`Repay bad debt` : t`Repay debt`,
+          !hasBadDebt && t`Recover collateral`,
+        ]}
         testId="close-position-submit-button"
       />
 

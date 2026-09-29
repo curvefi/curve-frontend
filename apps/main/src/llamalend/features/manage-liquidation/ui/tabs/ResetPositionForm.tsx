@@ -3,7 +3,6 @@ import { ResetPositionInfoList } from '@/llamalend/features/manage-liquidation/u
 import { useMarketContext } from '@/llamalend/features/market-context'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
-import { getFormButtonLabel } from '@/llamalend/widgets/action-card/utils'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
@@ -78,7 +77,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled}
-        label={getFormButtonLabel({ isApproved, labels: [t`Reset position`] })}
+        label={[isApproved?.data === false && t`Approve`, t`Reset position`]}
         testId="reset-position-submit-button"
       />
 

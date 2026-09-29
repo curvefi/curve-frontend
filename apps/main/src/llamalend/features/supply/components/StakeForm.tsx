@@ -1,7 +1,6 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
-import { getFormButtonLabel } from '@/llamalend/widgets/action-card/utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
@@ -71,7 +70,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled}
-        label={getFormButtonLabel({ isApproved, labels: [t`Stake`] })}
+        label={[isApproved?.data === false && t`Approve`, t`Stake`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
       >
         {hasGauge ? disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm> : <AlertNoGauge />}

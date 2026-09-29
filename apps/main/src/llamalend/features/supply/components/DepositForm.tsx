@@ -1,7 +1,6 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
-import { getFormButtonLabel } from '@/llamalend/widgets/action-card/utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
@@ -64,7 +63,7 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled}
-        label={getFormButtonLabel({ isApproved, labels: [t`Deposit`] })}
+        label={[isApproved?.data === false && t`Approve`, t`Deposit`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
         connectWalletTestId="form-market-page"
       >

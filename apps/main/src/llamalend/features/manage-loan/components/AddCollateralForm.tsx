@@ -1,6 +1,5 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
-import { getFormButtonLabel } from '@/llamalend/widgets/action-card/utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
@@ -79,7 +78,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         pending={isPending}
         loading={!marketId}
         disabled={isDisabled}
-        label={getFormButtonLabel({ isApproved, labels: [t`Add collateral`] })}
+        label={[isApproved?.data === false && t`Approve`, t`Add collateral`]}
         testId="add-collateral-submit-button"
       />
     </Form>

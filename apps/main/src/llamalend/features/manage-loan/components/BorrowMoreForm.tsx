@@ -8,7 +8,6 @@ import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/Leverag
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
-import { getFormButtonLabel } from '@/llamalend/widgets/action-card/utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
@@ -162,11 +161,11 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         pending={isPending}
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
-        label={getFormButtonLabel({
-          isControllerApproved,
-          isApproved,
-          labels: [Number(values.userCollateral) && t`Add`, t`Borrow More`],
-        })}
+        label={[
+          (isControllerApproved?.data === false || isApproved?.data === false) && t`Approve`,
+          Number(values.userCollateral) && t`Add`,
+          t`Borrow More`,
+        ]}
         testId="borrow-more-submit-button"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
