@@ -15,12 +15,14 @@ export const { useQuery: useRepayControllerApproval, fetchQuery: fetchRepayContr
     userBorrowed = '0',
   }: FieldsOf<UserMarketQuery & RepayFormFields>) =>
     [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayIsControllerApproved',
-      // The repayment implementation depends on which sources are used, not their amounts.
-      { stateCollateral: !!+(stateCollateral ?? '0') },
-      { userCollateral: !!+(userCollateral ?? '0') },
-      { userBorrowed: !!+(userBorrowed ?? '0') },
+      rootKeys.userMarket({ chainId, marketId, userAddress }),
+      {
+        name: 'repayIsControllerApproved',
+        // The repayment implementation depends on which sources are used, not their amounts.
+        stateCollateral: +(stateCollateral ?? '0') ? '1' : '0',
+        userCollateral: +(userCollateral ?? '0') ? '1' : '0',
+        userBorrowed: +(userBorrowed ?? '0') ? '1' : '0',
+      },
     ] as const,
   queryFn: async ({
     marketId,

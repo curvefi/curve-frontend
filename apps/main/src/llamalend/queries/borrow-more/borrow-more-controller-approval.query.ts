@@ -11,9 +11,8 @@ export const { useQuery: useBorrowMoreControllerApproval, fetchQuery: fetchBorro
   queryFactory({
     queryKey: ({ chainId, marketId, userAddress, leverageEnabled = false }: LeverageParams) =>
       [
-        ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-        'borrowMoreIsControllerApproved',
-        { leverageEnabled },
+        rootKeys.userMarket({ chainId, marketId, userAddress }),
+        { name: 'borrowMoreIsControllerApproved', leverageEnabled },
       ] as const,
     queryFn: async ({ marketId, userAddress, leverageEnabled }: LeverageQuery) => {
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)

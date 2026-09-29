@@ -11,9 +11,8 @@ export const { useQuery: useCreateLoanControllerApproval, fetchQuery: fetchCreat
   queryFactory({
     queryKey: ({ chainId, marketId, userAddress, leverageEnabled = false }: LeverageParams) =>
       [
-        ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-        'createLoanIsControllerApproved',
-        { leverageEnabled },
+        rootKeys.userMarket({ chainId, marketId, userAddress }),
+        { name: 'createLoanIsControllerApproved', leverageEnabled },
       ] as const,
     queryFn: async ({ marketId, userAddress, leverageEnabled }: LeverageQuery) => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)

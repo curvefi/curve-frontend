@@ -7,7 +7,7 @@ import { claimFeesValidationSuite } from './claim-fees.validation'
 
 export const { useQuery: useClaimableFees, invalidate: invalidateClaimableFees } = queryFactory({
   queryKey: ({ chainId, userAddress, token }: ClaimFeesParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'boosting.claimableFees', { token }] as const,
+    [rootKeys.userChain({ chainId, userAddress }), { name: 'boosting.claimableFees', token }] as const,
   queryFn: async ({ userAddress, token }: ClaimFeesQuery): Promise<Decimal> => {
     const { boosting } = requireLib('curveApi')
     const claimableMethods = {
