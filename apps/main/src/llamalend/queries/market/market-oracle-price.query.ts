@@ -5,7 +5,10 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useMarketOraclePrice, queryKey: getMarketOraclePriceKey } = queryFactory({
-  queryKey: (params: MarketParams) => ({ ...rootKeys.market(params), name: 'oraclePrice' }),
+  queryKey: ({ chainId, marketId }: MarketParams) => ({
+    ...rootKeys.market({ chainId, marketId }),
+    name: 'oraclePrice',
+  }),
   queryFn: async ({ marketId }: MarketQuery) => (await getPricesImplementation(marketId).oraclePrice()) as Decimal,
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,

@@ -1,7 +1,7 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
-import { isEmpty, notFalsy } from '@primitives/objects.utils'
+import { isEmpty, notFalsy, type Nullish } from '@primitives/objects.utils'
 import {
   type DefaultError,
   keepPreviousData,
@@ -19,8 +19,11 @@ import { formatTimeDiff } from '@ui/lib/time'
 import { validate } from '@ui/lib/validation/lib'
 import { FieldName, FieldsOf } from '@ui/lib/validation/types'
 
+/** Make sure we only use simple types for query keys, safe for caching and logging. */
+type QueryKeyItem = string | number | boolean | Nullish | readonly QueryKeyItem[]
+
 /** Scope and query-specific properties identifying a query. */
-type QueryKeyObject = Readonly<Record<string, unknown> & { name: string }>
+type QueryKeyObject = Readonly<Record<string, QueryKeyItem> & { name: string; version?: number }>
 
 /** The one-object key shape passed to TanStack Query. */
 type NormalizedQueryKey<TKey extends QueryKeyObject = QueryKeyObject> = readonly [TKey]

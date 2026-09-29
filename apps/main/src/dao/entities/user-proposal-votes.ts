@@ -42,7 +42,7 @@ const _fetchUserProposalVotes = async ({ userAddress }: { userAddress: string })
 }
 
 export const { useQuery: useUserProposalVotesQuery, invalidate: invalidateUserProposalVotesQuery } = queryFactory({
-  queryKey: (params: { userAddress: string }) => ({ name: 'user-proposal-votes', userAddress: params.userAddress }),
+  queryKey: ({ userAddress }: { userAddress: string }) => ({ name: 'user-proposal-votes', userAddress }),
   queryFn: _fetchUserProposalVotes,
   category: 'dao.user',
   validationSuite: EmptyValidationSuite,

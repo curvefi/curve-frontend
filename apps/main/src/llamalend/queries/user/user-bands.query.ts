@@ -11,7 +11,10 @@ const reverseBands = ([low, high]: number[]): Range<number> => [high, low]
  * Returns reversed bands [high, low] for UI display.
  */
 export const { useQuery: useUserBands, queryKey: getUserBandsKey } = queryFactory({
-  queryKey: (params: UserMarketParams) => ({ ...rootKeys.userMarket(params), name: 'userBands' }),
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    name: 'userBands',
+  }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     reverseBands(await getUserPositionImplementation(marketId).userBands(userAddress)),
   category: 'llamalend.user',

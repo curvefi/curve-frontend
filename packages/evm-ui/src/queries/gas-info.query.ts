@@ -102,8 +102,8 @@ const {
   fetchQuery: fetchGasInfoAndUpdateLibBase,
   setQueryData: setGasInfoAndUpdateLibBase,
 } = queryFactory({
-  queryKey: ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) => ({
-    ...rootKeys.chain(params),
+  queryKey: ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoParams) => ({
+    ...rootKeys.chain({ chainId }),
     name: 'gasInfo',
     gasPricesUrl,
     gasPricesUrlL2,

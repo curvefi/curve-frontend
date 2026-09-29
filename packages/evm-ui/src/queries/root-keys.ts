@@ -45,7 +45,7 @@ export const rootKeys = {
   contract: ({ blockchainId, contractAddress }: ContractParams) =>
     ({ ...rootKeys.chainName({ blockchainId }), contractAddress }) as const,
 
-  gauge: <T = number>(params: GaugeParams<T>) => rootKeys.pool(params),
+  gauge: <T = number>({ chainId, poolId }: GaugeParams<T>) => rootKeys.pool({ chainId, poolId }),
   token: ({ chainId, tokenAddress }: TokenParams) => ({ ...rootKeys.chain({ chainId }), tokenAddress }) as const,
 
   market: ({ chainId, marketId }: MarketParams) => ({ ...rootKeys.chain({ chainId }), marketId }) as const,

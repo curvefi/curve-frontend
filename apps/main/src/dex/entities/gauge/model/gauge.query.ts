@@ -16,14 +16,17 @@ export const {
   invalidate: invalidateDepositRewardAvailable,
   queryKey: getDepositRewardAvailableQueryKey,
 } = queryFactory({
-  queryKey: (params: GaugeParams) => ({ ...rootKeys.gauge(params), name: 'isDepositRewardAvailable' }),
+  queryKey: ({ chainId, poolId }: GaugeParams) => ({
+    ...rootKeys.gauge({ chainId, poolId }),
+    name: 'isDepositRewardAvailable',
+  }),
   queryFn: async ({ poolId }: GaugeQuery) => getGauge(poolId).isDepositRewardAvailable(),
   validationSuite: poolValidationSuite,
   category: 'dex.gauge',
 })
 
 export const { useQuery: useGaugeManager } = queryFactory({
-  queryKey: (params: GaugeParams) => ({ ...rootKeys.gauge(params), name: 'manager' }),
+  queryKey: ({ chainId, poolId }: GaugeParams) => ({ ...rootKeys.gauge({ chainId, poolId }), name: 'manager' }),
   queryFn: async ({ poolId }: GaugeQuery): Promise<Address | null> => {
     const gaugeManager = (await getGauge(poolId).gaugeManager()) as Address | null
     return gaugeManager === zeroAddress ? null : gaugeManager
@@ -33,8 +36,8 @@ export const { useQuery: useGaugeManager } = queryFactory({
 })
 
 export const { useQuery: useGaugeRewardsDistributors, invalidate: invalidateGaugeDistributors } = queryFactory({
-  queryKey: ({ userAddress, ...params }: GaugeDistributorsParams) => ({
-    ...rootKeys.gauge(params),
+  queryKey: ({ chainId, poolId, userAddress }: GaugeDistributorsParams) => ({
+    ...rootKeys.gauge({ chainId, poolId }),
     ...rootKeys.user({ userAddress }),
     name: 'distributors',
   }),
@@ -49,8 +52,8 @@ export const {
   fetchQuery: fetchDepositRewardIsApproved,
   queryKey: getDepositRewardIsApprovedQueryKey,
 } = queryFactory({
-  queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) => ({
-    ...rootKeys.gauge(gaugeParams),
+  queryKey: ({ chainId, poolId, rewardTokenId, amount }: DepositRewardApproveParams) => ({
+    ...rootKeys.gauge({ chainId, poolId }),
     name: 'depositRewardIsApproved',
     rewardTokenId,
     amount,

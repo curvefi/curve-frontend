@@ -12,11 +12,11 @@ type MarketParticipantsParams = FieldsOf<MarketParticipantsQuery>
 type MarketBorrowersQuery = MarketParticipantsQuery & { marketType: MarketType }
 
 export const { useQuery: useMarketBorrowers } = queryFactory({
-  queryKey: ({ marketType, ...params }: FieldsOf<MarketBorrowersQuery>) => ({
-    ...rootKeys.contract(params),
+  queryKey: ({ blockchainId, contractAddress, page, perPage, marketType }: FieldsOf<MarketBorrowersQuery>) => ({
+    ...rootKeys.contract({ blockchainId, contractAddress }),
     name: 'getMarketBorrowers',
-    page: params.page,
-    perPage: params.perPage,
+    page,
+    perPage,
     marketType,
   }),
   queryFn: ({ blockchainId, contractAddress, marketType, page, perPage }: MarketBorrowersQuery) =>
@@ -27,11 +27,11 @@ export const { useQuery: useMarketBorrowers } = queryFactory({
 })
 
 export const { useQuery: useMarketSuppliers } = queryFactory({
-  queryKey: (params: MarketParticipantsParams) => ({
-    ...rootKeys.contract(params),
+  queryKey: ({ blockchainId, contractAddress, page, perPage }: MarketParticipantsParams) => ({
+    ...rootKeys.contract({ blockchainId, contractAddress }),
     name: 'getVaultDepositors',
-    page: params.page,
-    perPage: params.perPage,
+    page,
+    perPage,
   }),
   queryFn: ({ blockchainId, contractAddress, page, perPage }: MarketParticipantsQuery) =>
     getVaultDepositors(blockchainId, contractAddress, { page, perPage }),

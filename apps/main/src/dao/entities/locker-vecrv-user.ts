@@ -9,10 +9,10 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 // There might be some overlap with locker-vecrv-info, but need to investigate and
 // refactor that at a later time.
 export const { useQuery: useLockerVecrvUser, invalidate: invalidateLockerVecrvUser } = queryFactory({
-  queryKey: (params: ChainParams<ChainId> & UserParams) => ({
+  queryKey: ({ chainId, userAddress }: ChainParams<ChainId> & UserParams) => ({
     name: 'locker-vecrv-user',
-    chainId: params.chainId,
-    userAddress: params.userAddress,
+    chainId,
+    userAddress,
   }),
   queryFn: async ({ userAddress }: ChainQuery<ChainId> & UserQuery) =>
     await requireLib('curveApi').dao.userVeCrv(userAddress),

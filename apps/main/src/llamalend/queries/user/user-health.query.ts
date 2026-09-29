@@ -37,8 +37,8 @@ export const {
   getQueryOptions: getUserHealthOptions,
   queryKey: getUserHealthKey,
 } = queryFactory({
-  queryKey: ({ isFull, ...params }: UserHealthParams) => ({
-    ...rootKeys.userMarket(params),
+  queryKey: ({ chainId, marketId, userAddress, isFull }: UserHealthParams) => ({
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
     name: 'userHealth',
     isFull,
   }),
