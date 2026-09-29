@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useMemo } from 'react'
+import { isValidElement, type ReactNode, useCallback, useMemo } from 'react'
 import Button from '@mui/material/Button'
 import { type IconButtonProps } from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
@@ -219,6 +219,17 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
   )
 }
 
+const isNotionalQuery = (notional: object): notional is QueryProp<NotionalValue> =>
+  'isLoading' in notional && !isValidElement(notional)
+
+/** A query renders as notional text. A node renders in that same slot, under a vertical value. */
+const NotionalSlot = ({ notional }: { notional: MetricProps['notional'] }) => {
+  if (notional == null || typeof notional === 'boolean') return null
+  if (isValidElement(notional)) return notional
+  if (typeof notional === 'object' && isNotionalQuery(notional)) return <Notional {...notional} />
+  return null
+}
+
 const Notional = ({ data, error, isLoading }: QueryProp<NotionalValue>) => (
   <WithSkeleton loading={isLoading}>
     <Typography variant="highlightXsNotional" color="textTertiary">
@@ -253,8 +264,8 @@ export type MetricProps = {
   /** The text to display when the value is copied to the clipboard */
   copyText?: string
 
-  /** Notional values give extra context to the metric, like underlying value */
-  notional?: QueryProp<NotionalValue>
+  /** Notional values give extra context to the metric, like underlying value. A node occupies that same slot. */
+  notional?: QueryProp<NotionalValue> | ReactNode
 
   /** Optional icon shown after the value in vertical orientation and before the label in the horizontal orientation. */
   icon?: ReactNode
@@ -349,10 +360,10 @@ export const Metric = ({
               {!isHorizontal && icon}
             </>
           )}
-          {isHorizontal && notional && <Notional {...notional} />}
+          {isHorizontal && <NotionalSlot notional={notional} />}
         </Stack>
       </WithSkeleton>
-      {!isHorizontal && notional && <Notional {...notional} />}
+      {!isHorizontal && <NotionalSlot notional={notional} />}
     </Stack>
   )
 }

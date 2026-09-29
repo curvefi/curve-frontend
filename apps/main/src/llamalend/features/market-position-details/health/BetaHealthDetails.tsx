@@ -23,6 +23,25 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
   const bufferIsRed = isCriticalBuffer(view.fullHealth.data, view.assetsType)
   const bufferColor = bufferIsRed ? theme.design.Text.TextColors.Feedback.Error : undefined
   const status = view.status
+  const healthSettled = view.health.data != null || (!view.health.isLoading && view.health.error == null)
+  const statusBadge = status && healthSettled && (
+    <Tooltip
+      {...statusTooltip({
+        label: status.label,
+        category: view.assetsType,
+        nearRange: assetsThresholds ? `${assetsThresholds.nearRangeDropPercent}%` : undefined,
+        criticalBuffer: `${assetsThresholds?.criticalBufferPercent ?? '0'}%`,
+        observedAt: view.fullHealthUpdatedAt > 0 ? view.fullHealthUpdatedAt : undefined,
+      })}
+    >
+      <Badge
+        data-testid="position-status"
+        size="extraSmall"
+        color={STATUS_BADGE_COLOR[status.severity]}
+        label={status.label}
+      />
+    </Tooltip>
+  )
   return (
     <>
       <Box sx={{ gridArea: 'health' }} data-testid="beta-health-details">
@@ -39,26 +58,7 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
             },
           }}
           valueTooltip={healthTooltip()}
-          icon={
-            status && (
-              <Tooltip
-                {...statusTooltip({
-                  label: status.label,
-                  category: view.assetsType,
-                  nearRange: assetsThresholds ? `${assetsThresholds.nearRangeDropPercent}%` : undefined,
-                  criticalBuffer: `${assetsThresholds?.criticalBufferPercent ?? '0'}%`,
-                  observedAt: view.fullHealthUpdatedAt > 0 ? view.fullHealthUpdatedAt : undefined,
-                })}
-              >
-                <Badge
-                  data-testid="position-status"
-                  size="extraSmall"
-                  color={STATUS_BADGE_COLOR[status.severity]}
-                  label={status.label}
-                />
-              </Tooltip>
-            )
-          }
+          notional={statusBadge}
         />
       </Box>
       <Box sx={{ gridArea: 'buffer' }}>
