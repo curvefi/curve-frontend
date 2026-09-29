@@ -45,6 +45,9 @@ const normalizeMarketStats = (stats: BorrowStats) => {
      * During soft liquidation part of the deposited collateral is converted into the borrow token.
      */
     borrowToken: collateralBorrowTokenAmount,
+    /** User band indexes. The band count is the inclusive distance between them. */
+    n1: stats.n1,
+    n2: stats.n2,
   }
 }
 

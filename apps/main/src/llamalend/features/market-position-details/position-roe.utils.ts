@@ -26,7 +26,7 @@ export type RoeResult =
 export type RoeMultiplier =
   | { kind: 'ratio'; value: Decimal }
   | { kind: 'zero' }
-  | { kind: 'negative' }
+  | { kind: 'negative'; value: Decimal }
   | { kind: 'omit' }
 
 const annual = (balance: Decimal, yieldInput: YieldInput): Decimal | undefined => {
@@ -64,14 +64,15 @@ export const yieldMultiplier = (roeAprPercent: Decimal, collateralYield: YieldIn
   if (!('aprFraction' in collateralYield)) return { kind: 'omit' }
   const reference = decimalMultiply(collateralYield.aprFraction, decimal('100') ?? '100')
   if (decimalCompare(reference, ZERO) <= 0) return { kind: 'omit' }
-  if (decimalCompare(roeAprPercent, ZERO) < 0) return { kind: 'negative' }
+  const ratio = decimalDiv(roeAprPercent, reference)
+  if (ratio == undefined) return { kind: 'omit' }
+  if (decimalCompare(roeAprPercent, ZERO) < 0) return { kind: 'negative', value: ratio }
   if (decimalEqual(roeAprPercent, ZERO)) return { kind: 'zero' }
-  return { kind: 'ratio', value: decimalDiv(roeAprPercent, reference) }
+  return { kind: 'ratio', value: ratio }
 }
 
 export const formatYieldMultiplier = (multiplier: RoeMultiplier): string | undefined => {
   if (multiplier.kind === 'omit') return undefined
-  if (multiplier.kind === 'negative') return 'Net yield negative'
   if (multiplier.kind === 'zero') return '0× yield'
   return `${BigNumber(multiplier.value).toFixed(4)}× yield`
 }

@@ -9,6 +9,7 @@ import {
   compositionShares,
   equity,
   formatDistancePercent,
+  rangeDistanceNotional,
   formatOracleHealth,
   formatSignedAmount,
   formatSignedPercent,
@@ -46,6 +47,8 @@ describe('position metrics', () => {
     expect(priceDistance(d(80), d(100), d(80)).location).toBe('inside')
     expect(priceDistance(d('100.0001'), d(100), d(80)).location).toBe('above')
     expect(formatDistancePercent(d('0.0001'))).toBe('<0.01%')
+    if (drop.location === 'above') expect(rangeDistanceNotional(drop)).toBe('16.6667% price drop to range')
+    expect(rangeDistanceNotional(priceDistance(d(90), d(100), d(80)))).toBe('In range')
   })
 
   it('keeps buffer sign and the debt-times-health amount', () => {
@@ -116,7 +119,7 @@ describe('position metrics', () => {
     })
     expect(converted.status).toBe('value')
     expect(leverage(d(0), d(10))).toBe('0')
-    if (converted.status === 'value') expect(formatYieldMultiplier(converted.multiplier)).toBe('Net yield negative')
+    if (converted.status === 'value') expect(formatYieldMultiplier(converted.multiplier)).toBe('-13.3333× yield')
     expect(leverage(d(1), d(0))).toBeUndefined()
     expect(
       positionReturnOnEquity({

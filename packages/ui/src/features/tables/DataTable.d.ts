@@ -29,5 +29,7 @@ declare module '@tanstack/table-core' {
     getRowHref?: (data: TData) => string | Nullish
     /** User borrow positions show net borrow APR under the Borrow APR figure. */
     showNetBorrowApr?: boolean
+    /** User supply positions show net supply APY and reward tokens under Supply APY. */
+    showNetSupplyApy?: boolean
   }
 }

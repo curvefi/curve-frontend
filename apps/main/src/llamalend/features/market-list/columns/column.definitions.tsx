@@ -20,6 +20,9 @@ import {
   MaxReturnOnEquityCell,
   UserLeverageCell,
   UserLiquidationRangeCell,
+  UserDistanceToRangeCell,
+  UserBandCountCell,
+  UserCollateralCompositionCell,
   UserReturnOnEquityCell,
   PercentCell,
   PriceCell,
@@ -43,8 +46,13 @@ import {
   getUserPositionBuffer,
   getUserPositionLeverage,
   getUserPositionRangeUpper,
+  getUserPositionDistance,
+  getUserPositionBandCount,
+  getUserPositionCollateralShare,
   getUserPositionLtv,
   getUserPositionRoe,
+  getUserSupplyShare,
+  getSupplyIncentivesApr,
 } from '../user-position.utils'
 import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
@@ -86,7 +94,21 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.UserEarnings,
     header: MARKET_TITLES[MarketColumnId.UserEarnings],
     cell: PriceCell,
-    meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
+    meta: { type: 'numeric', hidden: true }, // markets list stays off; supply positions offer this column
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserSupplyShare, {
+    id: MarketColumnId.UserSupplyShare,
+    header: MARKET_TITLES[MarketColumnId.UserSupplyShare],
+    cell: PercentCell,
+    meta: { type: 'numeric', unit: 'percentage' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getSupplyIncentivesApr, {
+    id: MarketColumnId.SupplyIncentivesApr,
+    header: MARKET_TITLES[MarketColumnId.SupplyIncentivesApr],
+    cell: PercentCell,
+    meta: { type: 'numeric', unit: 'percentage' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('lendingPosition.supplied', {
@@ -173,6 +195,27 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.UserLiquidationRange,
     header: MARKET_TITLES[MarketColumnId.UserLiquidationRange],
     cell: UserLiquidationRangeCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionDistance, {
+    id: MarketColumnId.UserDistanceToRange,
+    header: MARKET_TITLES[MarketColumnId.UserDistanceToRange],
+    cell: UserDistanceToRangeCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionBandCount, {
+    id: MarketColumnId.UserBandCount,
+    header: MARKET_TITLES[MarketColumnId.UserBandCount],
+    cell: UserBandCountCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionCollateralShare, {
+    id: MarketColumnId.UserCollateralComposition,
+    header: MARKET_TITLES[MarketColumnId.UserCollateralComposition],
+    cell: UserCollateralCompositionCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),

@@ -39,9 +39,13 @@ export const RateCell = <TValue extends number | null>({
   column: { id },
   table,
 }: CellContext<CurveTableFeatures, LlamaMarketRow, TValue>) => {
-  const rateType = assert(RateTypes[id as keyof typeof RateTypes], `RateCell: Unsupported column ID "${id}"`)
+  const columnId = id as MarketColumnId
+  const rateType = assert(RateTypes[columnId as keyof typeof RateTypes], `RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType][market.type]
   const rate = getValue()
+  const netBorrow = table.options.meta?.showNetBorrowApr && columnId === MarketColumnId.BorrowRate
+  const netSupply = table.options.meta?.showNetSupplyApy && columnId === MarketColumnId.LendRate
+  const rewards = <RewardsIcons market={market} rateType={rateType} />
   return (
     // The box container makes sure the tooltip doesn't span the entire cell, so the tooltip arrow is placed correctly
     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
@@ -50,13 +54,20 @@ export const RateCell = <TValue extends number | null>({
           <Typography variant="tableCellMBold" color="textPrimary">
             {formatCappedRatePercent(rate)}
           </Typography>
-
-          {table.options.meta?.showNetBorrowApr && (id as MarketColumnId) === MarketColumnId.BorrowRate && (
-            <Typography variant="bodyXsRegular" color="textSecondary" data-testid="user-net-borrow-apr">
-              {t`Net`} {formatCappedRatePercent(market.rates.borrowTotalApr)}
-            </Typography>
+          {netBorrow || netSupply ? (
+            <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+              <Typography
+                variant="bodySRegular"
+                sx={{ color: 'text.secondary' }}
+                data-testid={netBorrow ? 'user-net-borrow-apr' : 'user-net-supply-apy'}
+              >
+                {t`Net`} {formatCappedRatePercent(netBorrow ? market.rates.borrowTotalApr : market.rates.lendTotalApyMinBoosted)}
+              </Typography>
+              {rewards}
+            </Stack>
+          ) : (
+            rewards
           )}
-          <RewardsIcons market={market} rateType={rateType} />
         </Stack>
       </Tooltip>
     </Box>

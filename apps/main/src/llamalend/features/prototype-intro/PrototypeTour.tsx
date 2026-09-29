@@ -28,7 +28,7 @@ type Surface = 'list' | 'borrow' | 'supply'
 type Guide = Surface | 'positions'
 type TourStep = { element: NonNullable<DriveStep['element']>; title: string; content: ReactNode }
 
-const CONTENT_VERSIONS: Record<Guide, number> = { list: 4, positions: 5, borrow: 4, supply: 3 }
+const CONTENT_VERSIONS: Record<Guide, number> = { list: 4, positions: 9, borrow: 4, supply: 3 }
 const target = (testId: string) => document.querySelector(`[data-testid="${testId}"]`)
 const within = (element: Element | null, testId: string) => element?.querySelector(`[data-testid="${testId}"]`)
 const targetSelector = (testId: string) => `[data-testid="${testId}"]`
@@ -125,7 +125,7 @@ const positionSteps = (): TourStep[] | undefined => {
         title: t`Borrowing positions`,
         content: (
           <Change>
-            {t`On mobile, Borrowing positions show Total debt and leverage. The desktop table also shows Borrow APR, estimated RoE, range-based Health with status, Liquidation range, and Liquidation buffer. LTV has been removed. Open a market for the full metric explanations.`}
+            {t`Borrowing positions show the market and the column you sort by. Total debt is the starting sort.`}
           </Change>
         ),
       },
@@ -134,19 +134,22 @@ const positionSteps = (): TourStep[] | undefined => {
 
   const apr = within(table, 'data-table-cell-rates_borrow')
   const debt = within(table, 'data-table-cell-userBorrowed')
+  const collateral = within(table, 'data-table-cell-userCollateral')
+  const settings = within(table, 'btn-visibility-settings')
   const multiplier = within(table, 'user-position-yield-multiplier')
   const roe =
     multiplier?.closest('[data-testid="data-table-cell-userRoe"]') ?? within(table, 'data-table-header-userRoe')
   const healthValue = within(table, 'user-position-health-value')
-  const range = within(table, 'data-table-cell-userLiquidationRange')
+  const distance = within(table, 'user-position-distance')
   const buffer = within(table, 'data-table-cell-userLiquidationBuffer')
   const leverageValue = within(table, 'user-position-leverage-value')
+  const maxLeverage = within(table, 'user-position-max-leverage')
   const leverage =
     leverageValue?.closest('[data-testid="data-table-cell-userLeverage"]') ??
     within(table, 'data-table-header-userLeverage')
   const health =
     healthValue?.closest('[data-testid="data-table-cell-userHealth"]') ?? within(table, 'data-table-header-userHealth')
-  if (![apr, roe, health].every(visible)) return undefined
+  if (![apr, debt, health].every(visible)) return undefined
 
   return [
     {
@@ -164,46 +167,19 @@ const positionSteps = (): TourStep[] | undefined => {
         title: t`Total debt`,
         content: (
           <Change>
-            {t`Previously, this column was Borrow Amount and the table also showed LTV. It now reads Total debt: the amount borrowed in the debt token, including accrued interest. LTV is removed to match the position card.`}
+            {t`Previously, this column was Borrow Amount and the table also showed LTV. It now reads Total debt and stays visible by default: the amount borrowed in the debt token, including accrued interest.`}
           </Change>
         ),
       },
     ),
-    {
-      element: () =>
-        within(target('borrow-positions-table'), 'user-position-yield-multiplier')?.closest(
-          targetSelector('data-table-cell-userRoe'),
-        ) ?? document.querySelector(withinSelector('borrow-positions-table', 'data-table-header-userRoe'))!,
-      title: t`RoE and yield multiplier`,
-      content: (
-        <Stack spacing={1}>
-          <Change>
-            {t`This column was absent in Stable. Now RoE estimates an APR from the position’s current composition and rates. The smaller figure beneath it is the yield multiplier, not exposure leverage. Both are estimates without assumed reinvestment.`}
-          </Change>
-          {!multiplier && <Change>{t`The estimate needs position and rate data that is not available yet.`}</Change>}
-          <MathBlock>
-            <RoeEquations />
-          </MathBlock>
-        </Stack>
-      ),
-    },
     ...notFalsy(
-      visible(leverage) && {
-        element: () =>
-          within(target('borrow-positions-table'), 'user-position-leverage-value')?.closest(
-            targetSelector('data-table-cell-userLeverage'),
-          ) ?? document.querySelector(withinSelector('borrow-positions-table', 'data-table-header-userLeverage'))!,
-        title: t`Leverage`,
+      visible(collateral) && {
+        element: withinSelector('borrow-positions-table', 'data-table-cell-userCollateral'),
+        title: t`Collateral value`,
         content: (
-          <Stack spacing={1}>
-            <Change>
-              {t`This column was absent in Stable. Now it shows remaining collateral exposure over equity, using the same calculation as the position card. It amplifies relative-price gains and losses and potential collateral yield, less borrowing costs. It is not the yield multiplier.`}
-            </Change>
-            <MathBlock>
-              <LeverageEquation />
-            </MathBlock>
-            <Change>{t`q: remaining collateral quantity; p: oracle price; b: converted borrowed assets; d: debt.`}</Change>
-          </Stack>
+          <Change>
+            {t`Collateral value stays visible by default, next to Total debt. It is the position's collateral, shown with its token amount.`}
+          </Change>
         ),
       },
     ),
@@ -216,7 +192,7 @@ const positionSteps = (): TourStep[] | undefined => {
       content: (
         <Stack spacing={1}>
           <Change>
-            {t`Previously, this row showed Controller-derived Health and a bar. Now it shows Health relative to the Liquidation range, with a position-status badge when its inputs are available. Health remains 1.00 at or below the upper edge.`}
+            {t`Previously, this row showed Controller-derived Health and a bar. Now it shows Health relative to the Liquidation range, with a position-status badge when its inputs are available. Health remains 1.00 at or below the upper edge and stays visible by default.`}
           </Change>
           {!healthValue && (
             <Change>{t`The current Health value needs a valid oracle price and range boundary.`}</Change>
@@ -228,18 +204,66 @@ const positionSteps = (): TourStep[] | undefined => {
       ),
     },
     ...notFalsy(
-      visible(range) && {
-        element: withinSelector('borrow-positions-table', 'data-table-cell-userLiquidationRange'),
-        title: t`Liquidation range`,
+      visible(settings) && {
+        element: withinSelector('borrow-positions-table', 'btn-visibility-settings'),
+        title: t`Table settings`,
+        content: <Change>{t`Show or hide extra columns for these borrowing positions.`}</Change>,
+      },
+    ),
+    ...notFalsy(
+      visible(roe) && {
+        element: () =>
+          within(target('borrow-positions-table'), 'user-position-yield-multiplier')?.closest(
+            targetSelector('data-table-cell-userRoe'),
+          ) ?? document.querySelector(withinSelector('borrow-positions-table', 'data-table-header-userRoe'))!,
+        title: t`RoE and yield multiplier`,
         content: (
           <Stack spacing={1}>
             <Change>
-              {t`This range was absent from the Stable Borrowing table. Now it shows both edges where conversions may occur. Losses need not recover when price recovers, and the lower edge is not the hard-liquidation price.`}
+              {t`RoE is optional and hidden by default. When shown, it estimates an APR from the position’s current composition and rates. The smaller figure beneath it is the yield multiplier, not exposure leverage. A negative estimate keeps that signed multiplier and shows the RoE figure in red. Both are estimates without assumed reinvestment.`}
+            </Change>
+            {!multiplier && <Change>{t`The estimate needs position and rate data that is not available yet.`}</Change>}
+            <MathBlock>
+              <RoeEquations />
+            </MathBlock>
+          </Stack>
+        ),
+      },
+    ),
+    ...notFalsy(
+      visible(leverage) && {
+        element: () =>
+          within(target('borrow-positions-table'), 'user-position-leverage-value')?.closest(
+            targetSelector('data-table-cell-userLeverage'),
+          ) ?? document.querySelector(withinSelector('borrow-positions-table', 'data-table-header-userLeverage'))!,
+        title: t`Leverage`,
+        content: (
+          <Stack spacing={1}>
+            <Change>
+              {maxLeverage
+                ? t`Leverage is optional and hidden by default. When shown, the main figure is remaining collateral exposure over equity, the same calculation as the position card. Max leverage sits beneath it. It is not the yield multiplier.`
+                : t`Leverage is optional and hidden by default. When shown, the main figure is remaining collateral exposure over equity, the same calculation as the position card. This market's max leverage sits beneath it when Max LTV is available. It is not the yield multiplier.`}
+            </Change>
+            <MathBlock>
+              <LeverageEquation />
+            </MathBlock>
+            <Change>{t`q: remaining collateral quantity; p: oracle price; b: converted borrowed assets; d: debt.`}</Change>
+          </Stack>
+        ),
+      },
+    ),
+    ...notFalsy(
+      visible(distance) && {
+        element: withinSelector('borrow-positions-table', 'data-table-cell-userDistanceToRange'),
+        title: t`Distance to range`,
+        content: (
+          <Stack spacing={1}>
+            <Change>
+              {t`This optional column shows how far the oracle is from the range, or In range. The range itself sits underneath. While it is on, Liquidation buffer is hidden.`}
             </Change>
             <MathBlock>
               <RangeEquations />
             </MathBlock>
-            <Change>{t`p: oracle price; u: upper boundary; l: lower boundary.`}</Change>
           </Stack>
         ),
       },
@@ -251,7 +275,7 @@ const positionSteps = (): TourStep[] | undefined => {
         content: (
           <Stack spacing={1}>
             <Change>
-              {t`This separate debt-relative buffer was absent from the Stable Borrowing table. It is liquidation-adjusted margin, not a price-drop allowance or withdrawable equity.`}
+              {t`Liquidation buffer is shown because a position is in range. It is liquidation-adjusted margin, not a price-drop allowance or withdrawable equity. Turning on Distance to range removes this column.`}
             </Change>
             <MathBlock>
               <BufferEquations />
@@ -552,10 +576,11 @@ export const PrototypeTour = ({
   }, [beta, pathname, ready, positionsReady, positionsSeen, replay, seen, setPositionsSeen, setSeen, surface])
 
   if (!beta) return null
+  const showPageGuide = surface !== 'list' || seen
   return (
     <>
       {portal && createPortal(portal.content, portal.element)}
-      {(seen || (surface === 'list' && positionsSeen)) && (
+      {(showPageGuide || (surface === 'list' && positionsSeen)) && (
         <Stack
           className="llamalend-prototype-guide"
           spacing={0.5}
@@ -567,7 +592,7 @@ export const PrototypeTour = ({
           }}
         >
           <Typography variant="bodyXsRegular">{t`What changed`}</Typography>
-          {seen && (
+          {showPageGuide && (
             <Button
               ref={triggerRef}
               variant="text"

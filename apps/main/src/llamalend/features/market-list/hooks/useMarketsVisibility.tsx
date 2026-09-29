@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { MaxLeverageTooltip } from '@/llamalend/widgets/tooltips'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
-import { mapRecord } from '@primitives/objects.utils'
+import { mapRecord, notFalsy } from '@primitives/objects.utils'
 import { SortingState } from '@tanstack/react-table'
 import type { MigrationOptions } from '@ui/features/storage/useStoredState'
 import { preserveVisibilityChoices, useVisibilitySettings } from '@ui/features/tables/hooks/useVisibilitySettings'
@@ -18,6 +19,9 @@ import {
   getMarketsColumnOptions,
   MarketColumnId,
   createMarketsMobileColumns,
+  BORROW_POSITION_COLUMN_ORDER,
+  SUPPLY_POSITION_COLUMN_ORDER,
+  POSITION_TABLE_ONLY_COLUMNS,
 } from '../columns'
 
 type MarketColumnVariant = keyof ReturnType<typeof getMarketsColumnOptions>
@@ -27,28 +31,28 @@ const BETA_ONLY_COLUMNS = [
   MarketColumnId.UserLeverage,
   MarketColumnId.UserLiquidationBuffer,
   MarketColumnId.UserLiquidationRange,
+  ...POSITION_TABLE_ONLY_COLUMNS,
 ]
 
 const betaMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 3,
+  version: 6,
   migrate: (oldValue, initialValue) =>
-    mapRecord(initialValue, (variant, currentGroups) =>
-      preserveVisibilityChoices(
-        oldValue[variant]?.map(group => ({
-          ...group,
-          options: group.options.map(option =>
-            variant === MarketRateType.Borrow && option.columns.includes(MarketColumnId.UserLtv)
-              ? { ...option, columns: option.columns.filter(column => column !== MarketColumnId.UserLtv) }
-              : option,
-          ),
-        })),
-        currentGroups,
-        (preservedActive, option) =>
-          variant === MarketRateType.Borrow && option.columns.includes(MarketColumnId.UserLiquidationBuffer)
-            ? true
-            : preservedActive,
-      ),
-    ),
+    mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
+}
+
+const orderColumns = <T extends { id?: string }>(columns: readonly T[], order: readonly MarketColumnId[]) => {
+  const byId = new Map(columns.map(column => [column.id, column]))
+  return order.flatMap(id => notFalsy(byId.get(id)))
+}
+
+const withSupplyApy = <T extends { id?: string }>(column: T) => {
+  if (column.id !== MarketColumnId.LendRate) return column
+  const { accessorKey: _accessorKey, ...rest } = column as T & { accessorKey?: string }
+  return {
+    ...rest,
+    header: t`Supply APY`,
+    accessorFn: (row: LlamaMarketRow) => row.rates.lendApy ?? undefined,
+  }
 }
 
 const legacyMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
@@ -89,20 +93,37 @@ export const useMarketsVisibility = (title: string, sorting: SortingState, varia
   const columns = useMemo(
     () =>
       beta
-        ? MARKET_COLUMNS.filter(
-            column => variant !== MarketRateType.Borrow || column.id !== MarketColumnId.UserLtv,
-          ).map(column => {
-            if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserBorrowed)
-              return { ...column, header: t`Total debt` }
-            if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserCollateral)
-              return { ...column, header: t`Collateral value` }
-            if (column.id === MarketColumnId.MaxLeverage)
-              return {
-                ...column,
-                meta: { ...column.meta, tooltip: { title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> } },
+        ? orderColumns(
+            MARKET_COLUMNS.filter(
+              column =>
+                (variant === MarketRateType.Borrow || variant === MarketRateType.Supply ||
+                  !POSITION_TABLE_ONLY_COLUMNS.includes(column.id as (typeof POSITION_TABLE_ONLY_COLUMNS)[number])) &&
+                (variant !== MarketRateType.Borrow || column.id !== MarketColumnId.UserLtv),
+            ).map(column => {
+              if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserBorrowed)
+                return { ...column, header: t`Total debt` }
+              if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserCollateral)
+                return { ...column, header: t`Collateral value` }
+              if (variant === MarketRateType.Supply && column.id === MarketColumnId.LendRate) return withSupplyApy(column)
+              if (variant === MarketRateType.Supply && column.id === MarketColumnId.UserEarnings) {
+                const { hidden: _hidden, ...meta } = column.meta ?? {}
+                return { ...column, meta }
               }
-            return column
-          })
+              if (variant === MarketRateType.Supply && column.id === MarketColumnId.SolvencyPercent)
+                return { ...column, header: t`Market solvency` }
+              if (column.id === MarketColumnId.MaxLeverage)
+                return {
+                  ...column,
+                  meta: { ...column.meta, tooltip: { title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> } },
+                }
+              return column
+            }),
+            variant === MarketRateType.Borrow
+              ? BORROW_POSITION_COLUMN_ORDER
+              : variant === MarketRateType.Supply
+                ? SUPPLY_POSITION_COLUMN_ORDER
+                : MARKET_COLUMNS.map(column => column.id as MarketColumnId),
+          )
         : MARKET_COLUMNS.filter(column => !BETA_ONLY_COLUMNS.includes(column.id as MarketColumnId)).map(column => {
             if (column.id === MarketColumnId.BorrowRate)
               return { ...column, meta: { ...column.meta, tooltip: undefined } }
@@ -124,10 +145,6 @@ export const useMarketsVisibility = (title: string, sorting: SortingState, varia
     columns,
     beta ? betaMigration : legacyMigration,
   )
-  const columnVisibility = useMemo(() => {
-    const mobileColumns = createMarketsMobileColumns(sortField)
-    if (beta && variant === MarketRateType.Borrow) mobileColumns[MarketColumnId.UserLeverage] = true
-    return mobileColumns
-  }, [beta, sortField, variant])
+  const columnVisibility = useMemo(() => createMarketsMobileColumns(sortField), [sortField])
   return { sortField, tableSorting, columns, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }

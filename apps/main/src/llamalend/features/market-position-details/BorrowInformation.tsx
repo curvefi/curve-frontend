@@ -17,6 +17,7 @@ import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
+import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -42,8 +43,8 @@ import {
   compositionShares,
   equity,
   equityLeverage,
-  formatDistancePercent,
   priceDistance,
+  rangeDistanceNotional,
 } from './position-metrics.utils'
 import { formatYieldMultiplier, positionReturnOnEquity } from './position-roe.utils'
 import { collateralTooltip, debtTooltip, leverageTooltip, rangeTooltip, roeTooltip } from './PositionMetricTooltip'
@@ -158,6 +159,7 @@ const CurrentBorrowInformation = ({ params, tokens: { collateralToken, borrowTok
 }
 
 const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
+  const theme = useTheme()
   const { blockchainId, controllerAddress, marketType } = useMarketContext()
   const userState = useUserState(params)
   const oraclePrice = useMarketOraclePrice(params)
@@ -247,10 +249,10 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
           }}
           sx={{ whiteSpace: 'nowrap' }}
           notional={mapQuery(distance, value => {
-            if (!value || value.location === 'unavailable')
-              return value?.location === 'unavailable' ? t`Unavailable` : undefined
+            if (!value) return undefined
+            if (value.location === 'unavailable') return t`Unavailable`
             if (value.location === 'inside') return t`In range`
-            return `${formatDistancePercent(value.percent)} ${value.label}`
+            return rangeDistanceNotional(value)
           })}
           valueTooltip={rangeTooltip({
             pair: priceUnit,
@@ -343,7 +345,12 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
               roe.data?.kind === 'value' ? formatYieldMultiplier(roe.data.result.multiplier) : undefined,
               text => q({ data: text, isLoading: false, error: null }),
             )}
-            valueOptions={{ unit: { symbol: '% APR', position: 'suffix' } }}
+            valueOptions={{
+              unit: { symbol: '% APR', position: 'suffix' },
+              ...(roe.data?.kind === 'value' && roe.data.result.multiplier.kind === 'negative'
+                ? { color: theme.design.Text.TextColors.Feedback.Error }
+                : {}),
+            }}
             valueTooltip={roeTooltip()}
           />
         </Box>

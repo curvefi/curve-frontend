@@ -23,7 +23,7 @@ export const useMarketsSortOptions = () => {
           { id: MarketColumnId.UserCollateral, label: t`Collateral Amount` },
           { id: MarketColumnId.UserLtv, label: t`LTV` },
           ...notFalsy(beta && { id: MarketColumnId.UserLeverage, label: t`Leverage` }),
-          { id: MarketColumnId.UserEarnings, label: t`My Earnings` },
+          { id: MarketColumnId.UserEarnings, label: t`Interest earned` },
           { id: MarketColumnId.UserDeposited, label: t`Supplied Amount` },
           { id: MarketColumnId.UserBoostMultiplier, label: t`Boost` },
         ]
