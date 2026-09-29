@@ -7,9 +7,6 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 
 type Params = FieldsOf<UserMarketQuery>
 
-export const controllerApprovalKey = ({ chainId, marketId, userAddress }: Params) =>
-  [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'controllerApproval'] as const
-
 const { useQuery: useControllerApprovalEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: Params) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.setControllerApproval'] as const,

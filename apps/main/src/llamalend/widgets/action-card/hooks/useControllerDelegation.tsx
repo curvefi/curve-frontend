@@ -1,4 +1,4 @@
-import { useControllerApprovalEstimateGas } from '@/llamalend/queries/controller-approval.query'
+import { useControllerApprovalEstimateGas } from '@/llamalend/queries/controller-approval-gas-estimate.query'
 import type { Address } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
 import type { FieldValues, UseFormHandleSubmit } from '@ui/features/forms'

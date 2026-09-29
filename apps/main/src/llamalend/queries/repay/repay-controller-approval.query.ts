@@ -1,9 +1,8 @@
 import { getMarket } from '@/llamalend/llama.utils'
-import type { UserMarketQuery } from '@evm-ui/queries/root-keys'
+import { rootKeys, type UserMarketQuery } from '@evm-ui/queries/root-keys'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { FieldsOf } from '@ui/lib/validation/types'
-import { controllerApprovalKey } from '../controller-approval.query'
 import { getRepayImplementationType, type RepayFormFields } from './repay-query.helpers'
 
 export const { useQuery: useRepayControllerApproval, fetchQuery: fetchRepayControllerApproval } = queryFactory({
@@ -16,8 +15,8 @@ export const { useQuery: useRepayControllerApproval, fetchQuery: fetchRepayContr
     userBorrowed = '0',
   }: FieldsOf<UserMarketQuery & RepayFormFields>) =>
     [
-      ...controllerApprovalKey({ chainId, marketId, userAddress }),
-      'repay',
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      'repayIsControllerApproved',
       // The repayment implementation depends on which sources are used, not their amounts.
       { stateCollateral: !!+(stateCollateral ?? '0') },
       { userCollateral: !!+(userCollateral ?? '0') },
