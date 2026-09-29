@@ -7,7 +7,6 @@ import {
   keepPreviousData,
   type QueryExecuteOptions,
   QueryFunctionContext,
-  type QueryKey,
   queryOptions,
   useQuery,
 } from '@tanstack/react-query'
@@ -23,10 +22,10 @@ import { FieldName, FieldsOf } from '@ui/lib/validation/types'
 type QueryKeyItem = string | number | boolean | Nullish | readonly QueryKeyItem[]
 
 /** Scope and query-specific properties identifying a query. */
-type QueryKeyObject = Readonly<Record<string, QueryKeyItem> & { name: string; version?: number }>
+export type QueryKeyObject = Readonly<Record<string, QueryKeyItem> & { name: string; version?: number }>
 
 /** The one-object key shape passed to TanStack Query. */
-type NormalizedQueryKey<TKey extends QueryKeyObject = QueryKeyObject> = readonly [TKey]
+type InternalQueryKey<TKey extends QueryKeyObject = QueryKeyObject> = readonly [TKey]
 
 /** Specific class of errors thrown from inside queryFn to skip query retries on failure */
 export class NoRetryError extends Error {
@@ -51,7 +50,7 @@ export class NoRetryError extends Error {
 }
 
 async function runQuery<TData, TQuery>(
-  queryKey: NormalizedQueryKey,
+  queryKey: InternalQueryKey,
   queryFn: (params: TQuery) => Promise<TData>,
   disableLog: true | undefined,
 ) {
@@ -89,24 +88,24 @@ export function queryFactory<
   validationSuite: Suite<TField, string, TCallback>
   queryFn: (params: TQuery) => Promise<TData>
   category: QueryCategory
-  dependencies?: (params: TParams) => QueryKey[]
+  dependencies?: (params: TParams) => readonly QueryKeyObject[]
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
   disableLog?: true
   keepPreviousData?: boolean
 }) {
-  const getQueryKey = (params: TParams): NormalizedQueryKey<TKey> => [queryKey(params)]
+  const internalKey = (params: TParams): InternalQueryKey<TKey> => [queryKey(params)]
   const getQueryOptions = (params: TParams, enabled = true) =>
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryOptions({
       ...QUERY_CATEGORIES[category],
-      queryKey: getQueryKey(params),
-      queryFn: async ({ queryKey }: QueryFunctionContext<NormalizedQueryKey<TKey>>) =>
+      queryKey: internalKey(params),
+      queryFn: async ({ queryKey }: QueryFunctionContext<InternalQueryKey<TKey>>) =>
         await runQuery(queryKey, queryFn, disableLog),
       enabled:
         enabled &&
         isEmpty(validate<TParams, typeof validationSuite>(validationSuite, params)) &&
-        !dependencies?.(params).some(key => queryClient.getQueryData(key) === undefined),
+        !dependencies?.(params).some(key => queryClient.getQueryData([key]) === undefined),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
         !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
@@ -116,15 +115,15 @@ export function queryFactory<
     })
 
   return {
-    queryKey: getQueryKey,
+    queryKey,
     getQueryOptions,
-    getQueryData: (params: TParams): TData | undefined => queryClient.getQueryData(getQueryKey(params)),
-    setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(getQueryKey(params), data),
+    getQueryData: (params: TParams): TData | undefined => queryClient.getQueryData(internalKey(params)),
+    setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(internalKey(params), data),
     fetchQuery: (
       params: TParams,
-      options?: Partial<QueryExecuteOptions<TData, DefaultError, TData, TData, NormalizedQueryKey<TKey>>>,
+      options?: Partial<QueryExecuteOptions<TData, DefaultError, TData, TData, InternalQueryKey<TKey>>>,
     ) =>
-      queryClient.query<TData, DefaultError, TData, TData, NormalizedQueryKey<TKey>>({
+      queryClient.query<TData, DefaultError, TData, TData, InternalQueryKey<TKey>>({
         ...getQueryOptions(params),
         ...options,
       }),
@@ -134,15 +133,15 @@ export function queryFactory<
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
     refetchQuery: (params: TParams) =>
-      queryClient.query<TData, DefaultError, TData, TData, NormalizedQueryKey<TKey>>({
+      queryClient.query<TData, DefaultError, TData, TData, InternalQueryKey<TKey>>({
         ...getQueryOptions(params),
         ...options,
         staleTime: 0,
       }),
     useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
     /** Invalidates the cache for the query, marking it as stale and triggering a refetch if needed **/
-    invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: getQueryKey(params) }),
+    invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: internalKey(params) }),
     /** Removes all the cached data for the query **/
-    reset: (params: TParams) => queryClient.resetQueries({ queryKey: getQueryKey(params) }),
+    reset: (params: TParams) => queryClient.resetQueries({ queryKey: internalKey(params) }),
   } as const
 }

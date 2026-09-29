@@ -25,8 +25,10 @@ type PoolListRequestParams = Pick<
 type PoolListQuery = ChainQuery & PoolListRequestParams & { pageSize?: ListPoolsParams['pagination'] }
 type PoolListParams = FieldsOf<PoolListQuery>
 
-export const getPoolListRootQueryKey = ({ chainId }: ChainParams) =>
-  [{ name: 'listPools', ...rootKeys.chain({ chainId }) }] as const
+export const getPoolListRootQueryKey = ({ chainId }: ChainParams) => ({
+  name: 'listPools',
+  ...rootKeys.chain({ chainId }),
+})
 
 export const { useQuery: usePoolList } = queryFactory({
   queryKey: ({

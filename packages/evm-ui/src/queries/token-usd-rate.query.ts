@@ -106,6 +106,7 @@ const fetchUsdRate = async (chainId: number, tokenAddress: string) => {
  */
 export const {
   getQueryData: getTokenUsdRateQueryData,
+  setQueryData: setTokenUsdRateQueryData,
   useQuery: useTokenUsdRate,
   fetchQuery: fetchTokenUsdRate,
   getQueryOptions: getTokenUsdRateQueryOptions,
