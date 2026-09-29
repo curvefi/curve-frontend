@@ -14,10 +14,10 @@ export const LlammaEventChangeCell = ({
   event: { deposit, withdrawal, timestamp },
   collateralToken,
   borrowToken,
-  chain,
+  blockchainId,
 }: {
   event: MarketEventRow
-  chain: Chain
+  blockchainId: Chain
   collateralToken: Token | undefined
   borrowToken: Token | undefined
 }) => {
@@ -29,7 +29,7 @@ export const LlammaEventChangeCell = ({
           <LlammaTokenAmount
             amount={deposit.amount}
             token={collateralToken}
-            blockchainId={chain}
+            blockchainId={blockchainId}
             notional={formatActivityUsdValue(
               { amount: deposit.amount, amountUsd: deposit.amountUsd, timestamp },
               currentDate,
@@ -40,7 +40,7 @@ export const LlammaEventChangeCell = ({
           <LlammaTokenAmount
             amount={-withdrawal.amountCollateral}
             token={collateralToken}
-            blockchainId={chain}
+            blockchainId={blockchainId}
             notional={formatActivityUsdValue(
               {
                 amount: withdrawal.amountCollateral,
@@ -56,7 +56,7 @@ export const LlammaEventChangeCell = ({
           <LlammaTokenAmount
             amount={-withdrawal.amountBorrowed}
             token={borrowToken}
-            blockchainId={chain}
+            blockchainId={blockchainId}
             notional={formatActivityUsdValue(
               { amount: withdrawal.amountBorrowed, amountUsd: withdrawal.amountBorrowedUsd, timestamp, isSold: true },
               currentDate,

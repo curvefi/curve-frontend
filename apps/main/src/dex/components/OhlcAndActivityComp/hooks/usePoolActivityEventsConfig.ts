@@ -37,7 +37,7 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
   const { liquidityColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
   const poolLiquidityEvents = usePoolLiquidityEvents({
-    chain: network,
+    blockchainId: network,
     poolAddress,
     page: apiPage,
     perPage: DEFAULT_PAGE_SIZE,

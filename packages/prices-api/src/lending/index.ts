@@ -8,20 +8,20 @@ export type * from './schema'
 
 export async function getLoanDistribution(
   endpointParam: Schema.Endpoint,
-  chain: Chain,
+  blockchainId: Chain,
   controller: string,
   options?: Options,
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const response = await fetch(`${host}/v1/${endpointParam}/markets/${chain}/${controller}/loans/distribution`)
+  const response = await fetch(`${host}/v1/${endpointParam}/markets/${blockchainId}/${controller}/loans/distribution`)
 
   return Schema.getLoanDistributionResponse.parse(response)
 }
 
 type GetOracleParams = {
   endpoint: Schema.Endpoint
-  chain: Chain
+  blockchainId: Chain
   controller: Address
   interval: number
   units?: 'day' | 'hour' | 'minute'
@@ -30,7 +30,7 @@ type GetOracleParams = {
 }
 
 export async function getOracle(
-  { endpoint: endpointParam, chain, controller, interval, units = 'hour', start, end }: GetOracleParams,
+  { endpoint: endpointParam, blockchainId, controller, interval, units = 'hour', start, end }: GetOracleParams,
   options?: Options,
 ) {
   const host = getHost(options)
@@ -45,7 +45,7 @@ export async function getOracle(
     end: range.end.toString(),
   })
 
-  const response = await fetch(`${host}/v1/${endpointParam}/oracle_ohlc/${chain}/${controller}?${params}`, {
+  const response = await fetch(`${host}/v1/${endpointParam}/oracle_ohlc/${blockchainId}/${controller}?${params}`, {
     signal: options?.signal,
   })
 
@@ -54,22 +54,22 @@ export async function getOracle(
 
 export async function getUserMarketCollateralEvents(
   userAddr: Address,
-  chain: Chain,
+  blockchainId: Chain,
   marketController: Address,
   txHash?: Hex, // used to let the backend know that a new transaction was created, so it can batch an update
   options?: Options,
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/lending/collateral_events/${chain}/${marketController}/${userAddr}${txHash ? `?new_hash=${txHash}` : ''}`,
+    `${host}/v1/lending/collateral_events/${blockchainId}/${marketController}/${userAddr}${txHash ? `?new_hash=${txHash}` : ''}`,
   )
 
   return Schema.getUserCollateralEventsResponse.parse(response)
 }
 
-export async function getRateCurve(chain: Chain, controller: string, options?: Options) {
+export async function getRateCurve(blockchainId: Chain, controller: string, options?: Options) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/markets/${chain}/${controller}/rate_curve`)
+  const response = await fetch(`${host}/v1/lending/markets/${blockchainId}/${controller}/rate_curve`)
 
   return Schema.getRateCurveResponse.parse(response)
 }

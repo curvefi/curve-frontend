@@ -16,9 +16,9 @@ import * as yieldBasis from '../src/yield-basis'
 import { getEndpointCatalogSkipReason } from './catalog'
 import { createFetchTracker, formatTrackedFetchUrls } from './fetch-tracker'
 
-type PoolSeed = { chain: Chain; mainToken: Address; poolAddress: Address; referenceToken: Address }
+type PoolSeed = { blockchainId: Chain; mainToken: Address; poolAddress: Address; referenceToken: Address }
 
-type MarketSeed = { chain: Chain; controller: Address; llamma: Address }
+type MarketSeed = { blockchainId: Chain; controller: Address; llamma: Address }
 
 type LlamalendMarketSeed = MarketSeed & { vault: Address }
 
@@ -26,7 +26,7 @@ type MarketUserSeed = MarketSeed & { user: Address }
 
 type LlamalendUserSeed = LlamalendMarketSeed & { user: Address }
 
-type RefuelPoolSeed = { chain: Chain; poolAddress: Address }
+type RefuelPoolSeed = { blockchainId: Chain; poolAddress: Address }
 
 const PREFERRED_CHAIN: Chain = 'ethereum'
 const PRICES_API_HOST = process.env.PRICES_API_HOST
@@ -136,7 +136,7 @@ export const getPoolSeed = once(async (): Promise<PoolSeed> => {
     const mainToken = requireSeed(pool.coins[0]?.address, `pools.getPools(${chain}) main token`)
     const referenceToken = requireSeed(pool.coins[1]?.address, `pools.getPools(${chain}) reference token`)
 
-    return { chain, mainToken, poolAddress: pool.address, referenceToken }
+    return { blockchainId: chain, mainToken, poolAddress: pool.address, referenceToken }
   }
 
   throw new Error('Missing live seed from pools.getPools pool')
@@ -210,15 +210,15 @@ export const getCrvUsdMarketSeed = once(async (): Promise<MarketSeed> => {
   const candidates = markets.filter(({ market }) => market.loans > 0)
   const { chain, market } = randomItem(candidates.length > 0 ? candidates : markets, 'crvusd.getAllMarkets')
 
-  return { chain, controller: market.address, llamma: market.llamma }
+  return { blockchainId: chain, controller: market.address, llamma: market.llamma }
 })
 
 export const getCrvUsdUserSeed = once(async (): Promise<MarketUserSeed> => {
   const seed = await getCrvUsdMarketSeed()
-  const users = await llamalend.getMarketUsers('crvusd', seed.chain, seed.controller, requestOptions)
+  const users = await llamalend.getMarketUsers('crvusd', seed.blockchainId, seed.controller, requestOptions)
   const user = randomItem(
     users.users.map(user => user.user).filter(isAddress),
-    `llamalend.getMarketUsers(crvusd, ${seed.chain})`,
+    `llamalend.getMarketUsers(crvusd, ${seed.blockchainId})`,
   )
 
   return { ...seed, user }
@@ -237,7 +237,7 @@ export const getLlamalendMarketSeed = once(async (): Promise<LlamalendMarketSeed
   const candidates = markets.filter(({ market }) => market.nLoans > 0)
   const { chain, market } = randomItem(candidates.length > 0 ? candidates : markets, 'llamalend.getAllMarkets')
 
-  return { chain, controller: market.controller, llamma: market.llamma, vault: market.vault }
+  return { blockchainId: chain, controller: market.controller, llamma: market.llamma, vault: market.vault }
 })
 
 export const getLlamalendOracleSeed = once(async (): Promise<LlamalendMarketSeed> => {
@@ -248,15 +248,15 @@ export const getLlamalendOracleSeed = once(async (): Promise<LlamalendMarketSeed
   const candidates = markets.filter(({ market }) => market.oraclePools.length > 0)
   const { chain, market } = randomItem(candidates, 'llamalend.getAllMarkets oracle-compatible market')
 
-  return { chain, controller: market.controller, llamma: market.llamma, vault: market.vault }
+  return { blockchainId: chain, controller: market.controller, llamma: market.llamma, vault: market.vault }
 })
 
 export const getLlamalendUserSeed = once(async (): Promise<LlamalendUserSeed> => {
   const seed = await getLlamalendMarketSeed()
-  const users = await llamalend.getMarketUsers('lending', seed.chain, seed.controller, requestOptions)
+  const users = await llamalend.getMarketUsers('lending', seed.blockchainId, seed.controller, requestOptions)
   const user = randomItem(
     users.users.map(user => user.user).filter(isAddress),
-    `llamalend.getMarketUsers(lending, ${seed.chain})`,
+    `llamalend.getMarketUsers(lending, ${seed.blockchainId})`,
   )
 
   return { ...seed, user }
@@ -277,5 +277,5 @@ export const getRefuelPoolSeed = once(async (): Promise<RefuelPoolSeed> => {
   const poolsResponse = await refuel.getRefuelPools(chain, requestOptions)
   const pool = randomItem(poolsResponse.pools, `refuel.getRefuelPools(${chain})`)
 
-  return { chain, poolAddress: pool.address }
+  return { blockchainId: chain, poolAddress: pool.address }
 })

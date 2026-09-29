@@ -11,7 +11,7 @@ runEndpointCases('crvusd', [
   endpointCase('getAllMarkets', () => crvusd.getAllMarkets({ page: 1, per_page: 50 }, requestOptions)),
   endpointCase('getSnapshots', () =>
     crvusd.getSnapshots(
-      crvUsdMarketSeed().chain,
+      crvUsdMarketSeed().blockchainId,
       crvUsdMarketSeed().controller,
       { agg: 'day', fetch_on_chain: true, limit: 10 },
       requestOptions,
@@ -20,13 +20,13 @@ runEndpointCases('crvusd', [
   endpointCase('getCrvUsdSupply', () => crvusd.getCrvUsdSupply(chainSeed(), 7, requestOptions)),
   endpointCase('getKeepers', () => crvusd.getKeepers(chainSeed(), requestOptions)),
   endpointCase('getUserMarkets', () =>
-    crvusd.getUserMarkets(crvUsdUserSeed().user, crvUsdUserSeed().chain, undefined, requestOptions),
+    crvusd.getUserMarkets(crvUsdUserSeed().user, crvUsdUserSeed().blockchainId, undefined, requestOptions),
   ),
   endpointCase('getAllUserMarkets', () => crvusd.getAllUserMarkets(crvUsdUserSeed().user, undefined, requestOptions)),
   endpointCase('getUserMarketStats', () =>
     crvusd.getUserMarketStats(
       crvUsdUserSeed().user,
-      crvUsdUserSeed().chain,
+      crvUsdUserSeed().blockchainId,
       crvUsdUserSeed().controller,
       requestOptions,
     ),
@@ -34,7 +34,7 @@ runEndpointCases('crvusd', [
   endpointCase('getUserMarketSnapshots', () =>
     crvusd.getUserMarketSnapshots(
       crvUsdUserSeed().user,
-      crvUsdUserSeed().chain,
+      crvUsdUserSeed().blockchainId,
       crvUsdUserSeed().controller,
       requestOptions,
     ),
@@ -42,7 +42,7 @@ runEndpointCases('crvusd', [
   endpointCase('getUserMarketCollateralEvents', () =>
     crvusd.getUserMarketCollateralEvents(
       crvUsdUserSeed().user,
-      crvUsdUserSeed().chain,
+      crvUsdUserSeed().blockchainId,
       crvUsdUserSeed().controller,
       undefined,
       requestOptions,

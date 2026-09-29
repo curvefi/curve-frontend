@@ -17,7 +17,7 @@ export enum MarketColumnId {
   UtilizationPercent = 'utilizationPercent',
   SolvencyPercent = 'solvencyPercent',
   LiquidityUsd = 'liquidityUsd',
-  Chain = 'chain',
+  Chain = 'blockchainId',
   CollateralSymbol = 'assets_collateral_symbol',
   BorrowedSymbol = 'assets_borrowed_symbol',
   IsFavorite = 'isFavorite',

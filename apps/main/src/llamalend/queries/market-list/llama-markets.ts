@@ -38,7 +38,7 @@ export type AssetDetails = {
   symbol: string
   address: Address
   decimals: number
-  chain: Chain
+  blockchainId: Chain
   balance: number | null
   balanceUsd: number | null
   rebasingYield: number | null
@@ -46,7 +46,7 @@ export type AssetDetails = {
 }
 
 export type LlamaMarket = {
-  chain: Chain
+  blockchainId: Chain
   ammAddress: Address
   controllerAddress: Address
   vaultAddress: Address | null
@@ -111,7 +111,7 @@ const scaledFractionToPercent = (value: number): Decimal =>
 const convertLendingVault = (
   {
     controller,
-    chain,
+    chain: blockchainId,
     totalAssets,
     totalAssetsUsd,
     totalDebt,
@@ -169,14 +169,14 @@ const convertLendingVault = (
   const solvencyPercent = calculateMarketSolvency({ totalAssetsUsd, badDebtUsd })
 
   return {
-    chain,
+    blockchainId,
     controllerAddress: controller,
     ammAddress: llamma,
     vaultAddress: vault,
     version: toMarketVersion(version),
     assets: {
-      borrowed: { ...borrowedToken, chain, balance: totalDebt, balanceUsd: totalDebtUsd },
-      collateral: { ...collateralToken, chain, balance: totalAssets, balanceUsd: totalAssetsUsd },
+      borrowed: { ...borrowedToken, blockchainId, balance: totalDebt, balanceUsd: totalDebtUsd },
+      collateral: { ...collateralToken, blockchainId, balance: totalAssets, balanceUsd: totalAssetsUsd },
     },
     maxLtv,
     minBand,
@@ -217,18 +217,19 @@ const convertLendingVault = (
             title: symbol,
             percentage: rate,
             address,
-            blockchainId: chain,
+            blockchainId,
           }))
         : [],
     },
     lendingPosition,
     type: marketType,
-    url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
+    url: getInternalUrl('lend', blockchainId, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
     deprecatedMessage:
-      DEPRECATED_LLAMAS[marketType][chain]?.[controller]?.message ?? lowSolvencyDeprecatedMessage(solvencyPercent),
+      DEPRECATED_LLAMAS[marketType][blockchainId]?.[controller]?.message ??
+      lowSolvencyDeprecatedMessage(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
     rewards,
-    leverage: NO_LEVERAGE_LEND[chain]?.includes(controller) ? null : leverage,
+    leverage: NO_LEVERAGE_LEND[blockchainId]?.includes(controller) ? null : leverage,
     userHasPositions:
       hasBorrowed || lendingPosition
         ? { [MarketRateType.Borrow]: !!hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
@@ -287,7 +288,7 @@ const convertMintMarket = (
   const tvl = calculateMintMarketTvlUsd({ collateralAmountUsd })
 
   return {
-    chain,
+    blockchainId: chain,
     controllerAddress: address,
     ammAddress: llamma,
     vaultAddress: null, // mint markets dont have these
@@ -300,7 +301,7 @@ const convertMintMarket = (
         symbol: stablecoinToken.symbol,
         address: stablecoinToken.address,
         decimals: stablecoinToken.decimals,
-        chain,
+        blockchainId: chain,
         balance: borrowed,
         balanceUsd: borrowedUsd,
         rebasingYield: stablecoinToken.rebasingYield,
@@ -310,7 +311,7 @@ const convertMintMarket = (
         symbol: collateralSymbol,
         address: collateralAddress,
         decimals: collateralToken.decimals,
-        chain,
+        blockchainId: chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
         rebasingYield: collateralToken.rebasingYield,

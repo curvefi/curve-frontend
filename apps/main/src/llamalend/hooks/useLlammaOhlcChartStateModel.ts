@@ -84,7 +84,7 @@ export const useLlammaOhlcChartStateModel = ({
     isLlammaFallbackEnabled,
   } = useLlammaOhlcChartData({
     endpoint,
-    chain: network,
+    blockchainId: network,
     controller: controllerAddress,
     llamma: llammaAddress,
     oraclePrice,

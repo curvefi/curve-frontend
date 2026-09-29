@@ -75,7 +75,7 @@ export const useYieldBreakdown = ({
             body: (
               <CrvRateTooltipContent
                 {...range}
-                crvToken={{ address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain }}
+                crvToken={{ address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.blockchainId }}
               />
             ),
             clickable: true,

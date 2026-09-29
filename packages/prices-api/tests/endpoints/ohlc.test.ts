@@ -7,7 +7,7 @@ const poolSeed = endpointSeed(getPoolSeed)
 runEndpointCases('ohlc', [
   endpointCase('getOHLC', () =>
     ohlc.getOHLC(
-      poolSeed().chain,
+      poolSeed().blockchainId,
       poolSeed().poolAddress,
       poolSeed().mainToken,
       poolSeed().referenceToken,
@@ -15,6 +15,9 @@ runEndpointCases('ohlc', [
     ),
   ),
   endpointCase('getLpOHLC', () =>
-    ohlc.getLpOHLC({ chain: poolSeed().chain, poolAddress: poolSeed().poolAddress, priceUnits: 'usd' }, requestOptions),
+    ohlc.getLpOHLC(
+      { chain: poolSeed().blockchainId, poolAddress: poolSeed().poolAddress, priceUnits: 'usd' },
+      requestOptions,
+    ),
   ),
 ])
