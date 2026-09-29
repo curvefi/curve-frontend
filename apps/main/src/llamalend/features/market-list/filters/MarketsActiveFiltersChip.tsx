@@ -2,24 +2,24 @@ import { capitalize } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { ChainFilterChips } from '@evm-ui/shared/ui/DataTable/chips/ChainFilterChips'
-import {
-  getRangeFilterLabel,
-  parseListFilter,
-  parseRangeFilter,
-  rangeFilterFn,
-  serializeListFilter,
-} from '@evm-ui/shared/ui/DataTable/filters'
-import {
-  TableActiveFilterGroups,
-  type TableActiveFilterGroup,
-  type TableActiveFilterGroupChipsProps,
-} from '@evm-ui/shared/ui/DataTable/TableActiveFilterGroups'
 import { toArray } from '@primitives/array.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
 import type { Unit } from '@primitives/units.util'
 import type { ReactTable } from '@tanstack/react-table'
 import { constQ } from '@ui/features/queries/util'
 import type { CurveTableFeatures, FilterProps } from '@ui/features/tables/data-table.utils'
+import {
+  getRangeFilterLabel,
+  parseListFilter,
+  parseRangeFilter,
+  rangeFilterFn,
+  serializeListFilter,
+} from '@ui/features/tables/filters'
+import {
+  TableActiveFilterGroups,
+  type TableActiveFilterGroup,
+  type TableActiveFilterGroupChipsProps,
+} from '@ui/features/tables/TableActiveFilterGroups'
 import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
 
 const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))

@@ -3,8 +3,10 @@ import { oneInt, oneOf } from '@cy/support/generators'
 
 export const e2eBaseUrl = () => Cypress.config('baseUrl')
 
-export const [MIN_WIDTH, TABLET_BREAKPOINT, DESKTOP_BREAKPOINT, MAX_WIDTH] = [320, 820, 1200, 2000]
+const [MIN_WIDTH, TABLET_BREAKPOINT, DESKTOP_BREAKPOINT, MAX_WIDTH] = [320, 820, 1200, 2000]
 const [MIN_HEIGHT, MAX_HEIGHT] = [600, 1000]
+
+export { TABLET_BREAKPOINT }
 
 export const oneDesktopViewport = () =>
   [oneInt(DESKTOP_BREAKPOINT, MAX_WIDTH), oneInt(MIN_HEIGHT, MAX_HEIGHT), 'desktop'] as const

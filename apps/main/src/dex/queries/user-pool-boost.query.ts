@@ -11,11 +11,7 @@ import { isValidAddress } from '../utils'
 
 const ETH: number = Chain.Ethereum
 
-export const userPoolBoost = async (
-  chainId: number,
-  pool: PoolTemplate,
-  userAddress: Address,
-): Promise<Decimal | null> =>
+const userPoolBoost = async (chainId: number, pool: PoolTemplate, userAddress: Address): Promise<Decimal | null> =>
   chainId === ETH && isValidAddress(pool.gauge.address) ? (decimal(await pool.userBoost(userAddress)) ?? null) : null
 
 export const { useQuery: useUserPoolBoostQuery, invalidate: invalidateUserPoolBoostQuery } = queryFactory({

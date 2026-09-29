@@ -8,6 +8,7 @@ import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLe
 import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
+import { useBorrowMoreControllerApproval } from '@/llamalend/queries/borrow-more/borrow-more-controller-approval.query'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { getBorrowMoreGasEstimateQueryOptions } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
@@ -23,6 +24,7 @@ import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
+import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/queries/router-api'
@@ -142,7 +144,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const { borrowToken, collateralToken } = tokens
 
   const form = useForm<BorrowMoreForm>({
-    validation: borrowMoreFormValidationSuite,
+    validation: useMemo(() => borrowMoreFormValidationSuite(market), [market]),
     defaultValues: emptyBorrowMoreForm(defaultSlippage),
   })
   useSyncMarketLeverageSlippage(form, defaultSlippage)
@@ -161,18 +163,32 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     leverageProviders,
   })
 
+  const isControllerApproved = useBorrowMoreControllerApproval({
+    chainId,
+    marketId,
+    userAddress,
+    leverageEnabled: values.leverageEnabled,
+  })
+
+  const { onSubmit: onDelegationSubmit, modal: delegationModal } = useControllerDelegation<BorrowMoreForm>({
+    chainId,
+    userAddress,
+    marketId,
+    approval: q(isControllerApproved),
+    handleFormSubmit: form.handleSubmit,
+    onSubmit: onMutationSubmit,
+  })
+
   const {
     solvency: { isLoading: isSolvencyLoading, error: solvencyError },
     solvencyDisabledAlert,
     onSubmit,
-    onConfirm,
-    onClose,
-    isOpen,
+    modal: solvencyModal,
   } = useFormLowSolvency({
     controllerAddress,
     marketType,
     chainId,
-    onSubmit: onMutationSubmit,
+    onSubmit: onDelegationSubmit,
     handleFormSubmit: form.handleSubmit,
   })
 
@@ -189,17 +205,19 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: isPending || !market || isSolvencyLoading,
+    isLoading: isPending || !market || isSolvencyLoading || isControllerApproved.isLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     userAddress,
     borrowToken,
     collateralToken,
-    error: borrowError ?? solvencyError,
-    isApproved: useBorrowMoreIsApproved(params),
+    error: isControllerApproved.error ?? borrowError ?? solvencyError,
+    isApproved: q(useBorrowMoreIsApproved(params)),
+    isControllerApproved: q(isControllerApproved),
+    delegationModal,
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: { isOpen, onClose, onConfirm },
+    solvencyModal,
     priceImpact: q(useBorrowMorePriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,
@@ -213,7 +231,8 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
         form.update({ routeId: route?.id })
         await invalidateBorrowMoreRouteQueries(route, params)
       },
-      getRouteGasOptions: (routeId: string | undefined) => getBorrowMoreGasEstimateQueryOptions({ ...params, routeId }),
+      getRouteGasOptions: (routeId: string | undefined) =>
+        getBorrowMoreGasEstimateQueryOptions({ ...params, routeId, isControllerApproved: isControllerApproved.data }),
       networks,
       zapAddress,
       providers: leverageProviders,

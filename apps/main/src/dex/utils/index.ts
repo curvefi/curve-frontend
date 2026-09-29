@@ -1,7 +1,5 @@
 import { zeroAddress } from 'viem'
 
-export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
-
 export function shortenTokenName(token: string) {
   const tokenLength = token.length
   if (tokenLength > 30) {

@@ -13,6 +13,7 @@ import {
   getActionInfo,
   getActionValue,
 } from './action-info.helpers'
+import { submitLoanForm } from './loan-form.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -81,22 +82,22 @@ export const LOAN_TEST_MARKETS = {
       borrowedSymbol: BORROWED_SYMBOL,
     },
     {
-      id: 'one-way-market-v2-0',
-      label: 'wstETH-WETH LLv2 Lend Market',
-      collateralAddress: '0x1f32b1c2345538c0c6f582fcb022739c4a194ebb', // wstETH
-      controllerAddress: '0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
-      collateral: '1',
-      borrow: '0.01',
-      borrowMore: '0.005',
-      repay: '0.005',
+      id: 'one-way-market-v2-1',
+      label: 'WBTC-USDC LLv2 Lend Market',
+      collateralAddress: '0x68f180fcce6836688e9084f035309e29bf0a2095', // WBTC
+      controllerAddress: '0x9fC15ac3EF97093832f49B7997A58E29b49C56dE',
+      collateral: '0.1',
+      borrow: '100',
+      borrowMore: '10',
+      repay: '10',
       chainId: Chain.Optimism,
-      path: '/lend/optimism/markets/0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
+      path: '/lend/optimism/markets/0x9fC15ac3EF97093832f49B7997A58E29b49C56dE',
       hasLeverage: true,
       hasLeverageManagement: true,
-      collateralDecimals: COLLATERAL_DECIMALS,
-      borrowedAddress: '0x4200000000000000000000000000000000000006', // WETH
-      borrowedDecimals: BORROWED_DECIMALS,
-      borrowedSymbol: 'WETH',
+      collateralDecimals: 8,
+      borrowedAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85', // USDC
+      borrowedDecimals: 6,
+      borrowedSymbol: 'USDC',
     },
   ],
 } as const
@@ -119,17 +120,19 @@ export function checkLoanDetailsLoaded({
   leverageEnabled,
   expectError,
   hasApi = true,
+  controllerApproved = true,
 }: {
   leverageEnabled: boolean
   expectError?: string
   hasApi?: boolean
+  controllerApproved?: boolean
 }) {
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should(hasApi ? 'include' : 'equal', hasApi ? '%' : '-')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
-  checkEstimatedTxCost({ hasValue: hasApi && !expectError })
+  checkEstimatedTxCost({ hasValue: hasApi && !expectError && controllerApproved })
 
   if (leverageEnabled) {
     cy.get('[data-testid="loan-action-settings"]').within(() => {
@@ -224,14 +227,8 @@ export const checkLoanRangeSlider = () => {
   })
 }
 
-export function submitLoanForm({ form, message }: { form: string; message: string }) {
-  cy.get('[data-testid="toast-success"]', LOAD_TIMEOUT).should('not.exist') // wait previous confirmations are gone
-  cy.get(`[data-testid="${form}-submit-button"]`).click(LOAD_TIMEOUT)
-  cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
-  return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-}
-
 /**
  * Submit the create loan form and wait for the button to be re-enabled.
  */
-export const submitCreateLoanForm = () => submitLoanForm({ form: 'create-loan', message: 'Loan created' })
+export const submitCreateLoanForm = ({ controllerApproved = true }: { controllerApproved?: boolean } = {}) =>
+  submitLoanForm({ form: 'create-loan', message: 'Loan created', approveDelegation: !controllerApproved })

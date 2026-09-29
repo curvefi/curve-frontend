@@ -72,7 +72,6 @@ const ROUTE_TEST_IDS = {
   dex: {
     [DEX_ROUTES.PAGE_POOLS]: 'data-table-head',
     [DEX_ROUTES.PAGE_SWAP]: 'swap-page',
-    [DEX_ROUTES.PAGE_DASHBOARD]: 'dashboard-page',
     [DEX_ROUTES.PAGE_CREATE_POOL]: 'create-pool-page',
     [DEX_ROUTES.PAGE_DEPLOY_GAUGE]: 'deploy-gauge-page',
     [DEX_ROUTES.PAGE_COMPENSATION]: 'compensation-page',

@@ -15,6 +15,7 @@ import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
+import { q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useMarketContext } from '../../market-context'
 
@@ -126,7 +127,7 @@ export const useResetPositionForm = <ChainId extends LlamaChainId>({
     formErrors: formState.visibleErrors,
     borrowToken,
     collateralToken,
-    isApproved: useResetIsApproved(params),
+    isApproved: q(useResetIsApproved(params)),
     requiredWalletAmount: maybe(params.minBorrowed, x => (+x > 0 ? x : undefined)),
   }
 }

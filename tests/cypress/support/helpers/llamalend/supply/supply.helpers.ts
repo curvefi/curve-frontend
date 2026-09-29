@@ -75,7 +75,7 @@ export type SupplyActionType = SupplyFormType | 'claim-crv-rewards' | 'claim-oth
 const getSupplyInput = (type: SupplyFormType) =>
   cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`, LOAD_TIMEOUT)
 
-export const getSupplyInputBalanceValue = (type: SupplyFormType) =>
+const getSupplyInputBalanceValue = (type: SupplyFormType) =>
   cy.get(`[data-testid="supply-${type}-input"] [data-testid="balance-value"]`, LOAD_TIMEOUT)
 
 export const getSupplyInputBalanceValueAttr = (type: SupplyFormType) =>

@@ -17,7 +17,6 @@ import { useAvailableLiquidity } from '@/llamalend/widgets/page-header/hooks/use
 import { useManualPagination } from '@evm-ui/features/activity-table'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
-import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
@@ -32,6 +31,7 @@ import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
+import { ExpandedPanelActions } from '@ui/features/tables/ExpandedPanelActions'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { useTabs } from '@ui/hooks/useTabs'
 import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
@@ -85,7 +85,7 @@ const ParticipantExpandedPanelActions = ({
   />
 )
 
-export const BorrowersCard = () => {
+const BorrowersCard = () => {
   const { chainId, blockchainId, marketId, controllerAddress, apiMarket, marketType, tokens } = useMarketContext()
   const { pagination, onPaginationChange, apiPage } = useManualPagination(PAGE_SIZE)
   const borrowersQuery = useMarketBorrowers({
@@ -192,7 +192,7 @@ export const BorrowersCard = () => {
   )
 }
 
-export const SuppliersCard = () => {
+const SuppliersCard = () => {
   const { chainId, blockchainId, marketQuery, apiMarket, vaultToken, tokens } = useMarketContext()
   const { pagination, onPaginationChange, apiPage } = useManualPagination(PAGE_SIZE)
   const suppliersQuery = useMarketSuppliers({

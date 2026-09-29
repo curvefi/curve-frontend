@@ -1,7 +1,7 @@
 import { isMerkl } from '@evm-ui/queries/campaigns/merkl'
-import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
+import { RewardIcon } from '@ui/components/RewardIcon'
 import { TooltipItem, TooltipValueLink } from '@ui/components/TooltipComponents'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { MerklIcon } from '@ui/icons/MerklIcon'

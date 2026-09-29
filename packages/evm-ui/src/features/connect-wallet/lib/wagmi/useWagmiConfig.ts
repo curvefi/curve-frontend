@@ -21,7 +21,7 @@ export const useWagmiConfig = (chainIds: number[] | undefined) =>
         !NO_CYPRESS_TEST_CONNECTOR && {
           connectors: [
             createTestConnector({
-              privateKey: generatePrivateKey(),
+              account: generatePrivateKey(),
               chain: assert(
                 chains.find(chain => chain.id === CYPRESS_CONNECTOR_CHAIN),
                 `Chain ${CYPRESS_CONNECTOR_CHAIN} not found in networks ${chains.map(chain => chain.id).join(', ')}`,

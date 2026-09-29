@@ -14,7 +14,6 @@ import { invalidateUserPoolBoostQuery } from './user-pool-boost.query'
 import { getUserPoolClaimablesQueryKey } from './user-pool-claimables.query'
 import { invalidateUserPoolLiquidityUsdQuery } from './user-pool-liquidity-usd.query'
 import { getUserPoolPositionsQueryKey, invalidateUserPoolPositions } from './user-pool-positions.query'
-import { invalidateUserPoolRewardCrvApyQuery } from './user-pool-reward-crv-apy.query'
 import { invalidateUserPoolShareQuery } from './user-pool-share.query'
 
 /** Compatibility helper that refreshes user-pool-info method queries and the user's pool positions. */
@@ -23,7 +22,6 @@ export const invalidateUserPoolInfo = async (params: UserPoolParams) => {
     invalidateUserPoolBalancesQuery(params),
     invalidateUserPoolLiquidityUsdQuery(params),
     invalidateUserPoolShareQuery(params),
-    invalidateUserPoolRewardCrvApyQuery(params),
     invalidateUserPoolBoostQuery(params),
     invalidateUserPoolPositions(params),
     queryClient.resetQueries({ queryKey: getUserPoolClaimablesQueryKey(params) }),

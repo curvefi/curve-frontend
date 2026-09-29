@@ -10,6 +10,8 @@ import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { getRepayImplementation, isFullRepayFromDebtToken, isRepayLeveraged } from './repay-query.helpers'
 
+type GasEstimateParams = RepayParams & { isControllerApproved?: boolean }
+
 const {
   useQuery: useRepayLoanEstimateGas,
   invalidate: invalidateRepayLoanEstimateGasQuery,
@@ -25,7 +27,7 @@ const {
     isFull,
     slippage,
     routeId,
-  }: RepayParams) =>
+  }: GasEstimateParams) =>
     [
       rootKeys.userMarket({ chainId, marketId, userAddress }),
       { name: 'estimateGas.repay', stateCollateral, userCollateral, userBorrowed, isFull, slippage, routeId },
@@ -63,7 +65,11 @@ const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
+  validationSuite: repayValidationSuite({
+    leverageRequired: false,
+    validateMax: true,
+    requireControllerApproval: true,
+  }),
   dependencies: params => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
@@ -78,7 +84,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     isFull,
     slippage,
     routeId,
-  }: RepayParams) =>
+  }: GasEstimateParams) =>
     [
       rootKeys.userMarket({ chainId, marketId, userAddress }),
       { name: 'estimateGas.repayApprove', stateCollateral, userCollateral, userBorrowed, isFull, slippage, routeId },
@@ -116,11 +122,15 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
+  validationSuite: repayValidationSuite({
+    leverageRequired: false,
+    validateMax: true,
+    requireControllerApproval: true,
+  }),
   dependencies: params => notFalsy(isRepayLeveraged(params) && repayExpectedBorrowedQueryKey(params)),
 })
 
-export const useRepayEstimateGas = createApprovedEstimateGasHook({
+export const useRepayEstimateGas = createApprovedEstimateGasHook<GasEstimateParams, TGas>({
   useIsApproved: useRepayIsApproved,
   useApproveEstimate: useRepayApproveGasEstimate,
   useActionEstimate: useRepayLoanEstimateGas,

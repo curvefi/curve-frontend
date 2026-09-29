@@ -4,7 +4,7 @@ import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-va
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
-export const { useQuery: useMarketPrice, queryKey: getMarketPriceKey } = queryFactory({
+export const { useQuery: useMarketPrice } = queryFactory({
   queryKey: (params: MarketParams) => [rootKeys.market(params), { name: 'price' }] as const,
   queryFn: async ({ marketId }: MarketQuery) => (await getPricesImplementation(marketId).price()) as Decimal,
   category: 'llamalend.market',

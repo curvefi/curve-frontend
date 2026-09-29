@@ -41,7 +41,7 @@ describe('Router Swap (RPC)', () => {
   const TestWrapper = () => (
     <SwapTestCase
       vnet={getVirtualNetwork()}
-      privateKey={privateKey}
+      account={privateKey}
       chainId={Chain.Ethereum}
       fromAddress={FROM_ADDRESS}
       toAddress={TO_ADDRESS}

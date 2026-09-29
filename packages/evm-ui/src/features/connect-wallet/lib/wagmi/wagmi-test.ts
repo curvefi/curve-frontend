@@ -6,20 +6,23 @@ import {
   type CustomTransport,
   fallback,
   http,
+  type JsonRpcAccount,
   type PrivateKeyAccount,
   type SendTransactionParameters,
+  isAddress,
 } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
+import { privateKeyToAccount, toAccount } from 'viem/accounts'
 import { createConnector, type CreateConnectorFn } from 'wagmi'
-import { type Address, type Hex } from '@primitives/address.utils'
+import type { Address } from '@primitives/address.utils'
 import { WAGMI_HTTP_OPTIONS } from './transports'
 
 type ConnectParams<T> = { chainId?: number; isReconnecting?: boolean; withCapabilities: T }
 type ConnectResult<T> = { accounts: readonly T[]; chainId: number }
 type Account = { address: Address; capabilities: Record<string, unknown> }
+type TestAccount = PrivateKeyAccount | JsonRpcAccount
 
 /** Default custom transport for Cypress E2E tests, read-only */
-const cypressTransport = (account: PrivateKeyAccount, chain: Chain) => {
+const cypressTransport = (account: TestAccount, chain: Chain) => {
   // Dedicated local-account writer so eth_sendTransaction is signed with the provided private key.
   const writeClient = createWalletClient({ account, chain, transport: http(chain.rpcUrls.default.http[0]) })
   return custom({
@@ -32,8 +35,8 @@ const cypressTransport = (account: PrivateKeyAccount, chain: Chain) => {
 }
 
 export type CreateTestConnectorOptions = {
-  /** A hexadecimal private key used to generate a test account */
-  privateKey: Hex
+  /** A 32-byte private key or a 20-byte JSON-RPC account address, including the 0x prefix. */
+  account: Address
   /** The testnet chain configuration */
   chain: Chain
   /**
@@ -44,18 +47,22 @@ export type CreateTestConnectorOptions = {
    *
    * Defaults to a read-only custom transport for Cypress.
    */
-  transport?: (account: PrivateKeyAccount) => CustomTransport
+  transport?: (account: TestAccount) => CustomTransport
 }
 
 /**
  * Creates a wagmi test connector for Cypress.
  *
  * This connector is designed for use in test environments (e.g., Cypress) with optionally a testnet chain.
- * It creates a wallet using a custom seed (private key) to allow testing contract read and write calls
+ * It creates a wallet using a private key or address to impersonate to test contract read and write calls
  * without relying on third-party browser extensions like MetaMask.
  */
-export function createTestConnector({ privateKey, chain, transport }: CreateTestConnectorOptions): CreateConnectorFn {
-  const account = privateKeyToAccount(privateKey)
+export function createTestConnector({
+  account: accountHex,
+  chain,
+  transport,
+}: CreateTestConnectorOptions): CreateConnectorFn {
+  const account = isAddress(accountHex, { strict: false }) ? toAccount(accountHex) : privateKeyToAccount(accountHex)
 
   const client = createWalletClient({
     account,

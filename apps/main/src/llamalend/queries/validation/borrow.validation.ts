@@ -1,7 +1,9 @@
 import { group, skipWhen, test } from 'vest'
 import { isRouterRequired, tryGetMarket } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
   validateDebt,
+  validateControllerApproval,
   validateLeverageEnabled,
   validateMaxCollateral,
   validateMaxDebt,
@@ -32,19 +34,24 @@ const createLoanFormValidationGroup = (
     maxCollateral,
     leverageEnabled,
     routeId,
-  }: FieldsOf<CreateLoanForm>,
+    isControllerApproved,
+  }: FieldsOf<CreateLoanForm & { isControllerApproved: boolean }>,
   {
     debtRequired,
     isMaxDebtRequired,
     isLeverageRequired,
     collateralRequired,
     ignoreMaxCollateral,
+    market,
+    requireControllerApproval,
   }: {
     debtRequired: boolean
     isMaxDebtRequired: boolean
     isLeverageRequired: boolean
     collateralRequired: boolean
     ignoreMaxCollateral: boolean
+    market: MarketTemplate | undefined
+    requireControllerApproval: boolean
   },
 ) =>
   group('createLoanFormValidationGroup', () => {
@@ -56,11 +63,12 @@ const createLoanFormValidationGroup = (
     validateMaxDebt(debt, maxDebt, { required: isMaxDebtRequired })
     if (!ignoreMaxCollateral) validateMaxCollateral(userCollateral, maxCollateral, { required: collateralRequired })
     validateLeverageEnabled(leverageEnabled, { required: isLeverageRequired })
-    validateRouteCalldata(routeId)
+    validateRouteCalldata(routeId, market)
+    validateControllerApproval(isControllerApproved, { required: requireControllerApproval })
   })
 
 function validateCreateLoanFieldsForMarket(
-  params: CreateLoanDebtParams,
+  params: FieldsOf<CreateLoanForm & { marketId: string }>,
   {
     debtRequired,
     leverageProviders,
@@ -86,14 +94,31 @@ function validateCreateLoanFieldsForMarket(
   })
 }
 
+export const createLoanFormValidationSuite = (marketId: string | undefined) =>
+  createValidationSuite((params: CreateLoanForm) => {
+    createLoanFormValidationGroup(params, {
+      debtRequired: true,
+      isMaxDebtRequired: true,
+      isLeverageRequired: false,
+      collateralRequired: true,
+      ignoreMaxCollateral: false,
+      market: tryGetMarket(marketId) ?? undefined,
+      requireControllerApproval: false,
+    })
+    validateCreateLoanFieldsForMarket(
+      { ...params, marketId },
+      { debtRequired: true, leverageProviders: undefined, validateLeverageProviders: false },
+    )
+  })
+
 export const createLoanQueryValidationSuite = (options: {
   debtRequired: boolean
   ignoreMaxCollateral?: boolean
   collateralRequired?: boolean
   isMaxDebtRequired?: boolean
   isLeverageRequired?: boolean
-  skipMarketValidation?: boolean
   leverageProviders?: readonly RouteProvider[]
+  requireControllerApproval?: boolean
 }) => {
   const {
     debtRequired,
@@ -101,19 +126,19 @@ export const createLoanQueryValidationSuite = (options: {
     collateralRequired = false,
     ignoreMaxCollateral = !collateralRequired,
     isLeverageRequired = false,
-    skipMarketValidation = false,
     leverageProviders,
+    requireControllerApproval = false,
   } = options
-  return createValidationSuite((params: CreateLoanDebtParams) => {
-    skipWhen(skipMarketValidation, () => {
-      marketIdValidationSuite(params)
-    })
+  return createValidationSuite((params: CreateLoanDebtParams & { isControllerApproved?: boolean }) => {
+    marketIdValidationSuite(params)
     createLoanFormValidationGroup(params, {
       debtRequired,
       isMaxDebtRequired,
       isLeverageRequired,
       collateralRequired,
       ignoreMaxCollateral,
+      market: tryGetMarket(params.marketId) ?? undefined,
+      requireControllerApproval,
     })
     validateCreateLoanFieldsForMarket(params, {
       debtRequired,

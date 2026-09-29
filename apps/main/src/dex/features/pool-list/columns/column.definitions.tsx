@@ -37,6 +37,16 @@ export const POOL_COLUMNS = columnHelper.columns([
     cell: PoolTitleCell,
     meta: { tooltip: { title: POOL_TITLES[PoolColumnId.PoolName], body: <PoolHeaderTooltipContent /> } },
   }),
+  columnHelper.display({
+    id: PoolColumnId.Tokens,
+    header: POOL_TITLES[PoolColumnId.Tokens],
+    cell: ({ row }) => <TokensCell pool={row.original} />,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.Tokens], body: <TokensHeaderTooltipContent /> },
+    },
+  }),
   columnHelper.accessor(getNetApr, {
     id: PoolColumnId.NetRate,
     header: POOL_TITLES[PoolColumnId.NetRate],
@@ -93,16 +103,6 @@ export const POOL_COLUMNS = columnHelper.columns([
     meta: {
       type: 'numeric',
       tooltip: { title: POOL_TITLES[PoolColumnId.Points], body: <PointsHeaderTooltipContent /> },
-    },
-  }),
-  columnHelper.display({
-    id: PoolColumnId.Tokens,
-    header: POOL_TITLES[PoolColumnId.Tokens],
-    cell: ({ row }) => <TokensCell pool={row.original} />,
-    enableSorting: false,
-    meta: {
-      type: 'numeric',
-      tooltip: { title: POOL_TITLES[PoolColumnId.Tokens], body: <TokensHeaderTooltipContent /> },
     },
   }),
   columnHelper.accessor('tradingVolume24h', {
