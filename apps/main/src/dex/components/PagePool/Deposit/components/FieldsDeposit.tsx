@@ -42,7 +42,7 @@ function calculateBalancedValues(
   const { reserveRatio: changedRatio, usdPrice: changedUsdPrice } = reserves[tokenAddresses[changedIndex]] ?? {}
   return lodash.zip(oldAmounts, tokenAddresses).map((tuple, index) => {
     const [amount, tokenAddress] = tuple as [Amount, string]
-    if (changedIndex === index) {
+    if (changedIndex === index || !value) {
       return { ...amount, value }
     }
     const { usdPrice, reserveRatio } = reserves[tokenAddress] ?? {}
