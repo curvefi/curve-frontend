@@ -28,7 +28,7 @@ export const MaxReturnOnEquityCell = ({
   return (
     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
       <Tooltip
-        title={beta ? t`ROE at max leverage` : MARKET_TITLES[MarketColumnId.MaxReturnOnEquity]}
+        title={beta ? t`Max RoE` : MARKET_TITLES[MarketColumnId.MaxReturnOnEquity]}
         body={<MaxReturnOnEquityTooltipContent market={market} />}
         clickable
         mobileDrawer

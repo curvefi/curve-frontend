@@ -1,3 +1,4 @@
+import { Equation } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import { getMaxPositionLeverage } from '@/llamalend/max-leverage.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
@@ -33,16 +34,24 @@ export const MaxReturnOnEquityTooltipContent = ({
       <TooltipDescription
         text={
           beta
-            ? t`ROE at max leverage is the APR on equity 1 in a zero-conversion start: collateral equals the leverage limit, converted borrowed assets are 0, and debt is that limit minus 1. It excludes swap costs and price movement. It is not a live position.`
+            ? t`Max RoE estimates an APR on equity at the maximum leverage limit, assuming a zero-conversion start. It excludes swap costs and price movement. It is not a live position.`
             : t`The Maximum Return on Equity is an estimated annualized return on your own capital at maximum leverage, after borrowing costs.`
         }
       />
-      <TooltipDescription
-        text={beta ? t`ROE APR = M × collateral APR − (M − 1) × gross borrow APR` : t`Max RoE = M × C − (M − 1) × B`}
-      />
+      {beta ? (
+        <>
+          <Equation>{t`RoE APR = maxLeverage × collateral APR − (maxLeverage − 1) × gross borrow APR`}</Equation>
+          <TooltipDescription text={t`RoE = return on equity; APR = annual percentage rate.`} />
+          <TooltipDescription text={t`maxLeverage = maximum position leverage.`} />
+        </>
+      ) : (
+        <TooltipDescription text={t`Max RoE = M × C − (M − 1) × B`} />
+      )}
       {maybes([leverageShown, collateralShown, borrowShown], (lev, collateralRate, borrowRate) => (
         <TooltipItems secondary>
-          <TooltipItem title={t`Max multiplier (M)`}>{formatNumber(lev, 'multiplier')}</TooltipItem>
+          <TooltipItem title={beta ? t`Max leverage` : t`Max multiplier (M)`}>
+            {formatNumber(lev, 'multiplier')}
+          </TooltipItem>
           <TooltipItem title={beta ? t`Collateral APR` : t`Collateral APY (C)`}>
             {formatNumber(collateralRate, 'percent.rate')}
           </TooltipItem>

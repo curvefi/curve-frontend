@@ -9,7 +9,6 @@ import { useUserPrices } from '@/llamalend/queries/user/user-prices.query'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
@@ -21,17 +20,22 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 import type { ChipColors } from '@ui/features/themes/components/chip/colors'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import {
   bufferAmount,
   formatOracleHealth,
-  isOracleHealthFloor,
   formatSignedAmount,
   formatSignedPercent,
   oracleHealth,
 } from '../position-metrics.utils'
-import { PROVISIONAL_POSITION_THRESHOLDS, resolvePositionStatus, type PositionSeverity } from '../position-status.utils'
+import {
+  isCriticalBuffer,
+  PROVISIONAL_POSITION_THRESHOLDS,
+  resolvePositionStatus,
+  type PositionSeverity,
+} from '../position-status.utils'
 import { bufferTooltip, healthTooltip, statusTooltip } from '../PositionMetricTooltip'
 import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import { HealthAndBufferBar, HealthAndBufferDebug } from './HealthAndBufferBar'
@@ -110,19 +114,17 @@ export const HealthDetails = ({
 }
 
 const STATUS_BADGE_COLOR: Record<PositionSeverity, ChipColors> = {
-  healthy: 'active',
   near: 'warning',
-  protection: 'highlight',
-  low: 'warning',
-  critical: 'alert',
+  inRange: 'warning',
+  below: 'warning',
   liquidatable: 'alert',
-  converted: 'accent',
   neutral: 'default',
 }
 
 /** Beta card content. Full health is the same Controller health(full) read the rest of the market uses. */
 const BetaHealthDetails = () => {
   const { chainId, marketId, userAddress, controllerAddress, tokens } = useMarketContext()
+  const isMobile = useIsMobile()
   const params = { chainId, marketId, userAddress }
   const oracle = useMarketOraclePrice(params)
   const userPrices = useUserPrices(params)
@@ -136,7 +138,10 @@ const BetaHealthDetails = () => {
     if (!healthPoints) return undefined
     const amount = bufferAmount(state.debt, healthPoints)
     const text = formatSignedAmount(amount)
-    const display = text.startsWith('<') || text.startsWith('−<') || text === '0.00' ? text : formatNumber(amount, { abbreviate: true })
+    const display =
+      text.startsWith('<') || text.startsWith('−<') || text === '0.00'
+        ? text
+        : formatNumber(amount, { abbreviate: true })
     return `${display} ${tokens.borrowToken?.symbol ?? ''}`
   })
   const theme = useTheme()
@@ -147,32 +152,14 @@ const BetaHealthDetails = () => {
           upperPrice: userPrices.data[1],
           lowerPrice: userPrices.data[0],
           fullHealth: fullHealth.data,
-          collateralQuantity: userState.data.collateral,
+          debt: userState.data.debt,
           liquidationPredicate: 'strict-negative',
           assetsType: getMarketAssetsType(chainId, controllerAddress),
         })
       : undefined
   const assetsType = getMarketAssetsType(chainId, controllerAddress)
   const assetsThresholds = assetsType ? PROVISIONAL_POSITION_THRESHOLDS[assetsType] : undefined
-  const textFeedback =
-    status?.severity === 'healthy'
-      ? 'Success'
-      : status?.severity === 'near' || status?.severity === 'protection'
-        ? 'Warning'
-        : status?.severity === 'low'
-          ? 'Danger'
-          : status?.severity === 'critical' || status?.severity === 'liquidatable'
-            ? 'Error'
-            : undefined
-  const statusColor = textFeedback ? theme.design.Text.TextColors.Feedback[textFeedback] : undefined
-  const healthColor =
-    healthValue.data != undefined && isOracleHealthFloor(healthValue.data)
-      ? theme.design.Text.TextColors.Feedback.Error
-      : statusColor
-  const bufferIsRed =
-    status?.severity === 'critical' ||
-    status?.severity === 'liquidatable' ||
-    status?.bufferWarning?.severity === 'critical'
+  const bufferIsRed = isCriticalBuffer(fullHealth.data, assetsType)
   const bufferColor = bufferIsRed ? theme.design.Text.TextColors.Feedback.Error : undefined
   return (
     <>
@@ -184,7 +171,6 @@ const BetaHealthDetails = () => {
           value={keepDisplayedValue(healthValue)}
           valueOptions={{
             abbreviate: false,
-            color: healthColor,
             formatter: value => {
               const parsed = decimal(value)
               return parsed == undefined ? '' : formatOracleHealth(parsed)
@@ -192,51 +178,55 @@ const BetaHealthDetails = () => {
           }}
           valueTooltip={healthTooltip()}
         />
-      </Box>
-      <Box sx={{ gridArea: 'status' }}>
-      <Tooltip
-        {...statusTooltip({
-          label: status?.label,
-          category: getMarketAssetsType(chainId, controllerAddress),
-          nearRange: assetsThresholds ? `${assetsThresholds.nearRangeDropPercent}%` : undefined,
-          lowBuffer: assetsThresholds ? `${assetsThresholds.lowBufferPercent}%` : undefined,
-          criticalBuffer: assetsThresholds ? `${assetsThresholds.criticalBufferPercent}%` : undefined,
-          predicate: 'strict-negative',
-          observedAt: fullHealth.dataUpdatedAt > 0 ? fullHealth.dataUpdatedAt : undefined,
-        })}
-      >
-      <Stack sx={{ gap: Spacing.xxs, alignItems: 'flex-start' }} data-testid="position-status">
-        <Typography variant="bodyXsRegular" color="textSecondary">{t`Status`}</Typography>
         {status && (
-          <Badge
-            data-testid="position-status-label"
-            size="extraSmall"
-            color={STATUS_BADGE_COLOR[status.severity]}
-            label={status.label}
-          />
+          <Tooltip
+            {...statusTooltip({
+              label: status.label,
+              category: assetsType,
+              nearRange: assetsThresholds ? `${assetsThresholds.nearRangeDropPercent}%` : undefined,
+              criticalBuffer: `${assetsThresholds?.criticalBufferPercent ?? '0'}%`,
+              predicate: 'strict-negative',
+              observedAt: fullHealth.dataUpdatedAt > 0 ? fullHealth.dataUpdatedAt : undefined,
+            })}
+          >
+            <Box sx={{ mt: Spacing.xxs, width: 'fit-content' }} data-testid="position-status">
+              <Badge
+                data-testid="position-status-label"
+                size="extraSmall"
+                color={STATUS_BADGE_COLOR[status.severity]}
+                label={status.label}
+              />
+            </Box>
+          </Tooltip>
         )}
-      </Stack>
-      </Tooltip>
       </Box>
       <Box sx={{ gridArea: 'buffer' }}>
         <Metric
-          category="llamalend.positionBorrowDetails"
+          category="llamalend.positionCardTop"
           label={t`Liquidation buffer`}
           testId="health-details-liquidation-buffer-metric"
           value={keepDisplayedValue(bufferValue)}
-          notional={keepDisplayedValue(bufferAmountValue)}
+          notional={isMobile ? undefined : keepDisplayedValue(bufferAmountValue)}
           valueOptions={{
             abbreviate: false,
             color: bufferColor,
+            ...(isMobile ? { unit: { symbol: '\u00a0of debt', position: 'suffix' as const } } : {}),
             formatter: value => {
               const parsed = decimal(value)
               return parsed == undefined ? '' : formatSignedPercent(parsed)
             },
           }}
-          valueTooltip={bufferTooltip({ predicate: 'strict-negative' })}
+          valueTooltip={bufferTooltip({
+            predicate: 'strict-negative',
+            criticalBuffer: assetsThresholds?.criticalBufferPercent ?? '0',
+          })}
         />
         {status?.bufferUnavailable && (
-          <Typography variant="bodyXsRegular" color="textSecondary" data-testid="buffer-unavailable">{t`Buffer unavailable`}</Typography>
+          <Typography
+            variant="bodyXsRegular"
+            color="textSecondary"
+            data-testid="buffer-unavailable"
+          >{t`Buffer unavailable`}</Typography>
         )}
       </Box>
     </>

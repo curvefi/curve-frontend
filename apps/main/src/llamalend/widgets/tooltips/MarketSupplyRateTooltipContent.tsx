@@ -59,7 +59,7 @@ export const MarketSupplyRateTooltipContent = ({
       <TooltipDescription
         text={
           beta
-            ? t`Supply APY is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`
+            ? t`Supply APY is estimated earnings related to your share of the pool. It varies with the market, monetary policy, and incentives.`
             : t`The net supply rate is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`
         }
       />
@@ -100,7 +100,7 @@ export const MarketSupplyRateTooltipContent = ({
 
         {totalApy != null && (hasIncentives || hasRebasingYield) && (
           <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={t`Net total APY`} loading={isLoading}>
+            <TooltipItem variant="primary" title={beta ? t`Net supply APY` : t`Net total APY`} loading={isLoading}>
               {formatCappedRatePercent(totalApy)}
             </TooltipItem>
             {/* Historical boost data is only available at the market level, so user totals do not show an average. */}

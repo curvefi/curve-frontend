@@ -2,12 +2,16 @@ import { HealthBar } from '@/llamalend/features/market-position-details'
 import {
   formatOracleHealth,
   formatSignedPercent,
-  isOracleHealthFloor,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
-import type { PositionSeverity } from '@/llamalend/features/market-position-details/position-status.utils'
+import {
+  isCriticalBuffer,
+  type PositionSeverity,
+} from '@/llamalend/features/market-position-details/position-status.utils'
+import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
+import { requireChainId } from '@evm-ui/utils'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -28,13 +32,10 @@ import { ErrorCell } from './ErrorCell'
 const { Spacing } = SizesAndSpaces
 
 const STATUS_BADGE_COLOR: Record<PositionSeverity, ChipColors> = {
-  healthy: 'active',
   near: 'warning',
-  protection: 'highlight',
-  low: 'warning',
-  critical: 'alert',
+  inRange: 'warning',
+  below: 'warning',
   liquidatable: 'alert',
-  converted: 'accent',
   neutral: 'default',
 }
 
@@ -43,7 +44,6 @@ export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, Ll
   const { data: { status } = {}, error } = row.original.positionQueries.stats
   const health = getValue()
   const beta = useNewLlamalendHealth()
-  const theme = useTheme()
   const content = status ? getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[status] : null
   const risk = row.original.positionQueries.risk
   const riskError = risk.oracle.error ?? risk.prices.error ?? risk.fullHealth.error
@@ -55,12 +55,7 @@ export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, Ll
     return (
       <Stack data-testid="user-position-health" sx={{ gap: Spacing.xs, alignItems: 'flex-end' }}>
         {maybe(ratio, value => (
-          <Typography
-            component="span"
-            variant="bodySRegular"
-            data-testid="user-position-health-value"
-            sx={{ color: isOracleHealthFloor(value) ? theme.design.Text.TextColors.Feedback.Error : undefined }}
-          >
+          <Typography component="span" variant="bodySRegular" data-testid="user-position-health-value">
             {formatOracleHealth(value)}
           </Typography>
         ))}
@@ -93,6 +88,22 @@ export const LiquidationBufferCell = ({
 }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const error = row.original.positionQueries.risk.fullHealth.error
   const buffer = getValue()
+  const theme = useTheme()
   if (error && buffer == undefined) return <ErrorCell error={error} />
-  return maybe(decimal(buffer), formatSignedPercent)
+  return maybe(decimal(buffer), value => (
+    <Typography
+      component="span"
+      variant="bodySRegular"
+      sx={{
+        color: isCriticalBuffer(
+          value,
+          getMarketAssetsType(requireChainId(row.original.chain), row.original.controllerAddress),
+        )
+          ? theme.design.Text.TextColors.Feedback.Error
+          : undefined,
+      }}
+    >
+      {formatSignedPercent(value)}
+    </Typography>
+  ))
 }

@@ -32,7 +32,7 @@ export const useMarketsSortOptions = () => {
     { id: MarketColumnId.BorrowRate, label: t`Borrow APR` },
     ...(beta
       ? [
-          { id: MarketColumnId.NetBorrowRate, label: t`Net Borrow APR` },
+          { id: MarketColumnId.NetBorrowRate, label: t`Net borrow APR` },
           { id: MarketColumnId.CollateralYield, label: t`Collateral yield` },
         ]
       : []),

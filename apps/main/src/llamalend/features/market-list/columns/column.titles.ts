@@ -18,7 +18,7 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.UserLiquidationBuffer]: t`Liquidation buffer`,
   [MarketColumnId.UserLiquidationRange]: t`Liquidation range`,
   [MarketColumnId.UserDistanceToRange]: t`Distance to range`,
-  [MarketColumnId.UserBandCount]: t`Bands amount`,
+  [MarketColumnId.UserBandCount]: t`Band count`,
   [MarketColumnId.UserCollateralComposition]: t`Collateral composition`,
   [MarketColumnId.UserBorrowed]: t`Borrow Amount`,
   [MarketColumnId.UserCollateral]: t`Collateral Amount`,

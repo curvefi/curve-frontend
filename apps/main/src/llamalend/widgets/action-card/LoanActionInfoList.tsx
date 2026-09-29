@@ -1,5 +1,9 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
-import { formatOracleHealth, formatSignedPercent, oracleHealth } from '@/llamalend/features/market-position-details/position-metrics.utils'
+import {
+  formatOracleHealth,
+  formatSignedPercent,
+  oracleHealth,
+} from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
@@ -35,9 +39,7 @@ const oracleRatio = (oracle: QueryProp<Decimal | null>, range: QueryProp<Range<D
 
 /** Buffer is the preview health those forms already load, in percentage points. */
 const signedHealth = (health: QueryProp<Decimal | null> | undefined) =>
-  health
-    ? mapQuery(health, data => maybe(decimal(data), formatSignedPercent))
-    : DISABLED_Q
+  health ? mapQuery(health, data => maybe(decimal(data), formatSignedPercent)) : DISABLED_Q
 
 export type LoanActionInfoListProps = {
   isOpen: boolean
@@ -187,12 +189,7 @@ export const LoanActionInfoList = ({
             valueColor={
               betaMetrics
                 ? undefined
-                : getHealthValueColor({
-                    health: health?.data,
-                    prevHealth: prevHealth?.data,
-                    theme,
-                    isFullRepay,
-                  })
+                : getHealthValueColor({ health: health?.data, prevHealth: prevHealth?.data, theme, isFullRepay })
             }
             size="small"
             testId="borrow-health"
@@ -274,14 +271,18 @@ export const LoanActionInfoList = ({
           )}
           {collateralApy && (
             <ActionInfo
-              label={t`Return on Equity (RoE)`}
+              label={betaMetrics ? t`Return on equity (RoE)` : t`Return on Equity (RoE)`}
               value={positionRoe ?? formatReturnOnEquity(prevLeverageValue, prevRates, collateralApy)}
-              futureValue={positionRoe ? t`Estimate unavailable` : formatReturnOnEquity(
-                leverageValue,
-                /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
-                rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
-                collateralApy,
-              )}
+              futureValue={
+                positionRoe
+                  ? t`Estimate unavailable`
+                  : formatReturnOnEquity(
+                      leverageValue,
+                      /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
+                      rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
+                      collateralApy,
+                    )
+              }
               size="small"
               testId="borrow-return-on-equity"
             />

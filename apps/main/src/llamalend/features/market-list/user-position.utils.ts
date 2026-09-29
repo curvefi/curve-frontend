@@ -104,7 +104,11 @@ export const getUserPositionComposition = (row: LlamaMarketRow) => {
   const collateral = decimal(stats.collateral)
   const borrowed = decimal(stats.borrowToken)
   if (oracle == undefined || collateral == undefined || borrowed == undefined) return undefined
-  return compositionShares(collateralTokenValue(collateral, oracle), borrowed, collateralValue(collateral, oracle, borrowed))
+  return compositionShares(
+    collateralTokenValue(collateral, oracle),
+    borrowed,
+    collateralValue(collateral, oracle, borrowed),
+  )
 }
 
 /** Collateral share of the position's current value, used to sort composition. */
@@ -178,7 +182,6 @@ export const getUserPositionStatus = (row: LlamaMarketRow) => {
     upperPrice: prices.data[1],
     lowerPrice: prices.data[0],
     fullHealth: fullHealth.data,
-    collateralQuantity: quantity,
     liquidationPredicate: 'strict-negative',
     assetsType: getMarketAssetsType(requireChainId(row.chain), row.controllerAddress),
   })

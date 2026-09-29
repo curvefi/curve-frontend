@@ -18,7 +18,7 @@ export const MaxLeverageTooltip = () => {
       {beta ? (
         <>
           <TooltipDescription
-            text={t`Theoretical initial collateral exposure over equity at this market's Max LTV. It assumes no conversion into borrowed assets and excludes swap costs and price movement. It is not a live position.`}
+            text={t`Theoretical initial collateral exposure over equity at this market's maximum loan-to-value ratio (Max LTV). It assumes no conversion into borrowed assets and excludes swap costs and price movement. It is not a live position.`}
           />
           <LeverageEquation />
           <Equation>
@@ -26,6 +26,7 @@ export const MaxLeverageTooltip = () => {
             {' = '}
             <Fraction numerator="100%" denominator={t`100% − Max LTV`} />
           </Equation>
+          <TooltipDescription text={t`Max LTV = maximum loan-to-value ratio.`} />
         </>
       ) : (
         <>

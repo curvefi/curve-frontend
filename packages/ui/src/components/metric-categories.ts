@@ -100,6 +100,7 @@ export const METRIC_CATEGORIES = {
   'llamalend.marketListPosition': METRIC_TYPES.responsiveDetail,
   'llamalend.marketListSummary': METRIC_TYPES.primaryDetail,
   'llamalend.positionBorrowDetails': METRIC_TYPES.secondaryDetail,
+  'llamalend.positionCardTop': METRIC_TYPES.secondaryStat,
   'llamalend.positionCardSupport': METRIC_TYPES.tertiaryStat,
   'llamalend.positionSupplyDetails': METRIC_TYPES.secondaryDetail,
   'llamalend.positionHealth': METRIC_TYPES.primaryInline,

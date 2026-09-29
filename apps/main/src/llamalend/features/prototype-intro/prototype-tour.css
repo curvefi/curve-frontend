@@ -36,10 +36,25 @@
 }
 
 .llamalend-prototype-tour .llamalend-tour-math {
-  border: 1px solid var(--llamalend-tour-border);
-  border-radius: var(--llamalend-tour-radius);
-  background: var(--llamalend-tour-math-surface);
-  padding: 10px 12px;
+  max-width: 100%;
+}
+
+.llamalend-prototype-tour .llamalend-tour-status-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.llamalend-prototype-tour .llamalend-tour-status-list li {
+  padding-left: 2px;
+}
+
+.llamalend-prototype-tour .llamalend-tour-comparison > div + div {
+  border-top: 1px solid var(--llamalend-tour-border);
+  padding-top: 8px;
+}
+
+.llamalend-prototype-tour .llamalend-tour-comparison span {
+  color: var(--llamalend-tour-muted);
 }
 
 .llamalend-prototype-tour .driver-popover-footer {

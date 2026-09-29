@@ -27,6 +27,7 @@ import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import {
   decimal,
   decimalDiv,
@@ -160,6 +161,7 @@ const CurrentBorrowInformation = ({ params, tokens: { collateralToken, borrowTok
 
 const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const theme = useTheme()
+  const isMobile = useIsMobile()
   const { blockchainId, controllerAddress, marketType } = useMarketContext()
   const userState = useUserState(params)
   const oraclePrice = useMarketOraclePrice(params)
@@ -230,11 +232,16 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
         borrowed: BigNumber(100).minus(BigNumber(composition.data.collateralLabel).toFixed(2)).toFixed(2),
       }
     : undefined
+  const debtMetric = tokenMetric({
+    value: keepDisplayedValue(mapQuery(userState, ({ debt }) => debt)),
+    symbol: borrowToken?.symbol,
+    usdRate: q(borrowUsdRate),
+  })
   return (
     <>
       <Box sx={{ gridArea: 'range' }} data-testid="beta-borrow-information">
         <Metric
-          category={METRIC_CATEGORY}
+          category="llamalend.positionCardTop"
           label={t`Distance to range`}
           testId="liquidation-range"
           value={keepDisplayedValue(mapQuery(distance, value => (value ? 1 : undefined)))}
@@ -247,7 +254,7 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
               return formatDistancePercent(value.percent)
             },
           }}
-          sx={{ whiteSpace: 'nowrap' }}
+          sx={{ whiteSpace: { mobile: 'normal', tablet: 'nowrap' } }}
           notional={mapQuery(userPrices, prices =>
             prices
               ? `${formatNumber(prices[1], { abbreviate: true })}–${formatNumber(prices[0], { abbreviate: true })} ${priceUnit}`
@@ -289,7 +296,10 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
                 })}
               />
             </Stack>
-            <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
+            <Stack
+              direction="row"
+              sx={{ justifyContent: 'space-between', display: { mobile: 'none', tablet: 'flex' } }}
+            >
               <Typography variant="bodyXsRegular" color="textSecondary">
                 {`${compositionLabels.collateral}% ${collateralToken?.symbol ?? ''}`}
               </Typography>
@@ -304,18 +314,15 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
         <Metric
           category={METRIC_CATEGORY}
           label={t`Total debt`}
-          {...tokenMetric({
-            value: keepDisplayedValue(mapQuery(userState, ({ debt }) => debt)),
-            symbol: borrowToken?.symbol,
-            usdRate: q(borrowUsdRate),
-          })}
+          {...debtMetric}
+          notional={isMobile ? undefined : debtMetric.notional}
           valueTooltip={debtTooltip()}
         />
       </Box>
       <Box sx={{ gridArea: 'leverage' }}>
-        {isPositionLeveraged(leverageValue.data) && (
+        {(isMobile || isPositionLeveraged(leverageValue.data)) && (
           <Metric
-            category={METRIC_CATEGORY}
+            category="llamalend.positionCardTop"
             label={t`Leverage`}
             testId="position-leverage"
             value={keepDisplayedValue(leverageValue)}
@@ -340,10 +347,14 @@ const BetaBorrowInformation = ({ params, tokens: { collateralToken, borrowToken 
                     : roe.error,
               }),
             )}
-            notional={maybe(
-              roe.data?.kind === 'value' ? formatYieldMultiplier(roe.data.result.multiplier) : undefined,
-              text => q({ data: text, isLoading: false, error: null }),
-            )}
+            notional={
+              isMobile
+                ? undefined
+                : maybe(
+                    roe.data?.kind === 'value' ? formatYieldMultiplier(roe.data.result.multiplier) : undefined,
+                    text => q({ data: text, isLoading: false, error: null }),
+                  )
+            }
             valueOptions={{
               unit: { symbol: '% APR', position: 'suffix' },
               ...(roe.data?.kind === 'value' && roe.data.result.multiplier.kind === 'negative'

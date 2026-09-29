@@ -94,7 +94,7 @@ const createMarketsColumnOptions = ({
         },
       ),
       {
-        label: beta ? MARKET_TITLES[MarketColumnId.NetBorrowRate] : t`Net borrow APR`,
+        label: t`Net borrow APR`,
         columns: [MarketColumnId.NetBorrowRate],
         active: !beta && onlyPositions != MarketRateType.Supply,
         enabled: true,
@@ -139,12 +139,7 @@ const createMarketsColumnOptions = ({
               active: true,
               enabled: hasPositions,
             },
-            {
-              label: t`Total debt`,
-              columns: [MarketColumnId.UserBorrowed],
-              active: true,
-              enabled: hasPositions,
-            },
+            { label: t`Total debt`, columns: [MarketColumnId.UserBorrowed], active: true, enabled: hasPositions },
             {
               label: t`Collateral value`,
               columns: [MarketColumnId.UserCollateral],
@@ -279,18 +274,10 @@ export const POSITION_TABLE_ONLY_COLUMNS = [
 export const getMarketsColumnOptions = (beta: boolean) => ({
   [MarketRateType.Borrow]: beta
     ? borrowPositionColumnOptions()
-    : createMarketsColumnOptions({
-        hasPositions: true,
-        onlyPositions: MarketRateType.Borrow,
-        beta,
-      }),
+    : createMarketsColumnOptions({ hasPositions: true, onlyPositions: MarketRateType.Borrow, beta }),
   [MarketRateType.Supply]: beta
     ? supplyPositionColumnOptions()
-    : createMarketsColumnOptions({
-        hasPositions: true,
-        onlyPositions: MarketRateType.Supply,
-        beta,
-      }),
+    : createMarketsColumnOptions({ hasPositions: true, onlyPositions: MarketRateType.Supply, beta }),
   hasPositions: createMarketsColumnOptions({ hasPositions: true, beta }),
   noPositions: createMarketsColumnOptions({ hasPositions: false, beta }),
 })

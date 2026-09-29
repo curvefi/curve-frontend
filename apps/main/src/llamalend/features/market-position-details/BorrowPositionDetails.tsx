@@ -18,8 +18,8 @@ import { LegacyHealthDetails } from './health/LegacyHealthDetails'
 
 const { Spacing } = SizesAndSpaces
 
-const HEALTH_LEAD_AREAS = `"health range buffer leverage" "status debt collateral roe"`
-const MOBILE_HEALTH_AREAS = `"health status" "range range" "buffer buffer" "leverage leverage" "debt debt" "collateral collateral" "roe roe"`
+const HEALTH_LEAD_AREAS = `"health range debt leverage" "health buffer collateral roe"`
+const MOBILE_HEALTH_AREAS = `"health range" "buffer leverage" "debt debt" "collateral collateral" "roe roe"`
 
 export const BorrowPositionDetails = () => {
   const { chainId, marketId, tokens, userAddress } = useMarketContext()
@@ -34,11 +34,7 @@ export const BorrowPositionDetails = () => {
   const userState = useUserState(params)
   const watched = [fullHealth, oracle, userPrices, userState]
   const refreshFailed = watched.some(query => query.error != null && query.data != null)
-  const provenance = riskProvenance([
-    observationTime(fullHealth),
-    observationTime(oracle),
-    observationTime(userState),
-  ])
+  const provenance = riskProvenance([observationTime(fullHealth), observationTime(oracle), observationTime(userState)])
   const statusContent =
     liquidationStatus.data &&
     getPositionStatusContent(collateralToken?.symbol, borrowToken?.symbol)[liquidationStatus.data]
@@ -47,30 +43,27 @@ export const BorrowPositionDetails = () => {
     <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
       {useNewHealth ? (
         <>
-        <Box
-          data-testid="beta-position-card"
-          sx={{
-            display: 'grid',
-            columnGap: Spacing.md,
-            rowGap: Spacing.sm,
-            alignItems: 'start',
-            gridTemplateColumns: { mobile: '1fr 1fr', tablet: 'repeat(4, minmax(0, 1fr))' },
-            gridTemplateAreas: {
-              mobile: MOBILE_HEALTH_AREAS,
-              tablet: HEALTH_LEAD_AREAS,
-            },
-          }}
-        >
-          <HealthDetails health={health} positionStatus={liquidationStatus} />
-          <BorrowInformation params={params} tokens={tokens} />
-        </Box>
-        {refreshFailed && (
-          <Typography variant="bodyXsRegular" color="textSecondary" data-testid="position-update-failed">
-            {provenance.complete && provenance.oldestAt != null
-              ? t`Update failed. Numbers are from the oldest required read at ${new Date(provenance.oldestAt).toLocaleTimeString()}.`
-              : t`Update failed. A required input has no observation time, so these numbers are not freshly verified.`}
-          </Typography>
-        )}
+          <Box
+            data-testid="beta-position-card"
+            sx={{
+              display: 'grid',
+              columnGap: Spacing.md,
+              rowGap: Spacing.sm,
+              alignItems: 'start',
+              gridTemplateColumns: { mobile: '1fr 1fr', tablet: 'repeat(4, minmax(0, 1fr))' },
+              gridTemplateAreas: { mobile: MOBILE_HEALTH_AREAS, tablet: HEALTH_LEAD_AREAS },
+            }}
+          >
+            <HealthDetails health={health} positionStatus={liquidationStatus} />
+            <BorrowInformation params={params} tokens={tokens} />
+          </Box>
+          {refreshFailed && (
+            <Typography variant="bodyXsRegular" color="textSecondary" data-testid="position-update-failed">
+              {provenance.complete && provenance.oldestAt != null
+                ? t`Update failed. Numbers are from the oldest required read at ${new Date(provenance.oldestAt).toLocaleTimeString()}.`
+                : t`Update failed. A required input has no observation time, so these numbers are not freshly verified.`}
+            </Typography>
+          )}
         </>
       ) : (
         <Stack sx={{ gap: Spacing.sm }}>

@@ -14,7 +14,10 @@ import {
   type RoeResult,
   type YieldInput,
 } from '@/llamalend/features/market-position-details/position-roe.utils'
-import { resolvePositionStatus, type PositionStatus } from '@/llamalend/features/market-position-details/position-status.utils'
+import {
+  resolvePositionStatus,
+  type PositionStatus,
+} from '@/llamalend/features/market-position-details/position-status.utils'
 import type { MarketAssetsType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -52,7 +55,6 @@ export const derivePositionView = (input: PositionViewInput) => {
           upperPrice: input.upperPrice,
           lowerPrice: input.lowerPrice,
           fullHealth: input.fullHealthPercentagePoints,
-          collateralQuantity: input.collateralTokenAmount,
           liquidationPredicate: input.liquidationPredicate,
           assetsType: input.assetsType,
         })

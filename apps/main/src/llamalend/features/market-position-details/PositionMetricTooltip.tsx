@@ -42,10 +42,32 @@ export const Equation = ({ children }: { children: ReactNode }) => (
     variant="bodySRegular"
     color="textSecondary"
     component="div"
-    sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', columnGap: '0.35em', rowGap: Spacing.xs }}
+    sx={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      columnGap: '0.35em',
+      rowGap: Spacing.xs,
+      border: '1px solid',
+      borderColor: theme => theme.design.Layer[1].Outline,
+      borderRadius: theme => theme.design.Button.Radius.sm,
+      bgcolor: theme => theme.design.Layer[2].Fill,
+      px: Spacing.sm,
+      py: Spacing.xs,
+    }}
   >
     {children}
   </Typography>
+)
+
+const FormulaTerms = ({ terms }: { terms: string[] }) => (
+  <Stack sx={{ gap: Spacing.xxs }}>
+    {terms.map(term => (
+      <Typography key={term} variant="bodyXsRegular" color="textSecondary" component="div">
+        {term}
+      </Typography>
+    ))}
+  </Stack>
 )
 
 const EdgeMark = ({ edge }: { edge: 'top' | 'bottom' }) => (
@@ -85,7 +107,9 @@ export const HealthEquation = () => (
   </Equation>
 )
 
-export const bufferTooltip = (_options: { predicate?: 'strict-negative' | 'unverified' } = {}) => ({
+export const bufferTooltip = ({
+  criticalBuffer,
+}: { predicate?: 'strict-negative' | 'unverified'; criticalBuffer?: string } = {}) => ({
   ...tooltipChrome,
   title: t`Liquidation buffer`,
   body: (
@@ -95,8 +119,13 @@ export const bufferTooltip = (_options: { predicate?: 'strict-negative' | 'unver
       />
       <BufferEquations />
       <TooltipDescription
-        text={t`This uses the same Controller full-health read as the rest of the market. Liquidatable means that value is strictly below 0. Exact zero is critical, not liquidatable. Self and approved close use a different check. This is not a deployment-matched safety certificate.`}
+        text={t`The displayed percentage is healthFull. Liquidatable requires healthFull below 0; exactly 0 does not meet that condition. Self and approved close use a different check.`}
       />
+      {criticalBuffer && (
+        <TooltipDescription
+          text={t`The buffer value turns red at or below ${criticalBuffer}%. This provisional cutoff depends on the market category.`}
+        />
+      )}
     </TooltipWrapper>
   ),
 })
@@ -121,14 +150,12 @@ export const statusTooltip = ({
   label,
   category,
   nearRange,
-  lowBuffer,
   criticalBuffer,
   observedAt,
 }: {
   label?: string
   category?: string
   nearRange?: string
-  lowBuffer?: string
   criticalBuffer?: string
   predicate?: 'strict-negative' | 'unverified'
   observedAt?: number
@@ -138,21 +165,21 @@ export const statusTooltip = ({
   body: (
     <TooltipWrapper>
       <TooltipDescription text={label ? t`Resolved status: ${label}` : t`Status is not resolved yet.`} />
+      <TooltipDescription
+        text={t`Status shows whether the oracle is Above range, Near range, In range, or Below range. The Near range cutoff depends on the market category and is provisional. In range, collateral may be converting; consider closing or resetting the position.`}
+      />
       <TooltipItems secondary>
         <TooltipItem title={t`Category`} variant="independent">
           {category ?? t`Uncategorized`}
         </TooltipItem>
-        <TooltipItem title={t`Near range`} variant="subItem">
+        <TooltipItem title={t`Price drop to range ≤`} variant="subItem">
           {nearRange ?? t`Provisional`}
         </TooltipItem>
-        <TooltipItem title={t`Low buffer`} variant="subItem">
-          {lowBuffer ?? t`Provisional`}
-        </TooltipItem>
-        <TooltipItem title={t`Critical buffer`} variant="subItem">
+        <TooltipItem title={t`Buffer turns red at or below`} variant="subItem">
           {criticalBuffer ?? t`Provisional`}
         </TooltipItem>
-        <TooltipItem title={t`Predicate`} variant="subItem">
-          {t`Controller full health < 0. Exact zero is critical, not liquidatable.`}
+        <TooltipItem title={t`Liquidatable when`} variant="subItem">
+          {t`healthFull < 0. Exact zero does not meet this condition.`}
         </TooltipItem>
         <TooltipItem title={t`Observed`} variant="subItem">
           {observedAt != null ? new Date(observedAt).toLocaleString() : t`Unavailable`}
@@ -179,8 +206,15 @@ export const CollateralEquations = () => (
   <>
     <Equation>
       {t`Collateral value`}
-      {' = q × p + b'}
+      {' = collateral × price + converted'}
     </Equation>
+    <FormulaTerms
+      terms={[
+        t`collateral = remaining collateral quantity`,
+        t`price = oracle price`,
+        t`converted = converted borrowed assets`,
+      ]}
+    />
     <Equation>
       {t`Value share`}
       {' = '}
@@ -194,9 +228,7 @@ export const debtTooltip = () => ({
   title: t`Total debt`,
   body: (
     <TooltipWrapper>
-      <TooltipDescription
-        text={t`Current Controller debt, including accrued interest. The token and the snapshot time are the ones on this card.`}
-      />
+      <TooltipDescription text={t`Current debt in the debt token, including accrued interest.`} />
     </TooltipWrapper>
   ),
 })
@@ -215,11 +247,21 @@ export const leverageTooltip = () => ({
 })
 
 export const LeverageEquation = () => (
-  <Equation>
-    {t`Leverage`}
-    {' = '}
-    <Fraction numerator="q × p" denominator="q × p + b − d" />
-  </Equation>
+  <>
+    <Equation>
+      {t`Leverage`}
+      {' = '}
+      <Fraction numerator="collateral × price" denominator="collateral × price + converted − debt" />
+    </Equation>
+    <FormulaTerms
+      terms={[
+        t`collateral = remaining collateral quantity`,
+        t`price = oracle price`,
+        t`converted = converted borrowed assets`,
+        t`debt = current debt`,
+      ]}
+    />
+  </>
 )
 
 export const roeTooltip = () => ({
@@ -241,7 +283,7 @@ export const roeTooltip = () => ({
 export const RoeEquations = () => (
   <>
     <Equation>
-      {t`ROE APR`}
+      {t`RoE APR`}
       {' = '}
       <Fraction numerator={t`Annual asset yield + eligible rewards − gross borrowing costs`} denominator={t`Equity`} />
       {' × 100'}
@@ -249,8 +291,9 @@ export const RoeEquations = () => (
     <Equation>
       {t`Yield multiplier`}
       {' = '}
-      <Fraction numerator={t`ROE APR`} denominator={t`Unleveraged collateral APR`} />
+      <Fraction numerator={t`RoE APR`} denominator={t`Unleveraged collateral APR`} />
     </Equation>
+    <FormulaTerms terms={[t`RoE = return on equity`, t`APR = annual percentage rate`]} />
   </>
 )
 
@@ -285,7 +328,7 @@ export const rangeTooltip = ({
         <TooltipItem title={t`Bottom edge`} titleAdornment={<EdgeMark edge="bottom" />} variant="subItem">
           {lower}
         </TooltipItem>
-        <TooltipItem title={t`Amount of bands`} variant="subItem">
+        <TooltipItem title={t`Band count`} variant="subItem">
           {bandCount}
         </TooltipItem>
         <TooltipItem title={t`Band range`} variant="subItem">
@@ -301,14 +344,15 @@ export const RangeEquations = () => (
     <Equation>
       {t`Above`}
       {' = '}
-      <Fraction numerator="p − u" denominator="p" />
+      <Fraction numerator="price − upper" denominator="price" />
       {' × 100'}
     </Equation>
     <Equation>
       {t`Below`}
       {' = '}
-      <Fraction numerator="l − p" denominator="p" />
+      <Fraction numerator="lower − price" denominator="price" />
       {' × 100'}
     </Equation>
+    <FormulaTerms terms={[t`price = oracle price`, t`upper = upper range boundary`, t`lower = lower range boundary`]} />
   </>
 )

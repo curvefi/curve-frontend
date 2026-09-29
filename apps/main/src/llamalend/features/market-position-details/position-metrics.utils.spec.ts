@@ -18,7 +18,7 @@ import {
   priceDistance,
 } from './position-metrics.utils'
 import { positionReturnOnEquity, formatYieldMultiplier } from './position-roe.utils'
-import { resolvePositionStatus } from './position-status.utils'
+import { isCriticalBuffer, resolvePositionStatus } from './position-status.utils'
 
 const d = (value: string | number) => {
   const parsed = decimal(value)
@@ -61,11 +61,7 @@ describe('position metrics', () => {
   })
 
   it('matches collateral, leverage, and ROE fixtures', () => {
-    const plain = {
-      collateral: d(300),
-      borrowed: d(0),
-      debt: d(200),
-    }
+    const plain = { collateral: d(300), borrowed: d(0), debt: d(200) }
     const assets = collateralValue(d(300 / 120), d(120), plain.borrowed)
     expect(+assets).toBeCloseTo(300, 8)
     expect(+equity(assets, plain.debt)).toBeCloseTo(100, 8)
@@ -89,7 +85,9 @@ describe('position metrics', () => {
     const mixed = compositionShares(d(180), d(90), d(270))
     expect(+(mixed?.collateralLabel ?? 0)).toBeCloseTo(66.6667, 4)
     expect(+(mixed?.borrowedLabel ?? 0)).toBeCloseTo(33.3333, 4)
-    expect(+((mixed?.collateralLabel ?? d(0)) as unknown as number) + +((mixed?.borrowedLabel ?? d(0)) as unknown as number)).toBeCloseTo(100, 4)
+    expect(
+      +((mixed?.collateralLabel ?? d(0)) as unknown as number) + +((mixed?.borrowedLabel ?? d(0)) as unknown as number),
+    ).toBeCloseTo(100, 4)
     const mixedRoe = positionReturnOnEquity({
       collateralValue: d(180),
       borrowedValue: d(90),
@@ -157,7 +155,7 @@ describe('shared position view', () => {
     expect(view.oracleHealthFactor).toBeDefined()
     expect(view.distance.location).toBe('above')
     expect(view.roeApr.status).toBe('value')
-    expect(view.status?.label).toBe('Healthy')
+    expect(view.status?.label).toBe('Above range')
   })
 
   it('matches the canonical health, leverage, and buffer amount', () => {
@@ -221,69 +219,58 @@ describe('position status', () => {
     oraclePrice: d(120),
     upperPrice: d(100),
     lowerPrice: d(80),
-    collateralQuantity: d(1),
     liquidationPredicate: 'strict-negative' as const,
     assetsType: MarketAssetsType.Correlated,
   }
 
   it('prioritizes liquidation over a reassuring health value', () => {
     expect(resolvePositionStatus({ ...base, fullHealth: d(-1) }).label).toBe('Liquidatable')
+    expect(resolvePositionStatus({ ...base, oraclePrice: d(90), fullHealth: d(-1) }).label).toBe('Liquidatable')
     expect(resolvePositionStatus({ ...base, fullHealth: d(2), oraclePrice: d(90) }).label).not.toBe('Liquidatable')
   })
 
-  it('treats exact zero as critical for a strict-negative predicate', () => {
-    expect(resolvePositionStatus({ ...base, fullHealth: d(0) }).label).toBe('Critical buffer')
+  it('keeps location status at exact zero while marking the buffer critical', () => {
+    expect(resolvePositionStatus({ ...base, fullHealth: d(0) }).label).toBe('Above range')
+    expect(resolvePositionStatus({ ...base, oraclePrice: d(90), fullHealth: d(0) }).label).toBe('In range')
+    expect(isCriticalBuffer(d(0), MarketAssetsType.Correlated)).toBe(true)
   })
 
-  it('does not call an uncategorized position healthy', () => {
+  it('uses a factual label for an uncategorized position', () => {
     expect(resolvePositionStatus({ ...base, fullHealth: d(50), assetsType: undefined }).label).toBe('Above range')
   })
 
   it('uses category proximity only above the range', () => {
-    expect(resolvePositionStatus({ ...base, oraclePrice: d(105), fullHealth: d(50) }).label).toBe('Near range')
-    expect(resolvePositionStatus({ ...base, oraclePrice: d(90), fullHealth: d(50) }).label).toBe('Liquidation Protection')
-    expect(resolvePositionStatus({ ...base, oraclePrice: d(70), fullHealth: d(50), collateralQuantity: d(0) }).label).toBe(
-      'Fully converted',
-    )
-    expect(resolvePositionStatus({ ...base, oraclePrice: d(70), fullHealth: d(50), collateralQuantity: d(1) }).label).toBe(
-      'Partially converted',
-    )
+    expect(resolvePositionStatus({ ...base, oraclePrice: d('100.5'), fullHealth: d(50) }).label).toBe('Near range')
+    expect(resolvePositionStatus({ ...base, oraclePrice: d(105), fullHealth: d(50) }).label).toBe('Above range')
+    expect(resolvePositionStatus({ ...base, oraclePrice: d(90), fullHealth: d(50) }).label).toBe('In range')
+    expect(resolvePositionStatus({ ...base, oraclePrice: d(70), fullHealth: d(50) }).label).toBe('Below range')
   })
 
-  it('does not claim Healthy when liquidation semantics are unverified', () => {
+  it('does not claim liquidatable when liquidation semantics are unverified', () => {
     const status = resolvePositionStatus({ ...base, fullHealth: d(50), liquidationPredicate: 'unverified' })
     expect(status.label).toBe('Above range')
     expect(status.liquidationUnsupported).toBe(true)
   })
 
-  it('keeps distance status above range when the buffer is low or critical', () => {
-    const low = resolvePositionStatus({ ...base, fullHealth: d(5) })
-    expect(low.label).toBe('Healthy')
-    expect(low.lead).toBe('health')
-    expect(low.bufferWarning).toEqual({ label: 'Low buffer', severity: 'low' })
-    const critical = resolvePositionStatus({ ...base, fullHealth: d(1) })
-    expect(critical.label).toBe('Healthy')
-    expect(critical.lead).toBe('health')
-    expect(critical.bufferWarning?.label).toBe('Critical buffer')
-  })
-
-  it('leads with the buffer for zero, negative, inside, and below', () => {
-    expect(resolvePositionStatus({ ...base, fullHealth: d(0) }).lead).toBe('buffer')
-    expect(resolvePositionStatus({ ...base, fullHealth: d(-1) }).lead).toBe('buffer')
-    expect(resolvePositionStatus({ ...base, oraclePrice: d(90), fullHealth: d(50) }).lead).toBe('buffer')
-    expect(resolvePositionStatus({ ...base, oraclePrice: d(70), fullHealth: d(50) }).lead).toBe('buffer')
+  it('colors only very low buffers by category', () => {
+    expect(isCriticalBuffer(d('1.1'), MarketAssetsType.Correlated)).toBe(false)
+    expect(isCriticalBuffer(d(1), MarketAssetsType.Correlated)).toBe(true)
+    expect(isCriticalBuffer(d(2), MarketAssetsType.BlueChip)).toBe(true)
+    expect(isCriticalBuffer(d(3), MarketAssetsType.LongTail)).toBe(true)
+    expect(isCriticalBuffer(d(1), undefined)).toBe(false)
+    expect(isCriticalBuffer(d(0), undefined)).toBe(true)
   })
 
   it('changes the label when the same numbers use another category', () => {
-    const input = { ...base, oraclePrice: d(110), fullHealth: d(50) }
-    expect(resolvePositionStatus({ ...input, assetsType: MarketAssetsType.Correlated }).label).toBe('Healthy')
+    const input = { ...base, oraclePrice: d(108), fullHealth: d(50) }
+    expect(resolvePositionStatus({ ...input, assetsType: MarketAssetsType.Correlated }).label).toBe('Above range')
     expect(resolvePositionStatus({ ...input, assetsType: MarketAssetsType.LongTail }).label).toBe('Near range')
   })
 
   it('closes a position with no debt', () => {
     const status = resolvePositionStatus({ ...base, debt: d(0), fullHealth: d(10) })
     expect(status.label).toBe('Position closed')
-    expect(status.lead).toBe('neither')
+    expect(status.location).toBe('unavailable')
   })
 })
 

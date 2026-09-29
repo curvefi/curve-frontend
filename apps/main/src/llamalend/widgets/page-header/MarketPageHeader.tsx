@@ -121,7 +121,7 @@ const CategoryBadge = ({ chainId, controllerAddress }: { chainId: number; contro
   const label = category ? CATEGORY_LABEL[category] : 'Category unavailable'
   return (
     <Tooltip
-      title={t`Market category: ${label}. Position warnings use thresholds for this category. These thresholds are provisional.`}
+      title={t`Market category: ${label}. The Near range badge and Liquidation buffer warning color use provisional cutoffs for this category.`}
     >
       <Badge size="extraSmall" label={label} data-testid="market-category-badge" />
     </Tooltip>
