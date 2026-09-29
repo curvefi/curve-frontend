@@ -1,4 +1,3 @@
-import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
@@ -12,7 +11,7 @@ import { TokenIcon } from '@ui/components/TokenIcon'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import type { PoolRow } from '../types'
+import type { PoolClaimables, PoolRow } from '../types'
 import {
   formatCrvAprRange,
   getCompactPointsCampaigns,

@@ -6,8 +6,8 @@ export const DepositsCell = ({ pool }: { pool: PoolRow }) => (
   <TokenInfo
     icon={null}
     iconPosition="right"
-    primary={formatNumber(pool.userPosition.depositsUsd, 'usd.precise')}
-    secondary={`${formatNumber(pool.userPosition.lpBalance, 'token.balance')} LP`}
+    primary={formatNumber(pool.userPosition?.depositsUsd, 'usd.precise')}
+    secondary={`${formatNumber(pool.userPosition?.lpBalance, 'token.balance')} LP`}
     boldPrimary
     sx={{ justifyContent: 'end' }}
   />

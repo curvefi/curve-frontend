@@ -1,7 +1,7 @@
-import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { Tooltip } from '@ui/components/Tooltip'
@@ -10,7 +10,7 @@ import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalGreaterThan, ZERO } from '@ui/lib/decimal'
 import { POOL_TITLES, PoolColumnId } from '../columns'
-import { claimablesTotalUsd } from '../utils'
+import type { PoolClaimables } from '../types'
 import { ClaimablesTooltipContent } from './ClaimablesTooltipContent'
 import { ClaimablesIcons } from './RewardIcons'
 
@@ -19,9 +19,11 @@ const { Spacing } = SizesAndSpaces
 export const ClaimablesCell = ({
   blockchainId,
   claimables,
+  totalUsd,
 }: {
   blockchainId: string
   claimables: QueryProp<PoolClaimables>
+  totalUsd: Decimal | undefined
 }) => {
   if (claimables.error) {
     return (
@@ -31,15 +33,18 @@ export const ClaimablesCell = ({
     )
   }
 
-  const total = claimablesTotalUsd(claimables.data ?? [])
-  const hasClaimables = decimalGreaterThan(total, ZERO)
+  const hasClaimables = totalUsd != null && decimalGreaterThan(totalUsd, ZERO)
 
   return (
     <WithWrapper
-      shouldWrap={hasClaimables}
+      shouldWrap={!!claimables.data?.length}
       Wrapper={Tooltip}
       title={POOL_TITLES[PoolColumnId.Claimables]}
-      body={<ClaimablesTooltipContent claimables={claimables.data!} blockchainId={blockchainId} />}
+      body={
+        claimables.data && (
+          <ClaimablesTooltipContent claimables={claimables.data} blockchainId={blockchainId} totalUsd={totalUsd} />
+        )
+      }
       placement="top"
       clickable
       mobileDrawer
@@ -53,9 +58,9 @@ export const ClaimablesCell = ({
         ) : (
           <>
             <Typography variant="tableCellMBold">
-              {formatNumber(hasClaimables ? total : null, 'usd.precise')}
+              {formatNumber(hasClaimables ? totalUsd : null, 'usd.precise')}
             </Typography>
-            <ClaimablesIcons claimables={claimables.data!} blockchainId={blockchainId} />
+            {claimables.data && <ClaimablesIcons claimables={claimables.data} blockchainId={blockchainId} />}
           </>
         )}
       </Stack>

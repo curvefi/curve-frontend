@@ -1,9 +1,8 @@
-import { sum } from 'lodash'
 import { LARGE_RATE } from '@/dex/constants'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber, type NumberFormatCategory } from '@primitives/number.utils'
-import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 
@@ -25,7 +24,7 @@ export const getBaseApr = (pool: PoolRow, period: 'daily' | 'weekly') =>
 
 export const getCrvAprDescription = () =>
   t`CRV LP reward APR (max APR can be reached with max boost of ${MAX_CRV_BOOST})`
-export const getCrvAprRange = ({ crvApr, crvAprBoosted }: PoolRow) =>
+export const getCrvAprRange = ({ crvApr, crvAprBoosted }: Pick<PoolRow, 'crvApr' | 'crvAprBoosted'>) =>
   crvApr && crvAprBoosted ? { unboostedRate: crvApr, boostedRate: crvAprBoosted } : null // don't use maybe function as that accepts 0
 export const formatCrvAprRange = (range: ReturnType<typeof getCrvAprRange>) =>
   maybe(
@@ -35,17 +34,9 @@ export const formatCrvAprRange = (range: ReturnType<typeof getCrvAprRange>) =>
   ) ?? formatNumber(null, 'percent.rate')
 
 const isPointsCampaign = ({ reward, tags }: CampaignRewards) => reward?.type !== 'apr' || tags.includes('points')
-export const getPointsCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(isPointsCampaign)
+export const getPointsCampaigns = ({ campaigns }: Pick<PoolRow, 'campaigns'>) => campaigns.filter(isPointsCampaign)
 export const getCompactPointsCampaigns = (pool: PoolRow) => getPointsCampaigns(pool).slice(0, MAX_POINTS_CAMPAIGNS)
-export const getAprCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(campaign => !isPointsCampaign(campaign))
+export const getAprCampaigns = ({ campaigns }: Pick<PoolRow, 'campaigns'>) =>
+  campaigns.filter(campaign => !isPointsCampaign(campaign))
 
 export const getExtraRewards = ({ extraRewardsApr }: PoolRow) => extraRewardsApr.filter(({ apr }) => apr > 0)
-export const getExtraRewardsApr = (pool: PoolRow) => sum(getExtraRewards(pool).map(({ apr }) => apr))
-
-export const getCampaignRewardsApr = (pool: PoolRow) =>
-  sum(getAprCampaigns(pool).flatMap(({ reward }) => notFalsy(reward?.type === 'apr' && reward.value)))
-
-export const getRewardsApr = (pool: PoolRow) => sum([getExtraRewardsApr(pool), getCampaignRewardsApr(pool)])
-
-export const getNetApr = (pool: PoolRow) =>
-  sum([pool.baseDailyApr, pool.gauge?.isKilled ? null : pool.crvApr, getRewardsApr(pool)])

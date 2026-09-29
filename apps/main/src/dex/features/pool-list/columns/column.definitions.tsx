@@ -1,3 +1,4 @@
+import { maybe } from '@primitives/objects.utils'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { AgeCell } from '../cells/AgeCell'
 import { BaseRateCell, WeeklyBaseRateCell } from '../cells/BaseRateCell'
@@ -10,7 +11,7 @@ import { PoolTitleCell } from '../cells/PoolTitleCell'
 import { RewardsRateCell } from '../cells/RewardsRateCell'
 import { TokensCell } from '../cells/TokensCell'
 import { UsdCell } from '../cells/UsdCell'
-import { getCrvAprRange, getNetApr, getRewardsApr } from '../cells/utils'
+import { getCrvAprRange } from '../cells/utils'
 import { AgeHeaderTooltipContent } from '../header-tooltips/AgeHeaderTooltipContent'
 import { BaseRateHeaderTooltipContent } from '../header-tooltips/BaseRateHeaderTooltipContent'
 import { ClaimablesHeaderTooltipContent } from '../header-tooltips/ClaimablesHeaderTooltipContent'
@@ -24,7 +25,6 @@ import { TokensHeaderTooltipContent } from '../header-tooltips/TokensHeaderToolt
 import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
 import { VolumeHeaderTooltipContent } from '../header-tooltips/VolumeHeaderTooltipContent'
 import type { PoolRow } from '../types'
-import { claimablesTotalUsd } from '../utils'
 import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
 
@@ -47,8 +47,9 @@ export const POOL_COLUMNS = columnHelper.columns([
       tooltip: { title: POOL_TITLES[PoolColumnId.Tokens], body: <TokensHeaderTooltipContent /> },
     },
   }),
-  columnHelper.accessor(getNetApr, {
+  columnHelper.accessor('netApr', {
     id: PoolColumnId.NetRate,
+    sortUndefined: 'last',
     header: POOL_TITLES[PoolColumnId.NetRate],
     cell: ({ row }) => <NetRateCell pool={row.original} />,
     meta: {
@@ -86,8 +87,9 @@ export const POOL_COLUMNS = columnHelper.columns([
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(getRewardsApr, {
+  columnHelper.accessor('rewardsApr', {
     id: PoolColumnId.RewardsRate,
+    sortUndefined: 'last',
     header: POOL_TITLES[PoolColumnId.RewardsRate],
     cell: ({ row }) => <RewardsRateCell pool={row.original} />,
     meta: {
@@ -129,8 +131,9 @@ export const POOL_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric', tooltip: { title: POOL_TITLES[PoolColumnId.Age], body: <AgeHeaderTooltipContent /> } },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(pool => pool.userPosition.depositsUsd, {
+  columnHelper.accessor(pool => pool.userPosition?.depositsUsd, {
     id: PoolColumnId.Deposits,
+    sortUndefined: 'last',
     header: POOL_TITLES[PoolColumnId.Deposits],
     cell: ({ row }) => <DepositsCell pool={row.original} />,
     meta: {
@@ -138,12 +141,18 @@ export const POOL_COLUMNS = columnHelper.columns([
       tooltip: { title: POOL_TITLES[PoolColumnId.Deposits], body: <DepositsHeaderTooltipContent /> },
     },
   }),
-  columnHelper.accessor(pool => claimablesTotalUsd(pool.userPosition.claimables?.data ?? []), {
+  columnHelper.accessor(pool => pool.userPosition?.claimablesUsd, {
     id: PoolColumnId.Claimables,
+    sortUndefined: 'last',
     header: POOL_TITLES[PoolColumnId.Claimables],
-    cell: ({ row }) => (
-      <ClaimablesCell blockchainId={row.original.blockchainId} claimables={row.original.userPosition.claimables} />
-    ),
+    cell: ({ row }) =>
+      maybe(row.original.userPosition, position => (
+        <ClaimablesCell
+          blockchainId={row.original.blockchainId}
+          claimables={position.claimables}
+          totalUsd={position.claimablesUsd}
+        />
+      )),
     meta: {
       type: 'numeric',
       tooltip: { title: POOL_TITLES[PoolColumnId.Claimables], body: <ClaimablesHeaderTooltipContent /> },

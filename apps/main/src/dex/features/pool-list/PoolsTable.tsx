@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
+import { evmAddressDisplay } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
@@ -18,7 +19,6 @@ import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 import { POOL_COLUMNS, PoolColumnId } from './columns'
 import { PoolExpandedPanel } from './components/PoolExpandedPanel'
-import { PoolExpandedPanelActions } from './components/PoolExpandedPanelActions'
 import { PoolsFilters } from './filters/PoolsFilters'
 import { PoolsFiltersCollapsible } from './filters/PoolsFiltersCollapsible'
 import { usePoolsFilters } from './hooks/usePoolsFilters'
@@ -27,20 +27,27 @@ import { usePoolsPagination } from './hooks/usePoolsPagination'
 import { usePoolsSorting } from './hooks/usePoolsSorting'
 import { usePoolsTable } from './hooks/usePoolsTable'
 import { usePoolsVisibility } from './hooks/usePoolsVisibility'
-import type { PoolRow, PoolTableMeta } from './types'
+import { getPoolTableMeta, poolTableMeta } from './table-meta'
+import type { PoolRow } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const EMPTY_POOL_ROWS: readonly PoolRow[] = []
 
-const FullPoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row }) => (
-  <PoolExpandedPanel pool={row.original} variant="full" />
+const FullPoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => (
+  <PoolExpandedPanel pool={row.original} variant="full" addressDisplay={getPoolTableMeta(table).addressDisplay} />
 )
 
-const LitePoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row }) => (
-  <PoolExpandedPanel pool={row.original} variant="lite" />
+const LitePoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => (
+  <PoolExpandedPanel pool={row.original} variant="lite" addressDisplay={getPoolTableMeta(table).addressDisplay} />
 )
 
-export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
+export const PoolsTable = ({
+  network,
+  Actions,
+}: {
+  network: NetworkConfig
+  Actions: ExpandedPanelComponent<PoolRow>
+}) => {
   const isLite = isLiteChain(network.chainId)
   const isMobile = useIsMobile()
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -60,7 +67,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
     mobileColumn: sortField,
   })
 
-  const { isFetching, onReload, pageCount, userHasPositions, tableQuery } = usePoolsTable({
+  const { isFetching, onReload, pageCount, userHasPositions, tableQuery, alerts } = usePoolsTable({
     filters: isLite ? {} : apiParams,
     network,
     page: pagination.pageIndex + 1,
@@ -77,7 +84,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    meta: { getRowHref: ({ url }) => url, variant } as PoolTableMeta,
+    meta: poolTableMeta({ getRowHref: ({ url }) => url, variant, alerts, addressDisplay: evmAddressDisplay }),
     state: { expanded, sorting, columnVisibility, globalFilter, ...(!isLite && { pagination, columnFilters }) },
     getRowId: row => row.address,
     onExpandedChange: setExpanded,
@@ -104,10 +111,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list`, description: tableQuery.error?.message, onReload }}
-        expandedPanel={{
-          Body: isLite ? LitePoolExpandedPanel : FullPoolExpandedPanel,
-          Actions: PoolExpandedPanelActions,
-        }}
+        expandedPanel={{ Body: isLite ? LitePoolExpandedPanel : FullPoolExpandedPanel, Actions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters

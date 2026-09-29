@@ -5,15 +5,7 @@ import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './RateTooltipItems'
-import {
-  getAprCampaigns,
-  getBaseApr,
-  getCrvAprRange,
-  getExtraRewards,
-  getNetApr,
-  getPointsCampaigns,
-  getRewardsApr,
-} from './utils'
+import { getAprCampaigns, getBaseApr, getCrvAprRange, getExtraRewards, getPointsCampaigns } from './utils'
 
 const getIncentivesItems = (pool: PoolRow) => {
   const extraRewards = getExtraRewards(pool)
@@ -22,13 +14,7 @@ const getIncentivesItems = (pool: PoolRow) => {
   const hasCrvRate = unboostedCrvRate != null && unboostedCrvRate !== 0
 
   if (!hasCrvRate && !extraRewards.length && !campaigns.length) return null
-  else
-    return {
-      incentivesRate: getRewardsApr(pool) + (hasCrvRate ? unboostedCrvRate : 0),
-      extraRewards,
-      campaigns,
-      unboostedCrvRate,
-    }
+  else return { incentivesRate: pool.incentivesApr, extraRewards, campaigns, unboostedCrvRate }
 }
 
 const NetRateIncentivesTooltipItems = ({
@@ -56,9 +42,9 @@ const NetRateIncentivesTooltipItems = ({
 
 export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
   const baseRate = getBaseApr(pool, 'daily')
-  const netRate = getNetApr(pool)
+  const netRate = pool.netApr
   const crvRateRange = pool.gauge?.isKilled ? null : getCrvAprRange(pool)
-  const maxNetRate = crvRateRange ? netRate - crvRateRange.unboostedRate + crvRateRange.boostedRate : null
+  const maxNetRate = pool.netAprBoosted
   const incentiveItems = getIncentivesItems(pool)
   const pointsCampaigns = getPointsCampaigns(pool)
 
@@ -95,7 +81,7 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
             </TooltipItems>
           </>
         )}
-        {pointsCampaigns.length > 0 && (
+        {!!pointsCampaigns.length && (
           <TooltipItems secondary extraMargin>
             <TooltipItem title={t`Points campaigns`} />
             <PointsTooltipItems campaigns={pointsCampaigns} />

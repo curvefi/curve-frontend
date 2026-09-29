@@ -9,12 +9,12 @@ import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 import { NetRateTooltipContent } from './NetRateTooltipContent'
 import { RewardIcons } from './RewardIcons'
-import { formatCellValue, getNetApr, isVolatileRate } from './utils'
+import { formatCellValue, isVolatileRate } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
 export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
-  const netRate = getNetApr(pool)
+  const netRate = pool.netApr
   const volatile = isVolatileRate(netRate)
 
   return (

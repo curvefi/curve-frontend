@@ -4,6 +4,7 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
+import { evmAddressDisplay } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
 import { Metric } from '@ui/components/Metric'
@@ -21,11 +22,11 @@ import { t } from '@ui/lib/i18n'
 import { borderStyle, directChildrenAfterFirst } from '@ui/lib/mui'
 import { POOL_COLUMNS, PoolColumnId } from './columns'
 import { PoolExpandedPanel } from './components/PoolExpandedPanel'
-import { PoolExpandedPanelActions } from './components/PoolExpandedPanelActions'
 import { usePoolsGlobalFilterFn } from './hooks/usePoolsGlobalFilter'
 import { usePoolsVisibility } from './hooks/usePoolsVisibility'
 import { useUserPositionsTable } from './hooks/useUserPositionsTable'
-import type { PoolRow, PoolTableMeta } from './types'
+import { getPoolTableMeta, poolTableMeta } from './table-meta'
+import type { PoolRow } from './types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -33,11 +34,21 @@ const LOCAL_STORAGE_KEY = 'dex-user-pool-positions'
 const EMPTY_POOL_ROWS: readonly PoolRow[] = []
 const MAX_PAGE_SIZE = 10 as const
 
-const UserPositionsExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row }) => (
-  <PoolExpandedPanel pool={row.original} variant="userPositions" />
+const UserPositionsExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => (
+  <PoolExpandedPanel
+    pool={row.original}
+    variant="userPositions"
+    addressDisplay={getPoolTableMeta(table).addressDisplay}
+  />
 )
 
-export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
+export const UserPositionsTable = ({
+  network,
+  Actions,
+}: {
+  network: NetworkConfig
+  Actions: ExpandedPanelComponent<PoolRow>
+}) => {
   const { address } = useConnection()
   const isTablet = useIsTablet()
 
@@ -50,14 +61,16 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
     mobileColumn: PoolColumnId.Deposits,
   })
 
-  const { tableQuery, totalLiquidityUsd, claimablesTotalUsd, isFetching, onReload } = useUserPositionsTable({ network })
+  const { tableQuery, totalLiquidityUsd, claimablesTotalUsd, isFetching, onReload, alerts } = useUserPositionsTable({
+    network,
+  })
 
   const globalFilterFn = usePoolsGlobalFilterFn(tableQuery.data ?? EMPTY_POOL_ROWS, searchText)
 
   const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    meta: { getRowHref: ({ url }) => url, variant } as PoolTableMeta,
+    meta: poolTableMeta({ getRowHref: ({ url }) => url, variant, alerts, addressDisplay: evmAddressDisplay }),
     getRowId: row => row.address,
     state: { expanded, columnVisibility, globalFilter: searchText },
     initialState: { pagination: { pageIndex: 0, pageSize: MAX_PAGE_SIZE } },
@@ -104,7 +117,7 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
                   description: t`Try another pool name, token symbol, or address.`,
                 }}
                 errorState={{ title: t`Could not load pool positions`, onReload }}
-                expandedPanel={{ Body: UserPositionsExpandedPanel, Actions: PoolExpandedPanelActions }}
+                expandedPanel={{ Body: UserPositionsExpandedPanel, Actions }}
                 shouldStickFirstColumn={Boolean(isTablet && rowCount)}
               >
                 <TableFilters

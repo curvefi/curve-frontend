@@ -1,6 +1,6 @@
 import { capitalize, groupBy } from 'lodash'
-import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
+import type { Address } from '@primitives/address.utils'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { IS_CYPRESS } from '@ui/lib/env'
@@ -64,6 +64,7 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity) => {
       .filter(({ value }) => value > 0)
       // Convert actual token reward data into the more generic data type we use all across the app.
       .map<CampaignRewards>(({ token }) => ({
+        isMerkl: true,
         campaignName: opp.name,
         platform: opp.tags.map(tag => capitalize(tag)).join(', '),
         platformImageId: token.icon,
@@ -119,4 +120,4 @@ export const fetchMerklRewards = async (params: Record<string, string | number |
   return groupBy(campaigns, x => x.address)
 }
 
-export const isMerkl = (campaign: CampaignRewards) => campaign.dashboardLink.includes('merkl.xyz')
+export const isMerkl = (campaign: CampaignRewards) => campaign.isMerkl

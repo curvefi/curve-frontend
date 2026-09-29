@@ -14,10 +14,11 @@ import type {
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import type { Address } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { constQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import type { PoolsApiParams } from '../filters/utils'
-import { enrichPoolRow, litePoolToRowData, poolToRowData } from '../utils'
+import { enrichPoolRow, getPoolListAlerts, litePoolToRowData, poolToRowData } from '../utils'
 import { POOLS_PAGE_SIZE } from './usePoolsPagination'
 
 class UnsupportedPoolListError extends Error {
@@ -30,11 +31,17 @@ class UnsupportedPoolListError extends Error {
 const litePoolsToRows = ({ pools }: { pools: LitePool[] }) => pools.map(litePoolToRowData)
 const poolsToRows = ({ pools }: { pools: V2Pool[] }) => pools.map(poolToRowData)
 
-const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPosition | undefined) => ({
-  lpBalance: positions?.positions.find(({ address }) => isAddressEqual(address, poolAddress))?.totalBalance ?? '0',
-  depositsUsd: undefined,
-  claimables: constQ([]),
-})
+/** Public pool rows show known balances but do not fetch claimables. */
+const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPosition | undefined) =>
+  maybe(
+    positions?.positions.find(({ address }) => isAddressEqual(address, poolAddress)),
+    position => ({
+      lpBalance: position.totalBalance,
+      depositsUsd: undefined,
+      claimables: constQ(undefined),
+      claimablesUsd: undefined,
+    }),
+  )
 
 /** Fetches the selected pool-list source and maps its API rows into table rows. */
 export const usePoolsTable = ({
@@ -111,7 +118,8 @@ export const usePoolsTable = ({
         : fullPoolChains.isFetching || poolList.isFetching),
     onReload: () => resetPoolLists({ chainId, userAddress }),
     pageCount: isLite ? 1 : (poolList.data?.pageCount ?? -1),
-    userHasPositions: tableQuery.data?.some(({ userPosition }) => +userPosition.lpBalance > 0),
+    userHasPositions: tableQuery.data?.some(({ userPosition }) => userPosition && +userPosition.lpBalance > 0),
     tableQuery,
+    alerts: getPoolListAlerts(tableQuery.data, blockchainId),
   }
 }
