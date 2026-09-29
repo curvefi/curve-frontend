@@ -81,22 +81,22 @@ export const LOAN_TEST_MARKETS = {
       borrowedSymbol: BORROWED_SYMBOL,
     },
     {
-      id: 'one-way-market-v2-0',
-      label: 'wstETH-WETH LLv2 Lend Market',
-      collateralAddress: '0x1f32b1c2345538c0c6f582fcb022739c4a194ebb', // wstETH
-      controllerAddress: '0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
-      collateral: '1',
-      borrow: '0.01',
-      borrowMore: '0.005',
-      repay: '0.005',
+      id: 'one-way-market-v2-1',
+      label: 'WBTC-USDC LLv2 Lend Market',
+      collateralAddress: '0x68f180fcce6836688e9084f035309e29bf0a2095', // WBTC
+      controllerAddress: '0x9fC15ac3EF97093832f49B7997A58E29b49C56dE',
+      collateral: '0.1',
+      borrow: '100',
+      borrowMore: '10',
+      repay: '10',
       chainId: Chain.Optimism,
-      path: '/lend/optimism/markets/0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
+      path: '/lend/optimism/markets/0x9fC15ac3EF97093832f49B7997A58E29b49C56dE',
       hasLeverage: true,
       hasLeverageManagement: true,
-      collateralDecimals: COLLATERAL_DECIMALS,
-      borrowedAddress: '0x4200000000000000000000000000000000000006', // WETH
-      borrowedDecimals: BORROWED_DECIMALS,
-      borrowedSymbol: 'WETH',
+      collateralDecimals: 8,
+      borrowedAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85', // USDC
+      borrowedDecimals: 6,
+      borrowedSymbol: 'USDC',
     },
   ],
 } as const

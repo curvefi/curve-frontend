@@ -85,7 +85,7 @@ const ParticipantExpandedPanelActions = ({
   />
 )
 
-export const BorrowersCard = () => {
+const BorrowersCard = () => {
   const { chainId, blockchainId, marketId, controllerAddress, apiMarket, marketType, tokens } = useMarketContext()
   const { pagination, onPaginationChange, apiPage } = useManualPagination(PAGE_SIZE)
   const borrowersQuery = useMarketBorrowers({
@@ -192,7 +192,7 @@ export const BorrowersCard = () => {
   )
 }
 
-export const SuppliersCard = () => {
+const SuppliersCard = () => {
   const { chainId, blockchainId, marketQuery, apiMarket, vaultToken, tokens } = useMarketContext()
   const { pagination, onPaginationChange, apiPage } = useManualPagination(PAGE_SIZE)
   const suppliersQuery = useMarketSuppliers({

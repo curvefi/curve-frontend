@@ -156,7 +156,7 @@ export const expectedBorrowedMetrics = () => ({
   avgPrice: oneDecimal(900, 2300, 2),
 })
 
-export const createLoanPositionStubs = ({ collateral, debt }: { collateral: Decimal; debt: Decimal }) => ({
+const createLoanPositionStubs = ({ collateral, debt }: { collateral: Decimal; debt: Decimal }) => ({
   userState: createStub({ collateral, stablecoin: '0', debt }),
   userHealth: createStub(oneDecimal(20, 80, 2)),
 })
