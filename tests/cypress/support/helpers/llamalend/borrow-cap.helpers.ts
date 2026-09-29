@@ -94,7 +94,7 @@ export const setupLlv2BorrowingLiquidity = ({
   controllerAddress,
   borrowedAddress,
   borrowedDecimals,
-  borrowedLiquidity = '10',
+  borrowedLiquidity = '1000',
   borrowCap = '1000',
 }: {
   adminRpcUrl: string
