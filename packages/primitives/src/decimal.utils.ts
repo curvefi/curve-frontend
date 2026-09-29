@@ -17,3 +17,5 @@ export type Decimal = `${number}`
  * Union type used for components that accept both number and Decimal types for amounts.
  */
 export type Amount = number | Decimal
+
+export const DECIMAL_REGEX = /^-?(\d+(\.\d*)?|\.\d+)$/

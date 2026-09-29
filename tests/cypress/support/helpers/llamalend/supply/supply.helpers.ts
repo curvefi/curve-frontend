@@ -1,14 +1,10 @@
 import type { Address } from 'viem'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import type { Decimal } from '@primitives/decimal.utils'
+import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
-import {
-  checkEstimatedTxCost as checkEstimatedTxCostValue,
-  DECIMAL_REGEX,
-  getActionValue,
-} from '../action-info.helpers'
+import { checkEstimatedTxCost as checkEstimatedTxCostValue, getActionValue } from '../action-info.helpers'
 
 type SupplyRpcTestMarket = {
   id: string

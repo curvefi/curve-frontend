@@ -1,5 +1,5 @@
 import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import type { Decimal } from '@primitives/decimal.utils'
+import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
 
@@ -7,7 +7,6 @@ type ActionInfoField = 'previous' | 'left' | 'right' | 'value'
 export const getActionInfo = (name: string, field: ActionInfoField = 'value') =>
   cy.get(`[data-testid="${notFalsy(name, field).join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
 
-export const DECIMAL_REGEX = /(\d(\.\d+)?)/
 export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REGEX.source].join(' - '))
 
 export const getActionValue = (name: string, field?: ActionInfoField) =>
