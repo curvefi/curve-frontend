@@ -89,7 +89,16 @@ export const UserPositionsTable = ({
 
   return (
     <Stack data-testid="user-pool-positions">
-      <TableHeader title={t`Your positions`} onReload={onReload} isLoading={isFetching} />
+      <TableHeader
+        title={t`Your positions`}
+        onReload={onReload}
+        isLoading={isFetching}
+        visibilitySettings={
+          address && tableQuery.data?.length
+            ? { anchorRef: visibilitySettingsRef, open: visibilitySettingsOpen, onOpen: openVisibilitySettings }
+            : undefined
+        }
+      />
       <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         {address ? (
           tableQuery.data?.length ? (
@@ -129,11 +138,6 @@ export const UserPositionsTable = ({
               >
                 <TableFilters
                   testIdPrefix={LOCAL_STORAGE_KEY}
-                  visibilitySettings={{
-                    anchorRef: visibilitySettingsRef,
-                    open: visibilitySettingsOpen,
-                    onOpen: openVisibilitySettings,
-                  }}
                   searchText={searchText}
                   onSearch={value => {
                     setSearchText(value)
