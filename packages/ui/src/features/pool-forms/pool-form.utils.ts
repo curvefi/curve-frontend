@@ -25,7 +25,7 @@ export const allTokenFields = <T extends number | Nullish>(count: T) =>
 
 /** Keep contract amounts in pool token order, regardless of form field insertion order. */
 export const getPoolAmounts = (values: FieldsOf<PoolTokenFields>, tokenCount: number | undefined) =>
-  maybe(tokenCount, count => range(count).map(index => values[poolAmountField(index)]))
+  maybe(tokenCount, count => range(count).map(index => values[poolAmountField(index)] ?? undefined))
 
 export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokenFields, PoolAmountField> =>
   Object.fromEntries(range(tokenCount).map(index => [poolAmountField(index), undefined]))
