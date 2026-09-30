@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
-import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { USER_NET_SUPPLY_RATE_TITLE, USER_TOTAL_SUPPLY_APY_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
@@ -17,6 +17,7 @@ import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipCo
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
 import { useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
@@ -51,6 +52,8 @@ const METRIC_CATEGORY = 'llamalend.positionSupplyDetails'
 const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 12, tablet: 3 }}>{children}</Grid>
 
 export const SupplyPositionDetails = () => {
+  const beta = useNewLlamalendHealth()
+  const supplyRateTitle = beta ? USER_TOTAL_SUPPLY_APY_TITLE : USER_NET_SUPPLY_RATE_TITLE
   const {
     chainId,
     blockchainId,
@@ -127,7 +130,7 @@ export const SupplyPositionDetails = () => {
       <MetricGrid>
         <Metric
           category={METRIC_CATEGORY}
-          label={USER_NET_SUPPLY_RATE_TITLE}
+          label={supplyRateTitle}
           value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
           valueOptions={{
             unit: 'percentage',
@@ -137,7 +140,7 @@ export const SupplyPositionDetails = () => {
           }}
           notional={mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
           valueTooltip={{
-            title: USER_NET_SUPPLY_RATE_TITLE,
+            title: supplyRateTitle,
             body: (
               <MarketSupplyRateTooltipContent
                 supplyApy={supplyMetrics.data?.supplyApy}
@@ -168,12 +171,20 @@ export const SupplyPositionDetails = () => {
         <Metric
           category={METRIC_CATEGORY}
           label={t`Amount supplied`}
-          value={mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue)}
-          valueOptions={{ unit: 'dollar' }}
-          notional={mapQuery(supplyAsset, ({ depositedAmount, symbol }) => ({
-            value: depositedAmount,
-            unit: { symbol: ` ${symbol}`, position: 'suffix' as const },
-          }))}
+          testId="position-amount-supplied"
+          value={mapQuery(supplyAsset, ({ depositedAmount, depositedUsdValue }) =>
+            beta ? depositedAmount : depositedUsdValue,
+          )}
+          valueOptions={
+            beta
+              ? { unit: { symbol: ` ${market.borrowed_token.symbol}`, position: 'suffix' }, abbreviate: false }
+              : { unit: 'dollar' }
+          }
+          notional={mapQuery(supplyAsset, ({ depositedAmount, depositedUsdValue, symbol }) =>
+            beta
+              ? { value: depositedUsdValue, unit: 'dollar' as const }
+              : { value: depositedAmount, unit: { symbol: ` ${symbol}`, position: 'suffix' as const } },
+          )}
           valueTooltip={{
             title: t`Amount Supplied`,
             body: <AmountSuppliedTooltipContent balances={q(balances)} supplyAsset={supplyAsset} />,

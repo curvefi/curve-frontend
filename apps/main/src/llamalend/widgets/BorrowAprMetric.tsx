@@ -46,7 +46,7 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
       notional={mapQuery(borrowRate, ({ totalBorrowRate, totalAverageBorrowRate }) =>
         beta
-          ? maybe(totalBorrowRate, value => t`Net ${formatCappedRatePercent(value)}`)
+          ? maybe(totalBorrowRate, value => t`Est. net ${formatCappedRatePercent(value)}`)
           : maybe(totalAverageBorrowRate, value => ({
               value,
               abbreviate: false,

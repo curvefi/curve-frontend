@@ -56,5 +56,6 @@ export function useBorrowRates<ChainId extends IChainId>(
     prevNetBorrowApr,
     netBorrowApr,
     collateralApy: mapQuery(snapshots, data => data.at(-1)?.collateralToken.rebasingYield),
+    collateralApr: mapQuery(snapshots, data => data.at(-1)?.collateralToken.rebasingYieldApr),
   }
 }

@@ -1,4 +1,5 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { NET_SUPPLY_RATE_TITLE, TOTAL_SUPPLY_APY_TITLE } from '@/llamalend/constants'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -49,7 +50,7 @@ export const SupplyActionInfoList = ({
   suppliedAssets,
   prevSuppliedAssets,
   sharesLabel = t`Vault Shares`,
-  amountLabel = t`Amount Supplied`,
+  amountLabel,
   suppliedSymbol,
   supplyApy,
   prevSupplyApy,
@@ -57,6 +58,7 @@ export const SupplyActionInfoList = ({
   prevNetSupplyApy,
   gas,
 }: SupplyActionInfoListProps) => {
+  const beta = useNewLlamalendHealth()
   const shouldShowNetSupplyApy = useShouldShowNetRate({
     tokenSymbol: suppliedSymbol,
     prevNetRate: prevNetSupplyApy,
@@ -81,7 +83,7 @@ export const SupplyActionInfoList = ({
           )}
           {shouldShowNetSupplyApy && (
             <ActionInfo
-              label={NET_SUPPLY_RATE_TITLE}
+              label={beta ? TOTAL_SUPPLY_APY_TITLE : NET_SUPPLY_RATE_TITLE}
               value={mapQuery(prevNetSupplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               futureValue={mapQuery(netSupplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               size="small"
@@ -99,7 +101,7 @@ export const SupplyActionInfoList = ({
           />
           {(suppliedAssets != null || prevSuppliedAssets != null) && (
             <ActionInfo
-              label={amountLabel}
+              label={amountLabel ?? (beta ? t`Amount supplied` : t`Amount Supplied`)}
               value={mapQuery(prevSuppliedAssets ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
               futureValue={mapQuery(suppliedAssets ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
               valueRight={suppliedSymbol}

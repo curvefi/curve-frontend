@@ -7,7 +7,7 @@ import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, AverageCategory } from '@evm-ui/utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { useSwitch } from '@ui/hooks/useSwitch'
-import { MARKET_TITLES, MarketColumnId, POSITION_COLUMN_LABELS } from '../../columns'
+import { BETA_MARKET_TITLES, MARKET_TITLES, MarketColumnId } from '../../columns'
 import { RateTooltipProps } from './RateCell'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.marketList.rate'
@@ -32,7 +32,7 @@ export const BorrowRateTooltip = ({ market, children, columnId }: RateTooltipPro
   const poolRewards = useFilteredRewards(rewards, marketType, MarketRateType.Borrow)
   const betaTitle =
     columnId === MarketColumnId.NetBorrowRate
-      ? POSITION_COLUMN_LABELS.netBorrowApr
+      ? BETA_MARKET_TITLES[MarketColumnId.NetBorrowRate]
       : MARKET_TITLES[MarketColumnId.BorrowRate]
   const title = beta
     ? betaTitle

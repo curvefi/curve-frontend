@@ -2,7 +2,7 @@ import { MarketRateType } from '@evm-ui/types/market'
 import { fromEntries, notFalsy, recordValues } from '@primitives/objects.utils'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { t } from '@ui/lib/i18n'
-import { MARKET_TITLES, POSITION_COLUMN_LABELS } from './column.titles'
+import { BETA_MARKET_TITLES, BETA_ROE_TITLES, MARKET_TITLES, POSITION_COLUMN_LABELS } from './column.titles'
 import { MarketColumnId } from './columns.enum'
 
 /**
@@ -38,7 +38,7 @@ const createMarketsColumnOptions = ({
         enabled: true,
       },
       {
-        label: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
+        label: beta ? BETA_ROE_TITLES.max : MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
         columns: [MarketColumnId.MaxReturnOnEquity],
         active: false,
         enabled: true,
@@ -57,7 +57,7 @@ const createMarketsColumnOptions = ({
         enabled: true,
       },
       {
-        label: MARKET_TITLES[MarketColumnId.SolvencyPercent],
+        label: beta ? POSITION_COLUMN_LABELS.marketSolvency : MARKET_TITLES[MarketColumnId.SolvencyPercent],
         columns: [MarketColumnId.SolvencyPercent],
         active: false,
         enabled: true,
@@ -94,7 +94,7 @@ const createMarketsColumnOptions = ({
         },
       ),
       {
-        label: POSITION_COLUMN_LABELS.netBorrowApr,
+        label: beta ? BETA_MARKET_TITLES[MarketColumnId.NetBorrowRate]! : POSITION_COLUMN_LABELS.netBorrowApr,
         columns: [MarketColumnId.NetBorrowRate],
         active: !beta && onlyPositions != MarketRateType.Supply,
         enabled: true,
@@ -112,13 +112,13 @@ const createMarketsColumnOptions = ({
       ...(beta
         ? [
             {
-              label: MARKET_TITLES[MarketColumnId.CollateralYield],
+              label: BETA_MARKET_TITLES[MarketColumnId.CollateralYield]!,
               columns: [MarketColumnId.CollateralYield],
               active: false,
               enabled: true,
             },
             {
-              label: MARKET_TITLES[MarketColumnId.UserReturnOnEquity],
+              label: BETA_ROE_TITLES.position,
               columns: [MarketColumnId.UserReturnOnEquity],
               active: false,
               enabled: hasPositions,
@@ -188,7 +188,7 @@ const createMarketsColumnOptions = ({
     label: t`Lend`,
     options: [
       {
-        label: MARKET_TITLES[MarketColumnId.LendRate],
+        label: beta ? BETA_MARKET_TITLES[MarketColumnId.LendRate]! : MARKET_TITLES[MarketColumnId.LendRate],
         columns: [MarketColumnId.LendRate],
         active: onlyPositions != MarketRateType.Borrow,
         enabled: true,
@@ -203,7 +203,7 @@ const createMarketsColumnOptions = ({
   },
 ]
 
-const option = (id: MarketColumnId, active: boolean, label = MARKET_TITLES[id]) => ({
+const option = (id: MarketColumnId, active: boolean, label = BETA_MARKET_TITLES[id] ?? MARKET_TITLES[id]) => ({
   label,
   columns: [id],
   active,
@@ -216,7 +216,7 @@ const borrowPositionColumnOptions = (): VisibilityGroup<MarketColumnId>[] => [
     label: t`Borrow`,
     options: [
       option(MarketColumnId.UserLeverage, false),
-      option(MarketColumnId.UserReturnOnEquity, false),
+      option(MarketColumnId.UserReturnOnEquity, false, BETA_ROE_TITLES.position),
       option(MarketColumnId.UserDistanceToRange, false),
       option(MarketColumnId.UserBandCount, false),
       option(MarketColumnId.UserCollateralComposition, false),

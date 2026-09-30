@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
+import { RANGE_HEALTH_DESCRIPTION } from '@/llamalend/constants'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
@@ -16,6 +17,7 @@ import type { VaultActivityProps } from '@evm-ui/features/activity-table'
 import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
@@ -190,6 +192,7 @@ export const MarketActivityLayout = <T extends MarketRateType>({
 )
 
 export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
+  const beta = useNewLlamalendHealth()
   const { isConnected } = useConnection()
   const { tokenPair, isMarketLoading } = useMarketTokenPair()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
@@ -284,7 +287,10 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
             />
           )}
         </Stack>
-        <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
+        <ChartFooter
+          legendSets={chartFooterLegendSets}
+          description={beta ? RANGE_HEALTH_DESCRIPTION : SOFT_LIQUIDATION_DESCRIPTION}
+        />
       </Stack>
     </Card>
   )
@@ -302,6 +308,7 @@ export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAn
 )
 
 const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
+  const beta = useNewLlamalendHealth()
   const { isConnected } = useConnection()
   const { tokenPair, isMarketLoading } = useMarketTokenPair()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
@@ -398,7 +405,10 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
           />
         )}
       </Stack>
-      <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
+      <ChartFooter
+        legendSets={chartFooterLegendSets}
+        description={beta ? RANGE_HEALTH_DESCRIPTION : SOFT_LIQUIDATION_DESCRIPTION}
+      />
     </Stack>
   )
 }

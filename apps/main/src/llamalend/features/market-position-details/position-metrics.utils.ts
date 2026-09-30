@@ -66,10 +66,7 @@ export const priceDistance = (oraclePrice: Decimal, upperPrice: Decimal, lowerPr
       percent: decimalMultiply(decimalDiv(decimalMinus(oraclePrice, upperPrice), oraclePrice), d(100)),
     }
   }
-  return {
-    location,
-    percent: decimalMultiply(decimalDiv(decimalMinus(lowerPrice, oraclePrice), oraclePrice), d(100)),
-  }
+  return { location, percent: decimalMultiply(decimalDiv(decimalMinus(lowerPrice, oraclePrice), oraclePrice), d(100)) }
 }
 
 /** Full Controller health is already percentage points. Amount is debt times that percent. */
@@ -106,11 +103,7 @@ export const compositionShares = (collateralAssets: Decimal, totalAssets: Decima
   const collateralExact = decimalMultiply(decimalDiv(collateralAssets, totalAssets), d(100))
   const collateralLabel = BigNumber(collateralExact).decimalPlaces(4, BigNumber.ROUND_HALF_UP)
   const borrowedLabel = BigNumber(100).minus(collateralLabel)
-  return {
-    collateralExact,
-    collateralLabel: d(collateralLabel.toFixed(4)),
-    borrowedLabel: d(borrowedLabel.toFixed(4)),
-  }
+  return { collateralExact, collateralLabel: d(collateralLabel.toFixed(4)), borrowedLabel: d(borrowedLabel.toFixed(4)) }
 }
 
 /** Any value above 1 must not collapse to the boundary label 1.00. */
@@ -137,6 +130,8 @@ export const formatSignedPercent = (value: Decimal): string => {
   return `${text}%`
 }
 
+export const formatBufferPercent = (value: Decimal): string => t`${formatSignedPercent(value)} of debt`
+
 export const formatSignedAmount = (value: Decimal): string => {
   if (decimalEqual(value, ZERO)) return '0.00'
   const negative = decimalCompare(value, ZERO) < 0
@@ -155,7 +150,16 @@ export const formatDistancePercent = (percent: Decimal): string => {
 export const formatPriceDistanceHeadline = (distance: PriceDistance): string => {
   if (distance.location === 'unavailable') return t`Unavailable`
   if (distance.location === 'inside') return t`In range`
-  return formatDistancePercent(distance.percent)
+  return `${distance.location === 'above' ? '−' : '+'}${formatDistancePercent(distance.percent)}`
+}
+
+export const formatPriceDistanceDescription = (distance: PriceDistance): string => {
+  if (distance.location === 'above')
+    return t`Price drop of ${formatDistancePercent(distance.percent)} to reach the liquidation range`
+  if (distance.location === 'below')
+    return t`Price rise of ${formatDistancePercent(distance.percent)} to reach the liquidation range`
+  if (distance.location === 'inside') return t`In the liquidation range`
+  return t`Distance unavailable`
 }
 
 export const formatRangeBounds = (

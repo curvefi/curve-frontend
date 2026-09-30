@@ -1,3 +1,4 @@
+import { MARKET_SOLVENCY_TITLE } from '@/llamalend/constants'
 import { MaxReturnOnEquity, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType } from '@evm-ui/types/market'
@@ -73,10 +74,10 @@ const NewMarketInfoContent = () => {
           <Metric
             category={METRIC_CATEGORY}
             testId="market-solvency"
-            label={t`Solvency`}
+            label={MARKET_SOLVENCY_TITLE}
             value={mapQuery(solvency, ({ value }) => value)}
             valueOptions={{ unit: 'percentage' }}
-            valueTooltip={{ title: t`Solvency`, body: <SolvencyTooltip type={MarketType.Lend} /> }}
+            valueTooltip={{ title: MARKET_SOLVENCY_TITLE, body: <SolvencyTooltip type={MarketType.Lend} /> }}
           />
         )}
         <Metric

@@ -1,12 +1,14 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { NET_SUPPLY_RATE_TITLE, TOTAL_SUPPLY_APY_TITLE } from '@/llamalend/constants'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
 import { aprToApy } from '@ui/lib/rates.utils'
 import { useMarketRateHistory } from '../../hooks/useMarketRateHistory'
 import { RateTooltipProps } from './RateCell'
@@ -58,12 +60,13 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
   )
 }
 
-export const SupplyRateLendTooltip = ({ market, children }: RateTooltipProps) => {
+export const SupplyRateLendTooltip = ({ market, children, showBaseSupplyApy }: RateTooltipProps) => {
+  const beta = useNewLlamalendHealth()
   const [open, onOpen, onClose] = useSwitch(false)
   return (
     <Tooltip
       clickable
-      title={NET_SUPPLY_RATE_TITLE}
+      title={beta ? (showBaseSupplyApy ? t`Supply APY` : TOTAL_SUPPLY_APY_TITLE) : NET_SUPPLY_RATE_TITLE}
       body={<LendRateTooltipContent isOpen={open} market={market} />}
       placement="top"
       open={open}

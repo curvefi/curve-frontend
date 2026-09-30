@@ -59,10 +59,7 @@ export const LegacyMetricsRow = ({
           notional={mapQuery(supplyRate, ({ totalMinBoost, totalAverageMinBoost }) =>
             maybe(beta ? totalMinBoost : totalAverageMinBoost, value => ({
               value,
-              unit: {
-                symbol: beta ? `% ${t`Net supply APY`}` : `% ${supplyRatePeriod} Avg`,
-                position: 'suffix' as const,
-              },
+              unit: { symbol: beta ? `% ${t`Total`}` : `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
             })),
           )}
           valueTooltip={{

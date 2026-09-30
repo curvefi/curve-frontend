@@ -1,7 +1,16 @@
 import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import { ZERO, decimal, decimalCompare, decimalDiv, decimalEqual, decimalGreaterThan, decimalMultiply } from '@ui/lib/decimal'
+import {
+  ZERO,
+  decimal,
+  decimalCompare,
+  decimalDiv,
+  decimalEqual,
+  decimalGreaterThan,
+  decimalMultiply,
+} from '@ui/lib/decimal'
+import { t } from '@ui/lib/i18n'
 
 export type YieldInput = { aprFraction: Decimal } | { unavailable: true } | { unnecessary: true }
 
@@ -20,15 +29,10 @@ export type RoeInput = {
   rewards: RewardInput
 }
 
-export type RoeResult =
-  | { status: 'unavailable' }
-  | { status: 'value'; aprPercent: Decimal; multiplier: RoeMultiplier }
+export type RoeResult = { status: 'unavailable' } | { status: 'value'; aprPercent: Decimal; multiplier: RoeMultiplier }
 
 export type RoeMultiplier =
-  | { kind: 'ratio'; value: Decimal }
-  | { kind: 'zero' }
-  | { kind: 'negative'; value: Decimal }
-  | { kind: 'omit' }
+  { kind: 'ratio'; value: Decimal } | { kind: 'zero' } | { kind: 'negative'; value: Decimal } | { kind: 'omit' }
 
 const annual = (balance: Decimal, yieldInput: YieldInput): Decimal | undefined => {
   if ('unnecessary' in yieldInput) return ZERO
@@ -48,11 +52,22 @@ export const positionReturnOnEquity = ({
   rewards,
 }: RoeInput): RoeResult => {
   if (!decimalGreaterThan(equity, ZERO)) return { status: 'unavailable' }
-  const collateralAnnual = annual(collateralValue, decimalEqual(collateralValue, ZERO) ? { unnecessary: true } : collateralYield)
-  const borrowedAnnual = annual(borrowedValue, decimalEqual(borrowedValue, ZERO) ? { unnecessary: true } : borrowedYield)
+  const collateralAnnual = annual(
+    collateralValue,
+    decimalEqual(collateralValue, ZERO) ? { unnecessary: true } : collateralYield,
+  )
+  const borrowedAnnual = annual(
+    borrowedValue,
+    decimalEqual(borrowedValue, ZERO) ? { unnecessary: true } : borrowedYield,
+  )
   const debtAnnual = annual(debt, decimalEqual(debt, ZERO) ? { unnecessary: true } : borrowCost)
   const rewardAnnual = 'amount' in rewards ? rewards.amount : 'unnecessary' in rewards ? ZERO : undefined
-  if (collateralAnnual == undefined || borrowedAnnual == undefined || debtAnnual == undefined || rewardAnnual == undefined) {
+  if (
+    collateralAnnual == undefined ||
+    borrowedAnnual == undefined ||
+    debtAnnual == undefined ||
+    rewardAnnual == undefined
+  ) {
     return { status: 'unavailable' }
   }
   const numerator = BigNumber(collateralAnnual).plus(borrowedAnnual).minus(debtAnnual).plus(rewardAnnual)
@@ -72,17 +87,24 @@ export const yieldMultiplier = (roeAprPercent: Decimal, collateralYield: YieldIn
   return { kind: 'ratio', value: ratio }
 }
 
-export const formatYieldMultiplier = (multiplier: RoeMultiplier): string | undefined => {
+export const formatYieldMultiplier = (
+  multiplier: RoeMultiplier,
+  reference: 'yield' | 'collateral' = 'yield',
+): string | undefined => {
   if (multiplier.kind === 'omit') return undefined
-  if (multiplier.kind === 'zero') return '0× yield'
-  return `${BigNumber(multiplier.value).toFixed(4)}× yield`
+  if (multiplier.kind === 'zero') return reference === 'collateral' ? t`0× collateral yield` : t`0× yield`
+  return reference === 'collateral'
+    ? t`${BigNumber(multiplier.value).toFixed(4)}× collateral yield`
+    : t`${BigNumber(multiplier.value).toFixed(4)}× yield`
 }
 
 type RebasingToken = { rebasingYieldApr: number | Nullish }
 
 /** Lending snapshots name the debt token `borrowedToken`. Mint snapshots name it `stablecoinToken`. */
 export const snapshotRebasingAprs = (
-  snapshot: { collateralToken: RebasingToken } & ({ borrowedToken: RebasingToken } | { stablecoinToken: RebasingToken }),
+  snapshot: { collateralToken: RebasingToken } & (
+    { borrowedToken: RebasingToken } | { stablecoinToken: RebasingToken }
+  ),
 ) => ({
   collateralApr: snapshot.collateralToken.rebasingYieldApr,
   borrowedApr: ('borrowedToken' in snapshot ? snapshot.borrowedToken : snapshot.stablecoinToken).rebasingYieldApr,

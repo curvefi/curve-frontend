@@ -1,6 +1,8 @@
+import { MARKET_SOLVENCY_TITLE } from '@/llamalend/constants'
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, objectKeys } from '@primitives/objects.utils'
@@ -24,9 +26,10 @@ export const SolvencyCell = ({
   getValue,
   row,
 }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
+  const beta = useNewLlamalendHealth()
   const value = getValue()
   return (
-    <Tooltip title={t`Solvency`} body={<SolvencyTooltip type={row.original.type} />}>
+    <Tooltip title={beta ? MARKET_SOLVENCY_TITLE : t`Solvency`} body={<SolvencyTooltip type={row.original.type} />}>
       <Typography variant="tableCellMBold" color={getSolvencyColor(value)}>
         {formatNumber(value, 'percent.value')}
       </Typography>

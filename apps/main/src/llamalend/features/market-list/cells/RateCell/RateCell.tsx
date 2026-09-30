@@ -20,7 +20,12 @@ import { SupplyRateMintTooltip } from './SupplyRateMintTooltip'
 
 const { Spacing } = SizesAndSpaces
 
-export type RateTooltipProps = { market: LlamaMarket; children: TooltipProps['children']; columnId?: MarketColumnId }
+export type RateTooltipProps = {
+  market: LlamaMarket
+  children: TooltipProps['children']
+  columnId?: MarketColumnId
+  showBaseSupplyApy?: boolean
+}
 
 const RateTypes = {
   [MarketColumnId.LendRate]: MarketRateType.Supply,
@@ -49,7 +54,7 @@ export const RateCell = <TValue extends number | null>({
   return (
     // The box container makes sure the tooltip doesn't span the entire cell, so the tooltip arrow is placed correctly
     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-      <Tooltip market={market} columnId={columnId}>
+      <Tooltip market={market} columnId={columnId} showBaseSupplyApy={netSupply}>
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
           <Typography variant="tableCellMBold" color="textPrimary">
             {formatCappedRatePercent(rate)}
@@ -61,7 +66,7 @@ export const RateCell = <TValue extends number | null>({
                 color="textSecondary"
                 data-testid={netBorrow ? 'user-net-borrow-apr' : 'user-net-supply-apy'}
               >
-                {t`Net`}{' '}
+                {netBorrow ? t`Est. net` : t`Total`}{' '}
                 {formatCappedRatePercent(netBorrow ? market.rates.borrowTotalApr : market.rates.lendTotalApyMinBoosted)}
               </Typography>
               {rewards}

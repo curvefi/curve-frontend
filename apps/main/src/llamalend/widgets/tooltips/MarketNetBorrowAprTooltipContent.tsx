@@ -1,3 +1,4 @@
+import { ESTIMATED_NET_BORROW_APR_TITLE } from '@/llamalend/constants'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { MarketType } from '@evm-ui/types/market'
@@ -82,7 +83,9 @@ export const MarketNetBorrowAprTooltipContent = ({
 
         {rebasingYieldApr != null && (
           <TooltipItems secondary>
-            <TooltipItem title={t`Yield bearing tokens`}>{formatCappedRatePercent(-rebasingYieldApr)}</TooltipItem>
+            <TooltipItem title={beta ? t`Collateral yield APR` : t`Yield bearing tokens`}>
+              {formatCappedRatePercent(-rebasingYieldApr)}
+            </TooltipItem>
             {!!collateralSymbol && (
               <TooltipItem variant="subItem" title={collateralSymbol}>
                 {formatCappedRatePercent(-rebasingYieldApr)}
@@ -93,7 +96,7 @@ export const MarketNetBorrowAprTooltipContent = ({
 
         {totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) && (
           <TooltipItems>
-            <TooltipItem variant="primary" title={beta ? t`Estimated net borrow APR` : t`Net borrow APR`}>
+            <TooltipItem variant="primary" title={beta ? ESTIMATED_NET_BORROW_APR_TITLE : t`Net borrow APR`}>
               {formatCappedRatePercent(totalBorrowApr)}
             </TooltipItem>
             <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>

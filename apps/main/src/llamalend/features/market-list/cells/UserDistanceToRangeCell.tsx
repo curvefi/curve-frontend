@@ -1,5 +1,6 @@
 import {
   formatPriceDistanceHeadline,
+  formatPriceDistanceDescription,
   formatRangeLabel,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
@@ -25,6 +26,7 @@ export const UserDistanceToRangeCell = ({
       hasData={distance != undefined}
       testId="user-position-distance"
       value={maybe(distance, formatPriceDistanceHeadline)}
+      valueAriaLabel={maybe(distance, formatPriceDistanceDescription)}
       support={
         range && (
           <Typography variant="bodySRegular" color="textSecondary">

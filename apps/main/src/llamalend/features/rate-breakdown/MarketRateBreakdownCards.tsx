@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
+import { ESTIMATED_NET_BORROW_APR_TITLE, TOTAL_SUPPLY_APY_TITLE } from '@/llamalend/constants'
 import type { PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 import { PointsCampaignsTable } from '@evm-ui/features/points-campaigns/PointsCampaignsTable'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
@@ -41,6 +43,21 @@ const RATE_BREAKDOWN_CONFIG = {
   },
 }
 
+const BETA_RATE_BREAKDOWN_COPY = {
+  [MarketRateType.Borrow]: {
+    title: t`Borrow rate breakdown`,
+    emptyTitle: t`No borrow rate breakdown found`,
+    errorTitle: t`Could not load borrow rate breakdown`,
+    totalTitle: ESTIMATED_NET_BORROW_APR_TITLE,
+  },
+  [MarketRateType.Supply]: {
+    title: t`Supply yield breakdown`,
+    emptyTitle: t`No supply yield breakdown found`,
+    errorTitle: t`Could not load supply yield breakdown`,
+    totalTitle: TOTAL_SUPPLY_APY_TITLE,
+  },
+}
+
 const FooterRow = ({
   visibleColumns,
   title,
@@ -78,7 +95,11 @@ export const RateBreakdownTable = ({
   rateType: MarketRateType
   query: QueryProp<RateBreakdownData>
 }) => {
-  const { columns, title, emptyTitle, errorTitle, totalTitle } = RATE_BREAKDOWN_CONFIG[rateType]
+  const beta = useNewLlamalendHealth()
+  const { columns, title, emptyTitle, errorTitle, totalTitle } = {
+    ...RATE_BREAKDOWN_CONFIG[rateType],
+    ...(beta && BETA_RATE_BREAKDOWN_COPY[rateType]),
+  }
   const table = useCurveTable({
     query: mapQuery(query, ({ rows }) => rows),
     columns,
@@ -88,7 +109,14 @@ export const RateBreakdownTable = ({
 
   return (
     <Card size="small" data-testid={`${rateType.toLowerCase()}-rate-breakdown`}>
-      <CardHeader title={title} />
+      <CardHeader
+        title={title}
+        subheader={
+          beta && rateType === MarketRateType.Supply
+            ? t`Token reward APRs are converted to APY assuming weekly reinvestment. Rewards do not compound automatically.`
+            : undefined
+        }
+      />
       <EvmDataTable
         category="detail"
         table={table}

@@ -1,7 +1,8 @@
+import { ESTIMATED_LEVERAGED_APR_TITLE, ESTIMATED_NET_BORROW_APR_TITLE } from '@/llamalend/constants'
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import {
   formatOracleHealth,
-  formatSignedPercent,
+  formatBufferPercent,
   oracleHealth,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
@@ -39,7 +40,7 @@ const oracleRatio = (oracle: QueryProp<Decimal | null>, range: QueryProp<Range<D
 
 /** Buffer is the preview health those forms already load, in percentage points. */
 const signedHealth = (health: QueryProp<Decimal | null> | undefined) =>
-  health ? mapQuery(health, data => maybe(decimal(data), formatSignedPercent)) : DISABLED_Q
+  health ? mapQuery(health, data => maybe(decimal(data), formatBufferPercent)) : DISABLED_Q
 
 export type LoanActionInfoListProps = {
   isOpen: boolean
@@ -52,6 +53,7 @@ export type LoanActionInfoListProps = {
   rates?: QueryProp<BorrowRates | null>
   prevRates?: QueryProp<BorrowRates | null>
   collateralApy?: QueryProp<number | null>
+  collateralApr?: QueryProp<number | null>
   oraclePrice: QueryProp<Decimal | null>
   loanToValue?: QueryProp<Decimal | null>
   prevLoanToValue?: QueryProp<Decimal | null>
@@ -93,6 +95,7 @@ export const LoanActionInfoList = ({
   prevRates,
   rates,
   collateralApy,
+  collateralApr,
   oraclePrice,
   loanToValue,
   prevLoanToValue,
@@ -116,6 +119,8 @@ export const LoanActionInfoList = ({
   positionRoe,
 }: LoanActionInfoListProps) => {
   const betaMetrics = useNewLlamalendHealth()
+  const collateralYield = betaMetrics ? collateralApr : collateralApy
+  const roeRateType = betaMetrics ? 'apr' : 'apy'
   const theme = useTheme()
   const shouldShowNetBorrowApr = useShouldShowNetRate({
     tokenSymbol: collateralSymbol,
@@ -130,7 +135,7 @@ export const LoanActionInfoList = ({
     <>
       {(debt ?? prevDebt) && (
         <ActionInfo
-          label={t`Debt`}
+          label={betaMetrics ? t`Total debt` : t`Debt`}
           value={mapQuery(prevDebt ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
           futureValue={mapQuery(debt ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
           valueRight={borrowSymbol}
@@ -157,7 +162,7 @@ export const LoanActionInfoList = ({
           )}
           {shouldShowNetBorrowApr && (
             <ActionInfo
-              label={t`Net borrow APR`}
+              label={betaMetrics ? ESTIMATED_NET_BORROW_APR_TITLE : t`Net borrow APR`}
               value={mapQuery(prevNetBorrowApr ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               futureValue={mapQuery(netBorrowApr ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               size="small"
@@ -269,10 +274,18 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {collateralApy && (
+          {collateralYield && (
             <ActionInfo
-              label={betaMetrics ? t`Return on equity (RoE)` : t`Return on Equity (RoE)`}
-              value={positionRoe ?? formatReturnOnEquity(prevLeverageValue, prevRates, collateralApy)}
+              label={betaMetrics ? ESTIMATED_LEVERAGED_APR_TITLE : t`Return on Equity (RoE)`}
+              labelTooltip={
+                betaMetrics
+                  ? {
+                      title: ESTIMATED_LEVERAGED_APR_TITLE,
+                      body: t`Estimated annual rate on net position value (assets minus debt), after borrowing costs, using the displayed balances and rates. No reinvestment is assumed. It is not realised return or profit and loss (PnL).`,
+                    }
+                  : undefined
+              }
+              value={positionRoe ?? formatReturnOnEquity(prevLeverageValue, prevRates, collateralYield, roeRateType)}
               futureValue={
                 positionRoe
                   ? t`Estimate unavailable`
@@ -280,7 +293,8 @@ export const LoanActionInfoList = ({
                       leverageValue,
                       /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
                       rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
-                      collateralApy,
+                      collateralYield,
+                      roeRateType,
                     )
               }
               size="small"
@@ -289,7 +303,7 @@ export const LoanActionInfoList = ({
           )}
           {(prevLeverageCollateral ?? leverageCollateral) && (
             <ActionInfo
-              label={t`Leverage collateral`}
+              label={betaMetrics ? t`Collateral from leverage` : t`Leverage collateral`}
               value={
                 leverageCollateral?.data && prevLeverageCollateral
                   ? mapQuery(prevLeverageCollateral, data => formatAmount(data, collateralSymbol))

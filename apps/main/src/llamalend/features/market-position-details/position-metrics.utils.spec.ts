@@ -10,6 +10,8 @@ import {
   equity,
   formatDistancePercent,
   formatPriceDistanceHeadline,
+  formatPriceDistanceDescription,
+  formatBufferPercent,
   formatOracleHealth,
   formatSignedAmount,
   formatSignedPercent,
@@ -95,7 +97,15 @@ describe('position metrics', () => {
     expect(priceDistance(d(80), d(100), d(80)).location).toBe('inside')
     expect(priceDistance(d('100.0001'), d(100), d(80)).location).toBe('above')
     expect(formatDistancePercent(d('0.0001'))).toBe('<0.01%')
-    if (drop.location === 'above') expect(formatPriceDistanceHeadline(drop)).toBe('16.6667%')
+    if (drop.location === 'above') expect(formatPriceDistanceHeadline(drop)).toBe('−16.6667%')
+    expect(formatPriceDistanceHeadline(rise)).toBe('+14.2857%')
+    expect(formatPriceDistanceDescription(drop)).toBe('Price drop of 16.6667% to reach the liquidation range')
+    expect(formatPriceDistanceDescription(rise)).toBe('Price rise of 14.2857% to reach the liquidation range')
+    expect(formatPriceDistanceHeadline(priceDistance(d(100), d(100), d(80)))).toBe('In range')
+    expect(formatPriceDistanceHeadline(priceDistance(d(80), d(100), d(80)))).toBe('In range')
+    expect(formatPriceDistanceHeadline(priceDistance(d('100.0001'), d(100), d(80)))).toBe('−<0.01%')
+    expect(formatPriceDistanceHeadline(priceDistance(d('79.9999'), d(100), d(80)))).toBe('+<0.01%')
+    expect(formatPriceDistanceHeadline(priceDistance(d(0), d(100), d(80)))).toBe('Unavailable')
     expect(formatPriceDistanceHeadline(priceDistance(d(90), d(100), d(80)))).toBe('In range')
   })
 
@@ -106,6 +116,9 @@ describe('position metrics', () => {
     expect(formatSignedPercent(d('-0.004'))).toBe('−<0.01%')
     expect(formatSignedAmount(d('-12.5'))).toBe('-12.50')
     expect(formatSignedPercent(d('-3'))).toBe('-3.00%')
+    expect(formatBufferPercent(d('3.27'))).toBe('3.27% of debt')
+    expect(formatBufferPercent(d('-0.004'))).toBe('−<0.01% of debt')
+    expect(formatBufferPercent(d(0))).toBe('0.00% of debt')
   })
 
   it('matches collateral, leverage, and ROE fixtures', () => {
@@ -128,6 +141,7 @@ describe('position metrics', () => {
     if (roe.status === 'value') {
       expect(+roe.aprPercent).toBeCloseTo(5, 8)
       expect(formatYieldMultiplier(roe.multiplier)).toBe('1.6667× yield')
+      expect(formatYieldMultiplier(roe.multiplier, 'collateral')).toBe('1.6667× collateral yield')
     }
 
     const mixed = compositionShares(d(180), d(270))

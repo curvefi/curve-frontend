@@ -16,7 +16,7 @@ import { t } from '@ui/lib/i18n'
 import { getSteps, visible, type Guide, type Surface } from './prototype-tour-steps'
 import './prototype-tour.css'
 
-const CONTENT_VERSIONS: Record<Guide, number> = { list: 6, positions: 11, borrow: 8, supply: 4 }
+const CONTENT_VERSIONS: Record<Guide, number> = { list: 9, positions: 14, borrow: 11, supply: 5 }
 export const PrototypeTour = ({
   surface,
   ready,

@@ -39,13 +39,36 @@
   max-width: 100%;
 }
 
-.llamalend-prototype-tour .llamalend-tour-status-list {
-  margin: 0;
-  padding-left: 18px;
+.llamalend-prototype-tour .llamalend-tour-status-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
-.llamalend-prototype-tour .llamalend-tour-status-list li {
-  padding-left: 2px;
+.llamalend-prototype-tour .llamalend-tour-status-table caption {
+  padding-bottom: 6px;
+  text-align: left;
+  font-weight: 700;
+}
+
+.llamalend-prototype-tour .llamalend-tour-status-table th,
+.llamalend-prototype-tour .llamalend-tour-status-table td {
+  padding: 6px;
+  border: 1px solid var(--llamalend-tour-border);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.llamalend-prototype-tour .llamalend-tour-status-table th:first-child {
+  width: 32%;
+}
+
+.llamalend-prototype-tour .llamalend-tour-status-table thead,
+.llamalend-prototype-tour .llamalend-tour-status-table tr[data-current-market='true'] {
+  background: var(--llamalend-tour-math-surface);
 }
 
 .llamalend-prototype-tour .llamalend-tour-comparison > div + div {

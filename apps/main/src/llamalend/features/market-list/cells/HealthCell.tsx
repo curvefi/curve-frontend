@@ -1,7 +1,7 @@
 import { HealthBar } from '@/llamalend/features/market-position-details'
 import {
   formatOracleHealth,
-  formatSignedPercent,
+  formatBufferPercent,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { STATUS_BADGE_COLOR } from '@/llamalend/features/market-position-details/position-status-badge'
 import { isCriticalBuffer } from '@/llamalend/features/market-position-details/position-status.utils'
@@ -49,11 +49,7 @@ export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, Ll
         value={maybe(decimal(oracleHealthValue), formatOracleHealth)}
         support={
           positionStatus && (
-            <Badge
-              size="extraSmall"
-              color={STATUS_BADGE_COLOR[positionStatus.severity]}
-              label={positionStatus.label}
-            />
+            <Badge size="extraSmall" color={STATUS_BADGE_COLOR[positionStatus.severity]} label={positionStatus.label} />
           )
         }
       />
@@ -88,7 +84,7 @@ export const LiquidationBufferCell = ({
     <PositionMetricCell
       error={error}
       hasData={value != undefined}
-      value={maybe(value, formatSignedPercent)}
+      value={maybe(value, formatBufferPercent)}
       valueSx={{
         color: isCriticalBuffer(
           value,

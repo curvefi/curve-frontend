@@ -45,7 +45,7 @@ type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = 
 export const computeTotalRate = (rate: number, rebasingYield: number, campaignsRate: number) =>
   rate - rebasingYield - campaignsRate
 
-/** Annualized return on equity at the given leverage. Input APYs and output are percentage. */
+/** Annualized return at the given leverage. Inputs must use the same rate convention and percentage points. */
 export const getReturnOnEquity = (
   leverage: number | Nullish,
   collateralApy: number | Nullish,
@@ -105,12 +105,14 @@ export type BorrowRates = { borrowApr?: Decimal; borrowApy?: Decimal }
 export const formatReturnOnEquity = (
   leverage: QueryProp<Decimal | null> | undefined,
   rates: QueryProp<BorrowRates | null> | undefined,
-  collateralApy: QueryProp<number | null>,
+  collateralYield: QueryProp<number | null>,
+  rateType: 'apy' | 'apr' = 'apy',
 ) =>
   mapQuery(
-    combineQueries([leverage ?? DISABLED_Q, rates ?? DISABLED_Q, collateralApy], (leverage, rates, collateralApy) =>
-      maybes([leverage, collateralApy, rates?.borrowApy], (leverage, collateralApy, borrowApy) =>
-        getReturnOnEquity(+leverage, collateralApy, +borrowApy),
+    combineQueries([leverage ?? DISABLED_Q, rates ?? DISABLED_Q, collateralYield], (leverage, rates, collateralYield) =>
+      maybes(
+        [leverage, collateralYield, rates?.[rateType === 'apr' ? 'borrowApr' : 'borrowApy']],
+        (leverage, collateralYield, borrowRate) => getReturnOnEquity(+leverage, collateralYield, +borrowRate),
       ),
     ),
     returnOnEquity => formatNumber(returnOnEquity, 'percent.rate'),

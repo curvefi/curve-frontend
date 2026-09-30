@@ -21,6 +21,15 @@ export const MarketTypeSuffix: Record<MarketType, string> = {
 
 export const NET_SUPPLY_RATE_TITLE = t`Net Supply APY`
 export const USER_NET_SUPPLY_RATE_TITLE = t`Your net supply APY`
+export const ESTIMATED_NET_BORROW_APR_TITLE = t`Est. net borrow APR`
+export const TOTAL_SUPPLY_APY_TITLE = t`Total supply APY`
+export const USER_TOTAL_SUPPLY_APY_TITLE = t`Your total supply APY`
+export const MARKET_SOLVENCY_TITLE = t`Market solvency`
+export const RANGE_HEALTH_DESCRIPTION = t`Health reaches 1.00 at the start of the Liquidation range, where collateral can convert and losses can occur. It stays at 1.00 within and below the range; monitor Liquidation buffer and Status.`
+
+// Distinguish annual rate estimates from position PnL.
+export const ESTIMATED_LEVERAGED_APR_TITLE = t`Estimated leveraged APR`
+export const ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE = t`Estimated APR at max leverage`
 
 export const LEVERAGE = 'leverage' as const satisfies SlippageType
 

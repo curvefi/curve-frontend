@@ -5,7 +5,9 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { Form } from '@ui/features/forms/components/Form'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -16,6 +18,7 @@ const { Spacing } = SizesAndSpaces
 export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaChainId> }) => {
   const { chainId, controllerAddress, marketType } = useMarketContext<LlamaChainId>()
   const network = networks[chainId]
+  const beta = useNewLlamalendHealth()
   const {
     form,
     values,
@@ -47,6 +50,11 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
         />
       }
     >
+      {beta && (
+        <Typography variant="bodySRegular" color="textSecondary">
+          {t`Use converted collateral and optional wallet funds to reduce debt and reset the liquidation range.`}
+        </Typography>
+      )}
       <Stack sx={{ gap: Spacing.xs }}>
         <LoanFormTokenInput
           label={t`Converted collateral`}

@@ -1,4 +1,4 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { NET_SUPPLY_RATE_TITLE, ESTIMATED_NET_BORROW_APR_TITLE, TOTAL_SUPPLY_APY_TITLE } from '@/llamalend/constants'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import { t } from '@ui/lib/i18n'
 import { MarketColumnId } from './columns.enum'
@@ -53,3 +53,14 @@ export const POSITION_COLUMN_LABELS = {
   netBorrowApr: t`Net borrow APR`,
   marketSolvency: t`Market solvency`,
 } as const
+
+export const BETA_MARKET_TITLES: Partial<Record<MarketColumnId, string>> = {
+  [MarketColumnId.NetBorrowRate]: ESTIMATED_NET_BORROW_APR_TITLE,
+  [MarketColumnId.LendRate]: TOTAL_SUPPLY_APY_TITLE,
+  [MarketColumnId.CollateralYield]: t`Collateral yield APR`,
+  [MarketColumnId.UserSupplyShare]: t`Supply share`,
+  [MarketColumnId.UserDeposited]: t`Amount supplied`,
+  [MarketColumnId.SolvencyPercent]: POSITION_COLUMN_LABELS.marketSolvency,
+}
+
+export const BETA_ROE_TITLES = { position: t`Est. leveraged APR`, max: t`Est. APR at max leverage` } as const

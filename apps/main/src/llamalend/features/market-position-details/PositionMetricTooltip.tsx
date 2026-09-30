@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components -- tooltip option builders, not a rendered module */
 import type { ReactNode } from 'react'
+import { ESTIMATED_LEVERAGED_APR_TITLE, RANGE_HEALTH_DESCRIPTION } from '@/llamalend/constants'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -88,9 +89,7 @@ export const healthTooltip = () => ({
   title: t`Health`,
   body: (
     <TooltipWrapper>
-      <TooltipDescription
-        text={t`Proximity to the start of the Liquidation range. Health remains 1.00 at or below the upper edge. Monitor the Liquidation buffer after that.`}
-      />
+      <TooltipDescription text={RANGE_HEALTH_DESCRIPTION} />
       <HealthEquation />
     </TooltipWrapper>
   ),
@@ -105,9 +104,7 @@ export const HealthEquation = () => (
   </Equation>
 )
 
-export const bufferTooltip = ({
-  criticalBuffer,
-}: { criticalBuffer?: string } = {}) => ({
+export const bufferTooltip = ({ criticalBuffer }: { criticalBuffer?: string } = {}) => ({
   ...tooltipChrome,
   title: t`Liquidation buffer`,
   body: (
@@ -150,13 +147,7 @@ export const statusTooltip = ({
   nearRange,
   criticalBuffer,
   observedAt,
-}: {
-  label?: string
-  category?: string
-  nearRange?: string
-  criticalBuffer?: string
-  observedAt?: number
-} = {}) => ({
+}: { label?: string; category?: string; nearRange?: string; criticalBuffer?: string; observedAt?: number } = {}) => ({
   ...tooltipChrome,
   title: t`Status`,
   body: (
@@ -263,11 +254,11 @@ export const LeverageEquation = () => (
 
 export const roeTooltip = () => ({
   ...tooltipChrome,
-  title: t`Return on equity`,
+  title: ESTIMATED_LEVERAGED_APR_TITLE,
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Current composition and rates, as an APR with no assumed reinvestment. Excludes price movement and conversion profit or loss.`}
+        text={t`An annual rate estimate from current composition and rates, with no assumed reinvestment. It is not realised return or profit and loss (PnL); it excludes price movement and conversion profit or loss.`}
       />
       <RoeEquations />
       <TooltipDescription
@@ -280,17 +271,20 @@ export const roeTooltip = () => ({
 export const RoeEquations = () => (
   <>
     <Equation>
-      {t`RoE APR`}
+      {t`Leveraged APR`}
       {' = '}
-      <Fraction numerator={t`Annual asset yield + eligible rewards − gross borrowing costs`} denominator={t`Equity`} />
+      <Fraction
+        numerator={t`Annual asset yield + eligible rewards − gross borrowing costs`}
+        denominator={t`Net position value`}
+      />
       {' × 100'}
     </Equation>
     <Equation>
       {t`Yield multiplier`}
       {' = '}
-      <Fraction numerator={t`RoE APR`} denominator={t`Unleveraged collateral APR`} />
+      <Fraction numerator={t`Leveraged APR`} denominator={t`Unleveraged collateral APR`} />
     </Equation>
-    <FormulaTerms terms={[t`RoE = return on equity`, t`APR = annual percentage rate`]} />
+    <FormulaTerms terms={[t`Net position value = assets minus debt`, t`APR = annual percentage rate`]} />
   </>
 )
 
@@ -312,7 +306,7 @@ export const rangeTooltip = ({
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Conversions may occur both ways. Losses need not recover when the price recovers. The lower edge is not the hard-liquidation price.`}
+        text={t`Distance shows the price change needed to reach the Liquidation range: negative for a price drop from above, positive for a price rise from below. Conversions may occur both ways. Losses need not recover when the price recovers. The lower edge is not the hard-liquidation price.`}
       />
       <RangeEquations />
       <TooltipItems secondary>
@@ -341,7 +335,7 @@ export const RangeEquations = () => (
     <Equation>
       {t`Above`}
       {' = '}
-      <Fraction numerator="price − upper" denominator="price" />
+      <Fraction numerator="upper − price" denominator="price" />
       {' × 100'}
     </Equation>
     <Equation>

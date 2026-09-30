@@ -1,3 +1,4 @@
+import { MARKET_SOLVENCY_TITLE } from '@/llamalend/constants'
 import { formatCollateralNotional, tokenMetric } from '@/llamalend/llama.utils'
 import {
   MaxLeverageTooltip,
@@ -5,6 +6,7 @@ import {
   TotalCollateralTooltip,
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
 import { Metric } from '@ui/components/Metric'
@@ -20,6 +22,7 @@ const { Spacing } = SizesAndSpaces
 const METRIC_CATEGORY = 'llamalend.marketAdvancedDetails'
 
 export const MarketAdvancedDetails = () => {
+  const beta = useNewLlamalendHealth()
   const { chainId, marketId, marketQuery, marketType, apiMarket } = useMarketContext()
   const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
     useAdvancedDetailsData({ chainId, marketQuery, marketId, marketType, apiMarket })
@@ -88,10 +91,14 @@ export const MarketAdvancedDetails = () => {
       {solvency && (
         <Metric
           category={METRIC_CATEGORY}
-          label={t`Solvency`}
+          label={beta ? MARKET_SOLVENCY_TITLE : t`Solvency`}
           value={mapQuery(solvency, ({ value }) => value)}
           valueOptions={{ unit: 'percentage' }}
-          valueTooltip={{ title: t`Solvency`, body: <SolvencyTooltip type={marketType} />, ...TooltipOptions }}
+          valueTooltip={{
+            title: beta ? MARKET_SOLVENCY_TITLE : t`Solvency`,
+            body: <SolvencyTooltip type={marketType} />,
+            ...TooltipOptions,
+          }}
         />
       )}
       {maxLeverage && (

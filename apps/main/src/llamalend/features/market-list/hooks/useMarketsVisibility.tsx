@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE } from '@/llamalend/constants'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { MaxLeverageTooltip } from '@/llamalend/widgets/tooltips'
@@ -19,11 +20,14 @@ import {
   getMarketsColumnOptions,
   MarketColumnId,
   POSITION_COLUMN_LABELS,
+  BETA_ROE_TITLES,
+  BETA_MARKET_TITLES,
   createMarketsMobileColumns,
   BORROW_POSITION_COLUMN_ORDER,
   SUPPLY_POSITION_COLUMN_ORDER,
   POSITION_TABLE_ONLY_COLUMNS,
 } from '../columns'
+import { LendRateHeaderTooltipContent } from '../header-tooltips/LendRateHeaderTooltipContent'
 
 type MarketColumnVariant = keyof ReturnType<typeof getMarketsColumnOptions>
 const BETA_ONLY_COLUMNS = [
@@ -44,12 +48,6 @@ const betaMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGrou
 const orderColumns = <T extends { id?: string }>(columns: readonly T[], order: readonly MarketColumnId[]) => {
   const byId = new Map(columns.map(column => [column.id, column]))
   return order.flatMap(id => notFalsy(byId.get(id)))
-}
-
-const withSupplyApy = <T extends { id?: string; accessorKey?: string }>(column: T) => {
-  if (column.id !== MarketColumnId.LendRate) return column
-  const { accessorKey: _accessorKey, ...rest } = column
-  return { ...rest, header: t`Supply APY`, accessorFn: (row: LlamaMarketRow) => row.rates.lendApy ?? undefined }
 }
 
 const columnOrder = (variant: MarketColumnVariant) => {
@@ -94,20 +92,40 @@ const columnsForVariant = (variant: MarketColumnVariant, beta: boolean) => {
         return { ...column, header: POSITION_COLUMN_LABELS.totalDebt }
       if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserCollateral)
         return { ...column, header: POSITION_COLUMN_LABELS.collateralValue }
-      if (variant === MarketRateType.Supply && column.id === MarketColumnId.LendRate) return withSupplyApy(column)
+      if (column.id === MarketColumnId.UserReturnOnEquity) return { ...column, header: BETA_ROE_TITLES.position }
+      if (column.id === MarketColumnId.MaxReturnOnEquity)
+        return {
+          ...column,
+          header: BETA_ROE_TITLES.max,
+          meta: { ...column.meta, tooltip: { ...column.meta?.tooltip, title: ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE } },
+        }
+      if (variant === MarketRateType.Supply && column.id === MarketColumnId.LendRate) {
+        const { accessorKey: _accessorKey, ...rest } = column as typeof column & { accessorKey?: string }
+        return {
+          ...rest,
+          header: t`Supply APY`,
+          accessorFn: (row: LlamaMarketRow) => row.rates.lendApy ?? undefined,
+          meta: { ...column.meta, tooltip: { title: t`Supply APY`, body: <LendRateHeaderTooltipContent baseRate /> } },
+        }
+      }
       if (variant === MarketRateType.Supply && column.id === MarketColumnId.UserEarnings) {
         const { hidden: _hidden, ...meta } = column.meta ?? {}
         return { ...column, meta }
       }
-      if (variant === MarketRateType.Supply && column.id === MarketColumnId.SolvencyPercent)
-        return { ...column, header: POSITION_COLUMN_LABELS.marketSolvency }
       if (column.id === MarketColumnId.MaxLeverage) {
         return {
           ...column,
           meta: { ...column.meta, tooltip: { title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> } },
         }
       }
-      return column
+      const title = BETA_MARKET_TITLES[column.id as MarketColumnId]
+      return title
+        ? {
+            ...column,
+            header: title,
+            meta: { ...column.meta, ...(column.meta?.tooltip && { tooltip: { ...column.meta.tooltip, title } }) },
+          }
+        : column
     }),
     columnOrder(variant),
   )

@@ -14,6 +14,7 @@ export const PositionMetricCell = ({
   value,
   testId,
   valueTestId,
+  valueAriaLabel,
   valueSx,
   support,
 }: {
@@ -22,6 +23,7 @@ export const PositionMetricCell = ({
   value: string | undefined
   testId?: string
   valueTestId?: string
+  valueAriaLabel?: string
   valueSx?: SxProps
   support?: ReactNode
 }) => {
@@ -29,7 +31,7 @@ export const PositionMetricCell = ({
   const text = value ?? (hasData ? t`Unavailable` : '')
   return (
     <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }} data-testid={testId}>
-      <Typography variant="tableCellMBold" data-testid={valueTestId} sx={valueSx}>
+      <Typography variant="tableCellMBold" data-testid={valueTestId} aria-label={valueAriaLabel} sx={valueSx}>
         {text}
       </Typography>
       {support}

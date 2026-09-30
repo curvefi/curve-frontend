@@ -1,3 +1,4 @@
+import { ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE } from '@/llamalend/constants'
 import { MARKET_TITLES } from '@/llamalend/features/market-list/columns/column.titles'
 import { MarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
@@ -27,7 +28,7 @@ export const MaxReturnOnEquityCell = ({
   return (
     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
       <Tooltip
-        title={MARKET_TITLES[MarketColumnId.MaxReturnOnEquity]}
+        title={beta ? ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE : MARKET_TITLES[MarketColumnId.MaxReturnOnEquity]}
         body={<MaxReturnOnEquityTooltipContent market={market} />}
         clickable
         mobileDrawer

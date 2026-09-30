@@ -1,3 +1,4 @@
+import { TOTAL_SUPPLY_APY_TITLE } from '@/llamalend/constants'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { ExtraIncentive } from '@evm-ui/types/market'
@@ -87,7 +88,7 @@ export const MarketSupplyRateTooltipContent = ({
 
         {hasRebasingYield && (
           <TooltipItems secondary>
-            <TooltipItem title={t`Yield bearing APY`} loading={isLoading}>
+            <TooltipItem title={beta ? t`Token yield APY` : t`Yield bearing APY`} loading={isLoading}>
               {formatCappedRatePercent(rebasingYieldApy)}
             </TooltipItem>
             {!!rebasingSymbol && (
@@ -100,7 +101,7 @@ export const MarketSupplyRateTooltipContent = ({
 
         {totalApy != null && (hasIncentives || hasRebasingYield) && (
           <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={beta ? t`Net supply APY` : t`Net total APY`} loading={isLoading}>
+            <TooltipItem variant="primary" title={beta ? TOTAL_SUPPLY_APY_TITLE : t`Net total APY`} loading={isLoading}>
               {formatCappedRatePercent(totalApy)}
             </TooltipItem>
             {/* Historical boost data is only available at the market level, so user totals do not show an average. */}
@@ -139,7 +140,9 @@ export const MarketSupplyRateTooltipContent = ({
 
       {(hasIncentives || showBoostRow) && (
         <TooltipFooter>
-          {t`Token incentive APY assumes a ${COMPOUNDING_CATEGORIES['llamalend.rewards'].adjective} compounding rate.`}
+          {beta
+            ? t`Token reward APRs are converted to APY assuming weekly reinvestment. Rewards do not compound automatically.`
+            : t`Token incentive APY assumes a ${COMPOUNDING_CATEGORIES['llamalend.rewards'].adjective} compounding rate.`}
         </TooltipFooter>
       )}
     </TooltipWrapper>

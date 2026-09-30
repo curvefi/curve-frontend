@@ -4,7 +4,7 @@ import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
-import { MarketColumnId, POSITION_COLUMN_LABELS } from '../columns'
+import { BETA_MARKET_TITLES, BETA_ROE_TITLES, MarketColumnId, POSITION_COLUMN_LABELS } from '../columns'
 
 type Option<T = string> = { id: T; label: ReactNode }
 
@@ -24,7 +24,7 @@ export const useMarketsSortOptions = () => {
           { id: MarketColumnId.UserLtv, label: t`LTV` },
           ...notFalsy(beta && { id: MarketColumnId.UserLeverage, label: t`Leverage` }),
           { id: MarketColumnId.UserEarnings, label: t`Interest earned` },
-          { id: MarketColumnId.UserDeposited, label: t`Supplied Amount` },
+          { id: MarketColumnId.UserDeposited, label: beta ? t`Amount supplied` : t`Supplied Amount` },
           { id: MarketColumnId.UserBoostMultiplier, label: t`Boost` },
         ]
       : []),
@@ -32,15 +32,15 @@ export const useMarketsSortOptions = () => {
     { id: MarketColumnId.BorrowRate, label: t`Borrow APR` },
     ...(beta
       ? [
-          { id: MarketColumnId.NetBorrowRate, label: POSITION_COLUMN_LABELS.netBorrowApr },
-          { id: MarketColumnId.CollateralYield, label: t`Collateral yield` },
+          { id: MarketColumnId.NetBorrowRate, label: BETA_MARKET_TITLES[MarketColumnId.NetBorrowRate]! },
+          { id: MarketColumnId.CollateralYield, label: BETA_MARKET_TITLES[MarketColumnId.CollateralYield]! },
         ]
       : []),
-    { id: MarketColumnId.LendRate, label: NET_SUPPLY_RATE_TITLE },
+    { id: MarketColumnId.LendRate, label: beta ? BETA_MARKET_TITLES[MarketColumnId.LendRate]! : NET_SUPPLY_RATE_TITLE },
     { id: MarketColumnId.Tvl, label: t`Total Value Locked` },
     { id: MarketColumnId.MaxLtv, label: t`Max LTV` },
     { id: MarketColumnId.MaxLeverage, label: t`Max leverage` },
-    { id: MarketColumnId.MaxReturnOnEquity, label: t`Max RoE` },
+    { id: MarketColumnId.MaxReturnOnEquity, label: beta ? BETA_ROE_TITLES.max : t`Max RoE` },
     { id: MarketColumnId.UtilizationPercent, label: t`Utilization` },
     { id: MarketColumnId.LiquidityUsd, label: t`Available Liquidity` },
     { id: MarketColumnId.TotalCollateralUsd, label: t`Total Collateral` },

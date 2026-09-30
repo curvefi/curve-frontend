@@ -96,8 +96,8 @@ const listSteps = (): TourStep[] | undefined => {
             before={t`These position metrics were not available in the market list controls.`}
             after={
               visible(settings)
-                ? t`Table settings can reveal collateral yield, Liquidation range, Liquidation buffer, position RoE, and position leverage. Open a position for the calculations.`
-                : t`Mobile sort can use collateral yield, Liquidation range, Liquidation buffer, and position leverage. Open a position for the calculations.`
+                ? t`Table settings can reveal Collateral yield APR, Liquidation range, Liquidation buffer, Estimated leveraged APR, and position leverage. Open a position for the calculations.`
+                : t`Mobile sort can use Collateral yield APR, Liquidation range, Liquidation buffer, and position leverage. Open a position for the calculations.`
             }
           />
         ),
@@ -215,7 +215,7 @@ const positionSteps = (): TourStep[] | undefined => {
         <Stack spacing={1}>
           <Comparison
             before={t`The row derived Health from healthFull and healthNotFull and showed a bar.`}
-            after={t`Health shows the oracle price relative to the upper edge of the Liquidation range, with a Status badge when its inputs are available. It remains 1.00 at or below that edge and stays visible by default.`}
+            after={t`Health shows the oracle price relative to the upper edge of the Liquidation range, with a Status badge when its inputs are available. At 1.00, the position enters the range, where collateral can convert and losses can occur. Health stays at 1.00 within and below the range; monitor Liquidation buffer and Status.`}
           />
           {!healthValue && (
             <Change>{t`The current Health value needs a valid oracle price and range boundary.`}</Change>
@@ -232,12 +232,12 @@ const positionSteps = (): TourStep[] | undefined => {
           within(target('borrow-positions-table'), 'user-position-yield-multiplier')?.closest(
             targetSelector('data-table-cell-userRoe'),
           ) ?? document.querySelector(withinSelector('borrow-positions-table', 'data-table-header-userRoe'))!,
-        title: t`RoE and yield multiplier`,
+        title: t`Estimated leveraged APR and yield multiplier`,
         content: (
           <Stack spacing={1}>
             <Comparison
               before={t`The Borrowing table had no return on equity (RoE) or yield multiplier column.`}
-              after={t`Optional RoE estimates an APR from current composition and rates, without assumed reinvestment. The smaller yield multiplier compares that return with unleveraged collateral APR; it is not exposure leverage. A negative estimate keeps its sign.`}
+              after={t`Optional Estimated leveraged APR shows an annual rate estimate from current composition and rates, without assumed reinvestment. It is not realised return or profit and loss (PnL); it excludes price movement and conversion profit or loss. The smaller yield multiplier compares that estimate with unleveraged collateral APR; it is not exposure leverage. A negative estimate keeps its sign.`}
             />
             {!multiplier && <Change>{t`The estimate needs position and rate data that is not available yet.`}</Change>}
             <MathBlock>
@@ -279,7 +279,7 @@ const positionSteps = (): TourStep[] | undefined => {
           <Stack spacing={1}>
             <Comparison
               before={t`The Borrowing table did not show distance to the Liquidation range.`}
-              after={t`This optional column shows the oracle's distance to the range, or In range, with both range boundaries beneath it. While it is shown, Liquidation buffer is hidden.`}
+              after={t`This optional column shows the price change needed to reach the range: − for a drop from above, + for a rise from below, or In range. Both range boundaries appear beneath it. While it is shown, Liquidation buffer is hidden.`}
             />
             <MathBlock>
               <RangeEquations />
@@ -313,20 +313,31 @@ const StatusScale = ({ assetsType }: { assetsType: MarketAssetsType | undefined 
     <Change>
       {t`Market types use different provisional scales. Near range measures the price drop to the upper boundary; the buffer warning uses healthFull, the position's full health percentage.`}
     </Change>
-    <Stack component="ul" className="llamalend-tour-status-list" spacing={0.25}>
-      {Object.values(MarketAssetsType).map(category => {
-        const scale = PROVISIONAL_POSITION_THRESHOLDS[category]
-        return (
-          <Typography component="li" variant="bodyXsRegular" key={category}>
-            <strong>
-              {CATEGORY_LABEL[category]}
-              {assetsType === category ? t` (this market)` : ''}:
-            </strong>{' '}
-            {t`Near range ≤ ${scale.nearRangeDropPercent}% price drop; buffer warning at healthFull ≤ ${scale.criticalBufferPercent}%.`}
-          </Typography>
-        )
-      })}
-    </Stack>
+    <table className="llamalend-tour-status-table">
+      <caption>{t`Provisional scales`}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{t`Market type`}</th>
+          <th scope="col">{t`Near range`}</th>
+          <th scope="col">{t`Buffer warning`}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Object.values(MarketAssetsType).map(category => {
+          const scale = PROVISIONAL_POSITION_THRESHOLDS[category]
+          return (
+            <tr key={category} data-current-market={assetsType === category}>
+              <th scope="row">
+                {CATEGORY_LABEL[category]}
+                {assetsType === category ? t` (this market)` : ''}
+              </th>
+              <td>{t`≤ ${scale.nearRangeDropPercent}% price drop`}</td>
+              <td>{t`healthFull ≤ ${scale.criticalBufferPercent}%`}</td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
     {!assetsType && (
       <Change>{t`This market is uncategorized, so Near range has no cutoff and the buffer warning begins at healthFull ≤ 0%.`}</Change>
     )}
@@ -334,37 +345,32 @@ const StatusScale = ({ assetsType }: { assetsType: MarketAssetsType | undefined 
   </Stack>
 )
 
-const StatusStates = ({ assetsType }: { assetsType: MarketAssetsType | undefined }) => (
-  <Stack component="ul" className="llamalend-tour-status-list" spacing={0.25}>
-    <Typography
-      component="li"
-      variant="bodyXsRegular"
-    >{t`Above range: oracle above the upper boundary, outside the Near range cutoff.`}</Typography>
-    <Typography
-      component="li"
-      variant="bodyXsRegular"
-    >{t`Near range: above the upper boundary, within this market category's price-drop cutoff.`}</Typography>
-    <Typography
-      component="li"
-      variant="bodyXsRegular"
-    >{t`In range: oracle between the two boundaries; collateral may be converting.`}</Typography>
-    <Typography component="li" variant="bodyXsRegular">{t`Below range: oracle below the lower boundary.`}</Typography>
-    <Typography
-      component="li"
-      variant="bodyXsRegular"
-    >{t`Liquidatable: healthFull < 0; this overrides the range status. Exactly 0 is not liquidatable.`}</Typography>
-    <Typography component="li" variant="bodyXsRegular">{t`Position closed: no debt remains.`}</Typography>
-    <Typography
-      component="li"
-      variant="bodyXsRegular"
-    >{t`Status unavailable: oracle price or valid range boundaries are missing.`}</Typography>
-    {!assetsType && (
-      <Typography
-        component="li"
-        variant="bodyXsRegular"
-      >{t`Near range is unavailable for uncategorized markets.`}</Typography>
-    )}
-  </Stack>
+const StatusStates = () => (
+  <table className="llamalend-tour-status-table">
+    <caption>{t`States`}</caption>
+    <thead>
+      <tr>
+        <th scope="col">{t`Status`}</th>
+        <th scope="col">{t`When it applies`}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {[
+        [t`Above range`, t`Oracle above the upper boundary, outside the Near range cutoff.`],
+        [t`Near range`, t`Above the upper boundary, within this market category's price-drop cutoff.`],
+        [t`In range`, t`Oracle between the two boundaries; collateral may be converting.`],
+        [t`Below range`, t`Oracle below the lower boundary.`],
+        [t`Liquidatable`, t`healthFull < 0; this overrides the range status. Exactly 0 is not liquidatable.`],
+        [t`Position closed`, t`No debt remains.`],
+        [t`Status unavailable`, t`Oracle price or valid range boundaries are missing.`],
+      ].map(([label, description]) => (
+        <tr key={label}>
+          <th scope="row">{label}</th>
+          <td>{description}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
 )
 
 const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | undefined => {
@@ -388,7 +394,7 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
         <Stack spacing={1}>
           <Comparison
             before={t`Health was derived from healthFull and healthNotFull and described the cushion before hard liquidation.`}
-            after={t`Health shows the oracle price relative to the start of the Liquidation range. It remains 1.00 at or below the upper edge; then monitor the separate Liquidation buffer.`}
+            after={t`Health shows the oracle price relative to the start of the Liquidation range. At 1.00, the position enters the range, where collateral can convert and losses can occur. Health stays at 1.00 within and below the range; monitor Liquidation buffer and Status.`}
           />
           <MathBlock>
             <HealthEquation />
@@ -406,7 +412,7 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
               before={t`The card used Health and conditional alerts; it had no separate Status badge.`}
               after={t`A separate badge now names the position's range location and liquidation state. Its states and category-specific warning scales are listed below.`}
             />
-            <StatusStates assetsType={assetsType} />
+            <StatusStates />
             <StatusScale assetsType={assetsType} />
           </Stack>
         ),
@@ -419,7 +425,7 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
         <Stack spacing={1}>
           <Comparison
             before={t`The card showed one Liquidation threshold and its distance.`}
-            after={t`The main figure shows the oracle's distance to the Liquidation range, or In range. Both range boundaries appear beneath it. Conversions may occur in both directions; the lower edge is not the hard-liquidation price.`}
+            after={t`The main figure shows the price change needed to reach the Liquidation range: − for a drop from above, + for a rise from below, or In range. Both range boundaries appear beneath it. Conversions may occur in both directions; the lower edge is not the hard-liquidation price.`}
           />
           <MathBlock>
             <RangeEquations />
@@ -434,7 +440,7 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
         <Stack spacing={1}>
           <Comparison
             before={t`Liquidation buffer appeared beside the Health bar, based on healthNotFull and the market's discount gap.`}
-            after={t`The standalone Liquidation buffer displays healthFull as a debt-relative percentage and amount. It is neither a price-drop allowance nor withdrawable equity. Its warning color uses a provisional market-category cutoff.`}
+            after={t`The standalone Liquidation buffer displays healthFull as a percentage of debt, with the amount beneath it. It is neither a price-drop allowance nor withdrawable equity. Its warning color uses a provisional market-category cutoff.`}
           />
           <MathBlock>
             <BufferEquations />
@@ -479,12 +485,12 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
     ...notFalsy(
       visible(roe) && {
         element: withinSelector('beta-position-card', 'position-roe'),
-        title: t`Return on equity`,
+        title: t`Estimated leveraged APR`,
         content: (
           <Stack spacing={1}>
             <Comparison
               before={t`The position card had no return on equity (RoE) metric.`}
-              after={t`RoE estimates an APR from current composition and rates without assumed reinvestment. It excludes price movement and conversion profit or loss.`}
+              after={t`Estimated leveraged APR shows an annual rate estimate from current composition and rates without assumed reinvestment. It is not realised return or profit and loss (PnL); it excludes price movement and conversion profit or loss.`}
             />
             <MathBlock>
               <RoeEquations />
@@ -501,7 +507,7 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
         content: (
           <Comparison
             before={t`Net borrow APR led the header, with its period average beneath it.`}
-            after={t`Borrow APR leads: interest charged on debt before collateral yield or incentives. The smaller Net line shows estimated net borrow APR after collateral yield and incentives. Yield paid in another asset is not a same-asset borrowing cost.`}
+            after={t`Borrow APR leads: interest charged on debt before collateral yield or incentives. The smaller Est. net line shows estimated net borrow APR after collateral yield and incentives. Yield paid in another asset is not a same-asset borrowing cost.`}
           />
         ),
       },
@@ -519,7 +525,7 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
 const SupplyApyCopy = () => (
   <Comparison
     before={t`Net supply APY led the header, with its period average beneath it.`}
-    after={t`Supply APY leads: estimated earnings related to your share of the pool. Net supply APY appears below. Rates vary with the market, monetary policy, and incentives.`}
+    after={t`Supply APY leads. Total supply APY appears below and adds intrinsic token yield and rewards. Token reward APRs are converted to APY assuming weekly reinvestment, not automatic compounding. Rates vary with the market, monetary policy, and incentives.`}
   />
 )
 
@@ -538,4 +544,3 @@ export const getSteps = (guide: Guide, assetsType: MarketAssetsType | undefined)
       : guide === 'borrow'
         ? borrowSteps(assetsType)
         : supplySteps()
-

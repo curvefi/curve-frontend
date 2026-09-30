@@ -1,4 +1,5 @@
 import { type ReactNode, type MouseEvent, useCallback } from 'react'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
@@ -30,46 +31,55 @@ export const LoanPresetSelector = ({
   setPreset: (value: LoanPreset) => void
   setRange: (value: number) => void
   children: ReactNode
-}) => (
-  <Stack>
-    <Stack sx={{ gap: Spacing.xs }}>
-      <Typography variant="bodyXsRegular" color="textSecondary">{t`Liquidation protection setup`}</Typography>
-      <ToggleButtonGroup
-        exclusive
-        compact
-        value={preset}
-        onChange={useCallback(
-          (_: MouseEvent<HTMLElement>, p: LoanPreset) => {
-            setPreset(p)
-            if (p !== LoanPreset.Custom) setRange(PRESET_RANGES[p])
-          },
-          [setPreset, setRange],
-        )}
-        aria-label={t`Loan Preset`}
-        sx={{ width: '100%' }}
-      >
-        {Object.values(LoanPreset).map(p => (
-          <Tooltip
-            title={PRESET_TOOLTIP_TITLE}
-            body={
-              <TooltipWrapper>
-                <TooltipDescription text={PRESET_TOOLTIP_BODY} />
-              </TooltipWrapper>
-            }
-            key={p}
-          >
-            <ToggleButton
-              value={p}
-              size="extraSmall"
-              data-testid={`loan-preset-${p}`}
-              sx={{ flex: 1, whiteSpace: 'nowrap' }}
+}) => {
+  const beta = useNewLlamalendHealth()
+  const title = beta ? t`Liquidation range setup` : PRESET_TOOLTIP_TITLE
+  const description = beta
+    ? t`Choose the width of your liquidation range. A wider range spreads collateral conversion across more bands. A narrower range allows higher LTV. Neither prevents losses.`
+    : PRESET_TOOLTIP_BODY
+  return (
+    <Stack>
+      <Stack sx={{ gap: Spacing.xs }}>
+        <Typography variant="bodyXsRegular" color="textSecondary">
+          {title}
+        </Typography>
+        <ToggleButtonGroup
+          exclusive
+          compact
+          value={preset}
+          onChange={useCallback(
+            (_: MouseEvent<HTMLElement>, p: LoanPreset) => {
+              setPreset(p)
+              if (p !== LoanPreset.Custom) setRange(PRESET_RANGES[p])
+            },
+            [setPreset, setRange],
+          )}
+          aria-label={t`Loan Preset`}
+          sx={{ width: '100%' }}
+        >
+          {Object.values(LoanPreset).map(p => (
+            <Tooltip
+              title={title}
+              body={
+                <TooltipWrapper>
+                  <TooltipDescription text={description} />
+                </TooltipWrapper>
+              }
+              key={p}
             >
-              {PRESETS_DESCRIPTIONS[p]}
-            </ToggleButton>
-          </Tooltip>
-        ))}
-      </ToggleButtonGroup>
+              <ToggleButton
+                value={p}
+                size="extraSmall"
+                data-testid={`loan-preset-${p}`}
+                sx={{ flex: 1, whiteSpace: 'nowrap' }}
+              >
+                {PRESETS_DESCRIPTIONS[p]}
+              </ToggleButton>
+            </Tooltip>
+          ))}
+        </ToggleButtonGroup>
+      </Stack>
+      {children}
     </Stack>
-    {children}
-  </Stack>
-)
+  )
+}

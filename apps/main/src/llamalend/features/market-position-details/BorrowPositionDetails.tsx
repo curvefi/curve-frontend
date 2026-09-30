@@ -16,7 +16,7 @@ import { LegacyHealthDetails } from './health/LegacyHealthDetails'
 const { Spacing } = SizesAndSpaces
 
 const HEALTH_LEAD_AREAS = `"health range debt leverage" "health buffer collateral roe"`
-const MOBILE_HEALTH_AREAS = `"health range" "buffer leverage" "debt debt" "collateral collateral" "roe roe"`
+const MOBILE_HEALTH_AREAS = `"health range" "health buffer" "leverage leverage" "debt debt" "collateral collateral" "roe roe"`
 
 export const BorrowPositionDetails = () =>
   useNewLlamalendHealth() ? <BetaBorrowPositionDetails /> : <LegacyBorrowPositionDetails />
@@ -32,6 +32,7 @@ const BetaBorrowPositionDetails = () => {
         sx={{
           alignItems: 'start',
           gridTemplateAreas: { mobile: MOBILE_HEALTH_AREAS, tablet: HEALTH_LEAD_AREAS },
+          rowGap: Spacing.sm,
         }}
       >
         <BetaHealthDetails view={view} borrowSymbol={tokens.borrowToken?.symbol ?? ''} />

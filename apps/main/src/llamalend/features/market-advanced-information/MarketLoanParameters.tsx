@@ -1,8 +1,9 @@
+import { ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE } from '@/llamalend/constants'
 import { useMarketParameters } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { MaxLeverageTooltip, MaxReturnOnEquity, MaxReturnOnEquityTooltipContent } from '@/llamalend/widgets/tooltips'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
+import { useNewLlamaMarketDetailPage, useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
@@ -24,6 +25,7 @@ export const MarketLoanParameters = ({
   maxReturnOnEquity?: QueryProp<MaxReturnOnEquity>
 }) => {
   const parameters = useMarketParameters({ chainId, marketId })
+  const beta = useNewLlamalendHealth()
   return (
     <>
       {(!apiMarket.data || marketId) && (
@@ -58,7 +60,7 @@ export const MarketLoanParameters = ({
 
       <ActionInfo
         testId="market-param-band-width-factor"
-        label={t`Band width factor`}
+        label={beta ? t`Band width factor (A)` : t`Band width factor`}
         labelTooltip={{
           title: t`A setting that controls how wide the liquidation bands are and how gradually soft liquidation plays out.`,
         }}
@@ -111,9 +113,9 @@ export const MarketLoanParameters = ({
           />
           <ActionInfo
             testId="market-param-max-roe"
-            label={t`Max RoE`}
+            label={ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE}
             labelTooltip={{
-              title: t`Max RoE`,
+              title: ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE,
               body: (
                 <MaxReturnOnEquityTooltipContent
                   leverage={maxReturnOnEquity?.data?.leverage}

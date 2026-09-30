@@ -34,14 +34,14 @@ export const MaxReturnOnEquityTooltipContent = ({
       <TooltipDescription
         text={
           beta
-            ? t`Max RoE estimates an APR on equity at the maximum leverage limit, assuming a zero-conversion start. It excludes swap costs and price movement. It is not a live position.`
+            ? t`Estimated APR at max leverage is an annual rate estimate on net position value (assets minus debt), assuming a zero-conversion start at the maximum leverage limit. It excludes swap costs and price movement. It does not show realised return or profit and loss (PnL).`
             : t`The Maximum Return on Equity is an estimated annualized return on your own capital at maximum leverage, after borrowing costs.`
         }
       />
       {beta ? (
         <>
-          <Equation>{t`RoE APR = maxLeverage × collateral APR − (maxLeverage − 1) × gross borrow APR`}</Equation>
-          <TooltipDescription text={t`RoE = return on equity; APR = annual percentage rate.`} />
+          <Equation>{t`Leveraged APR = maxLeverage × collateral APR − (maxLeverage − 1) × gross borrow APR`}</Equation>
+          <TooltipDescription text={t`APR = annual percentage rate.`} />
           <TooltipDescription text={t`maxLeverage = maximum position leverage.`} />
         </>
       ) : (

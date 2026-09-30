@@ -1,10 +1,18 @@
-import { formatBufferNotional, formatOracleHealth, formatSignedPercent } from '@/llamalend/features/market-position-details/position-metrics.utils'
+import {
+  formatBufferNotional,
+  formatOracleHealth,
+  formatSignedPercent,
+} from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { STATUS_BADGE_COLOR } from '@/llamalend/features/market-position-details/position-status-badge'
 import {
   isCriticalBuffer,
   PROVISIONAL_POSITION_THRESHOLDS,
 } from '@/llamalend/features/market-position-details/position-status.utils'
-import { bufferTooltip, healthTooltip, statusTooltip } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
+import {
+  bufferTooltip,
+  healthTooltip,
+  statusTooltip,
+} from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
@@ -44,7 +52,7 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
   )
   return (
     <>
-      <Box sx={{ gridArea: 'health' }} data-testid="beta-health-details">
+      <Box sx={{ gridArea: 'health', alignSelf: 'stretch' }} data-testid="beta-health-details">
         <Metric
           category="llamalend.legacyPositionHealth"
           label={t`Health`}
@@ -77,15 +85,13 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
           valueOptions={{
             abbreviate: false,
             color: bufferColor,
-            ...(isMobile ? { unit: { symbol: '\u00a0of debt', position: 'suffix' as const } } : {}),
+            unit: { symbol: '\u00a0of debt', position: 'suffix' },
             formatter: value => {
               const parsed = decimal(value)
               return parsed == undefined ? '' : formatSignedPercent(parsed)
             },
           }}
-          valueTooltip={bufferTooltip({
-            criticalBuffer: assetsThresholds?.criticalBufferPercent ?? '0',
-          })}
+          valueTooltip={bufferTooltip({ criticalBuffer: assetsThresholds?.criticalBufferPercent ?? '0' })}
         />
       </Box>
     </>

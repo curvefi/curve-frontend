@@ -1,12 +1,20 @@
+import { ESTIMATED_LEVERAGED_APR_TITLE } from '@/llamalend/constants'
 import {
   formatBandSpan,
   formatPriceDistanceHeadline,
+  formatPriceDistanceDescription,
   formatRangeLabel,
   formatShareLabel,
   inclusiveBandCount,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { formatYieldMultiplier } from '@/llamalend/features/market-position-details/position-roe.utils'
-import { collateralTooltip, debtTooltip, leverageTooltip, rangeTooltip, roeTooltip } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
+import {
+  collateralTooltip,
+  debtTooltip,
+  leverageTooltip,
+  rangeTooltip,
+  roeTooltip,
+} from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import { isPositionLeveraged, tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
 import Box from '@mui/material/Box'
@@ -38,20 +46,18 @@ export const BetaBorrowInformation = ({
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
   const shares = view.composition
   const compositionLabels = shares
-    ? {
-        collateral: formatShareLabel(shares.collateralLabel),
-        borrowed: formatShareLabel(shares.borrowedLabel),
-      }
+    ? { collateral: formatShareLabel(shares.collateralLabel), borrowed: formatShareLabel(shares.borrowedLabel) }
     : undefined
-  const debtMetric = tokenMetric({
-    value: view.debt,
-    symbol: borrowToken?.symbol,
-    usdRate: q(view.borrowUsdRate),
-  })
+  const debtMetric = tokenMetric({ value: view.debt, symbol: borrowToken?.symbol, usdRate: q(view.borrowUsdRate) })
   const roe = view.roe.data
   return (
     <>
-      <Box sx={{ gridArea: 'range' }} data-testid="beta-borrow-information">
+      <Box
+        sx={{ gridArea: 'range' }}
+        data-testid="beta-borrow-information"
+        role="group"
+        aria-label={maybe(view.distance.data, formatPriceDistanceDescription)}
+      >
         <Metric
           category="llamalend.positionCardTop"
           label={t`Distance to range`}
@@ -127,18 +133,22 @@ export const BetaBorrowInformation = ({
         <Box sx={{ gridArea: 'roe' }}>
           <Metric
             category={METRIC_CATEGORY}
-            label={t`Return on equity`}
+            label={ESTIMATED_LEVERAGED_APR_TITLE}
             testId="position-roe"
             value={q({
               data: roe?.status === 'value' ? roe.aprPercent : undefined,
               isLoading: view.roe.isLoading,
-              error: roe?.status === 'unavailable' ? new Error('A required yield or borrow rate is unavailable.') : view.roe.error,
+              error:
+                roe?.status === 'unavailable'
+                  ? new Error('A required yield or borrow rate is unavailable.')
+                  : view.roe.error,
             })}
             notional={
               isMobile
                 ? undefined
-                : maybe(roe?.status === 'value' ? formatYieldMultiplier(roe.multiplier) : undefined, text =>
-                    q({ data: text, isLoading: false, error: null }),
+                : maybe(
+                    roe?.status === 'value' ? formatYieldMultiplier(roe.multiplier, 'collateral') : undefined,
+                    text => q({ data: text, isLoading: false, error: null }),
                   )
             }
             valueOptions={{

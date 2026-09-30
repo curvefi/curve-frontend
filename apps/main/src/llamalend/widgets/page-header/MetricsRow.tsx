@@ -51,7 +51,7 @@ export const MetricsRow = ({
           value,
           abbreviate: false,
           formatter: formatCappedRateValue,
-          unit: { symbol: beta ? `% ${t`Net supply APY`}` : `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
+          unit: { symbol: beta ? `% ${t`Total`}` : `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
         })),
       )}
       valueTooltip={{
