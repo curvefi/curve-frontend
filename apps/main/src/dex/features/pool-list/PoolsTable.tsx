@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
-import { evmAddressDisplay } from '@evm-ui/utils'
+import { evmAddressDisplay, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
@@ -27,18 +27,28 @@ import { usePoolsPagination } from './hooks/usePoolsPagination'
 import { usePoolsSorting } from './hooks/usePoolsSorting'
 import { usePoolsTable } from './hooks/usePoolsTable'
 import { usePoolsVisibility } from './hooks/usePoolsVisibility'
-import { getPoolTableMeta, poolTableMeta } from './table-meta'
+import { getPoolTableMeta, createPoolTableMeta } from './table-meta'
 import type { PoolRow } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const EMPTY_POOL_ROWS: readonly PoolRow[] = []
 
 const FullPoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => (
-  <PoolExpandedPanel pool={row.original} variant="full" addressDisplay={getPoolTableMeta(table).addressDisplay} />
+  <PoolExpandedPanel
+    pool={row.original}
+    variant="full"
+    addressDisplay={getPoolTableMeta(table).addressDisplay}
+    crvToken={getPoolTableMeta(table).crvToken}
+  />
 )
 
 const LitePoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => (
-  <PoolExpandedPanel pool={row.original} variant="lite" addressDisplay={getPoolTableMeta(table).addressDisplay} />
+  <PoolExpandedPanel
+    pool={row.original}
+    variant="lite"
+    addressDisplay={getPoolTableMeta(table).addressDisplay}
+    crvToken={getPoolTableMeta(table).crvToken}
+  />
 )
 
 export const PoolsTable = ({
@@ -84,7 +94,13 @@ export const PoolsTable = ({
   const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    meta: poolTableMeta({ getRowHref: ({ url }) => url, variant, alerts, addressDisplay: evmAddressDisplay }),
+    meta: createPoolTableMeta({
+      getRowHref: ({ url }) => url,
+      variant,
+      alerts,
+      addressDisplay: evmAddressDisplay,
+      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain },
+    }),
     state: { expanded, sorting, columnVisibility, globalFilter, ...(!isLite && { pagination, columnFilters }) },
     getRowId: row => row.address,
     onExpandedChange: setExpanded,

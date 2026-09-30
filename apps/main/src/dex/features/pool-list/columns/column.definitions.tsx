@@ -24,6 +24,7 @@ import { RewardsRateHeaderTooltipContent } from '../header-tooltips/RewardsRateH
 import { TokensHeaderTooltipContent } from '../header-tooltips/TokensHeaderTooltipContent'
 import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
 import { VolumeHeaderTooltipContent } from '../header-tooltips/VolumeHeaderTooltipContent'
+import { getPoolTableMeta } from '../table-meta'
 import type { PoolRow } from '../types'
 import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
@@ -51,7 +52,7 @@ export const POOL_COLUMNS = columnHelper.columns([
     id: PoolColumnId.NetRate,
     sortUndefined: 'last',
     header: POOL_TITLES[PoolColumnId.NetRate],
-    cell: ({ row }) => <NetRateCell pool={row.original} />,
+    cell: ({ row, table }) => <NetRateCell pool={row.original} crvToken={getPoolTableMeta(table).crvToken} />,
     meta: {
       type: 'numeric',
       tooltip: { title: POOL_TITLES[PoolColumnId.NetRate], body: <NetRateHeaderTooltipContent /> },
@@ -80,7 +81,7 @@ export const POOL_COLUMNS = columnHelper.columns([
   columnHelper.accessor(pool => (pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)?.unboostedRate), {
     id: PoolColumnId.CrvRate,
     header: POOL_TITLES[PoolColumnId.CrvRate],
-    cell: ({ row }) => <CrvRateCell pool={row.original} />,
+    cell: ({ row, table }) => <CrvRateCell pool={row.original} crvToken={getPoolTableMeta(table).crvToken} />,
     meta: {
       type: 'numeric',
       tooltip: { title: POOL_TITLES[PoolColumnId.CrvRate], body: <CrvRateHeaderTooltipContent /> },

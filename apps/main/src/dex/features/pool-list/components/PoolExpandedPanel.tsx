@@ -19,7 +19,7 @@ import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { ClaimablesIcons, RewardIcons } from '../cells/RewardIcons'
 import { getBaseApr, isVolatileRate } from '../cells/utils'
 import { POOL_TITLES, PoolColumnId } from '../columns'
-import type { PoolRow, PoolTableVariant } from '../types'
+import type { PoolRow, PoolTableMeta, PoolTableVariant } from '../types'
 
 const { Spacing } = SizesAndSpaces
 const PRIMARY_METRIC_CATEGORY = 'dex.poolListMobileExpanded'
@@ -76,10 +76,12 @@ export const PoolExpandedPanel = ({
   pool,
   variant,
   addressDisplay,
+  crvToken,
 }: {
   pool: PoolRow
   variant: PoolTableVariant
   addressDisplay: AddressDisplay
+  crvToken: PoolTableMeta['crvToken']
 }) => {
   const currentDate = useCurrentDate()
   const baseRate = getBaseApr(pool, 'daily')
@@ -98,14 +100,14 @@ export const PoolExpandedPanel = ({
           valueTooltip={
             netRate
               ? {
-                  body: <NetRateTooltipContent pool={pool} volatile={volatileBaseRate} />,
+                  body: <NetRateTooltipContent pool={pool} crvToken={crvToken} volatile={volatileBaseRate} />,
                   clickable: true,
                   placement: 'top',
                   title: t`Net APR`,
                 }
               : undefined
           }
-          icon={<RewardIcons pool={pool} includeCrv includePoints tooltipPlacement="top" />}
+          icon={<RewardIcons pool={pool} crvToken={crvToken} includePoints tooltipPlacement="top" />}
           testId="pool-net-rate"
         />
       </Grid>

@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import type { AlertType, PoolAlert } from '@/dex/types/main.types'
 import Stack from '@mui/material/Stack'
 import { Badge, type BadgeProps } from '@ui/components/Badge'
 import { Tooltip } from '@ui/components/Tooltip'
@@ -7,10 +6,11 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'
 import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 import { t } from '@ui/lib/i18n'
-import type { PoolAlerts, PoolRow } from '../../types'
+import type { PoolAlerts, PoolListAlert, PoolRow } from '../../types'
 import { poolTypeClassifications, type PoolClassification } from './classifications'
 
 const { Spacing } = SizesAndSpaces
+type AlertType = PoolListAlert['alertType']
 
 const poolTypeLabels = { stable: t`Stable`, volatile: t`Volatile`, fxswap: t`FXSwap` } satisfies Record<
   PoolClassification,
@@ -35,7 +35,7 @@ const AlertIcons: Record<AlertType, ReactElement> = {
 
 const PoolBadge = (props: Omit<BadgeProps, 'size'>) => <Badge size="extraSmall" {...props} />
 
-const AlertBadge = ({ alert, source }: { alert: PoolAlert; source: 'pool' | 'token' }) => (
+const AlertBadge = ({ alert, source }: { alert: PoolListAlert; source: 'pool' | 'token' }) => (
   <Tooltip title={alert.message ?? alert.banner?.subtitle ?? alert.banner?.title} clickable>
     <PoolBadge
       color={alertTypeToBadgeColor[alert.alertType]}

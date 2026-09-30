@@ -1,17 +1,17 @@
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
-import { MAINNET_CRV } from '@evm-ui/utils'
-import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { IconStack } from '@ui/components/IconStack'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
+import { TooltipDescription, TooltipFooter, TooltipValueLink, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import type { PoolClaimables, PoolRow } from '../types'
+import type { PoolClaimables, PoolRow, PoolTableMeta } from '../types'
 import {
   formatCrvAprRange,
   getCompactPointsCampaigns,
@@ -36,14 +36,48 @@ const ExtraRewardTooltipBody = ({ reward }: { reward: ExtraReward }) => (
 )
 
 export const CampaignTooltipContent = ({ campaign, showRate }: { campaign: CampaignRewards; showRate: boolean }) => (
-  <Stack sx={{ gap: Spacing.sm }}>
+  <TooltipWrapper>
     {showRate && campaign.reward?.type === 'apr' && (
       <Typography variant="bodySRegular" sx={{ textAlign: 'start' }}>
         {t`APR`}: {formatNumber(campaign.reward.value, 'percent.rate')}
       </Typography>
     )}
-    <TooltipMessage rewardsPool={campaign} />
-  </Stack>
+    <Stack>
+      <Typography variant="bodySBold">{campaign.campaignName || campaign.platform}</Typography>
+      {campaign.campaignName && campaign.platform && <TooltipDescription text={t`by ${campaign.platform}`} />}
+    </Stack>
+    {campaign.period && (
+      <Stack>
+        <TooltipDescription text={t`from: ${formatDate(campaign.period[0])}`} />
+        <TooltipDescription text={t`to: ${formatDate(campaign.period[1])}`} />
+      </Stack>
+    )}
+    <TooltipDescription
+      text={
+        campaign.action === 'lp'
+          ? campaign.description
+          : campaign.action === 'supply'
+            ? t`Earn ${campaign.symbol ?? '?'} by supplying liquidity.`
+            : t`Earn ${campaign.symbol ?? '?'} by borrowing.`
+      }
+    />
+    {!!campaign.steps?.length && (
+      <Stack>
+        <Typography variant="bodySBold">{t`Steps:`}</Typography>
+        <Box component="ol" sx={{ margin: 0, paddingInlineStart: '2ch' }}>
+          {campaign.steps.map(step => (
+            <Typography component="li" variant="bodySRegular" key={step} sx={{ listStyle: 'decimal' }}>
+              {step}
+            </Typography>
+          ))}
+        </Box>
+      </Stack>
+    )}
+    <TooltipFooter>
+      {t`External rewards are project dependent, always check with the token issuer to make sure you have taken all the necessary actions to benefit from their rewards program.`}
+    </TooltipFooter>
+    <TooltipValueLink href={campaign.dashboardLink}>{t`Go to issuer`}</TooltipValueLink>
+  </TooltipWrapper>
 )
 
 const CampaignIcon = ({ campaign }: { campaign: CampaignRewards }) => (
@@ -112,9 +146,11 @@ const CampaignRewardIcon = ({
 )
 
 const CrvRewardIcon = ({
+  crvToken,
   placement,
   range,
 }: {
+  crvToken: PoolTableMeta['crvToken']
   placement?: TooltipProps['placement']
   range: NonNullable<ReturnType<typeof getCrvAprRange>>
 }) => (
@@ -131,7 +167,7 @@ const CrvRewardIcon = ({
     testId="pool-crv-reward-badge"
     title={t`CRV gauge reward`}
   >
-    <TokenIcon blockchainId={MAINNET_CRV.chain} address={MAINNET_CRV.address} size="mui-sm" />
+    <TokenIcon {...crvToken} size="mui-sm" />
   </RewardIconTooltip>
 )
 
@@ -166,12 +202,12 @@ export const PointsRewardIcon = ({
 )
 
 export const RewardIcons = ({
-  includeCrv = false,
+  crvToken,
   includePoints = false,
   pool,
   tooltipPlacement,
 }: {
-  includeCrv?: boolean
+  crvToken?: PoolTableMeta['crvToken']
   includePoints?: boolean
   pool: PoolRow
   tooltipPlacement?: TooltipProps['placement']
@@ -179,7 +215,7 @@ export const RewardIcons = ({
   const pointsCampaigns = includePoints ? getCompactPointsCampaigns(pool) : []
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
-  const crvRateRange = includeCrv && !pool.gauge?.isKilled ? getCrvAprRange(pool) : null
+  const crvRateRange = crvToken && !pool.gauge?.isKilled ? getCrvAprRange(pool) : null
 
   if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !crvRateRange) return null
 
@@ -211,7 +247,9 @@ export const RewardIcons = ({
           placement={tooltipPlacement}
         />
       ))}
-      {crvRateRange && <CrvRewardIcon placement={tooltipPlacement} range={crvRateRange} />}
+      {crvToken && crvRateRange && (
+        <CrvRewardIcon crvToken={crvToken} placement={tooltipPlacement} range={crvRateRange} />
+      )}
     </IconStack>
   )
 }

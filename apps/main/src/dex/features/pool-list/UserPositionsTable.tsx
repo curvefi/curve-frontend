@@ -4,7 +4,7 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
-import { evmAddressDisplay } from '@evm-ui/utils'
+import { evmAddressDisplay, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
 import { Metric } from '@ui/components/Metric'
@@ -25,7 +25,7 @@ import { PoolExpandedPanel } from './components/PoolExpandedPanel'
 import { usePoolsGlobalFilterFn } from './hooks/usePoolsGlobalFilter'
 import { usePoolsVisibility } from './hooks/usePoolsVisibility'
 import { useUserPositionsTable } from './hooks/useUserPositionsTable'
-import { getPoolTableMeta, poolTableMeta } from './table-meta'
+import { getPoolTableMeta, createPoolTableMeta } from './table-meta'
 import type { PoolRow } from './types'
 
 const { Spacing } = SizesAndSpaces
@@ -39,6 +39,7 @@ const UserPositionsExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, tabl
     pool={row.original}
     variant="userPositions"
     addressDisplay={getPoolTableMeta(table).addressDisplay}
+    crvToken={getPoolTableMeta(table).crvToken}
   />
 )
 
@@ -70,7 +71,13 @@ export const UserPositionsTable = ({
   const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    meta: poolTableMeta({ getRowHref: ({ url }) => url, variant, alerts, addressDisplay: evmAddressDisplay }),
+    meta: createPoolTableMeta({
+      getRowHref: ({ url }) => url,
+      variant,
+      alerts,
+      addressDisplay: evmAddressDisplay,
+      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain },
+    }),
     getRowId: row => row.address,
     state: { expanded, columnVisibility, globalFilter: searchText },
     initialState: { pagination: { pageIndex: 0, pageSize: MAX_PAGE_SIZE } },

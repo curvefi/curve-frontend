@@ -10,7 +10,7 @@ import type { ChainId } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
-import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils/address'
+import { MAINNET_CRV, MAINNET_CRV_ADDRESS } from '@evm-ui/utils/address'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
@@ -70,7 +70,16 @@ export const useYieldBreakdown = ({
         rate: unboostedCrvRate,
         maxBoostRate: maxBoostCrvRate,
         ...maybe(crvRateRange, range => ({
-          rateTooltip: { title: t`Gauge APR`, body: <CrvRateTooltipContent {...range} />, clickable: true },
+          rateTooltip: {
+            title: t`Gauge APR`,
+            body: (
+              <CrvRateTooltipContent
+                {...range}
+                crvToken={{ address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain }}
+              />
+            ),
+            clickable: true,
+          },
         })),
       })
     }

@@ -1,9 +1,9 @@
-import { LARGE_RATE } from '@/dex/constants'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber, type NumberFormatCategory } from '@primitives/number.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
+import { MAX_DISPLAY_RATE_PERCENT } from '@ui/lib/rates.utils'
 import type { PoolRow } from '../types'
 
 const MAX_CRV_BOOST = '2.5x'
@@ -17,7 +17,7 @@ type MissingAmount = Nullish | ''
 export const formatCellValue = (value: Amount | MissingAmount, category: NumberFormatCategory) =>
   formatNumber(value != null && value !== '' && Number(value) === 0 ? null : value, category)
 
-export const isVolatileRate = (rate: number | Nullish) => rate != null && rate > LARGE_RATE
+export const isVolatileRate = (rate: number | Nullish) => rate != null && rate > MAX_DISPLAY_RATE_PERCENT
 
 export const getBaseApr = (pool: PoolRow, period: 'daily' | 'weekly') =>
   period === 'daily' ? pool.baseDailyApr : pool.baseWeeklyApr

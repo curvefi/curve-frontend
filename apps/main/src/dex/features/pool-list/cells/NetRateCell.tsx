@@ -6,14 +6,14 @@ import { Tooltip } from '@ui/components/Tooltip'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import type { PoolRow } from '../types'
+import type { PoolRow, PoolTableMeta } from '../types'
 import { NetRateTooltipContent } from './NetRateTooltipContent'
 import { RewardIcons } from './RewardIcons'
 import { formatCellValue, isVolatileRate } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
+export const NetRateCell = ({ pool, crvToken }: { pool: PoolRow; crvToken: PoolTableMeta['crvToken'] }) => {
   const netRate = pool.netApr
   const volatile = isVolatileRate(netRate)
 
@@ -24,7 +24,7 @@ export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
         Wrapper={Tooltip}
         clickable
         title={t`Net APR`}
-        body={<NetRateTooltipContent pool={pool} volatile={volatile} />}
+        body={<NetRateTooltipContent pool={pool} crvToken={crvToken} volatile={volatile} />}
         placement="top"
       >
         <Box
@@ -48,7 +48,7 @@ export const NetRateCell = ({ pool }: { pool: PoolRow }) => {
           )}
         </Box>
       </WithWrapper>
-      <RewardIcons pool={pool} includeCrv includePoints />
+      <RewardIcons pool={pool} crvToken={crvToken} includePoints />
     </Stack>
   )
 }

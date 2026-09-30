@@ -8,4 +8,4 @@ export const getPoolTableMeta = (table: Table<CurveTableFeatures, PoolRow>): Poo
   assert(table.options.meta, 'Pool table metadata is required') as PoolTableMeta
 
 /** Checks host metadata at construction without casting away missing or misspelled fields. */
-export const poolTableMeta = (meta: PoolTableMeta) => meta
+export const createPoolTableMeta = (meta: PoolTableMeta) => meta

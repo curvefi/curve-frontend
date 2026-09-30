@@ -1,9 +1,8 @@
-import { MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
-import type { PoolRow } from '../types'
+import type { PoolRow, PoolTableMeta } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './RateTooltipItems'
 import { getAprCampaigns, getBaseApr, getCrvAprRange, getExtraRewards, getPointsCampaigns } from './utils'
 
@@ -20,18 +19,16 @@ const getIncentivesItems = (pool: PoolRow) => {
 const NetRateIncentivesTooltipItems = ({
   items: { incentivesRate, extraRewards, campaigns, unboostedCrvRate },
   blockchainId,
+  crvToken,
 }: {
   items: NonNullable<ReturnType<typeof getIncentivesItems>>
   blockchainId: string
+  crvToken: PoolTableMeta['crvToken']
 }) => (
   <TooltipItems secondary>
     <TooltipItem title={t`Liquidity incentives`}>{formatNumber(incentivesRate, 'percent.rate')}</TooltipItem>
     {!!unboostedCrvRate && (
-      <TooltipItem
-        variant="subItem"
-        title="CRV"
-        titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
-      >
+      <TooltipItem variant="subItem" title="CRV" titleIcon={{ ...crvToken, size: 'mui-sm' }}>
         {formatNumber(unboostedCrvRate, 'percent.rate')}
       </TooltipItem>
     )}
@@ -40,7 +37,15 @@ const NetRateIncentivesTooltipItems = ({
   </TooltipItems>
 )
 
-export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
+export const NetRateTooltipContent = ({
+  pool,
+  volatile,
+  crvToken,
+}: {
+  pool: PoolRow
+  volatile: boolean
+  crvToken: PoolTableMeta['crvToken']
+}) => {
   const baseRate = getBaseApr(pool, 'daily')
   const netRate = pool.netApr
   const crvRateRange = pool.gauge?.isKilled ? null : getCrvAprRange(pool)
@@ -57,7 +62,9 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
         <TooltipItems secondary>
           <TooltipItem title={t`Base APR`}>{formatNumber(baseRate, 'percent.rate')}</TooltipItem>
         </TooltipItems>
-        {incentiveItems && <NetRateIncentivesTooltipItems items={incentiveItems} blockchainId={pool.blockchainId} />}
+        {incentiveItems && (
+          <NetRateIncentivesTooltipItems items={incentiveItems} blockchainId={pool.blockchainId} crvToken={crvToken} />
+        )}
         <TooltipItems borderTop>
           <TooltipItem variant="primary" title={t`Net total APR`}>
             {formatNumber(netRate, 'percent.rate')}
@@ -68,7 +75,7 @@ export const NetRateTooltipContent = ({ pool, volatile }: { pool: PoolRow; volat
             <TooltipItems secondary extraMargin>
               <TooltipItem
                 title={t`Max veCRV Boost (2.5x)`}
-                titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
+                titleIcon={{ ...crvToken, size: 'mui-sm' }}
                 variant="independent"
               >
                 {formatNumber(crvRateRange.boostedRate, 'percent.rate')}

@@ -1,4 +1,4 @@
-import type { PoolAlert } from '@/dex/types/main.types'
+import type { ReactNode } from 'react'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -83,12 +83,20 @@ export type PoolRow = PoolRowData &
     netAprBoosted: number | undefined
   }
 
+/** Only the alert fields used by pool-list presentation; Main supplies the rich content. */
+export type PoolListAlert = {
+  alertType: 'info' | 'warning' | 'error' | 'danger' | ''
+  message?: ReactNode
+  banner?: { title: ReactNode; subtitle?: ReactNode }
+  isPoolPageOnly?: boolean
+}
+
 /** Main keys alerts to the exact row addresses; rich messages stay outside the rows. */
 export type PoolAlerts = {
-  pools: Readonly<Record<string, PoolAlert | undefined>> | undefined
-  tokens: Readonly<Record<string, PoolAlert | undefined>> | undefined
+  pools: Readonly<Record<string, PoolListAlert | undefined>> | undefined
+  tokens: Readonly<Record<string, PoolListAlert | undefined>> | undefined
   /** Used only when a vulnerable pool has no explicit pool alert. */
-  vyper: PoolAlert
+  vyper: PoolListAlert
 }
 
 export type PoolTableVariant = keyof typeof POOLS_COLUMN_OPTIONS
@@ -101,4 +109,5 @@ export type PoolTableMeta = TableMeta<CurveTableFeatures, PoolRow> & {
   alerts: PoolAlerts
   /** Formatting and explorer links remain app-specific without duplicating them onto each row. */
   addressDisplay: AddressDisplay
+  crvToken: { address: Address; blockchainId: string }
 }
