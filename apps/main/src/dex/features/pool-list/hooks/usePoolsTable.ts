@@ -37,7 +37,7 @@ const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPosition |
     positions?.positions.find(({ address }) => isAddressEqual(address, poolAddress)),
     position => ({
       lpBalance: position.totalBalance,
-      depositsUsd: undefined,
+      depositsUsd: constQ(undefined),
       claimables: constQ(undefined),
       claimablesUsd: undefined,
     }),

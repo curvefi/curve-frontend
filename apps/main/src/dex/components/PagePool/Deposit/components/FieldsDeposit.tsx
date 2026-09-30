@@ -12,8 +12,6 @@ import { useStore } from '@/dex/store/useStore'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import type { Address } from '@primitives/address.utils'
-import { mapQuery } from '@ui/features/queries/util'
-import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { Amount } from '../../utils'
 
@@ -123,7 +121,7 @@ export const FieldsDeposit = ({
       {tokens.length === amountsInput.length &&
         tokens.map((token, idx) => {
           const tokenAddress = tokenAddresses[idx]
-          const addressBalanceAmount = userPoolBalances.data?.[tokenAddress] ?? '0'
+          const addressBalanceAmount = userPoolBalances[tokenAddress]?.data
           const haveSameTokenName = tokenCount[token] > 1
           const { value } = amountsInput[idx]
           const isDisableInput = isSeed === null || formProcessing || (isSeed && idx !== 0)
@@ -134,9 +132,9 @@ export const FieldsDeposit = ({
               key={`${tokenAddress}-${idx}`}
               idx={idx}
               amount={value}
-              balance={mapQuery(userPoolBalances, t => decimal(t[tokenAddress]) ?? '0')}
+              balance={userPoolBalances[tokenAddress]}
               disabled={isDisableInput}
-              isNotEnough={haveSigner && !formProcessing ? +(value || '0') > +addressBalanceAmount : false}
+              isNotEnough={haveSigner && !formProcessing && +(value || '0') > +(addressBalanceAmount ?? '0')}
               haveSameTokenName={haveSameTokenName}
               haveSigner={haveSigner}
               blockchainId={blockchainId}

@@ -12,7 +12,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { mapRecord, notFalsy } from '@primitives/objects.utils'
 import { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -40,8 +40,10 @@ export function RepayTokenList<ChainId extends IChainId>({
     () => notFalsy(collateralToken?.address, borrowToken?.address),
     [collateralToken?.address, borrowToken?.address],
   )
-  const { data: balances } = useTokenBalances({ chainId: network.chainId, userAddress, tokenAddresses })
-  const { data: tokenPrices } = useTokenUsdRates({ chainId: network.chainId, tokenAddresses })
+  const balanceQueries = useTokenBalances({ chainId: network.chainId, userAddress, tokenAddresses })
+  const priceQueries = useTokenUsdRates({ chainId: network.chainId, tokenAddresses })
+  const balances = useMemo(() => mapRecord(balanceQueries, (_, query) => query.data), [balanceQueries])
+  const tokenPrices = useMemo(() => mapRecord(priceQueries, (_, query) => query.data), [priceQueries])
 
   const [[stateCollateralToken], walletTokens] = useMemo(
     () => partition(tokens, token => token.field === 'stateCollateral'),

@@ -55,7 +55,7 @@ export type PoolClaimables = { token: string; symbol: string; price: number; amo
 type PoolUserPosition = {
   /** Both staked and unstaked */
   lpBalance: Decimal
-  depositsUsd: Decimal | undefined
+  depositsUsd: QueryProp<Decimal>
   /** Rows are derived outside the query cache, so query errors can remain Error instances. */
   claimables: QueryProp<PoolClaimables>
   claimablesUsd: Decimal | undefined

@@ -53,7 +53,7 @@ export const Dashboard = ({
   const noResult = useStore(state => state.dashboard.noResult)
   const isLoading = useStore(state => state.dashboard.loading)
   const isXSmDown = useLayoutStore(state => state.isXSmDown)
-  const { data: rewardsApyMapper } = usePoolsRewardsApy({ chainId: rChainId, poolIds: dashboardDataPoolIds ?? [] })
+  const rewardsApyMapper = usePoolsRewardsApy({ chainId: rChainId, poolIds: dashboardDataPoolIds ?? [] })
   const setFormValues = useStore(state => state.dashboard.setFormValues)
 
   const { chainId, signerAddress } = curve ?? {}
@@ -159,7 +159,7 @@ export const Dashboard = ({
                     },
                     formValues,
                     pool,
-                    poolRewardsApy: rewardsApyMapper?.[poolId],
+                    poolRewardsApy: rewardsApyMapper[poolId]?.data,
                     dashboardData,
                     updatePath,
                   }

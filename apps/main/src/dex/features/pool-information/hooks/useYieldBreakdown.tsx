@@ -42,7 +42,7 @@ export const useYieldBreakdown = ({
     () => rewards?.other?.flatMap(({ tokenAddress, tokenPrice }) => (tokenPrice == null ? [tokenAddress] : [])) ?? [],
     [rewards?.other],
   )
-  const { data: fallbackTokenRates } = useTokenUsdRates(
+  const fallbackTokenRates = useTokenUsdRates(
     { chainId, tokenAddresses: missingTokenRates },
     missingTokenRates.length > 0,
   )
@@ -91,7 +91,7 @@ export const useYieldBreakdown = ({
         source: { address, blockchainId: network?.blockchainId, iconPosition: 'left', primary: symbol },
         address,
         explorerUrl: scanTokenPath(chainId, tokenAddress),
-        price: tokenPrice ?? fallbackTokenRates?.[tokenAddress],
+        price: tokenPrice ?? fallbackTokenRates[tokenAddress]?.data,
         rate,
       })
     })

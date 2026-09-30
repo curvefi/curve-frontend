@@ -78,7 +78,7 @@ const createPool = (): PoolRow => ({
   gauge: { address: GAUGE_ADDRESS, isKilled: false },
   gauges: [{ address: GAUGE_ADDRESS, isKilled: false }],
   campaigns: [BOLD_CAMPAIGN, BOLD_APR_CAMPAIGN],
-  userPosition: { lpBalance: '0', depositsUsd: undefined, claimables: constQ([]), claimablesUsd: '0' },
+  userPosition: { lpBalance: '0', depositsUsd: constQ(undefined), claimables: constQ([]), claimablesUsd: '0' },
   extraRewardsTotalApr: 2,
   campaignRewardsApr: 3,
   rewardsApr: 5,

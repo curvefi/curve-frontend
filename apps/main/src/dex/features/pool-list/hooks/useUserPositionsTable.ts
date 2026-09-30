@@ -1,24 +1,25 @@
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { resetPoolLists } from '@/dex/queries/invalidation'
-import { useUserPoolClaimables, type UserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
-import { useUserPoolPositions, type UserPoolPosition } from '@/dex/queries/user-pool-positions.query'
+import { type UserPoolClaimables, useUserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
+import { type UserPoolPosition, useUserPoolPositions } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
-import { useTokenUsdRates, type TokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
+import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { completeArray } from '@primitives/array.utils'
-import { maybe } from '@primitives/objects.utils'
-import { mapQuery, useMappedQuery, type Query } from '@ui/features/queries/util'
+import { maybe, notFalsy } from '@primitives/objects.utils'
+import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
+import { mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { claimablesTotalUsd, enrichPoolRow, getPoolListAlerts, poolToRowData } from '../utils'
 
 const getPoolUserPosition = (
   position: UserPoolPosition['positions'][number],
-  tokenRates: TokenUsdRates | undefined,
+  tokenRate: QueryProp<number>,
   claimables: Query<UserPoolClaimables>,
 ) => ({
   lpBalance: position.totalBalance,
-  depositsUsd: maybe(tokenRates?.[position.lpTokenAddress], price => decimalMultiply(position.totalBalance, price)),
+  depositsUsd: mapQuery(tokenRate, price => decimalMultiply(position.totalBalance, price)),
   claimables: mapQuery(claimables, pools => pools[position.address]),
   claimablesUsd: claimablesTotalUsd(claimables.data?.[position.address]),
 })
@@ -47,7 +48,7 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
               poolToRowData(position),
               network,
               campaigns.data,
-              getPoolUserPosition(position, tokenRates.data, {
+              getPoolUserPosition(position, tokenRates[position.lpTokenAddress], {
                 data: claimables.data,
                 isLoading: claimables.isLoading,
                 error: claimables.error,
@@ -55,13 +56,13 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
             ),
           )
           .toSorted((a, b) => {
-            const first = a.userPosition?.depositsUsd
-            const second = b.userPosition?.depositsUsd
+            const first = a.userPosition?.depositsUsd.data
+            const second = b.userPosition?.depositsUsd.data
             if (first == null) return second == null ? 0 : 1
             if (second == null) return -1
             return decimalCompare(second, first)
           }),
-      [network, campaigns.data, tokenRates.data, claimables.data, claimables.isLoading, claimables.error],
+      [network, campaigns.data, tokenRates, claimables.data, claimables.isLoading, claimables.error],
     ),
   )
 
@@ -73,10 +74,9 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
     claimablesTotalUsd: mapQuery(claimables, pools =>
       maybe(completeArray(Object.values(pools).map(claimablesTotalUsd)), amounts => decimalSum(...amounts)),
     ),
-    totalLiquidityUsd: mapQuery(tableQuery, rows =>
-      maybe(completeArray(rows.map(({ userPosition }) => userPosition?.depositsUsd)), amounts =>
-        decimalSum(...amounts),
-      ),
+    totalLiquidityUsd: combineQueries(
+      [tableQuery, aggregateQueries(notFalsy(...(tableQuery.data?.map(row => row.userPosition?.depositsUsd) ?? [])))],
+      (rows, amounts) => (rows.length && amounts.every(amount => amount == null) ? undefined : decimalSum(...amounts)),
     ),
   }
 }

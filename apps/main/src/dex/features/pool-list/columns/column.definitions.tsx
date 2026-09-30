@@ -132,7 +132,7 @@ export const POOL_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric', tooltip: { title: POOL_TITLES[PoolColumnId.Age], body: <AgeHeaderTooltipContent /> } },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(pool => pool.userPosition?.depositsUsd, {
+  columnHelper.accessor(pool => pool.userPosition?.depositsUsd.data, {
     id: PoolColumnId.Deposits,
     sortUndefined: 'last',
     header: POOL_TITLES[PoolColumnId.Deposits],

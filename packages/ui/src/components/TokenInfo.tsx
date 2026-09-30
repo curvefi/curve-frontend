@@ -1,18 +1,22 @@
 import type { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
+import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
+import { type QueryOrValue, type QueryProp, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { applySxProps, SxProps } from '@ui/lib/mui'
+import { ErrorIconButton } from './ErrorIconButton'
+import { Spinner } from './Spinner'
 import { TokenIcon, type Size } from './TokenIcon'
+import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing } = SizesAndSpaces
 
 type TokenInfoBaseProps = {
   iconPosition: 'left' | 'right'
   iconAlignment?: 'start' | 'center' | 'end'
-  primary: ReactNode
-  secondary?: ReactNode
+  primary: QueryOrValue<ReactNode>
+  secondary?: QueryOrValue<ReactNode>
   boldPrimary?: boolean
 }
 
@@ -36,6 +40,21 @@ type TokenInfoCustomIconProps = TokenInfoBaseProps & {
 
 export type TokenInfoProps = TokenInfoTokenIconProps | TokenInfoCustomIconProps
 
+const TokenInfoText = ({
+  value: { data, error, isLoading },
+  ...typographyProps
+}: { value: QueryProp<ReactNode> } & Pick<TypographyProps, 'variant' | 'color'>) => (
+  <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
+    {error && <ErrorIconButton error={error} size="extraSmall" />}
+    {isLoading && data != null && <Spinner size={16} sx={{ margin: 0 }} />}
+    <WithSkeleton loading={isLoading && data == null}>
+      <Typography {...typographyProps} noWrap>
+        {data ?? (isLoading || error ? '-' : null)}
+      </Typography>
+    </WithSkeleton>
+  </Stack>
+)
+
 export const TokenInfo = (props: TokenInfoProps) => {
   const { iconPosition, iconAlignment = 'center', primary, secondary, boldPrimary } = props
   const tokenIcon =
@@ -55,15 +74,9 @@ export const TokenInfo = (props: TokenInfoProps) => {
       {iconPosition === 'left' && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>
-        <Typography variant={boldPrimary ? 'tableCellMBold' : 'tableCellMRegular'} noWrap>
-          {primary}
-        </Typography>
+        <TokenInfoText value={toQuery(primary)} variant={boldPrimary ? 'tableCellMBold' : 'tableCellMRegular'} />
 
-        {secondary && (
-          <Typography variant="tableCellSRegular" color="textSecondary" noWrap>
-            {secondary}
-          </Typography>
-        )}
+        {secondary && <TokenInfoText value={toQuery(secondary)} variant="tableCellSRegular" color="textSecondary" />}
       </Stack>
 
       {iconPosition === 'right' && tokenIcon}

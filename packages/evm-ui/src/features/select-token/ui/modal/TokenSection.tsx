@@ -23,7 +23,7 @@ export type TokenSectionProps<T extends Option = Option> = {
   /** Token balances mapped by token address */
   balances?: Record<string, string | undefined>
   /** Token prices in USD mapped by token address */
-  tokenPrices?: Record<string, number>
+  tokenPrices?: Record<string, number | undefined>
   /** List of token addresses that should be disabled/unselectable */
   disabledTokens?: string[]
   /** Callback when a token is selected */
