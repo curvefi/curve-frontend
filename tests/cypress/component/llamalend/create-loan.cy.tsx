@@ -6,6 +6,10 @@ import {
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import {
+  DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
+  ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
+} from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/mocks/create-loan.mocks'
 import {
@@ -14,45 +18,63 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { MarketVersion } from '@evm-ui/types/market'
 
 const CHAIN_ID = 1
+
 const testCases = [
-  { approved: false, title: 'fills, approves, and submits' },
-  { approved: true, title: 'fills and submits' },
-].flatMap(testCase => [
-  { ...testCase, hasLeverage: false, leverageEnabled: false },
-  { ...testCase, title: `${testCase.title} with leverage`, hasLeverage: true, leverageEnabled: true },
-])
+  ...[
+    { ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE, approved: false, title: 'fills, approves, and submits' },
+    { ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE, approved: true, title: 'fills and submits' },
+  ].flatMap(testCase => [
+    { ...testCase, hasLeverage: false, leverageEnabled: false },
+    { ...testCase, title: `${testCase.title} with leverage`, hasLeverage: true, leverageEnabled: true },
+  ]),
+  {
+    title: 'approves delegation and creates an LLv2 loan with oversized calldata',
+    approved: false,
+    hasLeverage: true,
+    leverageEnabled: true,
+    controllerApproved: false,
+    marketVersion: MarketVersion.v2,
+    routeCalldata: ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
+  },
+]
 
 describe('CreateLoanForm (mocked)', () => {
   beforeEach(setupMockedLlamalendComponentTest)
 
-  testCases.forEach(({ approved, hasLeverage, leverageEnabled, title }) => {
-    it(title, () => {
-      const { llamaApi, market, borrow, collateral, assertPreSubmit, assertSubmit } = createCreateLoanScenario({
-        chainId: CHAIN_ID,
-        presetRange: 50,
-        approved,
-        leverage: hasLeverage,
+  testCases.forEach(
+    ({ approved, hasLeverage, leverageEnabled, title, controllerApproved = true, marketVersion, routeCalldata }) => {
+      it(title, () => {
+        const { llamaApi, market, borrow, collateral, assertPreSubmit, assertSubmit } = createCreateLoanScenario({
+          chainId: CHAIN_ID,
+          presetRange: 50,
+          approved,
+          leverage: hasLeverage,
+          controllerApproved,
+          marketVersion,
+          routeCalldata,
+        })
+        const onPricesUpdated = cy.spy().as('onPricesUpdated')
+
+        setLlamaApi(llamaApi)
+        setGasInfo({ chainId: CHAIN_ID })
+
+        cy.mount(
+          <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+            <CreateLoanForm networks={llamaNetworks} onPricesUpdated={onPricesUpdated} />
+          </MockLoanTestWrapper>,
+        )
+
+        writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage, waitForRoutes: leverageEnabled })
+        checkLoanDetailsLoaded({ leverageEnabled, controllerApproved })
+
+        cy.then(assertPreSubmit)
+        submitCreateLoanForm({ controllerApproved }).then(assertSubmit)
       })
-      const onPricesUpdated = cy.spy().as('onPricesUpdated')
-
-      setLlamaApi(llamaApi)
-      setGasInfo({ chainId: CHAIN_ID })
-
-      cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-          <CreateLoanForm networks={llamaNetworks} onPricesUpdated={onPricesUpdated} />
-        </MockLoanTestWrapper>,
-      )
-
-      writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage, waitForRoutes: leverageEnabled })
-      checkLoanDetailsLoaded({ leverageEnabled })
-
-      cy.then(assertPreSubmit)
-      submitCreateLoanForm().then(assertSubmit)
-    })
-  })
+    },
+  )
 
   it('hides leverage for an unlisted ZapV2 market', () => {
     const { llamaApi, market } = createCreateLoanScenario({

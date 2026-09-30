@@ -13,6 +13,7 @@ import {
   getActionInfo,
   getActionValue,
 } from './action-info.helpers'
+import { submitLoanForm } from './loan-form.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -119,17 +120,19 @@ export function checkLoanDetailsLoaded({
   leverageEnabled,
   expectError,
   hasApi = true,
+  controllerApproved = true,
 }: {
   leverageEnabled: boolean
   expectError?: string
   hasApi?: boolean
+  controllerApproved?: boolean
 }) {
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should(hasApi ? 'include' : 'equal', hasApi ? '%' : '-')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
-  checkEstimatedTxCost({ hasValue: hasApi && !expectError })
+  checkEstimatedTxCost({ hasValue: hasApi && !expectError && controllerApproved })
 
   if (leverageEnabled) {
     cy.get('[data-testid="loan-action-settings"]').within(() => {
@@ -224,14 +227,8 @@ export const checkLoanRangeSlider = () => {
   })
 }
 
-export function submitLoanForm({ form, message }: { form: string; message: string }) {
-  cy.get('[data-testid="toast-success"]', LOAD_TIMEOUT).should('not.exist') // wait previous confirmations are gone
-  cy.get(`[data-testid="${form}-submit-button"]`).click(LOAD_TIMEOUT)
-  cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
-  return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-}
-
 /**
  * Submit the create loan form and wait for the button to be re-enabled.
  */
-export const submitCreateLoanForm = () => submitLoanForm({ form: 'create-loan', message: 'Loan created' })
+export const submitCreateLoanForm = ({ controllerApproved = true }: { controllerApproved?: boolean } = {}) =>
+  submitLoanForm({ form: 'create-loan', message: 'Loan created', approveDelegation: !controllerApproved })

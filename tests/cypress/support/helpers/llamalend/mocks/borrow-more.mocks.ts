@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { Hex } from 'viem'
 import { oneDecimal, oneInt } from '@cy/support/generators'
+import { MarketVersion } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { decimalSum } from '@ui/lib/decimal'
-import { createMockLlamaApi, TEST_TX_HASH } from '../mock-loan-test-data'
+import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
+import { createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
-  createBorrowMoreMintMarket,
+  createControllerApprovalStubs,
   createMockLendLoanMarket,
   DEFAULT_COLLATERAL_ADDRESS,
   DEFAULT_USER_BORROWED,
@@ -18,6 +20,47 @@ import {
   seedMarketBalances,
 } from './shared.mocks'
 
+const createBorrowMoreMintMarket = ({
+  normalStubs,
+  expectedCurrentDebt,
+  version,
+}: {
+  normalStubs: {
+    parameters: object
+    estimateGasBorrowMore: object
+    estimateGasBorrowMoreApprove: object
+    borrowMoreHealth: object
+    borrowMoreMaxRecv: object
+    borrowMoreIsApproved: object
+    borrowMoreApprove: object
+    borrowMore: object
+    borrowMorePrices: object
+    loanExists: object
+    userPrices: object
+  }
+  expectedCurrentDebt: Decimal
+  version: MarketVersion
+}) =>
+  createMockMintMarket({
+    version,
+    collateral: DEFAULT_COLLATERAL_ADDRESS,
+    stats: { parameters: normalStubs.parameters },
+    estimateGas: {
+      borrowMore: normalStubs.estimateGasBorrowMore,
+      borrowMoreApprove: normalStubs.estimateGasBorrowMoreApprove,
+    },
+    userState: createStub({ collateral: '1', stablecoin: '0', debt: expectedCurrentDebt }),
+    userHealth: createStub(oneDecimal(20, 80, 2)),
+    borrowMoreHealth: normalStubs.borrowMoreHealth,
+    borrowMoreMaxRecv: normalStubs.borrowMoreMaxRecv,
+    borrowMoreIsApproved: normalStubs.borrowMoreIsApproved,
+    borrowMoreApprove: normalStubs.borrowMoreApprove,
+    borrowMore: normalStubs.borrowMore,
+    borrowMorePrices: normalStubs.borrowMorePrices,
+    loanExists: normalStubs.loanExists,
+    userPrices: normalStubs.userPrices,
+  })
+
 export const createBorrowMoreScenario = ({
   chainId,
   approved,
@@ -25,6 +68,8 @@ export const createBorrowMoreScenario = ({
   leverage = false,
   leverageImplementation,
   routeCalldata,
+  controllerApproved = true,
+  marketVersion = MarketVersion.v1,
 }: {
   chainId: number
   approved: boolean
@@ -32,6 +77,8 @@ export const createBorrowMoreScenario = ({
   leverage?: boolean
   leverageImplementation?: 'zapV2'
   routeCalldata?: Hex
+  controllerApproved?: boolean
+  marketVersion?: MarketVersion
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(1, 45, 2)
@@ -40,6 +87,7 @@ export const createBorrowMoreScenario = ({
 
   const borrowMoreApprove = createTransactionStub(TEST_TX_HASH)
   const borrowMoreLeverageApprove = createTransactionStub(TEST_TX_HASH)
+  const controllerApproval = createControllerApprovalStubs(controllerApproved)
   const normalStubs = {
     parameters: createStub(oneRatePair()),
     estimateGasBorrowMore: createStub(oneInt(120_000, 240_000)),
@@ -90,6 +138,8 @@ export const createBorrowMoreScenario = ({
 
   const leverageZapV2 = {
     hasLeverage: () => true,
+    isControllerApproved: controllerApproval.isControllerApproved,
+    setControllerApproval: controllerApproval.setControllerApproval,
     maxLeverage: zapV2Stubs.maxLeverage,
     borrowMoreExpectedMetrics: zapV2Stubs.borrowMoreExpectedMetrics,
     borrowMoreMaxRecv: zapV2Stubs.borrowMoreMaxRecv,
@@ -100,10 +150,12 @@ export const createBorrowMoreScenario = ({
     borrowMoreFutureLeverage: zapV2Stubs.borrowMoreFutureLeverage,
     calcMinRecv: zapV2Stubs.calcMinRecv,
     estimateGas: {
+      setControllerApproval: controllerApproval.estimateGasSetControllerApproval,
       borrowMore: zapV2Stubs.estimateGasBorrowMore,
       borrowMoreApprove: zapV2Stubs.estimateGasBorrowMoreApprove,
     },
   }
+  const expectedRoute = { ...routeMutationMeta, calldata: routeCalldata ?? routeMutationMeta.calldata }
   const zapV2Expected = {
     metrics: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED, dDebt: borrow, debt: borrow },
     maxRecv: { userCollateral: collateral },
@@ -115,28 +167,28 @@ export const createBorrowMoreScenario = ({
       userBorrowed: DEFAULT_USER_BORROWED,
       dDebt: borrow,
       debt: borrow,
-      ...routeMutationMeta,
+      ...expectedRoute,
     },
     submit: {
       userCollateral: collateral,
       userBorrowed: DEFAULT_USER_BORROWED,
       dDebt: borrow,
       debt: borrow,
-      ...routeMutationMeta,
+      ...expectedRoute,
     },
     expectedCollateral: {
       userCollateral: collateral,
       userBorrowed: DEFAULT_USER_BORROWED,
       dDebt: borrow,
       debt: borrow,
-      ...routeMutationMeta,
+      ...expectedRoute,
     },
     futureLeverage: {
       userCollateral: collateral,
       userBorrowed: DEFAULT_USER_BORROWED,
       dDebt: borrow,
       debt: borrow,
-      ...routeMutationMeta,
+      ...expectedRoute,
     },
   } as const
   const normalExpected = {
@@ -162,6 +214,7 @@ export const createBorrowMoreScenario = ({
   }
   const market = useZapV2
     ? createMockLendLoanMarket({
+        version: marketVersion,
         loan,
         leverage: { maxLeverage: zapV2Stubs.maxLeverage },
         leverageZapV2,
@@ -171,7 +224,7 @@ export const createBorrowMoreScenario = ({
         loanExists: normalStubs.loanExists,
         userPrices: normalStubs.userPrices,
       })
-    : createBorrowMoreMintMarket({ normalStubs, expectedCurrentDebt })
+    : createBorrowMoreMintMarket({ normalStubs, expectedCurrentDebt, version: marketVersion })
 
   return {
     borrow,
@@ -181,13 +234,19 @@ export const createBorrowMoreScenario = ({
     llamaApi: createMockLlamaApi(chainId, market),
     assertPreSubmit: () => {
       if (useZapV2) {
+        expect(controllerApproval.isControllerApproved).to.have.been.calledWithExactly(TEST_ADDRESS)
+        expect(controllerApproval.setControllerApproval).to.not.have.been.called
+        expect(zapV2Stubs.borrowMore).to.not.have.been.called
         expect(zapV2Stubs.maxLeverage).to.have.been.called
         expect(zapV2Stubs.borrowMoreExpectedMetrics).to.have.been.calledWithMatch(zapV2Expected.metrics)
         expect(zapV2Stubs.borrowMoreMaxRecv).to.have.been.calledWithMatch(zapV2Expected.maxRecv)
         expect(zapV2Stubs.borrowMoreIsApproved).to.have.been.calledWithMatch(zapV2Expected.isApproved)
         expect(zapV2Stubs.borrowMoreExpectedCollateral).to.have.been.calledWithMatch(zapV2Expected.expectedCollateral)
         expect(zapV2Stubs.borrowMoreFutureLeverage).to.have.been.calledWithMatch(zapV2Expected.futureLeverage)
-        if (approved) {
+        if (!controllerApproved) {
+          expect(zapV2Stubs.estimateGasBorrowMore).to.not.have.been.called
+          expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+        } else if (approved) {
           expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
           expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
         } else {
@@ -210,6 +269,8 @@ export const createBorrowMoreScenario = ({
     },
     assertSubmit: () => {
       if (useZapV2) {
+        expect(controllerApproval.setControllerApproval.callCount).to.equal(controllerApproved ? 0 : 1)
+        expect(zapV2Stubs.borrowMore).to.have.been.calledOnce
         expect(zapV2Stubs.borrowMore).to.have.been.calledWithMatch(zapV2Expected.submit)
         if (approved) {
           expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
