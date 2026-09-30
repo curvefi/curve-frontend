@@ -82,10 +82,7 @@ export const EmptyStateCard = ({
   testId,
   ...connectionProps
 }: EmptyStateCardProps) => (
-  <Stack
-    sx={{ gap: Spacing.xs, alignItems: 'center', justifySelf: 'center', maxWidth: MaxWidth.emptyStateCard }}
-    data-testid={testId}
-  >
+  <Stack sx={{ gap: Spacing.xs, alignItems: 'center', maxWidth: MaxWidth.emptyStateCard }} data-testid={testId}>
     <LlamaIcon sx={{ width: SIZE_CONFIG[size].icon, height: SIZE_CONFIG[size].icon }} />
     {isLoading ? (
       <Skeletons />

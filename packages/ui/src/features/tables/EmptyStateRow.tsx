@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import Stack from '@mui/material/Stack'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -25,7 +26,7 @@ export const EmptyStateRow = ({
       component="td"
       sx={{ padding: Spacing[SPACING_SIZE_MAP[size]], textAlign: 'center' }}
     >
-      {children}
+      <Stack sx={{ alignItems: 'center' }}>{children}</Stack>
     </Typography>
   </TableRow>
 )
