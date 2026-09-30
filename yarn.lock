@@ -777,6 +777,8 @@ __metadata:
 "@curvefi/primitives@workspace:^, @curvefi/primitives@workspace:packages/primitives":
   version: 0.0.0-use.local
   resolution: "@curvefi/primitives@workspace:packages/primitives"
+  dependencies:
+    vitest: "npm:4.1.11"
   languageName: unknown
   linkType: soft
 
