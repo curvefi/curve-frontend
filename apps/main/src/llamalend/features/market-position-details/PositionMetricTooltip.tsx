@@ -169,7 +169,9 @@ export const bufferTooltip = ({
             {symbol}
           </TooltipItem>
           {criticalBuffer != null && (
-            <TooltipItem title={t`Red at or below`} variant="independent">{`${criticalBuffer}%`}</TooltipItem>
+            <TooltipItem title={t`Red at or below`} variant="independent">
+              {criticalBuffer}
+            </TooltipItem>
           )}
         </TooltipItems>
       )}
@@ -177,8 +179,8 @@ export const bufferTooltip = ({
         <BufferEquations />
       </Calculation>
       <TooltipFooter>
-        {t`This is full Controller health (healthFull). Below 0 is liquidatable; exactly 0 is not.`}
-        {criticalBuffer != null && t` The warning cutoff is provisional for this market category.`}
+        {t`Full Controller health below 0 permits hard liquidation; exactly 0 does not.`}
+        {criticalBuffer != null && t` Warning cutoffs are provisional.`}
       </TooltipFooter>
     </TooltipWrapper>
   ),
@@ -218,13 +220,13 @@ export const statusTooltip = ({
             : label === 'Below range'
               ? t`The oracle is below the liquidation range. The lower boundary is not the hard-liquidation price.`
               : label === 'Liquidatable'
-                ? t`Full Controller health is below zero; the position is liquidatable.`
+                ? t`The position can be hard-liquidated.`
                 : label === 'Position closed'
                   ? t`No debt remains.`
                   : label === 'Status unavailable' || !label
                     ? t`Status needs a valid oracle price and liquidation range.`
                     : label === 'Near range'
-                      ? t`The oracle is above the range, within this market category's provisional price-drop cutoff.`
+                      ? t`The oracle is above the range, within the Near range cutoff.`
                       : t`The oracle is above the range, outside the Near range cutoff.`
         }
       />
@@ -245,7 +247,7 @@ export const statusTooltip = ({
           {criticalBuffer ? `≤ ${criticalBuffer}` : t`Not set`}
         </TooltipItem>
       </TooltipItems>
-      <TooltipFooter>{t`Cutoffs are provisional. Liquidatable requires full Controller health below 0; exactly 0 is not liquidatable.`}</TooltipFooter>
+      <TooltipFooter>{t`Cutoffs are provisional. Hard liquidation requires full Controller health below 0, not exactly 0.`}</TooltipFooter>
       {observedAt != null && (
         <TooltipFooter>{t`Full health read: ${new Date(observedAt).toLocaleString()}`}</TooltipFooter>
       )}
@@ -286,7 +288,7 @@ export const collateralTooltip = ({
       <Calculation>
         <CollateralEquations />
       </Calculation>
-      <TooltipFooter>{t`Percentages are shares of collateral value. A zero total is unavailable, not 100% cash.`}</TooltipFooter>
+      <TooltipFooter>{t`A zero total is unavailable, not 100% cash.`}</TooltipFooter>
     </TooltipWrapper>
   ),
 })
@@ -338,7 +340,7 @@ export const leverageTooltip = () => ({
       <Calculation>
         <LeverageEquation />
       </Calculation>
-      <TooltipFooter>{t`Amplifies relative-price gains, losses and collateral yield, less borrowing costs. It is not the yield multiplier.`}</TooltipFooter>
+      <TooltipFooter>{t`Amplifies price gains, losses and collateral yield, less borrowing costs. Not the yield multiplier.`}</TooltipFooter>
     </TooltipWrapper>
   ),
 })
@@ -367,7 +369,7 @@ export const roeTooltip = ({ yieldMultiplier }: { yieldMultiplier?: string } = {
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Estimated annual rate from current composition and rates, after borrowing costs. It is not realised return or PnL.`}
+        text={t`Estimated annual rate after borrowing costs, based on current composition and rates. Not realised return or PnL.`}
       />
       {yieldMultiplier != null && (
         <TooltipItems secondary>
@@ -380,7 +382,7 @@ export const roeTooltip = ({ yieldMultiplier }: { yieldMultiplier?: string } = {
         <RoeEquations />
         <TooltipFooter>{t`Lender CRV rewards are not borrower income.`}</TooltipFooter>
       </Calculation>
-      <TooltipFooter>{t`Excludes price movement and conversion gains or losses; assumes no reinvestment. The multiplier compares with unleveraged collateral yield, not exposure leverage.`}</TooltipFooter>
+      <TooltipFooter>{t`Excludes price movement, conversion gains or losses, and reinvestment. The yield multiplier is not exposure leverage.`}</TooltipFooter>
     </TooltipWrapper>
   ),
 })
@@ -401,7 +403,7 @@ export const RoeEquations = () => (
       {' = '}
       <Fraction numerator={t`Leveraged APR`} denominator={t`Unleveraged collateral APR`} />
     </Equation>
-    <FormulaTerms terms={[t`Net position value = assets minus debt`, t`APR = annual percentage rate`]} />
+    <FormulaTerms terms={[t`Net position value = assets minus debt`]} />
   </>
 )
 
@@ -446,7 +448,7 @@ export const rangeTooltip = ({
           </TooltipItem>
         </TooltipItems>
       </Calculation>
-      <TooltipFooter>{t`Conversions can occur both ways; losses may persist after price recovery. The lower boundary is not the hard-liquidation price.`}</TooltipFooter>
+      <TooltipFooter>{t`Conversion losses may persist after price recovery. The lower boundary is not the hard-liquidation price.`}</TooltipFooter>
     </TooltipWrapper>
   ),
 })

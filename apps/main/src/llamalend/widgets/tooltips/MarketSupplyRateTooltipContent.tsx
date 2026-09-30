@@ -62,7 +62,7 @@ export const MarketSupplyRateTooltipContent = ({
   if (beta && boost.type === 'user') {
     return (
       <TooltipWrapper>
-        <TooltipDescription text={t`Estimated supply interest, token yield and eligible rewards for your position.`} />
+        <TooltipDescription text={t`Estimated annual yield from supply interest, token yield and eligible rewards.`} />
         <TooltipItems secondary>
           <TooltipItem title={t`Supply APY`} loading={isLoading}>
             {formatCappedRatePercent(supplyApy)}
@@ -101,7 +101,7 @@ export const MarketSupplyRateTooltipContent = ({
           )}
         </TooltipItems>
         {hasIncentives && (
-          <TooltipFooter>{t`Reward APRs assume weekly reinvestment to estimate APY. Rewards do not compound automatically.`}</TooltipFooter>
+          <TooltipFooter>{t`Reward APRs are converted to APY assuming weekly reinvestment; compounding is not automatic.`}</TooltipFooter>
         )}
       </TooltipWrapper>
     )

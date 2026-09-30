@@ -1,5 +1,4 @@
 import {
-  formatBufferNotional,
   formatOracleHealth,
   formatSignedPercent,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
@@ -17,6 +16,7 @@ import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import { formatNumber } from '@primitives/number.utils'
 import { Badge } from '@ui/components/Badge'
 import { Metric } from '@ui/components/Metric'
 import { Tooltip } from '@ui/components/Tooltip'
@@ -36,8 +36,8 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
       {...statusTooltip({
         label: status.label,
         category: view.assetsType,
-        nearRange: assetsThresholds ? `${assetsThresholds.nearRangeDropPercent}%` : undefined,
-        criticalBuffer: `${assetsThresholds?.criticalBufferPercent ?? '0'}%`,
+        nearRange: assetsThresholds ? formatNumber(assetsThresholds.nearRangeDropPercent, 'percent.rate') : undefined,
+        criticalBuffer: formatNumber(assetsThresholds?.criticalBufferPercent ?? '0', 'percent.rate'),
         observedAt: view.fullHealthUpdatedAt > 0 ? view.fullHealthUpdatedAt : undefined,
       })}
     >
@@ -87,8 +87,8 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
             },
           }}
           valueTooltip={bufferTooltip({
-            criticalBuffer: assetsThresholds?.criticalBufferPercent ?? '0',
-            amount: view.buffer.data != null ? formatBufferNotional(view.buffer.data) : t`Unavailable`,
+            criticalBuffer: formatNumber(assetsThresholds?.criticalBufferPercent ?? '0', 'percent.rate'),
+            amount: view.buffer.data != null ? formatNumber(view.buffer.data, 'token.balance') : t`Unavailable`,
             symbol: borrowSymbol,
           })}
         />

@@ -3,7 +3,6 @@ import {
   formatBandSpan,
   formatPriceDistanceHeadline,
   formatPriceDistanceDescription,
-  formatShareLabel,
   inclusiveBandCount,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import {
@@ -44,7 +43,10 @@ export const BetaBorrowInformation = ({
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
   const shares = view.composition
   const compositionLabels = shares
-    ? { collateral: formatShareLabel(shares.collateralLabel), borrowed: formatShareLabel(shares.borrowedLabel) }
+    ? {
+        collateral: formatNumber(shares.collateralLabel, 'percent.rate'),
+        borrowed: formatNumber(shares.borrowedLabel, 'percent.rate'),
+      }
     : undefined
   const debtUsdValue = maybes([view.debt.data, view.borrowUsdRate.data], (debt, rate) =>
     formatNumber(decimalMultiply(debt, rate), 'usd.notional'),
@@ -83,8 +85,8 @@ export const BetaBorrowInformation = ({
           value={view.collateral}
           valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
           valueTooltip={collateralTooltip({
-            collateralShare: compositionLabels ? `${compositionLabels.collateral}%` : undefined,
-            convertedShare: compositionLabels ? `${compositionLabels.borrowed}%` : undefined,
+            collateralShare: compositionLabels ? compositionLabels.collateral : undefined,
+            convertedShare: compositionLabels ? compositionLabels.borrowed : undefined,
             collateralSymbol: collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL,
             convertedSymbol: borrowSymbol,
           })}
@@ -144,11 +146,7 @@ export const BetaBorrowInformation = ({
             valueTooltip={roeTooltip({
               yieldMultiplier:
                 multiplier && multiplier.kind !== 'omit'
-                  ? formatNumber(multiplier.kind === 'zero' ? 0 : multiplier.value, {
-                      unit: 'multiplier',
-                      abbreviate: false,
-                      maximumFractionDigits: 4,
-                    })
+                  ? formatNumber(multiplier.kind === 'zero' ? 0 : multiplier.value, 'multiplier')
                   : undefined,
             })}
           />
