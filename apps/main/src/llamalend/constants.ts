@@ -29,7 +29,7 @@ export const RANGE_HEALTH_DESCRIPTION = t`Health reaches 1.00 at the start of th
 
 // Distinguish annual rate estimates from position PnL.
 export const ESTIMATED_LEVERAGED_APR_TITLE = t`Estimated leveraged APR`
-export const ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE = t`Estimated APR at max leverage`
+export const ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE = t`Estimated max leveraged APR`
 
 export const LEVERAGE = 'leverage' as const satisfies SlippageType
 

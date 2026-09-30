@@ -229,6 +229,17 @@ export const MARKET_COLUMNS = columnHelper.columns([
     },
     sortUndefined: 'last',
   }),
+  columnHelper.accessor('rates.lendTotalApyMinBoosted', {
+    id: MarketColumnId.NetSupplyRate,
+    header: MARKET_TITLES[MarketColumnId.NetSupplyRate],
+    cell: RateCell,
+    meta: {
+      type: 'numeric',
+      hidden: true,
+      tooltip: { title: MARKET_TITLES[MarketColumnId.NetSupplyRate], body: <LendRateHeaderTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
   columnHelper.accessor('rates.borrowApr', {
     id: MarketColumnId.BorrowChart,
     header: MARKET_TITLES[MarketColumnId.BorrowChart],

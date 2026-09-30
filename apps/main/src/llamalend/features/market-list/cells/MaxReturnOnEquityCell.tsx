@@ -11,13 +11,11 @@ import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
-import { t } from '@ui/lib/i18n'
 
 const maxRoeText = (apr: MaxRoeApr | undefined, legacy: number | undefined) => {
   if (apr == null) return formatNumber(legacy, 'percent.rate')
   if (apr.status === 'value') return formatNumber(apr.aprPercent, 'percent.rate')
-  if (apr.status === 'not-applicable') return t`Not applicable`
-  return t`Unavailable`
+  return '—'
 }
 
 export const MaxReturnOnEquityCell = ({

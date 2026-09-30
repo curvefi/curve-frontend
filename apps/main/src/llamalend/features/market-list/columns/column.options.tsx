@@ -193,6 +193,15 @@ const createMarketsColumnOptions = ({
         active: onlyPositions != MarketRateType.Borrow,
         enabled: true,
       },
+      ...notFalsy(
+        beta &&
+          !onlyPositions && {
+            label: MARKET_TITLES[MarketColumnId.NetSupplyRate],
+            columns: [MarketColumnId.NetSupplyRate],
+            active: false,
+            enabled: true,
+          },
+      ),
       {
         label: t`Lend Details`,
         columns: [MarketColumnId.UserEarnings, MarketColumnId.UserDeposited, MarketColumnId.UserBoostMultiplier],

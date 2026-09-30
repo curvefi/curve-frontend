@@ -1,6 +1,7 @@
 import type { FunctionComponent } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -29,6 +30,7 @@ export type RateTooltipProps = {
 
 const RateTypes = {
   [MarketColumnId.LendRate]: MarketRateType.Supply,
+  [MarketColumnId.NetSupplyRate]: MarketRateType.Supply,
   [MarketColumnId.BorrowRate]: MarketRateType.Borrow,
   [MarketColumnId.NetBorrowRate]: MarketRateType.Borrow,
 } as const
@@ -44,6 +46,7 @@ export const RateCell = <TValue extends number | null>({
   column: { id },
   table,
 }: CellContext<CurveTableFeatures, LlamaMarketRow, TValue>) => {
+  const beta = useNewLlamalendHealth()
   const columnId = id as MarketColumnId
   const rateType = assert(RateTypes[columnId as keyof typeof RateTypes], `RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType][market.type]
@@ -54,7 +57,7 @@ export const RateCell = <TValue extends number | null>({
   return (
     // The box container makes sure the tooltip doesn't span the entire cell, so the tooltip arrow is placed correctly
     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-      <Tooltip market={market} columnId={columnId} showBaseSupplyApy={netSupply}>
+      <Tooltip market={market} columnId={columnId} showBaseSupplyApy={beta && columnId === MarketColumnId.LendRate}>
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
           <Typography variant="tableCellMBold" color="textPrimary">
             {formatCappedRatePercent(rate)}

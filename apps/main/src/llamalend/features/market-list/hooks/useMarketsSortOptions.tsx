@@ -37,6 +37,7 @@ export const useMarketsSortOptions = () => {
         ]
       : []),
     { id: MarketColumnId.LendRate, label: beta ? BETA_MARKET_TITLES[MarketColumnId.LendRate]! : NET_SUPPLY_RATE_TITLE },
+    ...notFalsy(beta && { id: MarketColumnId.NetSupplyRate, label: t`Net supply APY` }),
     { id: MarketColumnId.Tvl, label: t`Total Value Locked` },
     { id: MarketColumnId.MaxLtv, label: t`Max LTV` },
     { id: MarketColumnId.MaxLeverage, label: t`Max leverage` },

@@ -34,7 +34,7 @@ export const MaxReturnOnEquityTooltipContent = ({
       <TooltipDescription
         text={
           beta
-            ? t`Estimated APR at max leverage is an annual rate estimate on net position value (assets minus debt), assuming a zero-conversion start at the maximum leverage limit. It excludes swap costs and price movement. It does not show realised return or profit and loss (PnL).`
+            ? t`Estimated max leveraged APR is an annual rate estimate on net position value (assets minus debt), assuming a zero-conversion start at the maximum leverage limit. It excludes swap costs and price movement. It does not show realised return or profit and loss (PnL).`
             : t`The Maximum Return on Equity is an estimated annualized return on your own capital at maximum leverage, after borrowing costs.`
         }
       />

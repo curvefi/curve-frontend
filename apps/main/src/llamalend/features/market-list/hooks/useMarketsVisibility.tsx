@@ -31,6 +31,7 @@ import { LendRateHeaderTooltipContent } from '../header-tooltips/LendRateHeaderT
 
 type MarketColumnVariant = keyof ReturnType<typeof getMarketsColumnOptions>
 const BETA_ONLY_COLUMNS = [
+  MarketColumnId.NetSupplyRate,
   MarketColumnId.CollateralYield,
   MarketColumnId.UserReturnOnEquity,
   MarketColumnId.UserLeverage,
@@ -40,7 +41,7 @@ const BETA_ONLY_COLUMNS = [
 ]
 
 const betaMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 6,
+  version: 7,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
 }
@@ -99,7 +100,7 @@ const columnsForVariant = (variant: MarketColumnVariant, beta: boolean) => {
           header: BETA_ROE_TITLES.max,
           meta: { ...column.meta, tooltip: { ...column.meta?.tooltip, title: ESTIMATED_APR_AT_MAX_LEVERAGE_TITLE } },
         }
-      if (variant === MarketRateType.Supply && column.id === MarketColumnId.LendRate) {
+      if (column.id === MarketColumnId.LendRate) {
         const { accessorKey: _accessorKey, ...rest } = column as typeof column & { accessorKey?: string }
         return {
           ...rest,

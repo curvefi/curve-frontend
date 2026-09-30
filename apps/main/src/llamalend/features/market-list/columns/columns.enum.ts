@@ -21,6 +21,7 @@ export enum MarketColumnId {
   CollateralYield = 'collateralYield',
   BorrowChart = 'borrowChart',
   LendRate = 'rates_lend',
+  NetSupplyRate = 'rates_net_supply',
   MaxLtv = 'maxLtv',
   MaxLeverage = 'maxLeverage',
   MaxReturnOnEquity = 'maxRoe', // preserve the persisted column ID
