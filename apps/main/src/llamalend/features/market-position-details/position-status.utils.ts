@@ -1,6 +1,6 @@
 import type { MarketAssetsType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
-import { ZERO, decimalCompare, decimalGreaterThan } from '@ui/lib/decimal'
+import { ZERO, decimalCompare, decimalGreaterThan, decimalDiv, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
 import { type RangeLocation, priceDistance } from './position-metrics.utils'
 
 /** Provisional prototype cutoffs, not calibrated liquidation probabilities. */
@@ -39,6 +39,16 @@ export type PositionStatusInput = {
   assetsType: MarketAssetsType | undefined
   /** Fixture-only threshold override. Live callers omit this. */
   thresholds?: (typeof PROVISIONAL_POSITION_THRESHOLDS)[MarketAssetsType]
+}
+
+export const getRangeHealthFeedback = (health: Decimal | undefined, assetsType: MarketAssetsType | undefined) => {
+  if (health == undefined) return undefined
+  if (decimalCompare(health, '1') <= 0) return 'Error'
+  if (assetsType == undefined) return undefined
+  const dropPercent = decimalMultiply(decimalMinus('1', decimalDiv('1', health)), '100')
+  return decimalCompare(dropPercent, PROVISIONAL_POSITION_THRESHOLDS[assetsType].nearRangeDropPercent) <= 0
+    ? 'Warning'
+    : 'Success'
 }
 
 export const isCriticalBuffer = (fullHealth: Decimal | undefined, assetsType: MarketAssetsType | undefined) =>

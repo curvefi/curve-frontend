@@ -4,7 +4,10 @@ import {
   formatBufferPercent,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { STATUS_BADGE_COLOR } from '@/llamalend/features/market-position-details/position-status-badge'
-import { isCriticalBuffer } from '@/llamalend/features/market-position-details/position-status.utils'
+import {
+  getRangeHealthFeedback,
+  isCriticalBuffer,
+} from '@/llamalend/features/market-position-details/position-status.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
@@ -31,6 +34,7 @@ const { Spacing } = SizesAndSpaces
 export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const { assets } = row.original
   const { data: { status } = {}, error } = row.original.positionQueries.stats
+  const theme = useTheme()
   const health = getValue()
   const beta = useNewLlamalendHealth()
   const content = status ? getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[status] : null
@@ -40,6 +44,10 @@ export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, Ll
   if (beta) {
     const oracleHealthValue = getUserPositionOracleHealth(row.original)
     const positionStatus = getUserPositionStatus(row.original)
+    const healthFeedback = getRangeHealthFeedback(
+      decimal(oracleHealthValue),
+      getMarketAssetsType(requireChainId(row.original.chain), row.original.controllerAddress),
+    )
     return (
       <PositionMetricCell
         error={riskError}
@@ -47,6 +55,7 @@ export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, Ll
         testId="user-position-health"
         valueTestId="user-position-health-value"
         value={maybe(decimal(oracleHealthValue), formatOracleHealth)}
+        valueSx={{ color: healthFeedback ? theme.design.Text.TextColors.Feedback[healthFeedback] : undefined }}
         support={
           positionStatus && (
             <Badge size="extraSmall" color={STATUS_BADGE_COLOR[positionStatus.severity]} label={positionStatus.label} />

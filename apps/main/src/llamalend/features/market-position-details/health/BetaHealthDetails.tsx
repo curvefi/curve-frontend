@@ -5,6 +5,7 @@ import {
 import { STATUS_BADGE_COLOR } from '@/llamalend/features/market-position-details/position-status-badge'
 import {
   isCriticalBuffer,
+  getRangeHealthFeedback,
   PROVISIONAL_POSITION_THRESHOLDS,
 } from '@/llamalend/features/market-position-details/position-status.utils'
 import {
@@ -27,6 +28,7 @@ import { t } from '@ui/lib/i18n'
 export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPositionView; borrowSymbol: string }) => {
   const theme = useTheme()
   const assetsThresholds = view.assetsType ? PROVISIONAL_POSITION_THRESHOLDS[view.assetsType] : undefined
+  const healthFeedback = getRangeHealthFeedback(view.health.data, view.assetsType)
   const bufferIsRed = isCriticalBuffer(view.fullHealth.data, view.assetsType)
   const bufferColor = bufferIsRed ? theme.design.Text.TextColors.Feedback.Error : undefined
   const status = view.status
@@ -61,6 +63,7 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
           testId="health-details-health-metric"
           value={view.health}
           valueOptions={{
+            color: healthFeedback ? theme.design.Text.TextColors.Feedback[healthFeedback] : undefined,
             abbreviate: false,
             formatter: value => {
               const parsed = decimal(value)
