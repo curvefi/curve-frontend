@@ -12,26 +12,23 @@ process.loadEnvFile()
 const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
 
 const CHAIN_ID_ETHEREUM = '1'
-const CHAIN_ID_OPTIMISM = '10'
 const ETHEREUM_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
 const ETHEREUM_USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7'
+const ETHEREUM_WETH_CRVUSD = '0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635'
 
+const CHAIN_ID_OPTIMISM = '10'
 const OPTIMISM_USDC = '0x0b2c639c533813f4aa9d7837caf62653d097ff85'
 const OPTIMISM_USDT = '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58'
+const OPTIMISM_WSTETH_USDC = '0xb5EC7A3D591877A66BE4f3eafdC4205E98A1BCAA'
 
 const CHAIN_ID_ARBITRUM = '42161'
 const ARBITRUM_USDC = '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
 const ARBITRUM_USDT = '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
+const ARBITRUM_WETH_CRVUSD = '0xB5c6082d3307088C98dA8D79991501E113e6365d'
 
 const CHAIN_ID_PLASMA = '9745'
 const CORN_USDT0 = '0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb'
 const CORN_SUSDE = '0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2'
-
-const CONTROLLER_ADDRESS_BY_CHAIN_ID: PartialRecord<string, string> = {
-  [CHAIN_ID_ETHEREUM]: '0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635', // WETH/crvUSD
-  [CHAIN_ID_OPTIMISM]: '0xb5EC7A3D591877A66BE4f3eafdC4205E98A1BCAA', // wstETH/USDC v2
-  [CHAIN_ID_ARBITRUM]: '0xB5c6082d3307088C98dA8D79991501E113e6365d', // WETH/crvUSD
-}
 
 const USD_DECIMALS = 6
 const USDT0_DECIMALS = 6
@@ -77,6 +74,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
     'ethereum amountIn': {
       query: {
         chainId: CHAIN_ID_ETHEREUM,
+        controllerAddress: ETHEREUM_WETH_CRVUSD,
         tokenIn: [ETHEREUM_USDT],
         tokenOut: [ETHEREUM_USDC],
         amountIn: [toWei('1000', USD_DECIMALS)],
@@ -87,6 +85,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
     'arbitrum amountIn': {
       query: {
         chainId: CHAIN_ID_ARBITRUM,
+        controllerAddress: ARBITRUM_WETH_CRVUSD,
         tokenIn: [ARBITRUM_USDC],
         tokenOut: [ARBITRUM_USDT],
         amountIn: [toWei('100', USD_DECIMALS)],
@@ -97,6 +96,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
     'optimism amountIn': {
       query: {
         chainId: CHAIN_ID_OPTIMISM,
+        controllerAddress: OPTIMISM_WSTETH_USDC,
         tokenIn: [OPTIMISM_USDC],
         tokenOut: [OPTIMISM_USDT],
         amountIn: [toWei('100', USD_DECIMALS)],
@@ -107,6 +107,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
     'arbitrum amountOut': {
       query: {
         chainId: CHAIN_ID_ARBITRUM,
+        controllerAddress: ARBITRUM_WETH_CRVUSD,
         tokenIn: [ARBITRUM_USDC],
         tokenOut: [ARBITRUM_USDT],
         amountOut: [toWei('1000', USD_DECIMALS)],
@@ -118,6 +119,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
     'ethereum amountIn': {
       query: {
         chainId: CHAIN_ID_ETHEREUM,
+        controllerAddress: ETHEREUM_WETH_CRVUSD,
         tokenIn: [ETHEREUM_USDC],
         tokenOut: [ETHEREUM_USDT],
         amountIn: [toWei('1000', USD_DECIMALS)],
@@ -128,6 +130,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
     'optimism amountIn': {
       query: {
         chainId: CHAIN_ID_OPTIMISM,
+        controllerAddress: OPTIMISM_WSTETH_USDC,
         tokenIn: [OPTIMISM_USDC],
         tokenOut: [OPTIMISM_USDT],
         amountIn: [toWei('100', USD_DECIMALS)],
@@ -138,6 +141,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
     'arbitrum amountIn': {
       query: {
         chainId: CHAIN_ID_ARBITRUM,
+        controllerAddress: ARBITRUM_WETH_CRVUSD,
         tokenIn: [ARBITRUM_USDC],
         tokenOut: [ARBITRUM_USDT],
         amountIn: [toWei('100', USD_DECIMALS)],
@@ -251,7 +255,7 @@ describe('GET routes integration', () => {
       it(`returns a valid route for ${router} - ${label}`, { retry }, async () => {
         const { json, body, statusCode } = await server.inject({
           url: '/api/router/v1/routes',
-          query: { ...query, router, controllerAddress: CONTROLLER_ADDRESS_BY_CHAIN_ID[String(query.chainId)]! },
+          query: { ...query, router },
         })
         expect(statusCode, `${router} - ${label} failed with response: ${body}`).toBe(200)
 
