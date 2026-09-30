@@ -19,6 +19,12 @@ const isVercelDeployment = process.env.VERCEL === '1'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
+  ...(isVercelDeployment && {
+    builder: {
+      // the plugin requires us to build the frontend, it only copies the files in dist
+      buildApp: async builder => void (await builder.build(builder.environments.client)),
+    },
+  }),
   // the local server starts on port 3000 by default, with hot module reload enabled and /api proxying
   server: {
     port: 3000,
