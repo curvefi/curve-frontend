@@ -56,7 +56,6 @@ export const deployTestPool = async ({ factory: factoryAddress, deployer, coins 
     publicKey: deployer.address,
     networkPassphrase: Networks.TESTNET,
     rpcUrl: STELLAR_NETWORKS['stellar-testnet'].rpcUrl,
-    signTransaction: (xdr, options) => StellarWalletsKit.signTransaction(xdr, options),
   })
   const transaction = await factory.deploy_plain_pool({
     deployer: deployer.address,
