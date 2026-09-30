@@ -56,7 +56,7 @@ export const buildEnsoRouteResponse = async (
     return []
   }
 
-  const { feeBps, feeReceiver } = getRouterFee('enso', query)
+  const fee = getRouterFee('enso', query)
   const url = `${ENSO_API_URL}/api/v1/shortcuts/route?${new URLSearchParams({
     chainId: `${chainId}`,
     fromAddress: zapAddress,
@@ -66,8 +66,7 @@ export const buildEnsoRouteResponse = async (
     ...(minAmountOut
       ? { minAmountOut }
       : slippage != null && { slippage: new BigNumber(slippage).times(100).toString() }),
-    fee: feeBps,
-    feeReceiver,
+    ...(fee && { fee: fee.feeBps, feeReceiver: fee.feeReceiver }),
   })}`
 
   // Enso API is documented to return an array of routes, but in practice it returns a single object

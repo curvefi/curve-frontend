@@ -5,7 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 // eslint-disable-next-line no-restricted-imports -- Server-side fee selection requires the controller mapping.
 import { MARKET_ASSETS_TYPE_BY_CONTROLLER, MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { Chain } from '@primitives/network.utils'
-import { assert } from '@primitives/objects.utils'
+import { assert, type PartialRecord } from '@primitives/objects.utils'
 import type { ExternalRouteProvider } from '@primitives/router.utils'
 import type { RoutesQuery } from './routes/routes.schemas'
 
@@ -16,7 +16,7 @@ export const ROUTER_FEE_BPS: Record<MarketAssetsType, Decimal> = {
   [MarketAssetsType.LongTail]: '10',
 }
 
-export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, Record<number, Address>> = {
+export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, PartialRecord<number, Address>> = {
   /** Enso fee splitter contracts distribute router fees 50/50 between Curve and Enso. */
   enso: {
     [Chain.Ethereum]: '0x428C2a762EE70c18d7e370Da1b5A2951bE717c49',
@@ -28,18 +28,17 @@ export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, Reco
   },
 }
 
-/** Selects the configured fee and receiver for a supported market controller. */
+/** Selects the configured fee when the provider has a receiver on the chain. */
 export const getRouterFee = (
   provider: ExternalRouteProvider,
   { chainId, controllerAddress }: Pick<RoutesQuery, 'chainId' | 'controllerAddress'>,
 ) => {
+  const feeReceiver = ROUTER_FEE_RECEIVER_BY_CHAIN_ID[provider][chainId]
+  if (!feeReceiver) return
+
   const assetsType = assert(
     controllerAddress && MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)],
     `A supported controllerAddress is required for ${provider} on chain ${chainId}`,
-  )
-  const feeReceiver = assert(
-    ROUTER_FEE_RECEIVER_BY_CHAIN_ID[provider][chainId],
-    `No ${provider} fee receiver configured for chain ${chainId}`,
   )
   return { feeBps: ROUTER_FEE_BPS[assetsType], feeReceiver }
 }

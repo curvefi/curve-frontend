@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it, type TestOptions } from 'vitest'
 import { ADDRESS_HEX_PATTERN } from '@primitives/address.utils'
 import { assert, type PartialRecord } from '@primitives/objects.utils'
-import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
+import { ExternalRouteProviders, type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import { toWei } from '../../src/router.utils'
 import { type RoutesQuery } from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
@@ -26,6 +26,12 @@ const ARBITRUM_USDT = '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
 const CHAIN_ID_PLASMA = '9745'
 const CORN_USDT0 = '0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb'
 const CORN_SUSDE = '0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2'
+
+const CONTROLLER_ADDRESS_BY_CHAIN_ID: PartialRecord<string, string> = {
+  [CHAIN_ID_ETHEREUM]: '0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635', // WETH/crvUSD
+  [CHAIN_ID_OPTIMISM]: '0xb5EC7A3D591877A66BE4f3eafdC4205E98A1BCAA', // wstETH/USDC v2
+  [CHAIN_ID_ARBITRUM]: '0xB5c6082d3307088C98dA8D79991501E113e6365d', // WETH/crvUSD
+}
 
 const USD_DECIMALS = 6
 const USDT0_DECIMALS = 6
@@ -245,7 +251,7 @@ describe('GET routes integration', () => {
       it(`returns a valid route for ${router} - ${label}`, { retry }, async () => {
         const { json, body, statusCode } = await server.inject({
           url: '/api/router/v1/routes',
-          query: { ...query, router },
+          query: { ...query, router, controllerAddress: CONTROLLER_ADDRESS_BY_CHAIN_ID[String(query.chainId)]! },
         })
         expect(statusCode, `${router} - ${label} failed with response: ${body}`).toBe(200)
 

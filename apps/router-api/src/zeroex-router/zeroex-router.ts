@@ -69,16 +69,14 @@ export const buildZeroExRouteResponse = async (
     return []
   }
 
-  const { feeBps, feeReceiver } = getRouterFee('0x', query)
+  const fee = getRouterFee('0x', query)
   const params: ZeroExQuoteRequest = {
     chainId,
     sellToken,
     buyToken,
     sellAmount: amountIn,
     taker,
-    swapFeeRecipient: feeReceiver,
-    swapFeeBps: feeBps,
-    swapFeeToken: sellToken,
+    ...(fee && { swapFeeRecipient: fee.feeReceiver, swapFeeBps: fee.feeBps, swapFeeToken: sellToken }),
   }
   const quote = await getZeroExQuote(params).catch(error => logZeroExError(error, log, params))
   if (!quote?.liquidityAvailable) {
