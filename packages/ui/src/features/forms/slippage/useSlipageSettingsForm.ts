@@ -14,7 +14,7 @@ import { t } from '@ui/lib/i18n'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 
-function isSlippage(nr: Decimal) {
+function isSlippage(nr: Decimal | undefined) {
   enforce(nr)
     .message(t`Invalid percentage number`)
     .isDecimal()
@@ -26,7 +26,7 @@ function isSlippage(nr: Decimal) {
     .lte(MAX_SLIPPAGE)
 }
 
-export type SlippageSettingsFormData = SlippageSettings
+export type SlippageSettingsFormData = Partial<SlippageSettings>
 
 const validation = createValidationSuite(({ stable, leverage, crypto }: SlippageSettingsFormData) => {
   test('stable', () => isSlippage(stable))
@@ -38,7 +38,7 @@ export function useSlippageSettingsForm({
   onChanged,
   current,
 }: {
-  onChanged: (data: SlippageSettingsFormData) => void
+  onChanged: (data: SlippageSettings) => void
   current?: { type: SlippageType; value: Decimal }
 }) {
   const maxSlippage = useUserProfileStore(state => state.maxSlippage)
@@ -51,8 +51,9 @@ export function useSlippageSettingsForm({
   return {
     form,
     onSubmit: form.handleSubmit(data => {
-      setMaxSlippage(data)
-      onChanged(data)
+      const settings = data as SlippageSettings // validated by the suite
+      setMaxSlippage(settings)
+      onChanged(settings)
     }),
     reset: () => form.reset(defaultValues),
   }
