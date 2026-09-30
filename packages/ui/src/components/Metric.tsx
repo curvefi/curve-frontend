@@ -141,9 +141,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
     disableTooltip = false,
     ...formattingOptions
   } = valueOptions
-  const decomposed = maybe(numberValue, amount =>
-    decomposeNumber(amount, { ...formattingOptions, abbreviate }),
-  )
+  const decomposed = maybe(numberValue, amount => decomposeNumber(amount, { ...formattingOptions, abbreviate }))
   const { prefix, scaleSuffix, suffix } = decomposed ?? {}
   const mainValue = literalValue ?? decomposed?.mainValue
 
@@ -253,6 +251,9 @@ export type MetricProps = {
     disableTooltip?: boolean
   }
 
+  /** Content after the value and unit in either orientation. */
+  valueAdornment?: ReactNode
+
   /** Optional value that denotes a change in metric value since 'last' time */
   change?: number
   /** Label that goes above the value */
@@ -280,6 +281,7 @@ export type MetricProps = {
 export const Metric = ({
   value,
   valueOptions = {},
+  valueAdornment,
   change,
 
   label,
@@ -357,6 +359,7 @@ export const Metric = ({
                 tooltip={valueTooltip}
                 testId={testId}
               />
+              {valueAdornment}
               {!isHorizontal && icon}
             </>
           )}

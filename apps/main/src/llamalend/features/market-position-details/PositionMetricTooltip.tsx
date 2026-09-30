@@ -160,7 +160,7 @@ export const bufferTooltip = ({
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Liquidation-adjusted margin as a percentage of debt. It is neither a price-drop allowance nor withdrawable equity.`}
+        text={t`At 0%, no liquidation margin remains. Below 0%, the position is liquidatable. The buffer measures liquidation-adjusted margin as a percentage of debt.`}
       />
       {amount != null && (
         <TooltipItems secondary>
@@ -179,7 +179,7 @@ export const bufferTooltip = ({
         <BufferEquations />
       </Calculation>
       <TooltipFooter>
-        {t`Full Controller health below 0 permits hard liquidation; exactly 0 does not.`}
+        {t`Not a price-drop allowance or withdrawable equity.`}
         {criticalBuffer != null && t` Warning cutoffs are provisional.`}
       </TooltipFooter>
     </TooltipWrapper>

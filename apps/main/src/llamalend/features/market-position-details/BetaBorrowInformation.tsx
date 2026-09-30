@@ -15,21 +15,17 @@ import {
 import { isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
 import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
-import { LinearProgress } from '@ui/components/LinearProgress'
 import { Metric } from '@ui/components/Metric'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
-const { Spacing } = SizesAndSpaces
 
 export const BetaBorrowInformation = ({
   view,
@@ -77,13 +73,32 @@ export const BetaBorrowInformation = ({
           })}
         />
       </Box>
-      <Stack sx={{ gridArea: 'collateral', gap: Spacing.xxs }}>
+      <Box sx={{ gridArea: 'collateral' }}>
         <Metric
           category={METRIC_CATEGORY}
           label={t`Collateral value`}
           testId="position-collateral-value"
           value={view.collateral}
           valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
+          valueAdornment={
+            compositionLabels &&
+            shares && (
+              <Box
+                data-testid="collateral-composition"
+                role="img"
+                aria-label={t`Collateral composition: ${compositionLabels.collateral} ${collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}, ${compositionLabels.borrowed} ${borrowSymbol}`}
+                sx={{
+                  width: 16,
+                  height: 16,
+                  flexShrink: 0,
+                  alignSelf: 'center',
+                  ml: 1,
+                  borderRadius: '50%',
+                  background: `conic-gradient(${theme.design.Layer.Feedback.Success} 0% ${shares.collateralLabel}%, ${theme.design.Layer.Feedback.Warning} ${shares.collateralLabel}% 100%)`,
+                }}
+              />
+            )
+          }
           valueTooltip={collateralTooltip({
             collateralShare: compositionLabels ? compositionLabels.collateral : undefined,
             convertedShare: compositionLabels ? compositionLabels.borrowed : undefined,
@@ -91,17 +106,7 @@ export const BetaBorrowInformation = ({
             convertedSymbol: borrowSymbol,
           })}
         />
-        {compositionLabels && shares && (
-          <Stack data-testid="collateral-composition" sx={{ gap: Spacing.xxs }}>
-            <LinearProgress
-              percent={Number(shares.collateralLabel)}
-              size="small"
-              barColor={theme.design.Layer.Feedback.Success}
-              trackColor={theme.design.Layer.Feedback.Warning}
-            />
-          </Stack>
-        )}
-      </Stack>
+      </Box>
       <Box sx={{ gridArea: 'debt' }}>
         <Metric
           category={METRIC_CATEGORY}
