@@ -15,7 +15,7 @@ export const validate = <D extends object, S extends ValidationSuite>(
   fields?: FieldName<D>[],
 ) => {
   suite.reset() // reset the validation state so all fields get revalidated even if they didn't change
-  return suite(data, fields).getErrors()
+  return suite.run(data, fields).getErrors()
 }
 
 export function assertValidity<D extends object, S extends ValidationSuite>(

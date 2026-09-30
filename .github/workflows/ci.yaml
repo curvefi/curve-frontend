@@ -13,7 +13,7 @@ jobs:
   check-supply-chain:
     name: Check supply chain
     timeout-minutes: 6
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
         with:
@@ -31,7 +31,7 @@ jobs:
   lint:
     name: Lint, format & typecheck
     timeout-minutes: 8
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -51,7 +51,7 @@ jobs:
   test:
     name: Unit tests
     timeout-minutes: 5
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -76,7 +76,7 @@ jobs:
         iteration: [1, 2]
     name: Cypress component tests in ${{ matrix.browser }} ${{ matrix.iteration }}
     timeout-minutes: 15
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -115,7 +115,7 @@ jobs:
     name: Cypress component tests with RPC
     if: github.ref_name == 'main'
     timeout-minutes: 20
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -165,7 +165,7 @@ jobs:
   cypress-component-stellar:
     name: Cypress Stellar component tests
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     concurrency: # shared testnet account, run sequentially to avoid conflicting balances
       group: stellar-testnet
       cancel-in-progress: false
@@ -228,7 +228,7 @@ jobs:
             specs: 'cypress/e2e/all/**/*,cypress/e2e/analytics/**/*,cypress/e2e/bridge/**/*,cypress/e2e/dao/**/*'
     name: Cypress e2e ${{ matrix.group }} ${{ matrix.browser }} ${{ matrix.iteration }}
     timeout-minutes: 20
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -308,7 +308,7 @@ jobs:
   notify:
     name: Notify Slack
     if: failure() && github.ref_name == 'main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 1
     needs: [lint, test, cypress-e2e, cypress-component, cypress-component-rpc, cypress-component-stellar]
     steps:

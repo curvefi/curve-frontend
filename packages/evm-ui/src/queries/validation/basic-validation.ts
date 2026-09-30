@@ -1,7 +1,7 @@
 import { enforce } from '@ui/lib/validation/enforce-extension'
 
 // TODO: move to Token validation lib
-export const tokenIdValidationFn = <T>(value: T) => {
+export const tokenIdValidationFn = (value: unknown) => {
   enforce(value)
     .message('Token address is required')
     .isNotEmpty()
@@ -11,7 +11,7 @@ export const tokenIdValidationFn = <T>(value: T) => {
     .isNotZeroAddress()
 }
 
-export const amountValidationFn = <T>(value: T) => {
+export const amountValidationFn = (value: unknown) => {
   enforce(value)
     .message('Amount is required')
     .isNotEmpty()
@@ -19,7 +19,7 @@ export const amountValidationFn = <T>(value: T) => {
     .isDecimal({ decimal_digits: '0,18' })
 }
 
-export const addressValidationFn = <T>(value: T) => {
+export const addressValidationFn = (value: unknown) => {
   enforce(value)
     .message('Address is required')
     .isNotEmpty()

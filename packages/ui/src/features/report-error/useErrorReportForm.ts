@@ -5,7 +5,7 @@ import { captureError, captureString } from '@ui/features/sentry'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 
-export type ErrorContext = { error: Error | string | Nullish; title: ReactNode; subtitle: ReactNode | Nullish }
+export type ErrorContext = { error: unknown; title: ReactNode; subtitle: ReactNode | Nullish }
 
 export type ErrorReportFormValues = {
   address: string
@@ -42,10 +42,10 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
       }
       console.info(`Submitting error report:`, body)
       try {
-        if (error instanceof Error) {
-          captureError(error, { body, userReport: true })
-        } else {
+        if (typeof error === 'string') {
           captureString(error ?? 'Error Report', { body, userReport: true })
+        } else {
+          captureError(error as Error, { body, userReport: true })
         }
         onClose()
       } catch (e) {

@@ -30,7 +30,7 @@ export const ErrorPage = ({
   subtitle: string
   resetError?: () => void
   continueUrl?: string
-  error?: Error | string
+  error?: unknown
   LinkComponent?: ElementType
   userAddress: Address | undefined
 }) => {

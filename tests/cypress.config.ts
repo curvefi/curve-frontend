@@ -6,7 +6,6 @@ const testSeed = (process.env.TEST_SEED = process.env.TEST_SEED?.trim() || rando
 console.info(`Cypress test seed: ${testSeed}`)
 
 export default defineConfig({
-  allowCypressEnv: false,
   defaultCommandTimeout: 5000,
   pageLoadTimeout: 20000,
   video: true,

@@ -169,7 +169,7 @@ const config = [
               importNames: ['enforce'],
               message: 'Import enforce from @ui/lib/validation/enforce-extension instead.',
             },
-            ...['@stellar/stellar-sdk', '@creit-tech/stellar-wallets-kit/sdk'].map(name => ({
+            ...['@stellar/stellar-sdk', '@creit.tech/stellar-wallets-kit/sdk'].map(name => ({
               name,
               message: 'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
             })),

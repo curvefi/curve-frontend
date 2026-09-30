@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
-import vercel from 'vite-plugin-vercel'
+import { vercel } from 'vite-plugin-vercel/vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 const {
@@ -44,7 +44,21 @@ export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     svgr(),
-    ...(isVercelDeployment ? [vercel()] : []),
+    ...(isVercelDeployment
+      ? [
+          vercel({
+            entries: [
+              { id: resolve(__dirname, '_api/router.ts'), route: '/api/router/**' },
+              { id: resolve(__dirname, '_api/merkl.ts'), route: '/api/merkl/**' },
+            ],
+            rewrites: [
+              { source: '/favicon', destination: '/favicon.ico' },
+              { source: '/(.*)', destination: '/index.html', enforce: 'post' },
+            ],
+            redirects: [{ source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 }],
+          }),
+        ]
+      : []),
     ...(SENTRY_PROJECT
       ? sentryVitePlugin({
           applicationKey: SENTRY_APPLICATION_KEY,
@@ -70,16 +84,4 @@ export default defineConfig(({ command }) => ({
     ],
   },
   define: { 'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production') },
-  ...(isVercelDeployment && {
-    vercel: {
-      buildCommand: 'yarn build',
-      rewrites: [
-        { source: '/favicon', destination: '/favicon.ico' },
-        { source: '/api/router/(.*)', destination: '/api/router' },
-        { source: '/api/merkl/(.*)', destination: '/api/merkl' },
-        { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
-        { source: '/(.*)', destination: '/index.html' },
-      ],
-    },
-  }),
 }))

@@ -19,7 +19,7 @@ export const ErrorMessage = ({
 }: {
   title: ReactNode
   subtitle?: ReactNode
-  error?: Error | string
+  error?: unknown
   refreshData?: () => Promise<unknown> | void
   sx?: SxProps
   size?: EmptyStateCardProps['size']
