@@ -11,8 +11,8 @@
     "lint": "eslint --cache --cache-location ../../.cache/eslint/merkl-api --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/merkl-api --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-merkl-api.tsbuildinfo",
-    "test": "yarn run -T test --project merkl-api",
-    "test:watch": "yarn run -T test:watch --project merkl-api"
+    "test": "yarn run --top-level test --project merkl-api",
+    "test:watch": "yarn run --top-level test:watch --project merkl-api"
   },
   "dependencies": {
     "@curvefi/api-server": "workspace:^",

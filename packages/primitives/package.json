@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "test": "yarn run -T test --project @curvefi/primitives",
-    "test:ui": "yarn run -T test:ui --project @curvefi/primitives",
-    "vitest:watch": "yarn run -T test:watch --project @curvefi/primitives",
+    "test": "yarn run --top-level test --project @curvefi/primitives",
+    "test:ui": "yarn run --top-level test:ui --project @curvefi/primitives",
+    "vitest:watch": "yarn run --top-level test:watch --project @curvefi/primitives",
     "lint": "eslint --cache --cache-location ../../.cache/eslint/primitives --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/primitives --cache-strategy content . --fix",
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-primitives.tsbuildinfo"
   },
   "devDependencies": {
+    "@vitest/ui": "4.1.11",
     "vitest": "4.1.11"
   },
   "publishConfig": {

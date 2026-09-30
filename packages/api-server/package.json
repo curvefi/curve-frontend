@@ -7,8 +7,8 @@
     "lint": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-api-server.tsbuildinfo",
-    "test": "yarn run -T test --project @curvefi/api-server",
-    "test:watch": "yarn run -T test:watch --project @curvefi/api-server"
+    "test": "yarn run --top-level test --project @curvefi/api-server",
+    "test:watch": "yarn run --top-level test:watch --project @curvefi/api-server"
   },
   "main": "src/index.ts",
   "types": "src/index.ts",
