@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { Hex } from 'viem'
 import { oneDecimal, oneInt } from '@cy/support/generators'
+import { MarketVersion } from '@evm-ui/types/market'
 import { decimalMinus, decimalSum } from '@ui/lib/decimal'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
   createMockLendLoanMarket,
+  createControllerApprovalStubs,
   DEFAULT_COLLATERAL_ADDRESS,
   DEFAULT_USER_BORROWED,
   expectedBorrowedMetrics,
@@ -23,11 +25,15 @@ export const createRepayScenario = ({
   approved,
   leverage = false,
   routeCalldata,
+  controllerApproved = true,
+  marketVersion = MarketVersion.v1,
 }: {
   chainId: number
   approved: boolean
   leverage?: boolean
   routeCalldata?: Hex
+  controllerApproved?: boolean
+  marketVersion?: MarketVersion
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(0.5, 20, 2)
@@ -39,6 +45,7 @@ export const createRepayScenario = ({
   }
   const repayApproveStub = createTransactionStub(TEST_TX_HASH)
   const repayLeverageApproveStub = createTransactionStub(TEST_TX_HASH)
+  const controllerApproval = createControllerApprovalStubs(controllerApproved)
   const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
   const normalStubs = {
@@ -77,6 +84,8 @@ export const createRepayScenario = ({
 
   const leverageZapV2 = {
     hasLeverage: () => true,
+    isControllerApproved: controllerApproval.isControllerApproved,
+    setControllerApproval: controllerApproval.setControllerApproval,
     repayExpectedMetrics: leverageStubs.repayExpectedMetrics,
     repayIsApproved: leverageStubs.repayIsApproved,
     repayIsAvailable: leverageStubs.repayIsAvailable,
@@ -86,9 +95,14 @@ export const createRepayScenario = ({
     repayExpectedBorrowed: leverageStubs.repayExpectedBorrowed,
     repayFutureLeverage: leverageStubs.repayFutureLeverage,
     calcMinRecv: leverageStubs.calcMinRecv,
-    estimateGas: { repay: leverageStubs.estimateGasRepay, repayApprove: leverageStubs.estimateGasRepayApprove },
+    estimateGas: {
+      repay: leverageStubs.estimateGasRepay,
+      repayApprove: leverageStubs.estimateGasRepayApprove,
+      setControllerApproval: controllerApproval.estimateGasSetControllerApproval,
+    },
   }
 
+  const expectedRoute = { ...routeMutationMeta, calldata: routeCalldata ?? routeMutationMeta.calldata }
   const leverageExpected = {
     metrics: {
       stateCollateral: collateral,
@@ -96,14 +110,15 @@ export const createRepayScenario = ({
       healthIsFull: true,
       address: TEST_ADDRESS,
       ...routeMeta,
+      calldata: expectedRoute.calldata,
     },
     isApproved: { userCollateral: DEFAULT_USER_BORROWED },
-    estimateGas: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
+    estimateGas: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
     estimateGasApprove: { userCollateral: DEFAULT_USER_BORROWED },
     approve: { userCollateral: DEFAULT_USER_BORROWED },
-    submit: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
-    expectedBorrowed: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
-    futureLeverage: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...routeMutationMeta },
+    submit: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
+    expectedBorrowed: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
+    futureLeverage: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
   } as const
   const normalExpected = {
     health: [borrow, false] as const,
@@ -128,6 +143,7 @@ export const createRepayScenario = ({
   }
   const market = leverage
     ? createMockLendLoanMarket({
+        version: marketVersion,
         loan,
         leverage: { maxLeverage: createStub(oneDecimal(1.5, 10, 2)) },
         leverageZapV2,
@@ -136,6 +152,7 @@ export const createRepayScenario = ({
         userHealth: createStub(oneDecimal(20, 80, 2)),
       })
     : createMockMintMarket({
+        version: marketVersion,
         collateral: DEFAULT_COLLATERAL_ADDRESS,
         stats: { parameters: normalStubs.parameters },
         estimateGas: loan.estimateGas,
@@ -157,11 +174,17 @@ export const createRepayScenario = ({
     llamaApi: createMockLlamaApi(chainId, market),
     assertPreSubmit: leverage
       ? () => {
+          expect(controllerApproval.isControllerApproved).to.have.been.calledWithExactly(TEST_ADDRESS)
+          expect(controllerApproval.setControllerApproval).to.not.have.been.called
+          expect(leverageStubs.repay).to.not.have.been.called
           expect(leverageStubs.repayExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.metrics)
           expect(leverageStubs.repayIsApproved).to.have.been.calledWithMatch(leverageExpected.isApproved)
           expect(leverageStubs.repayExpectedBorrowed).to.have.been.calledWithMatch(leverageExpected.expectedBorrowed)
           expect(leverageStubs.repayFutureLeverage).to.have.been.calledWithMatch(leverageExpected.futureLeverage)
-          if (approved) {
+          if (!controllerApproved) {
+            expect(leverageStubs.estimateGasRepay).to.not.have.been.called
+            expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
+          } else if (approved) {
             expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
             expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
           } else {
@@ -186,6 +209,8 @@ export const createRepayScenario = ({
         },
     assertSubmit: leverage
       ? () => {
+          expect(controllerApproval.setControllerApproval.callCount).to.equal(controllerApproved ? 0 : 1)
+          expect(leverageStubs.repay).to.have.been.calledOnce
           expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
           expect(leverageStubs.repay).to.have.been.calledWithMatch(leverageExpected.submit)
           if (approved) {

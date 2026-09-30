@@ -6,6 +6,12 @@ const TEST_ACCOUNT = privateKeyToAccount(TEST_PRIVATE_KEY)
 export const TEST_ADDRESS = TEST_ACCOUNT.address
 // Deterministic transaction hash with a mocked receipt in mocked LlamaLend component tests.
 export const TEST_TX_HASH: `0x${string}` = '0xb664cb54f72491d8f459bb2a0db0bf074b30fa0fb1179a989ff4e1932291a69d'
+export const ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA = `0x${'00'.repeat(9_401)}` as const
+export const DEFAULT_CONTROLLER_APPROVAL_TEST_CASE = {
+  controllerApproved: undefined,
+  marketVersion: undefined,
+  routeCalldata: undefined,
+}
 
 export const createMockLlamaApi = (chainId: number, mockMarket: unknown) => ({
   ___mock: true,

@@ -1,8 +1,9 @@
-import { submitLoanForm, waitForRoutesLoaded } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { waitForRoutesLoaded } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { checkDebt, checkEstimatedTxCost, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
+import { submitLoanForm } from './loan-form.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
@@ -44,11 +45,13 @@ export function checkRepayDetailsLoaded({
   debt,
   isPriceChanged = true,
   hasApi = true,
+  controllerApproved = true,
 }: {
   debt: DebtCheck
   leverageEnabled?: boolean
   isPriceChanged?: boolean
   hasApi?: boolean
+  controllerApproved?: boolean
 }) {
   cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
   cy.get('[data-testid="loan-action-settings"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.be.visible')
@@ -57,9 +60,10 @@ export function checkRepayDetailsLoaded({
     /(\d(\.\d+)?) - (\d(\.\d+)?)/,
   )
   getActionValue('borrow-apr').should('include', '%')
-  checkEstimatedTxCost({ hasValue: hasApi })
+  checkEstimatedTxCost({ hasValue: hasApi && controllerApproved })
   checkDebt(debt, { checkLoanToValue: hasApi })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
-export const submitRepayForm = () => submitLoanForm({ form: 'repay', message: 'Loan repaid!' })
+export const submitRepayForm = ({ controllerApproved = true }: { controllerApproved?: boolean } = {}) =>
+  submitLoanForm({ form: 'repay', message: 'Loan repaid!', approveDelegation: !controllerApproved })
