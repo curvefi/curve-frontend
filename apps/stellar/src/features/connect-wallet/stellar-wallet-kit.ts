@@ -7,7 +7,7 @@ import { activeModule } from '@creit-tech/stellar-wallets-kit/state'
 import { type ISupportedWallet, KitEventType } from '@creit-tech/stellar-wallets-kit/types'
 import { assert } from '@primitives/objects.utils'
 import { retry } from '@primitives/promise.utils'
-import { Address, contract, nativeToScVal, Networks, type rpc, scValToNative, StrKey, xdr } from '@stellar/stellar-sdk'
+import { Address, contract, nativeToScVal, Networks, rpc, scValToNative, StrKey, xdr } from '@stellar/stellar-sdk'
 
 export type WalletConnector = ISupportedWallet
 export type StellarHex = string & { readonly __stellarHex: unique symbol } // Stellar hashes are hex strings without an 0x prefix.
@@ -94,6 +94,15 @@ export async function sendStellarTransaction<T>(transaction: StellarTransaction<
       shouldRetry: error => (error as Error).message.includes('TRY_AGAIN_LATER'),
     },
   )
+  const confirmation = sent.getTransactionResponse
+  if (confirmation?.status !== rpc.Api.GetTransactionStatus.SUCCESS) {
+    // The SDK tries to decode an undefined return value for failed transactions, hiding the actual failure.
+    const reason =
+      confirmation && 'resultXdr' in confirmation
+        ? JSON.stringify(confirmation.resultXdr.result)
+        : (confirmation?.status ?? 'Missing confirmation')
+    throw new Error(`Stellar transaction did not succeed: ${reason}`, { cause: confirmation })
+  }
   const result = sent.result // Reading the result checks confirmed execution, not just submission.
   const response = assert(sent.sendTransactionResponse, 'Missing submission response') as StellarTransactionResponse
   return { result, response }
