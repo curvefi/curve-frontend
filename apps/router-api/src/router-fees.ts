@@ -5,7 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 // eslint-disable-next-line no-restricted-imports -- Server-side fee selection requires the controller mapping.
 import { MARKET_ASSETS_TYPE_BY_CONTROLLER, MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { Chain } from '@primitives/network.utils'
-import { assert, type PartialRecord } from '@primitives/objects.utils'
+import { assert } from '@primitives/objects.utils'
 import type { ExternalRouteProvider } from '@primitives/router.utils'
 import type { RoutesQuery } from './routes/routes.schemas'
 
