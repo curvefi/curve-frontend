@@ -12,7 +12,6 @@ import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { CenteredEmptyState } from '@ui/features/tables/CenteredEmptyState'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
-import { TableFilters } from '@ui/features/tables/TableFilters'
 import { TableHeader } from '@ui/features/tables/TableHeader'
 import { TableVisibilitySettingsPopover } from '@ui/features/tables/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -22,7 +21,6 @@ import { t } from '@ui/lib/i18n'
 import { borderStyle, directChildrenAfterFirst } from '@ui/lib/mui'
 import { POOL_COLUMNS, PoolColumnId } from './columns'
 import { PoolExpandedPanel } from './components/PoolExpandedPanel'
-import { usePoolsGlobalFilterFn } from './hooks/usePoolsGlobalFilter'
 import { usePoolsVisibility } from './hooks/usePoolsVisibility'
 import { useUserPositionsTable } from './hooks/useUserPositionsTable'
 import { getPoolTableMeta, createPoolTableMeta } from './table-meta'
@@ -31,7 +29,6 @@ import type { PoolRow } from './types'
 const { Spacing } = SizesAndSpaces
 
 const LOCAL_STORAGE_KEY = 'dex-user-pool-positions'
-const EMPTY_POOL_ROWS: readonly PoolRow[] = []
 const MAX_PAGE_SIZE = 10 as const
 
 const UserPositionsExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => (
@@ -54,7 +51,6 @@ export const UserPositionsTable = ({
   const isTablet = useIsTablet()
 
   const [expanded, setExpanded] = useState<ExpandedState>({})
-  const [searchText, setSearchText] = useState('')
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const anchorRef = useRef<HTMLDivElement>(null)
   const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
@@ -65,8 +61,6 @@ export const UserPositionsTable = ({
   const { tableQuery, totalLiquidityUsd, claimablesTotalUsd, isFetching, onReload, alerts } = useUserPositionsTable({
     network,
   })
-
-  const globalFilterFn = usePoolsGlobalFilterFn(tableQuery.data ?? EMPTY_POOL_ROWS, searchText)
 
   const table = useCurveTable({
     columns: POOL_COLUMNS,
@@ -79,11 +73,10 @@ export const UserPositionsTable = ({
       crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain },
     }),
     getRowId: row => row.address,
-    state: { expanded, columnVisibility, globalFilter: searchText },
+    state: { expanded, columnVisibility },
     initialState: { pagination: { pageIndex: 0, pageSize: MAX_PAGE_SIZE } },
     onExpandedChange: setExpanded,
     enableSorting: false,
-    globalFilterFn,
   })
   const rowCount = table.getFilteredRowModel().rows.length
 
@@ -131,16 +124,7 @@ export const UserPositionsTable = ({
                 errorState={{ title: t`Could not load pool positions`, onReload }}
                 expandedPanel={{ Body: UserPositionsExpandedPanel, Actions }}
                 shouldStickFirstColumn={Boolean(isTablet && rowCount)}
-              >
-                <TableFilters
-                  testIdPrefix={LOCAL_STORAGE_KEY}
-                  searchText={searchText}
-                  onSearch={value => {
-                    setSearchText(value)
-                    table.setPageIndex(0)
-                  }}
-                />
-              </EvmDataTable>
+              />
               <TableVisibilitySettingsPopover
                 anchorRef={anchorRef}
                 visibilityGroups={columnSettings}
