@@ -3,11 +3,9 @@ import {
   formatBandSpan,
   formatPriceDistanceHeadline,
   formatPriceDistanceDescription,
-  formatRangeLabel,
   formatShareLabel,
   inclusiveBandCount,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
-import { formatYieldMultiplier } from '@/llamalend/features/market-position-details/position-roe.utils'
 import {
   collateralTooltip,
   debtTooltip,
@@ -15,19 +13,19 @@ import {
   rangeTooltip,
   roeTooltip,
 } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
-import { isPositionLeveraged, tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import { isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { LinearProgress } from '@ui/components/LinearProgress'
 import { Metric } from '@ui/components/Metric'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 
@@ -48,8 +46,11 @@ export const BetaBorrowInformation = ({
   const compositionLabels = shares
     ? { collateral: formatShareLabel(shares.collateralLabel), borrowed: formatShareLabel(shares.borrowedLabel) }
     : undefined
-  const debtMetric = tokenMetric({ value: view.debt, symbol: borrowToken?.symbol, usdRate: q(view.borrowUsdRate) })
+  const debtUsdValue = maybes([view.debt.data, view.borrowUsdRate.data], (debt, rate) =>
+    formatNumber(decimalMultiply(debt, rate), 'usd.notional'),
+  )
   const roe = view.roe.data
+  const multiplier = roe?.status === 'value' ? roe.multiplier : undefined
   return (
     <>
       <Box
@@ -65,9 +66,6 @@ export const BetaBorrowInformation = ({
           value={mapQuery(view.distance, formatPriceDistanceHeadline)}
           valueOptions={{ abbreviate: false }}
           sx={{ whiteSpace: { mobile: 'normal', tablet: 'nowrap' } }}
-          notional={mapQuery(view.userPrices, prices =>
-            prices ? formatRangeLabel(prices[1], prices[0], view.priceUnit) : undefined,
-          )}
           valueTooltip={rangeTooltip({
             pair: view.priceUnit,
             upper: view.userPrices.data ? formatNumber(view.userPrices.data[1], { abbreviate: true }) : undefined,
@@ -84,7 +82,12 @@ export const BetaBorrowInformation = ({
           testId="position-collateral-value"
           value={view.collateral}
           valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
-          valueTooltip={collateralTooltip()}
+          valueTooltip={collateralTooltip({
+            collateralShare: compositionLabels ? `${compositionLabels.collateral}%` : undefined,
+            convertedShare: compositionLabels ? `${compositionLabels.borrowed}%` : undefined,
+            collateralSymbol: collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL,
+            convertedSymbol: borrowSymbol,
+          })}
         />
         {compositionLabels && shares && (
           <Stack data-testid="collateral-composition" sx={{ gap: Spacing.xxs }}>
@@ -94,17 +97,6 @@ export const BetaBorrowInformation = ({
               barColor={theme.design.Layer.Feedback.Success}
               trackColor={theme.design.Layer.Feedback.Warning}
             />
-            <Stack
-              direction="row"
-              sx={{ justifyContent: 'space-between', display: { mobile: 'none', tablet: 'flex' } }}
-            >
-              <Typography variant="highlightXsNotional" color="textTertiary">
-                {`${compositionLabels.collateral}% ${collateralToken?.symbol ?? ''}`}
-              </Typography>
-              <Typography variant="highlightXsNotional" color="textTertiary">
-                {`${compositionLabels.borrowed}% ${borrowSymbol}`}
-              </Typography>
-            </Stack>
           </Stack>
         )}
       </Stack>
@@ -112,9 +104,9 @@ export const BetaBorrowInformation = ({
         <Metric
           category={METRIC_CATEGORY}
           label={t`Total debt`}
-          {...debtMetric}
-          notional={isMobile ? undefined : debtMetric.notional}
-          valueTooltip={debtTooltip()}
+          value={view.debt}
+          valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
+          valueTooltip={debtTooltip({ usdValue: debtUsdValue })}
         />
       </Box>
       <Box sx={{ gridArea: 'leverage' }}>
@@ -143,21 +135,22 @@ export const BetaBorrowInformation = ({
                   ? new Error('A required yield or borrow rate is unavailable.')
                   : view.roe.error,
             })}
-            notional={
-              isMobile
-                ? undefined
-                : maybe(
-                    roe?.status === 'value' ? formatYieldMultiplier(roe.multiplier, 'collateral') : undefined,
-                    text => q({ data: text, isLoading: false, error: null }),
-                  )
-            }
             valueOptions={{
               unit: { symbol: '% APR', position: 'suffix' },
               ...(roe?.status === 'value' && roe.multiplier.kind === 'negative'
                 ? { color: theme.design.Text.TextColors.Feedback.Error }
                 : {}),
             }}
-            valueTooltip={roeTooltip()}
+            valueTooltip={roeTooltip({
+              yieldMultiplier:
+                multiplier && multiplier.kind !== 'omit'
+                  ? formatNumber(multiplier.kind === 'zero' ? 0 : multiplier.value, {
+                      unit: 'multiplier',
+                      abbreviate: false,
+                      maximumFractionDigits: 4,
+                    })
+                  : undefined,
+            })}
           />
         </Box>
       )}

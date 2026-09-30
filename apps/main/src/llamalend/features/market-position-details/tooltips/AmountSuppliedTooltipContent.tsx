@@ -2,7 +2,13 @@ import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { type Nullish, maybe, maybes } from '@primitives/objects.utils'
-import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import {
+  TooltipDescription,
+  TooltipFooter,
+  TooltipItem,
+  TooltipItems,
+  TooltipWrapper,
+} from '@ui/components/TooltipComponents'
 import type { QueryProp } from '@ui/features/queries/util'
 import { decimalDiv, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -20,18 +26,52 @@ const formatPercentageDisplay = (percentage: Decimal | Nullish) =>
 export const AmountSuppliedTooltipContent = ({
   balances: { data: balances },
   supplyAsset: { data: supplyAsset },
+  showUsdValue = false,
 }: {
   balances: QueryProp<UserBalances>
   supplyAsset: QueryProp<SupplyAsset>
+  showUsdValue?: boolean
 }) => {
   const { totalShares: value, gauge: staked } = balances ?? {}
-  const { symbol, depositedAmount } = supplyAsset ?? {}
+  const { symbol, depositedAmount, depositedUsdValue } = supplyAsset ?? {}
 
   const unstaked = maybes([value, staked], (value, staked) => decimalMinus(value, staked))
   const unstakedPercentage = maybes([value, unstaked], (value, unstaked) =>
     +value ? decimalDiv(unstaked, value) : null,
   )
   const stakedPercentage = maybes([value, staked], (value, staked) => (+value ? decimalDiv(staked, value) : null))
+
+  if (showUsdValue) {
+    return (
+      <TooltipWrapper>
+        <TooltipDescription
+          text={t`Underlying tokens supplied to this market. They earn interest and may qualify for rewards.`}
+        />
+        <TooltipItems secondary>
+          <TooltipItem title={t`Amount supplied`} variant="independent">
+            {formatNumber(depositedAmount, 'token.balance')}
+            {symbol}
+          </TooltipItem>
+          <TooltipItem title={t`USD value`} variant="independent">
+            {formatNumber(depositedUsdValue, 'usd.notional')}
+          </TooltipItem>
+        </TooltipItems>
+        <TooltipItems>
+          {[
+            { title: t`Staked`, percentage: stakedPercentage },
+            { title: t`Unstaked`, percentage: unstakedPercentage },
+          ].map(({ title, percentage }) => (
+            <TooltipItem key={title} title={title} variant="independent">
+              {formatNumber(maybes([percentage, depositedAmount], decimalMultiply), 'token.balance')}
+              {symbol}
+              {`(${formatPercentageDisplay(percentage)})`}
+            </TooltipItem>
+          ))}
+        </TooltipItems>
+        <TooltipFooter>{t`Only staked supply is eligible for CRV rewards.`}</TooltipFooter>
+      </TooltipWrapper>
+    )
+  }
 
   return (
     <TooltipWrapper>

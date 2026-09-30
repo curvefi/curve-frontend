@@ -4,6 +4,8 @@ import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import {
   TooltipDescription,
@@ -12,6 +14,7 @@ import {
   TooltipItems,
   TooltipWrapper,
 } from '@ui/components/TooltipComponents'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { COMPOUNDING_CATEGORIES, formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
@@ -22,6 +25,7 @@ type SupplyBoost = {
   apy: number | Nullish
   totalApy: number | Nullish
   totalAverageApy: number | Nullish
+  multiplier?: Decimal | Nullish
 }
 type MarketSupplyRateTooltipContentProps = {
   supplyApy: number | Nullish
@@ -54,6 +58,54 @@ export const MarketSupplyRateTooltipContent = ({
   const hasIncentives = !!(extraRewards.length || extraIncentives.length)
   const hasRebasingYield = rebasingYieldApy != null
   const showBoostRow = boost.type === 'market' && !!boost.apy
+
+  if (beta && boost.type === 'user') {
+    return (
+      <TooltipWrapper>
+        <TooltipDescription text={t`Estimated supply interest, token yield and eligible rewards for your position.`} />
+        <TooltipItems secondary>
+          <TooltipItem title={t`Supply APY`} loading={isLoading}>
+            {formatCappedRatePercent(supplyApy)}
+          </TooltipItem>
+          {averageSupplyApy != null && (
+            <TooltipItem title={`${periodLabel} ${t`average`}`} variant="subItem" loading={isLoading}>
+              {formatCappedRatePercent(averageSupplyApy)}
+            </TooltipItem>
+          )}
+          {hasRebasingYield && (
+            <TooltipItem title={t`Token yield APY`} loading={isLoading}>
+              {formatCappedRatePercent(rebasingYieldApy)}
+              {rebasingSymbol}
+            </TooltipItem>
+          )}
+          {hasIncentives && (
+            <RewardsTooltipItems
+              title={t`Rewards`}
+              tooltipType="supply"
+              extraRewards={extraRewards}
+              extraIncentives={extraIncentives}
+            />
+          )}
+          <TooltipItem
+            title={TOTAL_SUPPLY_APY_TITLE}
+            variant="primary"
+            loading={isLoading}
+            sx={{ borderTop: theme => `1px solid ${theme.design.Layer[3].Outline}`, pt: SizesAndSpaces.Spacing.xs }}
+          >
+            {formatCappedRatePercent(totalApy)}
+          </TooltipItem>
+          {boost.multiplier != null && (
+            <TooltipItem title={t`veCRV boost`} variant="independent">
+              {formatNumber(boost.multiplier, 'multiplier')}
+            </TooltipItem>
+          )}
+        </TooltipItems>
+        {hasIncentives && (
+          <TooltipFooter>{t`Reward APRs assume weekly reinvestment to estimate APY. Rewards do not compound automatically.`}</TooltipFooter>
+        )}
+      </TooltipWrapper>
+    )
+  }
 
   return (
     <TooltipWrapper>

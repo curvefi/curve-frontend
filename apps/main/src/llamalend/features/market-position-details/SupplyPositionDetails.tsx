@@ -138,7 +138,9 @@ export const SupplyPositionDetails = () => {
             formatter: formatCappedRateValue,
             ...(noGauge && { fallback: `No Gauge` }),
           }}
-          notional={mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
+          notional={
+            beta ? undefined : mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)
+          }
           valueTooltip={{
             title: supplyRateTitle,
             body: (
@@ -155,6 +157,7 @@ export const SupplyPositionDetails = () => {
                   apy: supplyMetrics.data?.userBoostApy,
                   totalApy: supplyMetrics.data?.totalUserBoost,
                   totalAverageApy: snapshots.data?.supplyAverageMetrics.totalAverageUserBoost,
+                  multiplier: beta ? userSupplyBoost.data : undefined,
                 }}
                 rebasingYieldApy={snapshots.data?.rebasingYield}
                 rebasingSymbol={supplyAsset.data?.symbol}
@@ -180,14 +183,17 @@ export const SupplyPositionDetails = () => {
               ? { unit: { symbol: ` ${market.borrowed_token.symbol}`, position: 'suffix' }, abbreviate: false }
               : { unit: 'dollar' }
           }
-          notional={mapQuery(supplyAsset, ({ depositedAmount, depositedUsdValue, symbol }) =>
+          notional={
             beta
-              ? { value: depositedUsdValue, unit: 'dollar' as const }
-              : { value: depositedAmount, unit: { symbol: ` ${symbol}`, position: 'suffix' as const } },
-          )}
+              ? undefined
+              : mapQuery(supplyAsset, ({ depositedAmount, symbol }) => ({
+                  value: depositedAmount,
+                  unit: { symbol: ` ${symbol}`, position: 'suffix' as const },
+                }))
+          }
           valueTooltip={{
             title: t`Amount Supplied`,
-            body: <AmountSuppliedTooltipContent balances={q(balances)} supplyAsset={supplyAsset} />,
+            body: <AmountSuppliedTooltipContent balances={q(balances)} supplyAsset={supplyAsset} showUsdValue={beta} />,
             placement: 'top',
             arrow: false,
             clickable: true,
@@ -200,13 +206,17 @@ export const SupplyPositionDetails = () => {
           label={t`Vault shares`}
           value={mapQuery(balances, ({ totalShares }) => totalShares)}
           valueOptions={{}}
-          notional={mapQuery(balances, ({ stakedPercentage = '0' }) => ({
-            value: stakedPercentage,
-            unit: { symbol: t`% staked`, position: 'suffix' as const },
-          }))}
+          notional={
+            beta
+              ? undefined
+              : mapQuery(balances, ({ stakedPercentage = '0' }) => ({
+                  value: stakedPercentage,
+                  unit: { symbol: t`% staked`, position: 'suffix' as const },
+                }))
+          }
           valueTooltip={{
             title: t`Vault Shares`,
-            body: <VaultSharesTooltipContent />,
+            body: <VaultSharesTooltipContent stakedPercentage={beta ? balances.data?.stakedPercentage : undefined} />,
             placement: 'top',
             arrow: false,
             clickable: true,

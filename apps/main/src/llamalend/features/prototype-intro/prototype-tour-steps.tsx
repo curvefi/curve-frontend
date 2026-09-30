@@ -425,7 +425,7 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
         <Stack spacing={1}>
           <Comparison
             before={t`The card showed one Liquidation threshold and its distance.`}
-            after={t`The main figure shows the price change needed to reach the Liquidation range: − for a drop from above, + for a rise from below, or In range. Both range boundaries appear beneath it. Conversions may occur in both directions; the lower edge is not the hard-liquidation price.`}
+            after={t`The main figure shows the price change needed to reach the Liquidation range: − for a drop from above, + for a rise from below, or In range. Both range boundaries are in the tooltip. Conversions may occur in both directions; the lower edge is not the hard-liquidation price.`}
           />
           <MathBlock>
             <RangeEquations />
@@ -440,7 +440,7 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
         <Stack spacing={1}>
           <Comparison
             before={t`Liquidation buffer appeared beside the Health bar, based on healthNotFull and the market's discount gap.`}
-            after={t`The standalone Liquidation buffer displays healthFull as a percentage of debt, with the amount beneath it. It is neither a price-drop allowance nor withdrawable equity. Its warning color uses a provisional market-category cutoff.`}
+            after={t`The standalone Liquidation buffer displays healthFull as a percentage of debt, with the amount in the tooltip. It is neither a price-drop allowance nor withdrawable equity. Its warning color uses a provisional market-category cutoff.`}
           />
           <MathBlock>
             <BufferEquations />

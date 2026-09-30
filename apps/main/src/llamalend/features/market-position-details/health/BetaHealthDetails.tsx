@@ -15,17 +15,16 @@ import {
 } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Badge } from '@ui/components/Badge'
 import { Metric } from '@ui/components/Metric'
 import { Tooltip } from '@ui/components/Tooltip'
-import { mapQuery, q } from '@ui/features/queries/util'
-import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPositionView; borrowSymbol: string }) => {
-  const isMobile = useIsMobile()
   const theme = useTheme()
   const assetsThresholds = view.assetsType ? PROVISIONAL_POSITION_THRESHOLDS[view.assetsType] : undefined
   const bufferIsRed = isCriticalBuffer(view.fullHealth.data, view.assetsType)
@@ -52,7 +51,10 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
   )
   return (
     <>
-      <Box sx={{ gridArea: 'health', alignSelf: 'stretch' }} data-testid="beta-health-details">
+      <Stack
+        sx={{ gridArea: 'health', alignSelf: 'stretch', alignItems: 'start', gap: SizesAndSpaces.Spacing.xs }}
+        data-testid="beta-health-details"
+      >
         <Metric
           category="llamalend.positionCardHealth"
           label={t`Health`}
@@ -66,22 +68,15 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
             },
           }}
           valueTooltip={healthTooltip()}
-          notional={statusBadge}
         />
-      </Box>
+        {statusBadge}
+      </Stack>
       <Box sx={{ gridArea: 'buffer' }}>
         <Metric
           category="llamalend.positionCardTop"
           label={t`Liquidation buffer`}
           testId="health-details-liquidation-buffer-metric"
           value={view.fullHealth}
-          notional={
-            status?.bufferUnavailable
-              ? q({ data: t`Buffer unavailable`, isLoading: false, error: null })
-              : isMobile
-                ? undefined
-                : mapQuery(view.buffer, amount => formatBufferNotional(amount, borrowSymbol))
-          }
           valueOptions={{
             abbreviate: false,
             color: bufferColor,
@@ -91,7 +86,11 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
               return parsed == undefined ? '' : formatSignedPercent(parsed)
             },
           }}
-          valueTooltip={bufferTooltip({ criticalBuffer: assetsThresholds?.criticalBufferPercent ?? '0' })}
+          valueTooltip={bufferTooltip({
+            criticalBuffer: assetsThresholds?.criticalBufferPercent ?? '0',
+            amount: view.buffer.data != null ? formatBufferNotional(view.buffer.data) : t`Unavailable`,
+            symbol: borrowSymbol,
+          })}
         />
       </Box>
     </>

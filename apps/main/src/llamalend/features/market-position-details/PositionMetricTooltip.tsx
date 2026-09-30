@@ -2,15 +2,41 @@
 import type { ReactNode } from 'react'
 import { ESTIMATED_LEVERAGED_APR_TITLE, RANGE_HEALTH_DESCRIPTION } from '@/llamalend/constants'
 import Box from '@mui/material/Box'
+import type { PopperProps } from '@mui/material/Popper'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import {
+  TooltipDescription,
+  TooltipFooter,
+  TooltipItem,
+  TooltipItems,
+  TooltipWrapper,
+} from '@ui/components/TooltipComponents'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-const tooltipChrome = { placement: 'top' as const, arrow: false, clickable: true }
+// Expanded calculations must trigger a fresh tooltip placement.
+const resizeModifier: NonNullable<PopperProps['modifiers']>[number] = {
+  name: 'contentResize',
+  enabled: true,
+  phase: 'write',
+  fn: () => undefined,
+  effect: ({ state, instance }) => {
+    const observer = new ResizeObserver(() => void instance.update())
+    observer.observe(state.elements.popper)
+    return () => observer.disconnect()
+  },
+}
+
+const tooltipChrome = {
+  placement: 'top' as const,
+  arrow: false,
+  clickable: true,
+  mobileDrawer: true,
+  slotProps: { popper: { modifiers: [resizeModifier] } },
+}
 
 /** Stacked fraction. Kept local so tooltips can show a formula without a math typesetting dependency. */
 export const Fraction = ({ numerator, denominator }: { numerator: ReactNode; denominator: ReactNode }) => (
@@ -69,6 +95,24 @@ const FormulaTerms = ({ terms }: { terms: string[] }) => (
   </Stack>
 )
 
+const Calculation = ({ children }: { children: ReactNode }) => (
+  <Box component="details">
+    <Typography
+      component="summary"
+      variant="bodyXsBold"
+      color="textSecondary"
+      sx={{
+        cursor: 'pointer',
+        py: Spacing.xxs,
+        '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main' },
+      }}
+    >
+      {t`Calculation`}
+    </Typography>
+    <Stack sx={{ gap: Spacing.xs, mt: Spacing.xs }}>{children}</Stack>
+  </Box>
+)
+
 const EdgeMark = ({ edge }: { edge: 'top' | 'bottom' }) => (
   <Stack sx={{ width: 16, height: 16, alignItems: 'center', justifyContent: 'center' }}>
     <Stack
@@ -90,7 +134,9 @@ export const healthTooltip = () => ({
   body: (
     <TooltipWrapper>
       <TooltipDescription text={RANGE_HEALTH_DESCRIPTION} />
-      <HealthEquation />
+      <Calculation>
+        <HealthEquation />
+      </Calculation>
     </TooltipWrapper>
   ),
 })
@@ -104,23 +150,36 @@ export const HealthEquation = () => (
   </Equation>
 )
 
-export const bufferTooltip = ({ criticalBuffer }: { criticalBuffer?: string } = {}) => ({
+export const bufferTooltip = ({
+  criticalBuffer,
+  amount,
+  symbol,
+}: { criticalBuffer?: string; amount?: string; symbol?: string } = {}) => ({
   ...tooltipChrome,
   title: t`Liquidation buffer`,
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Debt-relative liquidation-adjusted margin. This is not a price-drop allowance and it is not withdrawable equity.`}
+        text={t`Liquidation-adjusted margin as a percentage of debt. It is neither a price-drop allowance nor withdrawable equity.`}
       />
-      <BufferEquations />
-      <TooltipDescription
-        text={t`The displayed percentage is healthFull. Liquidatable requires healthFull below 0; exactly 0 does not meet that condition. Self and approved close use a different check.`}
-      />
-      {criticalBuffer && (
-        <TooltipDescription
-          text={t`The buffer value turns red at or below ${criticalBuffer}%. This provisional cutoff depends on the market category.`}
-        />
+      {amount != null && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Buffer amount`} variant="independent">
+            {amount}
+            {symbol}
+          </TooltipItem>
+          {criticalBuffer != null && (
+            <TooltipItem title={t`Red at or below`} variant="independent">{`${criticalBuffer}%`}</TooltipItem>
+          )}
+        </TooltipItems>
       )}
+      <Calculation>
+        <BufferEquations />
+      </Calculation>
+      <TooltipFooter>
+        {t`This is full Controller health (healthFull). Below 0 is liquidatable; exactly 0 is not.`}
+        {criticalBuffer != null && t` The warning cutoff is provisional for this market category.`}
+      </TooltipFooter>
     </TooltipWrapper>
   ),
 })
@@ -152,40 +211,82 @@ export const statusTooltip = ({
   title: t`Status`,
   body: (
     <TooltipWrapper>
-      <TooltipDescription text={label ? t`Resolved status: ${label}` : t`Status is not resolved yet.`} />
       <TooltipDescription
-        text={t`Status shows whether the oracle is Above range, Near range, In range, or Below range. The Near range cutoff depends on the market category and is provisional. In range, collateral may be converting; consider closing or resetting the position.`}
+        text={
+          label === 'In range'
+            ? t`The oracle is within the liquidation range. Collateral can convert and incur losses; consider closing or resetting.`
+            : label === 'Below range'
+              ? t`The oracle is below the liquidation range. The lower boundary is not the hard-liquidation price.`
+              : label === 'Liquidatable'
+                ? t`Full Controller health is below zero; the position is liquidatable.`
+                : label === 'Position closed'
+                  ? t`No debt remains.`
+                  : label === 'Status unavailable' || !label
+                    ? t`Status needs a valid oracle price and liquidation range.`
+                    : label === 'Near range'
+                      ? t`The oracle is above the range, within this market category's provisional price-drop cutoff.`
+                      : t`The oracle is above the range, outside the Near range cutoff.`
+        }
       />
       <TooltipItems secondary>
-        <TooltipItem title={t`Category`} variant="independent">
-          {category ?? t`Uncategorized`}
+        <TooltipItem title={t`Market type`} variant="independent">
+          {category === 'correlated'
+            ? t`Correlated`
+            : category === 'blue-chip'
+              ? t`Blue-chip`
+              : category === 'long-tail'
+                ? t`Long-tail`
+                : t`Uncategorized`}
         </TooltipItem>
-        <TooltipItem title={t`Price drop to range ≤`} variant="subItem">
-          {nearRange ?? t`Provisional`}
+        <TooltipItem title={t`Near range cutoff`} variant="independent">
+          {nearRange ? `≤ ${nearRange}` : t`Not set`}
         </TooltipItem>
-        <TooltipItem title={t`Buffer turns red at or below`} variant="subItem">
-          {criticalBuffer ?? t`Provisional`}
-        </TooltipItem>
-        <TooltipItem title={t`Liquidatable when`} variant="subItem">
-          {t`healthFull < 0. Exact zero does not meet this condition.`}
-        </TooltipItem>
-        <TooltipItem title={t`Observed`} variant="subItem">
-          {observedAt != null ? new Date(observedAt).toLocaleString() : t`Unavailable`}
+        <TooltipItem title={t`Buffer warning cutoff`} variant="independent">
+          {criticalBuffer ? `≤ ${criticalBuffer}` : t`Not set`}
         </TooltipItem>
       </TooltipItems>
+      <TooltipFooter>{t`Cutoffs are provisional. Liquidatable requires full Controller health below 0; exactly 0 is not liquidatable.`}</TooltipFooter>
+      {observedAt != null && (
+        <TooltipFooter>{t`Full health read: ${new Date(observedAt).toLocaleString()}`}</TooltipFooter>
+      )}
     </TooltipWrapper>
   ),
 })
 
-export const collateralTooltip = () => ({
+export const collateralTooltip = ({
+  collateralShare,
+  convertedShare,
+  collateralSymbol,
+  convertedSymbol,
+}: {
+  collateralShare?: string
+  convertedShare?: string
+  collateralSymbol?: string
+  convertedSymbol?: string
+} = {}) => ({
   ...tooltipChrome,
   title: t`Collateral value`,
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Remaining collateral and converted borrowed assets backing the debt. A zero total is unavailable, not 100% cash.`}
+        text={t`Combined value of remaining collateral and converted borrowed assets backing the debt.`}
       />
-      <CollateralEquations />
+      {collateralShare != null && convertedShare != null && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Remaining collateral`} variant="independent">
+            {collateralShare}
+            {collateralSymbol}
+          </TooltipItem>
+          <TooltipItem title={t`Converted assets`} variant="independent">
+            {convertedShare}
+            {convertedSymbol}
+          </TooltipItem>
+        </TooltipItems>
+      )}
+      <Calculation>
+        <CollateralEquations />
+      </Calculation>
+      <TooltipFooter>{t`Percentages are shares of collateral value. A zero total is unavailable, not 100% cash.`}</TooltipFooter>
     </TooltipWrapper>
   ),
 })
@@ -211,12 +312,19 @@ export const CollateralEquations = () => (
   </>
 )
 
-export const debtTooltip = () => ({
+export const debtTooltip = ({ usdValue }: { usdValue?: string } = {}) => ({
   ...tooltipChrome,
   title: t`Total debt`,
   body: (
     <TooltipWrapper>
       <TooltipDescription text={t`Current debt in the debt token, including accrued interest.`} />
+      {usdValue != null && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`USD value`} variant="independent">
+            {usdValue}
+          </TooltipItem>
+        </TooltipItems>
+      )}
     </TooltipWrapper>
   ),
 })
@@ -226,10 +334,11 @@ export const leverageTooltip = () => ({
   title: t`Leverage`,
   body: (
     <TooltipWrapper>
-      <TooltipDescription
-        text={t`Remaining collateral exposure over equity. It amplifies relative-price gains and losses and potential collateral yield, less borrowing costs. It is not the yield multiplier.`}
-      />
-      <LeverageEquation />
+      <TooltipDescription text={t`Remaining collateral exposure divided by net position value (assets minus debt).`} />
+      <Calculation>
+        <LeverageEquation />
+      </Calculation>
+      <TooltipFooter>{t`Amplifies relative-price gains, losses and collateral yield, less borrowing costs. It is not the yield multiplier.`}</TooltipFooter>
     </TooltipWrapper>
   ),
 })
@@ -252,18 +361,26 @@ export const LeverageEquation = () => (
   </>
 )
 
-export const roeTooltip = () => ({
+export const roeTooltip = ({ yieldMultiplier }: { yieldMultiplier?: string } = {}) => ({
   ...tooltipChrome,
   title: ESTIMATED_LEVERAGED_APR_TITLE,
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`An annual rate estimate from current composition and rates, with no assumed reinvestment. It is not realised return or profit and loss (PnL); it excludes price movement and conversion profit or loss.`}
+        text={t`Estimated annual rate from current composition and rates, after borrowing costs. It is not realised return or PnL.`}
       />
-      <RoeEquations />
-      <TooltipDescription
-        text={t`The multiplier uses the same collateral yield as the estimate. It is not exposure leverage. Lender CRV rewards are not borrower income.`}
-      />
+      {yieldMultiplier != null && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Yield multiplier`} variant="independent">
+            {yieldMultiplier}
+          </TooltipItem>
+        </TooltipItems>
+      )}
+      <Calculation>
+        <RoeEquations />
+        <TooltipFooter>{t`Lender CRV rewards are not borrower income.`}</TooltipFooter>
+      </Calculation>
+      <TooltipFooter>{t`Excludes price movement and conversion gains or losses; assumes no reinvestment. The multiplier compares with unleveraged collateral yield, not exposure leverage.`}</TooltipFooter>
     </TooltipWrapper>
   ),
 })
@@ -306,26 +423,30 @@ export const rangeTooltip = ({
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Distance shows the price change needed to reach the Liquidation range: negative for a price drop from above, positive for a price rise from below. Conversions may occur both ways. Losses need not recover when the price recovers. The lower edge is not the hard-liquidation price.`}
+        text={t`Price change needed to reach the liquidation range: − for a drop from above, + for a rise from below.`}
       />
-      <RangeEquations />
       <TooltipItems secondary>
-        <TooltipItem title={t`Range details`} variant="independent">
+        <TooltipItem title={t`Upper boundary`} titleAdornment={<EdgeMark edge="top" />} variant="independent">
+          {upper ?? t`Unavailable`}
           {pair}
         </TooltipItem>
-        <TooltipItem title={t`Top edge`} titleAdornment={<EdgeMark edge="top" />} variant="subItem">
-          {upper}
-        </TooltipItem>
-        <TooltipItem title={t`Bottom edge`} titleAdornment={<EdgeMark edge="bottom" />} variant="subItem">
-          {lower}
-        </TooltipItem>
-        <TooltipItem title={t`Band count`} variant="subItem">
-          {bandCount}
-        </TooltipItem>
-        <TooltipItem title={t`Band range`} variant="subItem">
-          {bandRange}
+        <TooltipItem title={t`Lower boundary`} titleAdornment={<EdgeMark edge="bottom" />} variant="independent">
+          {lower ?? t`Unavailable`}
+          {pair}
         </TooltipItem>
       </TooltipItems>
+      <Calculation>
+        <RangeEquations />
+        <TooltipItems>
+          <TooltipItem title={t`Band count`} variant="independent">
+            {bandCount ?? t`Unavailable`}
+          </TooltipItem>
+          <TooltipItem title={t`Bands`} variant="independent">
+            {bandRange ?? t`Unavailable`}
+          </TooltipItem>
+        </TooltipItems>
+      </Calculation>
+      <TooltipFooter>{t`Conversions can occur both ways; losses may persist after price recovery. The lower boundary is not the hard-liquidation price.`}</TooltipFooter>
     </TooltipWrapper>
   ),
 })

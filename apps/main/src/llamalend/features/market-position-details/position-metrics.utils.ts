@@ -180,11 +180,11 @@ export const inclusiveBandCount = (start: number, end: number) => Math.abs(start
 export const formatBandSpan = (start: number, end: number) => `${Math.min(start, end)} to ${Math.max(start, end)}`
 
 /** Tiny and zero amounts keep their signed label. Larger amounts abbreviate. */
-export const formatBufferNotional = (amount: Decimal, symbol: string): string => {
+export const formatBufferNotional = (amount: Decimal, symbol?: string): string => {
   const magnitude = decimalCompare(amount, ZERO) < 0 ? decimalMinus(ZERO, amount) : amount
   const display =
     decimalEqual(amount, ZERO) || decimalCompare(magnitude, TINY_PERCENT) < 0
       ? formatSignedAmount(amount)
       : formatNumber(amount, { abbreviate: true })
-  return `${display} ${symbol}`
+  return symbol ? `${display} ${symbol}` : display
 }

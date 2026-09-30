@@ -3,14 +3,13 @@ import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { drawerClasses } from '@mui/material/Drawer'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
-import type { SxProps } from '@mui/material/styles'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { TokenIcon, type Size } from '@ui/components/TokenIcon'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
-import { applySxProps } from '@ui/lib/mui'
+import { applySxProps, type SxProps } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
 
@@ -106,7 +105,11 @@ export const TooltipItem = ({
 }: TooltipItemProps) => (
   <Stack direction="row" sx={applySxProps({ gap: Spacing.sm, justifyContent: 'space-between' }, sx)}>
     <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
-      {titleAdornment && <Stack sx={{ alignItems: 'center', marginLeft: Spacing.md }}>{titleAdornment}</Stack>}
+      {titleAdornment && (
+        <Stack sx={{ alignItems: 'center', ...(variant !== 'independent' && { marginLeft: Spacing.md }) }}>
+          {titleAdornment}
+        </Stack>
+      )}
       {titleIcon && (
         <TokenIcon
           blockchainId={titleIcon.blockchainId}
