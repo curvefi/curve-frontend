@@ -54,7 +54,7 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
     <>
       <Box sx={{ gridArea: 'health', alignSelf: 'stretch' }} data-testid="beta-health-details">
         <Metric
-          category="llamalend.legacyPositionHealth"
+          category="llamalend.positionCardHealth"
           label={t`Health`}
           testId="health-details-health-metric"
           value={view.health}
