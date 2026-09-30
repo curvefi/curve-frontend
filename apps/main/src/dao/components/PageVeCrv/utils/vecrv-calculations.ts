@@ -1,6 +1,6 @@
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { dayjs } from '@evm-ui/lib/dayjs'
+import { dayjs } from '@evm-ui/utils/dayjs'
 import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
 import { formatDate } from '@primitives/date.utils'

@@ -5,14 +5,19 @@ import { useUserPoolBalancesQuery } from '@/dex/queries/user-pool-balances.query
 import { useUserPoolBoostQuery } from '@/dex/queries/user-pool-boost.query'
 import { useUserPoolLiquidityUsdQuery } from '@/dex/queries/user-pool-liquidity-usd.query'
 import { useUserPoolShareQuery } from '@/dex/queries/user-pool-share.query'
-import type { ChainId, PoolData } from '@/dex/types/main.types'
+import type { ChainId } from '@/dex/types/main.types'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalPercent, decimalSum } from '@ui/lib/decimal'
 
-export type UseLiquidityDetailsParams = { chainId: ChainId; poolData: PoolData; poolId: string | undefined }
+export type UseLiquidityDetailsParams = {
+  chainId: ChainId
+  poolId: string | undefined
+  tokens: string[]
+  tokenAddresses: string[]
+}
 
-export const useLiquidityDetails = ({ chainId, poolData, poolId }: UseLiquidityDetailsParams) => {
+export const useLiquidityDetails = ({ chainId, poolId, tokens, tokenAddresses }: UseLiquidityDetailsParams) => {
   const { address: userAddress } = useConnection()
   const { lpTokenBalance, gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, poolId, userAddress })
 
@@ -30,12 +35,12 @@ export const useLiquidityDetails = ({ chainId, poolData, poolId }: UseLiquidityD
 
   const withdrawRows = useMemo(
     () =>
-      poolData.tokenAddresses.map((address, index) => ({
+      tokenAddresses.map((address, index) => ({
         address,
         amount: userBalances.data?.[index],
-        symbol: poolData.tokens[index] ?? '',
+        symbol: tokens[index] ?? '',
       })),
-    [poolData.tokenAddresses, poolData.tokens, userBalances.data],
+    [tokenAddresses, tokens, userBalances.data],
   )
 
   return {

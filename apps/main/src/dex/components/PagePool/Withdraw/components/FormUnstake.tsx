@@ -10,7 +10,8 @@ import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, PoolData } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
@@ -21,7 +22,7 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormUnstake = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, poolData, api: curve } = usePoolContext()
+  const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -43,16 +44,26 @@ export const FormUnstake = ({ seed }: TransferProps) => {
     (updatedFormValues: Partial<FormValues>) => {
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
-      void setFormValues('UNSTAKE', config, curve, poolId, poolData, updatedFormValues, null, seed.isSeed, '')
+      void setFormValues(
+        'UNSTAKE',
+        config,
+        curve,
+        poolId,
+        pool,
+        { isWrapped, ...updatedFormValues },
+        null,
+        seed.isSeed,
+        '',
+      )
     },
-    [config, curve, poolData, poolId, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, pool, poolId, seed.isSeed, setFormValues],
   )
 
   const handleUnstakeClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues) => {
       const notifyMessage = t`Please confirm unstaking of ${formValues.stakedLpToken} LP Tokens`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepUnstake(activeKey, curve, poolData, formValues)
+      const resp = await fetchStepUnstake(activeKey, curve, pool, formValues)
 
       if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
         const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
@@ -67,7 +78,7 @@ export const FormUnstake = ({ seed }: TransferProps) => {
     (
       activeKey: string,
       curve: CurveApi,
-      poolData: PoolData,
+      pool: PoolTemplate,
       formValues: FormValues,
       formStatus: FormStatus,
       isSeed: boolean,
@@ -82,7 +93,7 @@ export const FormUnstake = ({ seed }: TransferProps) => {
           status: getStepStatus(isComplete, step === 'UNSTAKE', isValid),
           type: 'action',
           content: isComplete ? t`Unstake Complete` : t`Unstake`,
-          onClick: () => void handleUnstakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => void handleUnstakeClick(activeKey, curve, pool, formValues),
         },
       }
 
@@ -102,7 +113,7 @@ export const FormUnstake = ({ seed }: TransferProps) => {
 
   useEffect(() => {
     if (poolId) {
-      resetState(poolData)
+      resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolId])
@@ -117,8 +128,8 @@ export const FormUnstake = ({ seed }: TransferProps) => {
 
   // steps
   useEffect(() => {
-    if (curve && poolData && seed.isSeed !== null) {
-      const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, seed.isSeed)
+    if (curve && pool && seed.isSeed !== null) {
+      const updatedSteps = getSteps(activeKey, curve, pool, formValues, formStatus, seed.isSeed)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }

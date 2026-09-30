@@ -125,7 +125,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
                   </InlineLink>
                   <br />
                   <br />
-                  <Box component="span" sx={{ color: t => t.palette.warning.main }}>
+                  <Box component="span" sx={{ color: t => t.design.Text.TextColors.Feedback.Warning }}>
                     {t`IMPORTANT: You must enable the "pinFileToIPFS" legacy endpoint when creating your API key, otherwise it will not work.`}
                   </Box>
                 </>

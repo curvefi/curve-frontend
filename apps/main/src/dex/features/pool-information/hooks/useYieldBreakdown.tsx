@@ -6,28 +6,29 @@ import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
-import type { ChainId, PoolData } from '@/dex/types/main.types'
-import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
-import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
+import type { ChainId } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
+import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils/address'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
+import { RewardIcon } from '@ui/components/RewardIcon'
 import { t } from '@ui/lib/i18n'
 import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/columns.definitions'
 
 export const useYieldBreakdown = ({
   chainId,
-  poolData,
+  pool,
   poolId,
 }: {
   chainId: ChainId
-  poolData: PoolData
+  pool: PoolTemplate
   poolId: string
 }) => {
   const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
-  const poolAddress = poolData.pool.address as Address
+  const poolAddress = pool.address as Address
   const gaugeIsKilled = !!gauge?.isKilled
   const { data: network } = useNetworkByChain({ chainId })
 

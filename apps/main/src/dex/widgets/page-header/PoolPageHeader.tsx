@@ -1,4 +1,3 @@
-import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
@@ -25,9 +24,8 @@ export const PoolPageHeader = ({
   pricesApiPoolData: PricesApiPool | undefined
   backHref: string
 }) => {
-  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
-  const tvl = usePoolTvl({ chainId, poolId })
-  const volume = usePoolVolume({ chainId, poolId })
+  const tvl = usePoolTvl({ chainId, poolId: poolIdOrAddress })
+  const volume = usePoolVolume({ chainId, poolId: poolIdOrAddress })
 
   return (
     <PoolDetailsHeader

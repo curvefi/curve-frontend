@@ -11,16 +11,16 @@ import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 export type PricesProps = {
-  tokens: string[]
-  tokenAddresses: Address[]
-  priceOracleData: Amount[] | undefined
-  priceScaleData: Amount[] | undefined
-  xcpProfit: number | Nullish
-  xcpProfitA: number | Nullish
+  tokenSymbols: string[] | undefined
+  tokenAddresses: Address[] | undefined
+  priceOracleData?: Amount[] | undefined
+  priceScaleData?: Amount[] | undefined
+  xcpProfit?: number | Nullish
+  xcpProfitA?: number | Nullish
 }
 
 export const Prices = ({
-  tokens,
+  tokenSymbols,
   tokenAddresses,
   priceOracleData,
   priceScaleData,
@@ -28,9 +28,9 @@ export const Prices = ({
   xcpProfitA,
 }: PricesProps) => {
   // Curve price oracle/scale arrays omit the base token, so value index 0 belongs to token index 1.
-  const priceRows = tokens
-    .slice(1)
-    .map((label, index) => ({ key: tokenAddresses[index + 1] ?? `${label}-${index + 1}`, label, index }))
+  const priceRows = tokenSymbols
+    ?.slice(1)
+    .map((label, index) => ({ key: tokenAddresses?.[index + 1] ?? `${label}-${index + 1}`, label, index }))
 
   return (
     <>
@@ -38,7 +38,7 @@ export const Prices = ({
         <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Price Oracle`} />
           <CardContent component={SectionContentCard}>
-            {priceRows.map(({ key, label, index }) => (
+            {priceRows?.map(({ key, label, index }) => (
               <ActionInfo
                 key={`price-oracle-${key}`}
                 label={label}
@@ -53,7 +53,7 @@ export const Prices = ({
         <Card size="extraSmall" variant="inline">
           <CardHeader title={t`Price Scale`} />
           <CardContent component={SectionContentCard}>
-            {priceRows.map(({ key, label, index }) => (
+            {priceRows?.map(({ key, label, index }) => (
               <ActionInfo
                 key={`price-scale-${key}`}
                 label={label}

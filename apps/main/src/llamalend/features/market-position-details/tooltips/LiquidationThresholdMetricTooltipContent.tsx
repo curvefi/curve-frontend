@@ -1,5 +1,5 @@
 import { useUserBands } from '@/llamalend/queries/user'
-import type { UserMarketParams } from '@evm-ui/lib/model'
+import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui/components/TooltipComponents'

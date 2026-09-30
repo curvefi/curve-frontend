@@ -1,5 +1,5 @@
 import type { ChainId } from '@/dao/types/dao.types'
-import type { UserChainQuery } from '@evm-ui/lib/model'
+import type { UserChainQuery } from '@evm-ui/queries/root-keys'
 import type { CalendarDate } from '@internationalized/date'
 import type { FieldsOf } from '@ui/lib/validation/types'
 

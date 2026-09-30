@@ -12,6 +12,7 @@ export type BridgeFormContentParams = Omit<
   Pick<BridgeAmountProps, 'amount' | 'onAmount' | 'walletBalance' | 'inputBalanceUsd'> & {
     bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
     loading: boolean
+    isDebouncing: boolean
   }
 
 export const BridgeFormContent = ({
@@ -23,6 +24,7 @@ export const BridgeFormContent = ({
   inputBalanceUsd,
   bridgeDisabledAlert,
   loading,
+  isDebouncing,
   isPending,
   isApproved,
   isConnected,
@@ -55,7 +57,7 @@ export const BridgeFormContent = ({
     ) : (
       <BridgeButton
         disableChangeNetwork={loading}
-        disableBridge={!!amount.error || !amount.data || loading || isApproved == null}
+        disableBridge={!!amount.error || !amount.data || loading || isDebouncing || isApproved == null}
         isPending={isPending}
         isApproved={isApproved}
         isConnected={isConnected}

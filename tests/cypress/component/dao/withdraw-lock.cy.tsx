@@ -4,7 +4,7 @@ import { createWithdrawLockScenario } from '@cy/support/helpers/dao/mocks/withdr
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
 import { setGasInfo } from '@cy/support/helpers/llamalend/test-context.helpers'
 import type { CurveApi } from '@evm-ui/features/connect-wallet'
-import { dayjs } from '@evm-ui/lib/dayjs'
+import { dayjs } from '@evm-ui/utils/dayjs'
 
 const CHAIN_ID = 1
 

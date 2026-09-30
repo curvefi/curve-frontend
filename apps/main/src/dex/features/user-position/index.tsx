@@ -16,8 +16,11 @@ const Content = ({ children }: { children: ReactNode }) => (
 )
 
 export const UserPosition = () => {
-  const { chainId, blockchainId, poolId, poolData } = usePoolContext()
-  const params = useMemo(() => ({ blockchainId, chainId, poolData, poolId }), [blockchainId, chainId, poolData, poolId])
+  const { chainId, blockchainId, poolId, tokens, tokenAddresses } = usePoolContext()
+  const params = useMemo(
+    () => ({ blockchainId, chainId, poolId, tokens, tokenAddresses }),
+    [blockchainId, chainId, poolId, tokens, tokenAddresses],
+  )
   const { hasPosition } = useLiquidityDetails(params)
   return (
     hasPosition && (

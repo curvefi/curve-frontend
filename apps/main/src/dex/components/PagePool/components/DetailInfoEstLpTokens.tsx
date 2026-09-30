@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { FormLpTokenExpected } from '@/dex/components/PagePool/Deposit/types'
-import { PoolData } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@primitives/number.utils'
@@ -11,13 +11,13 @@ import { formatToken } from '@ui/lib/tokens'
 export const DetailInfoEstLpTokens = ({
   formLpTokenExpected,
   maxSlippage,
-  poolData,
+  pool,
 }: {
   formLpTokenExpected: FormLpTokenExpected
   maxSlippage: string
-  poolData: PoolData
+  pool: PoolTemplate
 }) => {
-  const { referenceAsset } = poolData.pool
+  const { referenceAsset } = pool
   const showTooltip = referenceAsset !== 'CRYPTO'
   const parsedVirtualPrice = formatToken(amount(formLpTokenExpected.virtualPrice), referenceAsset, 'amount')
 

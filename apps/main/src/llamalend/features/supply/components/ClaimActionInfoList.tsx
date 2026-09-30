@@ -5,7 +5,7 @@ import {
 import { ActionInfoCollapse } from '@/llamalend/widgets/action-card/ActionInfoCollapse'
 import { ACTION_INFO_GROUP_SX } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { UserMarketParams } from '@evm-ui/lib/model'
+import { UserMarketParams } from '@evm-ui/queries/root-keys'
 import Stack from '@mui/material/Stack'
 import { ActionInfoGasEstimate } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { q } from '@ui/features/queries/util'

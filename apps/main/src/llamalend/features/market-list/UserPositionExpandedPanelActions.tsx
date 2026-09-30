@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
+import { ExpandedPanelActions } from '@ui/features/tables/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { t } from '@ui/lib/i18n'
 import { useMarketExpandedPanelActions } from './hooks/useMarketExpandedPanelActions'

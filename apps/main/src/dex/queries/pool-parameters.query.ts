@@ -1,8 +1,8 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type PoolParams, type PoolQuery } from '@evm-ui/lib/model'
-import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
-import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
-import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
+import { rootKeys, type PoolParams, type PoolQuery } from '@evm-ui/queries/root-keys'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
+import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 

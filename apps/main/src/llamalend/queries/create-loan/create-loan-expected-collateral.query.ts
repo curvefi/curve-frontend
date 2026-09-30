@@ -1,6 +1,6 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { parseRoute as parseRoute } from '@evm-ui/entities/router-api'
-import { rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/queries/root-keys'
+import { parseRoute as parseRoute } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'

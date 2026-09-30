@@ -5,7 +5,7 @@ import {
   type ResetQuery,
   resetValidationSuite,
 } from '@/llamalend/queries/validation/reset.validation'
-import { rootKeys } from '@evm-ui/lib/model'
+import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { Range } from '@ui/features/queries/util'

@@ -11,9 +11,9 @@ import { YIELD_BREAKDOWN_COLUMNS, YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY } fro
 import { FooterRow } from './FooterRow'
 
 export const YieldBreakdown = () => {
-  const { chainId, poolId, poolData } = usePoolContext()
+  const { chainId, poolId, pool } = usePoolContext()
   const isMobile = useIsMobile()
-  const { maxBoostTotal, total, rows } = useYieldBreakdown({ chainId, poolData, poolId })
+  const { maxBoostTotal, total, rows } = useYieldBreakdown({ chainId, pool, poolId })
   const table = useCurveTable({
     query: constQ(rows), // TODO: get error and loading state properly
     columns: YIELD_BREAKDOWN_COLUMNS,

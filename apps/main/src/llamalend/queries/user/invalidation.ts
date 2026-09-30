@@ -3,7 +3,7 @@ import { invalidateUserVaultEventsQuery } from '@/llamalend/features/user-positi
 import { getMarket, getVaultAddress } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { rootKeys, type UserContractQuery, type UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, type UserContractQuery, type UserMarketQuery } from '@evm-ui/queries/root-keys'
 import { queryClient } from '@ui/features/queries/query-client'
 import { invalidateUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'

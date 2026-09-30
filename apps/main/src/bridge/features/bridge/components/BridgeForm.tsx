@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
 import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useNetworksTVL } from '@evm-ui/queries/prices-networks.query'
+import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { getCurrentApp, getInternalUrl } from '@evm-ui/shared/routes'
 import { CRVUSD_ADDRESS, requireBlockchainId } from '@evm-ui/utils'
 import { Chain } from '@primitives/network.utils'
@@ -32,6 +32,7 @@ export const BridgeForm = ({
     form,
     values: { fromChainId, amount },
     loading,
+    isDebouncing,
     walletBalance,
     supportedNetworks,
     isPending,
@@ -78,6 +79,7 @@ export const BridgeForm = ({
         inputBalanceUsd={inputBalanceUsd}
         bridgeDisabledAlert={bridgeDisabledAlert}
         loading={!supportedNetworks.length || loading}
+        isDebouncing={isDebouncing}
         isPending={isPending}
         isApproved={isApproved?.data}
         isConnected={isConnected}

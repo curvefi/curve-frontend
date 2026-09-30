@@ -1,6 +1,7 @@
+import { countBy } from 'lodash'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
-import { PoolData } from '@/dex/types/main.types'
 import { shortenAddress } from '@evm-ui/utils'
 import { Loader } from '@legacy-ui/Loader'
 import { Radio, RadioGroup } from '@legacy-ui/Radio'
@@ -17,7 +18,6 @@ export const SelectedOneCoinExpected = ({
   haveSigner,
   blockchainId,
   loading,
-  poolData,
   selectedTokenAddress,
   tokens,
   tokenAddresses,
@@ -27,7 +27,6 @@ export const SelectedOneCoinExpected = ({
   haveSigner: boolean
   blockchainId: string
   loading: boolean
-  poolData: PoolData
   selectedTokenAddress: string
   tokens: string[]
   tokenAddresses: string[]
@@ -37,13 +36,14 @@ export const SelectedOneCoinExpected = ({
     const idx = tokenAddresses.findIndex(tokenAddress => tokenAddress === selectedTokenAddress)
     handleChanged({ token: tokens[idx], tokenAddress: selectedTokenAddress })
   }
+  const tokenCount = useMemo(() => countBy(tokens), [tokens])
 
   return (
     <StyledRadioGroup aria-label="Withdraw from one coin" value={selectedTokenAddress} onChange={handleRadioChange}>
       {selectedTokenAddress ? (
         tokenAddresses.map((tokenAddress, idx) => {
           const symbol = tokens[idx]
-          const haveSameTokenName = poolData?.tokensCountBy[symbol] > 1
+          const haveSameTokenName = tokenCount[symbol] > 1
 
           return (
             <Radio

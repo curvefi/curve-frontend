@@ -1,6 +1,6 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type UserPoolParams, type UserPoolQuery } from '@evm-ui/lib/model'
-import { userPoolValidationSuite } from '@evm-ui/lib/model/query/user-pool-validation'
+import { rootKeys, type UserPoolParams, type UserPoolQuery } from '@evm-ui/queries/root-keys'
+import { userPoolValidationSuite } from '@evm-ui/queries/validation/user-pool-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 

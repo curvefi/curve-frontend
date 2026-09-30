@@ -1,16 +1,6 @@
-import { isUndefined } from 'lodash'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-import {
-  ChainId,
-  ClaimableReward,
-  claimButtonsKey,
-  CurveApi,
-  EstimatedGas,
-  Pool,
-  PoolData,
-  Provider,
-} from '@/dex/types/main.types'
+import { ChainId, ClaimableReward, CurveApi, EstimatedGas, Provider } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import {
   _parseRoutesAndOutput,
@@ -19,13 +9,41 @@ import {
   getSwapIsLowExchangeRate,
   routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
-import type { IProfit } from '@curvefi/api/lib/interfaces'
-import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
-import { getGasConfig } from '@evm-ui/lib/model/entities/gas-info'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import { getGasConfig } from '@evm-ui/queries/gas-info.query'
+import { waitForTransaction, waitForTransactions } from '@evm-ui/utils/ethers'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { log } from '@ui/lib/logging'
 
+type Pool = PoolTemplate
+
 const helpers = { waitForTransaction, waitForTransactions }
+
+const USE_API = true
+
+export const fetchNewPools = async (curve: CurveApi) =>
+  await Promise.all([
+    curve.factory.fetchNewPools(),
+    curve.cryptoFactory.fetchNewPools(),
+    curve.twocryptoFactory.fetchNewPools(),
+    curve.tricryptoFactory.fetchNewPools(),
+    curve.stableNgFactory.fetchNewPools(),
+  ])
+
+export const fetchPools = async (curve: CurveApi) => {
+  await Promise.all([
+    curve.factory.fetchPools(USE_API),
+    curve.cryptoFactory.fetchPools(USE_API),
+    curve.twocryptoFactory.fetchPools(USE_API),
+    curve.crvUSDFactory.fetchPools(USE_API),
+    curve.tricryptoFactory.fetchPools(USE_API),
+    curve.stableNgFactory.fetchPools(USE_API),
+  ])
+
+  if (!curve.isNoRPC) {
+    await fetchNewPools(curve)
+  }
+}
 
 // curve
 const network = {
@@ -39,40 +57,10 @@ const network = {
   },
 }
 
-function filterCrvProfit<T extends { day: string; week: string; month: string; year: string }>(crvProfit: T) {
-  const haveCrvProfit = (['day', 'week', 'month', 'year'] as const).some(t => Number(crvProfit[t]) > 0)
-  return haveCrvProfit ? crvProfit : null
-}
-
-function separateCrvProfit<T extends { symbol: string }>(tokensProfit: T[]) {
-  if (Array.isArray(tokensProfit)) {
-    const crvIdx = tokensProfit.findIndex(r => r.symbol === 'CRV')
-
-    if (crvIdx !== -1) {
-      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-      const crvProfit = tokensProfit.splice(crvIdx, 1)
-      return { crvProfit: crvProfit[0], tokensProfit }
-    }
-  }
-
-  return { crvProfit: null, tokensProfit }
-}
-
-function parseBaseProfit(baseProfit: { day: string; week: string; month: string; year: string }) {
-  const { day, week, month, year } = baseProfit ?? {}
-  return {
-    day: day && +day > 0 ? day : '',
-    week: week && +week > 0 ? week : '',
-    month: month && +month > 0 ? month : '',
-    year: year && +year > 0 ? year : '',
-  }
-}
-
 const router = {
   routesAndOutput: async (
     activeKey: string,
     curve: CurveApi,
-    poolsMapper: Record<string, PoolData>,
     formValues: FormValues,
     searchedParams: SearchedParams,
   ) => {
@@ -115,7 +103,6 @@ const router = {
             routes,
             priceImpact,
             output,
-            poolsMapper,
             fetchedToAmount,
             toAddress,
             toStoredRate,
@@ -148,7 +135,6 @@ const router = {
             routes,
             priceImpact,
             output,
-            poolsMapper,
             toAmount,
             toAddress,
             toStoredRate,
@@ -1014,156 +1000,6 @@ const poolWithdraw = {
   },
 }
 
-const wallet = {
-  getUserLiquidityUSD: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
-    log('getUserLiquidityUSD', poolIds, walletAddress)
-    return await curve.getUserLiquidityUSD(poolIds, walletAddress)
-  },
-  getUserClaimable: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
-    log('getUserClaimable', poolIds, walletAddress)
-    const fetchedUserClaimable = await curve.getUserClaimable(poolIds, walletAddress)
-    if (curve.chainId === 8453) {
-      return fetchedUserClaimable.map(poolClaimables => {
-        if (Array.isArray(poolClaimables)) {
-          const crvClaimables = poolClaimables.filter(c => c.symbol === 'CRV')
-          // Base chain show too many CRV
-          if (crvClaimables.length === 2) {
-            return [crvClaimables[0]]
-          }
-        }
-        return poolClaimables
-      })
-    }
-    return fetchedUserClaimable
-  },
-  userClaimableFees: async (curve: CurveApi, activeKey: string, walletAddress: string) => {
-    log('userClaimableFees', activeKey, walletAddress)
-    const resp = { activeKey, '3CRV': '', crvUSD: '', error: '' }
-    try {
-      ;[resp['3CRV'], resp.crvUSD] = await Promise.all([
-        curve.boosting.claimableFees(walletAddress),
-        curve.boosting.claimableFeesCrvUSD(walletAddress),
-      ])
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-get-claimable')
-      return resp
-    }
-  },
-  userPoolLpTokenBalances: async (p: Pool, signerAddress: string) => {
-    const resp = { lpToken: '0', gauge: '0' }
-    try {
-      const fetchedLpTokenBalances = await p.wallet.lpTokenBalances(signerAddress)
-      if (!isUndefined(fetchedLpTokenBalances.lpToken)) {
-        resp.lpToken = fetchedLpTokenBalances.lpToken as string
-      }
-      if (!isUndefined(fetchedLpTokenBalances.gauge)) {
-        resp.gauge = fetchedLpTokenBalances.gauge as string
-      }
-      return resp
-    } catch (error) {
-      console.error(error)
-      return resp
-    }
-  },
-  userPoolRewardProfit: async (p: Pool, signerAddress: string, chainId: ChainId) => {
-    const profit = {
-      baseProfit: { day: '0', week: '0', month: '0', year: '0' },
-      crvProfit: { day: '0', price: 0, token: '', symbol: '', week: '0', month: '0', year: '0' },
-      tokensProfit: [] as IProfit[],
-    }
-
-    profit.baseProfit = parseBaseProfit(await p.baseProfit(signerAddress))
-
-    if (isValidAddress(p.gauge.address)) {
-      const isRewardsOnly = p.rewardsOnly()
-      if (isRewardsOnly) {
-        const rewards = await p.rewardsProfit(signerAddress)
-        const { crvProfit, tokensProfit } = separateCrvProfit(rewards)
-        if (crvProfit) {
-          profit.crvProfit = crvProfit
-        }
-        profit.tokensProfit = tokensProfit
-      } else {
-        const rewards = await Promise.all([p.crvProfit(signerAddress), p.rewardsProfit(signerAddress)])
-        const filteredCrvProfiles = filterCrvProfit(rewards[0])
-        if (filteredCrvProfiles) {
-          profit.crvProfit = filteredCrvProfiles
-        }
-        if (chainId === 8453) {
-          const foundCRVRewards = rewards[1].find(r => r.symbol === 'CRV')
-          if (!foundCRVRewards) {
-            profit.tokensProfit = rewards[1]
-          }
-        } else {
-          profit.tokensProfit = rewards[1]
-        }
-      }
-    }
-
-    return profit
-  },
-}
-
-const lockCrv = {
-  vecrvInfo: async (activeKey: string, curve: CurveApi, walletAddress: string) => {
-    log('vecrvInfo', curve.chainId, walletAddress)
-    const resp = {
-      activeKey,
-      resp: { crv: '', lockedAmountAndUnlockTime: { lockedAmount: '', unlockTime: 0 }, veCrv: '', veCrvPct: '' },
-      error: '',
-    }
-
-    try {
-      const [crv, lockedAmountAndUnlockTime, veCrv, veCrvPct] = await Promise.all([
-        curve.boosting.getCrv([walletAddress]),
-        curve.boosting.getLockedAmountAndUnlockTime([walletAddress]),
-        curve.boosting.getVeCrv([walletAddress]),
-        curve.boosting.getVeCrvPct([walletAddress]),
-      ])
-      resp.resp.crv = crv as string
-      resp.resp.lockedAmountAndUnlockTime = lockedAmountAndUnlockTime as { lockedAmount: string; unlockTime: number }
-      resp.resp.veCrv = veCrv as string
-      resp.resp.veCrvPct = veCrvPct as string
-
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-get-locked-crv-info')
-      return resp
-    }
-  },
-  withdrawLockedCrv: async (curve: CurveApi, provider: Provider, walletAddress: string) => {
-    log('withdrawLockedCrv', curve.chainId)
-    const resp = { walletAddress, hash: '', error: '' }
-    try {
-      resp.hash = await curve.boosting.withdrawLockedCrv()
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-withdraw-locked-crv')
-      return resp
-    }
-  },
-  claimFees: async (activeKey: string, curve: CurveApi, provider: Provider, key: claimButtonsKey) => {
-    log('claimFees', curve.chainId, key)
-    const resp = { activeKey, hash: '', error: '' }
-
-    try {
-      const isClaim3Crv = key === claimButtonsKey['3CRV']
-      resp.hash = isClaim3Crv ? await curve.boosting.claimFees() : await curve.boosting.claimFeesCrvUSD()
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-claim-fees')
-      return resp
-    }
-  },
-}
-
 function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
   const { gasL2 } = getGasConfig(chainId)
   if (gasL2 && !Array.isArray(estimatedGas) && estimatedGas !== null) {
@@ -1171,4 +1007,4 @@ function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
   }
 }
 
-export const curvejsApi = { helpers, network, router, poolDeposit, poolWithdraw, poolSwap, wallet, lockCrv }
+export const curvejsApi = { helpers, network, router, poolDeposit, poolWithdraw, poolSwap }

@@ -12,7 +12,7 @@ import { readContractsQueryOptions } from '@wagmi/core/query'
 import { createMockLendMarket } from './mock-market.helpers'
 import { mockedWagmiConfig } from './test-wagmi.helpers'
 
-export const seedErc20BalanceQuery = ({
+const seedErc20BalanceQuery = ({
   chainId,
   tokenAddress,
   userAddress,

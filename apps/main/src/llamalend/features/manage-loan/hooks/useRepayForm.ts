@@ -5,6 +5,7 @@ import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLe
 import { getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
+import { useRepayControllerApproval } from '@/llamalend/queries/repay/repay-controller-approval.query'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
@@ -14,8 +15,9 @@ import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/qu
 import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
+import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/entities/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
@@ -120,7 +122,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
-    onSubmit,
+    onSubmit: onMutationSubmit,
     isPending: isRepaying,
     error: repayError,
   } = useRepayMutation({
@@ -129,6 +131,17 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     onReset: () => form.reset({ ...userDefaultValues, routeId: undefined }),
     userAddress,
     leverageProviders,
+  })
+
+  const isControllerApproved = useRepayControllerApproval({ chainId, marketId, userAddress, ...values })
+
+  const { onSubmit, modal: delegationModal } = useControllerDelegation<RepayFormData>({
+    chainId,
+    userAddress,
+    marketId,
+    approval: q(isControllerApproved),
+    handleFormSubmit: form.handleSubmit,
+    onSubmit: onMutationSubmit,
   })
 
   useCallbackSync(useRepayPrices(params), onPricesUpdated)
@@ -149,14 +162,16 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: !market,
+    isLoading: !market || isControllerApproved.isLoading,
     isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
     userAddress,
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,
-    repayError,
-    isApproved: useRepayIsApproved(params),
+    repayError: isControllerApproved.error ?? repayError,
+    isControllerApproved: q(isControllerApproved),
+    delegationModal,
+    isApproved: q(useRepayIsApproved(params)),
     priceImpact: q(useRepayPriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,
@@ -170,7 +185,8 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
         form.update({ routeId: route?.id })
         await invalidateRepayRouteQueries(route, params)
       },
-      getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
+      getRouteGasOptions: (routeId: string | undefined) =>
+        getRepayLoanEstimateGasOptions({ ...params, routeId, isControllerApproved: isControllerApproved.data }),
       networks,
       zapAddress,
       providers: leverageProviders,

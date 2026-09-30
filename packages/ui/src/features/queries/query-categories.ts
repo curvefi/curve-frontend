@@ -34,6 +34,7 @@ export const QUERY_CATEGORIES = {
   'dex.gauge': marketDetail,
   'dex.network': staticData,
   'dex.user': user,
+  'dex.claims': table,
   'dex.swap': form,
   'dex.deposit': form,
   'dex.deployGauge': form,

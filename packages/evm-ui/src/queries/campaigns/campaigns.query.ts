@@ -1,0 +1,113 @@
+import memoizee from 'memoizee'
+import { useCallback } from 'react'
+import type { Address } from '@primitives/address.utils'
+import { type Nullish, fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
+import { type QueriesResults, useQueries } from '@tanstack/react-query'
+import { combineQueryState } from '@ui/features/queries/combine'
+import { useMappedQuery } from '@ui/features/queries/util'
+import { getCampaignsExternalOptions } from './campaigns-external.query'
+import { getCampaignsMarketsMerklOptions } from './campaigns-markets-merkl.query'
+import { getCampaignsPoolsMerklOptions } from './campaigns-pools-merkl.query'
+import type { Campaigns } from './types'
+
+/**
+ * Combines multiple campaign records into a single record, merging campaigns by address.
+ *
+ * When the same address appears in multiple campaign sources, all rewards are merged into a single array.
+ * Addresses with no campaigns after filtering are automatically excluded.
+ *
+ * The function is memoized because Tanstack will call `combine` on every usage of `useQueries`,
+ *
+ * @param campaigns - Array of campaign records to combine (undefined values are filtered out)
+ * @param filter - Optional filter function to apply to individual campaigns before grouping
+ * @returns Combined record with all campaigns merged by address
+ */
+export const combineCampaigns = memoizee((campaigns: (Campaigns | undefined)[], network?: string): Campaigns => {
+  // Get all unique addresses from all campaign sources
+  const allAddresses = new Set(notFalsy(...campaigns).flatMap(objectKeys))
+
+  // Combine campaigns by address, applying optional filter
+  return fromEntries(
+    [...allAddresses]
+      .map(address => {
+        const allRewards = notFalsy(...campaigns.flatMap(record => record?.[address]))
+        const filteredRewards = network ? allRewards.filter(r => r.network === network) : allRewards
+
+        return [address, filteredRewards] as const
+      })
+      // Only include campaigns that have rewards after filtering
+      .filter(([_, rewards]) => rewards.length > 0),
+  )
+})
+
+type UseCampaignsOptions = { blockchainId?: string; enabled?: boolean }
+
+type CampaignQueries = [
+  ReturnType<typeof getCampaignsExternalOptions>,
+  ReturnType<typeof getCampaignsPoolsMerklOptions>,
+  ReturnType<typeof getCampaignsMarketsMerklOptions>,
+]
+const queries: CampaignQueries = [
+  getCampaignsExternalOptions({}),
+  getCampaignsPoolsMerklOptions({}),
+  getCampaignsMarketsMerklOptions({}),
+]
+
+/**
+ * Hook for accessing all campaigns, optionally filtered by network.
+ *
+ * @param blockchainId - Optional chain identifier to filter campaigns by network
+ *
+ * @example
+ * ```typescript
+ * // Get all campaigns from all networks
+ * const { data: allCampaigns } = useCampaigns()
+ *
+ * // Get campaigns filtered by network
+ * const { data: ethereumCampaigns } = useCampaigns({
+ *   blockchainId: 'ethereum'
+ * })
+ *
+ * // Access campaigns for a specific pool address
+ * const poolCampaigns = ethereumCampaigns['0x123...'] || []
+ * ```
+ */
+export const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
+  useQueries({
+    queries,
+    combine: useCallback(
+      ([external, merklPools, merklMarkets]: QueriesResults<CampaignQueries>) => ({
+        ...combineQueryState(external, merklPools, merklMarkets),
+        // Combine campaigns with an optional network filter
+        data: combineCampaigns([external.data, merklPools.data, merklMarkets.data], blockchainId),
+      }),
+      [blockchainId],
+    ),
+  })
+
+/**
+ * Hook for accessing campaigns for a specific campaign address, optionally filtered by network.
+ *
+ * @param address - Address to get campaigns for
+ * @param blockchainId - Optional chain identifier to filter campaigns by network
+ *
+ * @example
+ * ```typescript
+ * const { data: campaigns, isLoading } = useCampaignByAddress({
+ *   address: '0x123...',
+ *   blockchainId: 'ethereum'
+ * })
+ * ```
+ */
+export const useCampaignsByAddress = ({
+  address,
+  blockchainId,
+}: { address: Address | Nullish } & UseCampaignsOptions) => {
+  const query = useMappedQuery(
+    useCampaigns({ blockchainId, enabled: Boolean(address) }),
+    useCallback(campaigns => address && campaigns[address], [address]),
+  )
+
+  // TODO: Temporarily map undefined data to [], needs a proper fix
+  return { ...query, data: query.data ?? [] }
+}

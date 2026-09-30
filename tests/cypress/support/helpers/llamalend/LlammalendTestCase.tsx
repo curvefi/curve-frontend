@@ -24,7 +24,7 @@ import { llamaNetworks } from '@cy/support/helpers/llamalend/test-context.helper
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
-import type { UserMarketQuery } from '@evm-ui/lib/model'
+import type { UserMarketQuery } from '@evm-ui/queries/root-keys'
 import { MarketType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -106,8 +106,8 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
 
 export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet
 
-export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
-  <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
+export const LlammalendTestCase = ({ vnet, account, chainId, marketType, ...props }: LlammalendTestCaseProps) => (
+  <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, account })} autoConnect>
     <CurveProvider app="llamalend" network={llamaNetworks[chainId]} onChainUnavailable={console.error}>
       <Box sx={{ maxWidth: 520 }}>
         <FormPlacementProvider placement="inline">

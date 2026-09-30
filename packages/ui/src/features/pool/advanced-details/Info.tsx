@@ -11,19 +11,18 @@ import { t } from '@ui/lib/i18n'
 
 export type InfoProps = {
   chainId: number
-  poolId: string
+  poolId?: string
   poolType: string | Nullish
-  isMetapool: boolean | undefined
-  isBasePool: boolean | undefined
-  basePoolAddress: Address | undefined
-  registryAddress: Address | undefined
-  vyperVersion: string | Nullish
+  isMetapool?: boolean
+  isBasePool?: boolean
+  basePoolAddress?: Address
+  registryAddress?: Address
+  vyperVersion?: string | null
   addressDisplay: AddressDisplay
 }
 
 export const Info = ({
   chainId,
-  poolId,
   poolType,
   isMetapool,
   isBasePool,
@@ -31,6 +30,7 @@ export const Info = ({
   registryAddress,
   vyperVersion,
   addressDisplay,
+  ...props
 }: InfoProps) => (
   <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Info`} />
@@ -51,7 +51,7 @@ export const Info = ({
       {maybe(registryAddress, address => (
         <AddressActionInfo chainId={chainId} title={t`Registry`} address={address} display={addressDisplay} />
       ))}
-      <ActionInfo label={t`ID`} value={fakeLoadingQ(poolId)} />
+      {'poolId' in props && <ActionInfo label={t`ID`} value={fakeLoadingQ(props.poolId)} />}
     </CardContent>
   </Card>
 )

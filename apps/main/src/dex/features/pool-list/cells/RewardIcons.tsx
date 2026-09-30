@@ -1,5 +1,5 @@
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
-import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
+import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
 import Box from '@mui/material/Box'
@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { IconStack } from '@ui/components/IconStack'
+import { RewardIcon } from '@ui/components/RewardIcon'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -215,3 +216,17 @@ export const RewardIcons = ({
     </IconStack>
   )
 }
+
+export const ClaimablesIcons = ({
+  claimables,
+  blockchainId,
+}: {
+  claimables: PoolClaimables
+  blockchainId: PoolRow['blockchainId']
+}) => (
+  <IconStack iconSize="sm">
+    {claimables.map(reward => (
+      <TokenIcon key={reward.token} blockchainId={blockchainId} address={reward.token} size="mui-sm" />
+    ))}
+  </IconStack>
+)

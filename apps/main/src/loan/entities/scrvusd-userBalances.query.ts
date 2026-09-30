@@ -1,5 +1,5 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/lib/model/query'
+import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { scrvUsdUserValidationSuite } from './scrvusd.validation'

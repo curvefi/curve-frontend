@@ -36,8 +36,8 @@ export const AdvancedDetails = ({
   prices: PricesProps
   parameters: ParametersProps
   addressDisplay: AddressDisplay
-  managePoolLink: ReactNode
-  addGaugeLink: ReactNode
+  managePoolLink?: ReactNode
+  addGaugeLink?: ReactNode
 }) => {
   const [isOpen, , , toggleOpen] = useSwitch(false)
 

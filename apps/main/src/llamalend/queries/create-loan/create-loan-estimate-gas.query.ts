@@ -2,9 +2,9 @@ import { getMarket } from '@/llamalend/llama.utils'
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { parseMutationRoute } from '@evm-ui/entities/router-api'
-import { rootKeys } from '@evm-ui/lib/model'
-import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
+import { rootKeys } from '@evm-ui/queries/root-keys'
+import { parseMutationRoute } from '@evm-ui/queries/router-api'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type FieldsOf } from '@ui/lib/validation/types'
@@ -14,7 +14,7 @@ import { useCreateLoanIsApproved } from './create-loan-approved.query'
 import { createLoanRouteMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanEstimateGasQuery<T = IChainId> = CreateLoanFormQuery<T>
-type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>>
+type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>> & { isControllerApproved?: boolean }
 
 const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateLoanApproveEstimateGasQuery } =
   queryFactory({
@@ -37,7 +37,11 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
       }
     },
     category: 'llamalend.createLoan',
-    validationSuite: createLoanQueryValidationSuite({ debtRequired: false, collateralRequired: true }),
+    validationSuite: createLoanQueryValidationSuite({
+      debtRequired: false,
+      collateralRequired: true,
+      requireControllerApproval: true,
+    }),
     dependencies: params => [createLoanRouteMaxReceiveKey(params)],
   })
 
@@ -94,14 +98,18 @@ const {
     }
   },
   category: 'llamalend.createLoan',
-  validationSuite: createLoanQueryValidationSuite({ debtRequired: true, collateralRequired: true }),
+  validationSuite: createLoanQueryValidationSuite({
+    debtRequired: true,
+    collateralRequired: true,
+    requireControllerApproval: true,
+  }),
   dependencies: params => [
     createLoanRouteMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],
 })
 
-export const useCreateLoanEstimateGas = createApprovedEstimateGasHook({
+export const useCreateLoanEstimateGas = createApprovedEstimateGasHook<GasEstimateParams, TGas>({
   useIsApproved: useCreateLoanIsApproved,
   useApproveEstimate: useCreateLoanApproveEstimateGas,
   useActionEstimate: useCreateLoanEstimateGasQuery,

@@ -44,28 +44,19 @@ const BannerSx: Record<
     title: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
     subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
     action: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
-    wrapper: {
-      backgroundColor: t => t.design.Layer.Feedback.Warning,
-      border: t => `1px solid ${t.design.Layer.Feedback.Warning}`,
-    },
+    wrapper: { backgroundColor: t => t.design.Layer.Feedback.Warning },
   },
   caution: {
     title: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
     subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
     action: { color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
-    wrapper: {
-      backgroundColor: t => t.design.Layer.Feedback.Caution,
-      border: t => `1px solid ${t.design.Layer.Feedback.Caution}`,
-    },
+    wrapper: { backgroundColor: t => t.design.Layer.Feedback.Caution },
   },
   alert: {
     title: { color: t => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
     subtitle: { color: t => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
     action: { color: t => t.design.Color.Neutral[25] },
-    wrapper: {
-      backgroundColor: t => t.design.Layer.Feedback.Error,
-      border: t => `1px solid ${t.design.Layer.Feedback.Alert}`,
-    },
+    wrapper: { backgroundColor: t => t.design.Layer.Feedback.Error },
   },
 }
 

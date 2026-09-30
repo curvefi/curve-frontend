@@ -14,7 +14,7 @@ import {
   getUnlockDateUpdate,
 } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
 import { invalidateVeCrvQueries, useLockerCrv } from '@/dao/entities/locker-vecrv-info'
-import { dayjs } from '@evm-ui/lib/dayjs'
+import { dayjs } from '@evm-ui/utils/dayjs'
 import type { DateValue } from '@internationalized/date'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'

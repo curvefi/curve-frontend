@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { zip } from '@primitives/array.utils'
-import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { type Amount, type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 
 export const ZERO: Decimal = '0'
@@ -17,7 +17,7 @@ export const decimal = (value: number | string | Nullish | BigNumber | bigint): 
   if (value instanceof BigNumber) {
     value = value.toFixed()
   }
-  if (value != null && !['', '-', '?', 'Infinity', '-Infinity'].includes(value) && !new BigNumber(value).isNaN()) {
+  if (value != null && DECIMAL_REGEX.test(value)) {
     return value as Decimal
   }
 }

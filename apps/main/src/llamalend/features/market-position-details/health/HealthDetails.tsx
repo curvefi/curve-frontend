@@ -10,7 +10,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import { HealthAndBufferBar, HealthAndBufferDebug } from './HealthAndBufferBar'
-import { getHealthDetailsState, getHealthColor } from './utils'
+import { getHealthDetailsState, getHealthTextColor, getLiquidationBufferTextColor } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -27,7 +27,7 @@ export const HealthDetails = ({
   positionStatus: QueryProp<UserPositionStatus>
 }) => {
   const theme = useTheme()
-  const { state, healthState, type } = getHealthDetailsState(health.data)
+  const { state, healthState, liquidationBufferState, type } = getHealthDetailsState(health.data)
 
   return (
     <>
@@ -41,7 +41,7 @@ export const HealthDetails = ({
             value={mapQuery(health, data => data.healthFactor)}
             valueOptions={{
               abbreviate: false,
-              color: getHealthColor(healthState)(theme),
+              color: getHealthTextColor(healthState)(theme),
               formatter: value =>
                 formatNumber(value, +value < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health'),
             }}
@@ -58,7 +58,11 @@ export const HealthDetails = ({
             testId="health-details-liquidation-buffer-metric"
             value={mapQuery(health, data => data.liquidationBuffer)}
             notional={mapQuery(health, data => t`(${formatNumber(data.healthNotFull, 'percent.value')} of debt)`)}
-            valueOptions={{ abbreviate: false, formatter: value => formatNumber(value, 'percent.value') }}
+            valueOptions={{
+              abbreviate: false,
+              color: getLiquidationBufferTextColor(liquidationBufferState)(theme),
+              formatter: value => formatNumber(value, 'percent.value'),
+            }}
             valueTooltip={LIQUIDATION_BUFFER_TOOLTIP}
           />
         </Grid>

@@ -1,9 +1,9 @@
 import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
-import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
-import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
-import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
+import { useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
+import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
+import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,

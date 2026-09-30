@@ -3,12 +3,12 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useFormSync, useForm } from '@ui/features/forms'
-import { useDebouncedValue } from '@ui/hooks/useDebounce'
+import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -28,13 +28,18 @@ export type BridgeForm = {
   walletBalance: Decimal | undefined
 }
 
-/** Debounce for form values such that we're not spamming queries (for validation) */
+const bridgeQueryDefaults = { amount: undefined } as const
+
+/** Debounce amount-dependent queries while preserving current chain and wallet context. */
 const useBridgeParams = ({
   chainId,
   userAddress,
   amount,
 }: BridgeForm & { chainId: number | undefined; userAddress: Address | undefined }) =>
-  useDebouncedValue(useMemo(() => ({ chainId, userAddress, amount }), [chainId, userAddress, amount]))
+  useFormDebounce(
+    useMemo(() => ({ chainId, userAddress, amount }), [chainId, userAddress, amount]),
+    bridgeQueryDefaults,
+  )
 
 const userDefaultValues = { fromChainId: undefined, amount: undefined }
 
@@ -49,7 +54,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
   const values = form.watchValues()
 
   const { address: userAddress } = useConnection()
-  const params = useBridgeParams({ chainId, userAddress, ...values })
+  const [params, isDebouncing] = useBridgeParams({ chainId, userAddress, ...values })
 
   // Fetch wallet balance for UI and form validation
   const { curveApi: curve } = useCurve()
@@ -113,6 +118,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
   return {
     form,
     values,
+    isDebouncing,
     loading: crvUsdBalanceLoading || capacityLoading, // Primarily to make sure validation setup is done
     walletBalance,
     supportedNetworks,

@@ -1,7 +1,7 @@
 import type { EstimatedGas, Slippage, TransferTabsParams } from '@/dex/components/PagePool/types'
-import { PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import type { IDict } from '@curvefi/api/lib/interfaces'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { maybe } from '@primitives/objects.utils'
 import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 
@@ -40,8 +40,8 @@ export const DEFAULT_SLIPPAGE: Slippage = {
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }
 
-export const getSlippageType = <T extends PoolData | undefined>(poolData: T) =>
-  maybe(poolData, ({ pool }): SlippageType => (pool.isCrypto ? 'crypto' : 'stable'))
+export const getSlippageType = <T extends PoolTemplate | undefined>(pool: T) =>
+  maybe(pool, (pool): SlippageType => (pool.isCrypto ? 'crypto' : 'stable'))
 
 export const getDepositTabAlert = ({ poolAlert }: TransferTabsParams) => poolAlert?.isDisableDeposit && poolAlert
 

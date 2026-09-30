@@ -1,6 +1,5 @@
 import type { UserPositionStatus } from '@/llamalend/llamalend.types'
-import type { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
-import type { QueryData } from '@evm-ui/lib/queries/types'
+import type { HealthValues } from '@/llamalend/queries/user/user-health.query'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -24,7 +23,7 @@ const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthDetailsS
   const data = maybes([health, liquidationBuffer], (h, lb) => {
     const healthNotFull = decimalMultiply(decimalDiv(lb, '100'), DISCOUNT_GAP)
     return { health: h, healthFactor: decimalSum('1', decimalDiv(h, '100')), healthNotFull, liquidationBuffer: lb }
-  }) satisfies QueryData<typeof useUserHealthValues> | undefined
+  }) satisfies HealthValues | undefined
 
   return isLoading ? q({ data, isLoading: true, error: null }) : constQ(data)
 }

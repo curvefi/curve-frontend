@@ -1,5 +1,5 @@
 import { getPoolMetadata, type GetPoolMetadataParams } from '@curvefi/prices-api/pools'
-import { contractValidationGroup } from '@evm-ui/lib/model/query/contract-validation'
+import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'

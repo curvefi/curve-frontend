@@ -17,8 +17,8 @@ import { YieldBreakdown } from './components/yield-breakdown'
 type PoolInformation = { poolAlert: PoolAlert | null; pricesApiPoolData?: PricesApiPool }
 
 export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformation) => {
-  const { poolData } = usePoolContext()
-  const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll)
+  const { tokenAddressesAll } = usePoolContext()
+  const tokenAlert = useTokenAlert(tokenAddressesAll)
 
   return (
     <Stack sx={stackedCardHeadersSx}>

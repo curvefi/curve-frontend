@@ -2,7 +2,7 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getUserHealthOptions, useUserPrices, useUserState } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { UserMarketParams } from '@evm-ui/lib/model'
+import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import type { Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'

@@ -3,7 +3,7 @@ import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import type { Config } from 'wagmi'
 import { type CurveApi, useCurve } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/lib/model'
+import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/queries/root-keys'
 import { q } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 

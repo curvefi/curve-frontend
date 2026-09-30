@@ -1,7 +1,7 @@
 import { getIsUserCloseToSoftLiquidation, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
 import { useMarketOraclePriceBand } from '@/llamalend/queries/market'
 import { useUserBands, useUserHealth, useUserState } from '@/llamalend/queries/user'
-import type { UserMarketParams } from '@evm-ui/lib/model'
+import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
 

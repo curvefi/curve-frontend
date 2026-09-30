@@ -8,11 +8,11 @@ import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loa
 import { type UserState, useUserBalances, useUserState } from '@/llamalend/queries/user'
 import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type TokenUsdRate, useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { type TokenUsdRate, useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { useForm } from '@ui/features/forms'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { decimal, decimalNegate } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -198,7 +198,7 @@ export function useClosePositionForm({
     borrowedBalance: closePositionData?.borrowedBalance,
     closeError,
     formErrors: visibleErrors,
-    isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }),
+    isApproved: q(useCloseLoanIsApproved({ chainId, marketId, userAddress })),
     onSubmit: form.handleSubmit(onSubmit),
   }
 }

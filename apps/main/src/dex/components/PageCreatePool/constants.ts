@@ -194,8 +194,8 @@ export const POOL_PRESETS: PRESETS = {
   },
   // fxswap
   9: {
-    name: 'FXSwap',
-    descriptionName: t`FXSwap`,
+    name: 'FXSwap V1 & V2',
+    descriptionName: t`FXSwap V1 & V2`,
     description: t`Suitable for forex tokens with low volatility`,
     defaultParams: {
       ...fillerParams,
@@ -205,6 +205,22 @@ export const POOL_PRESETS: PRESETS = {
       gamma: '0.0001', // 10**14 (irrelevant for fx pools)
       allowedExtraProfit: '0.000000000001', // 1e-12 * 10**18
       feeGamma: '0.001', // 0.001 * 1e18
+      adjustmentStep: '0.005', // 0.5/100*10**18
+      maHalfTime: '600', // 866 * 0.693 (half life in seconds)
+    },
+  },
+  10: {
+    name: 'FXSwap V3',
+    descriptionName: t`FXSwap V3`,
+    description: t`Suitable for forex tokens with low volatility`,
+    defaultParams: {
+      ...fillerParams,
+      midFee: '0.01', // 1/10_000 * 10**10 (1 bps)
+      outFee: '0.30', // 30/10_000 * 10**10 (30 bps)
+      cryptoA: '250000', // native A (UI displays A / 10000)
+      gamma: '0.0001', // 10**14 (irrelevant for fx pools)
+      allowedExtraProfit: '0.000000000001', // 1e-12 * 10**18
+      feeGamma: '0.05', // 0.05 * 1e18
       adjustmentStep: '0.005', // 0.5/100*10**18
       maHalfTime: '600', // 866 * 0.693 (half life in seconds)
     },
@@ -270,7 +286,11 @@ export const FXSWAP_A_CONFIG = {
 } as const
 
 export const parseCryptoA = (value: string | number, swapType: SwapType) =>
-  swapType === FXSWAP ? new BigNumber(value).multipliedBy(FXSWAP_A_CONFIG.scale).toFixed() : value.toString()
+  swapType === FXSWAP && value !== ''
+    ? new BigNumber(value).multipliedBy(FXSWAP_A_CONFIG.scale).toFixed()
+    : value.toString()
 
 export const formatCryptoA = (value: string | number, swapType: SwapType) =>
-  swapType === FXSWAP ? new BigNumber(value).dividedBy(FXSWAP_A_CONFIG.scale).toString() : value.toString()
+  swapType === FXSWAP && value !== ''
+    ? new BigNumber(value).dividedBy(FXSWAP_A_CONFIG.scale).toString()
+    : value.toString()

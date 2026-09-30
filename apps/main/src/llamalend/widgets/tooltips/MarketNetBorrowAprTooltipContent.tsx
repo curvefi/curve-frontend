@@ -1,10 +1,10 @@
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { MarketType } from '@evm-ui/types/market'
-import { formatCappedRatePercent } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Nullish } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
+import { formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketNetBorrowAprTooltipContentProps = {

@@ -1,7 +1,7 @@
 import type { Chain } from '@curvefi/prices-api'
-import { contractValidationGroup } from '@evm-ui/lib/model/query/contract-validation'
-import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
-import { pricesApiChainNameValidationGroup } from '@evm-ui/lib/model/query/prices-chain-validation'
+import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
+import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
+import { pricesApiChainNameValidationGroup } from '@evm-ui/queries/validation/prices-chain-validation'
 import type { Address } from '@primitives/address.utils'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 

@@ -7,7 +7,7 @@ import { invalidateCreateLoanHealth } from '@/llamalend/queries/create-loan/crea
 import { invalidateCreateLoanMaxReceive } from '@/llamalend/queries/create-loan/create-loan-max-receive.query'
 import { invalidateCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { invalidateCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
-import type { RouteResponse } from '@evm-ui/entities/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api'
 
 export const invalidateCreateLoanRouteQueries = async (
   route: RouteResponse | undefined,

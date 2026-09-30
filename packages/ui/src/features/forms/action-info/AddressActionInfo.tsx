@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { Typography } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
+import { UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
@@ -49,7 +50,7 @@ export const AddressActionInfo = ({
     value={
       /** TODO: Clarify: The design has this typography component as as semi-bold,
        * should Bold typography variants have an updated font-weight? 🤔 */
-      <Typography variant={VALUE_SIZE[size]}>{address ? formatAddress(address) : '-'}</Typography>
+      <Typography variant={VALUE_SIZE[size]}>{maybe(address, formatAddress) ?? UNAVAILABLE_NOTATION}</Typography>
     }
     copyValue={address}
     valueTooltip={

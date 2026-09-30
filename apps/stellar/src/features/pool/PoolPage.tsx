@@ -14,6 +14,7 @@ import { StellarUrls } from '../../routes/routes'
 import { DepositTab } from '../deposit/DepositTab'
 import { SwapTab } from '../swap/SwapTab'
 import { WithdrawTab } from '../withdraw/WithdrawTab'
+import { PoolAdvancedDetails } from './PoolAdvancedDetails'
 import { usePoolComposition } from './usePoolComposition'
 import { usePoolTokens } from './usePoolTokens'
 
@@ -46,6 +47,7 @@ export const PoolPage = () => {
       formTabs={{ placement: 'inline', content: <FormTabs menu={menu} params={{ network, pool }} /> }}
     >
       <PoolCompositionCard {...composition} />
+      <PoolAdvancedDetails network={network} pool={pool} tokens={tokens} />
     </DetailPageLayout>
   )
 }

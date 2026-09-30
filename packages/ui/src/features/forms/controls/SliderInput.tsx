@@ -1,13 +1,11 @@
 import { sortBy } from 'lodash'
-import { ReactNode, useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Slider, type SliderProps } from '@ui/components/Slider'
 import { SliderSize } from '@ui/features/themes/components/slider/types'
-import { Duration } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { useDebounce } from '@ui/hooks/useDebounce'
 import { decimal } from '@ui/lib/decimal'
 import { NumericTextField, NumericTextFieldProps } from './NumericTextField'
 
@@ -35,8 +33,6 @@ export type SliderInputProps<T extends Decimal | DecimalRangeValue> = {
   sliderLabel?: ReactNode
   /** Propagated to both inputs and slider */
   disabled?: boolean
-  /** The debounce time in milliseconds for the slider and inputs */
-  debounceMs?: number
   /** Optional transform that maps values between the inputs and the slider */
   sliderValueTransform?: {
     toSlider: (value: number) => number
@@ -80,8 +76,8 @@ const isRangeValue = (value: Decimal | DecimalRangeValue): value is DecimalRange
 /**
  * A controlled slider component with synchronized numeric input fields.
  * With multiple inputs and layout orientations
- * Supports both single value and range modes. User interactions are debounced
- * during drag and typing, then immediately committed on blur or release.
+ * Supports both single value and range modes. User interactions update local display
+ * state, then commit on blur or slider release.
  */
 export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   layoutDirection = 'row',
@@ -97,7 +93,6 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   inputProps,
   sliderValueTransform,
   name,
-  debounceMs = Duration.FormDebounce,
 }: SliderInputProps<T>) => {
   const isRange = isRangeValue(value)
   type SliderValue = T extends Decimal ? number : RangeValue
@@ -116,15 +111,11 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
     [sliderValueTransform?.fromSlider],
   )
 
-  /** Internal debounced value state for slider and inputs during drag and typing */
-  const [internalValue, setInternalValue, cancelDebounce] = useDebounce<T>({
-    initialValue: value,
-    debounceMs,
-    callback: onChange,
-  })
+  /** Local display value while dragging or typing, synchronized with external resets. */
+  const [displayValue, setDisplayValue] = useState<T>(value)
 
-  /** The current display values for slider and inputs */
-  const displayValue = useMemo((): T => internalValue ?? value, [internalValue, value])
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Keep local interaction state in sync with controlled value changes.
+  useEffect(() => setDisplayValue(value), [value])
 
   /** The slider's numeric value with sliderValueTransform mapping if provided (e.g. logarithmic scales) */
   const sliderValue = useMemo(
@@ -132,16 +123,15 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
     [displayValue, mapToSliderValue],
   )
 
-  /** Commits value without debouncing for slider and inputs on slider release and input blur */
+  /** Commits the local value once on slider release or input blur. */
   const commitValue = useCallback(
     (nextValue: T | undefined) => {
       if (nextValue == null) return
-      setInternalValue(nextValue)
-      cancelDebounce()
+      setDisplayValue(nextValue)
       if (Array.isArray(nextValue) && nextValue.find(v => v == null)) return
       onChange(nextValue)
     },
-    [cancelDebounce, onChange, setInternalValue],
+    [onChange, setDisplayValue],
   )
 
   /**Converts slider's numeric value to Decimal and maps back to original value space */
@@ -157,10 +147,10 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
     (_e, newValue) => {
       const next = computeSliderValue(newValue as SliderValue)
       if (next != null) {
-        setInternalValue(next)
+        setDisplayValue(next)
       }
     },
-    [computeSliderValue, setInternalValue],
+    [computeSliderValue, setDisplayValue],
   )
 
   const handleSliderCommit = useCallback<NonNullable<SliderProps['onChangeCommitted']>>(
@@ -187,12 +177,12 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
           // the user first types "8" which can be smaller than the first input.
           else return
         }
-        setInternalValue([decimal(nextFirst), decimal(nextSecond)] as T)
+        setDisplayValue([decimal(nextFirst), decimal(nextSecond)] as T)
         return
       }
-      setInternalValue(decimal(numericValue) as T)
+      setDisplayValue(decimal(numericValue) as T)
     },
-    [displayValue, isRange, setInternalValue],
+    [displayValue, isRange, setDisplayValue],
   )
 
   const handleInputBlur = useCallback(

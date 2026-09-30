@@ -1,6 +1,5 @@
 import type { UserPositionStatus, UserPositionStatusKey } from '@/llamalend/llamalend.types'
-import { type HealthQuery, useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
-import { QueryData } from '@evm-ui/lib/queries/types'
+import { type HealthQuery, type HealthValues } from '@/llamalend/queries/user/user-health.query'
 import { Stack } from '@mui/material'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
@@ -44,7 +43,7 @@ const SEGMENT_CONFIG: Record<
   {
     size: 'lg' | 'sm'
     tooltip: typeof HEALTH_TOOLTIP | typeof LIQUIDATION_BUFFER_TOOLTIP
-    getValue: (data: QueryData<typeof useUserHealthValues>) => Decimal | Nullish
+    getValue: (data: HealthValues) => Decimal | Nullish
     getColor: (value: Decimal | Nullish) => (theme: Theme) => string | undefined
     getPercentage: (value: Decimal | Nullish) => number
   }

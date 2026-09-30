@@ -1,6 +1,6 @@
 import { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/entities/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api'
 import { Decimal } from '@primitives/decimal.utils'
 
 export type StepKey = 'APPROVAL' | 'SWAP'

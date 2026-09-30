@@ -2,7 +2,7 @@ import { resetIsAvailableQueryKey } from '@/llamalend/queries/reset/reset-is-ava
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import { resetSupportedValidationSuite } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
+import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 

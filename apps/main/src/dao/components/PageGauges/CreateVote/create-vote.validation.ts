@@ -1,5 +1,5 @@
 import { test } from 'vest'
-import { addressValidationFn } from '@evm-ui/lib/validation'
+import { addressValidationFn } from '@evm-ui/queries/validation/basic-validation'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { CreateVoteForm } from './useCreateVoteForm'

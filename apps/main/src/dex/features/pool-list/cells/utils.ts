@@ -1,6 +1,6 @@
 import { sum } from 'lodash'
 import { LARGE_RATE } from '@/dex/constants'
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber, type NumberFormatCategory } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'

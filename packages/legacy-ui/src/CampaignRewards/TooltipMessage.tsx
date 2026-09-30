@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
+import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { Box } from '@legacy-ui/Box'
 import { ExternalLink } from '@legacy-ui/Link'
 import { formatDate } from '@primitives/date.utils'

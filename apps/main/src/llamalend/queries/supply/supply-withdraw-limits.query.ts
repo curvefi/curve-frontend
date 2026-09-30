@@ -1,5 +1,5 @@
-import { rootKeys } from '@evm-ui/lib/model'
-import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
+import { rootKeys } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { requireVault, supplyUserValidationSuite } from '../validation/supply.validation'

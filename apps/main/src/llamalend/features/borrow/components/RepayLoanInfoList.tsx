@@ -80,6 +80,7 @@ export function RepayLoanInfoList({
   marketType,
   params,
   values: { stateCollateral, userCollateral, userBorrowed, isFull },
+  isControllerApproved,
   tokens: { collateralToken, borrowToken },
   showLeverage,
   form,
@@ -90,6 +91,7 @@ export function RepayLoanInfoList({
   marketType: MarketType
   params: RepayParams
   values: RepayFormData
+  isControllerApproved: boolean | undefined
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   showLeverage: boolean | undefined
   form: UseFormReturn<RepayFormData>
@@ -109,7 +111,7 @@ export function RepayLoanInfoList({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
-      gas={q(useRepayEstimateGas(params, isOpen))}
+      gas={q(useRepayEstimateGas({ ...params, isControllerApproved }, isOpen))}
       health={q(useHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={prices}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}

@@ -31,7 +31,7 @@ const requestVirtualNetworkState = ({
     })
 }
 
-export const snapshotVirtualNetwork = ({ vnet }: { vnet: VirtualNetwork }) =>
+const snapshotVirtualNetwork = ({ vnet }: { vnet: VirtualNetwork }) =>
   requestVirtualNetworkState({ method: 'evm_snapshot', vnet }).then(snapshotId =>
     assert(
       typeof snapshotId === 'string' && snapshotId,
@@ -39,7 +39,7 @@ export const snapshotVirtualNetwork = ({ vnet }: { vnet: VirtualNetwork }) =>
     ),
   )
 
-export const revertVirtualNetwork = ({ snapshotId, vnet }: { snapshotId: string; vnet: VirtualNetwork }) =>
+const revertVirtualNetwork = ({ snapshotId, vnet }: { snapshotId: string; vnet: VirtualNetwork }) =>
   requestVirtualNetworkState({ method: 'evm_revert', params: [snapshotId], vnet }).then(reverted => {
     assert(reverted, `Tenderly evm_revert rejected snapshot '${snapshotId}'`)
   })

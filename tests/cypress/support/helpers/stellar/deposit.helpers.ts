@@ -44,11 +44,7 @@ export const seedTestPool = async (pool: StellarContract, { coins, deployer: { a
   return sendStellarTransaction(transaction)
 }
 
-export const fetchDepositPreview = async (
-  pool: StellarContract,
-  { coins, lp, supply }: PoolState,
-  amounts: PoolAmounts,
-) => {
+const fetchDepositPreview = async (pool: StellarContract, { coins, lp, supply }: PoolState, amounts: PoolAmounts) => {
   const expected = await fetchExpectedLp({
     network: TEST_NETWORK,
     pool,
@@ -81,7 +77,7 @@ export const checkBalancedWalletAmounts = (coins: PoolState['coins']) =>
     Math.min(...coins.map(({ balance }, index) => Number(balance) / (index + 1))),
   )
 
-export const checkDepositSupply = (pool: StellarContract, state: PoolState, expectedLp: Decimal) =>
+const checkDepositSupply = (pool: StellarContract, state: PoolState, expectedLp: Decimal) =>
   cy
     .then(LOAD_TIMEOUT, () => fetchPoolSupply({ network: TEST_NETWORK, pool }, { staleTime: 0 }))
     .then(supply => {
@@ -113,7 +109,7 @@ export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
   depositSubmit().should('be.disabled')
 }
 
-export const checkDepositResult = (state: PoolState, amounts: PoolAmounts, projectedLp: Decimal) =>
+const checkDepositResult = (state: PoolState, amounts: PoolAmounts, projectedLp: Decimal) =>
   checkDepositBalances({
     ...state,
     lp: { ...state.lp, balance: projectedLp },

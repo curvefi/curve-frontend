@@ -29,6 +29,8 @@ type Props = { curve: CurveApi; chainId: ChainId; haveSigner: boolean }
 const FEE_FORMAT_OPTIONS = { maximumFractionDigits: 8 }
 const CRYPTO_FORMAT_OPTIONS = { maximumSignificantDigits: 21, maximumFractionDigits: 21 }
 
+const FXSWAP_V3_INDEX = 10
+
 export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const advanced = useStore(state => state.createPool.advanced)
   const midFee = useStore(state => state.createPool.parameters.midFee)
@@ -214,6 +216,12 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     return initialPrice.initialPrice[0] === '0'
   }, [initialPrice.initialPrice, tokensInPool.tokenAmount])
 
+  // At the request of smart people, FXSwap V3 specifically needs some inputs relabled. They probably have good reasons.
+  const allowedExtraProfitLabel = poolPresetIndex === FXSWAP_V3_INDEX ? t`Adjustment Step Min` : t`Allowed Extra Profit`
+  const adjustmentStepLabel = poolPresetIndex === FXSWAP_V3_INDEX ? t`Adjustment Step Max` : t`Adjustment Step`
+
+  const irrelevancyLabel = poolPresetIndex === FXSWAP_V3_INDEX ? ` (${t`irrelevant for FXSwap V3`})` : ''
+
   return (
     <>
       <Wrapper>
@@ -350,15 +358,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateGamma}
                   />
                   <NumberField
-                    label={t`Allowed Extra Profit (${cryptoswapMinMax.allowedExtraProfit.min} - ${cryptoswapMinMax.allowedExtraProfit.max})`}
-                    value={+allowedExtraProfit}
-                    minValue={cryptoswapMinMax.allowedExtraProfit.min}
-                    maxValue={cryptoswapMinMax.allowedExtraProfit.max}
-                    formatOptions={CRYPTO_FORMAT_OPTIONS}
-                    onChange={updateAllowedExtraProfit}
-                  />
-                  <NumberField
-                    label={t`Fee Gamma (${cryptoswapMinMax.feeGamma.min} - ${cryptoswapMinMax.feeGamma.max})`}
+                    label={t`Fee Gamma (${cryptoswapMinMax.feeGamma.min} - ${cryptoswapMinMax.feeGamma.max})${irrelevancyLabel}`}
                     value={+feeGamma}
                     minValue={cryptoswapMinMax.feeGamma.min}
                     maxValue={cryptoswapMinMax.feeGamma.max}
@@ -366,7 +366,15 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateFeeGamma}
                   />
                   <NumberField
-                    label={t`Adjustment Step (${cryptoswapMinMax.adjustmentStep.min} - ${cryptoswapMinMax.adjustmentStep.max})`}
+                    label={t`${allowedExtraProfitLabel} (${cryptoswapMinMax.allowedExtraProfit.min} - ${cryptoswapMinMax.allowedExtraProfit.max})`}
+                    value={+allowedExtraProfit}
+                    minValue={cryptoswapMinMax.allowedExtraProfit.min}
+                    maxValue={cryptoswapMinMax.allowedExtraProfit.max}
+                    formatOptions={CRYPTO_FORMAT_OPTIONS}
+                    onChange={updateAllowedExtraProfit}
+                  />
+                  <NumberField
+                    label={t`${adjustmentStepLabel} (${cryptoswapMinMax.adjustmentStep.min} - ${cryptoswapMinMax.adjustmentStep.max})`}
                     value={+adjustmentStep}
                     minValue={cryptoswapMinMax.adjustmentStep.min}
                     maxValue={cryptoswapMinMax.adjustmentStep.max}

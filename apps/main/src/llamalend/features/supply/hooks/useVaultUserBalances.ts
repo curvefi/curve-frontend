@@ -1,5 +1,5 @@
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
-import { UserMarketQuery } from '@evm-ui/lib/model'
+import { UserMarketQuery } from '@evm-ui/queries/root-keys'
 import { maybes } from '@primitives/objects.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'

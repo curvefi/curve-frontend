@@ -1,5 +1,5 @@
-import { rootKeys } from '@evm-ui/lib/model'
-import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
+import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
+import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { StakeParams, StakeQuery, stakeValidationSuite, requireVault } from '../validation/supply.validation'
 import { useStakeIsApproved } from './supply-stake-approved.query'

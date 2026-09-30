@@ -1,17 +1,14 @@
 import { useMemo } from 'react'
-import {
-  preserveVisibilityChoices,
-  useVisibilitySettings,
-} from '@evm-ui/shared/ui/DataTable/hooks/useVisibilitySettings'
 import { fromEntries, mapRecord, recordValues } from '@primitives/objects.utils'
 import type { MigrationOptions } from '@ui/features/storage/useStoredState'
+import { preserveVisibilityChoices, useVisibilitySettings } from '@ui/features/tables/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { POOL_COLUMNS, POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
 import type { PoolTableVariant } from '../types'
 
 const migration: MigrationOptions<Record<PoolTableVariant, VisibilityGroup<PoolColumnId>[]>> = {
-  version: 6,
+  version: 7,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
 }

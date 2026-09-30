@@ -15,7 +15,6 @@ export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',
   PAGE_POOLS: '/pools',
   PAGE_CREATE_POOL: '/create-pool',
-  PAGE_DASHBOARD: '/dashboard',
   PAGE_DEPLOY_GAUGE: '/deploy-gauge',
   PAGE_COMPENSATION: '/compensation',
   PAGE_LEGAL,
@@ -74,7 +73,6 @@ export const APP_LINK: Record<AppMenuOption, AppNavigation> = {
       { app: 'dex', route: DEX_ROUTES.PAGE_SWAP, label: () => t`Swap` },
       { app: 'dex', route: DEX_ROUTES.PAGE_POOLS, label: () => t`Pools` },
       { app: 'dex', route: DEX_ROUTES.PAGE_CREATE_POOL, label: () => t`Pool Creation` },
-      { app: 'dex', route: DEX_ROUTES.PAGE_DASHBOARD, label: () => t`Dashboard` },
     ],
   },
   llamalend: {

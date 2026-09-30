@@ -3,6 +3,7 @@ import { isRouterRequired, tryGetMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
+  validateControllerApproval,
   validateIsFull,
   validateLeverageSupported,
   validateLeverageValuesSupported,
@@ -14,7 +15,7 @@ import {
   validateRouteProvider,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
-import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
+import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
@@ -72,7 +73,7 @@ const validateRepayFieldsForMarket = (
       })
     const swapRequired = stateCollateral || userCollateral || routeId
     validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
-    validateRouteCalldata(routeId)
+    validateRouteCalldata(routeId, market)
     if (validateLeverageProviders) validateRouteProvider(routeId, leverageProviders, type === 'zapV2')
 
     skipWhen(!['deleverage', 'zapV2', null, undefined].includes(type), () => {
@@ -95,19 +96,22 @@ const repayValidationGroup = (
     maxStateCollateral,
     maxCollateral,
     maxBorrowed,
-  }: FieldsOf<RepayFormData>,
+    isControllerApproved,
+  }: FieldsOf<RepayFormData & { isControllerApproved: boolean }>,
   {
     leverageRequired,
     validateMax,
     maxRequired = validateMax,
     leverageProviders,
     validateLeverageProviders = false,
+    requireControllerApproval = false,
   }: {
     leverageRequired: boolean
     validateMax: boolean
     maxRequired?: boolean
     leverageProviders?: readonly RouteProvider[]
     validateLeverageProviders?: boolean
+    requireControllerApproval?: boolean
   },
 ) => {
   const market = tryGetMarket(marketId)
@@ -127,6 +131,7 @@ const repayValidationGroup = (
   validateSlippage({ slippage })
   validateLeverageSupported(market, { required: leverageRequired })
   validateIsFull(isFull)
+  validateControllerApproval(isControllerApproved, { required: requireControllerApproval })
 
   skipWhen(!validateMax, () => {
     validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed, required: maxRequired })
@@ -139,20 +144,30 @@ export const repayValidationSuite = (options: {
   leverageRequired: boolean
   validateMax: boolean
   requireLeverageValue?: boolean
+  requireControllerApproval?: boolean
   leverageProviders?: readonly RouteProvider[]
 }) => {
-  const { leverageRequired, validateMax, requireLeverageValue = leverageRequired, leverageProviders } = options
-  return createValidationSuite(({ chainId, marketId, userAddress, ...params }: RepayParams) => {
-    const market = tryGetMarket(marketId)
-    userMarketValidationSuite({ chainId, marketId, userAddress })
-    repayValidationGroup(market, params, {
-      leverageRequired,
-      validateMax,
-      leverageProviders,
-      validateLeverageProviders: 'leverageProviders' in options, // If omitted skips provider validation for queries
-    })
-    validateLeverageValuesSupported(market, requireLeverageValue)
-  })
+  const {
+    leverageRequired,
+    validateMax,
+    requireLeverageValue = leverageRequired,
+    requireControllerApproval = false,
+    leverageProviders,
+  } = options
+  return createValidationSuite(
+    ({ chainId, marketId, userAddress, ...params }: RepayParams & { isControllerApproved?: boolean }) => {
+      const market = tryGetMarket(marketId)
+      userMarketValidationSuite({ chainId, marketId, userAddress })
+      repayValidationGroup(market, params, {
+        leverageRequired,
+        validateMax,
+        leverageProviders,
+        validateLeverageProviders: 'leverageProviders' in options, // If omitted skips provider validation for queries
+        requireControllerApproval,
+      })
+      validateLeverageValuesSupported(market, requireLeverageValue)
+    },
+  )
 }
 
 export const repayFormValidationSuite = (market: MarketTemplate | undefined) =>

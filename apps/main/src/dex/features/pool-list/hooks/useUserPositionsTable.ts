@@ -1,15 +1,25 @@
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { resetPoolLists } from '@/dex/queries/invalidation'
-import { useUserPoolPositions } from '@/dex/queries/user-pool-positions.query'
+import { useUserPoolClaimables, type UserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
+import { useUserPoolPositions, type UserPoolPosition } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import { useCampaigns } from '@evm-ui/entities/campaigns'
-import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { useCampaigns } from '@evm-ui/queries/campaigns'
+import { useTokenUsdRates, type TokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { maybe } from '@primitives/objects.utils'
-import { useCombinedQueries } from '@ui/features/queries/combine'
-import { constQ, mapQuery, useMappedQuery } from '@ui/features/queries/util'
+import { mapQuery, type Query, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum } from '@ui/lib/decimal'
-import { enrichPoolRow, poolToRowData } from '../utils'
+import { claimablesTotalUsd, enrichPoolRow, poolToRowData } from '../utils'
+
+const getPoolUserPosition = (
+  position: UserPoolPosition['positions'][number],
+  tokenRates: TokenUsdRates | undefined,
+  claimables: Query<UserPoolClaimables>,
+) => ({
+  lpBalance: position.totalBalance,
+  depositsUsd: maybe(tokenRates?.[position.lpTokenAddress], price => decimalMultiply(position.totalBalance, price)),
+  claimables: mapQuery(claimables, rewards => rewards[position.address] ?? []),
+})
 
 export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) => {
   const { chainId, blockchainId } = network
@@ -17,38 +27,45 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
 
   const campaigns = useCampaigns({ blockchainId })
   const positions = useUserPoolPositions({ chainId, userAddress })
+  const claimables = useUserPoolClaimables({ chainId, userAddress }, positions)
 
-  const { data: tokenAddresses } = useMappedQuery(
+  const tokenAddresses = useMappedQuery(
     positions,
     useCallback(({ positions }) => positions.map(({ lpTokenAddress }) => lpTokenAddress), []),
   )
-  const tokenRates = useTokenUsdRates({ chainId, tokenAddresses }, !!userAddress)
+  const tokenRates = useTokenUsdRates({ chainId, tokenAddresses: tokenAddresses.data }, !!userAddress)
 
-  // constQ suppresses loading state, and ?? null allows useCombinedQueries to run even when data is not yet loaded or present.
-  const tableQuery = useCombinedQueries(
-    [positions, constQ(network), constQ(campaigns.data), constQ(tokenRates.data ?? null)],
+  const tableQuery = useMappedQuery(
+    positions,
     useCallback(
-      ({ positions }, network, campaigns, prices) =>
+      ({ positions }) =>
         positions
           .map(position =>
-            enrichPoolRow(poolToRowData(position), network, campaigns, {
-              lpBalance: position.totalBalance,
-              depositsUsd: maybe(prices?.[position.lpTokenAddress], price =>
-                decimalMultiply(position.totalBalance, price),
-              ),
-            }),
+            enrichPoolRow(
+              poolToRowData(position),
+              network,
+              campaigns.data,
+              getPoolUserPosition(position, tokenRates.data, {
+                data: claimables.data,
+                isLoading: claimables.isLoading,
+                error: claimables.error,
+              }),
+            ),
           )
           .toSorted((a, b) => decimalCompare(b.userPosition.depositsUsd ?? '0', a.userPosition.depositsUsd ?? '0')),
-      [],
+      [network, campaigns.data, tokenRates.data, claimables.data, claimables.isLoading, claimables.error],
     ),
   )
 
   return {
-    isFetching: positions.isFetching || campaigns.isLoading,
+    isFetching: positions.isFetching || campaigns.isLoading || claimables.isFetching,
     onReload: () => resetPoolLists({ chainId, userAddress }),
     tableQuery,
+    claimablesTotalUsd: mapQuery(claimables, pools =>
+      decimalSum(...Object.values(pools).map(claimables => claimablesTotalUsd(claimables))),
+    ),
     totalLiquidityUsd: mapQuery(tableQuery, rows =>
-      decimalSum(...rows.map(({ userPosition }) => userPosition.depositsUsd ?? '0')),
+      decimalSum(...rows.map(({ userPosition }) => userPosition.depositsUsd)),
     ),
   }
 }

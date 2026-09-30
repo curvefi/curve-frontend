@@ -12,4 +12,5 @@ export enum PoolColumnId {
   Tvl = 'tvl',
   Age = 'Age',
   Deposits = 'Deposits',
+  Claimables = 'Claimables',
 }

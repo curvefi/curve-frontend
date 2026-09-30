@@ -3,22 +3,20 @@ import { styled } from 'styled-components'
 import type { Seed } from '@/dex/components/PagePool/types'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { hasWrapped } from '@/dex/pool.utils'
-import { PoolData } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { formatNumber } from '@primitives/number.utils'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 export const AlertSeedAmounts = ({ seed }: { seed: Seed }) => {
-  const { poolData } = usePoolContext()
+  const { pool } = usePoolContext()
   const [seedAmounts, setSeedAmounts] = useState<string[]>([])
 
   const { isSeed, loaded } = seed
 
-  const getSeedRatio = useCallback(async (poolData: PoolData) => {
+  const getSeedRatio = useCallback(async (pool: PoolTemplate) => {
     try {
-      const { pool } = poolData
-
       const tokens = hasWrapped(pool) ? pool.wrappedCoins : pool.underlyingCoins
       const useUnderlying = !hasWrapped(pool)
 
@@ -36,9 +34,9 @@ export const AlertSeedAmounts = ({ seed }: { seed: Seed }) => {
   }, [])
 
   useEffect(() => {
-    if (!!poolData && loaded && isSeed) void getSeedRatio(poolData)
+    if (!!pool && loaded && isSeed) void getSeedRatio(pool)
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolData?.pool?.id, loaded, isSeed])
+  }, [pool?.id, loaded, isSeed])
 
   const seedAmountsLength = seedAmounts.length
 

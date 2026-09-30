@@ -2,8 +2,6 @@ import { useRef, useState } from 'react'
 import { useConnection } from 'wagmi'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
-import { TableFilters } from '@evm-ui/shared/ui/DataTable/TableFilters'
-import { TableVisibilitySettingsPopover } from '@evm-ui/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import Stack from '@mui/material/Stack'
@@ -13,7 +11,9 @@ import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { CenteredEmptyState } from '@ui/features/tables/CenteredEmptyState'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
+import { TableFilters } from '@ui/features/tables/TableFilters'
 import { TableHeader } from '@ui/features/tables/TableHeader'
+import { TableVisibilitySettingsPopover } from '@ui/features/tables/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -50,7 +50,7 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
     mobileColumn: PoolColumnId.Deposits,
   })
 
-  const { tableQuery, totalLiquidityUsd, isFetching, onReload } = useUserPositionsTable({ network })
+  const { tableQuery, totalLiquidityUsd, claimablesTotalUsd, isFetching, onReload } = useUserPositionsTable({ network })
 
   const globalFilterFn = usePoolsGlobalFilterFn(tableQuery.data ?? EMPTY_POOL_ROWS, searchText)
 
@@ -86,6 +86,12 @@ export const UserPositionsTable = ({ network }: { network: NetworkConfig }) => {
                   category="dex.poolListSummary"
                   label={t`Total liquidity provided`}
                   value={totalLiquidityUsd}
+                  valueOptions={{ unit: 'dollar' }}
+                />
+                <Metric
+                  category="dex.poolListSummary"
+                  label={t`Claimable rewards`}
+                  value={claimablesTotalUsd}
                   valueOptions={{ unit: 'dollar' }}
                 />
               </MetricsGrid>

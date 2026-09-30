@@ -3,7 +3,7 @@ import { LendMarketSubNavMobile } from '@/lend/components/LendMarketSubNavMobile
 import { networksIdMapper } from '@/lend/networks'
 import type { UrlParams } from '@/lend/types/lend.types'
 import { useRedirectToEth } from '@evm-ui/hooks/useRedirectToEth'
-import { useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
+import { useGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { Outlet } from '@tanstack/react-router'
 import { useParams } from '@ui/hooks/router'
 

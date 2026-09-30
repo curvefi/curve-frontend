@@ -21,6 +21,6 @@ export const ErrorIconButton = ({
     size={size}
     data-error={error.toString()}
   >
-    <ExclamationTriangleIcon color="error" />
+    <ExclamationTriangleIcon sx={{ color: theme => theme.design.Text.TextColors.Feedback.Error }} />
   </CopyIconButton>
 )

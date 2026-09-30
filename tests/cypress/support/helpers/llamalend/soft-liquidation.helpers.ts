@@ -1,4 +1,3 @@
-import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -9,6 +8,7 @@ import {
   DECIMAL_REGEX,
   getActionValue,
 } from './action-info.helpers'
+import { submitLoanForm } from './loan-form.helpers'
 
 const getResetPositionConvertedInput = () =>
   cy.get('[data-testid="reset-position-input-converted-borrowed"] input[type="text"]', LOAD_TIMEOUT)

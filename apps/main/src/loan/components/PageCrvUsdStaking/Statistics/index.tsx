@@ -4,7 +4,7 @@ import type { StatisticsChart, YieldKeys } from '@/loan/components/PageCrvUsdSta
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield.query'
 import type { ChainId } from '@/loan/types/loan.types'
-import { timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
+import { timeOptions } from '@evm-ui/queries/validation/time-option-validation'
 import {
   ChartFooter,
   ChartHeader,

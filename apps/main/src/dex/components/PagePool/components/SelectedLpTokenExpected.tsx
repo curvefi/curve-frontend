@@ -1,6 +1,7 @@
+import { countBy } from 'lodash'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
-import { PoolData } from '@/dex/types/main.types'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Loader } from '@legacy-ui/Loader'
@@ -15,39 +16,40 @@ export const SelectedLpTokenExpected = ({
   amounts,
   blockchainId,
   loading,
-  poolData,
   tokens,
   tokenAddresses,
 }: {
   amounts: Amount[]
   blockchainId: string
   loading: boolean
-  poolData: PoolData
   tokens: string[]
   tokenAddresses: string[]
-}) => (
-  <Box as="ul" grid gridRowGap={2}>
-    {tokenAddresses.map((tokenAddress, idx) => {
-      const symbol = tokens[idx]
-      const haveSameTokenName = poolData.tokensCountBy[symbol] > 1
+}) => {
+  const tokenCount = useMemo(() => countBy(tokens), [tokens])
+  return (
+    <Box as="ul" grid gridRowGap={2}>
+      {tokenAddresses.map((tokenAddress, idx) => {
+        const symbol = tokens[idx]
+        const haveSameTokenName = tokenCount[symbol] > 1
 
-      return (
-        <Box key={tokenAddress} as="li" flex flexAlignItems="center">
-          <StyledTokenIcon blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} /> {symbol}
-          {haveSameTokenName && <Chip>{shortenAddress(tokenAddress)}</Chip>}
-          <Spacer />
-          {loading ? (
-            <Loader skeleton={[90, 20]} />
-          ) : (
-            <TextEllipsis smMaxWidth="15rem">
-              {formatNumber(amount(amounts[idx]?.value || 0), { abbreviate: false })}
-            </TextEllipsis>
-          )}
-        </Box>
-      )
-    })}
-  </Box>
-)
+        return (
+          <Box key={tokenAddress} as="li" flex flexAlignItems="center">
+            <StyledTokenIcon blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} /> {symbol}
+            {haveSameTokenName && <Chip>{shortenAddress(tokenAddress)}</Chip>}
+            <Spacer />
+            {loading ? (
+              <Loader skeleton={[90, 20]} />
+            ) : (
+              <TextEllipsis smMaxWidth="15rem">
+                {formatNumber(amount(amounts[idx]?.value || 0), { abbreviate: false })}
+              </TextEllipsis>
+            )}
+          </Box>
+        )
+      })}
+    </Box>
+  )
+}
 
 const StyledTokenIcon = styled(TokenIcon)`
   margin-right: var(--spacing-1);

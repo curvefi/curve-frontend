@@ -4,7 +4,7 @@ import { getToken, useToken, useTokens, type TokenMapper } from '@/dex/queries/t
 import { useStore } from '@/dex/store/useStore'
 import { getExchangeRates, getRouterWarningModal } from '@/dex/utils/utilsSwap'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import { type RouteResponse, type RoutesQuery, useRouterApi as useRouterApiQuery } from '@evm-ui/entities/router-api'
+import { type RouteResponse, type RoutesQuery, useRouterApi as useRouterApiQuery } from '@evm-ui/queries/router-api'
 import { fromWei } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
