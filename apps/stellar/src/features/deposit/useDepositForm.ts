@@ -110,6 +110,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens,
+    maxAmounts,
     isSeed,
   }
 }

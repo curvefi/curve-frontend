@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { ethAddress, isAddressEqual, type Address } from 'viem'
+import { useDepositEstimateGas } from '@/dex/queries/deposit/deposit-estimate-gas.query'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
-import { getPoolAmounts, poolAmountField, type PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
+import { getPoolAmounts, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
-import { decimal, decimalMax, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
-import { useDepositEstimateGas } from '../deposit.query'
+import { decimalMax, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
 import type { DepositParams } from '../types'
 
 const GAS_BUFFER_MULTIPLIER = '1.8'
@@ -26,21 +26,21 @@ export const useDepositMaxAmounts = ({
       ...(nativeIndex >= 0 && {
         [poolAmountField(nativeIndex)]:
           balances.data?.[tokenAddresses[nativeIndex]] ??
-          getPoolAmounts(params as Partial<PoolTokenFields>, params.decimals?.length)?.[nativeIndex],
+          getPoolAmounts(params, params.decimals?.length)?.[nativeIndex],
       }),
     }),
     [balances.data, nativeIndex, params, tokenAddresses],
   )
   const gas = useDepositEstimateGas(maxParams)
 
+  // Only native-token deposits need to reserve part of the balance for gas.
   return nativeIndex < 0
-    ? mapQuery(balances, balances => tokenAddresses.map(address => decimal(balances[address])))
-    : combineQueries([balances, gas], (balances, { estGasCost }) => {
-        const gasCost = decimal(estGasCost)
-        return tokenAddresses.map((address, index) =>
-          index === nativeIndex && gasCost != null
-            ? decimalMax('0', decimalMinus(balances[address], decimalMultiply(gasCost, GAS_BUFFER_MULTIPLIER)))
-            : decimal(balances[address]),
-        )
-      })
+    ? mapQuery(balances, balances => tokenAddresses.map(address => balances[address]))
+    : combineQueries([balances, gas], (balances, { estGasCost }) =>
+        tokenAddresses.map((address, index) =>
+          index === nativeIndex && estGasCost != null
+            ? decimalMax('0', decimalMinus(balances[address], decimalMultiply(estGasCost, GAS_BUFFER_MULTIPLIER)))
+            : balances[address],
+        ),
+      )
 }

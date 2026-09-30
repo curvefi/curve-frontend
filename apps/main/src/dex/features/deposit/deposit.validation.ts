@@ -4,12 +4,7 @@ import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-va
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import { MAX_SLIPPAGE, MIN_SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
-import {
-  getPoolAmounts,
-  poolAmountField,
-  poolMaxAmountField,
-  type PoolTokenFields,
-} from '@ui/features/pool-forms/pool-form.utils'
+import { getPoolAmounts, poolAmountField, poolMaxAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 
@@ -17,7 +12,7 @@ export const depositQueryValidationSuite = createValidationSuite((params: Deposi
   poolValidationGroup(params)
   curveApiValidationGroup(params, { requireRpc: true })
   evmAddressValidationGroup({ evmAddress: params.userAddress })
-  const amounts = getPoolAmounts(params as Partial<PoolTokenFields>, params.decimals?.length)
+  const amounts = getPoolAmounts(params, params.decimals?.length)
   test('root', 'Enter an amount to deposit', () => {
     enforce(amounts?.some(amount => +(amount ?? '0') > 0)).equals(true)
   })

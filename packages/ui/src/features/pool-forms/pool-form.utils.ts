@@ -1,5 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, maybe, range } from '@primitives/objects.utils'
+import type { FieldsOf } from '@ui/lib/validation/types'
 
 export type PoolAmountField = `amount_${number}`
 export type PoolMaxAmountField = `maxAmount_${number}`
@@ -23,7 +24,7 @@ export const allTokenFields = <T extends number | Nullish>(count: T) =>
   maybe(count, c => range(c).flatMap(index => poolTokenFields(index)))
 
 /** Keep contract amounts in pool token order, regardless of form field insertion order. */
-export const getPoolAmounts = (values: PoolTokenFields, tokenCount: number | undefined) =>
+export const getPoolAmounts = (values: FieldsOf<PoolTokenFields>, tokenCount: number | undefined) =>
   maybe(tokenCount, count => range(count).map(index => values[poolAmountField(index)]))
 
 export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokenFields, PoolAmountField> =>

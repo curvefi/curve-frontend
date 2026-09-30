@@ -18,7 +18,7 @@ type PoolActionInfoListProps = {
   slippage: Decimal
   onSlippageChange: (slippage: Decimal) => void
   userAddress: Address | undefined
-  slippageType?: SlippageType
+  slippageType: SlippageType
   expectedLp?: QueryProp<Decimal>
   expectedLpLabel?: string
   expectedLpTestId?: string
@@ -42,7 +42,7 @@ export const PoolActionInfoList = ({
   slippage,
   onSlippageChange,
   userAddress,
-  slippageType = 'stable',
+  slippageType,
   expectedLp,
   expectedLpLabel,
   expectedLpTestId,

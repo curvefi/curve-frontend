@@ -28,7 +28,7 @@ export const PoolTokenInput = ({
   disabled,
   hideMaxButton,
   reserves: { data: reserves },
-  maxBalance,
+  max,
   positionBalance,
 }: {
   token: PoolToken
@@ -36,9 +36,9 @@ export const PoolTokenInput = ({
   disabled: boolean
   hideMaxButton?: boolean
   reserves: QueryProp<Decimal[]>
-  /** Override the value used by the Max chip while keeping the displayed wallet balance. */
-  maxBalance?: QueryProp<Decimal>
-  /** Display the position balance instead of the wallet balance, as in LoanFormTokenInput. */
+  /** Spendable maximum used for amount validation and the Max chip. */
+  max: QueryProp<Decimal>
+  /** Display the position balance instead of the wallet balance. */
   positionBalance?: {
     position: QueryProp<Decimal>
     tooltip?: NonNullable<LargeTokenInputProps['walletBalance']>['tooltip']
@@ -50,9 +50,8 @@ export const PoolTokenInput = ({
   const amount = watchValue(field)
   const fieldError = touchedFields[field] ? (errors[field] ?? errors[poolMaxAmountField(index)]) : undefined
   const { position, tooltip } = positionBalance ?? {}
-  const maximum = maxBalance ?? position ?? balance
-  useFormSync({ update }, { [poolMaxAmountField(index)]: maximum.data })
-  const inputError = fieldError ?? maximum.error
+  useFormSync({ update }, { [poolMaxAmountField(index)]: max.data })
+  const inputError = fieldError ?? max.error
   return (
     <LargeTokenInput
       name={field}
@@ -73,7 +72,7 @@ export const PoolTokenInput = ({
       )}
       disabled={disabled}
       walletBalance={{ symbol, balance: position ?? balance, tooltip, prefix: position && LlamaIcon }}
-      {...(!hideMaxButton && { maxBalance: { balance: maximum, chips: 'max' } })}
+      {...(!hideMaxButton && { maxBalance: { balance: max, chips: 'max' } })}
       message={inputError?.message}
       testId={`pool-token-input-${address}`}
     />

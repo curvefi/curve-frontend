@@ -52,6 +52,7 @@ export const WithdrawForm = ({
       tokens={tokens}
       reserves={reserves}
       isDisabled={isPending}
+      maxAmounts={maxAmounts}
       positionAmounts={maxAmounts}
       hideMaxButton
     />

@@ -5,6 +5,8 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePoolTokens } from '@/dex/features/pool/usePoolTokens'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { useDepositBonus } from '@/dex/queries/deposit/deposit-bonus.query'
+import { useSeedAmounts } from '@/dex/queries/deposit/deposit-seed-amounts.query'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -13,10 +15,9 @@ import { useForm, useFormSync } from '@ui/features/forms'
 import { getPoolDefaultValues, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { decimal, decimalMinus } from '@ui/lib/decimal'
+import { decimalMinus } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import { useDepositMutation } from '../deposit.mutation'
-import { useDepositBonus, useSeedAmounts } from '../deposit.query'
 import { depositFormValidationSuite } from '../deposit.validation'
 import type { DepositFormState, DepositQuery } from '../types'
 import { useDepositMaxAmounts } from './useDepositMaxAmounts'
@@ -100,11 +101,11 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
 
   const { formState } = form
   const isPending = formState.isSubmitting || isDepositing
-  const isDerivingSeedAmounts = isSeed.data === true && seedAmounts.isFetching
+  const isDerivingSeedAmounts = isSeed.data === true && seedAmounts.isLoading
   return {
     form,
     params,
-    reserves: mapQuery(reserves, reserves => reserves.tokens.map(token => decimal(token.balance)!)),
+    reserves: mapQuery(reserves, reserves => reserves.tokens.map(token => token.balance)),
     isSeed,
     canDepositWrapped,
     isWrappedOnly: wrappedOnly,
