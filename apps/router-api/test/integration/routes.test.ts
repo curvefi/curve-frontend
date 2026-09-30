@@ -7,7 +7,7 @@ import { toWei } from '../../src/router.utils'
 import { type RoutesQuery } from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
 
-process.loadEnvFile()
+process.loadEnvFile(new URL('../../.env', import.meta.url))
 
 const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
 
