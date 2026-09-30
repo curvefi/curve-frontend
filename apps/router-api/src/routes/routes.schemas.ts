@@ -1,8 +1,8 @@
 import { type Address, ADDRESS_HEX_PATTERN } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
+import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
 
-const DECIMAL_PATTERN = '^-?\\d+(\\.\\d+)?$'
+const DECIMAL_PATTERN = DECIMAL_REGEX.source
 const WEI_AMOUNT_PATTERN = '^\\d+$'
 
 export const ROUTES_PATH = '/api/router/v1/routes'
@@ -34,6 +34,7 @@ const routesQuerySchema = {
     amountOut: { ...WeiAmountArraySchema, description: 'Amount of tokenOut in wei (integer, no decimals).' },
     userAddress: AddressSchema,
     zapAddress: AddressSchema,
+    controllerAddress: AddressSchema,
     slippage: { type: 'number', minimum: 0 },
   },
 } as const
@@ -48,6 +49,7 @@ export type RoutesQuery = {
   amountOut?: [Decimal]
   userAddress?: Address
   zapAddress?: Address
+  controllerAddress?: Address
   slippage?: number
 }
 

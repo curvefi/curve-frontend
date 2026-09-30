@@ -5,9 +5,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { Badge } from '@ui/components/Badge'
 import { ActionInfoSize, ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
-import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
+import type { SlippageSettings, SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageSettingsModal } from '@ui/features/forms/slippage/SlippageSettingsModal'
-import type { SlippageSettingsFormData } from '@ui/features/forms/slippage/useSlipageSettingsForm'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { GearIcon } from '@ui/icons/GearIcon'
 import { t } from '@ui/lib/i18n'
@@ -21,7 +20,7 @@ export const SlippageToleranceActionInfo = ({
   userAddress,
 }: {
   maxSlippage: Decimal | undefined
-  onChanged?: (data: SlippageSettingsFormData) => void
+  onChanged?: (data: SlippageSettings) => void
   size?: ActionInfoSize
   type: SlippageType | SlippageType[] | undefined
   active?: SlippageType

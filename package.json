@@ -13,7 +13,9 @@
   ],
   "scripts": {
     "build": "yarn workspaces foreach --parallel --all run build",
-    "test": "yarn workspaces foreach --parallel --all run test",
+    "test": "yarn workspace @curvefi/primitives exec \"cd ../.. && vitest run\"",
+    "test:watch": "yarn workspace @curvefi/primitives exec \"cd ../.. && vitest --watch\"",
+    "test:ui": "yarn workspace @curvefi/primitives exec \"cd ../.. && vitest --ui\"",
     "start": "yarn workspace main start",
     "dev": "yarn workspace main dev",
     "dev-router-api": "yarn workspace router-api dev",
@@ -51,8 +53,7 @@
     "prettier": "3.9.6",
     "typescript": "6.0.3",
     "typescript-eslint": "8.68.0",
-    "vite-plugin-svgr": "5.2.0",
-    "vitest": "4.1.11"
+    "vite-plugin-svgr": "5.2.0"
   },
   "packageManager": "yarn@4.17.1",
   "lint-staged": {

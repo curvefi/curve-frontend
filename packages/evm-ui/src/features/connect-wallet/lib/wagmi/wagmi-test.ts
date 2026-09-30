@@ -13,7 +13,7 @@ import {
 } from 'viem'
 import { privateKeyToAccount, toAccount } from 'viem/accounts'
 import { createConnector, type CreateConnectorFn } from 'wagmi'
-import type { Address } from '@primitives/address.utils'
+import type { Address, Hex } from '@primitives/address.utils'
 import { WAGMI_HTTP_OPTIONS } from './transports'
 
 type ConnectParams<T> = { chainId?: number; isReconnecting?: boolean; withCapabilities: T }
@@ -35,8 +35,8 @@ const cypressTransport = (account: TestAccount, chain: Chain) => {
 }
 
 export type CreateTestConnectorOptions = {
-  /** A 32-byte private key or a 20-byte JSON-RPC account address, including the 0x prefix. */
-  account: Address
+  /** A 32-byte private key or a 20-byte address to impersonate */
+  account: Hex
   /** The testnet chain configuration */
   chain: Chain
   /**

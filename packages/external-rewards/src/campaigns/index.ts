@@ -1,5 +1,6 @@
 import Aegis from './Aegis.json'
 import Apyx from './Apyx.json'
+import Axis from './Axis.json'
 import DTrinity from './DTrinity.json'
 import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
@@ -44,4 +45,5 @@ export {
   Apyx,
   Jane,
   Tori,
+  Axis,
 }

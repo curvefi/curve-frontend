@@ -66,6 +66,7 @@ export const calculatePriceImpact = ({
 export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends QueryKey>({
   chainId,
   marketAddress,
+  controllerAddress,
   tokenIn,
   tokenOut,
   amountIn,
@@ -79,6 +80,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
 }: {
   chainId: number
   marketAddress: Address | undefined
+  controllerAddress: Address | undefined
   tokenIn: MarketToken | undefined
   tokenOut: MarketToken | undefined
   amountIn: Decimal | undefined
@@ -99,6 +101,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     tokenOut: tokenOut?.address,
     amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
     blacklist: toArray(marketAddress),
+    controllerAddress,
     userAddress,
     zapAddress,
     slippage,
