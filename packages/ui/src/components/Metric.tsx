@@ -328,17 +328,19 @@ export const Metric = ({
         {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
         {error && <ErrorIconButton size={MetricButtonSize[size]} error={error} />}
         {isLoading && data != null && <Spinner size={16} sx={{ margin: 0, alignSelf: 'center' }} />}
-        <WithSkeleton loading={isLoading && data == null}>
-          <MetricValue
-            value={data ?? null}
-            valueOptions={valueOptions}
-            change={change}
-            size={size}
-            copyValue={data || data === 0 ? copyValue : undefined}
-            tooltip={valueTooltip}
-            testId={testId}
-          />
-        </WithSkeleton>
+        {(!error || data != null) && (
+          <WithSkeleton loading={isLoading && data == null}>
+            <MetricValue
+              value={data ?? null}
+              valueOptions={valueOptions}
+              change={change}
+              size={size}
+              copyValue={data || data === 0 ? copyValue : undefined}
+              tooltip={valueTooltip}
+              testId={testId}
+            />
+          </WithSkeleton>
+        )}
         {!isHorizontal && icon}
         {isHorizontal && notional && <Notional {...notional} />}
       </Stack>
