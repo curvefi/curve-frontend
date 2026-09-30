@@ -1,15 +1,14 @@
-import { defineChain, http } from 'viem'
+import { defineChain, http, type Hex } from 'viem'
 import { arbitrum, mainnet, optimism } from 'viem/chains'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 import { createWagmiConfig } from '@evm-ui/features/connect-wallet'
-import { type Hex } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
 import { createTenderlyConnector } from './connector'
 
 /** Configuration options for creating a test Wagmi config */
 type Options = {
-  /** Private key for the test account */
-  privateKey: Hex
+  /** A 32-byte private key or a 20-byte address to impersonate */
+  account: Hex
   /** RPC URL for the Ethereum network */
   rpcUrl: string
   /** Block explorer URL for the network */
@@ -27,8 +26,8 @@ const getTestChain = (chainId: number | string) =>
     `Unsupported chain ${chainId}`,
   ) as typeof mainnet
 
-/** Creates a Wagmi configuration for testing with a private key connector to a custom Tenderly (testnet) RPC */
-export function createTenderlyWagmiConfig({ privateKey, rpcUrl, explorerUrl, chainId, tenderly }: Options) {
+/** Creates a Wagmi configuration for a private-key or impersonated account on a Tenderly testnet. */
+export function createTenderlyWagmiConfig({ account, rpcUrl, explorerUrl, chainId, tenderly }: Options) {
   const chain = defineChain({
     ...getTestChain(chainId),
     rpcUrls: { default: { http: [rpcUrl] } },
@@ -38,6 +37,6 @@ export function createTenderlyWagmiConfig({ privateKey, rpcUrl, explorerUrl, cha
   return createWagmiConfig({
     chains: [chain],
     transports: { [chain.id]: http(rpcUrl) },
-    connectors: [createTenderlyConnector({ privateKey, chain, tenderly })],
+    connectors: [createTenderlyConnector({ account, chain, tenderly })],
   })
 }

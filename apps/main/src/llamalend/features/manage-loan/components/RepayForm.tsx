@@ -9,6 +9,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { isRepayLeveraged } from '@/llamalend/queries/repay/repay-query.helpers'
 import { useUserPrices } from '@/llamalend/queries/user'
+import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/LeverageDelegationModal'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -81,6 +82,8 @@ export const RepayForm = <ChainId extends IChainId>({
     borrowToken,
     collateralToken,
     repayError,
+    isControllerApproved,
+    delegationModal,
     isApproved,
     userAddress,
     routes,
@@ -137,6 +140,7 @@ export const RepayForm = <ChainId extends IChainId>({
           form={form}
           params={params}
           values={values}
+          isControllerApproved={isControllerApproved.data}
           tokens={{ collateralToken, borrowToken }}
           showLeverage={showLeverage}
           prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
@@ -197,7 +201,7 @@ export const RepayForm = <ChainId extends IChainId>({
         loading={isLoading}
         disabled={isDisabled || shouldBlockTransaction(priceImpact, isRepayLeveraged(values))}
         label={[
-          isApproved.data === false && t`Approve`,
+          [isControllerApproved.data, isApproved.data].includes(false) && t`Approve`,
           notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
           isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
         ]}
@@ -212,6 +216,7 @@ export const RepayForm = <ChainId extends IChainId>({
         handledErrors={notFalsy(selectedField, max[selectedField]?.fieldName)}
         userAddress={userAddress}
       />
+      <LeverageDelegationModal {...delegationModal} />
     </Form>
   )
 }

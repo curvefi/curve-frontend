@@ -2,14 +2,29 @@ import type { Address, Hex } from 'viem'
 import { LEVERAGE } from '@/llamalend/constants'
 import { oneAddress, oneDecimal } from '@cy/support/generators'
 import type { RoutesQuery } from '@evm-ui/queries/router-api'
+import { MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
-import { TEST_ADDRESS } from '../mock-loan-test-data'
+import { TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockLendMarket, createMockLendStats, createMockMintMarket } from '../mock-market.helpers'
 import { seedErc20BalanceForAddresses } from '../query-cache.helpers'
-import { createStub, createSyncStub, type TestStub, type TestStubArg } from '../test-stub.utils'
+import { createStub, createSyncStub, createTransactionStub, type TestStub, type TestStubArg } from '../test-stub.utils'
+
+export const createControllerApprovalStubs = (approved = true) => {
+  const setControllerApproval = createTransactionStub([TEST_TX_HASH])
+  return {
+    isControllerApproved: cy
+      .stub()
+      .callsFake(() => Promise.resolve(approved || setControllerApproval.callCount > 0)) as TestStub<
+      readonly TestStubArg[],
+      Promise<boolean>
+    >,
+    setControllerApproval,
+    estimateGasSetControllerApproval: createStub('100000'),
+  }
+}
 
 /** Seed token balances for both collateral and borrow (crvUSD) tokens so useReadContracts doesn't make real RPC calls */
 export const seedMarketBalances = (chainId: number, collateralAddress: Address) => {
@@ -97,6 +112,7 @@ export const mockRouterRoutes = (chainId: number, calldata: Hex = ROUTER_CALLDAT
 }
 
 export const createMockLendLoanMarket = ({
+  version = MarketVersion.v1,
   loan,
   leverage,
   leverageZapV2,
@@ -106,6 +122,7 @@ export const createMockLendLoanMarket = ({
   userPrices,
   loanExists,
 }: {
+  version?: MarketVersion
   loan: object
   leverage?: object
   leverageZapV2: object
@@ -116,6 +133,7 @@ export const createMockLendLoanMarket = ({
   loanExists?: TestStub<readonly TestStubArg[], unknown>
 }) =>
   createMockLendMarket({
+    version,
     collateral_token: { symbol: 'wstETH', address: DEFAULT_COLLATERAL_ADDRESS, decimals: 18 },
     borrowed_token: { symbol: 'crvUSD', address: CRVUSD_ADDRESS, decimals: 18 },
     coinDecimals: [18, 18],
@@ -156,7 +174,7 @@ export const expectedBorrowedMetrics = () => ({
   avgPrice: oneDecimal(900, 2300, 2),
 })
 
-export const createLoanPositionStubs = ({ collateral, debt }: { collateral: Decimal; debt: Decimal }) => ({
+const createLoanPositionStubs = ({ collateral, debt }: { collateral: Decimal; debt: Decimal }) => ({
   userState: createStub({ collateral, stablecoin: '0', debt }),
   userHealth: createStub(oneDecimal(20, 80, 2)),
 })

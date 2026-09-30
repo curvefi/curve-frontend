@@ -132,7 +132,7 @@ testCases.forEach(
           type="loan"
           tab={tab}
           vnet={getVirtualNetwork()}
-          privateKey={privateKey}
+          account={privateKey}
           chainId={chainId}
           marketId={id}
           userAddress={address}

@@ -225,7 +225,7 @@ export const defaultNetworks = Object.entries({
 /** Networks that has only been upgraded to show pool rewards APY */
 const poolRewardsUpgradedChains = [Chain.Taiko, Chain.Etherlink]
 /** Networks that has FXSwap enabled in pool creation */
-const fxSwapUpgradedChains = [Chain.Etherlink]
+const fxSwapUpgradedChains = [Chain.Etherlink, Chain.Robinhood, Chain.Arc]
 
 const liteCreateQuickList: Record<number, NetworkConfig['createQuickList']> = {
   [Chain.Arc]: [{ address: ARC_USDC_ADDRESS, symbol: 'USDC' }],

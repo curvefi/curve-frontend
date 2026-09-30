@@ -1,0 +1,27 @@
+import { type GridProps } from '@mui/material/Grid'
+import { getDefaultSelectableChipSize } from '@ui/components/selectable-chip.utils'
+import { SelectableChip, type SelectableChipProps } from '@ui/components/SelectableChip'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { ChipGridItem } from './ChipGridItem'
+
+/** A <GridItem> with a SelectableChip inside */
+export const GridChip = ({
+  size,
+  selectableChipSize,
+  ...props
+}: Omit<SelectableChipProps, 'size'> & {
+  size?: GridProps['size']
+  selectableChipSize?: SelectableChipProps['size']
+}) => {
+  const isMobile = useIsMobile()
+  return (
+    <ChipGridItem size={size}>
+      <SelectableChip
+        {...props}
+        size={selectableChipSize || getDefaultSelectableChipSize(isMobile)}
+        // flex removes the inline-flex line box that otherwise makes icon-only chip wrappers taller.
+        sx={{ display: 'flex', width: { mobile: '100%', tablet: 'auto' } }}
+      />
+    </ChipGridItem>
+  )
+}

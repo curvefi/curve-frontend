@@ -46,8 +46,8 @@ function QuickSwapTest({
   )
 }
 
-export const SwapTestCase = ({ vnet, privateKey, chainId, fromAddress, toAddress }: SwapTestCaseProps) => (
-  <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
+export const SwapTestCase = ({ vnet, account, chainId, fromAddress, toAddress }: SwapTestCaseProps) => (
+  <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, account })} autoConnect>
     <CurveProvider
       app="dex"
       network={defaultNetworks[chainId]}

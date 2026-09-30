@@ -165,9 +165,10 @@ function useCurveRouterQuery<TData extends TGas | null, TKey extends QueryKey>(
   enabled: boolean | undefined,
 ) {
   const curveRoutes = useRouterQuery(params, 'curve', enabled)
+  const gasOptions = getRouteGasOptions(curveRoutes.data?.id)
   const { data: gas } = useQuery({
-    ...getRouteGasOptions(curveRoutes.data?.id),
-    enabled: !!curveRoutes.data && enabled,
+    ...gasOptions,
+    enabled: gasOptions.enabled !== false && !!curveRoutes.data && enabled,
   })
   return {
     ...pick(curveRoutes, 'isFetching', 'enabled'),

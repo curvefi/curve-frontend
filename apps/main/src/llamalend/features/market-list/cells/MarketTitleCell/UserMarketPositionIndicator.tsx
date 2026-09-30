@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { UserPositionIndicator, type ColorState } from '@evm-ui/shared/ui/DataTable/UserPositionIndicator'
 import { Typography } from '@mui/material'
+import { UserPositionIndicator, type ColorState } from '@ui/features/tables/UserPositionIndicator'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 
 /**

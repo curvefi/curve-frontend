@@ -1,8 +1,8 @@
 import { type Address, ADDRESS_HEX_PATTERN } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
+import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
 
-const DECIMAL_PATTERN = '^-?\\d+(\\.\\d+)?$'
+const DECIMAL_PATTERN = DECIMAL_REGEX.source
 const WEI_AMOUNT_PATTERN = '^\\d+$'
 
 export const ROUTES_PATH = '/api/router/v1/routes'
@@ -11,7 +11,6 @@ const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN.source } as
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
 const AddressListSchema = { type: 'array', items: AddressSchema, minItems: 1 } as const
 const DecimalSchema = { type: 'string', pattern: DECIMAL_PATTERN }
-const DecimalTupleSchema = { type: 'array', items: DecimalSchema, minItems: 2, maxItems: 2 } as const
 const WeiAmountSchema = { type: 'string', pattern: WEI_AMOUNT_PATTERN } as const
 const WeiAmountArraySchema = { type: 'array', items: WeiAmountSchema, minItems: 1, maxItems: 1 } as const
 
@@ -60,8 +59,14 @@ const routeItemSchema = {
     routerFeePercentage: DecimalSchema,
     amountIn: WeiAmountArraySchema,
     amountOut: WeiAmountArraySchema,
-    gas: { anyOf: [DecimalSchema, DecimalTupleSchema, { type: 'null' }] },
-    priceImpact: { anyOf: [{ type: 'number' }, { type: 'null' }] },
+    gas: {
+      type: ['string', 'array', 'null'],
+      pattern: DECIMAL_PATTERN, // applies only to strings
+      items: DecimalSchema, // applies only to arrays
+      minItems: 2,
+      maxItems: 2,
+    },
+    priceImpact: { type: ['number', 'null'] },
     createdAt: { type: 'integer' },
     isStableswapRoute: { type: 'boolean' },
     warnings: { type: 'array', items: { type: 'string', enum: ['high-slippage', 'low-exchange-rate'] } },

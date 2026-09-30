@@ -1,18 +1,5 @@
 import { Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
 
-/**
- * Makes sure that the filter chips are visible during the given callback.
- * On mobile, the filters are hidden behind a drawer and need to be expanded for some actions.
- */
-export function withFilterChips<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
-  if (breakpoint !== 'mobile') return callback()
-  cy.get('[data-testid^="btn-drawer-filter-"]').click()
-  return callback().then(result => {
-    cy.get('body').click(0, 0)
-    return cy.wrap(result)
-  })
-}
-
 export function expandFirstRowOnMobile(breakpoint: Breakpoint) {
   if (breakpoint == 'mobile') {
     cy.get(`[data-testid="expand-icon"]`).first().click()

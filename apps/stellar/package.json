@@ -23,7 +23,8 @@
     "@tanstack/react-router-devtools": "1.167.1",
     "@tanstack/router-core": "1.171.27",
     "vite-plugin-svgr": "5.2.0",
-    "vite-plugin-vercel": "9.1.1"
+    "vite-plugin-vercel": "9.1.1",
+    "wrangler": "4.135.0"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
