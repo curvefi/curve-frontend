@@ -16,7 +16,7 @@ export const ROUTER_FEE_BPS: Record<MarketAssetsType, Decimal> = {
   [MarketAssetsType.LongTail]: '10',
 }
 
-export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, PartialRecord<number, Address>> = {
+export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, Record<number, Address>> = {
   /** Enso fee splitter contracts distribute router fees 50/50 between Curve and Enso. */
   enso: {
     [Chain.Ethereum]: '0x428C2a762EE70c18d7e370Da1b5A2951bE717c49',

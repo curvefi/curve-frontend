@@ -71,8 +71,8 @@ export const routerApiValidation = createValidationSuite(
       enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
     })
     validateAddressList({ addresses: blacklist, fieldName: 'blacklist' })
-    evmAddressValidationGroup({ evmAddress: userAddress, required: false })
-    evmAddressValidationGroup({ evmAddress: zapAddress, required: false })
+    evmAddressValidationGroup({ evmAddress: userAddress, fieldName: 'userAddress', required: false })
+    evmAddressValidationGroup({ evmAddress: zapAddress, fieldName: 'zapAddress', required: false })
     evmAddressValidationGroup({
       evmAddress: controllerAddress,
       fieldName: 'controllerAddress',

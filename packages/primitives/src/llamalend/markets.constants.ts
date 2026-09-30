@@ -2,6 +2,8 @@ import type { Address } from '../address.utils'
 import { Chain } from '../network.utils'
 import type { PartialRecord } from '../objects.utils'
 
+/** TODO: This shouldn't live in the primitives package, move it to the router api and fetch markets assets from there */
+
 export enum MarketAssetsType {
   Correlated = 'correlated', // Assets expected to maintain a close price relationship.
   BlueChip = 'blue-chip', // A pair of established assets with deep and reliable liquidity and substantial trading activity.
