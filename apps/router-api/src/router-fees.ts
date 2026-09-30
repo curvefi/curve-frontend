@@ -1,13 +1,22 @@
 import { BigNumber } from 'bignumber.js'
+import { getAddress } from 'viem'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+// eslint-disable-next-line no-restricted-imports -- Server-side fee selection requires the controller mapping.
+import { MARKET_ASSETS_TYPE_BY_CONTROLLER, MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { Chain } from '@primitives/network.utils'
-import type { RouteProvider } from '@primitives/router.utils'
+import { assert } from '@primitives/objects.utils'
+import type { ExternalRouteProvider } from '@primitives/router.utils'
+import type { RoutesQuery } from './routes/routes.schemas'
 
-// Fee is set to 0 because previous value (8) was too important for big leverages (like x30)
-export const ROUTER_FEE_BPS: Decimal = '0' // note: no fractions allowed by enso
+/** note: no fractions allowed by enso */
+export const ROUTER_FEE_BPS: Record<MarketAssetsType, Decimal> = {
+  [MarketAssetsType.Correlated]: '2',
+  [MarketAssetsType.BlueChip]: '6',
+  [MarketAssetsType.LongTail]: '10',
+}
 
-export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<Extract<RouteProvider, 'enso' | '0x'>, Record<number, Address>> = {
+export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, Record<number, Address>> = {
   /** Enso fee splitter contracts distribute router fees 50/50 between Curve and Enso. */
   enso: {
     [Chain.Ethereum]: '0x428C2a762EE70c18d7e370Da1b5A2951bE717c49',
@@ -17,6 +26,22 @@ export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<Extract<RouteProvider, 'ens
     [Chain.Ethereum]: '0xB4c2C0B045fA0517cACEebC917443Fa041A9c18B',
     [Chain.Optimism]: '0x3Aa9742e8BA5eA0F573FcE69e1c8b49aFd0Af610',
   },
+}
+
+/** Selects the configured fee and receiver for a supported market controller. */
+export const getRouterFee = (
+  provider: ExternalRouteProvider,
+  { chainId, controllerAddress }: Pick<RoutesQuery, 'chainId' | 'controllerAddress'>,
+) => {
+  const assetsType = assert(
+    controllerAddress && MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)],
+    `A supported controllerAddress is required for ${provider} on chain ${chainId}`,
+  )
+  const feeReceiver = assert(
+    ROUTER_FEE_RECEIVER_BY_CHAIN_ID[provider][chainId],
+    `No ${provider} fee receiver configured for chain ${chainId}`,
+  )
+  return { feeBps: ROUTER_FEE_BPS[assetsType], feeReceiver }
 }
 
 /** Calculates the total fee amount as a percentage of the provided amount. */

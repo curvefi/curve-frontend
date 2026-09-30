@@ -4,14 +4,9 @@ import { isAddressEqual } from 'viem'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { FetchError, fetchJson } from '@primitives/fetch.utils'
-import { assert, maybe, notFalsy } from '@primitives/objects.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
 import type { RouterRouteResponse, RouteStep } from '@primitives/router.utils'
-import {
-  calculateFeePercentage,
-  combineFeePercentages,
-  ROUTER_FEE_BPS,
-  ROUTER_FEE_RECEIVER_BY_CHAIN_ID,
-} from '../router-fees'
+import { calculateFeePercentage, combineFeePercentages, getRouterFee } from '../router-fees'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { ZeroExQuoteRequest, ZeroExQuoteResponse } from './zeroex.types'
 
@@ -74,17 +69,16 @@ export const buildZeroExRouteResponse = async (
     return []
   }
 
+  const { feeBps, feeReceiver } = getRouterFee('0x', query)
   const params: ZeroExQuoteRequest = {
     chainId,
     sellToken,
     buyToken,
     sellAmount: amountIn,
     taker,
-    ...maybe(ROUTER_FEE_RECEIVER_BY_CHAIN_ID['0x'][chainId], swapFeeRecipient => ({
-      swapFeeRecipient,
-      swapFeeBps: ROUTER_FEE_BPS,
-      swapFeeToken: sellToken,
-    })),
+    swapFeeRecipient: feeReceiver,
+    swapFeeBps: feeBps,
+    swapFeeToken: sellToken,
   }
   const quote = await getZeroExQuote(params).catch(error => logZeroExError(error, log, params))
   if (!quote?.liquidityAvailable) {

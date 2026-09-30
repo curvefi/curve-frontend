@@ -4,7 +4,7 @@ import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-addres
 import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
+import { ExternalRouteProviders, type RouteProvider, RouteProviders } from '@primitives/router.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
@@ -56,6 +56,7 @@ export const routerApiValidation = createValidationSuite(
     blacklist,
     userAddress,
     zapAddress,
+    controllerAddress,
     slippage,
     router,
   }: RoutesQuery) => {
@@ -72,6 +73,12 @@ export const routerApiValidation = createValidationSuite(
     validateAddressList({ addresses: blacklist, fieldName: 'blacklist' })
     evmAddressValidationGroup({ evmAddress: userAddress, required: false })
     evmAddressValidationGroup({ evmAddress: zapAddress, required: false })
+    evmAddressValidationGroup({
+      evmAddress: controllerAddress,
+      fieldName: 'controllerAddress',
+      // controller address is required because fees depend on the market
+      required: ExternalRouteProviders.some(provider => toArray(router).includes(provider)),
+    })
     validateSlippage({ slippage, required: false })
     validateRouter({ router, isRequired: false })
   },

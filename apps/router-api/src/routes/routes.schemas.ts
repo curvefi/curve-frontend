@@ -34,6 +34,7 @@ const routesQuerySchema = {
     amountOut: { ...WeiAmountArraySchema, description: 'Amount of tokenOut in wei (integer, no decimals).' },
     userAddress: AddressSchema,
     zapAddress: AddressSchema,
+    controllerAddress: AddressSchema,
     slippage: { type: 'number', minimum: 0 },
   },
 } as const
@@ -48,6 +49,7 @@ export type RoutesQuery = {
   amountOut?: [Decimal]
   userAddress?: Address
   zapAddress?: Address
+  controllerAddress?: Address
   slippage?: number
 }
 
