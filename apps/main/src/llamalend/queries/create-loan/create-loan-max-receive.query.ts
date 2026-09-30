@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
+import { getControllerAddress, getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { pickMaxDebtQuery } from '@/llamalend/queries/llamma-query.helpers'
 import { rootKeys } from '@evm-ui/queries/root-keys'
@@ -98,7 +98,14 @@ const {
       case 'zapV2': {
         const router = assert(routerProvider, 'No router enabled')
         const zapAddress = getZapAddress(market)
-        const getExpected = getExpectedFn({ chainId, router, userAddress, zapAddress, slippage })
+        const getExpected = getExpectedFn({
+          chainId,
+          router,
+          userAddress,
+          zapAddress,
+          controllerAddress: getControllerAddress(market),
+          slippage,
+        })
         const result = await impl.createLoanMaxRecv({ userCollateral, range, getExpected })
         return { router, ...convertNumbers(result) }
       }

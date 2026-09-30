@@ -104,8 +104,10 @@ jobs:
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
+      - name: Restore Vite dependency cache
         uses: ./.github/actions/restore-cache
+        with:
+          path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
 

@@ -76,6 +76,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
     router,
     userAddress,
     zapAddress,
+    controllerAddress,
     slippage,
   }: RoutesParams) => ({
     name: 'routerApi.routes',
@@ -88,6 +89,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
     router,
     userAddress,
     zapAddress,
+    controllerAddress,
     slippage,
   }),
   queryFn: async ({
@@ -100,6 +102,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
     router,
     userAddress,
     zapAddress,
+    controllerAddress,
     slippage,
   }: RoutesQuery): Promise<RouteResponse[]> => {
     const query = new URLSearchParams(
@@ -111,6 +114,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
         amountOut && ['amountOut', `${amountOut}`],
         userAddress && ['userAddress', userAddress],
         zapAddress && ['zapAddress', zapAddress],
+        controllerAddress && ['controllerAddress', controllerAddress],
         slippage && ['slippage', `${slippage}`],
       ),
     )
@@ -130,6 +134,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
           slippage,
           userAddress,
           zapAddress,
+          controllerAddress,
           amountOut,
           tx?.data,
         ])}`
