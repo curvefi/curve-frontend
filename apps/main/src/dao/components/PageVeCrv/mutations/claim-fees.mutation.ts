@@ -17,7 +17,6 @@ import { invalidateTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type TransactionContext, useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import type { Address, Hex } from '@primitives/address.utils'
-import { recordValues } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 
 type ClaimFeesContext = TransactionContext & Omit<ClaimFeesQuery, 'token'>
@@ -39,10 +38,10 @@ export const useClaimFeesMutation = ({
     buildContext: (_, context) => ({ ...context, chainId, userAddress: context.wallet.address }),
     mutationFn: async ({ token }, { chainId, userAddress }) => {
       const { boosting } = requireLib('curveApi')
-      const claimMethods = {
-        [CLAIM_FEES_TOKENS.ThreeCRV]: boosting.claimFees,
-        [CLAIM_FEES_TOKENS.crvUSD]: boosting.claimFeesCrvUSD,
-      }
+      const claimMethods = { '3CRV': boosting.claimFees, crvUSD: boosting.claimFeesCrvUSD } satisfies Record<
+        ClaimFeesToken,
+        unknown
+      >
       const hash = (await claimMethods[token](userAddress)) as Hex
       return { hash, chainId }
     },
@@ -51,7 +50,7 @@ export const useClaimFeesMutation = ({
     onReset: noop,
     onSuccess: async (_, _receipt, { token }, { chainId, userAddress }) => {
       await Promise.all([
-        ...recordValues(CLAIM_FEES_TOKENS).map(token => invalidateClaimableFees({ chainId, userAddress, token })),
+        ...CLAIM_FEES_TOKENS.map(token => invalidateClaimableFees({ chainId, userAddress, token })),
         invalidateTokenBalances(config, {
           chainId,
           userAddress,

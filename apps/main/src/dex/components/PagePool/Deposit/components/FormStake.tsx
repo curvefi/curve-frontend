@@ -187,7 +187,11 @@ export const FormStake = ({ seed }: TransferProps) => {
         <FieldLpToken
           amount={formValues.lpToken}
           balance={lpTokenBalance}
-          isNotEnough={haveSigner && new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance.data ?? '0')}
+          isNotEnough={
+            haveSigner &&
+            !!formValues.lpToken &&
+            new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance.data ?? '0')
+          }
           handleAmountChange={useCallback(lpToken => updateFormValues({ lpToken }), [updateFormValues])}
           disabled={disableForm}
         />
