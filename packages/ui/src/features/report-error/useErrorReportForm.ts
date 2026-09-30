@@ -42,7 +42,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
       }
       console.info(`Submitting error report:`, body)
       try {
-        if (typeof error === 'string') {
+        if (error == null || typeof error === 'string') {
           captureString(error ?? 'Error Report', { body, userReport: true })
         } else {
           captureError(error as Error, { body, userReport: true })

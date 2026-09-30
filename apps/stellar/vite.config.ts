@@ -12,16 +12,11 @@ const {
   GITHUB_SHA,
   SENTRY_APPLICATION_KEY = 'curve-stellar',
 } = process.env
+
 const isVercelDeployment = process.env.VERCEL === '1'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  ...(isVercelDeployment && {
-    builder: {
-      // the plugin requires us to build the frontend, it only copies the files in dist
-      buildApp: async builder => void (await builder.build(builder.environments.client)),
-    },
-  }),
   server: { port: 3100, hmr: true, ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'] },
   preview: { port: 3100 },
   build: { sourcemap: true },
@@ -62,4 +57,8 @@ export default defineConfig(({ command }) => ({
     ],
   },
   define: { 'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production') },
+  ...(isVercelDeployment && {
+    // the vercel plugin requires us to build the frontend, it then copies the files in dist
+    builder: { buildApp: async builder => void (await builder.build(builder.environments.client)) },
+  }),
 }))
