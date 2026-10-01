@@ -10,7 +10,7 @@ import { useMarketContext } from '../../market-context'
 import { CLAIM_TAB_COLUMNS } from '../components/columns'
 import { useClaimableTokens } from './useClaimableTokens'
 
-export const useClaimTab = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
+export const useSupplyClaimTab = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
   const { marketId, crvTokenAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
 
