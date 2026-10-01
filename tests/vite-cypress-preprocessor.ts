@@ -1,30 +1,35 @@
 import path from 'node:path'
 import { build } from 'vite'
 
+type Compilation = { result: ReturnType<typeof Promise.withResolvers<string>>; pending: boolean; initial: boolean }
+
 /**
  * Custom Vite-based preprocessor for Cypress e2e. We use Vite instead of webpack to:
  * - avoid the webpack-specific resolution of optional wagmi connector peers
  * - keep bundling light-weight for specs
  * - consistent use of Vite across the monorepo
+ *
+ * This bundles E2E specs and support files; component tests use Cypress's Vite dev server separately.
+ * The Vite config supplies workspace aliases, and the process shim supplies TEST_SEED.
+ *
+ * Watched requests wait for the current build to finish writing to disk. Failed builds reject
+ * instead of serving a previous bundle, and later edits can recover. Each build replaces its
+ * readonly cache entry; closing the file removes that entry and closes its watcher.
+ * Without watching, only in-flight builds are shared, so subsequent requests pick up edits.
  */
 export const vitePreprocessor = () => {
-  const cache = new Map<string, { ready: Promise<string> }>()
+  // The map is the only mutable state; each build replaces its immutable compilation entry.
+  const cache = new Map<string, Compilation>()
 
   return async (file: Cypress.FileObject) => {
     const { filePath, outputPath, shouldWatch } = file
     const cached = cache.get(filePath)
-    if (cached) return cached.ready
+    if (cached) return cached.result.promise
 
-    let compilation = Promise.withResolvers<string>()
-    const entry = { ready: compilation.promise }
-    let settled = false
-    let initialBuild = true
-    const observeRejection = () => {
-      // A watcher can fail before Cypress requests the rebuilt file.
-      void entry.ready.catch(() => undefined)
-    }
-    observeRejection()
-    cache.set(filePath, entry)
+    const compilation = Promise.withResolvers<string>()
+    // A watcher can fail before Cypress requests the rebuilt file; preserve its rejection for that request.
+    void compilation.promise.catch(() => undefined)
+    cache.set(filePath, { result: compilation, pending: true, initial: true })
 
     const testSeed = process.env.TEST_SEED ?? ''
     const filename = path.basename(outputPath)
@@ -75,30 +80,30 @@ export const vitePreprocessor = () => {
 
       if (shouldWatch && 'on' in watcher) {
         watcher.on('event', event => {
-          if (event.code === 'START' && settled) {
-            compilation = Promise.withResolvers<string>()
-            entry.ready = compilation.promise
-            settled = false
-            observeRejection()
+          const current = cache.get(filePath)
+          if (!current) return
+
+          if (event.code === 'START' && !current.pending) {
+            const next = Promise.withResolvers<string>()
+            void next.promise.catch(() => undefined)
+            cache.set(filePath, { ...current, result: next, pending: true })
           }
           // Wait for disk output; returning early can serve a bundle from a previous process.
-          if (event.code === 'END' && !settled) {
-            compilation.resolve(outputPath)
-            settled = true
-            if (!initialBuild) file.emit('rerun')
-            initialBuild = false
+          if (event.code === 'END' && current.pending) {
+            current.result.resolve(outputPath)
+            cache.set(filePath, { ...current, pending: false, initial: false })
+            if (!current.initial) file.emit('rerun')
           }
           if (event.code === 'ERROR') {
-            compilation.reject(event.error)
-            settled = true
+            current.result.reject(event.error)
+            cache.set(filePath, { ...current, pending: false, initial: false })
             // Rerun requests must receive the build error instead of the old bundle.
-            if (!initialBuild) file.emit('rerun')
-            initialBuild = false
+            if (!current.initial) file.emit('rerun')
           }
         })
         file.on('close', () => {
+          cache.get(filePath)?.result.reject(new Error(`Cypress closed ${filePath} before compilation finished`))
           cache.delete(filePath)
-          compilation.reject(new Error(`Cypress closed ${filePath} before compilation finished`))
           void watcher.close().catch(e => {
             console.error('Error closing Vite watcher for Cypress spec:', e)
           })
@@ -113,6 +118,6 @@ export const vitePreprocessor = () => {
       compilation.reject(error)
     }
 
-    return entry.ready
+    return compilation.promise
   }
 }
