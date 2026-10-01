@@ -95,7 +95,7 @@ export const EmptyStateCard = ({
             </Typography>
           )}
           {description && (
-            <Typography component="span" variant="bodySRegular" color="textSecondary">
+            <Typography component="span" variant="bodySRegular" color="textSecondary" sx={{ overflowWrap: 'anywhere' }}>
               {description}
             </Typography>
           )}
