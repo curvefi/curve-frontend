@@ -17,18 +17,18 @@
   "dependencies": {
     "@creit-tech/stellar-wallets-kit": "jsr:^2.6.0",
     "@curvefi/ui": "workspace:^",
-    "@tanstack/react-query": "5.102.8",
-    "@tanstack/react-query-devtools": "5.102.8",
-    "@tanstack/react-router": "1.170.32",
-    "@tanstack/react-router-devtools": "1.167.1",
-    "@tanstack/router-core": "1.171.27",
+    "@tanstack/react-query": "5.104.0",
+    "@tanstack/react-query-devtools": "5.104.0",
+    "@tanstack/react-router": "1.170.39",
+    "@tanstack/react-router-devtools": "1.167.2",
+    "@tanstack/router-core": "1.171.32",
     "vite-plugin-svgr": "5.2.0",
     "vite-plugin-vercel": "9.1.1",
-    "wrangler": "4.135.0"
+    "wrangler": "4.141.0"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "5.4.0",
-    "@types/node": "26.1.0",
+    "@types/node": "26.6.3",
     "@vitejs/plugin-react": "5.1.2",
     "vite": "7.3.5"
   }

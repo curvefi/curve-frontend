@@ -19,10 +19,10 @@
     "@curvefi/api-server": "workspace:^",
     "@curvefi/prices-api": "workspace:^",
     "bignumber.js": "10.0.2",
-    "fastify": "5.12.1",
-    "viem": "2.56.0"
+    "fastify": "5.12.5",
+    "viem": "2.56.9"
   },
   "devDependencies": {
-    "tsx": "4.23.12"
+    "tsx": "4.23.15"
   }
 }
