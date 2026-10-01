@@ -75,6 +75,9 @@ export const METRIC_CATEGORIES = {
   'storybook.metric.compact': METRIC_TYPES.secondaryStat,
   'storybook.metric.horizontal': METRIC_TYPES.primaryInline,
 
+  // Shared
+  'table.mobileExpandedPanel': METRIC_TYPES.tertiaryInline,
+
   // DAO
   'dao.crvStats': METRIC_TYPES.secondaryStat,
 
@@ -94,7 +97,6 @@ export const METRIC_CATEGORIES = {
   'llamalend.marketCharts': METRIC_TYPES.secondaryStat,
   'llamalend.marketAdvancedDetailsSummary': METRIC_TYPES.secondaryStat,
   'llamalend.marketParticipants': METRIC_TYPES.secondaryStat,
-  'llamalend.marketParticipantsExpanded': METRIC_TYPES.tertiaryInline,
   'llamalend.marketAdvancedDetails': METRIC_TYPES.responsiveDetail,
   'llamalend.marketListRates': METRIC_TYPES.primaryStat,
   'llamalend.marketListExpandedDetails': METRIC_TYPES.responsiveDetail,

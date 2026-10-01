@@ -1,17 +1,14 @@
 import { formatActivityUsdValue } from '@evm-ui/features/activity-table/utils'
+import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
 import { BlockchainIds } from '@evm-ui/utils/network'
-import { UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
-import { TokenIcon } from '@ui/components/TokenIcon'
 import { constQ } from '@ui/features/queries/util'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { t } from '@ui/lib/i18n'
 import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
-const EXPANDED_METRIC_CATEGORY = 'llamalend.marketParticipantsExpanded'
 const getChangeColor = (amount: number, positive: 'success' | 'error', negative: 'success' | 'error') =>
   amount > 0 ? positive : amount < 0 ? negative : 'textPrimary'
 
@@ -33,16 +30,10 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
 
   return (
     <MetricsGrid variant="mobileRows">
-      <Metric
-        category={EXPANDED_METRIC_CATEGORY}
+      <MetricExpandedPanel
         label={notFalsy(t`Collateral`, collateralToken?.symbol && `(${collateralToken.symbol})`).join(' ')}
         value={hasCollateralChange ? collateralChange : null}
-        valueOptions={{
-          abbreviate: false,
-          fallback: UNAVAILABLE_NOTATION,
-          signDisplay: 'exceptZero',
-          color: getChangeColor(collateralChange, 'success', 'error'),
-        }}
+        valueOptions={{ signDisplay: 'exceptZero', color: getChangeColor(collateralChange, 'success', 'error') }}
         {...(hasCollateralChange && {
           notional: constQ(
             formatActivityUsdValue(
@@ -51,26 +42,18 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
             ),
           ),
         })}
-        icon={
-          collateralToken && <TokenIcon blockchainId={blockchainId} address={collateralToken.address} size="mui-sm" />
-        }
+        icon={{ blockchainId, token: collateralToken }}
       />
-      <Metric
-        category={EXPANDED_METRIC_CATEGORY}
+      <MetricExpandedPanel
         label={notFalsy(t`Debt`, borrowToken?.symbol && `(${borrowToken.symbol})`).join(' ')}
         value={hasLoanChange ? loanChange : null}
-        valueOptions={{
-          abbreviate: false,
-          fallback: UNAVAILABLE_NOTATION,
-          signDisplay: 'exceptZero',
-          color: getChangeColor(loanChange, 'error', 'success'),
-        }}
+        valueOptions={{ signDisplay: 'exceptZero', color: getChangeColor(loanChange, 'error', 'success') }}
         {...(hasLoanChange && {
           notional: constQ(
             formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentTime),
           ),
         })}
-        icon={borrowToken && <TokenIcon blockchainId={blockchainId} address={borrowToken.address} size="mui-sm" />}
+        icon={{ blockchainId, token: borrowToken }}
       />
     </MetricsGrid>
   )
