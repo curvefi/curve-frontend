@@ -28,7 +28,7 @@ const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactor
     (await getUserPositionImplementation(marketId).userPrices(userAddress)) as Range<Decimal>,
   category: 'llamalend.user',
   validationSuite: createValidationSuite((params: UserPricesParams) => {
-    marketIdValidationSuite(params)
+    marketIdValidationSuite.run(params)
     loanExistsValidationGroup(params)
   }),
 })

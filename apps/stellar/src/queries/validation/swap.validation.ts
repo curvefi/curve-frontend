@@ -15,10 +15,19 @@ const validateTokens = ({ fromIndex, toIndex, decimals }: SwapInputs) => {
     decimals?.forEach(precision => enforce(precision).isNumber())
   })
   test('fromIndex', 'Select different pool tokens', () => {
-    enforce(fromIndex).isNumber().equals(maybe(fromIndex, Math.trunc)).gte(0).lt(decimals?.length).notEquals(toIndex)
+    enforce(fromIndex)
+      .isNumber()
+      .equals(maybe(fromIndex, Math.trunc))
+      .gte(0)
+      .lt(decimals?.length ?? NaN)
+      .notEquals(toIndex)
   })
   test('toIndex', 'Select a receiving token', () => {
-    enforce(toIndex).isNumber().equals(maybe(toIndex, Math.trunc)).gte(0).lt(decimals?.length)
+    enforce(toIndex)
+      .isNumber()
+      .equals(maybe(toIndex, Math.trunc))
+      .gte(0)
+      .lt(decimals?.length ?? NaN)
   })
 }
 
@@ -37,7 +46,7 @@ const validateSwapAmount = (
 const validateBalance = ({ inputAmount, maxAmount }: Pick<SwapParams, 'inputAmount' | 'maxAmount'>) => {
   skipWhen(maxAmount == null, () => {
     test('inputAmount', 'Insufficient token balance', () => {
-      enforce(+(inputAmount || '0')).lte(maybe(maxAmount, value => +value))
+      enforce(+(inputAmount || '0')).lte(maxAmount!)
     })
   })
 }
@@ -47,7 +56,7 @@ const validateReserve = ({ outputAmount, maxOutput }: Pick<SwapQuoteParams, 'out
     enforce(maxOutput).isDecimal().gte(0)
   })
   test('outputAmount', 'Amount must be less than the available pool reserve', () => {
-    enforce(+(outputAmount || '0')).lt(maybe(maxOutput, value => +value))
+    enforce(+(outputAmount || '0')).lt(maybe(maxOutput, value => +value) ?? NaN)
   })
 }
 

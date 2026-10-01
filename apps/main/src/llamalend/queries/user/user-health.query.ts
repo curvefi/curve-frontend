@@ -46,7 +46,7 @@ export const {
     (await getUserPositionImplementation(marketId).userHealth(isFull, userAddress)) as Decimal,
   category: 'llamalend.user',
   validationSuite: createValidationSuite(({ userAddress, isFull, marketId, chainId }: UserHealthParams) => {
-    userMarketValidationSuite({ userAddress, marketId, chainId })
+    userMarketValidationSuite.run({ userAddress, marketId, chainId })
     validateIsFull(isFull)
   }),
 })

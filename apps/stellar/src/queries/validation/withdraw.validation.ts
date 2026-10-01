@@ -38,14 +38,14 @@ const validateBudget = ({
     enforce(maxLpAmount).isDecimal().gte(0)
   })
   test('lpAmount', 'Insufficient LP balance', () => {
-    enforce(maybe(lpAmount, amount => +amount)).lte(maybe(maxLpAmount, amount => +amount))
+    enforce(maybe(lpAmount, amount => +amount)).lte(maybe(maxLpAmount, amount => +amount) ?? NaN)
   })
   test('seedLock', 'Locked liquidity is unavailable', () => {
     enforce(seedLock).isDecimal().gte(0)
   })
   test('lpAmount', 'Withdrawal exceeds the redeemable LP supply', () => {
     enforce(maybe(lpAmount, amount => +amount)).lte(
-      maybes([supply, seedLock], (supply, seedLock) => +supply - +seedLock),
+      maybes([supply, seedLock], (supply, seedLock) => +supply - +seedLock) ?? NaN,
     )
   })
 }
@@ -61,7 +61,7 @@ const validateMaximumBurn = ({ lpAmount, maximumBurn }: Pick<WithdrawSimulationP
     })
   })
   test('root', 'Maximum LP required exceeds the LP amount. Reduce the token amounts or increase the LP amount.', () => {
-    enforce(maybe(maximumBurn, amount => +amount)).lte(maybe(lpAmount, amount => +amount))
+    enforce(maybe(maximumBurn, amount => +amount)).lte(maybe(lpAmount, amount => +amount) ?? NaN)
   })
 }
 

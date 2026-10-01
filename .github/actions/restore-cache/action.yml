@@ -10,7 +10,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/cache@v5
+    - uses: actions/cache@v6
       with:
         path: ${{ inputs.path }}
         # Caches are immutable: restore by prefix, then save a fresh entry after a successful job.

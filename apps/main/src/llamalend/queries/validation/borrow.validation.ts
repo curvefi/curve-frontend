@@ -130,7 +130,7 @@ export const createLoanQueryValidationSuite = (options: {
     requireControllerApproval = false,
   } = options
   return createValidationSuite((params: CreateLoanDebtParams & { isControllerApproved?: boolean }) => {
-    marketIdValidationSuite(params)
+    marketIdValidationSuite.run(params)
     createLoanFormValidationGroup(params, {
       debtRequired,
       isMaxDebtRequired,

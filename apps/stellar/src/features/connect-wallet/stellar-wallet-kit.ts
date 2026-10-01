@@ -1,10 +1,10 @@
 /* eslint-disable no-restricted-imports -- This module wraps Stellar wallet and contract SDK access. */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { STELLAR_NETWORKS, type StellarNetwork } from '@/stellar/lib/networks'
-import { defaultModules } from '@creit-tech/stellar-wallets-kit/modules/utils'
-import { StellarWalletsKit } from '@creit-tech/stellar-wallets-kit/sdk'
-import { activeModule } from '@creit-tech/stellar-wallets-kit/state'
-import { type ISupportedWallet, KitEventType } from '@creit-tech/stellar-wallets-kit/types'
+import { defaultModules } from '@creit.tech/stellar-wallets-kit/modules/utils'
+import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
+import { activeModule } from '@creit.tech/stellar-wallets-kit/state'
+import { type ISupportedWallet, KitEventType } from '@creit.tech/stellar-wallets-kit/types'
 import { assert } from '@primitives/objects.utils'
 import { retry } from '@primitives/promise.utils'
 import {
