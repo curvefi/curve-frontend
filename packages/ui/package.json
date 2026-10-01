@@ -35,9 +35,9 @@
     "immer": "11.1.18",
     "lodash": "4.18.1",
     "memoizee": "0.4.17",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "react-hook-form": "7.86.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hook-form": "7.89.0",
     "vest": "6.3.2",
     "vest-utils": "1.5.0",
     "zustand": "5.0.15"
