@@ -1,63 +1,74 @@
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import { formatNumber } from '@primitives/number.utils'
 import { shortenString } from '@primitives/string.utils'
-import { TokenIcon } from '@ui/components/TokenIcon'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { ActivityUsdValue } from '../cells/ActivityUsdValue'
+import { LlammaTokenAmount } from '../cells/LlammaTokenAmount'
 import type { MarketEventRow } from '../types'
-
-const { Spacing } = SizesAndSpaces
 
 export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> = ({
   row: {
-    original: { deposit, withdrawal, provider, blockchainId, collateralToken, borrowToken },
+    original: { deposit, withdrawal, provider, blockchainId, collateralToken, borrowToken, timestamp },
   },
 }) => (
   <Stack>
     {deposit && (
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="bodyMRegular" color="textSecondary">{t`Amount`}</Typography>
-        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-          <Typography variant="tableCellMBold" color="success">
-            {formatNumber(deposit.amount, { abbreviate: false })} {collateralToken?.symbol}
-          </Typography>
-          {collateralToken && <TokenIcon blockchainId={blockchainId} address={collateralToken.address} size="mui-sm" />}
-        </Stack>
-      </Stack>
+      <ActionInfo
+        label={t`Amount`}
+        valueColor="success"
+        value={
+          <LlammaTokenAmount amount={deposit.amount} blockchainId={blockchainId} token={collateralToken} showSymbol />
+        }
+        valueRight={<ActivityUsdValue amount={deposit.amount} amountUsd={deposit.amountUsd} timestamp={timestamp} />}
+      />
     )}
     {withdrawal && (
       <>
-        {withdrawal.amountCollateral !== 0 && (
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="bodyMRegular" color="textSecondary">{t`Collateral`}</Typography>
-            <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-              <Typography variant="tableCellMBold" color="error">
-                {formatNumber(withdrawal.amountCollateral, { abbreviate: false })} {collateralToken?.symbol}
-              </Typography>
-              {collateralToken && (
-                <TokenIcon blockchainId={blockchainId} address={collateralToken.address} size="mui-sm" />
-              )}
-            </Stack>
-          </Stack>
+        {!!withdrawal.amountCollateral && (
+          <ActionInfo
+            label={t`Collateral`}
+            valueColor="error"
+            value={
+              <LlammaTokenAmount
+                amount={withdrawal.amountCollateral}
+                blockchainId={blockchainId}
+                token={collateralToken}
+                showSymbol
+              />
+            }
+            valueRight={
+              <ActivityUsdValue
+                amount={withdrawal.amountCollateral}
+                amountUsd={withdrawal.amountCollateralUsd}
+                timestamp={timestamp}
+              />
+            }
+          />
         )}
-        {withdrawal.amountBorrowed !== 0 && (
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="bodyMRegular" color="textSecondary">{t`Borrowed`}</Typography>
-            <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-              <Typography variant="tableCellMBold" color="error">
-                {formatNumber(withdrawal.amountBorrowed, { abbreviate: false })} {borrowToken?.symbol}
-              </Typography>
-              {borrowToken && <TokenIcon blockchainId={blockchainId} address={borrowToken.address} size="mui-sm" />}
-            </Stack>
-          </Stack>
+        {!!withdrawal.amountBorrowed && (
+          <ActionInfo
+            label={t`Borrowed`}
+            valueColor="error"
+            value={
+              <LlammaTokenAmount
+                amount={withdrawal.amountBorrowed}
+                blockchainId={blockchainId}
+                token={borrowToken}
+                showSymbol
+              />
+            }
+            valueRight={
+              <ActivityUsdValue
+                amount={withdrawal.amountBorrowed}
+                amountUsd={withdrawal.amountBorrowedUsd}
+                timestamp={timestamp}
+              />
+            }
+          />
         )}
       </>
     )}
-    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-      <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-      <Typography variant="tableCellMBold">{shortenString(provider)}</Typography>
-    </Stack>
+    <ActionInfo label={t`User`} value={shortenString(provider)} />
   </Stack>
 )
