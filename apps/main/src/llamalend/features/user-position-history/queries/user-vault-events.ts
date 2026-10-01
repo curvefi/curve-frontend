@@ -5,8 +5,12 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 import { userCollateralEventsValidationSuite } from './validation/user-collateral-events-validation'
 
 export const { useQuery: useUserVaultEventsQuery, invalidate: invalidateUserVaultEventsQuery } = queryFactory({
-  queryKey: ({ blockchainId, userAddress, contractAddress }: FieldsOf<UserContractQuery>) =>
-    ['userVaultEvents', { blockchainId }, { userAddress }, { contractAddress }] as const,
+  queryKey: ({ blockchainId, userAddress, contractAddress }: FieldsOf<UserContractQuery>) => ({
+    name: 'userVaultEvents',
+    blockchainId,
+    userAddress,
+    contractAddress,
+  }),
   queryFn: ({ blockchainId, userAddress, contractAddress }: UserContractQuery) =>
     getUserVaultEvents(userAddress, blockchainId, contractAddress),
   category: 'llamalend.user',

@@ -9,31 +9,33 @@
   "scripts": {
     "lint": "eslint --cache --cache-location ../../.cache/eslint/evm-ui --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/evm-ui --cache-strategy content . --fix",
-    "test": "vitest run --config vitest.config.ts",
+    "test": "yarn run --top-level test --project @curvefi/evm-ui",
+    "test:ui": "yarn run --top-level test:ui --project @curvefi/evm-ui",
+    "vitest:watch": "yarn run --top-level test:watch --project @curvefi/evm-ui",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-evm-ui.tsbuildinfo"
   },
   "dependencies": {
-    "@coinbase/wallet-sdk": "4.3.7",
+    "@coinbase/wallet-sdk": "4.4.0",
+    "@curvefi/api": "2.70.2",
     "@curvefi/legacy-ui": "workspace:^",
-    "@curvefi/llamalend-api": "2.5.2",
+    "@curvefi/llamalend-api": "2.6.0",
     "@curvefi/ui": "workspace:^",
     "@metamask/connect-evm": "2.1.1",
     "@safe-global/safe-apps-provider": "0.18.6",
     "@safe-global/safe-apps-sdk": "9.1.0",
-    "@sentry/react": "10.72.0",
+    "@sentry/react": "11.1.0",
     "@supercharge/promise-pool": "3.3.0",
-    "@walletconnect/ethereum-provider": "2.24.0",
+    "@walletconnect/ethereum-provider": "2.25.0",
     "dayjs": "1.11.23",
     "echarts": "6.1.0",
     "echarts-for-react": "3.0.6",
     "ethers": "6.17.0",
     "external-rewards": "workspace:^",
     "lightweight-charts": "5.2.1",
-    "viem": "2.56.0",
+    "viem": "2.57.0",
     "wagmi": "3.7.7"
   },
   "devDependencies": {
-    "@curvefi/api": "2.70.1",
     "@types/lodash": "4.17.25",
     "@types/memoizee": "0.4.12"
   }

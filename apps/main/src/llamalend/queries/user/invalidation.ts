@@ -22,7 +22,7 @@ export const invalidateAllUserMarketDetails = ({
   const market = getMarket(marketId)
   ;(market as LendMarketTemplate)?.userPosition?.clearCache?.()
   return Promise.all([
-    queryClient.invalidateQueries({ queryKey: rootKeys.market({ chainId, marketId }) }),
+    queryClient.invalidateQueries({ queryKey: [rootKeys.market({ chainId, marketId })] }),
     invalidateUserCollateralEvents({ userAddress, contractAddress, blockchainId }),
     market instanceof LendMarketTemplate &&
       invalidateUserVaultEventsQuery({ userAddress, blockchainId, contractAddress: getVaultAddress(market) }),

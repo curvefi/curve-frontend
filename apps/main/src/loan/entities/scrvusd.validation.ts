@@ -45,7 +45,7 @@ const validateRequiredDecimal = (field: 'depositAmount' | 'withdrawAmount', valu
     enforce(value).isNotEmpty()
   })
   test(field, `${field} must be a positive number`, () => {
-    enforce(value).isDecimal().gt(0)
+    enforce(value).isString().isDecimal().gt(0)
   })
 }
 
@@ -62,7 +62,7 @@ const validateMaxDecimal = (
   })
   skipWhen(value == null || max == null, () => {
     test(field, `Amount exceeds maximum of ${max}`, () => {
-      enforce(value).lte(max)
+      enforce(value).lte(max!)
     })
   })
 }
@@ -103,7 +103,7 @@ export const scrvUsdDepositFormValidationSuite = createValidationSuite(
     })
     skipWhen(depositAmount == null || maxDepositAmount == null, () => {
       test('depositAmount', `Amount exceeds maximum of ${maxDepositAmount}`, () => {
-        enforce(depositAmount).lte(maxDepositAmount)
+        enforce(depositAmount).lte(maxDepositAmount!)
       })
     })
   },
@@ -144,7 +144,7 @@ export const scrvUsdWithdrawFormValidationSuite = createValidationSuite(
     })
     skipWhen(withdrawAmount == null || maxWithdrawAmount == null, () => {
       test('withdrawAmount', `Amount exceeds maximum of ${maxWithdrawAmount}`, () => {
-        enforce(withdrawAmount).lte(maxWithdrawAmount)
+        enforce(withdrawAmount).lte(maxWithdrawAmount!)
       })
     })
     test('isFull', 'Full withdraw value must be calculated', () => {

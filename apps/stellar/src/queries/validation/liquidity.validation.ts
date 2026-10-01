@@ -72,7 +72,7 @@ export const validateReserveAmounts = ({ amounts, maxAmounts }: Pick<ExpectedLpP
       enforce(maxAmounts?.[index]).isDecimal().gte(0)
     })
     test(poolAmountField(index), 'Amount must be less than the available pool reserve', () => {
-      enforce(+(amount || '0')).lt(maybe(maxAmounts?.[index], maxAmount => +maxAmount))
+      enforce(+(amount || '0')).lt(maybe(maxAmounts?.[index], maxAmount => +maxAmount) ?? NaN)
     })
   })
 }

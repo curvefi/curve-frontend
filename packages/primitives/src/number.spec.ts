@@ -1,4 +1,3 @@
-import { noop } from 'lodash'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import type { Amount } from './decimal.utils'
 import {
@@ -317,7 +316,7 @@ describe('defaultNumberFormatter', () => {
 
 describe('decomposeNumber', () => {
   // Mock console.warn for USD overflow tests
-  const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(noop)
+  const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
 
   afterEach(() => {
     consoleSpy.mockClear()

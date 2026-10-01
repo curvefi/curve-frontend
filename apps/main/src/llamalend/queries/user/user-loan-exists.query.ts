@@ -5,7 +5,10 @@ import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-marke
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useLoanExists } = queryFactory({
-  queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'loanExists'] as const,
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
+    name: 'loanExists',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+  }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getMarket(marketId)
     return market instanceof MintMarketTemplate

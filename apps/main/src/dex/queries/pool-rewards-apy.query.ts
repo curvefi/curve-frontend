@@ -1,24 +1,21 @@
 import { BigNumber } from 'bignumber.js'
-import { useCallback, useMemo } from 'react'
 import { test } from 'vest'
 import { fetchNetworks } from '@/dex/entities/networks'
-import type { ChainId, NetworkConfig, RewardCrv } from '@/dex/types/main.types'
+import type { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { type ChainParams, type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/queries/root-keys'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
-import { type QueriesResults, useQueries } from '@tanstack/react-query'
-import { combineQueriesToObject } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import type { QueryData } from '@ui/features/queries/util'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
 import { fulfilledValue, isValidAddress } from '../utils'
 
+type RewardCrv = number
 type RewardOther = {
   apy: number
   decimals?: number
@@ -135,16 +132,13 @@ const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi
 type PoolRewardsApyQuery = PoolQuery<ChainId> & { useApi: boolean }
 type PoolRewardsApyParams = FieldsOf<PoolRewardsApyQuery>
 
-const {
-  useQuery: usePoolRewardsApyQuery,
-  getQueryOptions: getPoolRewardsApyQueryOptions,
-  fetchQuery: fetchPoolRewardsApy,
-  getQueryData: getPoolRewardsApyQueryData,
-  invalidate: invalidatePoolRewardsApyQuery,
-} = queryFactory({
+const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQuery } = queryFactory({
   category: 'dex.pool',
-  queryKey: ({ chainId, poolId, useApi }: PoolRewardsApyParams) =>
-    [...rootKeys.pool({ chainId, poolId }), 'rewardsApy', { useApi }] as const,
+  queryKey: ({ chainId, poolId, useApi }: PoolRewardsApyParams) => ({
+    name: 'rewardsApy',
+    ...rootKeys.pool({ chainId, poolId }),
+    useApi,
+  }),
   queryFn: async ({ chainId, poolId, useApi }: PoolRewardsApyQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     const networks = await fetchNetworks()
@@ -160,8 +154,6 @@ const {
   }),
 })
 
-export { fetchPoolRewardsApy, getPoolRewardsApyQueryData }
-
 export const invalidatePoolRewardsApy = (params: PoolParams<ChainId>) =>
   Promise.all([true, false].map(useApi => invalidatePoolRewardsApyQuery({ ...params, useApi })))
 
@@ -170,29 +162,3 @@ export function usePoolRewardsApy(params: PoolParams<ChainId>) {
   const { curveApi, isHydrated } = useCurve()
   return usePoolRewardsApyQuery({ ...params, useApi: !curveApi?.signerAddress }, isHydrated)
 }
-
-type PoolRewardsApyOptions = ReturnType<typeof getPoolRewardsApyQueryOptions>
-
-/** Slop coded hook only for the dashboard to fetch multiple APYs all at once that will need a rewrite anyway. */
-export function usePoolsRewardsApy({ chainId, poolIds = [] }: ChainParams<ChainId> & { poolIds?: string[] }) {
-  const { isHydrated } = useCurve()
-  const uniquePoolIds = useMemo(() => Array.from(new Set(poolIds)), [poolIds])
-  return useQueries({
-    queries: useMemo(
-      () =>
-        uniquePoolIds.map(poolId =>
-          getPoolRewardsApyQueryOptions(
-            { chainId, poolId, useApi: false /* need a connected wallet anyway */ },
-            isHydrated,
-          ),
-        ),
-      [chainId, uniquePoolIds, isHydrated],
-    ),
-    combine: useCallback(
-      (results: QueriesResults<PoolRewardsApyOptions[]>) => combineQueriesToObject(results, uniquePoolIds),
-      [uniquePoolIds],
-    ),
-  })
-}
-
-export type RewardsApy = QueryData<typeof usePoolRewardsApyQuery>

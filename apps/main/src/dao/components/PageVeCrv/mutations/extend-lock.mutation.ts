@@ -17,7 +17,7 @@ export const useExtendLockMutation = ({
   onExtended: OnTransactionSuccess<ExtendLockMutation>
 }) => {
   const { mutate, error, isPending } = useEvmMutation<ExtendLockMutation>({
-    mutationKey: [...rootKeys.chain({ chainId }), 'lockCrv.extend'] as const,
+    mutationKey: [{ ...rootKeys.chain({ chainId }), name: 'lockCrv.extend' }] as const,
     mutationFn: async ({ days }) => ({ hash: (await requireLib('curveApi').boosting.increaseUnlockTime(days)) as Hex }),
     validationSuite: extendLockQueryValidationSuite,
     validationParams: { chainId },

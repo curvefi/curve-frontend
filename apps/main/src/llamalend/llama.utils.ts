@@ -16,6 +16,7 @@ import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import {
   type Nullish,
   type AllOrNone,
@@ -34,6 +35,7 @@ import { decimal, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/deci
 import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
+import { getMarketAssetsType } from './market-assets-type.utils'
 import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 
 /**
@@ -50,10 +52,17 @@ export const getMarket = (id: string | MarketTemplate, lib = requireLib('llamaAp
 export const tryGetMarket = (marketId: MarketTemplate | string | Nullish) =>
   typeof marketId === 'object' ? marketId : maybes([marketId, getLib('llamaApi')], getMarket)
 
-/** Returns the market-specific slippage, falling back to the default leverage slippage. */
+const SLIPPAGE_KEY_BY_ASSETS_TYPE = {
+  [MarketAssetsType.Correlated]: 'stable',
+  [MarketAssetsType.BlueChip]: 'leverage',
+  [MarketAssetsType.LongTail]: 'leverage',
+} satisfies Record<MarketAssetsType, keyof typeof SLIPPAGE>
+
+/** Returns the leverage slippage for the market's assets type, falling back to the default for unmapped markets. */
 export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Address | undefined) =>
-  (controllerAddress && MARKETS_LEVERAGE_CONFIG[chainId]?.[getAddress(controllerAddress)]?.slippage) ??
-  SLIPPAGE.leverage.default
+  SLIPPAGE[
+    maybe(getMarketAssetsType(chainId, controllerAddress), type => SLIPPAGE_KEY_BY_ASSETS_TYPE[type]) ?? 'leverage'
+  ].default
 
 /**
  * Resolves leverage providers from the market whitelist: approved markets get every provider on Beta and only their
@@ -95,8 +104,11 @@ const hasV1Deleverage = (market: MarketTemplate) =>
 
 export const hasDeleverage = (market: MarketTemplate) => hasZapV2(market) || hasV1Deleverage(market)
 
+const isV2Market = (market: MarketTemplate | Nullish) =>
+  maybe(market, market => market instanceof LendMarketTemplate && market.version === 'v2')
+
 export const hasResetPosition = (market: MarketTemplate | Nullish): market is LendMarketTemplate<'v2'> =>
-  market instanceof LendMarketTemplate && market.version === 'v2'
+  isV2Market(market) === true
 
 /**
  * Check if an open position is a leveraged position, using the leverage value.
@@ -120,6 +132,9 @@ export const hasVault = (market: MarketTemplate) => market instanceof LendMarket
 
 export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
+
+/** Only LLv2 markets use the upgraded ZapV2 contract for now */
+export const hasUpgradedZapV2 = (market: MarketTemplate | Nullish) => isV2Market(market)
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',

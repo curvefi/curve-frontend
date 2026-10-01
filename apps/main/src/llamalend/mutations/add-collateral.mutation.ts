@@ -40,7 +40,7 @@ export const useAddCollateralMutation = ({
   const { mutate, error, isPending } = useMarketMutation<AddCollateralMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'add-collateral'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'add-collateral' }] as const,
     mutationFn: async (variables, { market }) => {
       await waitForApproval({
         isApproved: () =>

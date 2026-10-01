@@ -35,8 +35,6 @@ export type NetworkConfig = {
 
 export type Networks = Record<ChainId, NetworkConfig>
 export type ClaimableReward = { token: string; symbol: string; amount: string; price: number }
-export type RewardBase = { day: string; week: string }
-export type RewardCrv = number
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
@@ -69,8 +67,3 @@ export type FnStepEstGasApprovalResponse = {
 export type FnStepApproveResponse = { activeKey: string; hashes: string[]; error: string }
 
 export type FnStepResponse = { activeKey: string; hash: string; error: string }
-
-export enum claimButtonsKey {
-  '3CRV' = '3CRV',
-  crvUSD = 'crvUSD',
-}

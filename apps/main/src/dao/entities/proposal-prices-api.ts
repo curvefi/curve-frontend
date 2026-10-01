@@ -32,13 +32,15 @@ const _fetchProposalPricesApi = async ({
 }
 
 export const { useQuery: useProposalPricesApiQuery, invalidate: invalidateProposalPricesApi } = queryFactory({
-  queryKey: (params: { proposalId: number; proposalType: ProposalType; txHash?: string }) =>
-    [
-      'proposal-prices-api',
-      { proposalId: params.proposalId },
-      { proposalType: params.proposalType },
-      { txHash: params.txHash },
-    ] as const,
+  queryKey: ({
+    proposalId,
+    proposalType,
+    txHash,
+  }: {
+    proposalId: number
+    proposalType: ProposalType
+    txHash?: string
+  }) => ({ name: 'proposal-prices-api', proposalId, proposalType, txHash }),
   queryFn: _fetchProposalPricesApi,
   category: 'dao.proposals',
   validationSuite: EmptyValidationSuite,

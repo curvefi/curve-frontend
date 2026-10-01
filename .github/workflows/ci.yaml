@@ -13,7 +13,7 @@ jobs:
   check-supply-chain:
     name: Check supply chain
     timeout-minutes: 6
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
         with:
@@ -22,8 +22,6 @@ jobs:
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
       - run: yarn check-supply-chain
@@ -31,15 +29,32 @@ jobs:
   lint:
     name: Lint, format & typecheck
     timeout-minutes: 8
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
+      - name: Restore ESLint cache
         uses: ./.github/actions/restore-cache
+        with:
+          path: .cache/eslint
+          # Invalidate for custom rules, dependency updates, and TypeScript project config changes.
+          key-prefix: >-
+            eslint-${{ hashFiles(
+              '.eslint/**',
+              'yarn.lock',
+              'tsconfig*.json',
+              'apps/**/tsconfig*.json',
+              'packages/**/tsconfig*.json',
+              'tests/**/tsconfig*.json',
+              'storybook/**/tsconfig*.json'
+            ) }}
+      - name: Restore typecheck cache
+        uses: ./.github/actions/restore-cache
+        with:
+          path: .cache/typecheck
       - run: yarn set version stable
       - run: yarn install --immutable
       - run: yarn lint
@@ -51,15 +66,13 @@ jobs:
   test:
     name: Unit tests
     timeout-minutes: 5
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
       - run: yarn build # make sure the build works + uploads source maps to Sentry
@@ -76,15 +89,17 @@ jobs:
         iteration: [1, 2]
     name: Cypress component tests in ${{ matrix.browser }} ${{ matrix.iteration }}
     timeout-minutes: 15
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
+      - name: Restore Vite dependency cache
         uses: ./.github/actions/restore-cache
+        with:
+          path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
       - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
@@ -115,15 +130,17 @@ jobs:
     name: Cypress component tests with RPC
     if: github.ref_name == 'main'
     timeout-minutes: 20
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
+      - name: Restore Vite dependency cache
         uses: ./.github/actions/restore-cache
+        with:
+          path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
       - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
@@ -165,7 +182,7 @@ jobs:
   cypress-component-stellar:
     name: Cypress Stellar component tests
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     concurrency: # shared testnet account, run sequentially to avoid conflicting balances
       group: stellar-testnet
       cancel-in-progress: false
@@ -175,8 +192,10 @@ jobs:
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
+      - name: Restore Vite dependency cache
         uses: ./.github/actions/restore-cache
+        with:
+          path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
       - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
@@ -228,15 +247,13 @@ jobs:
             specs: 'cypress/e2e/all/**/*,cypress/e2e/analytics/**/*,cypress/e2e/bridge/**/*,cypress/e2e/dao/**/*'
     name: Cypress e2e ${{ matrix.group }} ${{ matrix.browser }} ${{ matrix.iteration }}
     timeout-minutes: 20
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
       - run: npm install -g wait-on &
 
       - run: yarn set version stable
@@ -308,7 +325,7 @@ jobs:
   notify:
     name: Notify Slack
     if: failure() && github.ref_name == 'main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 1
     needs: [lint, test, cypress-e2e, cypress-component, cypress-component-rpc, cypress-component-stellar]
     steps:

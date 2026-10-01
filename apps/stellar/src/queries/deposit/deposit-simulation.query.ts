@@ -11,17 +11,16 @@ export const {
   invalidate: invalidateDepositSimulation,
   fetchQuery: fetchDepositSimulation,
 } = queryFactory({
-  queryKey: ({ network, pool, amounts, decimals, account, minMint, supply, maxAmounts }: DepositParams) =>
-    [
-      ...rootKeys.pool({ network, pool }),
-      'add_liquidity',
-      { amounts },
-      { decimals },
-      { account },
-      { minMint },
-      { supply },
-      { maxAmounts },
-    ] as const,
+  queryKey: ({ network, pool, amounts, decimals, account, minMint, supply, maxAmounts }: DepositParams) => ({
+    name: 'add_liquidity',
+    ...rootKeys.pool({ network, pool }),
+    amounts,
+    decimals,
+    account,
+    minMint,
+    supply,
+    maxAmounts,
+  }),
   queryFn: ({ network, pool, account, amounts, decimals, minMint }: DepositQuery) =>
     simulateContractCall<bigint>(
       network,

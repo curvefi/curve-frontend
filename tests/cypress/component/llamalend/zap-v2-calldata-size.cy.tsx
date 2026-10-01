@@ -5,7 +5,10 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import { getTokens } from '@/llamalend/llama.utils'
 import { writeBorrowMoreForm } from '@cy/support/helpers/llamalend/borrow-more.helpers'
 import { writeCreateLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
-import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
+import {
+  fakeCollateralEvents,
+  ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
+} from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/mocks/borrow-more.mocks'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/mocks/create-loan.mocks'
@@ -23,7 +26,6 @@ import { constQ } from '@ui/features/queries/util'
 
 const routerCalldataOfSize = (bytes: number): Hex => `0x${'00'.repeat(bytes)}`
 const CHAIN_ID = 1
-const OVERSIZED_CALLDATA = routerCalldataOfSize(9_401)
 const ROUTE_ERROR = '[data-testid="loan-form-error-routeId"]'
 
 const checkOversizedCalldataBlocked = (submitButtonTestId: string) => {
@@ -60,7 +62,7 @@ describe('ZapV2 router calldata size', () => {
       chainId: CHAIN_ID,
       approved: true,
       leverage: true,
-      routeCalldata: OVERSIZED_CALLDATA,
+      routeCalldata: ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
     })
 
     setLlamaApi(llamaApi)
@@ -82,7 +84,7 @@ describe('ZapV2 router calldata size', () => {
       approved: true,
       leverage: true,
       leverageImplementation: 'zapV2',
-      routeCalldata: OVERSIZED_CALLDATA,
+      routeCalldata: ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
     })
 
     setLlamaApi(llamaApi)
@@ -106,7 +108,7 @@ describe('ZapV2 router calldata size', () => {
       chainId: CHAIN_ID,
       approved: true,
       leverage: true,
-      routeCalldata: OVERSIZED_CALLDATA,
+      routeCalldata: ZAP_V2_OVER_LEGACY_LIMIT_CALLDATA,
     })
     const { collateralToken } = getTokens(market)
 

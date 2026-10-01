@@ -9,8 +9,11 @@ import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useResetIsApproved, fetchQuery: fetchResetIsApproved } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'resetIsApproved', { userBorrowed }] as const,
+  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) => ({
+    name: 'resetIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    userBorrowed,
+  }),
   queryFn: async ({ marketId, ...params }: ResetQuery) =>
     await getResetImplementation(marketId).repayIsApproved(params.userBorrowed),
   category: 'llamalend.repay',

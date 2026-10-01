@@ -11,16 +11,14 @@ import { isValidAddress } from '../utils'
 
 const ETH: number = Chain.Ethereum
 
-export const userPoolBoost = async (
-  chainId: number,
-  pool: PoolTemplate,
-  userAddress: Address,
-): Promise<Decimal | null> =>
+const userPoolBoost = async (chainId: number, pool: PoolTemplate, userAddress: Address): Promise<Decimal | null> =>
   chainId === ETH && isValidAddress(pool.gauge.address) ? (decimal(await pool.userBoost(userAddress)) ?? null) : null
 
 export const { useQuery: useUserPoolBoostQuery, invalidate: invalidateUserPoolBoostQuery } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
-    [...rootKeys.userPool({ chainId, poolId, userAddress }), 'userBoost'] as const,
+  queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) => ({
+    name: 'userBoost',
+    ...rootKeys.userPool({ chainId, poolId, userAddress }),
+  }),
   category: 'dex.user',
   queryFn: async ({ chainId, poolId, userAddress }: UserPoolQuery) =>
     await userPoolBoost(chainId, requireLib('curveApi').getPool(poolId), userAddress),

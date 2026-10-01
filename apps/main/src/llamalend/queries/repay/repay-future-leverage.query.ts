@@ -17,17 +17,16 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
     slippage,
     routeId,
     isFull,
-  }: RepayParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayFutureLeverage',
-      { stateCollateral },
-      { userCollateral },
-      { userBorrowed },
-      { slippage },
-      { routeId },
-      { isFull },
-    ] as const,
+  }: RepayParams) => ({
+    name: 'repayFutureLeverage',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    slippage,
+    routeId,
+    isFull,
+  }),
   queryFn: async ({
     marketId,
     userAddress,

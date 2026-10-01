@@ -8,7 +8,7 @@ import {
   USER_MARKETS_FIRST_PAGE,
 } from '@curvefi/prices-api/crvusd'
 import { paginate } from '@curvefi/prices-api/paginate'
-import { type ChainNameQuery, type UserQuery } from '@evm-ui/queries/root-keys'
+import { rootKeys, type ChainNameQuery, type UserQuery } from '@evm-ui/queries/root-keys'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { pricesApiChainNameValidationGroup } from '@evm-ui/queries/validation/prices-chain-validation'
 import {
@@ -33,7 +33,7 @@ const userChainNameValidationSuite = createValidationSuite((params: UserChainNam
 export type MintMarket = MintMarketFromApi & { chain: Chain }
 
 export const { getQueryOptions: getMintMarketOptions, reset: resetMintMarkets } = queryFactory({
-  queryKey: () => ['mint-markets', 'v4'] as const,
+  queryKey: () => ({ name: 'mint-markets', version: 4 }),
   queryFn: async (): Promise<MintMarket[]> =>
     recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map(market => ({ ...market, chain }))),
   category: 'llamalend.marketList',
@@ -46,8 +46,12 @@ const {
   invalidate: invalidateUserMintMarketsQuery,
   reset: resetUserMintMarketsQuery,
 } = queryFactory({
-  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
-    ['user-mint-markets', { blockchainId }, { userAddress }, 'v2'] as const,
+  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) => ({
+    name: 'user-mint-markets',
+    version: 2,
+    blockchainId,
+    userAddress,
+  }),
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
     (
       await paginate(
@@ -67,8 +71,12 @@ const {
   invalidate: invalidateUserMintMarketStats,
   reset: resetUserMintMarketStats,
 } = queryFactory({
-  queryKey: ({ userAddress, blockchainId, contractAddress }: UserContractParams) =>
-    ['user-mint-markets', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
+  queryKey: ({ userAddress, blockchainId, contractAddress }: UserContractParams) => ({
+    name: 'getUserMarketStats',
+    version: 1,
+    ...rootKeys.contract({ blockchainId, contractAddress }),
+    ...rootKeys.user({ userAddress }),
+  }),
   queryFn: ({ userAddress, blockchainId, contractAddress }: UserContractQuery) =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
   category: 'llamalend.user',

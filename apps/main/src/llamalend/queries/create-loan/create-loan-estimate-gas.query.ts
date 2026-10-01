@@ -14,18 +14,23 @@ import { useCreateLoanIsApproved } from './create-loan-approved.query'
 import { createLoanRouteMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanEstimateGasQuery<T = IChainId> = CreateLoanFormQuery<T>
-type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>>
+type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>> & { isControllerApproved?: boolean }
 
 const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateLoanApproveEstimateGasQuery } =
   queryFactory({
-    queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
-      [
-        ...rootKeys.market({ chainId, marketId }),
-        'estimateGas.createLoanApprove',
-        { userBorrowed },
-        { userCollateral },
-        { leverageEnabled },
-      ] as const,
+    queryKey: ({
+      chainId,
+      marketId,
+      userBorrowed = '0',
+      userCollateral = '0',
+      leverageEnabled,
+    }: GasEstimateParams) => ({
+      name: 'estimateGas.createLoanApprove',
+      ...rootKeys.market({ chainId, marketId }),
+      userBorrowed,
+      userCollateral,
+      leverageEnabled,
+    }),
     queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanEstimateGasQuery) => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       switch (type) {
@@ -37,7 +42,11 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
       }
     },
     category: 'llamalend.createLoan',
-    validationSuite: createLoanQueryValidationSuite({ debtRequired: false, collateralRequired: true }),
+    validationSuite: createLoanQueryValidationSuite({
+      debtRequired: false,
+      collateralRequired: true,
+      requireControllerApproval: true,
+    }),
     dependencies: params => [createLoanRouteMaxReceiveKey(params)],
   })
 
@@ -56,18 +65,17 @@ const {
     range,
     slippage,
     routeId,
-  }: GasEstimateParams) =>
-    [
-      ...rootKeys.market({ chainId, marketId }),
-      'estimateGas.createLoan',
-      { userBorrowed },
-      { userCollateral },
-      { debt },
-      { leverageEnabled },
-      { range },
-      { slippage },
-      { routeId },
-    ] as const,
+  }: GasEstimateParams) => ({
+    name: 'estimateGas.createLoan',
+    ...rootKeys.market({ chainId, marketId }),
+    userBorrowed,
+    userCollateral,
+    debt,
+    leverageEnabled,
+    range,
+    slippage,
+    routeId,
+  }),
   queryFn: async ({
     marketId,
     userCollateral = '0',
@@ -94,14 +102,18 @@ const {
     }
   },
   category: 'llamalend.createLoan',
-  validationSuite: createLoanQueryValidationSuite({ debtRequired: true, collateralRequired: true }),
+  validationSuite: createLoanQueryValidationSuite({
+    debtRequired: true,
+    collateralRequired: true,
+    requireControllerApproval: true,
+  }),
   dependencies: params => [
     createLoanRouteMaxReceiveKey(params),
     ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
   ],
 })
 
-export const useCreateLoanEstimateGas = createApprovedEstimateGasHook({
+export const useCreateLoanEstimateGas = createApprovedEstimateGasHook<GasEstimateParams, TGas>({
   useIsApproved: useCreateLoanIsApproved,
   useApproveEstimate: useCreateLoanApproveEstimateGas,
   useActionEstimate: useCreateLoanEstimateGasQuery,

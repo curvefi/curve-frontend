@@ -63,7 +63,7 @@ describe('scrvUSD', () => {
     const FormComponent = ScrvUsdFormComponents[form]
 
     return (
-      <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
+      <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, account: privateKey })} autoConnect>
         <CurveProvider app="llamalend" network={networks[Chain.Ethereum]} onChainUnavailable={console.error}>
           <FormPlacementProvider placement="inline">
             <Stack sx={{ maxWidth: 520, gap: 2 }}>

@@ -10,8 +10,14 @@ import { type FieldsOf } from '@ui/lib/validation/types'
 type LlammaEventsParams = FieldsOf<GetEventsParams>
 
 export const { useQuery: useLlammaEvents } = queryFactory({
-  queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaEventsParams) =>
-    ['llamma-events', { chain }, { llamma }, { endpoint }, { page }, { perPage }] as const,
+  queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaEventsParams) => ({
+    name: 'llamma-events',
+    chain,
+    llamma,
+    endpoint,
+    page,
+    perPage,
+  }),
   queryFn: async ({
     chain,
     llamma,

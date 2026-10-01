@@ -12,7 +12,7 @@ import { type TokenUsdRate, useTokenUsdRate } from '@evm-ui/queries/token-usd-ra
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { useForm } from '@ui/features/forms'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { decimal, decimalNegate } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -198,7 +198,7 @@ export function useClosePositionForm({
     borrowedBalance: closePositionData?.borrowedBalance,
     closeError,
     formErrors: visibleErrors,
-    isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }),
+    isApproved: q(useCloseLoanIsApproved({ chainId, marketId, userAddress })),
     onSubmit: form.handleSubmit(onSubmit),
   }
 }

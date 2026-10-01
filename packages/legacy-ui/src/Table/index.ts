@@ -1,7 +1,0 @@
-export * from './Td'
-export * from './Th'
-export * from './Thead'
-export * from './TheadButton'
-export * from './TheadSortButton'
-export * from './Tr'
-export * from './Table'

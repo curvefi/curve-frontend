@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
+import { getControllerAddress, getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { pickMaxDebtQuery } from '@/llamalend/queries/llamma-query.helpers'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
@@ -67,16 +67,15 @@ const { getQueryOptions: getBorrowMoreMaxReceiveOptions, invalidate: invalidateB
       leverageEnabled,
       slippage,
       router,
-    }: BorrowMoreMaxReceiveQueryParams) =>
-      [
-        ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-        'borrowMoreMaxRecv',
-        { userCollateral },
-        { userBorrowed },
-        { leverageEnabled },
-        { slippage },
-        { router },
-      ] as const,
+    }: BorrowMoreMaxReceiveQueryParams) => ({
+      name: 'borrowMoreMaxRecv',
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      userCollateral,
+      userBorrowed,
+      leverageEnabled,
+      slippage,
+      router,
+    }),
     queryFn: async ({
       marketId,
       userCollateral = '0',
@@ -92,7 +91,14 @@ const { getQueryOptions: getBorrowMoreMaxReceiveOptions, invalidate: invalidateB
         case 'zapV2': {
           const router = assert(routerProvider, 'No router enabled')
           const zapAddress = getZapAddress(market)
-          const getExpected = getExpectedFn({ chainId, userAddress, zapAddress, slippage, router })
+          const getExpected = getExpectedFn({
+            chainId,
+            userAddress,
+            zapAddress,
+            controllerAddress: getControllerAddress(market),
+            slippage,
+            router,
+          })
           const result = await impl.borrowMoreMaxRecv({ userCollateral, address: userAddress, getExpected })
           return { router, ...castFieldsToDecimal(result) }
         }

@@ -40,7 +40,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     if (isNetworkSwitched) {
       state.quickSwap.resetState()
       state.createPool.resetState()
-      state.dashboard.resetState()
     }
 
     await fetchPools(curve) // hydrates the lib with pool data required for curve.getPool(poolIdOrAddress)

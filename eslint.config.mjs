@@ -169,10 +169,18 @@ const config = [
               importNames: ['enforce'],
               message: 'Import enforce from @ui/lib/validation/enforce-extension instead.',
             },
-            ...['@stellar/stellar-sdk', '@creit-tech/stellar-wallets-kit/sdk'].map(name => ({
+            ...['@stellar/stellar-sdk', '@creit.tech/stellar-wallets-kit/sdk'].map(name => ({
               name,
               message: 'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
             })),
+          ],
+          patterns: [
+            {
+              regex: '(^|/)markets\\.constants(?:\\.ts)?$',
+              importNames: ['MARKET_ASSETS_TYPE_BY_CONTROLLER', '*'],
+              message:
+                'Use getMarketAssetsType from market-assets-type.utils instead of reading the assets type mapping directly.',
+            },
           ],
         },
       ],

@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -18,9 +18,6 @@ jobs:
           node-version: 24
           cache: yarn
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
 
       - name: 'Build and publish'
         working-directory: packages/prices-api
