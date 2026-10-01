@@ -25,16 +25,16 @@ export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowCl
     totalNotionals,
     usdRateLoading,
     isLoading,
-    onSubmitCrv,
-    isCrvDisabled,
-    isCrvPending,
+    onSubmit,
+    isDisabled,
+    isPending,
     errors,
   } = useBorrowClaimForm({ network: networks[chainId] })
 
   return (
     <Form
       {...form}
-      onSubmit={onSubmitCrv}
+      onSubmit={onSubmit}
       footer={<BorrowClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}
     >
       <EvmDataTable
@@ -54,9 +54,9 @@ export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowCl
       />
       <EvmFormButton
         fullWidth
-        pending={isCrvPending}
+        pending={isPending}
         loading={isLoading}
-        disabled={isCrvDisabled}
+        disabled={isDisabled}
         label={t`Claim CRV rewards`}
         testId={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
       />
