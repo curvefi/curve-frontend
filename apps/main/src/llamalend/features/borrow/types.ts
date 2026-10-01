@@ -31,3 +31,5 @@ export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQue
 export type CreateLoanDebtQuery<T = IChainId> = CreateLoanFormQuery<T> & Pick<CreateLoanForm, 'maxDebt'>
 /** Fields of the create loan debt query before validation */
 export type CreateLoanDebtParams<T = IChainId> = FieldsOf<CreateLoanDebtQuery<T>>
+
+export type BorrowTabsClaimVisibility = { showCollateralClaim: boolean }
