@@ -107,7 +107,7 @@ const validateDepositAmount = (
 const validateDepositMaxAmount = (amount: Decimal | Nullish, maxAmount: Decimal | Nullish) => {
   skipWhen(amount == null || maxAmount == null, () => {
     test('depositAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
-      enforce(amount).lte(maxAmount)
+      enforce(amount).lte(maxAmount!)
     })
   })
 }
@@ -132,7 +132,7 @@ export const depositFormValidationSuite = createValidationSuite(
 )
 
 const supplyUserValidationGroup = <IChainId extends number>(params: UserMarketParams<IChainId>) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   validateHasVault(params.marketId)
 }
 
@@ -178,7 +178,7 @@ const validateWithdrawAmount = (
 const validateWithdrawMaxAmount = (amount: Decimal | Nullish, maxAmount: Decimal | Nullish) => {
   skipWhen(amount == null || maxAmount == null, () => {
     test('withdrawAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
-      enforce(amount).lte(maxAmount)
+      enforce(amount).lte(maxAmount!)
     })
   })
 }
@@ -216,7 +216,7 @@ const withdrawValidationGroup = <IChainId extends number>({
 }
 
 export const withdrawValidationSuite = createValidationSuite((params: WithdrawParams) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   withdrawValidationGroup(params)
   validateUserVaultShares(params.userVaultShares, { sharesRequired: !!params.isFull })
 })
@@ -251,7 +251,7 @@ const validateStakeShares = (shares: Decimal | Nullish) => {
 const validateStakeMaxAssets = (assets: Decimal | Nullish, maxAssets: Decimal | Nullish) => {
   skipWhen(assets == null || maxAssets == null, () => {
     test('stakeAssets', `Amount exceeds maximum of ${maxAssets}`, () => {
-      enforce(assets).lte(maxAssets)
+      enforce(assets).lte(maxAssets!)
     })
   })
 }
@@ -265,7 +265,7 @@ export const stakeFormValidationSuite = createValidationSuite(
 )
 
 export const stakeValidationSuite = createValidationSuite((params: UserMarketParams & StakeMutation) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   validateHasVault(params.marketId)
   validateStakeShares(params.stakeShares)
 })
@@ -300,7 +300,7 @@ const validateUnstakeShares = (shares: Decimal | Nullish) => {
 const validateUnstakeMaxAssets = (assets: Decimal | Nullish, maxAssets: Decimal | Nullish) => {
   skipWhen(assets == null || maxAssets == null, () => {
     test('unstakeAssets', `Amount exceeds maximum of ${maxAssets}`, () => {
-      enforce(assets).lte(maxAssets)
+      enforce(assets).lte(maxAssets!)
     })
   })
 }
@@ -314,7 +314,7 @@ export const unstakeFormValidationSuite = createValidationSuite(
 )
 
 export const unstakeValidationSuite = createValidationSuite((params: UserMarketParams & UnstakeMutation) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   validateHasVault(params.marketId)
   validateUnstakeShares(params.unstakeShares)
 })

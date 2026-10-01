@@ -14,14 +14,13 @@ type RecentRefuelsQuery = ChainNameQuery & { poolAddress: Address; page?: number
 type RecentRefuelsParams = FieldsOf<RecentRefuelsQuery>
 
 export const { useQuery: useRecentRefuels } = queryFactory({
-  queryKey: ({ blockchainId, poolAddress, page, pageSize }: RecentRefuelsParams) =>
-    [
-      ...rootKeys.chainName({ blockchainId }),
-      'getRefuelDonationEvents',
-      { poolAddress },
-      { page },
-      { pageSize },
-    ] as const,
+  queryKey: ({ blockchainId, poolAddress, page, pageSize }: RecentRefuelsParams) => ({
+    name: 'getRefuelDonationEvents',
+    ...rootKeys.chainName({ blockchainId }),
+    poolAddress,
+    page,
+    pageSize,
+  }),
   queryFn: async ({
     blockchainId,
     poolAddress,

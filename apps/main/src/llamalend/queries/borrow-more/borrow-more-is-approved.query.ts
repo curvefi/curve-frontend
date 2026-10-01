@@ -17,15 +17,14 @@ export const {
     userBorrowed = '0',
     leverageEnabled,
     routeId,
-  }: BorrowMoreParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'borrowMoreIsApproved',
-      { userCollateral },
-      { userBorrowed },
-      { leverageEnabled },
-      { routeId },
-    ] as const,
+  }: BorrowMoreParams) => ({
+    name: 'borrowMoreIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    userCollateral,
+    userBorrowed,
+    leverageEnabled,
+    routeId,
+  }),
   queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery) => {
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {

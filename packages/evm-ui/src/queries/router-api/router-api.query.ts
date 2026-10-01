@@ -24,7 +24,7 @@ const {
   setQueryData: setRouteQueryData,
   useQuery: useRouteByIdQuery,
 } = queryFactory({
-  queryKey: ({ routeId }: RouteByIdParams) => ['router-api', 'v1/routes', { routeId }] as const,
+  queryKey: ({ routeId }: RouteByIdParams) => ({ name: 'routerApi.routes', routeId }),
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async (_params: RouteByIdQuery): Promise<RouteResponse> => {
     throw new NoRetryError('router route-by-id cache is write-through only')
@@ -76,22 +76,22 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
     router,
     userAddress,
     zapAddress,
+    controllerAddress,
     slippage,
-  }: RoutesParams) =>
-    [
-      'router-api',
-      'v1/routes',
-      { chainId },
-      { tokenIn },
-      { tokenOut },
-      { amountIn },
-      { amountOut },
-      { blacklist },
-      { router },
-      { userAddress },
-      { zapAddress },
-      { slippage },
-    ] as const,
+  }: RoutesParams) => ({
+    name: 'routerApi.routes',
+    chainId,
+    tokenIn,
+    tokenOut,
+    amountIn,
+    amountOut,
+    blacklist,
+    router,
+    userAddress,
+    zapAddress,
+    controllerAddress,
+    slippage,
+  }),
   queryFn: async ({
     chainId,
     tokenIn,
@@ -102,6 +102,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
     router,
     userAddress,
     zapAddress,
+    controllerAddress,
     slippage,
   }: RoutesQuery): Promise<RouteResponse[]> => {
     const query = new URLSearchParams(
@@ -113,6 +114,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
         amountOut && ['amountOut', `${amountOut}`],
         userAddress && ['userAddress', userAddress],
         zapAddress && ['zapAddress', zapAddress],
+        controllerAddress && ['controllerAddress', controllerAddress],
         slippage && ['slippage', `${slippage}`],
       ),
     )
@@ -132,6 +134,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
           slippage,
           userAddress,
           zapAddress,
+          controllerAddress,
           amountOut,
           tx?.data,
         ])}`

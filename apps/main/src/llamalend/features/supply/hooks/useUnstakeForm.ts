@@ -30,8 +30,11 @@ const emptyUnstakeForm = (): UnstakeForm => ({
 })
 
 const { useQuery: useUnstakeAssetsToShares } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake.assetsToShares', { assets }] as const,
+  queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) => ({
+    name: 'unstake.assetsToShares',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    assets,
+  }),
   queryFn: async ({ marketId, assets }: AssetsToSharesQuery) =>
     (await requireVault(marketId).vault.convertToShares(assets)) as Decimal,
   category: 'llamalend.supply',

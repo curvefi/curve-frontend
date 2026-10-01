@@ -17,19 +17,18 @@ type UserBandsBalancesQuery = UserMarketQuery & { loanExists: boolean; liquidati
 type UserBandsBalancesParams = FieldsOf<UserBandsBalancesQuery>
 
 const userBandsBalancesValidationSuite = createValidationSuite((params: UserBandsBalancesParams) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   loanExistsValidationGroup(params)
   liquidationBandValidationGroup(params)
 })
 
 export const { useQuery: useUserBandsBalances } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: UserBandsBalancesParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      QUERY_KEY,
-      { loanExists },
-      { liquidationBand },
-    ] as const,
+  queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: UserBandsBalancesParams) => ({
+    name: QUERY_KEY,
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    loanExists,
+    liquidationBand,
+  }),
   queryFn: async ({ marketId, userAddress, liquidationBand }: UserBandsBalancesQuery) => {
     const market = getMarket(marketId)
     const userBandsBalances = normalizeBands(await getUserPositionImplementation(market).userBandsBalances(userAddress))

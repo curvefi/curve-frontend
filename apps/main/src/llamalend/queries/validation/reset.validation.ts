@@ -69,7 +69,7 @@ const validateMinimumResetAmount = (userBorrowed: Decimal | Nullish, minBorrowed
   })
   skipWhen(minBorrowed == null, () => {
     test('userBorrowed', `Add at least ${minBorrowed} from wallet to reset this position`, () => {
-      enforce(userBorrowed ?? '0').gte(minBorrowed)
+      enforce(userBorrowed ?? '0').gte(minBorrowed!)
     })
   })
 }
@@ -120,14 +120,14 @@ const resetValidationGroup = (
 
 export const resetSupportedValidationSuite = createValidationSuite(
   ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) => {
-    userMarketValidationSuite({ chainId, marketId, userAddress })
+    userMarketValidationSuite.run({ chainId, marketId, userAddress })
     validateResetSupported(marketId)
   },
 )
 
 export const resetValidationSuite = createValidationSuite(
   ({ chainId, marketId, userAddress, ...params }: ResetParams) => {
-    userMarketValidationSuite({ chainId, marketId, userAddress })
+    userMarketValidationSuite.run({ chainId, marketId, userAddress })
     validateResetSupported(marketId)
     resetValidationGroup(params, { requireLoadedAvailability: true })
   },

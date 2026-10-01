@@ -165,7 +165,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       } else {
         enableGraphColumn()
       }
-      checkLineGraphColor(MarketRateType.Borrow, '#ed242f')
+      checkLineGraphColor(MarketRateType.Borrow, '#ed242f', height)
 
       cy.get<unknown[]>(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls1 => {
         expect(calls1.length).to.be.greaterThan(0).lessThan(vaultCount) // make sure we have some calls before scrolling, but not all

@@ -12,10 +12,11 @@ import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } fr
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet'
-import { MarketAssetsType, MarketType, MarketVersion } from '@evm-ui/types/market'
+import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import {
   type Nullish,
   type AllOrNone,

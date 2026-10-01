@@ -4,9 +4,8 @@ import { Address } from 'viem'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { FetchError, fetchJson } from '@primitives/fetch.utils'
-import { maybe } from '@primitives/objects.utils'
 import type { RouterRouteResponse, TransactionData } from '@primitives/router.utils'
-import { calculateFeePercentage, ROUTER_FEE_BPS, ROUTER_FEE_RECEIVER_BY_CHAIN_ID } from '../router-fees'
+import { calculateFeePercentage, getRouterFee } from '../router-fees'
 import { type RoutesQuery } from '../routes/routes.schemas'
 
 const { ENSO_API_URL = 'https://api.enso.finance', ENSO_API_KEY } = process.env
@@ -57,6 +56,7 @@ export const buildEnsoRouteResponse = async (
     return []
   }
 
+  const fee = getRouterFee('enso', query)
   const url = `${ENSO_API_URL}/api/v1/shortcuts/route?${new URLSearchParams({
     chainId: `${chainId}`,
     fromAddress: zapAddress,
@@ -66,11 +66,7 @@ export const buildEnsoRouteResponse = async (
     ...(minAmountOut
       ? { minAmountOut }
       : slippage != null && { slippage: new BigNumber(slippage).times(100).toString() }),
-    ...maybe(
-      // Enso rejects an explicit fee=0, so omit fee parameters when fees are disabled.
-      +ROUTER_FEE_BPS ? ROUTER_FEE_RECEIVER_BY_CHAIN_ID.enso[chainId] : undefined,
-      feeReceiver => ({ fee: ROUTER_FEE_BPS, feeReceiver }),
-    ),
+    ...(fee && { fee: fee.feeBps, feeReceiver: fee.feeReceiver }),
   })}`
 
   // Enso API is documented to return an array of routes, but in practice it returns a single object

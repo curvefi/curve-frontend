@@ -7,8 +7,10 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { mapQuery } from '@ui/features/queries/util'
 
 const { useQuery: usePoolsPricesApi } = queryFactory({
-  queryKey: ({ blockchainId }: ChainNameParams) =>
-    [...rootKeys.chainName({ blockchainId }), 'pools-prices-api'] as const,
+  queryKey: ({ blockchainId }: ChainNameParams) => ({
+    name: 'pools-prices-api',
+    ...rootKeys.chainName({ blockchainId }),
+  }),
   queryFn: async ({ blockchainId }: ChainNameQuery) => {
     const { pools } = await getPools(blockchainId)
     return fromEntries(pools.map(pool => [pool.address.toLocaleLowerCase(), pool]))

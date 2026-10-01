@@ -7,7 +7,7 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSupportedNetworkGroup } from '../validation/bridge.validation'
 
 export const { useQuery: useBridgeCapacity } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'fastBridge.allowedToBridge'] as const,
+  queryKey: ({ chainId }: ChainParams) => ({ name: 'fastBridge.allowedToBridge', ...rootKeys.chain({ chainId }) }),
   queryFn: async () => await requireLib('curveApi').fastBridge.allowedToBridge(),
   category: 'bridge.capacity',
   validationSuite: createValidationSuite((params: ChainParams) => {

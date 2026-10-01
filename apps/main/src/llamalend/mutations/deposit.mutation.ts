@@ -44,7 +44,7 @@ export const useDepositMutation = ({
   const { mutate, error, isPending } = useMarketMutation<DepositMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'deposit'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'deposit' }] as const,
     mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({

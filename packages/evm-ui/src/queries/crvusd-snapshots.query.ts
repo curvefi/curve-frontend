@@ -12,15 +12,13 @@ type Query = ContractQuery & { timeOption?: TimeOption; limit?: number }
 type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useCrvUsdSnapshots } = queryFactory({
-  queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) =>
-    [
-      ...rootKeys.contract({ contractAddress, blockchainId }),
-      'crvUsd',
-      'snapshots',
-      'v3',
-      { timeOption },
-      { limit },
-    ] as const,
+  queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) => ({
+    name: 'getSnapshots',
+    version: 3,
+    ...rootKeys.contract({ contractAddress, blockchainId }),
+    timeOption,
+    limit,
+  }),
   queryFn: ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<CrvUsdSnapshot[]> => {
     const now = Date.now()
     return NoRetryError.catch404(async () =>

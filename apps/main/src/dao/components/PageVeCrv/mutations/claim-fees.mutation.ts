@@ -32,7 +32,7 @@ export const useClaimFeesMutation = ({
   const config = useConfig()
   const [claimingToken, setClaimingToken] = useState<ClaimFeesToken>()
   const { mutate, error, isPending } = useEvmMutation<ClaimFeesMutation, ClaimFeesContext, ClaimFeesResult>({
-    mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'claimFees'] as const,
+    mutationKey: [{ ...rootKeys.userChain({ chainId, userAddress }), name: 'claimFees' }] as const,
     validationSuite: claimFeesValidationSuite,
     validationParams: { chainId, userAddress },
     buildContext: (_, context) => ({ ...context, chainId, userAddress: context.wallet.address }),

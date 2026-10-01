@@ -103,7 +103,7 @@ export const useRepayMutation = ({
   const { mutate, error, isPending } = useMarketMutation<RepayMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'repay' }] as const,
     mutationFn: async (variables, { market, userAddress: walletAddress }) => {
       await waitForApproval({
         isApproved: () =>

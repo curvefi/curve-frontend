@@ -11,14 +11,14 @@
     "lint": "eslint --cache --cache-location ../../.cache/eslint/merkl-api --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/merkl-api --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-merkl-api.tsbuildinfo",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "yarn run --top-level test --project merkl-api",
+    "test:watch": "yarn run --top-level test:watch --project merkl-api"
   },
   "dependencies": {
     "@curvefi/api-server": "workspace:^",
-    "fastify": "5.12.1"
+    "fastify": "5.12.5"
   },
   "devDependencies": {
-    "tsx": "4.23.12"
+    "tsx": "4.23.15"
   }
 }

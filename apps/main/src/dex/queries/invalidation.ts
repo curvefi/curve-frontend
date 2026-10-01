@@ -24,7 +24,7 @@ export const invalidateUserPoolInfo = async (params: UserPoolParams) => {
     invalidateUserPoolShareQuery(params),
     invalidateUserPoolBoostQuery(params),
     invalidateUserPoolPositions(params),
-    queryClient.resetQueries({ queryKey: getUserPoolClaimablesQueryKey(params) }),
+    queryClient.resetQueries({ queryKey: [getUserPoolClaimablesQueryKey(params)] }),
   ])
 }
 
@@ -48,5 +48,5 @@ export const resetPoolLists = ({ chainId, userAddress }: UserChainParams) =>
       getUserPoolPositionsQueryKey({ chainId, userAddress }),
       getCampaignsExternalQueryKey({}),
       getCampaignsPoolsMerklQueryKey({}),
-    ].map(queryKey => queryClient.resetQueries({ queryKey })),
+    ].map(queryKey => queryClient.resetQueries({ queryKey: [queryKey] })),
   )

@@ -3,7 +3,7 @@ import { Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
 export function expandFirstRowOnMobile(breakpoint: Breakpoint) {
   if (breakpoint == 'mobile') {
     cy.get(`[data-testid="expand-icon"]`).first().click()
-    cy.get(`[data-testid="data-table-expansion-row"]`).should('be.visible')
+    cy.get(`[data-testid="data-table-expansion-row"] .MuiCollapse-entered`).should('be.visible')
   }
 }
 

@@ -20,17 +20,16 @@ export const {
     isFull,
     slippage,
     routeId,
-  }: RepayParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayIsApproved',
-      { stateCollateral },
-      { userCollateral },
-      { userBorrowed },
-      { isFull },
-      { slippage },
-      { routeId },
-    ] as const,
+  }: RepayParams) => ({
+    name: 'repayIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    isFull,
+    slippage,
+    routeId,
+  }),
   queryFn: async ({
     marketId,
     stateCollateral,

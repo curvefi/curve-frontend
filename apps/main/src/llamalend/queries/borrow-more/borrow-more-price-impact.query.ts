@@ -17,17 +17,16 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
     leverageEnabled,
     slippage,
     routeId,
-  }: BorrowMoreParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'borrowMorePriceImpact',
-      { userBorrowed },
-      { debt },
-      { maxDebt },
-      { leverageEnabled },
-      { slippage },
-      { routeId },
-    ] as const,
+  }: BorrowMoreParams) => ({
+    name: 'borrowMorePriceImpact',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    userBorrowed,
+    debt,
+    maxDebt,
+    leverageEnabled,
+    slippage,
+    routeId,
+  }),
   queryFn: async ({
     marketId,
     userCollateral = '0',

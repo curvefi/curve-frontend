@@ -6,6 +6,7 @@ import { CatchBoundary } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/router-core'
 import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
+import { t } from '@ui/lib/i18n'
 
 const ErrorComponent = ({
   error,
@@ -15,13 +16,16 @@ const ErrorComponent = ({
   userAddress,
 }: ErrorComponentProps & { title: string; LinkComponent?: ElementType; userAddress?: Address }) => {
   useEffect(() => {
-    captureException(error, { tags: { boundary: title }, extra: { message: error.message, stack: error.stack } })
+    captureException(error, {
+      tags: { boundary: title },
+      extra: error instanceof Error ? { message: error.message, stack: error.stack } : undefined,
+    })
   }, [error, title])
 
   return (
     <ErrorPage
       title={title}
-      subtitle={error.message}
+      subtitle={t`An unexpected error occurred`}
       resetError={reset}
       error={error}
       LinkComponent={LinkComponent}

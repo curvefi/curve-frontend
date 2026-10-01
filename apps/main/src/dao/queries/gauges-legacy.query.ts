@@ -77,7 +77,7 @@ export const getGaugeDepositUrl = (gaugeData: CurveApiGaugeData | undefined) =>
  * At some point in the future this functionality should be migrated to Prices API.
  */
 export const { useQuery: useGaugesLegacy } = queryFactory({
-  queryKey: () => ['gauges-legacy'] as const,
+  queryKey: () => ({ name: 'gauges-legacy' }),
   queryFn: async () => {
     const { data } = await fetchJson<CurveGaugeResponse>(GAUGES_LEGACY_URL)
 
