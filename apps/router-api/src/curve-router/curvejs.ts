@@ -52,10 +52,10 @@ async function fetchPools(instance: CurveInstance, log: FastifyBaseLogger) {
     } catch (e) {
       log.error({ message: 'Error fetching pools', error: e, chainId: curve.chainId })
       if (initial) throw e // make sure the request fails if fetching pools fails
-    } finally {
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-      setTimeout(fetchAllPools, ONE_MINUTE).unref() // refresh every minute, unref to avoid keeping the event loop alive
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+    setTimeout(fetchAllPools, ONE_MINUTE).unref() // refresh every minute, unref to avoid keeping the event loop alive
   }
   await fetchAllPools({ initial: true })
   log.info({ message: 'pools fetched', chainId: curve.chainId })
@@ -63,7 +63,7 @@ async function fetchPools(instance: CurveInstance, log: FastifyBaseLogger) {
 
 /**
  * Get a shared Curve.js instance and its latest pool blacklist, initializing them if necessary.
- * The result is cached per chain. Pool data and the blacklist refresh automatically.
+ * The result is cached per chain; failed initialization can be retried. Pool data and the blacklist refresh automatically.
  */
 export const loadCurve = (chainId: number, log: FastifyBaseLogger) => {
   instances[chainId] ??= (async () => {
@@ -73,6 +73,9 @@ export const loadCurve = (chainId: number, log: FastifyBaseLogger) => {
     const instance: CurveInstance = { curve, blacklist: new Set() }
     await fetchPools(instance, log)
     return instance
-  })()
+  })().catch(error => {
+    delete instances[chainId]
+    throw error
+  })
   return instances[chainId]
 }
