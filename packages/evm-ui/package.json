@@ -23,7 +23,7 @@
     "@metamask/connect-evm": "2.1.1",
     "@safe-global/safe-apps-provider": "0.18.6",
     "@safe-global/safe-apps-sdk": "9.1.0",
-    "@sentry/react": "10.72.0",
+    "@sentry/react": "11.0.0",
     "@supercharge/promise-pool": "3.3.0",
     "@walletconnect/ethereum-provider": "2.24.0",
     "dayjs": "1.11.23",
