@@ -4,7 +4,7 @@ import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneBool, oneOf, type TokenType } from '@cy/support/generators'
 import { getTableCellAssets, withFilters, withMultiSelectFilter } from '@cy/support/helpers/data-table.helpers'
 import { type Chain } from '@cy/support/helpers/lending-mocks'
-import { LOAD_TIMEOUT, Breakpoint } from '@cy/support/ui'
+import { assertInViewport, LOAD_TIMEOUT, Breakpoint } from '@cy/support/ui'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { median } from '@primitives/array.utils'
 import { fromEntries, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
@@ -84,12 +84,12 @@ export const filterByMarketType = (size: [number, number], marketType: MarketTyp
   cy.get(`[data-testid="badge-market-type-${otherMarketType}"]`).should('not.exist')
 }
 
-export function checkLineGraphColor(type: MarketRateType, color: string) {
+export function checkLineGraphColor(type: MarketRateType, color: string, height: number) {
   // the graphs are lazy loaded, so we need to scroll to them first before checking the color
-  cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
-  cy.get(`[data-testid="line-graph-${type}"] svg path[stroke]`, LOAD_TIMEOUT)
-    .first()
-    .should('have.attr', 'stroke', color)
+  cy.get(`[data-testid="line-graph-${type}"]:visible`).first().as('rateGraph')
+  cy.get('@rateGraph').scrollIntoView({ offset: { top: -height / 2, left: 0 } }) // clear of the sticky table header.
+  cy.get('@rateGraph').should(assertInViewport)
+  cy.get('@rateGraph').find('svg path[stroke]', LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
 }
 
 export function checkCoinSelection(
