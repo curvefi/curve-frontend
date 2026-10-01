@@ -1,18 +1,20 @@
-import type { ReactNode } from 'react'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { MarketBorrower, VaultDepositor } from '@curvefi/prices-api/llamalend'
-import { TokenAmount } from '@evm-ui/shared/ui/TokenAmount'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@primitives/number.utils'
-import type { Nullish } from '@primitives/objects.utils'
+import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
+import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
+import { Metric } from '@ui/components/Metric'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { TokenIcon } from '@ui/components/TokenIcon'
+import { constQ } from '@ui/features/queries/util'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
+const EXPANDED_METRIC_CATEGORY = 'llamalend.marketParticipantsExpanded'
 
 export type ParticipantRow = { explorerUrl?: string; blockchainId: Chain }
 
@@ -45,52 +47,56 @@ export const Health = ({ health }: Pick<BorrowerRow, 'health'>) => (
   <Typography variant="tableCellMRegular">{formatNumber(health, 'percent.value')}</Typography>
 )
 
-const ExpandedMetric = ({ label, children }: { label: string; children: ReactNode }) => (
-  <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-    <Typography variant="bodyMRegular" color="textSecondary">
-      {label}
-    </Typography>
-    {children}
-  </Stack>
-)
-
 export const BorrowerExpandedPanel: ExpandedPanelComponent<BorrowerRow> = ({ row: { original: borrower } }) => (
-  <Stack sx={{ gap: Spacing.xs }}>
-    <ExpandedMetric label={t`Collateral`}>
-      <TokenAmount
-        amount={borrower.collateral}
-        amountUsd={borrower.collateralUsd}
-        blockchainId={borrower.blockchainId}
-        tokenAddress={borrower.collateralToken?.address}
-        abbreviate={false}
-        iconSize="mui-sm"
-      />
-    </ExpandedMetric>
-    <ExpandedMetric label={t`Loan`}>
-      <TokenAmount
-        amount={borrower.debt}
-        amountUsd={borrower.debtUsd}
-        blockchainId={borrower.blockchainId}
-        tokenAddress={borrower.borrowToken?.address}
-        abbreviate={false}
-        iconSize="mui-sm"
-      />
-    </ExpandedMetric>
-    <ExpandedMetric label={t`Health`}>
-      <Health health={borrower.health} />
-    </ExpandedMetric>
-  </Stack>
+  <MetricsGrid variant="mobileRows">
+    <Metric
+      category={EXPANDED_METRIC_CATEGORY}
+      label={notFalsy(t`Collateral`, borrower.collateralToken?.symbol && `(${borrower.collateralToken.symbol})`).join(
+        ' ',
+      )}
+      value={borrower.collateral}
+      valueOptions={{ abbreviate: false, fallback: UNAVAILABLE_NOTATION }}
+      notional={constQ({ value: borrower.collateralUsd, unit: 'dollar' })}
+      icon={
+        borrower.collateralToken && (
+          <TokenIcon blockchainId={borrower.blockchainId} address={borrower.collateralToken.address} size="mui-sm" />
+        )
+      }
+    />
+    <Metric
+      category={EXPANDED_METRIC_CATEGORY}
+      label={notFalsy(t`Loan`, borrower.borrowToken?.symbol && `(${borrower.borrowToken.symbol})`).join(' ')}
+      value={borrower.debt}
+      valueOptions={{ abbreviate: false, fallback: UNAVAILABLE_NOTATION }}
+      notional={constQ({ value: borrower.debtUsd, unit: 'dollar' })}
+      icon={
+        borrower.borrowToken && (
+          <TokenIcon blockchainId={borrower.blockchainId} address={borrower.borrowToken.address} size="mui-sm" />
+        )
+      }
+    />
+    <Metric
+      category={EXPANDED_METRIC_CATEGORY}
+      label={t`Health`}
+      value={borrower.health}
+      valueOptions={{ unit: 'percentage', abbreviate: false, fallback: UNAVAILABLE_NOTATION }}
+    />
+  </MetricsGrid>
 )
 
 export const SupplierExpandedPanel: ExpandedPanelComponent<SupplierRow> = ({ row: { original: supplier } }) => (
-  <ExpandedMetric label={t`Supplied`}>
-    <TokenAmount
-      amount={supplier.assets}
-      amountUsd={supplier.assetsUsd}
-      blockchainId={supplier.blockchainId}
-      tokenAddress={supplier.borrowToken?.address}
-      abbreviate={false}
-      iconSize="mui-sm"
+  <MetricsGrid variant="mobileRows">
+    <Metric
+      category={EXPANDED_METRIC_CATEGORY}
+      label={notFalsy(t`Supplied`, supplier.borrowToken?.symbol && `(${supplier.borrowToken.symbol})`).join(' ')}
+      value={supplier.assets}
+      valueOptions={{ abbreviate: false, fallback: UNAVAILABLE_NOTATION }}
+      notional={maybe(supplier.assetsUsd, value => constQ({ value, unit: 'dollar' as const }))}
+      icon={
+        supplier.borrowToken && (
+          <TokenIcon blockchainId={supplier.blockchainId} address={supplier.borrowToken.address} size="mui-sm" />
+        )
+      }
     />
-  </ExpandedMetric>
+  </MetricsGrid>
 )

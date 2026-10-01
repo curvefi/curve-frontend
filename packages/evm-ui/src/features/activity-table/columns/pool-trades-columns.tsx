@@ -3,10 +3,12 @@ import { formatNumber } from '@primitives/number.utils'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
+import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { t } from '@ui/lib/i18n'
 import { TimestampCell, AddressCell } from '../cells'
-import { ActivityUsdValue } from '../cells/ActivityUsdValue'
 import type { PoolTradeRow } from '../types'
+import { formatActivityUsdValue } from '../utils'
+import { ActivityUsdValue } from '../cells/ActivityUsdValue'
 
 export enum PoolTradesColumnId {
   Bought = 'tokensBought',
