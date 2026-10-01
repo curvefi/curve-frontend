@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
+import { SupplyClaimTab } from '@/llamalend/features/supply/components/SupplyClaimTab'
 import { oneAddress } from '@cy/support/generators'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
@@ -26,7 +26,7 @@ const testCases: { title: string; claimableCrv: Decimal; claimableRewards: { amo
   { title: 'crv and rewards', claimableCrv: '5.00', claimableRewards: [{ amount: '2.50', symbol: 'CVX' }] },
 ]
 
-describe('ClaimTab (mocked)', () => {
+describe('SupplyClaimTab (mocked)', () => {
   beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(({ title, claimableCrv, claimableRewards }) => {
@@ -42,7 +42,7 @@ describe('ClaimTab (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-          <ClaimTab networks={llamaNetworks} />
+          <SupplyClaimTab networks={llamaNetworks} />
         </MockLoanTestWrapper>,
       )
 
