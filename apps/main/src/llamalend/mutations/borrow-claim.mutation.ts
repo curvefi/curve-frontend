@@ -21,6 +21,8 @@ type BorrowClaimOptions = {
   crvTokenAddress: Address | undefined
 }
 
+const noFormFieldOptions = { onReset: noop }
+
 export const useBorrowClaimCrvMutation = ({
   network,
   network: { chainId },
@@ -47,7 +49,7 @@ export const useBorrowClaimCrvMutation = ({
     pendingMessage: () => t`Claiming CRV rewards...`,
     successMessage: () => t`Claimed rewards!`,
     mutationTokenAddresses: () => notFalsy(crvTokenAddress),
-    onReset: noop,
+    ...noFormFieldOptions,
   })
 
   const onSubmit = useCallback(() => mutate({}), [mutate])
