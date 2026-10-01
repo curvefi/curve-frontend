@@ -6,6 +6,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
+import { setVirtualNetworkClockToFork } from '@cy/support/helpers/tenderly/vnet-clock'
 import { fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { CurveProvider } from '@evm-ui/features/connect-wallet'
@@ -19,6 +20,8 @@ describe('FormClaimFees (RPC)', () => {
     display_name: `Claim fees (${uuid})`,
     fork_config: { block_number: '26055408' }, // At this point in time USER_ADDRESS has a claim on both types of fees (3crv and crvusd)
   }))
+
+  before(() => setVirtualNetworkClockToFork(getRpcUrls(getVirtualNetwork())))
 
   beforeEach(setupMockedDaoComponentTest)
 
