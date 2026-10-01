@@ -1,5 +1,5 @@
 import type { BrowserProvider } from 'ethers'
-import PromisePool from '@supercharge/promise-pool'
+import { PromisePool } from '@supercharge/promise-pool'
 
 export type Provider = BrowserProvider
 
