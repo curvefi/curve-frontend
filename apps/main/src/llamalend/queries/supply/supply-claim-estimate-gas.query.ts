@@ -1,10 +1,7 @@
-import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
+import { createClaimEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/root-keys'
-import { combineQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import type { Query } from '@ui/features/queries/util'
 import { claimableRewardsValidationSuite, requireGauge, requireVault } from '../validation/supply.validation'
 import { useClaimableCrv, useClaimableRewards } from './supply-claimable-rewards.query'
 import { hasClaimableRewards } from './supply-query.helpers'
@@ -31,19 +28,6 @@ const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
   category: 'llamalend.supply',
   validationSuite: claimableRewardsValidationSuite,
 })
-
-/** Like `createEstimateGasHook`, but first fetches claimable rewards and skips gas estimation when none exist. */
-const createClaimEstimateGasHook = <T>(
-  useClaimable: (query: ClaimEstimateParams, enabled?: boolean) => Query<T>,
-  useEstimateGasQuery: (query: ClaimEstimateParams, enabled?: boolean) => Query<TGas>,
-  isClaimEnabled: (claimable: T | undefined) => boolean,
-) =>
-  createEstimateGasHook((query: ClaimEstimateParams, enabled?: boolean) => {
-    const claimable = useClaimable(query, enabled)
-    const estimateGas = useEstimateGasQuery(query, enabled && isClaimEnabled(claimable.data))
-
-    return combineQueries([claimable, estimateGas], (_, estimateGas) => estimateGas)
-  })
 
 /** Estimates claim-CRV gas only when the user has claimable CRV. */
 export const useClaimCrvEstimateGas = createClaimEstimateGasHook(
