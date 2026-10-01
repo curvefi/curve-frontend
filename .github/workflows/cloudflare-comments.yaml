@@ -2,7 +2,7 @@ name: Compact Cloudflare comments
 
 on:
   issue_comment:
-    types: [created, edited]
+    types: [edited] # comments are created "In progress", then updated with deploy data
 
 permissions:
   pull-requests: write
