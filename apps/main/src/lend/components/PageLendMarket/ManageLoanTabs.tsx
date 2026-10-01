@@ -1,5 +1,4 @@
 import { networks } from '@/lend/networks'
-import type { BorrowTabsClaimVisibility } from '@/llamalend/features/borrow/types'
 import { ClosePositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ImproveHealthForm'
 import { ResetPositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ResetPositionForm'
@@ -13,7 +12,7 @@ import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { type QueryProp, type Range } from '@ui/features/queries/util'
 import { useReleaseChannel } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
-import { borrowClaimTab } from './borrow-claim-tab'
+import { borrowClaimTab, BorrowTabsClaimVisibility } from './borrow-claim-tab'
 
 type LendManageLoanProps = BorrowTabsClaimVisibility & {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void

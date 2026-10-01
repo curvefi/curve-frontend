@@ -7,18 +7,20 @@ import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
+import { useForm } from '@ui/features/forms'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useMarketContext } from '../../market-context'
 import { CLAIM_TAB_COLUMNS, type ClaimableToken } from '../../supply/components/columns'
 
-export const useBorrowClaimTab = <ChainId extends IChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
+export const useBorrowClaimForm = <ChainId extends IChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
   const { marketId, crvTokenAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId, blockchainId } = network
   const params = useMemo(
     (): UserMarketParams<ChainId> => ({ chainId, marketId, userAddress }),
     [chainId, marketId, userAddress],
   )
+  const form = useForm({ defaultValues: {} })
 
   const { data: claimableCrv, isLoading, error: claimableCrvError } = useBorrowClaimableCrv(params)
   const {
@@ -50,8 +52,10 @@ export const useBorrowClaimTab = <ChainId extends IChainId>({ network }: { netwo
     isPending: isCrvPending,
     error: claimCrvError,
   } = useBorrowClaimCrvMutation({ marketId, network, userAddress, crvTokenAddress })
+  const isPending = form.formState.isSubmitting || isCrvPending
 
   return {
+    form,
     params,
     userAddress,
     table,
@@ -59,9 +63,9 @@ export const useBorrowClaimTab = <ChainId extends IChainId>({ network }: { netwo
     totalNotionals: claimableTokens[0]?.notional,
     usdRateLoading,
     isLoading,
-    onSubmitCrv,
-    isCrvDisabled: [!!claimableCrvError, claimableTokens.length === 0].some(Boolean),
-    isCrvPending,
+    onSubmitCrv: form.handleSubmit(onSubmitCrv),
+    isCrvDisabled: [!!claimableCrvError, claimableTokens.length === 0, isPending].some(Boolean),
+    isCrvPending: isPending,
     errors: notFalsy(usdRateError, claimableCrvError, claimCrvError),
   }
 }

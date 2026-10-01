@@ -1,26 +1,23 @@
-import { useConnection } from 'wagmi'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { ConnectEvmWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectEvmWalletButton'
+import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
-import Button from '@mui/material/Button'
-import { FormContent } from '@ui/features/forms/components/FormContent'
-import { BUTTON_FORM_SIZE } from '@ui/features/forms/constants'
+import { Form } from '@ui/features/forms/components/Form'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../../market-context'
 import { TotalNotionalRow } from '../../supply/components/columns/notional-cells'
-import { useBorrowClaimTab } from '../hooks/useBorrowClaimTab'
+import { useBorrowClaimForm } from '../hooks/useBorrowClaimForm'
 import { BorrowClaimActionInfoList } from './BorrowClaimActionInfoList'
 
-type BorrowClaimTabProps<ChainId extends IChainId> = { networks: NetworkDict<ChainId> }
+type BorrowClaimFormProps<ChainId extends IChainId> = { networks: NetworkDict<ChainId> }
 
 const TEST_ID_PREFIX = 'borrow-claim'
 
-export const BorrowClaimTab = <ChainId extends IChainId>({ networks }: BorrowClaimTabProps<ChainId>) => {
-  const { chainId, marketId } = useMarketContext<ChainId>()
-  const { isConnected } = useConnection()
+export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowClaimFormProps<ChainId>) => {
+  const { chainId } = useMarketContext<ChainId>()
   const {
+    form,
     params,
     userAddress,
     table,
@@ -32,10 +29,14 @@ export const BorrowClaimTab = <ChainId extends IChainId>({ networks }: BorrowCla
     isCrvDisabled,
     isCrvPending,
     errors,
-  } = useBorrowClaimTab({ network: networks[chainId] })
+  } = useBorrowClaimForm({ network: networks[chainId] })
 
   return (
-    <FormContent footer={<BorrowClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}>
+    <Form
+      {...form}
+      onSubmit={onSubmitCrv}
+      footer={<BorrowClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}
+    >
       <EvmDataTable
         category="form"
         table={table}
@@ -51,22 +52,15 @@ export const BorrowClaimTab = <ChainId extends IChainId>({ networks }: BorrowCla
           )
         }
       />
-      {isConnected ? (
-        <Button
-          fullWidth
-          type="button"
-          loading={isCrvPending || !marketId}
-          disabled={isCrvDisabled}
-          data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
-          onClick={onSubmitCrv}
-          size={BUTTON_FORM_SIZE}
-        >
-          {isCrvPending ? t`Processing...` : t`Claim CRV rewards`}
-        </Button>
-      ) : (
-        <ConnectEvmWalletButton />
-      )}
+      <EvmFormButton
+        fullWidth
+        pending={isCrvPending}
+        loading={isLoading}
+        disabled={isCrvDisabled}
+        label={t`Claim CRV rewards`}
+        testId={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
+      />
       <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} userAddress={userAddress} />
-    </FormContent>
+    </Form>
   )
 }
