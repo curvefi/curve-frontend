@@ -1,7 +1,7 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "curve-frontend",
-  "assets": { "directory": "./dist", "not_found_handling": "single-page-application" },
+  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "single-page-application" },
   "compatibility_date": "2026-09-24",
   "keep_vars": true,
   "main": "./_api/_cloudflare-worker.ts",
