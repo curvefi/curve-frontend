@@ -11,12 +11,11 @@ import { leverageCollateralValidationSuite } from '../validation/manage-loan.val
  * Note this does not support leverage values for old mint markets (marketId < 6).
  */
 export const { useQuery: useAddCollateralFutureLeverage } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'addCollateralFutureLeverage',
-      { userCollateral },
-    ] as const,
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) => ({
+    name: 'addCollateralFutureLeverage',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    userCollateral,
+  }),
   queryFn: async ({ marketId, userAddress, userCollateral }: CollateralQuery) =>
     decimal(await getLoanImplementation(marketId).addCollateralFutureLeverage(userCollateral, userAddress)) ?? null,
   category: 'llamalend.addCollateral',

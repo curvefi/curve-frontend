@@ -5,8 +5,10 @@ import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-marke
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useCloseLoanIsApproved, fetchQuery: fetchCloseIsApproved } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'selfLiquidateIsApproved'] as const,
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) => ({
+    name: 'selfLiquidateIsApproved',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+  }),
   queryFn: async ({ marketId }: UserMarketQuery<IChainId>): Promise<boolean> =>
     await getLoanImplementation(marketId).selfLiquidateIsApproved(),
   category: 'llamalend.closeLoan',

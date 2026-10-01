@@ -11,18 +11,18 @@
     "lint": "eslint --cache --cache-location ../../.cache/eslint/router-api --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/router-api --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-router-api.tsbuildinfo",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "yarn run --top-level test --project router-api",
+    "test:watch": "yarn run --top-level test:watch --project router-api"
   },
   "dependencies": {
     "@curvefi/api": "2.70.2",
     "@curvefi/api-server": "workspace:^",
     "@curvefi/prices-api": "workspace:^",
     "bignumber.js": "10.0.2",
-    "fastify": "5.12.1",
-    "viem": "2.56.0"
+    "fastify": "5.12.5",
+    "viem": "2.57.0"
   },
   "devDependencies": {
-    "tsx": "4.23.12"
+    "tsx": "4.23.15"
   }
 }

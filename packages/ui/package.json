@@ -7,7 +7,9 @@
   "scripts": {
     "lint": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/ui --cache-strategy content . --fix",
-    "test": "vitest run --config vitest.config.ts",
+    "test": "yarn run --top-level test --project @curvefi/ui",
+    "test:ui": "yarn run --top-level test:ui --project @curvefi/ui",
+    "vitest:watch": "yarn run --top-level test:watch --project @curvefi/ui",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-ui.tsbuildinfo"
   },
   "dependencies": {
@@ -15,18 +17,18 @@
     "@curvefi/primitives": "workspace:^",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
-    "@hookform/resolvers": "5.4.0",
+    "@hookform/resolvers": "5.9.1",
     "@mui/icons-material": "9.4.0",
     "@mui/material": "9.4.0",
-    "@sentry/core": "10.72.0",
-    "@sentry/react": "10.72.0",
-    "@tanstack/query-async-storage-persister": "5.102.8",
-    "@tanstack/query-persist-client-core": "5.102.8",
-    "@tanstack/react-query": "5.102.8",
-    "@tanstack/react-query-devtools": "5.102.8",
-    "@tanstack/react-query-persist-client": "5.102.8",
-    "@tanstack/react-router": "1.170.32",
-    "@tanstack/react-router-devtools": "1.167.1",
+    "@sentry/core": "11.1.0",
+    "@sentry/react": "11.1.0",
+    "@tanstack/query-async-storage-persister": "5.104.0",
+    "@tanstack/query-persist-client-core": "5.104.0",
+    "@tanstack/react-query": "5.104.0",
+    "@tanstack/react-query-devtools": "5.104.0",
+    "@tanstack/react-query-persist-client": "5.104.0",
+    "@tanstack/react-router": "1.170.40",
+    "@tanstack/react-router-devtools": "1.167.2",
     "@tanstack/react-table": "9.2.4",
     "bignumber.js": "10.0.2",
     "fuse.js": "7.5.0",
@@ -36,11 +38,11 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "7.86.0",
-    "vest": "5.4.6",
+    "vest": "6.3.2",
     "vest-utils": "1.5.0",
     "zustand": "5.0.15"
   },
   "devDependencies": {
-    "@types/node": "26.1.0"
+    "@types/node": "26.6.3"
   }
 }

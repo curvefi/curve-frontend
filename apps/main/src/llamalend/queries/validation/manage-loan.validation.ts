@@ -29,7 +29,7 @@ const collateralValidationGroup = ({
   userAddress,
 }: CollateralParams) =>
   group('chainValidation', () => {
-    marketIdValidationSuite({ chainId, marketId })
+    marketIdValidationSuite.run({ chainId, marketId })
     evmAddressValidationGroup({ evmAddress: userAddress })
     validateUserCollateral(userCollateral, { required: true })
     validateMaxCollateral(userCollateral, maxCollateral, { required: true })

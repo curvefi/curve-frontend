@@ -30,12 +30,15 @@ const fetchFutureRates = async (marketId: string, reserves: Decimal, debtDelta: 
 
 /** Calculates future borrow/lend rates when debt changes (e.g., borrowing more or repaying) - used for borrow operations */
 export const { useQuery: useMarketFutureRates } = queryFactory({
-  queryKey: ({ chainId, marketId, debtDelta }: BorrowFutureApyParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'futureRates', { debtDelta }] as const,
+  queryKey: ({ chainId, marketId, debtDelta }: BorrowFutureApyParams) => ({
+    name: 'futureRates',
+    ...rootKeys.market({ chainId, marketId }),
+    debtDelta,
+  }),
   queryFn: async ({ marketId, debtDelta }: BorrowApyQuery) => await fetchFutureRates(marketId, RESERVES, debtDelta),
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, debtDelta }: BorrowFutureApyParams) => {
-    marketIdValidationSuite({ chainId, marketId })
+    marketIdValidationSuite.run({ chainId, marketId })
     group('borrowFormValidationGroup', () => {
       test('debtDelta', `Debt delta must be a non-zero number`, () => {
         enforce(debtDelta).isNumeric().notEquals(0)
@@ -46,12 +49,15 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
 
 /** Calculates future borrow/lend rates when reserves change (e.g., depositing or withdrawing) - used for supply operations */
 export const { useQuery: useMarketSupplyFutureRates } = queryFactory({
-  queryKey: ({ chainId, marketId, reserves }: SupplyFutureApyParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'futureRates', { reserves }] as const,
+  queryKey: ({ chainId, marketId, reserves }: SupplyFutureApyParams) => ({
+    name: 'futureRates',
+    ...rootKeys.market({ chainId, marketId }),
+    reserves,
+  }),
   queryFn: async ({ marketId, reserves }: SupplyApyQuery) => await fetchFutureRates(marketId, reserves, DEBT),
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, reserves }: SupplyFutureApyParams) => {
-    marketIdValidationSuite({ chainId, marketId })
+    marketIdValidationSuite.run({ chainId, marketId })
     group('supplyFormValidationGroup', () =>
       test('reserves', `Reserves must be a non-zero number`, () => {
         enforce(reserves).isNumeric().notEquals(0)

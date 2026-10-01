@@ -6,8 +6,11 @@ import type { ClaimFeesParams, ClaimFeesQuery, ClaimFeesToken } from './claim-fe
 import { claimFeesValidationSuite } from './claim-fees.validation'
 
 export const { useQuery: useClaimableFees, invalidate: invalidateClaimableFees } = queryFactory({
-  queryKey: ({ chainId, userAddress, token }: ClaimFeesParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'boosting.claimableFees', { token }] as const,
+  queryKey: ({ chainId, userAddress, token }: ClaimFeesParams) => ({
+    name: 'boosting.claimableFees',
+    ...rootKeys.userChain({ chainId, userAddress }),
+    token,
+  }),
   queryFn: async ({ userAddress, token }: ClaimFeesQuery) => {
     const { boosting } = requireLib('curveApi')
     const claimableMethods = { '3CRV': boosting.claimableFees, crvUSD: boosting.claimableFeesCrvUSD } satisfies Record<

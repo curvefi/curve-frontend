@@ -29,7 +29,7 @@ export const useUnstakeMutation = ({
   const { mutate, error, isPending } = useMarketMutation<UnstakeMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'unstake' }] as const,
     mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
       return { hash: (await lendMarket.vault.unstake(variables.unstakeShares)) as Hex }

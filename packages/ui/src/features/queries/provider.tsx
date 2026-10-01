@@ -10,7 +10,7 @@ export const QueryProvider = ({ children, persister, queryClient }: QueryProvide
   persister ? (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister, dehydrateOptions: { shouldDehydrateQuery } }}
+      persistOptions={{ buster: 'query-key-v2', persister, dehydrateOptions: { shouldDehydrateQuery } }}
     >
       {children}
     </PersistQueryClientProvider>

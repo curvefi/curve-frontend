@@ -109,15 +109,14 @@ export const GasEstimate: Story = {
   args: {
     isExpanded: true,
     queryData: [
-      [['chain', { chainId: 1 }, 'token', { tokenAddress: ethAddress }, 'usdRate'], 3_000],
+      [{ name: 'usdRate', chainId: 1, tokenAddress: ethAddress }, 3_000],
       [
-        [
-          'chain',
-          { chainId: 1 },
-          { gasPricesUrl: 'https://api.curve.finance/api/getGas' },
-          { gasPricesUrlL2: undefined },
-          'gasInfo',
-        ],
+        {
+          name: 'gasInfo',
+          chainId: 1,
+          gasPricesUrl: 'https://api.curve.finance/api/getGas',
+          gasPricesUrlL2: undefined,
+        },
         { gasPrice: null, max: [], priority: [], basePlusPriority: [30_000_000_000] },
       ],
     ],

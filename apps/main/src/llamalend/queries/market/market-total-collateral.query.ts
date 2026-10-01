@@ -7,7 +7,10 @@ import { decimal } from '@ui/lib/decimal'
 import { IS_GETTER, USE_API } from './market.constants'
 
 export const { useQuery: useMarketTotalCollateral } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'totalCollateral'] as const,
+  queryKey: ({ chainId, marketId }: MarketParams) => ({
+    name: 'totalCollateral',
+    ...rootKeys.market({ chainId, marketId }),
+  }),
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)
 

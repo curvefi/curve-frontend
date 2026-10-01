@@ -25,8 +25,10 @@ type PoolListRequestParams = Pick<
 type PoolListQuery = ChainQuery & PoolListRequestParams & { pageSize?: ListPoolsParams['pagination'] }
 type PoolListParams = FieldsOf<PoolListQuery>
 
-export const getPoolListRootQueryKey = ({ chainId }: ChainParams) =>
-  [...rootKeys.chain({ chainId }), 'listPools'] as const
+export const getPoolListRootQueryKey = ({ chainId }: ChainParams) => ({
+  name: 'listPools',
+  ...rootKeys.chain({ chainId }),
+})
 
 export const { useQuery: usePoolList } = queryFactory({
   queryKey: ({
@@ -45,24 +47,24 @@ export const { useQuery: usePoolList } = queryFactory({
     maxCreationDate,
     sortBy,
     sortDirection,
-  }: PoolListParams) =>
-    [
-      ...getPoolListRootQueryKey({ chainId }),
-      { page },
-      { pageSize },
-      { searchString },
-      { poolType },
-      { minTvl },
-      { maxTvl },
-      { minVolume },
-      { maxVolume },
-      { minApy },
-      { maxApy },
-      { minCreationDate },
-      { maxCreationDate },
-      { sortBy },
-      { sortDirection },
-    ] as const,
+  }: PoolListParams) => ({
+    name: 'listPools',
+    ...rootKeys.chain({ chainId }),
+    page,
+    pageSize,
+    searchString,
+    poolType,
+    minTvl,
+    maxTvl,
+    minVolume,
+    maxVolume,
+    minApy,
+    maxApy,
+    minCreationDate,
+    maxCreationDate,
+    sortBy,
+    sortDirection,
+  }),
   queryFn: async ({ pageSize, ...params }: PoolListQuery) => {
     const poolList = await listPools({ ...params, pagination: pageSize })
 
@@ -74,14 +76,14 @@ export const { useQuery: usePoolList } = queryFactory({
 })
 
 export const { useQuery: usePoolChains, queryKey: getPoolChainsQueryKey } = queryFactory({
-  queryKey: () => ['listPoolChains'] as const,
+  queryKey: () => ({ name: 'listPoolChains' }),
   queryFn: () => listPoolChains(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.network',
 })
 
 export const { useQuery: useLitePoolChains, queryKey: getLitePoolChainsQueryKey } = queryFactory({
-  queryKey: () => ['listLitePoolChains', 'v2'] as const,
+  queryKey: () => ({ name: 'listLitePoolChains', version: 2 }),
   queryFn: () => listLitePoolChains(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.network',

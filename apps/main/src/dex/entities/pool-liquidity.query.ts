@@ -8,8 +8,13 @@ import { type FieldsOf } from '@ui/lib/validation/types'
 type PoolLiquidityEventsParams = FieldsOf<GetPoolLiquidityEventsParams>
 
 export const { useQuery: usePoolLiquidityEvents } = queryFactory({
-  queryKey: ({ chain, poolAddress, page, perPage }: PoolLiquidityEventsParams) =>
-    ['pool-liquidity-events', { chain }, { poolAddress }, { page }, { perPage }] as const,
+  queryKey: ({ chain, poolAddress, page, perPage }: PoolLiquidityEventsParams) => ({
+    name: 'pool-liquidity-events',
+    chain,
+    poolAddress,
+    page,
+    perPage,
+  }),
   queryFn: async ({
     chain,
     poolAddress,
