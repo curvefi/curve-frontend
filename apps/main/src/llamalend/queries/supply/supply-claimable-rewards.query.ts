@@ -7,8 +7,10 @@ import { claimableRewardsValidationSuite, requireGauge } from '../validation/sup
 export type ClaimableReward = { token: Address; symbol: string; amount: Decimal }
 
 export const { useQuery: useClaimableRewards, fetchQuery: fetchClaimableRewards } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimableRewards'] as const,
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
+    name: 'claimableRewards',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+  }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireGauge(marketId).vault.claimableRewards(userAddress)) as ClaimableReward[],
   category: 'llamalend.supply',
@@ -16,8 +18,10 @@ export const { useQuery: useClaimableRewards, fetchQuery: fetchClaimableRewards 
 })
 
 export const { useQuery: useClaimableCrv, fetchQuery: fetchClaimableCrv } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimableCrv'] as const,
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
+    name: 'claimableCrv',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+  }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireGauge(marketId).vault.claimableCrv(userAddress)) as Decimal,
   category: 'llamalend.supply',

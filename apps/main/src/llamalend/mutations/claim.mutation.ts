@@ -48,7 +48,7 @@ export const useClaimCrvMutation = ({
   const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimCrv'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'claimCrv' }] as const,
     mutationFn: async (_, { market }) => ({ hash: await claimCrv(market, userAddress) }),
     validationSuite: claimValidationSuite,
     pendingMessage: () => t`Claiming CRV rewards...`,
@@ -72,7 +72,7 @@ export const useClaimRewardsMutation = ({
   const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimRewards'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'claimRewards' }] as const,
     mutationFn: async (_, { market }) => ({ hash: await claimRewards(market, userAddress) }),
     validationSuite: claimableRewardsValidationSuite,
     pendingMessage: () => t`Claiming rewards...`,

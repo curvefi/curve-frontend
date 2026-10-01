@@ -23,16 +23,15 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       maxDebt,
       leverageEnabled,
       routeId,
-    }: GasEstimateParams) =>
-      [
-        ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-        'estimateGas.borrowMoreApprove',
-        { userCollateral },
-        { userBorrowed },
-        { maxDebt },
-        { leverageEnabled },
-        { routeId },
-      ] as const,
+    }: GasEstimateParams) => ({
+      name: 'estimateGas.borrowMoreApprove',
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      userCollateral,
+      userBorrowed,
+      maxDebt,
+      leverageEnabled,
+      routeId,
+    }),
     queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery): Promise<TGas | null> => {
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
       switch (type) {
@@ -65,17 +64,16 @@ const {
     slippage,
     leverageEnabled,
     routeId,
-  }: GasEstimateParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'estimateGas.borrowMore',
-      { userCollateral },
-      { userBorrowed },
-      { debt },
-      { slippage },
-      { leverageEnabled },
-      { routeId },
-    ] as const,
+  }: GasEstimateParams) => ({
+    name: 'estimateGas.borrowMore',
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    userCollateral,
+    userBorrowed,
+    debt,
+    slippage,
+    leverageEnabled,
+    routeId,
+  }),
   queryFn: async ({
     marketId,
     userCollateral = '0',

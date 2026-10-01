@@ -4,7 +4,10 @@ import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-va
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useMarketOraclePriceBand, queryKey: getMarketOraclePriceBandKey } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'oraclePriceBand'] as const,
+  queryKey: ({ chainId, marketId }: MarketParams) => ({
+    name: 'oraclePriceBand',
+    ...rootKeys.market({ chainId, marketId }),
+  }),
   queryFn: ({ marketId }: MarketQuery): Promise<number> => getPricesImplementation(marketId).oraclePriceBand(),
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,

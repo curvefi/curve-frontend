@@ -12,9 +12,10 @@ export type TokenParams = FieldsOf<TokenQuery>
 export type UserParams = FieldsOf<UserQuery>
 
 export const rootKeys = {
-  network: ({ network }: NetworkParams) => ['network', { network }] as const,
-  user: ({ account }: UserParams) => ['user', { account }] as const,
-  pool: ({ network, pool }: PoolParams) => [...rootKeys.network({ network }), 'pool', { pool }] as const,
-  token: ({ network, token }: TokenParams) => [...rootKeys.network({ network }), 'token', { token }] as const,
-  userPool: (params: PoolParams & UserParams) => [...rootKeys.pool(params), ...rootKeys.user(params)] as const,
+  network: ({ network }: NetworkParams) => ({ network }) as const,
+  user: ({ account }: UserParams) => ({ account }) as const,
+  pool: ({ network, pool }: PoolParams) => ({ ...rootKeys.network({ network }), pool }) as const,
+  token: ({ network, token }: TokenParams) => ({ ...rootKeys.network({ network }), token }) as const,
+  userPool: ({ network, pool, account }: PoolParams & UserParams) =>
+    ({ ...rootKeys.pool({ network, pool }), ...rootKeys.user({ account }) }) as const,
 }

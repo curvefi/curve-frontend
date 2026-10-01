@@ -18,14 +18,19 @@ type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>> &
 
 const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateLoanApproveEstimateGasQuery } =
   queryFactory({
-    queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
-      [
-        ...rootKeys.market({ chainId, marketId }),
-        'estimateGas.createLoanApprove',
-        { userBorrowed },
-        { userCollateral },
-        { leverageEnabled },
-      ] as const,
+    queryKey: ({
+      chainId,
+      marketId,
+      userBorrowed = '0',
+      userCollateral = '0',
+      leverageEnabled,
+    }: GasEstimateParams) => ({
+      name: 'estimateGas.createLoanApprove',
+      ...rootKeys.market({ chainId, marketId }),
+      userBorrowed,
+      userCollateral,
+      leverageEnabled,
+    }),
     queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanEstimateGasQuery) => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       switch (type) {
@@ -60,18 +65,17 @@ const {
     range,
     slippage,
     routeId,
-  }: GasEstimateParams) =>
-    [
-      ...rootKeys.market({ chainId, marketId }),
-      'estimateGas.createLoan',
-      { userBorrowed },
-      { userCollateral },
-      { debt },
-      { leverageEnabled },
-      { range },
-      { slippage },
-      { routeId },
-    ] as const,
+  }: GasEstimateParams) => ({
+    name: 'estimateGas.createLoan',
+    ...rootKeys.market({ chainId, marketId }),
+    userBorrowed,
+    userCollateral,
+    debt,
+    leverageEnabled,
+    range,
+    slippage,
+    routeId,
+  }),
   queryFn: async ({
     marketId,
     userCollateral = '0',

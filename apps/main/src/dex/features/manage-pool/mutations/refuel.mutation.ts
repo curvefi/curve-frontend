@@ -23,7 +23,7 @@ type RefuelMutationOptions = {
 export const useRefuelMutation = ({ chainId, poolAddress, tokens, userAddress, onReset }: RefuelMutationOptions) => {
   const config = useConfig()
   const { mutate, error, isPending } = useEvmMutation<RefuelFormValues>({
-    mutationKey: [...rootKeys.chain({ chainId }), 'refuel'] as const,
+    mutationKey: [{ ...rootKeys.chain({ chainId }), name: 'refuel' }] as const,
     mutationFn: async (form: RefuelFormValues) => {
       if (!userAddress) throw new Error('Wallet not connected')
       if (!tokens) throw new Error('Token data not available')

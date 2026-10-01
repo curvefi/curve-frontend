@@ -16,7 +16,7 @@ type BridgeOptions = { chainId: number; onReset: () => void }
 
 export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
   const { mutate, error, isPending } = useEvmMutation<BridgeMutation>({
-    mutationKey: [...rootKeys.chain({ chainId }), 'bridge'] as const,
+    mutationKey: [{ ...rootKeys.chain({ chainId }), name: 'bridge' }] as const,
     mutationFn: async ({ amount }) => {
       const curve = requireLib('curveApi')
       await fetchBridgeCost({ chainId }) // Must be called before bridging to cache the value

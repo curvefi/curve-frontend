@@ -37,8 +37,12 @@ const {
   invalidate: invalidatePoolCurrencyReservesQuery,
 } = queryFactory({
   category: 'dex.pool',
-  queryKey: ({ chainId, poolId, isWrapped, useApi }: PoolCurrencyReservesParams) =>
-    [...rootKeys.pool({ chainId, poolId }), 'stats.currencyReserves', { isWrapped }, { useApi }] as const,
+  queryKey: ({ chainId, poolId, isWrapped, useApi }: PoolCurrencyReservesParams) => ({
+    name: 'stats.currencyReserves',
+    ...rootKeys.pool({ chainId, poolId }),
+    isWrapped,
+    useApi,
+  }),
   queryFn: async ({ chainId, poolId, isWrapped }: PoolCurrencyReservesQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     const tokens = isWrapped ? pool.wrappedCoins : pool.underlyingCoins

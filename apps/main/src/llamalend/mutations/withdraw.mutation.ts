@@ -29,7 +29,7 @@ export const useWithdrawMutation = ({
   const { mutate, error, isPending } = useMarketMutation<WithdrawMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'withdraw'] as const,
+    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'withdraw' }] as const,
     mutationFn: async ({ userVaultShares, withdrawAmount, isFull }, { market }) => {
       const lendMarket = requireVault(market)
       return {

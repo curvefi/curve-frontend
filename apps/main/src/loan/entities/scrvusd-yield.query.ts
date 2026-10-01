@@ -33,7 +33,7 @@ const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
 }
 
 export const { useQuery: useScrvUsdYield } = queryFactory({
-  queryKey: (params: { timeOption: TimeOption }) => ['scrvUsdYield', { timeOption: params.timeOption }] as const,
+  queryKey: ({ timeOption }: { timeOption: TimeOption }) => ({ name: 'scrvUsd.getYield', timeOption }),
   queryFn: _getScrvUsdYield,
   validationSuite: timeOptionValidationSuite,
   category: 'savings.stats',

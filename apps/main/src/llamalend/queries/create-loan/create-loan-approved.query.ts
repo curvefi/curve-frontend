@@ -17,14 +17,13 @@ export const {
     userCollateral = '0',
     userBorrowed = '0',
     leverageEnabled,
-  }: CreateLoanFormQueryParams) =>
-    [
-      ...rootKeys.market({ chainId, marketId }),
-      'createLoanIsApproved',
-      { userCollateral },
-      { userBorrowed },
-      { leverageEnabled },
-    ] as const,
+  }: CreateLoanFormQueryParams) => ({
+    name: 'createLoanIsApproved',
+    ...rootKeys.market({ chainId, marketId }),
+    userCollateral,
+    userBorrowed,
+    leverageEnabled,
+  }),
   queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanDebtQuery): Promise<boolean> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {

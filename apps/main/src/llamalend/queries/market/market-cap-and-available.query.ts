@@ -7,7 +7,11 @@ import { decimal } from '@ui/lib/decimal'
 import { IS_GETTER, USE_API } from './market.constants'
 
 export const { useQuery: useMarketCapAndAvailable } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'capAndAvailable', 'v1'] as const,
+  queryKey: ({ chainId, marketId }: MarketParams) => ({
+    name: 'capAndAvailable',
+    version: 1,
+    ...rootKeys.market({ chainId, marketId }),
+  }),
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)
     if (market instanceof LendMarketTemplate) {

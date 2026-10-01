@@ -7,7 +7,11 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { requireVault } from '../validation/supply.validation'
 
 export const { useQuery: useUserSupplyBoost } = queryFactory({
-  queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'userBoost', 'v1'] as const,
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
+    name: 'userBoost',
+    version: 1,
+    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+  }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery): Promise<Decimal> => {
     const { addresses, userPosition } = requireVault(marketId)
     return addresses.gauge === zeroAddress ? '0' : ((await userPosition.userBoost(userAddress)) as Decimal)

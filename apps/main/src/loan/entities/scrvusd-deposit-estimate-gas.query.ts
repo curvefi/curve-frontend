@@ -7,12 +7,11 @@ import type { ScrvUsdDepositParams, ScrvUsdDepositQuery } from './scrvusd.valida
 import { scrvUsdDepositMaxValidationSuite } from './scrvusd.validation'
 
 const { useQuery: useScrvUsdDepositApproveEstimateGas } = queryFactory({
-  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) =>
-    [
-      ...rootKeys.userChain({ chainId, userAddress }),
-      'st_crvUSD.estimateGas.depositApprove',
-      { depositAmount },
-    ] as const,
+  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
+    name: 'st_crvUSD.estimateGas.depositApprove',
+    ...rootKeys.userChain({ chainId, userAddress }),
+    depositAmount,
+  }),
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
     await requireLib('llamaApi').st_crvUSD.estimateGas.depositApprove(depositAmount),
   category: 'savings.user',
@@ -20,8 +19,11 @@ const { useQuery: useScrvUsdDepositApproveEstimateGas } = queryFactory({
 })
 
 const { useQuery: useScrvUsdDepositEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.estimateGas.deposit', { depositAmount }] as const,
+  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
+    name: 'st_crvUSD.estimateGas.deposit',
+    ...rootKeys.userChain({ chainId, userAddress }),
+    depositAmount,
+  }),
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
     await requireLib('llamaApi').st_crvUSD.estimateGas.deposit(depositAmount),
   category: 'savings.user',

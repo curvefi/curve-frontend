@@ -21,8 +21,10 @@ type UserPoolClaimablesQuery = UserChainQuery & { poolAddresses: Address[] }
 type UserPoolClaimablesParams = FieldsOf<UserPoolClaimablesQuery>
 
 // Use this key to invalidate all user rewards regardless of the pools fetched.
-export const getUserPoolClaimablesQueryKey = (params: UserChainParams) =>
-  [...rootKeys.userChain(params), 'userPoolClaimables'] as const
+export const getUserPoolClaimablesQueryKey = ({ chainId, userAddress }: UserChainParams) => ({
+  name: 'userPoolClaimables',
+  ...rootKeys.userChain({ chainId, userAddress }),
+})
 
 /**
  * Including pool addresses in the query key makes refetching straightforward, but a position
@@ -34,8 +36,11 @@ export const getUserPoolClaimablesQueryKey = (params: UserChainParams) =>
  *
  */
 const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
-  queryKey: (params: UserPoolClaimablesParams) =>
-    [...getUserPoolClaimablesQueryKey(params), { poolAddresses: params.poolAddresses }] as const,
+  queryKey: ({ chainId, userAddress, poolAddresses }: UserPoolClaimablesParams) => ({
+    name: 'userPoolClaimables',
+    ...rootKeys.userChain({ chainId, userAddress }),
+    poolAddresses,
+  }),
   queryFn: async ({ userAddress, poolAddresses }: UserPoolClaimablesQuery) => {
     const curve = requireLib('curveApi')
     const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress)
