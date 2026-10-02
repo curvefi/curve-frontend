@@ -4,6 +4,7 @@ import { prefetchTokenBalances, useTokenBalances } from '@evm-ui/hooks/useTokenB
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import type { Address } from '@primitives/address.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
+import { toValue } from '@ui/features/queries/util'
 import type { TokenOption } from '@ui/features/select-token/types'
 
 /**
@@ -45,7 +46,7 @@ export const useTokenSelectorData = (
   const tokenAddressesWithBalance = useMemo(
     () =>
       recordEntries(balances)
-        .filter(([, balance]) => +(balance ?? 0))
+        .filter(([, balance]) => +(toValue(balance) ?? 0))
         .map(([address]) => address),
     [balances],
   )

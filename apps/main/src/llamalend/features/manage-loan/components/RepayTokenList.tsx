@@ -12,7 +12,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { mapRecord, notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -32,7 +32,7 @@ export function RepayTokenList<ChainId extends IChainId>({
   network,
   onToken,
   tokens,
-  stateCollateral: { data: positionCollateral },
+  stateCollateral,
 }: RepayTokenListProps<ChainId>) {
   const { address: userAddress } = useConnection()
   const { borrowToken, collateralToken } = marketTokens
@@ -40,10 +40,8 @@ export function RepayTokenList<ChainId extends IChainId>({
     () => notFalsy(collateralToken?.address, borrowToken?.address),
     [collateralToken?.address, borrowToken?.address],
   )
-  const balanceQueries = useTokenBalances({ chainId: network.chainId, userAddress, tokenAddresses })
-  const priceQueries = useTokenUsdRates({ chainId: network.chainId, tokenAddresses })
-  const balances = useMemo(() => mapRecord(balanceQueries, (_, query) => query.data), [balanceQueries])
-  const tokenPrices = useMemo(() => mapRecord(priceQueries, (_, query) => query.data), [priceQueries])
+  const balances = useTokenBalances({ chainId: network.chainId, userAddress, tokenAddresses })
+  const tokenPrices = useTokenUsdRates({ chainId: network.chainId, tokenAddresses })
 
   const [[stateCollateralToken], walletTokens] = useMemo(
     () => partition(tokens, token => token.field === 'stateCollateral'),
@@ -66,7 +64,7 @@ export function RepayTokenList<ChainId extends IChainId>({
             <TokenSection
               title={t`Llamalend`}
               tokens={[stateCollateralToken]}
-              balances={{ [stateCollateralToken.address]: positionCollateral }}
+              balances={{ [stateCollateralToken.address]: stateCollateral }}
               tokenPrices={tokenPrices}
               onToken={onToken}
             />

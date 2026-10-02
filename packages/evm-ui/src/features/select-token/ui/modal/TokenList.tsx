@@ -83,14 +83,14 @@ export const TokenList = ({
   const myTokens = useMemo(() => {
     if (disableMyTokens) return []
 
-    const balanceTokens = tokensSearched.filter(token => +(balances?.[token.address] ?? 0) > 0)
+    const balanceTokens = tokensSearched.filter(token => +(toValue(balances?.[token.address]) ?? 0) > 0)
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       balanceTokens.sort((a, b) => {
-        const aBalance = +(balances?.[a.address] ?? 0)
-        const bBalance = +(balances?.[b.address] ?? 0)
+        const aBalance = +(toValue(balances?.[a.address]) ?? 0)
+        const bBalance = +(toValue(balances?.[b.address]) ?? 0)
         const aBalanceUsd = (toValue(tokenPrices?.[a.address]) ?? 0) * aBalance
         const bBalanceUsd = (toValue(tokenPrices?.[b.address]) ?? 0) * bBalance
         return bBalanceUsd - aBalanceUsd || bBalance - aBalance
@@ -136,7 +136,9 @@ export const TokenList = ({
    */
   const allTokens = useMemo(() => {
     const allTokensBase = notFalsy(
-      disableMyTokens ? tokensSearched : tokensSearched.filter(token => +(balances?.[token.address] ?? 0) === 0),
+      disableMyTokens
+        ? tokensSearched
+        : tokensSearched.filter(token => +(toValue(balances?.[token.address]) ?? 0) === 0),
 
       showPreviewMy &&
         // Add tokens that have balance but aren't in the preview (dust tokens)
