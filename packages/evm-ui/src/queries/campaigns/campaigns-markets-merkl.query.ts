@@ -3,7 +3,7 @@ import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { fetchMerklRewards } from './merkl'
 
 export const { getQueryOptions: getCampaignsMarketsMerklOptions } = queryFactory({
-  queryKey: () => ({ name: 'campaigns-markets-merkl' }),
+  queryKey: () => ({ name: 'campaigns-markets-merkl', version: 1 }),
   queryFn: async () => await fetchMerklRewards({ mainProtocolId: 'llamalend', test: false, status: 'LIVE' }),
   validationSuite: EmptyValidationSuite,
   category: 'global.campaigns',

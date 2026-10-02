@@ -1,8 +1,10 @@
-import { styled } from 'styled-components'
-import { Icon } from '@legacy-ui/Icon'
-import { Chip } from '@legacy-ui/Typography/Chip'
 import { formatNumber } from '@primitives/number.utils'
+import { Badge } from '@ui/components/Badge'
+import { Tooltip } from '@ui/components/Tooltip'
+import { WithWrapper } from '@ui/components/WithWrapper'
+import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 import { t } from '@ui/lib/i18n'
+import { MAX_DISPLAY_RATE_PERCENT } from '@ui/lib/rates.utils'
 
 export const ChipVolatileBaseApy = ({
   isBold,
@@ -13,17 +15,17 @@ export const ChipVolatileBaseApy = ({
   showIcon?: boolean
   disableTooltip?: boolean
 }) => (
-  <VolatileChip
-    size="md"
-    isBold={isBold}
-    tooltip={disableTooltip ? undefined : t`This is a volatile number that will very likely not persist.`}
-    tooltipProps={{ textAlign: 'left', minWidth: '250px' }}
+  <WithWrapper
+    shouldWrap={!disableTooltip}
+    Wrapper={Tooltip}
+    title={t`This is a volatile number that will very likely not persist.`}
   >
-    {formatNumber(5000, { abbreviate: false })}
-    +% {showIcon && <Icon className="svg-tooltip" size={16} name="InformationSquare" />}
-  </VolatileChip>
+    <Badge
+      size="small"
+      color="alert"
+      label={`${formatNumber(MAX_DISPLAY_RATE_PERCENT, { abbreviate: false })}+%`}
+      {...(showIcon && { icon: <InfoCircledIcon /> })}
+      {...(isBold && { sx: { fontWeight: 'bold' } })}
+    />
+  </WithWrapper>
 )
-
-const VolatileChip = styled(Chip)`
-  color: var(--danger-400);
-`

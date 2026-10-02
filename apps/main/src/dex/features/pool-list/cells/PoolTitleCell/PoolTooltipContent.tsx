@@ -1,9 +1,8 @@
-import { evmAddressDisplay } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
-import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
+import { AddressActionInfo, type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
 import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../../types'
 import { poolTypeClassifications, type PoolClassification } from './classifications'
@@ -16,7 +15,7 @@ const CLASSIFICATIONS = {
 
 const METAPOOL_DESCRIPTION = t`A metapool pairs an asset with the liquidity of an existing base pool.`
 
-export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
+export const PoolTooltipContent = ({ pool, addressDisplay }: { pool: PoolRow; addressDisplay: AddressDisplay }) => {
   const classification = pool.poolType && poolTypeClassifications[pool.poolType]
   const descriptions = notFalsy(
     classification && CLASSIFICATIONS[classification],
@@ -46,7 +45,7 @@ export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
                 />
               }
               address={address}
-              display={evmAddressDisplay}
+              display={addressDisplay}
               size="small"
             />
           ))}
@@ -59,7 +58,7 @@ export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
             title={t`Pool`}
             address={pool.address}
             size="small"
-            display={evmAddressDisplay}
+            display={addressDisplay}
           />
           {maybe(pool.gauge, gauge => (
             <AddressActionInfo
@@ -67,7 +66,7 @@ export const PoolTooltipContent = ({ pool }: { pool: PoolRow }) => {
               title={t`Gauge`}
               address={gauge.address}
               size="small"
-              display={evmAddressDisplay}
+              display={addressDisplay}
             />
           ))}
         </TooltipItems>

@@ -1,4 +1,4 @@
-import type { Address } from 'viem'
+import type { Address } from '@primitives/address.utils'
 import type { Campaign, CampaignPool } from '@external-rewards'
 
 type CampaignReward =
@@ -6,6 +6,7 @@ type CampaignReward =
 
 export type CampaignRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
   Pick<CampaignPool, 'action' | 'tags' | 'address' | 'network'> & {
+    isMerkl: boolean
     description: CampaignPool['description'] | null
     steps?: string[]
     lock: boolean

@@ -14,6 +14,7 @@ import {
 import type { Nullish } from '@primitives/objects.utils'
 import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { LabelTooltipIcon } from '@ui/components/LabelTooltipIcon'
+import { Spinner } from '@ui/components/Spinner'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
@@ -210,18 +211,21 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
 }
 
 const Notional = ({ data, error, isLoading }: QueryProp<NotionalValue>) => (
-  <WithSkeleton loading={isLoading}>
-    <Typography variant="highlightXsNotional" color="textTertiary">
-      {error && <ErrorIconButton size="extraExtraSmall" error={error} />}
-      {data == null
-        ? formatNumber(isLoading ? PLACEHOLDER_USD : null, 'usd.notional')
-        : typeof data === 'string'
-          ? data
-          : typeof data === 'number'
-            ? formatNumber(data, { abbreviate: true })
-            : formatNumber(data.value, { abbreviate: true, ...data })}
-    </Typography>
-  </WithSkeleton>
+  <Stack direction="row" sx={{ alignItems: 'baseline', gap: Spacing.xxs }}>
+    {error && <ErrorIconButton size="extraExtraSmall" error={error} />}
+    {isLoading && data != null && <Spinner size={12} sx={{ margin: 0, alignSelf: 'center' }} />}
+    <WithSkeleton loading={isLoading && data == null}>
+      <Typography variant="highlightXsNotional" color="textTertiary">
+        {data == null
+          ? formatNumber(PLACEHOLDER_USD, 'usd.notional')
+          : typeof data === 'string'
+            ? data // `Decimal` values must be formatted beforehand.
+            : typeof data === 'number'
+              ? formatNumber(data, { abbreviate: true })
+              : formatNumber(data.value, { abbreviate: true, ...data })}
+      </Typography>
+    </WithSkeleton>
+  </Stack>
 )
 
 export type MetricProps = {
@@ -314,34 +318,32 @@ export const Metric = ({
           <LabelTooltipIcon tooltip={labelTooltip} />
         </Typography>
       </WithWrapper>
-      <WithSkeleton loading={isLoading}>
-        <Stack
-          direction="row"
-          sx={applySxProps(
-            { alignItems: 'baseline' },
-            isHorizontal && { flexWrap: 'wrap', gap: Spacing.xxs, justifyContent: 'flex-end' },
-          )}
-        >
-          {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
-          {error ? (
-            <ErrorIconButton size={MetricButtonSize[size]} error={error} />
-          ) : (
-            <>
-              <MetricValue
-                value={data ?? null}
-                valueOptions={valueOptions}
-                change={change}
-                size={size}
-                copyValue={data || data === 0 ? copyValue : undefined}
-                tooltip={valueTooltip}
-                testId={testId}
-              />
-              {!isHorizontal && icon}
-            </>
-          )}
-          {isHorizontal && notional && <Notional {...notional} />}
-        </Stack>
-      </WithSkeleton>
+      <Stack
+        direction="row"
+        sx={applySxProps(
+          { alignItems: 'baseline', gap: Spacing.xxs },
+          isHorizontal && { flexWrap: 'wrap', justifyContent: 'flex-end' },
+        )}
+      >
+        {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
+        {error && <ErrorIconButton size={MetricButtonSize[size]} error={error} />}
+        {isLoading && data != null && <Spinner size={16} sx={{ margin: 0, alignSelf: 'center' }} />}
+        {(!error || data != null) && (
+          <WithSkeleton loading={isLoading && data == null}>
+            <MetricValue
+              value={data ?? null}
+              valueOptions={valueOptions}
+              change={change}
+              size={size}
+              copyValue={data || data === 0 ? copyValue : undefined}
+              tooltip={valueTooltip}
+              testId={testId}
+            />
+          </WithSkeleton>
+        )}
+        {!isHorizontal && icon}
+        {isHorizontal && notional && <Notional {...notional} />}
+      </Stack>
       {!isHorizontal && notional && <Notional {...notional} />}
     </Stack>
   )

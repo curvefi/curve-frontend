@@ -33,8 +33,8 @@ export const useSupplyClaimTab = <ChainId extends LlamaChainId>({ network }: { n
   } = useClaimableTokens({ params, crvAddress: crvTokenAddress })
 
   const tableData = useMemo(
-    () => claimableTokens.map(token => ({ ...token, blockchainId: network.blockchainId, isLoading: usdRateLoading })),
-    [claimableTokens, network.blockchainId, usdRateLoading],
+    () => claimableTokens.map(token => ({ ...token, blockchainId: network.blockchainId })),
+    [claimableTokens, network.blockchainId],
   )
 
   const table = useCurveTable({

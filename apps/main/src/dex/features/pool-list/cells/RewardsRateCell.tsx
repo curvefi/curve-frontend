@@ -8,12 +8,12 @@ import { t } from '@ui/lib/i18n'
 import type { PoolRow } from '../types'
 import { RewardIcons } from './RewardIcons'
 import { RewardsRateTooltipContent } from './RewardsRateTooltipContent'
-import { formatCellValue, getRewardsApr } from './utils'
+import { formatCellValue } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
 export const RewardsRateCell = ({ pool }: { pool: PoolRow }) => {
-  const rewardsRate = getRewardsApr(pool)
+  const rewardsRate = pool.rewardsApr
 
   return (
     <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
