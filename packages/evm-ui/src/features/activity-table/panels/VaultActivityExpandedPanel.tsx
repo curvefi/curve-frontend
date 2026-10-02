@@ -29,7 +29,7 @@ export const VaultActivityExpandedPanel: ExpandedPanelComponent<VaultActivityRow
           />
         </MetricsGrid>
       )}
-      <ActionInfo label={t`User`} value={shortenString(event.provider)} size="small" />
+      <ActionInfo label={t`User`} value={shortenString(event.provider)} />
     </Stack>
   )
 }

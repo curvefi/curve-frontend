@@ -65,7 +65,7 @@ export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> =
           </>
         )}
       </MetricsGrid>
-      <ActionInfo label={t`User`} value={shortenString(provider)} size="small" />
+      <ActionInfo label={t`User`} value={shortenString(provider)} />
     </Stack>
   )
 }

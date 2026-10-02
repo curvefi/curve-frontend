@@ -33,7 +33,7 @@ export const PoolLiquidityExpandedPanel: ExpandedPanelComponent<PoolLiquidityRow
           />
         ))}
       </MetricsGrid>
-      <ActionInfo label={t`User`} value={shortenString(provider)} size="small" />
+      <ActionInfo label={t`User`} value={shortenString(provider)} />
     </Stack>
   )
 }

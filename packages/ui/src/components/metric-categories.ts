@@ -76,7 +76,7 @@ export const METRIC_CATEGORIES = {
   'storybook.metric.horizontal': METRIC_TYPES.primaryInline,
 
   // Shared
-  'table.mobileExpandedPanel': METRIC_TYPES.tertiaryInline,
+  'table.mobileExpandedPanel': METRIC_TYPES.secondaryInline,
 
   // DAO
   'dao.crvStats': METRIC_TYPES.secondaryStat,

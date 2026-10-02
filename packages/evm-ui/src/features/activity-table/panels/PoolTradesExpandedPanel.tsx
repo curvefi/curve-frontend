@@ -34,7 +34,7 @@ export const PoolTradesExpandedPanel: ExpandedPanelComponent<PoolTradeRow> = ({
           icon={{ blockchainId, token: tokenSold }}
         />
       </MetricsGrid>
-      <ActionInfo label={t`User`} value={shortenString(buyer)} size="small" />
+      <ActionInfo label={t`User`} value={shortenString(buyer)} />
     </Stack>
   )
 }
