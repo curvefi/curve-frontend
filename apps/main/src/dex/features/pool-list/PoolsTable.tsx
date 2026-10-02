@@ -134,8 +134,8 @@ export const PoolsTable = ({
           testIdPrefix={LOCAL_STORAGE_KEY}
           visibilitySettings={{
             anchorRef: visibilitySettingsRef,
-            open: visibilitySettingsOpen,
-            onOpen: openVisibilitySettings,
+            isOpen: visibilitySettingsOpen,
+            open: openVisibilitySettings,
           }}
           searchText={searchText}
           onSearch={onSearch}
