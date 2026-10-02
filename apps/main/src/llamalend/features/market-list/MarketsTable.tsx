@@ -73,7 +73,16 @@ export const MarketsTable = ({
 
   return (
     <Stack>
-      <TableHeader title={t`Markets`} onReload={onReload} isLoading={isLoading} />
+      <TableHeader
+        title={t`Markets`}
+        onReload={onReload}
+        isLoading={isLoading}
+        visibilitySettings={{
+          anchorRef: visibilitySettingsRef,
+          isOpen: visibilitySettingsOpen,
+          open: openVisibilitySettings,
+        }}
+      />
       <EvmDataTable
         table={table}
         emptyState={{
@@ -87,11 +96,6 @@ export const MarketsTable = ({
       >
         <TableFilters
           testIdPrefix={LOCAL_STORAGE_KEY}
-          visibilitySettings={{
-            anchorRef: visibilitySettingsRef,
-            isOpen: visibilitySettingsOpen,
-            open: openVisibilitySettings,
-          }}
           disableSearchAutoFocus
           searchText={globalFilter}
           onSearch={setGlobalFilter}
