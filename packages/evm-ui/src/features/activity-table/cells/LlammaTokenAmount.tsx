@@ -3,19 +3,16 @@ import type { Chain } from '@curvefi/prices-api'
 import type { Token } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { TokenInfo } from '@ui/components/TokenInfo'
-import { formatToken } from '@ui/lib/tokens'
 
 export const LlammaTokenAmount = ({
   amount,
   blockchainId,
-  secondary,
-  showSymbol = false,
+  notional,
   token,
 }: {
   amount: number
   blockchainId: Chain
-  secondary?: ReactNode
-  showSymbol?: boolean
+  notional?: ReactNode
   token: Token | undefined
 }) =>
   token && (
@@ -24,7 +21,7 @@ export const LlammaTokenAmount = ({
       blockchainId={blockchainId}
       iconPosition="right"
       iconSize="mui-md"
-      primary={showSymbol ? formatToken(amount, token.symbol, 'amount') : formatNumber(amount, 'token.amount')}
-      secondary={secondary}
+      primary={formatNumber(amount, 'token.amount')}
+      secondary={notional}
     />
   )

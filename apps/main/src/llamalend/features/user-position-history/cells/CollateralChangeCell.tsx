@@ -17,17 +17,11 @@ export const CollateralChangeCell = ({
     <InlineTableCell>
       <Typography
         variant="tableCellMBold"
-        color={
-          collateralChange === 0 || collateralChange == null
-            ? 'textPrimary'
-            : collateralChange > 0
-              ? 'success'
-              : 'error'
-        }
+        color={collateralChange ? (collateralChange > 0 ? 'success' : 'error') : 'textPrimary'}
       >
         {collateralChange > 0 ? '+' : ''}
         {collateralChange === 0 ? '-' : formatNumber(collateralChange, { abbreviate: false })}{' '}
-        {collateralChange != null && collateralChange !== 0 && collateralToken?.symbol}
+        {!!collateralChange && collateralToken?.symbol}
       </Typography>
       {collateralChange !== 0 && (
         <Typography variant="bodySRegular">
