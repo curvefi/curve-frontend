@@ -17,19 +17,15 @@ export const TableHeader = ({
   isLoading: boolean
   visibilitySettings?: TableVisibilitySettingsButtonProps
   testId?: string
-}) => {
-  const isMobile = useIsMobile()
-
-  return (
-    <Stack
-      direction="row"
-      sx={{ justifyContent: 'space-between', alignItems: 'end', backgroundColor: t => t.design.Layer.App.Background }}
-    >
-      <CardHeader title={title} data-testid={testId} />
-      <Stack direction="row" sx={{ alignItems: 'center' }}>
-        {!isMobile && visibilitySettings && <TableVisibilitySettingsButton {...visibilitySettings} />}
-        <TableButton onClick={() => void onReload()} icon={ReloadIcon} rotateIcon={isLoading} />
-      </Stack>
+}) => (
+  <Stack
+    direction="row"
+    sx={{ justifyContent: 'space-between', alignItems: 'end', backgroundColor: t => t.design.Layer.App.Background }}
+  >
+    <CardHeader title={title} data-testid={testId} />
+    <Stack direction="row" sx={{ alignItems: 'center' }}>
+      {!useIsMobile() && visibilitySettings && <TableVisibilitySettingsButton {...visibilitySettings} />}
+      <TableButton onClick={() => void onReload()} icon={ReloadIcon} rotateIcon={isLoading} />
     </Stack>
-  )
-}
+  </Stack>
+)
