@@ -56,7 +56,7 @@ export const UserPositionsTable = ({
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [searchText, setSearchText] = useState('')
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
-  const anchorRef = useRef<HTMLTableSectionElement>(null)
+  const anchorRef = useRef<HTMLDivElement>(null)
   const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
     variant: 'userPositions',
     mobileColumn: PoolColumnId.Deposits,
@@ -99,7 +99,7 @@ export const UserPositionsTable = ({
             : undefined
         }
       />
-      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
+      <Stack ref={anchorRef} sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         {address ? (
           tableQuery.data?.length ? (
             <>
@@ -127,7 +127,6 @@ export const UserPositionsTable = ({
               <EvmDataTable
                 category="limited"
                 table={table}
-                anchorRef={anchorRef}
                 viewAllLabel={t`View all ${rowCount} pool positions`}
                 emptyState={{
                   title: t`No matching positions`,
