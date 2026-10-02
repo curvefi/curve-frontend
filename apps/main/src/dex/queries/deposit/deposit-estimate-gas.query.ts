@@ -3,8 +3,7 @@ import type { DepositParams, DepositQuery, UserDepositParams } from '@/dex/featu
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { rootKeys } from '@evm-ui/queries/root-keys'
-import type { Decimal } from '@primitives/decimal.utils'
-import { getDepositType, getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
+import { depositMethod, getPoolAmounts, pickPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { useDepositIsApproved } from './deposit-approved.query'
 
@@ -13,12 +12,13 @@ const { useQuery: useDepositApproveEstimate } = queryFactory({
     name: 'estimateGas.depositApprove',
     ...rootKeys.userPool({ chainId, poolId, userAddress }),
     isWrapped,
-    amounts: getPoolAmounts(values, decimals?.length),
+    decimals,
+    ...pickPoolAmounts(values, decimals?.length),
   }),
   queryFn: async ({ poolId, isWrapped, decimals, ...params }: DepositQuery) =>
     await requireLib('curveApi')
       .getPool(poolId)
-      .estimateGas[`${getDepositType(isWrapped)}Approve`](getPoolAmounts(params, decimals.length) as Decimal[]),
+      .estimateGas[`${depositMethod(isWrapped)}Approve`](getPoolAmounts(params, decimals.length)),
   category: 'dex.pool',
   validationSuite: userDepositParamsValidationSuite,
 })
@@ -28,13 +28,14 @@ const { useQuery: useDepositEstimate } = queryFactory({
     name: 'estimateGas.deposit',
     ...rootKeys.userPool({ chainId, poolId, userAddress }),
     isWrapped,
-    amounts: getPoolAmounts(values, decimals?.length),
     slippage,
+    decimals,
+    ...pickPoolAmounts(values, decimals?.length),
   }),
   queryFn: async ({ poolId, isWrapped, slippage, decimals, ...values }: DepositQuery) =>
     await requireLib('curveApi')
       .getPool(poolId)
-      .estimateGas[getDepositType(isWrapped)](getPoolAmounts(values, decimals?.length) as Decimal[], +slippage),
+      .estimateGas[depositMethod(isWrapped)](getPoolAmounts(values, decimals?.length), +slippage),
   category: 'dex.pool',
   validationSuite: userDepositParamsValidationSuite,
 })

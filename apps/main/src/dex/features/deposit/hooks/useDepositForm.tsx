@@ -21,11 +21,9 @@ import { depositFormValidationSuite } from '../deposit.validation'
 import type { DepositFormValues, UserDepositParams } from '../types'
 import { useDepositMaxAmounts } from './useDepositMaxAmounts'
 
-const getDepositDefaults = (tokenCount: number, isWrapped: boolean, slippage: Decimal): DepositFormValues => ({
+const getDepositDefaults = (tokenCount: number, isWrapped: boolean, slippage: Decimal) => ({
   ...getPoolDefaultValues(tokenCount),
-  isBalanced: false,
   isWrapped,
-  decimals: undefined,
   slippage,
 })
 
@@ -33,13 +31,13 @@ const getDepositDefaults = (tokenCount: number, isWrapped: boolean, slippage: De
 function useForceSeedAmounts(
   params: UserDepositParams,
   { data: isSeed }: QueryProp<boolean>,
-  form: UseFormReturn<DepositFormValues>,
+  { update }: UseFormReturn<DepositFormValues>,
 ) {
   const { data: amounts, isLoading } = useSeedAmounts(params, isSeed === true && !!Number(params[poolAmountField(0)]))
   useEffect(() => {
     if (isSeed && amounts)
-      form.update(fromEntries(amounts.map((amount, index) => [poolAmountField(index), amount])), { automated: true })
-  }, [form, isSeed, amounts])
+      update(fromEntries(amounts.map((amount, index) => [poolAmountField(index), amount])), { automated: true })
+  }, [update, isSeed, amounts])
   return { isLoading }
 }
 
@@ -52,11 +50,15 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     () => getDepositDefaults(initialTokenCount, initialWrapped, maxSlippage),
     [initialTokenCount, initialWrapped, maxSlippage],
   )
-  const form = useForm<DepositFormValues>({ validation: depositFormValidationSuite, defaultValues: userDefaultValues })
+  const form = useForm<DepositFormValues>({
+    validation: depositFormValidationSuite,
+    defaultValues: { ...userDefaultValues, decimals: undefined, isWrapped: initialWrapped, isBalanced: false },
+  })
+  const { formState, handleSubmit, update, watchValues, reset } = form
   const { connect, connectState, wallet } = useWallet()
 
-  const values = useShallow(identity<DepositFormValues>)(form.watchValues()) // Dynamic field names prevent destructuring dependencies; useShallow keeps the values stable between actual changes.
-  const isWrapped = form.watchValue('isWrapped')
+  const values = useShallow(identity<DepositFormValues>)(watchValues()) // Dynamic field names prevent destructuring dependencies; useShallow keeps the values stable between actual changes.
+  const { isWrapped } = values
   const canDepositWrapped = hasWrapped(pool)
 
   const { tokens, tokenAddresses, tokenCount, decimals, balances } = usePoolTokens({
@@ -72,17 +74,17 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
 
   useEffect(() => setIsWrapped(isWrapped), [isWrapped, setIsWrapped])
 
-  useEffect(
-    () => form.update({ ...getPoolDefaultValues(tokenCount), isBalanced: false }),
-    [form, isWrapped, tokenCount],
-  )
+  useEffect(() => update({ ...getPoolDefaultValues(tokenCount), isBalanced: false }), [isWrapped, tokenCount, update])
 
   useEffect(() => {
-    if (isSeed.data && canDepositWrapped) form.update({ isWrapped: true })
-  }, [canDepositWrapped, form, isSeed.data])
+    if (isSeed.data && canDepositWrapped) update({ isWrapped: true })
+  }, [canDepositWrapped, update, isSeed.data])
 
-  const [params, isDebouncing] = useFormDebounce<UserDepositParams, keyof DepositFormValues>(
-    useMemo(() => ({ ...values, chainId, poolId }), [chainId, poolId, values]),
+  const [params, isDebouncing] = useFormDebounce(
+    useMemo(
+      () => ({ ...values, chainId, poolId, decimals, userAddress }),
+      [chainId, poolId, values, decimals, userAddress],
+    ),
     userDefaultValues,
   )
 
@@ -93,9 +95,8 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     onSubmit: submitMutation,
     isPending: isDepositing,
     error,
-  } = useDepositMutation({ chainId, poolId, tokenCount, onReset: () => form.reset(userDefaultValues) })
+  } = useDepositMutation({ chainId, poolId, tokenCount, onReset: () => reset(userDefaultValues) })
 
-  const { formState } = form
   const isPending = formState.isSubmitting || isDepositing
   const isDerivingSeedAmounts = isSeed.data === true && seedAmounts.isLoading
   return {
@@ -112,7 +113,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     maxAmounts: useDepositMaxAmounts({ params, tokenAddresses, balances }),
     wallet: { connect, isConnected: !!wallet, isConnecting: isLoading(connectState) },
     userAddress,
-    onSubmit: form.handleSubmit(submitMutation),
+    onSubmit: handleSubmit(submitMutation),
     isPending,
     isLoading: isPending || priceImpact.isLoading || isDerivingSeedAmounts,
     isDisabled:

@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { Address } from 'viem'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
@@ -17,28 +16,22 @@ export const usePoolTokens = ({
   userAddress: Address | undefined
   isWrapped: boolean
 }) => {
-  const { symbols, addresses, decimals } = useMemo(
-    () =>
-      isWrapped
-        ? { symbols: pool.wrappedCoins, addresses: pool.wrappedCoinAddresses, decimals: pool.wrappedDecimals }
-        : { symbols: pool.underlyingCoins, addresses: pool.underlyingCoinAddresses, decimals: pool.underlyingDecimals },
-    [isWrapped, pool],
-  )
-  const tokenAddresses = addresses as Address[]
+  const coinField = isWrapped ? ('wrapped' as const) : ('underlying' as const)
+  const symbols = pool[`${coinField}Coins`]
+  const tokenAddresses = pool[`${coinField}CoinAddresses`] as Address[]
   const balances = useTokenBalances({ chainId, userAddress, tokenAddresses })
-
   return {
     tokenAddresses,
     tokenCount: tokenAddresses.length,
-    decimals,
+    decimals: pool[`${coinField}Decimals`],
     balances,
     maxAmounts: mapQuery(balances, balances => tokenAddresses.map(address => balances[address])),
-    tokens: mapQuery(balances, balances =>
+    tokens: mapQuery(balances, b =>
       tokenAddresses.map((address, index) => ({
         address,
         blockchainId,
         symbol: symbols[index],
-        balance: q({ data: balances[address], error: null, isLoading: false }),
+        balance: q({ data: b[address], error: balances.error, isLoading: balances.isLoading }), // todo: proper query after PR #3310
       })),
     ),
   }

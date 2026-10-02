@@ -1,5 +1,5 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { type Nullish, maybe, range } from '@primitives/objects.utils'
+import { type Nullish, maybe, range, fromEntries } from '@primitives/objects.utils'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 export type PoolAmountField = `amount_${number}`
@@ -18,14 +18,25 @@ export type PoolForm = PoolTokenFields & { isBalanced: boolean; decimals: (numbe
 export type PoolDepositForm = PoolForm & { isWrapped: boolean }
 
 export const poolAmountField = (index: number): PoolAmountField => `amount_${index}`
+
 export const poolMaxAmountField = (index: number): PoolMaxAmountField => `maxAmount_${index}`
+
 const poolTokenFields = (index: number) => [poolAmountField(index), poolMaxAmountField(index)] as const
 export const allTokenFields = <T extends number | Nullish>(count: T) =>
   maybe(count, c => range(c).flatMap(index => poolTokenFields(index)))
 
 /** Keep contract amounts in pool token order, regardless of form field insertion order. */
 export const getPoolAmounts = <Count extends number | Nullish>(values: FieldsOf<PoolTokenFields>, tokenCount: Count) =>
-  maybe(tokenCount, count => range(count).map(index => values[poolAmountField(index)] ?? undefined))
+  maybe(tokenCount, count => range(count).map(index => values[poolAmountField(index)] ?? '0'))
+
+export const pickPoolAmounts = <Count extends number | Nullish>(values: FieldsOf<PoolTokenFields>, tokenCount: Count) =>
+  maybe(tokenCount, count =>
+    fromEntries(
+      range(count)
+        .map(index => poolAmountField(index))
+        .map(field => [field, values[field] ?? '0']),
+    ),
+  )
 
 export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokenFields, PoolAmountField> =>
   Object.fromEntries(range(tokenCount).map(index => [poolAmountField(index), undefined]))
@@ -33,4 +44,5 @@ export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokenFields, 
 export const getPoolMaxAmounts = (values: PoolTokenFields, tokenCount: number | undefined) =>
   maybe(tokenCount, count => range(count).map(index => values[poolMaxAmountField(index)]))
 
-export const getDepositType = (isWrapped: boolean) => (isWrapped ? ('depositWrapped' as const) : ('deposit' as const))
+export const depositMethod = (isWrapped: boolean) =>
+  (({ true: 'depositWrapped', false: 'deposit' }) as const)[`${isWrapped}`]

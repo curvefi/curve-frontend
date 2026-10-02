@@ -3,7 +3,7 @@ import type { DepositParams, DepositQuery } from '@/dex/features/deposit/types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
-import { getDepositType, getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
+import { depositMethod, getPoolAmounts, pickPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useDepositExpected } = queryFactory({
@@ -11,13 +11,14 @@ export const { useQuery: useDepositExpected } = queryFactory({
     name: 'depositExpected',
     ...rootKeys.pool({ chainId, poolId }),
     isWrapped,
-    amounts: getPoolAmounts(values, decimals?.length),
     slippage,
+    decimals,
+    ...pickPoolAmounts(values, decimals?.length),
   }),
   queryFn: async ({ poolId, isWrapped, slippage, decimals, ...values }: DepositQuery) =>
     (await requireLib('curveApi')
       .getPool(poolId)
-      [`${getDepositType(isWrapped)}Expected`](getPoolAmounts(values, decimals.length) as Decimal[])) as Decimal,
+      [`${depositMethod(isWrapped)}Expected`](getPoolAmounts(values, decimals.length))) as Decimal,
   category: 'dex.pool',
   validationSuite: depositQueryValidationSuite,
 })

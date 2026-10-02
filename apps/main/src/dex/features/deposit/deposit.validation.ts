@@ -17,21 +17,23 @@ export const depositFormValidationSuite = createValidationSuite(
     test('slippage', 'Invalid slippage tolerance', () => {
       enforce(slippage).isDecimal().gte(MIN_SLIPPAGE).lte(MAX_SLIPPAGE)
     })
+    test('decimals', 'Decimals are required', () => {
+      enforce(decimals).isArray().isNotEmpty()
+      enforce(decimals?.every(decimal => decimal != null && decimal >= 0)).equals(true)
+    })
     amounts?.forEach((amount, index) => {
       test(poolAmountField(index), 'Enter a valid non-negative amount', () => {
-        enforce(amount || '0')
-          .isDecimal({ decimal_digits: '0,' })
-          .gte(0)
+        enforce(amount).isDecimal({ decimal_digits: '0,' }).gte(0)
       })
       skipWhen(decimals?.[index] == null, () => {
         test(poolAmountField(index), 'Amount exceeds token decimal precision', () => {
-          enforce(amount || '0').isDecimal({ decimal_digits: `0,${decimals![index]}` })
+          enforce(amount).isDecimal({ decimal_digits: `0,${decimals![index]}` })
         })
       })
       const maxAmount = values[poolMaxAmountField(index)]
       skipWhen(maxAmount == null, () => {
         test(poolAmountField(index), 'Insufficient token balance', () => {
-          enforce(amount || '0').lte(maxAmount!)
+          enforce(amount).lte(maxAmount!)
         })
       })
     })
@@ -39,10 +41,10 @@ export const depositFormValidationSuite = createValidationSuite(
 )
 
 export const depositQueryValidationSuite = createValidationSuite(
-  ({ chainId, decimals, isWrapped, slippage, poolId, isBalanced, ...values }: DepositParams) => {
+  ({ chainId, decimals, isWrapped, slippage, poolId, ...values }: DepositParams) => {
     poolValidationGroup({ chainId, poolId })
     curveApiValidationGroup({ chainId }, { requireRpc: true })
-    depositFormValidationSuite.run({ decimals, isWrapped, slippage, isBalanced, ...values })
+    depositFormValidationSuite.run({ decimals, isWrapped, slippage, ...values })
   },
 )
 
