@@ -463,6 +463,12 @@ describe('formatNumber', () => {
       expect(formatNumber(1234.56, 'token.compact')).toBe('1.23k')
     })
 
+    it('formats token changes with signs, preserved precision, and a missing-value fallback', () => {
+      expect(formatNumber(null, 'token.change')).toBe('-')
+      expect(formatNumber(1.004, 'token.change')).toBe('+1.004')
+      expect(formatNumber(-1.004, 'token.change')).toBe('-1.004')
+    })
+
     it('formats token balances with precision-sensitive decimal handling', () => {
       expect(formatNumber(0.00000123456789, 'token.balance')).toBe('0.0000012346')
       expect(formatNumber(-0.00000123456789, 'token.balance')).toBe('-0.0000012346')

@@ -6,9 +6,16 @@ const token = z.object({ symbol: z.string(), address }).transform(({ symbol, add
 export const endpoint = z.enum(['crvusd', 'lending'])
 export type Endpoint = z.infer<typeof endpoint>
 
-const deposit = z.object({ amount: z.number(), n1: z.number(), n2: z.number() })
+const deposit = z.object({ amount: z.number(), amount_usd: z.number().nullable(), n1: z.number(), n2: z.number() })
 
-const withdrawal = z.object({ amount_borrowed: z.number(), amount_collateral: z.number() }).transform(camelizeKeys)
+const withdrawal = z
+  .object({
+    amount_borrowed: z.number(),
+    amount_borrowed_usd: z.number().nullable(),
+    amount_collateral: z.number(),
+    amount_collateral_usd: z.number().nullable(),
+  })
+  .transform(camelizeKeys)
 
 const llammaEvent = z
   .object({
@@ -22,7 +29,7 @@ const llammaEvent = z
   .transform(camelizeKeys)
   .transform(({ deposit, withdrawal, transactionHash, ...data }) => ({
     ...data,
-    deposit: deposit ? { amount: deposit.amount, n1: deposit.n1, n2: deposit.n2 } : null,
+    deposit: deposit ? { amount: deposit.amount, amountUsd: deposit.amountUsd, n1: deposit.n1, n2: deposit.n2 } : null,
     withdrawal: withdrawal ?? null,
     txHash: transactionHash,
   }))

@@ -44,7 +44,14 @@ export type UserCollateralEventType =
   | 'Hard Liquidation'
   | 'Partial Liquidation'
 
-const OriginalFields = ['loanChange', 'collateralChange', 'collateralChangeUsd', 'timestamp', 'txHash'] as const
+const OriginalFields = [
+  'loanChange',
+  'loanChangeUsd',
+  'collateralChange',
+  'collateralChangeUsd',
+  'timestamp',
+  'txHash',
+] as const
 
 export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> & {
   chainId: number
