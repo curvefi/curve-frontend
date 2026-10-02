@@ -25,7 +25,7 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
   onClose: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
-  anchorRef: RefObject<HTMLTableSectionElement | null>
+  anchorRef: RefObject<HTMLElement | null>
 }) => {
   const [isReady, setReady, resetReady] = useSwitch()
 
