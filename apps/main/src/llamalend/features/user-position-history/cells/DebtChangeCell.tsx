@@ -19,7 +19,7 @@ export const DebtChangeCell = ({
       <Typography variant="tableCellMBold" color={loanChange ? (loanChange > 0 ? 'error' : 'success') : 'textPrimary'}>
         {notFalsy(formatNumber(loanChange || null, 'token.change'), loanChange && borrowToken?.symbol).join(' ')}
       </Typography>
-      {loanChange !== 0 && (
+      {!!loanChange && (
         <Typography variant="bodySRegular">
           {formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentTime)}
         </Typography>

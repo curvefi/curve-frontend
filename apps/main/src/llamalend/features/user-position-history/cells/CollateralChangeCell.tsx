@@ -25,7 +25,7 @@ export const CollateralChangeCell = ({
           collateralChange && collateralToken?.symbol,
         ).join(' ')}
       </Typography>
-      {collateralChange !== 0 && (
+      {!!collateralChange && (
         <Typography variant="bodySRegular">
           {formatActivityUsdValue({ amount: collateralChange, amountUsd: collateralChangeUsd, timestamp }, currentTime)}
         </Typography>

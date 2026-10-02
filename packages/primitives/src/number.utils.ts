@@ -144,7 +144,7 @@ export const defaultNumberFormatter = (
    * - formatNumber(1.0001, { decimals: 2 }) would show "1.00" but we want "1.0001"
    * - formatNumber(1.0001, { decimals: 0 }) would show "1" but we want "1.0001"
    */
-  if (value !== 0 && /^[+-]?[01](?:\.0+)?$/.test(formatted)) {
+  if (value !== 0 && /^-?[01](?:\.0+)?$/.test(formatted)) {
     return value.toLocaleString(LOCALE, { maximumSignificantDigits: 6, ...options, ...formatterReset })
   }
 
@@ -232,7 +232,14 @@ const NUMBER_FORMAT_CATEGORIES = {
     maximumFractionDigits: 2,
   },
   'token.amount': { abbreviate: false, fallback: UNAVAILABLE_NOTATION },
-  'token.change': { abbreviate: false, fallback: UNAVAILABLE_NOTATION, signDisplay: 'exceptZero' },
+  'token.change': {
+    abbreviate: false,
+    fallback: UNAVAILABLE_NOTATION,
+    formatter: value => {
+      const formatted = defaultNumberFormatter(value)
+      return Number(value) > 0 ? `+${formatted}` : formatted
+    },
+  },
   'token.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
   'token.balance': PRECISE_NUMBER_FORMAT,
   'token.precise': PRECISE_NUMBER_FORMAT,
