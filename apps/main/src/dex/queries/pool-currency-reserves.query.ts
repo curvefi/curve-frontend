@@ -61,11 +61,11 @@ const {
     const crTokens = tokenAddresses.map((tokenAddress, idx) => {
       const usdRate = getTokenUsdRateQueryData({ chainId, tokenAddress }) ?? 0
       const balance = assert(balances?.[idx], balancesResp.error ?? t`Pool token balance is unavailable`)
-      const balanceUsd = !isEmpty && +usdRate > 0 && !isNaN(usdRate) ? Number(balance) * usdRate : 0
+      const balanceUsd = !isEmpty && +usdRate > 0 && !isNaN(usdRate) ? +balance * usdRate : 0
 
       return { token: tokens[idx], tokenAddress, balance, balanceUsd, usdRate }
     })
-    const total = crTokens.reduce((sum, { balance }) => sum + Number(balance), 0)
+    const total = crTokens.reduce((sum, { balance }) => sum + +balance, 0)
     const totalUsd = crTokens.reduce((sum, { balanceUsd }) => sum + balanceUsd, 0)
     // Only use USD balances if all tokens have a USD balance and the pool isn't empty.
     const useUsdBalances = crTokens.every(cr => cr.balanceUsd)
@@ -76,7 +76,7 @@ const {
         ...cr,
         percentShareInPool: isEmpty
           ? '0'
-          : ((useUsdBalances ? cr.balanceUsd / totalUsd : Number(cr.balance) / total) * 100).toFixed(2),
+          : ((useUsdBalances ? cr.balanceUsd / totalUsd : +cr.balance / total) * 100).toFixed(2),
       })),
       total: decimal(total),
       totalUsd: decimal(totalUsd),

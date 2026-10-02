@@ -8,11 +8,11 @@ import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
 import type { QueryProp } from '@ui/features/queries/util'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMinus, decimalMultiply, decimalNegate } from '@ui/lib/decimal'
-import type { DepositFormState, DepositParams } from '../types'
+import type { DepositFormValues, UserDepositParams } from '../types'
 
 type DepositActionInfoListProps = {
-  form: UseFormReturn<DepositFormState>
-  params: DepositParams
+  form: UseFormReturn<DepositFormValues>
+  params: UserDepositParams
   isSeed: QueryProp<boolean>
   slippageType: SlippageType
 }

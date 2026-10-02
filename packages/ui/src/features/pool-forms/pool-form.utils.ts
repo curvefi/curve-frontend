@@ -24,7 +24,7 @@ export const allTokenFields = <T extends number | Nullish>(count: T) =>
   maybe(count, c => range(c).flatMap(index => poolTokenFields(index)))
 
 /** Keep contract amounts in pool token order, regardless of form field insertion order. */
-export const getPoolAmounts = (values: FieldsOf<PoolTokenFields>, tokenCount: number | undefined) =>
+export const getPoolAmounts = <Count extends number | Nullish>(values: FieldsOf<PoolTokenFields>, tokenCount: Count) =>
   maybe(tokenCount, count => range(count).map(index => values[poolAmountField(index)] ?? undefined))
 
 export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokenFields, PoolAmountField> =>
@@ -32,3 +32,5 @@ export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokenFields, 
 
 export const getPoolMaxAmounts = (values: PoolTokenFields, tokenCount: number | undefined) =>
   maybe(tokenCount, count => range(count).map(index => values[poolMaxAmountField(index)]))
+
+export const getDepositType = (isWrapped: boolean) => (isWrapped ? ('depositWrapped' as const) : ('deposit' as const))

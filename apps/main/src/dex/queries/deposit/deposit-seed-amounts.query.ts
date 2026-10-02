@@ -5,19 +5,18 @@ import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { getDepositAmounts } from './deposit.utils'
 
 export const { useQuery: useSeedAmounts } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, isWrapped, decimals, ...values }: DepositParams) => ({
+  queryKey: ({ chainId, poolId, isWrapped, decimals, ...values }: DepositParams) => ({
     name: 'depositSeedAmounts',
-    ...rootKeys.userPool({ chainId, poolId, userAddress }),
+    ...rootKeys.pool({ chainId, poolId }),
     isWrapped,
     amounts: getPoolAmounts(values, decimals?.length),
   }),
-  queryFn: async (params: DepositQuery) =>
+  queryFn: async ({ chainId, poolId, isWrapped, decimals, ...values }: DepositQuery) =>
     (await requireLib('curveApi')
-      .getPool(params.poolId)
-      .getSeedAmounts(getDepositAmounts(params)[0], !params.isWrapped)) as Decimal[],
+      .getPool(poolId)
+      .getSeedAmounts(getPoolAmounts(values, decimals.length)[0]!, !isWrapped)) as Decimal[],
   category: 'dex.pool',
   validationSuite: depositQueryValidationSuite,
 })
