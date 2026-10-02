@@ -40,7 +40,7 @@ type TokenInfoCustomIconProps = TokenInfoBaseProps & {
 
 export type TokenInfoProps = TokenInfoTokenIconProps | TokenInfoCustomIconProps
 
-const TokenInfoText = ({
+const TokenInfoItem = ({
   value: { data, error, isLoading },
   ...typographyProps
 }: { value: QueryProp<ReactNode> } & Pick<TypographyProps, 'variant' | 'color'>) => (
@@ -74,9 +74,9 @@ export const TokenInfo = (props: TokenInfoProps) => {
       {iconPosition === 'left' && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>
-        <TokenInfoText value={toQuery(primary)} variant={boldPrimary ? 'tableCellMBold' : 'tableCellMRegular'} />
+        <TokenInfoItem value={toQuery(primary)} variant={boldPrimary ? 'tableCellMBold' : 'tableCellMRegular'} />
 
-        {secondary && <TokenInfoText value={toQuery(secondary)} variant="tableCellSRegular" color="textSecondary" />}
+        {secondary && <TokenInfoItem value={toQuery(secondary)} variant="tableCellSRegular" color="textSecondary" />}
       </Stack>
 
       {iconPosition === 'right' && tokenIcon}

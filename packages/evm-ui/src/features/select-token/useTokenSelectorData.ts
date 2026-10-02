@@ -3,10 +3,8 @@ import { useConfig } from 'wagmi'
 import { prefetchTokenBalances, useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import type { Address } from '@primitives/address.utils'
-import { mapRecord, recordEntries } from '@primitives/objects.utils'
-import { combineQueryState } from '@ui/features/queries/combine'
+import { recordEntries, recordValues } from '@primitives/objects.utils'
 import type { TokenOption } from '@ui/features/select-token/types'
-import type { TokenListProps } from './ui/modal/TokenList'
 
 /**
  * Hook to fetch token balances and USD rates for the token selector.
@@ -16,7 +14,7 @@ import type { TokenListProps } from './ui/modal/TokenList'
 export const useTokenSelectorData = (
   { tokens, chainId, userAddress }: { tokens: TokenOption[]; chainId: number; userAddress?: Address },
   { enabled, prefetch }: { enabled: boolean; prefetch: boolean },
-): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> => {
+) => {
   const config = useConfig()
   const tokenAddresses = useMemo(() => tokens.map(token => token.address), [tokens])
 
@@ -38,24 +36,21 @@ export const useTokenSelectorData = (
     }
   }, [prefetch, config, chainId, userAddress, tokenAddresses])
 
-  const balanceQueries = useTokenBalances(
+  const balances = useTokenBalances(
     { chainId, userAddress, tokenAddresses: enabled ? tokenAddresses : [] },
     false, // disabled, rely on prefetchTokenBalances (only care for query observers, don't invoke queryFn for each token)
   )
-  const balances = useMemo(() => mapRecord(balanceQueries, (_, query) => query.data), [balanceQueries])
-  const { isLoading } = combineQueryState(...Object.values(balanceQueries))
 
   // Only fetch prices for tokens the user has a balance of
   const tokenAddressesWithBalance = useMemo(
     () =>
       recordEntries(balances)
-        .filter(([, balance]) => +(balance ?? 0) > 0)
+        .filter(([, balance]) => +(balance ?? 0))
         .map(([address]) => address),
     [balances],
   )
 
-  const priceQueries = useTokenUsdRates({ chainId, tokenAddresses: tokenAddressesWithBalance }, enabled)
-  const tokenPrices = useMemo(() => mapRecord(priceQueries, (_, query) => query.data), [priceQueries])
+  const tokenPrices = useTokenUsdRates({ chainId, tokenAddresses: tokenAddressesWithBalance }, enabled)
 
-  return { balances, tokenPrices, isLoading }
+  return { balances, tokenPrices, isLoading: recordValues(balances).some(q => q.isLoading) }
 }

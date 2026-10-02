@@ -78,10 +78,7 @@ export const litePoolToRowData = (pool: LitePool): PoolRowData => {
   }
 }
 
-/**
- * Prepares rows in Main, outside the query cache. Totals retain existing source semantics:
- * killed gauges contribute zero, and absent base/CRV APRs are skipped by sum.
- */
+/** Enriches a pool from the API into a fully fledged table row with all necessary data. */
 export const enrichPoolRow = (
   pool: PoolRowData,
   { chainId, blockchainId }: NetworkConfig,
@@ -95,10 +92,8 @@ export const enrichPoolRow = (
   )
   const rewardsApr = extraRewardsTotalApr + campaignRewardsApr
   const crv = pool.gauge?.isKilled ? 0 : pool.crvApr
-  const incentivesApr = sum([crv, rewardsApr])
   const netApr = sum([pool.baseDailyApr, crv, rewardsApr])
   const crvRange = pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)
-  const netAprBoosted = maybes([netApr, crvRange], (net, range) => net - range.unboostedRate + range.boostedRate)
   return {
     ...pool,
     chainId,
@@ -110,9 +105,9 @@ export const enrichPoolRow = (
     extraRewardsTotalApr,
     campaignRewardsApr,
     rewardsApr,
-    incentivesApr,
+    incentivesApr: sum([crv, rewardsApr]),
     netApr,
-    netAprBoosted,
+    netAprBoosted: maybes([netApr, crvRange], (net, range) => net - range.unboostedRate + range.boostedRate),
   }
 }
 

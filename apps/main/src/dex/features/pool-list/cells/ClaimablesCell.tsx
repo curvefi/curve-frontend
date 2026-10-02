@@ -23,7 +23,7 @@ export const ClaimablesCell = ({
 }: {
   blockchainId: string
   claimables: QueryProp<PoolClaimables>
-  totalUsd: Decimal | undefined
+  totalUsd: QueryProp<Decimal>
 }) => {
   if (claimables.error) {
     return (
@@ -33,7 +33,7 @@ export const ClaimablesCell = ({
     )
   }
 
-  const hasClaimables = totalUsd != null && decimalGreaterThan(totalUsd, ZERO)
+  const hasClaimables = totalUsd.data != null && decimalGreaterThan(totalUsd.data, ZERO)
 
   return (
     <WithWrapper
@@ -58,7 +58,7 @@ export const ClaimablesCell = ({
         ) : (
           <>
             <Typography variant="tableCellMBold">
-              {formatNumber(hasClaimables ? totalUsd : null, 'usd.precise')}
+              {formatNumber(hasClaimables ? totalUsd.data : null, 'usd.precise')}
             </Typography>
             {claimables.data && <ClaimablesIcons claimables={claimables.data} blockchainId={blockchainId} />}
           </>

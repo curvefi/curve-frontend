@@ -7,7 +7,10 @@ import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { Spinner } from '@ui/components/Spinner'
+import type { QueryOrValue } from '@ui/features/queries/util'
 import type { TokenOption as Option } from '@ui/features/select-token/types'
 import { TokenOption } from '@ui/features/select-token/ui/modal/TokenOption'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -21,9 +24,9 @@ export type TokenSectionProps<T extends Option = Option> = {
   /** Are token balances still being fetched? Is the section 'under construction'? */
   isLoading?: boolean
   /** Token balances mapped by token address */
-  balances?: Record<string, string | undefined>
+  balances?: Record<Address, QueryOrValue<Decimal> | undefined> // todo: use Decimal instead of string
   /** Token prices in USD mapped by token address */
-  tokenPrices?: Record<string, number | undefined>
+  tokenPrices?: Record<Address, QueryOrValue<number> | undefined>
   /** List of token addresses that should be disabled/unselectable */
   disabledTokens?: string[]
   /** Callback when a token is selected */

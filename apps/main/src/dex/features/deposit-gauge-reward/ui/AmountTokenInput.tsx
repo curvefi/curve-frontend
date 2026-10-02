@@ -9,7 +9,7 @@ import { TokenList } from '@evm-ui/features/select-token'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'
-import { fromEntries, mapRecord, maybe, maybes, recordEntries } from '@primitives/objects.utils'
+import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
 import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { q } from '@ui/features/queries/util'
@@ -77,8 +77,6 @@ export const AmountTokenInput = ({
 
   const rewardTokenBalance = maybe(rewardTokenId, id => tokenBalances[id])
   const tokenUsdRate = maybe(rewardTokenId, id => tokenPrices[id])
-  const balances = useMemo(() => mapRecord(tokenBalances, (_, query) => query.data), [tokenBalances])
-  const prices = useMemo(() => mapRecord(tokenPrices, (_, query) => query.data), [tokenPrices])
 
   const onChangeToken = useCallback(
     (value: TokenOption) => {
@@ -116,7 +114,12 @@ export const AmountTokenInput = ({
             onOpen={openModal}
             onClose={closeModal}
           >
-            <TokenList tokens={filteredTokens} balances={balances} tokenPrices={prices} onToken={onChangeToken} />
+            <TokenList
+              tokens={filteredTokens}
+              balances={tokenBalances}
+              tokenPrices={tokenPrices}
+              onToken={onChangeToken}
+            />
           </TokenSelector>
         )
       }

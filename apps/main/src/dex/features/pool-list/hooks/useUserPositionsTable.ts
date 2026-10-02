@@ -21,7 +21,7 @@ const getPoolUserPosition = (
   lpBalance: position.totalBalance,
   depositsUsd: mapQuery(tokenRate, price => decimalMultiply(position.totalBalance, price)),
   claimables: mapQuery(claimables, pools => pools[position.address]),
-  claimablesUsd: claimablesTotalUsd(claimables.data?.[position.address]),
+  claimablesUsd: mapQuery(claimables, data => claimablesTotalUsd(data?.[position.address])),
 })
 
 export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) => {
@@ -55,13 +55,9 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
               }),
             ),
           )
-          .toSorted((a, b) => {
-            const first = a.userPosition?.depositsUsd.data
-            const second = b.userPosition?.depositsUsd.data
-            if (first == null) return second == null ? 0 : 1
-            if (second == null) return -1
-            return decimalCompare(second, first)
-          }),
+          .toSorted((a, b) =>
+            decimalCompare(b.userPosition?.depositsUsd.data ?? '0', a.userPosition?.depositsUsd.data ?? '0'),
+          ),
       [network, campaigns.data, tokenRates, claimables.data, claimables.isLoading, claimables.error],
     ),
   )

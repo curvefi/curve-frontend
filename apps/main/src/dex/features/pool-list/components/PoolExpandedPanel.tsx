@@ -6,7 +6,7 @@ import { type Nullish, maybe } from '@primitives/objects.utils'
 import { Metric, type MetricProps } from '@ui/components/Metric'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { AddressActionInfo, type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
-import { mapQuery, toQuery } from '@ui/features/queries/util'
+import { toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { decimal } from '@ui/lib/decimal'
@@ -149,7 +149,7 @@ export const PoolExpandedPanel = ({
               <Metric
                 category={PRIMARY_METRIC_CATEGORY}
                 label={POOL_TITLES[PoolColumnId.Claimables]}
-                value={mapQuery(claimables, () => pool.userPosition?.claimablesUsd)}
+                value={pool.userPosition?.claimablesUsd}
                 valueOptions={{ unit: 'dollar' }}
                 valueTooltip={
                   claimables.data && {

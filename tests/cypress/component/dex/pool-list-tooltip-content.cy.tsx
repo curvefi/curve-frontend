@@ -8,7 +8,7 @@ import type { PoolRow, PoolTableMeta } from '@/dex/features/pool-list/types'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import { Chain } from '@primitives/network.utils'
-import { constQ } from '@ui/features/queries/util'
+import { constQ, DISABLED_Q } from '@ui/features/queries/util'
 import { ThemeProvider } from '@ui/features/themes/ThemeProvider'
 
 const CONTENT = '[data-testid="pool-tooltip-content"]'
@@ -78,7 +78,7 @@ const createPool = (): PoolRow => ({
   gauge: { address: GAUGE_ADDRESS, isKilled: false },
   gauges: [{ address: GAUGE_ADDRESS, isKilled: false }],
   campaigns: [BOLD_CAMPAIGN, BOLD_APR_CAMPAIGN],
-  userPosition: { lpBalance: '0', depositsUsd: constQ(undefined), claimables: constQ([]), claimablesUsd: '0' },
+  userPosition: { lpBalance: '0', depositsUsd: DISABLED_Q, claimables: constQ([]), claimablesUsd: constQ('0') },
   extraRewardsTotalApr: 2,
   campaignRewardsApr: 3,
   rewardsApr: 5,

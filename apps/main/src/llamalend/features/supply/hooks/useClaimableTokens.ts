@@ -7,7 +7,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { UserMarketParams } from '@evm-ui/queries/root-keys'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV } from '@evm-ui/utils'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe, notFalsy, recordValues } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 
 export const useClaimableTokens = <ChainId extends LlamaChainId>({
@@ -29,7 +29,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>({
   const rewardsAddresses = useMemo(() => claimableRewards?.map(r => r.token) ?? [], [claimableRewards])
 
   const usdRates = useTokenUsdRates({ chainId, tokenAddresses: notFalsy(crvAddress, ...rewardsAddresses) })
-  const { isLoading: usdRateLoading, error: usdRateError } = combineQueryState(...Object.values(usdRates))
+  const { isLoading: usdRateLoading, error: usdRateError } = combineQueryState(...recordValues(usdRates))
 
   const claimableTokens = useMemo(() => {
     const tokens = notFalsy(

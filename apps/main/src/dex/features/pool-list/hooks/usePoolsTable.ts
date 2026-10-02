@@ -16,7 +16,7 @@ import { useCampaigns } from '@evm-ui/queries/campaigns'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
-import { constQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { DISABLED_Q, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import type { PoolsApiParams } from '../filters/utils'
 import { enrichPoolRow, getPoolListAlerts, litePoolToRowData, poolToRowData } from '../utils'
 import { POOLS_PAGE_SIZE } from './usePoolsPagination'
@@ -35,12 +35,7 @@ const poolsToRows = ({ pools }: { pools: V2Pool[] }) => pools.map(poolToRowData)
 const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPosition | undefined) =>
   maybe(
     positions?.positions.find(({ address }) => isAddressEqual(address, poolAddress)),
-    position => ({
-      lpBalance: position.totalBalance,
-      depositsUsd: constQ(undefined),
-      claimables: constQ(undefined),
-      claimablesUsd: undefined,
-    }),
+    p => ({ lpBalance: p.totalBalance, depositsUsd: DISABLED_Q, claimables: DISABLED_Q, claimablesUsd: DISABLED_Q }),
   )
 
 /** Fetches the selected pool-list source and maps its API rows into table rows. */

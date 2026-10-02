@@ -6,6 +6,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { type QueryProp, toValue } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalCompare } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -20,7 +21,7 @@ export const ClaimablesTooltipContent = ({
 }: {
   blockchainId: PoolRow['blockchainId']
   claimables: PoolClaimables
-  totalUsd: Decimal | undefined
+  totalUsd: QueryProp<Decimal> | undefined
 }) => (
   <TooltipWrapper>
     <Stack>
@@ -57,7 +58,7 @@ export const ClaimablesTooltipContent = ({
       </TooltipItems>
       <TooltipItems borderTop>
         <TooltipItem title={t`Total`} variant="primary">
-          {formatNumber(totalUsd, 'usd.precise')}
+          {formatNumber(toValue(totalUsd), 'usd.precise')}
         </TooltipItem>
       </TooltipItems>
     </Stack>

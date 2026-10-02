@@ -2,12 +2,14 @@ import { useRef } from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { shortenString } from '@primitives/string.utils'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { Tooltip } from '@ui/components/Tooltip'
+import { type QueryOrValue, toValue } from '@ui/features/queries/util'
 import type { TokenOption as Option } from '@ui/features/select-token/types'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -20,8 +22,8 @@ type TokenOptionCallbacks = { onToken: () => void }
 
 type TokenOptionsProps = {
   addressLabel?: string
-  balance?: string
-  tokenPrice?: number
+  balance?: QueryOrValue<Decimal>
+  tokenPrice?: QueryOrValue<number>
   disabled?: boolean
   disabledReason?: string
 }
@@ -31,12 +33,14 @@ export const TokenOption = ({
   symbol,
   address,
   addressLabel = shortenString(address),
-  balance,
-  tokenPrice,
+  balance: balanceProp,
+  tokenPrice: tokenPriceProp,
   disabled,
   disabledReason,
   onToken,
 }: Option & TokenOptionCallbacks & TokenOptionsProps) => {
+  const balance = toValue(balanceProp) // todo: show loading/error states
+  const tokenPrice = toValue(tokenPriceProp) // todo: show loading/error states
   const hasBalance = +(balance ?? '0') > 0
   const hasBalanceUsd = hasBalance && (tokenPrice ?? 0) > 0
   const menuItemRef = useRef<HTMLLIElement>(null)
@@ -89,7 +93,7 @@ export const TokenOption = ({
             {hasBalance && (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <Typography variant="bodyMBold" color={primary}>
-                {formatNumber(amount(balance), 'token.balance')}
+                {formatNumber(amount(toValue(balance)), 'token.balance')}
               </Typography>
             )}
 

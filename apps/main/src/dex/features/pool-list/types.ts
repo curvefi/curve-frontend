@@ -58,7 +58,7 @@ type PoolUserPosition = {
   depositsUsd: QueryProp<Decimal>
   /** Rows are derived outside the query cache, so query errors can remain Error instances. */
   claimables: QueryProp<PoolClaimables>
-  claimablesUsd: Decimal | undefined
+  claimablesUsd: QueryProp<Decimal>
 }
 
 /** Additional pool context not in the main pool data (contextual information sourced with external sources) */
