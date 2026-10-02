@@ -66,3 +66,6 @@ storybook-static
 
 *.tsbuildinfo
 .opencode.json
+
+# AI
+.codex/

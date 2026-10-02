@@ -9,9 +9,9 @@ import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/A
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
+import { SupplyClaimTab } from '@/llamalend/features/supply/components/SupplyClaimTab'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -44,7 +44,7 @@ const LoanComponentMap = {
 }
 
 const SupplyComponents = {
-  claim: ClaimTab,
+  claim: SupplyClaimTab,
   deposit: DepositForm,
   stake: StakeForm,
   unstake: UnstakeForm,

@@ -3,7 +3,7 @@ import type { FetchedBandsBalances, SortedBandBalance } from '@/llamalend/querie
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { sortBy } from '@primitives/array.utils'
 import { recordEntries } from '@primitives/objects.utils'
-import PromisePool from '@supercharge/promise-pool'
+import { PromisePool } from '@supercharge/promise-pool'
 import { decimal, decimalDiv, decimalGreaterThan, decimalMultiply, decimalSqrt, decimalSum } from '@ui/lib/decimal'
 
 type BandsBalances = Record<number, { borrowed: string; collateral: string }>
