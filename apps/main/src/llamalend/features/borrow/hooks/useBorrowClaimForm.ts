@@ -1,3 +1,4 @@
+import { sumBy } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useBorrowClaimCrvMutation } from '@/llamalend/mutations/borrow-claim.mutation'
@@ -46,7 +47,7 @@ const useClaimableTokens = <ChainId extends IChainId>({
 
   return {
     claimableTokens,
-    totalNotionals: claimableTokens[0]?.notional,
+    totalNotionals: sumBy(claimableTokens, 'notional'),
     isClaimablesLoading,
     claimableCrvError,
     usdRateLoading,
@@ -104,6 +105,6 @@ export const useBorrowClaimForm = <ChainId extends IChainId>({ network }: { netw
     isLoading: isClaimablesLoading,
     isDisabled: [!hasClaimableCrv, !!claimableCrvError, claimableTokens.length === 0, isPending].some(Boolean),
     isPending,
-    errors: notFalsy(usdRateError, claimableCrvError, claimCrvError),
+    error: claimCrvError ?? claimableCrvError ?? usdRateError,
   }
 }

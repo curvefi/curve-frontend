@@ -28,7 +28,7 @@ export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowCl
     onSubmit,
     isDisabled,
     isPending,
-    errors,
+    error,
   } = useBorrowClaimForm({ network: networks[chainId] })
 
   return (
@@ -60,7 +60,7 @@ export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowCl
         label={t`Claim CRV rewards`}
         testId={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
       />
-      <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} userAddress={userAddress} />
+      <FormAlerts error={error} formErrors={[]} handledErrors={[]} userAddress={userAddress} />
     </Form>
   )
 }
