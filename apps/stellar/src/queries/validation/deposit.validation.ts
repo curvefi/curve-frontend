@@ -45,7 +45,7 @@ const validateFundedInputs = ({ decimals, maxAmounts, ...inputs }: DepositInputs
 }
 
 const validateForm = ({ decimals, supply, slippage, ...values }: DepositForm) => {
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
   validateInputs({
     decimals,
     supply,
@@ -76,7 +76,7 @@ export const depositMutationValidationSuite = createValidationSuite(
   }: DepositMutationParams) => {
     validatePool({ pool, network })
     validateAccount(account)
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
     validateFundedInputs({ amounts, decimals, maxAmounts, supply })
     validateTokens({ tokens })
     test('quote', 'Deposit must leave LP after the permanent seed lock', () => {

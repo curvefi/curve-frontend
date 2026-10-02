@@ -82,7 +82,7 @@ export const swapFormValidationSuite = createValidationSuite(({ editedSide, slip
   skipWhen(editedSide !== 'receive' && values.outputAmount == null, () => validateSwapAmount(values, 'outputAmount'))
   skipWhen(editedSide !== 'receive', () => validateReserve(values))
   validateBalance(values)
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
 })
 
 const validateSwap = ({ network, pool, account, maxAmount, minimum, ...values }: SwapParams) => {

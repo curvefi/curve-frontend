@@ -63,7 +63,7 @@ const validateMaximumBurn = ({ lpAmount, maximumBurn }: Pick<WithdrawSimulationP
 
 export const withdrawFormValidationSuite = createValidationSuite(
   ({ slippage, decimals, supply, lpAmount, maxLpAmount, seedLock, maximumBurn, ...values }: WithdrawFormValues) => {
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
     validateOutputs({
       decimals,
       supply,
@@ -92,7 +92,7 @@ const validateWithdraw = ({
 }: WithdrawSimulationParams) => {
   validatePool({ pool, network })
   validateAccount(account)
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
   validateOutputs({ amounts, decimals, supply, maxAmounts })
   validateBudget({ lpAmount, maxLpAmount, supply, seedLock })
   validateMaximumBurn({ lpAmount, maximumBurn })
