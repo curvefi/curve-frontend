@@ -44,7 +44,7 @@ export const depositFormValidationSuite = createValidationSuite((values: Deposit
     const maxAmount = values[poolMaxAmountField(index)]
     skipWhen(maxAmount == null, () => {
       test(poolAmountField(index), 'Insufficient token balance', () => {
-        enforce(amount || '0').lte(maxAmount)
+        enforce(amount || '0').lte(maxAmount!)
       })
     })
   })

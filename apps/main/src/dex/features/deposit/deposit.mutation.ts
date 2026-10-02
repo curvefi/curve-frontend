@@ -33,7 +33,7 @@ const deposit = async (pool: PoolTemplate, { isWrapped, amounts, slippage }: Dep
 export const useDepositMutation = ({ chainId, poolId, userAddress, isWrapped, tokenCount, onReset }: Options) => {
   const config = useConfig()
   const { mutate, error, isPending } = useEvmMutation<DepositMutation>({
-    mutationKey: [...rootKeys.userPool({ chainId, poolId, userAddress }), 'deposit'] as const,
+    mutationKey: [{ ...rootKeys.userPool({ chainId, poolId, userAddress }), name: 'deposit' }] as const,
     mutationFn: async variables => {
       const pool = requireLib('curveApi').getPool(variables.poolId)
       await waitForApproval({

@@ -9,13 +9,12 @@ import { useDepositIsApproved } from './deposit-approved.query'
 import { getDepositAmounts } from './deposit.utils'
 
 const { useQuery: useDepositApproveEstimate } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, isWrapped, decimals, ...values }: DepositParams) =>
-    [
-      ...rootKeys.userPool({ chainId, poolId, userAddress }),
-      'estimateGas.depositApprove',
-      { isWrapped },
-      { amounts: getPoolAmounts(values, decimals?.length) },
-    ] as const,
+  queryKey: ({ chainId, poolId, userAddress, isWrapped, decimals, ...values }: DepositParams) => ({
+    name: 'estimateGas.depositApprove',
+    ...rootKeys.userPool({ chainId, poolId, userAddress }),
+    isWrapped,
+    amounts: getPoolAmounts(values, decimals?.length),
+  }),
   queryFn: async (params: DepositQuery) => {
     const pool = requireLib('curveApi').getPool(params.poolId)
     const amounts = getDepositAmounts(params)
@@ -28,14 +27,13 @@ const { useQuery: useDepositApproveEstimate } = queryFactory({
 })
 
 const { useQuery: useDepositEstimate } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, isWrapped, slippage, decimals, ...values }: DepositParams) =>
-    [
-      ...rootKeys.userPool({ chainId, poolId, userAddress }),
-      'estimateGas.deposit',
-      { isWrapped },
-      { amounts: getPoolAmounts(values, decimals?.length) },
-      { slippage },
-    ] as const,
+  queryKey: ({ chainId, poolId, userAddress, isWrapped, slippage, decimals, ...values }: DepositParams) => ({
+    name: 'estimateGas.deposit',
+    ...rootKeys.userPool({ chainId, poolId, userAddress }),
+    isWrapped,
+    amounts: getPoolAmounts(values, decimals?.length),
+    slippage,
+  }),
   queryFn: async (params: DepositQuery) => {
     const pool = requireLib('curveApi').getPool(params.poolId)
     const amounts = getDepositAmounts(params)

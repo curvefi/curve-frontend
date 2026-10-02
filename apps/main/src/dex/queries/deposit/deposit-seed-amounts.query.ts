@@ -8,13 +8,12 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { getDepositAmounts } from './deposit.utils'
 
 export const { useQuery: useSeedAmounts } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, isWrapped, decimals, ...values }: DepositParams) =>
-    [
-      ...rootKeys.userPool({ chainId, poolId, userAddress }),
-      'depositSeedAmounts',
-      { isWrapped },
-      { amounts: getPoolAmounts(values, decimals?.length) },
-    ] as const,
+  queryKey: ({ chainId, poolId, userAddress, isWrapped, decimals, ...values }: DepositParams) => ({
+    name: 'depositSeedAmounts',
+    ...rootKeys.userPool({ chainId, poolId, userAddress }),
+    isWrapped,
+    amounts: getPoolAmounts(values, decimals?.length),
+  }),
   queryFn: async (params: DepositQuery) =>
     (await requireLib('curveApi')
       .getPool(params.poolId)
