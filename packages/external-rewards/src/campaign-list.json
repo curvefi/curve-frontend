@@ -1,8 +1,5 @@
 [
   {
-    "campaign": "Ethena.json"
-  },
-  {
     "campaign": "Etherfi.json"
   },
   {
@@ -16,9 +13,6 @@
   },
   {
     "campaign": "DTrinity.json"
-  },
-  {
-    "campaign": "YieldFi.json"
   },
   {
     "campaign": "Fx.json"

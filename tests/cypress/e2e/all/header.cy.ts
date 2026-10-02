@@ -41,9 +41,8 @@ describe('Header', () => {
     beforeEach(() => {
       ;[width, height] = oneDesktopViewport()
       cy.viewport(width, height)
-      dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visitWithoutTestConnector(route)
+      cy.visitWithoutTestConnector(route, { onBeforeLoad: dismissHeaderBanners })
       waitIsLoaded(route)
     })
 
@@ -119,9 +118,8 @@ describe('Header', () => {
     beforeEach(() => {
       ;[width, height] = oneMobileOrTabletViewport()
       cy.viewport(width, height)
-      dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visitWithoutTestConnector(route)
+      cy.visitWithoutTestConnector(route, { onBeforeLoad: dismissHeaderBanners })
       waitIsLoaded(route)
     })
 
@@ -256,10 +254,11 @@ describe('Header', () => {
     })
   })
 
-  const dismissPhishingWarningBanner = (date?: number) => {
-    cy.window().then(win => {
-      win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(date ?? Date.now()))
-    })
+  const dismissHeaderBanners = (win: Cypress.AUTWindow) => {
+    // Keep navigation size assertions independent of temporary header announcements.
+    const dismissedAt = JSON.stringify(Date.now())
+    win.localStorage.setItem('phishing-warning-dismissed', dismissedAt)
+    win.localStorage.setItem('dex-dashboard-retirement-dismissed', dismissedAt)
   }
 
   const waitIsLoaded = (route: AppRoute) =>

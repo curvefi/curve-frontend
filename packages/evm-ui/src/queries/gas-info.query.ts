@@ -434,6 +434,23 @@ export const createEstimateGasHook =
     return combineQueries([converted, estimate], data => data)
   }
 
+/** Like `createEstimateGasHook`, but first fetches claimable rewards and skips gas estimation when none exist. */
+export const createClaimEstimateGasHook = <
+  Query extends WithOptionalChainId,
+  Claimable,
+  Estimate extends EstimateValue,
+>(
+  useClaimable: (query: Query, enabled?: boolean) => QueryResult<Claimable>,
+  useEstimateGasQuery: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
+  isClaimEnabled: (claimable: Claimable | undefined) => boolean,
+) =>
+  createEstimateGasHook((query: Query, enabled?: boolean) => {
+    const claimable = useClaimable(query, enabled)
+    const estimateGas = useEstimateGasQuery(query, enabled && isClaimEnabled(claimable.data))
+
+    return combineQueries([claimable, estimateGas], (_, estimateGas) => estimateGas)
+  })
+
 /** Builds a reusable gas-cost hook for actions that may need approval first. */
 export const createApprovedEstimateGasHook =
   <Query extends WithOptionalChainId, Estimate extends EstimateValue>({
