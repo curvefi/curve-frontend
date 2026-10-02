@@ -142,7 +142,7 @@ export const POOL_COLUMNS = columnHelper.columns([
       tooltip: { title: POOL_TITLES[PoolColumnId.Deposits], body: <DepositsHeaderTooltipContent /> },
     },
   }),
-  columnHelper.accessor(pool => pool.userPosition?.claimablesUsd, {
+  columnHelper.accessor(pool => pool.userPosition?.claimablesUsd.data, {
     id: PoolColumnId.Claimables,
     sortUndefined: 'last',
     header: POOL_TITLES[PoolColumnId.Claimables],
