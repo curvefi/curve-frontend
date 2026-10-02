@@ -117,7 +117,16 @@ export const PoolsTable = ({
 
   return (
     <Stack>
-      <TableHeader title={t`Pools`} onReload={onReload} isLoading={isFetching} />
+      <TableHeader
+        title={t`Pools`}
+        onReload={onReload}
+        isLoading={isFetching}
+        visibilitySettings={{
+          anchorRef: visibilitySettingsRef,
+          isOpen: visibilitySettingsOpen,
+          open: openVisibilitySettings,
+        }}
+      />
       <EvmDataTable
         table={table}
         emptyState={{
@@ -132,11 +141,6 @@ export const PoolsTable = ({
       >
         <TableFilters
           testIdPrefix={LOCAL_STORAGE_KEY}
-          visibilitySettings={{
-            anchorRef: visibilitySettingsRef,
-            isOpen: visibilitySettingsOpen,
-            open: openVisibilitySettings,
-          }}
           searchText={searchText}
           onSearch={onSearch}
           collapsibleFilters={

@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { TableSearchField } from './TableSearchField'
-import { TableVisibilitySettingsButton, type TableVisibilitySettingsButtonProps } from './TableVisibilitySettingsButton'
 
 const { Spacing } = SizesAndSpaces
 
@@ -15,7 +14,6 @@ const { Spacing } = SizesAndSpaces
  */
 export const TableFilters = ({
   testIdPrefix,
-  visibilitySettings,
   collapsibleFilters,
   chips,
   filterChip,
@@ -25,7 +23,6 @@ export const TableFilters = ({
   onSearch,
 }: {
   testIdPrefix: string
-  visibilitySettings?: TableVisibilitySettingsButtonProps
   // collapsible bar that displays the active filters
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
@@ -66,10 +63,9 @@ export const TableFilters = ({
           </Box>
           {sortChip && <Box className="tableControl">{sortChip}</Box>}
         </Grid>
-        {!isMobile && (
+        {!isMobile && chips && (
           <Grid container size="grow" spacing="none" sx={{ justifyContent: 'flex-end' }}>
             {chips}
-            {visibilitySettings && <TableVisibilitySettingsButton {...visibilitySettings} />}
           </Grid>
         )}
       </Grid>
