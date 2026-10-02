@@ -34,7 +34,7 @@ import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/Slippag
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
-export const FormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => {
+export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => {
   const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
   const isSubscribedRef = useRef(false)
 

@@ -28,6 +28,7 @@ export const PoolTokenInput = ({
   disabled,
   hideMaxButton,
   reserves: { data: reserves },
+  max,
   positionBalance,
 }: {
   token: PoolToken
@@ -35,7 +36,9 @@ export const PoolTokenInput = ({
   disabled: boolean
   hideMaxButton?: boolean
   reserves: QueryProp<Decimal[]>
-  /** Display the position balance instead of the wallet balance, as in LoanFormTokenInput. */
+  /** Spendable maximum used for amount validation and the Max chip. */
+  max: QueryProp<Decimal>
+  /** Display the position balance instead of the wallet balance. */
   positionBalance?: {
     position: QueryProp<Decimal>
     tooltip?: NonNullable<LargeTokenInputProps['walletBalance']>['tooltip']
@@ -47,9 +50,8 @@ export const PoolTokenInput = ({
   const amount = watchValue(field)
   const fieldError = touchedFields[field] ? (errors[field] ?? errors[poolMaxAmountField(index)]) : undefined
   const { position, tooltip } = positionBalance ?? {}
-  const maxBalance = position ?? balance
-  useFormSync({ update }, { [poolMaxAmountField(index)]: maxBalance.data })
-  const inputError = fieldError ?? maxBalance.error
+  useFormSync({ update }, { [poolMaxAmountField(index)]: max.data })
+  const inputError = fieldError ?? max.error
   return (
     <LargeTokenInput
       name={field}
@@ -70,7 +72,7 @@ export const PoolTokenInput = ({
       )}
       disabled={disabled}
       walletBalance={{ symbol, balance: position ?? balance, tooltip, prefix: position && LlamaIcon }}
-      {...(!hideMaxButton && { maxBalance: { balance: maxBalance, chips: 'max' } })}
+      {...(!hideMaxButton && { maxBalance: { balance: max, chips: 'max' } })}
       message={inputError?.message}
       testId={`pool-token-input-${address}`}
     />

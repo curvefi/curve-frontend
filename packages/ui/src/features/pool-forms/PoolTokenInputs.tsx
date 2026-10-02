@@ -10,24 +10,29 @@ export const PoolTokenInputs = ({
   isDisabled,
   hideMaxButton,
   maxAmounts,
+  positionAmounts,
+  enableFirstOnly,
 }: {
   tokens: QueryProp<PoolToken[]>
   reserves: QueryProp<Decimal[]>
   isDisabled: boolean
   hideMaxButton?: boolean
-  maxAmounts?: QueryProp<(Decimal | undefined)[]>
+  maxAmounts: QueryProp<(Decimal | undefined)[]>
+  positionAmounts: QueryProp<(Decimal | undefined)[]> | undefined
+  enableFirstOnly?: boolean
 }) =>
   tokens?.map((token, index) => (
     <PoolTokenInput
       key={token.address}
       token={token}
       index={index}
-      disabled={isDisabled}
+      disabled={isDisabled || (!!enableFirstOnly && index > 0)}
       hideMaxButton={hideMaxButton}
       reserves={reserves}
+      max={mapQuery(maxAmounts, amounts => amounts[index])}
       positionBalance={
-        maxAmounts && {
-          position: mapQuery(maxAmounts, amounts => amounts[index]),
+        positionAmounts && {
+          position: mapQuery(positionAmounts, amounts => amounts[index]),
           tooltip: t`Available pool liquidity`,
         }
       }

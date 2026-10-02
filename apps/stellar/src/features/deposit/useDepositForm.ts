@@ -25,7 +25,13 @@ import type { DepositForm, DepositFormQuery } from './types'
 
 const formOptions = {
   validation: depositFormValidationSuite,
-  defaultValues: { isBalanced: false, decimals: undefined, supply: undefined, slippage: SLIPPAGE.stable.default },
+  defaultValues: {
+    isBalanced: false,
+    isWrapped: false,
+    decimals: undefined,
+    supply: undefined,
+    slippage: SLIPPAGE.stable.default,
+  },
 }
 
 export function useDepositForm(poolParams: PoolQuery) {
@@ -104,6 +110,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens,
+    maxAmounts,
     isSeed,
   }
 }
