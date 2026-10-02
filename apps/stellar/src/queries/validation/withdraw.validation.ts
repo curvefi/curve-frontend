@@ -6,12 +6,8 @@ import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-
 import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import {
-  validateAmount,
-  validateLiquidityInputs,
-  validateReserveAmounts,
-  validateSlippage,
-} from './liquidity.validation'
+import { validateSlippage } from '@ui/lib/validation/slippage.validation'
+import { validateAmount, validateLiquidityInputs, validateReserveAmounts } from './liquidity.validation'
 import { validateAccount, validatePool } from './pool.validation'
 
 const validateOutputs = ({

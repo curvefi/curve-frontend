@@ -12,7 +12,7 @@ import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import { useForm, type UseFormReturn, useFormSync } from '@ui/features/forms'
-import { getPoolDefaultValues, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
+import { getPoolAmounts, getPoolDefaultValues, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
@@ -33,7 +33,7 @@ function useForceSeedAmounts(
   { data: isSeed }: QueryProp<boolean>,
   { update }: UseFormReturn<DepositFormValues>,
 ) {
-  const { data: amounts, isLoading } = useSeedAmounts(params, isSeed === true && !!Number(params[poolAmountField(0)]))
+  const { data: amounts, isLoading } = useSeedAmounts(params, isSeed === true && !!Number(params.amounts?.[0]))
   useEffect(() => {
     if (isSeed && amounts)
       update(fromEntries(amounts.map((amount, index) => [poolAmountField(index), amount])), { automated: true })
@@ -88,8 +88,9 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     userDefaultValues,
   )
 
-  const priceImpact = useDepositPriceImpact(params, isSeed.data === false)
-  const seedAmounts = useForceSeedAmounts(params, isSeed, form)
+  const queryParams = { ...params, amounts: getPoolAmounts(params, tokenCount) }
+  const priceImpact = useDepositPriceImpact(queryParams, isSeed.data === false)
+  const seedAmounts = useForceSeedAmounts(queryParams, isSeed, form)
 
   const {
     onSubmit: submitMutation,
@@ -101,7 +102,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   const isDerivingSeedAmounts = isSeed.data === true && seedAmounts.isLoading
   return {
     form,
-    params,
+    params: queryParams,
     reserves: mapQuery(reserves, reserves => reserves.tokens.map(token => token.balance)),
     isSeed,
     canDepositWrapped,
@@ -110,7 +111,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     // A seed deposit must derive every remaining amount from the first one.
     enableFirstOnly: isSeed.data !== false,
     tokens,
-    maxAmounts: useDepositMaxAmounts({ params, tokenAddresses, balances }),
+    maxAmounts: useDepositMaxAmounts({ params: queryParams, tokenAddresses, balances }),
     wallet: { connect, isConnected: !!wallet, isConnecting: isLoading(connectState) },
     userAddress,
     onSubmit: handleSubmit(submitMutation),

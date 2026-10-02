@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { ethAddress, isAddressEqual, type Address } from 'viem'
 import { useDepositEstimateGas } from '@/dex/queries/deposit/deposit-estimate-gas.query'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
-import { getPoolAmounts, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
 import { decimalMax, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
@@ -23,11 +22,9 @@ export const useDepositMaxAmounts = ({
   const maxParams = useMemo(
     () => ({
       ...params,
-      ...(nativeIndex >= 0 && {
-        [poolAmountField(nativeIndex)]:
-          balances.data?.[tokenAddresses[nativeIndex]] ??
-          getPoolAmounts(params, params.decimals?.length)?.[nativeIndex],
-      }),
+      amounts: params.amounts?.map((amount, index) =>
+        index === nativeIndex ? (balances.data?.[tokenAddresses[index]] ?? amount) : amount,
+      ),
     }),
     [balances.data, nativeIndex, params, tokenAddresses],
   )

@@ -6,7 +6,8 @@ import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import { poolAmountField, poolMaxAmountField, getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import { validateLiquidityInputs, validateSlippage } from './liquidity.validation'
+import { validateSlippage } from '@ui/lib/validation/slippage.validation'
+import { validateLiquidityInputs } from './liquidity.validation'
 
 export const depositValidationSuite = createValidationSuite(
   ({ pool, network, account, minMint, ...inputs }: DepositParams) => {

@@ -42,7 +42,7 @@ export const useDepositMutation = ({
       await waitForApproval({
         isApproved: async () =>
           await fetchDepositIsApproved(
-            { chainId, poolId, userAddress, isWrapped, decimals, slippage },
+            { chainId, poolId, userAddress, isWrapped, decimals, slippage, amounts },
             { staleTime: 0 },
           ),
         onApprove: async () => (await pool[`${depositMethod(isWrapped)}Approve`](amounts)) as Hex[],

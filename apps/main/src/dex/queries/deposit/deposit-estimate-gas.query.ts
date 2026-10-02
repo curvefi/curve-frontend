@@ -3,39 +3,33 @@ import type { DepositParams, DepositQuery, UserDepositParams } from '@/dex/featu
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { rootKeys } from '@evm-ui/queries/root-keys'
-import { depositMethod, getPoolAmounts, pickPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
+import { depositMethod } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { useDepositIsApproved } from './deposit-approved.query'
 
 const { useQuery: useDepositApproveEstimate } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, isWrapped, decimals, ...values }: UserDepositParams) => ({
+  queryKey: ({ chainId, poolId, userAddress, isWrapped, amounts }: UserDepositParams) => ({
     name: 'estimateGas.depositApprove',
     ...rootKeys.userPool({ chainId, poolId, userAddress }),
     isWrapped,
-    decimals,
-    ...pickPoolAmounts(values, decimals?.length),
+    amounts,
   }),
-  queryFn: async ({ poolId, isWrapped, decimals, ...params }: DepositQuery) =>
-    await requireLib('curveApi')
-      .getPool(poolId)
-      .estimateGas[`${depositMethod(isWrapped)}Approve`](getPoolAmounts(params, decimals.length)),
+  queryFn: async ({ poolId, isWrapped, amounts }: DepositQuery) =>
+    await requireLib('curveApi').getPool(poolId).estimateGas[`${depositMethod(isWrapped)}Approve`](amounts),
   category: 'dex.pool',
   validationSuite: userDepositParamsValidationSuite,
 })
 
 const { useQuery: useDepositEstimate } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, isWrapped, slippage, decimals, ...values }: UserDepositParams) => ({
+  queryKey: ({ chainId, poolId, userAddress, isWrapped, slippage, amounts }: UserDepositParams) => ({
     name: 'estimateGas.deposit',
     ...rootKeys.userPool({ chainId, poolId, userAddress }),
     isWrapped,
     slippage,
-    decimals,
-    ...pickPoolAmounts(values, decimals?.length),
+    amounts,
   }),
-  queryFn: async ({ poolId, isWrapped, slippage, decimals, ...values }: DepositQuery) =>
-    await requireLib('curveApi')
-      .getPool(poolId)
-      .estimateGas[depositMethod(isWrapped)](getPoolAmounts(values, decimals?.length), +slippage),
+  queryFn: async ({ poolId, isWrapped, slippage, amounts }: DepositQuery) =>
+    await requireLib('curveApi').getPool(poolId).estimateGas[depositMethod(isWrapped)](amounts, +slippage),
   category: 'dex.pool',
   validationSuite: userDepositParamsValidationSuite,
 })
