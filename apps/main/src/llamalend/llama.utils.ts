@@ -130,10 +130,6 @@ export const canLeverageUserBorrowed = <T extends MarketTemplate | undefined>(ma
 
 export const hasVault = (market: MarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
-/** Checks whether llamalend.js exposes the collateral rewards API. */
-export const supportsCollateralRewards = (market: MarketTemplate): market is LendMarketTemplate =>
-  market instanceof LendMarketTemplate
-
 export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
 
