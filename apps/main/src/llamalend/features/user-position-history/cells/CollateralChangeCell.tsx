@@ -21,7 +21,7 @@ export const CollateralChangeCell = ({
         color={collateralChange ? (collateralChange > 0 ? 'success' : 'error') : 'textPrimary'}
       >
         {notFalsy(
-          formatNumber(collateralChange || null, { abbreviate: false, signDisplay: 'exceptZero' }),
+          formatNumber(collateralChange || null, 'token.change'),
           collateralChange && collateralToken?.symbol,
         ).join(' ')}
       </Typography>

@@ -1,6 +1,7 @@
 import { formatActivityUsdValue } from '@evm-ui/features/activity-table/utils'
 import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
 import { BlockchainIds } from '@evm-ui/utils/network'
+import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { constQ } from '@ui/features/queries/util'
@@ -31,7 +32,10 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
       <MetricExpandedPanel
         label={notFalsy(t`Collateral`, collateralToken?.symbol && `(${collateralToken.symbol})`).join(' ')}
         value={collateralChange || null}
-        valueOptions={{ signDisplay: 'exceptZero', color: getChangeColor(collateralChange, 'success', 'error') }}
+        valueOptions={{
+          formatter: value => formatNumber(value, 'token.change'),
+          color: getChangeColor(collateralChange, 'success', 'error'),
+        }}
         {...(!!collateralChange && {
           notional: constQ(
             formatActivityUsdValue(
@@ -45,7 +49,10 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
       <MetricExpandedPanel
         label={notFalsy(t`Debt`, borrowToken?.symbol && `(${borrowToken.symbol})`).join(' ')}
         value={loanChange || null}
-        valueOptions={{ signDisplay: 'exceptZero', color: getChangeColor(loanChange, 'error', 'success') }}
+        valueOptions={{
+          formatter: value => formatNumber(value, 'token.change'),
+          color: getChangeColor(loanChange, 'error', 'success'),
+        }}
         {...(!!loanChange && {
           notional: constQ(
             formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentTime),
