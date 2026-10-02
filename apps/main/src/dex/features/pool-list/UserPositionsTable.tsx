@@ -94,9 +94,7 @@ export const UserPositionsTable = ({
         onReload={onReload}
         isLoading={isFetching}
         visibilitySettings={
-          address && tableQuery.data?.length
-            ? { isOpen: visibilitySettingsOpen, open: openVisibilitySettings }
-            : undefined
+          address && tableQuery.data && { isOpen: visibilitySettingsOpen, open: openVisibilitySettings }
         }
       />
       <Stack ref={anchorRef} sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
