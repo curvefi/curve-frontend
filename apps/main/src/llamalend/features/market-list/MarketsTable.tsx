@@ -41,7 +41,7 @@ export const MarketsTable = ({
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
-  const visibilitySettingsRef = useRef<HTMLButtonElement>(null)
+  const anchorRef = useRef<HTMLTableSectionElement>(null)
   const isMobile = useIsMobile()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
@@ -77,14 +77,11 @@ export const MarketsTable = ({
         title={t`Markets`}
         onReload={onReload}
         isLoading={isLoading}
-        visibilitySettings={{
-          anchorRef: visibilitySettingsRef,
-          isOpen: visibilitySettingsOpen,
-          open: openVisibilitySettings,
-        }}
+        visibilitySettings={{ isOpen: visibilitySettingsOpen, open: openVisibilitySettings }}
       />
       <EvmDataTable
         table={table}
+        anchorRef={anchorRef}
         emptyState={{
           title: t`No markets found`,
           description: t`Try adjusting your filters or search query`,
@@ -124,7 +121,7 @@ export const MarketsTable = ({
         />
       </EvmDataTable>
       <TableVisibilitySettingsPopover<MarketColumnId>
-        anchorRef={visibilitySettingsRef}
+        anchorRef={anchorRef}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
         open={visibilitySettingsOpen}

@@ -63,7 +63,7 @@ export const PoolsTable = ({
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
-  const visibilitySettingsRef = useRef<HTMLButtonElement>(null)
+  const anchorRef = useRef<HTMLTableSectionElement>(null)
   const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolsPagination()
   const { globalFilter, columnFilters, apiParams, filterProps, onSearch, resetFilters, searchText } = usePoolsFilters()
   const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolsSorting(
@@ -121,14 +121,11 @@ export const PoolsTable = ({
         title={t`Pools`}
         onReload={onReload}
         isLoading={isFetching}
-        visibilitySettings={{
-          anchorRef: visibilitySettingsRef,
-          isOpen: visibilitySettingsOpen,
-          open: openVisibilitySettings,
-        }}
+        visibilitySettings={{ isOpen: visibilitySettingsOpen, open: openVisibilitySettings }}
       />
       <EvmDataTable
         table={table}
+        anchorRef={anchorRef}
         emptyState={{
           title: t`Can't find what you're looking for?`,
           description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
@@ -181,7 +178,7 @@ export const PoolsTable = ({
         />
       </EvmDataTable>
       <TableVisibilitySettingsPopover<PoolColumnId>
-        anchorRef={visibilitySettingsRef}
+        anchorRef={anchorRef}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
         open={visibilitySettingsOpen}

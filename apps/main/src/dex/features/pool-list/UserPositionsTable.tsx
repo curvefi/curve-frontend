@@ -56,7 +56,7 @@ export const UserPositionsTable = ({
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [searchText, setSearchText] = useState('')
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
-  const visibilitySettingsRef = useRef<HTMLButtonElement>(null)
+  const anchorRef = useRef<HTMLTableSectionElement>(null)
   const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
     variant: 'userPositions',
     mobileColumn: PoolColumnId.Deposits,
@@ -95,7 +95,7 @@ export const UserPositionsTable = ({
         isLoading={isFetching}
         visibilitySettings={
           address && tableQuery.data?.length
-            ? { anchorRef: visibilitySettingsRef, isOpen: visibilitySettingsOpen, open: openVisibilitySettings }
+            ? { isOpen: visibilitySettingsOpen, open: openVisibilitySettings }
             : undefined
         }
       />
@@ -127,6 +127,7 @@ export const UserPositionsTable = ({
               <EvmDataTable
                 category="limited"
                 table={table}
+                anchorRef={anchorRef}
                 viewAllLabel={t`View all ${rowCount} pool positions`}
                 emptyState={{
                   title: t`No matching positions`,
@@ -146,7 +147,7 @@ export const UserPositionsTable = ({
                 />
               </EvmDataTable>
               <TableVisibilitySettingsPopover
-                anchorRef={visibilitySettingsRef}
+                anchorRef={anchorRef}
                 visibilityGroups={columnSettings}
                 toggleVisibility={toggleVisibility}
                 open={visibilitySettingsOpen}

@@ -1,13 +1,8 @@
-import type { RefObject } from 'react'
 import { GearIcon } from '@ui/icons/GearIcon'
 import { TableButton } from './TableButton'
 
-export type TableVisibilitySettingsButtonProps = {
-  anchorRef: RefObject<HTMLButtonElement | null>
-  isOpen: boolean
-  open: () => void
-}
+export type TableVisibilitySettingsButtonProps = { isOpen: boolean; open: () => void }
 
-export const TableVisibilitySettingsButton = ({ anchorRef, isOpen, open }: TableVisibilitySettingsButtonProps) => (
-  <TableButton ref={anchorRef} onClick={open} icon={GearIcon} testId="btn-visibility-settings" active={isOpen} />
+export const TableVisibilitySettingsButton = ({ isOpen, open }: TableVisibilitySettingsButtonProps) => (
+  <TableButton onClick={open} icon={GearIcon} testId="btn-visibility-settings" active={isOpen} />
 )
