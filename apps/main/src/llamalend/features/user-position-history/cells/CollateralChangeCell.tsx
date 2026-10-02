@@ -1,6 +1,7 @@
 import { formatActivityUsdValue } from '@evm-ui/features/activity-table/utils'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
@@ -19,9 +20,10 @@ export const CollateralChangeCell = ({
         variant="tableCellMBold"
         color={collateralChange ? (collateralChange > 0 ? 'success' : 'error') : 'textPrimary'}
       >
-        {collateralChange > 0 ? '+' : ''}
-        {collateralChange === 0 ? '-' : formatNumber(collateralChange, { abbreviate: false })}{' '}
-        {!!collateralChange && collateralToken?.symbol}
+        {notFalsy(
+          formatNumber(collateralChange || null, { abbreviate: false, signDisplay: 'exceptZero' }),
+          collateralChange && collateralToken?.symbol,
+        ).join(' ')}
       </Typography>
       {collateralChange !== 0 && (
         <Typography variant="bodySRegular">

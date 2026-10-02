@@ -1,6 +1,7 @@
 import { formatActivityUsdValue } from '@evm-ui/features/activity-table/utils'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
@@ -16,9 +17,10 @@ export const DebtChangeCell = ({
   return (
     <InlineTableCell>
       <Typography variant="tableCellMBold" color={loanChange ? (loanChange > 0 ? 'error' : 'success') : 'textPrimary'}>
-        {loanChange > 0 ? '+' : ''}
-        {loanChange == 0 ? '-' : formatNumber(loanChange, { abbreviate: false })}{' '}
-        {loanChange !== 0 && borrowToken?.symbol}
+        {notFalsy(
+          formatNumber(loanChange || null, { abbreviate: false, signDisplay: 'exceptZero' }),
+          loanChange && borrowToken?.symbol,
+        ).join(' ')}
       </Typography>
       {loanChange !== 0 && (
         <Typography variant="bodySRegular">

@@ -25,16 +25,14 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
   } = event
   const currentTime = useCurrentDate().getTime()
   const blockchainId = BlockchainIds[chainId]
-  const hasCollateralChange = collateralChange !== 0
-  const hasLoanChange = loanChange !== 0
 
   return (
     <MetricsGrid variant="mobileRows">
       <MetricExpandedPanel
         label={notFalsy(t`Collateral`, collateralToken?.symbol && `(${collateralToken.symbol})`).join(' ')}
-        value={hasCollateralChange ? collateralChange : null}
+        value={collateralChange || null}
         valueOptions={{ signDisplay: 'exceptZero', color: getChangeColor(collateralChange, 'success', 'error') }}
-        {...(hasCollateralChange && {
+        {...(!!collateralChange && {
           notional: constQ(
             formatActivityUsdValue(
               { amount: collateralChange, amountUsd: collateralChangeUsd, timestamp },
@@ -46,9 +44,9 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
       />
       <MetricExpandedPanel
         label={notFalsy(t`Debt`, borrowToken?.symbol && `(${borrowToken.symbol})`).join(' ')}
-        value={hasLoanChange ? loanChange : null}
+        value={loanChange || null}
         valueOptions={{ signDisplay: 'exceptZero', color: getChangeColor(loanChange, 'error', 'success') }}
-        {...(hasLoanChange && {
+        {...(!!loanChange && {
           notional: constQ(
             formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentTime),
           ),
