@@ -93,10 +93,14 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
           height={DAO_COMPACT_CHART_HEIGHT}
           isLoading={isLoading}
           isEmpty={!isLoading && !error && dataLength === 0}
-          emptyMessage={isUserVotes ? t`No gauge votes found` : t`No gauges with >0.5% relative gauge weight found`}
+          emptyState={{
+            description: isUserVotes ? t`No gauge votes found` : t`No gauges with >0.5% relative gauge weight found`,
+          }}
           error={error}
-          errorMessage={isUserVotes ? t`Unable to fetch user gauge votes.` : t`Unable to fetch gauges.`}
-          refreshData={refreshData}
+          errorState={{
+            description: isUserVotes ? t`Unable to fetch user gauge votes.` : t`Unable to fetch gauges.`,
+            onReload: refreshData,
+          }}
         >
           {isUserVotes ? (
             <EChartsBarChart

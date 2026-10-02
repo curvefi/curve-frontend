@@ -1,18 +1,20 @@
 import type { ReactNode } from 'react'
-import { ChartEmpty } from '@evm-ui/shared/ui/Chart/ChartEmpty'
-import { ChartError } from '@evm-ui/shared/ui/Chart/ChartError'
-import { ChartLoading } from '@evm-ui/shared/ui/Chart/ChartLoading'
+import { EmptyStateEvmCard, type EmptyStateEvmCardProps } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import type { Address } from '@primitives/address.utils'
+import type { EmptyStateCardProps } from '@ui/components/EmptyStateCard'
+import { Spinner } from '@ui/components/Spinner'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
+import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
+import { t } from '@ui/lib/i18n'
+import Stack from '@mui/material/Stack'
 
 type ChartStateWrapperProps = {
   height: number
   isLoading: boolean
   isEmpty?: boolean
-  emptyMessage?: ReactNode
+  emptyState?: Pick<EmptyStateEvmCardProps, 'title' | 'description' | 'button' | 'secondaryButton' | 'size' | 'testId'>
   error?: Error | null
-  errorMessage: string
-  refreshData?: () => Promise<unknown> | void
+  errorState?: Pick<EmptyStateCardProps, 'title' | 'description'> & { onReload?: () => Promise<unknown> | void }
   children: ReactNode
   userAddress?: Address
 }
@@ -23,35 +25,36 @@ export const ChartStateWrapper = ({
   height,
   isLoading,
   isEmpty,
-  emptyMessage,
+  emptyState,
   error,
-  errorMessage,
-  refreshData,
+  errorState,
   children,
   userAddress,
-}: ChartStateWrapperProps) => {
-  if (isLoading) return <ChartLoading height={height} />
-  if (error)
-    return (
-      <ChartError
-        height={height}
-        error={error}
-        errorMessage={errorMessage}
-        refreshData={refreshData}
-        userAddress={userAddress}
-      />
-    )
-  if (isEmpty) return <ChartEmpty height={height} message={emptyMessage} />
-
-  return (
+}: ChartStateWrapperProps) =>
+  error || isLoading || isEmpty ? (
+    <Stack sx={{ alignItems: 'center', justifyContent: 'center', minHeight: height }}>
+      {error ? (
+        <ErrorMessage
+          title={errorState?.title ?? t`An error occurred`}
+          subtitle={errorState?.description ?? error.message}
+          error={error}
+          refreshData={errorState?.onReload}
+          userAddress={userAddress}
+        />
+      ) : isLoading ? (
+        <Spinner />
+      ) : (
+        <EmptyStateEvmCard {...emptyState} title={emptyState?.title ?? t`No chart data found`} />
+      )}
+    </Stack>
+  ) : (
     <ErrorBoundary
       title="Chart Error"
       inline
       subtitle="Something went wrong when rendering the chart."
-      refreshData={refreshData}
+      refreshData={errorState?.onReload}
       userAddress={userAddress}
     >
       {children}
     </ErrorBoundary>
   )
-}
