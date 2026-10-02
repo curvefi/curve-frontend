@@ -25,7 +25,7 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
   onClose: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
-  anchorRef: RefObject<HTMLButtonElement | null>
+  anchorRef: RefObject<HTMLTableSectionElement | null>
 }) => {
   const [isReady, setReady, resetReady] = useSwitch()
 
@@ -34,7 +34,8 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
       open={open}
       onClose={onClose}
       anchorEl={() => anchorRef.current}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       slotProps={{ paper: { sx: { padding: Spacing.md } }, transition: { onEntered: setReady, onExited: resetReady } }}
     >
       <Stack data-testid={isReady ? 'visibility-settings-popover' : undefined} sx={{ gap: Spacing.md }}>
