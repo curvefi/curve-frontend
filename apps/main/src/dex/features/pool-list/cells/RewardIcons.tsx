@@ -52,15 +52,7 @@ export const CampaignTooltipContent = ({ campaign, showRate }: { campaign: Campa
         <TooltipDescription text={t`to: ${formatDate(campaign.period[1])}`} />
       </Stack>
     )}
-    <TooltipDescription
-      text={
-        campaign.action === 'lp'
-          ? campaign.description
-          : campaign.action === 'supply'
-            ? t`Earn ${campaign.symbol ?? '?'} by supplying liquidity.`
-            : t`Earn ${campaign.symbol ?? '?'} by borrowing.`
-      }
-    />
+    <TooltipDescription text={campaign.description} />
     {!!campaign.steps?.length && (
       <Stack>
         <Typography variant="bodySBold">{t`Steps:`}</Typography>

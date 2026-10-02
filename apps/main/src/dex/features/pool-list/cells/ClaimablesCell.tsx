@@ -37,7 +37,7 @@ export const ClaimablesCell = ({
 
   return (
     <WithWrapper
-      shouldWrap={!!claimables.data?.length}
+      shouldWrap={hasClaimables}
       Wrapper={Tooltip}
       title={POOL_TITLES[PoolColumnId.Claimables]}
       body={

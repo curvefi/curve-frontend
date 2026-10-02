@@ -72,16 +72,17 @@ type PoolRowContext = {
   url: string
 }
 
+type PoolRates = {
+  extraRewardsTotalApr: number
+  campaignRewardsApr: number
+  rewardsApr: number
+  incentivesApr: number
+  netApr: number
+  netAprBoosted: number | undefined
+}
+
 /** Source-independent view model containing only data consumed by the pools table. */
-export type PoolRow = PoolRowData &
-  PoolRowContext & {
-    extraRewardsTotalApr: number
-    campaignRewardsApr: number
-    rewardsApr: number
-    incentivesApr: number
-    netApr: number
-    netAprBoosted: number | undefined
-  }
+export type PoolRow = PoolRowData & PoolRowContext & PoolRates
 
 /** Only the alert fields used by pool-list presentation; Main supplies the rich content. */
 export type PoolListAlert = {

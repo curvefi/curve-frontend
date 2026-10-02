@@ -217,9 +217,9 @@ const Notional = ({ data, error, isLoading }: QueryProp<NotionalValue>) => (
     <WithSkeleton loading={isLoading && data == null}>
       <Typography variant="highlightXsNotional" color="textTertiary">
         {data == null
-          ? formatNumber(isLoading ? PLACEHOLDER_USD : null, 'usd.notional')
+          ? formatNumber(PLACEHOLDER_USD, 'usd.notional')
           : typeof data === 'string'
-            ? data
+            ? data // `Decimal` values must be formatted beforehand.
             : typeof data === 'number'
               ? formatNumber(data, { abbreviate: true })
               : formatNumber(data.value, { abbreviate: true, ...data })}

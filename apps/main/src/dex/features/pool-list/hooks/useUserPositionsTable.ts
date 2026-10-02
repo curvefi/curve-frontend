@@ -6,8 +6,7 @@ import { type UserPoolPosition, useUserPoolPositions } from '@/dex/queries/user-
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
-import { completeArray } from '@primitives/array.utils'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum } from '@ui/lib/decimal'
@@ -67,8 +66,9 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
     onReload: () => resetPoolLists({ chainId, userAddress }),
     tableQuery,
     alerts: getPoolListAlerts(tableQuery.data, blockchainId),
-    claimablesTotalUsd: mapQuery(claimables, pools =>
-      maybe(completeArray(Object.values(pools).map(claimablesTotalUsd)), amounts => decimalSum(...amounts)),
+    claimablesTotalUsd: combineQueries(
+      [tableQuery, aggregateQueries(notFalsy(...(tableQuery.data?.map(row => row.userPosition?.claimablesUsd) ?? [])))],
+      (rows, amounts) => (rows.length && amounts.every(amount => amount == null) ? undefined : decimalSum(...amounts)),
     ),
     totalLiquidityUsd: combineQueries(
       [tableQuery, aggregateQueries(notFalsy(...(tableQuery.data?.map(row => row.userPosition?.depositsUsd) ?? [])))],

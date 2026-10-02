@@ -24,7 +24,7 @@ export type TokenSectionProps<T extends Option = Option> = {
   /** Are token balances still being fetched? Is the section 'under construction'? */
   isLoading?: boolean
   /** Token balances mapped by token address */
-  balances?: Record<Address, QueryOrValue<Decimal> | undefined> // todo: use Decimal instead of string
+  balances?: Record<Address, QueryOrValue<Decimal> | undefined>
   /** Token prices in USD mapped by token address */
   tokenPrices?: Record<Address, QueryOrValue<number> | undefined>
   /** List of token addresses that should be disabled/unselectable */

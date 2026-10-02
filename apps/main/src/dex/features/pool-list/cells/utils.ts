@@ -4,7 +4,7 @@ import { formatNumber, type NumberFormatCategory } from '@primitives/number.util
 import { type Nullish, maybe } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { MAX_DISPLAY_RATE_PERCENT } from '@ui/lib/rates.utils'
-import type { PoolRow } from '../types'
+import type { PoolRow, PoolRowData } from '../types'
 
 const MAX_CRV_BOOST = '2.5x'
 const MAX_POINTS_CAMPAIGNS = 4
@@ -24,7 +24,7 @@ export const getBaseApr = (pool: PoolRow, period: 'daily' | 'weekly') =>
 
 export const getCrvAprDescription = () =>
   t`CRV LP reward APR (max APR can be reached with max boost of ${MAX_CRV_BOOST})`
-export const getCrvAprRange = ({ crvApr, crvAprBoosted }: Pick<PoolRow, 'crvApr' | 'crvAprBoosted'>) =>
+export const getCrvAprRange = ({ crvApr, crvAprBoosted }: PoolRowData) =>
   crvApr && crvAprBoosted ? { unboostedRate: crvApr, boostedRate: crvAprBoosted } : null // don't use maybe function as that accepts 0
 export const formatCrvAprRange = (range: ReturnType<typeof getCrvAprRange>) =>
   maybe(
@@ -34,7 +34,7 @@ export const formatCrvAprRange = (range: ReturnType<typeof getCrvAprRange>) =>
   ) ?? formatNumber(null, 'percent.rate')
 
 const isPointsCampaign = ({ reward, tags }: CampaignRewards) => reward?.type !== 'apr' || tags.includes('points')
-export const getPointsCampaigns = ({ campaigns }: Pick<PoolRow, 'campaigns'>) => campaigns.filter(isPointsCampaign)
+export const getPointsCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(isPointsCampaign)
 export const getCompactPointsCampaigns = (pool: PoolRow) => getPointsCampaigns(pool).slice(0, MAX_POINTS_CAMPAIGNS)
 export const getAprCampaigns = ({ campaigns }: Pick<PoolRow, 'campaigns'>) =>
   campaigns.filter(campaign => !isPointsCampaign(campaign))
