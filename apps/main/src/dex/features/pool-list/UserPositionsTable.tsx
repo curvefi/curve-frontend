@@ -95,7 +95,7 @@ export const UserPositionsTable = ({
         isLoading={isFetching}
         visibilitySettings={
           address && tableQuery.data?.length
-            ? { anchorRef: visibilitySettingsRef, open: visibilitySettingsOpen, onOpen: openVisibilitySettings }
+            ? { anchorRef: visibilitySettingsRef, isOpen: visibilitySettingsOpen, open: openVisibilitySettings }
             : undefined
         }
       />

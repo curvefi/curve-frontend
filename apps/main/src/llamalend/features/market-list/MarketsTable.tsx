@@ -89,8 +89,8 @@ export const MarketsTable = ({
           testIdPrefix={LOCAL_STORAGE_KEY}
           visibilitySettings={{
             anchorRef: visibilitySettingsRef,
-            open: visibilitySettingsOpen,
-            onOpen: openVisibilitySettings,
+            isOpen: visibilitySettingsOpen,
+            open: openVisibilitySettings,
           }}
           disableSearchAutoFocus
           searchText={globalFilter}
