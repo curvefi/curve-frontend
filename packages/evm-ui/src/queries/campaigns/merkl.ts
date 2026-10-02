@@ -102,7 +102,8 @@ export const fetchMerklRewards = async (params: Record<string, string | number |
 
     if (!resp.ok) {
       const message = `Merkl fetch error ${resp.status} for URL: ${url}`
-      if (window.location.hostname === 'localhost' && !IS_CYPRESS && resp.status === 500) {
+      // Match HTTP server errors status codes (5xx) locally
+      if (window.location.hostname === 'localhost' && !IS_CYPRESS && /^5\d{2}$/.test(String(resp.status))) {
         console.warn('Ignored merkl error for local testing', message)
         return []
       }
