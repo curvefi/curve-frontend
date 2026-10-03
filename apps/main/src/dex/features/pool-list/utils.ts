@@ -1,13 +1,16 @@
 import { sum } from 'lodash'
+import { getAddress } from 'viem'
 import { Alerts, getVyperExploitedAlert } from '@/dex/hooks/usePoolAlert'
 import { TOKEN_ALERTS } from '@/dex/hooks/useTokenAlert'
+import { getTokens, isWrappedOnly } from '@/dex/pool.utils'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { LitePool, V2Pool } from '@curvefi/prices-api/pools'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { type Nullish, fromEntries, maybe, maybes, notFalsy } from '@primitives/objects.utils'
-import { decimalSum } from '@ui/lib/decimal'
+import { decimal, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { isVyperVulnerablePool } from './alerts'
 import { getAprCampaigns, getCrvAprRange } from './cells/utils'
 import type { PoolAlerts, PoolClaimables, PoolRow, PoolRowData } from './types'
@@ -38,6 +41,25 @@ export const poolToRowData = (
   tradingVolume24h: pool.tradingVolume24h,
   tvlUsd: pool.tvlUsd ?? undefined,
 })
+
+/** Maps hydrated Curve pools (PoolTemplate) into the source-independent pool-list model. */
+export const curvePoolToRowData = (pool: PoolTemplate): PoolRowData => {
+  const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrappedOnly(pool) })
+  const coins = tokenAddresses.map((address, index) => ({
+    poolIndex: index,
+    address: getAddress(address),
+    symbol: tokens[index],
+  }))
+
+  return poolToRowData({
+    address: getAddress(pool.address),
+    name: pool.name,
+    coins,
+    tradeableCoins: coins,
+    isMetapool: pool.isMeta,
+    extraRewardsApr: [],
+  })
+}
 
 /** Maps API2's Lite pool shape into the source-independent pool-list model. */
 export const litePoolToRowData = (pool: LitePool): PoolRowData => {
@@ -113,6 +135,9 @@ export const enrichPoolRow = (
 
 export const claimablesTotalUsd = (claimables: PoolClaimables | undefined) =>
   maybe(claimables, rewards => decimalSum(...rewards.map(reward => reward.amountUsd)))
+
+export const hasClaimableRewards = (claimables: PoolClaimables) =>
+  claimables.some(reward => decimalGreaterThan(decimal(reward.amount) ?? ZERO, ZERO))
 
 /** Get pool alerts for the main app. Resolves EVM address casing. */
 export const getPoolListAlerts = (rows: readonly PoolRow[] | undefined, blockchainId: string): PoolAlerts => ({

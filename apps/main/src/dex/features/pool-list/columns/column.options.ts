@@ -4,27 +4,39 @@ import { t } from '@ui/lib/i18n'
 import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
 
-const DEFAULT_ACTIVE = [PoolColumnId.PoolName, PoolColumnId.NetRate] as const
+const USER_POSITION_DISABLED_COLUMNS = [PoolColumnId.Volume, PoolColumnId.Tvl, PoolColumnId.Age]
 
-const createVisibility = (active: PoolColumnId[], disabled: PoolColumnId[]): VisibilityGroup<PoolColumnId>[] => [
+const createVisibility = ({
+  active,
+  disabled,
+  alwaysVisible,
+}: {
+  active: PoolColumnId[]
+  disabled: PoolColumnId[]
+  alwaysVisible: PoolColumnId[]
+}): VisibilityGroup<PoolColumnId>[] => [
   {
     label: t`Pools`,
     options: recordEntries(POOL_TITLES)
-      .filter(([column]) => column !== PoolColumnId.PoolName) // Makes no sense to disable pool names
+      .filter(([column]) => !alwaysVisible.includes(column))
       .map(([column, label]) => ({
         label,
         columns: [column],
-        active: [...DEFAULT_ACTIVE, ...active].includes(column),
+        active: active.includes(column),
         enabled: !disabled.includes(column),
       })),
   },
 ]
 
 export const POOLS_COLUMN_OPTIONS = {
-  full: createVisibility([PoolColumnId.Volume, PoolColumnId.Tvl], [PoolColumnId.Deposits, PoolColumnId.Claimables]),
-  lite: createVisibility(
-    [PoolColumnId.Tvl],
-    [
+  full: createVisibility({
+    active: [PoolColumnId.NetRate, PoolColumnId.Volume, PoolColumnId.Tvl],
+    disabled: [PoolColumnId.Deposits, PoolColumnId.Claimables],
+    alwaysVisible: [PoolColumnId.PoolName],
+  }),
+  lite: createVisibility({
+    active: [PoolColumnId.NetRate, PoolColumnId.Tvl],
+    disabled: [
       PoolColumnId.BaseRate,
       PoolColumnId.WeeklyBaseRate,
       PoolColumnId.Volume,
@@ -32,9 +44,16 @@ export const POOLS_COLUMN_OPTIONS = {
       PoolColumnId.Deposits,
       PoolColumnId.Claimables,
     ],
-  ),
-  userPositions: createVisibility(
-    [PoolColumnId.Deposits, PoolColumnId.Claimables],
-    [PoolColumnId.Volume, PoolColumnId.Tvl, PoolColumnId.Age],
-  ),
+    alwaysVisible: [PoolColumnId.PoolName],
+  }),
+  userPositions: createVisibility({
+    active: [PoolColumnId.NetRate, PoolColumnId.Claimables],
+    disabled: USER_POSITION_DISABLED_COLUMNS,
+    alwaysVisible: [PoolColumnId.PoolName, PoolColumnId.Deposits],
+  }),
+  residualClaims: createVisibility({
+    active: [],
+    disabled: [...USER_POSITION_DISABLED_COLUMNS, PoolColumnId.Deposits],
+    alwaysVisible: [PoolColumnId.PoolName, PoolColumnId.Claimables],
+  }),
 }

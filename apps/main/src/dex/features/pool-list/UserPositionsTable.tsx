@@ -6,6 +6,7 @@ import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import { evmAddressDisplay, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
+import { recordEntries } from '@primitives/objects.utils'
 import type { ExpandedState } from '@tanstack/react-table'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
@@ -22,19 +23,28 @@ import { borderStyle, directChildrenAfterFirst } from '@ui/lib/mui'
 import { POOL_COLUMNS, PoolColumnId } from './columns'
 import { PoolExpandedPanel } from './components/PoolExpandedPanel'
 import { usePoolsVisibility } from './hooks/usePoolsVisibility'
+import { useResidualClaimsTable } from './hooks/useResidualClaimsTable'
 import { useUserPositionsTable } from './hooks/useUserPositionsTable'
 import { getPoolTableMeta, createPoolTableMeta } from './table-meta'
-import type { PoolRow } from './types'
+import type { PoolRow, PoolTableVariant } from './types'
 
 const { Spacing } = SizesAndSpaces
 
 const LOCAL_STORAGE_KEY = 'dex-user-pool-positions'
 const MAX_PAGE_SIZE = 10 as const
 
+type Variant = Extract<PoolTableVariant, 'userPositions' | 'residualClaims'>
+
+const TABS = { userPositions: t`Your positions`, residualClaims: t`Residual claims` } satisfies Record<Variant, string>
+const MOBILE_COLUMNS = {
+  userPositions: PoolColumnId.Deposits,
+  residualClaims: PoolColumnId.Claimables,
+} satisfies Record<Variant, PoolColumnId>
+
 const UserPositionsExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => (
   <PoolExpandedPanel
     pool={row.original}
-    variant="userPositions"
+    variant={getPoolTableMeta(table).variant}
     addressDisplay={getPoolTableMeta(table).addressDisplay}
     crvToken={getPoolTableMeta(table).crvToken}
   />
@@ -53,13 +63,22 @@ export const UserPositionsTable = ({
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const anchorRef = useRef<HTMLDivElement>(null)
-  const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
-    variant: 'userPositions',
-    mobileColumn: PoolColumnId.Deposits,
-  })
 
-  const { tableQuery, totalLiquidityUsd, claimablesTotalUsd, isFetching, onReload, alerts } = useUserPositionsTable({
-    network,
+  const [variant, setVariant] = useState<Variant>('userPositions')
+  const userPositions = useUserPositionsTable({ network }, variant === 'userPositions')
+  const residualClaims = useResidualClaimsTable({ network }, variant === 'residualClaims')
+  const {
+    tableQuery,
+    claimablesTotalUsd,
+    isFetching,
+    onReload,
+    alerts,
+    labels: { errorTitle, loading, empty },
+  } = variant === 'residualClaims' ? residualClaims : userPositions
+
+  const { columnSettings, columnVisibility, toggleVisibility } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
+    variant,
+    mobileColumn: MOBILE_COLUMNS[variant],
   })
 
   const table = useCurveTable({
@@ -83,7 +102,16 @@ export const UserPositionsTable = ({
   return (
     <Stack data-testid="user-pool-positions">
       <TableHeader
-        title={t`Your positions`}
+        tabs={{
+          value: variant,
+          onChange: value => {
+            setVariant(value)
+            setExpanded({})
+            table.setPageIndex(0)
+            closeVisibilitySettings()
+          },
+          options: recordEntries(TABS).map(([value, label]) => ({ value, label })),
+        }}
         onReload={onReload}
         isLoading={isFetching}
         visibilitySettings={
@@ -92,7 +120,7 @@ export const UserPositionsTable = ({
       />
       <Stack ref={anchorRef} sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         {address ? (
-          tableQuery.data?.length ? (
+          rowCount > 0 ? (
             <>
               <MetricsGrid
                 variant="fillMobile"
@@ -102,12 +130,14 @@ export const UserPositionsTable = ({
                   backgroundColor: t => t.design.Layer[1].Fill,
                 }}
               >
-                <Metric
-                  category="dex.poolListSummary"
-                  label={t`Total liquidity provided`}
-                  value={totalLiquidityUsd}
-                  valueOptions={{ unit: 'dollar' }}
-                />
+                {variant === 'userPositions' && (
+                  <Metric
+                    category="dex.poolListSummary"
+                    label={t`Total liquidity provided`}
+                    value={userPositions.totalLiquidityUsd}
+                    valueOptions={{ unit: 'dollar' }}
+                  />
+                )}
                 <Metric
                   category="dex.poolListSummary"
                   label={t`Claimable rewards`}
@@ -118,12 +148,8 @@ export const UserPositionsTable = ({
               <EvmDataTable
                 category="limited"
                 table={table}
-                viewAllLabel={t`View all ${rowCount} pool positions`}
-                emptyState={{
-                  title: t`No matching positions`,
-                  description: t`Try another pool name, token symbol, or address.`,
-                }}
-                errorState={{ title: t`Could not load pool positions`, onReload }}
+                emptyState={empty}
+                errorState={{ title: errorTitle, onReload }}
                 expandedPanel={{ Body: UserPositionsExpandedPanel, Actions }}
                 shouldStickFirstColumn={Boolean(isTablet && rowCount)}
               />
@@ -139,17 +165,13 @@ export const UserPositionsTable = ({
             <CenteredEmptyState>
               {tableQuery.error ? (
                 <EvmErrorMessage
-                  title={t`Could not load pool positions`}
+                  title={errorTitle}
                   subtitle={tableQuery.error.message}
                   error={tableQuery.error}
                   refreshData={onReload}
                 />
               ) : (
-                <EmptyStateEvmCard
-                  isLoading={tableQuery.isLoading}
-                  title={t`No active positions`}
-                  description={t`Provide liquidity to a pool to see your positions here.`}
-                />
+                <EmptyStateEvmCard {...(tableQuery.isLoading ? loading : empty)} />
               )}
             </CenteredEmptyState>
           )

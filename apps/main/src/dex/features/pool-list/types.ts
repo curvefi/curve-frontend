@@ -101,6 +101,7 @@ export type PoolAlerts = {
 }
 
 export type PoolTableVariant = keyof typeof POOLS_COLUMN_OPTIONS
+
 /**
  * Host-supplied presentation dependencies for static columns and expanded panels.
  * Access through getPoolTableMeta so the temporary metadata cast stays in one place.
