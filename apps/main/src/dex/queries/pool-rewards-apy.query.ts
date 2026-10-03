@@ -5,7 +5,7 @@ import type { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
@@ -134,11 +134,7 @@ type PoolRewardsApyParams = FieldsOf<PoolRewardsApyQuery>
 
 const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQuery } = queryFactory({
   category: 'dex.pool',
-  queryKey: ({ chainId, poolId, useApi }: PoolRewardsApyParams) => ({
-    name: 'rewardsApy',
-    ...rootKeys.pool({ chainId, poolId }),
-    useApi,
-  }),
+  queryKey: ({ chainId, poolId, useApi }: PoolRewardsApyParams) => ({ name: 'rewardsApy', chainId, poolId, useApi }),
   queryFn: async ({ chainId, poolId, useApi }: PoolRewardsApyQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     const networks = await fetchNetworks()

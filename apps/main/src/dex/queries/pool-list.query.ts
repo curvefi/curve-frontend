@@ -1,5 +1,5 @@
 import { listLitePoolChains, listPoolChains, listPools, type ListPoolsParams } from '@curvefi/prices-api/pools'
-import { rootKeys, type ChainParams, type ChainQuery } from '@evm-ui/queries/root-keys'
+import type { ChainParams, ChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { getPageCount } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -25,10 +25,7 @@ type PoolListRequestParams = Pick<
 type PoolListQuery = ChainQuery & PoolListRequestParams & { pageSize?: ListPoolsParams['pagination'] }
 type PoolListParams = FieldsOf<PoolListQuery>
 
-export const getPoolListRootQueryKey = ({ chainId }: ChainParams) => ({
-  name: 'listPools',
-  ...rootKeys.chain({ chainId }),
-})
+export const getPoolListRootQueryKey = ({ chainId }: ChainParams) => ({ name: 'listPools', chainId })
 
 export const { useQuery: usePoolList } = queryFactory({
   queryKey: ({
@@ -49,7 +46,7 @@ export const { useQuery: usePoolList } = queryFactory({
     sortDirection,
   }: PoolListParams) => ({
     name: 'listPools',
-    ...rootKeys.chain({ chainId }),
+    chainId,
     page,
     pageSize,
     searchString,

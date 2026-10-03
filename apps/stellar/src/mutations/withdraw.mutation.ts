@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import type { WithdrawMutationContext, WithdrawMutationOptions } from '@/stellar/features/withdraw/types'
 import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import { withdrawValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
 import {
   fetchWithdrawSimulation,
@@ -14,8 +13,9 @@ import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
 export const useWithdrawMutation = ({ onReset, tokens, quote, ...params }: WithdrawMutationOptions) => {
+  const { network, pool, account } = params
   const { mutate, error, isPending } = useStellarMutation<WithdrawMutation, WithdrawMutationContext>({
-    mutationKey: [{ ...rootKeys.userPool(params), name: 'withdraw' }],
+    mutationKey: [{ network, pool, account, name: 'withdraw' }],
     buildContext: (_, baseContext) => ({ ...baseContext, ...params, quote, tokens }) as WithdrawMutationContext,
     createTransaction: (values, context) => fetchWithdrawSimulation({ ...values, ...context }, { staleTime: 0 }),
     validationParams: { ...params, quote },

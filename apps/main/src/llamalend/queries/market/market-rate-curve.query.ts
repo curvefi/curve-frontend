@@ -1,5 +1,5 @@
 import { getRateCurve, type RateCurve } from '@curvefi/prices-api/lending'
-import { ContractQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { ContractQuery } from '@evm-ui/queries/query-types'
 import { contractValidationSuite } from '@evm-ui/queries/validation/contract-validation'
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
 import { type FieldsOf } from '@ui/lib/validation/types'
@@ -11,7 +11,8 @@ export const { useQuery: useRateCurve } = queryFactory({
   queryKey: ({ contractAddress, blockchainId }: QueryParams) => ({
     name: 'rateCurve',
     version: 1,
-    ...rootKeys.contract({ contractAddress, blockchainId }),
+    blockchainId,
+    contractAddress,
   }),
   queryFn: ({ blockchainId, contractAddress }: Query): Promise<RateCurve> =>
     NoRetryError.catch404(async () => await getRateCurve(blockchainId, contractAddress)),

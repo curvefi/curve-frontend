@@ -2,7 +2,7 @@ import { isNaN } from 'lodash'
 import { test } from 'vest'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@evm-ui/queries/token-usd-rate.query'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
@@ -39,7 +39,8 @@ const {
   category: 'dex.pool',
   queryKey: ({ chainId, poolId, isWrapped, useApi }: PoolCurrencyReservesParams) => ({
     name: 'stats.currencyReserves',
-    ...rootKeys.pool({ chainId, poolId }),
+    chainId,
+    poolId,
     isWrapped,
     useApi,
   }),

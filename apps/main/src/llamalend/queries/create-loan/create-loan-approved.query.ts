@@ -1,6 +1,5 @@
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { CreateLoanDebtQuery, CreateLoanFormQueryParams } from '../../features/borrow/types'
@@ -19,7 +18,8 @@ export const {
     leverageEnabled,
   }: CreateLoanFormQueryParams) => ({
     name: 'createLoanIsApproved',
-    ...rootKeys.market({ chainId, marketId }),
+    chainId,
+    marketId,
     userCollateral,
     userBorrowed,
     leverageEnabled,

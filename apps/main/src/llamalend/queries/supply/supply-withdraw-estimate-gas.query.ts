@@ -1,12 +1,13 @@
 import { createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { requireVault, WithdrawParams, WithdrawQuery, withdrawValidationSuite } from '../validation/supply.validation'
 
 const { useQuery: useWithdrawEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, withdrawAmount, isFull, userVaultShares }: WithdrawParams) => ({
     name: 'estimateGas.withdraw',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     withdrawAmount,
     isFull,
     userVaultShares,

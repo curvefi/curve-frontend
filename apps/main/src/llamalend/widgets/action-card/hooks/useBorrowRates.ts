@@ -2,7 +2,7 @@ import { useMarketFutureRates, useMarketRates, useMarketSnapshots } from '@/llam
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
-import type { MarketParams } from '@evm-ui/queries/root-keys'
+import type { MarketParams } from '@evm-ui/queries/query-types'
 import type { MarketType } from '@evm-ui/types/market'
 import { BlockchainIds } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'

@@ -1,5 +1,4 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type CollateralHealthParams, type CollateralHealthQuery } from '../validation/manage-loan.types'
@@ -8,7 +7,9 @@ import { collateralHealthValidationSuite } from '../validation/manage-loan.valid
 export const { getQueryOptions: getAddCollateralHealthOptions } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral, isFull }: CollateralHealthParams) => ({
     name: 'addCollateralHealth',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     userCollateral,
     isFull,
   }),

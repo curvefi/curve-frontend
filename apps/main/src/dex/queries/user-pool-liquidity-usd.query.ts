@@ -1,5 +1,5 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type UserPoolParams, type UserPoolQuery } from '@evm-ui/queries/root-keys'
+import type { UserPoolParams, UserPoolQuery } from '@evm-ui/queries/query-types'
 import { userPoolValidationSuite } from '@evm-ui/queries/validation/user-pool-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
@@ -8,7 +8,9 @@ export const { useQuery: useUserPoolLiquidityUsdQuery, invalidate: invalidateUse
   {
     queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) => ({
       name: 'userLiquidityUSD',
-      ...rootKeys.userPool({ chainId, poolId, userAddress }),
+      chainId,
+      poolId,
+      userAddress,
     }),
     category: 'dex.user',
     queryFn: async ({ poolId, userAddress }: UserPoolQuery) =>

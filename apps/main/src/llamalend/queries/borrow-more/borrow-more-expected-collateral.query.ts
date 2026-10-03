@@ -1,7 +1,6 @@
 import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
@@ -44,7 +43,9 @@ export const {
     routeId,
   }: BorrowMoreParams) => ({
     name: 'borrowMoreExpectedCollateral',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     userCollateral,
     userBorrowed,
     debt,

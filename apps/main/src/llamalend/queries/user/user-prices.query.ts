@@ -1,6 +1,6 @@
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { loanExistsValidationGroup } from '@evm-ui/queries/validation/loan-exists-validation'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,7 +21,9 @@ const calculatePriceDropToLiquidationThreshold = (currentPrice: Decimal, [, liqu
 const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) => ({
     name: 'userPrices',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     loanExists,
   }),
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<Range<Decimal>> =>

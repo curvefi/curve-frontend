@@ -1,7 +1,6 @@
 import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import { withdrawSimulationValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toBigIntArray, toWei, toWeiArray } from '@ui/lib/decimal'
@@ -27,7 +26,8 @@ export const {
     slippage,
   }: WithdrawSimulationParams) => ({
     name: 'remove_liquidity_imbalance',
-    ...rootKeys.pool({ network, pool }),
+    network,
+    pool,
     amounts,
     decimals,
     account,

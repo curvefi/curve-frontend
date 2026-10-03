@@ -2,8 +2,7 @@ import { getMarket } from '@/llamalend/llama.utils'
 import { fetchChartBandBalancesData, sortBands } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { getUserPositionImplementation, normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
 import { liquidationBandValidationGroup } from '@/llamalend/queries/validation/bands-validation'
-import type { UserMarketQuery } from '@evm-ui/queries/root-keys'
-import { rootKeys } from '@evm-ui/queries/root-keys'
+import type { UserMarketQuery } from '@evm-ui/queries/query-types'
 import { loanExistsValidationGroup } from '@evm-ui/queries/validation/loan-exists-validation'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -25,7 +24,9 @@ const userBandsBalancesValidationSuite = createValidationSuite((params: UserBand
 export const { useQuery: useUserBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: UserBandsBalancesParams) => ({
     name: QUERY_KEY,
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     loanExists,
     liquidationBand,
   }),

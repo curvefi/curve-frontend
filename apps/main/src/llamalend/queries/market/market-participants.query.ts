@@ -1,7 +1,6 @@
 import { getMarketEndpoint } from '@/llamalend/llama.utils'
 import { getMarketBorrowers, getVaultDepositors, type PaginatedOptions } from '@curvefi/prices-api/llamalend'
-import { rootKeys } from '@evm-ui/queries/root-keys'
-import type { ContractQuery } from '@evm-ui/queries/root-keys'
+import type { ContractQuery } from '@evm-ui/queries/query-types'
 import { contractValidationSuite } from '@evm-ui/queries/validation/contract-validation'
 import { MarketType } from '@evm-ui/types/market'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -14,7 +13,8 @@ type MarketBorrowersQuery = MarketParticipantsQuery & { marketType: MarketType }
 export const { useQuery: useMarketBorrowers } = queryFactory({
   queryKey: ({ blockchainId, contractAddress, page, perPage, marketType }: FieldsOf<MarketBorrowersQuery>) => ({
     name: 'getMarketBorrowers',
-    ...rootKeys.contract({ blockchainId, contractAddress }),
+    blockchainId,
+    contractAddress,
     page,
     perPage,
     marketType,
@@ -29,7 +29,8 @@ export const { useQuery: useMarketBorrowers } = queryFactory({
 export const { useQuery: useMarketSuppliers } = queryFactory({
   queryKey: ({ blockchainId, contractAddress, page, perPage }: MarketParticipantsParams) => ({
     name: 'getVaultDepositors',
-    ...rootKeys.contract({ blockchainId, contractAddress }),
+    blockchainId,
+    contractAddress,
     page,
     perPage,
   }),

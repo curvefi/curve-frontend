@@ -3,7 +3,6 @@ import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { parseMutationRoute } from '@evm-ui/queries/router-api'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -26,7 +25,8 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
       leverageEnabled,
     }: GasEstimateParams) => ({
       name: 'estimateGas.createLoanApprove',
-      ...rootKeys.market({ chainId, marketId }),
+      chainId,
+      marketId,
       userBorrowed,
       userCollateral,
       leverageEnabled,
@@ -67,7 +67,8 @@ const {
     routeId,
   }: GasEstimateParams) => ({
     name: 'estimateGas.createLoan',
-    ...rootKeys.market({ chainId, marketId }),
+    chainId,
+    marketId,
     userBorrowed,
     userCollateral,
     debt,

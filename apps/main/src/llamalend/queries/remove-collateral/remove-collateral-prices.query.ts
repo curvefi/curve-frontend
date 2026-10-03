@@ -1,5 +1,4 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { Range } from '@ui/features/queries/util'
@@ -10,7 +9,9 @@ import { maxRemovableCollateralKey } from './remove-collateral-max-removable.que
 export const { useQuery: useRemoveCollateralPrices } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) => ({
     name: 'removeCollateralPrices',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     userCollateral,
   }),
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>

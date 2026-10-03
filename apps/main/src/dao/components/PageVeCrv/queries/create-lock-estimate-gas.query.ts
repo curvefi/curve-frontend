@@ -1,6 +1,5 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { useCreateLockIsApproved } from './create-lock-approved.query'
 import type { CreateLockParams, CreateLockQuery } from './create-lock.types'
@@ -9,7 +8,8 @@ import { createLockApprovalQueryValidationSuite, createLockQueryValidationSuite 
 const { useQuery: useCreateLockApproveEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount }: CreateLockParams) => ({
     name: 'boosting.estimateGas.approve',
-    ...rootKeys.userChain({ chainId, userAddress }),
+    chainId,
+    userAddress,
     lockedAmount,
   }),
   queryFn: async ({ lockedAmount }: CreateLockQuery) =>
@@ -21,7 +21,8 @@ const { useQuery: useCreateLockApproveEstimateGas } = queryFactory({
 const { useQuery: useCreateLockEstimateGas } = queryFactory({
   queryKey: ({ chainId, userAddress, lockedAmount, days }: CreateLockParams) => ({
     name: 'boosting.estimateGas.createLock',
-    ...rootKeys.userChain({ chainId, userAddress }),
+    chainId,
+    userAddress,
     lockedAmount,
     days,
   }),

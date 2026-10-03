@@ -1,5 +1,5 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -7,7 +7,9 @@ import { queryFactory } from '@ui/features/queries/factory'
 export const { useQuery: useUserDiscounts, queryKey: getUserDiscountsKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
     name: 'userDiscounts',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
   }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const { loanDiscount, liquidationDiscount } =

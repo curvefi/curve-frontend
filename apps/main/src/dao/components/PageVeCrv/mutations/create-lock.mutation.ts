@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type OnTransactionSuccess, useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
@@ -24,7 +23,7 @@ export const useCreateLockMutation = ({
 }) => {
   const config = useConfig()
   const { mutate, error, isPending } = useEvmMutation<CreateLockMutation>({
-    mutationKey: [{ ...rootKeys.userChain({ chainId, userAddress }), name: 'lockCrv.create' }] as const,
+    mutationKey: [{ chainId, userAddress, name: 'lockCrv.create' }] as const,
     mutationFn: async ({ lockedAmount, days }) => {
       const params = { chainId, userAddress, lockedAmount, days }
       const curveApi = requireLib('curveApi')

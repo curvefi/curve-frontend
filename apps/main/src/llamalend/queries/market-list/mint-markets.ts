@@ -8,7 +8,7 @@ import {
   USER_MARKETS_FIRST_PAGE,
 } from '@curvefi/prices-api/crvusd'
 import { paginate } from '@curvefi/prices-api/paginate'
-import { rootKeys, type ChainNameQuery, type UserQuery } from '@evm-ui/queries/root-keys'
+import type { ChainNameQuery, UserQuery } from '@evm-ui/queries/query-types'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { pricesApiChainNameValidationGroup } from '@evm-ui/queries/validation/prices-chain-validation'
 import {
@@ -74,8 +74,9 @@ const {
   queryKey: ({ userAddress, blockchainId, contractAddress }: UserContractParams) => ({
     name: 'getUserMarketStats',
     version: 1,
-    ...rootKeys.contract({ blockchainId, contractAddress }),
-    ...rootKeys.user({ userAddress }),
+    blockchainId,
+    contractAddress,
+    userAddress,
   }),
   queryFn: ({ userAddress, blockchainId, contractAddress }: UserContractQuery) =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),

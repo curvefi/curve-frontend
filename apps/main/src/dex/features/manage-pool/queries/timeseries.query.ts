@@ -1,6 +1,6 @@
 import { getRefuelTimeseries } from '@curvefi/prices-api/refuel'
 import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
-import { rootKeys, type ChainNameQuery } from '@evm-ui/queries/root-keys'
+import type { ChainNameQuery } from '@evm-ui/queries/query-types'
 import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
 import type { Address } from '@primitives/address.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -22,7 +22,7 @@ type RefuelTimeseriesParams = FieldsOf<RefuelTimeseriesQuery>
 export const { useQuery: useRefuelTimeseries } = queryFactory({
   queryKey: ({ blockchainId, poolAddress, start, end, page, pageSize }: RefuelTimeseriesParams) => ({
     name: 'getRefuelTimeseries',
-    ...rootKeys.chainName({ blockchainId }),
+    blockchainId,
     poolAddress,
     start,
     end,

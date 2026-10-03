@@ -1,5 +1,4 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import {
   type BalanceParams,
   type BalanceQuery,
@@ -16,8 +15,9 @@ export const {
 } = queryFactory({
   queryKey: ({ network, token, account, decimals }: BalanceParams) => ({
     name: 'balance',
-    ...rootKeys.token({ network, token }),
-    ...rootKeys.user({ account }),
+    network,
+    token,
+    account,
     decimals,
   }),
   queryFn: async ({ network, token, account, decimals }: BalanceQuery) =>

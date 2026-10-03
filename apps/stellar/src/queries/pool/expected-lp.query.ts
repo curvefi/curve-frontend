@@ -1,6 +1,5 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import {
   quoteValidationSuite,
   type ExpectedLpParams,
@@ -16,7 +15,8 @@ export const {
 } = queryFactory({
   queryKey: ({ network, pool, amounts, decimals, supply, isDeposit, maxAmounts }: ExpectedLpParams) => ({
     name: 'calc_token_amount',
-    ...rootKeys.pool({ network, pool }),
+    network,
+    pool,
     amounts,
     decimals,
     supply,

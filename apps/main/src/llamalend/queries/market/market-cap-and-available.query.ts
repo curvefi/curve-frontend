@@ -1,17 +1,13 @@
 import { getMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { type MarketQuery, rootKeys, MarketParams } from '@evm-ui/queries/root-keys'
+import type { MarketQuery, MarketParams } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 import { IS_GETTER, USE_API } from './market.constants'
 
 export const { useQuery: useMarketCapAndAvailable } = queryFactory({
-  queryKey: ({ chainId, marketId }: MarketParams) => ({
-    name: 'capAndAvailable',
-    version: 1,
-    ...rootKeys.market({ chainId, marketId }),
-  }),
+  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'capAndAvailable', version: 1, chainId, marketId }),
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)
     if (market instanceof LendMarketTemplate) {

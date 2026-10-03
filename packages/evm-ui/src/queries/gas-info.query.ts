@@ -4,7 +4,7 @@ import { ethAddress } from 'viem'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { AnyCurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { type ChainQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { ChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { gweiToEther, gweiToWai, weiToGwei } from '@evm-ui/utils'
 import type { Provider } from '@evm-ui/utils/ethers'
@@ -104,7 +104,7 @@ const {
 } = queryFactory({
   queryKey: ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoParams) => ({
     name: 'gasInfo',
-    ...rootKeys.chain({ chainId }),
+    chainId,
     gasPricesUrl,
     gasPricesUrlL2,
   }),

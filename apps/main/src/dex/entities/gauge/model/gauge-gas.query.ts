@@ -8,7 +8,6 @@ import type {
   DepositRewardQuery,
 } from '@/dex/entities/gauge/types'
 import { createApprovedEstimateGasHook, createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import {
   gaugeAddRewardValidationSuite,
@@ -24,7 +23,8 @@ import {
 const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
   queryKey: ({ chainId, poolId, rewardTokenId, amount, userBalance }: DepositRewardApproveParams) => ({
     name: 'estimateGas.depositRewardApprove',
-    ...rootKeys.gauge({ chainId, poolId }),
+    chainId,
+    poolId,
     rewardTokenId,
     amount,
     userBalance,
@@ -40,7 +40,8 @@ const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
 const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
   queryKey: ({ chainId, poolId, rewardTokenId, distributorId }: AddRewardParams) => ({
     name: 'estimateGas.addRewardToken',
-    ...rootKeys.gauge({ chainId, poolId }),
+    chainId,
+    poolId,
     rewardTokenId,
     distributorId,
   }),
@@ -56,7 +57,8 @@ const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
 const { useQuery: useEstimateGasDepositReward } = queryFactory({
   queryKey: ({ chainId, poolId, rewardTokenId, amount, epoch, userBalance }: DepositRewardParams) => ({
     name: 'estimateGas.depositReward',
-    ...rootKeys.gauge({ chainId, poolId }),
+    chainId,
+    poolId,
     rewardTokenId,
     amount,
     epoch,

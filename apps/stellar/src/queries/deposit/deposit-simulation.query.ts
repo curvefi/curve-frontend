@@ -1,7 +1,6 @@
 import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import type { DepositParams, DepositQuery } from '@/stellar/features/deposit/types'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import { depositValidationSuite } from '@/stellar/queries/validation/deposit.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toBigIntArray, toWei, toWeiArray } from '@ui/lib/decimal'
@@ -13,7 +12,8 @@ export const {
 } = queryFactory({
   queryKey: ({ network, pool, amounts, decimals, account, minMint, supply, maxAmounts }: DepositParams) => ({
     name: 'add_liquidity',
-    ...rootKeys.pool({ network, pool }),
+    network,
+    pool,
     amounts,
     decimals,
     account,

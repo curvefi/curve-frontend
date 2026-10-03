@@ -1,6 +1,5 @@
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
@@ -19,7 +18,9 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
     isFull,
   }: RepayParams) => ({
     name: 'repayFutureLeverage',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     stateCollateral,
     userCollateral,
     userBorrowed,

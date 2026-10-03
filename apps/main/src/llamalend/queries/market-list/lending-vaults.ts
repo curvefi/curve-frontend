@@ -10,7 +10,7 @@ import {
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
 import { paginate } from '@curvefi/prices-api/paginate'
-import { rootKeys, type ChainNameQuery, type UserParams, type UserQuery } from '@evm-ui/queries/root-keys'
+import type { ChainNameQuery, UserParams, UserQuery } from '@evm-ui/queries/query-types'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { pricesApiChainNameValidationGroup } from '@evm-ui/queries/validation/prices-chain-validation'
 import {
@@ -76,8 +76,9 @@ const {
   queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) => ({
     name: 'getUserMarketStats',
     version: 1,
-    ...rootKeys.contract({ blockchainId, contractAddress }),
-    ...rootKeys.user({ userAddress }),
+    blockchainId,
+    contractAddress,
+    userAddress,
   }),
   queryFn: async ({ userAddress, contractAddress, blockchainId }: UserContractQuery): Promise<UserMarketStats> =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),

@@ -9,7 +9,6 @@ import {
   requireVault,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -28,7 +27,7 @@ export const useStakeMutation = ({ network, network: { chainId }, marketId, user
   const { mutate, error, isPending } = useMarketMutation<StakeMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'stake' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'stake' }] as const,
     mutationFn: async ({ stakeShares, isFull }, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({

@@ -3,7 +3,7 @@ import { getMarket } from '@/llamalend/llama.utils'
 import { USE_API } from '@/llamalend/queries/market/market.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { type MarketQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { MarketQuery } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -32,7 +32,8 @@ const fetchFutureRates = async (marketId: string, reserves: Decimal, debtDelta: 
 export const { useQuery: useMarketFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, debtDelta }: BorrowFutureApyParams) => ({
     name: 'futureRates',
-    ...rootKeys.market({ chainId, marketId }),
+    chainId,
+    marketId,
     debtDelta,
   }),
   queryFn: async ({ marketId, debtDelta }: BorrowApyQuery) => await fetchFutureRates(marketId, RESERVES, debtDelta),
@@ -51,7 +52,8 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
 export const { useQuery: useMarketSupplyFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, reserves }: SupplyFutureApyParams) => ({
     name: 'futureRates',
-    ...rootKeys.market({ chainId, marketId }),
+    chainId,
+    marketId,
     reserves,
   }),
   queryFn: async ({ marketId, reserves }: SupplyApyQuery) => await fetchFutureRates(marketId, reserves, DEBT),

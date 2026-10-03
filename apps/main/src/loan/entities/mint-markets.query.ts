@@ -2,7 +2,7 @@ import { USE_API } from '@/llamalend/queries/market/market.constants'
 import type { ILlamma } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { ChainParams, rootKeys } from '@evm-ui/queries/root-keys'
+import type { ChainParams } from '@evm-ui/queries/query-types'
 import { llamaApiValidationSuite } from '@evm-ui/queries/validation/curve-api-validation'
 import type { Address } from '@primitives/address.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -51,7 +51,7 @@ const getMarketData = ({
 })
 
 export const { useQuery: useMintMarkets } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => ({ name: 'getMintMarkets', ...rootKeys.chain({ chainId }) }),
+  queryKey: ({ chainId }: ChainParams) => ({ name: 'getMintMarkets', chainId }),
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   queryFn: async (): Promise<Record<string | Address, MintMarketData>> => {
     const api = requireLib('llamaApi')

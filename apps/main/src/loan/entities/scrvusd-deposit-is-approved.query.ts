@@ -1,5 +1,4 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { ScrvUsdDepositParams, ScrvUsdDepositQuery } from './scrvusd.validation'
 import { scrvUsdDepositValidationSuite } from './scrvusd.validation'
@@ -11,7 +10,8 @@ export const {
 } = queryFactory({
   queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
     name: 'st_crvUSD.depositIsApproved',
-    ...rootKeys.userChain({ chainId, userAddress }),
+    chainId,
+    userAddress,
     depositAmount,
   }),
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>

@@ -7,7 +7,6 @@ import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/vali
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 
 type GasEstimateParams = BorrowMoreParams & { isControllerApproved?: boolean }
@@ -25,7 +24,9 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       routeId,
     }: GasEstimateParams) => ({
       name: 'estimateGas.borrowMoreApprove',
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      chainId,
+      marketId,
+      userAddress,
       userCollateral,
       userBorrowed,
       maxDebt,
@@ -66,7 +67,9 @@ const {
     routeId,
   }: GasEstimateParams) => ({
     name: 'estimateGas.borrowMore',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     userCollateral,
     userBorrowed,
     debt,

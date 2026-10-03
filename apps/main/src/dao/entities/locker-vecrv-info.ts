@@ -1,8 +1,7 @@
 import { invalidateLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys } from '@evm-ui/queries/root-keys'
-import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/root-keys'
+import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -24,10 +23,7 @@ const lockerVecrvValidationSuite = createValidationSuite(({ chainId, userAddress
 })
 
 const { useQuery: useLockerCrv, invalidate: invalidateLockerCrv } = queryFactory({
-  queryKey: ({ chainId, userAddress }: LockerVecrvParams) => ({
-    name: 'boosting.getCrv',
-    ...rootKeys.userChain({ chainId, userAddress }),
-  }),
+  queryKey: ({ chainId, userAddress }: LockerVecrvParams) => ({ name: 'boosting.getCrv', chainId, userAddress }),
   queryFn: async ({ userAddress }: LockerVecrvQuery) =>
     (await requireLib('curveApi').boosting.getCrv([userAddress])) as Decimal,
   category: 'dao.user',
@@ -38,7 +34,8 @@ const { useQuery: useLockerLockedAmountAndUnlockTime, invalidate: invalidateLock
   queryFactory({
     queryKey: ({ chainId, userAddress }: LockerVecrvParams) => ({
       name: 'boosting.getLockedAmountAndUnlockTime',
-      ...rootKeys.userChain({ chainId, userAddress }),
+      chainId,
+      userAddress,
     }),
     queryFn: async ({ userAddress }: LockerVecrvQuery) =>
       (await requireLib('curveApi').boosting.getLockedAmountAndUnlockTime([userAddress])) as LockedAmountAndUnlockTime,
@@ -47,10 +44,7 @@ const { useQuery: useLockerLockedAmountAndUnlockTime, invalidate: invalidateLock
   })
 
 const { useQuery: useLockerVeCrv, invalidate: invalidateLockerVeCrv } = queryFactory({
-  queryKey: ({ chainId, userAddress }: LockerVecrvParams) => ({
-    name: 'boosting.getVeCrv',
-    ...rootKeys.userChain({ chainId, userAddress }),
-  }),
+  queryKey: ({ chainId, userAddress }: LockerVecrvParams) => ({ name: 'boosting.getVeCrv', chainId, userAddress }),
   queryFn: async ({ userAddress }: LockerVecrvQuery) =>
     (await requireLib('curveApi').boosting.getVeCrv([userAddress])) as Decimal,
   category: 'dao.user',

@@ -2,7 +2,7 @@ import { USE_API } from '@/llamalend/queries/market/market.constants'
 import type { IOneWayMarket } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { ChainParams, rootKeys } from '@evm-ui/queries/root-keys'
+import type { ChainParams } from '@evm-ui/queries/query-types'
 import { llamaApiValidationSuite } from '@evm-ui/queries/validation/curve-api-validation'
 import { MarketVersion } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
@@ -27,7 +27,7 @@ const getMarketData = ({
 }: LendMarketTemplate): LendMarketData => ({ id, name, version, addresses, borrowed_token, collateral_token })
 
 export const { useQuery: useLendMarkets } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => ({ name: 'getLendMarkets', ...rootKeys.chain({ chainId }) }),
+  queryKey: ({ chainId }: ChainParams) => ({ name: 'getLendMarkets', chainId }),
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- type is for documentation purposes
   queryFn: async (): Promise<Record<string | Address, LendMarketData>> => {
     const api = requireLib('llamaApi')

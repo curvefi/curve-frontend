@@ -1,5 +1,4 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import type {
@@ -13,7 +12,8 @@ import { scrvUsdDepositValidationSuite, scrvUsdWithdrawValidationSuite } from '.
 export const { useQuery: useScrvUsdPreviewDeposit } = queryFactory({
   queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
     name: 'st_crvUSD.previewDeposit',
-    ...rootKeys.userChain({ chainId, userAddress }),
+    chainId,
+    userAddress,
     depositAmount,
   }),
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
@@ -25,7 +25,8 @@ export const { useQuery: useScrvUsdPreviewDeposit } = queryFactory({
 export const { useQuery: useScrvUsdPreviewWithdraw } = queryFactory({
   queryKey: ({ chainId, userAddress, withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawParams) => ({
     name: 'st_crvUSD.previewRedeem',
-    ...rootKeys.userChain({ chainId, userAddress }),
+    chainId,
+    userAddress,
     withdrawAmount,
     isFull,
     maxWithdrawAmount,

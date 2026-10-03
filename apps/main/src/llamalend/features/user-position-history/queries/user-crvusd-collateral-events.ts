@@ -1,5 +1,5 @@
 import { getUserMarketCollateralEvents, type UserCollateralEvents } from '@curvefi/prices-api/crvusd'
-import { type UserContractParams, type UserContractQuery } from '@evm-ui/queries/root-keys'
+import type { UserContractParams, UserContractQuery } from '@evm-ui/queries/query-types'
 import { queryFactory } from '@ui/features/queries/factory'
 import { userCollateralEventsValidationSuite } from './validation/user-collateral-events-validation'
 

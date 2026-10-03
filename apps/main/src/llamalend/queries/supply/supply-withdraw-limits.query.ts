@@ -1,5 +1,4 @@
-import { rootKeys } from '@evm-ui/queries/root-keys'
-import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { requireVault, supplyUserValidationSuite } from '../validation/supply.validation'
@@ -8,7 +7,9 @@ import { requireVault, supplyUserValidationSuite } from '../validation/supply.va
 export const { useQuery: useVaultMaxWithdrawAmount } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
     name: 'maxWithdraw',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
   }),
   queryFn: async ({ marketId }: UserMarketQuery) => (await requireVault(marketId).vault.maxWithdraw()) as Decimal,
   category: 'llamalend.supply',
@@ -19,7 +20,9 @@ export const { useQuery: useVaultMaxWithdrawAmount } = queryFactory({
 export const { useQuery: useVaultMaxRedeemShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
     name: 'maxRedeem',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
   }),
   queryFn: async ({ marketId }: UserMarketQuery) => (await requireVault(marketId).vault.maxRedeem()) as Decimal,
   category: 'llamalend.supply',

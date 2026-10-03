@@ -7,7 +7,6 @@ import { fetchAddCollateralIsApproved } from '@/llamalend/queries/add-collateral
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -40,7 +39,7 @@ export const useAddCollateralMutation = ({
   const { mutate, error, isPending } = useMarketMutation<AddCollateralMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'add-collateral' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'add-collateral' }] as const,
     mutationFn: async (variables, { market }) => {
       await waitForApproval({
         isApproved: () =>

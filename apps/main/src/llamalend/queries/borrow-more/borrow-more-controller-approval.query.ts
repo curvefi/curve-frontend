@@ -1,4 +1,4 @@
-import { rootKeys, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -11,7 +11,9 @@ export const { useQuery: useBorrowMoreControllerApproval, fetchQuery: fetchBorro
   queryFactory({
     queryKey: ({ chainId, marketId, userAddress, leverageEnabled = false }: LeverageParams) => ({
       name: 'borrowMoreIsControllerApproved',
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      chainId,
+      marketId,
+      userAddress,
       leverageEnabled,
     }),
     queryFn: async ({ marketId, userAddress, leverageEnabled }: LeverageQuery) => {

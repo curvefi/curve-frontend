@@ -2,7 +2,6 @@ import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-e
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
@@ -19,7 +18,9 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     routeId,
   }: RepayParams) => ({
     name: 'repayIsFull',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     stateCollateral,
     userCollateral,
     userBorrowed,

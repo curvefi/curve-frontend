@@ -3,7 +3,7 @@ import {
   type StellarTransaction,
 } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import type { NetworkQuery } from '@/stellar/queries/root-keys'
+import type { NetworkQuery } from '@/stellar/queries/query-types'
 import { useTokenUsdRate } from '@/stellar/queries/token/token-usd-rate.query'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'

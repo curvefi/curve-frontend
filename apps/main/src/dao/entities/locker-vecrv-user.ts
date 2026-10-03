@@ -1,6 +1,6 @@
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@evm-ui/queries/root-keys'
+import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@evm-ui/queries/query-types'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { queryFactory } from '@ui/features/queries/factory'

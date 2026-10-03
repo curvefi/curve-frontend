@@ -1,5 +1,4 @@
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { StakeParams, StakeQuery, stakeValidationSuite, requireVault } from '../validation/supply.validation'
 import { useStakeIsApproved } from './supply-stake-approved.query'
@@ -7,7 +6,9 @@ import { useStakeIsApproved } from './supply-stake-approved.query'
 const { useQuery: useStakeApproveEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) => ({
     name: 'estimateGas.stakeApprove',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     stakeShares,
   }),
   queryFn: async ({ marketId, stakeShares }: StakeQuery) =>
@@ -19,7 +20,9 @@ const { useQuery: useStakeApproveEstimateGasQuery } = queryFactory({
 const { useQuery: useStakeEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) => ({
     name: 'estimateGas.stake',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     stakeShares,
   }),
   queryFn: async ({ marketId, stakeShares }: StakeQuery) =>

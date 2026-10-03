@@ -1,5 +1,5 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -39,7 +39,9 @@ export const {
 } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, isFull }: UserHealthParams) => ({
     name: 'userHealth',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     isFull,
   }),
   queryFn: async ({ marketId, userAddress, isFull }: UserHealthQuery) =>

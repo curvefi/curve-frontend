@@ -1,13 +1,15 @@
 import { getMarket } from '@/llamalend/llama.utils'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useLoanExists } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
     name: 'loanExists',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
   }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getMarket(marketId)

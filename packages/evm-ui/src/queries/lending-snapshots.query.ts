@@ -1,5 +1,5 @@
 import { getSnapshots, Snapshot } from '@curvefi/prices-api/llamalend'
-import { ContractQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { ContractQuery } from '@evm-ui/queries/query-types'
 import { contractValidationSuite } from '@evm-ui/queries/validation/contract-validation'
 import type { TimeOption } from '@evm-ui/queries/validation/time-option-validation'
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
@@ -15,7 +15,8 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
   queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) => ({
     name: 'lendingSnapshots',
     version: 5,
-    ...rootKeys.contract({ contractAddress, blockchainId }),
+    blockchainId,
+    contractAddress,
     timeOption,
     limit,
   }),

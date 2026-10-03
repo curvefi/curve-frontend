@@ -1,7 +1,6 @@
 import { zeroAddress } from 'viem'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys } from '@evm-ui/queries/root-keys'
-import type { MarketQuery, MarketParams } from '@evm-ui/queries/root-keys'
+import type { MarketQuery, MarketParams } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type Range } from '@ui/features/queries/util'
@@ -11,10 +10,7 @@ import { USE_API } from './market.constants'
  * Fetches on chain rewards (direct token incentives or crv emissions) for supply vaults
  * */
 export const { useQuery: useMarketVaultOnChainRewards } = queryFactory({
-  queryKey: ({ chainId, marketId }: MarketParams) => ({
-    name: 'vault.rewards',
-    ...rootKeys.market({ chainId, marketId }),
-  }),
+  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'vault.rewards', chainId, marketId }),
   queryFn: async ({ marketId }: MarketQuery) => {
     const { vault, addresses } = requireLib('llamaApi').getLendMarket(marketId)
     const [rewardsApr, crvRates] = await Promise.all([

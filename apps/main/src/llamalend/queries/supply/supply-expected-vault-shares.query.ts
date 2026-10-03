@@ -1,4 +1,3 @@
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import {
@@ -17,7 +16,9 @@ import {
 export const { useQuery: useDepositExpectedVaultShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) => ({
     name: 'previewDeposit',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     depositAmount,
   }),
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
@@ -32,7 +33,9 @@ export const { useQuery: useDepositExpectedVaultShares } = queryFactory({
 export const { useQuery: useWithdrawRemovableVaultShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, withdrawAmount }: WithdrawParams) => ({
     name: 'previewWithdraw',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
     withdrawAmount,
   }),
   queryFn: async ({ marketId, withdrawAmount }: WithdrawQuery) =>

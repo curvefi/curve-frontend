@@ -1,6 +1,5 @@
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { rootKeys } from '@evm-ui/queries/root-keys'
-import type { MarketQuery, MarketParams } from '@evm-ui/queries/root-keys'
+import type { MarketQuery, MarketParams } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { MarketVersion } from '@evm-ui/types/market'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -9,10 +8,7 @@ import { getLendMarketVersion, getMarket } from '../../llama.utils'
 import { convertRates } from '../../rates.utils'
 
 export const { useQuery: useMarketParameters } = queryFactory({
-  queryKey: ({ chainId, marketId }: MarketParams) => ({
-    name: 'parameters',
-    ...rootKeys.market({ chainId, marketId }),
-  }),
+  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'parameters', chainId, marketId }),
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)
     if (market instanceof MintMarketTemplate) {

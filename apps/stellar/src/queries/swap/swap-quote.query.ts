@@ -1,6 +1,5 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import type { SwapQuoteParams, SwapQuoteQuery } from '@/stellar/features/swap/types'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import { swapQuoteValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import { SWAP_FIELDS } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -41,7 +40,8 @@ export const {
     maxOutput,
   }: SwapQuoteParams) => ({
     name: 'swap-quote',
-    ...rootKeys.pool({ network, pool }),
+    network,
+    pool,
     editedSide,
     fromIndex,
     toIndex,

@@ -2,7 +2,7 @@ import { resetIsAvailableQueryKey } from '@/llamalend/queries/reset/reset-is-ava
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import { resetSupportedValidationSuite } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
@@ -10,7 +10,9 @@ import { queryFactory } from '@ui/features/queries/factory'
 export const { useQuery: useTokensToShrink } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) => ({
     name: 'tokensToShrink',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+    chainId,
+    marketId,
+    userAddress,
   }),
   queryFn: async ({ marketId, userAddress }: UserMarketQuery<IChainId>) =>
     // First parameter of tokensToShrink called dCollateral is for leverage, but we don't support that yet so we set it to zero for now.

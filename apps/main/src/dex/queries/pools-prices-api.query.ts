@@ -1,16 +1,13 @@
 import { isAddress, type Address } from 'viem'
 import { getPools } from '@curvefi/prices-api/pools'
-import { rootKeys, type ChainNameParams, type ChainNameQuery } from '@evm-ui/queries/root-keys'
+import type { ChainNameParams, ChainNameQuery } from '@evm-ui/queries/query-types'
 import { pricesApiChainValidationSuite } from '@evm-ui/queries/validation/prices-chain-validation'
 import { fromEntries, maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { mapQuery } from '@ui/features/queries/util'
 
 const { useQuery: usePoolsPricesApi } = queryFactory({
-  queryKey: ({ blockchainId }: ChainNameParams) => ({
-    name: 'pools-prices-api',
-    ...rootKeys.chainName({ blockchainId }),
-  }),
+  queryKey: ({ blockchainId }: ChainNameParams) => ({ name: 'pools-prices-api', blockchainId }),
   queryFn: async ({ blockchainId }: ChainNameQuery) => {
     const { pools } = await getPools(blockchainId)
     return fromEntries(pools.map(pool => [pool.address.toLocaleLowerCase(), pool]))
