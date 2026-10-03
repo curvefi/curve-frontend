@@ -1,7 +1,6 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type FieldsOf } from '@ui/lib/validation/types'
 import type { CollateralQuery } from '../validation/manage-loan.types'
@@ -12,11 +11,8 @@ type AddCollateralGasQuery<T = IChainId> = CollateralQuery<T>
 type AddCollateralGasParams<T = IChainId> = FieldsOf<AddCollateralGasQuery<T>>
 
 const { useQuery: useAddCollateralApproveGasEstimate } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) => ({
-    name: 'estimateGas.addCollateralApprove',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userCollateral,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) =>
+    ({ name: 'estimateGas.addCollateralApprove', chainId, marketId, userAddress, userCollateral }) as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) =>
     await getLoanImplementation(marketId).estimateGas.addCollateralApprove(userCollateral),
   category: 'llamalend.addCollateral',
@@ -24,11 +20,8 @@ const { useQuery: useAddCollateralApproveGasEstimate } = queryFactory({
 })
 
 const { useQuery: useAddCollateralGasEstimate } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) => ({
-    name: 'estimateGas.addCollateral',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userCollateral,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) =>
+    ({ name: 'estimateGas.addCollateral', chainId, marketId, userAddress, userCollateral }) as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) =>
     await getLoanImplementation(marketId).estimateGas.addCollateral(userCollateral),
   category: 'llamalend.addCollateral',

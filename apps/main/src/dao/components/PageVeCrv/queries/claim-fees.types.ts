@@ -1,5 +1,5 @@
 import type { ChainId } from '@/dao/types/dao.types'
-import type { UserChainQuery } from '@evm-ui/queries/root-keys'
+import type { UserChainQuery } from '@evm-ui/queries/query-types'
 import { CRVUSD_ADDRESS, THREECRV_ADDRESS } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { FieldsOf } from '@ui/lib/validation/types'

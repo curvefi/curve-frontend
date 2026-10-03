@@ -1,6 +1,6 @@
 import { asStellarContract } from '@/stellar/features/connect-wallet/address'
 import { usePoolList } from '@/stellar/features/pool-list/usePoolList'
-import type { NetworkQuery } from '@/stellar/queries/root-keys'
+import type { NetworkQuery } from '@/stellar/queries/query-types'
 import { StellarUrls } from '@/stellar/routes/routes'
 import Stack from '@mui/material/Stack'
 import { ListPageLayout } from '@ui/features/layout/ListPageLayout'

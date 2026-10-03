@@ -3,7 +3,6 @@ import { parseUnits, zeroAddress, type Address } from 'viem'
 import { useConfig } from 'wagmi'
 import { invalidateTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { approve, fetchHasEnoughAllowance } from '@evm-ui/queries/allowance.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import { t } from '@ui/lib/i18n'
@@ -23,7 +22,7 @@ type RefuelMutationOptions = {
 export const useRefuelMutation = ({ chainId, poolAddress, tokens, userAddress, onReset }: RefuelMutationOptions) => {
   const config = useConfig()
   const { mutate, error, isPending } = useEvmMutation<RefuelFormValues>({
-    mutationKey: [{ ...rootKeys.chain({ chainId }), name: 'refuel' }] as const,
+    mutationKey: [{ chainId, name: 'refuel' }] as const,
     mutationFn: async (form: RefuelFormValues) => {
       if (!userAddress) throw new Error('Wallet not connected')
       if (!tokens) throw new Error('Token data not available')

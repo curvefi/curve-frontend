@@ -7,7 +7,6 @@ import type {
 } from '@/stellar/features/deposit/types'
 import { fetchDepositSimulation, invalidateDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
 import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import { depositMutationValidationSuite } from '@/stellar/queries/validation/deposit.validation'
 import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { t } from '@ui/lib/i18n'
@@ -24,7 +23,7 @@ export const useDepositMutation = ({
   onReset,
 }: DepositMutationOptions) => {
   const { mutate, error, isPending } = useStellarMutation<DepositMutation, DepositMutationContext>({
-    mutationKey: [{ ...rootKeys.userPool({ network, pool, account }), name: 'deposit' }],
+    mutationKey: [{ network, pool, account, name: 'deposit' }] as const,
     buildContext: (_, baseContext) =>
       ({ ...baseContext, network, pool, tokens, quote, minMint }) as DepositMutationContext,
     createTransaction: (values, context) => fetchDepositSimulation({ ...values, ...context }, { staleTime: 0 }),

@@ -1,5 +1,5 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type PoolParams, type PoolQuery } from '@evm-ui/queries/root-keys'
+import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
@@ -7,10 +7,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 
 export const { useQuery: usePoolParameters, invalidate: invalidatePoolParameters } = queryFactory({
-  queryKey: ({ chainId, poolId }: PoolParams) => ({
-    name: 'pool.stats.parameters',
-    ...rootKeys.pool({ chainId, poolId }),
-  }),
+  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'pool.stats.parameters', chainId, poolId }) as const,
   queryFn: async ({ poolId }: PoolQuery) => await requireLib('curveApi').getPool(poolId).stats.parameters(),
   validationSuite: createValidationSuite((params: PoolParams) => {
     curveApiValidationGroup(params, { requireRpc: true })

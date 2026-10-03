@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type OnTransactionSuccess, useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import type { Address, Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -24,7 +23,7 @@ export const useWithdrawLockMutation = ({
   onWithdrawn: OnTransactionSuccess<WithdrawLockMutation>
 }) => {
   const { mutate, error, isPending } = useEvmMutation<WithdrawLockMutation>({
-    mutationKey: [{ ...rootKeys.userChain({ chainId, userAddress }), name: 'lockCrv.withdraw' }] as const,
+    mutationKey: [{ chainId, userAddress, name: 'lockCrv.withdraw' }] as const,
     mutationFn: async () => ({ hash: (await requireLib('curveApi').boosting.withdrawLockedCrv()) as Hex }),
     validationSuite: withdrawLockValidationSuite,
     validationParams: { chainId, lockedAmount, unlockTime },

@@ -1,5 +1,5 @@
 import { getUserMarketCollateralEvents, type UserCollateralEvents } from '@curvefi/prices-api/lending'
-import type { UserQuery, ContractQuery } from '@evm-ui/queries/root-keys'
+import type { UserQuery, ContractQuery } from '@evm-ui/queries/query-types'
 import { queryFactory } from '@ui/features/queries/factory'
 import { FieldsOf } from '@ui/lib/validation/types'
 import { userCollateralEventsValidationSuite } from './validation/user-collateral-events-validation'
@@ -9,13 +9,8 @@ type UserLendCollateralEventsParams = FieldsOf<UserLendCollateralEventsQuery>
 
 export const { useQuery: useUserLendCollateralEventsQuery, invalidate: invalidateUserLendCollateralEventsQuery } =
   queryFactory({
-    queryKey: ({ blockchainId, userAddress, contractAddress }: UserLendCollateralEventsParams) => ({
-      name: 'userLendCollateralEvents',
-      version: 1,
-      blockchainId,
-      userAddress,
-      contractAddress,
-    }),
+    queryKey: ({ blockchainId, userAddress, contractAddress }: UserLendCollateralEventsParams) =>
+      ({ name: 'userLendCollateralEvents', version: 1, blockchainId, userAddress, contractAddress }) as const,
     queryFn: ({
       blockchainId,
       contractAddress,

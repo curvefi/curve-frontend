@@ -1,6 +1,6 @@
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@evm-ui/queries/root-keys'
+import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@evm-ui/queries/query-types'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -9,11 +9,8 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 // There might be some overlap with locker-vecrv-info, but need to investigate and
 // refactor that at a later time.
 export const { useQuery: useLockerVecrvUser, invalidate: invalidateLockerVecrvUser } = queryFactory({
-  queryKey: ({ chainId, userAddress }: ChainParams<ChainId> & UserParams) => ({
-    name: 'locker-vecrv-user',
-    chainId,
-    userAddress,
-  }),
+  queryKey: ({ chainId, userAddress }: ChainParams<ChainId> & UserParams) =>
+    ({ name: 'locker-vecrv-user', chainId, userAddress }) as const,
   queryFn: async ({ userAddress }: ChainQuery<ChainId> & UserQuery) =>
     await requireLib('curveApi').dao.userVeCrv(userAddress),
   category: 'dao.user',

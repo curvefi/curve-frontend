@@ -3,14 +3,14 @@ import { invalidateUserVaultEventsQuery } from '@/llamalend/features/user-positi
 import { getMarket, getVaultAddress } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { rootKeys, type UserContractQuery, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserContractQuery, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { queryClient } from '@ui/features/queries/query-client'
 import { invalidateUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
 
 /**
  * Invalidates all market and user-position queries after a mutation.
- * Use rootKeys to cover all queries for the market at once, since a user action can change the whole market.
+ * Match the chain and market to cover all their queries, since a user action can change the whole market.
  */
 export const invalidateAllUserMarketDetails = ({
   marketId,
@@ -22,7 +22,7 @@ export const invalidateAllUserMarketDetails = ({
   const market = getMarket(marketId)
   ;(market as LendMarketTemplate)?.userPosition?.clearCache?.()
   return Promise.all([
-    queryClient.invalidateQueries({ queryKey: [rootKeys.market({ chainId, marketId })] }),
+    queryClient.invalidateQueries({ queryKey: [{ chainId, marketId }] }),
     invalidateUserCollateralEvents({ userAddress, contractAddress, blockchainId }),
     market instanceof LendMarketTemplate &&
       invalidateUserVaultEventsQuery({ userAddress, blockchainId, contractAddress: getVaultAddress(market) }),
