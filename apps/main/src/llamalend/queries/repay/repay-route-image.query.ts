@@ -13,17 +13,18 @@ export const { invalidate: invalidateRepayRouteImage } = queryFactory({
     userAddress,
     slippage,
     routeId,
-  }: RepayParams) => ({
-    name: 'repayRouteImage',
-    chainId,
-    marketId,
-    userAddress,
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    slippage,
-    routeId,
-  }),
+  }: RepayParams) =>
+    ({
+      name: 'repayRouteImage',
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userCollateral,
+      userBorrowed,
+      slippage,
+      routeId,
+    }) as const,
   queryFn: ({ marketId, stateCollateral, userCollateral, userBorrowed, slippage, routeId }: RepayQuery) => {
     const [type] = getRepayImplementation(marketId, {
       userCollateral,

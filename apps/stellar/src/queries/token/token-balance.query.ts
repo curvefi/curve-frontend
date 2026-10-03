@@ -13,13 +13,8 @@ export const {
   fetchQuery: fetchTokenBalance,
   invalidate: invalidateTokenBalance,
 } = queryFactory({
-  queryKey: ({ network, token, account, decimals }: BalanceParams) => ({
-    name: 'balance',
-    network,
-    token,
-    account,
-    decimals,
-  }),
+  queryKey: ({ network, token, account, decimals }: BalanceParams) =>
+    ({ name: 'balance', network, token, account, decimals }) as const,
   queryFn: async ({ network, token, account, decimals }: BalanceQuery) =>
     fromWei(
       await readContract<bigint>(network, token, 'balance', [account]).catch(error => {

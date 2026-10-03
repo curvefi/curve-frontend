@@ -7,7 +7,7 @@ import { convertRates } from '../../rates.utils'
 import { IS_GETTER, USE_API } from './market.constants'
 
 export const { useQuery: useMarketRates } = queryFactory({
-  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'rates', chainId, marketId }),
+  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'rates', chainId, marketId }) as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)
     return convertRates(

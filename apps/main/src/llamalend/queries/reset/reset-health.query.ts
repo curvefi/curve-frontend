@@ -10,14 +10,8 @@ type ResetHealthQuery<ChainId = IChainId> = ResetQuery<ChainId> & { isHealthFull
 type ResetHealthParams<ChainId = IChainId> = FieldsOf<ResetHealthQuery<ChainId>>
 
 export const { getQueryOptions: getResetHealthOptions } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0', isHealthFull }: ResetHealthParams) => ({
-    name: 'resetHealth',
-    chainId,
-    marketId,
-    userAddress,
-    userBorrowed,
-    isHealthFull,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0', isHealthFull }: ResetHealthParams) =>
+    ({ name: 'resetHealth', chainId, marketId, userAddress, userBorrowed, isHealthFull }) as const,
   queryFn: async ({ marketId, userAddress, isHealthFull, ...params }: ResetHealthQuery) =>
     (await getResetImplementation(marketId).repayHealth({
       debt: params.userBorrowed,

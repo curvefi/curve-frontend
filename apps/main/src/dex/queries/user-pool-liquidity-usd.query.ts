@@ -6,12 +6,8 @@ import { decimal } from '@ui/lib/decimal'
 
 export const { useQuery: useUserPoolLiquidityUsdQuery, invalidate: invalidateUserPoolLiquidityUsdQuery } = queryFactory(
   {
-    queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) => ({
-      name: 'userLiquidityUSD',
-      chainId,
-      poolId,
-      userAddress,
-    }),
+    queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
+      ({ name: 'userLiquidityUSD', chainId, poolId, userAddress }) as const,
     category: 'dex.user',
     queryFn: async ({ poolId, userAddress }: UserPoolQuery) =>
       requireLib('curveApi')

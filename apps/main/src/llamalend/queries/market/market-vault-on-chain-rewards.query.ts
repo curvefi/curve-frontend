@@ -10,7 +10,7 @@ import { USE_API } from './market.constants'
  * Fetches on chain rewards (direct token incentives or crv emissions) for supply vaults
  * */
 export const { useQuery: useMarketVaultOnChainRewards } = queryFactory({
-  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'vault.rewards', chainId, marketId }),
+  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'vault.rewards', chainId, marketId }) as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const { vault, addresses } = requireLib('llamaApi').getLendMarket(marketId)
     const [rewardsApr, crvRates] = await Promise.all([

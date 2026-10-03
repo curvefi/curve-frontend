@@ -5,12 +5,8 @@ import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-ty
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useResetIsAvailable, queryKey: resetIsAvailableQueryKey } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) => ({
-    name: 'resetIsAvailable',
-    chainId,
-    marketId,
-    userAddress,
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) =>
+    ({ name: 'resetIsAvailable', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery<IChainId>) =>
     await getResetImplementation(marketId).isRepayWithShrinkAvailable(userAddress),
   category: 'llamalend.repay',

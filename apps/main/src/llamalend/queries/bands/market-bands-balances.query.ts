@@ -20,12 +20,8 @@ const marketBandsBalancesValidationSuite = createValidationSuite((params: Market
 })
 
 export const { useQuery: useMarketBandsBalances } = queryFactory({
-  queryKey: ({ chainId, marketId, liquidationBand }: MarketBandsBalancesParams) => ({
-    name: QUERY_KEY,
-    chainId,
-    marketId,
-    liquidationBand,
-  }),
+  queryKey: ({ chainId, marketId, liquidationBand }: MarketBandsBalancesParams) =>
+    ({ name: QUERY_KEY, chainId, marketId, liquidationBand }) as const,
   queryFn: async ({ marketId, liquidationBand }: MarketBandsBalancesQuery) => {
     const market = getMarket(marketId)
     const normalizedLiquidationBand = liquidationBand ?? null

@@ -10,7 +10,7 @@ import type { Query, QueryProp } from '@ui/features/queries/util'
 import { fromWei } from '@ui/lib/decimal'
 
 export const { useQuery: usePoolReserves, invalidate: invalidatePoolReserves } = queryFactory({
-  queryKey: ({ network, pool }: PoolParams) => ({ name: 'get_balances', network, pool }),
+  queryKey: ({ network, pool }: PoolParams) => ({ name: 'get_balances', network, pool }) as const,
   queryFn: async ({ network, pool }: PoolQuery) =>
     (await readContract<bigint[]>(network, pool, 'get_balances')).map(value => value.toString() as Decimal),
   category: 'dex.pool',

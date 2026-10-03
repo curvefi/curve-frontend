@@ -6,13 +6,8 @@ import { type CollateralParams, type CollateralQuery } from '../validation/manag
 import { collateralValidationSuite } from '../validation/manage-loan.validation'
 
 export const { useQuery: useAddCollateralPrices } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) => ({
-    name: 'addCollateralPrices',
-    chainId,
-    marketId,
-    userAddress,
-    userCollateral,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
+    ({ name: 'addCollateralPrices', chainId, marketId, userAddress, userCollateral }) as const,
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
     (await getLoanImplementation(marketId).addCollateralPrices(userCollateral)) as Range<Decimal>,
   category: 'llamalend.addCollateral',

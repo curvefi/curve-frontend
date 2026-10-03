@@ -35,7 +35,7 @@ const userChainNameValidationSuite = createValidationSuite((params: UserChainNam
 export type LendingVault = Market & { chain: ChainName }
 
 export const { getQueryOptions: getLendingVaultsOptions, reset: resetLendingVaults } = queryFactory({
-  queryKey: () => ({ name: 'lending-vaults', version: 5 }),
+  queryKey: () => ({ name: 'lending-vaults', version: 5 }) as const,
   queryFn: async (): Promise<LendingVault[]> =>
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
       markets.map(market => ({ ...market, chain: chain as ChainName })),
@@ -50,12 +50,8 @@ const {
   invalidate: invalidateUserLendingVaultsQuery,
   reset: resetUserLendingVaultsQuery,
 } = queryFactory({
-  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) => ({
-    name: 'user-lending-vaults',
-    version: 3,
-    blockchainId,
-    userAddress,
-  }),
+  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
+    ({ name: 'user-lending-vaults', version: 3, blockchainId, userAddress }) as const,
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
     (
       await paginate(
@@ -73,13 +69,8 @@ const {
   invalidate: invalidateUserLendingVaultStats,
   reset: resetUserLendingVaultStats,
 } = queryFactory({
-  queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) => ({
-    name: 'getUserMarketStats',
-    version: 1,
-    blockchainId,
-    contractAddress,
-    userAddress,
-  }),
+  queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) =>
+    ({ name: 'getUserMarketStats', version: 1, blockchainId, contractAddress, userAddress }) as const,
   queryFn: async ({ userAddress, contractAddress, blockchainId }: UserContractQuery): Promise<UserMarketStats> =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
   category: 'llamalend.user',
@@ -120,12 +111,8 @@ const {
   invalidate: invalidateUserLendingSuppliesQuery,
   reset: resetUserLendingSuppliesQuery,
 } = queryFactory({
-  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) => ({
-    name: 'user-lending-supplies',
-    version: 6,
-    blockchainId,
-    userAddress,
-  }),
+  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
+    ({ name: 'user-lending-supplies', version: 6, blockchainId, userAddress }) as const,
   category: 'llamalend.user',
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<UserLendingSupplies> => {
     const positions = await paginate(

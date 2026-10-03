@@ -16,16 +16,17 @@ export const {
     userBorrowed = '0',
     leverageEnabled,
     routeId,
-  }: BorrowMoreParams) => ({
-    name: 'borrowMoreIsApproved',
-    chainId,
-    marketId,
-    userAddress,
-    userCollateral,
-    userBorrowed,
-    leverageEnabled,
-    routeId,
-  }),
+  }: BorrowMoreParams) =>
+    ({
+      name: 'borrowMoreIsApproved',
+      chainId,
+      marketId,
+      userAddress,
+      userCollateral,
+      userBorrowed,
+      leverageEnabled,
+      routeId,
+    }) as const,
   queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery) => {
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {

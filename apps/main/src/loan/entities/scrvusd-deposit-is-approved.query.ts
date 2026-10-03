@@ -8,12 +8,8 @@ export const {
   fetchQuery: fetchScrvUsdDepositIsApproved,
   invalidate: invalidateScrvUsdDepositIsApproved,
 } = queryFactory({
-  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
-    name: 'st_crvUSD.depositIsApproved',
-    chainId,
-    userAddress,
-    depositAmount,
-  }),
+  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) =>
+    ({ name: 'st_crvUSD.depositIsApproved', chainId, userAddress, depositAmount }) as const,
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
     await requireLib('llamaApi').st_crvUSD.depositIsApproved(depositAmount),
   category: 'savings.user',

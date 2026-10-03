@@ -102,12 +102,8 @@ const {
   fetchQuery: fetchGasInfoAndUpdateLibBase,
   setQueryData: setGasInfoAndUpdateLibBase,
 } = queryFactory({
-  queryKey: ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoParams) => ({
-    name: 'gasInfo',
-    chainId,
-    gasPricesUrl,
-    gasPricesUrlL2,
-  }),
+  queryKey: ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoParams) =>
+    ({ name: 'gasInfo', chainId, gasPricesUrl, gasPricesUrlL2 }) as const,
   queryFn: async ({ chainId: chain, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const chainId = chain as Chain

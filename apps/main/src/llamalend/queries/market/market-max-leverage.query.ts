@@ -13,7 +13,8 @@ type MaxLeverageQuery = MarketQuery<IChainId> & { range: number }
 type MaxLeverageParams = FieldsOf<MaxLeverageQuery>
 
 export const { useQuery: useMarketMaxLeverage } = queryFactory({
-  queryKey: ({ chainId, marketId, range }: MaxLeverageParams) => ({ name: 'maxLeverage', chainId, marketId, range }),
+  queryKey: ({ chainId, marketId, range }: MaxLeverageParams) =>
+    ({ name: 'maxLeverage', chainId, marketId, range }) as const,
   queryFn: async ({ marketId, range }: MaxLeverageQuery): Promise<Decimal> => {
     const market = getMarket(marketId)
     if (hasZapV2(market)) return (await market.leverageZapV2.maxLeverage(range)) as Decimal

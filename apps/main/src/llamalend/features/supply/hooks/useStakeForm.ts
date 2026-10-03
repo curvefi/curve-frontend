@@ -34,13 +34,8 @@ const emptyStakeForm = (): StakeForm => ({
 })
 
 const { useQuery: useStakeAssetsToShares } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) => ({
-    name: 'stake.assetsToShares',
-    chainId,
-    marketId,
-    userAddress,
-    assets,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) =>
+    ({ name: 'stake.assetsToShares', chainId, marketId, userAddress, assets }) as const,
   queryFn: async ({ marketId, assets }: AssetsToSharesQuery) =>
     (await requireVault(marketId).vault.convertToShares(assets)) as Decimal,
   category: 'llamalend.supply',

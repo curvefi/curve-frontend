@@ -5,7 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useScrvUsdSupplies } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => ({ name: 'st_crvUSD.totalSupplyAndCrvUSDLocked', chainId }),
+  queryKey: ({ chainId }: ChainParams) => ({ name: 'st_crvUSD.totalSupplyAndCrvUSDLocked', chainId }) as const,
   queryFn: async (_: ChainQuery) => {
     const { crvUSD, st_crvUSD } = await requireLib('llamaApi').st_crvUSD.totalSupplyAndCrvUSDLocked()
     return { crvUSD: crvUSD as Decimal, scrvUSD: st_crvUSD as Decimal }

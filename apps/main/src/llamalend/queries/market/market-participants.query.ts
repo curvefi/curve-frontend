@@ -11,14 +11,8 @@ type MarketParticipantsParams = FieldsOf<MarketParticipantsQuery>
 type MarketBorrowersQuery = MarketParticipantsQuery & { marketType: MarketType }
 
 export const { useQuery: useMarketBorrowers } = queryFactory({
-  queryKey: ({ blockchainId, contractAddress, page, perPage, marketType }: FieldsOf<MarketBorrowersQuery>) => ({
-    name: 'getMarketBorrowers',
-    blockchainId,
-    contractAddress,
-    page,
-    perPage,
-    marketType,
-  }),
+  queryKey: ({ blockchainId, contractAddress, page, perPage, marketType }: FieldsOf<MarketBorrowersQuery>) =>
+    ({ name: 'getMarketBorrowers', blockchainId, contractAddress, page, perPage, marketType }) as const,
   queryFn: ({ blockchainId, contractAddress, marketType, page, perPage }: MarketBorrowersQuery) =>
     getMarketBorrowers(blockchainId, contractAddress, { endpoint: getMarketEndpoint(marketType), page, perPage }),
 
@@ -27,13 +21,8 @@ export const { useQuery: useMarketBorrowers } = queryFactory({
 })
 
 export const { useQuery: useMarketSuppliers } = queryFactory({
-  queryKey: ({ blockchainId, contractAddress, page, perPage }: MarketParticipantsParams) => ({
-    name: 'getVaultDepositors',
-    blockchainId,
-    contractAddress,
-    page,
-    perPage,
-  }),
+  queryKey: ({ blockchainId, contractAddress, page, perPage }: MarketParticipantsParams) =>
+    ({ name: 'getVaultDepositors', blockchainId, contractAddress, page, perPage }) as const,
   queryFn: ({ blockchainId, contractAddress, page, perPage }: MarketParticipantsQuery) =>
     getVaultDepositors(blockchainId, contractAddress, { page, perPage }),
   category: 'llamalend.market',

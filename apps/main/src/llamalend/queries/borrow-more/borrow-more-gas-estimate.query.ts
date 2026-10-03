@@ -22,17 +22,18 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       maxDebt,
       leverageEnabled,
       routeId,
-    }: GasEstimateParams) => ({
-      name: 'estimateGas.borrowMoreApprove',
-      chainId,
-      marketId,
-      userAddress,
-      userCollateral,
-      userBorrowed,
-      maxDebt,
-      leverageEnabled,
-      routeId,
-    }),
+    }: GasEstimateParams) =>
+      ({
+        name: 'estimateGas.borrowMoreApprove',
+        chainId,
+        marketId,
+        userAddress,
+        userCollateral,
+        userBorrowed,
+        maxDebt,
+        leverageEnabled,
+        routeId,
+      }) as const,
     queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery): Promise<TGas | null> => {
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
       switch (type) {
@@ -65,18 +66,19 @@ const {
     slippage,
     leverageEnabled,
     routeId,
-  }: GasEstimateParams) => ({
-    name: 'estimateGas.borrowMore',
-    chainId,
-    marketId,
-    userAddress,
-    userCollateral,
-    userBorrowed,
-    debt,
-    slippage,
-    leverageEnabled,
-    routeId,
-  }),
+  }: GasEstimateParams) =>
+    ({
+      name: 'estimateGas.borrowMore',
+      chainId,
+      marketId,
+      userAddress,
+      userCollateral,
+      userBorrowed,
+      debt,
+      slippage,
+      leverageEnabled,
+      routeId,
+    }) as const,
   queryFn: async ({
     marketId,
     userCollateral = '0',

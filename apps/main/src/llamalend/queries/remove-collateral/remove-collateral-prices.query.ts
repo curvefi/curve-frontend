@@ -7,13 +7,8 @@ import { collateralValidationSuite } from '../validation/manage-loan.validation'
 import { maxRemovableCollateralKey } from './remove-collateral-max-removable.query'
 
 export const { useQuery: useRemoveCollateralPrices } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) => ({
-    name: 'removeCollateralPrices',
-    chainId,
-    marketId,
-    userAddress,
-    userCollateral,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
+    ({ name: 'removeCollateralPrices', chainId, marketId, userAddress, userCollateral }) as const,
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
     (await getLoanImplementation(marketId).removeCollateralPrices(userCollateral)) as Range<Decimal>,
   category: 'llamalend.removeCollateral',

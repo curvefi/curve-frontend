@@ -11,7 +11,7 @@ import { useStellarMutation } from './useStellarMutation'
 export const useSwapMutation = ({ tokens, onReset, ...params }: SwapMutationOptions) => {
   const { network, pool, account } = params
   const { mutate, error, isPending } = useStellarMutation<SwapMutation>({
-    mutationKey: [{ network, pool, account, name: 'swap' }],
+    mutationKey: [{ network, pool, account, name: 'swap' }] as const,
     createTransaction: (values, { account }) =>
       fetchSwapSimulation({ ...values, ...params, account }, { staleTime: 0 }),
     validationSuite: swapValidationSuite,

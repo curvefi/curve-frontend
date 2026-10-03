@@ -33,7 +33,7 @@ const userChainNameValidationSuite = createValidationSuite((params: UserChainNam
 export type MintMarket = MintMarketFromApi & { chain: Chain }
 
 export const { getQueryOptions: getMintMarketOptions, reset: resetMintMarkets } = queryFactory({
-  queryKey: () => ({ name: 'mint-markets', version: 4 }),
+  queryKey: () => ({ name: 'mint-markets', version: 4 }) as const,
   queryFn: async (): Promise<MintMarket[]> =>
     recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map(market => ({ ...market, chain }))),
   category: 'llamalend.marketList',
@@ -46,12 +46,8 @@ const {
   invalidate: invalidateUserMintMarketsQuery,
   reset: resetUserMintMarketsQuery,
 } = queryFactory({
-  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) => ({
-    name: 'user-mint-markets',
-    version: 2,
-    blockchainId,
-    userAddress,
-  }),
+  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
+    ({ name: 'user-mint-markets', version: 2, blockchainId, userAddress }) as const,
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
     (
       await paginate(
@@ -71,13 +67,8 @@ const {
   invalidate: invalidateUserMintMarketStats,
   reset: resetUserMintMarketStats,
 } = queryFactory({
-  queryKey: ({ userAddress, blockchainId, contractAddress }: UserContractParams) => ({
-    name: 'getUserMarketStats',
-    version: 1,
-    blockchainId,
-    contractAddress,
-    userAddress,
-  }),
+  queryKey: ({ userAddress, blockchainId, contractAddress }: UserContractParams) =>
+    ({ name: 'getUserMarketStats', version: 1, blockchainId, contractAddress, userAddress }) as const,
   queryFn: ({ userAddress, blockchainId, contractAddress }: UserContractQuery) =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
   category: 'llamalend.user',

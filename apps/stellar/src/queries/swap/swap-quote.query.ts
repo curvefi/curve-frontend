@@ -38,19 +38,20 @@ export const {
     decimals,
     editedSide,
     maxOutput,
-  }: SwapQuoteParams) => ({
-    name: 'swap-quote',
-    network,
-    pool,
-    editedSide,
-    fromIndex,
-    toIndex,
-    decimals,
-    // use only the key fields relevant to the side being quoted
-    inputAmount: editedSide === 'pay' ? inputAmount : undefined,
-    outputAmount: editedSide === 'receive' ? outputAmount : undefined,
-    maxOutput: editedSide === 'receive' ? maxOutput : undefined,
-  }),
+  }: SwapQuoteParams) =>
+    ({
+      name: 'swap-quote',
+      network,
+      pool,
+      editedSide,
+      fromIndex,
+      toIndex,
+      decimals,
+      // use only the key fields relevant to the side being quoted
+      inputAmount: editedSide === 'pay' ? inputAmount : undefined,
+      outputAmount: editedSide === 'receive' ? outputAmount : undefined,
+      maxOutput: editedSide === 'receive' ? maxOutput : undefined,
+    }) as const,
   queryFn: async ({
     network,
     pool,

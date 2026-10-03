@@ -40,7 +40,7 @@ export const { useQuery: useProposalPricesApiQuery, invalidate: invalidatePropos
     proposalId: number
     proposalType: ProposalType
     txHash?: string
-  }) => ({ name: 'proposal-prices-api', proposalId, proposalType, txHash }),
+  }) => ({ name: 'proposal-prices-api', proposalId, proposalType, txHash }) as const,
   queryFn: _fetchProposalPricesApi,
   category: 'dao.proposals',
   validationSuite: EmptyValidationSuite,

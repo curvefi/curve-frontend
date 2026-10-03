@@ -4,7 +4,7 @@ import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-va
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useMarketOracleAddress } = queryFactory({
-  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'oracleAddress', chainId, marketId }),
+  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'oracleAddress', chainId, marketId }) as const,
   queryFn: ({ marketId }: MarketQuery): Promise<string> => getStatsImplementation(marketId).oracleAddress(),
   category: 'llamalend.marketParams',
   validationSuite: marketIdValidationSuite,

@@ -22,7 +22,7 @@ type PoolConfig = {
 }
 
 export const { useQuery: usePoolConfig, fetchQuery: fetchPoolConfig } = queryFactory({
-  queryKey: ({ network, pool }: PoolParams) => ({ name: 'config', network, pool }),
+  queryKey: ({ network, pool }: PoolParams) => ({ name: 'config', network, pool }) as const,
   queryFn: async ({ network, pool }: PoolQuery) => {
     const config = await readContract<PoolConfig>(network, pool, 'config')
     return { ...config, seedLock: fromWei(config.min_locked_liquidity, LP_TOKEN_DECIMALS) }

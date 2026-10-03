@@ -4,7 +4,7 @@ import { tokenValidationSuite } from '@/stellar/queries/validation/pool.validati
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useTokenName, getQueryOptions: getTokenNameQueryOptions } = queryFactory({
-  queryKey: ({ network, token }: TokenParams) => ({ name: 'name', network, token }),
+  queryKey: ({ network, token }: TokenParams) => ({ name: 'name', network, token }) as const,
   queryFn: ({ network, token }: TokenQuery) => readContract<string>(network, token, 'name'),
   category: 'dex.poolParams',
   validationSuite: tokenValidationSuite,

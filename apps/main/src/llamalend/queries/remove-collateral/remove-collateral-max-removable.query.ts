@@ -14,12 +14,8 @@ export const {
   queryKey: maxRemovableCollateralKey,
   reset: invalidateMaxRemovableCollateral,
 } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: MaxRemovableParams) => ({
-    name: 'maxRemovable',
-    chainId,
-    marketId,
-    userAddress,
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: MaxRemovableParams) =>
+    ({ name: 'maxRemovable', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId }: MaxRemovableQuery) => (await getLoanImplementation(marketId).maxRemovable()) as Decimal,
   category: 'llamalend.removeCollateral',
   validationSuite: llamaApiValidationSuite,

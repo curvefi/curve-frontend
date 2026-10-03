@@ -134,7 +134,8 @@ type PoolRewardsApyParams = FieldsOf<PoolRewardsApyQuery>
 
 const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQuery } = queryFactory({
   category: 'dex.pool',
-  queryKey: ({ chainId, poolId, useApi }: PoolRewardsApyParams) => ({ name: 'rewardsApy', chainId, poolId, useApi }),
+  queryKey: ({ chainId, poolId, useApi }: PoolRewardsApyParams) =>
+    ({ name: 'rewardsApy', chainId, poolId, useApi }) as const,
   queryFn: async ({ chainId, poolId, useApi }: PoolRewardsApyQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     const networks = await fetchNetworks()

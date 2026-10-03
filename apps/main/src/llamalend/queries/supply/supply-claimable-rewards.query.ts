@@ -7,12 +7,8 @@ import { claimableRewardsValidationSuite, requireGauge } from '../validation/sup
 export type ClaimableReward = { token: Address; symbol: string; amount: Decimal }
 
 export const { useQuery: useClaimableRewards, fetchQuery: fetchClaimableRewards } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
-    name: 'claimableRewards',
-    chainId,
-    marketId,
-    userAddress,
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
+    ({ name: 'claimableRewards', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireGauge(marketId).vault.claimableRewards(userAddress)) as ClaimableReward[],
   category: 'llamalend.supply',
@@ -20,12 +16,8 @@ export const { useQuery: useClaimableRewards, fetchQuery: fetchClaimableRewards 
 })
 
 export const { useQuery: useClaimableCrv, fetchQuery: fetchClaimableCrv } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
-    name: 'claimableCrv',
-    chainId,
-    marketId,
-    userAddress,
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
+    ({ name: 'claimableCrv', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireGauge(marketId).vault.claimableCrv(userAddress)) as Decimal,
   category: 'llamalend.supply',

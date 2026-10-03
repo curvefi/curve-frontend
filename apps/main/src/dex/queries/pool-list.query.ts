@@ -25,7 +25,7 @@ type PoolListRequestParams = Pick<
 type PoolListQuery = ChainQuery & PoolListRequestParams & { pageSize?: ListPoolsParams['pagination'] }
 type PoolListParams = FieldsOf<PoolListQuery>
 
-export const getPoolListRootQueryKey = ({ chainId }: ChainParams) => ({ name: 'listPools', chainId })
+export const getPoolListRootQueryKey = ({ chainId }: ChainParams) => ({ name: 'listPools', chainId }) as const
 
 export const { useQuery: usePoolList } = queryFactory({
   queryKey: ({
@@ -44,24 +44,25 @@ export const { useQuery: usePoolList } = queryFactory({
     maxCreationDate,
     sortBy,
     sortDirection,
-  }: PoolListParams) => ({
-    name: 'listPools',
-    chainId,
-    page,
-    pageSize,
-    searchString,
-    poolType,
-    minTvl,
-    maxTvl,
-    minVolume,
-    maxVolume,
-    minApy,
-    maxApy,
-    minCreationDate,
-    maxCreationDate,
-    sortBy,
-    sortDirection,
-  }),
+  }: PoolListParams) =>
+    ({
+      name: 'listPools',
+      chainId,
+      page,
+      pageSize,
+      searchString,
+      poolType,
+      minTvl,
+      maxTvl,
+      minVolume,
+      maxVolume,
+      minApy,
+      maxApy,
+      minCreationDate,
+      maxCreationDate,
+      sortBy,
+      sortDirection,
+    }) as const,
   queryFn: async ({ pageSize, ...params }: PoolListQuery) => {
     const poolList = await listPools({ ...params, pagination: pageSize })
 
@@ -73,14 +74,14 @@ export const { useQuery: usePoolList } = queryFactory({
 })
 
 export const { useQuery: usePoolChains, queryKey: getPoolChainsQueryKey } = queryFactory({
-  queryKey: () => ({ name: 'listPoolChains' }),
+  queryKey: () => ({ name: 'listPoolChains' }) as const,
   queryFn: () => listPoolChains(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.network',
 })
 
 export const { useQuery: useLitePoolChains, queryKey: getLitePoolChainsQueryKey } = queryFactory({
-  queryKey: () => ({ name: 'listLitePoolChains', version: 2 }),
+  queryKey: () => ({ name: 'listLitePoolChains', version: 2 }) as const,
   queryFn: () => listLitePoolChains(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.network',

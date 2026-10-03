@@ -10,12 +10,8 @@ export const {
   getQueryData: getUserState,
   queryKey: getUserStateKey,
 } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) => ({
-    name: 'userState',
-    chainId,
-    marketId,
-    userAddress,
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
+    ({ name: 'userState', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const userState = await getUserPositionImplementation(marketId).userState(userAddress)
     return {

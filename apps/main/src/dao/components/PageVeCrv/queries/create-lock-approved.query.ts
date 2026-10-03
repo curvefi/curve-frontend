@@ -4,12 +4,8 @@ import type { CreateLockParams, CreateLockQuery } from './create-lock.types'
 import { createLockApprovalQueryValidationSuite } from './create-lock.validation'
 
 export const { useQuery: useCreateLockIsApproved, fetchQuery: fetchCreateLockIsApproved } = queryFactory({
-  queryKey: ({ chainId, userAddress, lockedAmount }: CreateLockParams) => ({
-    name: 'boosting.isApproved',
-    chainId,
-    userAddress,
-    lockedAmount,
-  }),
+  queryKey: ({ chainId, userAddress, lockedAmount }: CreateLockParams) =>
+    ({ name: 'boosting.isApproved', chainId, userAddress, lockedAmount }) as const,
   queryFn: async ({ lockedAmount }: CreateLockQuery) => await requireLib('curveApi').boosting.isApproved(lockedAmount),
   category: 'dao.user',
   validationSuite: createLockApprovalQueryValidationSuite,

@@ -5,7 +5,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { scrvUsdUserValidationSuite } from './scrvusd.validation'
 
 export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUserBalances } = queryFactory({
-  queryKey: ({ chainId, userAddress }: UserChainParams) => ({ name: 'st_crvUSD.userBalances', chainId, userAddress }),
+  queryKey: ({ chainId, userAddress }: UserChainParams) =>
+    ({ name: 'st_crvUSD.userBalances', chainId, userAddress }) as const,
   queryFn: async ({ userAddress }: UserChainQuery) => {
     const { crvUSD, st_crvUSD } = await requireLib('llamaApi').st_crvUSD.userBalances(userAddress)
     return { crvUSD: crvUSD as Decimal, scrvUSD: st_crvUSD as Decimal }

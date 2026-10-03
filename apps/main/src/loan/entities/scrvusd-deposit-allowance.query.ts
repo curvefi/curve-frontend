@@ -5,11 +5,8 @@ import type { ScrvUsdUserParams, ScrvUsdUserQuery } from './scrvusd.validation'
 import { scrvUsdUserValidationSuite } from './scrvusd.validation'
 
 export const { invalidate: invalidateScrvUsdDepositAllowance } = queryFactory({
-  queryKey: ({ chainId, userAddress }: ScrvUsdUserParams) => ({
-    name: 'st_crvUSD.depositAllowance',
-    chainId,
-    userAddress,
-  }),
+  queryKey: ({ chainId, userAddress }: ScrvUsdUserParams) =>
+    ({ name: 'st_crvUSD.depositAllowance', chainId, userAddress }) as const,
   queryFn: async (_: ScrvUsdUserQuery) => {
     const [allowance] = await requireLib('llamaApi').st_crvUSD.depositAllowance()
     return allowance as Decimal

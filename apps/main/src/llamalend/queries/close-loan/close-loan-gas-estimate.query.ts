@@ -8,13 +8,8 @@ import type { CloseLoanParams, CloseLoanQuery } from '../validation/manage-loan.
 import { closeLoanValidationSuite } from '../validation/manage-loan.validation'
 
 const { useQuery: useCloseLoanEstimateGas } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, slippage }: CloseLoanParams) => ({
-    name: 'estimateGas.selfLiquidate',
-    chainId,
-    marketId,
-    userAddress,
-    slippage,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, slippage }: CloseLoanParams) =>
+    ({ name: 'estimateGas.selfLiquidate', chainId, marketId, userAddress, slippage }) as const,
   queryFn: async ({ marketId, slippage }: CloseLoanQuery): Promise<TGas> =>
     await getLoanImplementation(marketId).estimateGas.selfLiquidate(Number(slippage)),
   category: 'llamalend.closeLoan',
@@ -22,12 +17,8 @@ const { useQuery: useCloseLoanEstimateGas } = queryFactory({
 })
 
 const { useQuery: useCloseApproveGasEstimate } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: CloseLoanParams) => ({
-    name: 'estimateGas.selfLiquidateApprove',
-    chainId,
-    marketId,
-    userAddress,
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: CloseLoanParams) =>
+    ({ name: 'estimateGas.selfLiquidateApprove', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId }: UserMarketQuery): Promise<TGas> =>
     await getLoanImplementation(marketId).estimateGas.selfLiquidateApprove(),
   category: 'llamalend.closeLoan',

@@ -8,12 +8,8 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 type Params = FieldsOf<UserMarketQuery>
 
 const { useQuery: useControllerApprovalEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: Params) => ({
-    name: 'estimateGas.setControllerApproval',
-    chainId,
-    marketId,
-    userAddress,
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: Params) =>
+    ({ name: 'estimateGas.setControllerApproval', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId }: UserMarketQuery) =>
     await getMarket(marketId).leverageZapV2.estimateGas.setControllerApproval(),
   category: 'llamalend.user',

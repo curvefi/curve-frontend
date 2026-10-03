@@ -16,14 +16,8 @@ export const {
     userCollateral = '0',
     userBorrowed = '0',
     leverageEnabled,
-  }: CreateLoanFormQueryParams) => ({
-    name: 'createLoanIsApproved',
-    chainId,
-    marketId,
-    userCollateral,
-    userBorrowed,
-    leverageEnabled,
-  }),
+  }: CreateLoanFormQueryParams) =>
+    ({ name: 'createLoanIsApproved', chainId, marketId, userCollateral, userBorrowed, leverageEnabled }) as const,
   queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanDebtQuery): Promise<boolean> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {

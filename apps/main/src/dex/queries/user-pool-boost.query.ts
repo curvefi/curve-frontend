@@ -15,7 +15,8 @@ const userPoolBoost = async (chainId: number, pool: PoolTemplate, userAddress: A
   chainId === ETH && isValidAddress(pool.gauge.address) ? (decimal(await pool.userBoost(userAddress)) ?? null) : null
 
 export const { useQuery: useUserPoolBoostQuery, invalidate: invalidateUserPoolBoostQuery } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) => ({ name: 'userBoost', chainId, poolId, userAddress }),
+  queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
+    ({ name: 'userBoost', chainId, poolId, userAddress }) as const,
   category: 'dex.user',
   queryFn: async ({ chainId, poolId, userAddress }: UserPoolQuery) =>
     await userPoolBoost(chainId, requireLib('curveApi').getPool(poolId), userAddress),

@@ -5,7 +5,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { getLendVault } from './market.query-helpers'
 
 export const { useQuery: useMarketVaultPricePerShare } = queryFactory({
-  queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'previewRedeem', version: 1, chainId, marketId }),
+  queryKey: ({ chainId, marketId }: MarketParams) =>
+    ({ name: 'previewRedeem', version: 1, chainId, marketId }) as const,
   queryFn: async (
     { marketId }: MarketQuery, // Use convertToAssets instead of redeem preview: previewRedeem can revert when the vault
   ) =>

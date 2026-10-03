@@ -19,13 +19,8 @@ const calculatePriceDropToLiquidationThreshold = (currentPrice: Decimal, [, liqu
   decimalMultiply(decimalDiv(decimalMinus(currentPrice, liquidationThreshold), currentPrice), `100`)
 
 const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) => ({
-    name: 'userPrices',
-    chainId,
-    marketId,
-    userAddress,
-    loanExists,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
+    ({ name: 'userPrices', chainId, marketId, userAddress, loanExists }) as const,
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<Range<Decimal>> =>
     (await getUserPositionImplementation(marketId).userPrices(userAddress)) as Range<Decimal>,
   category: 'llamalend.user',

@@ -4,12 +4,8 @@ import type { BridgeParams, BridgeQuery } from '../types'
 import { bridgeValidationSuite } from '../validation/bridge.validation'
 
 export const { useQuery: useBridgeApproveGasEstimate } = queryFactory({
-  queryKey: ({ chainId, userAddress, amount }: BridgeParams) => ({
-    name: 'fastBridge.estimateGas.approve',
-    chainId,
-    userAddress,
-    amount,
-  }),
+  queryKey: ({ chainId, userAddress, amount }: BridgeParams) =>
+    ({ name: 'fastBridge.estimateGas.approve', chainId, userAddress, amount }) as const,
   queryFn: async ({ amount }: BridgeQuery) => await requireLib('curveApi').fastBridge.estimateGas.approve(amount),
   category: 'bridge.user',
   validationSuite: bridgeValidationSuite,

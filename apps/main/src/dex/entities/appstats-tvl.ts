@@ -6,7 +6,7 @@ import { curveApiValidationSuite } from '@evm-ui/queries/validation/curve-api-va
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useAppStatsTvl } = queryFactory({
-  queryKey: ({ chainId }: ChainParams<ChainId>) => ({ name: 'appStatsTvl', chainId }),
+  queryKey: ({ chainId }: ChainParams<ChainId>) => ({ name: 'appStatsTvl', chainId }) as const,
   queryFn: (_: ChainParams<ChainId>) => curvejsApi.network.getTVL(requireLib('curveApi')),
   validationSuite: curveApiValidationSuite,
   category: 'dex.appStats',

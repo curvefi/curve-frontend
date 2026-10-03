@@ -9,13 +9,8 @@ type UserLendCollateralEventsParams = FieldsOf<UserLendCollateralEventsQuery>
 
 export const { useQuery: useUserLendCollateralEventsQuery, invalidate: invalidateUserLendCollateralEventsQuery } =
   queryFactory({
-    queryKey: ({ blockchainId, userAddress, contractAddress }: UserLendCollateralEventsParams) => ({
-      name: 'userLendCollateralEvents',
-      version: 1,
-      blockchainId,
-      userAddress,
-      contractAddress,
-    }),
+    queryKey: ({ blockchainId, userAddress, contractAddress }: UserLendCollateralEventsParams) =>
+      ({ name: 'userLendCollateralEvents', version: 1, blockchainId, userAddress, contractAddress }) as const,
     queryFn: ({
       blockchainId,
       contractAddress,

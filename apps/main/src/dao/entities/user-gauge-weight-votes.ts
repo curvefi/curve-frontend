@@ -30,11 +30,8 @@ const _fetchUserGaugeWeightVotes = async ({ userAddress }: ChainQuery<ChainId> &
 
 export const { useQuery: useUserGaugeWeightVotesQuery, invalidate: invalidateUserGaugeWeightVotesQuery } = queryFactory(
   {
-    queryKey: ({ chainId, userAddress }: ChainParams<ChainId> & { userAddress: string }) => ({
-      name: 'user-gauge-weight-votes',
-      chainId,
-      userAddress,
-    }),
+    queryKey: ({ chainId, userAddress }: ChainParams<ChainId> & { userAddress: string }) =>
+      ({ name: 'user-gauge-weight-votes', chainId, userAddress }) as const,
     queryFn: _fetchUserGaugeWeightVotes,
     category: 'dao.user',
     validationSuite: curveApiValidationSuite,
