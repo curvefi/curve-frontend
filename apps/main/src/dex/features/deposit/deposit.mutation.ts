@@ -5,7 +5,6 @@ import { invalidatePoolInfo, invalidateUserPoolInfo } from '@/dex/queries/invali
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { invalidateTokenBalances } from '@evm-ui/hooks/useTokenBalance'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type TransactionContext, useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
@@ -31,7 +30,7 @@ export const useDepositMutation = ({
   const { address: userAddress } = useConnection()
   const config = useConfig()
   const { mutate, error, isPending } = useEvmMutation<DepositMutation, DepositContext>({
-    mutationKey: [{ ...rootKeys.userPool({ chainId, poolId, userAddress }), name: 'deposit' }] as const,
+    mutationKey: [{ name: 'deposit', chainId, poolId, userAddress }] as const,
     validationParams: { chainId, poolId, userAddress },
     buildContext: (_variables, baseContext) => ({
       ...baseContext,

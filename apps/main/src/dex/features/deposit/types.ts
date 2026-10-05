@@ -1,4 +1,4 @@
-import type { PoolQuery, UserQuery } from '@evm-ui/queries/root-keys'
+import type { PoolQuery, UserQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { PoolDepositForm } from '@ui/features/pool-forms/pool-form.utils'
 import type { FieldsOf } from '@ui/lib/validation/types'
