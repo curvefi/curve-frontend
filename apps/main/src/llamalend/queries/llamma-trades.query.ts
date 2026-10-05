@@ -10,14 +10,8 @@ import { type FieldsOf } from '@ui/lib/validation/types'
 type LlammaTradesParams = FieldsOf<GetTradesParams>
 
 export const { useQuery: useLlammaTrades } = queryFactory({
-  queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaTradesParams) => ({
-    name: 'llamma-trades',
-    chain,
-    llamma,
-    endpoint,
-    page,
-    perPage,
-  }),
+  queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaTradesParams) =>
+    ({ name: 'llamma-trades', chain, llamma, endpoint, page, perPage }) as const,
   queryFn: async ({
     chain,
     llamma,

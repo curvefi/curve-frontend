@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type OnTransactionSuccess, useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import type { Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
@@ -17,7 +16,7 @@ export const useExtendLockMutation = ({
   onExtended: OnTransactionSuccess<ExtendLockMutation>
 }) => {
   const { mutate, error, isPending } = useEvmMutation<ExtendLockMutation>({
-    mutationKey: [{ ...rootKeys.chain({ chainId }), name: 'lockCrv.extend' }] as const,
+    mutationKey: [{ chainId, name: 'lockCrv.extend' }] as const,
     mutationFn: async ({ days }) => ({ hash: (await requireLib('curveApi').boosting.increaseUnlockTime(days)) as Hex }),
     validationSuite: extendLockQueryValidationSuite,
     validationParams: { chainId },

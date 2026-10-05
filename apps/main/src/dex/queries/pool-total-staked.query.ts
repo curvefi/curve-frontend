@@ -1,7 +1,7 @@
 import type { ContractMethod } from 'ethers'
 import { isValidAddress } from '@/dex/utils'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
@@ -12,7 +12,7 @@ const NOT_AVAILABLE = { totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' } as 
 
 const { useQuery: usePoolTotalStakedQuery, invalidate: invalidatePoolTotalStaked } = queryFactory({
   category: 'dex.pool',
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'totalStaked', ...rootKeys.pool({ chainId, poolId }) }),
+  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'totalStaked', chainId, poolId }) as const,
   queryFn: async ({ poolId }: PoolQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     if (!isValidAddress(pool.gauge.address)) return NOT_AVAILABLE

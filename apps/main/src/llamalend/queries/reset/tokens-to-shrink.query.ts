@@ -2,16 +2,14 @@ import { resetIsAvailableQueryKey } from '@/llamalend/queries/reset/reset-is-ava
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import { resetSupportedValidationSuite } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
 /** Returns the amount of (borrow) tokens required at minimum in the user's wallet in order to repay with shrink. */
 export const { useQuery: useTokensToShrink } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) => ({
-    name: 'tokensToShrink',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) =>
+    ({ name: 'tokensToShrink', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery<IChainId>) =>
     // First parameter of tokensToShrink called dCollateral is for leverage, but we don't support that yet so we set it to zero for now.
     (await getResetImplementation(marketId).tokensToShrink('0', userAddress)) as Decimal,

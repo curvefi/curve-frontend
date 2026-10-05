@@ -1,6 +1,6 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { leverageUserMarketValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
-import { rootKeys, UserMarketParams, UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 
@@ -13,10 +13,8 @@ export const {
   queryKey: getUserCurrentLeverageKey,
   reset: resetUserCurrentLeverage,
 } = queryFactory({
-  queryKey: ({ chainId, userAddress, marketId }: UserMarketParams) => ({
-    name: 'currentLeverage',
-    ...rootKeys.userMarket({ chainId, userAddress, marketId }),
-  }),
+  queryKey: ({ chainId, userAddress, marketId }: UserMarketParams) =>
+    ({ name: 'currentLeverage', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     decimal(await getUserPositionImplementation(marketId).currentLeverage(userAddress)) ?? '0', // return 0 when there is no loan, as usually done by llamalend.js
   category: 'llamalend.user',

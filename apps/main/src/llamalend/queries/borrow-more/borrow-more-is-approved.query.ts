@@ -1,7 +1,6 @@
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const {
@@ -17,14 +16,17 @@ export const {
     userBorrowed = '0',
     leverageEnabled,
     routeId,
-  }: BorrowMoreParams) => ({
-    name: 'borrowMoreIsApproved',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userCollateral,
-    userBorrowed,
-    leverageEnabled,
-    routeId,
-  }),
+  }: BorrowMoreParams) =>
+    ({
+      name: 'borrowMoreIsApproved',
+      chainId,
+      marketId,
+      userAddress,
+      userCollateral,
+      userBorrowed,
+      leverageEnabled,
+      routeId,
+    }) as const,
   queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery) => {
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {

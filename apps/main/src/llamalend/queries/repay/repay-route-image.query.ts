@@ -1,6 +1,5 @@
 import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { getRepayImplementation } from './repay-query.helpers'
 
@@ -14,15 +13,18 @@ export const { invalidate: invalidateRepayRouteImage } = queryFactory({
     userAddress,
     slippage,
     routeId,
-  }: RepayParams) => ({
-    name: 'repayRouteImage',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    slippage,
-    routeId,
-  }),
+  }: RepayParams) =>
+    ({
+      name: 'repayRouteImage',
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userCollateral,
+      userBorrowed,
+      slippage,
+      routeId,
+    }) as const,
   queryFn: ({ marketId, stateCollateral, userCollateral, userBorrowed, slippage, routeId }: RepayQuery) => {
     const [type] = getRepayImplementation(marketId, {
       userCollateral,

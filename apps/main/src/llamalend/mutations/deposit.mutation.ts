@@ -10,7 +10,6 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { OnTransactionSuccess } from '@evm-ui/queries/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
@@ -44,7 +43,7 @@ export const useDepositMutation = ({
   const { mutate, error, isPending } = useMarketMutation<DepositMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'deposit' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'deposit' }] as const,
     mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({

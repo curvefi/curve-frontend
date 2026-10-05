@@ -4,7 +4,6 @@ import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui/lib/i18n'
@@ -28,7 +27,7 @@ export const useRemoveCollateralMutation = ({
   const { mutate, error, isPending } = useMarketMutation<RemoveCollateralMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'remove-collateral' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'remove-collateral' }] as const,
     mutationFn: async ({ userCollateral }, { market }) => ({
       hash: (await getLoanImplementation(market).removeCollateral(userCollateral)) as Hex,
     }),

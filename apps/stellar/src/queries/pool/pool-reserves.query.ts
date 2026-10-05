@@ -1,5 +1,5 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { PoolParams, PoolQuery, rootKeys } from '@/stellar/queries/root-keys'
+import type { PoolParams, PoolQuery } from '@/stellar/queries/query-types'
 import { poolValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -10,7 +10,7 @@ import type { Query, QueryProp } from '@ui/features/queries/util'
 import { fromWei } from '@ui/lib/decimal'
 
 export const { useQuery: usePoolReserves, invalidate: invalidatePoolReserves } = queryFactory({
-  queryKey: ({ network, pool }: PoolParams) => ({ name: 'get_balances', ...rootKeys.pool({ network, pool }) }),
+  queryKey: ({ network, pool }: PoolParams) => ({ name: 'get_balances', network, pool }) as const,
   queryFn: async ({ network, pool }: PoolQuery) =>
     (await readContract<bigint[]>(network, pool, 'get_balances')).map(value => value.toString() as Decimal),
   category: 'dex.pool',

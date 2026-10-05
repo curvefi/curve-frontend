@@ -1,7 +1,7 @@
 import { getMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { type MarketQuery, rootKeys, type UserQuery } from '@evm-ui/queries/root-keys'
+import type { MarketQuery, UserQuery } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -14,10 +14,8 @@ type UserBalancesParams = FieldsOf<UserBalancesQuery>
 type LendBalances = { collateral: Decimal; borrowed: Decimal; vaultShares: Decimal; gauge: Decimal }
 
 export const { useQuery: useUserBalances } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserBalancesParams) => ({
-    name: 'wallet.balances',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: UserBalancesParams) =>
+    ({ name: 'wallet.balances', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId }: UserBalancesQuery) => {
     const market = getMarket(marketId)
     if (market instanceof LendMarketTemplate) {

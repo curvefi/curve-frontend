@@ -5,7 +5,6 @@ import { useConfig } from 'wagmi'
 import { abi as abiAgent } from '@/dao/abis/AragonAgent'
 import { abi as abiVoting } from '@/dao/abis/AragonVoting'
 import { abi as abiGauge } from '@/dao/abis/GaugeController'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import { ARAGON_OWNERSHIP_AGENT, ARAGON_OWNERSHIP_VOTING, GAUGE_CONTROLLER } from '@evm-ui/utils'
 import { t } from '@ui/lib/i18n'
@@ -60,7 +59,7 @@ export const useCreateVoteMutation = ({ onReset }: { onReset: () => void }) => {
   const config = useConfig()
 
   const { mutate, error, isPending } = useEvmMutation<CreateVoteMutation>({
-    mutationKey: [{ ...rootKeys.chain({ chainId: mainnet.id }), name: 'create-gauge-vote' }] as const,
+    mutationKey: [{ chainId: mainnet.id, name: 'create-gauge-vote' }] as const,
     mutationFn: async ({ gaugeAddress, description, pinataJwt }) => {
       const evmScript = buildEvmScript(gaugeAddress as Address)
       const ipfsHash = await uploadDescriptionToIpfs(description, pinataJwt)

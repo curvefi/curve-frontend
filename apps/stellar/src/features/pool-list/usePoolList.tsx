@@ -1,5 +1,5 @@
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import type { NetworkQuery } from '@/stellar/queries/root-keys'
+import type { NetworkQuery } from '@/stellar/queries/query-types'
 import type { LitePool } from '@curvefi/prices-api/pools'
 import { pick } from '@primitives/objects.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'

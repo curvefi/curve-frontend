@@ -15,7 +15,7 @@ import {
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type CampaignRewards, useCampaignsByAddress } from '@evm-ui/queries/campaigns'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
-import type { UserMarketParams } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { MarketType } from '@evm-ui/types/market'
 import { BlockchainIds } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'

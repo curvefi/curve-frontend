@@ -1,4 +1,4 @@
-import type { PoolQuery } from '@/stellar/queries/root-keys'
+import type { PoolQuery } from '@/stellar/queries/query-types'
 import { DepositForm } from '@ui/features/pool-forms/deposit/DepositForm'
 import { DepositActionInfoList } from './DepositActionInfoList'
 import { useDepositForm } from './useDepositForm'
