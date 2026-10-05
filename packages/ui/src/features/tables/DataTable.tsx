@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { type ReactNode, useMemo, useRef } from 'react'
+import { type ReactNode, type RefObject, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -50,6 +50,7 @@ export type DataTableProps<TData extends RowData> = {
   emptyState?: TableEmptyState // optional overrides for the built-in empty state
   errorState?: TableErrorState // optional overrides for the built-in error state
   children?: ReactNode // passed to <FilterRow />
+  anchorRef?: RefObject<HTMLTableSectionElement | null> // anchor for overlays that follow the sticky column headers
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
 } & AllOrNone<ConnectionProps & { userAddress: Address | undefined }> &
@@ -65,6 +66,7 @@ export const DataTable = <TData extends RowData>({
   emptyState,
   errorState,
   children,
+  anchorRef,
   shouldStickFirstColumn = false,
   footerRow,
   viewAllLabel,
@@ -136,7 +138,7 @@ export const DataTable = <TData extends RowData>({
             data-testid={!isLoading && 'data-table'}
           >
             {!hideHeader && (
-              <TableHead sx={tableHeaderSx} data-testid="data-table-head">
+              <TableHead ref={anchorRef} sx={tableHeaderSx} data-testid="data-table-head">
                 {children && shouldStickyHeader && (
                   <FilterRow colSpan={columnCount} testId={TABLE_FILTERS_TEST_ID}>
                     {children}

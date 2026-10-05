@@ -56,7 +56,7 @@ export const UserPositionsTable = ({
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [searchText, setSearchText] = useState('')
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
-  const visibilitySettingsRef = useRef<HTMLButtonElement>(null)
+  const anchorRef = useRef<HTMLDivElement>(null)
   const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
     variant: 'userPositions',
     mobileColumn: PoolColumnId.Deposits,
@@ -89,10 +89,15 @@ export const UserPositionsTable = ({
 
   return (
     <Stack data-testid="user-pool-positions">
-      <TableHeader title={t`Your positions`} onReload={onReload} isLoading={isFetching} />
-      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
+      <TableHeader
+        title={t`Your positions`}
+        onReload={onReload}
+        isLoading={isFetching}
+        visibilitySettings={rowCount > 0 ? { isOpen: visibilitySettingsOpen, open: openVisibilitySettings } : undefined}
+      />
+      <Stack ref={anchorRef} sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         {address ? (
-          tableQuery.data?.length ? (
+          rowCount > 0 ? (
             <>
               <MetricsGrid
                 variant="fillMobile"
@@ -129,11 +134,6 @@ export const UserPositionsTable = ({
               >
                 <TableFilters
                   testIdPrefix={LOCAL_STORAGE_KEY}
-                  visibilitySettings={{
-                    anchorRef: visibilitySettingsRef,
-                    open: visibilitySettingsOpen,
-                    onOpen: openVisibilitySettings,
-                  }}
                   searchText={searchText}
                   onSearch={value => {
                     setSearchText(value)
@@ -142,7 +142,7 @@ export const UserPositionsTable = ({
                 />
               </EvmDataTable>
               <TableVisibilitySettingsPopover
-                anchorRef={visibilitySettingsRef}
+                anchorRef={anchorRef}
                 visibilityGroups={columnSettings}
                 toggleVisibility={toggleVisibility}
                 open={visibilitySettingsOpen}
