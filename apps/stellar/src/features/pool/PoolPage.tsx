@@ -1,6 +1,6 @@
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
-import type { PoolQuery } from '@/stellar/queries/root-keys'
+import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenName } from '@/stellar/queries/token/token-name.query'
 import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'

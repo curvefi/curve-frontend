@@ -5,7 +5,6 @@ import {
   requireCollateralRewards,
 } from '@/llamalend/queries/validation/borrow-claim.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Address, Hex } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
@@ -32,9 +31,7 @@ export const useBorrowClaimCrvMutation = ({
   const { mutate, error, isPending } = useMarketMutation<BorrowClaimMutation>({
     network,
     marketId,
-    mutationKey: [
-      { ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'collateralRewards.claimCrv' },
-    ] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'collateralRewards.claimCrv' }] as const,
     mutationFn: async (_, { market }) => ({
       hash: (await requireCollateralRewards(market).collateralRewards.claimCrv()) as Hex,
     }),

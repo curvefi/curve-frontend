@@ -8,15 +8,11 @@ import {
 } from '@/llamalend/queries/validation/reset.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 
 const { useQuery: useResetLoanEstimateGas } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) => ({
-    name: 'estimateGas.reset',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userBorrowed,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) =>
+    ({ name: 'estimateGas.reset', chainId, marketId, userAddress, userBorrowed }) as const,
   queryFn: async ({ marketId, userAddress, ...params }: ResetQuery): Promise<TGas> =>
     await getResetImplementation(marketId).estimateGas.repay({
       debt: params.userBorrowed,
@@ -29,11 +25,8 @@ const { useQuery: useResetLoanEstimateGas } = queryFactory({
 })
 
 const { useQuery: useResetApproveGasEstimate } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) => ({
-    name: 'estimateGas.resetApprove',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userBorrowed,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0' }: ResetParams) =>
+    ({ name: 'estimateGas.resetApprove', chainId, marketId, userAddress, userBorrowed }) as const,
   queryFn: async ({ marketId, ...params }: ResetQuery): Promise<TGas> =>
     await getResetImplementation(marketId).estimateGas.repayApprove(params.userBorrowed),
   category: 'llamalend.repay',

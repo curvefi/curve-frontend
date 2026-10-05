@@ -1,7 +1,6 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import type { RepayHealthParams, RepayHealthQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { parseRoute } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -18,16 +17,19 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     isHealthFull,
     slippage,
     routeId,
-  }: RepayHealthParams) => ({
-    name: 'repayHealth',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    isHealthFull,
-    slippage,
-    routeId,
-  }),
+  }: RepayHealthParams) =>
+    ({
+      name: 'repayHealth',
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userCollateral,
+      userBorrowed,
+      isHealthFull,
+      slippage,
+      routeId,
+    }) as const,
   queryFn: async ({
     marketId,
     stateCollateral,

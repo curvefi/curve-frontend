@@ -87,7 +87,7 @@ export const StellarNetworkAwareLayout = () => {
                 address: userAddress,
                 addressLabel: shortenAddress(address),
                 connect,
-                disconnect: () => void disconnect(),
+                disconnect,
                 isConnected,
                 isConnecting,
               }}

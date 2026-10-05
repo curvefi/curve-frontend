@@ -1,8 +1,7 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
-import { rootKeys } from '@/stellar/queries/root-keys'
-import type { PoolQuery, PoolParams } from '@/stellar/queries/root-keys'
+import type { PoolQuery, PoolParams } from '@/stellar/queries/query-types'
 import { poolValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei } from '@ui/lib/decimal'
@@ -23,7 +22,7 @@ type PoolConfig = {
 }
 
 export const { useQuery: usePoolConfig, fetchQuery: fetchPoolConfig } = queryFactory({
-  queryKey: ({ network, pool }: PoolParams) => ({ name: 'config', ...rootKeys.pool({ network, pool }) }),
+  queryKey: ({ network, pool }: PoolParams) => ({ name: 'config', network, pool }) as const,
   queryFn: async ({ network, pool }: PoolQuery) => {
     const config = await readContract<PoolConfig>(network, pool, 'config')
     return { ...config, seedLock: fromWei(config.min_locked_liquidity, LP_TOKEN_DECIMALS) }

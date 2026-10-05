@@ -2,7 +2,6 @@ import { resetIsAvailableQueryKey } from '@/llamalend/queries/reset/reset-is-ava
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import { resetValidationSuite, type ResetQuery } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -11,12 +10,8 @@ type ResetHealthQuery<ChainId = IChainId> = ResetQuery<ChainId> & { isHealthFull
 type ResetHealthParams<ChainId = IChainId> = FieldsOf<ResetHealthQuery<ChainId>>
 
 export const { getQueryOptions: getResetHealthOptions } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0', isHealthFull }: ResetHealthParams) => ({
-    name: 'resetHealth',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userBorrowed,
-    isHealthFull,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0', isHealthFull }: ResetHealthParams) =>
+    ({ name: 'resetHealth', chainId, marketId, userAddress, userBorrowed, isHealthFull }) as const,
   queryFn: async ({ marketId, userAddress, isHealthFull, ...params }: ResetHealthQuery) =>
     (await getResetImplementation(marketId).repayHealth({
       debt: params.userBorrowed,

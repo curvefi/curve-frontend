@@ -1,16 +1,11 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { BridgeParams, BridgeQuery } from '../types'
 import { bridgeValidationSuite } from '../validation/bridge.validation'
 
 export const { useQuery: useBridgeIsApproved, invalidate: invalidateBridgeIsApproved } = queryFactory({
-  queryKey: ({ chainId, userAddress, amount }: BridgeParams) => ({
-    name: 'fastBridge.isApproved',
-    ...rootKeys.chain({ chainId }),
-    ...rootKeys.user({ userAddress }),
-    amount,
-  }),
+  queryKey: ({ chainId, userAddress, amount }: BridgeParams) =>
+    ({ name: 'fastBridge.isApproved', chainId, userAddress, amount }) as const,
   queryFn: async ({ amount }: BridgeQuery) => await requireLib('curveApi').fastBridge.isApproved(amount),
   category: 'bridge.user',
   validationSuite: bridgeValidationSuite,

@@ -5,7 +5,6 @@ import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/rep
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { getRepayImplementation, isFullRepayFromDebtToken, isRepayLeveraged } from './repay-query.helpers'
@@ -27,16 +26,19 @@ const {
     isFull,
     slippage,
     routeId,
-  }: GasEstimateParams) => ({
-    name: 'estimateGas.repay',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    isFull,
-    slippage,
-    routeId,
-  }),
+  }: GasEstimateParams) =>
+    ({
+      name: 'estimateGas.repay',
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userCollateral,
+      userBorrowed,
+      isFull,
+      slippage,
+      routeId,
+    }) as const,
   queryFn: async ({
     marketId,
     stateCollateral,
@@ -89,16 +91,19 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     isFull,
     slippage,
     routeId,
-  }: GasEstimateParams) => ({
-    name: 'estimateGas.repayApprove',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    isFull,
-    slippage,
-    routeId,
-  }),
+  }: GasEstimateParams) =>
+    ({
+      name: 'estimateGas.repayApprove',
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userCollateral,
+      userBorrowed,
+      isFull,
+      slippage,
+      routeId,
+    }) as const,
   queryFn: async ({
     marketId,
     stateCollateral,

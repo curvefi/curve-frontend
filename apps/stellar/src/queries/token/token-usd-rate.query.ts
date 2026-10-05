@@ -1,5 +1,5 @@
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import { rootKeys, type TokenParams, type TokenQuery } from '@/stellar/queries/root-keys'
+import type { TokenParams, TokenQuery } from '@/stellar/queries/query-types'
 import { tokenValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { fetchJson } from '@primitives/fetch.utils'
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
@@ -9,7 +9,7 @@ type AssetPriceResponse = { _embedded: { records: { asset: string; price: number
 const STELLAR_EXPERT_PATHS = { stellar: 'public', 'stellar-testnet': 'testnet' }
 
 export const { useQuery: useTokenUsdRate, getQueryOptions: getTokenUsdRateQueryOptions } = queryFactory({
-  queryKey: ({ network, token }: TokenParams) => ({ name: 'usdRate', ...rootKeys.token({ network, token }) }),
+  queryKey: ({ network, token }: TokenParams) => ({ name: 'usdRate', network, token }) as const,
   queryFn: async ({ network, token }: TokenQuery) => {
     const { nativeCurrency: nativeCurrency, isTestnet } = STELLAR_NETWORKS[network]
     const { address: nativeAddress, symbol: nativeSymbol } = nativeCurrency

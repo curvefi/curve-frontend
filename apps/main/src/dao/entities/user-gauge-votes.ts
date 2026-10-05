@@ -3,7 +3,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 export const { useQuery: useUserGaugeVoteQuery, invalidate: invalidateUserGaugeVoteQuery } = queryFactory({
-  queryKey: ({ userAddress }: { userAddress: string }) => ({ name: 'user-gauge-votes', userAddress }),
+  queryKey: ({ userAddress }: { userAddress: string }) => ({ name: 'user-gauge-votes', userAddress }) as const,
   queryFn: async ({ userAddress }: { userAddress: string }) => await getUserGaugeVotes(userAddress),
   category: 'dao.user',
   validationSuite: EmptyValidationSuite,

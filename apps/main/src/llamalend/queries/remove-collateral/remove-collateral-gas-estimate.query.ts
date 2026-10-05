@@ -2,7 +2,6 @@ import { getMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type FieldsOf } from '@ui/lib/validation/types'
 import type { CollateralQuery } from '../validation/manage-loan.types'
@@ -13,11 +12,8 @@ type RemoveCollateralGasQuery<T = IChainId> = CollateralQuery<T>
 type RemoveCollateralGasParams<T = IChainId> = FieldsOf<RemoveCollateralGasQuery<T>>
 
 const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral }: RemoveCollateralGasParams) => ({
-    name: 'estimateGas.removeCollateral',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userCollateral,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: RemoveCollateralGasParams) =>
+    ({ name: 'estimateGas.removeCollateral', chainId, marketId, userAddress, userCollateral }) as const,
   queryFn: async ({ marketId, userCollateral }: RemoveCollateralGasQuery) => {
     const market = getMarket(marketId)
     return market instanceof LendMarketTemplate

@@ -1,6 +1,6 @@
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
@@ -10,7 +10,7 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({
   category: 'dex.pools',
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'stats.volume', ...rootKeys.pool({ chainId, poolId }) }),
+  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'stats.volume', chainId, poolId }) as const,
   queryFn: async ({ poolId }: PoolQuery) => (await requireLib('curveApi').getPool(poolId).stats.volume()) as Decimal,
   validationSuite: createValidationSuite((params: PoolParams) => {
     curveApiValidationGroup(params)

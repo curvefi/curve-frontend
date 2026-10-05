@@ -7,7 +7,6 @@ import {
   requireVault,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
 import { formatTokenAmounts } from '../llama.utils'
@@ -29,7 +28,7 @@ export const useWithdrawMutation = ({
   const { mutate, error, isPending } = useMarketMutation<WithdrawMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'withdraw' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'withdraw' }] as const,
     mutationFn: async ({ userVaultShares, withdrawAmount, isFull }, { market }) => {
       const lendMarket = requireVault(market)
       return {

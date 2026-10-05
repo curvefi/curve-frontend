@@ -1,6 +1,6 @@
 import { type Address, erc20Abi } from 'viem'
 import { useReadContract } from 'wagmi'
-import type { ChainQuery } from '@evm-ui/queries/root-keys'
+import type { ChainQuery } from '@evm-ui/queries/query-types'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type TokenDecimalsQuery = ChainQuery & { tokenAddress: Address }

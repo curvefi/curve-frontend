@@ -1,5 +1,5 @@
 import { getRefuelDailyDonations } from '@curvefi/prices-api/refuel'
-import { rootKeys, type ChainNameQuery } from '@evm-ui/queries/root-keys'
+import type { ChainNameQuery } from '@evm-ui/queries/query-types'
 import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
 import type { Address } from '@primitives/address.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -11,13 +11,8 @@ type RefuelDailyDonationsQuery = ChainNameQuery & { poolAddress: Address; start?
 type RefuelDailyDonationsParams = FieldsOf<RefuelDailyDonationsQuery>
 
 export const { useQuery: useRefuelDailyRefuels } = queryFactory({
-  queryKey: ({ blockchainId, poolAddress, start, end }: RefuelDailyDonationsParams) => ({
-    name: 'getRefuelDailyDonations',
-    ...rootKeys.chainName({ blockchainId }),
-    poolAddress,
-    start,
-    end,
-  }),
+  queryKey: ({ blockchainId, poolAddress, start, end }: RefuelDailyDonationsParams) =>
+    ({ name: 'getRefuelDailyDonations', blockchainId, poolAddress, start, end }) as const,
   queryFn: async ({ blockchainId, poolAddress, start, end }: RefuelDailyDonationsQuery) =>
     getRefuelDailyDonations({ chain: blockchainId, poolAddress, start, end }),
   validationSuite: createValidationSuite(({ blockchainId, poolAddress }: RefuelDailyDonationsParams) => {

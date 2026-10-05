@@ -1,5 +1,5 @@
 import { getMarket } from '@/llamalend/llama.utils'
-import { rootKeys, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -13,14 +13,17 @@ export const { useQuery: useRepayControllerApproval, fetchQuery: fetchRepayContr
     stateCollateral = '0',
     userCollateral = '0',
     userBorrowed = '0',
-  }: FieldsOf<UserMarketQuery & RepayFormFields>) => ({
-    name: 'repayIsControllerApproved',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    // The repayment implementation depends on which sources are used, not their amounts.
-    stateCollateral: +(stateCollateral ?? '0') ? '1' : '0',
-    userCollateral: +(userCollateral ?? '0') ? '1' : '0',
-    userBorrowed: +(userBorrowed ?? '0') ? '1' : '0',
-  }),
+  }: FieldsOf<UserMarketQuery & RepayFormFields>) =>
+    ({
+      name: 'repayIsControllerApproved',
+      chainId,
+      marketId,
+      userAddress,
+      // The repayment implementation depends on which sources are used, not their amounts.
+      stateCollateral: +(stateCollateral ?? '0') ? '1' : '0',
+      userCollateral: +(userCollateral ?? '0') ? '1' : '0',
+      userBorrowed: +(userBorrowed ?? '0') ? '1' : '0',
+    }) as const,
   queryFn: async ({
     marketId,
     userAddress,
