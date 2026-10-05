@@ -35,7 +35,7 @@ const MAX_PAGE_SIZE = 10 as const
 
 type Variant = Extract<PoolTableVariant, 'userPositions' | 'residualClaims'>
 
-const TABS = { userPositions: t`Your positions`, residualClaims: t`Residual claims` } satisfies Record<Variant, string>
+const TABS = { userPositions: t`Your positions`, residualClaims: t`Residual rewards` } satisfies Record<Variant, string>
 const MOBILE_COLUMNS = {
   userPositions: PoolColumnId.Deposits,
   residualClaims: PoolColumnId.Claimables,
