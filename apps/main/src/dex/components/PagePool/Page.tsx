@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { isAddress, isAddressEqual } from 'viem'
+import { getAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -45,10 +45,8 @@ export const PagePool = () => {
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
-    () =>
-      isAddress(poolIdOrAddress, { strict: false /* address comes from URL which might be lowercase */ }) &&
-      blacklist?.some(badPool => isAddressEqual(badPool, poolIdOrAddress)),
-    [blacklist, poolIdOrAddress],
+    () => pool && blacklist?.some(badPool => isAddressEqual(badPool, getAddress(pool.address))),
+    [blacklist, pool],
   )
 
   return isHydrated && (isBlacklisted || (!pool && poolNotFound)) ? (

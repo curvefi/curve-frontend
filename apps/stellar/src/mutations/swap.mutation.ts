@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import type { SwapMutationOptions } from '@/stellar/features/swap/types'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import { fetchSwapSimulation, invalidateSwapSimulation } from '@/stellar/queries/swap/swap-simulation.query'
 import { swapValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import type { SwapFormValues, SwapMutation } from '@ui/features/pool-forms/swap/swap-form.utils'
@@ -10,8 +9,9 @@ import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
 export const useSwapMutation = ({ tokens, onReset, ...params }: SwapMutationOptions) => {
+  const { network, pool, account } = params
   const { mutate, error, isPending } = useStellarMutation<SwapMutation>({
-    mutationKey: [{ ...rootKeys.userPool(params), name: 'swap' }],
+    mutationKey: [{ network, pool, account, name: 'swap' }] as const,
     createTransaction: (values, { account }) =>
       fetchSwapSimulation({ ...values, ...params, account }, { staleTime: 0 }),
     validationSuite: swapValidationSuite,
@@ -24,7 +24,9 @@ export const useSwapMutation = ({ tokens, onReset, ...params }: SwapMutationOpti
       await Promise.allSettled([
         invalidatePoolLiquidity({ ...submitted, tokens }),
         // Both quote directions and small reference trades depend on the changed reserves.
-        queryClient.invalidateQueries({ queryKey: [{ name: 'swap-quote', ...rootKeys.pool(submitted) }] }),
+        queryClient.invalidateQueries({
+          queryKey: [{ name: 'swap-quote', network: submitted.network, pool: submitted.pool }],
+        }),
         invalidateSwapSimulation(submitted),
       ])
     },

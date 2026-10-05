@@ -1,7 +1,7 @@
 import { groupBy } from 'lodash'
 import { useCallback } from 'react'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/queries/root-keys'
+import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
@@ -17,10 +17,8 @@ type UserPoolClaimablesQuery = UserChainQuery & { poolAddresses: Address[] }
 type UserPoolClaimablesParams = FieldsOf<UserPoolClaimablesQuery>
 
 // Use this key to invalidate all user rewards regardless of the pools fetched.
-export const getUserPoolClaimablesQueryKey = ({ chainId, userAddress }: UserChainParams) => ({
-  name: 'userPoolClaimables',
-  ...rootKeys.userChain({ chainId, userAddress }),
-})
+export const getUserPoolClaimablesQueryKey = ({ chainId, userAddress }: UserChainParams) =>
+  ({ name: 'userPoolClaimables', chainId, userAddress }) as const
 
 /**
  * Including pool addresses in the query key makes refetching straightforward, but a position
@@ -32,11 +30,8 @@ export const getUserPoolClaimablesQueryKey = ({ chainId, userAddress }: UserChai
  *
  */
 const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
-  queryKey: ({ chainId, userAddress, poolAddresses }: UserPoolClaimablesParams) => ({
-    name: 'userPoolClaimables',
-    ...rootKeys.userChain({ chainId, userAddress }),
-    poolAddresses,
-  }),
+  queryKey: ({ chainId, userAddress, poolAddresses }: UserPoolClaimablesParams) =>
+    ({ name: 'userPoolClaimables', chainId, userAddress, poolAddresses }) as const,
   queryFn: async ({ userAddress, poolAddresses }: UserPoolClaimablesQuery) => {
     const curve = requireLib('curveApi')
     const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress)

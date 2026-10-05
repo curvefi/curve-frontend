@@ -1,7 +1,6 @@
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
@@ -30,15 +29,18 @@ export const {
     userAddress,
     slippage,
     routeId,
-  }: RepayParams) => ({
-    name: 'repayExpectedBorrowed',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    slippage,
-    routeId,
-  }),
+  }: RepayParams) =>
+    ({
+      name: 'repayExpectedBorrowed',
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userCollateral,
+      userBorrowed,
+      slippage,
+      routeId,
+    }) as const,
   queryFn: async ({
     chainId,
     marketId,

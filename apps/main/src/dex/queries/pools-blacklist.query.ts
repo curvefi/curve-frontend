@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { getAddress, type Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import { getPoolFilters } from '@curvefi/prices-api/chains'
-import { type ChainNameParams } from '@evm-ui/queries/root-keys'
+import type { ChainNameParams } from '@evm-ui/queries/query-types'
 import { queryFactory } from '@ui/features/queries/factory'
 import { useMappedQuery, type QueryData } from '@ui/features/queries/util'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
@@ -202,7 +202,7 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
 } as const
 
 const { useQuery: usePricesApiBlacklist } = queryFactory({
-  queryKey: () => ({ name: 'pools-blacklist' }),
+  queryKey: () => ({ name: 'pools-blacklist' }) as const,
   queryFn: async () => await getPoolFilters(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.poolParams',

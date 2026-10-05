@@ -7,7 +7,6 @@ import { fetchResetIsApproved } from '@/llamalend/queries/reset/reset-is-approve
 import { getResetDebtReduction, getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import { type ResetForm, resetValidationSuite } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
@@ -30,7 +29,7 @@ export const useResetMutation = ({ network, network: { chainId }, marketId, user
   const { mutate, error, isPending } = useMarketMutation<ResetMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'reset' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'reset' }] as const,
     mutationFn: async (variables, { market, userAddress }) => {
       const debt = variables.userBorrowed ?? '0' // The reset amount paid from wallet.
       await waitForApproval({

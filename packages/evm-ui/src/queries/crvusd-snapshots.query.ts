@@ -1,5 +1,5 @@
 import { getSnapshots, type Snapshot } from '@curvefi/prices-api/crvusd'
-import { ContractQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { ContractQuery } from '@evm-ui/queries/query-types'
 import { contractValidationSuite } from '@evm-ui/queries/validation/contract-validation'
 import type { TimeOption } from '@evm-ui/queries/validation/time-option-validation'
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
@@ -12,13 +12,8 @@ type Query = ContractQuery & { timeOption?: TimeOption; limit?: number }
 type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useCrvUsdSnapshots } = queryFactory({
-  queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) => ({
-    name: 'getSnapshots',
-    version: 3,
-    ...rootKeys.contract({ contractAddress, blockchainId }),
-    timeOption,
-    limit,
-  }),
+  queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) =>
+    ({ name: 'getSnapshots', version: 3, blockchainId, contractAddress, timeOption, limit }) as const,
   queryFn: ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<CrvUsdSnapshot[]> => {
     const now = Date.now()
     return NoRetryError.catch404(async () =>

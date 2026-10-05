@@ -1,6 +1,6 @@
 import { shortenAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import { usePoolReserveAmounts } from '@/stellar/queries/pool/pool-reserves.query'
-import type { PoolQuery } from '@/stellar/queries/root-keys'
+import type { PoolQuery } from '@/stellar/queries/query-types'
 import { getTokenUsdRateQueryOptions } from '@/stellar/queries/token/token-usd-rate.query'
 import { isComplete, zip } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'

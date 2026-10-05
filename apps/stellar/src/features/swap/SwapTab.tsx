@@ -1,4 +1,4 @@
-import type { PoolQuery } from '@/stellar/queries/root-keys'
+import type { PoolQuery } from '@/stellar/queries/query-types'
 import { SwapForm } from '@ui/features/pool-forms/swap/SwapForm'
 import { SwapActionInfoList } from './SwapActionInfoList'
 import { useSwapForm } from './useSwapForm'

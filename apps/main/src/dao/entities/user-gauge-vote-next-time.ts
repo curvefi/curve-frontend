@@ -1,6 +1,6 @@
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import type { ChainQuery, UserQuery } from '@evm-ui/queries/root-keys'
+import type { ChainQuery, UserQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
@@ -13,12 +13,8 @@ type UserGaugeParams = FieldsOf<UserGaugeQuery>
 
 export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUserGaugeVoteNextTimeQuery } =
   queryFactory({
-    queryKey: ({ chainId, gaugeAddress, userAddress }: UserGaugeParams) => ({
-      name: 'user-gauge-vote-next-time',
-      chainId,
-      gaugeAddress,
-      userAddress,
-    }),
+    queryKey: ({ chainId, gaugeAddress, userAddress }: UserGaugeParams) =>
+      ({ name: 'user-gauge-vote-next-time', chainId, gaugeAddress, userAddress }) as const,
     queryFn: ({ gaugeAddress }: UserGaugeQuery) => requireLib('curveApi').dao.voteForGaugeNextTime(gaugeAddress),
     category: 'dao.user',
     validationSuite: createValidationSuite(({ chainId, userAddress, gaugeAddress }: UserGaugeParams) => {

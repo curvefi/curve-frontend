@@ -3,7 +3,6 @@ import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { parseMutationRoute } from '@evm-ui/queries/router-api'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -18,19 +17,15 @@ type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>> &
 
 const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateLoanApproveEstimateGasQuery } =
   queryFactory({
-    queryKey: ({
-      chainId,
-      marketId,
-      userBorrowed = '0',
-      userCollateral = '0',
-      leverageEnabled,
-    }: GasEstimateParams) => ({
-      name: 'estimateGas.createLoanApprove',
-      ...rootKeys.market({ chainId, marketId }),
-      userBorrowed,
-      userCollateral,
-      leverageEnabled,
-    }),
+    queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
+      ({
+        name: 'estimateGas.createLoanApprove',
+        chainId,
+        marketId,
+        userBorrowed,
+        userCollateral,
+        leverageEnabled,
+      }) as const,
     queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanEstimateGasQuery) => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       switch (type) {
@@ -65,17 +60,19 @@ const {
     range,
     slippage,
     routeId,
-  }: GasEstimateParams) => ({
-    name: 'estimateGas.createLoan',
-    ...rootKeys.market({ chainId, marketId }),
-    userBorrowed,
-    userCollateral,
-    debt,
-    leverageEnabled,
-    range,
-    slippage,
-    routeId,
-  }),
+  }: GasEstimateParams) =>
+    ({
+      name: 'estimateGas.createLoan',
+      chainId,
+      marketId,
+      userBorrowed,
+      userCollateral,
+      debt,
+      leverageEnabled,
+      range,
+      slippage,
+      routeId,
+    }) as const,
   queryFn: async ({
     marketId,
     userCollateral = '0',

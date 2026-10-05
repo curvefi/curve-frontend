@@ -1,5 +1,5 @@
 import { group, test } from 'vest'
-import type { TokenParams } from '@evm-ui/queries/root-keys'
+import type { TokenParams } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 
