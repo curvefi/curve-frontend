@@ -21,7 +21,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { QueriesResults } from '@tanstack/react-query'
-import { combineQueryState } from '@ui/features/queries/combine'
+import { combineRequiredQueryState } from '@ui/features/queries/combine'
 import { DISABLED_Q, type Query } from '@ui/features/queries/util'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
@@ -376,15 +376,35 @@ function createCountMarket(data: MintMarket[] | undefined = []) {
   return (m: MintMarket) => marketCountByCollateral[getName(m)]--
 }
 
-type LlamaMarketsQueries = [
+/** Queries needed to render the markets, their errors are propagated */
+type RequiredQueries = [
   ReturnType<typeof getLendingVaultsOptions>,
   ReturnType<typeof getMintMarketOptions>,
   ReturnType<typeof getBadDebtLendMarketsOptions>,
   ReturnType<typeof getBadDebtMintMarketsOptions>,
+]
+
+/** Queries that only enrich the markets, their errors are ignored so the markets still render (e.g. Merkl API down) */
+type OptionalQueries = [
   ReturnType<typeof getCampaignsExternalOptions>,
   ReturnType<typeof getCampaignsMarketsMerklOptions>,
   ReturnType<typeof getFavoriteMarketOptions>,
 ]
+
+const getRequiredQueries = (enabled: boolean): RequiredQueries => [
+  getLendingVaultsOptions({}, enabled),
+  getMintMarketOptions({}, enabled),
+  getBadDebtLendMarketsOptions(enabled),
+  getBadDebtMintMarketsOptions(enabled),
+]
+
+const getOptionalQueries = (enabled: boolean): OptionalQueries => [
+  getCampaignsExternalOptions({}, enabled),
+  getCampaignsMarketsMerklOptions({}, enabled),
+  getFavoriteMarketOptions({}, enabled),
+]
+
+type LlamaMarketsQueries = [...RequiredQueries, ...OptionalQueries]
 
 export type LlamaMarketParams = { userAddress: Address | undefined; enableDeprecatedMarkets: boolean }
 
@@ -394,31 +414,17 @@ export type LlamaMarketParams = { userAddress: Address | undefined; enableDeprec
  */
 export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaMarketParams, enabled = true) => {
   const userPositions = useUserLlamaPositions({ userAddress }, enabled)
+  const required = useMemo(() => getRequiredQueries(enabled), [enabled])
+  const optional = useMemo(() => getOptionalQueries(enabled), [enabled])
   return useQueries({
-    queries: useMemo<LlamaMarketsQueries>(
-      () => [
-        getLendingVaultsOptions({}, enabled),
-        getMintMarketOptions({}, enabled),
-        getBadDebtLendMarketsOptions(enabled),
-        getBadDebtMintMarketsOptions(enabled),
-        getCampaignsExternalOptions({}, enabled),
-        getCampaignsMarketsMerklOptions({}, enabled),
-        getFavoriteMarketOptions({}, enabled),
-      ],
-      [enabled],
-    ),
+    queries: useMemo<LlamaMarketsQueries>(() => [...required, ...optional], [required, optional]),
     combine: useCallback(
       (results: QueriesResults<LlamaMarketsQueries>): Query<LlamaMarketsResult> => {
         if (!enabled) return DISABLED_Q // used in the header, only run when llamalend is selected
-        const [
-          lendingVaults,
-          mintMarkets,
-          badDebtLendMarkets,
-          badDebtMintMarkets,
-          externalCampaigns,
-          merklCampaigns,
-          favoriteMarkets,
-        ] = results
+        const requiredResults = results.slice(0, required.length) as QueriesResults<RequiredQueries>
+        const optionalResults = results.slice(required.length) as QueriesResults<OptionalQueries>
+        const [lendingVaults, mintMarkets, badDebtLendMarkets, badDebtMintMarkets] = requiredResults
+        const [externalCampaigns, merklCampaigns, favoriteMarkets] = optionalResults
         const favoriteMarketsSet = new Set(favoriteMarkets.data)
         const { userBorrows, userMints, userSuppliesByChain, userHasPositions = null } = userPositions.data ?? {}
         const countMarket = createCountMarket(mintMarkets.data)
@@ -461,9 +467,12 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
               ),
             }
           : undefined
-        return { data, ...combineQueryState(userPositions, ...results) }
+        return {
+          data,
+          ...combineRequiredQueryState({ required: [userPositions, ...requiredResults], optional: optionalResults }),
+        }
       },
-      [enabled, enableDeprecatedMarkets, userPositions],
+      [enabled, enableDeprecatedMarkets, userPositions, required.length],
     ),
   })
 }

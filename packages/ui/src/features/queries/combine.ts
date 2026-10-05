@@ -10,6 +10,18 @@ export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
     'data'
   >
 
+/** Like {@link combineQueryState}, but ignores the errors of optional queries. */
+export const combineRequiredQueryState = ({
+  required,
+  optional,
+}: {
+  required: Queries
+  optional: Queries
+}): Omit<QueryProp<unknown>, 'data'> => ({
+  ...combineQueryState(...required, ...optional),
+  error: combineQueryState(...required).error,
+})
+
 type Queries = readonly Query<unknown>[]
 type QueriesData<TQueries extends Queries> = {
   [K in keyof TQueries]: TQueries[K] extends Query<infer TData> ? Exclude<TData, undefined> : never

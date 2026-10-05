@@ -3,7 +3,6 @@ import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import { IS_CYPRESS } from '@ui/lib/env'
 import type { RewardsAction } from '@external-rewards'
 import type { CampaignRewards } from './types'
 
@@ -101,13 +100,7 @@ export const fetchMerklRewards = async (params: Record<string, string | number |
     const resp = await fetch(url, { method: 'GET' })
 
     if (!resp.ok) {
-      const message = `Merkl fetch error ${resp.status} for URL: ${url}`
-      // Match HTTP server errors status codes (5xx) locally
-      if (window.location.hostname === 'localhost' && !IS_CYPRESS && /^5\d{2}$/.test(String(resp.status))) {
-        console.warn('Ignored merkl error for local testing', message)
-        return []
-      }
-      throw new FetchError(resp.status, message, await resp.text())
+      throw new FetchError(resp.status, `Merkl fetch error ${resp.status} for URL: ${url}`, await resp.text())
     }
 
     return (await resp.json()) as MerklOpportunity[]
