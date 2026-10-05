@@ -30,7 +30,7 @@ const useDepositEstimateGasQuery = createApprovedEstimateGasHook({
   useActionEstimate: useDepositEstimate,
 })
 
-export const useDepositEstimateGas = (params: DepositParams) => {
+export const useDepositEstimateGas = (params: DepositParams, enabled?: boolean) => {
   const { isHydrated } = useCurve()
-  return useDepositEstimateGasQuery(params, isHydrated)
+  return useDepositEstimateGasQuery(params, isHydrated && enabled)
 }
