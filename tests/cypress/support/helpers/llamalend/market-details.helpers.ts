@@ -5,11 +5,22 @@ import {
   getMetricValue,
 } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { clickTab } from '@cy/support/helpers/tabs'
+import type { AppRoute } from '@cy/support/routes'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
 import { MarketRateType } from '@evm-ui/types/market'
 import { recordValues } from '@primitives/objects.utils'
 
 type MarketDetailsOptions = { breakpoint: Breakpoint; hasWallet: boolean; hasApi?: boolean }
+
+/**
+ * Visit a market page without a wallet (so the API market data is used) while the Merkl API is down.
+ * Waits until both Merkl campaign queries (pools & markets) failed after the initial request and 3 retries
+ */
+export const visitMarketWithMerklOffline = (route: `/${AppRoute}`) => {
+  cy.intercept('/api/merkl/v1/opportunities*', { statusCode: 502, body: 'Bad Gateway' }).as('merkl')
+  cy.visitWithoutTestConnector(route)
+  cy.get('@merkl.all', LOAD_TIMEOUT).should('have.length.at.least', 8)
+}
 
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 

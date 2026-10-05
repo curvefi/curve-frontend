@@ -1,5 +1,8 @@
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
-import { shouldLoadMintBorrowDetails } from '@cy/support/helpers/llamalend/market-details.helpers'
+import {
+  shouldLoadMintBorrowDetails,
+  visitMarketWithMerklOffline,
+} from '@cy/support/helpers/llamalend/market-details.helpers'
 import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
 import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
@@ -40,6 +43,10 @@ describe('Mint app', () => {
       blockUnmockedApis()
       cy.visit(url)
       shouldLoadMintBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: true, hasApi: false })
+    })
+    it('without a wallet when Merkl is offline', () => {
+      visitMarketWithMerklOffline(url)
+      shouldLoadMintBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: false })
     })
   })
 })

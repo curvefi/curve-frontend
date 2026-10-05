@@ -1,7 +1,9 @@
+import { oneOf } from '@cy/support/generators'
 import { mockLendingSnapshots, mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import {
   shouldLoadLendBorrowDetails,
   shouldLoadLendVaultDetails,
+  visitMarketWithMerklOffline,
 } from '@cy/support/helpers/llamalend/market-details.helpers'
 import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
@@ -10,6 +12,18 @@ import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 const LEND_MARKET = '0x23F5a668A9590130940eF55964ead9787976f2CC'
 
 const [WIDTH, HEIGHT, BREAKPOINT] = oneViewport()
+const MERKL_OFFLINE_PAGE = oneOf(
+  {
+    label: 'lend market',
+    path: `/lend/ethereum/markets/${LEND_MARKET}` as const,
+    shouldLoad: shouldLoadLendBorrowDetails,
+  },
+  {
+    label: 'vault',
+    path: `/lend/ethereum/markets/${LEND_MARKET}/vault` as const,
+    shouldLoad: shouldLoadLendVaultDetails,
+  },
+)
 
 describe('Lend app', () => {
   beforeEach(() => {
@@ -67,5 +81,10 @@ describe('Lend app', () => {
       cy.visit(url)
       shouldLoadLendVaultDetails({ breakpoint: BREAKPOINT, hasWallet: true, hasApi: false })
     })
+  })
+
+  it(`${MERKL_OFFLINE_PAGE.label} details without a wallet when Merkl is offline`, () => {
+    visitMarketWithMerklOffline(MERKL_OFFLINE_PAGE.path)
+    MERKL_OFFLINE_PAGE.shouldLoad({ breakpoint: BREAKPOINT, hasWallet: false })
   })
 })
