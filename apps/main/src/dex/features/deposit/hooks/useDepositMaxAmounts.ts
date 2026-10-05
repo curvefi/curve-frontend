@@ -3,8 +3,7 @@ import { ethAddress, isAddressEqual, type Address } from 'viem'
 import { useDepositEstimateGas } from '@/dex/queries/deposit/deposit-estimate-gas.query'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery } from '@ui/features/queries/util'
-import { decimalMax, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
+import { decimalMax, decimalMinus, decimalMultiply, ZERO } from '@ui/lib/decimal'
 import type { DepositParams } from '../types'
 
 const GAS_BUFFER_MULTIPLIER = '1.8'
@@ -30,14 +29,12 @@ export const useDepositMaxAmounts = ({
   )
   const gas = useDepositEstimateGas(maxParams)
 
-  // Only native-token deposits need to reserve part of the balance for gas.
-  return nativeIndex < 0
-    ? mapQuery(balances, balances => tokenAddresses.map(address => balances[address]))
-    : combineQueries([balances, gas], (balances, { estGasCost }) =>
-        tokenAddresses.map((address, index) =>
-          index === nativeIndex && estGasCost != null
-            ? decimalMax('0', decimalMinus(balances[address], decimalMultiply(estGasCost, GAS_BUFFER_MULTIPLIER)))
-            : balances[address],
-        ),
-      )
+  return combineQueries([balances, gas], (balances, { estGasCost = ZERO }) =>
+    tokenAddresses.map((address, index) =>
+      index === nativeIndex
+        ? // native-token deposits need to reserve part of the balance for gas.
+          decimalMax('0', decimalMinus(balances[address], decimalMultiply(estGasCost, GAS_BUFFER_MULTIPLIER)))
+        : balances[address],
+    ),
+  )
 }

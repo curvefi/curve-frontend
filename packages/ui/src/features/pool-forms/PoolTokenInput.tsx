@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import type { Address } from '@primitives/address.utils'
+import { isComplete } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
@@ -26,7 +27,6 @@ export const PoolTokenInput = ({
   token: { blockchainId, address, balance, symbol },
   index,
   disabled,
-  hideMaxButton,
   reserves: { data: reserves },
   max,
   positionBalance,
@@ -34,10 +34,9 @@ export const PoolTokenInput = ({
   token: PoolToken
   index: number
   disabled: boolean
-  hideMaxButton?: boolean
   reserves: QueryProp<Decimal[]>
   /** Spendable maximum used for amount validation and the Max chip. */
-  max: QueryProp<Decimal>
+  max?: QueryProp<Decimal>
   /** Display the position balance instead of the wallet balance. */
   positionBalance?: {
     position: QueryProp<Decimal>
@@ -50,20 +49,21 @@ export const PoolTokenInput = ({
   const amount = watchValue(field)
   const fieldError = touchedFields[field] ? (errors[field] ?? errors[poolMaxAmountField(index)]) : undefined
   const { position, tooltip } = positionBalance ?? {}
-  useFormSync({ update }, { [poolMaxAmountField(index)]: max.data })
-  const inputError = fieldError ?? max.error
+  const limit = max ?? position
+  useFormSync({ update }, { [poolMaxAmountField(index)]: limit?.data })
+  const error = fieldError ?? limit?.error
   return (
     <LargeTokenInput
       name={field}
       tokenSelector={
         <TokenLabel blockchainId={blockchainId} address={address} label={symbol} size="mui-md" disabled={disabled} />
       }
-      balance={q({ data: amount, error: inputError ?? null, isLoading: false })}
+      balance={q({ data: amount, error: error ?? null, isLoading: false })}
       onBalance={useCallback(
         (value: Decimal | undefined) => {
           const decimals = getValue('decimals')
           update(
-            getValue('isBalanced') && reserves?.every(reserve => +reserve) && decimals?.every(value => value != null)
+            getValue('isBalanced') && isComplete(reserves) && isComplete(decimals)
               ? getBalancedUpdates(reserves, decimals, value, index)
               : { [field]: value },
           )
@@ -72,8 +72,8 @@ export const PoolTokenInput = ({
       )}
       disabled={disabled}
       walletBalance={{ symbol, balance: position ?? balance, tooltip, prefix: position && LlamaIcon }}
-      {...(!hideMaxButton && { maxBalance: { balance: max, chips: 'max' } })}
-      message={inputError?.message}
+      maxBalance={max && { balance: max, chips: 'max' }}
+      message={error?.message}
       testId={`pool-token-input-${address}`}
     />
   )

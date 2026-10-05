@@ -36,9 +36,9 @@ export const DepositForm = <TValues extends PoolDepositForm>({
   formErrors,
   footer,
   isSeed,
-  canDepositWrapped = false,
-  isWrappedOnly = false,
-  enableFirstOnly = false,
+  canDepositWrapped,
+  isWrappedOnly,
+  enableFirstOnly,
   maxAmounts,
 }: DepositFormProps<TValues>) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
@@ -53,14 +53,13 @@ export const DepositForm = <TValues extends PoolDepositForm>({
       reserves={reserves}
       isDisabled={isPending}
       maxAmounts={maxAmounts}
-      positionAmounts={undefined}
       enableFirstOnly={enableFirstOnly}
     />
-    {canDepositWrapped && <WrappedDepositCheckbox disabled={isPending || isWrappedOnly || enableFirstOnly} />}
+    {canDepositWrapped && <WrappedDepositCheckbox disabled={isPending || !!isWrappedOnly || !!enableFirstOnly} />}
     <BalancedDepositCheckbox
       reserves={reserves}
       isConnected={wallet.isConnected}
-      disabled={isPending || isSeed.data !== false}
+      disabled={isPending || isSeed.data !== false || [tokens, reserves, maxAmounts].some(q => q.isLoading)}
     />
     <FormButton
       {...wallet}

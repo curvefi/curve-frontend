@@ -15,6 +15,7 @@ import { useForm, type UseFormReturn, useFormSync } from '@ui/features/forms'
 import { getPoolAmounts, getPoolDefaultValues, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
+import { toWei } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import { useDepositMutation } from '../deposit.mutation'
 import { depositFormValidationSuite } from '../deposit.validation'
@@ -52,7 +53,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   )
   const form = useForm<DepositFormValues>({
     validation: depositFormValidationSuite,
-    defaultValues: { ...userDefaultValues, decimals: undefined, isWrapped: initialWrapped, isBalanced: false },
+    defaultValues: { ...userDefaultValues, decimals: undefined, isBalanced: false },
   })
   const { formState, handleSubmit, update, watchValues, reset } = form
   const { connect, connectState, wallet } = useWallet()
@@ -103,7 +104,10 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   return {
     form,
     params: queryParams,
-    reserves: mapQuery(reserves, reserves => reserves.tokens.map(token => token.balance)),
+    reserves: mapQuery(reserves, reserves =>
+      // todo: make sure reserves use formatted values across the app, instead of raw values
+      reserves.tokens.map((token, index) => toWei(token.balance, decimals[index])),
+    ),
     isSeed,
     canDepositWrapped,
     isWrappedOnly: isWrappedOnly(pool),
