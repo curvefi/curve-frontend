@@ -93,13 +93,11 @@ export const UserPositionsTable = ({
         title={t`Your positions`}
         onReload={onReload}
         isLoading={isFetching}
-        visibilitySettings={
-          address && tableQuery.data && { isOpen: visibilitySettingsOpen, open: openVisibilitySettings }
-        }
+        visibilitySettings={rowCount > 0 ? { isOpen: visibilitySettingsOpen, open: openVisibilitySettings } : undefined}
       />
       <Stack ref={anchorRef} sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         {address ? (
-          tableQuery.data?.length ? (
+          rowCount > 0 ? (
             <>
               <MetricsGrid
                 variant="fillMobile"
