@@ -1,6 +1,5 @@
 import { createClaimEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
-import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { queryFactory } from '@ui/features/queries/factory'
 import { claimableRewardsValidationSuite, requireGauge, requireVault } from '../validation/supply.validation'
 import { useClaimableCrv, useClaimableRewards } from './supply-claimable-rewards.query'
@@ -10,20 +9,16 @@ type ClaimEstimateParams<ChainId = number> = UserMarketParams<ChainId>
 type ClaimEstimateQuery = UserMarketQuery
 
 const { useQuery: useClaimCrvEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) => ({
-    name: 'estimateGas.claimCrv',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) =>
+    ({ name: 'estimateGas.claimCrv', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId }: ClaimEstimateQuery) => await requireVault(marketId).vault.estimateGas.claimCrv(),
   category: 'llamalend.supply',
   validationSuite: claimableRewardsValidationSuite,
 })
 
 const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) => ({
-    name: 'estimateGas.claimRewards',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-  }),
+  queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) =>
+    ({ name: 'estimateGas.claimRewards', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId }: ClaimEstimateQuery) => await requireGauge(marketId).vault.estimateGas.claimRewards(),
   category: 'llamalend.supply',
   validationSuite: claimableRewardsValidationSuite,

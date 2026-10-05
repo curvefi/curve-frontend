@@ -9,7 +9,6 @@ import {
   requireVault,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
@@ -48,7 +47,7 @@ export const useClaimCrvMutation = ({
   const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'claimCrv' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'claimCrv' }] as const,
     mutationFn: async (_, { market }) => ({ hash: await claimCrv(market, userAddress) }),
     validationSuite: claimValidationSuite,
     pendingMessage: () => t`Claiming CRV rewards...`,
@@ -72,7 +71,7 @@ export const useClaimRewardsMutation = ({
   const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'claimRewards' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'claimRewards' }] as const,
     mutationFn: async (_, { market }) => ({ hash: await claimRewards(market, userAddress) }),
     validationSuite: claimableRewardsValidationSuite,
     pendingMessage: () => t`Claiming rewards...`,

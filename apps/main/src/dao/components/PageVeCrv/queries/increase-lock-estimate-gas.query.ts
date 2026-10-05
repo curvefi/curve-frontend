@@ -1,17 +1,13 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { useIncreaseLockIsApproved } from './increase-lock-approved.query'
 import type { IncreaseLockParams, IncreaseLockQuery } from './increase-lock.types'
 import { increaseLockQueryValidationSuite } from './increase-lock.validation'
 
 const { useQuery: useIncreaseLockApproveEstimateGas } = queryFactory({
-  queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) => ({
-    name: 'boosting.estimateGas.approve',
-    ...rootKeys.userChain({ chainId, userAddress }),
-    lockedAmount,
-  }),
+  queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) =>
+    ({ name: 'boosting.estimateGas.approve', chainId, userAddress, lockedAmount }) as const,
   queryFn: async ({ lockedAmount }: IncreaseLockQuery) =>
     await requireLib('curveApi').boosting.estimateGas.approve(lockedAmount),
   category: 'dao.user',
@@ -19,11 +15,8 @@ const { useQuery: useIncreaseLockApproveEstimateGas } = queryFactory({
 })
 
 const { useQuery: useIncreaseLockEstimateGas } = queryFactory({
-  queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) => ({
-    name: 'boosting.estimateGas.increaseAmount',
-    ...rootKeys.userChain({ chainId, userAddress }),
-    lockedAmount,
-  }),
+  queryKey: ({ chainId, userAddress, lockedAmount }: IncreaseLockParams) =>
+    ({ name: 'boosting.estimateGas.increaseAmount', chainId, userAddress, lockedAmount }) as const,
   queryFn: async ({ lockedAmount }: IncreaseLockQuery) =>
     await requireLib('curveApi').boosting.estimateGas.increaseAmount(lockedAmount),
   category: 'dao.user',

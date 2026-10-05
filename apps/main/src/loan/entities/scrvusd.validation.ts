@@ -1,6 +1,6 @@
 import { skipWhen, test } from 'vest'
 import type { ChainId } from '@/loan/types/loan.types'
-import type { UserChainQuery } from '@evm-ui/queries/root-keys'
+import type { UserChainQuery } from '@evm-ui/queries/query-types'
 import { llamaApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Decimal } from '@primitives/decimal.utils'

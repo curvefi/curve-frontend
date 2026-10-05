@@ -1,7 +1,7 @@
 import { fulfilledValue } from '@/dex/utils'
 import type { IGaugesDataFromApi } from '@curvefi/api/lib/interfaces'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
@@ -10,7 +10,7 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 
 const { useQuery: usePoolGaugeStatusQuery, invalidate: invalidatePoolGaugeStatus } = queryFactory({
   category: 'dex.gauge',
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'status', ...rootKeys.gauge({ chainId, poolId }) }),
+  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'status', chainId, poolId }) as const,
   queryFn: async ({ poolId }: PoolQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     const [gaugeStatusResult, isGaugeKilledResult] = await Promise.allSettled([

@@ -15,7 +15,7 @@ const _fetchUserLocks = async ({ userAddress }: { userAddress: string }): Promis
 }
 
 export const { useQuery: useUserLocksQuery, invalidate: invalidateUserLocks } = queryFactory({
-  queryKey: ({ userAddress }: { userAddress: string }) => ({ name: 'user-locks', userAddress }),
+  queryKey: ({ userAddress }: { userAddress: string }) => ({ name: 'user-locks', userAddress }) as const,
   queryFn: _fetchUserLocks,
   category: 'dao.user',
   validationSuite: EmptyValidationSuite,

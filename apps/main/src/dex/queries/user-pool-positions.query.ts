@@ -1,6 +1,6 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getUserPoolPositions, MAX_USER_POOL_PAGE_SIZE } from '@curvefi/prices-api/pools'
-import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/queries/root-keys'
+import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -13,11 +13,8 @@ export const {
   queryKey: getUserPoolPositionsQueryKey,
   invalidate: invalidateUserPoolPositions,
 } = queryFactory({
-  queryKey: ({ chainId, userAddress }: UserChainParams) => ({
-    name: 'getUserPoolPositions',
-    version: 2,
-    ...rootKeys.userChain({ chainId, userAddress }),
-  }),
+  queryKey: ({ chainId, userAddress }: UserChainParams) =>
+    ({ name: 'getUserPoolPositions', version: 2, chainId, userAddress }) as const,
   queryFn: async ({ chainId, userAddress }: UserChainQuery) => {
     const positions = await paginate(
       async (page, pagination) => (await getUserPoolPositions({ chainId, userAddress, page, pagination })).positions,

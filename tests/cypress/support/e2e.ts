@@ -1,4 +1,3 @@
-import '@evm-ui/eip6963-test-setup'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 

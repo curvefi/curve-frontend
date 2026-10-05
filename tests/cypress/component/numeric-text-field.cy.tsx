@@ -1,4 +1,3 @@
-import '@evm-ui/eip6963-test-setup'
 import { useState } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'

@@ -1,15 +1,11 @@
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { DepositParams, DepositQuery, depositValidationSuite, requireVault } from '../validation/supply.validation'
 import { useDepositIsApproved } from './supply-deposit-approved.query'
 
 const { useQuery: useDepositApproveEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) => ({
-    name: 'estimateGas.depositApprove',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    depositAmount,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) =>
+    ({ name: 'estimateGas.depositApprove', chainId, marketId, userAddress, depositAmount }) as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.estimateGas.depositApprove(depositAmount),
   category: 'llamalend.supply',
@@ -17,11 +13,8 @@ const { useQuery: useDepositApproveEstimateGasQuery } = queryFactory({
 })
 
 const { useQuery: useDepositEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) => ({
-    name: 'estimateGas.deposit',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    depositAmount,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) =>
+    ({ name: 'estimateGas.deposit', chainId, marketId, userAddress, depositAmount }) as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.estimateGas.deposit(depositAmount),
   category: 'llamalend.supply',

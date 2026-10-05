@@ -6,7 +6,6 @@ import { getLoanImplementation } from '@/llamalend/queries/market/market.query-h
 import type { CloseLoanParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { closeLoanValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -36,7 +35,7 @@ export const useClosePositionMutation = ({
   const config = useConfig()
   const { mutate, error, isPending } = useMarketMutation<CloseLoanMutation>({
     network,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'close-position' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'close-position' }] as const,
     marketId,
     mutationFn: async ({ slippage }, { market }) => {
       await waitForApproval({

@@ -1,6 +1,5 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type FieldsOf } from '@ui/lib/validation/types'
 import type { CollateralQuery } from '../validation/manage-loan.types'
@@ -10,11 +9,8 @@ type AddCollateralIsApprovedQuery<T = IChainId> = CollateralQuery<T>
 type AddCollateralIsApprovedParams<T = IChainId> = FieldsOf<AddCollateralIsApprovedQuery<T>>
 
 export const { useQuery: useAddCollateralIsApproved, fetchQuery: fetchAddCollateralIsApproved } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralIsApprovedParams) => ({
-    name: 'addCollateralIsApproved',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userCollateral,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralIsApprovedParams) =>
+    ({ name: 'addCollateralIsApproved', chainId, marketId, userAddress, userCollateral }) as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralIsApprovedQuery): Promise<boolean> =>
     await getLoanImplementation(marketId).addCollateralIsApproved(userCollateral),
   category: 'llamalend.addCollateral',

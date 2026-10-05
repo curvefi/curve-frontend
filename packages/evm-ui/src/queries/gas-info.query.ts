@@ -4,7 +4,7 @@ import { ethAddress } from 'viem'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { AnyCurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { type ChainQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { ChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { gweiToWai, weiToGwei } from '@evm-ui/utils'
 import type { Provider } from '@evm-ui/utils/ethers'
@@ -104,12 +104,8 @@ const {
   fetchQuery: fetchGasInfoAndUpdateLibBase,
   setQueryData: setGasInfoAndUpdateLibBase,
 } = queryFactory({
-  queryKey: ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoParams) => ({
-    name: 'gasInfo',
-    ...rootKeys.chain({ chainId }),
-    gasPricesUrl,
-    gasPricesUrlL2,
-  }),
+  queryKey: ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoParams) =>
+    ({ name: 'gasInfo', chainId, gasPricesUrl, gasPricesUrlL2 }) as const,
   queryFn: async ({ chainId: chain, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const chainId = chain as Chain
