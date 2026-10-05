@@ -232,7 +232,7 @@ const NUMBER_FORMAT_CATEGORIES = {
     maximumFractionDigits: 2,
   },
   'token.amount': { abbreviate: false, fallback: UNAVAILABLE_NOTATION },
-  'token.change': {
+  'token.delta': {
     abbreviate: false,
     fallback: UNAVAILABLE_NOTATION,
     formatter: value => {

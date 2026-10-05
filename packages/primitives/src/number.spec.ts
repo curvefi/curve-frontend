@@ -464,9 +464,9 @@ describe('formatNumber', () => {
     })
 
     it('formats token changes with signs, preserved precision, and a missing-value fallback', () => {
-      expect(formatNumber(null, 'token.change')).toBe('-')
-      expect(formatNumber(1.004, 'token.change')).toBe('+1.004')
-      expect(formatNumber(-1.004, 'token.change')).toBe('-1.004')
+      expect(formatNumber(null, 'token.delta')).toBe('-')
+      expect(formatNumber(1.004, 'token.delta')).toBe('+1.004')
+      expect(formatNumber(-1.004, 'token.delta')).toBe('-1.004')
     })
 
     it('formats token balances with precision-sensitive decimal handling', () => {

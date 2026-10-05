@@ -33,7 +33,7 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
         label={notFalsy(t`Collateral`, collateralToken?.symbol && `(${collateralToken.symbol})`).join(' ')}
         value={collateralChange || null}
         valueOptions={{
-          formatter: value => formatNumber(value, 'token.change'),
+          formatter: value => formatNumber(value, 'token.delta'),
           color: getChangeColor(collateralChange, 'success', 'error'),
         }}
         {...(!!collateralChange && {
@@ -50,7 +50,7 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
         label={notFalsy(t`Debt`, borrowToken?.symbol && `(${borrowToken.symbol})`).join(' ')}
         value={loanChange || null}
         valueOptions={{
-          formatter: value => formatNumber(value, 'token.change'),
+          formatter: value => formatNumber(value, 'token.delta'),
           color: getChangeColor(loanChange, 'error', 'success'),
         }}
         {...(!!loanChange && {

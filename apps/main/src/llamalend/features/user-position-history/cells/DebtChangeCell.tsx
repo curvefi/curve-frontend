@@ -17,7 +17,7 @@ export const DebtChangeCell = ({
   return (
     <InlineTableCell>
       <Typography variant="tableCellMBold" color={loanChange ? (loanChange > 0 ? 'error' : 'success') : 'textPrimary'}>
-        {notFalsy(formatNumber(loanChange || null, 'token.change'), loanChange && borrowToken?.symbol).join(' ')}
+        {notFalsy(formatNumber(loanChange || null, 'token.delta'), loanChange && borrowToken?.symbol).join(' ')}
       </Typography>
       {!!loanChange && (
         <Typography variant="bodySRegular">
