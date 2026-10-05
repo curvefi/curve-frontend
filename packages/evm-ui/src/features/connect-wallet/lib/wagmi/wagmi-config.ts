@@ -54,17 +54,7 @@ export const createWagmiConfig = memoize(
     transports,
     connectors = defaultConnectors,
   }: CreateWagmiConfigOptions<TChains>) => {
-    _config = createConfig({
-      chains,
-      connectors,
-      transports,
-      /**
-       * As much as we'd like to enable EIP-6963, enabling this somehow causes duplicate rehydration issues.
-       * We won't be able to turn this on (and remove this memoize and custom isWagmiReconnecting logic)
-       * until hydration logic is no longer dependant on many wallet side effects and / or stores.
-       */
-      multiInjectedProviderDiscovery: false,
-    })
+    _config = createConfig({ chains, connectors, transports })
     return _config
   },
   {
