@@ -4,9 +4,7 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@evm-ui/queries/token-usd-rate.query'
-import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
-import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
-import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData } from '@ui/features/queries/util'
@@ -77,9 +75,7 @@ const {
     }
   },
   validationSuite: createValidationSuite((params: PoolCurrencyReservesParams) => {
-    curveApiValidationGroup(params)
-    chainValidationGroup(params)
-    poolValidationGroup(params)
+    curvePoolValidationGroup(params)
     test('isWrapped', () => {
       enforce(params.isWrapped).isBoolean()
     })
