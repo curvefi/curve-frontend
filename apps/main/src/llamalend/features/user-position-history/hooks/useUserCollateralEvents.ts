@@ -3,7 +3,7 @@ import type { MarketTokens } from '@/llamalend/llama.utils'
 import { UserCollateralEvent as CrvUsdUserCollateralEvent } from '@curvefi/prices-api/crvusd'
 import { UserCollateralEvent as LendingUserCollateralEvent } from '@curvefi/prices-api/lending'
 import type { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
-import type { UserContractQuery } from '@evm-ui/queries/root-keys'
+import type { UserContractQuery } from '@evm-ui/queries/query-types'
 import { MarketType } from '@evm-ui/types/market'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
@@ -44,7 +44,14 @@ export type UserCollateralEventType =
   | 'Hard Liquidation'
   | 'Partial Liquidation'
 
-const OriginalFields = ['loanChange', 'collateralChange', 'collateralChangeUsd', 'timestamp', 'txHash'] as const
+const OriginalFields = [
+  'loanChange',
+  'loanChangeUsd',
+  'collateralChange',
+  'collateralChangeUsd',
+  'timestamp',
+  'txHash',
+] as const
 
 export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> & {
   chainId: number

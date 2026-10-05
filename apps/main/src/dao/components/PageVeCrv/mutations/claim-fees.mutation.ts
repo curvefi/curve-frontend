@@ -14,7 +14,6 @@ import { invalidateClaimableFees } from '@/dao/components/PageVeCrv/queries/clai
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { invalidateTokenBalances } from '@evm-ui/hooks/useTokenBalance'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type TransactionContext, useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import type { Address, Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
@@ -32,7 +31,7 @@ export const useClaimFeesMutation = ({
   const config = useConfig()
   const [claimingToken, setClaimingToken] = useState<ClaimFeesToken>()
   const { mutate, error, isPending } = useEvmMutation<ClaimFeesMutation, ClaimFeesContext, ClaimFeesResult>({
-    mutationKey: [{ ...rootKeys.userChain({ chainId, userAddress }), name: 'claimFees' }] as const,
+    mutationKey: [{ chainId, userAddress, name: 'claimFees' }] as const,
     validationSuite: claimFeesValidationSuite,
     validationParams: { chainId, userAddress },
     buildContext: (_, context) => ({ ...context, chainId, userAddress: context.wallet.address }),

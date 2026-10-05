@@ -1,5 +1,5 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { rootKeys, type TokenQuery, type TokenParams } from '@/stellar/queries/root-keys'
+import type { TokenQuery, TokenParams } from '@/stellar/queries/query-types'
 import { tokenValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 
@@ -8,7 +8,7 @@ export const {
   getQueryOptions: getTokenDecimalsQueryOptions,
   fetchQuery: fetchTokenDecimals,
 } = queryFactory({
-  queryKey: ({ network, token }: TokenParams) => ({ name: 'decimals', ...rootKeys.token({ network, token }) }),
+  queryKey: ({ network, token }: TokenParams) => ({ name: 'decimals', network, token }) as const,
   queryFn: ({ network, token }: TokenQuery) => readContract<number>(network, token, 'decimals'),
   category: 'dex.poolParams',
   validationSuite: tokenValidationSuite,

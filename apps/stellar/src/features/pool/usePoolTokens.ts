@@ -1,5 +1,5 @@
 import { asAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
-import type { NetworkParams, UserParams } from '@/stellar/queries/root-keys'
+import type { NetworkParams, UserParams } from '@/stellar/queries/query-types'
 import { getTokenBalanceQueryOptions } from '@/stellar/queries/token/token-balance.query'
 import { getTokenDecimalsQueryOptions } from '@/stellar/queries/token/token-decimals.query'
 import { getTokenNameQueryOptions } from '@/stellar/queries/token/token-name.query'

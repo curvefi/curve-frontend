@@ -5,7 +5,7 @@ import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { getLib } from '@evm-ui/features/connect-wallet'
 import type { LibKey } from '@evm-ui/features/connect-wallet/lib/types'
 import { getWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
-import { type ChainParams, rootKeys, type TokenParams, type TokenQuery } from '@evm-ui/queries/root-keys'
+import type { ChainParams, TokenParams, TokenQuery } from '@evm-ui/queries/query-types'
 import { tokenValidationGroup } from '@evm-ui/queries/validation/token-validation'
 import { BlockchainIds, REUSD_ADDRESS, SREUSD_ADDRESS } from '@evm-ui/utils'
 import { FetchError } from '@primitives/fetch.utils'
@@ -112,10 +112,7 @@ export const {
   getQueryOptions: getTokenUsdRateQueryOptions,
   queryKey: getTokenUsdRateKey,
 } = queryFactory({
-  queryKey: ({ chainId, tokenAddress }: TokenParams) => ({
-    name: 'usdRate',
-    ...rootKeys.token({ chainId, tokenAddress }),
-  }),
+  queryKey: ({ chainId, tokenAddress }: TokenParams) => ({ name: 'usdRate', chainId, tokenAddress }) as const,
   queryFn: async ({ chainId, tokenAddress }: TokenQuery) => await fetchUsdRate(chainId, tokenAddress),
   validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) =>
     tokenValidationGroup({ chainId, tokenAddress }),
@@ -146,4 +143,4 @@ export const useTokenUsdRates = (
 }
 
 export type TokenUsdRate = QueryData<typeof useTokenUsdRate>
-export type TokenUsdRates = QueryData<typeof useTokenUsdRates>
+export type TokenUsdRates = ReturnType<typeof useTokenUsdRates>

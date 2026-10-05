@@ -1,12 +1,10 @@
-import type { ReactNode, RefObject } from 'react'
+import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import { TableButton } from '@ui/features/tables/TableButton'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { GearIcon } from '@ui/icons/GearIcon'
 import { TableSearchField } from './TableSearchField'
 
 const { Spacing } = SizesAndSpaces
@@ -16,7 +14,6 @@ const { Spacing } = SizesAndSpaces
  */
 export const TableFilters = ({
   testIdPrefix,
-  visibilitySettings,
   collapsibleFilters,
   chips,
   filterChip,
@@ -26,7 +23,6 @@ export const TableFilters = ({
   onSearch,
 }: {
   testIdPrefix: string
-  visibilitySettings?: { anchorRef: RefObject<HTMLButtonElement | null>; open: boolean; onOpen: () => void }
   // collapsible bar that displays the active filters
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
@@ -67,18 +63,9 @@ export const TableFilters = ({
           </Box>
           {sortChip && <Box className="tableControl">{sortChip}</Box>}
         </Grid>
-        {!isMobile && (
+        {!isMobile && chips && (
           <Grid container size="grow" spacing="none" sx={{ justifyContent: 'flex-end' }}>
             {chips}
-            {visibilitySettings && (
-              <TableButton
-                ref={visibilitySettings.anchorRef}
-                onClick={visibilitySettings.onOpen}
-                icon={GearIcon}
-                testId="btn-visibility-settings"
-                active={visibilitySettings.open}
-              />
-            )}
           </Grid>
         )}
       </Grid>

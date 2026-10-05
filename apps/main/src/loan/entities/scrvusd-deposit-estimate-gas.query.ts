@@ -1,17 +1,13 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { useScrvUsdDepositIsApproved } from './scrvusd-deposit-is-approved.query'
 import type { ScrvUsdDepositParams, ScrvUsdDepositQuery } from './scrvusd.validation'
 import { scrvUsdDepositMaxValidationSuite } from './scrvusd.validation'
 
 const { useQuery: useScrvUsdDepositApproveEstimateGas } = queryFactory({
-  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
-    name: 'st_crvUSD.estimateGas.depositApprove',
-    ...rootKeys.userChain({ chainId, userAddress }),
-    depositAmount,
-  }),
+  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) =>
+    ({ name: 'st_crvUSD.estimateGas.depositApprove', chainId, userAddress, depositAmount }) as const,
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
     await requireLib('llamaApi').st_crvUSD.estimateGas.depositApprove(depositAmount),
   category: 'savings.user',
@@ -19,11 +15,8 @@ const { useQuery: useScrvUsdDepositApproveEstimateGas } = queryFactory({
 })
 
 const { useQuery: useScrvUsdDepositEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) => ({
-    name: 'st_crvUSD.estimateGas.deposit',
-    ...rootKeys.userChain({ chainId, userAddress }),
-    depositAmount,
-  }),
+  queryKey: ({ chainId, userAddress, depositAmount }: ScrvUsdDepositParams) =>
+    ({ name: 'st_crvUSD.estimateGas.deposit', chainId, userAddress, depositAmount }) as const,
   queryFn: async ({ depositAmount }: ScrvUsdDepositQuery) =>
     await requireLib('llamaApi').st_crvUSD.estimateGas.deposit(depositAmount),
   category: 'savings.user',

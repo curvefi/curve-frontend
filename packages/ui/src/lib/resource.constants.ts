@@ -41,6 +41,7 @@ export const EXTERNAL_LINKS = {
   curve: {
     root: 'https://www.curve.finance/',
     classic: 'https://classic.curve.finance/',
+    stellar: 'https://stellar.curve.finance/',
     gov: 'https://gov.curve.finance/',
     news: 'https://news.curve.finance/',
     docs: 'https://docs.curve.finance/',

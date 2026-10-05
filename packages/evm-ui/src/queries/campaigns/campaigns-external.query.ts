@@ -10,6 +10,7 @@ const REWARDS = groupBy(
   // Can't use Object.groupBy until we support ES2024
   campaigns.flatMap(campaign =>
     campaign.pools.map<CampaignRewards>(pool => ({
+      isMerkl: false,
       // Campaign specific properties
       campaignName: campaign.campaignName,
       platform: campaign.platform,
@@ -47,7 +48,7 @@ const REWARDS = groupBy(
  * @returns TanStack Query result with all active campaigns grouped by pool address
  */
 export const { getQueryOptions: getCampaignsExternalOptions, queryKey: getCampaignsExternalQueryKey } = queryFactory({
-  queryKey: () => ({ name: 'campaigns-external' }),
+  queryKey: () => ({ name: 'campaigns-external' }) as const,
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async () => {
     const now = Date.now() // refresh is handled by refetchInterval

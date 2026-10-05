@@ -8,14 +8,8 @@ import { type FieldsOf } from '@ui/lib/validation/types'
 type PoolTradesParams = FieldsOf<GetAllPoolTradesParams>
 
 export const { useQuery: usePoolTrades } = queryFactory({
-  queryKey: ({ chain, poolAddress, page, perPage, includeState }: PoolTradesParams) => ({
-    name: 'pool-trades',
-    chain,
-    poolAddress,
-    page,
-    perPage,
-    includeState,
-  }),
+  queryKey: ({ chain, poolAddress, page, perPage, includeState }: PoolTradesParams) =>
+    ({ name: 'pool-trades', chain, poolAddress, page, perPage, includeState }) as const,
   queryFn: async ({
     chain,
     poolAddress,

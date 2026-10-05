@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useClaimCrvMutation, useClaimRewardsMutation } from '@/llamalend/mutations/claim.mutation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { UserMarketParams } from '@evm-ui/queries/root-keys'
-import { notFalsy } from '@primitives/objects.utils'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useMarketContext } from '../../market-context'
@@ -33,8 +32,8 @@ export const useSupplyClaimTab = <ChainId extends LlamaChainId>({ network }: { n
   } = useClaimableTokens({ params, crvAddress: crvTokenAddress })
 
   const tableData = useMemo(
-    () => claimableTokens.map(token => ({ ...token, blockchainId: network.blockchainId, isLoading: usdRateLoading })),
-    [claimableTokens, network.blockchainId, usdRateLoading],
+    () => claimableTokens.map(token => ({ ...token, blockchainId: network.blockchainId })),
+    [claimableTokens, network.blockchainId],
   )
 
   const table = useCurveTable({
@@ -71,6 +70,6 @@ export const useSupplyClaimTab = <ChainId extends LlamaChainId>({ network }: { n
     onSubmitRewards,
     isCrvPending: isClaimCrvPending,
     isRewardsPending: isClaimRewardsPending,
-    errors: notFalsy(usdRateError, claimableCrvError, claimableRewardsError, claimRewardsError, claimCrvError),
+    error: claimCrvError ?? claimRewardsError ?? claimableCrvError ?? claimableRewardsError ?? usdRateError,
   }
 }

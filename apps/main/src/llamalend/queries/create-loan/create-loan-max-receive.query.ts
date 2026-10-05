@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { getControllerAddress, getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { pickMaxDebtQuery } from '@/llamalend/queries/llamma-query.helpers'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { getExpectedFn, getRouteById } from '@evm-ui/queries/router-api'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -71,16 +70,19 @@ const {
     leverageEnabled,
     slippage,
     router,
-  }: CreateLoanMaxReceiveQueryParams) => ({
-    name: 'createLoanMaxRecv',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userBorrowed,
-    userCollateral,
-    range,
-    leverageEnabled,
-    slippage,
-    router,
-  }),
+  }: CreateLoanMaxReceiveQueryParams) =>
+    ({
+      name: 'createLoanMaxRecv',
+      chainId,
+      marketId,
+      userAddress,
+      userBorrowed,
+      userCollateral,
+      range,
+      leverageEnabled,
+      slippage,
+      router,
+    }) as const,
   queryFn: async ({
     chainId,
     marketId,

@@ -1,6 +1,6 @@
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { FieldsOf } from '@ui/lib/validation/types'
+import type { FieldsOf } from '@ui/lib/validation/types'
 
 export type ChainQuery<T = number> = { chainId: T }
 export type UserQuery<T = Address> = { userAddress: T }
@@ -29,26 +29,3 @@ export type UserContractParams<TChain = Chain, TAddress = Address> = FieldsOf<Us
 export type PoolParams<T = number> = FieldsOf<PoolQuery<T>>
 export type GaugeParams<T = number> = FieldsOf<GaugeQuery<T>>
 export type TokenParams = FieldsOf<TokenQuery>
-
-export const rootKeys = {
-  chain: <T = number>({ chainId }: ChainParams<T>) => ({ chainId }) as const,
-  chainName: ({ blockchainId }: ChainNameParams) => ({ blockchainId }) as const,
-
-  user: <T = Address>({ userAddress }: UserParams<T>) => ({ userAddress }) as const,
-  userChain: <TChain = number, TUser = Address>({ chainId, userAddress }: UserChainParams<TChain, TUser>) =>
-    ({ ...rootKeys.chain({ chainId }), ...rootKeys.user({ userAddress }) }) as const,
-
-  pool: <T = number>({ chainId, poolId }: PoolParams<T>) => ({ ...rootKeys.chain({ chainId }), poolId }) as const,
-  userPool: <TChain = number, TUser = Address>({ chainId, poolId, userAddress }: UserPoolParams<TChain, TUser>) =>
-    ({ ...rootKeys.pool({ chainId, poolId }), ...rootKeys.user({ userAddress }) }) as const,
-
-  contract: ({ blockchainId, contractAddress }: ContractParams) =>
-    ({ ...rootKeys.chainName({ blockchainId }), contractAddress }) as const,
-
-  gauge: <T = number>({ chainId, poolId }: GaugeParams<T>) => rootKeys.pool({ chainId, poolId }),
-  token: ({ chainId, tokenAddress }: TokenParams) => ({ ...rootKeys.chain({ chainId }), tokenAddress }) as const,
-
-  market: ({ chainId, marketId }: MarketParams) => ({ ...rootKeys.chain({ chainId }), marketId }) as const,
-  userMarket: ({ chainId, marketId, userAddress }: UserMarketParams) =>
-    ({ ...rootKeys.market({ chainId, marketId }), ...rootKeys.user({ userAddress }) }) as const,
-} as const

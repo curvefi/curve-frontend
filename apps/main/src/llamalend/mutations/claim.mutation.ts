@@ -1,6 +1,5 @@
 import { noop } from 'lodash'
 import { useCallback } from 'react'
-import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import {
   claimValidationSuite,
@@ -9,12 +8,9 @@ import {
   requireVault,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { type Address, type Hex } from '@primitives/address.utils'
-import { assert, notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
-import { fetchClaimableCrv, fetchClaimableRewards } from '../queries/supply/supply-claimable-rewards.query'
-import { hasClaimableRewards } from '../queries/supply/supply-query.helpers'
 
 type ClaimMutation = Record<string, never>
 
@@ -26,18 +22,6 @@ type ClaimOptions = {
 
 const noFormFieldOptions = { onReset: noop }
 
-const claimCrv = async (market: MarketTemplate, userAddress: Address | undefined) => {
-  const claimableCrv = await fetchClaimableCrv({ marketId: market.id, userAddress }, { staleTime: 0 })
-  assert(Number(claimableCrv) > 0, 'No claimable CRV rewards found')
-  return (await requireVault(market).vault.claimCrv()) as Hex
-}
-
-const claimRewards = async (market: MarketTemplate, userAddress: Address | undefined) => {
-  const claimableRewards = await fetchClaimableRewards({ marketId: market.id, userAddress }, { staleTime: 0 })
-  assert(hasClaimableRewards(claimableRewards), 'No claimable rewards found')
-  return (await requireGauge(market.id).vault.claimRewards()) as Hex
-}
-
 export const useClaimCrvMutation = ({
   network,
   network: { chainId },
@@ -48,8 +32,8 @@ export const useClaimCrvMutation = ({
   const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'claimCrv' }] as const,
-    mutationFn: async (_, { market }) => ({ hash: await claimCrv(market, userAddress) }),
+    mutationKey: [{ chainId, marketId, userAddress, name: 'claimCrv' }] as const,
+    mutationFn: async (_, { market }) => ({ hash: (await requireVault(market).vault.claimCrv()) as Hex }),
     validationSuite: claimValidationSuite,
     pendingMessage: () => t`Claiming CRV rewards...`,
     successMessage: () => t`Claimed rewards!`,
@@ -72,8 +56,8 @@ export const useClaimRewardsMutation = ({
   const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'claimRewards' }] as const,
-    mutationFn: async (_, { market }) => ({ hash: await claimRewards(market, userAddress) }),
+    mutationKey: [{ chainId, marketId, userAddress, name: 'claimRewards' }] as const,
+    mutationFn: async (_, { market }) => ({ hash: (await requireGauge(market.id).vault.claimRewards()) as Hex }),
     validationSuite: claimableRewardsValidationSuite,
     pendingMessage: () => t`Claiming rewards...`,
     successMessage: () => t`Claimed rewards!`,

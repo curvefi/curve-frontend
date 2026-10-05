@@ -10,7 +10,7 @@ import type {
   CollateralHealthParams,
   CollateralParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
-import type { UserMarketParams } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { llamaApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'

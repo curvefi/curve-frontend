@@ -1,5 +1,4 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 import { getUserCurrentLeverageKey } from '../user/user-current-leverage.query'
@@ -11,11 +10,8 @@ import { leverageCollateralValidationSuite } from '../validation/manage-loan.val
  * Note this does not support leverage values for old mint markets (marketId < 6).
  */
 export const { useQuery: useRemoveCollateralFutureLeverage } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) => ({
-    name: 'removeCollateralFutureLeverage',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    userCollateral,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
+    ({ name: 'removeCollateralFutureLeverage', chainId, marketId, userAddress, userCollateral }) as const,
   queryFn: async ({ marketId, userAddress, userCollateral }: CollateralQuery) =>
     decimal(await getLoanImplementation(marketId).removeCollateralFutureLeverage(userCollateral, userAddress)) ?? null,
   category: 'llamalend.removeCollateral',
