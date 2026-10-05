@@ -1,15 +1,11 @@
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { StakeParams, StakeQuery, stakeValidationSuite, requireVault } from '../validation/supply.validation'
 import { useStakeIsApproved } from './supply-stake-approved.query'
 
 const { useQuery: useStakeApproveEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) => ({
-    name: 'estimateGas.stakeApprove',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    stakeShares,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) =>
+    ({ name: 'estimateGas.stakeApprove', chainId, marketId, userAddress, stakeShares }) as const,
   queryFn: async ({ marketId, stakeShares }: StakeQuery) =>
     await requireVault(marketId).vault.estimateGas.stakeApprove(stakeShares),
   category: 'llamalend.supply',
@@ -17,11 +13,8 @@ const { useQuery: useStakeApproveEstimateGasQuery } = queryFactory({
 })
 
 const { useQuery: useStakeEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) => ({
-    name: 'estimateGas.stake',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    stakeShares,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) =>
+    ({ name: 'estimateGas.stake', chainId, marketId, userAddress, stakeShares }) as const,
   queryFn: async ({ marketId, stakeShares }: StakeQuery) =>
     await requireVault(marketId).vault.estimateGas.stake(stakeShares),
   category: 'llamalend.supply',

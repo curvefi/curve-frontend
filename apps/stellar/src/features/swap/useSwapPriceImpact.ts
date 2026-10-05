@@ -1,4 +1,4 @@
-import type { PoolQuery } from '@/stellar/queries/root-keys'
+import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useSwapQuote } from '@/stellar/queries/swap/swap-quote.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'

@@ -1,5 +1,4 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { parseRoute as parseRoute } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -19,17 +18,19 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
     range,
     maxDebt,
     routeId,
-  }: CreateLoanDebtParams) => ({
-    name: 'createLoanPriceImpact',
-    ...rootKeys.market({ chainId, marketId }),
-    userCollateral,
-    userBorrowed,
-    debt,
-    leverageEnabled,
-    range,
-    maxDebt,
-    routeId,
-  }),
+  }: CreateLoanDebtParams) =>
+    ({
+      name: 'createLoanPriceImpact',
+      chainId,
+      marketId,
+      userCollateral,
+      userBorrowed,
+      debt,
+      leverageEnabled,
+      range,
+      maxDebt,
+      routeId,
+    }) as const,
   queryFn: async ({
     marketId,
     userCollateral = '0',

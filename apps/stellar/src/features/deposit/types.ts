@@ -1,5 +1,5 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import type { PoolQuery, UserParams, UserQuery } from '@/stellar/queries/root-keys'
+import type { PoolQuery, UserParams, UserQuery } from '@/stellar/queries/query-types'
 import type { QuoteQuery } from '@/stellar/queries/validation/liquidity.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { PoolForm, PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'

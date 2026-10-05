@@ -15,7 +15,6 @@ import {
   borrowMoreMutationValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { RouteProvider } from '@primitives/router.utils'
@@ -74,7 +73,7 @@ export const useBorrowMoreMutation = ({
   const { mutate, error, isPending } = useMarketMutation<BorrowMoreMutation>({
     network,
     marketId,
-    mutationKey: [{ ...rootKeys.userMarket({ chainId, marketId, userAddress }), name: 'borrowMore' }] as const,
+    mutationKey: [{ chainId, marketId, userAddress, name: 'borrowMore' }] as const,
     mutationFn: async (variables, { market, userAddress: walletAddress }) => {
       await waitForApproval({
         isApproved: () =>

@@ -1,13 +1,9 @@
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { StakeParams, StakeQuery, stakeValidationSuite, requireVault } from '../validation/supply.validation'
 
 export const { useQuery: useStakeIsApproved, fetchQuery: fetchStakeIsApproved } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) => ({
-    name: 'stakeIsApproved',
-    ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-    stakeShares,
-  }),
+  queryKey: ({ chainId, marketId, userAddress, stakeShares }: StakeParams) =>
+    ({ name: 'stakeIsApproved', chainId, marketId, userAddress, stakeShares }) as const,
   queryFn: async ({ marketId, stakeShares }: StakeQuery) =>
     await requireVault(marketId).vault.stakeIsApproved(stakeShares),
   category: 'llamalend.supply',
