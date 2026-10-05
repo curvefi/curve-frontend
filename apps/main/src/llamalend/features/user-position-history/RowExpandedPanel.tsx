@@ -1,4 +1,4 @@
-import { formatActivityUsdValue } from '@evm-ui/features/activity-table/utils'
+import { formatActivityUsdValue, getChangeColor } from '@evm-ui/features/activity-table/utils'
 import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import { formatNumber } from '@primitives/number.utils'
@@ -9,9 +9,6 @@ import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { t } from '@ui/lib/i18n'
 import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
-
-const getChangeColor = (amount: number, positive: 'success' | 'error', negative: 'success' | 'error') =>
-  amount > 0 ? positive : amount < 0 ? negative : 'textPrimary'
 
 export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent> = ({ row: { original: event } }) => {
   const {

@@ -47,3 +47,6 @@ export const formatActivityUsdValue = (
       ? t`Processing`
       : UNAVAILABLE_NOTATION
     : formatNumber(isSold ? -amountUsd : amountUsd, 'usd.notional')
+
+export const getChangeColor = (amount: number, positive: 'success' | 'error', negative: 'success' | 'error') =>
+  amount > 0 ? positive : amount < 0 ? negative : 'textPrimary'

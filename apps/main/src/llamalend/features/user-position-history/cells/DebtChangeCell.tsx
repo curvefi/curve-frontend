@@ -1,4 +1,4 @@
-import { formatActivityUsdValue } from '@evm-ui/features/activity-table/utils'
+import { formatActivityUsdValue, getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
@@ -16,7 +16,7 @@ export const DebtChangeCell = ({
   const currentDate = useCurrentDate()
   return (
     <InlineTableCell>
-      <Typography variant="tableCellMBold" color={loanChange ? (loanChange > 0 ? 'error' : 'success') : 'textPrimary'}>
+      <Typography variant="tableCellMBold" color={getChangeColor(loanChange, 'error', 'success')}>
         {notFalsy(formatNumber(loanChange || null, 'token.delta'), loanChange && borrowToken?.symbol).join(' ')}
       </Typography>
       {!!loanChange && (

@@ -1,4 +1,4 @@
-import { formatActivityUsdValue } from '@evm-ui/features/activity-table/utils'
+import { formatActivityUsdValue, getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
@@ -16,10 +16,7 @@ export const CollateralChangeCell = ({
   const currentDate = useCurrentDate()
   return (
     <InlineTableCell>
-      <Typography
-        variant="tableCellMBold"
-        color={collateralChange ? (collateralChange > 0 ? 'success' : 'error') : 'textPrimary'}
-      >
+      <Typography variant="tableCellMBold" color={getChangeColor(collateralChange, 'success', 'error')}>
         {notFalsy(
           formatNumber(collateralChange || null, 'token.delta'),
           collateralChange && collateralToken?.symbol,
