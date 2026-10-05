@@ -1,5 +1,4 @@
 import { CampaignRewards } from '@evm-ui/queries/campaigns'
-import { isMerkl } from '@evm-ui/queries/campaigns/merkl'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
@@ -57,7 +56,7 @@ export const RewardsTooltipItems = ({
             >
               <TooltipValueLink href={r.dashboardLink}>
                 <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-                  {isMerkl(r) && <MerklIcon sx={{ fontSize: IconSize.sm }} />}
+                  {r.isMerkl && <MerklIcon sx={{ fontSize: IconSize.sm }} />}
                   {r.reward?.type === 'apr'
                     ? `${tooltipType === 'supply' ? '+' : ''}${formatNumber(tooltipType === 'supply' ? aprToApy(r.reward.value, 'llamalend.rewards') : -r.reward.value, 'percent.rate')}`
                     : formatNumber(r.reward?.value, 'multiplier')}

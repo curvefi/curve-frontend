@@ -32,7 +32,7 @@ export function RepayTokenList<ChainId extends IChainId>({
   network,
   onToken,
   tokens,
-  stateCollateral: { data: positionCollateral },
+  stateCollateral,
 }: RepayTokenListProps<ChainId>) {
   const { address: userAddress } = useConnection()
   const { borrowToken, collateralToken } = marketTokens
@@ -40,8 +40,8 @@ export function RepayTokenList<ChainId extends IChainId>({
     () => notFalsy(collateralToken?.address, borrowToken?.address),
     [collateralToken?.address, borrowToken?.address],
   )
-  const { data: balances } = useTokenBalances({ chainId: network.chainId, userAddress, tokenAddresses })
-  const { data: tokenPrices } = useTokenUsdRates({ chainId: network.chainId, tokenAddresses })
+  const balances = useTokenBalances({ chainId: network.chainId, userAddress, tokenAddresses })
+  const tokenPrices = useTokenUsdRates({ chainId: network.chainId, tokenAddresses })
 
   const [[stateCollateralToken], walletTokens] = useMemo(
     () => partition(tokens, token => token.field === 'stateCollateral'),
@@ -64,7 +64,7 @@ export function RepayTokenList<ChainId extends IChainId>({
             <TokenSection
               title={t`Llamalend`}
               tokens={[stateCollateralToken]}
-              balances={{ [stateCollateralToken.address]: positionCollateral }}
+              balances={{ [stateCollateralToken.address]: stateCollateral }}
               tokenPrices={tokenPrices}
               onToken={onToken}
             />

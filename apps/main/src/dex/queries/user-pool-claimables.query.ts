@@ -1,21 +1,17 @@
 import { groupBy } from 'lodash'
 import { useCallback } from 'react'
-import type { ClaimableReward } from '@/dex/types/main.types'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries } from '@primitives/objects.utils'
+import { assert, fromEntries, recordEntries } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { q, useMappedQuery, type QueryData } from '@ui/features/queries/util'
+import { q, type QueryData, useMappedQuery } from '@ui/features/queries/util'
 import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
 import type { useUserPoolPositions } from './user-pool-positions.query'
-
-export type PoolClaimables = (ClaimableReward & { amountUsd: Decimal })[]
 
 type UserPoolClaimablesQuery = UserChainQuery & { poolAddresses: Address[] }
 type UserPoolClaimablesParams = FieldsOf<UserPoolClaimablesQuery>
@@ -39,27 +35,28 @@ const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
   queryFn: async ({ userAddress, poolAddresses }: UserPoolClaimablesQuery) => {
     const curve = requireLib('curveApi')
     const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress)
-
     return fromEntries(
-      poolAddresses.map((poolAddress, index) => {
+      poolAddresses.map((poolAddress, index) =>
         // Curve can return CRV emissions and extra CRV rewards separately for the same token.
-        const claimables = Object.entries(groupBy(poolRewards[index], reward => reward.token)).map(
-          ([token, rewards]) => {
-            const [{ symbol, price }] = rewards
-            return {
-              token,
-              symbol,
-              price,
-              amount: decimalSum(...rewards.map(reward => decimal(reward.amount))),
-              amountUsd: decimalSum(
-                ...rewards.map(reward => decimalMultiply(decimal(reward.amount) ?? '0', reward.price)),
-              ),
-            }
-          },
-        )
-
-        return [poolAddress, claimables]
-      }),
+        [
+          poolAddress,
+          recordEntries(
+            groupBy(
+              poolRewards[index].map(reward => ({
+                ...reward,
+                amount: assert(decimal(reward.amount), 'Invalid claimable amount'),
+              })),
+              reward => reward.token,
+            ),
+          ).map(([token, rewards]) => ({
+            token,
+            symbol: rewards[0]?.symbol,
+            price: rewards[0]?.price,
+            amount: decimalSum(...rewards.map(reward => reward.amount)),
+            amountUsd: decimalSum(...rewards.map(reward => decimalMultiply(reward.amount, reward.price))),
+          })),
+        ],
+      ),
     )
   },
   validationSuite: createValidationSuite((params: UserPoolClaimablesParams) => {

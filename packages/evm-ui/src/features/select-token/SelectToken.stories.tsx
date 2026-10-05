@@ -3,6 +3,7 @@ import { action } from 'storybook/actions'
 import { ethAddress, type Address } from 'viem'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { Button, Stack, Typography } from '@mui/material'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
@@ -47,7 +48,7 @@ const defaultBalances = {
   [defaultTokens[13].address]: '123.45',
   [defaultTokens[14].address]: '1337.00',
   [defaultTokens[15].address]: '69.420',
-}
+} satisfies Record<Address, Decimal>
 
 const defaultTokenPrices = {
   [defaultTokens[0].address]: 2600,

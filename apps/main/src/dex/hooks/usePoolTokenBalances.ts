@@ -4,43 +4,24 @@ import { useCurve, type CurveApi } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/queries/query-types'
 import type { Address } from '@primitives/address.utils'
+import { notFalsyArray, recordValues } from '@primitives/objects.utils'
+import { combineQueryState } from '@ui/features/queries/combine'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>
 
-/** Hook to get all pool token balances for underlying tokens */
-export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, enabled = true) {
+/** Fetch pool token balances and expose their combined loading/error state. */
+export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params) {
   const { curveApi, isHydrated } = useCurve()
-  const pool = useMemo(
-    () => (isHydrated && poolId ? curveApi!.getPool(poolId) : undefined),
-    [curveApi, isHydrated, poolId],
-  )
+  const { underlyingCoinAddresses, wrappedCoinAddresses } =
+    useMemo(() => (isHydrated && poolId ? curveApi!.getPool(poolId) : undefined), [curveApi, isHydrated, poolId]) ?? {}
 
-  const {
-    data: wrappedCoinsBalances,
-    isLoading: wrappedCoinsLoading,
-    error: wrappedCoinsError,
-  } = useTokenBalances(
-    { chainId, userAddress, tokenAddresses: pool?.wrappedCoinAddresses as Address[] },
-    enabled && isHydrated,
+  const balances = useTokenBalances(
+    { chainId, userAddress, tokenAddresses: notFalsyArray(wrappedCoinAddresses, underlyingCoinAddresses) as Address[] },
+    isHydrated,
   )
-
-  const {
-    data: underlyingCoinsBalances,
-    isLoading: underlyingCoinsLoading,
-    error: underlyingCoinsError,
-  } = useTokenBalances(
-    { chainId, userAddress, tokenAddresses: pool?.underlyingCoinAddresses as Address[] },
-    enabled && isHydrated,
-  )
-
-  return {
-    wrappedCoinsBalances,
-    underlyingCoinsBalances,
-    isLoading: wrappedCoinsLoading || underlyingCoinsLoading,
-    error: wrappedCoinsError ?? underlyingCoinsError,
-  }
+  return useMemo(() => combineQueryState(...recordValues(balances)), [balances])
 }
 
 /** Temporary imperative function for some zustand slices to fetch all pool token balances */
