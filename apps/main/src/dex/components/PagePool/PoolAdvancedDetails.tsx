@@ -6,7 +6,7 @@ import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { useBasePools } from '@/dex/queries/base-pools.query'
-import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
+import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
@@ -48,7 +48,7 @@ export const PoolAdvancedDetails = () => {
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
   const parameters = usePoolParameters({ chainId, poolId })
-  const { data: gaugeStatus } = usePoolGaugeStatus({ chainId, poolId })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
   const snapshots = usePoolSnapshots({ chain: blockchainId as BlockchainId, poolAddress })
   const {
     priceOracle: priceOracleApi,
@@ -86,7 +86,7 @@ export const PoolAdvancedDetails = () => {
         lpTokenAddress: getAddress(lpToken),
         gaugeAddress: getAddress(gauge.address),
         hasGauge: !isAddressEqual(gauge.address as Address, zeroAddress),
-        gaugeIsKilled: gaugeStatus?.isKilled,
+        gaugeIsKilled,
         oracles: assetTypes?.flatMap((assetType, index) => {
           const oracle = oracles?.[index]
           if (assetType !== 1 || !oracle?.oracleAddress || isAddressEqual(oracle.oracleAddress, zeroAddress)) return []
