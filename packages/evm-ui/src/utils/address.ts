@@ -1,4 +1,4 @@
-import { getAddress, zeroAddress } from 'viem'
+import { getAddress, isAddress, isAddressEqual, zeroAddress } from 'viem'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { type Address } from '@primitives/address.utils'
 
@@ -39,6 +39,8 @@ export const shortenAddress = (address: string | undefined, options?: ShortenAdd
 
 /** Makes sure a list of addresses doesn't contain duplicates. */
 export const uniqAddresses = (addresses: Address[]) => Array.from(new Set(addresses))
+
+export const isValidAddress = (address: string) => isAddress(address) && !isAddressEqual(address, zeroAddress)
 
 export const THREECRV_ADDRESS = '0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490' as const
 export const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e' as const

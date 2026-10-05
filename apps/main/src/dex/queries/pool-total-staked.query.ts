@@ -1,8 +1,8 @@
 import type { ContractMethod } from 'ethers'
-import { isValidAddress } from '@/dex/utils'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
+import { isValidAddress } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
 const NOT_AVAILABLE = { totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' } as const
