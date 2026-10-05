@@ -1,33 +1,19 @@
 import { isNaN } from 'lodash'
 import { test } from 'vest'
-import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
-import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@evm-ui/queries/token-usd-rate.query'
+import { fetchTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
-import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
-import { t } from '@ui/lib/i18n'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
+import { getTokens } from '../pool.utils'
 
 type PoolCurrencyReservesQuery = PoolQuery & { isWrapped: boolean; useApi: boolean }
 type PoolCurrencyReservesParams = FieldsOf<PoolCurrencyReservesQuery>
-
-const poolBalances = async (p: PoolTemplate, isWrapped: boolean) => {
-  if (p.curve.isNoRPC) {
-    return { error: t`Connect your wallet to see pool balances` }
-  }
-  try {
-    return { balances: isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances() }
-  } catch (error) {
-    console.error(error)
-    return { error: getErrorMessage(error, 'error-stats-balances') }
-  }
-}
 
 const {
   useQuery: usePoolCurrencyReservesQuery,
@@ -39,19 +25,16 @@ const {
     ({ name: 'stats.currencyReserves', chainId, poolId, isWrapped, useApi }) as const,
   queryFn: async ({ chainId, poolId, isWrapped }: PoolCurrencyReservesQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
-    const tokens = isWrapped ? pool.wrappedCoins : pool.underlyingCoins
-    const tokenAddresses = isWrapped ? pool.wrappedCoinAddresses : pool.underlyingCoinAddresses
+    const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrapped })
 
-    const [balancesResp] = await Promise.all([
-      poolBalances(pool, isWrapped),
-      // Fetching the token prices now, used later with getTokenUsdRateQueryData.
-      ...tokenAddresses.map(tokenAddress => fetchTokenUsdRate({ chainId, tokenAddress }).catch(() => 0)),
+    const [balances, usdRates] = await Promise.all([
+      isWrapped ? pool.stats.wrappedBalances() : pool.stats.underlyingBalances(),
+      Promise.all(tokenAddresses.map(tokenAddress => fetchTokenUsdRate({ chainId, tokenAddress }).catch(() => 0))),
     ])
 
-    const { balances } = balancesResp
     const isEmpty = !balances?.length || balances.every(b => +b === 0)
     const crTokens = tokenAddresses.map((tokenAddress, idx) => {
-      const usdRate = getTokenUsdRateQueryData({ chainId, tokenAddress }) ?? 0
+      const usdRate = usdRates[idx]
       const balance = Number(balances?.[idx])
       const balanceUsd = !isEmpty && +usdRate > 0 && !isNaN(usdRate) ? balance * usdRate : 0
 
