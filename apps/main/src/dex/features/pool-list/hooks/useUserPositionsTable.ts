@@ -1,24 +1,26 @@
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { resetPoolLists } from '@/dex/queries/invalidation'
-import { useUserPoolClaimables, type UserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
-import { useUserPoolPositions, type UserPoolPosition } from '@/dex/queries/user-pool-positions.query'
+import { type UserPoolClaimables, useUserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
+import { type UserPoolPosition, useUserPoolPositions } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
-import { useTokenUsdRates, type TokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
-import { maybe } from '@primitives/objects.utils'
-import { mapQuery, type Query, useMappedQuery } from '@ui/features/queries/util'
+import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
+import { notFalsy } from '@primitives/objects.utils'
+import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
+import { mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum } from '@ui/lib/decimal'
-import { claimablesTotalUsd, enrichPoolRow, poolToRowData } from '../utils'
+import { claimablesTotalUsd, enrichPoolRow, getPoolListAlerts, poolToRowData } from '../utils'
 
 const getPoolUserPosition = (
   position: UserPoolPosition['positions'][number],
-  tokenRates: TokenUsdRates | undefined,
+  tokenRate: QueryProp<number>,
   claimables: Query<UserPoolClaimables>,
 ) => ({
   lpBalance: position.totalBalance,
-  depositsUsd: maybe(tokenRates?.[position.lpTokenAddress], price => decimalMultiply(position.totalBalance, price)),
-  claimables: mapQuery(claimables, rewards => rewards[position.address] ?? []),
+  depositsUsd: mapQuery(tokenRate, price => decimalMultiply(position.totalBalance, price)),
+  claimables: mapQuery(claimables, pools => pools[position.address]),
+  claimablesUsd: mapQuery(claimables, data => claimablesTotalUsd(data?.[position.address])),
 })
 
 export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) => {
@@ -45,15 +47,17 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
               poolToRowData(position),
               network,
               campaigns.data,
-              getPoolUserPosition(position, tokenRates.data, {
+              getPoolUserPosition(position, tokenRates[position.lpTokenAddress], {
                 data: claimables.data,
                 isLoading: claimables.isLoading,
                 error: claimables.error,
               }),
             ),
           )
-          .toSorted((a, b) => decimalCompare(b.userPosition.depositsUsd ?? '0', a.userPosition.depositsUsd ?? '0')),
-      [network, campaigns.data, tokenRates.data, claimables.data, claimables.isLoading, claimables.error],
+          .toSorted((a, b) =>
+            decimalCompare(b.userPosition?.depositsUsd.data ?? '0', a.userPosition?.depositsUsd.data ?? '0'),
+          ),
+      [network, campaigns.data, tokenRates, claimables.data, claimables.isLoading, claimables.error],
     ),
   )
 
@@ -61,11 +65,14 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
     isFetching: positions.isFetching || campaigns.isLoading || claimables.isFetching,
     onReload: () => resetPoolLists({ chainId, userAddress }),
     tableQuery,
-    claimablesTotalUsd: mapQuery(claimables, pools =>
-      decimalSum(...Object.values(pools).map(claimables => claimablesTotalUsd(claimables))),
+    alerts: getPoolListAlerts(tableQuery.data, blockchainId),
+    claimablesTotalUsd: combineQueries(
+      [tableQuery, aggregateQueries(notFalsy(...(tableQuery.data?.map(row => row.userPosition?.claimablesUsd) ?? [])))],
+      (rows, amounts) => (rows.length && amounts.every(amount => amount == null) ? undefined : decimalSum(...amounts)),
     ),
-    totalLiquidityUsd: mapQuery(tableQuery, rows =>
-      decimalSum(...rows.map(({ userPosition }) => userPosition.depositsUsd)),
+    totalLiquidityUsd: combineQueries(
+      [tableQuery, aggregateQueries(notFalsy(...(tableQuery.data?.map(row => row.userPosition?.depositsUsd) ?? [])))],
+      (rows, amounts) => (rows.length && amounts.every(amount => amount == null) ? undefined : decimalSum(...amounts)),
     ),
   }
 }

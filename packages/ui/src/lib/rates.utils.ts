@@ -2,7 +2,7 @@ import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'
 
-const MAX_DISPLAY_RATE_PERCENT = 5000
+export const MAX_DISPLAY_RATE_PERCENT = 5000
 
 /** Number of compounding periods per year. */
 const COMPOUNDING_FREQUENCIES = { daily: 365, weekly: 365 / 7, continuous: Infinity } as const

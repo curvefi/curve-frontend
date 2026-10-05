@@ -61,10 +61,9 @@ export const StellarNetworkAwareLayout = () => {
             <Header
               banners={
                 <GlobalBanner
-                  rootUrl={EXTERNAL_LINKS.curve.root}
+                  rootUrl={EXTERNAL_LINKS.curve.stellar}
                   connectError={error}
                   switchChain={PLACEHOLDERS.notImplementedCallback}
-                  // TODO: Read the wallet network; the existing chain IDs do not distinguish mainnet from testnet.
                   walletChainId={chain.chainId}
                   chainName={chain.name}
                   chainId={chain.chainId}

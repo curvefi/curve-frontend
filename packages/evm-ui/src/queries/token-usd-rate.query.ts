@@ -143,4 +143,4 @@ export const useTokenUsdRates = (
 }
 
 export type TokenUsdRate = QueryData<typeof useTokenUsdRate>
-export type TokenUsdRates = QueryData<typeof useTokenUsdRates>
+export type TokenUsdRates = ReturnType<typeof useTokenUsdRates>

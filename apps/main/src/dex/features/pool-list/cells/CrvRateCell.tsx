@@ -1,15 +1,14 @@
 import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
-import { MAINNET_CRV } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { t } from '@ui/lib/i18n'
-import type { PoolRow } from '../types'
+import type { PoolRow, PoolTableMeta } from '../types'
 import { formatCellValue, getCrvAprRange } from './utils'
 
-export const CrvRateCell = ({ pool }: { pool: PoolRow }) => {
+export const CrvRateCell = ({ pool, crvToken }: { pool: PoolRow; crvToken: PoolTableMeta['crvToken'] }) => {
   const range = pool.gauge?.isKilled ? null : getCrvAprRange(pool)
 
   return (
@@ -19,14 +18,21 @@ export const CrvRateCell = ({ pool }: { pool: PoolRow }) => {
         Wrapper={Tooltip}
         clickable
         title={t`CRV APR`}
-        body={range && <CrvRateTooltipContent unboostedRate={range.unboostedRate} maximumRate={range.boostedRate} />}
+        body={
+          range && (
+            <CrvRateTooltipContent
+              crvToken={crvToken}
+              unboostedRate={range.unboostedRate}
+              maximumRate={range.boostedRate}
+            />
+          )
+        }
         placement="top"
       >
         <Box data-testid={range && 'pool-crv-rate-tooltip-trigger'}>
           {range ? (
             <TokenInfo
-              address={MAINNET_CRV.address}
-              blockchainId={MAINNET_CRV.chain}
+              {...crvToken}
               iconSize="mui-sm"
               iconPosition="right"
               iconAlignment="start"

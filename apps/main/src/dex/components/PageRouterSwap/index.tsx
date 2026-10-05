@@ -38,7 +38,7 @@ import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { assert, fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
+import { assert, fromEntries, maybe, maybes, recordEntries, recordValues } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
@@ -180,11 +180,7 @@ export const QuickSwap = ({
   const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromToken?.address })
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toToken?.address })
 
-  const {
-    balances,
-    tokenPrices,
-    isLoading: tokenSelectorLoading,
-  } = useTokenSelectorData(
+  const { balances, tokenPrices } = useTokenSelectorData(
     { chainId, userAddress, tokens },
     { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: userFromBalanceFetched && userToBalanceFetched },
   )
@@ -549,7 +545,7 @@ export const QuickSwap = ({
               balances={balances}
               tokenPrices={tokenPrices}
               volumes={tokenVolumes.data}
-              isLoading={tokenSelectorLoading}
+              isLoading={recordValues(balances).some(q => q.isLoading)}
               onToken={({ address: fromAddress }) => {
                 const toAddress =
                   fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress

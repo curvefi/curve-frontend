@@ -1,4 +1,3 @@
-import { isMerkl } from '@evm-ui/queries/campaigns/merkl'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
@@ -37,7 +36,7 @@ export const CampaignRewardTooltipItems = ({ campaigns }: { campaigns: Campaign[
     >
       <TooltipValueLink href={campaign.dashboardLink}>
         <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-          {isMerkl(campaign) && <MerklIcon sx={{ fontSize: IconSize.sm }} />}
+          {campaign.isMerkl && <MerklIcon sx={{ fontSize: IconSize.sm }} />}
           {formatNumber(campaign.reward?.type === 'apr' ? campaign.reward.value : null, 'percent.rate')}
         </Stack>
       </TooltipValueLink>
@@ -55,7 +54,7 @@ export const PointsTooltipItems = ({ campaigns }: { campaigns: Campaign[] }) =>
     >
       <TooltipValueLink href={campaign.dashboardLink}>
         <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-          {isMerkl(campaign) && <MerklIcon sx={{ fontSize: IconSize.sm }} />}
+          {campaign.isMerkl && <MerklIcon sx={{ fontSize: IconSize.sm }} />}
           {campaign.reward?.type === 'points'
             ? formatNumber(campaign.reward.value, 'multiplier')
             : campaign.symbol || '-'}

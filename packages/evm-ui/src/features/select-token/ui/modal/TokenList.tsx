@@ -4,8 +4,10 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { SearchField } from '@ui/components/SearchField'
+import { toValue } from '@ui/features/queries/util'
 import type { TokenOption as Option } from '@ui/features/select-token/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useFuzzySearch } from '@ui/hooks/useFuzzySearch'
@@ -25,7 +27,7 @@ export type TokenListProps = Pick<
   /** List of favorite token options to display at the top */
   favorites?: Option[]
   /** Token volumes in USD mapped by token address */
-  volumes?: Record<string, number>
+  volumes?: Record<Address, number>
   /** Custom error message to display (e.g., when tokens failed to load) */
   error?: string
   /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */
@@ -81,17 +83,16 @@ export const TokenList = ({
   const myTokens = useMemo(() => {
     if (disableMyTokens) return []
 
-    const balanceTokens = tokensSearched.filter(token => +(balances?.[token.address] ?? 0) > 0)
+    const balanceTokens = tokensSearched.filter(token => +(toValue(balances?.[token.address]) ?? 0) > 0)
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       balanceTokens.sort((a, b) => {
-        const aBalance = +(balances?.[a.address] ?? 0)
-        const bBalance = +(balances?.[b.address] ?? 0)
-        const aBalanceUsd = (tokenPrices?.[a.address] ?? 0) * aBalance
-        const bBalanceUsd = (tokenPrices?.[b.address] ?? 0) * bBalance
-
+        const aBalance = +(toValue(balances?.[a.address]) ?? 0)
+        const bBalance = +(toValue(balances?.[b.address]) ?? 0)
+        const aBalanceUsd = (toValue(tokenPrices?.[a.address]) ?? 0) * aBalance
+        const bBalanceUsd = (toValue(tokenPrices?.[b.address]) ?? 0) * bBalance
         return bBalanceUsd - aBalanceUsd || bBalance - aBalance
       })
     }
@@ -109,17 +110,16 @@ export const TokenList = ({
     if (!showPreviewMy) return []
 
     const totalUsdBalance = myTokens.reduce((sum, token) => {
-      const balance = +(balances?.[token.address] ?? 0)
-      const price = tokenPrices?.[token.address] ?? 0
+      const balance = +(toValue(balances?.[token.address]) ?? 0)
+      const price = toValue(tokenPrices?.[token.address]) ?? 0
       return sum + balance * price
     }, 0)
 
     const threshold = totalUsdBalance * 0.01
 
     return myTokens.filter((token: Option) => {
-      const balance = +(balances?.[token.address] ?? 0)
-      const price = tokenPrices?.[token.address] ?? 0
-
+      const balance = +(toValue(balances?.[token.address]) ?? 0)
+      const price = toValue(tokenPrices?.[token.address]) ?? 0
       // We used to include tokens with a balance > 0, but no $ price (0),
       // but it turns out that way quite a few scam tokens show up in the preview.
       return balance * price > threshold
@@ -136,7 +136,9 @@ export const TokenList = ({
    */
   const allTokens = useMemo(() => {
     const allTokensBase = notFalsy(
-      disableMyTokens ? tokensSearched : tokensSearched.filter(token => +(balances?.[token.address] ?? 0) === 0),
+      disableMyTokens
+        ? tokensSearched
+        : tokensSearched.filter(token => +(toValue(balances?.[token.address]) ?? 0) === 0),
 
       showPreviewMy &&
         // Add tokens that have balance but aren't in the preview (dust tokens)

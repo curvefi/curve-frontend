@@ -1,4 +1,3 @@
-import { evmAddressDisplay } from '@evm-ui/utils'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -6,8 +5,8 @@ import { formatDate } from '@primitives/date.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'
 import { Metric, type MetricProps } from '@ui/components/Metric'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
-import { mapQuery, toQuery } from '@ui/features/queries/util'
+import { AddressActionInfo, type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
+import { toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { decimal } from '@ui/lib/decimal'
@@ -18,10 +17,9 @@ import { formatToken } from '@ui/lib/tokens'
 import { ClaimablesTooltipContent } from '../cells/ClaimablesTooltipContent'
 import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { ClaimablesIcons, RewardIcons } from '../cells/RewardIcons'
-import { getBaseApr, getNetApr, isVolatileRate } from '../cells/utils'
+import { getBaseApr, isVolatileRate } from '../cells/utils'
 import { POOL_TITLES, PoolColumnId } from '../columns'
-import type { PoolRow, PoolTableVariant } from '../types'
-import { claimablesTotalUsd } from '../utils'
+import type { PoolRow, PoolTableMeta, PoolTableVariant } from '../types'
 
 const { Spacing } = SizesAndSpaces
 const PRIMARY_METRIC_CATEGORY = 'dex.poolListMobileExpanded'
@@ -44,7 +42,7 @@ const getRateValueOptions = (
 
 const PRIMARY_METRIC_SIZE = { full: 6, lite: 6, userPositions: 4 } satisfies Record<PoolTableVariant, number>
 
-const PoolTokens = ({ pool }: { pool: PoolRow }) => (
+const PoolTokens = ({ pool, addressDisplay }: { pool: PoolRow; addressDisplay: AddressDisplay }) => (
   <Stack data-testid="pool-tokens" sx={{ marginBlockStart: Spacing.md, gap: Spacing.sm }}>
     <Typography variant="bodyMBold" color="textSecondary">
       {t`Pool tokens`}
@@ -65,7 +63,7 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
             />
           }
           address={address}
-          display={evmAddressDisplay}
+          display={addressDisplay}
           hideTooltip
           testId={`pool-token-${address}`}
         />
@@ -76,17 +74,19 @@ const PoolTokens = ({ pool }: { pool: PoolRow }) => (
 
 export const PoolExpandedPanel = ({
   pool,
-  pool: {
-    userPosition: { claimables },
-  },
   variant,
+  addressDisplay,
+  crvToken,
 }: {
   pool: PoolRow
   variant: PoolTableVariant
+  addressDisplay: AddressDisplay
+  crvToken: PoolTableMeta['crvToken']
 }) => {
   const currentDate = useCurrentDate()
   const baseRate = getBaseApr(pool, 'daily')
-  const netRate = getNetApr(pool)
+  const netRate = pool.netApr
+  const claimables = pool.userPosition?.claimables
   const volatileBaseRate = isVolatileRate(baseRate)
 
   return (
@@ -100,14 +100,14 @@ export const PoolExpandedPanel = ({
           valueTooltip={
             netRate
               ? {
-                  body: <NetRateTooltipContent pool={pool} volatile={volatileBaseRate} />,
+                  body: <NetRateTooltipContent pool={pool} crvToken={crvToken} volatile={volatileBaseRate} />,
                   clickable: true,
                   placement: 'top',
                   title: t`Net APR`,
                 }
               : undefined
           }
-          icon={<RewardIcons pool={pool} includeCrv includePoints tooltipPlacement="top" />}
+          icon={<RewardIcons pool={pool} crvToken={crvToken} includePoints tooltipPlacement="top" />}
           testId="pool-net-rate"
         />
       </Grid>
@@ -139,9 +139,9 @@ export const PoolExpandedPanel = ({
             <Metric
               category={PRIMARY_METRIC_CATEGORY}
               label={POOL_TITLES[PoolColumnId.Deposits]}
-              value={pool.userPosition.depositsUsd}
+              value={pool.userPosition?.depositsUsd}
               valueOptions={{ unit: 'dollar' }}
-              notional={toQuery(formatToken(pool.userPosition.lpBalance, 'LP', 'balance'))}
+              notional={toQuery(formatToken(pool.userPosition?.lpBalance, 'LP', 'balance'))}
             />
           </Grid>
           {claimables && (
@@ -149,11 +149,17 @@ export const PoolExpandedPanel = ({
               <Metric
                 category={PRIMARY_METRIC_CATEGORY}
                 label={POOL_TITLES[PoolColumnId.Claimables]}
-                value={mapQuery(claimables, rewards => claimablesTotalUsd(rewards))}
+                value={pool.userPosition?.claimablesUsd}
                 valueOptions={{ unit: 'dollar' }}
                 valueTooltip={
                   claimables.data && {
-                    body: <ClaimablesTooltipContent claimables={claimables.data} blockchainId={pool.blockchainId} />,
+                    body: (
+                      <ClaimablesTooltipContent
+                        claimables={claimables.data}
+                        blockchainId={pool.blockchainId}
+                        totalUsd={pool.userPosition?.claimablesUsd}
+                      />
+                    ),
                     clickable: true,
                     placement: 'top',
                     title: POOL_TITLES[PoolColumnId.Claimables],
@@ -191,7 +197,7 @@ export const PoolExpandedPanel = ({
             testId="pool-age"
           />
         ))}
-        <PoolTokens pool={pool} />
+        <PoolTokens pool={pool} addressDisplay={addressDisplay} />
       </Grid>
     </Grid>
   )

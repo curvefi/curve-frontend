@@ -232,6 +232,14 @@ const NUMBER_FORMAT_CATEGORIES = {
     maximumFractionDigits: 2,
   },
   'token.amount': { abbreviate: false, fallback: UNAVAILABLE_NOTATION },
+  'token.delta': {
+    abbreviate: false,
+    fallback: UNAVAILABLE_NOTATION,
+    formatter: value => {
+      const formatted = defaultNumberFormatter(value)
+      return Number(value) > 0 ? `+${formatted}` : formatted
+    },
+  },
   'token.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
   'token.balance': PRECISE_NUMBER_FORMAT,
   'token.precise': PRECISE_NUMBER_FORMAT,
