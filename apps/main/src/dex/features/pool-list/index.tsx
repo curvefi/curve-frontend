@@ -1,5 +1,6 @@
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { ListPageLayout } from '@ui/features/layout/ListPageLayout'
+import { PoolExpandedPanelActions } from './components/PoolExpandedPanelActions'
 import { PoolsTable } from './PoolsTable'
 import { UserPositionsTable } from './UserPositionsTable'
 
@@ -10,8 +11,8 @@ export const PoolsList = () => {
     <ListPageLayout>
       {network && (
         <>
-          <UserPositionsTable network={network} />
-          <PoolsTable network={network} />
+          <UserPositionsTable network={network} Actions={PoolExpandedPanelActions} />
+          <PoolsTable network={network} Actions={PoolExpandedPanelActions} />
         </>
       )}
     </ListPageLayout>

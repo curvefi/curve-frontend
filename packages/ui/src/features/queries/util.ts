@@ -97,7 +97,7 @@ export const mapQuery = <TSource, TResult>(
 export const constQ = <T>(data: T) => q({ data, isLoading: false, error: null })
 
 /**
- * A disabled query without any data. Currently used because ActionInfo requires some query and doesn't accept undefined.
+ * A disabled query without any data. ActionInfo currently requires a query and doesn't accept undefined.
  * TODO: Get rid of this and create `type MaybeQuery<T> = T | QueryProp<T>`
  */
 export const DISABLED_Q = constQ(undefined)

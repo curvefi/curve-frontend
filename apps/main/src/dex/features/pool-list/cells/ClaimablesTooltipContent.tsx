@@ -1,25 +1,27 @@
 import { Fragment } from 'react'
-import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { type QueryProp, toValue } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalCompare } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import type { PoolRow } from '../types'
-import { claimablesTotalUsd } from '../utils'
+import type { PoolClaimables, PoolRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
 export const ClaimablesTooltipContent = ({
   blockchainId,
   claimables,
+  totalUsd,
 }: {
   blockchainId: PoolRow['blockchainId']
   claimables: PoolClaimables
+  totalUsd: QueryProp<Decimal> | undefined
 }) => (
   <TooltipWrapper>
     <Stack>
@@ -56,7 +58,7 @@ export const ClaimablesTooltipContent = ({
       </TooltipItems>
       <TooltipItems borderTop>
         <TooltipItem title={t`Total`} variant="primary">
-          {formatNumber(claimablesTotalUsd(claimables), 'usd.precise')}
+          {formatNumber(toValue(totalUsd), 'usd.precise')}
         </TooltipItem>
       </TooltipItems>
     </Stack>

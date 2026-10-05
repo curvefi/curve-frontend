@@ -1,15 +1,18 @@
-import type { PoolClaimables } from '@/dex/queries/user-pool-claimables.query'
+import { sum } from 'lodash'
+import { Alerts, getVyperExploitedAlert } from '@/dex/hooks/usePoolAlert'
+import { TOKEN_ALERTS } from '@/dex/hooks/useTokenAlert'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { LitePool, V2Pool } from '@curvefi/prices-api/pools'
 import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
-import { type Nullish, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, fromEntries, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { decimalSum } from '@ui/lib/decimal'
 import { isVyperVulnerablePool } from './alerts'
-import type { PoolRow, PoolRowData } from './types'
+import { getAprCampaigns, getCrvAprRange } from './cells/utils'
+import type { PoolAlerts, PoolClaimables, PoolRow, PoolRowData } from './types'
 
-/** Maps Prices API pool data into the source-independent pool-list model. */
+/** Maps Prices API data to row data, normalizing API nulls to the existing undefined-based contract. */
 export const poolToRowData = (
   pool: Pick<V2Pool, 'address' | 'name' | 'tradeableCoins' | 'extraRewardsApr'> & Partial<V2Pool>,
 ): PoolRowData => ({
@@ -81,14 +84,43 @@ export const enrichPoolRow = (
   { chainId, blockchainId }: NetworkConfig,
   campaignsByAddress: Record<string, CampaignRewards[]> | Nullish,
   userPosition: PoolRow['userPosition'],
-): PoolRow => ({
-  ...pool,
-  chainId,
-  blockchainId,
-  campaigns: campaignsByAddress?.[pool.address.toLowerCase()] ?? [],
-  hasVyperVulnerability: isVyperVulnerablePool(chainId, pool.address),
-  url: getPath({ network: blockchainId }, `${DEX_ROUTES.PAGE_POOLS}/${pool.address}`),
-  userPosition,
-})
+): PoolRow => {
+  const campaigns = campaignsByAddress?.[pool.address.toLowerCase()] ?? []
+  const extraRewardsTotalApr = sum(pool.extraRewardsApr.filter(reward => reward.apr > 0).map(reward => reward.apr))
+  const campaignRewardsApr = sum(
+    getAprCampaigns({ campaigns }).flatMap(({ reward }) => (reward?.type === 'apr' ? [reward.value] : [])),
+  )
+  const rewardsApr = extraRewardsTotalApr + campaignRewardsApr
+  const crv = pool.gauge?.isKilled ? 0 : pool.crvApr
+  const netApr = sum([pool.baseDailyApr, crv, rewardsApr])
+  const crvRange = pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)
+  return {
+    ...pool,
+    chainId,
+    blockchainId,
+    campaigns,
+    hasVyperVulnerability: isVyperVulnerablePool(chainId, pool.address),
+    url: getPath({ network: blockchainId }, `${DEX_ROUTES.PAGE_POOLS}/${pool.address}`),
+    userPosition,
+    extraRewardsTotalApr,
+    campaignRewardsApr,
+    rewardsApr,
+    incentivesApr: sum([crv, rewardsApr]),
+    netApr,
+    netAprBoosted: maybes([netApr, crvRange], (net, range) => net - range.unboostedRate + range.boostedRate),
+  }
+}
 
-export const claimablesTotalUsd = (claimables: PoolClaimables) => decimalSum(...claimables.map(r => r.amountUsd))
+export const claimablesTotalUsd = (claimables: PoolClaimables | undefined) =>
+  maybe(claimables, rewards => decimalSum(...rewards.map(reward => reward.amountUsd)))
+
+/** Get pool alerts for the main app. Resolves EVM address casing. */
+export const getPoolListAlerts = (rows: readonly PoolRow[] | undefined, blockchainId: string): PoolAlerts => ({
+  pools: maybe(rows, rows =>
+    fromEntries(rows.map(pool => [pool.address, Alerts[blockchainId]?.[pool.address.toLowerCase()]])),
+  ),
+  tokens: maybe(rows, rows =>
+    fromEntries(rows.flatMap(pool => pool.coins.map(({ address }) => [address, TOKEN_ALERTS[address.toLowerCase()]]))),
+  ),
+  vyper: getVyperExploitedAlert(),
+})

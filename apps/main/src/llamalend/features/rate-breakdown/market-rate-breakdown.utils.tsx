@@ -2,6 +2,7 @@ import { getAddress } from 'viem'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { getPointsCampaignRows, type PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
+import type { TokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
@@ -9,7 +10,7 @@ import { Chain } from '@primitives/network.utils'
 import { type Nullish, maybes, notFalsy } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
-import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { constQ, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { aprToApy } from '@ui/lib/rates.utils'
 
@@ -104,7 +105,7 @@ export const buildSupplyRateBreakdown = ({
   chainId: number
   blockchainId: string
   borrowToken: MarketToken | undefined
-  prices: QueryProp<Record<string, number>>
+  prices: TokenUsdRates
   crvPrice: QueryProp<number>
 }): RateBreakdownData => {
   const crvRates = [rate.supplyApyCrvMinBoost, rate.supplyApyCrvMaxBoost]
@@ -137,7 +138,7 @@ export const buildSupplyRateBreakdown = ({
         explorerUrl: scanTokenPath(chainId, borrowToken.address),
         yieldBearing: true,
       },
-      price: mapQuery(prices, prices => prices[borrowToken.address]),
+      price: prices[borrowToken.address],
       rate: rebasingYield,
     })),
   )
@@ -151,7 +152,7 @@ export const buildSupplyRateBreakdown = ({
           address: getAddress(address),
           explorerUrl: scanTokenPath(chainId, address),
         },
-        price: mapQuery(prices, prices => prices[address]),
+        price: prices[address],
         rate: percentage,
       })),
       ...campaigns.map(({ platform, platformImageId, reward, symbol }) => ({

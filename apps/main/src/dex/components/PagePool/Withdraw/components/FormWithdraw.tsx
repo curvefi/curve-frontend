@@ -277,15 +277,15 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   ])
 
   const tokenAddresses = useMemo(() => formValues.amounts.map(a => a.tokenAddress), [formValues.amounts])
-  const { data: usdRates } = useTokenUsdRates({ chainId, tokenAddresses })
+  const usdRates = useTokenUsdRates({ chainId, tokenAddresses })
 
   // usd amount for slippage warning
   const estUsdAmountTotalReceive = useMemo(() => {
     if (formValues.selected === 'token') {
       const foundCoinWithAmount = formValues.amounts.find(a => Number(a.value) > 0)
-      if (foundCoinWithAmount && usdRates?.[foundCoinWithAmount.tokenAddress] != null) {
+      if (foundCoinWithAmount && usdRates[foundCoinWithAmount.tokenAddress].data != null) {
         const { value, tokenAddress } = foundCoinWithAmount
-        const usdRate = usdRates?.[tokenAddress]
+        const usdRate = usdRates[tokenAddress].data
         if (usdRate) {
           return (usdRate * Number(value)).toString()
         }
@@ -294,8 +294,8 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
       return lodash
         .sum(
           formValues.amounts
-            .filter(({ tokenAddress, value }) => Number(value) > 0 && usdRates?.[tokenAddress])
-            .map(({ tokenAddress, value }) => Number(usdRates?.[tokenAddress]) * Number(value)),
+            .filter(({ tokenAddress, value }) => Number(value) > 0 && usdRates[tokenAddress]?.data)
+            .map(({ tokenAddress, value }) => Number(usdRates[tokenAddress]?.data) * Number(value)),
         )
         .toString()
     }
