@@ -1,8 +1,11 @@
 import { useMemo } from 'react'
+import { WagmiProvider } from 'wagmi'
 import { fromDate } from '@curvefi/prices-api/timestamp'
+import { createTestWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test-config'
 import type { Address, Token } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
 import { constQ, fakeLoadingQ, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { ActivityTable } from './ActivityTable'
@@ -157,13 +160,19 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
       deposit: isDeposit
         ? {
             amount: Math.random() * 10 + 0.5,
+            amountUsd: 2500,
             n1: Math.floor(Math.random() * 50),
             n2: Math.floor(Math.random() * 50) + 50,
           }
         : null,
       withdrawal: isDeposit
         ? null
-        : { amountBorrowed: Math.random() * 5000 + 100, amountCollateral: Math.random() * 2 + 0.1 },
+        : {
+            amountBorrowed: Math.random() * 5000 + 100,
+            amountBorrowedUsd: 1000,
+            amountCollateral: Math.random() * 2 + 0.1,
+            amountCollateralUsd: 3000,
+          },
       blockNumber: 19000000 + i * 60,
       timestamp: fromDate(new Date(now - i * 3600000)), // 1 hour apart
       txHash: generateTxHash(6000 + i),
@@ -176,6 +185,7 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
 }
 
 const liquidityColumns = createPoolLiquidityColumns({ blockchainId: 'ethereum', poolTokens: POOL_TOKENS })
+const wagmiConfig = createTestWagmiConfig()
 
 /**
  * DEX Pool Activity Component
@@ -239,6 +249,15 @@ const LendMarketActivityComponent = () => {
 
 const meta: Meta = {
   title: 'EVM UI/Features/ActivityTable',
+  decorators: [
+    Story => (
+      <WagmiProvider config={wagmiConfig}>
+        <TestQueryProvider data={[]}>
+          <Story />
+        </TestQueryProvider>
+      </WagmiProvider>
+    ),
+  ],
   parameters: {
     layout: 'padded',
     docs: {

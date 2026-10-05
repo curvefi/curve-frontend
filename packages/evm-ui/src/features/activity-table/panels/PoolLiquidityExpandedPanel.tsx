@@ -1,14 +1,12 @@
+import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import { formatNumber } from '@primitives/number.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { shortenString } from '@primitives/string.utils'
-import { TokenIcon } from '@ui/components/TokenIcon'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import type { PoolLiquidityRow } from '../types'
-
-const { Spacing } = SizesAndSpaces
 
 export const PoolLiquidityExpandedPanel: ExpandedPanelComponent<PoolLiquidityRow> = ({
   row: {
@@ -19,28 +17,23 @@ export const PoolLiquidityExpandedPanel: ExpandedPanelComponent<PoolLiquidityRow
 
   // Filter out zero amounts
   const nonZeroAmounts = tokenAmounts
-    .map((amount, index) => ({ amount, token: poolTokens[index] }))
+    .map((amount, index) => ({ amount, index, token: poolTokens[index] }))
     .filter(({ amount }) => amount !== 0)
 
   return (
     <Stack>
-      {nonZeroAmounts.map(({ amount, token }, index) => (
-        <Stack key={token.address} direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="bodyMRegular" color="textSecondary">
-            {token?.symbol ?? `Token ${index}`}
-          </Typography>
-          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-            <Typography variant="tableCellMBold" color={isAdd ? 'success' : 'error'}>
-              {formatNumber(amount, { abbreviate: false })}
-            </Typography>
-            <TokenIcon blockchainId={blockchainId} address={token?.address} size="mui-sm" />
-          </Stack>
-        </Stack>
-      ))}
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-        <Typography variant="tableCellMBold">{shortenString(provider)}</Typography>
-      </Stack>
+      <MetricsGrid variant="mobileRows">
+        {nonZeroAmounts.map(({ amount, index, token }) => (
+          <MetricExpandedPanel
+            key={token?.address ?? index}
+            label={notFalsy(t`Amount`, `(${token?.symbol ?? t`Token ${index + 1}`})`).join(' ')}
+            value={isAdd ? amount : -amount}
+            valueOptions={{ color: isAdd ? 'success' : 'error' }}
+            icon={{ blockchainId, token }}
+          />
+        ))}
+      </MetricsGrid>
+      <ActionInfo label={t`User`} value={shortenString(provider)} />
     </Stack>
   )
 }
