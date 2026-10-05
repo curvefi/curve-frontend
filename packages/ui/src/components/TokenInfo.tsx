@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
+import { PLACEHOLDER, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { type QueryOrValue, type QueryProp, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { applySxProps, SxProps } from '@ui/lib/mui'
@@ -49,7 +50,7 @@ const TokenInfoItem = ({
     {isLoading && data != null && <Spinner size={16} sx={{ margin: 0 }} />}
     <WithSkeleton loading={isLoading && data == null}>
       <Typography {...typographyProps} noWrap>
-        {data ?? (isLoading || error ? '-' : null)}
+        {data ?? (isLoading ? PLACEHOLDER : !error && UNAVAILABLE_NOTATION)}
       </Typography>
     </WithSkeleton>
   </Stack>

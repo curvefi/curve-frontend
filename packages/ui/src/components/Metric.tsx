@@ -10,6 +10,7 @@ import {
   formatNumber,
   type NumberFormatOptions,
   PLACEHOLDER_USD,
+  UNAVAILABLE_NOTATION,
 } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { ErrorIconButton } from '@ui/components/ErrorIconButton'
@@ -217,7 +218,9 @@ const Notional = ({ data, error, isLoading }: QueryProp<NotionalValue>) => (
     <WithSkeleton loading={isLoading && data == null}>
       <Typography variant="highlightXsNotional" color="textTertiary">
         {data == null
-          ? formatNumber(PLACEHOLDER_USD, 'usd.notional')
+          ? isLoading
+            ? formatNumber(PLACEHOLDER_USD, 'usd.notional')
+            : !error && UNAVAILABLE_NOTATION
           : typeof data === 'string'
             ? data // `Decimal` values must be formatted beforehand.
             : typeof data === 'number'
