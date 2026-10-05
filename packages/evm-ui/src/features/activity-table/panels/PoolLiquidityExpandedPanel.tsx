@@ -26,7 +26,7 @@ export const PoolLiquidityExpandedPanel: ExpandedPanelComponent<PoolLiquidityRow
         {nonZeroAmounts.map(({ amount, index, token }) => (
           <MetricExpandedPanel
             key={token?.address ?? index}
-            label={notFalsy(t`Amount`, `(${token?.symbol ?? t`Token ${index}`})`).join(' ')}
+            label={notFalsy(t`Amount`, `(${token?.symbol ?? t`Token ${index + 1}`})`).join(' ')}
             value={isAdd ? amount : -amount}
             valueOptions={{ color: isAdd ? 'success' : 'error' }}
             icon={{ blockchainId, token }}
