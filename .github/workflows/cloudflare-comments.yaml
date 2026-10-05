@@ -2,7 +2,7 @@ name: Compact Cloudflare comments
 
 on:
   issue_comment:
-    types: [edited] # comments are created "In progress", then updated with deploy data
+    types: [created, edited]
 
 permissions:
   pull-requests: write
@@ -27,6 +27,7 @@ jobs:
             const commentParams = { ...context.repo, comment_id: context.payload.comment.id }
             // Queued events may contain old build results, so always read the current comment.
             const { data: comment } = await github.rest.issues.getComment(commentParams)
+            core.debug(`Cloudflare comment ${comment.id}:\n${comment.body}`)
             assert.equal(comment.user.login, 'cloudflare-workers-and-pages[bot]', 'Unexpected comment author')
 
             const start = '<!-- compact-cloudflare:original -->\n'
@@ -60,15 +61,26 @@ jobs:
             const updated = text(cells[3])
             assert(projects.includes(project), 'Unrecognized Cloudflare project')
             assert(build, 'Missing Cloudflare build status')
-            assert(deployment, 'Missing Cloudflare deployment status')
+            // Cloudflare omits deployment details while building or when the build failed.
+            if (!deployment) {
+              assert.match(build, /^(In progress|Failed)\b/i, 'Missing Cloudflare deployment status')
+              assert.equal(cells[1].trim(), '', 'Unexpected URL without a Cloudflare deployment status')
+              assert.match(logs, /\/production\/builds\/[^/]+$/, 'Missing Cloudflare build logs link')
+            }
             assert(Number.isFinite(Date.parse(updated)), 'Invalid Cloudflare deployment timestamp')
 
             // Use Cloudflare's stable Preview URL, never the immutable per-deployment URL.
-            const previewUrl = original.match(/^### Preview URL: (https:\/\/[a-z0-9.-]+\.workers\.dev)(?=\s|$)/m)?.[1]
-            assert(previewUrl, 'Missing Cloudflare stable preview URL')
-            const preview = `[Preview](<${previewUrl}>)`
+            const previewSection = original.match(/<!-- Preview URL -->([\s\S]*?)<!-- Preview Deployments -->/)?.[1]
+            assert.notEqual(previewSection, undefined, 'Missing Cloudflare preview URL marker')
+            const previewUrl = previewSection.match(/^### Preview URL: (https:\/\/[a-z0-9.-]+\.workers\.dev)(?=\s|$)/m)?.[1]
+            // Before the first deployment, Cloudflare leaves this section empty.
+            assert(previewUrl || (!deployment && !previewSection.trim()), 'Missing Cloudflare stable preview URL')
+            const preview = previewUrl ? `[Preview](<${previewUrl}>)` : '—'
             const ready = /^Success\b/i.test(build) && /^Success\b/i.test(deployment)
-            const status = ready ? '✅ Ready' : `Build: ${escapeCell(build)} / Deployment: ${escapeCell(deployment)}`
+            const status = ready ? '✅ Ready' : [
+              `Build: ${escapeCell(build)}`,
+              ...(deployment ? [`Deployment: ${escapeCell(deployment)}`] : []),
+            ].join(' / ')
             const date = new Date(updated).toISOString()
             const body = [
               '| Project | Deployment | Preview | Updated |',
