@@ -40,10 +40,10 @@ export type ActivityUsdValueProps = {
 /** Historical USD prices can arrive after activity amounts. Show Processing for up to one hour. */
 export const formatActivityUsdValue = (
   { amount, amountUsd, timestamp, isSold = false }: ActivityUsdValueProps,
-  currentTime: number,
+  currentDate: Date,
 ) =>
   amountUsd == null
-    ? amount !== 0 && currentTime < timestamp + PROCESSING_TIMEOUT_MS
+    ? amount && currentDate.getTime() < timestamp + PROCESSING_TIMEOUT_MS
       ? t`Processing`
       : UNAVAILABLE_NOTATION
     : formatNumber(isSold ? -amountUsd : amountUsd, 'usd.notional')

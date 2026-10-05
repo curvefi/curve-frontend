@@ -16,7 +16,7 @@ export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> =
     original: { deposit, withdrawal, provider, blockchainId, collateralToken, borrowToken, timestamp },
   },
 }) => {
-  const currentTime = useCurrentDate().getTime()
+  const currentDate = useCurrentDate()
 
   return (
     <Stack>
@@ -27,7 +27,7 @@ export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> =
             value={deposit.amount}
             valueOptions={{ color: 'success' }}
             notional={constQ(
-              formatActivityUsdValue({ amount: deposit.amount, amountUsd: deposit.amountUsd, timestamp }, currentTime),
+              formatActivityUsdValue({ amount: deposit.amount, amountUsd: deposit.amountUsd, timestamp }, currentDate),
             )}
             icon={{ blockchainId, token: collateralToken }}
           />
@@ -42,7 +42,7 @@ export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> =
                 notional={constQ(
                   formatActivityUsdValue(
                     { amount: withdrawal.amountCollateral, amountUsd: withdrawal.amountCollateralUsd, timestamp },
-                    currentTime,
+                    currentDate,
                   ),
                 )}
                 icon={{ blockchainId, token: collateralToken }}
@@ -56,7 +56,7 @@ export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> =
                 notional={constQ(
                   formatActivityUsdValue(
                     { amount: withdrawal.amountBorrowed, amountUsd: withdrawal.amountBorrowedUsd, timestamp },
-                    currentTime,
+                    currentDate,
                   ),
                 )}
                 icon={{ blockchainId, token: borrowToken }}

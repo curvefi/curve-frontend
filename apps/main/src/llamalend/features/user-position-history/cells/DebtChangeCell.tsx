@@ -13,7 +13,7 @@ export const DebtChangeCell = ({
     original: { loanChange, loanChangeUsd, borrowToken, timestamp },
   },
 }: CellContext<CurveTableFeatures, ParsedUserCollateralEvent, ParsedUserCollateralEvent['loanChange']>) => {
-  const currentTime = useCurrentDate().getTime()
+  const currentDate = useCurrentDate()
   return (
     <InlineTableCell>
       <Typography variant="tableCellMBold" color={loanChange ? (loanChange > 0 ? 'error' : 'success') : 'textPrimary'}>
@@ -21,7 +21,7 @@ export const DebtChangeCell = ({
       </Typography>
       {!!loanChange && (
         <Typography variant="bodySRegular">
-          {formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentTime)}
+          {formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentDate)}
         </Typography>
       )}
     </InlineTableCell>

@@ -13,7 +13,7 @@ export const CollateralChangeCell = ({
     original: { collateralChange, collateralChangeUsd, collateralToken, timestamp },
   },
 }: CellContext<CurveTableFeatures, ParsedUserCollateralEvent, ParsedUserCollateralEvent['collateralChange']>) => {
-  const currentTime = useCurrentDate().getTime()
+  const currentDate = useCurrentDate()
   return (
     <InlineTableCell>
       <Typography
@@ -27,7 +27,7 @@ export const CollateralChangeCell = ({
       </Typography>
       {!!collateralChange && (
         <Typography variant="bodySRegular">
-          {formatActivityUsdValue({ amount: collateralChange, amountUsd: collateralChangeUsd, timestamp }, currentTime)}
+          {formatActivityUsdValue({ amount: collateralChange, amountUsd: collateralChangeUsd, timestamp }, currentDate)}
         </Typography>
       )}
     </InlineTableCell>

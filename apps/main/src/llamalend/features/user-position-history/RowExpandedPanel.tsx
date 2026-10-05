@@ -24,7 +24,7 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
     collateralToken,
     timestamp,
   } = event
-  const currentTime = useCurrentDate().getTime()
+  const currentDate = useCurrentDate()
   const blockchainId = BlockchainIds[chainId]
 
   return (
@@ -40,7 +40,7 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
           notional: constQ(
             formatActivityUsdValue(
               { amount: collateralChange, amountUsd: collateralChangeUsd, timestamp },
-              currentTime,
+              currentDate,
             ),
           ),
         })}
@@ -55,7 +55,7 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
         }}
         {...(!!loanChange && {
           notional: constQ(
-            formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentTime),
+            formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentDate),
           ),
         })}
         icon={{ blockchainId, token: borrowToken }}

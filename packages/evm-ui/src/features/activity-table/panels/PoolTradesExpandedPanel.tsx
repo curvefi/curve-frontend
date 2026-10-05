@@ -16,7 +16,7 @@ export const PoolTradesExpandedPanel: ExpandedPanelComponent<PoolTradeRow> = ({
     original: { tokensSold, tokensSoldUsd, tokenSold, buyer, blockchainId, time },
   },
 }) => {
-  const currentTime = useCurrentDate().getTime()
+  const currentDate = useCurrentDate()
 
   return (
     <Stack>
@@ -28,7 +28,7 @@ export const PoolTradesExpandedPanel: ExpandedPanelComponent<PoolTradeRow> = ({
           notional={constQ(
             formatActivityUsdValue(
               { amount: tokensSold, amountUsd: tokensSoldUsd, timestamp: time, isSold: true },
-              currentTime,
+              currentDate,
             ),
           )}
           icon={{ blockchainId, token: tokenSold }}

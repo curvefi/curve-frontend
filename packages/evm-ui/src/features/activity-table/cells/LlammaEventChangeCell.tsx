@@ -21,7 +21,7 @@ export const LlammaEventChangeCell = ({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
 }) => {
-  const currentTime = useCurrentDate().getTime()
+  const currentDate = useCurrentDate()
   return (
     <InlineTableCell>
       <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
@@ -32,7 +32,7 @@ export const LlammaEventChangeCell = ({
             blockchainId={chain}
             notional={formatActivityUsdValue(
               { amount: deposit.amount, amountUsd: deposit.amountUsd, timestamp },
-              currentTime,
+              currentDate,
             )}
           />
         )}
@@ -48,7 +48,7 @@ export const LlammaEventChangeCell = ({
                 timestamp,
                 isSold: true,
               },
-              currentTime,
+              currentDate,
             )}
           />
         )}
@@ -59,7 +59,7 @@ export const LlammaEventChangeCell = ({
             blockchainId={chain}
             notional={formatActivityUsdValue(
               { amount: withdrawal.amountBorrowed, amountUsd: withdrawal.amountBorrowedUsd, timestamp, isSold: true },
-              currentTime,
+              currentDate,
             )}
           />
         )}
