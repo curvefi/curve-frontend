@@ -43,9 +43,9 @@ function useForceSeedAmounts(
 }
 
 export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
-  const { chainId, poolId, pool, isWrapped: contextIsWrapped, setIsWrapped, blockchainId } = usePoolContext()
+  const { chainId, poolId, pool, isWrapped: initialWrapped, setIsWrapped, blockchainId, api } = usePoolContext()
   const { address: userAddress } = useConnection()
-  const initialWrapped = isWrappedOnly(pool) || contextIsWrapped
+  const nativeToken = api?.getNetworkConstants().NATIVE_TOKEN
   const initialTokenCount = (initialWrapped ? pool.wrappedCoins : pool.underlyingCoins).length
   const userDefaultValues = useMemo(
     () => getDepositDefaults(initialTokenCount, initialWrapped, maxSlippage),
@@ -101,21 +101,21 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
 
   const isPending = formState.isSubmitting || isDepositing
   const isDerivingSeedAmounts = isSeed.data === true && seedAmounts.isLoading
+
   return {
     form,
     params: queryParams,
     reserves: mapQuery(reserves, reserves =>
-      // todo: make sure reserves use formatted values across the app, instead of raw values
+      // todo: make sure reserves use formatted values across the app, keep raw values to queries and mutations
       reserves.tokens.map((token, index) => toWei(token.balance, decimals[index])),
     ),
     isSeed,
     canDepositWrapped,
     isWrappedOnly: isWrappedOnly(pool),
-    // Until reserves confirm this is not a seed pool, only the first amount is safe to enter.
-    // A seed deposit must derive every remaining amount from the first one.
-    enableFirstOnly: isSeed.data !== false,
+    // Unfortunately, curve.js requires a wallet. Seed deposit derives amounts from the first.
+    inputsDisabled: !wallet || isPending || (isSeed.data !== false && ('first-only' as const)),
     tokens,
-    maxAmounts: useDepositMaxAmounts({ params: queryParams, tokenAddresses, balances }),
+    maxAmounts: useDepositMaxAmounts({ params: queryParams, tokenAddresses, balances, nativeToken }),
     wallet: { connect, isConnected: !!wallet, isConnecting: isLoading(connectState) },
     userAddress,
     onSubmit: handleSubmit(submitMutation),

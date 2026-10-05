@@ -101,6 +101,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     params,
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
+    inputsDisabled: isPending,
     isDisabled:
       isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data === false),
     isLoading: isPending || priceImpact.isLoading,

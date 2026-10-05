@@ -9,7 +9,7 @@ import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import type { PoolFormProps } from '../pool-form.types'
 import { allTokenFields, type PoolDepositForm, type PoolTokenField } from '../pool-form.utils'
-import { PoolTokenInputs } from '../PoolTokenInputs'
+import { type PoolTokenDisabled, PoolTokenInputs } from '../PoolTokenInputs'
 import { BalancedDepositCheckbox } from './BalancedDepositCheckbox'
 import { WrappedDepositCheckbox } from './WrappedDepositCheckbox'
 
@@ -18,7 +18,7 @@ export type DepositFormProps<TValues extends PoolDepositForm = PoolDepositForm> 
   isSeed: QueryProp<boolean>
   canDepositWrapped?: boolean
   isWrappedOnly?: boolean
-  enableFirstOnly?: boolean
+  inputsDisabled: PoolTokenDisabled
   maxAmounts: QueryProp<(Decimal | undefined)[]>
 }
 
@@ -38,7 +38,7 @@ export const DepositForm = <TValues extends PoolDepositForm>({
   isSeed,
   canDepositWrapped,
   isWrappedOnly,
-  enableFirstOnly,
+  inputsDisabled,
   maxAmounts,
 }: DepositFormProps<TValues>) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
@@ -48,14 +48,10 @@ export const DepositForm = <TValues extends PoolDepositForm>({
         {t`The seed lock is permanent; expected LP is the net amount you receive.`}
       </Alert>
     )}
-    <PoolTokenInputs
-      tokens={tokens}
-      reserves={reserves}
-      isDisabled={isPending}
-      maxAmounts={maxAmounts}
-      enableFirstOnly={enableFirstOnly}
-    />
-    {canDepositWrapped && <WrappedDepositCheckbox disabled={isPending || !!isWrappedOnly || !!enableFirstOnly} />}
+    <PoolTokenInputs tokens={tokens} reserves={reserves} disabled={inputsDisabled} maxAmounts={maxAmounts} />
+    {canDepositWrapped && (
+      <WrappedDepositCheckbox disabled={isPending || !!isWrappedOnly || inputsDisabled !== false} />
+    )}
     <BalancedDepositCheckbox
       reserves={reserves}
       isConnected={wallet.isConnected}

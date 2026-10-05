@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
-import { ethAddress, isAddressEqual, type Address } from 'viem'
+import { type Address, ethAddress, isAddressEqual } from 'viem'
 import { useDepositEstimateGas } from '@/dex/queries/deposit/deposit-estimate-gas.query'
+import type { INetworkConstants } from '@curvefi/api/lib/interfaces'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { combineQueries } from '@ui/features/queries/combine'
 import { decimalMax, decimalMinus, decimalMultiply, ZERO } from '@ui/lib/decimal'
@@ -12,12 +13,15 @@ export const useDepositMaxAmounts = ({
   params,
   tokenAddresses,
   balances,
+  nativeToken,
 }: {
   params: DepositParams
   tokenAddresses: Address[]
   balances: ReturnType<typeof useTokenBalances>
+  nativeToken: INetworkConstants['NATIVE_TOKEN'] | undefined
 }) => {
-  const nativeIndex = tokenAddresses.findIndex(address => isAddressEqual(address, ethAddress))
+  const nativeTokenAddress = (nativeToken?.address ?? ethAddress) as Address
+  const nativeIndex = tokenAddresses.findIndex(address => isAddressEqual(address, nativeTokenAddress))
   const maxParams = useMemo(
     () => ({
       ...params,

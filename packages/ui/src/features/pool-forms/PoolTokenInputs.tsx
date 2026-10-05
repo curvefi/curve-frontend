@@ -4,27 +4,27 @@ import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { PoolTokenInput, type PoolToken } from './PoolTokenInput'
 
+export type PoolTokenDisabled = boolean | 'first-only'
+
 export const PoolTokenInputs = ({
   tokens: { data: tokens, error },
   reserves,
-  isDisabled,
+  disabled,
   maxAmounts,
   positionAmounts,
-  enableFirstOnly,
 }: {
   tokens: QueryProp<PoolToken[]>
   reserves: QueryProp<Decimal[]>
-  isDisabled: boolean
+  disabled: PoolTokenDisabled
   maxAmounts?: QueryProp<(Decimal | undefined)[]>
   positionAmounts?: QueryProp<(Decimal | undefined)[]> | undefined
-  enableFirstOnly?: boolean
 }) =>
   tokens?.map((token, index) => (
     <PoolTokenInput
       key={token.address}
       token={token}
       index={index}
-      disabled={isDisabled || (!!enableFirstOnly && index > 0)}
+      disabled={disabled === true || (disabled === 'first-only' && index > 0)}
       reserves={reserves}
       max={maxAmounts && mapQuery(maxAmounts, amounts => amounts[index])}
       positionBalance={

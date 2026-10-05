@@ -20,7 +20,7 @@ import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormU
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
-import { DepositForm } from '@/dex/features/deposit/components/DepositForm'
+import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
@@ -48,7 +48,7 @@ import { PoolAlertBanner } from '../PoolAlertBanner'
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
 const FormDeposit = (props: TransferProps) =>
-  useNewPoolForms() ? <DepositForm {...props} /> : <LegacyFormDeposit {...props} />
+  useNewPoolForms() ? <DepositTab {...props} /> : <LegacyFormDeposit {...props} />
 
 const menu = [
   {
