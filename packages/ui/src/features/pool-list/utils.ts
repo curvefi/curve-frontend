@@ -3,9 +3,6 @@ import { maybe, notFalsy } from '@primitives/objects.utils'
 import { decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import type { PoolClaimables, PoolRowData } from './types'
 
-export const hasClaimableRewards = <T extends PoolClaimables | undefined>(claimables: T) =>
-  maybe(claimables, cs => cs.some(({ amount }) => decimalGreaterThan(amount, ZERO)))
-
 /** Maps Prices API data to row data, normalizing API nulls to the existing undefined-based contract. */
 export const poolToRowData = (
   pool: Pick<V2Pool, 'address' | 'name' | 'tradeableCoins' | 'extraRewardsApr'> & Partial<V2Pool>,
@@ -72,5 +69,8 @@ export const litePoolToRowData = (pool: LitePool): PoolRowData => {
   }
 }
 
-export const claimablesTotalUsd = (claimables: PoolClaimables | undefined) =>
-  maybe(claimables, rewards => decimalSum(...rewards.map(reward => reward.amountUsd)))
+export const hasClaimableRewards = <T extends PoolClaimables | undefined>(claimables: T) =>
+  maybe(claimables, cs => cs.some(({ amount }) => decimalGreaterThan(amount, ZERO)))
+
+export const claimablesTotalUsd = <T extends PoolClaimables | undefined>(claimables: T) =>
+  maybe(claimables, cs => decimalSum(...cs.map(r => r.amountUsd)))
