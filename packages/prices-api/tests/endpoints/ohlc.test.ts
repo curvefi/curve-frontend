@@ -16,7 +16,7 @@ runEndpointCases('ohlc', [
   ),
   endpointCase('getLpOHLC', () =>
     ohlc.getLpOHLC(
-      { chain: poolSeed().blockchainId, poolAddress: poolSeed().poolAddress, priceUnits: 'usd' },
+      { blockchainId: poolSeed().blockchainId, poolAddress: poolSeed().poolAddress, priceUnits: 'usd' },
       requestOptions,
     ),
   ),
