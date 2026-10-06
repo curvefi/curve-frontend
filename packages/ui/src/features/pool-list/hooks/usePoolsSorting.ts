@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
 import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
-import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
 import { recordEntries } from '@primitives/objects.utils'
 import type { OnChangeFn, SortingState } from '@tanstack/react-table'
-import { POOL_TITLES, PoolColumnId } from '@ui/features/pool-list/columns'
+import { useSortFromQueryString } from '@ui/hooks/useSortFromQueryString'
+import { POOL_TITLES, PoolColumnId } from '../columns'
 import type { PoolsQueryUpdater } from '../filters/utils'
 
 const POOL_SORT_BY = {

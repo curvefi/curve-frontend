@@ -11,12 +11,12 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import type { PoolClaimables } from '@ui/features/pool-list/types'
-import { hasClaimableRewards } from '@ui/features/pool-list/utils'
+import { hasClaimableRewards, claimablesTotalUsd } from '@ui/features/pool-list/utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { constQ, mapQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { claimablesTotalUsd, curvePoolToRowData, enrichPoolRow, getPoolListAlerts } from '../utils'
+import { curvePoolToRowData, enrichPoolRow, getPoolListAlerts } from '../utils'
 
 const getPoolUserPosition = (claimables: PoolClaimables) => ({
   lpBalance: ZERO,

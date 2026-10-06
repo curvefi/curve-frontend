@@ -1,7 +1,7 @@
 import type { FuseOptionKey } from 'fuse.js'
 import { notFalsy } from '@primitives/objects.utils'
-import type { PoolRow } from '@ui/features/pool-list/types'
 import { cleanValue, useFuzzyFilterFn } from '@ui/hooks/useFuzzySearch'
+import type { PoolRow } from '../types'
 
 const POOL_SEARCH_KEYS = [
   'name',
