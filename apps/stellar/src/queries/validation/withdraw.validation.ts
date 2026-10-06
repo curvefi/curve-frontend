@@ -1,6 +1,6 @@
 import { skipWhen, test } from 'vest'
 import type { WithdrawSimulationParams } from '@/stellar/features/withdraw/types'
-import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { calculateExpectedBurn, calculateMaximumBurn } from '@/stellar/lib/amounts'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
@@ -30,7 +30,7 @@ const validateBudget = ({
   supply,
   seedLock,
 }: Pick<WithdrawSimulationParams, 'lpAmount' | 'maxLpAmount' | 'supply' | 'seedLock'>) => {
-  validateAmount('lpAmount', lpAmount, LP_TOKEN_DECIMALS)
+  validateAmount('lpAmount', lpAmount)
   test('lpAmount', 'Enter an LP amount', () => {
     enforce(lpAmount).isDecimal().gt(0)
   })
@@ -51,7 +51,7 @@ const validateBudget = ({
 }
 
 const validateMaximumBurn = ({ lpAmount, maximumBurn }: Pick<WithdrawSimulationParams, 'lpAmount' | 'maximumBurn'>) => {
-  validateAmount('root', maximumBurn, LP_TOKEN_DECIMALS)
+  validateAmount('root', maximumBurn)
   test('maximumBurn', 'Withdrawal quote is unavailable', () => {
     enforce(maximumBurn).isDecimal().gt(0)
   })
