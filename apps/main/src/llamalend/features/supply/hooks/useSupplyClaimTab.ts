@@ -3,7 +3,6 @@ import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useClaimCrvMutation, useClaimRewardsMutation } from '@/llamalend/mutations/claim.mutation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
-import { notFalsy } from '@primitives/objects.utils'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useMarketContext } from '../../market-context'
@@ -71,6 +70,6 @@ export const useSupplyClaimTab = <ChainId extends LlamaChainId>({ network }: { n
     onSubmitRewards,
     isCrvPending: isClaimCrvPending,
     isRewardsPending: isClaimRewardsPending,
-    errors: notFalsy(usdRateError, claimableCrvError, claimableRewardsError, claimRewardsError, claimCrvError),
+    error: claimCrvError ?? claimRewardsError ?? claimableCrvError ?? claimableRewardsError ?? usdRateError,
   }
 }
