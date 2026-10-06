@@ -4,7 +4,7 @@ import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { loadCurve } from '../curve-router/curvejs'
 import type { TokensQuery } from './tokens.schemas'
 
-const MIN_POOL_VOLUME = 1 // in dollars
+const MIN_POOL_TVL = 1 // in dollars
 
 /** Build the token catalog with metadata and available trading volumes from the shared Curve.js instance. */
 export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQuery }>) => {
@@ -15,6 +15,7 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
     .getPoolList()
     .map(id => curve.getPool(id))
     .filter(pool => !blacklist.has(pool.address.toLowerCase()))
+    .filter(pool => Number(pool.stats.totalLiquidity()) > MIN_POOL_TVL)
 
   const poolVolumes = curve.getIsLiteChain()
     ? undefined
@@ -38,10 +39,8 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
     return volumes
   }, {})
 
-  const poolsWithVolume = pools.filter(pool => tokenVolumes[getAddress(pool.address)] ?? 0 > MIN_POOL_VOLUME)
-
   // All tokens that are part of a pool's underlying composition
-  const poolTokens = poolsWithVolume.flatMap(pool => [
+  const poolTokens = pools.flatMap(pool => [
     ...pool.underlyingCoinAddresses.map((stringAddress, index) => {
       const address = getAddress(stringAddress)
       return [
@@ -63,7 +62,7 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
   ])
 
   // Pool LP tokens themselves
-  const lpTokens = poolsWithVolume.map(pool => {
+  const lpTokens = pools.map(pool => {
     const address = getAddress(pool.lpToken)
     return (
       !isAddressEqual(address, zeroAddress) &&
