@@ -7,6 +7,7 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { notFalsy } from '@primitives/objects.utils'
+import type { UserPositionsTableData } from '@ui/features/pool-list/types'
 import { claimablesTotalUsd, poolToRowData } from '@ui/features/pool-list/utils'
 import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
@@ -25,7 +26,10 @@ const getPoolUserPosition = (
   claimablesUsd: mapQuery(claimables, data => claimablesTotalUsd(data?.[position.address])),
 })
 
-export const useUserPositionsTable = ({ network }: { network: NetworkConfig }, enabled = true) => {
+export const useUserPositionsTable = (
+  { network }: { network: NetworkConfig },
+  enabled = true,
+): UserPositionsTableData => {
   const { chainId, blockchainId } = network
   const { address: userAddress } = useConnection()
 

@@ -18,6 +18,7 @@ import { maybe } from '@primitives/objects.utils'
 import type { PoolsApiParams } from '@ui/features/pool-list/filters/utils'
 import { POOLS_PAGE_SIZE } from '@ui/features/pool-list/hooks/usePoolsPagination'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
+import type { PoolsTableData } from '@ui/features/pool-list/types'
 import { litePoolToRowData, poolToRowData } from '@ui/features/pool-list/utils'
 import { DISABLED_Q, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { enrichPoolRow, getPoolListAlerts } from '../utils'
@@ -54,7 +55,7 @@ export const usePoolsTable = ({
   searchText: string
   sortBy: PoolSortField
   sortDirection: PoolSortDirection
-}) => {
+}): PoolsTableData => {
   const { chainId, blockchainId } = network
   const { address: userAddress } = useConnection()
   const isLite = isLiteChain(chainId)
