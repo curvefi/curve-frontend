@@ -74,7 +74,7 @@ export const UserPositionsTable = ({
     onReload,
     alerts,
     labels: { errorTitle, loading, empty },
-  } = variant === 'residualClaims' ? residualClaims : userPositions
+  } = { residualClaims, userPositions }[variant]
 
   const { columnSettings, columnVisibility, toggleVisibility } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
     variant,
