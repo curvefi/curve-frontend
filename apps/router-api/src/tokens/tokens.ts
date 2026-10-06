@@ -78,6 +78,8 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
   const nativeAddress = getAddress(nativeToken.address)
   const nativeWrappedAddress = getAddress(nativeToken.wrappedAddress)
 
+  // We don't need to make the list distinct by token address, we can simply overwrite previous entries with the same address, since they will have the same symbol and decimals.
+  // The only difference is the volume, which is summed up anyway.
   return fromEntries(
     notFalsy(
       // Native token
@@ -95,7 +97,6 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
         },
       ],
       ...poolTokens,
-      // LP entries come last so their metadata wins when an LP token is also a pool coin.
       ...lpTokens,
     ),
   )
