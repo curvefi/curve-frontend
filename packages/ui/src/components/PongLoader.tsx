@@ -81,7 +81,6 @@ const Pong = styled(Box)({
     background: 'var(--c)',
     animation: `${pongBall} 3.2s linear infinite`,
   },
-  '@media (prefers-reduced-motion: reduce)': { '& > span, & > i': { animationDuration: '3s' } },
 })
 
 export const PongLoader = (props: BoxProps) => (
