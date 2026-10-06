@@ -80,7 +80,7 @@ export const LendMarketPage = () => {
   const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists)
 
   const error = marketError ?? apiMarket.error
-  return error ? (
+  return error && !(market ?? apiMarket.data) ? (
     <ErrorPage
       title={t`Error`}
       subtitle={error.message}
