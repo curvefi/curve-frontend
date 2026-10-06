@@ -28,7 +28,8 @@ const {
     const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrapped })
 
     const [balances, usdRates] = await Promise.all([
-      isWrapped ? pool.stats.wrappedBalances() : pool.stats.underlyingBalances(),
+      // Without RPC, leave balances unknown so the query can resolve without reporting an empty pool.
+      pool.curve.isNoRPC ? undefined : isWrapped ? pool.stats.wrappedBalances() : pool.stats.underlyingBalances(),
       Promise.all(tokenAddresses.map(tokenAddress => fetchTokenUsdRate({ chainId, tokenAddress }).catch(() => 0))),
     ])
 
