@@ -1,5 +1,6 @@
 import type { FastifyRequest } from 'fastify'
 import { type Address, getAddress, zeroAddress, isAddressEqual } from 'viem'
+import { zip } from '@primitives/array.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { loadCurve } from '../curve-router/curvejs'
 import type { TokensQuery } from './tokens.schemas'
@@ -39,27 +40,21 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
     return volumes
   }, {})
 
-  // All tokens that are part of a pool's underlying composition
-  const poolTokens = pools.flatMap(pool => [
-    ...pool.underlyingCoinAddresses.map((stringAddress, index) => {
-      const address = getAddress(stringAddress)
-      return [
-        address,
-        {
-          symbol: pool.underlyingCoins[index],
-          decimals: pool.underlyingDecimals[index],
-          volume: tokenVolumes[address],
-        },
-      ] as const
-    }),
-    ...pool.wrappedCoinAddresses.map((stringAddress, index) => {
-      const address = getAddress(stringAddress)
-      return [
-        address,
-        { symbol: pool.wrappedCoins[index], decimals: pool.wrappedDecimals[index], volume: tokenVolumes[address] },
-      ] as const
-    }),
-  ])
+  // All tokens that are part of a pool's underlying or wrapped composition
+  const poolTokens = pools.flatMap(pool =>
+    [
+      ...zip(
+        pool.underlyingCoinAddresses.map(address => getAddress(address)),
+        pool.underlyingCoins,
+        pool.underlyingDecimals,
+      ),
+      ...zip(
+        pool.wrappedCoinAddresses.map(address => getAddress(address)),
+        pool.wrappedCoins,
+        pool.wrappedDecimals,
+      ),
+    ].map(([address, symbol, decimals]) => [address, { symbol, decimals, volume: tokenVolumes[address] }] as const),
+  )
 
   // Pool LP tokens themselves
   const lpTokens = pools.map(pool => {
