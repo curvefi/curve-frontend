@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { fromEntries, mapRecord, recordValues } from '@primitives/objects.utils'
+import { POOL_COLUMNS, POOLS_COLUMN_OPTIONS, PoolColumnId } from '@ui/features/pool-list/columns'
+import type { PoolTableVariant } from '@ui/features/pool-list/types'
 import type { MigrationOptions } from '@ui/features/storage/useStoredState'
 import { preserveVisibilityChoices, useVisibilitySettings } from '@ui/features/tables/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { POOL_COLUMNS, POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
-import type { PoolTableVariant } from '../types'
 
 const migration: MigrationOptions<Record<PoolTableVariant, VisibilityGroup<PoolColumnId>[]>> = {
   version: 8,

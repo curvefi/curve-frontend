@@ -7,13 +7,13 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { LitePool, V2Pool } from '@curvefi/prices-api/pools'
-import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { type Nullish, fromEntries, maybe, maybes, notFalsy } from '@primitives/objects.utils'
-import { decimal, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
+import { getAprCampaigns, getCrvAprRange } from '@ui/features/pool-list/cells/utils'
+import type { PoolAlerts, PoolClaimables, PoolRow, PoolRowData } from '@ui/features/pool-list/types'
+import { decimalSum } from '@ui/lib/decimal'
 import { isVyperVulnerablePool } from './alerts'
-import { getAprCampaigns, getCrvAprRange } from './cells/utils'
-import type { PoolAlerts, PoolClaimables, PoolRow, PoolRowData } from './types'
 
 /** Maps Prices API data to row data, normalizing API nulls to the existing undefined-based contract. */
 export const poolToRowData = (
@@ -135,9 +135,6 @@ export const enrichPoolRow = (
 
 export const claimablesTotalUsd = (claimables: PoolClaimables | undefined) =>
   maybe(claimables, rewards => decimalSum(...rewards.map(reward => reward.amountUsd)))
-
-export const hasClaimableRewards = (claimables: PoolClaimables) =>
-  claimables.some(reward => decimalGreaterThan(decimal(reward.amount) ?? ZERO, ZERO))
 
 /** Get pool alerts for the main app. Resolves EVM address casing. */
 export const getPoolListAlerts = (rows: readonly PoolRow[] | undefined, blockchainId: string): PoolAlerts => ({

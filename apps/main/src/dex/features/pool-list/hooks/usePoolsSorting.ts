@@ -3,7 +3,7 @@ import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortFie
 import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
 import { recordEntries } from '@primitives/objects.utils'
 import type { OnChangeFn, SortingState } from '@tanstack/react-table'
-import { POOL_TITLES, PoolColumnId } from '../columns'
+import { POOL_TITLES, PoolColumnId } from '@ui/features/pool-list/columns'
 import type { PoolsQueryUpdater } from '../filters/utils'
 
 const POOL_SORT_BY = {

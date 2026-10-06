@@ -3,9 +3,9 @@ import { paginate } from '@curvefi/prices-api/paginate'
 import type { Address } from '@primitives/address.utils'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
 import type { Nullish } from '@primitives/objects.utils'
+import type { RewardsAction } from '@ui/features/campaigns/external-campaign.types'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { IS_CYPRESS } from '@ui/lib/env'
-import type { RewardsAction } from '@external-rewards'
-import type { CampaignRewards } from './types'
 
 type MerklAction = 'POOL' | 'BORROW' | 'LEND'
 

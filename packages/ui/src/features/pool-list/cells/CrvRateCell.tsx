@@ -1,10 +1,10 @@
-import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { t } from '@ui/lib/i18n'
+import { CrvRateTooltipContent } from '../../pools/CrvRateTooltipContent'
 import type { PoolRow, PoolTableMeta } from '../types'
 import { formatCellValue, getCrvAprRange } from './utils'
 
