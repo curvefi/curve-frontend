@@ -4,6 +4,8 @@ import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { loadCurve } from '../curve-router/curvejs'
 import type { TokensQuery } from './tokens.schemas'
 
+const MIN_POOL_VOLUME = 1 // in dollars
+
 /** Build the token catalog with metadata and available trading volumes from the shared Curve.js instance. */
 export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQuery }>) => {
   const { curve, blacklist } = await loadCurve(request.query.chainId, request.log)
@@ -36,6 +38,8 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
     return volumes
   }, {})
 
+  const poolsWithVolume = pools.filter(pool => tokenVolumes[getAddress(pool.address)] ?? 0 > MIN_POOL_VOLUME)
+
   const nativeAddress = getAddress(nativeToken.address)
   const nativeWrappedAddress = getAddress(nativeToken.wrappedAddress)
 
@@ -56,7 +60,7 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
         },
       ],
       // All pool tokens
-      ...pools.flatMap(pool => [
+      ...poolsWithVolume.flatMap(pool => [
         ...pool.underlyingCoinAddresses.map((stringAddress, index) => {
           const address = getAddress(stringAddress)
           return [
@@ -77,7 +81,7 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
         }),
       ]),
       // LP entries come last so their metadata wins when an LP token is also a pool coin.
-      ...pools.map(pool => {
+      ...poolsWithVolume.map(pool => {
         const address = getAddress(pool.lpToken)
         return (
           !isAddressEqual(address, zeroAddress) &&
