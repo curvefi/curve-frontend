@@ -79,9 +79,7 @@ export const StellarWalletProvider = ({ children }: { children: ReactNode }) => 
   const { connect, connectors, connectingToId, isConnecting } = useConnect({ setError, openModal, closeModal })
   const disconnect = useDisconnect({ setError, openModal, closeModal })
 
-  useEffect(() => {
-    void initWallet().catch(setError)
-  }, [])
+  useEffect(() => initWallet(setError), [])
   useEffect(() => onWalletAddressChanged(setAddress), [])
 
   return (
