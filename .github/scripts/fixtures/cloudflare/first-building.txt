@@ -1,0 +1,43 @@
+## 🚀 Deploying Preview to Cloudflare 🚀
+<!-- Preview URL -->
+
+<!-- Preview Deployments -->
+### Preview Deployments by commit
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Status</th>
+      <th align="left">Deployment URL</th>
+      <th align="left">Commit</th>
+      <th align="left">Updated (UTC)</th>
+      <th align="left">See this deployment's details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><ul><li><b>Build:</b> In progress 🔵</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/cd0c1f80-9345-4a51-80e5-4117d9581ffc">View logs ↗</a></td>
+      <td></td>
+      <td>275a928</td>
+      <td>2026-09-30T12:47:06.385Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/cd0c1f80-9345-4a51-80e5-4117d9581ffc">View logs ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Failed ❌</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/adac362e-ed58-4eb1-8671-b71cccf5b32b">View logs ↗</a></td>
+      <td></td>
+      <td>ab06dcc</td>
+      <td>2026-09-27T09:48:34.088Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/adac362e-ed58-4eb1-8671-b71cccf5b32b">View logs ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Failed ❌</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/b281b5e7-8854-46de-937a-030a82403df0">View logs ↗</a></td>
+      <td></td>
+      <td>4ad331f</td>
+      <td>2026-09-27T09:34:02.838Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/b281b5e7-8854-46de-937a-030a82403df0">View logs ↗</a></td>
+    </tr>
+  </tbody>
+</table>

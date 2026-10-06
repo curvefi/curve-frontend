@@ -1,0 +1,104 @@
+## 🚀 Deploying Preview to Cloudflare 🚀
+<!-- Preview URL -->
+### Preview URL: https://refactor-deposit-curve-frontend.michael-954.workers.dev (commit 2bbbb63)
+###### This URL reflects your latest Preview deployment
+
+<!-- Preview Deployments -->
+### Preview Deployments by commit
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Status</th>
+      <th align="left">Deployment URL</th>
+      <th align="left">Commit</th>
+      <th align="left">Updated (UTC)</th>
+      <th align="left">See this deployment's details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><ul><li><b>Build:</b> In progress 🔵</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/48b940f7-bdbd-4a78-9f31-20aab3af5066">View logs ↗</a></td>
+      <td></td>
+      <td>a594a72</td>
+      <td>2026-10-05T14:17:05.226Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/48b940f7-bdbd-4a78-9f31-20aab3af5066">View logs ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Success ✅</li><li><b>Deployment:</b> Success ✅</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit/deployments/20581add-fda0-4866-be9a-00569ad4b645">View logs ↗</a></td>
+      <td><a href="https://20581add-curve-frontend.michael-954.workers.dev">https://20581add-curve-frontend.michael-954.workers.dev</a></td>
+      <td>2bbbb63</td>
+      <td>2026-10-05T13:40:22.791Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit">Visit the dashboard ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Failed ❌</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/fe9306b3-65f0-4b16-a2cc-14ec7dd913d2">View logs ↗</a></td>
+      <td></td>
+      <td>0ba3eb9</td>
+      <td>2026-10-05T13:33:33.777Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/builds/fe9306b3-65f0-4b16-a2cc-14ec7dd913d2">View logs ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Success ✅</li><li><b>Deployment:</b> Success ✅</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit/deployments/b3900e9a-073e-41bd-8c68-ac78e78909fb">View logs ↗</a></td>
+      <td><a href="https://b3900e9a-curve-frontend.michael-954.workers.dev">https://b3900e9a-curve-frontend.michael-954.workers.dev</a></td>
+      <td>5b508b3</td>
+      <td>2026-10-02T16:11:18.517Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit">Visit the dashboard ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Success ✅</li><li><b>Deployment:</b> Success ✅</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit/deployments/972ba2a7-ec1c-4b5f-9edd-ce458c02cb07">View logs ↗</a></td>
+      <td><a href="https://972ba2a7-curve-frontend.michael-954.workers.dev">https://972ba2a7-curve-frontend.michael-954.workers.dev</a></td>
+      <td>b935449</td>
+      <td>2026-10-02T15:09:47.661Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit">Visit the dashboard ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Success ✅</li><li><b>Deployment:</b> Success ✅</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit/deployments/e98bd025-d90c-498b-b3de-cd79fe4bd4d8">View logs ↗</a></td>
+      <td><a href="https://e98bd025-curve-frontend.michael-954.workers.dev">https://e98bd025-curve-frontend.michael-954.workers.dev</a></td>
+      <td>d8404f8</td>
+      <td>2026-10-02T14:13:26.923Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit">Visit the dashboard ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Success ✅</li><li><b>Deployment:</b> Success ✅</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit/deployments/7547aa95-1710-4b5b-a8b1-1c62ca386ef0">View logs ↗</a></td>
+      <td><a href="https://7547aa95-curve-frontend.michael-954.workers.dev">https://7547aa95-curve-frontend.michael-954.workers.dev</a></td>
+      <td>08959e2</td>
+      <td>2026-10-02T13:20:31.967Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit">Visit the dashboard ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Success ✅</li><li><b>Deployment:</b> Success ✅</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit/deployments/e8df3c73-310c-4d36-839b-2813e81a7d6d">View logs ↗</a></td>
+      <td><a href="https://e8df3c73-curve-frontend.michael-954.workers.dev">https://e8df3c73-curve-frontend.michael-954.workers.dev</a></td>
+      <td>896587c</td>
+      <td>2026-10-01T10:21:43.578Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit">Visit the dashboard ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Success ✅</li><li><b>Deployment:</b> Success ✅</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit/deployments/0661c049-e481-496d-ba38-cd5e36364217">View logs ↗</a></td>
+      <td><a href="https://0661c049-curve-frontend.michael-954.workers.dev">https://0661c049-curve-frontend.michael-954.workers.dev</a></td>
+      <td>861bd46</td>
+      <td>2026-09-30T14:17:17.498Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit">Visit the dashboard ↗</a></td>
+    </tr>
+    <tr>
+      <td><ul><li><b>Build:</b> Success ✅</li><li><b>Deployment:</b> Success ✅</li></ul><br/>
+        <a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit/deployments/9ecc7cb8-4670-42c4-adb2-79095d945889">View logs ↗</a></td>
+      <td><a href="https://9ecc7cb8-curve-frontend.michael-954.workers.dev">https://9ecc7cb8-curve-frontend.michael-954.workers.dev</a></td>
+      <td>275a928</td>
+      <td>2026-09-30T12:51:51.099Z</td>
+      <td><a href="https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews/refactor-deposit">Visit the dashboard ↗</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- View all previews -->
+### View all previews: [View all previews ↗](https://dash.cloudflare.com/?to=/95470c464083fb18e999d9fb68e92a62/workers/services/view/curve-frontend/production/previews)
