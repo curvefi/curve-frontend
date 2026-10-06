@@ -10,13 +10,18 @@ const swingLeft = keyframes`
     transform: rotate(50deg);
     animation-timing-function: ease-in;
   }
-  50%, 100% {
+  50% {
     transform: rotate(0deg);
+    animation-timing-function: linear;
   }
 `
 
 const swingRight = keyframes`
-  0%, 50% {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: linear;
+  }
+  50% {
     transform: rotate(0deg);
     animation-timing-function: ease-out;
   }
@@ -24,14 +29,11 @@ const swingRight = keyframes`
     transform: rotate(-50deg);
     animation-timing-function: ease-in;
   }
-  100% {
-    transform: rotate(0deg);
-  }
 `
 
 export const NewtonCradleIcon = styled(
   createSvgIcon(
-    <svg fill="currentColor" viewBox="-8 -10 56 28" xmlns="http://www.w3.org/2000/svg">
+    <svg fill="currentColor" viewBox="0 -10 40 28" xmlns="http://www.w3.org/2000/svg">
       <circle cx="8" cy="12" r="3" />
       <circle cx="16" cy="12" r="3" />
       <circle cx="24" cy="12" r="3" />
@@ -40,10 +42,7 @@ export const NewtonCradleIcon = styled(
     'NewtonCradle',
   ),
 )({
-  '& > circle': { transformBox: 'view-box', transformOrigin: 'center top' },
+  '& > circle': { transformOrigin: 'center top' },
   '& > circle:first-of-type': { animation: `${swingLeft} 1.2s linear infinite` },
   '& > circle:last-of-type': { animation: `${swingRight} 1.2s linear infinite` },
-  '@media (prefers-reduced-motion: reduce)': {
-    '& > circle:first-of-type, & > circle:last-of-type': { animation: 'none' },
-  },
 })
