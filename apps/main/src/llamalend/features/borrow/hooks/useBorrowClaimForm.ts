@@ -8,8 +8,9 @@ import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe, notFalsy, recordValues } from '@primitives/objects.utils'
 import { useForm } from '@ui/features/forms'
+import { combineQueryState } from '@ui/features/queries/combine'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useMarketContext } from '../../market-context'
@@ -24,11 +25,8 @@ const useClaimableTokens = <ChainId extends IChainId>({
 }) => {
   const { chainId } = params
   const { data: claimableCrv, isLoading: isClaimablesLoading, error: claimableCrvError } = useBorrowClaimableCrv(params)
-  const {
-    data: usdRates,
-    isLoading: usdRateLoading,
-    error: usdRateError,
-  } = useTokenUsdRates({ chainId, tokenAddresses: notFalsy(crvAddress) })
+  const usdRates = useTokenUsdRates({ chainId, tokenAddresses: notFalsy(crvAddress) })
+  const { isLoading: usdRateLoading, error: usdRateError } = combineQueryState(...recordValues(usdRates))
 
   const claimableTokens = useMemo(
     () =>
@@ -39,7 +37,7 @@ const useClaimableTokens = <ChainId extends IChainId>({
             amount: claimableCrv,
             token: crvAddress,
             symbol: MAINNET_CRV.symbol,
-            notional: maybe(usdRates?.[crvAddress], usdRate => Number(claimableCrv) * usdRate),
+            notional: maybe(usdRates[crvAddress]?.data, usdRate => Number(claimableCrv) * usdRate),
           },
       ),
     [crvAddress, claimableCrv, usdRates],
