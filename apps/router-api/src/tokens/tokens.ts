@@ -12,11 +12,15 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
   const { curve, blacklist } = await loadCurve(request.query.chainId, request.log)
   const { NATIVE_TOKEN: nativeToken, DECIMALS: decimals } = curve.getNetworkConstants()
 
-  const pools = curve
-    .getPoolList()
-    .map(id => curve.getPool(id))
-    .filter(pool => !blacklist.has(pool.address.toLowerCase()))
-    .filter(pool => Number(pool.stats.totalLiquidity()) > MIN_POOL_TVL)
+  const pools = notFalsy(
+    ...(await Promise.all(
+      curve
+        .getPoolList()
+        .map(id => curve.getPool(id))
+        .filter(pool => !blacklist.has(pool.address.toLowerCase()))
+        .map(async pool => Number(await pool.stats.totalLiquidity()) > MIN_POOL_TVL && pool),
+    )),
+  )
 
   const poolVolumes = curve.getIsLiteChain()
     ? undefined
