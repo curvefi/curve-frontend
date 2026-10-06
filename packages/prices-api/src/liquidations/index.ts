@@ -12,7 +12,9 @@ export async function getSoftLiqRatios(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/${blockchainId}/${marketAddr}/soft_liquidation_ratio`)
+  const response = await fetch(
+    `${host}/v1/${endpointParam}/liquidations/${blockchainId}/${marketAddr}/soft_liquidation_ratio`,
+  )
 
   return Schema.getSoftLiqRatiosResponse.parse(response)
 }
@@ -25,7 +27,9 @@ export async function getLiqsDetailed(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/${blockchainId}/${marketAddr}/history/detailed`)
+  const response = await fetch(
+    `${host}/v1/${endpointParam}/liquidations/${blockchainId}/${marketAddr}/history/detailed`,
+  )
 
   return Schema.getLiqsDetailedResponse.parse(response)
 }
@@ -38,7 +42,9 @@ export async function getLiqsAggregate(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/${blockchainId}/${marketAddr}/history/aggregated`)
+  const response = await fetch(
+    `${host}/v1/${endpointParam}/liquidations/${blockchainId}/${marketAddr}/history/aggregated`,
+  )
 
   return Schema.getLiqsAggregateResponse.parse(response)
 }
@@ -79,7 +85,9 @@ export async function getLiqHealthDeciles(
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
-  const response = await fetch(`${host}/v1/${endpointParam}/liquidations/${blockchainId}/${marketAddr}/health/distribution`)
+  const response = await fetch(
+    `${host}/v1/${endpointParam}/liquidations/${blockchainId}/${marketAddr}/health/distribution`,
+  )
 
   return Schema.getLiqHealthDecilesResponse.parse(response)
 }

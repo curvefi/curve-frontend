@@ -9,7 +9,8 @@ type PoolMetadataParams = FieldsOf<GetPoolMetadataParams>
 export const { useQuery: usePoolMetadata } = queryFactory({
   queryKey: ({ blockchainId, poolAddress }: PoolMetadataParams) =>
     ({ name: 'pool-metadata', blockchainId, poolAddress }) as const,
-  queryFn: async ({ blockchainId, poolAddress }: GetPoolMetadataParams) => getPoolMetadata({ blockchainId, poolAddress }),
+  queryFn: async ({ blockchainId, poolAddress }: GetPoolMetadataParams) =>
+    getPoolMetadata({ blockchainId, poolAddress }),
   validationSuite: createValidationSuite(({ blockchainId, poolAddress }: PoolMetadataParams) => {
     contractValidationGroup({ blockchainId, contractAddress: poolAddress })
   }),
