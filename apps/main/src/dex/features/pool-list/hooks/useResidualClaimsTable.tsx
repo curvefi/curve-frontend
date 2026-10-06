@@ -10,10 +10,10 @@ import { useUserPoolPositions } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
+import { PongLoader } from '@ui/components/PongLoader'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { constQ, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { NewtonCradleIcon } from '@ui/icons/NewtonCradleIcon'
 import { decimalCompare, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { PoolClaimables } from '../types'
@@ -84,7 +84,7 @@ export const useResidualClaimsTable = ({ network }: { network: NetworkConfig }, 
       loading: {
         title: t`Searching for your residual rewards`,
         description: t`Scanning ${scanPoolCount ? scanPoolCount.toString() : 'all'} ${capitalize(blockchainId)} pools. This may take a while.`,
-        icon: <NewtonCradleIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />,
+        icon: <PongLoader sx={{ '--ldr-size': IconSize.xxl }} />,
       },
       empty: {
         title: t`No residual rewards`,
