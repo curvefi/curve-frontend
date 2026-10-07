@@ -56,47 +56,40 @@ export const getChangeColor = (amount: number, positive: 'success' | 'error', ne
 export const formatTokenDeltaUsd = ({ amount, amountUsd, timestamp }: ActivityTokenDelta, currentDate: Date) =>
   formatActivityUsdValue({ amount, amountUsd, timestamp, isSold: amount < 0 }, currentDate)
 
-/** The API has no event type, a LLAMMA event is either a deposit or a withdrawal depending on which field is set */
-const getLlammaEventType = ({ deposit }: MarketEventRow) => (deposit ? 'deposit' : 'withdrawal')
-
-export const getLlammaEventAction = (event: MarketEventRow) =>
+export const getLlammaEventAction = ({ type }: MarketEventRow) =>
   ({
     deposit: { label: t`Deposit`, color: 'success' as const },
     withdrawal: { label: t`Withdrawal`, color: 'error' as const },
-  })[getLlammaEventType(event)]
+  })[type]
 
 /** Lists the token deltas of a LLAMMA event: the deposited collateral, or the withdrawn collateral and borrowed tokens */
-export const getLlammaEventTokenDeltas = ({
-  deposit,
-  withdrawal,
-  timestamp,
-  blockchainId,
-  collateralToken,
-  borrowToken,
-}: MarketEventRow): ActivityTokenDelta[] =>
-  notFalsy(
-    deposit && {
-      label: t`Amount`,
-      token: collateralToken,
-      blockchainId,
-      amount: deposit.amount,
-      amountUsd: deposit.amountUsd,
-      timestamp,
-    },
-    !!withdrawal?.amountCollateral && {
-      label: t`Collateral`,
-      token: collateralToken,
-      blockchainId,
-      amount: -withdrawal.amountCollateral,
-      amountUsd: withdrawal.amountCollateralUsd,
-      timestamp,
-    },
-    !!withdrawal?.amountBorrowed && {
-      label: t`Borrowed`,
-      token: borrowToken,
-      blockchainId,
-      amount: -withdrawal.amountBorrowed,
-      amountUsd: withdrawal.amountBorrowedUsd,
-      timestamp,
-    },
-  )
+export const getLlammaEventTokenDeltas = (event: MarketEventRow): ActivityTokenDelta[] => {
+  const { timestamp, blockchainId, collateralToken, borrowToken } = event
+  switch (event.type) {
+    case 'deposit': {
+      const { amount, amountUsd } = event.deposit
+      return [{ label: t`Amount`, token: collateralToken, blockchainId, amount, amountUsd, timestamp }]
+    }
+    case 'withdrawal': {
+      const { amountCollateral, amountCollateralUsd, amountBorrowed, amountBorrowedUsd } = event.withdrawal
+      return notFalsy(
+        !!amountCollateral && {
+          label: t`Collateral`,
+          token: collateralToken,
+          blockchainId,
+          amount: -amountCollateral,
+          amountUsd: amountCollateralUsd,
+          timestamp,
+        },
+        !!amountBorrowed && {
+          label: t`Borrowed`,
+          token: borrowToken,
+          blockchainId,
+          amount: -amountBorrowed,
+          amountUsd: amountBorrowedUsd,
+          timestamp,
+        },
+      )
+    }
+  }
+}

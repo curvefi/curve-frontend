@@ -161,24 +161,8 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
     const isDeposit = i % 3 !== 2 // 2/3 deposits, 1/3 withdrawals
     const isSoftLiquidated = i % 2 === 0 // half of the withdrawals return both collateral and borrowed tokens
 
-    return {
+    const event = {
       provider: generateAddress(6000 + i),
-      deposit: isDeposit
-        ? {
-            amount: Math.random() * 10 + 0.5,
-            amountUsd: 2500,
-            n1: Math.floor(Math.random() * 50),
-            n2: Math.floor(Math.random() * 50) + 50,
-          }
-        : null,
-      withdrawal: isDeposit
-        ? null
-        : {
-            amountBorrowed: isSoftLiquidated ? Math.random() * 5000 + 100 : 0,
-            amountBorrowedUsd: isSoftLiquidated ? 1000 : 0,
-            amountCollateral: Math.random() * 2 + 0.1,
-            amountCollateralUsd: 3000,
-          },
       blockNumber: 19000000 + i * 60,
       timestamp: fromDate(new Date(now - i * 3600000)), // 1 hour apart
       txHash: generateTxHash(6000 + i),
@@ -186,7 +170,31 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
       chainId: Chain.Ethereum,
       collateralToken,
       borrowToken,
-    }
+    } as const
+
+    return isDeposit
+      ? {
+          ...event,
+          type: 'deposit',
+          deposit: {
+            amount: Math.random() * 10 + 0.5,
+            amountUsd: 2500,
+            n1: Math.floor(Math.random() * 50),
+            n2: Math.floor(Math.random() * 50) + 50,
+          },
+          withdrawal: null,
+        }
+      : {
+          ...event,
+          type: 'withdrawal',
+          deposit: null,
+          withdrawal: {
+            amountBorrowed: isSoftLiquidated ? Math.random() * 5000 + 100 : 0,
+            amountBorrowedUsd: isSoftLiquidated ? 1000 : 0,
+            amountCollateral: Math.random() * 2 + 0.1,
+            amountCollateralUsd: 3000,
+          },
+        }
   })
 }
 
