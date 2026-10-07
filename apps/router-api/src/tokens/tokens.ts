@@ -1,11 +1,30 @@
-import type { FastifyRequest } from 'fastify'
+import { type FastifyRequest } from 'fastify'
 import { type Address, getAddress, zeroAddress, isAddressEqual } from 'viem'
+import { _getPoolTotalLiquidityFromApi } from '@curvefi/api/lib/cached.js'
+import type { IPoolData } from '@curvefi/api/lib/interfaces'
 import { zip } from '@primitives/array.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
-import { loadCurve } from '../curve-router/curvejs'
+import { type CurveJS, loadCurve } from '../curve-router/curvejs'
 import type { TokensQuery } from './tokens.schemas'
 
 const MIN_POOL_TVL = 100 // in dollars
+
+/**
+ * Read cached API TVL, constructing a pool only when an on-chain calculation is required.
+ * todo: helper copied from curve-js using internal cache files, it should be exposed from there!
+ **/
+export const getPoolTvl = async (
+  curve: CurveJS,
+  { is_crypto = false, is_llamma, swap_address, id }: IPoolData & { id: string },
+): Promise<number> => {
+  if (curve.chainId === 1 && id === 'crveth') return 0
+  if (!is_llamma) {
+    const network = curve.getNetworkConstants().NETWORK_NAME
+    const tvl = await _getPoolTotalLiquidityFromApi(network, id, swap_address, is_crypto, curve.getIsLiteChain())
+    if (tvl !== undefined) return Number(tvl)
+  }
+  return Number(await curve.getPool(id).stats.totalLiquidityMemoized())
+}
 
 /** Build the token catalog with metadata and available trading volumes from the shared Curve.js instance. */
 export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQuery }>) => {
@@ -41,9 +60,9 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
     ...(await Promise.all(
       curve
         .getPoolList()
-        .map(id => poolsData[id])
-        .filter(pool => !blacklist.has(pool.swap_address.toLowerCase()))
-        .map(async pool => Number(await pool.stats.totalLiquidity()) > MIN_POOL_TVL && pool),
+        .map(id => ({ id, ...poolsData[id] }))
+        .filter(({ swap_address }) => !blacklist.has(swap_address.toLowerCase()))
+        .map(async pool => (await getPoolTvl(curve, pool)) > MIN_POOL_TVL && pool),
     )),
   )
 
@@ -90,13 +109,13 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
 
   // Pool LP tokens themselves
   const lpTokens = pools.map(pool => {
-    const address = getAddress(pool.lpToken)
+    const address = getAddress(pool.token_address)
     return (
       !isAddressEqual(address, zeroAddress) &&
-      decimals[pool.lpToken] &&
+      decimals[pool.token_address] &&
       ([
         address,
-        { symbol: pool.symbol, decimals: decimals[pool.lpToken], lp: true, volume: tokenVolumes[address] },
+        { symbol: pool.symbol, decimals: decimals[pool.token_address], lp: true, volume: tokenVolumes[address] },
       ] as const)
     )
   })
