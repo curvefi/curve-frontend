@@ -27,18 +27,18 @@ export const useDepositMaxAmounts = ({
         ...params,
         amounts: params.amounts?.map((amount, index) =>
           // replace the native-token amount with the wallet balance for gas estimation
-          index === nativeIndex ? (balances.data?.[tokenAddresses[index]] ?? amount) : amount,
+          index === nativeIndex ? (balances[tokenAddresses[index]]?.data ?? amount) : amount,
         ),
       },
       nativeIndex >= 0,
     ).data?.estGasCost ?? ZERO
 
-  return mapQuery(balances, balances =>
-    tokenAddresses.map((address, index) =>
+  return tokenAddresses.map((address, index) =>
+    mapQuery(balances[address], balance =>
       index === nativeIndex
         ? // native-token deposits need to reserve part of the balance for gas.
-          decimalMax('0', decimalMinus(balances[address], decimalMultiply(estGasCost, GAS_BUFFER)))
-        : balances[address],
+          decimalMax('0', decimalMinus(balance, decimalMultiply(estGasCost, GAS_BUFFER)))
+        : balance,
     ),
   )
 }
