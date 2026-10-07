@@ -10,7 +10,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
-import { fetchEnsoRoute } from '../api/enso.api'
+import { fetchMigrationRoute } from '../api/migration-route.api'
 
 /** `amountIn` is a raw-unit string because query keys cannot hold bigints. */
 export type MigrationQuoteQuery = UserChainQuery & {
@@ -40,7 +40,7 @@ export const { useQuery: useMigrationQuote, fetchQuery: fetchMigrationQuote } = 
   queryKey: ({ chainId, userAddress, tokenIn, tokenOut, amountIn, slippageBps }: MigrationQuoteParams) =>
     ({ name: 'balancerMigrationQuote', chainId, userAddress, tokenIn, tokenOut, amountIn, slippageBps }) as const,
   queryFn: ({ chainId, userAddress, tokenIn, tokenOut, amountIn, slippageBps }: MigrationQuoteQuery) =>
-    fetchEnsoRoute({ chainId, fromAddress: userAddress, tokenIn, tokenOut, amountIn: BigInt(amountIn), slippageBps }),
+    fetchMigrationRoute({ chainId, userAddress, tokenIn, tokenOut, amountIn: BigInt(amountIn), slippageBps }),
   category: 'dex.deposit',
   validationSuite: migrationQuoteValidationSuite,
 })

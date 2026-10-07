@@ -9,7 +9,6 @@ const {
   API_PROXY_TARGET,
   ROUTER_API_PROXY_TARGET = API_PROXY_TARGET || 'http://localhost:3010',
   MERKL_API_PROXY_TARGET = 'http://localhost:3011',
-  ENSO_API_KEY,
   SENTRY_AUTH_TOKEN,
   SENTRY_ORG,
   SENTRY_PROJECT,
@@ -27,12 +26,6 @@ export default defineConfig(({ command }) => ({
     proxy: {
       '/api/router': { target: ROUTER_API_PROXY_TARGET, changeOrigin: true },
       '/api/merkl': { target: MERKL_API_PROXY_TARGET, changeOrigin: true },
-      '/api/enso': {
-        target: 'https://api.enso.build',
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/api\/enso/, ''),
-        headers: { Authorization: `Bearer ${ENSO_API_KEY}` },
-      },
     },
     ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'],
   },
@@ -57,7 +50,6 @@ export default defineConfig(({ command }) => ({
             entries: [
               { id: resolve(__dirname, '_api/router.ts'), route: '/api/router/**' },
               { id: resolve(__dirname, '_api/merkl.ts'), route: '/api/merkl/**' },
-              { id: resolve(__dirname, '_api/enso.ts'), route: '/api/enso/**' },
             ],
             rewrites: [
               { source: '/favicon', destination: '/favicon.ico' },

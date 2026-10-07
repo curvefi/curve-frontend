@@ -28,16 +28,19 @@ export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, Reco
   },
 }
 
-/** Selects the configured fee when the provider has a receiver on the chain. */
+/**
+ * Selects the configured fee when the provider has a receiver on the chain.
+ * Requests without a controller (not LlamaLend, e.g. the Balancer migration) carry no fee.
+ */
 export const getRouterFee = (
   provider: ExternalRouteProvider,
   { chainId, controllerAddress }: Pick<RoutesQuery, 'chainId' | 'controllerAddress'>,
 ) => {
   const feeReceiver = ROUTER_FEE_RECEIVER_BY_CHAIN_ID[provider][chainId]
-  if (!feeReceiver) return
+  if (!feeReceiver || !controllerAddress) return
 
   const assetsType = assert(
-    controllerAddress && MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)],
+    MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)],
     `A supported controllerAddress is required for ${provider} on chain ${chainId}`,
   )
   return { feeBps: ROUTER_FEE_BPS[assetsType], feeReceiver }

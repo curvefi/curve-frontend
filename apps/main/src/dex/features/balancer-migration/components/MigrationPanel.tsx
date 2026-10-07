@@ -70,7 +70,7 @@ export const MigrationPanel = ({ chainId, blockchainId, userAddress, position, t
 
   const preview = useMemo(() => {
     if (!quote.data || !target) return null
-    const lpOut = Number(formatUnits(BigInt(quote.data.amountOut), LP_DECIMALS))
+    const lpOut = Number(formatUnits(BigInt(quote.data.amountOut[0]), LP_DECIMALS))
     const valueOutUsd = maybe(getCurveLpPriceUsd(target.pool), price => lpOut * price)
     return {
       lpOut,
@@ -179,7 +179,7 @@ export const MigrationPanel = ({ chainId, blockchainId, userAddress, position, t
                 <ActionInfo
                   label={t`Route`}
                   value={quoteValue(
-                    quote.data?.route.map(({ action, protocol }) => `${action} (${protocol})`).join(', '),
+                    quote.data?.route?.map(({ action, protocol }) => `${action} (${protocol})`).join(', '),
                   )}
                 />
               </Stack>

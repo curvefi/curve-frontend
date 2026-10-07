@@ -67,6 +67,27 @@ describe('GET routes mocked unit tests', () => {
     },
   )
 
+  it('requests enso routes without a fee when no controller is given', async () => {
+    const fetchMock = vi.fn<typeof fetch>(() => Promise.resolve(Response.json(ensoResponse)))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { statusCode } = await server.inject({
+      url: '/api/router/v1/routes',
+      query: {
+        chainId: '1',
+        tokenIn: [zeroAddress],
+        tokenOut: [zeroAddress],
+        amountIn: ['1000000000'],
+        router: ['enso'],
+        zapAddress: zeroAddress,
+      },
+    })
+
+    expect(statusCode).toBe(200)
+    const url = getFetchUrl(fetchMock.mock.calls[0][0])
+    expect(url.searchParams.get('fee')).toBeNull()
+  })
+
   it('returns an empty response when 0x has no liquidity', async () => {
     vi.stubGlobal(
       'fetch',
