@@ -7,7 +7,7 @@ import { fetchBalancerPositions } from '../api/balancer.api'
 
 export const { useQuery: useBalancerPositions, invalidate: invalidateBalancerPositions } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
-    ({ name: 'balancerPositions', chainId, userAddress }) as const,
+    ({ name: 'balancerPositions', version: 2, chainId, userAddress }) as const,
   queryFn: ({ chainId, userAddress }: UserChainQuery) => fetchBalancerPositions(chainId, userAddress),
   category: 'dex.user',
   validationSuite: createValidationSuite((params: UserChainParams) => {
