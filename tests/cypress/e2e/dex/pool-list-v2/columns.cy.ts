@@ -1,4 +1,3 @@
-import { PoolColumnId } from '@/dex/features/pool-list/columns'
 import {
   setupDexPoolListV2Mocks,
   V2_POOL_FIXTURE_NOW,
@@ -12,6 +11,7 @@ import {
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
 import { API_LOAD_TIMEOUT } from '@cy/support/ui'
+import { PoolColumnId } from '@ui/features/pool-list/columns'
 
 const expectHeaderOrder = (expected: readonly PoolColumnId[]) =>
   cy.get('[data-testid="data-table-head"] [data-testid^="data-table-header-"]').should($headers => {

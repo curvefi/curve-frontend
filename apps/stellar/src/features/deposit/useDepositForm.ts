@@ -70,9 +70,9 @@ export function useDepositForm(poolParams: PoolQuery) {
         decimals: decimals.data,
         slippage: values.slippage,
         supply: supply.data,
-        maxAmounts: maxAmounts.data,
+        maxAmounts: maxAmounts.map(q => q.data),
       }),
-      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts.data],
+      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts],
     ),
     userDefaultValues,
   )

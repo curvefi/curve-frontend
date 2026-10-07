@@ -11,13 +11,14 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import { PongLoader } from '@ui/components/PongLoader'
+import type { PoolClaimables } from '@ui/features/pool-list/types'
+import { hasClaimableRewards, claimablesTotalUsd } from '@ui/features/pool-list/utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { constQ, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalCompare, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import type { PoolClaimables } from '../types'
-import { claimablesTotalUsd, curvePoolToRowData, enrichPoolRow, getPoolListAlerts, hasClaimableRewards } from '../utils'
+import { curvePoolToRowData, enrichPoolRow, getPoolListAlerts } from '../utils'
 
 const { IconSize } = SizesAndSpaces
 
@@ -47,7 +48,7 @@ export const useResidualClaimsTable = ({ network }: { network: NetworkConfig }, 
           ? addresses
               .filter(
                 address =>
-                  hasClaimableRewards(rewards[address] ?? []) &&
+                  hasClaimableRewards(rewards[address]) &&
                   !positions.some(
                     position =>
                       isAddressEqual(position.address, address) && decimalGreaterThan(position.totalBalance, ZERO),

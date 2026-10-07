@@ -16,7 +16,7 @@ export const PoolTokenInputs = ({
   tokens: QueryProp<PoolToken[]>
   reserves: QueryProp<Decimal[]>
   disabled: PoolTokenDisabled
-  maxAmounts?: QueryProp<(Decimal | undefined)[]>
+  maxAmounts?: QueryProp<Decimal>[]
   positionAmounts?: QueryProp<(Decimal | undefined)[]> | undefined
 }) =>
   tokens?.map((token, index) => (
@@ -26,7 +26,7 @@ export const PoolTokenInputs = ({
       index={index}
       disabled={disabled === true || (disabled === 'first-only' && index > 0)}
       reserves={reserves}
-      max={maxAmounts && mapQuery(maxAmounts, amounts => amounts[index])}
+      max={maxAmounts?.[index]}
       positionBalance={
         positionAmounts && {
           position: mapQuery(positionAmounts, amounts => amounts[index]),
