@@ -63,3 +63,13 @@ export const migrationQueryValidationSuite = createValidationSuite(
     validateSlippage({ slippage })
   },
 )
+
+/** A Uniswap migration moves the whole position, so only the target and slippage are user choices. */
+export type UniswapMigrationForm = Pick<MigrationForm, 'targetLpToken' | 'stake' | 'slippage'>
+
+export const uniswapMigrationFormValidationSuite = createValidationSuite(
+  ({ targetLpToken, slippage }: UniswapMigrationForm) => {
+    evmAddressValidationGroup({ evmAddress: targetLpToken, fieldName: 'targetLpToken' })
+    validateSlippage({ slippage })
+  },
+)

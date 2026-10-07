@@ -117,12 +117,16 @@ export const getBalancerNetAprItems = ({ dynamicData: { aprItems } }: BalancerPo
 export const getBalancerIconTokens = ({ poolTokens }: BalancerPosition) =>
   poolTokens.map(({ underlyingToken, address, symbol }) => underlyingToken ?? { address, symbol })
 
-export type MigrationProtocol = 'balancer' | 'curve'
+export type MigrationProtocol = 'balancer' | 'uniswap' | 'curve'
 
 export const PROTOCOLS = {
   balancer: { name: 'Balancer', logoUrl: `${CURVE_ASSETS_URL}/platforms/balancer.png` },
+  uniswap: { name: 'Uniswap', logoUrl: `${CURVE_ASSETS_URL}/platforms/uniswap.png` },
   curve: { name: 'Curve', logoUrl: CURVE_LOGO_URL },
 } as const satisfies Record<MigrationProtocol, { name: string; logoUrl: string }>
 
 /** Active gauge of the target, which "Deposit & stake" routes into. */
 export const getTargetGauge = ({ row: { gauge } }: CurveTarget) => (gauge?.isKilled ? undefined : gauge?.address)
+
+/** Uniswap fee tiers are in hundredths of a bip: 500 is 0.05%. */
+export const formatFeeTier = (fee: number) => `${fee / 10_000}%`

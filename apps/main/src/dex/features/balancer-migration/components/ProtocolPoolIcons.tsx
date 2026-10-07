@@ -14,7 +14,8 @@ export const ProtocolPoolIcons = ({
   <Box sx={{ position: 'relative', flexShrink: 0 }}>
     <TokenIcons blockchainId={blockchainId} tokens={tokens} showTooltips={false} />
     <TokenBadge tooltipTitle={PROTOCOLS[protocol].name} position="br">
-      <BadgeIcon src={PROTOCOLS[protocol].logoUrl} alt={PROTOCOLS[protocol].name} />
+      {/* The tooltip names the protocol, so a missing logo shows nothing rather than its alt text. */}
+      <BadgeIcon src={PROTOCOLS[protocol].logoUrl} alt="" />
     </TokenBadge>
   </Box>
 )
