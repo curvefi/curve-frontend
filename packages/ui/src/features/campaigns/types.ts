@@ -1,5 +1,5 @@
 import type { Address } from '@primitives/address.utils'
-import type { Campaign, CampaignPool } from '@external-rewards'
+import type { Campaign, CampaignPool } from '@ui/features/campaigns/external-campaign.types'
 
 type CampaignReward =
   { type: 'apr'; value: number; address: Address; price?: number } | { type: 'points'; value: number }

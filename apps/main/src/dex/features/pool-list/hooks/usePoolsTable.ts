@@ -15,11 +15,12 @@ import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
+import type { PoolsApiParams } from '@ui/features/pool-list/filters/utils'
+import { POOLS_PAGE_SIZE } from '@ui/features/pool-list/hooks/usePoolsPagination'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
+import { litePoolToRowData, poolToRowData } from '@ui/features/pool-list/utils'
 import { DISABLED_Q, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
-import type { PoolsApiParams } from '../filters/utils'
-import { enrichPoolRow, getPoolListAlerts, litePoolToRowData, poolToRowData } from '../utils'
-import { POOLS_PAGE_SIZE } from './usePoolsPagination'
+import { enrichPoolRow, getPoolListAlerts } from '../utils'
 
 class UnsupportedPoolListError extends Error {
   constructor(readonly chainId: number) {

@@ -55,8 +55,8 @@ describe('Refuel page', () => {
     getTestById('budget-chart').contains('Unlocked refuel shares').should('be.visible')
 
     getTestById('reserves-composition-chart').should('be.visible')
-    getTestById('reserves-composition-chart').contains('crvUSD').should('be.visible')
-    getTestById('reserves-composition-chart').contains('WETH').should('be.visible')
+    getTestById('reserves-composition-chart').contains('crvUSD', API_LOAD_TIMEOUT).should('be.visible')
+    getTestById('reserves-composition-chart').contains('WETH', API_LOAD_TIMEOUT).should('be.visible')
 
     getTestById('daily-refuels-chart').should('be.visible')
     getTestById('daily-refuels-chart').contains('Daily refuels').should('be.visible')

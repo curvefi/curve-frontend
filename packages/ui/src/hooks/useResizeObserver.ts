@@ -4,7 +4,6 @@ type Dimension = 'width' | 'height'
 
 /** Options for the resize observer */
 type ResizeObserverOptions = {
-  threshold?: number
   enabled?: boolean
   /** Only changes to this dimension trigger updates. Watches both when omitted. */
   dimension?: Dimension
@@ -15,7 +14,7 @@ const EMPTY_DIMENSIONS: readonly [] = []
 
 /**
  * A hook that observes an element's dimension changes (including borders) and returns the current dimensions.
- * Only updates when the selected dimension changes beyond the threshold (both by default).
+ * Rounds measurements to whole pixels and only updates when the selected dimension changes (both by default).
  * Returns both dimensions from the last accepted measurement, even when observing just one.
  *
  * @param elementRef - React ref object for the element to observe
@@ -27,13 +26,13 @@ const EMPTY_DIMENSIONS: readonly [] = []
  * const elementRef = useRef<HTMLDivElement>(null);
  * const [width, height] = useResizeObserver(elementRef);
  *
- * // With custom threshold
+ * // Observe height changes only
  * const bannerRef = useRef<HTMLDivElement>(null);
- * const [,bannerHeight] = useResizeObserver(bannerRef, { threshold: 5 });
+ * const [,height] = useResizeObserver(bannerRef, { dimension: 'height' });
  *
  * // Using the height in layout calculations
  * useEffect(() => {
- *   if (height !== null) {
+ *   if (height != null) {
  *     // Update layout based on height
  *     updateLayoutHeight('banner', height);
  *   }
@@ -41,7 +40,7 @@ const EMPTY_DIMENSIONS: readonly [] = []
  */
 export function useResizeObserver(
   elementRef: RefObject<Element | null>,
-  { threshold = 10, enabled = true, dimension }: ResizeObserverOptions = {},
+  { enabled = true, dimension }: ResizeObserverOptions = {},
 ) {
   const [dimensions, setDimensions] = useState<[number, number] | null>(null)
 
@@ -52,7 +51,7 @@ export function useResizeObserver(
 
     const { width, height } = node.getBoundingClientRect()
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setDimensions([width, height])
+    setDimensions([Math.round(width), Math.round(height)])
 
     const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {
       const { inlineSize: width, blockSize: height } = updatedEntry?.borderBoxSize[0] ?? {}
@@ -61,10 +60,7 @@ export function useResizeObserver(
       setDimensions((prev): [number, number] =>
         prev == null
           ? dimensions
-          : dimensions.some(
-                (value, i) =>
-                  (dimension == null || i === DIMENSION_INDEX[dimension]) && Math.abs(value - prev[i]) > threshold,
-              )
+          : dimensions.some((value, i) => (dimension == null || i === DIMENSION_INDEX[dimension]) && value !== prev[i])
             ? dimensions
             : prev,
       )
@@ -76,7 +72,7 @@ export function useResizeObserver(
     return () => {
       observer?.disconnect()
     }
-  }, [elementRef, threshold, enabled, dimension])
+  }, [elementRef, enabled, dimension])
 
   return dimensions ?? EMPTY_DIMENSIONS
 }

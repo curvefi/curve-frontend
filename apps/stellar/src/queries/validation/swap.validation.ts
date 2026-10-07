@@ -4,7 +4,8 @@ import { maybe } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapAmountField, type SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import { validateAmount, validateSlippage } from './liquidity.validation'
+import { validateSlippage } from '@ui/lib/validation/slippage.validation'
+import { validateAmount } from './liquidity.validation'
 import { validateAccount, validatePool } from './pool.validation'
 
 type SwapInputs = Pick<SwapQuoteParams, 'fromIndex' | 'toIndex' | 'inputAmount' | 'outputAmount' | 'decimals'>
@@ -77,7 +78,7 @@ export const swapFormValidationSuite = createValidationSuite(({ editedSide, slip
   skipWhen(editedSide !== 'receive' && values.outputAmount == null, () => validateSwapAmount(values, 'outputAmount'))
   skipWhen(editedSide !== 'receive', () => validateReserve(values))
   validateBalance(values)
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
 })
 
 const validateSwap = ({ network, pool, account, maxAmount, minimum, ...values }: SwapParams) => {

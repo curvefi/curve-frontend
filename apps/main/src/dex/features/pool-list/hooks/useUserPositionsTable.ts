@@ -7,10 +7,12 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { notFalsy } from '@primitives/objects.utils'
+import { claimablesTotalUsd, poolToRowData } from '@ui/features/pool-list/utils'
 import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
-import { decimalCompare, decimalMultiply, decimalSum } from '@ui/lib/decimal'
-import { claimablesTotalUsd, enrichPoolRow, getPoolListAlerts, poolToRowData } from '../utils'
+import { decimalCompare, decimalMultiply, decimalSum, ZERO } from '@ui/lib/decimal'
+import { t } from '@ui/lib/i18n'
+import { enrichPoolRow, getPoolListAlerts } from '../utils'
 
 const getPoolUserPosition = (
   position: UserPoolPosition['positions'][number],
@@ -23,19 +25,23 @@ const getPoolUserPosition = (
   claimablesUsd: mapQuery(claimables, data => claimablesTotalUsd(data?.[position.address])),
 })
 
-export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) => {
+export const useUserPositionsTable = ({ network }: { network: NetworkConfig }, enabled = true) => {
   const { chainId, blockchainId } = network
   const { address: userAddress } = useConnection()
 
   const campaigns = useCampaigns({ blockchainId })
-  const positions = useUserPoolPositions({ chainId, userAddress })
-  const claimables = useUserPoolClaimables({ chainId, userAddress }, positions)
+  const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
+  const poolAddresses = useMappedQuery(
+    positions,
+    useCallback(({ positions }) => positions.map(({ address }) => address), []),
+  )
+  const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)
 
   const tokenAddresses = useMappedQuery(
     positions,
     useCallback(({ positions }) => positions.map(({ lpTokenAddress }) => lpTokenAddress), []),
   )
-  const tokenRates = useTokenUsdRates({ chainId, tokenAddresses: tokenAddresses.data }, !!userAddress)
+  const tokenRates = useTokenUsdRates({ chainId, tokenAddresses: tokenAddresses.data }, enabled && !!userAddress)
 
   const tableQuery = useMappedQuery(
     positions,
@@ -55,7 +61,7 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
             ),
           )
           .toSorted((a, b) =>
-            decimalCompare(b.userPosition?.depositsUsd.data ?? '0', a.userPosition?.depositsUsd.data ?? '0'),
+            decimalCompare(b.userPosition?.depositsUsd.data ?? ZERO, a.userPosition?.depositsUsd.data ?? ZERO),
           ),
       [network, campaigns.data, tokenRates, claimables.data, claimables.isLoading, claimables.error],
     ),
@@ -74,5 +80,10 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }) =
       [tableQuery, aggregateQueries(notFalsy(...(tableQuery.data?.map(row => row.userPosition?.depositsUsd) ?? [])))],
       (rows, amounts) => (rows.length && amounts.every(amount => amount == null) ? undefined : decimalSum(...amounts)),
     ),
+    labels: {
+      errorTitle: t`Could not load pool positions`,
+      loading: { title: t`Loading positions` },
+      empty: { title: t`No active positions`, description: t`Provide liquidity to a pool to see your positions here.` },
+    },
   }
 }
