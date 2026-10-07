@@ -1,4 +1,5 @@
 import { sumBy } from 'lodash'
+import { useMemo } from 'react'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -106,7 +107,7 @@ export const BalancerPositionsTable = ({
   onReload: () => Promise<unknown>
 }) => {
   const table = useCurveTable({
-    columns: createColumns(blockchainId),
+    columns: useMemo(() => createColumns(blockchainId), [blockchainId]),
     query,
     meta: { onRowClick: onSelect, isRowSelected: ({ id }) => id === selectedId },
     getRowId: ({ id }) => id,

@@ -7,7 +7,6 @@ import { Form } from '@ui/features/forms/components/Form'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
-import type { PoolRow } from '@ui/features/pool-list/types'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, fromWei } from '@ui/lib/decimal'
@@ -28,20 +27,9 @@ export type MigrationFormProps = {
   blockchainId: string
   position: BalancerPosition
   target: CurveTarget | undefined
-  /** Pool-list row of the target, as shown in the Curve pools table. */
-  targetRow: PoolRow | undefined
 }
 
-export const MigrationForm = ({
-  chainId,
-  userAddress,
-  blockchainId,
-  position,
-  target,
-  targetRow,
-}: MigrationFormProps) => {
-  const gauge = targetRow?.gauge
-  const gaugeAddress = gauge?.isKilled ? undefined : gauge?.address
+export const MigrationForm = ({ chainId, userAddress, blockchainId, position, target }: MigrationFormProps) => {
   const {
     form,
     values,
@@ -51,12 +39,13 @@ export const MigrationForm = ({
     maxAmount,
     lpPriceUsd,
     isApproved,
+    gaugeAddress,
     onSubmit,
     isPending,
     isDisabled,
     error,
     formErrors,
-  } = useMigrationForm({ chainId, userAddress, position, target, gaugeAddress })
+  } = useMigrationForm({ chainId, userAddress, position, target })
   const targetLpPriceUsd = maybe(target?.pool, getCurveLpPriceUsd)
   const expectedLp = mapQuery(route, ({ amountOut: [amountOut] }) => fromWei(amountOut, LP_DECIMALS))
   const amountError = formErrors.find(([field]) => field === 'amount')?.[1]
@@ -108,12 +97,12 @@ export const MigrationForm = ({
           inputBalanceUsd={decimal(targetLpPriceUsd && expectedLp.data && +expectedLp.data * targetLpPriceUsd)}
           disabled
           tokenSelector={
-            targetRow && (
+            target && (
               <PoolTokensLabel
                 protocol="curve"
                 blockchainId={blockchainId}
-                tokens={targetRow.tradeableCoins}
-                label={targetRow.name}
+                tokens={target.row.tradeableCoins}
+                label={target.row.name}
               />
             )
           }

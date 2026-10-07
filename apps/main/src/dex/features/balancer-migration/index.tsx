@@ -18,8 +18,8 @@ import { getBalancerChain } from './api/balancer.api'
 import { BalancerPositionsTable } from './components/BalancerPositionsTable'
 import { CurvePoolsTable } from './components/CurvePoolsTable'
 import { MigrationFormTabs } from './components/MigrationFormTabs'
-import { useCurveTargetRows } from './hooks/useCurveTargetRows'
-import { findCurveTargets } from './migration.utils'
+import { useCurveTargets } from './hooks/useCurveTargets'
+import { findCurveCandidates } from './migration.utils'
 import { useBalancerPositions } from './queries/balancer-positions.query'
 
 const { Spacing } = SizesAndSpaces
@@ -45,13 +45,11 @@ export const PageBalancerMigration = () => {
 
   const selected = positions.data?.find(({ id }) => id === selectedId) ?? positions.data?.[0]
   const candidates = useMemo(
-    () => (selected && curvePools.data ? findCurveTargets(selected, recordValues(curvePools.data)) : []),
+    () => (selected && curvePools.data ? findCurveCandidates(selected, recordValues(curvePools.data)) : []),
     [selected, curvePools.data],
   )
-  const targetRows = useCurveTargetRows({ network, position: selected, candidates })
-  const { targets } = targetRows
+  const { targets, rows, alerts } = useCurveTargets({ network, position: selected, candidates })
   const target = targets.find(({ pool }) => pool.address === targetAddress) ?? targets[0]
-  const targetRow = targetRows.rows.find(({ address }) => address === target?.pool.address)
 
   const isReady = !!userAddress && isSupportedChain
   return (
@@ -69,7 +67,6 @@ export const PageBalancerMigration = () => {
                   blockchainId={blockchainId}
                   position={selected}
                   target={target}
-                  targetRow={targetRow}
                 />
               ),
             }
@@ -106,11 +103,11 @@ export const PageBalancerMigration = () => {
                 <Stack sx={{ flex: 1, minWidth: 0 }}>
                   <CurvePoolsTable
                     query={q({
-                      data: curvePools.data && targetRows.rows,
+                      data: curvePools.data && rows,
                       isLoading: curvePools.isLoading,
                       error: curvePools.error,
                     })}
-                    alerts={targetRows.alerts}
+                    alerts={alerts}
                     selectedAddress={target?.pool.address}
                     onSelect={({ address }) => setTargetAddress(address)}
                     onReload={curvePools.refetch}

@@ -13,27 +13,29 @@ const MIN_TARGET_TVL_USD = 1_000
 const MAX_CANDIDATES = 10
 const MAX_SUGGESTIONS = 5
 
-export type CurveTarget = { pool: Pool; matchedSymbols: string[]; overlap: number }
+/** `overlap` is the share of tokens the Balancer and Curve pools have in common. */
+export type CurveCandidate = { pool: Pool; overlap: number }
+/** A candidate with its pool-list row, which carries the pool type, gauge and APRs. */
+export type CurveTarget = CurveCandidate & { row: PoolRow }
 
 /** Balancer v3 boosted pools hold ERC4626 wrappers, so the wrapper and its underlying both count as a match. */
 const getBalancerTokenAddresses = ({ poolTokens }: BalancerPosition) =>
-  poolTokens.map(({ address, symbol, underlyingToken }) => ({
-    symbol: underlyingToken?.symbol ?? symbol,
-    addresses: notFalsy(address, underlyingToken?.address).map(a => a.toLowerCase()),
-  }))
+  poolTokens.map(({ address, underlyingToken }) =>
+    notFalsy(address, underlyingToken?.address).map(a => a.toLowerCase()),
+  )
 
 /**
  * Candidate Curve pools, ranked by the share of the Balancer pool's tokens they hold, then by TVL.
  * Native ETH (0xeeee…) in Curve pools does not match WETH in Balancer pools.
  */
-export function findCurveTargets(position: BalancerPosition, curvePools: readonly Pool[]): CurveTarget[] {
+export function findCurveCandidates(position: BalancerPosition, curvePools: readonly Pool[]): CurveCandidate[] {
   const tokens = getBalancerTokenAddresses(position)
   return curvePools
     .filter(pool => pool.tvlUsd >= MIN_TARGET_TVL_USD)
     .map(pool => {
       const coins = new Set(pool.coins.map(coin => coin.address.toLowerCase()))
-      const matchedSymbols = tokens.filter(t => t.addresses.some(a => coins.has(a))).map(t => t.symbol)
-      return { pool, matchedSymbols, overlap: matchedSymbols.length / Math.max(tokens.length, pool.coins.length) }
+      const matched = tokens.filter(addresses => addresses.some(a => coins.has(a))).length
+      return { pool, overlap: matched / Math.max(tokens.length, pool.coins.length) }
     })
     .filter(({ overlap }) => overlap > 0)
     .toSorted((a, b) => b.overlap - a.overlap || b.pool.tvlUsd - a.pool.tvlUsd)
@@ -44,24 +46,27 @@ export function findCurveTargets(position: BalancerPosition, curvePools: readonl
 export const getCurveLpPriceUsd = ({ tvlUsd, lpTokenSupply }: Pool) =>
   lpTokenSupply > 0 ? tvlUsd / lpTokenSupply : null
 
-/** GYROE (E-CLP) pools serve both pegged and volatile pairs, so they express no preference. */
-const BALANCER_CLASSIFICATIONS: Record<string, PoolClassification> = {
-  STABLE: 'stable',
-  COMPOSABLE_STABLE: 'stable',
-  META_STABLE: 'stable',
-  WEIGHTED: 'volatile',
-  QUANT_AMM_WEIGHTED: 'volatile',
-  RECLAMM: 'volatile',
-  COW_AMM: 'volatile',
-  GYRO: 'volatile',
-  GYRO3: 'volatile',
-  LIQUIDITY_BOOTSTRAPPING: 'volatile',
-  FIXED_LBP: 'volatile',
-  FX: 'fxswap',
+/** GYROE (E-CLP) pools serve both pegged and volatile pairs, so they express no curve preference. */
+const BALANCER_POOL_TYPES: Record<string, { label: string; classification?: PoolClassification }> = {
+  STABLE: { label: 'Stable', classification: 'stable' },
+  COMPOSABLE_STABLE: { label: 'Composable stable', classification: 'stable' },
+  META_STABLE: { label: 'Meta stable', classification: 'stable' },
+  WEIGHTED: { label: 'Weighted', classification: 'volatile' },
+  QUANT_AMM_WEIGHTED: { label: 'QuantAMM', classification: 'volatile' },
+  RECLAMM: { label: 'reCLAMM', classification: 'volatile' },
+  COW_AMM: { label: 'CoW AMM', classification: 'volatile' },
+  GYRO: { label: '2-CLP', classification: 'volatile' },
+  GYRO3: { label: '3-CLP', classification: 'volatile' },
+  GYROE: { label: 'E-CLP' },
+  LIQUIDITY_BOOTSTRAPPING: { label: 'LBP', classification: 'volatile' },
+  FIXED_LBP: { label: 'Fixed LBP', classification: 'volatile' },
+  FX: { label: 'FX', classification: 'fxswap' },
 }
 
+export const getBalancerTypeLabel = (type: string) => BALANCER_POOL_TYPES[type]?.label ?? type
+
 const getClassificationScore = (balancerType: string, { poolType }: PoolRow) => {
-  const wanted = BALANCER_CLASSIFICATIONS[balancerType]
+  const wanted = BALANCER_POOL_TYPES[balancerType]?.classification
   const actual = poolType && poolTypeClassifications[poolType]
   return !wanted || !actual ? 0 : wanted === actual ? 1 : -1
 }
@@ -70,16 +75,13 @@ const getClassificationScore = (balancerType: string, { poolType }: PoolRow) => 
  * Prefers the Curve pool closest to the Balancer one: the same tokens first,
  * then the same curve (stable, volatile or FX), then TVL. The first result is the recommendation.
  */
-export const rankCurveTargets = <T extends { target: CurveTarget; row: PoolRow }>(
-  { type }: BalancerPosition,
-  candidates: T[],
-) =>
-  candidates
+export const rankCurveTargets = ({ type }: BalancerPosition, targets: CurveTarget[]) =>
+  targets
     .toSorted(
       (a, b) =>
-        b.target.overlap - a.target.overlap ||
+        b.overlap - a.overlap ||
         getClassificationScore(type, b.row) - getClassificationScore(type, a.row) ||
-        b.target.pool.tvlUsd - a.target.pool.tvlUsd,
+        b.pool.tvlUsd - a.pool.tvlUsd,
     )
     .slice(0, MAX_SUGGESTIONS)
 
@@ -118,21 +120,3 @@ export const PROTOCOL_LOGO_TOKENS = {
   balancer: '0xba100000625a3754423978a60c9317c58a424e3D',
   curve: '0xD533a949740bb3306d119CC777fa900bA034cd52',
 } as const satisfies Record<MigrationProtocol, Address>
-
-const BALANCER_TYPE_LABELS: Record<string, string> = {
-  STABLE: 'Stable',
-  COMPOSABLE_STABLE: 'Composable stable',
-  META_STABLE: 'Meta stable',
-  WEIGHTED: 'Weighted',
-  QUANT_AMM_WEIGHTED: 'QuantAMM',
-  RECLAMM: 'reCLAMM',
-  COW_AMM: 'CoW AMM',
-  GYRO: '2-CLP',
-  GYRO3: '3-CLP',
-  GYROE: 'E-CLP',
-  LIQUIDITY_BOOTSTRAPPING: 'LBP',
-  FIXED_LBP: 'Fixed LBP',
-  FX: 'FX',
-}
-
-export const getBalancerTypeLabel = (type: string) => BALANCER_TYPE_LABELS[type] ?? type

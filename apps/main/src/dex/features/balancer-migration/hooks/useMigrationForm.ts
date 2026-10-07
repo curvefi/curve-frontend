@@ -21,16 +21,15 @@ export const useMigrationForm = ({
   userAddress,
   position,
   target,
-  gaugeAddress,
 }: {
   chainId: number
   userAddress: Address
   position: BalancerPosition
   target: CurveTarget | undefined
-  /** Active gauge of the target pool, if any. */
-  gaugeAddress: Address | undefined
 }) => {
   const tokenIn = position.address
+  const gauge = target?.row.gauge
+  const gaugeAddress = gauge?.isKilled ? undefined : gauge?.address
   const maxAmount = useTokenBalance({ chainId, userAddress, tokenAddress: tokenIn })
   const form = useForm<MigrationForm>({
     validation: migrationFormValidationSuite,
@@ -86,8 +85,8 @@ export const useMigrationForm = ({
     priceImpact,
     maxAmount: q(maxAmount),
     lpPriceUsd,
-    userAddress,
     isApproved: q(useMigrationIsApproved(params)),
+    gaugeAddress,
     onSubmit: form.handleSubmit(values => onSubmit({ ...values, tokenOut })),
     isPending,
     isDisabled: !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, false),

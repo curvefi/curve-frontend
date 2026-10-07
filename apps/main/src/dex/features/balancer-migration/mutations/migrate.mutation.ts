@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
+import { fetchTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { approve, fetchHasEnoughAllowance } from '@evm-ui/queries/allowance.query'
 import { useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
@@ -10,7 +11,7 @@ import { t } from '@ui/lib/i18n'
 import { sendTransaction } from '@wagmi/core'
 import { migrationQueryValidationSuite } from '../migration.validation'
 import { invalidateBalancerPositions } from '../queries/balancer-positions.query'
-import { fetchLpBalance, fetchMigrationRouteQuery, LP_DECIMALS } from '../queries/migration-route.query'
+import { fetchMigrationRouteQuery, LP_DECIMALS } from '../queries/migration-route.query'
 
 export type MigrateVariables = { tokenOut: Address; amount: Decimal; slippage: Decimal }
 
@@ -29,7 +30,8 @@ export const useMigrateMutation = ({ chainId, userAddress, tokenIn, poolName, on
     mutationFn: async ({ tokenOut, amount, slippage }) => {
       if (!userAddress) throw new Error('Wallet not connected')
       const amountIn = BigInt(toWei(amount, LP_DECIMALS))
-      if ((await fetchLpBalance({ chainId, userAddress, tokenIn })) < amountIn)
+      const balance = await fetchTokenBalance(config, { chainId, userAddress, tokenAddress: tokenIn })
+      if (BigInt(toWei(balance, LP_DECIMALS)) < amountIn)
         throw new Error(t`Balancer LP balance changed, refresh the quote`)
 
       // Fresh quote right before signing: the calldata carries Enso's minAmountOut, which reverts on worse execution.
