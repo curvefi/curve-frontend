@@ -1,4 +1,5 @@
 import type { Pool } from '@curvefi/prices-api/pools'
+import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import {
   type PoolClassification,
@@ -109,3 +110,11 @@ export const getBalancerNetAprItems = ({ dynamicData: { aprItems } }: BalancerPo
 /** Boosted pools show the underlying tokens rather than their ERC4626 wrappers. */
 export const getBalancerIconTokens = ({ poolTokens }: BalancerPosition) =>
   poolTokens.map(({ underlyingToken, address, symbol }) => underlyingToken ?? { address, symbol })
+
+export type MigrationProtocol = 'balancer' | 'curve'
+
+/** Mainnet BAL and CRV, whose icons are the protocol logos. */
+export const PROTOCOL_LOGO_TOKENS = {
+  balancer: '0xba100000625a3754423978a60c9317c58a424e3D',
+  curve: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+} as const satisfies Record<MigrationProtocol, Address>

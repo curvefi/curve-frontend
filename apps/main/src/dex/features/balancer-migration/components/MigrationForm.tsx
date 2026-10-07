@@ -78,6 +78,7 @@ export const MigrationForm = ({ chainId, blockchainId, position, target, targetR
           inputBalanceUsd={decimal(lpPriceUsd && +(values.amount ?? 0) * lpPriceUsd)}
           tokenSelector={
             <PoolTokensLabel
+              protocol="balancer"
               blockchainId={blockchainId}
               tokens={getBalancerIconTokens(position)}
               label={position.name}
@@ -99,7 +100,12 @@ export const MigrationForm = ({ chainId, blockchainId, position, target, targetR
           disabled
           tokenSelector={
             targetRow && (
-              <PoolTokensLabel blockchainId={blockchainId} tokens={targetRow.tradeableCoins} label={targetRow.name} />
+              <PoolTokensLabel
+                protocol="curve"
+                blockchainId={blockchainId}
+                tokens={targetRow.tradeableCoins}
+                label={targetRow.name}
+              />
             )
           }
         >

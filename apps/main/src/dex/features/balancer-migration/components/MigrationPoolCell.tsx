@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { TokenIcons, type TokenIconsProps } from '@ui/components/TokenIcons'
+import type { TokenIconsProps } from '@ui/components/TokenIcons'
 import { responsiveTitleEllipsisSx } from '@ui/features/tables/titleTruncate'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { MigrationProtocol } from '../migration.utils'
+import { ProtocolPoolIcons } from './ProtocolPoolIcons'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -14,11 +16,16 @@ const NAME_MAX_WIDTH = '14rem'
 export const MigrationPoolCell = ({
   blockchainId,
   tokens,
+  protocol,
   name,
   badges,
-}: Pick<TokenIconsProps, 'blockchainId' | 'tokens'> & { name: string; badges: ReactNode }) => (
+}: Pick<TokenIconsProps, 'blockchainId' | 'tokens'> & {
+  protocol: MigrationProtocol
+  name: string
+  badges: ReactNode
+}) => (
   <Stack direction="row" sx={{ height: Height.row, alignItems: 'center', gap: Spacing.sm }}>
-    <TokenIcons blockchainId={blockchainId} tokens={tokens} showTooltips={false} />
+    <ProtocolPoolIcons blockchainId={blockchainId} tokens={tokens} protocol={protocol} />
     <Stack sx={{ justifyContent: 'center', gap: Spacing.xxs, minWidth: 0 }}>
       <Typography
         variant="tableCellL"

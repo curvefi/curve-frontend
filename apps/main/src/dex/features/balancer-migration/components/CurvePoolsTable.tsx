@@ -27,6 +27,7 @@ const COLUMNS = columnHelper.columns([
     // Rows keep the ranking order (sorting is disabled), so the first row is the recommendation.
     cell: ({ row: { original: pool, index }, table }) => (
       <MigrationPoolCell
+        protocol="curve"
         blockchainId={pool.blockchainId}
         tokens={pool.tradeableCoins}
         name={pool.name}
@@ -72,7 +73,7 @@ export const CurvePoolsTable = ({
   })
   return (
     <Stack data-testid="balancer-migration-targets">
-      <MigrationTableTitle title={t`Target Curve pool to migrate to`} logoToken={MAINNET_CRV.address} />
+      <MigrationTableTitle title={t`Target Curve pool to migrate to`} protocol="curve" />
       <EvmDataTable
         category="detail"
         table={table}

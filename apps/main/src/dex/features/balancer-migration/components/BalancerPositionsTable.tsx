@@ -15,9 +15,6 @@ import { getBalancerIconTokens, getBalancerNetAprItems } from '../migration.util
 import { MigrationPoolCell } from './MigrationPoolCell'
 import { MigrationTableTitle } from './MigrationTableTitle'
 
-/** Mainnet BAL, whose icon is the Balancer logo. */
-const BAL_ADDRESS = '0xba100000625a3754423978a60c9317c58a424e3D'
-
 const columnHelper = createAppColumnHelper<BalancerPosition>()
 
 const getStakedUsd = ({ totalBalanceUsd, walletBalanceUsd }: BalancerPosition['userBalance']) =>
@@ -29,6 +26,7 @@ const createColumns = (blockchainId: string) =>
       header: t`Pool`,
       cell: ({ row: { original: position } }) => (
         <MigrationPoolCell
+          protocol="balancer"
           blockchainId={blockchainId}
           tokens={getBalancerIconTokens(position)}
           name={position.name}
@@ -116,7 +114,7 @@ export const BalancerPositionsTable = ({
   })
   return (
     <Stack data-testid="balancer-migration-positions">
-      <MigrationTableTitle title={t`Balancer pool to migrate from`} logoToken={BAL_ADDRESS} />
+      <MigrationTableTitle title={t`Balancer pool to migrate from`} protocol="balancer" />
       <EvmDataTable
         category="detail"
         table={table}
