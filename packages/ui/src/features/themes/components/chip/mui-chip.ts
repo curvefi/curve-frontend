@@ -49,6 +49,8 @@ const createColor = ({
     color: Badges.Label[color],
     borderColor: Badges.Border[color],
     borderWidth,
+    // MUI gives icons of default-colored chips its own grey; Figma colors them with LabelIcon.
+    '& .MuiChip-icon': { color: 'inherit' },
   },
   props: (props: ChipVariantProps) => isBadgeVariant(props) && props.ownerState.color === color.toLowerCase(),
 })
