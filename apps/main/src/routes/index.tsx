@@ -29,6 +29,7 @@ const integrationsRedirectRoute = createRoute({
 
 export const router = createRouter({
   scrollRestoration: true,
+  scrollRestorationBehavior: 'instant',
   defaultPendingComponent: Loading,
   defaultPendingMs: Duration.Transition,
   routeTree: rootRoute.addChildren([

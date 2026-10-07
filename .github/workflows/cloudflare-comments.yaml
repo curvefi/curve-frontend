@@ -2,9 +2,10 @@ name: Compact Cloudflare comments
 
 on:
   issue_comment:
-    types: [edited] # comments are created "In progress", then updated with deploy data
+    types: [created, edited]
 
 permissions:
+  contents: read
   pull-requests: write
 
 jobs:
@@ -19,68 +20,13 @@ jobs:
       group: cloudflare-comment-${{ github.event.comment.id }}
       cancel-in-progress: false
     steps:
-      # No checkout: this workflow only processes comment data, including for fork PRs.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: .github/scripts
       - uses: actions/github-script@v9
         with:
           script: |
-            const assert = require('node:assert/strict')
-            const commentParams = { ...context.repo, comment_id: context.payload.comment.id }
-            // Queued events may contain old build results, so always read the current comment.
-            const { data: comment } = await github.rest.issues.getComment(commentParams)
-            assert.equal(comment.user.login, 'cloudflare-workers-and-pages[bot]', 'Unexpected comment author')
-
-            const start = '<!-- compact-cloudflare:original -->\n'
-            const end = '\n<!-- /compact-cloudflare:original -->'
-            const startIndex = comment.body.indexOf(start)
-            const endIndex = comment.body.indexOf(end)
-            assert(
-              (startIndex === -1 && endIndex === -1) || (startIndex !== -1 && endIndex >= startIndex + start.length),
-              'Incomplete compact comment',
-            )
-            const original = startIndex === -1 ? comment.body : comment.body.slice(startIndex + start.length, endIndex)
-
-            // Keep Cloudflare's full source and markers intact: it may update sections in place.
-            assert(original.includes('<!-- Preview Deployments -->'), 'Missing Cloudflare preview deployments marker')
-            const row = original.match(/<tbody>\s*<tr>([\s\S]*?)<\/tr>/)?.[1]
-            assert(row, 'Missing Cloudflare deployment row')
-            const cells = [...row.matchAll(/<td(?:\s[^>]*)?>([\s\S]*?)<\/td>/g)].map((match) => match[1])
-            assert.equal(cells.length, 5, 'Unrecognized Cloudflare deployment table')
-
-            const text = (html) => html.replace(/<[^>]*>/g, '').trim()
-            const escapeCell = (value) => value.replace(/[\\`*_[\]<>|]/g, (character) => `&#${character.charCodeAt(0)};`)
-            const dashboardLink = (html) => html.match(/href="(https:\/\/dash\.cloudflare\.com\/[^"<>]+)"/)?.[1]?.replaceAll('&amp;', '&')
-            const dashboard = dashboardLink(cells[4])
-            const logs = dashboardLink(cells[0])
-            assert(dashboard, 'Missing Cloudflare dashboard link')
-            assert(logs, 'Missing Cloudflare logs link')
-            const project = dashboard?.match(/\/workers\/services\/view\/([^/]+)\//)?.[1]
-            const projects = ['curve-frontend', 'curve-frontend-stellar', 'curve-frontend-storybook']
-            const build = text(cells[0].match(/<b>Build:<\/b>([\s\S]*?)<\/li>/)?.[1] ?? '')
-            const deployment = text(cells[0].match(/<b>Deployment:<\/b>([\s\S]*?)<\/li>/)?.[1] ?? '')
-            const updated = text(cells[3])
-            assert(projects.includes(project), 'Unrecognized Cloudflare project')
-            assert(build, 'Missing Cloudflare build status')
-            assert(deployment, 'Missing Cloudflare deployment status')
-            assert(Number.isFinite(Date.parse(updated)), 'Invalid Cloudflare deployment timestamp')
-
-            // Use Cloudflare's stable Preview URL, never the immutable per-deployment URL.
-            const previewUrl = original.match(/^### Preview URL: (https:\/\/[a-z0-9.-]+\.workers\.dev)(?=\s|$)/m)?.[1]
-            assert(previewUrl, 'Missing Cloudflare stable preview URL')
-            const preview = `[Preview](<${previewUrl}>)`
-            const ready = /^Success\b/i.test(build) && /^Success\b/i.test(deployment)
-            const status = ready ? '✅ Ready' : `Build: ${escapeCell(build)} / Deployment: ${escapeCell(deployment)}`
-            const date = new Date(updated).toISOString()
-            const body = [
-              '| Project | Deployment | Preview | Updated |',
-              '| --- | --- | --- | --- |',
-              `| [${project}](<${dashboard}>) | [${status}](<${logs}>) | ${preview} | <relative-time datetime="${date}">${date}</relative-time> |`,
-              '',
-              '<details>',
-              '<summary>Deployment history</summary>',
-              '',
-              start + original + end,
-              '</details>',
-            ].join('\n')
-
-            if (body === comment.body) return
-            await github.rest.issues.updateComment({ ...commentParams, body })
+            const compact = require('./.github/scripts/compact-cloudflare-comment.cjs')
+            await compact({ github, context, core })

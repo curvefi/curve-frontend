@@ -61,7 +61,7 @@ export const Page = () => {
   })
 
   const error = marketError ?? apiMarket.error
-  return error ? (
+  return error && !(market ?? apiMarket.data) ? (
     <ErrorPage
       title={t`Error`}
       subtitle={error.message}
