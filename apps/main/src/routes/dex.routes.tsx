@@ -5,6 +5,10 @@ import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 
 const DexLayout = lazyRouteComponent(() => import('@/dex/DexLayout'), 'DexLayout')
+const PageBalancerMigration = lazyRouteComponent(
+  () => import('@/dex/features/balancer-migration'),
+  'PageBalancerMigration',
+)
 const PageCompensation = lazyRouteComponent(() => import('@/dex/components/PageCompensation/Page'), 'PageCompensation')
 const PageCreatePool = lazyRouteComponent(() => import('@/dex/components/PageCreatePool/Page'), 'PageCreatePool')
 const PageDeployGauge = lazyRouteComponent(() => import('@/dex/components/PageDeployGauge/Page'), 'PageDeployGauge')
@@ -25,6 +29,12 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({ path: '/integrations', loader: () => redirectTo('/dex/ethereum/integrations/'), ...layoutProps }),
+  createRoute({
+    path: '$network/migrate-balancer',
+    component: PageBalancerMigration,
+    head: () => ({ meta: [{ title: 'Migrate from Balancer - Curve' }] }),
+    ...layoutProps,
+  }),
   createRoute({
     path: '$network/compensation',
     component: PageCompensation,

@@ -3,6 +3,7 @@
 import { httpServerHandler } from 'cloudflare:node'
 import { createMerklServer } from 'merkl-api/src/server'
 import { createRouterApiServer } from 'router-api/src/server'
+import { proxyEnso } from './_enso-proxy'
 
 function prepareApi(create: typeof createRouterApiServer, name: string) {
   const api = create({
@@ -26,13 +27,16 @@ const merklApi = prepareApi(createMerklServer, 'merkl')
 export default {
   fetch: async (
     request: Request,
-    { ASSETS }: { ASSETS: { fetch(request: Request): Promise<Response> } },
+    { ASSETS, ENSO_API_KEY }: { ASSETS: { fetch(request: Request): Promise<Response> }; ENSO_API_KEY?: string },
   ): Promise<Response> => {
-    const { pathname } = new URL(request.url)
+    const url = new URL(request.url)
+    const { pathname } = url
     return pathname.startsWith('/api/merkl/')
       ? await merklApi(request)
-      : ['/api', '/health'].includes(pathname) || pathname.startsWith('/api/')
-        ? await routerApi(request)
-        : await ASSETS.fetch(request) // forward any non-API requests to the frontend
+      : pathname.startsWith('/api/enso/')
+        ? await proxyEnso(url, request.method, ENSO_API_KEY)
+        : ['/api', '/health'].includes(pathname) || pathname.startsWith('/api/')
+          ? await routerApi(request)
+          : await ASSETS.fetch(request) // forward any non-API requests to the frontend
   },
 }
