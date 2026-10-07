@@ -1,6 +1,5 @@
 import { noop } from 'lodash'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
-import { TokenList } from '@evm-ui/features/select-token'
 import Stack from '@mui/material/Stack'
 import { maybe } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
@@ -8,10 +7,7 @@ import { Form } from '@ui/features/forms/components/Form'
 import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { mapQuery, q } from '@ui/features/queries/util'
-import type { TokenOption } from '@ui/features/select-token/types'
-import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { useSwitch } from '@ui/hooks/useSwitch'
 import { decimal, fromWei } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { BalancerPosition } from '../api/balancer.api'
@@ -26,10 +22,10 @@ export type MigrationFormProps = {
   chainId: number
   blockchainId: string
   position: BalancerPosition
-  targets: CurveTarget[]
+  target: CurveTarget | undefined
 }
 
-export const MigrationForm = ({ chainId, blockchainId, position, targets }: MigrationFormProps) => {
+export const MigrationForm = ({ chainId, blockchainId, position, target }: MigrationFormProps) => {
   const {
     form,
     values,
@@ -45,16 +41,8 @@ export const MigrationForm = ({ chainId, blockchainId, position, targets }: Migr
     isDisabled,
     error,
     formErrors,
-  } = useMigrationForm({ chainId, position, targets })
-  const [isSelectorOpen, openSelector, closeSelector] = useSwitch()
-
-  const targetOptions = targets.map(({ pool }): TokenOption => ({
-    address: pool.lpTokenAddress,
-    symbol: pool.name,
-    chain: blockchainId,
-  }))
-  const target = targets.find(({ pool }) => pool.lpTokenAddress === values.targetLpToken)?.pool
-  const targetLpPriceUsd = maybe(target, getCurveLpPriceUsd)
+  } = useMigrationForm({ chainId, position, target })
+  const targetLpPriceUsd = maybe(target?.pool, getCurveLpPriceUsd)
   const expectedLp = mapQuery(route, ({ amountOut: [amountOut] }) => fromWei(amountOut, LP_DECIMALS))
   const amountError = formErrors.find(([field]) => field === 'amount')?.[1]
 
@@ -105,26 +93,17 @@ export const MigrationForm = ({ chainId, blockchainId, position, targets }: Migr
           inputBalanceUsd={decimal(targetLpPriceUsd && expectedLp.data && +expectedLp.data * targetLpPriceUsd)}
           disabled
           tokenSelector={
-            <TokenSelector
-              title={t`Select a Curve pool`}
-              selectedToken={targetOptions.find(({ address }) => address === values.targetLpToken)}
-              disabled={!targetOptions.length}
-              isOpen={!!isSelectorOpen}
-              onOpen={openSelector}
-              onClose={closeSelector}
-              testId="balancer-migration-target-selector"
-              compact
-            >
-              <TokenList
-                tokens={targetOptions}
-                onToken={({ address }) => form.update({ targetLpToken: address })}
-                disableMyTokens
-                disableSorting
+            target && (
+              <TokenLabel
+                blockchainId={blockchainId}
+                address={target.pool.lpTokenAddress}
+                label={target.pool.name}
+                tooltip={target.pool.name}
               />
-            </TokenSelector>
+            )
           }
         >
-          {!targetOptions.length && <HelperMessage message={t`No Curve pool holds these tokens yet.`} isError />}
+          {!target && <HelperMessage message={t`Select a Curve pool to migrate to.`} isError />}
         </LargeTokenInput>
       </Stack>
 

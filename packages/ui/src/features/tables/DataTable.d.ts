@@ -27,5 +27,8 @@ declare module '@tanstack/table-core' {
     facetedRowModelFactory?: (table: Table<TFeatures, TData>, columnId: string) => () => RowModel<TFeatures, TData>
     /** Resolve an optional navigation target for rows rendered by Curve DataTable. */
     getRowHref?: (data: TData) => string | Nullish
+    /** Makes rows selectable instead of navigable; takes precedence over `getRowHref` on click. */
+    onRowClick?: (data: TData) => void
+    isRowSelected?: (data: TData) => boolean
   }
 }

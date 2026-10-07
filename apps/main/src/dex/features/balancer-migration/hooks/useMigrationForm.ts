@@ -19,11 +19,11 @@ const userDefaultValues = { amount: undefined }
 export const useMigrationForm = ({
   chainId,
   position,
-  targets,
+  target,
 }: {
   chainId: number
   position: BalancerPosition
-  targets: CurveTarget[]
+  target: CurveTarget | undefined
 }) => {
   const { address: userAddress } = useConnection()
   const tokenIn = position.address
@@ -33,11 +33,11 @@ export const useMigrationForm = ({
     defaultValues: {
       ...userDefaultValues,
       maxAmount: undefined,
-      targetLpToken: targets[0]?.pool.lpTokenAddress,
+      targetLpToken: target?.pool.lpTokenAddress,
       slippage: SLIPPAGE.crypto.default,
     },
   })
-  useFormSync(form, { maxAmount: maxAmount.data })
+  useFormSync(form, { maxAmount: maxAmount.data, targetLpToken: target?.pool.lpTokenAddress })
   const values = form.watchValues()
 
   const [params, isDebouncing] = useFormDebounce(
