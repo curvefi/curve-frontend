@@ -20,7 +20,7 @@ type UserPositionsTableProps = { onReload: () => Promise<unknown>; tableQuery: Q
 const buildVaultUrl = (market: LlamaMarket) =>
   getInternalUrl(
     'lend',
-    market.chain,
+    market.blockchainId,
     `${LEND_ROUTES.PAGE_MARKETS}/${market.controllerAddress}${LEND_MARKET_ROUTES.PAGE_VAULT}`,
   )
 

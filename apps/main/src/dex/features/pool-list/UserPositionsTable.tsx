@@ -19,19 +19,26 @@ export const UserPositionsTable = ({
   const { address, isConnecting, isConnected } = useConnection()
   const { connect } = useWallet()
   const [variant, setVariant] = useState<UserPositionsTableVariant>('userPositions')
-  const userPositions = useUserPositionsTable({ network }, variant === 'userPositions')
-  const residualClaims = useResidualClaimsTable({ network }, variant === 'residualClaims')
 
   return (
     <UserPositionsTableUi
-      {...(variant === 'residualClaims' ? { variant, ...residualClaims } : { variant, ...userPositions })}
+      {...{
+        residualClaims: {
+          variant: 'residualClaims' as const,
+          ...useResidualClaimsTable({ network }, variant === 'residualClaims'),
+        },
+        userPositions: {
+          variant: 'userPositions' as const,
+          ...useUserPositionsTable({ network }, variant === 'userPositions'),
+        },
+      }[variant]}
       userAddress={address}
       isConnecting={isConnecting}
       isConnected={isConnected}
       connect={connect}
       onVariantChange={setVariant}
       addressDisplay={evmAddressDisplay}
-      crvToken={{ address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain }}
+      crvToken={MAINNET_CRV}
       Actions={Actions}
     />
   )

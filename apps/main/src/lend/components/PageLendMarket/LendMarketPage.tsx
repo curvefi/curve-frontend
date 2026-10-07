@@ -13,6 +13,7 @@ import { useIsInLiquidation } from '@/llamalend/features/market-position-details
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/llama.utils'
+import { useMarketCollateralRewardsEnabled } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
@@ -40,7 +41,7 @@ const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Borrow })
 
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId: chainId } = parseMarketParams(params)
+  const { rMarket, chainId } = parseMarketParams(params)
   const marketQuery = useLendMarket({ chainId, rMarket })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
   const { isInitialized } = useCurve()
@@ -52,6 +53,8 @@ export const LendMarketPage = () => {
   const network = networks[chainId]
   const queryParams = { chainId, marketId: market?.id, userAddress }
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
+  const { data: collateralRewardsEnabled } = useMarketCollateralRewardsEnabled({ chainId, marketId: market?.id })
+  const showCollateralClaim = collateralRewardsEnabled === true
 
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const isLoading = !isInitialized || isMarketLoading
@@ -77,7 +80,7 @@ export const LendMarketPage = () => {
   const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists)
 
   const error = marketError ?? apiMarket.error
-  return error ? (
+  return error && !(market ?? apiMarket.data) ? (
     <ErrorPage
       title={t`Error`}
       subtitle={error.message}
@@ -103,10 +106,11 @@ export const LendMarketPage = () => {
                 onPricesUpdated={setPreviewPrices}
                 collateralEvents={collateralEvents}
                 showReset={showReset}
+                showCollateralClaim={showCollateralClaim}
                 isLiquidation={!!isLiquidation}
               />
             ) : (
-              <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
+              <CreateLoanTabs onPricesUpdated={setPreviewPrices} showCollateralClaim={showCollateralClaim} />
             )),
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}

@@ -505,11 +505,13 @@ export function calculateReturnToWallet({
 }
 
 export const createGetBadDebtMarket = (badDebtMarkets: BadDebt | undefined) => {
-  const toKey = (chain: Chain, controllerAddress: Address) => `${chain}:${controllerAddress.toLowerCase()}`
+  const toKey = (blockchainId: Chain, controllerAddress: Address) =>
+    `${blockchainId}:${controllerAddress.toLowerCase()}`
   const badDebtByMarket = new Map(
     (badDebtMarkets ?? []).map(market => [toKey(market.chain, market.controllerAddress), market]),
   )
-  return (chain: Chain, controllerAddress: Address) => badDebtByMarket.get(toKey(chain, controllerAddress))?.badDebt
+  return (blockchainId: Chain, controllerAddress: Address) =>
+    badDebtByMarket.get(toKey(blockchainId, controllerAddress))?.badDebt
 }
 
 export const calculateMarketSolvency = ({

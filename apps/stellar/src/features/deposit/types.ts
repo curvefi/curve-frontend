@@ -2,11 +2,11 @@ import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { PoolQuery, UserParams, UserQuery } from '@/stellar/queries/query-types'
 import type { QuoteQuery } from '@/stellar/queries/validation/liquidity.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { PoolForm, PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
+import type { PoolDepositForm, PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
-export type DepositForm = PoolForm & { supply: Decimal | undefined; slippage: Decimal }
+export type DepositForm = PoolDepositForm & { supply: Decimal | undefined; slippage: Decimal }
 
 type CompleteDepositForm = DepositForm &
   PoolTokenFields & { maxAmounts: (Decimal | undefined)[] | undefined; tokenCount: number | undefined }

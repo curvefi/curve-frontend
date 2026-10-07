@@ -3,12 +3,12 @@ import { isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
-import { FormDeposit } from '@/dex/components/PagePool/Deposit/components/FormDeposit'
 import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
 import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
+import { LegacyFormDeposit } from '@/dex/components/PagePool/Deposit/components/LegacyFormDeposit'
 import { PoolAdvancedDetails } from '@/dex/components/PagePool/PoolAdvancedDetails'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, Seed, TransferTabsParams } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, Seed, TransferProps, TransferTabsParams } from '@/dex/components/PagePool/types'
 import {
   getDepositTabAlert,
   getSlippageType,
@@ -20,6 +20,7 @@ import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormU
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
+import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
@@ -32,6 +33,7 @@ import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { PoolPageHeader } from '@/dex/widgets/page-header/PoolPageHeader'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import type { Address } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -44,6 +46,9 @@ import { t } from '@ui/lib/i18n'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
+
+const FormDeposit = (props: TransferProps) =>
+  useNewPoolForms() ? <DepositTab {...props} /> : <LegacyFormDeposit {...props} />
 
 const menu = [
   {
@@ -200,7 +205,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         <CampaignRewardsBanner />
         <UserPosition />
         {!isLiteChain(chainId) && pricesApiPoolData && (
-          <OhlcAndActivityComp rChainId={chainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
+          <OhlcAndActivityComp chainId={chainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
         {!isLiteChain(chainId) && <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />}
         <PoolInformation poolAlert={poolAlert} pricesApiPoolData={pricesApiPoolData} />

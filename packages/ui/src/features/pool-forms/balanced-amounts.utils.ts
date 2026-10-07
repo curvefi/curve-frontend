@@ -4,10 +4,9 @@ import { decimalGreaterThan, decimalIntegerDiv, decimalMultiply, fromWei, toWei 
 
 /** Scale raw reserves by a ratio, rounding down to each token's precision. */
 export const scaleReserves = (reserves: Decimal[], decimals: number[], numerator: Decimal, denominator: Decimal) =>
-  zip(reserves, decimals).map(([reserve, decimals]) => {
-    const scaledReserve = decimalMultiply(reserve, numerator)
-    return fromWei(decimalIntegerDiv(scaledReserve, denominator), decimals)
-  })
+  zip(reserves, decimals).map(([reserve, decimals]) =>
+    fromWei(decimalIntegerDiv(decimalMultiply(reserve, numerator), denominator), decimals),
+  )
 
 /** Preserve the edited amount so that form validation still reports excess precision. */
 export const getBalancedAmounts = (

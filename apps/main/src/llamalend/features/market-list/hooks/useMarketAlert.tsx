@@ -6,11 +6,11 @@ import { MarketType } from '@evm-ui/types/market'
 import { Address } from '@primitives/address.utils'
 
 export const useMarketAlert = <ChainId extends IChainId>(
-  rChainId: ChainId,
+  chainId: ChainId,
   controllerAddress: Address | undefined,
   marketType: MarketType | undefined,
 ) =>
   useMemo(
-    () => controllerAddress && marketType && MARKETS_ALERTS[marketType][rChainId]?.[getAddress(controllerAddress)],
-    [rChainId, controllerAddress, marketType],
+    () => controllerAddress && marketType && MARKETS_ALERTS[marketType][chainId]?.[getAddress(controllerAddress)],
+    [chainId, controllerAddress, marketType],
   )
