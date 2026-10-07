@@ -89,7 +89,7 @@ export const UserPositionsTable = ({
       variant,
       alerts,
       addressDisplay: evmAddressDisplay,
-      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain },
+      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.blockchainId },
     }),
     getRowId: row => row.address,
     state: { expanded, columnVisibility },

@@ -57,7 +57,7 @@ export const CRVUSD = {
   address: CRVUSD_ADDRESS,
   decimals: 18,
   name: 'crvUSD',
-  chain: 'ethereum',
+  blockchainId: 'ethereum',
 } as const
 
 export const MAINNET_CRV = {
@@ -65,7 +65,7 @@ export const MAINNET_CRV = {
   address: MAINNET_CRV_ADDRESS,
   decimals: 18,
   name: 'CRV',
-  chain: 'ethereum',
+  blockchainId: 'ethereum',
 } as const
 
 export const evmAddressDisplay = { formatAddress: shortenAddress, scanAddressPath }

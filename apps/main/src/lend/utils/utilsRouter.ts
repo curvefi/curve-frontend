@@ -7,5 +7,5 @@ export const getCollateralListPathname = ({ network }: NetworkUrlParams) =>
 
 export const parseMarketParams = ({ market, network }: MarketUrlParams) => ({
   rMarket: market.toLowerCase(),
-  rChainId: networksIdMapper[network],
+  chainId: networksIdMapper[network],
 })

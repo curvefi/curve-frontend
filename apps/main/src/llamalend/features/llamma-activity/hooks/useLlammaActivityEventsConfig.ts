@@ -24,7 +24,7 @@ export const useLlammaActivityEventsConfig = ({
   const { eventsColumnVisibility } = useLlammaActivityVisibility()
   const { pagination, onPaginationChange, apiPage: page } = useManualPagination()
 
-  const eventsQuery = useLlammaEvents({ chain: blockchainId, llamma, endpoint, page, perPage: DEFAULT_PAGE_SIZE })
+  const eventsQuery = useLlammaEvents({ blockchainId, llamma, endpoint, page, perPage: DEFAULT_PAGE_SIZE })
 
   // Transform events data with block explorer URLs
   const query = combineQueries([eventsQuery, fakeLoadingQ(llamma)], ({ events }) =>

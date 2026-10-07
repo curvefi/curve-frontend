@@ -110,7 +110,7 @@ export const MarketSupplyRateTooltipContent = ({
           <TooltipItems secondary extraMargin>
             <TooltipItem
               title={t`Max veCRV Boost (2.5x)`}
-              titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
+              titleIcon={{ blockchainId: MAINNET_CRV.blockchainId, address: MAINNET_CRV.address, size: 'mui-sm' }}
               loading={isLoading}
               variant="independent"
             >

@@ -12,9 +12,13 @@ export const USER_MARKETS_DEFAULT_PER_PAGE = 100
 type GetUserMarketsParams = { page?: number; per_page?: number; include_closed?: boolean }
 
 /** Retrieve all markets for a specific chain, sorted by date of creation. */
-export async function getMarkets(chain: Chain, params: { page?: number; per_page?: number } = {}, options?: Options) {
+export async function getMarkets(
+  blockchainId: Chain,
+  params: { page?: number; per_page?: number } = {},
+  options?: Options,
+) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/crvusd/markets/${chain}${addQueryString(params)}`)
+  const response = await fetch(`${host}/v1/crvusd/markets/${blockchainId}${addQueryString(params)}`)
 
   return Schema.getMarketsResponse.parse(response)
 }
@@ -28,7 +32,7 @@ export async function getAllMarkets(params: { page?: number; per_page?: number }
 }
 
 export async function getSnapshots(
-  chain: Chain,
+  blockchainId: Chain,
   marketAddr: string,
   params: { agg?: string; fetch_on_chain?: boolean; limit?: number; start?: number; end?: number } = {
     fetch_on_chain: true,
@@ -38,29 +42,31 @@ export async function getSnapshots(
   options?: Options,
 ) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/crvusd/markets/${chain}/${marketAddr}/snapshots${addQueryString(params)}`)
+  const response = await fetch(
+    `${host}/v1/crvusd/markets/${blockchainId}/${marketAddr}/snapshots${addQueryString(params)}`,
+  )
 
   return Schema.getSnapshotsResponse.parse(response)
 }
 
-export async function getCrvUsdSupply(chain: Chain, days?: number, options?: Options) {
+export async function getCrvUsdSupply(blockchainId: Chain, days?: number, options?: Options) {
   const host = getHost(options)
   const range = getTimeRange({ daysRange: days })
-  const response = await fetch(`${host}/v1/crvusd/markets/${chain}/supply${addQueryString(range)}`)
+  const response = await fetch(`${host}/v1/crvusd/markets/${blockchainId}/supply${addQueryString(range)}`)
 
   return Schema.getSupplyResponse.parse(response)
 }
 
-export async function getKeepers(chain: Chain, options?: Options) {
+export async function getKeepers(blockchainId: Chain, options?: Options) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/crvusd/pegkeepers/${chain}`)
+  const response = await fetch(`${host}/v1/crvusd/pegkeepers/${blockchainId}`)
 
   return Schema.getKeepersResponse.parse(response)
 }
 
 export async function getUserMarkets(
   userAddr: string,
-  chain: Chain,
+  blockchainId: Chain,
   {
     page = USER_MARKETS_FIRST_PAGE,
     per_page = USER_MARKETS_DEFAULT_PER_PAGE,
@@ -70,7 +76,7 @@ export async function getUserMarkets(
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/crvusd/users/${chain}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
+    `${host}/v1/crvusd/users/${blockchainId}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
   )
 
   return Schema.getUserMarketsResponse.parse(response)
@@ -87,22 +93,27 @@ export async function getAllUserMarkets(
   return Schema.getAllUserMarketsResponse.parse(response)
 }
 
-export async function getUserMarketStats(userAddr: string, chain: Chain, marketController: string, options?: Options) {
+export async function getUserMarketStats(
+  userAddr: string,
+  blockchainId: Chain,
+  marketController: string,
+  options?: Options,
+) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/crvusd/users/${chain}/${userAddr}/${marketController}/stats`)
+  const response = await fetch(`${host}/v1/crvusd/users/${blockchainId}/${userAddr}/${marketController}/stats`)
 
   return Schema.getUserMarketStatsResponse.parse(response)
 }
 
 export async function getUserMarketSnapshots(
   userAddr: string,
-  chain: Chain,
+  blockchainId: Chain,
   marketController: string,
   options?: Options,
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/crvusd/users/${chain}/${userAddr}/${marketController}/snapshots?page=1&per_page=100`,
+    `${host}/v1/crvusd/users/${blockchainId}/${userAddr}/${marketController}/snapshots?page=1&per_page=100`,
   )
 
   return Schema.getUserMarketSnapshotsResponse.parse(response)
@@ -110,22 +121,22 @@ export async function getUserMarketSnapshots(
 
 export async function getUserMarketCollateralEvents(
   userAddr: Address | '' = '',
-  chain: Chain,
+  blockchainId: Chain,
   marketController: string,
   txHash?: string,
   options?: Options,
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/crvusd/collateral_events/${chain}/${marketController}/${userAddr}${txHash ? `?new_hash=${txHash}` : ''}`,
+    `${host}/v1/crvusd/collateral_events/${blockchainId}/${marketController}/${userAddr}${txHash ? `?new_hash=${txHash}` : ''}`,
   )
 
   return Schema.getUserCollateralEventsResponse.parse(response)
 }
 
-export async function getCrvUsdTvl(chain: Chain, options?: Options) {
+export async function getCrvUsdTvl(blockchainId: Chain, options?: Options) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/crvusd/markets/${chain}/tvl`)
+  const response = await fetch(`${host}/v1/crvusd/markets/${blockchainId}/tvl`)
 
   return Schema.getCrvUsdTvlResponse.parse(response)
 }

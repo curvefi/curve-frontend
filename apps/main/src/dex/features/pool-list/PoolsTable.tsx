@@ -99,7 +99,7 @@ export const PoolsTable = ({
       variant,
       alerts,
       addressDisplay: evmAddressDisplay,
-      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain },
+      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.blockchainId },
     }),
     state: { expanded, sorting, columnVisibility, globalFilter, ...(!isLite && { pagination, columnFilters }) },
     getRowId: row => row.address,

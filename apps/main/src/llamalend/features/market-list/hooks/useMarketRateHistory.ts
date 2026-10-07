@@ -33,7 +33,7 @@ export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>
   { type, category }: { type: MarketRateType; category: AverageCategory },
   enabled: boolean,
 ): UseRateHistoryResult<T> {
-  const { chain, controllerAddress, type: marketType, rates } = market ?? {}
+  const { blockchainId: chain, controllerAddress, type: marketType, rates } = market ?? {}
   const isLend = marketType == MarketType.Lend
   const showLendGraph = isLend && enabled
   const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled

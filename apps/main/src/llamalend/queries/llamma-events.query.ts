@@ -10,18 +10,18 @@ import { type FieldsOf } from '@ui/lib/validation/types'
 type LlammaEventsParams = FieldsOf<GetEventsParams>
 
 export const { useQuery: useLlammaEvents } = queryFactory({
-  queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaEventsParams) =>
-    ({ name: 'llamma-events', chain, llamma, endpoint, page, perPage }) as const,
+  queryKey: ({ blockchainId, llamma, endpoint, page, perPage }: LlammaEventsParams) =>
+    ({ name: 'llamma-events', blockchainId, llamma, endpoint, page, perPage }) as const,
   queryFn: async ({
-    chain,
+    blockchainId,
     llamma,
     endpoint,
     page = DEFAULT_PAGE_START_INDEX,
     perPage = DEFAULT_PAGE_SIZE,
-  }: GetEventsParams) => getEvents({ endpoint, chain, llamma, page, perPage }),
+  }: GetEventsParams) => getEvents({ endpoint, blockchainId, llamma, page, perPage }),
   category: 'llamalend.user',
-  validationSuite: createValidationSuite(({ chain, llamma, endpoint }: LlammaEventsParams) => {
-    contractValidationGroup({ blockchainId: chain, contractAddress: llamma })
+  validationSuite: createValidationSuite(({ blockchainId, llamma, endpoint }: LlammaEventsParams) => {
+    contractValidationGroup({ blockchainId, contractAddress: llamma })
     test('endpoint', 'Invalid endpoint', () => {
       enforce(endpoint).isNotEmpty().inside(['crvusd', 'lending'])
     })

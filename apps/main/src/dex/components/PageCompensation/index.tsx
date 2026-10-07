@@ -11,12 +11,12 @@ import { Decimal } from '@primitives/decimal.utils'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 
 export const FormCompensation = ({
-  rChainId,
+  chainId,
   curve,
   contracts,
   provider,
 }: {
-  rChainId: ChainId
+  chainId: ChainId
   curve: CurveApi | null
   contracts: EtherContract[]
   provider: Provider
@@ -113,7 +113,7 @@ export const FormCompensation = ({
       {Object.entries(groupedContracts).map(([poolId, contracts]) => (
         <Box key={poolId}>
           <Compensations
-            rChainId={rChainId}
+            chainId={chainId}
             curve={curve}
             poolId={poolId}
             contracts={contracts}

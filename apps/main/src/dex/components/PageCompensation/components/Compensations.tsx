@@ -10,7 +10,7 @@ export const Compensations = ({
   vestedTotals,
   ...rest
 }: {
-  rChainId: ChainId
+  chainId: ChainId
   curve: CurveApi | null
   poolId: string
   contracts: EtherContract[]
