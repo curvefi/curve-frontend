@@ -7,11 +7,12 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { notFalsy } from '@primitives/objects.utils'
+import { claimablesTotalUsd, poolToRowData } from '@ui/features/pool-list/utils'
 import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { claimablesTotalUsd, enrichPoolRow, getPoolListAlerts, poolToRowData } from '../utils'
+import { enrichPoolRow, getPoolListAlerts } from '../utils'
 
 const getPoolUserPosition = (
   position: UserPoolPosition['positions'][number],

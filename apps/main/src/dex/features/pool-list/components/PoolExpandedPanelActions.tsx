@@ -1,11 +1,11 @@
 import { getAddress } from 'viem'
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
+import type { PoolRow } from '@ui/features/pool-list/types'
 import { ExpandedPanelActions } from '@ui/features/tables/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { copyToClipboardWithToast } from '@ui/hooks/useCopyToClipboard'
 import { t } from '@ui/lib/i18n'
-import type { PoolRow } from '../types'
 
 export const PoolExpandedPanelActions: ExpandedPanelComponent<PoolRow> = ({ row }) => {
   const pool = row.original
