@@ -27,7 +27,7 @@ export const MarketTitleCell = ({
     <Stack direction="row" sx={{ height: Height.row }}>
       {market.userHasPositions && <UserMarketPositionIndicator market={market} />}
       <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
-        <TokenIcons blockchainId={market.chain} tokens={[collateral, borrowed]} />
+        <TokenIcons blockchainId={market.blockchainId} tokens={[collateral, borrowed]} />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <TableRowTitle

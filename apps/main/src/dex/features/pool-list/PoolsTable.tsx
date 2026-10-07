@@ -5,6 +5,17 @@ import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { evmAddressDisplay, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
+import { POOL_COLUMNS, PoolColumnId } from '@ui/features/pool-list/columns'
+import { PoolExpandedPanel } from '@ui/features/pool-list/components/PoolExpandedPanel'
+import { PoolsFilters } from '@ui/features/pool-list/filters/PoolsFilters'
+import { PoolsFiltersCollapsible } from '@ui/features/pool-list/filters/PoolsFiltersCollapsible'
+import { usePoolsFilters } from '@ui/features/pool-list/hooks/usePoolsFilters'
+import { usePoolsGlobalFilterFn } from '@ui/features/pool-list/hooks/usePoolsGlobalFilter'
+import { usePoolsPagination } from '@ui/features/pool-list/hooks/usePoolsPagination'
+import { usePoolsSorting } from '@ui/features/pool-list/hooks/usePoolsSorting'
+import { usePoolsVisibility } from '@ui/features/pool-list/hooks/usePoolsVisibility'
+import { getPoolTableMeta, createPoolTableMeta } from '@ui/features/pool-list/table-meta'
+import type { PoolRow } from '@ui/features/pool-list/types'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { TableFilters } from '@ui/features/tables/TableFilters'
@@ -17,18 +28,7 @@ import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
-import { POOL_COLUMNS, PoolColumnId } from './columns'
-import { PoolExpandedPanel } from './components/PoolExpandedPanel'
-import { PoolsFilters } from './filters/PoolsFilters'
-import { PoolsFiltersCollapsible } from './filters/PoolsFiltersCollapsible'
-import { usePoolsFilters } from './hooks/usePoolsFilters'
-import { usePoolsGlobalFilterFn } from './hooks/usePoolsGlobalFilter'
-import { usePoolsPagination } from './hooks/usePoolsPagination'
-import { usePoolsSorting } from './hooks/usePoolsSorting'
 import { usePoolsTable } from './hooks/usePoolsTable'
-import { usePoolsVisibility } from './hooks/usePoolsVisibility'
-import { getPoolTableMeta, createPoolTableMeta } from './table-meta'
-import type { PoolRow } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const EMPTY_POOL_ROWS: readonly PoolRow[] = []
@@ -99,7 +99,7 @@ export const PoolsTable = ({
       variant,
       alerts,
       addressDisplay: evmAddressDisplay,
-      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain },
+      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.blockchainId },
     }),
     state: { expanded, sorting, columnVisibility, globalFilter, ...(!isLite && { pagination, columnFilters }) },
     getRowId: row => row.address,

@@ -70,11 +70,11 @@ const OhlcTabsContent = ({ children }: { children: ReactNode }) => (
 )
 
 export const OhlcAndActivityComp = ({
-  rChainId: chainId,
+  chainId,
   poolAddress,
   pricesApiPoolData,
 }: {
-  rChainId: ChainId
+  chainId: ChainId
   poolAddress: Address
   pricesApiPoolData: Pool
 }) => {

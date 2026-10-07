@@ -39,7 +39,7 @@ export const SupplyClaimTab = <ChainId extends IChainId>({ networks }: SupplyCla
     table,
     onSubmitCrv,
     onSubmitRewards,
-    errors,
+    error,
   } = useSupplyClaimTab({ network })
   return (
     <FormContent footer={<ClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}>
@@ -88,7 +88,7 @@ export const SupplyClaimTab = <ChainId extends IChainId>({ networks }: SupplyCla
         <ConnectEvmWalletButton />
       )}
 
-      <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} userAddress={userAddress} />
+      <FormAlerts error={error} formErrors={[]} handledErrors={[]} userAddress={userAddress} />
     </FormContent>
   )
 }

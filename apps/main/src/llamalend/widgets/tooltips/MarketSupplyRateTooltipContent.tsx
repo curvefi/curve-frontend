@@ -1,4 +1,3 @@
-import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
@@ -10,6 +9,7 @@ import {
   TooltipItems,
   TooltipWrapper,
 } from '@ui/components/TooltipComponents'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { t } from '@ui/lib/i18n'
 import { COMPOUNDING_CATEGORIES, formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
@@ -110,7 +110,7 @@ export const MarketSupplyRateTooltipContent = ({
           <TooltipItems secondary extraMargin>
             <TooltipItem
               title={t`Max veCRV Boost (2.5x)`}
-              titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
+              titleIcon={{ blockchainId: MAINNET_CRV.blockchainId, address: MAINNET_CRV.address, size: 'mui-sm' }}
               loading={isLoading}
               variant="independent"
             >

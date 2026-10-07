@@ -24,7 +24,7 @@ type HistoricalSelection = { oraclePool: boolean; llamma: boolean }
 
 type UseLlammaOhlcChartDataParams = {
   anchorEnd: number
-  chain: Chain | undefined
+  blockchainId: Chain | undefined
   controller: Address | undefined
   enabled?: boolean
   endpoint: Endpoint
@@ -45,7 +45,7 @@ const selectOraclePoolChartData = (pages: OraclePoolOhlcPage[] | undefined) => (
 
 export const useLlammaOhlcChartData = ({
   anchorEnd,
-  chain,
+  blockchainId,
   controller,
   enabled = true,
   endpoint,
@@ -57,7 +57,7 @@ export const useLlammaOhlcChartData = ({
 }: UseLlammaOhlcChartDataParams) => {
   const oraclePoolQuery = useOraclePoolOhlcQuery({
     endpoint,
-    chain,
+    blockchainId,
     controller,
     interval,
     timeOption,
@@ -72,7 +72,7 @@ export const useLlammaOhlcChartData = ({
   const shouldFetchLlammaQuery = enabled && !!llamma && oraclePoolIsSettled && !oraclePoolsHaveOraclePriceData
   const llammaQuery = useLlammaOhlcQuery({
     endpoint,
-    chain,
+    blockchainId,
     llamma,
     interval,
     timeOption,

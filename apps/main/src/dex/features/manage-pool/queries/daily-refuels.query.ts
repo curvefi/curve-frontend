@@ -14,7 +14,7 @@ export const { useQuery: useRefuelDailyRefuels } = queryFactory({
   queryKey: ({ blockchainId, poolAddress, start, end }: RefuelDailyDonationsParams) =>
     ({ name: 'getRefuelDailyDonations', blockchainId, poolAddress, start, end }) as const,
   queryFn: async ({ blockchainId, poolAddress, start, end }: RefuelDailyDonationsQuery) =>
-    getRefuelDailyDonations({ chain: blockchainId, poolAddress, start, end }),
+    getRefuelDailyDonations({ blockchainId, poolAddress, start, end }),
   validationSuite: createValidationSuite(({ blockchainId, poolAddress }: RefuelDailyDonationsParams) => {
     contractValidationGroup({ blockchainId, contractAddress: poolAddress })
   }),

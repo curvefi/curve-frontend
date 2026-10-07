@@ -1,15 +1,15 @@
-import { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import { TooltipItem, TooltipValueLink } from '@ui/components/TooltipComponents'
+import type { RewardsAction } from '@ui/features/campaigns/external-campaign.types'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { MerklIcon } from '@ui/icons/MerklIcon'
 import { t } from '@ui/lib/i18n'
 import { aprToApy } from '@ui/lib/rates.utils'
-import type { RewardsAction } from '@external-rewards'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

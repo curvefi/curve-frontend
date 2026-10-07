@@ -1,5 +1,5 @@
-import { PoolColumnId } from '@/dex/features/pool-list/columns'
 import { API_LOAD_TIMEOUT } from '@cy/support/ui'
+import { PoolColumnId } from '@ui/features/pool-list/columns'
 import { V2_POOL_FIXTURES } from './dex-pool-list-v2-mocks'
 
 export const DESKTOP_VIEWPORT = [1200, 800] as const

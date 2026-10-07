@@ -30,7 +30,7 @@ const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId: chainId } = parseMarketParams(params)
+  const { rMarket, chainId } = parseMarketParams(params)
   const { isInitialized } = useCurve()
   const marketQuery = useLendMarket({ chainId, rMarket })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -61,7 +61,7 @@ export const Page = () => {
   })
 
   const error = marketError ?? apiMarket.error
-  return error ? (
+  return error && !(market ?? apiMarket.data) ? (
     <ErrorPage
       title={t`Error`}
       subtitle={error.message}

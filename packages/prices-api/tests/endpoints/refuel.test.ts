@@ -18,7 +18,7 @@ runEndpointCases('refuel', [
     refuel.getRefuelDonationLeaderboard({ ...refuelPoolSeed(), ...nowRange() }, requestOptions),
   ),
   endpointCase('getRefuelChains', () => refuel.getRefuelChains(requestOptions)),
-  endpointCase('getRefuelPools', () => refuel.getRefuelPools(refuelPoolSeed().chain, requestOptions)),
+  endpointCase('getRefuelPools', () => refuel.getRefuelPools(refuelPoolSeed().blockchainId, requestOptions)),
   endpointCase('getRefuelDailyDonations', () =>
     refuel.getRefuelDailyDonations({ ...refuelPoolSeed(), ...nowRange() }, requestOptions),
   ),

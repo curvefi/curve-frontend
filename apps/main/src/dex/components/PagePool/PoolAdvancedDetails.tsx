@@ -46,10 +46,10 @@ export const PoolAdvancedDetails = () => {
     tokenAddresses,
   } = usePoolContext()
   const basePools = useBasePools({ chainId })
-  const metadata = usePoolMetadata({ chain: blockchainId as BlockchainId, poolAddress })
+  const metadata = usePoolMetadata({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const parameters = usePoolParameters({ chainId, poolId })
   const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
-  const snapshots = usePoolSnapshots({ chain: blockchainId as BlockchainId, poolAddress })
+  const snapshots = usePoolSnapshots({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const {
     priceOracle: priceOracleApi,
     priceScale: priceScaleApi,

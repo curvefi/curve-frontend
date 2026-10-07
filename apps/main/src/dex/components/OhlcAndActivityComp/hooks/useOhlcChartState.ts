@@ -31,7 +31,7 @@ export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartSt
   )
   const chartQuery = useDexOhlcQuery({
     anchorEnd,
-    chain: getPricesApiBlockchainId(networkData.blockchainId),
+    blockchainId: getPricesApiBlockchainId(networkData.blockchainId),
     chartSelection: selectedChart,
     interval: chartInterval,
     poolAddress: pricesApiPoolData.address,

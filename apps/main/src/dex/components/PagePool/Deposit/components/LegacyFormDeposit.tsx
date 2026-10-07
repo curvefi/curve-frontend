@@ -1,0 +1,306 @@
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useConfig } from 'wagmi'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { AlertSlippage } from '@/dex/components/AlertSlippage'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoEstLpTokens } from '@/dex/components/PagePool/components/DetailInfoEstLpTokens'
+import { DetailInfoSlippage } from '@/dex/components/PagePool/components/DetailInfoSlippage'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
+import { WarningModal as HighSlippagePriceImpactModal } from '@/dex/components/PagePool/components/WarningModal'
+import { FieldsDeposit } from '@/dex/components/PagePool/Deposit/components/FieldsDeposit'
+import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@/dex/components/PagePool/Deposit/types'
+import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/dex/components/PagePool/Deposit/utils'
+import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
+import {
+  amountsDescription,
+  DEFAULT_ESTIMATED_GAS,
+  DEFAULT_SLIPPAGE,
+  getSlippageType,
+  tokensDescription,
+} from '@/dex/components/PagePool/utils'
+import { useNetworks } from '@/dex/entities/networks'
+import { usePoolContext } from '@/dex/features/pool-context'
+import { useStore } from '@/dex/store/useStore'
+import { CurveApi } from '@/dex/types/main.types'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import { AlertBox } from '@legacy-ui/AlertBox'
+import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
+import { Stepper } from '@legacy-ui/Stepper/Stepper'
+import type { Step } from '@legacy-ui/Stepper/types'
+import { TxInfoBar } from '@legacy-ui/TxInfoBar'
+import { scanTxPath } from '@legacy-ui/utils'
+import { FormContent } from '@ui/features/forms/components/FormContent'
+import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
+import { notify } from '@ui/features/toast/Toast/notify'
+import { t } from '@ui/lib/i18n'
+
+export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => {
+  const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
+  const isSubscribedRef = useRef(false)
+
+  const activeKey = useStore(state => state.poolDeposit.activeKey)
+  const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
+  const formLpTokenExpected = useStore(
+    state => state.poolDeposit.formLpTokenExpected[activeKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED,
+  )
+  const formStatus = useStore(state => state.poolDeposit.formStatus)
+  const formValues = useStore(state => state.poolDeposit.formValues)
+  const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
+  const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
+  const fetchStepDeposit = useStore(state => state.poolDeposit.fetchStepDeposit)
+  const setFormValues = useStore(state => state.poolDeposit.setFormValues)
+  const resetState = useStore(state => state.poolDeposit.resetState)
+  const { data: networks } = useNetworks()
+  const network = networks[chainId] || null
+
+  const [slippageConfirmed, setSlippageConfirmed] = useState(false)
+  const [steps, setSteps] = useState<Step[]>([])
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
+
+  const haveSigner = !!signerAddress
+
+  const config = useConfig()
+
+  const updateFormValues = useCallback(
+    (
+      updatedFormValues: Partial<FormValues>,
+      loadMaxAmount: LoadMaxAmount | null,
+      updatedMaxSlippage: string | null,
+    ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+      setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+      setSlippageConfirmed(false)
+      void setFormValues(
+        'DEPOSIT',
+        config,
+        curve,
+        pool?.id,
+        pool,
+        { isWrapped, ...updatedFormValues },
+        loadMaxAmount,
+        seed.isSeed,
+        updatedMaxSlippage || maxSlippage,
+      )
+    },
+    [config, curve, isWrapped, maxSlippage, pool, seed.isSeed, setFormValues],
+  )
+
+  const handleApproveClick = useCallback(
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => {
+      const notifyMessage = t`Please approve spending your ${tokensDescription(formValues.amounts)}.`
+      const { dismiss } = notify(notifyMessage, 'pending')
+      await fetchStepApprove(activeKey, curve, 'DEPOSIT', pool, formValues, maxSlippage)
+      if (typeof dismiss === 'function') dismiss()
+    },
+    [fetchStepApprove],
+  )
+
+  const handleDepositClick = useCallback(
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => {
+      const tokenText = amountsDescription(formValues.amounts)
+      const notifyMessage = t`Please confirm deposit of ${tokenText} at max ${maxSlippage}% slippage.`
+      const { dismiss } = notify(notifyMessage, 'pending')
+      const resp = await fetchStepDeposit(activeKey, curve, pool, formValues, maxSlippage)
+
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
+        const txDescription = t`Deposited ${tokenText}.`
+        setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+      }
+      if (typeof dismiss === 'function') dismiss()
+    },
+    [fetchStepDeposit, chainId],
+  )
+
+  const getSteps = useCallback(
+    (
+      activeKey: string,
+      curve: CurveApi,
+      pool: PoolTemplate,
+      formValues: FormValues,
+      formStatus: FormStatus,
+      slippageConfirmed: boolean,
+      slippage: Slippage,
+      steps: Step[],
+      maxSlippage: string,
+    ) => {
+      const haveFormValues = formValues.amounts.some(a => Number(a.value) > 0)
+      const isValid = haveFormValues && !formStatus.error
+      const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
+      const isComplete = formStatus.formTypeCompleted === 'DEPOSIT'
+
+      const stepsObj: Record<string, Step> = {
+        APPROVAL: {
+          key: 'APPROVAL',
+          status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
+          type: 'action',
+          content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          onClick: () => void handleApproveClick(activeKey, curve, pool, formValues, maxSlippage),
+        },
+        ['DEPOSIT']: {
+          key: 'DEPOSIT',
+          status: getStepStatus(isComplete, formStatus.step === 'DEPOSIT', isValid && formStatus.isApproved),
+          type: 'action',
+          content: isComplete ? t`Deposit Complete` : t`Deposit`,
+          ...(slippage.isHighSlippage
+            ? {
+                modal: {
+                  title: t`Warning!`,
+                  content: (
+                    <HighSlippagePriceImpactModal
+                      slippage
+                      confirmed={slippageConfirmed}
+                      value={slippage.slippage || 0}
+                      transferType="Deposit"
+                      setConfirmed={setSlippageConfirmed}
+                    />
+                  ),
+                  isDismissable: false,
+                  cancelBtnProps: {
+                    label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+                    onClick: () => setSlippageConfirmed(false),
+                  },
+                  primaryBtnProps: {
+                    onClick: () => void handleDepositClick(activeKey, curve, pool, formValues, maxSlippage),
+                    disabled: !slippageConfirmed,
+                  },
+                  primaryBtnLabel: 'Deposit anyway',
+                },
+              }
+            : { onClick: () => void handleDepositClick(activeKey, curve, pool, formValues, maxSlippage) }),
+        },
+      }
+
+      let stepsKey: StepKey[]
+
+      if (formStatus.formProcessing || formStatus.formTypeCompleted) {
+        stepsKey = steps.map(s => s.key as StepKey)
+      } else {
+        stepsKey = formStatus.isApproved ? ['DEPOSIT'] : ['APPROVAL', 'DEPOSIT']
+      }
+
+      return stepsKey.map(key => stepsObj[key])
+    },
+    [handleApproveClick, handleDepositClick],
+  )
+
+  // onMount
+  useEffect(() => {
+    isSubscribedRef.current = true
+
+    return () => {
+      isSubscribedRef.current = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (poolId) {
+      resetState(pool, isWrapped)
+    }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+  }, [poolId])
+
+  // curve state change
+  useEffect(() => {
+    if (chainId && poolId) {
+      updateFormValues({}, null, null)
+    }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+  }, [chainId, poolId, signerAddress, seed.isSeed])
+
+  // max Slippage
+  useEffect(() => {
+    if (maxSlippage) {
+      updateFormValues({}, null, maxSlippage)
+    }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+  }, [maxSlippage])
+
+  // steps
+  useEffect(() => {
+    if (curve && pool) {
+      const updatedSteps = getSteps(
+        activeKey,
+        curve,
+        pool,
+        formValues,
+        formStatus,
+        slippageConfirmed,
+        slippage,
+        steps,
+        maxSlippage,
+      )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+      setSteps(updatedSteps)
+    }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+  }, [
+    curve?.chainId,
+    pool?.id,
+    signerAddress,
+    formValues,
+    formStatus,
+    slippage.isHighSlippage,
+    slippageConfirmed,
+    maxSlippage,
+  ])
+
+  const activeStep = haveSigner ? getActiveStep(steps) : null
+  const disableForm = !seed.loaded || formStatus.formProcessing
+
+  const estLpTokenReceivedUsdAmount = useMemo(() => {
+    if (formLpTokenExpected.expected && formLpTokenExpected.virtualPrice) {
+      const usdAmount = Number(formLpTokenExpected.expected) * Number(formLpTokenExpected.virtualPrice)
+      return usdAmount.toString()
+    }
+    return ''
+  }, [formLpTokenExpected.expected, formLpTokenExpected.virtualPrice])
+
+  return (
+    <FormContent>
+      <FieldsDeposit
+        chainId={chainId}
+        formProcessing={disableForm}
+        formValues={formValues}
+        haveSigner={haveSigner}
+        blockchainId={network?.blockchainId ?? ''}
+        isSeed={seed.isSeed}
+        updateFormValues={updateFormValues}
+      />
+
+      <div>
+        <DetailInfoEstLpTokens formLpTokenExpected={formLpTokenExpected} maxSlippage={maxSlippage} pool={pool} />
+
+        <DetailInfoSlippage {...slippage} />
+
+        {haveSigner && (
+          <DetailInfoEstGas
+            isDivider
+            chainId={chainId}
+            {...formEstGas}
+            stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
+          />
+        )}
+        <SlippageToleranceActionInfo
+          maxSlippage={maxSlippage}
+          type={getSlippageType(pool)}
+          userAddress={signerAddress}
+        />
+      </div>
+
+      {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
+        <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+      )}
+
+      <TransferActions loading={!chainId || !steps.length} seed={seed}>
+        <AlertSlippage maxSlippage={maxSlippage} usdAmount={estLpTokenReceivedUsdAmount} />
+        {formStatus.error && (
+          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, null, null)} />
+        )}
+        {txInfoBar}
+        <Stepper steps={steps} />
+      </TransferActions>
+    </FormContent>
+  )
+}

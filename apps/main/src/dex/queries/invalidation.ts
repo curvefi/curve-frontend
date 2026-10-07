@@ -3,6 +3,7 @@ import { getCampaignsPoolsMerklQueryKey } from '@evm-ui/queries/campaigns/campai
 import type { PoolParams, UserChainParams, UserPoolParams } from '@evm-ui/queries/query-types'
 import { getLitePoolListQueryKey } from '@ui/features/pool-list/lite-pool-list.query'
 import { queryClient } from '@ui/features/queries/query-client'
+import { getPoolAddressesQueryKey } from './pool-addresses.query'
 import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'
 import { invalidatePoolGaugeStatus } from './pool-gauge-status.query'
 import { invalidatePoolIsGaugeKilled } from './pool-is-gauge-killed.query'
@@ -43,6 +44,7 @@ export const resetPoolLists = ({ chainId, userAddress }: UserChainParams) =>
   Promise.all(
     [
       getPoolListRootQueryKey({ chainId }),
+      getPoolAddressesQueryKey({ chainId }),
       getLitePoolListQueryKey({ chainId }),
       getPoolChainsQueryKey({}),
       getLitePoolChainsQueryKey({}),
