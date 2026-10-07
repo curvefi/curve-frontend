@@ -44,17 +44,14 @@ export const getMarketsColumnVariant = (
 export const useMarketsVisibility = (title: string, sorting: SortingState, variant: MarketColumnVariant) => {
   const isMobile = useIsMobile()
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as MarketColumnId
-  const { columnVisibility, ...settings } = useVisibilitySettings(title, MARKETS_COLUMN_OPTIONS, variant, migration)
+  const visibilitySettings = useVisibilitySettings(title, MARKETS_COLUMN_OPTIONS, variant, migration)
+  const columnVisibility = useMemo(
+    () => ({
+      ...(isMobile ? createMarketsMobileColumns(sortField) : visibilitySettings.columnVisibility),
+      ...Object.fromEntries(FILTER_ONLY_COLUMNS.map(id => [id, false])),
+    }),
+    [isMobile, sortField, visibilitySettings.columnVisibility],
+  )
 
-  return {
-    sortField,
-    ...settings,
-    columnVisibility: useMemo(
-      () => ({
-        ...(isMobile ? createMarketsMobileColumns(sortField) : columnVisibility),
-        ...Object.fromEntries(FILTER_ONLY_COLUMNS.map(id => [id, false])),
-      }),
-      [isMobile, sortField, columnVisibility],
-    ),
-  }
+  return { sortField, ...visibilitySettings, columnVisibility }
 }
