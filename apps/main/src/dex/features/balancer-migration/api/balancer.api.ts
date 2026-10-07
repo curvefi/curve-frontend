@@ -27,7 +27,8 @@ type BalancerPoolResponse = {
   symbol: string
   type: string
   protocolVersion: number
-  dynamicData: { totalLiquidity: string; totalShares: string }
+  /** `apr` is a fraction (0.05 = 5%). */
+  dynamicData: { totalLiquidity: string; totalShares: string; aprItems: { title: string; type: string; apr: number }[] }
   poolTokens: {
     address: Address
     symbol: string
@@ -51,7 +52,7 @@ const USER_POOLS_QUERY = `
 query UserPools($chain: GqlChain!, $userAddress: String!) {
   poolGetPools(where: { chainIn: [$chain], userAddress: $userAddress }, first: 100) {
     id address name symbol type protocolVersion
-    dynamicData { totalLiquidity totalShares }
+    dynamicData { totalLiquidity totalShares aprItems { title type apr } }
     poolTokens { address symbol decimals underlyingToken { address symbol } }
     userBalance {
       walletBalance walletBalanceUsd totalBalance totalBalanceUsd

@@ -1,22 +1,22 @@
 import { noop } from 'lodash'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
-import { TokenLabel } from '@ui/components/TokenLabel'
 import { Form } from '@ui/features/forms/components/Form'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
+import type { PoolRow } from '@ui/features/pool-list/types'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, fromWei } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { BalancerPosition } from '../api/balancer.api'
 import { useMigrationForm } from '../hooks/useMigrationForm'
-import { type CurveTarget, getCurveLpPriceUsd } from '../migration.utils'
+import { type CurveTarget, getBalancerIconTokens, getCurveLpPriceUsd } from '../migration.utils'
 import { LP_DECIMALS } from '../queries/migration-route.query'
 import { MigrationActionInfoList } from './MigrationActionInfoList'
+import { PoolTokensLabel } from './PoolTokensLabel'
 
 const { Spacing } = SizesAndSpaces
 
@@ -25,10 +25,13 @@ export type MigrationFormProps = {
   blockchainId: string
   position: BalancerPosition
   target: CurveTarget | undefined
-  gaugeAddress: Address | undefined
+  /** Pool-list row of the target, as shown in the Curve pools table. */
+  targetRow: PoolRow | undefined
 }
 
-export const MigrationForm = ({ chainId, blockchainId, position, target, gaugeAddress }: MigrationFormProps) => {
+export const MigrationForm = ({ chainId, blockchainId, position, target, targetRow }: MigrationFormProps) => {
+  const gauge = targetRow?.gauge
+  const gaugeAddress = gauge?.isKilled ? undefined : gauge?.address
   const {
     form,
     values,
@@ -74,11 +77,10 @@ export const MigrationForm = ({ chainId, blockchainId, position, target, gaugeAd
           maxBalance={{ balance: maxAmount, chips: 'range' }}
           inputBalanceUsd={decimal(lpPriceUsd && +(values.amount ?? 0) * lpPriceUsd)}
           tokenSelector={
-            <TokenLabel
+            <PoolTokensLabel
               blockchainId={blockchainId}
-              address={position.address}
-              label={position.symbol}
-              tooltip={position.name}
+              tokens={getBalancerIconTokens(position)}
+              label={position.name}
             />
           }
         >
@@ -96,13 +98,8 @@ export const MigrationForm = ({ chainId, blockchainId, position, target, gaugeAd
           inputBalanceUsd={decimal(targetLpPriceUsd && expectedLp.data && +expectedLp.data * targetLpPriceUsd)}
           disabled
           tokenSelector={
-            target && (
-              <TokenLabel
-                blockchainId={blockchainId}
-                address={target.pool.lpTokenAddress}
-                label={target.pool.name}
-                tooltip={target.pool.name}
-              />
+            targetRow && (
+              <PoolTokensLabel blockchainId={blockchainId} tokens={targetRow.tradeableCoins} label={targetRow.name} />
             )
           }
         >

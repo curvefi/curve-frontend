@@ -1,13 +1,18 @@
+import { sumBy } from 'lodash'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { Badge } from '@ui/components/Badge'
 import { TokenInfo } from '@ui/components/TokenInfo'
+import { Tooltip } from '@ui/components/Tooltip'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import type { QueryProp } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { TableHeader } from '@ui/features/tables/TableHeader'
 import { t } from '@ui/lib/i18n'
 import type { BalancerPosition } from '../api/balancer.api'
+import { getBalancerIconTokens, getBalancerNetAprItems } from '../migration.utils'
 import { MigrationPoolCell } from './MigrationPoolCell'
 import { MigrationTableDescription } from './MigrationTableDescription'
 
@@ -23,9 +28,7 @@ const createColumns = (blockchainId: string) =>
       cell: ({ row: { original: position } }) => (
         <MigrationPoolCell
           blockchainId={blockchainId}
-          tokens={position.poolTokens.map(
-            ({ underlyingToken, address, symbol }) => underlyingToken ?? { address, symbol },
-          )}
+          tokens={getBalancerIconTokens(position)}
           name={position.name}
           badges={
             <>
@@ -51,6 +54,39 @@ const createColumns = (blockchainId: string) =>
           boldPrimary
           sx={{ justifyContent: 'end' }}
         />
+      ),
+      meta: { type: 'numeric' },
+    }),
+    columnHelper.accessor(position => sumBy(getBalancerNetAprItems(position), 'apr'), {
+      id: 'netApr',
+      header: t`Net APR`,
+      cell: ({ getValue, row: { original: position } }) => (
+        <Tooltip
+          clickable
+          title={t`Net APR`}
+          placement="top"
+          body={
+            <TooltipWrapper>
+              <TooltipDescription text={t`Swap fees, yield-bearing tokens and rewards, as reported by Balancer.`} />
+              <Stack>
+                <TooltipItems secondary>
+                  {getBalancerNetAprItems(position).map(({ title, apr }) => (
+                    <TooltipItem key={title} title={title}>
+                      {formatNumber(apr, 'percent.rate')}
+                    </TooltipItem>
+                  ))}
+                </TooltipItems>
+                <TooltipItems borderTop>
+                  <TooltipItem variant="primary" title={t`Net total APR`}>
+                    {formatNumber(getValue(), 'percent.rate')}
+                  </TooltipItem>
+                </TooltipItems>
+              </Stack>
+            </TooltipWrapper>
+          }
+        >
+          <Typography variant="tableCellMBold">{formatNumber(getValue(), 'percent.rate')}</Typography>
+        </Tooltip>
       ),
       meta: { type: 'numeric' },
     }),

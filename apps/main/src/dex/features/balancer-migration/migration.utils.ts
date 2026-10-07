@@ -81,3 +81,31 @@ export const rankCurveTargets = <T extends { target: CurveTarget; row: PoolRow }
         b.target.pool.tvlUsd - a.target.pool.tvlUsd,
     )
     .slice(0, MAX_SUGGESTIONS)
+
+/**
+ * APR types that add up to what any LP earns, like Curve's Net APR (base, unboosted emissions and rewards).
+ * Boosts, locking, voting, Aura and the 7d/30d duplicates of the 24h figures are left out.
+ */
+const BALANCER_NET_APR_TYPES = new Set([
+  'SWAP_FEE_24H',
+  'DYNAMIC_SWAP_FEE_24H',
+  'SURPLUS_24H',
+  'IB_YIELD',
+  'NESTED',
+  'STAKING',
+  'VEBAL_EMISSIONS',
+  'MABEETS_EMISSIONS',
+  'MERKL',
+  'FUUL',
+  'QUANT_AMM_UPLIFT',
+])
+
+/** Net APR items in percent, matching the Curve pool-list units. */
+export const getBalancerNetAprItems = ({ dynamicData: { aprItems } }: BalancerPosition) =>
+  aprItems
+    .filter(({ type, apr }) => BALANCER_NET_APR_TYPES.has(type) && apr > 0)
+    .map(({ title, apr }) => ({ title, apr: apr * 100 }))
+
+/** Boosted pools show the underlying tokens rather than their ERC4626 wrappers. */
+export const getBalancerIconTokens = ({ poolTokens }: BalancerPosition) =>
+  poolTokens.map(({ underlyingToken, address, symbol }) => underlyingToken ?? { address, symbol })

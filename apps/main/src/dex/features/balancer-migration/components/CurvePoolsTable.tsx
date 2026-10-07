@@ -33,7 +33,7 @@ const COLUMNS = columnHelper.columns([
         name={pool.name}
         badges={
           <>
-            {index === 0 && <Badge size="extraSmall" color="highlight" label={t`Recommended`} />}
+            {index === 0 && <Badge size="extraSmall" color="active" label={t`Recommended`} />}
             <PoolBadges pool={pool} alerts={getPoolTableMeta(table).alerts} />
           </>
         }
