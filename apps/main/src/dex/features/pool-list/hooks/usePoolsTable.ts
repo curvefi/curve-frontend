@@ -35,7 +35,7 @@ const poolsToRows = ({ pools }: { pools: V2Pool[] }) => pools.map(poolToRowData)
 /** Public pool rows show known balances but do not fetch claimables. */
 const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPositions | undefined) =>
   maybe(
-    positions?.positions.find(({ address }) => isAddressEqual(address, poolAddress)),
+    positions?.find(({ address }) => isAddressEqual(address, poolAddress)),
     p => ({ lpBalance: p.totalBalance, depositsUsd: DISABLED_Q, claimables: DISABLED_Q, claimablesUsd: DISABLED_Q }),
   )
 

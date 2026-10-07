@@ -21,14 +21,11 @@ export const {
       1,
       MAX_USER_POOL_PAGE_SIZE,
     )
-    return {
-      chainId,
-      user: userAddress,
-      positions: positions.map(position => ({
-        ...position,
-        totalBalance: decimalDiv(decimalSum(position.lpBalance, position.gaugeBalance), '1e18'),
-      })),
-    }
+
+    return positions.map(position => ({
+      ...position,
+      totalBalance: decimalDiv(decimalSum(position.lpBalance, position.gaugeBalance), '1e18'),
+    }))
   },
   validationSuite: createValidationSuite((params: UserChainParams) => {
     chainValidationGroup(params)
@@ -38,4 +35,4 @@ export const {
 })
 
 export type UserFullPoolPositions = QueryData<typeof useUserFullPoolPositions>
-export type UserFullPoolPosition = UserFullPoolPositions['positions'][number]
+export type UserFullPoolPosition = UserFullPoolPositions[number]

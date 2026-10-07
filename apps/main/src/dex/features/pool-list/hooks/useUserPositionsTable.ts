@@ -16,10 +16,10 @@ import { constQ, mapQuery, type Query, type QueryProp, useMappedQuery } from '@u
 import { decimalCompare, decimalMultiply, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { enrichPoolRow, getPoolListAlerts } from '../utils'
-import { useUserPoolPositions, type UserPoolPositions } from './useUserPoolPositions'
+import { useUserPoolPositions, type UserPoolPosition } from './useUserPoolPositions'
 
 const getPoolUserPosition = (
-  position: UserPoolPositions['positions'][number],
+  position: UserPoolPosition,
   tokenRate: QueryProp<number>,
   claimables: Query<UserPoolClaimables>,
 ) => ({
@@ -39,20 +39,20 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }, e
   const litePoolList = useLitePoolList({ chainId }, enabled && isLite && !!userAddress)
   const poolAddresses = useMappedQuery(
     positions,
-    useCallback(({ positions }) => positions.map(({ address }) => address), []),
+    useCallback(positions => positions.map(({ address }) => address), []),
   )
   const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)
 
   const tokenAddresses = useMappedQuery(
     positions,
-    useCallback(({ positions }) => positions.map(({ lpTokenAddress }) => lpTokenAddress), []),
+    useCallback(positions => positions.map(({ lpTokenAddress }) => lpTokenAddress), []),
   )
   const tokenRates = useTokenUsdRates({ chainId, tokenAddresses: tokenAddresses.data }, enabled && !!userAddress)
 
   const tableQuery = useCombinedQueries(
     [positions, isLite ? litePoolList : constQ(null)],
     useCallback(
-      ({ positions }, litePools) =>
+      (positions, litePools) =>
         positions
           .map(position => ({
             position,

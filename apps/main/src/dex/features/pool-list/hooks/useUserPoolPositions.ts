@@ -16,3 +16,4 @@ export function useUserPoolPositions(params: UserChainParams, enabled = true) {
 }
 
 export type UserPoolPositions = QueryData<typeof useUserPoolPositions>
+export type UserPoolPosition = UserPoolPositions[number]

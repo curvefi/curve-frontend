@@ -18,7 +18,7 @@ const {
 } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
     ({ name: 'getUserLitePoolPositions', chainId, userAddress }) as const,
-  queryFn: async ({ chainId, userAddress }: UserChainQuery) => {
+  queryFn: async ({ userAddress }: UserChainQuery) => {
     const curve = requireLib('curveApi')
     const poolIds = await curve.getUserPoolListByLiquidity(userAddress)
     const { results } = await PromisePool.for(poolIds)
@@ -30,11 +30,7 @@ const {
         return { address: getAddress(pool.address), lpTokenAddress: getAddress(pool.lpToken), totalBalance }
       })
 
-    return {
-      chainId,
-      user: userAddress,
-      positions: results.filter(({ totalBalance }) => decimalGreaterThan(totalBalance, ZERO)),
-    }
+    return results.filter(({ totalBalance }) => decimalGreaterThan(totalBalance, ZERO))
   },
   validationSuite: createValidationSuite((params: UserChainParams) => {
     chainValidationGroup(params)

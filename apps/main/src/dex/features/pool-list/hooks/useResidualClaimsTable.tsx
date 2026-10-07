@@ -42,7 +42,7 @@ export const useResidualClaimsTable = ({ network }: { network: NetworkConfig }, 
   const tableQuery = useCombinedQueries(
     [positions, poolAddresses, claimables],
     useCallback(
-      ({ positions }, addresses, rewards) =>
+      (positions, addresses, rewards) =>
         // Out of all pools, we want those that have claimable rewards but no LP balance for the user.
         isHydrated
           ? addresses
