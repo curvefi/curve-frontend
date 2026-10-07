@@ -9,12 +9,12 @@ import { decimalDiv, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 
 export const {
-  useQuery: useUserPoolPositions,
-  queryKey: getUserPoolPositionsQueryKey,
-  invalidate: invalidateUserPoolPositions,
+  useQuery: useUserFullPoolPositions,
+  queryKey: getUserFullPoolPositionsQueryKey,
+  invalidate: invalidateUserFullPoolPositions,
 } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
-    ({ name: 'getUserPoolPositions', version: 2, chainId, userAddress }) as const,
+    ({ name: 'getUserPoolFullPositions', version: 2, chainId, userAddress }) as const,
   queryFn: async ({ chainId, userAddress }: UserChainQuery) => {
     const positions = await paginate(
       async (page, pagination) => (await getUserPoolPositions({ chainId, userAddress, page, pagination })).positions,
@@ -37,4 +37,5 @@ export const {
   category: 'dex.user',
 })
 
-export type UserPoolPosition = QueryData<typeof useUserPoolPositions>
+export type UserFullPoolPositions = QueryData<typeof useUserFullPoolPositions>
+export type UserFullPoolPosition = UserFullPoolPositions['positions'][number]
