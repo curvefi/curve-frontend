@@ -68,11 +68,19 @@ const getPaddedMin = (values: number[]) => {
   return min > 0 ? Math.max(paddedMin, min / 2) : paddedMin
 }
 
-export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId: Chain; poolAddress: Address }) => {
+export const RefuelPricesChart = ({
+  blockchainId,
+  poolAddress,
+  end,
+}: {
+  blockchainId: Chain
+  poolAddress: Address
+  end: number
+}) => {
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>('6m')
   const [fullscreen, , closeFullscreen, toggleFullscreen] = useSwitch(false)
   const [visibility, setVisibility] = useState<Record<string, boolean>>({})
-  const { start, end } = useMemo(() => getTimeRange({ daysRange: DAYS[period] }), [period])
+  const { start } = getTimeRange({ daysRange: DAYS[period], end })
 
   const toggleVisibility = (key: string) => setVisibility(prev => ({ ...prev, [key]: !(prev[key] ?? true) }))
 
