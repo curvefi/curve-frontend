@@ -32,7 +32,11 @@ export class FetchError extends Error {
   }
 }
 
-type RequestOptions = { body?: Record<string, unknown>; headers?: Record<string, unknown>; signal?: AbortSignal }
+type RequestOptions = {
+  body?: Record<string, unknown> | readonly unknown[]
+  headers?: Record<string, unknown>
+  signal?: AbortSignal
+}
 
 async function requestJson<T>(url: string, { body, headers, signal }: RequestOptions): Promise<T> {
   const resp = await fetch(url, {

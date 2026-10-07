@@ -1,4 +1,10 @@
 import { createApiServer } from '@curvefi/api-server'
+import { getClmmMigration } from './clmm-migration/clmm-migration'
+import {
+  CLMM_MIGRATION_PATH,
+  ClmmMigrationOpts,
+  type ClmmMigrationQuery,
+} from './clmm-migration/clmm-migration.schemas'
 import { getRoutes } from './routes/routes'
 import { RoutesOpts, ROUTES_PATH, type RoutesQuery } from './routes/routes.schemas'
 import { getTokens } from './tokens/tokens'
@@ -14,3 +20,4 @@ export const createRouterApiServer = ({
   createApiServer({ serviceName: 'router-api', env, logger, pluginTimeout })
     .get<{ Querystring: RoutesQuery }>(ROUTES_PATH, RoutesOpts, getRoutes)
     .get<{ Querystring: TokensQuery }>(TOKENS_PATH, TokensOpts, getTokens)
+    .get<{ Querystring: ClmmMigrationQuery }>(CLMM_MIGRATION_PATH, ClmmMigrationOpts, getClmmMigration)
