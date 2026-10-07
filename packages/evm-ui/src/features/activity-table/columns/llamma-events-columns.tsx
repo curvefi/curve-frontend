@@ -1,17 +1,29 @@
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
+import type { RowData } from '@tanstack/react-table'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
+import { RowBreakdownConfig } from '@ui/features/tables/DataRow'
 import { t } from '@ui/lib/i18n'
-import { TimestampCell, AddressCell, LlammaEventActionCell, LlammaEventChangeCell } from '../cells'
-import type { MarketEventRow } from '../types'
+import {
+  TimestampCell,
+  AddressCell,
+  BreakdownActionLabel,
+  LlammaEventActionCell,
+  TokenDeltaAmountCell,
+  TokenDeltaUsdCell,
+} from '../cells'
+import type { ActivityTokenDelta, MarketEventRow } from '../types'
+import { getLlammaEventAction, getLlammaEventTokenDeltas } from '../utils'
 
 export enum LlammaEventsColumnId {
   Action = 'action',
-  Change = 'change',
+  TokenAmount = 'tokenAmount',
+  UsdValue = 'usdValue',
   User = 'provider',
   Time = 'timestamp',
 }
 
 const columnHelper = createAppColumnHelper<MarketEventRow>()
+const createRowBreakdown = <TData extends RowData, TItem>(config: RowBreakdownConfig<TData, TItem>) => config
 
 export const LLAMMA_EVENTS_COLUMNS = columnHelper.columns([
   columnHelper.accessor('provider', {
@@ -30,16 +42,15 @@ export const LLAMMA_EVENTS_COLUMNS = columnHelper.columns([
     cell: ({ row }) => <LlammaEventActionCell event={row.original} />,
   }),
   columnHelper.display({
-    id: LlammaEventsColumnId.Change,
-    header: t`Change`,
-    cell: ({ row }) => (
-      <LlammaEventChangeCell
-        event={row.original}
-        chain={row.original.blockchainId}
-        collateralToken={row.original.collateralToken}
-        borrowToken={row.original.borrowToken}
-      />
-    ),
+    id: LlammaEventsColumnId.TokenAmount,
+    header: t`Token amount`,
+    cell: ({ row }) => <TokenDeltaAmountCell deltas={getLlammaEventTokenDeltas(row.original)} />,
+    meta: { type: 'numeric' },
+  }),
+  columnHelper.display({
+    id: LlammaEventsColumnId.UsdValue,
+    header: t`USD value`,
+    cell: ({ row }) => <TokenDeltaUsdCell deltas={getLlammaEventTokenDeltas(row.original)} />,
     meta: { type: 'numeric' },
   }),
   columnHelper.accessor('timestamp', {
@@ -55,3 +66,14 @@ export const LLAMMA_EVENTS_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric' },
   }),
 ])
+
+/** One row per token when a LLAMMA event deltas multiple tokens, e.g. a withdrawal of collateral and borrowed tokens */
+export const LLAMMA_EVENTS_BREAKDOWN = createRowBreakdown<MarketEventRow, ActivityTokenDelta>({
+  getItems: getLlammaEventTokenDeltas,
+  getItemKey: ({ label }) => label,
+  cells: {
+    [LlammaEventsColumnId.Action]: (_, event) => <BreakdownActionLabel {...getLlammaEventAction(event)} />,
+    [LlammaEventsColumnId.TokenAmount]: delta => <TokenDeltaAmountCell deltas={[delta]} />,
+    [LlammaEventsColumnId.UsdValue]: delta => <TokenDeltaUsdCell deltas={[delta]} />,
+  },
+})

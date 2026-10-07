@@ -5,6 +5,7 @@ import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
+import type { ActivityTokenDelta, MarketEventRow } from './types'
 
 const PROCESSING_TIMEOUT_MS = REFRESH_INTERVAL['1h']
 
@@ -50,3 +51,52 @@ export const formatActivityUsdValue = (
 
 export const getChangeColor = (amount: number, positive: 'success' | 'error', negative: 'success' | 'error') =>
   amount > 0 ? positive : amount < 0 ? negative : 'textPrimary'
+
+/** Formats the USD value of a single token delta, negative when the tokens go out */
+export const formatTokenDeltaUsd = ({ amount, amountUsd, timestamp }: ActivityTokenDelta, currentDate: Date) =>
+  formatActivityUsdValue({ amount, amountUsd, timestamp, isSold: amount < 0 }, currentDate)
+
+/** The API has no event type, a LLAMMA event is either a deposit or a withdrawal depending on which field is set */
+const getLlammaEventType = ({ deposit }: MarketEventRow) => (deposit ? 'deposit' : 'withdrawal')
+
+export const getLlammaEventAction = (event: MarketEventRow) =>
+  ({
+    deposit: { label: t`Deposit`, color: 'success' as const },
+    withdrawal: { label: t`Withdrawal`, color: 'error' as const },
+  })[getLlammaEventType(event)]
+
+/** Lists the token deltas of a LLAMMA event: the deposited collateral, or the withdrawn collateral and borrowed tokens */
+export const getLlammaEventTokenDeltas = ({
+  deposit,
+  withdrawal,
+  timestamp,
+  blockchainId,
+  collateralToken,
+  borrowToken,
+}: MarketEventRow): ActivityTokenDelta[] =>
+  notFalsy(
+    deposit && {
+      label: t`Amount`,
+      token: collateralToken,
+      blockchainId,
+      amount: deposit.amount,
+      amountUsd: deposit.amountUsd,
+      timestamp,
+    },
+    !!withdrawal?.amountCollateral && {
+      label: t`Collateral`,
+      token: collateralToken,
+      blockchainId,
+      amount: -withdrawal.amountCollateral,
+      amountUsd: withdrawal.amountCollateralUsd,
+      timestamp,
+    },
+    !!withdrawal?.amountBorrowed && {
+      label: t`Borrowed`,
+      token: borrowToken,
+      blockchainId,
+      amount: -withdrawal.amountBorrowed,
+      amountUsd: withdrawal.amountBorrowedUsd,
+      timestamp,
+    },
+  )

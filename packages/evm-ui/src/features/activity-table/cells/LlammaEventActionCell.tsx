@@ -1,17 +1,15 @@
 import Typography from '@mui/material/Typography'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
-import { t } from '@ui/lib/i18n'
 import type { MarketEventRow } from '../types'
+import { getLlammaEventAction } from '../utils'
 
 type LlammaEventActionCellProps = { event: MarketEventRow }
 
 export const LlammaEventActionCell = ({ event }: LlammaEventActionCellProps) => {
-  const isDeposit = !!event.deposit
-  const label = isDeposit ? t`Deposit` : t`Withdrawal`
-
+  const { label, color } = getLlammaEventAction(event)
   return (
     <InlineTableCell>
-      <Typography variant="tableCellMBold" color={isDeposit ? 'success' : 'error'}>
+      <Typography variant="tableCellMBold" color={color}>
         {label}
       </Typography>
     </InlineTableCell>
