@@ -45,7 +45,7 @@ export const PoolsTable = ({
       pagination={pagination}
       sorting={sorting}
       addressDisplay={evmAddressDisplay}
-      crvToken={{ address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain }}
+      crvToken={MAINNET_CRV}
       Actions={Actions}
     />
   )

@@ -21,7 +21,7 @@ const { Spacing } = SizesAndSpaces
  * This is used in the lending markets filters to display collateral and debt tokens.
  */
 const Token = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDetails> }) => {
-  const { chain, address = null } = tokens[symbol] ?? {}
+  const { blockchainId: chain, address = null } = tokens[symbol] ?? {}
   return <TokenLabel blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="xl" />
 }
 

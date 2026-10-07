@@ -10,18 +10,18 @@ import { type FieldsOf } from '@ui/lib/validation/types'
 type LlammaTradesParams = FieldsOf<GetTradesParams>
 
 export const { useQuery: useLlammaTrades } = queryFactory({
-  queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaTradesParams) =>
-    ({ name: 'llamma-trades', chain, llamma, endpoint, page, perPage }) as const,
+  queryKey: ({ blockchainId, llamma, endpoint, page, perPage }: LlammaTradesParams) =>
+    ({ name: 'llamma-trades', blockchainId, llamma, endpoint, page, perPage }) as const,
   queryFn: async ({
-    chain,
+    blockchainId,
     llamma,
     endpoint,
     page = DEFAULT_PAGE_START_INDEX,
     perPage = DEFAULT_PAGE_SIZE,
-  }: GetTradesParams) => getTrades({ endpoint, chain, llamma, page, perPage }),
+  }: GetTradesParams) => getTrades({ endpoint, blockchainId, llamma, page, perPage }),
   category: 'llamalend.user',
-  validationSuite: createValidationSuite(({ chain, llamma, endpoint }: LlammaTradesParams) => {
-    contractValidationGroup({ blockchainId: chain, contractAddress: llamma })
+  validationSuite: createValidationSuite(({ blockchainId, llamma, endpoint }: LlammaTradesParams) => {
+    contractValidationGroup({ blockchainId, contractAddress: llamma })
     test('endpoint', 'Invalid endpoint', () => {
       enforce(endpoint).isNotEmpty().inside(['crvusd', 'lending'])
     })

@@ -38,7 +38,7 @@ export const UserPositionsTable = ({
       connect={connect}
       onVariantChange={setVariant}
       addressDisplay={evmAddressDisplay}
-      crvToken={{ address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain }}
+      crvToken={MAINNET_CRV}
       Actions={Actions}
     />
   )

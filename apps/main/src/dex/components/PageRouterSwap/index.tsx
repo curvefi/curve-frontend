@@ -70,14 +70,14 @@ const getSlippageType = ({ isStableswapRoute }: RouterRouteResponse | RawRoutesA
 export const QuickSwap = ({
   pageLoaded,
   params,
-  rChainId: chainId,
+  chainId,
   searchedParams,
   redirect,
   curve,
 }: {
   pageLoaded: boolean
   params: NetworkUrlParams
-  rChainId: ChainId
+  chainId: ChainId
   searchedParams: SearchedParams
   redirect: (toAddress: string, fromAddress: string) => void
   curve: CurveApi | null
