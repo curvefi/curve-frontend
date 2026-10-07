@@ -1,5 +1,4 @@
-import { getMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { getMarket, isLendMarket } from '@/llamalend/llama.utils'
 import type { MarketQuery, MarketParams } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -11,9 +10,7 @@ export const { useQuery: useMarketRates } = queryFactory({
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)
     return convertRates(
-      market instanceof LendMarketTemplate
-        ? await market.stats.rates(IS_GETTER, USE_API)
-        : (await market.stats.parameters()).rates,
+      isLendMarket(market) ? await market.stats.rates(IS_GETTER, USE_API) : (await market.stats.parameters()).rates,
     )
   },
   category: 'llamalend.market',

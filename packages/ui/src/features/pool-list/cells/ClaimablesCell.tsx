@@ -33,7 +33,7 @@ export const ClaimablesCell = ({
     )
   }
 
-  const hasClaimables = hasClaimableRewards(claimables.data ?? [])
+  const hasClaimables = hasClaimableRewards(claimables.data)
 
   return (
     <WithWrapper

@@ -37,7 +37,7 @@ describe('Legal', () => {
     })
 
     it('should use the first tab as default when the wrong tab is provided', () => {
-      cy.visit('/lend/#/ethereum/legal?tab=dontexist')
+      cy.visit('/lend/ethereum/legal?tab=dontexist')
       // Verify the first tab (Terms & Conditions) is selected
       cy.get('[data-testid="legal-tab-terms"]', LOAD_TIMEOUT)
         .should('have.attr', 'aria-selected', 'true')
@@ -45,7 +45,7 @@ describe('Legal', () => {
     })
 
     it('should use the current page subtab as default when the wrong subtab is provided', () => {
-      cy.visit('/lend/#/ethereum/legal?tab=disclaimers&subtab=dontexist')
+      cy.visit('/lend/ethereum/legal?tab=disclaimers&subtab=dontexist')
 
       // Verify the Disclaimers tab is selected and the lend subtab is selected
       cy.get('[data-testid="legal-disclaimer-tab-lend"]', LOAD_TIMEOUT)

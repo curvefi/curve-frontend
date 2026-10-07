@@ -1,7 +1,7 @@
-import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber, type NumberFormatCategory } from '@primitives/number.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { t } from '@ui/lib/i18n'
 import { MAX_DISPLAY_RATE_PERCENT } from '@ui/lib/rates.utils'
 import type { PoolRow, PoolRowData } from '../types'

@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import { replaceNetworkInPath } from '@evm-ui/shared/routes'
-import { usePathname, useNavigate } from '@ui/hooks/router'
+import { useLocation, useNavigate } from '@ui/hooks/router'
 
 export function useRedirectToEth(blockchainId: string, supportedBlockchainIds: string[]) {
   const push = useNavigate()
-  const pathname = usePathname()
+  const { pathname, searchStr } = useLocation()
   useEffect(() => {
     if (!supportedBlockchainIds.includes(blockchainId) && pathname) {
       console.warn(`Chain '${blockchainId}' not supported, redirecting...`)
-      push(replaceNetworkInPath(pathname, 'ethereum'))
+      push(replaceNetworkInPath(pathname, 'ethereum') + searchStr)
     }
-  }, [blockchainId, supportedBlockchainIds, push, pathname])
+  }, [blockchainId, supportedBlockchainIds, push, pathname, searchStr])
 }

@@ -8,16 +8,16 @@ import { type FieldsOf } from '@ui/lib/validation/types'
 type PoolLiquidityEventsParams = FieldsOf<GetPoolLiquidityEventsParams>
 
 export const { useQuery: usePoolLiquidityEvents } = queryFactory({
-  queryKey: ({ chain, poolAddress, page, perPage }: PoolLiquidityEventsParams) =>
-    ({ name: 'pool-liquidity-events', chain, poolAddress, page, perPage }) as const,
+  queryKey: ({ blockchainId, poolAddress, page, perPage }: PoolLiquidityEventsParams) =>
+    ({ name: 'pool-liquidity-events', blockchainId, poolAddress, page, perPage }) as const,
   queryFn: async ({
-    chain,
+    blockchainId,
     poolAddress,
     page = DEFAULT_PAGE_START_INDEX,
     perPage = DEFAULT_PAGE_SIZE,
-  }: GetPoolLiquidityEventsParams) => getPoolLiquidityEvents({ chain, poolAddress, page, perPage }),
-  validationSuite: createValidationSuite(({ chain, poolAddress }: PoolLiquidityEventsParams) => {
-    contractValidationGroup({ blockchainId: chain, contractAddress: poolAddress })
+  }: GetPoolLiquidityEventsParams) => getPoolLiquidityEvents({ blockchainId, poolAddress, page, perPage }),
+  validationSuite: createValidationSuite(({ blockchainId, poolAddress }: PoolLiquidityEventsParams) => {
+    contractValidationGroup({ blockchainId, contractAddress: poolAddress })
   }),
   category: 'dex.pool',
 })

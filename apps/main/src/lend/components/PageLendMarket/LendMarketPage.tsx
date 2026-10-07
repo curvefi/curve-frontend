@@ -41,7 +41,7 @@ const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Borrow })
 
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId: chainId } = parseMarketParams(params)
+  const { rMarket, chainId } = parseMarketParams(params)
   const marketQuery = useLendMarket({ chainId, rMarket })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
   const { isInitialized } = useCurve()
