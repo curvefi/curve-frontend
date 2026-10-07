@@ -3,7 +3,6 @@ import { isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import { resetPoolLists } from '@/dex/queries/invalidation'
 import { useLitePoolChains, usePoolChains, usePoolList } from '@/dex/queries/pool-list.query'
-import { useUserPoolPositions, type UserPoolPosition } from '@/dex/queries/user-pool-positions.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import type {
   LitePool,
@@ -21,6 +20,7 @@ import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { litePoolToRowData, poolToRowData } from '@ui/features/pool-list/utils'
 import { DISABLED_Q, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { enrichPoolRow, getPoolListAlerts } from '../utils'
+import { useUserPoolPositions, type UserPoolPositions } from './useUserPoolPositions'
 
 class UnsupportedPoolListError extends Error {
   constructor(readonly chainId: number) {
@@ -33,9 +33,9 @@ const litePoolsToRows = ({ pools }: { pools: LitePool[] }) => pools.map(litePool
 const poolsToRows = ({ pools }: { pools: V2Pool[] }) => pools.map(poolToRowData)
 
 /** Public pool rows show known balances but do not fetch claimables. */
-const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPosition | undefined) =>
+const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPositions | undefined) =>
   maybe(
-    positions?.positions.find(({ address }) => isAddressEqual(address, poolAddress)),
+    positions?.find(({ address }) => isAddressEqual(address, poolAddress)),
     p => ({ lpBalance: p.totalBalance, depositsUsd: DISABLED_Q, claimables: DISABLED_Q, claimablesUsd: DISABLED_Q }),
   )
 
