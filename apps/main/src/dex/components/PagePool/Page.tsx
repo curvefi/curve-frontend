@@ -14,6 +14,7 @@ import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
+import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
@@ -49,18 +50,28 @@ export const PagePool = () => {
     [blacklist, pool],
   )
 
-  return isHydrated && (isBlacklisted || (!pool && poolNotFound)) ? (
-    <ErrorPage
-      title="404"
-      subtitle={t`Pool Not Found`}
-      continueUrl={getPath(props, ROUTE.PAGE_POOLS)}
-      userAddress={curveApi?.signerAddress}
+  return isBlacklisted ? (
+    <PageBlacklist
+      title={t`Blacklisted pool`}
+      description={t`Access through the Curve interface is blocked to help protect you from unsafe deposits. Pools may be blacklisted because of deprecated or exploited assets, misconfiguration, or malicious deployers.`}
+      navUrl={getPath(props, ROUTE.PAGE_POOLS)}
+      navTitle={t`Go to pool list`}
     />
   ) : (
-    pool && isHydrated && (
-      <PoolContextProvider network={network} pool={pool}>
-        <Transfer params={props} />
-      </PoolContextProvider>
-    )
+    isHydrated &&
+      (pool ? (
+        <PoolContextProvider network={network} pool={pool}>
+          <Transfer params={props} />
+        </PoolContextProvider>
+      ) : (
+        poolNotFound && (
+          <ErrorPage
+            title="404"
+            subtitle={t`Pool Not Found`}
+            continueUrl={getPath(props, ROUTE.PAGE_POOLS)}
+            userAddress={curveApi?.signerAddress}
+          />
+        )
+      ))
   )
 }
