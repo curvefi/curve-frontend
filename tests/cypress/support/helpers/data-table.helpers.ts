@@ -44,6 +44,10 @@ export function closeDrawer(breakpoint: Breakpoint) {
   }
 }
 
+/** Wait for the close transition to finish while ensuring the contents remain mounted. */
+export const assertModalClosed = (testId: string) =>
+  cy.get(`[data-testid="${testId}"]`, LOAD_TIMEOUT).closest('.MuiModal-root').should('have.class', 'MuiModal-hidden')
+
 export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
   cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
   if (breakpoint !== 'mobile') {
@@ -54,8 +58,7 @@ export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.C
       closeDrawer(breakpoint)
     } else {
       cy.get('[data-testid="btn-close-filters"]').click({ waitForAnimations: true })
-      cy.get('[data-testid="table-filters-popover"]', LOAD_TIMEOUT).should('not.exist')
-      cy.get('[data-testid="table-filters-popover-root"]').should('not.exist')
+      assertModalClosed('table-filters-popover-root')
     }
     return cy.wrap(result)
   })
