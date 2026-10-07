@@ -53,7 +53,6 @@ export const preserveVisibilityChoices = <ColumnIds extends string>(
  * @param tableTitle - The title of the table, used as a key for local storage.
  * @param groups - The visibility groups for all the different variants (visibility might be e.g. different in mobile).
  * @param variant - The current variant for which visibility settings are applied.
- * @param columns - The column definitions for the table.
  * @param migration - Migration options for stored visibility settings.
  * @returns An object containing the current column settings, column visibility state, and a function to
  * toggle visibility of columns.
@@ -62,7 +61,6 @@ export const useVisibilitySettings = <TVariant extends string, ColumnIds extends
   tableTitle: string,
   groups: Record<TVariant, VisibilityGroup<ColumnIds>[]>,
   variant: TVariant,
-  columns: readonly { id?: string; meta?: { hidden?: boolean } }[],
   migration: MigrationOptions<Record<TVariant, VisibilityGroup<ColumnIds>[]>>,
 ) => {
   /** current visibility settings in grouped format */
@@ -84,15 +82,7 @@ export const useVisibilitySettings = <TVariant extends string, ColumnIds extends
   )
 
   const columnSettings = visibilitySettings[variant]
-  /** current column visibility state as used internally by tanstack */
-  const columnVisibility = useMemo(
-    () =>
-      ({
-        ...flatten(columnSettings),
-        ...Object.fromEntries(columns.filter(c => c.meta?.hidden).map(c => [c.id, false])),
-      }) as Record<ColumnIds, boolean>,
-    [columnSettings, columns],
-  )
+  const columnVisibility = useMemo(() => flatten(columnSettings) as Record<ColumnIds, boolean>, [columnSettings])
 
   return { columnSettings, columnVisibility, toggleVisibility }
 }
