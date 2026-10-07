@@ -10,7 +10,7 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import { PongLoader } from '@ui/components/PongLoader'
-import type { PoolClaimables } from '@ui/features/pool-list/types'
+import type { PoolClaimables, ResidualClaimsTableData } from '@ui/features/pool-list/types'
 import { hasClaimableRewards, claimablesTotalUsd } from '@ui/features/pool-list/utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { constQ, mapQuery } from '@ui/features/queries/util'
@@ -29,7 +29,10 @@ const getPoolUserPosition = (claimables: PoolClaimables) => ({
   claimablesUsd: constQ(claimablesTotalUsd(claimables)),
 })
 
-export const useResidualClaimsTable = ({ network }: { network: NetworkConfig }, enabled = true) => {
+export const useResidualClaimsTable = (
+  { network }: { network: NetworkConfig },
+  enabled = true,
+): ResidualClaimsTableData => {
   const { chainId, blockchainId } = network
   const { address: userAddress } = useConnection()
   const { curveApi, isHydrated } = useCurve()

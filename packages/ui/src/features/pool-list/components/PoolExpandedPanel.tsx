@@ -77,14 +77,10 @@ const PoolTokens = ({ pool, addressDisplay }: { pool: PoolRow; addressDisplay: A
 
 export const PoolExpandedPanel = ({
   pool,
-  variant,
-  addressDisplay,
-  crvToken,
+  meta: { variant, addressDisplay, crvToken },
 }: {
   pool: PoolRow
-  variant: PoolTableVariant
-  addressDisplay: AddressDisplay
-  crvToken: PoolTableMeta['crvToken']
+  meta: PoolTableMeta
 }) => {
   const currentDate = useCurrentDate()
   const baseRate = getBaseApr(pool, 'daily')

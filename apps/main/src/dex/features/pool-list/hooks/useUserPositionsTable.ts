@@ -10,9 +10,10 @@ import { useCampaigns } from '@evm-ui/queries/campaigns'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
+import type { UserPositionsTableData } from '@ui/features/pool-list/types'
 import { claimablesTotalUsd, litePoolToRowData, poolToRowData } from '@ui/features/pool-list/utils'
 import { aggregateQueries, combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
-import { constQ, mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
+import { constQ, mapQuery, useMappedQuery, type Query, type QueryProp } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { enrichPoolRow, getPoolListAlerts } from '../utils'
@@ -29,7 +30,10 @@ const getPoolUserPosition = (
   claimablesUsd: mapQuery(claimables, data => claimablesTotalUsd(data?.[position.address])),
 })
 
-export const useUserPositionsTable = ({ network }: { network: NetworkConfig }, enabled = true) => {
+export const useUserPositionsTable = (
+  { network }: { network: NetworkConfig },
+  enabled = true,
+): UserPositionsTableData => {
   const { chainId, blockchainId } = network
   const { address: userAddress } = useConnection()
   const isLite = isLiteChain(chainId)
