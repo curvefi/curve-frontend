@@ -1,10 +1,8 @@
-import { noop } from 'lodash'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Form } from '@ui/features/forms/components/Form'
-import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { mapQuery, q } from '@ui/features/queries/util'
@@ -13,8 +11,9 @@ import { decimal, fromWei } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { BalancerPosition } from '../api/balancer.api'
 import { useMigrationForm } from '../hooks/useMigrationForm'
-import { type CurveTarget, getBalancerIconTokens, getCurveLpPriceUsd } from '../migration.utils'
+import { type CurveTarget, getBalancerIconTokens } from '../migration.utils'
 import { LP_DECIMALS } from '../queries/migration-route.query'
+import { CurveTargetFields } from './CurveTargetFields'
 import { MigrationActionInfoList } from './MigrationActionInfoList'
 import { PoolTokensLabel } from './PoolTokensLabel'
 
@@ -33,21 +32,18 @@ export const MigrationForm = ({ chainId, userAddress, blockchainId, position, ta
   const {
     form,
     values,
-    params,
     route,
     priceImpact,
+    gas,
     maxAmount,
     lpPriceUsd,
     isApproved,
-    gaugeAddress,
     onSubmit,
     isPending,
     isDisabled,
     error,
     formErrors,
   } = useMigrationForm({ chainId, userAddress, position, target })
-  const targetLpPriceUsd = maybe(target?.pool, getCurveLpPriceUsd)
-  const expectedLp = mapQuery(route, ({ amountOut: [amountOut] }) => fromWei(amountOut, LP_DECIMALS))
   const amountError = formErrors.find(([field]) => field === 'amount')?.[1]
 
   return (
@@ -56,10 +52,15 @@ export const MigrationForm = ({ chainId, userAddress, blockchainId, position, ta
       onSubmit={onSubmit}
       footer={
         <MigrationActionInfoList
-          form={form}
-          params={params}
-          route={route}
-          priceImpact={priceImpact}
+          quote={mapQuery(route, ({ amountOut: [amountOut], minAmountOut, routerFeePercentage }) => ({
+            amountOut,
+            minAmountOut,
+            routerFeePercentage,
+          }))}
+          priceImpact={mapQuery(priceImpact, impact => impact?.priceImpact ?? null)}
+          gas={gas}
+          slippage={values.slippage}
+          onSlippageChange={slippage => form.update({ slippage })}
           userAddress={userAddress}
         />
       }
@@ -88,36 +89,14 @@ export const MigrationForm = ({ chainId, userAddress, blockchainId, position, ta
           )}
         </LargeTokenInput>
 
-        <LargeTokenInput
-          name="expectedLp"
-          label={values.stake ? t`Staked Curve LP to receive` : t`Curve LP to receive`}
-          testId="balancer-migration-target"
-          balance={expectedLp}
-          onBalance={noop}
-          inputBalanceUsd={decimal(targetLpPriceUsd && expectedLp.data && +expectedLp.data * targetLpPriceUsd)}
-          disabled
-          tokenSelector={
-            target && (
-              <PoolTokensLabel
-                protocol="curve"
-                blockchainId={blockchainId}
-                tokens={target.row.tradeableCoins}
-                label={target.row.name}
-              />
-            )
-          }
-        >
-          {!target && <HelperMessage message={t`Select a Curve pool to migrate to.`} isError />}
-        </LargeTokenInput>
+        <CurveTargetFields
+          blockchainId={blockchainId}
+          target={target}
+          expectedLp={mapQuery(route, ({ amountOut: [amountOut] }) => fromWei(amountOut, LP_DECIMALS))}
+          stake={values.stake}
+          onStakeChange={stake => form.update({ stake })}
+        />
       </Stack>
-
-      <CheckboxField
-        checked={values.stake && !!gaugeAddress}
-        label={t`Deposit & stake`}
-        disabled={!gaugeAddress}
-        testIdPrefix="balancer-migration-stake"
-        onChange={({ target: { checked } }) => form.update({ stake: checked })}
-      />
 
       <EvmFormButton
         pending={isPending}

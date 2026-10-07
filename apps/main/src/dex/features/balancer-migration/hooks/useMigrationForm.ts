@@ -9,10 +9,10 @@ import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimal } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { BalancerPosition } from '../api/balancer.api'
-import type { CurveTarget } from '../migration.utils'
+import { type CurveTarget, getTargetGauge } from '../migration.utils'
 import { type MigrationForm, migrationFormValidationSuite } from '../migration.validation'
 import { useMigrateMutation } from '../mutations/migrate.mutation'
-import { useMigrationIsApproved, useMigrationRoute } from '../queries/migration-route.query'
+import { useMigrationEstimateGas, useMigrationIsApproved, useMigrationRoute } from '../queries/migration-route.query'
 
 const userDefaultValues = { amount: undefined }
 
@@ -28,8 +28,7 @@ export const useMigrationForm = ({
   target: CurveTarget | undefined
 }) => {
   const tokenIn = position.address
-  const gauge = target?.row.gauge
-  const gaugeAddress = gauge?.isKilled ? undefined : gauge?.address
+  const gaugeAddress = maybe(target, getTargetGauge)
   const maxAmount = useTokenBalance({ chainId, userAddress, tokenAddress: tokenIn })
   const form = useForm<MigrationForm>({
     validation: migrationFormValidationSuite,
@@ -86,7 +85,7 @@ export const useMigrationForm = ({
     maxAmount: q(maxAmount),
     lpPriceUsd,
     isApproved: q(useMigrationIsApproved(params)),
-    gaugeAddress,
+    gas: useMigrationEstimateGas(params),
     onSubmit: form.handleSubmit(values => onSubmit({ ...values, tokenOut })),
     isPending,
     isDisabled: !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, false),

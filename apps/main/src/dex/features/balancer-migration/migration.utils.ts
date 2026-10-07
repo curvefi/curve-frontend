@@ -19,18 +19,18 @@ export type CurveCandidate = { pool: Pool; overlap: number }
 export type CurveTarget = CurveCandidate & { row: PoolRow }
 
 /** Balancer v3 boosted pools hold ERC4626 wrappers, so the wrapper and its underlying both count as a match. */
-const getBalancerTokenAddresses = ({ poolTokens }: BalancerPosition) =>
+export const getBalancerTokenAddresses = ({ poolTokens }: BalancerPosition) =>
   poolTokens.map(({ address, underlyingToken }) =>
     notFalsy(address, underlyingToken?.address).map(a => a.toLowerCase()),
   )
 
 /**
- * Candidate Curve pools, ranked by the share of the Balancer pool's tokens they hold, then by TVL.
- * Native ETH (0xeeee…) in Curve pools does not match WETH in Balancer pools.
+ * Candidate Curve pools, ranked by the share of the source pool's tokens they hold, then by TVL.
+ * `tokens` lists the lowercase addresses each source token may match as.
+ * Native ETH (0xeeee…) in Curve pools does not match WETH in the source pool.
  */
-export function findCurveCandidates(position: BalancerPosition, curvePools: readonly Pool[]): CurveCandidate[] {
-  const tokens = getBalancerTokenAddresses(position)
-  return curvePools
+export const findCurveCandidates = (tokens: readonly string[][], curvePools: readonly Pool[]): CurveCandidate[] =>
+  curvePools
     .filter(pool => pool.tvlUsd >= MIN_TARGET_TVL_USD)
     .map(pool => {
       const coins = new Set(pool.coins.map(coin => coin.address.toLowerCase()))
@@ -40,7 +40,6 @@ export function findCurveCandidates(position: BalancerPosition, curvePools: read
     .filter(({ overlap }) => overlap > 0)
     .toSorted((a, b) => b.overlap - a.overlap || b.pool.tvlUsd - a.pool.tvlUsd)
     .slice(0, MAX_CANDIDATES)
-}
 
 /** Prices API reports `lpTokenSupply` in LP token units, so this is the USD value of one LP token. */
 export const getCurveLpPriceUsd = ({ tvlUsd, lpTokenSupply }: Pool) =>
@@ -65,22 +64,27 @@ const BALANCER_POOL_TYPES: Record<string, { label: string; classification?: Pool
 
 export const getBalancerTypeLabel = (type: string) => BALANCER_POOL_TYPES[type]?.label ?? type
 
-const getClassificationScore = (balancerType: string, { poolType }: PoolRow) => {
-  const wanted = BALANCER_POOL_TYPES[balancerType]?.classification
+export const getBalancerClassification = (type: string) => BALANCER_POOL_TYPES[type]?.classification
+
+/** Uniswap's 0.01% tier holds pegged pairs and its 0.3%/1% tiers volatile ones; 0.05% holds both. */
+export const getUniswapClassification = (fee: number): PoolClassification | undefined =>
+  fee <= 100 ? 'stable' : fee >= 3000 ? 'volatile' : undefined
+
+const getClassificationScore = (wanted: PoolClassification | undefined, { poolType }: PoolRow) => {
   const actual = poolType && poolTypeClassifications[poolType]
   return !wanted || !actual ? 0 : wanted === actual ? 1 : -1
 }
 
 /**
- * Prefers the Curve pool closest to the Balancer one: the same tokens first,
+ * Prefers the Curve pool closest to the source: the same tokens first,
  * then the same curve (stable, volatile or FX), then TVL. The first result is the recommendation.
  */
-export const rankCurveTargets = ({ type }: BalancerPosition, targets: CurveTarget[]) =>
+export const rankCurveTargets = (classification: PoolClassification | undefined, targets: CurveTarget[]) =>
   targets
     .toSorted(
       (a, b) =>
         b.overlap - a.overlap ||
-        getClassificationScore(type, b.row) - getClassificationScore(type, a.row) ||
+        getClassificationScore(classification, b.row) - getClassificationScore(classification, a.row) ||
         b.pool.tvlUsd - a.pool.tvlUsd,
     )
     .slice(0, MAX_SUGGESTIONS)
@@ -119,3 +123,6 @@ export const PROTOCOLS = {
   balancer: { name: 'Balancer', logoUrl: `${CURVE_ASSETS_URL}/platforms/balancer.png` },
   curve: { name: 'Curve', logoUrl: CURVE_LOGO_URL },
 } as const satisfies Record<MigrationProtocol, { name: string; logoUrl: string }>
+
+/** Active gauge of the target, which "Deposit & stake" routes into. */
+export const getTargetGauge = ({ row: { gauge } }: CurveTarget) => (gauge?.isKilled ? undefined : gauge?.address)
