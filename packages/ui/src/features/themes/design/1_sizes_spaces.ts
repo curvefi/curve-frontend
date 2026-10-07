@@ -280,6 +280,7 @@ export const SizesAndSpaces = {
       bands: '6.8rem', // 108.8px
     },
     maintenanceContent: '40rem', // 640px
+    blacklistContent: '30rem', // 480px
   },
   Height: {
     modal: MappedModalHeight,

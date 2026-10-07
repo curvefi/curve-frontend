@@ -3,7 +3,6 @@ import { EvmErrorPage } from '@evm-ui/pages/EvmErrorPage'
 import { createRoute, createRouter } from '@tanstack/react-router'
 import { Loading } from '@ui/components/Loading'
 import { Duration } from '@ui/features/themes/design/0_primitives'
-import { redirectTo } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { analyticsRoutes } from './analytics.routes'
 import { bridgeRoutes } from './bridge.routes'
@@ -21,14 +20,9 @@ const indexRoute = createRoute({
   head: () => ({ meta: [{ title: 'Curve.finance' }] }),
 })
 
-const integrationsRedirectRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/integrations',
-  loader: () => redirectTo('/dex/ethereum/integrations/'),
-})
-
 export const router = createRouter({
   scrollRestoration: true,
+  scrollRestorationBehavior: 'instant',
   defaultPendingComponent: Loading,
   defaultPendingMs: Duration.Transition,
   routeTree: rootRoute.addChildren([
@@ -40,7 +34,6 @@ export const router = createRouter({
     lendRoutes,
     llamalendRoutes,
     bridgeRoutes,
-    integrationsRedirectRoute,
   ]),
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,

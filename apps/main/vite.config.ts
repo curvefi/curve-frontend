@@ -32,7 +32,6 @@ export default defineConfig(({ command }) => ({
   build: {
     sourcemap: true,
     rollupOptions: {
-      output: { strictExecutionOrder: true }, // Wallet discovery must initialize before the connector modules execute.
       onwarn: (warn, handler) =>
         (warn.code === 'INVALID_ANNOTATION' && warn.id?.includes('/node_modules/ox/_esm/core/')) || // ignore `ox` /*#__PURE__*/ annotations
         (warn.code === 'EVAL' && warn.id?.endsWith('/apps/main/src/main.tsx')) // required eval()

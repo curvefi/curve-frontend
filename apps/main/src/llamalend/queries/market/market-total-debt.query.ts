@@ -1,5 +1,4 @@
-import { getMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { getMarket, isLendMarket } from '@/llamalend/llama.utils'
 import type { MarketQuery, MarketParams } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -10,10 +9,9 @@ export const { useQuery: useMarketTotalDebt } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'totalDebt', chainId, marketId }) as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getMarket(marketId)
-    const totalDebt =
-      market instanceof LendMarketTemplate
-        ? await market.stats.totalDebt(IS_GETTER, USE_API)
-        : await market.stats.totalDebt()
+    const totalDebt = isLendMarket(market)
+      ? await market.stats.totalDebt(IS_GETTER, USE_API)
+      : await market.stats.totalDebt()
     return decimal(totalDebt)!
   },
   category: 'llamalend.market',

@@ -1,13 +1,13 @@
 import type { ReactElement } from 'react'
-import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
-import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
-import { NetRateTooltipContent } from '@/dex/features/pool-list/cells/NetRateTooltipContent'
-import { CampaignTooltipContent } from '@/dex/features/pool-list/cells/RewardIcons'
-import { RewardsRateTooltipContent } from '@/dex/features/pool-list/cells/RewardsRateTooltipContent'
-import type { PoolRow, PoolTableMeta } from '@/dex/features/pool-list/types'
-import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import { Chain } from '@primitives/network.utils'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
+import { NetRateTooltipContent } from '@ui/features/pool-list/cells/NetRateTooltipContent'
+import { CampaignTooltipContent } from '@ui/features/pool-list/cells/RewardIcons'
+import { RewardsRateTooltipContent } from '@ui/features/pool-list/cells/RewardsRateTooltipContent'
+import type { PoolRow, PoolTableMeta } from '@ui/features/pool-list/types'
+import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
+import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
 import { constQ, DISABLED_Q } from '@ui/features/queries/util'
 import { ThemeProvider } from '@ui/features/themes/ThemeProvider'
 
@@ -17,7 +17,10 @@ const GAUGE_ADDRESS = '0x07a01471fa544d9c6531b631e6a96a79a9ad05e9'
 const POINTS_CAMPAIGN_LINK = 'https://www.liquity.org/forks/'
 const APR_CAMPAIGN_LINK = 'https://www.liquity.org/'
 const CAMPAIGN_ICON = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms/liquity.png'
-const CRV_TOKEN = { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain } satisfies PoolTableMeta['crvToken']
+const CRV_TOKEN = {
+  address: MAINNET_CRV.address,
+  blockchainId: MAINNET_CRV.blockchainId,
+} satisfies PoolTableMeta['crvToken']
 
 const BOLD = {
   symbol: 'BOLD',

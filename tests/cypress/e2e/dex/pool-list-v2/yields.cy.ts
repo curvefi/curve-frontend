@@ -1,4 +1,3 @@
-import { PoolColumnId } from '@/dex/features/pool-list/columns'
 import { setupDexPoolListV2Mocks, V2_POOL_FIXTURES } from '@cy/support/helpers/dex-pool-list-v2-mocks'
 import {
   DESKTOP_VIEWPORT,
@@ -6,6 +5,7 @@ import {
   showV2PoolColumns,
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
+import { PoolColumnId } from '@ui/features/pool-list/columns'
 
 const POINTS_BADGE = '[data-testid="pool-points-badge"]'
 const EXTRA_REWARD_BADGE = '[data-testid="pool-extra-reward-badge"]'
