@@ -36,7 +36,7 @@ export const useUserPositionsTable = ({ network }: { network: NetworkConfig }, e
 
   const campaigns = useCampaigns({ blockchainId })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
-  const litePoolList = useLitePoolList({ chainId }, enabled && isLite)
+  const litePoolList = useLitePoolList({ chainId }, enabled && isLite && !!userAddress)
   const poolAddresses = useMappedQuery(
     positions,
     useCallback(({ positions }) => positions.map(({ address }) => address), []),
