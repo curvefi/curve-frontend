@@ -10,7 +10,7 @@ import { ProtocolPoolIcons } from './ProtocolPoolIcons'
 const { Spacing, Height } = SizesAndSpaces
 
 /** Two tables share the content column on desktop; long Balancer names would push the numbers out of view. */
-const NAME_MAX_WIDTH = '14rem'
+const NAME_MAX_WIDTH = '10rem'
 
 /** Pool title layout of the DEX pool list, without the link: a click on the row selects the pool. */
 export const MigrationPoolCell = ({

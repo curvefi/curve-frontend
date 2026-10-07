@@ -1,6 +1,7 @@
 import { noop } from 'lodash'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Form } from '@ui/features/forms/components/Form'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
@@ -22,6 +23,8 @@ const { Spacing } = SizesAndSpaces
 
 export type MigrationFormProps = {
   chainId: number
+  /** Whose Balancer LP is migrated; the page decides, so balances and quotes follow it. */
+  userAddress: Address
   blockchainId: string
   position: BalancerPosition
   target: CurveTarget | undefined
@@ -29,7 +32,14 @@ export type MigrationFormProps = {
   targetRow: PoolRow | undefined
 }
 
-export const MigrationForm = ({ chainId, blockchainId, position, target, targetRow }: MigrationFormProps) => {
+export const MigrationForm = ({
+  chainId,
+  userAddress,
+  blockchainId,
+  position,
+  target,
+  targetRow,
+}: MigrationFormProps) => {
   const gauge = targetRow?.gauge
   const gaugeAddress = gauge?.isKilled ? undefined : gauge?.address
   const {
@@ -40,14 +50,13 @@ export const MigrationForm = ({ chainId, blockchainId, position, target, targetR
     priceImpact,
     maxAmount,
     lpPriceUsd,
-    userAddress,
     isApproved,
     onSubmit,
     isPending,
     isDisabled,
     error,
     formErrors,
-  } = useMigrationForm({ chainId, position, target, gaugeAddress })
+  } = useMigrationForm({ chainId, userAddress, position, target, gaugeAddress })
   const targetLpPriceUsd = maybe(target?.pool, getCurveLpPriceUsd)
   const expectedLp = mapQuery(route, ({ amountOut: [amountOut] }) => fromWei(amountOut, LP_DECIMALS))
   const amountError = formErrors.find(([field]) => field === 'amount')?.[1]

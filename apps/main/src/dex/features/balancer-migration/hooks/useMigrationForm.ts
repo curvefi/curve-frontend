@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -19,17 +18,18 @@ const userDefaultValues = { amount: undefined }
 
 export const useMigrationForm = ({
   chainId,
+  userAddress,
   position,
   target,
   gaugeAddress,
 }: {
   chainId: number
+  userAddress: Address
   position: BalancerPosition
   target: CurveTarget | undefined
   /** Active gauge of the target pool, if any. */
   gaugeAddress: Address | undefined
 }) => {
-  const { address: userAddress } = useConnection()
   const tokenIn = position.address
   const maxAmount = useTokenBalance({ chainId, userAddress, tokenAddress: tokenIn })
   const form = useForm<MigrationForm>({

@@ -65,6 +65,7 @@ export const PageBalancerMigration = () => {
                   // Remount per position so the amount resets.
                   key={selected.id}
                   chainId={chainId}
+                  userAddress={userAddress}
                   blockchainId={blockchainId}
                   position={selected}
                   target={target}

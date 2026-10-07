@@ -11,7 +11,7 @@ import type { QueryProp } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import type { BalancerPosition } from '../api/balancer.api'
-import { getBalancerIconTokens, getBalancerNetAprItems } from '../migration.utils'
+import { getBalancerIconTokens, getBalancerNetAprItems, getBalancerTypeLabel } from '../migration.utils'
 import { MigrationPoolCell } from './MigrationPoolCell'
 import { MigrationTableTitle } from './MigrationTableTitle'
 
@@ -33,7 +33,7 @@ const createColumns = (blockchainId: string) =>
           badges={
             <>
               <Badge size="extraSmall" label={t`Balancer v${position.protocolVersion}`} />
-              <Badge size="extraSmall" label={position.type} />
+              <Badge size="extraSmall" label={getBalancerTypeLabel(position.type)} />
               {getStakedUsd(position.userBalance) > 0.01 && (
                 <Badge size="extraSmall" color="warning" label={t`Staked`} />
               )}

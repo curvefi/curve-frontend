@@ -118,3 +118,21 @@ export const PROTOCOL_LOGO_TOKENS = {
   balancer: '0xba100000625a3754423978a60c9317c58a424e3D',
   curve: '0xD533a949740bb3306d119CC777fa900bA034cd52',
 } as const satisfies Record<MigrationProtocol, Address>
+
+const BALANCER_TYPE_LABELS: Record<string, string> = {
+  STABLE: 'Stable',
+  COMPOSABLE_STABLE: 'Composable stable',
+  META_STABLE: 'Meta stable',
+  WEIGHTED: 'Weighted',
+  QUANT_AMM_WEIGHTED: 'QuantAMM',
+  RECLAMM: 'reCLAMM',
+  COW_AMM: 'CoW AMM',
+  GYRO: '2-CLP',
+  GYRO3: '3-CLP',
+  GYROE: 'E-CLP',
+  LIQUIDITY_BOOTSTRAPPING: 'LBP',
+  FIXED_LBP: 'Fixed LBP',
+  FX: 'FX',
+}
+
+export const getBalancerTypeLabel = (type: string) => BALANCER_TYPE_LABELS[type] ?? type
