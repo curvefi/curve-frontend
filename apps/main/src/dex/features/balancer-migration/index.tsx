@@ -43,12 +43,13 @@ export const PageBalancerMigration = () => {
   const [targetAddress, setTargetAddress] = useState<Address>()
 
   const selected = positions.data?.find(({ id }) => id === selectedId) ?? positions.data?.[0]
-  const targets = useMemo(
+  const candidates = useMemo(
     () => (selected && curvePools.data ? findCurveTargets(selected, recordValues(curvePools.data)) : []),
     [selected, curvePools.data],
   )
+  const targetRows = useCurveTargetRows({ network, position: selected, candidates })
+  const { targets } = targetRows
   const target = targets.find(({ pool }) => pool.address === targetAddress) ?? targets[0]
-  const targetRows = useCurveTargetRows({ network, targets })
   const targetGauge = targetRows.rows.find(({ address }) => address === target?.pool.address)?.gauge
 
   const isReady = !!userAddress && isSupportedChain

@@ -4,36 +4,52 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCampaigns } from '@evm-ui/queries/campaigns'
 import { poolToRowData } from '@ui/features/pool-list/utils'
 import { enrichPoolRow, getPoolListAlerts } from '../../pool-list/utils'
-import type { CurveTarget } from '../migration.utils'
+import type { BalancerPosition } from '../api/balancer.api'
+import { type CurveTarget, rankCurveTargets } from '../migration.utils'
 import { useCurveTargetPools } from '../queries/curve-target-pools.query'
 
-/** Pool-list rows for the targets, in target order. Falls back to legacy prices data while pool-list rows load. */
+/**
+ * Ranked targets with their pool-list rows. Falls back to legacy prices data while pool-list rows load,
+ * so the ranking ignores pool types until then.
+ */
 export const useCurveTargetRows = ({
   network,
-  targets,
+  position,
+  candidates,
 }: {
   network: NetworkConfig | undefined
-  targets: CurveTarget[]
+  position: BalancerPosition | undefined
+  candidates: CurveTarget[]
 }) => {
   const { chainId, blockchainId = 'ethereum' } = network ?? {}
-  const poolAddresses = useMemo(() => targets.map(({ pool }) => pool.address), [targets])
+  const poolAddresses = useMemo(() => candidates.map(({ pool }) => pool.address), [candidates])
   const poolRows = useCurveTargetPools({ chainId, poolAddresses }, poolAddresses.length > 0)
   const campaigns = useCampaigns({ blockchainId })
 
-  const rows = useMemo(
+  const ranked = useMemo(
     () =>
-      network
-        ? targets.map(({ pool }) =>
-            enrichPoolRow(
-              poolRows.data?.find(({ address }) => isAddressEqual(address, pool.address)) ??
-                poolToRowData({ ...pool, tradeableCoins: pool.coins, extraRewardsApr: [] }),
-              network,
-              campaigns.data,
-              undefined,
-            ),
+      network && position
+        ? rankCurveTargets(
+            position,
+            candidates.map(target => ({
+              target,
+              row: enrichPoolRow(
+                poolRows.data?.find(({ address }) => isAddressEqual(address, target.pool.address)) ??
+                  poolToRowData({ ...target.pool, tradeableCoins: target.pool.coins, extraRewardsApr: [] }),
+                network,
+                campaigns.data,
+                undefined,
+              ),
+            })),
           )
         : [],
-    [targets, poolRows.data, network, campaigns.data],
+    [candidates, position, poolRows.data, network, campaigns.data],
   )
-  return { rows, alerts: getPoolListAlerts(rows, blockchainId), isFetching: poolRows.isFetching }
+  const rows = useMemo(() => ranked.map(({ row }) => row), [ranked])
+  return {
+    targets: useMemo(() => ranked.map(({ target }) => target), [ranked]),
+    rows,
+    alerts: getPoolListAlerts(rows, blockchainId),
+    isFetching: poolRows.isFetching,
+  }
 }

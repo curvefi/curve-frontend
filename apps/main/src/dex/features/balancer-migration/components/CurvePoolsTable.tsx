@@ -3,6 +3,7 @@ import { evmAddressDisplay, MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
+import { Badge } from '@ui/components/Badge'
 import { PoolBadges } from '@ui/features/pool-list/cells/PoolTitleCell/PoolBadges'
 import { POOL_COLUMNS, PoolColumnId } from '@ui/features/pool-list/columns'
 import { createPoolTableMeta, getPoolTableMeta } from '@ui/features/pool-list/table-meta'
@@ -24,12 +25,18 @@ const getPoolColumn = (id: PoolColumnId) =>
 const COLUMNS = columnHelper.columns([
   columnHelper.accessor('name', {
     header: t`Pool`,
-    cell: ({ row: { original: pool }, table }) => (
+    // Rows keep the ranking order (sorting is disabled), so the first row is the recommendation.
+    cell: ({ row: { original: pool, index }, table }) => (
       <MigrationPoolCell
         blockchainId={pool.blockchainId}
         tokens={pool.tradeableCoins}
         name={pool.name}
-        badges={<PoolBadges pool={pool} alerts={getPoolTableMeta(table).alerts} />}
+        badges={
+          <>
+            {index === 0 && <Badge size="extraSmall" color="highlight" label={t`Recommended`} />}
+            <PoolBadges pool={pool} alerts={getPoolTableMeta(table).alerts} />
+          </>
+        }
       />
     ),
   }),
