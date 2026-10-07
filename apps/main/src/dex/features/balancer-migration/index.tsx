@@ -81,46 +81,49 @@ export const PageBalancerMigration = () => {
       }
       testId="balancer-migration-page"
     >
-      {isReady ? (
-        <Stack direction={{ mobile: 'column', desktop: 'row' }} sx={{ gap: Spacing.md, alignItems: 'start' }}>
-          <Stack sx={{ flex: 1, width: '100%' }}>
-            <BalancerPositionsTable
-              blockchainId={blockchainId}
-              query={q(positions)}
-              selectedId={selected?.id}
-              onSelect={({ id }) => {
-                setSelectedId(id)
-                setTargetAddress(undefined)
-              }}
-              onReload={positions.refetch}
-              isFetching={positions.isFetching}
-            />
+      {/* The layout leaves no gap under the header from tablet up; mobile gets the grid row spacing instead. */}
+      <Stack sx={{ marginBlockStart: { tablet: Spacing.xl.tablet, desktop: Spacing.xl.desktop } }}>
+        {isReady ? (
+          <Stack direction={{ mobile: 'column', desktop: 'row' }} sx={{ gap: Spacing.md, alignItems: 'start' }}>
+            <Stack sx={{ flex: 1, width: '100%' }}>
+              <BalancerPositionsTable
+                blockchainId={blockchainId}
+                query={q(positions)}
+                selectedId={selected?.id}
+                onSelect={({ id }) => {
+                  setSelectedId(id)
+                  setTargetAddress(undefined)
+                }}
+                onReload={positions.refetch}
+                isFetching={positions.isFetching}
+              />
+            </Stack>
+            {!!positions.data?.length && (
+              <>
+                <MigrationArrow />
+                <Stack sx={{ flex: 2, width: '100%' }}>
+                  <CurvePoolsTable
+                    query={q({
+                      data: curvePools.data && targetRows.rows,
+                      isLoading: curvePools.isLoading,
+                      error: curvePools.error,
+                    })}
+                    alerts={targetRows.alerts}
+                    selectedAddress={target?.pool.address}
+                    onSelect={({ address }) => setTargetAddress(address)}
+                    onReload={curvePools.refetch}
+                    isFetching={curvePools.isFetching || targetRows.isFetching}
+                  />
+                </Stack>
+              </>
+            )}
           </Stack>
-          {!!positions.data?.length && (
-            <>
-              <MigrationArrow />
-              <Stack sx={{ flex: 2, width: '100%' }}>
-                <CurvePoolsTable
-                  query={q({
-                    data: curvePools.data && targetRows.rows,
-                    isLoading: curvePools.isLoading,
-                    error: curvePools.error,
-                  })}
-                  alerts={targetRows.alerts}
-                  selectedAddress={target?.pool.address}
-                  onSelect={({ address }) => setTargetAddress(address)}
-                  onReload={curvePools.refetch}
-                  isFetching={curvePools.isFetching || targetRows.isFetching}
-                />
-              </Stack>
-            </>
-          )}
-        </Stack>
-      ) : userAddress ? (
-        <Alert variant="outlined" severity="info">{t`Balancer migration isn't available on this network.`}</Alert>
-      ) : (
-        <ConnectWalletPrompt description={t`Connect your wallet to see your Balancer positions.`} />
-      )}
+        ) : userAddress ? (
+          <Alert variant="outlined" severity="info">{t`Balancer migration isn't available on this network.`}</Alert>
+        ) : (
+          <ConnectWalletPrompt description={t`Connect your wallet to see your Balancer positions.`} />
+        )}
+      </Stack>
     </DetailPageLayout>
   )
 }
