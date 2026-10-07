@@ -40,7 +40,10 @@ const getRateValueOptions = (
   ...(volatile && { color: 'error', formatter: formatCappedRateValue }),
 })
 
-const PRIMARY_METRIC_SIZE = { full: 6, lite: 6, userPositions: 4 } satisfies Record<PoolTableVariant, number>
+const PRIMARY_METRIC_SIZE = { full: 6, lite: 6, userPositions: 4, residualClaims: 6 } satisfies Record<
+  PoolTableVariant,
+  number
+>
 
 const PoolTokens = ({ pool, addressDisplay }: { pool: PoolRow; addressDisplay: AddressDisplay }) => (
   <Stack data-testid="pool-tokens" sx={{ marginBlockStart: Spacing.md, gap: Spacing.sm }}>
@@ -134,44 +137,42 @@ export const PoolExpandedPanel = ({
         </Grid>
       )}
       {variant === 'userPositions' && (
-        <>
-          <Grid size={PRIMARY_METRIC_SIZE[variant]}>
-            <Metric
-              category={PRIMARY_METRIC_CATEGORY}
-              label={POOL_TITLES[PoolColumnId.Deposits]}
-              value={pool.userPosition?.depositsUsd}
-              valueOptions={{ unit: 'dollar' }}
-              notional={toQuery(formatToken(pool.userPosition?.lpBalance, 'LP', 'balance'))}
-            />
-          </Grid>
-          {claimables && (
-            <Grid size={PRIMARY_METRIC_SIZE[variant]}>
-              <Metric
-                category={PRIMARY_METRIC_CATEGORY}
-                label={POOL_TITLES[PoolColumnId.Claimables]}
-                value={pool.userPosition?.claimablesUsd}
-                valueOptions={{ unit: 'dollar' }}
-                valueTooltip={
-                  claimables.data && {
-                    body: (
-                      <ClaimablesTooltipContent
-                        claimables={claimables.data}
-                        blockchainId={pool.blockchainId}
-                        totalUsd={pool.userPosition?.claimablesUsd}
-                      />
-                    ),
-                    clickable: true,
-                    placement: 'top',
-                    title: POOL_TITLES[PoolColumnId.Claimables],
-                  }
-                }
-                icon={maybe(claimables.data, rewards => (
-                  <ClaimablesIcons claimables={rewards} blockchainId={pool.blockchainId} />
-                ))}
-              />
-            </Grid>
-          )}
-        </>
+        <Grid size={PRIMARY_METRIC_SIZE[variant]}>
+          <Metric
+            category={PRIMARY_METRIC_CATEGORY}
+            label={POOL_TITLES[PoolColumnId.Deposits]}
+            value={pool.userPosition?.depositsUsd}
+            valueOptions={{ unit: 'dollar' }}
+            notional={toQuery(formatToken(pool.userPosition?.lpBalance, 'LP', 'balance'))}
+          />
+        </Grid>
+      )}
+      {claimables && (
+        <Grid size={PRIMARY_METRIC_SIZE[variant]}>
+          <Metric
+            category={PRIMARY_METRIC_CATEGORY}
+            label={POOL_TITLES[PoolColumnId.Claimables]}
+            value={pool.userPosition?.claimablesUsd}
+            valueOptions={{ unit: 'dollar' }}
+            valueTooltip={
+              claimables.data && {
+                body: (
+                  <ClaimablesTooltipContent
+                    claimables={claimables.data}
+                    blockchainId={pool.blockchainId}
+                    totalUsd={pool.userPosition?.claimablesUsd}
+                  />
+                ),
+                clickable: true,
+                placement: 'top',
+                title: POOL_TITLES[PoolColumnId.Claimables],
+              }
+            }
+            icon={maybe(claimables.data, rewards => (
+              <ClaimablesIcons claimables={rewards} blockchainId={pool.blockchainId} />
+            ))}
+          />
+        </Grid>
       )}
 
       <Grid size={12}>

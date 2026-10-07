@@ -8,9 +8,9 @@ import { Tooltip } from '@ui/components/Tooltip'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { decimalGreaterThan, ZERO } from '@ui/lib/decimal'
 import { POOL_TITLES, PoolColumnId } from '../columns'
 import type { PoolClaimables } from '../types'
+import { hasClaimableRewards } from '../utils'
 import { ClaimablesTooltipContent } from './ClaimablesTooltipContent'
 import { ClaimablesIcons } from './RewardIcons'
 
@@ -33,7 +33,7 @@ export const ClaimablesCell = ({
     )
   }
 
-  const hasClaimables = totalUsd.data != null && decimalGreaterThan(totalUsd.data, ZERO)
+  const hasClaimables = hasClaimableRewards(claimables.data)
 
   return (
     <WithWrapper

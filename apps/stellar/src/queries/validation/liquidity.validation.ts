@@ -3,8 +3,7 @@ import { MAX_I128 } from '@/stellar/lib/amounts'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { validatePool } from '@/stellar/queries/validation/pool.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type Nullish, maybe, notFalsy, notFalsyArray } from '@primitives/objects.utils'
-import { MAX_SLIPPAGE, MIN_SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
+import { maybe, notFalsy, notFalsyArray, type Nullish } from '@primitives/objects.utils'
 import { poolAmountField, poolMaxAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
 import { fromWei } from '@ui/lib/decimal'
@@ -16,12 +15,6 @@ export type QuoteQuery = PoolQuery & { amounts: (Decimal | undefined)[]; decimal
 export type QuoteParams = FieldsOf<DeepPartial<QuoteQuery>>
 export type ExpectedLpQuery = QuoteQuery & { isDeposit: boolean; maxAmounts?: (Decimal | undefined)[] }
 export type ExpectedLpParams = FieldsOf<DeepPartial<ExpectedLpQuery>>
-
-export const validateSlippage = (slippage: Decimal | Nullish) => {
-  test('slippage', 'Invalid slippage tolerance', () => {
-    enforce(slippage).isDecimal().gte(MIN_SLIPPAGE).lte(MAX_SLIPPAGE)
-  })
-}
 
 export const validateAmount = (field: string, amount: Decimal | Nullish, precision: number | undefined) => {
   test(field, 'Enter a valid non-negative amount', () => {

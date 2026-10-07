@@ -3,12 +3,12 @@ import { useCallback } from 'react'
 import type { Address } from '@primitives/address.utils'
 import { type Nullish, fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
+import type { Campaigns } from '@ui/features/campaigns/types'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { getCampaignsExternalOptions } from './campaigns-external.query'
 import { getCampaignsMarketsMerklOptions } from './campaigns-markets-merkl.query'
 import { getCampaignsPoolsMerklOptions } from './campaigns-pools-merkl.query'
-import type { Campaigns } from './types'
 
 /**
  * Combines multiple campaign records into a single record, merging campaigns by address.

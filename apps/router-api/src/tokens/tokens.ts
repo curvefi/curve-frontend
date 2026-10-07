@@ -1,8 +1,11 @@
 import type { FastifyRequest } from 'fastify'
 import { type Address, getAddress, zeroAddress, isAddressEqual } from 'viem'
+import { zip } from '@primitives/array.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { loadCurve } from '../curve-router/curvejs'
 import type { TokensQuery } from './tokens.schemas'
+
+const MIN_POOL_TVL = 100 // in dollars
 
 /** Build the token catalog with metadata and available trading volumes from the shared Curve.js instance. */
 export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQuery }>) => {
@@ -34,10 +37,15 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
     ...LLAMMAS_DATA,
   }
 
-  const pools = curve
-    .getPoolList()
-    .map(id => poolsData[id])
-    .filter(pool => !blacklist.has(pool.swap_address.toLowerCase()))
+  const pools = notFalsy(
+    ...(await Promise.all(
+      curve
+        .getPoolList()
+        .map(id => poolsData[id])
+        .filter(pool => !blacklist.has(pool.swap_address.toLowerCase()))
+        .map(async pool => Number(await pool.stats.totalLiquidity()) > MIN_POOL_TVL && pool),
+    )),
+  )
 
   const poolVolumes = curve.getIsLiteChain()
     ? undefined
@@ -64,9 +72,40 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
     {},
   )
 
+  // All tokens that are part of a pool's underlying or wrapped composition
+  const poolTokens = pools.flatMap(pool =>
+    [
+      ...zip(
+        pool.underlying_coin_addresses.map(address => getAddress(address)),
+        pool.underlying_coins,
+        pool.underlying_decimals,
+      ),
+      ...zip(
+        pool.wrapped_coin_addresses.map(address => getAddress(address)),
+        pool.wrapped_coins,
+        pool.wrapped_decimals,
+      ),
+    ].map(([address, symbol, decimals]) => [address, { symbol, decimals, volume: tokenVolumes[address] }] as const),
+  )
+
+  // Pool LP tokens themselves
+  const lpTokens = pools.map(pool => {
+    const address = getAddress(pool.lpToken)
+    return (
+      !isAddressEqual(address, zeroAddress) &&
+      decimals[pool.lpToken] &&
+      ([
+        address,
+        { symbol: pool.symbol, decimals: decimals[pool.lpToken], lp: true, volume: tokenVolumes[address] },
+      ] as const)
+    )
+  })
+
   const nativeAddress = getAddress(nativeToken.address)
   const nativeWrappedAddress = getAddress(nativeToken.wrappedAddress)
 
+  // We don't need to make the list distinct by token address, we can simply overwrite previous entries with the same address, since they will have the same symbol and decimals.
+  // The only difference is the volume, which is summed up anyway.
   return fromEntries(
     notFalsy(
       // Native token
@@ -83,44 +122,8 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
           volume: tokenVolumes[nativeWrappedAddress],
         },
       ],
-      // All pool tokens
-      ...pools.flatMap(
-        ({
-          underlying_coin_addresses,
-          underlying_coins,
-          underlying_decimals,
-          wrapped_coin_addresses,
-          wrapped_coins,
-          wrapped_decimals,
-        }) => [
-          ...underlying_coin_addresses.map((stringAddress, index) => {
-            const address = getAddress(stringAddress)
-            return [
-              address,
-              { symbol: underlying_coins[index], decimals: underlying_decimals[index], volume: tokenVolumes[address] },
-            ] as const
-          }),
-          ...wrapped_coin_addresses.map((stringAddress, index) => {
-            const address = getAddress(stringAddress)
-            return [
-              address,
-              { symbol: wrapped_coins[index], decimals: wrapped_decimals[index], volume: tokenVolumes[address] },
-            ] as const
-          }),
-        ],
-      ),
-      // LP entries come last so their metadata wins when an LP token is also a pool coin.
-      ...pools.map(pool => {
-        const address = getAddress(pool.token_address)
-        return (
-          !isAddressEqual(address, zeroAddress) &&
-          decimals[pool.token_address] &&
-          ([
-            address,
-            { symbol: pool.symbol, decimals: decimals[pool.token_address], lp: true, volume: tokenVolumes[address] },
-          ] as const)
-        )
-      }),
+      ...poolTokens,
+      ...lpTokens,
     ),
   )
 }
