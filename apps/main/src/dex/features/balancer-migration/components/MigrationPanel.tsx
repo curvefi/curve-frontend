@@ -171,6 +171,12 @@ export const MigrationPanel = ({ chainId, blockchainId, userAddress, position, t
                   value={quoteValue(preview && formatNumber(preview.valueChangePct, 'percent.value'))}
                 />
                 <ActionInfo
+                  label={t`Fee`}
+                  value={quoteValue(
+                    quote.data && formatNumber(Number(quote.data.routerFeePercentage), 'percent.value'),
+                  )}
+                />
+                <ActionInfo
                   label={t`Price impact`}
                   value={quoteValue(
                     quote.data && formatNumber(quote.data.priceImpact && quote.data.priceImpact / 100, 'percent.value'),

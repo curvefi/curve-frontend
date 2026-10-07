@@ -16,7 +16,7 @@ export type MigrationRouteParams = {
 export type MigrationRoute = Omit<RouterRouteResponse, 'tx'> & { tx: TransactionData; minAmountOut: string }
 
 /**
- * Enso route through our router API, which holds the Enso key. With no LlamaLend controller the router API adds no fee.
+ * Enso route through our router API, which holds the Enso key and adds the flat migration fee (no LlamaLend controller).
  * The user is the Enso `fromAddress`, approving and calling the Enso router (`tx.to`) directly.
  */
 export async function fetchMigrationRoute({

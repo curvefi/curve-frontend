@@ -67,7 +67,7 @@ describe('GET routes mocked unit tests', () => {
     },
   )
 
-  it('requests enso routes without a fee when no controller is given', async () => {
+  it('applies the flat fee to enso routes when no controller is given', async () => {
     const fetchMock = vi.fn<typeof fetch>(() => Promise.resolve(Response.json(ensoResponse)))
     vi.stubGlobal('fetch', fetchMock)
 
@@ -85,7 +85,7 @@ describe('GET routes mocked unit tests', () => {
 
     expect(statusCode).toBe(200)
     const url = getFetchUrl(fetchMock.mock.calls[0][0])
-    expect(url.searchParams.get('fee')).toBeNull()
+    expect(url.searchParams.get('fee')).toBe('2')
   })
 
   it('returns an empty response when 0x has no liquidity', async () => {
