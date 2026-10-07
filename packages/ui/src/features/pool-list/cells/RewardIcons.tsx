@@ -142,7 +142,7 @@ const CrvRewardIcon = ({
   placement,
   range,
 }: {
-  crvToken: PoolTableMeta['crvToken']
+  crvToken: NonNullable<PoolTableMeta['crvToken']>
   placement?: TooltipProps['placement']
   range: NonNullable<ReturnType<typeof getCrvAprRange>>
 }) => (

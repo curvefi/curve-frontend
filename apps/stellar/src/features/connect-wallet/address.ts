@@ -21,8 +21,10 @@ export const asStellarContract = <T extends Address | Nullish>(address: T) =>
 export const shortenAddress = <T extends StellarAddress | StellarContract | Nullish>(address: T) =>
   maybe(address, shortenString)
 
+export const formatAddress = (address: Address) => shortenAddress(asStellarContract(address))
+
 export const stellarAddressDisplay = {
-  formatAddress: (address: Address) => shortenAddress(asStellarContract(address)),
+  formatAddress,
   scanAddressPath: (chainId: number, address: Address) =>
     `${STELLAR_NETWORKS_BY_ID[chainId as keyof typeof STELLAR_NETWORKS_BY_ID].explorerUrl.replace(/\/$/, '')}/contract/${address}`,
 }

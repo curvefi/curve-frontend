@@ -28,7 +28,7 @@ const NetRateIncentivesTooltipItems = ({
   <TooltipItems secondary>
     <TooltipItem title={t`Liquidity incentives`}>{formatNumber(incentivesRate, 'percent.rate')}</TooltipItem>
     {!!unboostedCrvRate && (
-      <TooltipItem variant="subItem" title="CRV" titleIcon={{ ...crvToken, size: 'mui-sm' }}>
+      <TooltipItem variant="subItem" title="CRV" titleIcon={crvToken && { ...crvToken, size: 'mui-sm' }}>
         {formatNumber(unboostedCrvRate, 'percent.rate')}
       </TooltipItem>
     )}
@@ -75,7 +75,7 @@ export const NetRateTooltipContent = ({
             <TooltipItems secondary extraMargin>
               <TooltipItem
                 title={t`Max veCRV Boost (2.5x)`}
-                titleIcon={{ ...crvToken, size: 'mui-sm' }}
+                titleIcon={crvToken && { ...crvToken, size: 'mui-sm' }}
                 variant="independent"
               >
                 {formatNumber(crvRateRange.boostedRate, 'percent.rate')}

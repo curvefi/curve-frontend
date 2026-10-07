@@ -7,23 +7,23 @@ import { t } from '@ui/lib/i18n'
 const getTitle = (copyText: string, title: string | undefined) =>
   title ?? t`${ADDRESS_HEX_PATTERN.test(copyText) ? `Address` : `Value`} has been copied to clipboard`
 
-type CopyToClipboardWithToastOptions = {
-  copyText: string | undefined
-  format?: (text: string) => string
+type CopyToClipboardWithToastOptions<T extends string = string> = {
+  copyText: T | undefined
+  format?: (text: T) => string
   confirmationText?: string
   confirmationMessage?: string
   failureText?: string
   testId?: string
 }
 
-export const copyToClipboardWithToast = async ({
+export const copyToClipboardWithToast = async <T extends string = string>({
   copyText,
   format,
   confirmationText,
   confirmationMessage,
   failureText = t`Failed to copy to clipboard`,
   testId = 'copy-confirmation',
-}: CopyToClipboardWithToastOptions) => {
+}: CopyToClipboardWithToastOptions<T>) => {
   if (!copyText) return showToast({ title: t`Nothing to copy`, severity: 'warning', testId })
 
   const formattedText = format ? format(copyText) : copyText
