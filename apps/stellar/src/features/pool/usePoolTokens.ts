@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { asAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { NetworkParams, UserParams } from '@/stellar/queries/query-types'
 import { getTokenBalanceQueryOptions } from '@/stellar/queries/token/token-balance.query'
@@ -7,7 +8,7 @@ import { getTokenSymbolQueryOptions } from '@/stellar/queries/token/token-symbol
 import { zip } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
-import { aggregateQueries, combineQueries } from '@ui/features/queries/combine'
+import { aggregateQueries, useCombinedQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, q, type QueryProp } from '@ui/features/queries/util'
 
 const disableCombine = () => DISABLED_Q
@@ -21,7 +22,7 @@ export function usePoolTokens({
   tokenAddresses,
 }: NetworkParams & UserParams & { tokenAddresses: QueryProp<StellarContract[]> }) {
   const addresses = tokenAddresses.data ?? [] // useQueries doesn't accept undefined
-  const combine = tokenAddresses.data ? aggregateQueries : disableCombine
+  const combine = tokenAddresses.data ? aggregateQueries : disableCombine // aggregateQueries requires at least one query
   const decimals = useQueries({
     queries: addresses.map(token => getTokenDecimalsQueryOptions({ network, token })),
     combine,
@@ -31,8 +32,13 @@ export function usePoolTokens({
     combine,
   })
   const names = useQueries({ queries: addresses.map(token => getTokenNameQueryOptions({ network, token })), combine })
-  const metadata = combineQueries([decimals, symbols, names], (decimals, symbols, names) =>
-    zip(decimals, symbols, names).map(([decimals, symbol, name]) => ({ decimals, symbol, name })),
+  const metadata = useCombinedQueries(
+    [decimals, symbols, names],
+    useCallback(
+      (decimals, symbols, names) =>
+        zip(decimals, symbols, names).map(([decimals, symbol, name]) => ({ decimals, symbol, name })),
+      [],
+    ),
   )
   const balances = useQueries({
     queries:
@@ -43,13 +49,18 @@ export function usePoolTokens({
       ) ?? [],
     combine: results => results.map(q),
   })
-  const tokens = combineQueries([tokenAddresses, metadata], (addresses, metadata) =>
-    zip(addresses, metadata, balances).map(([address, metadata, balance]) => ({
-      blockchainId: network ?? undefined,
-      address: asAddress(address),
-      symbol: metadata.symbol,
-      balance,
-    })),
+  const tokens = useCombinedQueries(
+    [tokenAddresses, metadata],
+    useCallback(
+      (addresses, metadata) =>
+        zip(addresses, metadata, balances).map(([address, metadata, balance]) => ({
+          blockchainId: network ?? undefined,
+          address: asAddress(address),
+          symbol: metadata.symbol,
+          balance,
+        })),
+      [balances, network],
+    ),
   )
   return { tokens, decimals, maxAmounts: balances }
 }
