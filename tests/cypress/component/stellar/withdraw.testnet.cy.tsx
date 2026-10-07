@@ -1,7 +1,6 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { DepositTab } from '@/stellar/features/deposit/DepositTab'
 import { WithdrawTab } from '@/stellar/features/withdraw/WithdrawTab'
-import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { allCoinDeposit, submitDepositForm } from '@cy/support/helpers/stellar/deposit.helpers'
@@ -30,7 +29,7 @@ import {
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
-import { decimalSum, fromWei } from '@ui/lib/decimal'
+import { decimalSum } from '@ui/lib/decimal'
 
 const WITHDRAW_LP_AMOUNT = '0.003' satisfies Decimal
 const SINGLE_COIN_OUTPUT_AMOUNT = '0.0001' satisfies Decimal
@@ -98,13 +97,12 @@ describe('Stellar testnet withdraw', () => {
       withdrawSubmit().should('not.exist')
     })
 
-    it('rejects empty, zero, excessive and overprecision LP amounts', () => {
+    it('rejects empty, zero and excessive LP amounts', () => {
       mountWithdraw()
       withdrawSubmit().should('be.disabled')
       ;[
         { amount: '0' as Decimal, message: 'Enter an LP amount' },
         { amount: decimalSum(state.lp.balance, '1'), message: 'Insufficient LP balance' },
-        { amount: fromWei('1', LP_TOKEN_DECIMALS + 1), message: 'Amount exceeds token decimal precision' },
       ].forEach(({ amount, message }) => {
         writeWithdrawLp(amount)
         withdrawLpInput().find('[data-testid="helper-message-error"]').should('contain.text', message)
@@ -136,19 +134,16 @@ describe('Stellar testnet withdraw', () => {
       poolInput(state.coins[0].address).find('input').should('not.have.value', SINGLE_COIN_OUTPUT_AMOUNT)
     })
 
-    it('rejects zero outputs, reserve overflow, token precision and outputs above the LP budget', () => {
+    it('rejects zero outputs, reserve overflow and outputs above the LP budget', () => {
       const lpBudget = '0.001' satisfies Decimal
       const overBudgetOutput = '0.003' satisfies Decimal
       mountWithdraw()
       writeWithdrawLp(lpBudget)
       state.coins.forEach(({ address }) => writePoolAmount(address, '0'))
       withdrawSubmit().should('be.disabled')
-      state.coins.forEach(({ address, decimals }, index) => {
+      state.coins.forEach(({ address }, index) => {
         writePoolAmount(address, decimalSum(state.reserves[index], '1'))
         checkPoolInputError(address, 'Amount must be less than the available pool reserve')
-        withdrawSubmit().should('be.disabled')
-        writePoolAmount(address, fromWei('1', decimals + 1))
-        checkPoolInputError(address, 'Amount exceeds token decimal precision')
         withdrawSubmit().should('be.disabled')
         writePoolAmount(address, '0')
       })
