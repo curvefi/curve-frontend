@@ -7,10 +7,10 @@ import { getAprCampaigns, getCrvAprRange } from './cells/utils'
 import type { PoolClaimables, PoolRates, PoolRowData } from './types'
 
 /** Calculates pool yields independently of network routing, alerts, and wallet state. */
-export const getPoolRates = (pool: PoolRowData, campaigns: CampaignRewards[] | undefined): PoolRates => {
+export const getPoolRates = (pool: PoolRowData, campaigns?: CampaignRewards[]): PoolRates => {
   const extraRewardsTotalApr = sum(pool.extraRewardsApr.filter(reward => reward.apr > 0).map(reward => reward.apr))
   const campaignRewardsApr = sum(
-    getAprCampaigns({ campaigns }).flatMap(({ reward }) => (reward?.type === 'apr' ? [reward.value] : [])),
+    getAprCampaigns({ campaigns })?.flatMap(({ reward }) => (reward?.type === 'apr' ? [reward.value] : [])),
   )
   const rewardsApr = extraRewardsTotalApr + campaignRewardsApr
   const crv = pool.gauge?.isKilled ? 0 : pool.crvApr

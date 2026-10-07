@@ -209,11 +209,11 @@ export const RewardIcons = ({
   const campaigns = getAprCampaigns(pool)
   const crvRateRange = crvToken && !pool.gauge?.isKilled ? getCrvAprRange(pool) : null
 
-  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !crvRateRange) return null
+  if (!pointsCampaigns?.length && !extraRewards.length && !campaigns?.length && !crvRateRange) return null
 
   return (
     <IconStack iconSize="sm">
-      {pointsCampaigns.map((campaign, index) => (
+      {pointsCampaigns?.map((campaign, index) => (
         <PointsRewardIcon
           // eslint-disable-next-line @eslint-react/no-array-index-key -- Campaigns may describe distinct point rewards with the same platform metadata.
           key={`${campaign.platform}-${campaign.description}-${index}`}
@@ -231,7 +231,7 @@ export const RewardIcons = ({
           reward={reward}
         />
       ))}
-      {campaigns.map((campaign, index) => (
+      {campaigns?.map((campaign, index) => (
         <CampaignRewardIcon
           // eslint-disable-next-line @eslint-react/no-array-index-key -- Campaigns may describe distinct rewards with the same platform metadata.
           key={`${campaign.platform}-${campaign.description}-${index}`}

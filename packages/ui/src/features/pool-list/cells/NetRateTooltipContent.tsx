@@ -12,7 +12,7 @@ const getIncentivesItems = (pool: PoolRow) => {
   const unboostedCrvRate = pool.gauge?.isKilled ? null : pool.crvApr
   const hasCrvRate = unboostedCrvRate != null && unboostedCrvRate !== 0
 
-  if (!hasCrvRate && !extraRewards.length && !campaigns.length) return null
+  if (!hasCrvRate && !extraRewards.length && !campaigns?.length) return null
   else return { incentivesRate: pool.incentivesApr, extraRewards, campaigns, unboostedCrvRate }
 }
 
@@ -33,7 +33,7 @@ const NetRateIncentivesTooltipItems = ({
       </TooltipItem>
     )}
     <ExtraRewardTooltipItems blockchainId={blockchainId} rewards={extraRewards} />
-    <CampaignRewardTooltipItems campaigns={campaigns} />
+    {campaigns && <CampaignRewardTooltipItems campaigns={campaigns} />}
   </TooltipItems>
 )
 
@@ -88,7 +88,7 @@ export const NetRateTooltipContent = ({
             </TooltipItems>
           </>
         )}
-        {!!pointsCampaigns.length && (
+        {!!pointsCampaigns?.length && (
           <TooltipItems secondary extraMargin>
             <TooltipItem title={t`Points campaigns`} />
             <PointsTooltipItems campaigns={pointsCampaigns} />
