@@ -14,15 +14,15 @@ import { EmptyStateCard } from '@ui/components/EmptyStateCard'
 import { PageHeader } from '@ui/components/PageHeader'
 import { SelectableCard } from '@ui/components/SelectableCard'
 import { TokenIcons } from '@ui/components/TokenIcons'
-import { ListPageLayout } from '@ui/features/layout/ListPageLayout'
+import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { type BalancerPosition, getBalancerChain } from './api/balancer.api'
-import { MigrationPanel } from './components/MigrationPanel'
+import { MigrationFormTabs } from './components/MigrationFormTabs'
 import { findCurveTargets } from './migration.utils'
 import { useBalancerPositions } from './queries/balancer-positions.query'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const PositionCard = ({
   position,
@@ -87,59 +87,63 @@ export const PageBalancerMigration = () => {
     [selected, curvePools.data],
   )
 
+  const isReady = !!userAddress && isSupportedChain
   return (
-    <ListPageLayout>
-      <PageHeader
-        title={t`Migrate from Balancer`}
-        subtitle={t`Balancer is winding down. Move your liquidity into a Curve pool with the same tokens in one transaction.`}
-      />
-
-      {userAddress && isSupportedChain && positions.data?.length ? (
-        <Stack direction={{ mobile: 'column', desktop: 'row' }} sx={{ gap: Spacing.lg, alignItems: 'start' }}>
-          <Stack sx={{ gap: Spacing.sm, flex: 1, width: '100%' }}>
-            <Typography variant="headingXsBold">{t`Your Balancer positions`}</Typography>
-            {positions.data.map(position => (
-              <PositionCard
-                key={position.id}
-                position={position}
-                blockchainId={blockchainId}
-                isSelected={position.id === selected?.id}
-                onSelect={() => setSelectedId(position.id)}
-              />
-            ))}
-          </Stack>
-          <Stack sx={{ flex: 1, width: '100%', maxWidth: { desktop: MaxWidth.connectWallet } }}>
-            {selected && chainId != null && (
-              <MigrationPanel
-                // Remount per position so target and amount selections reset.
-                key={selected.id}
-                chainId={chainId}
-                blockchainId={blockchainId}
-                userAddress={userAddress}
-                position={selected}
-                targets={targets}
-              />
-            )}
-          </Stack>
+    <DetailPageLayout
+      header={
+        <PageHeader
+          title={t`Migrate from Balancer`}
+          subtitle={t`Balancer is winding down. Move your liquidity into a Curve pool with the same tokens in one transaction.`}
+        />
+      }
+      formTabs={
+        isReady && selected && chainId != null
+          ? {
+              // Wait for Curve pools so the form starts with the best target selected; the layout shows a skeleton.
+              content: curvePools.data && (
+                <MigrationFormTabs
+                  // Remount per position so target and amount selections reset.
+                  key={selected.id}
+                  chainId={chainId}
+                  blockchainId={blockchainId}
+                  position={selected}
+                  targets={targets}
+                />
+              ),
+            }
+          : null
+      }
+      testId="balancer-migration-page"
+    >
+      {isReady && positions.data?.length ? (
+        <Stack sx={{ gap: Spacing.sm }}>
+          <Typography variant="headingXsBold">{t`Your Balancer positions`}</Typography>
+          {positions.data.map(position => (
+            <PositionCard
+              key={position.id}
+              position={position}
+              blockchainId={blockchainId}
+              isSelected={position.id === selected?.id}
+              onSelect={() => setSelectedId(position.id)}
+            />
+          ))}
         </Stack>
-      ) : userAddress && isSupportedChain && positions.data ? (
-        <Stack sx={{ alignItems: 'center' }}>
-          <EmptyStateCard
-            title={t`No Balancer positions`}
-            description={t`This wallet has no Balancer liquidity on this network.`}
-          />
-        </Stack>
-      ) : userAddress && isSupportedChain && positions.error ? (
+      ) : isReady && positions.data ? (
+        <EmptyStateCard
+          title={t`No Balancer positions`}
+          description={t`This wallet has no Balancer liquidity on this network.`}
+        />
+      ) : isReady && positions.error ? (
         <Alert variant="outlined" severity="error">
           {t`Couldn't load Balancer positions:`} {positions.error.message}
         </Alert>
-      ) : userAddress && isSupportedChain ? (
+      ) : isReady ? (
         <Skeleton variant="rectangular" height={200} />
       ) : userAddress ? (
         <Alert variant="outlined" severity="info">{t`Balancer migration isn't available on this network.`}</Alert>
       ) : (
         <ConnectWalletPrompt description={t`Connect your wallet to see your Balancer positions.`} />
       )}
-    </ListPageLayout>
+    </DetailPageLayout>
   )
 }

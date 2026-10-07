@@ -1,4 +1,6 @@
+import { BigNumber } from 'bignumber.js'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { addQueryString, fetchJson } from '@primitives/fetch.utils'
 import type { RouterRouteResponse, TransactionData } from '@primitives/router.utils'
 
@@ -8,12 +10,13 @@ export type MigrationRouteParams = {
   tokenIn: Address
   tokenOut: Address
   /** Raw token units. */
-  amountIn: bigint
-  /** Basis points. */
-  slippageBps: number
+  amountIn: Decimal
+  /** Percent. */
+  slippage: Decimal
 }
 
-export type MigrationRoute = Omit<RouterRouteResponse, 'tx'> & { tx: TransactionData; minAmountOut: string }
+/** `minAmountOut` is in raw token units. */
+export type MigrationRoute = Omit<RouterRouteResponse, 'tx'> & { tx: TransactionData; minAmountOut: Decimal }
 
 /**
  * Enso route through our router API, which holds the Enso key and adds the flat migration fee (no LlamaLend controller).
@@ -25,21 +28,17 @@ export async function fetchMigrationRoute({
   tokenIn,
   tokenOut,
   amountIn,
-  slippageBps,
+  slippage,
 }: MigrationRouteParams): Promise<MigrationRoute> {
   const [route] = await fetchJson<RouterRouteResponse[]>(
-    `/api/router/v1/routes${addQueryString({
-      chainId,
-      router: 'enso',
-      tokenIn,
-      tokenOut,
-      amountIn: amountIn.toString(),
-      zapAddress: userAddress,
-      slippage: slippageBps / 100, // router API takes percent
-    })}`,
+    `/api/router/v1/routes${addQueryString({ chainId, router: 'enso', tokenIn, tokenOut, amountIn, zapAddress: userAddress, slippage })}`,
   )
   if (!route?.tx) throw new Error('No Enso route found')
   // The router API drops Enso's minAmountOut; the calldata still enforces it, so this mirrors it for display.
-  const minAmountOut = (BigInt(route.amountOut[0]) * BigInt(10_000 - slippageBps)) / 10_000n
-  return { ...route, tx: route.tx, minAmountOut: minAmountOut.toString() }
+  const minAmountOut = new BigNumber(route.amountOut[0])
+    .times(new BigNumber(100).minus(slippage))
+    .div(100)
+    .integerValue(BigNumber.ROUND_DOWN)
+    .toFixed() as Decimal
+  return { ...route, tx: route.tx, minAmountOut }
 }
