@@ -1,11 +1,11 @@
 import type { Pool } from '@curvefi/prices-api/pools'
-import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import {
   type PoolClassification,
   poolTypeClassifications,
 } from '@ui/features/pool-list/cells/PoolTitleCell/classifications'
 import type { PoolRow } from '@ui/features/pool-list/types'
+import { CURVE_ASSETS_URL, CURVE_LOGO_URL } from '@ui/lib/resource.constants'
 import type { BalancerPosition } from './api/balancer.api'
 
 const MIN_TARGET_TVL_USD = 1_000
@@ -115,8 +115,7 @@ export const getBalancerIconTokens = ({ poolTokens }: BalancerPosition) =>
 
 export type MigrationProtocol = 'balancer' | 'curve'
 
-/** Mainnet BAL and CRV, whose icons are the protocol logos. */
-export const PROTOCOL_LOGO_TOKENS = {
-  balancer: '0xba100000625a3754423978a60c9317c58a424e3D',
-  curve: '0xD533a949740bb3306d119CC777fa900bA034cd52',
-} as const satisfies Record<MigrationProtocol, Address>
+export const PROTOCOLS = {
+  balancer: { name: 'Balancer', logoUrl: `${CURVE_ASSETS_URL}/platforms/balancer.png` },
+  curve: { name: 'Curve', logoUrl: CURVE_LOGO_URL },
+} as const satisfies Record<MigrationProtocol, { name: string; logoUrl: string }>
