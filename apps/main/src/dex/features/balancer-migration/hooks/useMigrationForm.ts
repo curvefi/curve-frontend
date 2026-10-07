@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
+import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
@@ -20,10 +21,13 @@ export const useMigrationForm = ({
   chainId,
   position,
   target,
+  gaugeAddress,
 }: {
   chainId: number
   position: BalancerPosition
   target: CurveTarget | undefined
+  /** Active gauge of the target pool, if any. */
+  gaugeAddress: Address | undefined
 }) => {
   const { address: userAddress } = useConnection()
   const tokenIn = position.address
@@ -34,23 +38,18 @@ export const useMigrationForm = ({
       ...userDefaultValues,
       maxAmount: undefined,
       targetLpToken: target?.pool.lpTokenAddress,
+      stake: false,
       slippage: SLIPPAGE.crypto.default,
     },
   })
   useFormSync(form, { maxAmount: maxAmount.data, targetLpToken: target?.pool.lpTokenAddress })
   const values = form.watchValues()
+  const tokenOut = values.stake && gaugeAddress ? gaugeAddress : values.targetLpToken
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
-      () => ({
-        chainId,
-        userAddress,
-        tokenIn,
-        tokenOut: values.targetLpToken,
-        amount: values.amount,
-        slippage: values.slippage,
-      }),
-      [chainId, userAddress, tokenIn, values.targetLpToken, values.amount, values.slippage],
+      () => ({ chainId, userAddress, tokenIn, tokenOut, amount: values.amount, slippage: values.slippage }),
+      [chainId, userAddress, tokenIn, tokenOut, values.amount, values.slippage],
     ),
     userDefaultValues,
   )
@@ -89,7 +88,7 @@ export const useMigrationForm = ({
     lpPriceUsd,
     userAddress,
     isApproved: q(useMigrationIsApproved(params)),
-    onSubmit: form.handleSubmit(onSubmit),
+    onSubmit: form.handleSubmit(values => onSubmit({ ...values, tokenOut })),
     isPending,
     isDisabled: !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, false),
     error,

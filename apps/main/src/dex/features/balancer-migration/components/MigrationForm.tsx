@@ -1,9 +1,11 @@
 import { noop } from 'lodash'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { Form } from '@ui/features/forms/components/Form'
+import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { mapQuery, q } from '@ui/features/queries/util'
@@ -23,9 +25,10 @@ export type MigrationFormProps = {
   blockchainId: string
   position: BalancerPosition
   target: CurveTarget | undefined
+  gaugeAddress: Address | undefined
 }
 
-export const MigrationForm = ({ chainId, blockchainId, position, target }: MigrationFormProps) => {
+export const MigrationForm = ({ chainId, blockchainId, position, target, gaugeAddress }: MigrationFormProps) => {
   const {
     form,
     values,
@@ -41,7 +44,7 @@ export const MigrationForm = ({ chainId, blockchainId, position, target }: Migra
     isDisabled,
     error,
     formErrors,
-  } = useMigrationForm({ chainId, position, target })
+  } = useMigrationForm({ chainId, position, target, gaugeAddress })
   const targetLpPriceUsd = maybe(target?.pool, getCurveLpPriceUsd)
   const expectedLp = mapQuery(route, ({ amountOut: [amountOut] }) => fromWei(amountOut, LP_DECIMALS))
   const amountError = formErrors.find(([field]) => field === 'amount')?.[1]
@@ -86,7 +89,7 @@ export const MigrationForm = ({ chainId, blockchainId, position, target }: Migra
 
         <LargeTokenInput
           name="expectedLp"
-          label={t`Curve LP to receive`}
+          label={values.stake ? t`Staked Curve LP to receive` : t`Curve LP to receive`}
           testId="balancer-migration-target"
           balance={expectedLp}
           onBalance={noop}
@@ -106,6 +109,14 @@ export const MigrationForm = ({ chainId, blockchainId, position, target }: Migra
           {!target && <HelperMessage message={t`Select a Curve pool to migrate to.`} isError />}
         </LargeTokenInput>
       </Stack>
+
+      <CheckboxField
+        checked={values.stake && !!gaugeAddress}
+        label={t`Deposit & stake`}
+        disabled={!gaugeAddress}
+        testIdPrefix="balancer-migration-stake"
+        onChange={({ target: { checked } }) => form.update({ stake: checked })}
+      />
 
       <EvmFormButton
         pending={isPending}

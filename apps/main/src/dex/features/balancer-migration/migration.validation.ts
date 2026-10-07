@@ -17,6 +17,8 @@ export type MigrationForm = {
   amount: Decimal | undefined
   maxAmount: Decimal | undefined
   targetLpToken: Address | undefined
+  /** Route into the target's gauge, so the user receives staked LP. */
+  stake: boolean
   slippage: Decimal
 }
 

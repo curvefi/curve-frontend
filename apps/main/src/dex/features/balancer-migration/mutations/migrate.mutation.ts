@@ -63,8 +63,8 @@ export const useMigrateMutation = ({ chainId, userAddress, tokenIn, poolName, on
   })
 
   const onSubmit = useCallback(
-    ({ targetLpToken, amount, slippage }: { targetLpToken?: Address; amount?: Decimal; slippage: Decimal }) =>
-      mutate({ tokenOut: targetLpToken!, amount: amount!, slippage }),
+    ({ tokenOut, amount, slippage }: { tokenOut?: Address; amount?: Decimal; slippage: Decimal }) =>
+      mutate({ tokenOut: tokenOut!, amount: amount!, slippage }),
     [mutate],
   )
 

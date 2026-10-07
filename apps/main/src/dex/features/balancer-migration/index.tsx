@@ -49,6 +49,7 @@ export const PageBalancerMigration = () => {
   )
   const target = targets.find(({ pool }) => pool.address === targetAddress) ?? targets[0]
   const targetRows = useCurveTargetRows({ network, targets })
+  const targetGauge = targetRows.rows.find(({ address }) => address === target?.pool.address)?.gauge
 
   const isReady = !!userAddress && isSupportedChain
   return (
@@ -71,6 +72,7 @@ export const PageBalancerMigration = () => {
                   blockchainId={blockchainId}
                   position={selected}
                   target={target}
+                  gaugeAddress={targetGauge?.isKilled ? undefined : targetGauge?.address}
                 />
               ),
             }
