@@ -1,7 +1,6 @@
-import { getMarket, hasDeleverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { getMarket, hasDeleverage, hasZapV2, isMintMarket } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { UserMarketQuery } from '@evm-ui/queries/query-types'
 import { parseMutationRoute, type RouteMutationMeta } from '@evm-ui/queries/router-api'
 import { Decimal } from '@primitives/decimal.utils'
@@ -34,7 +33,7 @@ export function getRepayImplementation(
   const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
     v => !!+v,
   )
-  if (market instanceof MintMarketTemplate) {
+  if (isMintMarket(market)) {
     if (!hasUserCollateral && !hasStateCollateral) return ['unleveragedMint', market, [userBorrowed]] as const
     if (hasZapV2(market) && !hasUserBorrowed) {
       const route = (routeMeta as RouteMutationMeta) ?? parseMutationRoute(market, { routeId, slippage, isRepay: true })

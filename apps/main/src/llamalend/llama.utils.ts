@@ -99,11 +99,14 @@ export const hasLeverageValue = <T extends MarketTemplate | Nullish>(market: T) 
 export const isLendMarket = (market: MarketTemplate | Nullish): market is LendMarketTemplate =>
   market instanceof LendMarketTemplate
 
+export const isMintMarket = (market: MarketTemplate | Nullish): market is MintMarketTemplate =>
+  market instanceof MintMarketTemplate
+
 export const hasLegacyMintLeverage = (market: MarketTemplate) =>
-  market instanceof MintMarketTemplate && market.index == null && market.leverageZap !== zeroAddress
+  isMintMarket(market) && market.index == null && market.leverageZap !== zeroAddress
 
 const hasV1Deleverage = (market: MarketTemplate) =>
-  market instanceof MintMarketTemplate && market.index == null && market.deleverageZap !== zeroAddress
+  isMintMarket(market) && market.index == null && market.deleverageZap !== zeroAddress
 
 export const hasDeleverage = (market: MarketTemplate) => hasZapV2(market) || hasV1Deleverage(market)
 
@@ -124,7 +127,7 @@ export const isPositionLeveraged = (leverage: Amount | Nullish) =>
   leverage != null && !BigNumber(leverage).isZero() && !BigNumber(leverage).isEqualTo(1)
 
 export const canRepayFromStateCollateral = <T extends MarketTemplate | undefined>(market: T) =>
-  maybe(market, market => (market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)))
+  maybe(market, market => (isMintMarket(market) ? hasDeleverage(market) : hasLeverage(market)))
 
 export const canRepayFromUserCollateral = <T extends MarketTemplate | undefined>(market: T) => hasZapV2(market)
 
@@ -158,10 +161,10 @@ export const getLendMarketVersion = (market: LendMarketTemplate): MarketVersion 
   )
 
 const getBorrowSymbol = (market: MarketTemplate) =>
-  market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol
+  isMintMarket(market) ? CRVUSD.symbol : market.borrowed_token.symbol
 
 const getCollateralSymbol = (market: MarketTemplate) =>
-  market instanceof MintMarketTemplate ? market.collateralSymbol : market.collateral_token.symbol
+  isMintMarket(market) ? market.collateralSymbol : market.collateral_token.symbol
 
 export const formatTokenAmounts = (
   market: MarketTemplate,
@@ -211,7 +214,7 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
     market,
     apiMarket,
     (market: MarketTemplate): MarketTokens =>
-      market instanceof MintMarketTemplate
+      isMintMarket(market)
         ? {
             collateralToken: {
               symbol: market.collateralSymbol,
