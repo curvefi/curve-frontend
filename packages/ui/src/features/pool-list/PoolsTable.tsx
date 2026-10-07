@@ -116,9 +116,16 @@ export const PoolsTable = ({
         table={table}
         anchorRef={anchorRef}
         emptyState={{
-          title: t`Can't find what you're looking for?`,
-          description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
-          button: { label: t`Show all pools`, onClick: resetFilters, testId: 'dex-pool-empty-state-reset' },
+          ...(hasActiveFilters
+            ? {
+                title: t`Can't find what you're looking for?`,
+                description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
+                button: { label: t`Show all pools`, onClick: resetFilters, testId: 'dex-pool-empty-state-reset' },
+              }
+            : {
+                title: t`We couldn't find any results.`,
+                description: t`If this is unexpected, feel free to ask us on Telegram.`,
+              }),
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list`, description: tableQuery.error?.message, onReload }}

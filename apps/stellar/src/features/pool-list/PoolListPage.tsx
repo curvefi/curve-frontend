@@ -10,7 +10,6 @@ import { usePoolsPagination } from '@ui/features/pool-list/hooks/usePoolsPaginat
 import { usePoolsSorting } from '@ui/features/pool-list/hooks/usePoolsSorting'
 import { PoolsTable } from '@ui/features/pool-list/PoolsTable'
 import type { PoolAlerts, PoolRow } from '@ui/features/pool-list/types'
-import { q } from '@ui/features/queries/util'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { useParams } from '@ui/hooks/router'
 
@@ -24,15 +23,15 @@ export const PoolListPage = () => {
   const { network } = useParams<NetworkQuery>()
   const { address, connect, isConnected, isConnecting } = useWallet()
   const { isLite } = STELLAR_NETWORKS[network]
-  const query = usePoolList({ network })
   const pagination = usePoolsPagination()
+  const { isFetching, refetch, pageCount, query } = usePoolList({ network })
   return (
     <ListPageLayout>
       <PoolsTable
-        tableQuery={q(query)}
-        isFetching={query.isFetching}
-        onReload={query.refetch}
-        pageCount={1}
+        tableQuery={query}
+        isFetching={isFetching}
+        onReload={refetch}
+        pageCount={pageCount}
         userHasPositions={undefined}
         alerts={NO_ALERTS}
         isLite={isLite}
