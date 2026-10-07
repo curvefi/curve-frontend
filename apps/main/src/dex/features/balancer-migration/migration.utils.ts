@@ -8,7 +8,7 @@ import {
 import type { PoolRow } from '@ui/features/pool-list/types'
 import type { BalancerPosition } from './api/balancer.api'
 
-const MIN_TARGET_TVL_USD = 10_000
+const MIN_TARGET_TVL_USD = 1_000
 /** Candidates fetched for type-aware ranking, of which `MAX_SUGGESTIONS` are shown. */
 const MAX_CANDIDATES = 10
 const MAX_SUGGESTIONS = 5

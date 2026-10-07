@@ -2,6 +2,8 @@ import type { Address } from '@primitives/address.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 
 const BALANCER_API_URL = 'https://api-v3.balancer.fi/'
+/** Dust positions aren't worth the migration gas. */
+const MIN_POSITION_USD = 1
 
 /** Balancer API `GqlChain` values for the chains both Balancer and Curve support. */
 const BALANCER_CHAINS: Record<number, string> = {
@@ -70,6 +72,6 @@ export async function fetchBalancerPositions(chainId: number, userAddress: Addre
   }>(BALANCER_API_URL, { body: { query: USER_POOLS_QUERY, variables: { chain, userAddress } } })
   if (errors?.length) throw new Error(`Balancer API: ${errors.map(e => e.message).join(', ')}`)
   return (data?.poolGetPools ?? []).filter(
-    (pool): pool is BalancerPosition => !!pool.userBalance && Number(pool.userBalance.totalBalance) > 0,
+    (pool): pool is BalancerPosition => !!pool.userBalance && pool.userBalance.totalBalanceUsd >= MIN_POSITION_USD,
   )
 }
