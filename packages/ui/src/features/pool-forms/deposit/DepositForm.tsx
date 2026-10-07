@@ -1,6 +1,7 @@
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { type ErrorKey } from '@ui/features/forms'
 import { Form } from '@ui/features/forms/components/Form'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
@@ -19,7 +20,7 @@ export type DepositFormProps<TValues extends PoolDepositForm = PoolDepositForm> 
   canDepositWrapped?: boolean
   isWrappedOnly?: boolean
   inputsDisabled: PoolTokenDisabled
-  maxAmounts: QueryProp<Decimal>[]
+  maxAmounts: QueryProp<Decimal>[] | undefined
 }
 
 export const DepositForm = <TValues extends PoolDepositForm>({
@@ -55,7 +56,11 @@ export const DepositForm = <TValues extends PoolDepositForm>({
     <BalancedDepositCheckbox
       reserves={reserves}
       isConnected={wallet.isConnected}
-      disabled={isPending || isSeed.data !== false || [tokens, reserves, ...maxAmounts].some(q => q.isLoading)}
+      disabled={
+        isPending ||
+        isSeed.data !== false ||
+        notFalsyArray<QueryProp<unknown>>(tokens, [reserves], maxAmounts).some(q => q.isLoading)
+      }
     />
     <FormButton
       {...wallet}
@@ -69,7 +74,7 @@ export const DepositForm = <TValues extends PoolDepositForm>({
     <FormAlerts<ErrorKey<TValues> | PoolTokenField>
       error={error}
       formErrors={formErrors}
-      handledErrors={allTokenFields(tokens.data?.length) ?? []}
+      handledErrors={allTokenFields(tokens?.length) ?? []}
       userAddress={userAddress}
     />
   </Form>

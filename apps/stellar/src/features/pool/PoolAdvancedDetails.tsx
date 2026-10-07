@@ -17,7 +17,11 @@ const FEE_DECIMALS = 10
 
 const hasRampFinished = (futureATime: number, currentDate: Date) => futureATime < currentDate.valueOf()
 
-export const PoolAdvancedDetails = ({ network, pool, tokens }: PoolQuery & { tokens: QueryProp<PoolToken[]> }) => {
+export const PoolAdvancedDetails = ({
+  network,
+  pool,
+  tokens,
+}: PoolQuery & { tokens: QueryProp<PoolToken>[] | undefined }) => {
   const currentDate = useCurrentDate()
   const params = { network, pool }
   const a = usePoolA(params)
@@ -34,7 +38,7 @@ export const PoolAdvancedDetails = ({ network, pool, tokens }: PoolQuery & { tok
   const futureATime = maybe(future_a_time, future_a_time => Number(future_a_time) * 1000)
   const initialATime = maybe(initial_a_time, initial_a_time => Number(initial_a_time) * 1000)
 
-  const tokenSymbols = tokens.data?.map(({ symbol }, index) => symbol ?? t`Token ${index + 1}`)
+  const tokenSymbols = tokens?.map(({ data }, index) => data?.symbol ?? t`Token ${index + 1}`)
   return (
     <AdvancedDetails
       chainId={STELLAR_NETWORKS[network].chainId}

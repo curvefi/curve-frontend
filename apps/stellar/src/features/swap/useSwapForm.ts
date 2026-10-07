@@ -42,13 +42,13 @@ export function useSwapForm(poolParams: PoolQuery) {
   const config = usePoolConfig(poolParams)
   const reserves = usePoolReserves(poolParams)
   const tokenAddresses = mapQuery(config, config => config.tokens)
-  const { tokens, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimalsData, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const form = useForm<SwapFormValues>(formOptions)
   const { formState, reset } = form
   const values = form.watchValues()
   const { fromIndex, toIndex, editedSide } = values
-  const maxAmount = maxAmounts[fromIndex]?.data
-  const maxOutput = maybes([reserves.data?.[toIndex], decimals.data?.[toIndex]], fromWei)
+  const maxAmount = maxAmounts?.[fromIndex]?.data
+  const maxOutput = maybes([reserves.data?.[toIndex], decimalsData?.[toIndex]], fromWei)
 
   const [params, isDebouncing] = useFormDebounce<SwapFormQuery, 'inputAmount' | 'outputAmount' | 'editedSide'>(
     useMemo(
@@ -61,7 +61,7 @@ export function useSwapForm(poolParams: PoolQuery) {
         fromIndex,
         toIndex,
         editedSide,
-        decimals: decimals.data,
+        decimals: decimalsData,
         maxAmount,
         maxOutput,
         slippage: values.slippage,
@@ -75,7 +75,7 @@ export function useSwapForm(poolParams: PoolQuery) {
         fromIndex,
         toIndex,
         editedSide,
-        decimals.data,
+        decimalsData,
         maxAmount,
         maxOutput,
         values.slippage,
@@ -89,7 +89,7 @@ export function useSwapForm(poolParams: PoolQuery) {
   const minimum = mapQuery(outputAmount, value =>
     maybe(params.decimals?.[toIndex], precision => calculateMinimumReceived(value, params.slippage, precision)),
   )
-  useFormSync(form, { decimals: decimals.data, maxAmount, maxOutput, minimum: minimum.data })
+  useFormSync(form, { decimals: decimalsData, maxAmount, maxOutput, minimum: minimum.data })
 
   // Don't overwrite form while a changed pair or amount is being debounced
   useFormSync(form, { inputAmount: inputAmount.data }, !isDebouncing && editedSide === 'receive')
@@ -110,14 +110,14 @@ export function useSwapForm(poolParams: PoolQuery) {
   return {
     form,
     tokens,
-    fromSymbol: tokens.data?.[fromIndex]?.symbol,
-    toSymbol: tokens.data?.[toIndex]?.symbol,
+    fromSymbol: tokens?.[fromIndex]?.data?.symbol,
+    toSymbol: tokens?.[toIndex]?.data?.symbol,
     params,
     inputAmount,
     outputAmount,
     isPending,
     isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
-    isLoading: isPending || priceImpact.isLoading,
+    isLoading: isPending || config.isLoading || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: swapError,

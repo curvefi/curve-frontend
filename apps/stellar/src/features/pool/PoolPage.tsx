@@ -30,8 +30,8 @@ export const PoolPage = () => {
   const params = { network, pool }
   const config = usePoolConfig(params)
   const tokenAddresses = mapQuery(config, config => config.tokens)
-  const { tokens, decimals } = usePoolTokens({ network, account, tokenAddresses })
-  const composition = usePoolComposition({ ...params, tokenAddresses, tokens, decimals })
+  const { tokens, symbols, decimals } = usePoolTokens({ network, account, tokenAddresses })
+  const composition = usePoolComposition({ ...params, tokenAddresses, symbols, decimals })
 
   return (
     <DetailPageLayout

@@ -8,6 +8,7 @@ import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenCell } from '@ui/components/TokenCell'
 import { TokenInfo, type TokenInfoTokenIconProps } from '@ui/components/TokenInfo'
 import { Tooltip } from '@ui/components/Tooltip'
+import { mapQuery, type QueryProp, toValue } from '@ui/features/queries/util'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
@@ -17,9 +18,9 @@ export type PoolCompositionRow = {
   source: TokenInfoTokenIconProps
   displayAddress: string
   explorerUrl?: string
-  marketShare?: Amount
-  amount?: Amount
-  amountUsd?: Amount
+  marketShare: QueryProp<Amount>
+  amount: QueryProp<Amount>
+  amountUsd: QueryProp<Amount>
   price?: number
 }
 
@@ -62,7 +63,11 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     header: headers[PoolCompositionColumnId.Balance],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <Typography>{formatNumber(getValue(), 'percent.rate')}</Typography>
+        <TokenInfo
+          icon={null}
+          iconPosition="right"
+          primary={mapQuery(getValue(), value => formatNumber(value, 'percent.rate'))}
+        />
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -72,16 +77,16 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     id: PoolCompositionColumnId.TokenAmount,
     header: headers[PoolCompositionColumnId.TokenAmount],
     cell: ({ getValue, row }) => {
-      const symbol = row.original.source.primary
+      const symbol = toValue(row.original.source.primary)
       return (
         <InlineTableCell sx={{ alignItems: 'end' }}>
           <Tooltip
             title={maybe(
-              getValue(),
+              getValue().data,
               value =>
                 // TokenInfo primary is ReactNode; we only want to show a tooltip if it's a pure string (which it should for all our cases)
                 typeof symbol === 'string' &&
-                `${formatToken(value, symbol)}${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
+                `${formatToken(value, symbol)}${maybe(row.original.amountUsd.data, value => ` / ${value}`) ?? ''}`,
             )}
             placement="top"
           >
@@ -90,8 +95,8 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
               <TokenInfo
                 icon={null}
                 iconPosition="right"
-                primary={formatNumber(getValue(), 'token.compact')}
-                secondary={formatNumber(row.original.amountUsd, 'usd.notional')}
+                primary={mapQuery(getValue(), value => formatNumber(value, 'token.compact'))}
+                secondary={mapQuery(row.original.amountUsd, value => formatNumber(value, 'usd.notional'))}
               />
             </Box>
           </Tooltip>

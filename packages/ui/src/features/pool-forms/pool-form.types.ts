@@ -8,7 +8,7 @@ import type { PoolToken } from './PoolTokenInput'
 
 export type PoolFormProps<TValues extends FieldValues> = {
   form: UseFormReturn<TValues>
-  tokens: QueryProp<PoolToken[]>
+  tokens: QueryProp<PoolToken>[] | undefined
   onSubmit: FormSubmitHandler
   isPending: boolean
   isLoading: boolean

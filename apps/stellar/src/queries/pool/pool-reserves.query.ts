@@ -1,12 +1,11 @@
+import { useMemo } from 'react'
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import type { PoolParams, PoolQuery } from '@/stellar/queries/query-types'
 import { poolValidationSuite } from '@/stellar/queries/validation/pool.validation'
-import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
-import { useCombinedQueries } from '@ui/features/queries/combine'
+import { combineQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import type { Query, QueryProp } from '@ui/features/queries/util'
+import { mapQuery, type Query, type QueryProp } from '@ui/features/queries/util'
 import { fromWei } from '@ui/lib/decimal'
 
 export const { useQuery: usePoolReserves, invalidate: invalidatePoolReserves } = queryFactory({
@@ -17,11 +16,14 @@ export const { useQuery: usePoolReserves, invalidate: invalidatePoolReserves } =
   validationSuite: poolValidationSuite,
 })
 
-const getReserveAmounts = (reserves: Decimal[], decimals: (number | undefined)[]) =>
-  zip(reserves, decimals).map(([amount, decimals]) => maybe(decimals, d => fromWei(amount, d)))
+export const useScaleReserves = ({ data, error, isLoading }: Query<Decimal[]>, decimals: Query<number>[] | undefined) =>
+  useMemo(
+    () =>
+      decimals?.map((decimals, index) =>
+        combineQueries([mapQuery({ data, error, isLoading }, amounts => amounts[index]), decimals], fromWei),
+      ),
+    [data, error, isLoading, decimals],
+  )
 
-export const useScaleReserves = (reserves: Query<Decimal[]>, decimals: Query<(number | undefined)[]>) =>
-  useCombinedQueries([reserves, decimals], getReserveAmounts)
-
-export const usePoolReserveAmounts = (params: PoolParams, decimals: QueryProp<(number | undefined)[]>) =>
+export const usePoolReserveAmounts = (params: PoolParams, decimals: QueryProp<number>[] | undefined) =>
   useScaleReserves(usePoolReserves(params), decimals)

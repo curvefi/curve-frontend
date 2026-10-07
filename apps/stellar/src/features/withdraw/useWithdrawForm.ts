@@ -47,7 +47,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
-  const { tokens, decimals } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
   const reserves = usePoolReserves(poolParams)
   const maxAmounts = useScaleReserves(reserves, decimals)
@@ -73,12 +73,12 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         pool,
         account,
         tokenCount,
-        decimals: decimals.data,
+        decimals: decimalsData,
         slippage: values.slippage,
         supply: supply.data,
         seedLock: config.data?.seedLock,
         maxLpAmount: lpBalance.data,
-        maxAmounts: maxAmounts.data,
+        maxAmounts: maxAmounts?.map(q => q.data),
       }),
       [
         values,
@@ -86,11 +86,11 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         pool,
         account,
         tokenCount,
-        decimals.data,
+        decimalsData,
         supply.data,
         config.data?.seedLock,
         lpBalance.data,
-        maxAmounts.data,
+        maxAmounts,
       ],
     ),
     userDefaultValues,
@@ -104,7 +104,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   )
 
   useFormSync(form, {
-    decimals: decimals.data,
+    decimals: decimalsData,
     supply: supply.data,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
@@ -127,7 +127,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   return {
     form,
     reserves: q(reserves),
-    decimals: q(decimals),
+    decimals,
     lpTokenDecimals: LP_TOKEN_DECIMALS,
     maxAmounts,
     params,
@@ -136,7 +136,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
     isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
-    isLoading: isPending || priceImpact.isLoading,
+    isLoading: isPending || config.isLoading || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: withdrawError,

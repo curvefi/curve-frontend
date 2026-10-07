@@ -7,9 +7,10 @@ import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { shortenAddress } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
+import { zip } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
-import { q } from '@ui/features/queries/util'
+import { constQ, q } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
 export const usePoolComposition = ({
@@ -50,8 +51,7 @@ export const usePoolComposition = ({
       })
     : currencyReserves?.tokens
 
-  const rows: PoolCompositionRow[] = tokens.map((symbol, index) => {
-    const tokenAddress = tokenAddresses[index]
+  const rows: PoolCompositionRow[] = zip(tokens, tokenAddresses).map(([symbol, tokenAddress]) => {
     const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
     return {
@@ -63,9 +63,9 @@ export const usePoolComposition = ({
       },
       displayAddress: shortenAddress(tokenAddress),
       explorerUrl: scanTokenPath(chainId, tokenAddress),
-      marketShare: maybe(reserve?.percentShareInPool, x => +x),
-      amount: reserve?.balance,
-      amountUsd: reserve?.balanceUsd,
+      marketShare: constQ(maybe(reserve?.percentShareInPool, x => +x)),
+      amount: constQ(reserve?.balance),
+      amountUsd: constQ(reserve?.balanceUsd),
       price: reserve?.usdRate,
     }
   })
