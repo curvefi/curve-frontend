@@ -34,14 +34,14 @@ export function usePoolTokens({
   const metadata = combineQueries([decimals, symbols, names], (decimals, symbols, names) =>
     zip(decimals, symbols, names).map(([decimals, symbol, name]) => ({ decimals, symbol, name })),
   )
-  const { balances, maxAmounts } = useQueries({
+  const balances = useQueries({
     queries:
       maybes([decimals.data, tokenAddresses.data], (decimals, addresses) =>
         zip(addresses, decimals).map(([token, decimals]) =>
           getTokenBalanceQueryOptions({ network, token, account, decimals }),
         ),
       ) ?? [],
-    combine: results => ({ balances: results.map(q), maxAmounts: combine(results) }),
+    combine: results => results.map(q),
   })
   const tokens = combineQueries([tokenAddresses, metadata], (addresses, metadata) =>
     zip(addresses, metadata, balances).map(([address, metadata, balance]) => ({
@@ -51,5 +51,5 @@ export function usePoolTokens({
       balance,
     })),
   )
-  return { tokens, decimals, maxAmounts }
+  return { tokens, decimals, maxAmounts: balances }
 }

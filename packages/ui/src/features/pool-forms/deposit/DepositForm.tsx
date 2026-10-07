@@ -19,7 +19,7 @@ export type DepositFormProps<TValues extends PoolDepositForm = PoolDepositForm> 
   canDepositWrapped?: boolean
   isWrappedOnly?: boolean
   inputsDisabled: PoolTokenDisabled
-  maxAmounts: QueryProp<(Decimal | undefined)[]>
+  maxAmounts: QueryProp<Decimal>[]
 }
 
 export const DepositForm = <TValues extends PoolDepositForm>({
@@ -55,7 +55,7 @@ export const DepositForm = <TValues extends PoolDepositForm>({
     <BalancedDepositCheckbox
       reserves={reserves}
       isConnected={wallet.isConnected}
-      disabled={isPending || isSeed.data !== false || [tokens, reserves, maxAmounts].some(q => q.isLoading)}
+      disabled={isPending || isSeed.data !== false || [tokens, reserves, ...maxAmounts].some(q => q.isLoading)}
     />
     <FormButton
       {...wallet}
