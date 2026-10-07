@@ -32,10 +32,10 @@ const {
 
     return results.filter(({ totalBalance }) => decimalGreaterThan(totalBalance, ZERO))
   },
-  validationSuite: createValidationSuite((params: UserChainParams) => {
-    chainValidationGroup(params)
-    userAddressValidationGroup(params)
-    curveApiValidationGroup(params, { requireRpc: true })
+  validationSuite: createValidationSuite(({ chainId, userAddress }: UserChainParams) => {
+    chainValidationGroup({ chainId })
+    userAddressValidationGroup({ userAddress })
+    curveApiValidationGroup({ chainId }, { requireRpc: true })
   }),
   category: 'dex.user',
 })
