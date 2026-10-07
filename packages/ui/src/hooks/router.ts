@@ -105,4 +105,11 @@ export const useGoBack = () => {
   )
 }
 
-export const redirectTo = <T extends string>(to: T) => routerRedirect({ to, throw: true, replace: true })
+export const redirectTo = <T extends string>(to: T) =>
+  routerRedirect({
+    to,
+    throw: true,
+    replace: true,
+    // If the new URL has its own query part, don't add the old one too: ?tab=new?tab=old would be broken.
+    search: to.includes('?') ? undefined : true,
+  })

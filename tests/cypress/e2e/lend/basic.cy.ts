@@ -20,17 +20,13 @@ describe('Lend app', () => {
   })
 
   it('should open', () => {
-    cy.visit('/lend/')
-    cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/llamalend\/ethereum\/markets\/?$/)
-  })
-
-  it('should redirect from the old root URL', () => {
-    cy.visit('/lend/#/ethereum')
-    cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/llamalend\/ethereum\/markets\/?$/)
+    cy.visit('/lend/?foo=derp')
+    cy.location('pathname', LOAD_TIMEOUT).should('match', /^\/llamalend\/ethereum\/markets\/?$/)
+    cy.location('search').should('equal', '?foo=derp')
   })
 
   it('should redirect from the old nested URL', () => {
-    cy.visit('/lend/#/ethereum/disclaimer?tab=lend')
+    cy.visit('/lend/ethereum/disclaimer?tab=lend')
     cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/lend\/ethereum\/legal\/?\?tab=disclaimers$/)
     cy.title().should('equal', 'Legal - Curve')
   })
