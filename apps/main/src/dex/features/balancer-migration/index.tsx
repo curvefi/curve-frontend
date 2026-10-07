@@ -8,7 +8,7 @@ import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { recordValues } from '@primitives/objects.utils'
-import { PageHeader } from '@ui/components/PageHeader'
+import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -24,8 +24,9 @@ import { useBalancerPositions } from './queries/balancer-positions.query'
 
 const { Spacing } = SizesAndSpaces
 
+/** Sits beside the table titles on desktop and between the stacked tables below it. */
 const MigrationArrow = () => (
-  <Stack sx={{ alignSelf: 'center', color: t => t.design.Text.TextColors.Secondary }}>
+  <Stack sx={{ alignSelf: { mobile: 'center', desktop: 'start' } }}>
     <ArrowDownIcon sx={{ transform: { desktop: 'rotate(-90deg)' } }} />
   </Stack>
 )
@@ -55,12 +56,6 @@ export const PageBalancerMigration = () => {
   const isReady = !!userAddress && isSupportedChain
   return (
     <DetailPageLayout
-      header={
-        <PageHeader
-          title={t`Migrate from Balancer`}
-          subtitle={t`Balancer is winding down. Move your liquidity into a Curve pool with the same tokens in one transaction.`}
-        />
-      }
       formTabs={
         isReady && selected && chainId != null
           ? {
@@ -81,11 +76,18 @@ export const PageBalancerMigration = () => {
       }
       testId="balancer-migration-page"
     >
-      {/* The layout leaves no gap under the header from tablet up; mobile gets the grid row spacing instead. */}
-      <Stack sx={{ marginBlockStart: { tablet: Spacing.xl.tablet, desktop: Spacing.xl.desktop } }}>
-        {isReady ? (
-          <Stack direction={{ mobile: 'column', desktop: 'row' }} sx={{ gap: Spacing.md, alignItems: 'start' }}>
-            <Stack sx={{ flex: 1, width: '100%' }}>
+      {isReady ? (
+        <Stack>
+          <TabsSwitcher
+            variant="contained"
+            value="migrate"
+            options={[{ value: 'migrate', label: t`Migrate your Balancer positions` }]}
+          />
+          <Stack
+            direction={{ mobile: 'column', desktop: 'row' }}
+            sx={{ gap: Spacing.md, padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}
+          >
+            <Stack sx={{ flex: 1, minWidth: 0 }}>
               <BalancerPositionsTable
                 blockchainId={blockchainId}
                 query={q(positions)}
@@ -95,13 +97,12 @@ export const PageBalancerMigration = () => {
                   setTargetAddress(undefined)
                 }}
                 onReload={positions.refetch}
-                isFetching={positions.isFetching}
               />
             </Stack>
             {!!positions.data?.length && (
               <>
                 <MigrationArrow />
-                <Stack sx={{ flex: 2, width: '100%' }}>
+                <Stack sx={{ flex: 1, minWidth: 0 }}>
                   <CurvePoolsTable
                     query={q({
                       data: curvePools.data && targetRows.rows,
@@ -112,18 +113,17 @@ export const PageBalancerMigration = () => {
                     selectedAddress={target?.pool.address}
                     onSelect={({ address }) => setTargetAddress(address)}
                     onReload={curvePools.refetch}
-                    isFetching={curvePools.isFetching || targetRows.isFetching}
                   />
                 </Stack>
               </>
             )}
           </Stack>
-        ) : userAddress ? (
-          <Alert variant="outlined" severity="info">{t`Balancer migration isn't available on this network.`}</Alert>
-        ) : (
-          <ConnectWalletPrompt description={t`Connect your wallet to see your Balancer positions.`} />
-        )}
-      </Stack>
+        </Stack>
+      ) : userAddress ? (
+        <Alert variant="outlined" severity="info">{t`Balancer migration isn't available on this network.`}</Alert>
+      ) : (
+        <ConnectWalletPrompt description={t`Connect your wallet to see your Balancer positions.`} />
+      )}
     </DetailPageLayout>
   )
 }

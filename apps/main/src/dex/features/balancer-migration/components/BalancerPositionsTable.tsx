@@ -9,12 +9,14 @@ import { Tooltip } from '@ui/components/Tooltip'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import type { QueryProp } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
-import { TableHeader } from '@ui/features/tables/TableHeader'
 import { t } from '@ui/lib/i18n'
 import type { BalancerPosition } from '../api/balancer.api'
 import { getBalancerIconTokens, getBalancerNetAprItems } from '../migration.utils'
 import { MigrationPoolCell } from './MigrationPoolCell'
-import { MigrationTableDescription } from './MigrationTableDescription'
+import { MigrationTableTitle } from './MigrationTableTitle'
+
+/** Mainnet BAL, whose icon is the Balancer logo. */
+const BAL_ADDRESS = '0xba100000625a3754423978a60c9317c58a424e3D'
 
 const columnHelper = createAppColumnHelper<BalancerPosition>()
 
@@ -98,14 +100,12 @@ export const BalancerPositionsTable = ({
   selectedId,
   onSelect,
   onReload,
-  isFetching,
 }: {
   blockchainId: string
   query: QueryProp<BalancerPosition[]>
   selectedId: string | undefined
   onSelect: (position: BalancerPosition) => void
   onReload: () => Promise<unknown>
-  isFetching: boolean
 }) => {
   const table = useCurveTable({
     columns: createColumns(blockchainId),
@@ -116,7 +116,7 @@ export const BalancerPositionsTable = ({
   })
   return (
     <Stack data-testid="balancer-migration-positions">
-      <TableHeader title={t`Your Balancer positions`} onReload={onReload} isLoading={isFetching} />
+      <MigrationTableTitle title={t`Balancer pool to migrate from`} logoToken={BAL_ADDRESS} />
       <EvmDataTable
         category="detail"
         table={table}
@@ -125,9 +125,7 @@ export const BalancerPositionsTable = ({
           description: t`This wallet has no Balancer liquidity on this network.`,
         }}
         errorState={{ title: t`Couldn't load Balancer positions`, onReload }}
-      >
-        <MigrationTableDescription>{t`Select a Balancer pool to migrate from`}</MigrationTableDescription>
-      </EvmDataTable>
+      />
     </Stack>
   )
 }

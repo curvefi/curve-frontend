@@ -10,10 +10,9 @@ import { createPoolTableMeta, getPoolTableMeta } from '@ui/features/pool-list/ta
 import type { PoolAlerts, PoolRow } from '@ui/features/pool-list/types'
 import type { QueryProp } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
-import { TableHeader } from '@ui/features/tables/TableHeader'
 import { t } from '@ui/lib/i18n'
 import { MigrationPoolCell } from './MigrationPoolCell'
-import { MigrationTableDescription } from './MigrationTableDescription'
+import { MigrationTableTitle } from './MigrationTableTitle'
 
 const columnHelper = createAppColumnHelper<PoolRow>()
 const getPoolColumn = (id: PoolColumnId) =>
@@ -50,14 +49,12 @@ export const CurvePoolsTable = ({
   selectedAddress,
   onSelect,
   onReload,
-  isFetching,
 }: {
   query: QueryProp<PoolRow[]>
   alerts: PoolAlerts
   selectedAddress: Address | undefined
   onSelect: (pool: PoolRow) => void
   onReload: () => Promise<unknown>
-  isFetching: boolean
 }) => {
   const table = useCurveTable({
     columns: COLUMNS,
@@ -75,15 +72,13 @@ export const CurvePoolsTable = ({
   })
   return (
     <Stack data-testid="balancer-migration-targets">
-      <TableHeader title={t`Matching Curve pools`} onReload={onReload} isLoading={isFetching} />
+      <MigrationTableTitle title={t`Target Curve pool to migrate to`} logoToken={MAINNET_CRV.address} />
       <EvmDataTable
         category="detail"
         table={table}
         emptyState={{ title: t`No matching Curve pool`, description: t`No Curve pool holds these tokens yet.` }}
         errorState={{ title: t`Couldn't load Curve pools`, onReload }}
-      >
-        <MigrationTableDescription>{t`Select a target Curve pool to migrate to`}</MigrationTableDescription>
-      </EvmDataTable>
+      />
     </Stack>
   )
 }
