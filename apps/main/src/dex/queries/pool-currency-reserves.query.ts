@@ -7,6 +7,8 @@ import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@evm-ui/queries/tok
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData } from '@ui/features/queries/util'
@@ -24,7 +26,7 @@ const poolBalances = async (p: PoolTemplate, isWrapped: boolean) => {
     return { error: t`Connect your wallet to see pool balances` }
   }
   try {
-    return { balances: isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances() }
+    return { balances: (isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances()) as Decimal[] }
   } catch (error) {
     console.error(error)
     return { error: getErrorMessage(error, 'error-stats-balances') }
@@ -54,12 +56,12 @@ const {
     const isEmpty = !balances?.length || balances.every(b => +b === 0)
     const crTokens = tokenAddresses.map((tokenAddress, idx) => {
       const usdRate = getTokenUsdRateQueryData({ chainId, tokenAddress }) ?? 0
-      const balance = Number(balances?.[idx])
-      const balanceUsd = !isEmpty && +usdRate > 0 && !isNaN(usdRate) ? balance * usdRate : 0
+      const balance = assert(balances?.[idx], balancesResp.error ?? t`Pool token balance is unavailable`)
+      const balanceUsd = !isEmpty && +usdRate > 0 && !isNaN(usdRate) ? +balance * usdRate : 0
 
       return { token: tokens[idx], tokenAddress, balance, balanceUsd, usdRate }
     })
-    const total = crTokens.reduce((sum, { balance }) => sum + balance, 0)
+    const total = crTokens.reduce((sum, { balance }) => sum + +balance, 0)
     const totalUsd = crTokens.reduce((sum, { balanceUsd }) => sum + balanceUsd, 0)
     // Only use USD balances if all tokens have a USD balance and the pool isn't empty.
     const useUsdBalances = crTokens.every(cr => cr.balanceUsd)
@@ -70,7 +72,7 @@ const {
         ...cr,
         percentShareInPool: isEmpty
           ? '0'
-          : ((useUsdBalances ? cr.balanceUsd / totalUsd : cr.balance / total) * 100).toFixed(2),
+          : ((useUsdBalances ? cr.balanceUsd / totalUsd : +cr.balance / total) * 100).toFixed(2),
       })),
       total: decimal(total),
       totalUsd: decimal(totalUsd),

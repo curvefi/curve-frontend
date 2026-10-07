@@ -36,6 +36,7 @@ export const DepositActionInfoList = ({
 
   return (
     <PoolActionInfoList
+      slippageType="stable"
       expectedLp={q(quote)}
       expectedLpLabel={t`Expected LP received`}
       expectedLpTestId="pool-deposit-expected-lp"
