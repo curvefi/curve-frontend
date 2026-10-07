@@ -1,5 +1,6 @@
-import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { requireLib } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
@@ -19,8 +20,5 @@ const { useQuery: usePoolVolumeQuery } = queryFactory({
   }),
 })
 
-/** Hook to fetch the trading volume for a single pool. Disabled on lite networks. */
-export function usePoolVolume({ chainId, poolId }: PoolParams) {
-  const { isHydrated } = useCurve()
-  return usePoolVolumeQuery({ chainId, poolId }, isHydrated && chainId != null && !isLiteChain(chainId))
-}
+export const usePoolVolume = (params: PoolParams) =>
+  useHydratedQuery(usePoolVolumeQuery, params, params.chainId != null && !isLiteChain(params.chainId))
