@@ -9,6 +9,7 @@ import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/
 import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Withdraw/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
+import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -29,7 +30,8 @@ import { t, Trans } from '@ui/lib/i18n'
 
 export const FormClaim = ({ seed }: TransferProps) => {
   const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
-  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
+  const { data: gaugeStatus } = usePoolGaugeStatus({ chainId, poolId })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -46,7 +48,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const haveSigner = !!signerAddress
-  const { rewardsNeedNudging } = gauge?.status ?? {}
+  const { rewardsNeedNudging } = gaugeStatus ?? {}
   const haveClaimableCrv = +formValues.claimableCrv > 0
   const haveClaimableRewards = +formValues.claimableRewards.length > 0
 
@@ -184,7 +186,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
     }
   }
 
-  const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !gauge?.isKilled
+  const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !gaugeIsKilled
 
   return (
     <FormContent>

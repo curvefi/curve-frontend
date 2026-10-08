@@ -96,16 +96,22 @@ export const hasLeverage = <T extends MarketTemplate | undefined>(market: T) =>
  */
 export const hasLeverageValue = <T extends MarketTemplate | Nullish>(market: T) => hasZapV2(market)
 
+export const isLendMarket = (market: MarketTemplate | Nullish): market is LendMarketTemplate =>
+  market instanceof LendMarketTemplate
+
+export const isMintMarket = (market: MarketTemplate | Nullish): market is MintMarketTemplate =>
+  market instanceof MintMarketTemplate
+
 export const hasLegacyMintLeverage = (market: MarketTemplate) =>
-  market instanceof MintMarketTemplate && market.index == null && market.leverageZap !== zeroAddress
+  isMintMarket(market) && market.index == null && market.leverageZap !== zeroAddress
 
 const hasV1Deleverage = (market: MarketTemplate) =>
-  market instanceof MintMarketTemplate && market.index == null && market.deleverageZap !== zeroAddress
+  isMintMarket(market) && market.index == null && market.deleverageZap !== zeroAddress
 
 export const hasDeleverage = (market: MarketTemplate) => hasZapV2(market) || hasV1Deleverage(market)
 
 const isV2Market = (market: MarketTemplate | Nullish) =>
-  maybe(market, market => market instanceof LendMarketTemplate && market.version === 'v2')
+  maybe(market, market => isLendMarket(market) && market.version === 'v2')
 
 export const hasResetPosition = (market: MarketTemplate | Nullish): market is LendMarketTemplate<'v2'> =>
   isV2Market(market) === true
@@ -121,14 +127,14 @@ export const isPositionLeveraged = (leverage: Amount | Nullish) =>
   leverage != null && !BigNumber(leverage).isZero() && !BigNumber(leverage).isEqualTo(1)
 
 export const canRepayFromStateCollateral = <T extends MarketTemplate | undefined>(market: T) =>
-  maybe(market, market => (market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)))
+  maybe(market, market => (isMintMarket(market) ? hasDeleverage(market) : hasLeverage(market)))
 
 export const canRepayFromUserCollateral = <T extends MarketTemplate | undefined>(market: T) => hasZapV2(market)
 
 export const canLeverageUserBorrowed = <T extends MarketTemplate | undefined>(market: T) =>
   maybe(market, market => hasLegacyMintLeverage(market))
 
-export const hasVault = (market: MarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
+export const hasVault = (market: MarketTemplate) => isLendMarket(market) && 'vault' in market
 
 export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
@@ -146,8 +152,7 @@ const LEVERAGED_MAX_BORROW_RATIO = '0.99999' // -0.001%
 export const getMaxBorrowAmount = (maxDebt: Decimal | undefined, leverageEnabled: boolean | undefined) =>
   maxDebt && leverageEnabled ? decimalMultiply(maxDebt, LEVERAGED_MAX_BORROW_RATIO) : maxDebt
 
-export const hasGauge = (market: MarketTemplate) =>
-  market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
+export const hasGauge = (market: MarketTemplate) => isLendMarket(market) && market.addresses.gauge !== zeroAddress
 
 export const getLendMarketVersion = (market: LendMarketTemplate): MarketVersion =>
   assert(
@@ -156,10 +161,10 @@ export const getLendMarketVersion = (market: LendMarketTemplate): MarketVersion 
   )
 
 const getBorrowSymbol = (market: MarketTemplate) =>
-  market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol
+  isMintMarket(market) ? CRVUSD.symbol : market.borrowed_token.symbol
 
 const getCollateralSymbol = (market: MarketTemplate) =>
-  market instanceof MintMarketTemplate ? market.collateralSymbol : market.collateral_token.symbol
+  isMintMarket(market) ? market.collateralSymbol : market.collateral_token.symbol
 
 export const formatTokenAmounts = (
   market: MarketTemplate,
@@ -194,7 +199,7 @@ export const getMarketType = <T extends MarketTemplate | Nullish>(
   getMarketOrApiValue(
     market,
     apiMarket,
-    m => (m instanceof LendMarketTemplate ? MarketType.Lend : MarketType.Mint),
+    m => (isLendMarket(m) ? MarketType.Lend : MarketType.Mint),
     m => m.type,
   )
 
@@ -209,7 +214,7 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
     market,
     apiMarket,
     (market: MarketTemplate): MarketTokens =>
-      market instanceof MintMarketTemplate
+      isMintMarket(market)
         ? {
             collateralToken: {
               symbol: market.collateralSymbol,
@@ -240,7 +245,7 @@ export const getAmmAddress = <T extends MarketTemplate | Nullish>(
   getMarketOrApiValue(
     market,
     apiMarket,
-    market => (market instanceof LendMarketTemplate ? market.addresses.amm : market.address) as Address,
+    market => (isLendMarket(market) ? market.addresses.amm : market.address) as Address,
     m => m.ammAddress,
   )
 
@@ -251,7 +256,7 @@ export const getControllerAddress = <T extends MarketTemplate | Nullish>(
   getMarketOrApiValue(
     market,
     apiMarket,
-    market => (market instanceof LendMarketTemplate ? market.addresses.controller : market.controller) as Address,
+    market => (isLendMarket(market) ? market.addresses.controller : market.controller) as Address,
     m => m.controllerAddress,
   )
 
@@ -262,14 +267,12 @@ export const getVaultAddress = <T extends MarketTemplate | Nullish>(
   getMarketOrApiValue(
     market,
     apiMarket,
-    market => (market instanceof LendMarketTemplate ? (market.addresses.vault as Address) : null),
+    market => (isLendMarket(market) ? (market.addresses.vault as Address) : null),
     m => m.vaultAddress,
   )
 
 export const getGaugeAddress = (market: MarketTemplate | Nullish): Address | undefined =>
-  market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
-    ? (market.addresses.gauge as Address)
-    : undefined
+  isLendMarket(market) && market.addresses.gauge !== zeroAddress ? (market.addresses.gauge as Address) : undefined
 
 export const getVaultToken = <T extends MarketTemplate | Nullish>(
   market: T,
@@ -305,8 +308,7 @@ export const getMonetaryPolicy = <T extends MarketTemplate | Nullish>(
   getMarketOrApiValue(
     market,
     apiMarket,
-    market =>
-      (market instanceof LendMarketTemplate ? market.addresses.monetary_policy : market.monetaryPolicy) as Address,
+    market => (isLendMarket(market) ? market.addresses.monetary_policy : market.monetaryPolicy) as Address,
     m => m.monetaryPolicyAddress,
   )
 
@@ -359,10 +361,9 @@ export const updateUserEventsApi = async (
   market: MarketTemplate,
   txHash: string,
 ) => {
-  const [address, updateEvents] =
-    market instanceof LendMarketTemplate
-      ? [market.addresses.controller, getLendUserMarketCollateralEvents]
-      : [market.controller, getMintUserMarketCollateralEvents]
+  const [address, updateEvents] = isLendMarket(market)
+    ? [market.addresses.controller, getLendUserMarketCollateralEvents]
+    : [market.controller, getMintUserMarketCollateralEvents]
   return await updateEvents(wallet.address, blockchainId, address as Address, txHash as Hex)
 }
 

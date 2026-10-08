@@ -6,15 +6,17 @@ import { queryClient } from '@ui/features/queries/query-client'
 import { getPoolAddressesQueryKey } from './pool-addresses.query'
 import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'
 import { invalidatePoolGaugeStatus } from './pool-gauge-status.query'
+import { invalidatePoolIsGaugeKilled } from './pool-is-gauge-killed.query'
 import { getPoolListRootQueryKey, getPoolChainsQueryKey, getLitePoolChainsQueryKey } from './pool-list.query'
 import { invalidatePoolParameters } from './pool-parameters.query'
 import { invalidatePoolRewardsApy } from './pool-rewards-apy.query'
 import { invalidatePoolTotalStaked } from './pool-total-staked.query'
+import { getUserFullPoolPositionsQueryKey, invalidateUserFullPoolPositions } from './user-full-pool-positions.query'
+import { getUserLitePoolPositionsQueryKey, invalidateUserLitePoolPositions } from './user-lite-pool-positions.query'
 import { invalidateUserPoolBalancesQuery } from './user-pool-balances.query'
 import { invalidateUserPoolBoostQuery } from './user-pool-boost.query'
 import { getUserPoolClaimablesQueryKey } from './user-pool-claimables.query'
 import { invalidateUserPoolLiquidityUsdQuery } from './user-pool-liquidity-usd.query'
-import { getUserPoolPositionsQueryKey, invalidateUserPoolPositions } from './user-pool-positions.query'
 import { invalidateUserPoolShareQuery } from './user-pool-share.query'
 
 /** Compatibility helper that refreshes user-pool-info method queries and the user's pool positions. */
@@ -24,7 +26,8 @@ export const invalidateUserPoolInfo = async (params: UserPoolParams) => {
     invalidateUserPoolLiquidityUsdQuery(params),
     invalidateUserPoolShareQuery(params),
     invalidateUserPoolBoostQuery(params),
-    invalidateUserPoolPositions(params),
+    invalidateUserFullPoolPositions(params),
+    invalidateUserLitePoolPositions(params),
     queryClient.resetQueries({ queryKey: [getUserPoolClaimablesQueryKey(params)] }),
   ])
 }
@@ -34,6 +37,7 @@ export const invalidatePoolInfo = async (params: PoolParams) =>
     invalidatePoolParameters(params),
     invalidatePoolCurrencyReserves(params),
     invalidatePoolGaugeStatus(params),
+    invalidatePoolIsGaugeKilled(params),
     invalidatePoolRewardsApy(params),
     invalidatePoolTotalStaked(params),
   ])
@@ -47,7 +51,8 @@ export const resetPoolLists = ({ chainId, userAddress }: UserChainParams) =>
       getPoolChainsQueryKey({}),
       getLitePoolChainsQueryKey({}),
       getUserPoolClaimablesQueryKey({ chainId, userAddress }),
-      getUserPoolPositionsQueryKey({ chainId, userAddress }),
+      getUserFullPoolPositionsQueryKey({ chainId, userAddress }),
+      getUserLitePoolPositionsQueryKey({ chainId, userAddress }),
       getCampaignsExternalQueryKey({}),
       getCampaignsPoolsMerklQueryKey({}),
     ].map(queryKey => queryClient.resetQueries({ queryKey: [queryKey] })),

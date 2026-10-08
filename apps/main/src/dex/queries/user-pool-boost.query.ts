@@ -2,12 +2,12 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import type { UserPoolParams, UserPoolQuery } from '@evm-ui/queries/query-types'
 import { userPoolValidationSuite } from '@evm-ui/queries/validation/user-pool-validation'
+import { isValidAddress } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
-import { isValidAddress } from '../utils'
 
 const ETH: number = Chain.Ethereum
 
