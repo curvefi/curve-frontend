@@ -1,5 +1,6 @@
 import type { IGaugesDataFromApi } from '@curvefi/api/lib/interfaces'
-import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -14,7 +15,4 @@ const { useQuery: usePoolGaugeStatusQuery, invalidate: invalidatePoolGaugeStatus
 
 export { invalidatePoolGaugeStatus }
 
-export function usePoolGaugeStatus(params: PoolParams) {
-  const { isHydrated } = useCurve()
-  return usePoolGaugeStatusQuery(params, isHydrated)
-}
+export const usePoolGaugeStatus = (params: PoolParams) => useHydratedQuery(usePoolGaugeStatusQuery, params)
