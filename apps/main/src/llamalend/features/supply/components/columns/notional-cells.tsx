@@ -51,7 +51,7 @@ export const TotalNotionalRow = ({
 }) => (
   <>
     <TableCell sx={sx}>
-      <Typography variant="tableCellMRegular" color="textPrimary" data-testid="rewards-value">
+      <Typography variant="tableCellMBold" color="textPrimary" data-testid="rewards-value">
         {t`Rewards value`}
       </Typography>
     </TableCell>
