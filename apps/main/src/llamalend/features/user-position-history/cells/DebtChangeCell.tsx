@@ -16,11 +16,11 @@ export const DebtChangeCell = ({
   const currentDate = useCurrentDate()
   return (
     <InlineTableCell>
-      <Typography variant="tableCellMBold" color={getChangeColor(loanChange, 'error', 'success')}>
+      <Typography variant="tableCellValue" color={getChangeColor(loanChange, 'error', 'success')}>
         {notFalsy(formatNumber(loanChange || null, 'token.delta'), loanChange && borrowToken?.symbol).join(' ')}
       </Typography>
       {!!loanChange && (
-        <Typography variant="bodySRegular">
+        <Typography variant="tableCellSupport" color="textSecondary">
           {formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentDate)}
         </Typography>
       )}

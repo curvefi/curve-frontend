@@ -57,7 +57,7 @@ export const ClaimablesCell = ({
           </>
         ) : (
           <>
-            <Typography variant="tableCellMBold">
+            <Typography variant="tableCellValue">
               {formatNumber(hasClaimables ? totalUsd.data : null, 'usd.precise')}
             </Typography>
             {claimables.data && <ClaimablesIcons claimables={claimables.data} blockchainId={blockchainId} />}

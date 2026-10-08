@@ -28,7 +28,7 @@ export const MigrationPoolCell = ({
     <ProtocolPoolIcons blockchainId={blockchainId} tokens={tokens} protocol={protocol} />
     <Stack sx={{ justifyContent: 'center', gap: Spacing.xxs, minWidth: 0 }}>
       <Typography
-        variant="tableCellL"
+        variant="tableCellTitle"
         sx={{ ...responsiveTitleEllipsisSx, maxWidth: { mobile: 'calc(100vw - 200px)', desktop: NAME_MAX_WIDTH } }}
       >
         {name}

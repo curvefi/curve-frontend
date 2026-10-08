@@ -7,7 +7,7 @@ type ActivityTableItem = { chainId: number; txHash: string | null }
 
 type ActivityTableProps<TData extends ActivityTableItem> = Pick<
   EvmDataTableProps<TData>,
-  'table' | 'emptyState' | 'errorState' | 'expandedPanel'
+  'table' | 'emptyState' | 'errorState' | 'expandedPanel' | 'rowBreakdown'
 >
 
 const DefaultExpandedPanelActions = <TData extends ActivityTableItem>({
@@ -23,12 +23,14 @@ export const ActivityTable = <TData extends ActivityTableItem>({
   emptyState,
   errorState,
   expandedPanel,
+  rowBreakdown,
 }: ActivityTableProps<TData>) => (
   <EvmDataTable
     category="scrollable"
     table={table}
     emptyState={emptyState}
     errorState={errorState}
+    rowBreakdown={rowBreakdown}
     expandedPanel={expandedPanel && { ...expandedPanel, Actions: expandedPanel.Actions ?? DefaultExpandedPanelActions }}
   />
 )

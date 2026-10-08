@@ -1,4 +1,4 @@
-import { type MouseEvent, useCallback, useMemo, useState } from 'react'
+import { type MouseEvent, ReactNode, useCallback, useMemo, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
 import type { ReactTable, Row, RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
@@ -6,6 +6,7 @@ import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { useNavigate } from '@ui/hooks/router'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { hasParentWithClass } from '@ui/lib/dom'
+import { BreakdownRows } from './BreakdownRows'
 import {
   CLICKABLE_IN_ROW_CLASS,
   type CurveTableFeatures,
@@ -15,10 +16,21 @@ import {
 import { DataCell } from './DataCell'
 import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
+export type RowBreakdownConfig<TData extends RowData, TItem> = {
+  /** Items to render as breakdown rows under the parent row. Fewer than 2 items means no breakdown rows. */
+  getItems: (data: TData) => readonly TItem[]
+  /** Unique key of an item within its parent row */
+  getItemKey: (item: TItem) => string
+  /** Cell renderers keyed by column id. Columns without a renderer are left empty. */
+  cells: Partial<Record<string, (item: TItem, data: TData) => ReactNode>>
+}
+
 export type DataRowProps<TData extends RowData> = {
   table: ReactTable<CurveTableFeatures, TData>
   row: Row<CurveTableFeatures, TData>
   expandedPanel?: ExpandedPanelConfig<TData>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the item type is only known by the config itself
+  rowBreakdown?: RowBreakdownConfig<TData, any> // Renders extra rows under a parent row, one per item (e.g. one row per token of a multi-token event)
   shouldStickFirstColumn?: boolean
   verticalAlign?: 'top' | 'middle' | 'bottom'
 }
@@ -35,6 +47,7 @@ export const DataRow = <TData extends RowData>({
   table,
   row,
   expandedPanel,
+  rowBreakdown,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
 }: DataRowProps<TData>) => {
@@ -112,6 +125,10 @@ export const DataRow = <TData extends RowData>({
           ))}
         </TableRow>
       </InvertOnHover>
+
+      {!isMobile && rowBreakdown && (
+        <BreakdownRows row={row} config={rowBreakdown} shouldStickFirstColumn={shouldStickFirstColumn} />
+      )}
 
       {hasExpansionRow && (
         <ExpansionRow colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />

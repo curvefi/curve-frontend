@@ -15,7 +15,7 @@
     "test:watch": "yarn run --top-level test:watch --project router-api"
   },
   "dependencies": {
-    "@curvefi/api": "2.70.2",
+    "@curvefi/api": "2.70.5",
     "@curvefi/api-server": "workspace:^",
     "@curvefi/prices-api": "workspace:^",
     "bignumber.js": "10.0.2",

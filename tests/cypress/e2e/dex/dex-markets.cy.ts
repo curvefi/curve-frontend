@@ -1,4 +1,5 @@
 import { orderBy } from 'lodash'
+import { assertModalClosed } from '@cy/support/helpers/data-table.helpers'
 import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
@@ -130,7 +131,7 @@ describe('DEX Pools', () => {
       if (breakpoint === 'mobile') {
         cy.get('[data-testid="btn-drawer-sort-dex-pools"]').click()
         cy.get(`[data-testid="drawer-sort-menu-dex-pools"] li[value="${field}"]`).click()
-        cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.be.visible')
+        assertModalClosed('drawer-sort-menu-dex-pools')
       } else {
         cy.get(`[data-testid="data-table-header-${field}"]`).click()
         cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.exist')

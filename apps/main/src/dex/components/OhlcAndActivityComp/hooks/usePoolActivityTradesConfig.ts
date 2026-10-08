@@ -36,7 +36,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
   const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
-  const poolTrades = usePoolTrades({ chain: network, poolAddress, page: apiPage, perPage: DEFAULT_PAGE_SIZE })
+  const poolTrades = usePoolTrades({ blockchainId: network, poolAddress, page: apiPage, perPage: DEFAULT_PAGE_SIZE })
   const { data: tradesData } = poolTrades
 
   const pageCount = getPageCount(tradesData?.count, DEFAULT_PAGE_SIZE)

@@ -146,14 +146,15 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   // is seed
   useEffect(() => {
-    if (currencyReserves == null) return
+    const balances = currencyReserves?.tokens.map(({ balance }) => +balance) ?? pricesApiPoolData?.balances
+    if (!balances?.length) return
 
-    const isSeed = Number(currencyReserves.total) === 0
+    const isSeed = balances.every(balance => balance === 0)
 
     if (isSeed && hasWrapped(pool)) setIsWrapped(true)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
-  }, [currencyReserves, pool, setIsWrapped])
+  }, [currencyReserves, pricesApiPoolData, pool, setIsWrapped])
 
   const tabParams = useMemo(
     () => ({
@@ -205,7 +206,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         <CampaignRewardsBanner />
         <UserPosition />
         {!isLiteChain(chainId) && pricesApiPoolData && (
-          <OhlcAndActivityComp rChainId={chainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
+          <OhlcAndActivityComp chainId={chainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
         {!isLiteChain(chainId) && <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />}
         <PoolInformation poolAlert={poolAlert} pricesApiPoolData={pricesApiPoolData} />

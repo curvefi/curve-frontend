@@ -59,7 +59,7 @@ const createColumns = (blockchainId: string) =>
       cell: ({ getValue }) => formatNumber(getValue(), 'percent.rate'),
       meta: {
         type: 'numeric',
-        variant: 'tableCellMBold',
+        variant: 'tableCellValueStrong',
         tooltip: { title: t`Estimated fee APR`, body: <TooltipDescription text={UNISWAP_FEE_APR_DESCRIPTION} /> },
       },
     }),

@@ -32,9 +32,20 @@ const TRANSACTION_SUBMISSION_RETRY_DELAY_MS = 5000
 const RESOURCE_FEE_BUFFER_PERCENT = 20n
 const MAX_INCLUSION_FEE = 50_000n // 0.005 XLM ≈ $0.0011 at the time of writing; resource fees are separate.
 
-export const initWallet = async () => {
-  StellarWalletsKit.init({ modules: defaultModules() })
-  if (activeModule.value) await StellarWalletsKit.fetchAddress()
+export const initWallet = (onError: (error: Error) => void) => {
+  const modules = defaultModules()
+  StellarWalletsKit.init({ modules })
+  const refreshAddress = () => activeModule.value && void StellarWalletsKit.fetchAddress().catch(onError)
+  modules.forEach(wallet =>
+    wallet.onChange?.(
+      ({ error }) =>
+        activeModule.value === wallet &&
+        (error ? onError(new Error(`${error.code}: ${error.message}`)) : refreshAddress()),
+    ),
+  )
+  refreshAddress()
+  window.addEventListener('focus', refreshAddress) // some wallets e.g., Freighter don't listen to changes, refresh when returning to the app
+  return () => window.removeEventListener('focus', refreshAddress)
 }
 
 export const onWalletAddressChanged = (onChange: (address: StellarAddress | undefined) => void) =>

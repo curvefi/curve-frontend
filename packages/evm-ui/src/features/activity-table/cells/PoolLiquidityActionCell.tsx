@@ -23,7 +23,7 @@ export const PoolLiquidityActionCell = ({ event }: PoolLiquidityActionCellProps)
     <InlineTableCell>
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <Icon />
-        <Typography variant="tableCellMBold" color={isAdd ? 'success' : 'error'}>
+        <Typography variant="tableCellValue" color={isAdd ? 'success' : 'error'}>
           {label}
         </Typography>
       </Stack>

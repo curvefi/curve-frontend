@@ -2,7 +2,6 @@ import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-marke
 import { getMaxReturnOnEquity } from '@/llamalend/rates.utils'
 import { MaxReturnOnEquityTooltipContent, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { MarketRateType } from '@evm-ui/types/market'
-import type { DeepKeys } from '@tanstack/table-core'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
 import {
@@ -41,10 +40,6 @@ import { MarketColumnId } from './columns.enum'
 
 const columnHelper = createAppColumnHelper<LlamaMarketRow>()
 
-/** Define a hidden column. */
-const hidden = (id: MarketColumnId, field: DeepKeys<LlamaMarketRow>, filterFn: typeof multiFilterFn) =>
-  columnHelper.accessor(field, { id, header: MARKET_TITLES[id], filterFn, meta: { hidden: true } })
-
 /** Columns for the lending markets table. */
 export const MARKET_COLUMNS = columnHelper.columns([
   columnHelper.accessor(
@@ -76,7 +71,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.UserEarnings,
     header: MARKET_TITLES[MarketColumnId.UserEarnings],
     cell: PriceCell,
-    meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
+    meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('lendingPosition.supplied', {
@@ -233,13 +228,13 @@ export const MARKET_COLUMNS = columnHelper.columns([
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
-  // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
-  hidden(MarketColumnId.Chain, MarketColumnId.Chain, multiFilterFn),
-  hidden(MarketColumnId.CollateralSymbol, 'assets.collateral.symbol', multiFilterFn),
-  hidden(MarketColumnId.BorrowedSymbol, 'assets.borrowed.symbol', multiFilterFn),
-  hidden(MarketColumnId.IsFavorite, MarketColumnId.IsFavorite, boolFilterFn),
-  hidden(MarketColumnId.Rewards, MarketColumnId.Rewards, listNotEmptyFilterFn),
-  hidden(MarketColumnId.DeprecatedMessage, MarketColumnId.DeprecatedMessage, boolFilterFn),
-  hidden(MarketColumnId.Type, MarketColumnId.Type, multiFilterFn),
-  hidden(MarketColumnId.Version, MarketColumnId.Version, multiFilterFn),
+  // The following columns are at the moment of writing used for filtering only and most likely hidden.
+  columnHelper.accessor('blockchainId', { id: MarketColumnId.Chain, filterFn: multiFilterFn }),
+  columnHelper.accessor('assets.collateral.symbol', { id: MarketColumnId.CollateralSymbol, filterFn: multiFilterFn }),
+  columnHelper.accessor('assets.borrowed.symbol', { id: MarketColumnId.BorrowedSymbol, filterFn: multiFilterFn }),
+  columnHelper.accessor('isFavorite', { id: MarketColumnId.IsFavorite, filterFn: boolFilterFn }),
+  columnHelper.accessor('rewards', { id: MarketColumnId.Rewards, filterFn: listNotEmptyFilterFn }),
+  columnHelper.accessor('deprecatedMessage', { id: MarketColumnId.DeprecatedMessage, filterFn: boolFilterFn }),
+  columnHelper.accessor('type', { id: MarketColumnId.Type, filterFn: multiFilterFn }),
+  columnHelper.accessor('version', { id: MarketColumnId.Version, filterFn: multiFilterFn }),
 ])

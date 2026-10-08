@@ -1,4 +1,4 @@
-import { ActivityTable, MarketEventsExpandedPanel } from '@evm-ui/features/activity-table'
+import { ActivityTable, LLAMMA_EVENTS_BREAKDOWN, MarketEventsExpandedPanel } from '@evm-ui/features/activity-table'
 import { useLlammaActivityEventsConfig } from './hooks/useLlammaActivityEventsConfig'
 import { LlammaActivityProps } from '.'
 
@@ -25,6 +25,7 @@ export const LlammaActivityEventsTable = ({
       emptyState={emptyState}
       errorState={errorState}
       expandedPanel={{ Body: MarketEventsExpandedPanel }}
+      rowBreakdown={LLAMMA_EVENTS_BREAKDOWN}
     />
   )
 }

@@ -64,7 +64,7 @@ export const CurvePoolsTable = ({
       variant: 'full',
       alerts,
       addressDisplay: evmAddressDisplay,
-      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain },
+      crvToken: { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.blockchainId },
       onRowClick: onSelect,
       isRowSelected: ({ address }) => address === selectedAddress,
     }),

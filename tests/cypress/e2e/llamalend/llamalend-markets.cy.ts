@@ -3,6 +3,7 @@ import { MarketColumnId } from '@/llamalend/features/market-list/columns/columns
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, shuffle } from '@cy/support/generators'
 import {
+  assertModalClosed,
   expandFirstRowOnMobile,
   getTableCellAssets,
   openDrawer,
@@ -139,7 +140,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         openDrawer(breakpoint, 'sort')
         cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
         cy.get(`[data-testid="drawer-sort-menu-lamalend-markets"] li[value="${utilizationColumnId}"]`).click()
-        cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.be.visible')
+        assertModalClosed('drawer-sort-menu-lamalend-markets')
         cy.get(`[data-testid^="data-table-row"]`)
           .first()
           .find(`[data-testid="table-row-link-${HIGH_UTILIZATION_ADDRESS}"]`)

@@ -86,7 +86,7 @@ const createColumns = (blockchainId: string) =>
             </TooltipWrapper>
           }
         >
-          <Typography variant="tableCellMBold">{formatNumber(getValue(), 'percent.rate')}</Typography>
+          <Typography variant="tableCellValueStrong">{formatNumber(getValue(), 'percent.rate')}</Typography>
         </Tooltip>
       ),
       meta: { type: 'numeric' },

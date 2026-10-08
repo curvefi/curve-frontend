@@ -9,26 +9,23 @@ import { decimalDiv, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 
 export const {
-  useQuery: useUserPoolPositions,
-  queryKey: getUserPoolPositionsQueryKey,
-  invalidate: invalidateUserPoolPositions,
+  useQuery: useUserFullPoolPositions,
+  queryKey: getUserFullPoolPositionsQueryKey,
+  invalidate: invalidateUserFullPoolPositions,
 } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
-    ({ name: 'getUserPoolPositions', version: 2, chainId, userAddress }) as const,
+    ({ name: 'getUserPoolFullPositions', version: 2, chainId, userAddress }) as const,
   queryFn: async ({ chainId, userAddress }: UserChainQuery) => {
     const positions = await paginate(
       async (page, pagination) => (await getUserPoolPositions({ chainId, userAddress, page, pagination })).positions,
       1,
       MAX_USER_POOL_PAGE_SIZE,
     )
-    return {
-      chainId,
-      user: userAddress,
-      positions: positions.map(position => ({
-        ...position,
-        totalBalance: decimalDiv(decimalSum(position.lpBalance, position.gaugeBalance), '1e18'),
-      })),
-    }
+
+    return positions.map(position => ({
+      ...position,
+      totalBalance: decimalDiv(decimalSum(position.lpBalance, position.gaugeBalance), '1e18'),
+    }))
   },
   validationSuite: createValidationSuite((params: UserChainParams) => {
     chainValidationGroup(params)
@@ -37,4 +34,5 @@ export const {
   category: 'dex.user',
 })
 
-export type UserPoolPosition = QueryData<typeof useUserPoolPositions>
+export type UserFullPoolPositions = QueryData<typeof useUserFullPoolPositions>
+export type UserFullPoolPosition = UserFullPoolPositions[number]

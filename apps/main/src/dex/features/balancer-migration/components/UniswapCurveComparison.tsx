@@ -45,7 +45,7 @@ const ProtocolHeader = ({ protocol, title }: { protocol: MigrationProtocol; titl
 /** Current state, in the table's secondary text. */
 const Was = ({ children, badge }: { children: ReactNode; badge?: ReactNode }) => (
   <Stack direction="row" sx={{ ...cellSx, justifyContent: 'end' }}>
-    <Typography variant="tableCellMRegular" color="textSecondary" noWrap>
+    <Typography variant="tableCellValue" color="textSecondary" noWrap>
       {children}
     </Typography>
     {badge}
@@ -55,7 +55,7 @@ const Was = ({ children, badge }: { children: ReactNode; badge?: ReactNode }) =>
 /** After the migration, emphasized. */
 const Becomes = ({ children, badge }: { children: ReactNode; badge?: ReactNode }) => (
   <Stack direction="row" sx={{ ...cellSx, justifyContent: 'end' }}>
-    <Typography variant="tableCellMBold" noWrap>
+    <Typography variant="tableCellValueStrong" noWrap>
       {children}
     </Typography>
     {badge}
@@ -69,7 +69,7 @@ const COLUMNS = columnHelper.columns([
     header: '',
     cell: ({ row }) => (
       <Stack direction="row" sx={cellSx}>
-        <Typography variant="tableCellMRegular">{row.original.label}</Typography>
+        <Typography variant="tableCellValue">{row.original.label}</Typography>
       </Stack>
     ),
   }),

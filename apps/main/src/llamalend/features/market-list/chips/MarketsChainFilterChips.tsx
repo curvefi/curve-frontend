@@ -10,7 +10,7 @@ import { MarketColumnId } from '../columns'
 const getChains = (data: LlamaMarket[]) =>
   getUniqueSortedStrings(
     data.filter(market => !market.deprecatedMessage || market.userHasPositions),
-    MarketColumnId.Chain,
+    'blockchainId',
   )
 
 export const MarketsChainFilterChips = ({

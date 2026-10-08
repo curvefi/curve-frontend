@@ -5,6 +5,7 @@
   "compatibility_date": "2026-09-24",
   "keep_vars": true,
   "main": "./_api/_cloudflare-worker.ts",
+  "minify": true,
   "observability": { "logs": { "enabled": true, "invocation_logs": true } },
   "previews": {},
   "upload_source_maps": true
