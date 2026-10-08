@@ -38,7 +38,7 @@ export const AddressCell = ({ address, label, explorerUrl }: AddressCellProps) =
     >
       <Stack direction="row" sx={{ gap: Spacing.xs }}>
         <Typography
-          variant="tableCellMBold"
+          variant="tableCellValueStrong"
           onClick={useCopyToClipboard({ copyText: address, format: getAddress })}
           sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
         >

@@ -6,7 +6,7 @@ import { t } from '@ui/lib/i18n'
 import { GridChip } from './chips/GridChip'
 
 type TableFiltersChipProps = {
-  open: boolean
+  open: boolean | undefined
   popoverFilterChipRef: RefObject<HTMLDivElement | null>
   setOpen: (open: boolean) => void
   testId: string
@@ -18,13 +18,13 @@ export const TableFiltersChip = ({ open, popoverFilterChipRef, setOpen, testId }
   const openFilters = () => setOpen(true)
 
   return isMobile ? (
-    <SelectableChip size="medium" selected={open} icon={<FilterIcon />} toggle={openFilters} data-testid={testId} />
+    <SelectableChip size="medium" selected={!!open} icon={<FilterIcon />} toggle={openFilters} data-testid={testId} />
   ) : (
     <GridChip
       ref={popoverFilterChipRef}
       label={t`Filters`}
       selectableChipSize="medium"
-      selected={open}
+      selected={!!open}
       icon={<FilterIcon />}
       toggle={openFilters}
       data-testid={testId}

@@ -33,7 +33,7 @@ export const SwipeableDrawer = ({ button, children, keepMounted = false, open, s
       onOpen={() => setOpen(true)}
       // if false, add an invisible bottom hit area (~20px height) to swipe-open the drawer
       disableSwipeToOpen={true}
-      keepMounted={keepMounted}
+      ModalProps={{ keepMounted }}
       slotProps={{
         paper: { sx: applySxProps({ backgroundColor: (t: Theme) => t.design.Layer.App.Background }, paperSx) },
       }}

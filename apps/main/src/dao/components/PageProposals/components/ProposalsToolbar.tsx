@@ -55,7 +55,7 @@ export const ProposalsToolbar = ({
   onSortingChange: OnChangeFn<SortingState>
 }) => {
   const isMobile = useIsMobile()
-  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState<boolean | undefined>()
   const filterChipRef = useRef<HTMLDivElement>(null)
   const hasActiveFilters = status !== 'all'
 

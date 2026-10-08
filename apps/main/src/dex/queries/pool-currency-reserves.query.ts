@@ -1,6 +1,7 @@
 import { isNaN } from 'lodash'
 import { test } from 'vest'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { fetchTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
@@ -82,9 +83,11 @@ export const invalidatePoolCurrencyReserves = (params: PoolParams) =>
   )
 
 /** Hook to fetch reserves for the selected pool token representation. */
-export function usePoolCurrencyReserves(params: Omit<PoolCurrencyReservesParams, 'useApi'>) {
-  const { curveApi, isHydrated } = useCurve()
-  return usePoolCurrencyReservesQuery({ ...params, useApi: !curveApi?.signerAddress }, isHydrated)
-}
+export const usePoolCurrencyReserves = (params: Omit<PoolCurrencyReservesParams, 'useApi'>) =>
+  useHydratedQuery(
+    usePoolCurrencyReservesQuery,
+    { ...params, useApi: !useCurve()?.curveApi?.signerAddress },
+    useCurve().curveApi?.isNoRPC === false,
+  )
 
 export type CurrencyReserves = QueryData<typeof usePoolCurrencyReservesQuery>

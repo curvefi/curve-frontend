@@ -26,7 +26,7 @@ export const RewardsRateCell = ({ pool }: { pool: PoolRow }) => {
         placement="top"
       >
         <Box component="span" sx={{ display: 'inline-flex' }}>
-          <Typography variant="tableCellMBold">{formatCellValue(rewardsRate, 'percent.rate')}</Typography>
+          <Typography variant="tableCellValue">{formatCellValue(rewardsRate, 'percent.rate')}</Typography>
         </Box>
       </WithWrapper>
       <RewardIcons pool={pool} />
