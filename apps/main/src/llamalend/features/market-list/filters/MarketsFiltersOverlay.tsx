@@ -11,7 +11,7 @@ import { MarketsFilters } from './MarketsFilters'
 
 type MarketsFiltersOverlayProps = {
   table: ReactTable<CurveTableFeatures, LlamaMarketRow>
-  open: boolean
+  open: boolean | undefined
   setOpen: (open: boolean) => void
   anchorRef: RefObject<HTMLDivElement | null>
   marketsQuery: QueryProp<LlamaMarket[]>

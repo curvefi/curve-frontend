@@ -66,7 +66,7 @@ export const PoolsTable = ({
   Actions,
 }: PoolsTableProps) => {
   const isMobile = useIsMobile()
-  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState<boolean | undefined>()
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const anchorRef = useRef<HTMLTableSectionElement>(null)
