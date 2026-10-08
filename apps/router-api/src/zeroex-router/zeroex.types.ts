@@ -7,6 +7,8 @@ export type ZeroExQuoteRequest = {
   buyToken: Address
   sellAmount: Decimal
   taker: Address
+  txOrigin?: Address // EOA that initiates the transaction, required when the taker is a contract such as ZapV2
+  slippageBps?: Decimal // integer, defaults to 100 (1%) when omitted
   swapFeeRecipient?: Address
   swapFeeBps?: Decimal
   swapFeeToken?: Address
