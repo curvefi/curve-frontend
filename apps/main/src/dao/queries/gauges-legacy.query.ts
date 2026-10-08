@@ -68,7 +68,8 @@ export const getGaugeDepositUrl = (gaugeData: CurveApiGaugeData | undefined) =>
     isFundraisingGauge(gaugeData)
       ? undefined
       : gaugeData.isPool
-        ? gaugeData.poolUrls.deposit[0]
+        ? // Legacy pool URLs have a hash fragment; redirects have been removed. This is a legacy query anyway and most likely be removed in the future.
+          gaugeData.poolUrls.deposit[0]?.replace('/#/', '/')
         : gaugeData.lendingVaultUrls.deposit,
   )
 

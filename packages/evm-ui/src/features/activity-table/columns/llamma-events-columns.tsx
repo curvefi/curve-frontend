@@ -35,7 +35,7 @@ export const LLAMMA_EVENTS_COLUMNS = columnHelper.columns([
     cell: ({ row }) => (
       <LlammaEventChangeCell
         event={row.original}
-        chain={row.original.blockchainId}
+        blockchainId={row.original.blockchainId}
         collateralToken={row.original.collateralToken}
         borrowToken={row.original.borrowToken}
       />

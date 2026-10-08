@@ -5,24 +5,24 @@ import * as Schema from './schema'
 
 export type * from './schema'
 
-type PoolParams = { chain: Chain; poolAddress: Address }
+type PoolParams = { blockchainId: Chain; poolAddress: Address }
 type WindowParams = { start?: number; end?: number }
 type PageParams = { page?: number; pageSize?: number }
 
 export async function getRefuelTimeseries(
-  { chain, poolAddress, start, end, page, pageSize }: PoolParams & WindowParams & PageParams,
+  { blockchainId, poolAddress, start, end, page, pageSize }: PoolParams & WindowParams & PageParams,
   options?: Options,
 ) {
   const host = getHost(options)
   const query = addQueryString({ start, end, page, page_size: pageSize })
-  const response = await fetch(`${host}/v1/refuel/${chain}/${poolAddress}/timeseries${query}`)
+  const response = await fetch(`${host}/v1/refuel/${blockchainId}/${poolAddress}/timeseries${query}`)
 
   return Schema.refuelTimeseriesResponse.parse(response)
 }
 
 export async function getRefuelIlTimeseries(
   {
-    chain,
+    blockchainId,
     poolAddress,
     start,
     end,
@@ -33,29 +33,29 @@ export async function getRefuelIlTimeseries(
 ) {
   const host = getHost(options)
   const query = addQueryString({ start, end, initial_lp: initialLp, initial_usd: initialUsd })
-  const response = await fetch(`${host}/v1/refuel/${chain}/${poolAddress}/il_timeseries${query}`)
+  const response = await fetch(`${host}/v1/refuel/${blockchainId}/${poolAddress}/il_timeseries${query}`)
 
   return Schema.refuelIlTimeseriesResponse.parse(response)
 }
 
 export async function getRefuelDonationEvents(
-  { chain, poolAddress, start, end, page, pageSize }: PoolParams & WindowParams & PageParams,
+  { blockchainId, poolAddress, start, end, page, pageSize }: PoolParams & WindowParams & PageParams,
   options?: Options,
 ) {
   const host = getHost(options)
   const query = addQueryString({ start, end, page, page_size: pageSize })
-  const response = await fetch(`${host}/v1/refuel/${chain}/${poolAddress}/donations/events${query}`)
+  const response = await fetch(`${host}/v1/refuel/${blockchainId}/${poolAddress}/donations/events${query}`)
 
   return Schema.refuelDonationEventsResponse.parse(response)
 }
 
 export async function getRefuelDonationLeaderboard(
-  { chain, poolAddress, start, end }: PoolParams & WindowParams,
+  { blockchainId, poolAddress, start, end }: PoolParams & WindowParams,
   options?: Options,
 ) {
   const host = getHost(options)
   const query = addQueryString({ start, end })
-  const response = await fetch(`${host}/v1/refuel/${chain}/${poolAddress}/donations/leaderboard${query}`)
+  const response = await fetch(`${host}/v1/refuel/${blockchainId}/${poolAddress}/donations/leaderboard${query}`)
 
   return Schema.refuelDonationLeaderboardResponse.parse(response)
 }
@@ -67,20 +67,20 @@ export async function getRefuelChains(options?: Options) {
   return Schema.refuelChainsResponse.parse(response)
 }
 
-export async function getRefuelPools(chain: Chain, options?: Options) {
+export async function getRefuelPools(blockchainId: Chain, options?: Options) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/refuel/${chain}/pools`)
+  const response = await fetch(`${host}/v1/refuel/${blockchainId}/pools`)
 
   return Schema.refuelPoolsResponse.parse(response)
 }
 
 export async function getRefuelDailyDonations(
-  { chain, poolAddress, start, end }: PoolParams & WindowParams,
+  { blockchainId, poolAddress, start, end }: PoolParams & WindowParams,
   options?: Options,
 ) {
   const host = getHost(options)
   const query = addQueryString({ start, end })
-  const response = await fetch(`${host}/v1/refuel/${chain}/${poolAddress}/donations/daily${query}`)
+  const response = await fetch(`${host}/v1/refuel/${blockchainId}/${poolAddress}/donations/daily${query}`)
 
   return Schema.refuelDailyDonationsResponse.parse(response)
 }

@@ -1,7 +1,7 @@
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { ChainId, ClaimableReward, CurveApi, EstimatedGas, Provider } from '@/dex/types/main.types'
-import { fulfilledValue, isValidAddress } from '@/dex/utils'
+import { fulfilledValue } from '@/dex/utils'
 import {
   _parseRoutesAndOutput,
   excludeLowExchangeRateCheck,
@@ -11,6 +11,7 @@ import {
 } from '@/dex/utils/utilsSwap'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { getGasConfig } from '@evm-ui/queries/gas-info.query'
+import { isValidAddress } from '@evm-ui/utils'
 import { waitForTransaction, waitForTransactions } from '@evm-ui/utils/ethers'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { log } from '@ui/lib/logging'

@@ -55,10 +55,9 @@ export const PoolHistoricalBaseRateChart = ({
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<BaseRateSeriesKey[]>(() => SERIES_CONFIG.map(({ key }) => key))
 
-  const chain = blockchainId as Chain
   const [end] = useState(() => Math.floor(Date.now() / 1000))
   const snapshots = usePoolSnapshots({
-    chain,
+    blockchainId: blockchainId as Chain,
     poolAddress,
     start: end - TIME_OPTION_MS[timeOption] / 1000,
     end,
@@ -76,7 +75,7 @@ export const PoolHistoricalBaseRateChart = ({
   )
 
   // Current metric values are based on pool list data to avoid mismatches, and is also updated more frequently than snapshots
-  const currentPool = usePoolPricesApi({ blockchainId: chain, poolAddress })
+  const currentPool = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
   const {
     design: { Color },

@@ -20,7 +20,7 @@ export const LiquidityUsdCell = ({ getValue, row }: CellContext<CurveTableFeatur
       <Box>
         <TokenInfo
           address={assets.borrowed.address}
-          blockchainId={assets.borrowed.chain}
+          blockchainId={assets.borrowed.blockchainId}
           iconSize="mui-sm"
           iconPosition="right"
           iconAlignment="start"

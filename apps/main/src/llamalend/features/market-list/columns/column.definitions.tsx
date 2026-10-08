@@ -234,7 +234,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
     filterFn: rangeFilterFn,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
-  hidden(MarketColumnId.Chain, MarketColumnId.Chain, multiFilterFn),
+  hidden(MarketColumnId.Chain, 'blockchainId', multiFilterFn),
   hidden(MarketColumnId.CollateralSymbol, 'assets.collateral.symbol', multiFilterFn),
   hidden(MarketColumnId.BorrowedSymbol, 'assets.borrowed.symbol', multiFilterFn),
   hidden(MarketColumnId.IsFavorite, MarketColumnId.IsFavorite, boolFilterFn),

@@ -1,6 +1,5 @@
-import { getMarket } from '@/llamalend/llama.utils'
+import { getMarket, isLendMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MarketQuery, UserQuery } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -18,7 +17,7 @@ export const { useQuery: useUserBalances } = queryFactory({
     ({ name: 'wallet.balances', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId }: UserBalancesQuery) => {
     const market = getMarket(marketId)
-    if (market instanceof LendMarketTemplate) {
+    if (isLendMarket(market)) {
       const { collateral, borrowed, vaultShares, gauge } = (await market.wallet.balances()) as LendBalances
       const [vaultSharesConverted, gaugeConverted] = await Promise.all(
         [vaultShares, gauge].map(async v => (+v === 0 ? v : await market.vault.convertToAssets(v)) as Decimal),

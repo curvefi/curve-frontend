@@ -24,7 +24,6 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     loader: ({ params: { network } }) => redirectTo(`/dex/${network}/swap/`),
     ...layoutProps,
   }),
-  createRoute({ path: '/integrations', loader: () => redirectTo('/dex/ethereum/integrations/'), ...layoutProps }),
   createRoute({
     path: '$network/compensation',
     component: PageCompensation,
