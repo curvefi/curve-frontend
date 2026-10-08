@@ -16,8 +16,8 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { usePoolContext } from '../../pool-context'
-import { TokenSelector } from './TokenSelector'
 import { DistributorInput } from './DistributorInput'
+import { TokenSelector } from './TokenSelector'
 
 const { Spacing } = SizesAndSpaces
 
