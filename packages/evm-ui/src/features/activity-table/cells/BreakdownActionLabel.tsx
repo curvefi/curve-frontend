@@ -7,7 +7,7 @@ const { Spacing } = SizesAndSpaces
 /** Action label of a breakdown row, indented under the action of its parent row */
 export const BreakdownActionLabel = ({ label, color }: { label: string; color: 'success' | 'error' }) => (
   <InlineTableCell sx={{ paddingInlineStart: Spacing.md }}>
-    <Typography variant="tableCellMBold" color={color}>
+    <Typography variant="tableCellValueStrong" color={color}>
       ↳ {label}
     </Typography>
   </InlineTableCell>

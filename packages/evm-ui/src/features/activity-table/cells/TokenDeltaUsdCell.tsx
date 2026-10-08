@@ -21,9 +21,7 @@ export const TokenDeltaUsdCell = ({ deltas }: { deltas: readonly ActivityTokenDe
   const currentDate = useCurrentDate()
   return (
     <InlineTableCell>
-      {!!deltas.length && (
-        <Typography variant="tableCellMRegular">{formatTotalDeltaUsd(deltas, currentDate)}</Typography>
-      )}
+      {!!deltas.length && <Typography variant="tableCellValue">{formatTotalDeltaUsd(deltas, currentDate)}</Typography>}
     </InlineTableCell>
   )
 }

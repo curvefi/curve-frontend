@@ -77,7 +77,7 @@ export const HeaderCell = function <TData extends RowData>({
       colSpan={header.colSpan}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}
-      variant="tableHeaderS"
+      variant="tableHeaderLabel"
     >
       <Tooltip title={tooltip?.title} {...tooltip}>
         <Sortable column={column} size={size} isEnabled={canSort}>

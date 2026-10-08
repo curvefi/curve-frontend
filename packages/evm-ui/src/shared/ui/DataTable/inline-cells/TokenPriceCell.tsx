@@ -12,7 +12,7 @@ export const TokenPriceCell = ({ query: { data, error, isLoading } }: { query: Q
       {data == null && error ? (
         <ErrorIconButton error={error} size="extraExtraSmall" />
       ) : (
-        <Typography>{formatNumber(data, 'usd.precise')}</Typography>
+        <Typography variant="tableCellValue">{formatNumber(data, 'usd.precise')}</Typography>
       )}
     </WithSkeleton>
   </InlineTableCell>

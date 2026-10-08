@@ -45,7 +45,7 @@ export const RateCell = <TValue extends number | null>({
     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
       <Tooltip market={market}>
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
-          <Typography variant="tableCellMBold" color="textPrimary">
+          <Typography variant="tableCellValueStrong" color="textPrimary">
             {formatCappedRatePercent(rate)}
           </Typography>
 

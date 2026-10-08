@@ -40,7 +40,7 @@ export const NetRateCell = ({ pool, crvToken }: { pool: PoolRow; crvToken: PoolT
             <Typography
               component="span"
               data-testid="pool-net-rate"
-              variant="tableCellMBold"
+              variant="tableCellValueStrong"
               sx={{ display: 'block', textAlign: 'end' }}
             >
               {formatCellValue(netRate, 'percent.rate')}

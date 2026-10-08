@@ -75,7 +75,7 @@ const createMarketColumns = (extraColumnCount = 0) =>
       header: 'Market',
       cell: ({ row }) => (
         <Stack sx={{ gap: 0.25 }}>
-          <Typography component="span" variant="tableCellMBold">
+          <Typography component="span" variant="tableCellValueStrong">
             {row.original.market}
           </Typography>
         </Stack>

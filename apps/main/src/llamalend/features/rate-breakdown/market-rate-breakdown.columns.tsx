@@ -59,6 +59,7 @@ const rateColumns = (rateHeader: string) =>
             secondary={maybe(row.original.maxBoostRate, maxBoostRate =>
               maxBoostRate !== getValue() ? t`Max boost ${formatNumber(maxBoostRate, 'percent.rate')}` : undefined,
             )}
+            boldPrimary
           />
         </InlineTableCell>
       ),

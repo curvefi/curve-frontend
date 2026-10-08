@@ -13,7 +13,7 @@ const { Spacing, Height } = SizesAndSpaces
 
 export const PoolTitleCell = ({ pool: { name, address, network, coins } }: { pool: Pool }) => (
   <Stack sx={{ minHeight: Height.row, justifyContent: 'center' }}>
-    <Typography variant={useIsMobile() ? 'tableCellMBold' : 'tableCellL'}>
+    <Typography variant={useIsMobile() ? 'tableCellValueStrong' : 'tableCellTitle'}>
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <TokenIcons blockchainId={network} tokens={coins} showTooltips={false} />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>

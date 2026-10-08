@@ -1,4 +1,4 @@
-import { Sizing, Spacing } from './0_primitives'
+import { FontWeight, Sizing, Spacing } from './0_primitives'
 
 const MappedSpacing = {
   '3xs': { mobile: Spacing[75], tablet: Spacing[75], desktop: Spacing[75] },
@@ -136,13 +136,13 @@ const SliderThumbWidth = {
 } as const
 
 const MappedFontWeight = {
-  Extra_Light: 200,
-  Light: 300,
-  Normal: 400,
-  Medium: 500,
-  Semi_Bold: 600,
-  Bold: 700,
-  Extra_Bold: 800,
+  Extra_Light: FontWeight[200],
+  Light: FontWeight[300],
+  Normal: FontWeight[400],
+  Medium: FontWeight[500],
+  Semi_Bold: FontWeight[600],
+  Bold: FontWeight[700],
+  Extra_Bold: FontWeight[800],
 } as const
 
 const MappedLineHeight = {

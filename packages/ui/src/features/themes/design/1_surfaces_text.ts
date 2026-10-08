@@ -50,7 +50,7 @@ function createLightSurfaces() {
     },
     Tables: {
       Row: { Default: Grays[50], Selected: Blues[100], Hover: Grays[10] },
-      Header: { Fill: Grays[200], Label: { Default: Grays[700], Hover: Blues[500], Active: Grays[950] } },
+      Header: { Fill: Grays[200], Label: { Default: Grays[800], Hover: Blues[500], Active: Grays[950] } },
     },
     Badges: {
       // Figma names this group LabelIcon; keep Label as the runtime key for API compatibility.
@@ -133,7 +133,7 @@ function createDarkSurfaces() {
     },
     Tables: {
       Row: { Default: Grays[950], Selected: Grays[850], Hover: Grays[900] },
-      Header: { Fill: Grays[800], Label: { Default: Grays[300], Hover: Blues[400], Active: Grays[50] } },
+      Header: { Fill: Grays[800], Label: { Default: Grays[200], Hover: Blues[400], Active: Grays[50] } },
     },
     Badges: {
       Label: {
@@ -215,7 +215,7 @@ function createChadSurfaces() {
     },
     Tables: {
       Row: { Default: Grays[150], Selected: Violets[50], Hover: Violets[50] },
-      Header: { Fill: Grays[300], Label: { Default: Grays[750], Hover: Violets[600], Active: Grays[950] } },
+      Header: { Fill: Grays[300], Label: { Default: Grays[850], Hover: Violets[600], Active: Grays[950] } },
     },
     Badges: {
       Label: {

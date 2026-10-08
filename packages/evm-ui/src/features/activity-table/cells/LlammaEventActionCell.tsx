@@ -9,7 +9,7 @@ export const LlammaEventActionCell = ({ event }: LlammaEventActionCellProps) => 
   const { label, color } = getLlammaEventAction(event)
   return (
     <InlineTableCell>
-      <Typography variant="tableCellMBold" color={color}>
+      <Typography variant="tableCellValue" color={color}>
         {label}
       </Typography>
     </InlineTableCell>

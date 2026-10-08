@@ -10,7 +10,6 @@ export const DepositsCell = ({ pool: { userPosition } }: { pool: PoolRow }) => (
     iconPosition="right"
     primary={maybe(userPosition, p => mapQuery(p.depositsUsd, value => formatNumber(value, 'usd.precise')))}
     secondary={maybe(userPosition, p => `${formatNumber(p.lpBalance, 'token.balance')} LP`)}
-    boldPrimary
     sx={{ justifyContent: 'end' }}
   />
 )
