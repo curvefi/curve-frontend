@@ -31,7 +31,7 @@ const BaseRateTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: b
           {volatile ? (
             <ChipVolatileBaseApy />
           ) : (
-            <Typography variant="tableCellMBold">{formatCellValue(rate, 'percent.rate')}</Typography>
+            <Typography variant="tableCellMRegular">{formatCellValue(rate, 'percent.rate')}</Typography>
           )}
         </Box>
       </WithWrapper>

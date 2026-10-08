@@ -53,7 +53,7 @@ export const TokenAmount = ({
     <Box sx={{ gridRow: horizontal ? 'auto' : 2 }}>
       <WithSkeleton loading={usdLoading}>
         <Tooltip title={formatNumber(amountUsd, { decimals: 5, unit: 'dollar', abbreviate: false, fallback: '-' })}>
-          <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
+          <Typography variant="tableCellSRegular" color="textSecondary">
             {formatNumber(amountUsd, 'usd.notional')}
           </Typography>
         </Tooltip>

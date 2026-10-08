@@ -27,7 +27,7 @@ export const SolvencyCell = ({
   const value = getValue()
   return (
     <Tooltip title={t`Solvency`} body={<SolvencyTooltip type={row.original.type} />}>
-      <Typography variant="tableCellMBold" color={getSolvencyColor(value)}>
+      <Typography variant="tableCellMRegular" color={getSolvencyColor(value)}>
         {formatNumber(value, 'percent.value')}
       </Typography>
     </Tooltip>

@@ -20,7 +20,7 @@ export const AgeCell = ({ getValue }: CellContext<CurveTableFeatures, PoolRow, P
       title={maybe(creationDate, date => formatDate(date, 'long'))}
       placement="top"
     >
-      <Typography data-testid="pool-age" variant="tableCellMBold" sx={{ textAlign: 'end' }}>
+      <Typography data-testid="pool-age" variant="tableCellMRegular" sx={{ textAlign: 'end' }}>
         {creationDate == null ? '-' : relativeTime(currentDate.getTime(), creationDate)}
       </Typography>
     </WithWrapper>

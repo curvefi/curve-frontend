@@ -16,14 +16,14 @@ export const CollateralChangeCell = ({
   const currentDate = useCurrentDate()
   return (
     <InlineTableCell>
-      <Typography variant="tableCellMBold" color={getChangeColor(collateralChange, 'success', 'error')}>
+      <Typography variant="tableCellMRegular" color={getChangeColor(collateralChange, 'success', 'error')}>
         {notFalsy(
           formatNumber(collateralChange || null, 'token.delta'),
           collateralChange && collateralToken?.symbol,
         ).join(' ')}
       </Typography>
       {!!collateralChange && (
-        <Typography variant="bodySRegular">
+        <Typography variant="tableCellSRegular" color="textSecondary">
           {formatActivityUsdValue({ amount: collateralChange, amountUsd: collateralChangeUsd, timestamp }, currentDate)}
         </Typography>
       )}

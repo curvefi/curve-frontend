@@ -7,7 +7,7 @@ import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 export const MaxLeverageCell = ({ getValue }: CellContext<CurveTableFeatures, LlamaMarketRow, number | null>) => {
   const value = getValue()
   return (
-    <Typography variant="tableCellMBold">
+    <Typography variant="tableCellMRegular">
       {formatNumber(value, { abbreviate: false, fallback: '-', maximumSignificantDigits: 2, unit: 'multiplier' })}
     </Typography>
   )

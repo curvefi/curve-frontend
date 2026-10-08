@@ -7,7 +7,7 @@ import { decimalCompare, ZERO } from '@ui/lib/decimal'
 export const VaultChangeAmount = ({ value, symbol }: { value: Decimal | undefined; symbol?: string }) => {
   const sign = decimalCompare(value ?? ZERO, ZERO)
   return (
-    <Typography variant="tableCellMBold" color={sign === 0 ? 'textPrimary' : sign > 0 ? 'success' : 'error'}>
+    <Typography variant="tableCellMRegular" color={sign === 0 ? 'textPrimary' : sign > 0 ? 'success' : 'error'}>
       {notFalsy(sign > 0 && '+', formatNumber(value, 'token.amount'), value != null && symbol && ` ${symbol}`).join('')}
     </Typography>
   )

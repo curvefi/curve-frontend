@@ -11,7 +11,7 @@ export const LlammaEventActionCell = ({ event }: LlammaEventActionCellProps) => 
 
   return (
     <InlineTableCell>
-      <Typography variant="tableCellMBold" color={isDeposit ? 'success' : 'error'}>
+      <Typography variant="tableCellMRegular" color={isDeposit ? 'success' : 'error'}>
         {label}
       </Typography>
     </InlineTableCell>

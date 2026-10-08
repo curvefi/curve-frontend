@@ -17,7 +17,7 @@ export const BoostCell = ({ getValue }: CellContext<CurveTableFeatures, LlamaMar
     body={<BoostTooltipContent />}
     placement="top"
   >
-    <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
+    <Typography variant="tableCellMRegular" color="textPrimary" sx={{ textAlign: 'right' }}>
       {formatNumber(getValue(), 'multiplier')}
     </Typography>
   </WithWrapper>

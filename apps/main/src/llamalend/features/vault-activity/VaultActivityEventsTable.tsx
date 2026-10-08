@@ -47,7 +47,7 @@ const VAULT_ACTIVITY_COLUMNS = columnHelper.columns([
       return (
         <InlineTableCell>
           {action && (
-            <Typography variant="tableCellMBold" color={action.color}>
+            <Typography variant="tableCellMRegular" color={action.color}>
               {action.label}
             </Typography>
           )}

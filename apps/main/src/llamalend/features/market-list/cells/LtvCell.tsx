@@ -16,7 +16,7 @@ export const LtvCell = ({ getValue, row }: CellContext<CurveTableFeatures, Llama
   if (stats.isLoading || prices.borrowed.isLoading || prices.collateral.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-        <Typography variant="tableCellMBold" sx={{ textAlign: 'right' }}>
+        <Typography variant="tableCellMRegular" sx={{ textAlign: 'right' }}>
           <Skeleton variant="text" width={40} />
         </Typography>
       </Box>
@@ -25,7 +25,7 @@ export const LtvCell = ({ getValue, row }: CellContext<CurveTableFeatures, Llama
 
   if (!ltv || stats.error || prices.borrowed.error || prices.collateral.error) {
     return (
-      <Typography variant="tableCellMBold" color="textSecondary" sx={{ textAlign: 'right' }}>
+      <Typography variant="tableCellMRegular" color="textSecondary" sx={{ textAlign: 'right' }}>
         -
       </Typography>
     )
@@ -38,7 +38,7 @@ export const LtvCell = ({ getValue, row }: CellContext<CurveTableFeatures, Llama
       body={<CurrentLTVTooltipContent debtDenomination="Borrowed amount" />}
       placement="top"
     >
-      <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
+      <Typography variant="tableCellMRegular" color="textPrimary" sx={{ textAlign: 'right' }}>
         {formatNumber(ltv, 'percent.rate')}
       </Typography>
     </Tooltip>

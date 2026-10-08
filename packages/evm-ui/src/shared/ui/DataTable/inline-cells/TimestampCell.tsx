@@ -27,7 +27,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
       })}
       sx={{ gap: Spacing.xxs, whiteSpace: 'nowrap' }}
     >
-      <Typography variant="tableCellMBold" sx={{ textAlign: align }}>
+      <Typography variant="tableCellMRegular" sx={{ textAlign: align }}>
         {formatDate(timestamp, 'short', { omitYear: isMobile })}
       </Typography>
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: align, gap: Spacing.xs }}>

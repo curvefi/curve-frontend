@@ -31,7 +31,7 @@ export const USER_VAULT_HISTORY_COLUMNS = columnHelper.columns([
         <InlineTableCell>
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
             <Icon />
-            <Typography variant="tableCellMBold">{label}</Typography>
+            <Typography variant="tableCellMRegular">{label}</Typography>
           </Stack>
         </InlineTableCell>
       )
