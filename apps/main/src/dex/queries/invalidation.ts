@@ -6,6 +6,7 @@ import { queryClient } from '@ui/features/queries/query-client'
 import { getPoolAddressesQueryKey } from './pool-addresses.query'
 import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'
 import { invalidatePoolGaugeStatus } from './pool-gauge-status.query'
+import { invalidatePoolIsGaugeKilled } from './pool-is-gauge-killed.query'
 import { getPoolListRootQueryKey, getPoolChainsQueryKey, getLitePoolChainsQueryKey } from './pool-list.query'
 import { invalidatePoolParameters } from './pool-parameters.query'
 import { invalidatePoolRewardsApy } from './pool-rewards-apy.query'
@@ -36,6 +37,7 @@ export const invalidatePoolInfo = async (params: PoolParams) =>
     invalidatePoolParameters(params),
     invalidatePoolCurrencyReserves(params),
     invalidatePoolGaugeStatus(params),
+    invalidatePoolIsGaugeKilled(params),
     invalidatePoolRewardsApy(params),
     invalidatePoolTotalStaked(params),
   ])
