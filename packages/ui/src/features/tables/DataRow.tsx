@@ -3,9 +3,11 @@ import TableRow from '@mui/material/TableRow'
 import type { ReactTable, Row, RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useNavigate } from '@ui/hooks/router'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { hasParentWithClass } from '@ui/lib/dom'
+import type { DataTableRowHeight } from './categories'
 import {
   CLICKABLE_IN_ROW_CLASS,
   type CurveTableFeatures,
@@ -15,12 +17,15 @@ import {
 import { DataCell } from './DataCell'
 import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
+const { Height } = SizesAndSpaces
+
 export type DataRowProps<TData extends RowData> = {
   table: ReactTable<CurveTableFeatures, TData>
   row: Row<CurveTableFeatures, TData>
   expandedPanel?: ExpandedPanelConfig<TData>
   shouldStickFirstColumn?: boolean
   verticalAlign?: 'top' | 'middle' | 'bottom'
+  rowHeight?: DataTableRowHeight
 }
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
@@ -41,6 +46,7 @@ export const DataRow = <TData extends RowData>({
   expandedPanel,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
+  rowHeight = 'l',
 }: DataRowProps<TData>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
@@ -65,6 +71,7 @@ export const DataRow = <TData extends RowData>({
           sx={useMemo(
             () => ({
               marginBlock: 0,
+              height: Height.table.row[rowHeight], // a table row grows past its height, so this is a minimum
               cursor: isInteractive ? 'pointer' : 'default',
               verticalAlign,
               transition: `border-bottom ${TRANSITION_FUNCTION}`,
@@ -84,7 +91,7 @@ export const DataRow = <TData extends RowData>({
                 },
               }),
             }),
-            [isInteractive, verticalAlign],
+            [isInteractive, verticalAlign, rowHeight],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}

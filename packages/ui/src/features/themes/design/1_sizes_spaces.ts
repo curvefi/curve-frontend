@@ -290,6 +290,7 @@ export const SizesAndSpaces = {
         sm: '8rem', // 128px
         lg: '25rem', // 400px
       },
+      row: { s: Sizing[600], m: Sizing[650], l: Sizing[700] }, // Figma Table/Row/Height, applied as a minimum
     },
     row: Sizing[700],
     chart: MappedChartHeight, // chart libraries require heights in number format
