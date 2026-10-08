@@ -38,7 +38,7 @@ export function SwapTokenSelector({
       onClose={onClose}
       size="small"
     >
-      <SwapTokenList tokens={options?.filter((_, index) => index !== calculatedIndex)} onToken={onToken} />
+      <SwapTokenList tokens={options} calculatedIndex={calculatedIndex} onToken={onToken} />
     </TokenSelector>
   )
 }
