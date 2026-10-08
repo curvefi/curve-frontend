@@ -5,6 +5,7 @@ import type { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import { isValidAddress } from '@evm-ui/utils'
@@ -151,8 +152,5 @@ const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQu
 export const invalidatePoolRewardsApy = (params: PoolParams<ChainId>) =>
   Promise.all([true, false].map(useApi => invalidatePoolRewardsApyQuery({ ...params, useApi })))
 
-/** Prefer on-chain rewards for pool details when a wallet is connected. */
-export function usePoolRewardsApy(params: PoolParams<ChainId>) {
-  const { curveApi, isHydrated } = useCurve()
-  return usePoolRewardsApyQuery({ ...params, useApi: !curveApi?.signerAddress }, isHydrated)
-}
+export const usePoolRewardsApy = (params: PoolParams<ChainId>) =>
+  useHydratedQuery(usePoolRewardsApyQuery, { ...params, useApi: !useCurve()?.curveApi?.signerAddress })
