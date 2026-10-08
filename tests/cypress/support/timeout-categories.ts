@@ -1,6 +1,8 @@
-import { TIMEOUT_TYPES } from './timeout-types'
-
-const { standard, extended, long } = TIMEOUT_TYPES
+const { standard, extended, long } = {
+  standard: { timeout: 30_000 },
+  extended: { timeout: 90_000 },
+  long: { timeout: 120_000 },
+} as const satisfies Record<string, Cypress.Timeoutable>
 
 /**
  * Select the dependency and operation being awaited, including for data displayed in the DOM.
@@ -61,15 +63,15 @@ export const TIMEOUTS = {
   'stellar.seedPool': long,
 
   // Intercepted HTTP responses: independently tunable from live services.
-  'mock.prices.chains': long, // /v1/chains/ and /v2/pools/chains/
-  'mock.prices.pools': long, // /v2/pools/
+  'mock.prices.chains': standard, // /v1/chains/ and /v2/pools/chains/
+  'mock.prices.pools': standard, // /v2/pools/
   'mock.prices.markets': standard, // /v1/lending/markets and /v1/crvusd/markets
-  'mock.prices.snapshots': long, // Market historical-rate snapshots and their charts.
-  'mock.prices.charts': long, // Intercepted LLAMMA/oracle OHLC data.
-  'mock.curveCore.platforms': long, // api-core.curve.finance/v1/getPlatforms
-  'mock.curveLite.platforms': long, // api2.curve.finance/get_platforms
-  'mock.curveLite.pools': long, // api2.curve.finance/get_pools/:chainId
-  'mock.merkl.opportunities': long, // /api/merkl/v1/opportunities
+  'mock.prices.snapshots': standard, // Market historical-rate snapshots and their charts.
+  'mock.prices.charts': standard, // Intercepted LLAMMA/oracle OHLC data.
+  'mock.curveCore.platforms': standard, // api-core.curve.finance/v1/getPlatforms
+  'mock.curveLite.platforms': standard, // api2.curve.finance/get_platforms
+  'mock.curveLite.pools': standard, // api2.curve.finance/get_pools/:chainId
+  'mock.merkl.opportunities': standard, // /api/merkl/v1/opportunities
   'mock.router.routes': standard, // /api/router/v1/routes
   'mock.sentry.report': standard, // Intercepted Sentry envelope submission.
 
