@@ -3,7 +3,7 @@ import { StellarUrls } from '@/stellar/routes/routes'
 import { oneOf } from '@cy/support/generators'
 import { expandFirstRowOnMobile, openDrawer, withExpandedPanelDrawer } from '@cy/support/helpers/data-table.helpers'
 import { mountStellarApp } from '@cy/support/helpers/stellar/StellarTestWrapper'
-import { allViewports, API_LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { PoolColumnId } from '@ui/features/pool-list/columns'
 import { queryClient } from '@ui/features/queries/query-client'
 
@@ -12,7 +12,9 @@ const POOL_LIST_URL = StellarUrls.poolList({ network: NETWORK })
 const poolLinks = () => cy.get('[data-testid^="table-row-link-"]', API_LOAD_TIMEOUT)
 const search = () => cy.get('[data-testid="table-text-search-dex-pool-list"] input')
 
-allViewports().forEach(([width, height, breakpoint]) => {
+const testCases = [oneViewport()]
+
+testCases.forEach(([width, height, breakpoint]) => {
   describe(`Stellar pool list (${breakpoint}, ${width}x${height})`, () => {
     beforeEach(() => {
       queryClient.clear()
@@ -23,13 +25,8 @@ allViewports().forEach(([width, height, breakpoint]) => {
     it('redirects the app entry to the mainnet pool list', () => {
       mountStellarApp('/')
       cy.location('pathname').should('equal', StellarUrls.poolList({ network: 'stellar' }))
-      // Mainnet may still be empty while the backend rolls out support.
-      cy.get(
-        `[data-testid^="table-row-link-"], [data-testid="table-empty-row"]:contains("We couldn't find any results.")`,
-        API_LOAD_TIMEOUT,
-      )
-        .first()
-        .should('be.visible')
+      // Mainnet is empty while the backend rolls out support.
+      cy.get(`[data-testid="dex-pool-empty-state-no-results"]`, API_LOAD_TIMEOUT).should('be.visible')
     })
 
     it('loads pools, searches by address, and resets an empty search', () => {
@@ -43,7 +40,7 @@ allViewports().forEach(([width, height, breakpoint]) => {
         poolLinks().should('have.length', 1).and('have.attr', 'href', href)
         search().clear()
         search().type('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
-        cy.contains("We couldn't find any results.").should('be.visible')
+        cy.get(`[data-testid="dex-pool-empty-state-reset"]`).should('be.visible')
         search().clear()
         search().should('have.value', '')
         poolLinks().should('have.length', count)

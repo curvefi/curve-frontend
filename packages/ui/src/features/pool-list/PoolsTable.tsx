@@ -125,6 +125,7 @@ export const PoolsTable = ({
             : {
                 title: t`We couldn't find any results.`,
                 description: t`If this is unexpected, feel free to ask us on Telegram.`,
+                testId: 'dex-pool-empty-state-no-results',
               }),
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
