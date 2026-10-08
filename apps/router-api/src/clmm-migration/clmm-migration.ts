@@ -20,6 +20,7 @@ type EnsoBundleResponse = {
 /**
  * Enso bundle: redeem the whole position, take the router fee from each token, then route each token into `tokenOut`.
  * Routing each token separately works for every Curve pool type and gauge, unlike protocol-specific deposits.
+ * Enso finds no route for a zero amount, so `skipTokens` (one side of an out-of-range position) are left out.
  */
 const buildActions = ({
   chainId,
@@ -30,6 +31,7 @@ const buildActions = ({
   tokens,
   tokenOut,
   slippage,
+  skipTokens = [],
 }: ClmmMigrationQuery) => {
   const fee = getRouterFee('enso', { chainId })
   const slippageBps = new BigNumber(slippage).times(100).toFixed(0)
@@ -38,20 +40,23 @@ const buildActions = ({
     action: 'redeemclmm',
     args: { tokenIn: positionManager, tokenOut: tokens, liquidity, tokenId },
   }
+  const outputs = tokens
+    .map((token, index) => ({ token, index }))
+    .filter(({ token }) => !skipTokens.some(skip => skip.toLowerCase() === token.toLowerCase()))
   const fees = fee
-    ? tokens.map((token, index) => ({
+    ? outputs.map(({ token, index }) => ({
         protocol: 'enso',
         action: 'fee',
         args: { token, amount: { useOutputOfCallAt: 0, index }, bps: fee.feeBps, receiver: fee.feeReceiver },
       }))
     : []
-  const routes = tokens.map((token, index) => ({
+  const routes = outputs.map(({ token, index }, position) => ({
     protocol: 'enso',
     action: 'route',
     args: {
       tokenIn: token,
       tokenOut,
-      amountIn: fee ? { useOutputOfCallAt: 1 + index } : { useOutputOfCallAt: 0, index },
+      amountIn: fee ? { useOutputOfCallAt: 1 + position } : { useOutputOfCallAt: 0, index },
       slippage: slippageBps,
     },
   }))
@@ -81,7 +86,11 @@ export const getClmmMigration = async (
     if (error instanceof FetchError) log.error({ message: 'Enso bundle request failed', status: error.status, url })
     throw error
   })
-  const outKey = Object.keys(amountsOut).find(key => key.toLowerCase() === query.tokenOut.toLowerCase()) as Address
+  // Enso sometimes keys a multi-hop route's output by an intermediate token. Every redeemed token is routed into
+  // `tokenOut`, so a single remaining output is the LP.
+  const outKey = (Object.keys(amountsOut).find(key => key.toLowerCase() === query.tokenOut.toLowerCase()) ??
+    (Object.keys(amountsOut).length === 1 ? Object.keys(amountsOut)[0] : undefined)) as Address | undefined
+  if (!outKey) throw new Error(`Enso bundle returned no ${query.tokenOut} output`)
   const approval = preTransactions.find(({ type }) => type === 'tokenApproval')?.tx
   return {
     routerFeePercentage: feePercentage,

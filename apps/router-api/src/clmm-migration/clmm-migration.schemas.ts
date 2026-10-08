@@ -19,6 +19,8 @@ export type ClmmMigrationQuery = {
   userAddress: Address
   /** Percent. */
   slippage: number
+  /** Redeemed tokens with a zero amount, which are not routed. */
+  skipTokens?: Address[]
 }
 
 const clmmMigrationQuerySchema = {
@@ -35,6 +37,7 @@ const clmmMigrationQuerySchema = {
     tokenOut: AddressSchema,
     userAddress: AddressSchema,
     slippage: { type: 'number', minimum: 0, maximum: 50, default: 0.5 },
+    skipTokens: { type: 'array', items: AddressSchema, maxItems: 1 },
   },
 } as const
 

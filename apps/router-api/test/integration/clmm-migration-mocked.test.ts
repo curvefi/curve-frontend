@@ -87,4 +87,23 @@ describe('GET clmm-migration mocked unit tests', () => {
     const actions = JSON.parse(fetchMock.mock.calls[0][1]!.body as string) as { action: string }[]
     expect(actions.map(({ action }) => action)).toEqual(['redeemclmm', 'route', 'route'])
   })
+
+  it('leaves zero-amount tokens out of the fee and route actions', async () => {
+    const fetchMock = vi.fn<typeof fetch>(() => Promise.resolve(Response.json(ensoBundleResponse)))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { statusCode } = await server.inject({
+      url: '/api/router/v1/clmm-migration',
+      query: { ...query, skipTokens: [USDC] },
+    })
+
+    expect(statusCode).toBe(200)
+    const actions = JSON.parse(fetchMock.mock.calls[0][1]!.body as string) as {
+      action: string
+      args: Record<string, unknown>
+    }[]
+    expect(actions.map(({ action }) => action)).toEqual(['redeemclmm', 'fee', 'route'])
+    expect(actions[1].args).toMatchObject({ token: USDT, amount: { useOutputOfCallAt: 0, index: 1 } })
+    expect(actions[2].args).toMatchObject({ tokenIn: USDT, amountIn: { useOutputOfCallAt: 1 } })
+  })
 })
