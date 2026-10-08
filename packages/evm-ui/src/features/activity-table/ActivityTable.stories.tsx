@@ -2,15 +2,18 @@ import { useMemo } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { fromDate } from '@curvefi/prices-api/timestamp'
 import { createTestWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test-config'
+import Stack from '@mui/material/Stack'
 import type { Address, Token } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
 import { constQ, fakeLoadingQ, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ActivityTable } from './ActivityTable'
 import {
   createPoolLiquidityColumns,
+  LLAMMA_EVENTS_BREAKDOWN,
   LLAMMA_EVENTS_COLUMNS,
   LLAMMA_TRADES_COLUMNS,
   POOL_TRADES_COLUMNS,
@@ -22,6 +25,8 @@ import {
   PoolTradesExpandedPanel,
 } from './panels'
 import type { MarketEventRow, MarketTradeRow, PoolLiquidityRow, PoolTradeRow } from './types'
+
+const { Spacing } = SizesAndSpaces
 
 const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}`
 
@@ -154,25 +159,10 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
 
   return Array.from({ length: count }, (_, i) => {
     const isDeposit = i % 3 !== 2 // 2/3 deposits, 1/3 withdrawals
+    const isSoftLiquidated = i % 2 === 0 // half of the withdrawals return both collateral and borrowed tokens
 
-    return {
+    const event = {
       provider: generateAddress(6000 + i),
-      deposit: isDeposit
-        ? {
-            amount: Math.random() * 10 + 0.5,
-            amountUsd: 2500,
-            n1: Math.floor(Math.random() * 50),
-            n2: Math.floor(Math.random() * 50) + 50,
-          }
-        : null,
-      withdrawal: isDeposit
-        ? null
-        : {
-            amountBorrowed: Math.random() * 5000 + 100,
-            amountBorrowedUsd: 1000,
-            amountCollateral: Math.random() * 2 + 0.1,
-            amountCollateralUsd: 3000,
-          },
       blockNumber: 19000000 + i * 60,
       timestamp: fromDate(new Date(now - i * 3600000)), // 1 hour apart
       txHash: generateTxHash(6000 + i),
@@ -180,7 +170,31 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
       chainId: Chain.Ethereum,
       collateralToken,
       borrowToken,
-    }
+    } as const
+
+    return isDeposit
+      ? {
+          ...event,
+          type: 'deposit',
+          deposit: {
+            amount: Math.random() * 10 + 0.5,
+            amountUsd: 2500,
+            n1: Math.floor(Math.random() * 50),
+            n2: Math.floor(Math.random() * 50) + 50,
+          },
+          withdrawal: null,
+        }
+      : {
+          ...event,
+          type: 'withdrawal',
+          deposit: null,
+          withdrawal: {
+            amountBorrowed: isSoftLiquidated ? Math.random() * 5000 + 100 : 0,
+            amountBorrowedUsd: isSoftLiquidated ? 1000 : 0,
+            amountCollateral: Math.random() * 2 + 0.1,
+            amountCollateralUsd: 3000,
+          },
+        }
   })
 }
 
@@ -230,7 +244,7 @@ const LendMarketActivityComponent = () => {
   const eventsTable = useCurveTable({ query: constQ(eventsData), columns: LLAMMA_EVENTS_COLUMNS })
 
   return (
-    <>
+    <Stack sx={{ gap: Spacing.md }}>
       <ActivityTable
         table={tradesTable}
         emptyState={{ title: 'No AMM trades found.' }}
@@ -242,8 +256,9 @@ const LendMarketActivityComponent = () => {
         emptyState={{ title: 'No controller events found.' }}
         errorState={{ title: 'Could not load controller events.' }}
         expandedPanel={{ Body: MarketEventsExpandedPanel }}
+        rowBreakdown={LLAMMA_EVENTS_BREAKDOWN}
       />
-    </>
+    </Stack>
   )
 }
 
