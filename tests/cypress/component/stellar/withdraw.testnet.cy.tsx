@@ -28,7 +28,7 @@ import {
 } from '@cy/support/helpers/stellar/withdraw.helpers'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { decimalSum } from '@ui/lib/decimal'
 
 const WITHDRAW_LP_AMOUNT = '0.003' satisfies Decimal
