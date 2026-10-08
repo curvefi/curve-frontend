@@ -84,7 +84,7 @@ export const DataRow = <TData extends RowData>({
           sx={useMemo(
             () => ({
               marginBlock: 0,
-              height: Height.table.row[rowHeight], // a table row grows past its height, so this is a minimum
+              minHeight: Height.table.row[rowHeight],
               cursor: isInteractive ? 'pointer' : 'default',
               verticalAlign,
               transition: `border-bottom ${TRANSITION_FUNCTION}`,
