@@ -13,8 +13,8 @@ import { SafeWalletIcon } from '@ui/icons/SafeWalletIcon'
 import { WalletConnectIcon } from '@ui/icons/WalletConnectIcon'
 import { WalletIcon as DefaultWalletIcon } from '@ui/icons/WalletIcon'
 import type { Connector } from '@wagmi/core'
-import { useWallet } from '../lib'
 import { INJECTED_CONNECTOR_ID } from '../lib/wagmi/connectors'
+import { useWallet } from '../lib/useWallet'
 
 const { IconSize } = SizesAndSpaces
 
