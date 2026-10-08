@@ -27,7 +27,7 @@ const defaultTokens: TokenOption[] = [
   { chain: 'ethereum', address: '0x853d955aCEf822Db058eb8505911ED77F175b99e', symbol: 'FRAX' },
   { chain: 'ethereum', address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e', symbol: 'YFI' },
   { chain: 'ethereum', address: '0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0', symbol: 'FXS' },
-  { chain: 'ethereum', address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', symbol: 'stETH' },
+  { chain: 'ethereum', address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', symbol: 'stETH', category: 'staked' },
   { chain: 'ethereum', address: '0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B', symbol: 'CVX' },
   { chain: 'ethereum', address: '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32', symbol: 'LDO' },
   { chain: 'ethereum', address: '0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF', symbol: 'ALCX' },
