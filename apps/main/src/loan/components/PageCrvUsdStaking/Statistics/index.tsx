@@ -88,7 +88,7 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
               height={Height.chart.lg}
               isLoading={isScrvUsdYieldLoading}
               error={scrvUsdYieldError}
-              errorMessage={t`Unable to fetch savings rate data.`}
+              errorState={{ description: t`Unable to fetch savings rate data.` }}
             >
               <RevenueLineChart
                 height={Height.chart.lg}
@@ -110,7 +110,7 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
             height={Height.chart.lg}
             isLoading={isRevenueLoading}
             error={revenueError}
-            errorMessage={t`Unable to fetch distributions data.`}
+            errorState={{ description: t`Unable to fetch distributions data.` }}
           >
             <RevenueDistributionsBarChart height={Height.chart.lg} data={revenueData ?? null} />
           </EvmChartStateWrapper>
