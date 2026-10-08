@@ -1,6 +1,6 @@
 import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
 import { MarketType } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -121,24 +121,35 @@ export function checkLoanDetailsLoaded({
   expectError,
   hasApi = true,
   controllerApproved = true,
+  isMocked = false,
 }: {
   leverageEnabled: boolean
   expectError?: string
   hasApi?: boolean
   controllerApproved?: boolean
+  isMocked?: boolean
 }) {
-  getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
-  getActionValue('borrow-apr').should('include', '%')
-  getActionValue('borrow-apr', 'previous').should('include', '%')
-  getActionValue('borrow-ltv').should(hasApi ? 'include' : 'equal', hasApi ? '%' : '-')
-  getActionValue('borrow-ltv', 'previous').should('include', '%')
-  checkEstimatedTxCost({ hasValue: hasApi && !expectError && controllerApproved })
+  getActionValue('borrow-price-range', getTimeoutCategory('evm.simulation', isMocked)).should(
+    'match',
+    DECIMAL_RANGE_REGEX,
+  )
+  getActionValue('borrow-apr', getTimeoutCategory('evm.simulation', isMocked)).should('include', '%')
+  getActionValue('borrow-apr', getTimeoutCategory('evm.simulation', isMocked), 'previous').should('include', '%')
+  getActionValue('borrow-ltv', getTimeoutCategory('evm.simulation', isMocked)).should(
+    hasApi ? 'include' : 'equal',
+    hasApi ? '%' : '-',
+  )
+  getActionValue('borrow-ltv', getTimeoutCategory('evm.simulation', isMocked), 'previous').should('include', '%')
+  checkEstimatedTxCost({
+    hasValue: hasApi && !expectError && controllerApproved,
+    category: getTimeoutCategory('evm.simulation', isMocked),
+  })
 
   if (leverageEnabled) {
     cy.get('[data-testid="loan-action-settings"]').within(() => {
-      getActionValue('borrow-price-impact').should('include', '%')
+      getActionValue('borrow-price-impact', getTimeoutCategory('evm.simulation', isMocked)).should('include', '%')
       cy.get('[data-testid="borrow-slippage"]').should('be.visible')
-      getActionValue('borrow-slippage').should('include', '%')
+      getActionValue('borrow-slippage', 'ui.render').should('include', '%')
     })
   }
 
@@ -170,14 +181,22 @@ export const checkLeverageCheckbox = ({
   }
 }
 
-export const waitForRoutesLoaded = ({ submitButtonTestId }: { submitButtonTestId: string }) => {
+export const waitForRoutesLoaded = ({
+  submitButtonTestId,
+  isMocked = false,
+}: {
+  submitButtonTestId: string
+  isMocked?: boolean
+}) => {
   cy.get('[data-testid="loan-action-settings"] [data-testid="route-provider-accordion"]').click()
-  cy.wait('@routerRoutes', LOAD_TIMEOUT)
+  cy.wait('@routerRoutes', TIMEOUTS['mock.router.routes'])
   cy.get('[data-testid="refresh-button"]').should('be.enabled')
-  cy.get(`[data-testid="${submitButtonTestId}"]`, LOAD_TIMEOUT).should('be.enabled')
+  cy.get(`[data-testid="${submitButtonTestId}"]`, TIMEOUTS[getTimeoutCategory('evm.simulation', isMocked)]).should(
+    'be.enabled',
+  )
 }
 
-export const toggleLeverage = () => cy.get('[data-testid="leverage-checkbox"]').click(LOAD_TIMEOUT)
+export const toggleLeverage = () => cy.get('[data-testid="leverage-checkbox"]').click(TIMEOUTS['ui.interaction'])
 
 /**
  * Fill in the create loan form. Assumes the form is already opened.
@@ -188,39 +207,42 @@ export function writeCreateLoanForm({
   leverageEnabled,
   hasLeverage,
   waitForRoutes,
+  isMocked = false,
 }: {
   collateral: Decimal
   borrow: Decimal
   leverageEnabled: boolean
   hasLeverage: boolean
   waitForRoutes?: boolean
+  isMocked?: boolean
 }) {
-  cy.get('[data-testid="borrow-debt-input"]', TRANSACTION_LOAD_TIMEOUT).should('be.visible')
-  cy.get('[data-testid="borrow-collateral-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should(
-    'be.visible',
-  )
+  cy.get('[data-testid="borrow-debt-input"]', TIMEOUTS['ui.render']).should('be.visible')
+  cy.get(
+    '[data-testid="borrow-collateral-input"] [data-testid="balance-value"]',
+    TIMEOUTS[getTimeoutCategory('evm.balances', isMocked)],
+  ).should('be.visible')
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
   getMaxBorrowBalance().should('be.visible')
-  getActionInfo('borrow-health').should('have.text', '-')
+  getActionInfo('borrow-health', getTimeoutCategory('evm.simulation', isMocked)).should('have.text', '-')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
-  getActionValue('borrow-health').should('match', DECIMAL_REGEX)
+  getActionValue('borrow-health', getTimeoutCategory('evm.simulation', isMocked)).should('match', DECIMAL_REGEX)
   if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
-  if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button' })
+  if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button', isMocked })
 }
 
 /**
  * Test the loan range slider by selecting max ltv and max borrow presets, checking for errors, and clearing them.
  */
-export const checkLoanRangeSlider = () => {
+export const checkLoanRangeSlider = (isMocked = false) => {
   getMaxBorrowBalance().then($el => {
     const safeMax = $el.attr('data-value')
     cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
     getBorrowInput().should('not.have.attr', 'data-value', safeMax)
     getMaxBorrowBalance().should('not.have.attr', 'data-value', safeMax)
-    getMaxBorrowBalance(LOAD_TIMEOUT).click()
+    getMaxBorrowBalance(TIMEOUTS[getTimeoutCategory('evm.simulation', isMocked)]).click()
     cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
     getMaxBorrowBalance().should('have.attr', 'data-value', safeMax)
     getBorrowInput().should('have.attr', 'data-value', safeMax)
@@ -230,5 +252,8 @@ export const checkLoanRangeSlider = () => {
 /**
  * Submit the create loan form and wait for the button to be re-enabled.
  */
-export const submitCreateLoanForm = ({ controllerApproved = true }: { controllerApproved?: boolean } = {}) =>
-  submitLoanForm({ form: 'create-loan', message: 'Loan created', approveDelegation: !controllerApproved })
+export const submitCreateLoanForm = ({
+  controllerApproved = true,
+  isMocked = false,
+}: { controllerApproved?: boolean; isMocked?: boolean } = {}) =>
+  submitLoanForm({ form: 'create-loan', message: 'Loan created', approveDelegation: !controllerApproved, isMocked })

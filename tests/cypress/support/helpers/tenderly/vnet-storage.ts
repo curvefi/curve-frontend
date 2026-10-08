@@ -1,6 +1,6 @@
 import type { Address, Hex } from 'viem'
 import { oneInt } from '@cy/support/generators'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { getRpcUrls } from './vnet'
 import type { CreateVirtualTestnetResponse } from './vnet-create'
 
@@ -20,7 +20,12 @@ export const setVirtualNetworkStorageAt = ({
   const body = { jsonrpc: '2.0', method: 'tenderly_setStorageAt', params: [contractAddress, slot, value], id: oneInt() }
 
   return cy
-    .request<{ error?: unknown; result?: unknown }>({ method: 'POST', url: adminRpcUrl, body, ...LOAD_TIMEOUT })
+    .request<{ error?: unknown; result?: unknown }>({
+      method: 'POST',
+      url: adminRpcUrl,
+      body,
+      ...TIMEOUTS['tenderly.storage'],
+    })
     .then(({ body: responseBody, isOkStatusCode }) => {
       const errorMessage = JSON.stringify({ request: body, response: responseBody })
       expect(isOkStatusCode).to.equal(true, errorMessage)

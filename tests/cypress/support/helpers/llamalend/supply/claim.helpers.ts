@@ -1,7 +1,7 @@
 import { type Address, encodeFunctionData, parseAbi } from 'viem'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-time'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { loadTenderlyAccount } from '../../tenderly/account'
@@ -20,20 +20,24 @@ const GAUGE_ABI = parseAbi([
   'function deposit_reward_token(address _reward_token, uint256 _amount, uint256 _epoch)',
 ])
 
-const submitClaimForm = (type: SupplyActionType) => submitSupplyForm(type, 'Claimed rewards!')
+const submitClaimForm = (type: SupplyActionType, isMocked = false) =>
+  submitSupplyForm(type, 'Claimed rewards!', isMocked)
 
-const getClaimSubmitButton = (type: ClaimRewardType) =>
-  cy.get(`[data-testid="supply-claim-${type}-rewards-submit-button"]`, LOAD_TIMEOUT)
+const getClaimSubmitButton = (type: ClaimRewardType, isMocked = false) =>
+  cy.get(
+    `[data-testid="supply-claim-${type}-rewards-submit-button"]`,
+    TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)],
+  )
 
 export const submitClaimAndSettle = (
   type: ClaimRewardType,
-  { waitForEmptyState = false }: { waitForEmptyState?: boolean } = {},
+  { waitForEmptyState = false, isMocked = false }: { waitForEmptyState?: boolean; isMocked?: boolean } = {},
 ) => {
   const rewardTypeId: SupplyActionType = `claim-${type}-rewards`
-  return submitClaimForm(rewardTypeId).then(() => {
+  return submitClaimForm(rewardTypeId, isMocked).then(() => {
     if (waitForEmptyState) {
-      getClaimSubmitButton(type).should('be.disabled')
-      touchClaimForm(rewardTypeId)
+      getClaimSubmitButton(type, isMocked).should('be.disabled')
+      touchClaimForm(rewardTypeId, isMocked)
     }
   })
 }
@@ -45,7 +49,7 @@ const checkpointTenderlySupplyRewards = (
     gaugeAddress,
   }: { vnet: CreateVirtualTestnetResponse; userAddress: Address; gaugeAddress: Address }, // Some gauges expose freshly accrued rewards only after a user checkpoint updates internal reward accounting for that address.
 ) =>
-  loadTenderlyAccount().then(LOAD_TIMEOUT, async tenderlyAccount => {
+  loadTenderlyAccount().then(TIMEOUTS['tenderly.submit'], async tenderlyAccount => {
     await sendVnetTransaction({
       tenderly: { ...tenderlyAccount, vnetId: vnet.id },
       tx: {
@@ -77,8 +81,11 @@ export const prepareClaimRewards = ({
  * The claim tab has no editable inputs, so "touching" it means waiting for the
  * post-claim refetch to settle into the empty state.
  */
-const touchClaimForm = (type: string) => {
-  cy.get(`[data-testid="supply-${type}-submit-button"]`, LOAD_TIMEOUT).should('be.disabled')
+const touchClaimForm = (type: string, isMocked = false) => {
+  cy.get(
+    `[data-testid="supply-${type}-submit-button"]`,
+    TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)],
+  ).should('be.disabled')
 }
 
 /** Validates the structural state of the claim tab - button state, error presence, and empty state visibility. */
@@ -86,11 +93,19 @@ export function validateClaimTabState({
   crvButtonDisabled = true,
   otherRewardsButtonDisabled = true,
   noRewards = crvButtonDisabled && otherRewardsButtonDisabled,
-}: { crvButtonDisabled?: boolean; otherRewardsButtonDisabled?: boolean; noRewards?: boolean } = {}) {
-  getClaimSubmitButton('crv').should(crvButtonDisabled ? 'be.disabled' : 'not.be.disabled')
-  getClaimSubmitButton('other').should(otherRewardsButtonDisabled ? 'be.disabled' : 'not.be.disabled')
+  isMocked = false,
+}: {
+  crvButtonDisabled?: boolean
+  otherRewardsButtonDisabled?: boolean
+  noRewards?: boolean
+  isMocked?: boolean
+} = {}) {
+  getClaimSubmitButton('crv', isMocked).should(crvButtonDisabled ? 'be.disabled' : 'not.be.disabled')
+  getClaimSubmitButton('other', isMocked).should(otherRewardsButtonDisabled ? 'be.disabled' : 'not.be.disabled')
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-  cy.get('[data-testid="supply-claim-empty-state"]', LOAD_TIMEOUT).should(noRewards ? 'be.visible' : 'not.exist')
+  cy.get('[data-testid="supply-claim-empty-state"]', TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)]).should(
+    noRewards ? 'be.visible' : 'not.exist',
+  )
 }
 
 /**
@@ -104,12 +119,14 @@ export function checkClaimDetailsLoaded({
   expectedSymbols,
   checkEstimatedTxCost = hasCrvRewards || hasOtherRewards,
   hasApi = true,
+  isMocked = false,
 }: {
   hasCrvRewards?: boolean
   hasOtherRewards?: boolean
   expectedSymbols?: string[]
   checkEstimatedTxCost?: boolean
   hasApi?: boolean
+  isMocked?: boolean
 } = {}) {
   if (hasCrvRewards || hasOtherRewards) {
     cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
@@ -120,22 +137,41 @@ export function checkClaimDetailsLoaded({
 
   if (checkEstimatedTxCost) {
     if (hasCrvRewards) {
-      checkEstimatedTxCostValue({ hasValue: hasApi, name: 'claim-crv-rewards-estimated-tx-cost' })
+      checkEstimatedTxCostValue({
+        hasValue: hasApi,
+        name: 'claim-crv-rewards-estimated-tx-cost',
+        category: getTimeoutCategory('evm.simulation', isMocked),
+      })
     } else {
-      checkEstimatedTxCostValue({ hasValue: false, name: 'claim-crv-rewards-estimated-tx-cost' })
-      getActionInfo('claim-crv-rewards-estimated-tx-cost').should('have.text', '-')
+      checkEstimatedTxCostValue({
+        hasValue: false,
+        name: 'claim-crv-rewards-estimated-tx-cost',
+        category: getTimeoutCategory('evm.simulation', isMocked),
+      })
+      getActionInfo('claim-crv-rewards-estimated-tx-cost', 'ui.render').should('have.text', '-')
     }
 
     if (hasOtherRewards) {
-      checkEstimatedTxCostValue({ hasValue: hasApi, name: 'claim-other-rewards-estimated-tx-cost' })
+      checkEstimatedTxCostValue({
+        hasValue: hasApi,
+        name: 'claim-other-rewards-estimated-tx-cost',
+        category: getTimeoutCategory('evm.simulation', isMocked),
+      })
     } else {
-      checkEstimatedTxCostValue({ hasValue: false, name: 'claim-other-rewards-estimated-tx-cost' })
-      getActionInfo('claim-other-rewards-estimated-tx-cost').should('have.text', '-')
+      checkEstimatedTxCostValue({
+        hasValue: false,
+        name: 'claim-other-rewards-estimated-tx-cost',
+        category: getTimeoutCategory('evm.simulation', isMocked),
+      })
+      getActionInfo('claim-other-rewards-estimated-tx-cost', 'ui.render').should('have.text', '-')
     }
   }
 
-  cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('exist')
-  cy.get('[data-testid="data-table-cell-token"]', LOAD_TIMEOUT).should('have.length.at.least', 1)
+  cy.get('[data-testid="data-table"]', TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)]).should('exist')
+  cy.get('[data-testid="data-table-cell-token"]', TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)]).should(
+    'have.length.at.least',
+    1,
+  )
   cy.get('[data-testid="data-table-cell-token"]').each($row => {
     const [, match] = CLAIMABLE_AMOUNT_REGEX.exec($row.text().replaceAll(',', '')) ?? []
     expect(match).to.not.equal(undefined)

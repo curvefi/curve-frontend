@@ -1,14 +1,15 @@
 import { setupDexPoolListV2Mocks } from '@cy/support/helpers/dex-pool-list-v2-mocks'
 import { DESKTOP_VIEWPORT } from '@cy/support/helpers/dex-pools-list-v2.helpers'
-import { API_LOAD_TIMEOUT, UnexpectedApiRequest } from '@cy/support/ui'
+import { TIMEOUTS, type TimeoutCategory } from '@cy/support/timeout-categories'
+import { UnexpectedApiRequest } from '@cy/support/ui'
 import { Chain } from '@primitives/network.utils'
 
-const visitPoolList = (network: string, supportAlias: `@${string}`) => {
+const visitPoolList = (network: string, supportAlias: `@${string}`, category: TimeoutCategory) => {
   cy.viewport(...DESKTOP_VIEWPORT)
   cy.visitWithoutTestConnector(`dex/${network}/pools/`)
-  cy.wait('@dex-v2-platforms', API_LOAD_TIMEOUT)
-  cy.wait('@dex-v2-prices-chains', API_LOAD_TIMEOUT)
-  cy.wait(supportAlias, API_LOAD_TIMEOUT)
+  cy.wait('@dex-v2-platforms', TIMEOUTS['mock.curveCore.platforms'])
+  cy.wait('@dex-v2-prices-chains', TIMEOUTS['mock.prices.chains'])
+  cy.wait(supportAlias, TIMEOUTS[category])
 }
 
 const expectUnsupportedPoolList = () => {
@@ -25,7 +26,7 @@ describe('V2 pool-list network support', () => {
       { body: { data: [] } },
     ).as('dex-v2-unsupported-pool-chains')
 
-    visitPoolList('ethereum', '@dex-v2-unsupported-pool-chains')
+    visitPoolList('ethereum', '@dex-v2-unsupported-pool-chains', 'mock.prices.chains')
 
     expectUnsupportedPoolList()
     cy.get('@dex-v2-pools.all').should('have.length', 0)
@@ -37,7 +38,7 @@ describe('V2 pool-list network support', () => {
       UnexpectedApiRequest,
     ).as('dex-v2-unexpected-lite-pools')
 
-    visitPoolList('celo', '@dex-v2-lite-pool-chains')
+    visitPoolList('celo', '@dex-v2-lite-pool-chains', 'mock.curveLite.platforms')
 
     expectUnsupportedPoolList()
     cy.get('@dex-v2-unexpected-lite-pools.all').should('have.length', 0)

@@ -14,7 +14,7 @@ import {
   TEST_NETWORK,
 } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { fromEntries } from '@primitives/objects.utils'
@@ -61,7 +61,7 @@ const fetchDepositPreview = async (pool: StellarContract, { coins, lp, supply }:
 }
 
 export const depositBalancedCheckbox = () =>
-  cy.get('[data-testid="pool-deposit-balanced-checkbox"]', LOAD_TIMEOUT).find('input')
+  cy.get('[data-testid="pool-deposit-balanced-checkbox"]', TIMEOUTS['ui.render']).find('input')
 
 export const checkBalancedDepositAmounts = (coins: PoolState['coins'], unit: number) =>
   coins.forEach(({ address, decimals }, index) => {
@@ -79,18 +79,22 @@ export const checkBalancedWalletAmounts = (coins: PoolState['coins']) =>
 
 const checkDepositSupply = (pool: StellarContract, state: PoolState, expectedLp: Decimal) =>
   cy
-    .then(LOAD_TIMEOUT, () => fetchPoolSupply({ network: TEST_NETWORK, pool }, { staleTime: 0 }))
+    .then(TIMEOUTS['stellar.read'], () => fetchPoolSupply({ network: TEST_NETWORK, pool }, { staleTime: 0 }))
     .then(supply => {
       const seedLock = +state.supply ? '0' : state.config.seedLock
       expect(decimalMinus(supply, state.supply)).to.equal(decimalSum(expectedLp, seedLock))
       expect(decimalMinus(supply, decimalSum(state.lp.balance, expectedLp))).to.equal(state.config.seedLock)
     })
 
-export const depositSubmit = () => cy.get('[data-testid="pool-deposit-submit"]', LOAD_TIMEOUT)
+export const depositSubmit = () => cy.get('[data-testid="pool-deposit-submit"]', TIMEOUTS['ui.render'])
 export const checkDepositDetail = (
   detail: 'expected-lp' | 'minimum-lp' | 'current-lp' | 'projected-lp' | 'seed-lock',
   amount: Decimal,
-) => getActionValue(`pool-deposit-${detail}`).should('equal', formatNumber(amount, 'token.balance'))
+) =>
+  getActionValue(`pool-deposit-${detail}`, detail === 'current-lp' ? 'stellar.read' : 'stellar.simulation').should(
+    'equal',
+    formatNumber(amount, 'token.balance'),
+  )
 
 export const checkDepositBalances = ({ coins, lp }: PoolState) => {
   checkDepositDetail('current-lp', lp.balance)
@@ -100,9 +104,9 @@ export const checkDepositBalances = ({ coins, lp }: PoolState) => {
 }
 
 export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
-  getActionValue('pool-deposit-expected-lp').should(value => expect(+value!).to.be.greaterThan(0))
-  depositSubmit().click(LOAD_TIMEOUT)
-  cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('contain.text', 'Deposit confirmed')
+  getActionValue('pool-deposit-expected-lp', 'stellar.simulation').should(value => expect(+value!).to.be.greaterThan(0))
+  depositSubmit().click(TIMEOUTS['ui.interaction'])
+  cy.get('[data-testid="toast-success"]', TIMEOUTS['stellar.confirmation']).should('contain.text', 'Deposit confirmed')
   coins.forEach(({ address }) => {
     poolInput(address).find('input').should('have.value', '')
   })
@@ -119,12 +123,12 @@ const checkDepositResult = (state: PoolState, amounts: PoolAmounts, projectedLp:
 /** Check the preview, confirm the deposit, and verify its effect on the wallet and pool. */
 export const submitDepositAndCheck = (pool: StellarContract, state: PoolState, amounts: PoolAmounts) =>
   cy
-    .then(LOAD_TIMEOUT, () => fetchDepositPreview(pool, state, amounts))
+    .then(TIMEOUTS['stellar.simulation'], () => fetchDepositPreview(pool, state, amounts))
     .then(({ expected, minimum, projected }) => {
       checkDepositDetail('expected-lp', expected)
       checkDepositDetail('minimum-lp', minimum)
       checkDepositDetail('projected-lp', projected)
-      checkEstimatedTxCost()
+      checkEstimatedTxCost({ category: 'stellar.simulation' })
       checkPoolSlippage()
       if (+state.supply) checkPoolPriceImpact()
       submitDepositForm(state)

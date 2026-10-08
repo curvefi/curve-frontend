@@ -1,4 +1,5 @@
-import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 
 /** Global Cypress exception handler to ignore specific known errors. */
@@ -43,7 +44,7 @@ const ensureTestExited = () =>
   })
 
 /** Install the cypress internals to force a blank page after each test */
-afterEach(() => Cypress.isBrowser('firefox') && cy.then(LOAD_TIMEOUT, ensureTestExited))
+afterEach(() => Cypress.isBrowser('firefox') && cy.then(TIMEOUTS['ui.teardown'], ensureTestExited))
 
 if (Cypress.config('isInteractive')) {
   skipTestsAfterFailure()

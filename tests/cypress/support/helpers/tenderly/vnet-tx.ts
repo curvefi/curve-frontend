@@ -1,6 +1,6 @@
 import type { Hash, Hex, PublicClient, RpcTransactionRequest } from 'viem'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Address } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
 
@@ -26,9 +26,9 @@ export const sendAdminTransaction = ({
       method: 'POST',
       url: adminRpcUrl,
       body: { jsonrpc: '2.0', method: 'eth_sendTransaction', params: [{ from, to, data }], id: 2 },
-      ...LOAD_TIMEOUT,
+      ...TIMEOUTS['tenderly.submit'],
     })
-    .then(TRANSACTION_LOAD_TIMEOUT, ({ body }) =>
+    .then(TIMEOUTS['evm.confirmation'], ({ body }) =>
       client.waitForTransactionReceipt({
         hash: assert(body.result, `Failed to send available balance transaction: ${JSON.stringify(body.error)}`),
         pollingInterval: VNET_RECEIPT_POLLING_INTERVAL,

@@ -1,6 +1,6 @@
 import { type Address, createPublicClient, encodeFunctionData, http, parseAbi, parseUnits } from 'viem'
 import { sendAdminTransaction } from '@cy/support/helpers/tenderly/vnet-tx'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { fundErc20, fundEth } from '../tenderly/vnet-fund'
@@ -31,7 +31,7 @@ const setControllerBorrowCap = ({
   availableBalance?: Decimal
   borrowedDecimals: number
 }) => {
-  cy.then(LOAD_TIMEOUT, async () => {
+  cy.then(TIMEOUTS['evm.contractRead'], async () => {
     const borrowCapWei = parseUnits(borrowCap, borrowedDecimals)
     const availableBalanceWei = parseUnits(availableBalance, borrowedDecimals)
     const client = createPublicClient({ transport: http(publicRpcUrl) })

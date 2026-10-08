@@ -17,7 +17,8 @@ import { PoolTestCase } from '@cy/support/helpers/dex/PoolTestCase'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 
@@ -106,7 +107,7 @@ describe('Pool Deposit (RPC)', () => {
 
   it('deposits all coins in a balanced proportion', () => {
     cy.mount(<TestWrapper />)
-    cy.get('[data-testid="pool-deposit-balanced-checkbox"]', LOAD_TIMEOUT).find('input').check()
+    cy.get('[data-testid="pool-deposit-balanced-checkbox"]', TIMEOUTS['ui.render']).find('input').check()
     checkPoolDepositDetailsLoaded()
     getPoolDepositAmounts(pool).then(amounts => {
       checkBalancedPoolDepositAmounts({ ...getRpcUrls(getVirtualNetwork()), amounts, pool })
@@ -116,7 +117,7 @@ describe('Pool Deposit (RPC)', () => {
 
   it('deposits the maximum remaining wallet balance of one coin', () => {
     cy.mount(<TestWrapper />)
-    cy.get('[data-testid^="pool-token-input-"] [data-testid="balance-value"]', LOAD_TIMEOUT)
+    cy.get('[data-testid^="pool-token-input-"] [data-testid="balance-value"]', TIMEOUTS['evm.balances'])
       .should('have.length', pool.coins.length)
       .filter((_, element) => Number(element.getAttribute('data-value')) > 0)
       .first()
