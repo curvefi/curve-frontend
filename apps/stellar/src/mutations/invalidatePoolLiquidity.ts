@@ -19,8 +19,8 @@ export const invalidatePoolLiquidity = async ({
     ...zip([...tokens, pool], [...decimals, LP_TOKEN_DECIMALS]).map(([token, decimals]) =>
       invalidateTokenBalance({ network, token, account, decimals }),
     ),
-    invalidatePoolReserves(params),
+    invalidatePoolReserves({ ...params, decimals }),
     invalidatePoolSupply(params),
-    invalidatePoolRates(params),
+    invalidatePoolRates({ ...params, decimals }),
   ])
 }
