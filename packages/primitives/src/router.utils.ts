@@ -49,3 +49,6 @@ export type ClmmMigrationResponse = {
   tx: TransactionData
   approval: { to: Address; data: Hex } | null
 }
+
+/** USD values from DefiLlama; `volumeUsd7d` is null when DefiLlama has no volume for the pool. */
+export type UniswapV3PoolStats = { tvlUsd: number; volumeUsd7d: number | null }
