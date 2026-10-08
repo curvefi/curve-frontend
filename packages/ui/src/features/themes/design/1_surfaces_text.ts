@@ -138,9 +138,9 @@ function createDarkSurfaces() {
     Badges: {
       Label: {
         Default: Grays[10],
-        Active: Grays[10],
+        Active: Grays[975],
         Alert: Grays[10],
-        Highlight: Blues[400],
+        Highlight: Blues[300],
         Warning: Grays[975],
         Accent: Grays[10],
       },
@@ -148,7 +148,7 @@ function createDarkSurfaces() {
         Default: Grays[600],
         Active: Layer.Feedback.Success,
         Alert: Reds[500],
-        Highlight: Blues[400],
+        Highlight: Blues[300],
         Warning: Oranges[500],
         Accent: Blues[400],
       },
