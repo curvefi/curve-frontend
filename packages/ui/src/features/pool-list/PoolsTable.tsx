@@ -98,7 +98,7 @@ export const PoolsTable = ({
     ...(isLite && { globalFilterFn }),
   })
 
-  const hasActiveFilters = !isLite && !!table.state.columnFilters.length
+  const hasActiveFilters = !!table.state.columnFilters.length || !!table.state.globalFilter
 
   return (
     <Stack>

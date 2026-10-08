@@ -47,7 +47,7 @@ export function useSwapForm(poolParams: PoolQuery) {
   const { formState, reset } = form
   const values = form.watchValues()
   const { fromIndex, toIndex, editedSide } = values
-  const maxAmount = maxAmounts.data?.[fromIndex]
+  const maxAmount = maxAmounts[fromIndex]?.data
   const maxOutput = maybes([reserves.data?.[toIndex], decimals.data?.[toIndex]], fromWei)
 
   const [params, isDebouncing] = useFormDebounce<SwapFormQuery, 'inputAmount' | 'outputAmount' | 'editedSide'>(

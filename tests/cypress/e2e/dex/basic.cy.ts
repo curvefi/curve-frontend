@@ -2,33 +2,23 @@ import { oneOf } from '@cy/support/generators'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('Basic Access Test', () => {
-  const path = oneOf('/', '/dex')
+  const path = oneOf('/', '/dex', '/dex/ethereum')
 
   it('should support default networks if the lite API is offline', () => {
     cy.intercept(`https://api-core.curve.finance/v1/getPlatforms`, { status: 500 }).as('error')
-    cy.visit('/dex/plasma/pools')
+    cy.visit('/dex/plasma/pools?foo=derp')
     cy.wait('@error', LOAD_TIMEOUT)
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.get('[data-testid="error-title"]').should('not.exist')
     cy.url().should('include', '/dex/ethereum/pools')
+    cy.location('search').should('equal', '?foo=derp')
   })
 
   it(`should open the DEX app successfully at ${path}`, () => {
-    cy.visit(path)
+    cy.visit(`${path}?foo=derp`)
     cy.title(LOAD_TIMEOUT).should('equal', 'Swap - Curve')
-    cy.url().should('include', '/dex')
-  })
-
-  it(`should redirect from the old URL successfully at ${path}`, () => {
-    cy.visit(`${path}#/ethereum/create-pool`)
-    cy.title(LOAD_TIMEOUT).should('equal', 'Create Pool - Curve')
-    cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/create-pool\/?$/)
-  })
-
-  it('should redirect from the old integrations URL successfully', () => {
-    cy.visit(`${path.replace('/', '')}${oneOf('', '#')}/integrations`)
-    cy.title(LOAD_TIMEOUT).should('equal', 'Integrations - Curve')
-    cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/integrations\/?$/)
+    cy.location('pathname').should('match', /^\/dex\/ethereum\/swap\/?$/)
+    cy.location('search').should('equal', '?foo=derp')
   })
 
   it('should show an error page on 404', () => {

@@ -3,8 +3,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { decimalMinus, decimalMultiply, decimalSum, fromWei, toWei } from '@ui/lib/decimal'
 
-export const MAX_I128 = (1n << 127n) - 1n
-
 export const LP_TOKEN_DECIMALS = 18
 
 const applyLpSlippage = (amount: Decimal, slippage: Decimal, rounding: BigNumber.RoundingMode): Decimal =>

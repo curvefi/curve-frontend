@@ -114,7 +114,7 @@ export type PoolTableData = {
 
 export type PoolsTableData = PoolTableData & { pageCount: number; userHasPositions: boolean | undefined }
 
-type EmptyStateDescription = Pick<EmptyStateCardProps, 'title' | 'description'>
+type EmptyStateDescription = Pick<EmptyStateCardProps, 'title' | 'description' | 'icon'>
 
 export type ResidualClaimsTableData = PoolTableData & {
   claimablesTotalUsd: QueryProp<Decimal>

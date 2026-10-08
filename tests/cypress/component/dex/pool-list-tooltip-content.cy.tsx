@@ -17,7 +17,10 @@ const GAUGE_ADDRESS = '0x07a01471fa544d9c6531b631e6a96a79a9ad05e9'
 const POINTS_CAMPAIGN_LINK = 'https://www.liquity.org/forks/'
 const APR_CAMPAIGN_LINK = 'https://www.liquity.org/'
 const CAMPAIGN_ICON = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms/liquity.png'
-const CRV_TOKEN = { address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.chain } satisfies PoolTableMeta['crvToken']
+const CRV_TOKEN = {
+  address: MAINNET_CRV.address,
+  blockchainId: MAINNET_CRV.blockchainId,
+} satisfies PoolTableMeta['crvToken']
 
 const BOLD = {
   symbol: 'BOLD',

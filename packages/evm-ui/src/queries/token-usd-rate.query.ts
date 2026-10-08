@@ -105,7 +105,6 @@ const fetchUsdRate = async (chainId: number, tokenAddress: string) => {
  * Falls back to the prices API if no matching library is available.
  */
 export const {
-  getQueryData: getTokenUsdRateQueryData,
   setQueryData: setTokenUsdRateQueryData,
   useQuery: useTokenUsdRate,
   fetchQuery: fetchTokenUsdRate,

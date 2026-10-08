@@ -27,7 +27,7 @@ const MarketBadge = ({ ...props }: Omit<BadgeProps, 'size'>) => <Badge size="ext
 
 /** Displays badges for a market, such as the chain icon and market type. */
 export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobile: boolean }) => {
-  const { favoriteKey, type, deprecatedMessage, chain, version } = market
+  const { favoriteKey, type, deprecatedMessage, blockchainId: chain, version } = market
   return (
     <Stack
       direction="row"

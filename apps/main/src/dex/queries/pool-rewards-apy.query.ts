@@ -6,14 +6,13 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
-import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
-import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
-import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import { isValidAddress } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
-import { fulfilledValue, isValidAddress } from '../utils'
+import { fulfilledValue } from '../utils'
 
 type RewardCrv = number
 type RewardOther = {
@@ -142,9 +141,7 @@ const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQu
     return await poolAllRewardsApy(networks[chainId], pool, useApi)
   },
   validationSuite: createValidationSuite((params: PoolRewardsApyParams) => {
-    curveApiValidationGroup(params)
-    chainValidationGroup(params)
-    poolValidationGroup(params)
+    curvePoolValidationGroup(params)
     test('useApi', () => {
       enforce(params.useApi).isBoolean()
     })

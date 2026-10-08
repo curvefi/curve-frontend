@@ -1,6 +1,5 @@
-import { getMarket, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { getMarket, hasLegacyMintLeverage, hasZapV2, isLendMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 
 /**
  * Determines the appropriate create loan implementation based on market type and leverage settings.
@@ -17,7 +16,7 @@ export function getCreateLoanImplementation(marketId: string | MarketTemplate, l
   const unsupported = (): never => {
     throw new Error(`Leveraged create loan is not supported for market ${market.id}`)
   }
-  return market instanceof LendMarketTemplate
+  return isLendMarket(market)
     ? leverageEnabled
       ? hasZapV2(market)
         ? (['zapV2', market.leverageZapV2] as const)

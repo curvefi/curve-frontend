@@ -25,7 +25,13 @@ import type { DepositForm, DepositFormQuery } from './types'
 
 const formOptions = {
   validation: depositFormValidationSuite,
-  defaultValues: { isBalanced: false, decimals: undefined, supply: undefined, slippage: SLIPPAGE.stable.default },
+  defaultValues: {
+    isBalanced: false,
+    isWrapped: false,
+    decimals: undefined,
+    supply: undefined,
+    slippage: SLIPPAGE.stable.default,
+  },
 }
 
 export function useDepositForm(poolParams: PoolQuery) {
@@ -64,9 +70,9 @@ export function useDepositForm(poolParams: PoolQuery) {
         decimals: decimals.data,
         slippage: values.slippage,
         supply: supply.data,
-        maxAmounts: maxAmounts.data,
+        maxAmounts: maxAmounts.map(q => q.data),
       }),
-      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts.data],
+      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts],
     ),
     userDefaultValues,
   )
@@ -95,8 +101,9 @@ export function useDepositForm(poolParams: PoolQuery) {
     params,
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
+    inputsDisabled: isPending,
     isDisabled:
-      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data === false),
+      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data !== true),
     isLoading: isPending || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
@@ -104,6 +111,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens,
+    maxAmounts,
     isSeed,
   }
 }

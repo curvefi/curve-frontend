@@ -1,17 +1,13 @@
 import { skipWhen, test } from 'vest'
 import type { WithdrawSimulationParams } from '@/stellar/features/withdraw/types'
-import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { calculateExpectedBurn, calculateMaximumBurn } from '@/stellar/lib/amounts'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import {
-  validateAmount,
-  validateLiquidityInputs,
-  validateReserveAmounts,
-  validateSlippage,
-} from './liquidity.validation'
+import { validateSlippage } from '@ui/lib/validation/slippage.validation'
+import { validateAmount, validateLiquidityInputs, validateReserveAmounts } from './liquidity.validation'
 import { validateAccount, validatePool } from './pool.validation'
 
 const validateOutputs = ({
@@ -30,7 +26,7 @@ const validateBudget = ({
   supply,
   seedLock,
 }: Pick<WithdrawSimulationParams, 'lpAmount' | 'maxLpAmount' | 'supply' | 'seedLock'>) => {
-  validateAmount('lpAmount', lpAmount, LP_TOKEN_DECIMALS)
+  validateAmount('lpAmount', lpAmount)
   test('lpAmount', 'Enter an LP amount', () => {
     enforce(lpAmount).isDecimal().gt(0)
   })
@@ -51,7 +47,7 @@ const validateBudget = ({
 }
 
 const validateMaximumBurn = ({ lpAmount, maximumBurn }: Pick<WithdrawSimulationParams, 'lpAmount' | 'maximumBurn'>) => {
-  validateAmount('root', maximumBurn, LP_TOKEN_DECIMALS)
+  validateAmount('root', maximumBurn)
   test('maximumBurn', 'Withdrawal quote is unavailable', () => {
     enforce(maximumBurn).isDecimal().gt(0)
   })
@@ -67,7 +63,7 @@ const validateMaximumBurn = ({ lpAmount, maximumBurn }: Pick<WithdrawSimulationP
 
 export const withdrawFormValidationSuite = createValidationSuite(
   ({ slippage, decimals, supply, lpAmount, maxLpAmount, seedLock, maximumBurn, ...values }: WithdrawFormValues) => {
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
     validateOutputs({
       decimals,
       supply,
@@ -96,7 +92,7 @@ const validateWithdraw = ({
 }: WithdrawSimulationParams) => {
   validatePool({ pool, network })
   validateAccount(account)
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
   validateOutputs({ amounts, decimals, supply, maxAmounts })
   validateBudget({ lpAmount, maxLpAmount, supply, seedLock })
   validateMaximumBurn({ lpAmount, maximumBurn })

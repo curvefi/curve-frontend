@@ -509,15 +509,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@curvefi/api@npm:2.70.2":
-  version: 2.70.2
-  resolution: "@curvefi/api@npm:2.70.2"
+"@curvefi/api@npm:2.70.5":
+  version: 2.70.5
+  resolution: "@curvefi/api@npm:2.70.5"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.20"
     bignumber.js: "npm:^10.0.2"
     ethers: "npm:^6.16.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/7dffbeacc459452b093f42f084aa352eaa267b4c6b8f652c29db20c450951c3e77bf564e76a881cbc71da4acec8b0bf6f72df8590031984eb3e0075ad2ceeaa5
+  checksum: 10c0/3918cd95dae884b322d470835b9b3d374fe30e9c1b302b50427d2d9a95dda2c27b52b73a392346d9ba926f5d14a4ffa14d4ca578f1337bc770a956dc810847c5
   languageName: node
   linkType: hard
 
@@ -568,9 +568,9 @@ __metadata:
   resolution: "@curvefi/evm-ui@workspace:packages/evm-ui"
   dependencies:
     "@coinbase/wallet-sdk": "npm:4.4.0"
-    "@curvefi/api": "npm:2.70.2"
+    "@curvefi/api": "npm:2.70.5"
     "@curvefi/legacy-ui": "workspace:^"
-    "@curvefi/llamalend-api": "npm:2.6.0"
+    "@curvefi/llamalend-api": "npm:2.6.1"
     "@curvefi/ui": "workspace:^"
     "@metamask/connect-evm": "npm:2.1.1"
     "@safe-global/safe-apps-provider": "npm:0.18.6"
@@ -603,15 +603,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@curvefi/llamalend-api@npm:2.6.0":
-  version: 2.6.0
-  resolution: "@curvefi/llamalend-api@npm:2.6.0"
+"@curvefi/llamalend-api@npm:2.6.1":
+  version: 2.6.1
+  resolution: "@curvefi/llamalend-api@npm:2.6.1"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.20"
     bignumber.js: "npm:9.3.1"
     ethers: "npm:6.17.0"
     memoizee: "npm:0.4.17"
-  checksum: 10c0/6c5acee6f780773926a83d40645976b1adbd656e60ee1f7a81d72c16def799bfe0e0f715c10953f9ff77b6f93bf5024994b205032a8a1ed7b30eb760660e041a
+  checksum: 10c0/009cf1c56a64c965ae8c985d17d18a1c15b64da20740a1a6f532d7257b2a447eaa52bddb2585f2cc64c37aca1fc2cc9092d21d5c49874dad5a6e677c53740f54
   languageName: node
   linkType: hard
 
@@ -13522,7 +13522,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
-    "@curvefi/api": "npm:2.70.2"
+    "@curvefi/api": "npm:2.70.5"
     "@curvefi/api-server": "workspace:^"
     "@curvefi/prices-api": "workspace:^"
     bignumber.js: "npm:10.0.2"
@@ -14039,9 +14039,9 @@ __metadata:
   linkType: hard
 
 "source-map-js@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "source-map-js@npm:1.2.1"
-  checksum: 10c0/7bda1fc4c197e3c6ff17de1b8b2c20e60af81b63a52cb32ec5a5d67a20a7d42651e2cb34ebe93833c5a2a084377e17455854fee3e21e7925c64a51b6a52b0faf
+  version: 1.2.2
+  resolution: "source-map-js@npm:1.2.2"
+  checksum: 10c0/d5d6dec62266834f83dd4f8a2606a196fb1a006ca5d53b0ef80ee513b7eba2f4e2ae241f4bc129ae7e9b80dea24f6e3d92b446b7e6e96be7653cab8888168a94
   languageName: node
   linkType: hard
 

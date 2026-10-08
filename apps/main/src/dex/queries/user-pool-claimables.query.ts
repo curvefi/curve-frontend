@@ -49,12 +49,9 @@ const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
     const curve = requireLib('curveApi')
 
     // This is a very heavy function call, so we want to avoid many retries.
-    let poolRewards: Awaited<ReturnType<typeof curve.getUserClaimable>>
-    try {
-      poolRewards = await curve.getUserClaimable(poolAddresses, userAddress)
-    } catch (error) {
+    const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress).catch(error => {
       throw new NoRetryError(error instanceof Error ? error.message : 'Failed to fetch user claimables')
-    }
+    })
 
     return fromEntries(
       poolAddresses.map((poolAddress, index) =>

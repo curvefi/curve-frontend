@@ -12,11 +12,13 @@ export const getPool = (poolIdOrAddress: string | PoolTemplate, lib = requireLib
 export const tryGetPool = (poolIdOrAddress: PoolTemplate | string | Nullish, lib = getLib('curveApi')) =>
   typeof poolIdOrAddress === 'object'
     ? poolIdOrAddress
-    : maybes([poolIdOrAddress, lib], (poolIdOrAddress, lib) => {
+    : maybes([poolIdOrAddress, lib], (pool, lib) => {
         try {
-          return getPool(poolIdOrAddress, lib)
-        } catch {
-          return undefined
+          return getPool(pool, lib)
+        } catch (e) {
+          const msg = (e as Error).message
+          if ([`Pool with address ${pool} not found`, `Pool with id ${pool} not found`].includes(msg)) return undefined
+          throw e
         }
       })
 
