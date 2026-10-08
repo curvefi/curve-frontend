@@ -83,11 +83,8 @@ export const TokenList = ({
   )
 
   const tokensCategorized = useMemo(
-    () =>
-      category == 'all'
-        ? tokensSearched
-        : tokensSearched.filter(({ category }) => category && categories.has(category)),
-    [categories, category, tokensSearched],
+    () => (category == 'all' ? tokensSearched : tokensSearched.filter(token => token.category === category)),
+    [category, tokensSearched],
   )
 
   /**
