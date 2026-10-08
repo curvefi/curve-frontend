@@ -5,6 +5,7 @@ import {
   poolTypeClassifications,
 } from '@ui/features/pool-list/cells/PoolTitleCell/classifications'
 import type { PoolRow } from '@ui/features/pool-list/types'
+import { t } from '@ui/lib/i18n'
 import { CURVE_ASSETS_URL, CURVE_LOGO_URL } from '@ui/lib/resource.constants'
 import type { BalancerPosition } from './api/balancer.api'
 
@@ -130,3 +131,5 @@ export const getTargetGauge = ({ row: { gauge } }: CurveTarget) => (gauge?.isKil
 
 /** Uniswap fee tiers are in hundredths of a bip: 500 is 0.05%. */
 export const formatFeeTier = (fee: number) => `${fee / 10_000}%`
+
+export const UNISWAP_FEE_APR_DESCRIPTION = t`Estimated from your share of the pool's in-range liquidity and its 7-day average trading fees (DefiLlama), after any Uniswap protocol fee. It assumes the price stays in your range; out of range the position earns nothing.`

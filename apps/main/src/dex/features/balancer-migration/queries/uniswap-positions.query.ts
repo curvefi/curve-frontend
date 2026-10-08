@@ -9,7 +9,7 @@ import { fetchUniswapPositions } from '../api/uniswap.api'
 
 export const { useQuery: useUniswapPositions, invalidate: invalidateUniswapPositions } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
-    ({ name: 'uniswapPositions', chainId, userAddress }) as const,
+    ({ name: 'uniswapPositions', version: 2, chainId, userAddress }) as const,
   queryFn: ({ chainId, userAddress }: UserChainQuery) =>
     fetchUniswapPositions(assert(getWagmiConfig(), 'Wagmi config is not initialized'), chainId, userAddress),
   category: 'dex.user',

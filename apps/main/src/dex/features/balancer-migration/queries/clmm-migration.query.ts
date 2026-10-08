@@ -41,6 +41,7 @@ export const { useQuery: useClmmMigrationRoute, fetchQuery: fetchClmmMigrationQu
     tokens,
     tokenOut,
     slippage,
+    skipTokens,
   }: ClmmMigrationQueryParams) =>
     ({
       name: 'uniswapMigration.route',
@@ -52,6 +53,7 @@ export const { useQuery: useClmmMigrationRoute, fetchQuery: fetchClmmMigrationQu
       tokens,
       tokenOut,
       slippage,
+      skipTokens,
     }) as const,
   queryFn: (params: ClmmMigrationParams) => fetchClmmMigration(params),
   category: 'dex.deposit',
@@ -69,6 +71,7 @@ export const { useQuery: useClmmIsApproved } = queryFactory({
     tokens,
     tokenOut,
     slippage,
+    skipTokens,
   }: ClmmMigrationQueryParams) =>
     ({
       name: 'uniswapMigration.isApproved',
@@ -80,6 +83,7 @@ export const { useQuery: useClmmIsApproved } = queryFactory({
       tokens,
       tokenOut,
       slippage,
+      skipTokens,
     }) as const,
   queryFn: async (params: ClmmMigrationParams) => {
     const { tx } = await fetchClmmMigrationQuery(params)

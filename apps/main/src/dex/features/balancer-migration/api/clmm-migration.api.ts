@@ -13,11 +13,33 @@ export type ClmmMigrationParams = {
   tokenOut: Address
   /** Percent. */
   slippage: Decimal
+  /** Redeemed tokens with a zero amount, e.g. one side of an out-of-range position. */
+  skipTokens: Address[]
 }
 
 /** Enso bundle built by router-api, which holds the Enso key and adds the flat router fee. */
-export const fetchClmmMigration = ({ tokens, ...params }: ClmmMigrationParams) => {
-  const query = new URLSearchParams({ protocol: 'uniswap-v3', ...params, chainId: `${params.chainId}` })
+export const fetchClmmMigration = ({
+  chainId,
+  userAddress,
+  positionManager,
+  tokenId,
+  liquidity,
+  tokens,
+  tokenOut,
+  slippage,
+  skipTokens,
+}: ClmmMigrationParams) => {
+  const query = new URLSearchParams({
+    protocol: 'uniswap-v3',
+    chainId: `${chainId}`,
+    userAddress,
+    positionManager,
+    tokenId,
+    liquidity,
+    tokenOut,
+    slippage,
+  })
   tokens.forEach(token => query.append('tokens', token))
+  skipTokens.forEach(token => query.append('skipTokens', token))
   return fetchJson<ClmmMigrationResponse>(`/api/router/v1/clmm-migration?${query}`)
 }

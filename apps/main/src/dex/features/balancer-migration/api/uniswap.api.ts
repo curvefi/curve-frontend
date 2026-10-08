@@ -45,7 +45,10 @@ const positionManagerAbi = parseAbi([
   'function multicall(bytes[] data) returns (bytes[] results)',
 ])
 const factoryAbi = parseAbi(['function getPool(address, address, uint24) view returns (address)'])
-const poolAbi = parseAbi(['function slot0() view returns (uint160, int24 tick, uint16, uint16, uint16, uint8, bool)'])
+const poolAbi = parseAbi([
+  'function slot0() view returns (uint160, int24 tick, uint16, uint16, uint16, uint8 feeProtocol, bool)',
+  'function liquidity() view returns (uint128)',
+])
 
 type UniswapToken = { address: Address; symbol: string; decimals: number }
 
@@ -62,11 +65,40 @@ export type UniswapPosition = {
   tickUpper: number
   tick: number
   liquidity: string
+  /** Liquidity active at the current tick, which shares the pool's trading fees. */
+  poolLiquidity: string
+  /** Share of trading fees left to LPs after the pool's protocol fee. */
+  lpFeeShare: number
   amounts: [Decimal, Decimal]
   fees: [Decimal, Decimal]
 }
 
+/** Tokens the full withdrawal returns none of, as for one side of an out-of-range position. */
+export const getEmptyTokens = ({ tokens, amounts, fees }: UniswapPosition) =>
+  tokens.filter((_, i) => !(+amounts[i] + +fees[i])).map(({ address }) => address)
+
 export const isInRange = ({ tick, tickLower, tickUpper }: UniswapPosition) => tickLower <= tick && tick < tickUpper
+
+/**
+ * v3 packs the protocol fee per token in `feeProtocol`: 1/n of the swap fee in the low 4 bits for token0, the high
+ * 4 bits for token1, 0 when off. Swap direction is unknown, so both tokens weigh the same.
+ */
+const getLpFeeShare = (feeProtocol: number) =>
+  [feeProtocol % 16, feeProtocol >> 4].reduce((share, n) => share - (n ? 1 / n / 2 : 0), 1)
+
+/**
+ * Estimated yearly fee APR, in percent, of a position that stays in range: in-range liquidity shares the pool's
+ * fees pro rata, so the position earns its share of the 7-day average fees. Out of range it earns nothing.
+ */
+export const estimateUniswapFeeApr = (
+  position: UniswapPosition,
+  { volumeUsd7d, positionValueUsd }: { volumeUsd7d: number; positionValueUsd: number },
+) => {
+  if (!isInRange(position) || !positionValueUsd || !+position.poolLiquidity) return 0
+  const share = Number(position.liquidity) / Number(position.poolLiquidity)
+  const dailyFeesUsd = (volumeUsd7d / 7) * (position.fee / 1_000_000) * position.lpFeeShare
+  return ((share * dailyFeesUsd * 365) / positionValueUsd) * 100
+}
 
 /** Price of token0 in token1 at a tick. */
 export const tickToPrice = (tick: number, [token0, token1]: UniswapPosition['tokens']) =>
@@ -182,10 +214,14 @@ export async function fetchUniswapPositions(
   const tokens = fromEntries(
     tokenAddresses.map((address, i) => [address, { address, symbol: symbols[i], decimals: decimals[i] }] as const),
   )
-  const [slots, withdrawals] = await Promise.all([
+  const [slots, poolLiquidities, withdrawals] = await Promise.all([
     readContracts(config, {
       allowFailure: false,
       contracts: pools.map(address => ({ chainId, address, abi: poolAbi, functionName: 'slot0' }) as const),
+    }),
+    readContracts(config, {
+      allowFailure: false,
+      contracts: pools.map(address => ({ chainId, address, abi: poolAbi, functionName: 'liquidity' }) as const),
     }),
     Promise.all(
       open.map(({ tokenId, position }) =>
@@ -208,6 +244,8 @@ export async function fetchUniswapPositions(
       tickUpper: position[6],
       tick: slots[i][1],
       liquidity: `${position[7]}`,
+      poolLiquidity: `${poolLiquidities[i]}`,
+      lpFeeShare: getLpFeeShare(slots[i][5]),
       amounts: [fromWei(principal[0], pair[0].decimals), fromWei(principal[1], pair[1].decimals)],
       fees: [fromWei(fees[0], pair[0].decimals), fromWei(fees[1], pair[1].decimals)],
     }

@@ -4,12 +4,13 @@ import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import { Badge } from '@ui/components/Badge'
 import { TokenInfo } from '@ui/components/TokenInfo'
+import { TooltipDescription } from '@ui/components/TooltipComponents'
 import type { QueryProp } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { isInRange } from '../api/uniswap.api'
 import type { UniswapPositionRow } from '../hooks/useUniswapPositionRows'
-import { formatFeeTier } from '../migration.utils'
+import { formatFeeTier, UNISWAP_FEE_APR_DESCRIPTION } from '../migration.utils'
 import { MigrationPoolCell } from './MigrationPoolCell'
 import { MigrationTableTitle } from './MigrationTableTitle'
 
@@ -51,6 +52,15 @@ const createColumns = (blockchainId: string) =>
         />
       ),
       meta: { type: 'numeric' },
+    }),
+    columnHelper.accessor('feeApr', {
+      header: t`Fee APR`,
+      cell: ({ getValue }) => formatNumber(getValue(), 'percent.rate'),
+      meta: {
+        type: 'numeric',
+        variant: 'tableCellMBold',
+        tooltip: { title: t`Estimated fee APR`, body: <TooltipDescription text={UNISWAP_FEE_APR_DESCRIPTION} /> },
+      },
     }),
     columnHelper.accessor('feesUsd', {
       header: t`Unclaimed fees`,

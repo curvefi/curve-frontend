@@ -6,6 +6,7 @@ import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimal, fromWei } from '@ui/lib/decimal'
 import { calculatePriceImpact, shouldBlockTransaction } from '@ui/lib/price-impact.util'
+import { getEmptyTokens } from '../api/uniswap.api'
 import { type CurveTarget, getCurveLpPriceUsd, getTargetGauge } from '../migration.utils'
 import { type UniswapMigrationForm, uniswapMigrationFormValidationSuite } from '../migration.validation'
 import { useMigrateUniswapMutation } from '../mutations/migrate-uniswap.mutation'
@@ -44,8 +45,9 @@ export const useUniswapMigrationForm = ({
       tokens: [tokens[0].address, tokens[1].address] as [Address, Address],
       tokenOut,
       slippage: values.slippage,
+      skipTokens: getEmptyTokens(position),
     }),
-    [chainId, userAddress, positionManager, tokenId, liquidity, tokens, tokenOut, values.slippage],
+    [chainId, userAddress, positionManager, tokenId, liquidity, tokens, tokenOut, values.slippage, position],
   )
   const route = q(useClmmMigrationRoute(params))
   const expectedLp = mapQuery(route, ({ amountOut }) => fromWei(amountOut, LP_DECIMALS))

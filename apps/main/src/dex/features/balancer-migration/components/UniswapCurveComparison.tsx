@@ -8,7 +8,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { isInRange, tickToPrice } from '../api/uniswap.api'
 import type { UniswapPositionRow } from '../hooks/useUniswapPositionRows'
-import { type CurveTarget, formatFeeTier, getTargetGauge } from '../migration.utils'
+import { type CurveTarget, formatFeeTier, getTargetGauge, UNISWAP_FEE_APR_DESCRIPTION } from '../migration.utils'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
@@ -60,7 +60,12 @@ export const UniswapCurveComparison = ({ position, target }: { position: Uniswap
       value: t`None`,
       futureValue: hasGauge ? t`CRV and pool rewards when staked` : t`No gauge on this pool`,
     },
-    { label: t`Net APR`, value: t`Not tracked here`, futureValue: formatNumber(target.row.netApr, 'percent.rate') },
+    {
+      label: t`APR`,
+      labelTooltip: { title: t`Estimated fee APR`, body: UNISWAP_FEE_APR_DESCRIPTION },
+      value: t`${formatNumber(position.feeApr, 'percent.rate')} fee APR (est.)`,
+      futureValue: t`${formatNumber(target.row.netApr, 'percent.rate')} Net APR`,
+    },
   ]
   return (
     <Stack>

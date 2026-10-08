@@ -7,7 +7,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui/lib/i18n'
 import { sendTransaction, writeContract } from '@wagmi/core'
-import { fetchIsPositionApproved, type UniswapPosition } from '../api/uniswap.api'
+import { fetchIsPositionApproved, getEmptyTokens, type UniswapPosition } from '../api/uniswap.api'
 import { clmmMigrationValidationSuite, fetchClmmMigrationQuery } from '../queries/clmm-migration.query'
 import { invalidateUniswapPositions } from '../queries/uniswap-positions.query'
 
@@ -40,6 +40,7 @@ export const useMigrateUniswapMutation = ({
           tokenId,
           liquidity,
           tokens: [tokens[0].address, tokens[1].address],
+          skipTokens: getEmptyTokens(position),
           tokenOut,
           slippage,
         },
