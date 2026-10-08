@@ -25,7 +25,11 @@ const NotionalTypographyWithSkeleton = ({
   bold?: boolean
 }) => (
   <WithSkeleton loading={isLoading} sx={{ maxWidth: 'none', width: '3rem', height: '1lh', display: 'inline-block' }}>
-    <Typography variant={bold ? 'tableCellMBold' : 'tableCellMRegular'} color="textPrimary" sx={{ textAlign: 'right' }}>
+    <Typography
+      variant={bold ? 'tableCellValueStrong' : 'tableCellValue'}
+      color="textPrimary"
+      sx={{ textAlign: 'right' }}
+    >
       {formatNotional(notional)}
     </Typography>
   </WithSkeleton>
@@ -51,7 +55,7 @@ export const TotalNotionalRow = ({
 }) => (
   <>
     <TableCell sx={sx}>
-      <Typography variant="tableCellMBold" color="textPrimary" data-testid="rewards-value">
+      <Typography variant="tableCellValueStrong" color="textPrimary" data-testid="rewards-value">
         {t`Rewards value`}
       </Typography>
     </TableCell>

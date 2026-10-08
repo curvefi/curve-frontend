@@ -167,7 +167,7 @@ export const PointsRewardIcon = ({
   campaign,
   placement,
   showLabel = true,
-  typographyVariant = 'tableCellMRegular',
+  typographyVariant = 'tableCellValue',
 }: {
   campaign: CampaignRewards
   placement?: TooltipProps['placement']

@@ -12,7 +12,7 @@ export const PointsCell = ({ pool }: { pool: PoolRow }) => {
 
   if (!campaigns.length) {
     return (
-      <Typography data-testid="pool-points" variant="tableCellMRegular" sx={{ textAlign: 'end' }}>
+      <Typography data-testid="pool-points" variant="tableCellValue" sx={{ textAlign: 'end' }}>
         -
       </Typography>
     )

@@ -47,7 +47,7 @@ export const CrvRateCell = ({ pool, crvToken }: { pool: PoolRow; crvToken: PoolT
               sx={{ justifyContent: 'end' }}
             />
           ) : (
-            <Typography variant="tableCellMRegular">{formatCellValue(null, 'percent.rate')}</Typography>
+            <Typography variant="tableCellValue">{formatCellValue(null, 'percent.rate')}</Typography>
           )}
         </Box>
       </WithWrapper>

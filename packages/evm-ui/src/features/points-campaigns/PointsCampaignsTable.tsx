@@ -32,7 +32,7 @@ const COLUMNS = columnHelper.columns([
     header: t`Multiplier`,
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <Typography variant="tableCellMRegular">{getValue()}</Typography>
+        <Typography variant="tableCellValue">{getValue()}</Typography>
       </InlineTableCell>
     ),
     enableSorting: false,

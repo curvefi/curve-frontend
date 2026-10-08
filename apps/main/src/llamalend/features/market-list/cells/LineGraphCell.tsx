@@ -88,7 +88,7 @@ export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: Ra
       ) : (
         <Typography
           sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }}
-          variant="tableCellSRegular"
+          variant="tableCellSupport"
           title={error?.toString()}
         >
           {error ? t`Failed to load` : t`No historical data`}

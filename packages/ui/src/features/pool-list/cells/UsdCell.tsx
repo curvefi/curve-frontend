@@ -14,7 +14,7 @@ export const UsdCell = ({
 
   return (
     <Tooltip title={maybe(value, value => formatNumber(value, 'usd.amount'))}>
-      <Typography data-testid="pool-usd-value" variant="tableCellMRegular">
+      <Typography data-testid="pool-usd-value" variant="tableCellValue">
         {formatCellValue(value, 'usd.notional')}
       </Typography>
     </Tooltip>

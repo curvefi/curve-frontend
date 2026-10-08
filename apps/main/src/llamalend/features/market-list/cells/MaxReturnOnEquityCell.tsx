@@ -20,7 +20,7 @@ export const MaxReturnOnEquityCell = ({
       clickable
       mobileDrawer
     >
-      <Typography variant="tableCellMRegular">{formatNumber(getValue(), 'percent.rate')}</Typography>
+      <Typography variant="tableCellValue">{formatNumber(getValue(), 'percent.rate')}</Typography>
     </Tooltip>
   </Box>
 )

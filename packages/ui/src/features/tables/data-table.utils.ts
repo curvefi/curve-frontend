@@ -107,7 +107,7 @@ export const useCurveTable = <TData extends RowData>({
 export const getAlignment = (type?: 'numeric') => (type == 'numeric' ? 'right' : 'left')
 
 /** Get the typography variant for the cell based on the column definition. */
-export const getCellVariant = (variant?: TypographyVariantKey) => variant ?? 'tableCellMRegular'
+export const getCellVariant = (variant?: TypographyVariantKey) => variant ?? 'tableCellValue'
 
 // The following datatable size code lives in the util file, because at the moment of writing we have both DataTable and LegacyDataTable.
 // TODO: move to the final DataTable.tsx component once we remove the LegacyDataTable and make sure there are no circular dependencies with the other files in the DataTable folder.

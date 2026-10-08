@@ -38,7 +38,7 @@ export const EventTypeCell = ({
   <InlineTableCell>
     <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
       {icons[type]}
-      <Typography variant="tableCellMRegular">{type}</Typography>
+      <Typography variant="tableCellValue">{type}</Typography>
     </Stack>
   </InlineTableCell>
 )

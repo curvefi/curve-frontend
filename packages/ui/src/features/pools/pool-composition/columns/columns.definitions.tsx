@@ -51,7 +51,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     header: headers[PoolCompositionColumnId.Price],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <Typography variant="tableCellMRegular">{formatNumber(getValue(), 'usd.precise')}</Typography>
+        <Typography variant="tableCellValue">{formatNumber(getValue(), 'usd.precise')}</Typography>
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -62,7 +62,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     header: headers[PoolCompositionColumnId.Balance],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <Typography variant="tableCellMRegular">{formatNumber(getValue(), 'percent.rate')}</Typography>
+        <Typography variant="tableCellValue">{formatNumber(getValue(), 'percent.rate')}</Typography>
       </InlineTableCell>
     ),
     enableSorting: false,
