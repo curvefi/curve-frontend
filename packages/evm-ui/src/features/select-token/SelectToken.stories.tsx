@@ -1,7 +1,7 @@
 import { type ComponentProps, type ReactNode, useState } from 'react'
 import { action } from 'storybook/actions'
 import { ethAddress, type Address } from 'viem'
-import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { MAINNET_CRV_ADDRESS, REUSD_ADDRESS } from '@evm-ui/utils'
 import { Button, Stack, Typography } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -34,11 +34,7 @@ const defaultTokens: TokenOption[] = [
   { chain: 'ethereum', address: '0x3231Cb76718CDeF2155FC47b5286d82e6eDA273f', symbol: 'EURE' },
   { chain: 'ethereum', address: '0x365AccFCa291e7D3914637ABf1F7635dB165Bb09', symbol: 'FXN' },
   { chain: 'ethereum', address: '0x0D57436F2d39c0664C6f0f2E349229483f87EA38', symbol: 'A7A5' },
-  {
-    chain: 'ethereum',
-    address: MAINNET_CRV_ADDRESS,
-    symbol: 'CRV with a very superlong name that should be truncated',
-  },
+  { chain: 'ethereum', address: REUSD_ADDRESS, symbol: 'reUSD with a very superlong name that should be truncated' },
 ]
 
 const defaultBalances = {
