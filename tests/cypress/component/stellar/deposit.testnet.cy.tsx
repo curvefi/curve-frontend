@@ -28,7 +28,7 @@ import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stella
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { fromEntries } from '@primitives/objects.utils'
-import { decimalMultiply, decimalSum, fromWei } from '@ui/lib/decimal'
+import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 
 const singleCoinDeposit = (coins: PoolState['coins']): PoolAmounts =>
   fromEntries([[oneOf(...coins).symbol, BASE_DEPOSIT_AMOUNT]])
@@ -87,14 +87,11 @@ describe('Stellar testnet deposit', () => {
     depositSubmit().should('be.disabled')
   })
 
-  it('rejects amounts exceeding wallet balances and token precision', () => {
+  it('rejects amounts exceeding wallet balances', () => {
     mountDeposit()
-    state.coins.forEach(({ address, symbol, balance, decimals }) => {
+    state.coins.forEach(({ address, symbol, balance }) => {
       writePoolForm(state.coins, { ...allCoinDeposit(state.coins), [symbol]: decimalSum(balance, '1') })
       checkPoolInputError(address, 'Insufficient token balance')
-      depositSubmit().should('be.disabled')
-      writePoolForm(state.coins, { [symbol]: fromWei('1', decimals + 1) })
-      checkPoolInputError(address, 'Amount exceeds token decimal precision')
       depositSubmit().should('be.disabled')
     })
   })

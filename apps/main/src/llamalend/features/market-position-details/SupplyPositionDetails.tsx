@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
+import { isLendMarket } from '@/llamalend/llama.utils'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
@@ -15,7 +16,6 @@ import {
 } from '@/llamalend/rates.utils'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
 import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
 import { useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
@@ -59,7 +59,7 @@ export const SupplyPositionDetails = () => {
     controllerAddress,
   } = useMarketContext<LlamaChainId>()
   const market = assert(
-    contextMarket instanceof LendMarketTemplate ? contextMarket : undefined,
+    isLendMarket(contextMarket) ? contextMarket : undefined,
     'SupplyPositionDetails requires a lend market',
   )
 

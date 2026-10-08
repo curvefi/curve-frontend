@@ -5,7 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
-import { PoolTokenInput, type PoolToken } from './PoolTokenInput'
+import { type PoolToken, PoolTokenInput } from './PoolTokenInput'
 
 export type PoolTokenDisabled = boolean | 'first-only'
 

@@ -23,7 +23,7 @@ export const useLlammaActivityTradesConfig = ({
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
   const tradesQuery = useLlammaTrades({
-    chain: blockchainId,
+    blockchainId,
     llamma: ammAddress,
     endpoint,
     page: apiPage,

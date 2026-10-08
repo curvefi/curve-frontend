@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.4.0",
-    "@curvefi/api": "2.70.2",
+    "@curvefi/api": "2.70.5",
     "@curvefi/legacy-ui": "workspace:^",
     "@curvefi/llamalend-api": "2.6.1",
     "@curvefi/ui": "workspace:^",

@@ -103,7 +103,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     isPending,
     inputsDisabled: isPending,
     isDisabled:
-      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data === false),
+      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data !== true),
     isLoading: isPending || config.isLoading || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
