@@ -42,7 +42,7 @@ export function useSwapForm(poolParams: PoolQuery) {
   const config = usePoolConfig(poolParams)
   const reserves = usePoolReserves(poolParams)
   const tokenAddresses = mapQuery(config, config => config.tokens)
-  const { tokens, decimalsData, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimalsData, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const form = useForm<SwapFormValues>(formOptions)
   const { formState, reset } = form
   const values = form.watchValues()

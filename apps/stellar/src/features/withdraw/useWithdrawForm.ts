@@ -47,7 +47,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
-  const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
   const reserves = usePoolReserves(poolParams)
   const maxAmounts = useScaleReserves(reserves, decimals)

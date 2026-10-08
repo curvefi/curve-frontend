@@ -43,7 +43,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
-  const { tokens, decimalsData, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimalsData, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), isBalanced: false }),
     [tokenCount],

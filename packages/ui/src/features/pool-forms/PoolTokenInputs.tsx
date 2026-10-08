@@ -25,7 +25,7 @@ export const PoolTokenInputs = ({
   tokens?.map(({ data: token, isLoading, error }, index) => (
     // eslint-disable-next-line @eslint-react/no-array-index-key
     <Fragment key={index}>
-      {token && (
+      {token ? (
         <PoolTokenInput
           key={token.address}
           token={token}
@@ -37,8 +37,9 @@ export const PoolTokenInputs = ({
             positionAmounts && { position: positionAmounts[index], tooltip: t`Available pool liquidity` }
           }
         />
+      ) : (
+        isLoading && <LargeTokenInputSkeleton />
       )}
-      {!token && isLoading && <LargeTokenInputSkeleton />}
       {error && (
         <Alert severity="error">
           <AlertTitle>{`${t`Error retrieving pool token`} ${index + 1}`}</AlertTitle> {error.message}

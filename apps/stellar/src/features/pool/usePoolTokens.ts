@@ -56,8 +56,5 @@ export function usePoolTokens({
   )
 
   const decimalsData = useMemo(() => decimals.map(q => q.data), [decimals])
-  if (tokenAddresses.data) {
-    return { tokens, symbols, decimals, decimalsData, maxAmounts: balances }
-  }
-  return { tokens: undefined, symbols: undefined, decimals: undefined, decimalsData: undefined, maxAmounts: undefined }
+  if (tokenAddresses.data) return { tokens, symbols, decimals, decimalsData, maxAmounts: balances }
 }

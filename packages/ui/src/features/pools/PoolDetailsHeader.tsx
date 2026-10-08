@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react'
 import type { Address } from '@primitives/address.utils'
-import { completeArray } from '@primitives/array.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { PageHeader } from '@ui/components/PageHeader'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
-import { aggregateQueries } from '@ui/features/queries/combine'
 import type { QueryProp } from '@ui/features/queries/util'
 
 const ICON_SIZE = 35
@@ -22,26 +21,27 @@ export const PoolDetailsHeader = ({
   blockchainId: string
   backHref: string
   rightItems: ReactNode
-}) => {
-  const tokenQuery = tokens && aggregateQueries(tokens)
-  const tokenData = completeArray(tokenQuery?.data)
-  const isLoadingTokens = tokenQuery?.isLoading ?? true
-
-  return (
-    <PageHeader
-      backHref={backHref}
-      title={title ?? 'Pool'}
-      titleLoading={isTitleLoading}
-      subtitle={tokenData?.map(({ symbol }) => symbol).join(' / ') ?? (isLoadingTokens ? 'Token symbols' : undefined)}
-      subtitleLoading={isLoadingTokens}
-      icon={
-        (isLoadingTokens || (tokenData && tokenData.length > 0)) && (
-          <WithSkeleton loading={isLoadingTokens} variant="rectangular" width={ICON_SIZE} height={ICON_SIZE}>
-            <TokenIcons blockchainId={blockchainId} tokens={tokenData} overflowMode="stack" />
-          </WithSkeleton>
-        )
-      }
-      rightItems={rightItems}
-    />
-  )
-}
+}) => (
+  <PageHeader
+    backHref={backHref}
+    title={title ?? 'Pool'}
+    titleLoading={isTitleLoading}
+    subtitle={tokens?.map((t, i) => t.data?.symbol ?? `Token ${i}`).join(' / ')}
+    subtitleLoading={!tokens?.every(t => !t.isLoading)}
+    icon={
+      <WithSkeleton
+        loading={!tokens?.every(t => !t.isLoading)}
+        variant="rectangular"
+        width={ICON_SIZE}
+        height={ICON_SIZE}
+      >
+        <TokenIcons
+          blockchainId={blockchainId}
+          tokens={notFalsy(...(tokens ?? []).map(t => t.data))}
+          overflowMode="stack"
+        />
+      </WithSkeleton>
+    }
+    rightItems={rightItems}
+  />
+)
