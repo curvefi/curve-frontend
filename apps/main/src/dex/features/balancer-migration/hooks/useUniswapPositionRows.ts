@@ -51,7 +51,7 @@ export const useUniswapPositionRows = (
           ),
         }
       })
-      .toSorted((a, b) => (b.valueUsd ?? 0) - (a.valueUsd ?? 0)),
+      .toSorted((a, b) => (b.totalUsd ?? 0) - (a.totalUsd ?? 0)),
   )
   return { query, refetch: positions.refetch }
 }

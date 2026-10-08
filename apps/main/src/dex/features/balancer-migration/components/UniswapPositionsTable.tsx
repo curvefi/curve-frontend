@@ -39,13 +39,14 @@ const createColumns = (blockchainId: string) =>
         />
       ),
     }),
-    columnHelper.accessor('valueUsd', {
+    // Unclaimed fees are collected by the migration, so they count towards the value.
+    columnHelper.accessor('totalUsd', {
       header: t`Value`,
       cell: ({ row: { original: position } }) => (
         <TokenInfo
           icon={null}
           iconPosition="right"
-          primary={formatNumber(position.valueUsd, 'usd.notional')}
+          primary={formatNumber(position.totalUsd, 'usd.notional')}
           secondary={`#${position.tokenId}`}
           boldPrimary
           sx={{ justifyContent: 'end' }}
@@ -61,11 +62,6 @@ const createColumns = (blockchainId: string) =>
         variant: 'tableCellMBold',
         tooltip: { title: t`Estimated fee APR`, body: <TooltipDescription text={UNISWAP_FEE_APR_DESCRIPTION} /> },
       },
-    }),
-    columnHelper.accessor('feesUsd', {
-      header: t`Unclaimed fees`,
-      cell: ({ getValue }) => formatNumber(getValue(), 'usd.notional'),
-      meta: { type: 'numeric', variant: 'tableCellMBold' },
     }),
   ])
 

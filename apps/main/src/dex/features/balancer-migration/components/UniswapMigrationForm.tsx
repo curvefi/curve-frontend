@@ -18,7 +18,7 @@ import { PoolTokensLabel } from './PoolTokensLabel'
 
 const { Spacing, LargeTokenInput } = SizesAndSpaces
 
-/** Read-only, in the large input's style: the whole position moves, including its unclaimed fees. */
+/** Read-only, in the large input's style: the whole position moves, and the migration collects its fees. */
 const UniswapPositionSummary = ({ blockchainId, position }: { blockchainId: string; position: UniswapPositionRow }) => (
   <Stack
     sx={{
@@ -39,7 +39,6 @@ const UniswapPositionSummary = ({ blockchainId, position }: { blockchainId: stri
         key={symbol}
         label={symbol}
         value={formatNumber(+position.amounts[i] + +position.fees[i], 'token.amount')}
-        valueTooltip={t`${formatNumber(position.amounts[i], 'token.amount')} in the position + ${formatNumber(position.fees[i], 'token.amount')} unclaimed fees`}
         size="small"
       />
     ))}
