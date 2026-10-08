@@ -1,6 +1,7 @@
 import { groupBy } from 'lodash'
 import { useMemo } from 'react'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
@@ -85,15 +86,16 @@ const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
 })
 
 export function useUserPoolClaimables(params: UserPoolClaimablesParams, enabled = true) {
-  const { curveApi, isHydrated } = useCurve()
+  const { curveApi } = useCurve()
   const { chainId, poolAddresses } = params
   const filteredPoolAddresses = useMemo(
     () => poolAddresses?.filter(address => chainId && !CLAIMABLES_BLACKLIST[chainId]?.has(address)),
     [chainId, poolAddresses],
   )
-  const query = useUserPoolClaimablesQuery(
+  const query = useHydratedQuery(
+    useUserPoolClaimablesQuery,
     { ...params, poolAddresses: filteredPoolAddresses },
-    enabled && !!filteredPoolAddresses?.length && isHydrated && curveApi?.chainId === chainId,
+    enabled && !!filteredPoolAddresses?.length && curveApi?.chainId === chainId,
   )
 
   return {
