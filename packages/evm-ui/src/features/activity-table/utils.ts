@@ -59,7 +59,7 @@ export const formatTokenDeltaUsd = ({ amount, amountUsd, timestamp }: ActivityTo
 export const getLlammaEventAction = ({ type }: MarketEventRow) =>
   ({
     deposit: { label: t`Deposit`, color: 'success' as const },
-    withdrawal: { label: t`Withdrawal`, color: 'error' as const },
+    withdrawal: { label: t`Withdraw`, color: 'error' as const },
   })[type]
 
 /** Lists the token deltas of a LLAMMA event: the deposited collateral, or the withdrawn collateral and borrowed tokens */
