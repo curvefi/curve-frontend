@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { Range } from '@ui/features/queries/util'
 import type { FilterProps } from '@ui/features/tables/data-table.utils'
 import { normalizeRangeFilterDefaults, parseRangeFilter, serializeRangeFilter } from '@ui/features/tables/filters'
-import { useDebounced } from '@ui/hooks/useDebounce'
+import { useDebounce } from '@ui/hooks/useDebounce'
 
 export const useRangeFilter = <TColumnId extends string>({
   isLoading = false,
@@ -21,15 +21,16 @@ export const useRangeFilter = <TColumnId extends string>({
   max?: number
   isLoading?: boolean
 }) => {
-  const setFilter = useDebounced(setColumnFilter)
-  const filterValue = useMemo((): Range<number | null> => {
-    const [minFilter, maxFilter] = parseRangeFilter(columnFiltersById[id]) ?? []
+  const serializedFilter = columnFiltersById[id]
+  const initialValue = useMemo((): Range<number | null> => {
+    const [minFilter, maxFilter] = parseRangeFilter(serializedFilter) ?? []
     return [minFilter ?? (isLoading ? null : displayDefaultMin), maxFilter ?? (isLoading || max == null ? null : max)]
-  }, [columnFiltersById, displayDefaultMin, id, isLoading, max])
-  const setFilterValue = useCallback(
+  }, [serializedFilter, displayDefaultMin, isLoading, max])
+  const callback = useCallback(
     (newRange: Range<number | null>) =>
-      setFilter(id, serializeRangeFilter(normalizeRangeFilterDefaults(newRange, [defaultMin, max]))),
-    [defaultMin, max, id, setFilter],
+      setColumnFilter(id, serializeRangeFilter(normalizeRangeFilterDefaults(newRange, [defaultMin, max]))),
+    [defaultMin, max, id, setColumnFilter],
   )
-  return [filterValue, setFilterValue] as const
+  // Keep the input draft current during parent rerenders; only debounce the committed filter.
+  return useDebounce({ initialValue, callback })
 }
