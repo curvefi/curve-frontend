@@ -16,7 +16,7 @@ export type DataTableCategoryConfig = {
   emptyStateSize?: NonNullable<EmptyStateCardProps['size']>
   emptyStateRowSize?: EmptyStateRowSize
   enablePageChangeScroll?: boolean // defaults to false; scroll the container or document after pagination changes
-  rowHeight?: DataTableRowHeight // defaults to 'l'
+  rowHeight?: DataTableRowHeight // defaults to 'lg'
 }
 
 export type DataTableRowHeight = keyof typeof Height.table.row
@@ -25,25 +25,25 @@ export type DataTableCategory = keyof typeof DATA_TABLE_CATEGORIES
 
 export const DATA_TABLE_CATEGORIES = {
   // default full-list table, e.g. MarketsTable or PoolListTable.
-  list: { emptyStateRowSize: 'lg', enablePageChangeScroll: true, rowHeight: 'l' },
+  list: { emptyStateRowSize: 'lg', enablePageChangeScroll: true, rowHeight: 'lg' },
   // preview table that starts with a few rows, e.g. UserPositionsMarketRateTable.
   limited: {
     defaultVisibleRows: 3,
     increasingLength: 'limited',
     emptyStateSize: 'sm',
     enablePageChangeScroll: true,
-    rowHeight: 'l',
+    rowHeight: 'lg',
   },
   // table with many rows constrained inside a scrollable viewport, e.g. ActivityTable or UserEventsTable.
-  scrollable: { height: Height.table.events, emptyStateRowSize: 'lg', enablePageChangeScroll: true, rowHeight: 's' },
+  scrollable: { height: Height.table.events, emptyStateRowSize: 'lg', enablePageChangeScroll: true, rowHeight: 'sm' },
   // compact detail table inside a secondary card or advanced-details section, e.g. PoolComposition or YieldBreakdown.
-  detail: { disableStickyHeader: true, increasingLength: 'disabled', rowHeight: 's' },
+  detail: { disableStickyHeader: true, increasingLength: 'disabled', rowHeight: 'sm' },
   // compact form table without visible column headers, e.g. ClaimTab or ClosePositionForm.
   form: {
     disableStickyHeader: true,
     hideHeader: true,
     increasingLength: 'limited',
     emptyStateSize: 'sm',
-    rowHeight: 's',
+    rowHeight: 'sm',
   },
 } as const satisfies Record<string, DataTableCategoryConfig>

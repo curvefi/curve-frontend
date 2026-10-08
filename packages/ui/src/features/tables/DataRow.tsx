@@ -46,7 +46,7 @@ export const DataRow = <TData extends RowData>({
   expandedPanel,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
-  rowHeight = 'l',
+  rowHeight = 'lg',
 }: DataRowProps<TData>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
