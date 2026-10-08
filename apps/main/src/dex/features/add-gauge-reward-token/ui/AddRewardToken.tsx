@@ -5,7 +5,6 @@ import { gaugeAddRewardValidationGroup } from '@/dex/entities/gauge/model/gauge-
 import { useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge/model/gauge.query'
 import type { AddRewardParams } from '@/dex/entities/gauge/types'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
-import { DistributorInput, TokenSelector } from '@/dex/features/add-gauge-reward-token/ui'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
 import { useForm, useFormSync } from '@ui/features/forms'
@@ -17,6 +16,8 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { usePoolContext } from '../../pool-context'
+import { TokenSelector } from './TokenSelector'
+import { DistributorInput } from './DistributorInput'
 
 const { Spacing } = SizesAndSpaces
 
