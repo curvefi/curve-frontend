@@ -73,10 +73,7 @@ export const TokenList = ({
   const tokensSearched = useFuzzySearch(tokens, search, ['symbol', 'address'])
 
   const [category, setCategory] = useState<TokenCategory>('all')
-  const categories = useMemo(
-    () => new Set(notFalsy('all', ...tokensSearched.map(token => token.category))),
-    [tokensSearched],
-  )
+  const categories = useMemo(() => new Set(notFalsy('all', ...tokens.map(token => token.category))), [tokens])
   const categoriesTabs = useMemo(
     () => [...categories].map(category => ({ value: category, label: TOKEN_CATEGORY_LABELS[category] })),
     [categories],
