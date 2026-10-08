@@ -160,10 +160,12 @@ export const TokenList = ({
         ? tokensCategorized
         : tokensCategorized.filter(token => +(toValue(balances?.[token.address]) ?? 0) === 0),
 
+      // Add tokens that have balance but aren't in the preview (dust tokens)
+      // When showPreviewMy is false, those dust tokens should be in the myTokens section
+      // However, TokenSection falls back to showing all myTokens when the preview is empty,
+      // so only a nonempty preview can leave hidden dust to add to the volume section.
       showPreviewMy &&
-        // Add tokens that have balance but aren't in the preview (dust tokens)
-        // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
-        // When showPreviewMy is false, those dust tokens should be in the myTokens section
+        previewMy.length > 0 &&
         myTokens.filter(token => !previewMy.some(previewToken => previewToken.address === token.address)),
     ).flat()
     return disableSorting
