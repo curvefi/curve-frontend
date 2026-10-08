@@ -81,7 +81,6 @@ export const TokenList = ({
     () => [...categories].map(category => ({ value: category, label: TOKEN_CATEGORY_LABELS[category] })),
     [categories],
   )
-  const showCategories = categories.size > 1 // categories always contain at least 'all'.
 
   const tokensCategorized = useMemo(
     () =>
@@ -190,7 +189,7 @@ export const TokenList = ({
       {showFavorites && <FavoriteTokens tokens={favorites} onToken={onToken} />}
       {showFavorites && children && <Divider />}
       {children}
-      {showCategories && (
+      {categories.size > 1 && ( // categories always contain at least 'all'.
         <TabsSwitcher
           variant="underlined"
           size="small"
