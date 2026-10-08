@@ -17,7 +17,6 @@ export const useMarketsSortOptions = () => {
           { id: MarketColumnId.UserBorrowed, label: t`Borrow Amount` },
           { id: MarketColumnId.UserCollateral, label: t`Collateral Amount` },
           { id: MarketColumnId.UserLtv, label: t`LTV` },
-          { id: MarketColumnId.UserEarnings, label: t`My Earnings` },
           { id: MarketColumnId.UserDeposited, label: t`Supplied Amount` },
           { id: MarketColumnId.UserBoostMultiplier, label: t`Boost` },
         ]
