@@ -1,4 +1,4 @@
-import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
 import { TokenAmount } from '@evm-ui/shared/ui/TokenAmount'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
