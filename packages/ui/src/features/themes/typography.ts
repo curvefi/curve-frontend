@@ -105,7 +105,7 @@ export const TYPOGRAPHY_VARIANTS = {
   tableCellL: { fontWeight: 'Bold', fontSize: Sizing[200], lineHeight: Spacing[400], fontVariantNumeric: TABULAR_NUMS },
   tableCellMRegular: { fontWeight: 'Normal', fontSize: 'md', lineHeight: Sizing[200], fontVariantNumeric: TABULAR_NUMS },
   tableCellMBold: { fontWeight: 'Bold', fontSize: 'md', lineHeight: Sizing[200], fontVariantNumeric: TABULAR_NUMS },
-  tableCellSRegular: { fontWeight: 'Normal', fontSize: 'sm', lineHeight: Sizing[150], fontVariantNumeric: TABULAR_NUMS },
+  tableCellSRegular: { fontWeight: 'Normal', fontSize: 'xs', lineHeight: Sizing[150], fontVariantNumeric: TABULAR_NUMS },
   tableCellSBold: { fontWeight: 'Bold', fontSize: 'sm', lineHeight: Sizing[150], fontVariantNumeric: TABULAR_NUMS },
 
   highlightXsNotional: { fontWeight: 'Normal', fontSize: 'xs', fontVariantNumeric: TABULAR_NUMS },
