@@ -4,7 +4,7 @@ import type { MigrationOptions } from '@ui/features/storage/useStoredState'
 import { preserveVisibilityChoices, useVisibilitySettings } from '@ui/features/tables/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { POOL_COLUMNS, POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
+import { POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
 import type { PoolTableVariant } from '../types'
 
 const migration: MigrationOptions<Record<PoolTableVariant, VisibilityGroup<PoolColumnId>[]>> = {
@@ -24,7 +24,7 @@ export function usePoolsVisibility(
   title: string,
   { variant, mobileColumn }: { variant: PoolTableVariant; mobileColumn: PoolColumnId },
 ) {
-  const visibilitySettings = useVisibilitySettings(title, POOLS_COLUMN_OPTIONS, variant, POOL_COLUMNS, migration)
+  const visibilitySettings = useVisibilitySettings(title, POOLS_COLUMN_OPTIONS, variant, migration)
   const columnVisibility = useMemo(() => createMobileColumns(mobileColumn), [mobileColumn])
 
   return { variant, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
