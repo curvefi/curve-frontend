@@ -2,7 +2,7 @@ import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
-import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import type { ChartDataPoint } from '@/llamalend/features/bands-chart/types'
 import {
   LlammaActivityEventsTable,
   type LlammaActivityProps,
@@ -40,6 +40,7 @@ import type { TabItem } from '@ui/hooks/useTabs'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit } from '@ui/lib/tokens'
+import type { FetchedBandsBalances } from '../queries/bands/bands-balances.query-helpers'
 
 const { Spacing } = SizesAndSpaces
 

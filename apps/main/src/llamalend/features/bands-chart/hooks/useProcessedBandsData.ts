@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import type { ChartDataPoint } from '@/llamalend/features/bands-chart/types'
+import type { FetchedBandsBalances } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { sortBy } from '@primitives/array.utils'
 
 type ProcessedBandsData = {

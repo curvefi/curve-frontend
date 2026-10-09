@@ -1,6 +1,7 @@
 import { useConnection } from 'wagmi'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
-import { useMarketBandsBalances, useUserBandsBalances } from '@/llamalend/queries/bands'
+import { useMarketBandsBalances } from '@/llamalend/queries/bands/market-bands-balances.query'
+import { useUserBandsBalances } from '@/llamalend/queries/bands/user-bands-balances.query'
 import { useMarketLiquidationBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
