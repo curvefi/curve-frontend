@@ -5,7 +5,7 @@ import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
 import { WalletContext } from '@/stellar/features/connect-wallet/useWallet'
 import { router } from '@/stellar/routes'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { API_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 
 export const StellarTestWrapper = ({ children, address }: { children: ReactNode; address?: StellarAddress }) => (
@@ -35,5 +35,5 @@ export const StellarTestWrapper = ({ children, address }: { children: ReactNode;
 export const mountStellarApp = (path: string) => {
   cy.mount(<StellarApp />)
   cy.then(() => router.navigate({ to: path }))
-  cy.get('[data-testid="data-table"]', API_LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="data-table"]', TIMEOUTS['ui.render']).should('be.visible')
 }

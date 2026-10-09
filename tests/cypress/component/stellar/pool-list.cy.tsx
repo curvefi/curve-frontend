@@ -3,13 +3,14 @@ import { StellarUrls } from '@/stellar/routes/routes'
 import { oneOf } from '@cy/support/generators'
 import { expandFirstRowOnMobile, openDrawer, withExpandedPanelDrawer } from '@cy/support/helpers/data-table.helpers'
 import { mountStellarApp } from '@cy/support/helpers/stellar/StellarTestWrapper'
-import { API_LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { oneViewport } from '@cy/support/ui'
 import { PoolColumnId } from '@ui/features/pool-list/columns'
 import { queryClient } from '@ui/features/queries/query-client'
 
 const NETWORK = 'stellar-testnet'
 const POOL_LIST_URL = StellarUrls.poolList({ network: NETWORK })
-const poolLinks = () => cy.get('[data-testid^="table-row-link-"]', API_LOAD_TIMEOUT)
+const poolLinks = () => cy.get('[data-testid^="table-row-link-"]', TIMEOUTS['curveLite.pools'])
 const search = () => cy.get('[data-testid="table-text-search-dex-pool-list"] input')
 
 const testCases = [oneViewport()]
@@ -26,7 +27,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       mountStellarApp('/')
       cy.location('pathname').should('equal', StellarUrls.poolList({ network: 'stellar' }))
       // Mainnet is empty while the backend rolls out support.
-      cy.get(`[data-testid="dex-pool-empty-state-no-results"]`, API_LOAD_TIMEOUT).should('be.visible')
+      cy.get(`[data-testid="dex-pool-empty-state-no-results"]`, TIMEOUTS['curveLite.pools']).should('be.visible')
     })
 
     it('loads pools, searches by address, and resets an empty search', () => {
