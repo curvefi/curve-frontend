@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { getAddress, zeroAddress } from 'viem'
+import { getAddress, isAddressEqual, zeroAddress } from 'viem'
 import type { MarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user'
@@ -14,7 +14,7 @@ import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
-import { type Address, Hex } from '@primitives/address.utils'
+import { type Address, Hex, type Token } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import {
@@ -25,9 +25,11 @@ import {
   maybe,
   maybes,
   notFalsy,
+  recordEntries,
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
+import type { TokenOrPair } from '@ui/components/TokenIcons'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { QueryProp, toQuery } from '@ui/features/queries/util'
@@ -36,7 +38,7 @@ import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
-import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
+import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -237,6 +239,11 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
           },
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
+
+/** Returns the token pair of a known LP token, or the token itself */
+export const getTokenOrPair = (blockchainId: Chain, token: Token): TokenOrPair =>
+  recordEntries(LP_TOKEN_PAIRS[blockchainId] ?? {}).find(([address]) => isAddressEqual(address, token.address))?.[1] ??
+  token
 
 export const getAmmAddress = <T extends MarketTemplate | Nullish>(
   market: T,

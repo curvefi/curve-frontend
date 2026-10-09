@@ -1,5 +1,6 @@
 import { useConnection } from 'wagmi'
 import { useMarketContext } from '@/llamalend/features/market-context'
+import { getTokenOrPair } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
@@ -67,7 +68,11 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
         icon={
           <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
             {collateralToken && borrowToken && (
-              <TokenIcons blockchainId={blockchainId} tokens={[collateralToken, borrowToken]} overflowMode="stack" />
+              <TokenIcons
+                blockchainId={blockchainId}
+                tokens={[getTokenOrPair(blockchainId, collateralToken), borrowToken]}
+                overflowMode="stack"
+              />
             )}
           </WithSkeleton>
         }

@@ -3,7 +3,7 @@ import { type Chain as ApiChain } from '@curvefi/prices-api'
 import { MarketType } from '@evm-ui/types/market'
 import { AlertType } from '@legacy-ui/AlertBox/types'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
-import type { Address } from '@primitives/address.utils'
+import type { Address, Token } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
@@ -508,4 +508,14 @@ export const SOLVENCY_THRESHOLDS = {
   solvent: 99.9,
   low: 90,
   insolvent: 0,
+}
+
+export const LP_TOKEN_PAIRS: PartialRecord<ApiChain, Record<Address, [Token, Token]>> = {
+  ethereum: {
+    // reUSD/sfrxUSD
+    '0xed785Af60bEd688baa8990cD5c4166221599A441': [
+      { symbol: 'reUSD', address: '0x57aB1E0003F623289CD798B1824Be09a793e4Bec' },
+      { symbol: 'sfrxUSD', address: '0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6' },
+    ],
+  },
 }
