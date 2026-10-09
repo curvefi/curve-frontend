@@ -68,8 +68,8 @@ describe('RepayForm (mocked)', () => {
         const { collateralToken } = getTokens(market)
         const token =
           repayToken === 'collateral'
-            ? { symbol: collateralToken.symbol, tokenAddress: collateralToken.address, optionIndex: 1 }
-            : { symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, optionIndex: 0 }
+            ? { symbol: collateralToken.symbol, tokenAddress: collateralToken.address }
+            : { symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS }
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId: CHAIN_ID })

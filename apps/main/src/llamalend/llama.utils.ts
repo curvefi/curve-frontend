@@ -129,7 +129,8 @@ export const isPositionLeveraged = (leverage: Amount | Nullish) =>
 export const canRepayFromStateCollateral = <T extends MarketTemplate | undefined>(market: T) =>
   maybe(market, market => (isMintMarket(market) ? hasDeleverage(market) : hasLeverage(market)))
 
-export const canRepayFromUserCollateral = <T extends MarketTemplate | undefined>(market: T) => hasZapV2(market)
+/** Repaying with collateral from the wallet is disabled on every market for security reasons */
+export const canRepayFromUserCollateral = <T extends MarketTemplate | undefined>(_market: T) => false
 
 export const canLeverageUserBorrowed = <T extends MarketTemplate | undefined>(market: T) =>
   maybe(market, market => hasLegacyMintLeverage(market))

@@ -11,12 +11,10 @@ export function selectRepayToken({
   symbol,
   tokenAddress,
   hasLeverageManagement,
-  optionIndex = 0,
 }: {
   symbol: string
   tokenAddress: string
   hasLeverageManagement: boolean
-  optionIndex?: number
 }) {
   const tokenIconTestId = `token-icon-${tokenAddress.toLowerCase()}`
   if (!hasLeverageManagement) {
@@ -25,7 +23,7 @@ export function selectRepayToken({
   cy.get('[data-testid^="repay-input-"] [aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
   cy.get(`[data-testid="token-option-${tokenAddress.toLowerCase()}"]`, LOAD_TIMEOUT)
     .filter(`:has([data-testid="${tokenIconTestId}"])`)
-    .eq(optionIndex)
+    .should('have.length', 1) // repaying with collateral from the wallet is disabled, only the position collateral is listed
     .click()
   cy.get(`[data-testid="${tokenIconTestId}"]`, LOAD_TIMEOUT).should('be.visible')
   cy.get('[data-testid^="repay-input-"]', LOAD_TIMEOUT).contains(symbol).should('be.visible')
