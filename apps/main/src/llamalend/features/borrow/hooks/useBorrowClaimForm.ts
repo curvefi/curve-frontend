@@ -14,7 +14,7 @@ import { combineQueryState } from '@ui/features/queries/combine'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useMarketContext } from '../../market-context'
-import { CLAIM_TAB_COLUMNS } from '../../supply/components/columns'
+import { CLAIM_TAB_COLUMNS } from '../../supply/components/columns/column.definitions'
 
 const useClaimableTokens = <ChainId extends IChainId>({
   params,
