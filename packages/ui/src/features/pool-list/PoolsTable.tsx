@@ -31,7 +31,7 @@ import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const EMPTY_POOL_ROWS: readonly PoolRow[] = []
 
-type PoolsTableProps = PoolsTableData &
+export type PoolsTableProps = PoolsTableData &
   ConnectionProps &
   Pick<PoolTableMeta, 'addressDisplay' | 'crvToken'> & {
     userAddress: Address | undefined
