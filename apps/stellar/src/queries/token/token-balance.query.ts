@@ -10,6 +10,7 @@ import { fromWei } from '@ui/lib/decimal'
 export const {
   useQuery: useTokenBalance,
   getQueryOptions: getTokenBalanceQueryOptions,
+  getQueryData: getTokenBalance,
   fetchQuery: fetchTokenBalance,
   invalidate: invalidateTokenBalance,
 } = queryFactory({

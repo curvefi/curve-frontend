@@ -135,7 +135,39 @@ describe('Stellar testnet withdraw', () => {
       poolInput(state.coins[0].address).find('input').should('not.have.value', SINGLE_COIN_OUTPUT_AMOUNT)
     })
 
-    it('rejects zero outputs, reserve overflow and outputs above the LP budget', () => {
+    it('selects one coin at Max, clears the others, and allows smaller amounts', () => {
+      mountWithdraw()
+      writeWithdrawLp(WITHDRAW_LP_AMOUNT)
+      state.coins.forEach(({ address }, index) => {
+        poolInput(address)
+          .find('[data-testid="balance-value"]')
+          .invoke('attr', 'data-value')
+          .then(maxAmount => {
+            poolInput(address).find('[data-testid="input-chip-Max"]').click()
+            state.coins.map(({ address }, i) =>
+              poolInput(address)
+                .find('input')
+                .should('have.value', i === index ? maxAmount : '0'),
+            )
+          })
+        withdrawLpInput().find('input').should('have.value', state.lp.balance)
+        poolInput(address).find('[data-testid="helper-message-error"]').should('not.exist')
+        checkWithdrawDetail('expected-lp', state.lp.balance)
+        checkWithdrawDetail('maximum-lp', state.lp.balance)
+        checkWithdrawDetail('projected-lp', '0')
+        cy.get('[data-testid="loan-form-error-root"]').should('not.exist')
+      })
+      const { address } = state.coins.at(-1)!
+      writePoolAmount(address, SINGLE_COIN_OUTPUT_AMOUNT)
+      withdrawSubmit().should('be.enabled')
+      poolInput(address).find('input').should('have.value', SINGLE_COIN_OUTPUT_AMOUNT)
+      withdrawLpInput().find('input').should('have.value', state.lp.balance)
+      state.coins.slice(0, -1).map(({ address }) => poolInput(address).find('input').should('have.value', '0'))
+      poolInput(address).find('[data-testid="helper-message-error"]').should('not.exist')
+      cy.get('[data-testid="loan-form-error-root"]').should('not.exist')
+    })
+
+    it('rejects zero outputs, amounts above the user maximum and outputs above the LP budget', () => {
       const lpBudget = '0.001' satisfies Decimal
       const overBudgetOutput = '0.003' satisfies Decimal
       mountWithdraw()
@@ -144,7 +176,7 @@ describe('Stellar testnet withdraw', () => {
       withdrawSubmit().should('be.disabled')
       state.coins.forEach(({ address }, index) => {
         writePoolAmount(address, decimalSum(state.reserves[index], '1'))
-        checkPoolInputError(address, 'Amount must be less than the available pool reserve')
+        checkPoolInputError(address, 'Amount exceeds the maximum withdrawal')
         withdrawSubmit().should('be.disabled')
         writePoolAmount(address, '0')
       })

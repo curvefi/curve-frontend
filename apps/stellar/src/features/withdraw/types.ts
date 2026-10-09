@@ -8,7 +8,12 @@ import type { DeepPartial } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type CompleteWithdrawForm = Omit<WithdrawFormValues, 'decimals'> &
-  PoolTokenFields & { decimals: (number | undefined)[] | undefined; tokenCount: number | undefined; slippage: Decimal }
+  PoolTokenFields & {
+    decimals: (number | undefined)[] | undefined
+    tokenCount: number | undefined
+    slippage: Decimal
+    maxAmounts: (Decimal | undefined)[] | undefined
+  }
 
 export type WithdrawFormQuery = PoolQuery & UserParams & CompleteWithdrawForm
 
@@ -18,14 +23,15 @@ export type WithdrawSimulationQuery = QuoteQuery &
   UserQuery & {
     lpAmount: Decimal
     maxLpAmount: Decimal
+    maxWithdrawIndex: number | undefined
     seedLock: Decimal
     maxAmounts: (Decimal | undefined)[]
-    quote: Decimal
+    expected: Decimal
     maximumBurn: Decimal
     slippage: Decimal
   }
 export type WithdrawSimulationParams = FieldsOf<DeepPartial<WithdrawSimulationQuery>>
-export type WithdrawMutationContext = Pick<WithdrawQuery, 'network' | 'pool' | 'account' | 'quote'> & {
+export type WithdrawMutationContext = Pick<WithdrawQuery, 'network' | 'pool' | 'account' | 'expected'> & {
   account: StellarAddress
   tokens: StellarContract[]
 }

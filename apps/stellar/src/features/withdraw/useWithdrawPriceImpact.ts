@@ -9,13 +9,13 @@ import { combineQueries } from '@ui/features/queries/combine'
 import type { Query } from '@ui/features/queries/util'
 import { calculatePriceImpact } from '@ui/lib/price-impact.util'
 
-export function useWithdrawPriceImpact(params: QuoteParams, expectedBurn: Query<Decimal>) {
+export function useWithdrawPriceImpact(params: QuoteParams, expectedLp: Query<Decimal>) {
   const reserves = usePoolReserves(params)
   const rates = usePoolRates(params)
-  return combineQueries([reserves, rates, expectedBurn], (reserves, rates, burn) => {
+  return combineQueries([reserves, rates, expectedLp], (reserves, rates, lpAmount) => {
     const { amounts, decimals, supply } = params
     if (!amounts || !isComplete(decimals) || !supply || !+supply) return null
-    const balanced = scaleReserves(reserves, decimals, burn, supply)
+    const balanced = scaleReserves(reserves, decimals, lpAmount, supply)
     const balancedValue = rateAdjustedValue(balanced, rates)
     return calculatePriceImpact(rateAdjustedValue(amounts, rates), balancedValue)
   })
