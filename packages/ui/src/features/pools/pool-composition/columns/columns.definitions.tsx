@@ -62,7 +62,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     id: PoolCompositionColumnId.Balance,
     header: headers[PoolCompositionColumnId.Balance],
     cell: ({ getValue }) => (
-      <InlineTableCell>
+      <InlineTableCell sx={{ alignItems: 'end' }}>
         <TokenInfo
           icon={null}
           iconPosition="right"
