@@ -5,7 +5,7 @@ import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.qu
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { getToken, useTokens } from '@/dex/queries/tokens.query'
 import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
-import { TokenList } from '@evm-ui/features/select-token'
+import { TokenList } from '@evm-ui/features/select-token/ui/modal/TokenList'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'

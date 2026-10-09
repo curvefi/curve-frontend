@@ -1,5 +1,5 @@
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
@@ -9,7 +9,8 @@ import { createMockLendMarket } from '../mock-market.helpers'
 import { checkClaimTableState } from '../supply/claim.helpers'
 import { createStub, createTransactionStub } from '../test-stub.utils'
 
-const getBorrowClaimSubmitButton = () => cy.get('[data-testid="borrow-claim-crv-rewards-submit-button"]', LOAD_TIMEOUT)
+const getBorrowClaimSubmitButton = () =>
+  cy.get('[data-testid="borrow-claim-crv-rewards-submit-button"]', TIMEOUTS['mock.evm.contractRead'])
 
 export const createBorrowClaimScenario = ({ chainId, claimableCrv }: { chainId: number; claimableCrv: Decimal }) => {
   const claimableCrvStub = createStub(claimableCrv)
@@ -49,7 +50,7 @@ export const createBorrowClaimScenario = ({ chainId, claimableCrv }: { chainId: 
 export function validateBorrowClaimFormState({ crvButtonDisabled }: { crvButtonDisabled: boolean }) {
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   cy.get('[data-testid="loan-alert-error"]').should('not.exist')
-  cy.get('[data-testid="borrow-claim-empty-state"]', LOAD_TIMEOUT).should(
+  cy.get('[data-testid="borrow-claim-empty-state"]', TIMEOUTS['mock.evm.contractRead']).should(
     crvButtonDisabled ? 'be.visible' : 'not.exist',
   )
 }
@@ -63,7 +64,7 @@ export function checkBorrowClaimTableState({ rows, totalNotional }: Parameters<t
   }
 
   checkClaimTableState({ rows, totalNotional })
-  cy.get('[data-testid="rewards-value"]', LOAD_TIMEOUT)
+  cy.get('[data-testid="rewards-value"]', TIMEOUTS['mock.evm.contractRead'])
     .should('be.visible')
     .closest('tr')
     .find('td')
@@ -73,21 +74,21 @@ export function checkBorrowClaimTableState({ rows, totalNotional }: Parameters<t
 }
 
 export function checkBorrowClaimDetailsLoaded({ hasCrvRewards }: { hasCrvRewards: boolean }) {
-  cy.get('[data-testid="borrow-claim-action-info-list"]', LOAD_TIMEOUT).should(
+  cy.get('[data-testid="borrow-claim-action-info-list"]', TIMEOUTS['mock.evm.contractRead']).should(
     hasCrvRewards ? 'be.visible' : 'not.be.visible',
   )
   getBorrowClaimSubmitButton().should(hasCrvRewards ? 'not.be.disabled' : 'be.disabled')
   if (!hasCrvRewards) return
 
-  checkEstimatedTxCost({ name: 'borrow-claim-crv-rewards-estimated-tx-cost' })
-  cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('exist')
+  checkEstimatedTxCost({ name: 'borrow-claim-crv-rewards-estimated-tx-cost', category: 'mock.evm.simulation' })
+  cy.get('[data-testid="data-table"]', TIMEOUTS['mock.evm.contractRead']).should('exist')
 }
 
 export const submitBorrowClaim = () => {
-  getBorrowClaimSubmitButton().click(LOAD_TIMEOUT)
-  cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).contains(
+  getBorrowClaimSubmitButton().click(TIMEOUTS['ui.interaction'])
+  cy.get('[data-testid="toast-success"]', TIMEOUTS['mock.evm.confirmation']).contains(
     'Claimed rewards!',
-    TRANSACTION_LOAD_TIMEOUT,
+    TIMEOUTS['mock.evm.confirmation'],
   )
   return cy.get('[data-testid="loan-alert-error"]').should('not.exist')
 }

@@ -7,7 +7,7 @@ import {
   writeSupplyInput,
 } from './supply.helpers'
 
-export const submitWithdrawForm = () => submitSupplyForm('withdraw', 'Withdraw successful!')
+export const submitWithdrawForm = (isMocked = false) => submitSupplyForm('withdraw', 'Withdraw successful!', isMocked)
 
 /**
  * Fill in the withdraw form with the specified amount.
@@ -24,15 +24,17 @@ export function checkWithdrawDetailsLoaded({
   expectedButtonText = 'Withdraw',
   symbol = 'crvUSD',
   hasApi = true,
+  isMocked = false,
 }: {
   suppliedAssets: Decimal
   prevSuppliedAssets: Decimal
   expectedButtonText?: string
   symbol?: string
   hasApi?: boolean
+  isMocked?: boolean
 }) {
-  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi })
-  checkSupplySubmitButtonText('withdraw', expectedButtonText)
+  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi, isMocked })
+  checkSupplySubmitButtonText('withdraw', expectedButtonText, isMocked)
 }
 
 /**

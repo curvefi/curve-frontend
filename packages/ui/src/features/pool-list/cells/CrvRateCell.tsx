@@ -32,8 +32,7 @@ export const CrvRateCell = ({ pool, crvToken }: { pool: PoolRow; crvToken: PoolT
         <Box data-testid={range && 'pool-crv-rate-tooltip-trigger'}>
           {range ? (
             <TokenInfo
-              {...crvToken}
-              iconSize="mui-sm"
+              {...(crvToken ? { ...crvToken, iconSize: 'mui-sm' } : { icon: null })}
               iconPosition="right"
               iconAlignment="start"
               primary={
@@ -44,11 +43,10 @@ export const CrvRateCell = ({ pool, crvToken }: { pool: PoolRow; crvToken: PoolT
               secondary={
                 <span data-testid="pool-crv-rate-boosted">{formatCellValue(range.boostedRate, 'percent.rate')}</span>
               }
-              boldPrimary
               sx={{ justifyContent: 'end' }}
             />
           ) : (
-            <Typography variant="tableCellMBold">{formatCellValue(null, 'percent.rate')}</Typography>
+            <Typography variant="tableCellValue">{formatCellValue(null, 'percent.rate')}</Typography>
           )}
         </Box>
       </WithWrapper>

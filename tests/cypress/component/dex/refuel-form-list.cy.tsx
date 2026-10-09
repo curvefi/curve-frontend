@@ -24,19 +24,19 @@ describe('RefuelFormList', () => {
   it('shows empty projections until an amount is entered', () => {
     mountRefuelFormList(baseProps)
 
-    getActionValue('refuel-size-action-info').should('equal', '-')
-    getActionValue('refuel-weekly-action-info').should('equal', '-')
-    getActionValue('refuel-bi-weekly-action-info').should('equal', '-')
-    getActionValue('refuel-monthly-action-info').should('equal', '-')
+    getActionValue('refuel-size-action-info', 'ui.render').should('equal', '-')
+    getActionValue('refuel-weekly-action-info', 'ui.render').should('equal', '-')
+    getActionValue('refuel-bi-weekly-action-info', 'ui.render').should('equal', '-')
+    getActionValue('refuel-monthly-action-info', 'ui.render').should('equal', '-')
   })
 
   it('calculates the pool share and yearly projections from token amounts', () => {
     mountRefuelFormList({ ...baseProps, values: { tokenAAmount: '2', tokenBAmount: '3' } })
 
-    getActionValue('refuel-size-action-info').should('equal', '0.80%')
-    getActionValue('refuel-weekly-action-info').should('equal', '41.60%')
-    getActionValue('refuel-bi-weekly-action-info').should('equal', '20.80%')
-    getActionValue('refuel-monthly-action-info').should('equal', '9.60%')
+    getActionValue('refuel-size-action-info', 'ui.render').should('equal', '0.80%')
+    getActionValue('refuel-weekly-action-info', 'ui.render').should('equal', '41.60%')
+    getActionValue('refuel-bi-weekly-action-info', 'ui.render').should('equal', '20.80%')
+    getActionValue('refuel-monthly-action-info', 'ui.render').should('equal', '9.60%')
   })
 
   it('falls back when pricing or TVL data is unavailable', () => {
@@ -46,9 +46,9 @@ describe('RefuelFormList', () => {
       tokenBRate: constQ(undefined),
     })
 
-    getActionValue('refuel-size-action-info').should('be.undefined')
-    getActionValue('refuel-weekly-action-info').should('be.undefined')
-    getActionValue('refuel-bi-weekly-action-info').should('be.undefined')
-    getActionValue('refuel-monthly-action-info').should('be.undefined')
+    getActionValue('refuel-size-action-info', 'ui.render').should('be.undefined')
+    getActionValue('refuel-weekly-action-info', 'ui.render').should('be.undefined')
+    getActionValue('refuel-bi-weekly-action-info', 'ui.render').should('be.undefined')
+    getActionValue('refuel-monthly-action-info', 'ui.render').should('be.undefined')
   })
 })

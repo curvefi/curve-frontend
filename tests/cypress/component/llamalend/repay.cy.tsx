@@ -86,15 +86,16 @@ describe('RepayForm (mocked)', () => {
         )
 
         selectRepayToken({ ...token, hasLeverageManagement })
-        writeRepayLoanForm({ amount, waitForRoutes: leverage })
+        writeRepayLoanForm({ amount, waitForRoutes: leverage, isMocked: true })
         checkRepayDetailsLoaded({
           debt: { current: currentDebt, future: futureDebt, symbol: 'crvUSD' },
           leverageEnabled: leverage,
           controllerApproved,
+          isMocked: true,
         })
 
         cy.then(assertPreSubmit)
-        submitRepayForm({ controllerApproved }).then(assertSubmit)
+        submitRepayForm({ controllerApproved, isMocked: true }).then(assertSubmit)
       })
     },
   )

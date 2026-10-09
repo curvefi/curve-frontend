@@ -1,6 +1,6 @@
 import { oneOf } from '@cy/support/generators'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { DISCLAIMER_TABS, TABS as LEGAL_PAGE_TABS } from '@evm-ui/widgets/Legal/constants'
-import { LOAD_TIMEOUT } from '../ui'
 
 export const oneLegalPageTab = () => oneOf(...LEGAL_PAGE_TABS.map(tab => tab.value))
 export const oneDisclaimersSubTabs = () => oneOf(...DISCLAIMER_TABS.map(tab => tab.value))
@@ -10,7 +10,7 @@ const isTabClickable = ($tab: JQuery) => window.getComputedStyle($tab[0]).pointe
 export const clickTab = (
   testIdPrefix: string,
   value: string,
-  options: Partial<Cypress.Timeoutable> = LOAD_TIMEOUT,
+  options: Partial<Cypress.Timeoutable> = TIMEOUTS['ui.interaction'],
   // Existing callers force clicks because the phishing banner can cover tabs.
   clickOptions: Partial<Cypress.ClickOptions> = { force: true },
 ) => {

@@ -29,7 +29,8 @@ import {
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import { getLib } from '@evm-ui/features/connect-wallet'
 import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -50,12 +51,12 @@ const HAS_API = oneBool()
  */
 const waitUntilLendMarketUpdated = (id: string, expectedDebt: Decimal, marketType: MarketType) => {
   if (marketType !== MarketType.Lend) return // mint markets don't have cache
-  cy.then(LOAD_TIMEOUT, () =>
+  cy.then(TIMEOUTS['evm.contractRead'], () =>
     waitFor(async () => {
       const state = await getLib('llamaApi')?.getLendMarket(id).userPosition.userState()
       if (state && BigNumber(expectedDebt).isEqualTo(state.debt)) return true
       console.warn(`Lend market ${id} debt not updated to ${expectedDebt} yet (state=${JSON.stringify(state)})`)
-    }, LOAD_TIMEOUT),
+    }, TIMEOUTS['evm.contractRead']),
   )
 }
 

@@ -7,8 +7,9 @@ import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { SearchField } from '@ui/components/SearchField'
+import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { toValue } from '@ui/features/queries/util'
-import type { TokenOption as Option } from '@ui/features/select-token/types'
+import { TOKEN_CATEGORY_LABELS, TokenCategory, type TokenOption as Option } from '@ui/features/select-token/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useFuzzySearch } from '@ui/hooks/useFuzzySearch'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -71,6 +72,18 @@ export const TokenList = ({
 
   const tokensSearched = useFuzzySearch(tokens, search, ['symbol', 'address'])
 
+  const [category, setCategory] = useState<TokenCategory>('all')
+  const categories = useMemo(() => new Set(notFalsy('all', ...tokens.map(token => token.category))), [tokens])
+  const categoriesTabs = useMemo(
+    () => [...categories].map(category => ({ value: category, label: TOKEN_CATEGORY_LABELS[category] })),
+    [categories],
+  )
+
+  const tokensCategorized = useMemo(
+    () => (category == 'all' ? tokensSearched : tokensSearched.filter(token => token.category === category)),
+    [category, tokensSearched],
+  )
+
   /**
    * Filters and sorts tokens that the user owns (has a balance > 0).
    *
@@ -83,7 +96,7 @@ export const TokenList = ({
   const myTokens = useMemo(() => {
     if (disableMyTokens) return []
 
-    const balanceTokens = tokensSearched.filter(token => +(toValue(balances?.[token.address]) ?? 0) > 0)
+    const balanceTokens = tokensCategorized.filter(token => +(toValue(balances?.[token.address]) ?? 0) > 0)
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
@@ -98,7 +111,7 @@ export const TokenList = ({
     }
 
     return balanceTokens
-  }, [disableMyTokens, tokensSearched, disableSorting, balances, tokenPrices])
+  }, [disableMyTokens, tokensCategorized, disableSorting, balances, tokenPrices])
 
   /**
    * Filters tokens to show only those with significant value.
@@ -137,13 +150,15 @@ export const TokenList = ({
   const allTokens = useMemo(() => {
     const allTokensBase = notFalsy(
       disableMyTokens
-        ? tokensSearched
-        : tokensSearched.filter(token => +(toValue(balances?.[token.address]) ?? 0) === 0),
+        ? tokensCategorized
+        : tokensCategorized.filter(token => +(toValue(balances?.[token.address]) ?? 0) === 0),
 
+      // Add tokens that have balance but aren't in the preview (dust tokens)
+      // When showPreviewMy is false, those dust tokens should be in the myTokens section
+      // However, TokenSection falls back to showing all myTokens when the preview is empty,
+      // so only a nonempty preview can leave hidden dust to add to the volume section.
       showPreviewMy &&
-        // Add tokens that have balance but aren't in the preview (dust tokens)
-        // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
-        // When showPreviewMy is false, those dust tokens should be in the myTokens section
+        previewMy.length > 0 &&
         myTokens.filter(token => !previewMy.some(previewToken => previewToken.address === token.address)),
     ).flat()
     return disableSorting
@@ -151,7 +166,7 @@ export const TokenList = ({
       : allTokensBase.toSorted(
           (a, b) => (volumes[b.address] ?? 0) - (volumes[a.address] ?? 0) || a.symbol.localeCompare(b.symbol),
         )
-  }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy, volumes])
+  }, [disableMyTokens, tokensCategorized, showPreviewMy, myTokens, disableSorting, balances, previewMy, volumes])
 
   /**
    * Filters tokens to show in the preview of "All tokens" section.
@@ -168,6 +183,15 @@ export const TokenList = ({
       {showFavorites && <FavoriteTokens tokens={favorites} onToken={onToken} />}
       {showFavorites && children && <Divider />}
       {children}
+      {categories.size > 1 && ( // categories always contain at least 'all'.
+        <TabsSwitcher
+          variant="underlined"
+          size="small"
+          value={category}
+          onChange={setCategory}
+          options={categoriesTabs}
+        />
+      )}
       {error ? (
         <ErrorAlert error={error} />
       ) : myTokens.length + allTokens.length === 0 ? (

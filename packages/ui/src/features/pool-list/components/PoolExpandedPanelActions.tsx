@@ -10,7 +10,7 @@ export const PoolExpandedPanelActions = ({
 }: {
   poolAddress: Address
   path: string
-  formatAddress: (address: string) => string
+  formatAddress: (address: Address) => string
 }) => (
   <ExpandedPanelActions
     actions={[

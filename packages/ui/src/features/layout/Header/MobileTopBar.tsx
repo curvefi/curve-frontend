@@ -1,6 +1,5 @@
 import Stack from '@mui/material/Stack'
-import { ChainSwitcher } from '@ui/features/layout/switch-chain'
-import type { ChainSwitcherProps } from '@ui/features/layout/switch-chain/ui/ChainSwitcher'
+import { ChainSwitcher, type ChainSwitcherProps } from '@ui/features/layout/switch-chain'
 import { HeaderLogo } from './HeaderLogo'
 import { MenuToggleButton } from './MenuToggleButton'
 

@@ -1,4 +1,3 @@
-import { sum } from 'lodash'
 import { getAddress } from 'viem'
 import { Alerts, getVyperExploitedAlert } from '@/dex/hooks/usePoolAlert'
 import { TOKEN_ALERTS } from '@/dex/hooks/useTokenAlert'
@@ -7,11 +6,10 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
-import { type Nullish, fromEntries, maybe, maybes } from '@primitives/objects.utils'
+import { type Nullish, fromEntries, maybe } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
-import { getAprCampaigns, getCrvAprRange } from '@ui/features/pool-list/cells/utils'
 import type { PoolAlerts, PoolRow, PoolRowData } from '@ui/features/pool-list/types'
-import { poolToRowData } from '@ui/features/pool-list/utils'
+import { getPoolRates, poolToRowData } from '@ui/features/pool-list/utils'
 import { isVyperVulnerablePool } from './alerts'
 
 /** Maps hydrated Curve pools (PoolTemplate) into the source-independent pool-list model. */
@@ -40,29 +38,16 @@ export const enrichPoolRow = (
   campaignsByAddress: Record<string, CampaignRewards[]> | Nullish,
   userPosition: PoolRow['userPosition'],
 ): PoolRow => {
-  const campaigns = campaignsByAddress?.[pool.address.toLowerCase()] ?? []
-  const extraRewardsTotalApr = sum(pool.extraRewardsApr.filter(reward => reward.apr > 0).map(reward => reward.apr))
-  const campaignRewardsApr = sum(
-    getAprCampaigns({ campaigns }).flatMap(({ reward }) => (reward?.type === 'apr' ? [reward.value] : [])),
-  )
-  const rewardsApr = extraRewardsTotalApr + campaignRewardsApr
-  const crv = pool.gauge?.isKilled ? 0 : pool.crvApr
-  const netApr = sum([pool.baseDailyApr, crv, rewardsApr])
-  const crvRange = pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)
+  const campaigns = campaignsByAddress?.[pool.address.toLowerCase()]
   return {
     ...pool,
+    ...getPoolRates(pool, campaigns),
     chainId,
     blockchainId,
     campaigns,
     hasVyperVulnerability: isVyperVulnerablePool(chainId, pool.address),
     url: getPath({ network: blockchainId }, `${DEX_ROUTES.PAGE_POOLS}/${pool.address}`),
     userPosition,
-    extraRewardsTotalApr,
-    campaignRewardsApr,
-    rewardsApr,
-    incentivesApr: sum([crv, rewardsApr]),
-    netApr,
-    netAprBoosted: maybes([netApr, crvRange], (net, range) => net - range.unboostedRate + range.boostedRate),
   }
 }
 
