@@ -112,7 +112,7 @@ export function createVirtualTestnet(
   opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions> & { chain_id?: number },
 ) {
   let vnet: CreateVirtualTestnetResponse
-  let shouldDeleteVnet = true
+  let shouldDeleteVnet = false
 
   before(() => {
     const uuid = oneVnetId()
