@@ -1,6 +1,4 @@
-import { identity } from 'lodash'
 import { useEffect, useMemo } from 'react'
-import { useShallow } from 'zustand/react/shallow'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { useDepositPriceImpact } from '@/stellar/features/deposit/useDepositPriceImpact'
@@ -55,25 +53,21 @@ export function useDepositForm(poolParams: PoolQuery) {
   const { formState, reset } = form
 
   useFormSync(form, { decimals: decimals.data, supply: supply.data })
-  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
+  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues])
 
-  // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
-  const values = useShallow(identity<DepositForm>)(form.watchValues())
+  const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce<DepositFormQuery, PoolAmountField>(
-    useMemo(
-      () => ({
-        ...values,
-        network,
-        pool,
-        account,
-        tokenCount,
-        decimals: decimals.data,
-        slippage: values.slippage,
-        supply: supply.data,
-        maxAmounts: maxAmounts.map(q => q.data),
-      }),
-      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts],
-    ),
+    {
+      ...values,
+      network,
+      pool,
+      account,
+      tokenCount,
+      decimals: decimals.data,
+      slippage: values.slippage,
+      supply: supply.data,
+      maxAmounts: maxAmounts.map(q => q.data),
+    },
     userDefaultValues,
   )
   const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })

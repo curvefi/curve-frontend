@@ -36,10 +36,7 @@ const useBridgeParams = ({
   userAddress,
   amount,
 }: BridgeForm & { chainId: number | undefined; userAddress: Address | undefined }) =>
-  useFormDebounce(
-    useMemo(() => ({ chainId, userAddress, amount }), [chainId, userAddress, amount]),
-    bridgeQueryDefaults,
-  )
+  useFormDebounce({ chainId, userAddress, amount }, bridgeQueryDefaults)
 
 const userDefaultValues = { fromChainId: undefined, amount: undefined }
 

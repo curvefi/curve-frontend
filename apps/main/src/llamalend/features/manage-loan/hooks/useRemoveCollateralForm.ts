@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useRemoveCollateralMutation } from '@/llamalend/mutations/remove-collateral.mutation'
 import {
   invalidateMaxRemovableCollateral,
@@ -45,16 +44,13 @@ export const useRemoveCollateralForm = <
   const values = form.watchValues()
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): CollateralParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        userCollateral: values.userCollateral,
-        maxCollateral: values.maxCollateral,
-      }),
-      [chainId, marketId, userAddress, values.userCollateral, values.maxCollateral],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      userCollateral: values.userCollateral,
+      maxCollateral: values.maxCollateral,
+    } satisfies CollateralParams<ChainId>,
     userDefaultValues,
   )
 

@@ -58,35 +58,20 @@ const useBorrowMoreParams = <ChainId extends LlamaChainId>({
   leverageProviders: readonly RouteProvider[] | undefined
 }) =>
   useFormDebounce(
-    useMemo(
-      () => ({
-        chainId,
-        marketId,
-        userAddress,
-        userCollateral,
-        userBorrowed,
-        debt,
-        maxDebt,
-        slippage,
-        leverageEnabled,
-        routeId,
-        slippageType: LEVERAGE,
-        leverageProviders,
-      }),
-      [
-        chainId,
-        marketId,
-        userAddress,
-        userCollateral,
-        userBorrowed,
-        debt,
-        maxDebt,
-        slippage,
-        leverageEnabled,
-        routeId,
-        leverageProviders,
-      ],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      userCollateral,
+      userBorrowed,
+      debt,
+      maxDebt,
+      slippage,
+      leverageEnabled,
+      routeId,
+      slippageType: LEVERAGE,
+      leverageProviders,
+    },
     userDefaultValues,
   )
 

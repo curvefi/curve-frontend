@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
@@ -51,36 +50,20 @@ export function useSwapForm(poolParams: PoolQuery) {
   const maxOutput = maybes([reserves.data?.[toIndex], decimals.data?.[toIndex]], fromWei)
 
   const [params, isDebouncing] = useFormDebounce<SwapFormQuery, 'inputAmount' | 'outputAmount' | 'editedSide'>(
-    useMemo(
-      () => ({
-        network,
-        pool,
-        account,
-        inputAmount: values.inputAmount,
-        outputAmount: values.outputAmount,
-        fromIndex,
-        toIndex,
-        editedSide,
-        decimals: decimals.data,
-        maxAmount,
-        maxOutput,
-        slippage: values.slippage,
-      }),
-      [
-        network,
-        pool,
-        account,
-        values.inputAmount,
-        values.outputAmount,
-        fromIndex,
-        toIndex,
-        editedSide,
-        decimals.data,
-        maxAmount,
-        maxOutput,
-        values.slippage,
-      ],
-    ),
+    {
+      network,
+      pool,
+      account,
+      inputAmount: values.inputAmount,
+      outputAmount: values.outputAmount,
+      fromIndex,
+      toIndex,
+      editedSide,
+      decimals: decimals.data,
+      maxAmount,
+      maxOutput,
+      slippage: values.slippage,
+    },
     userDefaultValues,
   )
 

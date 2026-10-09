@@ -42,30 +42,17 @@ const useResetParams = <ChainId extends LlamaChainId>({
   resetAvailable,
 }: ResetForm & { chainId: ChainId; marketId: string | undefined; userAddress: Address | undefined }) =>
   useFormDebounce(
-    useMemo(
-      (): ResetParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        convertedBorrowed,
-        userBorrowed,
-        maxBorrowed,
-        maxTotalBorrowed,
-        minBorrowed,
-        resetAvailable,
-      }),
-      [
-        chainId,
-        marketId,
-        userAddress,
-        convertedBorrowed,
-        userBorrowed,
-        maxBorrowed,
-        maxTotalBorrowed,
-        minBorrowed,
-        resetAvailable,
-      ],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      convertedBorrowed,
+      userBorrowed,
+      maxBorrowed,
+      maxTotalBorrowed,
+      minBorrowed,
+      resetAvailable,
+    } satisfies ResetParams<ChainId>,
     userDefaultValues,
   )
 
