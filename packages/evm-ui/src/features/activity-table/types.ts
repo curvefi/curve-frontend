@@ -5,11 +5,15 @@ import type { AllPoolTrade, PoolLiquidityEvent } from '@curvefi/prices-api/pools
 import type { Timestamp } from '@curvefi/prices-api/timestamp'
 import type { Token } from '@primitives/address.utils'
 import type { Nullish } from '@primitives/objects.utils'
+import type { TokenPairAddresses } from '@ui/components/TokenIcon'
+
+/** A token of an activity row, whose address can be a token pair so its icon shows both tokens */
+export type ActivityToken = Omit<Token, 'address'> & { address: Token['address'] | TokenPairAddresses }
 
 /** A single token delta of an activity event, used to render one row per token */
 export type ActivityTokenDelta = {
   label: string
-  token: Token | undefined
+  token: ActivityToken | undefined
   blockchainId: Chain
   amount: number // positive when tokens go in, negative when they go out
   amountUsd: number | Nullish
@@ -17,12 +21,17 @@ export type ActivityTokenDelta = {
 }
 
 // LLAMMA Types (for lending/crvusd markets)
-export type MarketTradeRow = LlammaTrade & { chainId: number; blockchainId: Chain }
+export type MarketTradeRow = Omit<LlammaTrade, 'tokenBought' | 'tokenSold'> & {
+  chainId: number
+  blockchainId: Chain
+  tokenBought: ActivityToken
+  tokenSold: ActivityToken
+}
 export type MarketEventRow = LlammaEvent & {
   chainId: number
   blockchainId: Chain
-  collateralToken: Token | undefined
-  borrowToken: Token | undefined
+  collateralToken: ActivityToken | undefined
+  borrowToken: ActivityToken | undefined
 }
 
 export type VaultActivityProps = {
@@ -32,7 +41,11 @@ export type VaultActivityProps = {
   vaultToken: Token | undefined
 }
 
-export type VaultActivityRow = VaultEvent & VaultActivityProps
+export type VaultActivityRow = VaultEvent &
+  Omit<VaultActivityProps, 'borrowToken' | 'vaultToken'> & {
+    borrowToken: ActivityToken | undefined
+    vaultToken: ActivityToken | undefined
+  }
 
 // Pool Types (for DEX pools)
 export type PoolTradeRow = AllPoolTrade & { chainId: number; blockchainId: Chain }

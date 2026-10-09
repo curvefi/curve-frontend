@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { getAddress, zeroAddress } from 'viem'
 import {
+  getAddressOrPair,
   getAmmAddress,
   getControllerAddress,
   getGaugeAddress,
@@ -12,6 +13,7 @@ import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Chain } from '@curvefi/prices-api'
 import { evmAddressDisplay } from '@evm-ui/utils'
 import { scanAddressPath } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
@@ -46,7 +48,7 @@ type AddressItem = {
 
 type MarketContractsProps = {
   chainId: IChainId
-  blockchainId: string
+  blockchainId: Chain
   market: MarketTemplate | undefined
   apiMarket: QueryProp<LlamaMarket>
 }
@@ -69,7 +71,7 @@ const AssetRow = ({
 }: {
   title: ReactNode
   chainId: number
-  blockchainId: string
+  blockchainId: Chain
   token: { symbol?: string; address?: Address } | undefined
   testId: string
 }) => {
@@ -82,7 +84,7 @@ const AssetRow = ({
         <TokenLabel
           blockchainId={blockchainId}
           tooltip={token?.symbol}
-          address={address}
+          address={getAddressOrPair(blockchainId, address)}
           label={token?.symbol ?? ''}
           size="mui-md"
         />

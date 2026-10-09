@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { getAddressOrPair } from '@/llamalend/llama.utils'
 import type { LendingPosition } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarketRow, type MarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
@@ -175,7 +176,7 @@ export const PriceCell = ({
           amount={value}
           amountUsd={usdValue}
           blockchainId={asset.blockchainId}
-          tokenAddress={asset.address}
+          tokenAddress={getAddressOrPair(asset.blockchainId, asset.address)}
           amountLoading={usesBorrowStats && isLoadingStats}
           usdLoading={isPriceLoading}
           tooltipTitle={tooltipTitle}

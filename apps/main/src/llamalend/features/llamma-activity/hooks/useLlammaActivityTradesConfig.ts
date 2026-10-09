@@ -1,3 +1,4 @@
+import { getActivityToken } from '@/llamalend/llama.utils'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
 import {
@@ -34,7 +35,15 @@ export const useLlammaActivityTradesConfig = ({
 
   // Transform trades data with block explorer URLs
   const tradesWithUrlsQuery = mapQuery(tradesQuery, ({ trades }) =>
-    maybe(blockchainId, blockchainId => trades.map((trade: LlammaTrade) => ({ ...trade, chainId, blockchainId }))),
+    maybe(blockchainId, blockchainId =>
+      trades.map((trade: LlammaTrade) => ({
+        ...trade,
+        chainId,
+        blockchainId,
+        tokenBought: getActivityToken(blockchainId, trade.tokenBought) ?? trade.tokenBought,
+        tokenSold: getActivityToken(blockchainId, trade.tokenSold) ?? trade.tokenSold,
+      })),
+    ),
   )
 
   const table = useCurveTable({

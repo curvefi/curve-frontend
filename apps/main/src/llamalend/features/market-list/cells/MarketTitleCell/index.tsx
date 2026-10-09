@@ -1,4 +1,5 @@
 import { getAddress } from 'viem'
+import { getTokenOrPair } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
@@ -27,7 +28,10 @@ export const MarketTitleCell = ({
     <Stack direction="row" sx={{ height: Height.row }}>
       {market.userHasPositions && <UserMarketPositionIndicator market={market} />}
       <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
-        <TokenIcons blockchainId={market.blockchainId} tokens={[collateral, borrowed]} />
+        <TokenIcons
+          blockchainId={market.blockchainId}
+          tokens={[getTokenOrPair(market.blockchainId, collateral), getTokenOrPair(market.blockchainId, borrowed)]}
+        />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <TableRowTitle
