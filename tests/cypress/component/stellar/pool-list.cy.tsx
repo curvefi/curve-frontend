@@ -26,7 +26,6 @@ const mountStellarApp = (path: string) => {
   cy.get('[data-testid="data-table"]', TIMEOUTS['ui.render']).should('be.visible')
 }
 
-
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`Stellar pool list (${breakpoint}, ${width}x${height})`, () => {
     beforeEach(() => {
