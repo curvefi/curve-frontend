@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { UserPositionHistoryColumnId } from '../columns'
+import { UserPositionHistoryColumnId } from '../columns/columns.enum'
 
 /**
  * Create a map of column visibility for the User Position History table on mobile devices.
