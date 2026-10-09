@@ -21,14 +21,12 @@ import {
   TvlCell,
   UtilizationCell,
 } from '../cells'
-import {
-  CollateralBorrowHeaderTooltipContent,
-  LendRateHeaderTooltipContent,
-  LiquidityUsdHeaderTooltipContent,
-  NetBorrowAprHeaderTooltipContent,
-  TvlHeaderTooltipContent,
-  UtilizationHeaderTooltipContent,
-} from '../header-tooltips'
+import { CollateralBorrowHeaderTooltipContent } from '../header-tooltips/CollateralBorrowHeaderTooltipContent'
+import { LendRateHeaderTooltipContent } from '../header-tooltips/LendRateHeaderTooltipContent'
+import { LiquidityUsdHeaderTooltipContent } from '../header-tooltips/LiquidityUsdHeaderTooltipContent'
+import { NetBorrowAprHeaderTooltipContent } from '../header-tooltips/NetBorrowAprHeaderTooltipContent'
+import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
+import { UtilizationHeaderTooltipContent } from '../header-tooltips/UtilizationHeaderTooltipContent'
 import {
   getUserBorrowedUsd,
   getUserCollateralUsd,
