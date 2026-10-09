@@ -1,6 +1,7 @@
 import { getAddress } from 'viem'
-import type { MarketToken } from '@/llamalend/llama.utils'
+import { getAddressOrPair, type MarketToken } from '@/llamalend/llama.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
+import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { getPointsCampaignRows, type PointsCampaignRow } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 import type { TokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
@@ -40,7 +41,7 @@ export const buildBorrowRateBreakdown = ({
 }: {
   rate: BorrowRate
   chainId: number
-  blockchainId: string
+  blockchainId: BlockchainId
   collateralToken: MarketToken | undefined
   collateralPrice: QueryProp<number>
 }): RateBreakdownData => {
@@ -51,7 +52,7 @@ export const buildBorrowRateBreakdown = ({
     maybes([rate.rebasingYield, collateralToken], (rebasingYield, collateralToken) => ({
       source: {
         tokenInfo: {
-          address: collateralToken.address,
+          address: getAddressOrPair(blockchainId, collateralToken.address),
           blockchainId,
           iconPosition: 'left' as const,
           primary: collateralToken.symbol,
@@ -103,7 +104,7 @@ export const buildSupplyRateBreakdown = ({
 }: {
   rate: SupplyRate
   chainId: number
-  blockchainId: string
+  blockchainId: BlockchainId
   borrowToken: MarketToken | undefined
   prices: TokenUsdRates
   crvPrice: QueryProp<number>
@@ -129,7 +130,7 @@ export const buildSupplyRateBreakdown = ({
     maybes([rate.rebasingYield, borrowToken], (rebasingYield, borrowToken) => ({
       source: {
         tokenInfo: {
-          address: getAddress(borrowToken.address),
+          address: getAddressOrPair(blockchainId, getAddress(borrowToken.address)),
           blockchainId,
           iconPosition: 'left' as const,
           primary: borrowToken.symbol,

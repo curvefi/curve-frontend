@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import { TokenIcon, type Size } from '@ui/components/TokenIcon'
+import { TokenIcon, type Size, type TokenPairAddresses } from '@ui/components/TokenIcon'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -16,8 +16,8 @@ type TokenAmountProps = {
   amount: number | undefined
   amountUsd: number | Nullish
   blockchainId?: string
-  /** Token contract address used to render the token icon. */
-  tokenAddress?: Address
+  /** Token contract address used to render the token icon, or the addresses of a token pair. */
+  tokenAddress?: Address | TokenPairAddresses
   amountLoading?: boolean
   usdLoading?: boolean
   tooltipTitle?: ReactNode

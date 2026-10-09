@@ -27,7 +27,7 @@ type TokenCellProps = {
 
 /** Displays token information with copy-address and optional explorer interactions. */
 export const TokenCell = ({ source, address, explorerUrl, endAdornment, displayAddress }: TokenCellProps) => {
-  address = address ?? ('address' in source ? source.address : undefined)
+  address = address ?? ('address' in source && typeof source.address === 'string' ? source.address : undefined)
   const copyAddress = useCopyToClipboard({ copyText: address })
 
   return (

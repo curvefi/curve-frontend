@@ -1,4 +1,5 @@
 import { noop, type Dictionary } from 'lodash'
+import { getAddressOrPair } from '@/llamalend/llama.utils'
 import Stack from '@mui/material/Stack'
 import { SelectableChip } from '@ui/components/SelectableChip'
 import { TokenLabel } from '@ui/components/TokenLabel'
@@ -22,7 +23,15 @@ const { Spacing } = SizesAndSpaces
  */
 const Token = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDetails> }) => {
   const { blockchainId: chain, address = null } = tokens[symbol] ?? {}
-  return <TokenLabel blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="xl" />
+  return (
+    <TokenLabel
+      blockchainId={chain}
+      tooltip={symbol}
+      address={getAddressOrPair(chain, address)}
+      label={symbol}
+      size="xl"
+    />
+  )
 }
 
 /**

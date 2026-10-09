@@ -1,4 +1,4 @@
-import type { MarketToken } from '@/llamalend/llama.utils'
+import { getAddressOrPair, type MarketToken } from '@/llamalend/llama.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { MarketBorrower, VaultDepositor } from '@curvefi/prices-api/llamalend'
 import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
@@ -34,7 +34,7 @@ export const TokenHeader = ({
 }) => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
     {label}
-    <TokenIcon blockchainId={blockchainId} address={tokenAddress} size="mui-md" />
+    <TokenIcon blockchainId={blockchainId} address={getAddressOrPair(blockchainId, tokenAddress)} size="mui-md" />
   </Stack>
 )
 
@@ -54,13 +54,19 @@ export const BorrowerExpandedPanel: ExpandedPanelComponent<BorrowerRow> = ({ row
       )}
       value={borrower.collateral}
       notional={constQ({ value: borrower.collateralUsd, unit: 'dollar' })}
-      icon={{ blockchainId: borrower.blockchainId, token: borrower.collateralToken }}
+      icon={{
+        blockchainId: borrower.blockchainId,
+        token: { address: getAddressOrPair(borrower.blockchainId, borrower.collateralToken?.address) },
+      }}
     />
     <MetricExpandedPanel
       label={notFalsy(t`Loan`, borrower.borrowToken?.symbol && `(${borrower.borrowToken.symbol})`).join(' ')}
       value={borrower.debt}
       notional={constQ({ value: borrower.debtUsd, unit: 'dollar' })}
-      icon={{ blockchainId: borrower.blockchainId, token: borrower.borrowToken }}
+      icon={{
+        blockchainId: borrower.blockchainId,
+        token: { address: getAddressOrPair(borrower.blockchainId, borrower.borrowToken?.address) },
+      }}
     />
     <MetricExpandedPanel label={t`Health`} value={borrower.health} valueOptions={{ unit: 'percentage' }} />
   </MetricsGrid>
@@ -72,7 +78,10 @@ export const SupplierExpandedPanel: ExpandedPanelComponent<SupplierRow> = ({ row
       label={notFalsy(t`Supplied`, supplier.borrowToken?.symbol && `(${supplier.borrowToken.symbol})`).join(' ')}
       value={supplier.assets}
       notional={maybe(supplier.assetsUsd, value => constQ({ value, unit: 'dollar' as const }))}
-      icon={{ blockchainId: supplier.blockchainId, token: supplier.borrowToken }}
+      icon={{
+        blockchainId: supplier.blockchainId,
+        token: { address: getAddressOrPair(supplier.blockchainId, supplier.borrowToken?.address) },
+      }}
     />
   </MetricsGrid>
 )

@@ -1,4 +1,5 @@
 import { ReactElement } from 'react'
+import { getAddressOrPair } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { Chain } from '@curvefi/prices-api'
@@ -31,7 +32,12 @@ const Currency = ({
 }) => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
     {formatNumber(balance, 'token.compact')}
-    <TokenIcon blockchainId={blockchainId} address={address} tooltip={symbol} size="mui-sm" />
+    <TokenIcon
+      blockchainId={blockchainId}
+      address={getAddressOrPair(blockchainId, address)}
+      tooltip={symbol}
+      size="mui-sm"
+    />
   </Stack>
 )
 

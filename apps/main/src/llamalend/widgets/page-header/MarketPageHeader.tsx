@@ -70,7 +70,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
             {collateralToken && borrowToken && (
               <TokenIcons
                 blockchainId={blockchainId}
-                tokens={[getTokenOrPair(blockchainId, collateralToken), borrowToken]}
+                tokens={[getTokenOrPair(blockchainId, collateralToken), getTokenOrPair(blockchainId, borrowToken)]}
                 overflowMode="stack"
               />
             )}
