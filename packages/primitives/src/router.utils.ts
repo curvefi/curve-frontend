@@ -35,3 +35,20 @@ export type RouterRouteResponse = {
   isStableswapRoute?: boolean
   tx?: TransactionData
 }
+
+/** Concentrated-liquidity position protocols the migration bundle can redeem. */
+export const ClmmProtocols = ['uniswap-v3'] as const
+export type ClmmProtocol = (typeof ClmmProtocols)[number]
+
+/** Amounts are raw token units; `approval` is the NFT approval to send first, when one is missing. */
+export type ClmmMigrationResponse = {
+  routerFeePercentage: Decimal
+  amountOut: Decimal
+  minAmountOut: Decimal
+  gas: Decimal
+  tx: TransactionData
+  approval: { to: Address; data: Hex } | null
+}
+
+/** USD values from DefiLlama; `volumeUsd7d` is null when DefiLlama has no volume for the pool. */
+export type UniswapV3PoolStats = { tvlUsd: number; volumeUsd7d: number | null }

@@ -40,11 +40,7 @@ export type DataRowProps<TData extends RowData> = {
   rowHeight?: DataTableRowHeight
 }
 
-const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
-  // ignore clicks on elements that should be clickable inside the row
-  if (hasParentWithClass(target, CLICKABLE_IN_ROW_CLASS, { untilTag: 'TR' })) {
-    return
-  }
+const navigate = (url: string, routerNavigate: (href: string) => void) => {
   if (url.startsWith('http')) {
     location.href = url // external link
   } else {
@@ -64,12 +60,19 @@ export const DataRow = <TData extends RowData>({
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const push = useNavigate()
-  const href = table.options.meta?.getRowHref?.(row.original)
+  const { getRowHref, onRowClick, isRowSelected } = table.options.meta ?? {}
+  const href = getRowHref?.(row.original)
+  const isSelected = !!isRowSelected?.(row.original)
   const hasExpansionRow = isMobile && !!expandedPanel
-  const isInteractive = !!href || hasExpansionRow
-  const onClickDesktop = useCallback(
-    (e: MouseEvent<HTMLTableRowElement>) => href && onCellClick(e.target, href, push),
-    [href, push],
+  const isInteractive = !!href || !!onRowClick || hasExpansionRow
+  const onClickRow = useCallback(
+    (e: MouseEvent<HTMLTableRowElement>) => {
+      // ignore clicks on elements that should be clickable inside the row
+      if (hasParentWithClass(e.target, CLICKABLE_IN_ROW_CLASS, { untilTag: 'TR' })) return
+      if (onRowClick) onRowClick(row.original)
+      else if (href) navigate(href, push)
+    },
+    [href, onRowClick, row.original, push],
   )
   const visibleCells = row.getVisibleCells()
 
@@ -89,6 +92,7 @@ export const DataRow = <TData extends RowData>({
               verticalAlign,
               transition: `border-bottom ${TRANSITION_FUNCTION}`,
               [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Default.Secondary },
+              ...(isSelected && { '& td, & th': { backgroundColor: t => t.design.Table.Row.Selected } }),
               ...(isInteractive && {
                 [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
                   opacity: { mobile: 1, desktop: 0 },
@@ -104,12 +108,19 @@ export const DataRow = <TData extends RowData>({
                 },
               }),
             }),
-            [isInteractive, verticalAlign, rowHeight],
+            [isInteractive, isSelected, verticalAlign, rowHeight],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
+          aria-selected={isRowSelected && isSelected}
           // eslint-disable-next-line local/no-router-navigate-on-click -- A `<tr>` cannot be a link.
-          onClick={isMobile ? () => row.toggleExpanded() : href ? onClickDesktop : undefined}
+          onClick={
+            isMobile && (hasExpansionRow || !onRowClick)
+              ? () => row.toggleExpanded()
+              : href || onRowClick
+                ? onClickRow
+                : undefined
+          }
         >
           {visibleCells.map((cell, index) => (
             <DataCell
