@@ -29,7 +29,7 @@ import {
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { decimalSum } from '@ui/lib/decimal'
 
 const WITHDRAW_LP_AMOUNT = '0.003' satisfies Decimal

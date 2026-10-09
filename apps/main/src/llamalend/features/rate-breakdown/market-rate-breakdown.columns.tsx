@@ -1,5 +1,5 @@
 import { getAddress } from 'viem'
-import { TokenPriceCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+import { TokenPriceCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TokenPriceCell'
 import { shortenAddress } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'

@@ -7,7 +7,7 @@ import { getIsMobileFormDrawer } from '@ui/features/form-context/FormPlacementCo
 import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 import { FormSkeleton } from '@ui/features/forms/tabs/FormSkeleton'
 import { useLayoutStore } from '@ui/features/layout/store'
-import { mapBreakpoints } from '@ui/features/themes/basic-theme/basic-theme'
+import { mapBreakpoints } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { PAGE_SPACING } from './constants'

@@ -10,7 +10,7 @@ import { useLlamaMarkets, type LlamaMarketsResult } from '@/llamalend/queries/ma
 import { resetMintMarkets, resetAllUserMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
 import type { Address } from '@primitives/address.utils'
 import { useMappedQuery } from '@ui/features/queries/util'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 
 const EMPTY_MARKETS: LlamaMarketsResult['markets'] = []
 

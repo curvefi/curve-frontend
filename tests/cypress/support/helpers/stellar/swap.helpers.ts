@@ -7,7 +7,7 @@ import { formatNumber } from '@primitives/number.utils'
 import { range } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapSide } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { decimalDiv, decimalMinus } from '@ui/lib/decimal'
 import { formatToken } from '@ui/lib/tokens'
 

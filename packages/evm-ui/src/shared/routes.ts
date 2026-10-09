@@ -7,7 +7,7 @@ import {
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import { recordValues } from '@primitives/objects.utils'
 import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
-import type { ChainListOption } from '@ui/features/layout/switch-chain/ui/ChainList'
+import type { ChainListOption } from '@ui/features/layout/switch-chain/ChainList'
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 

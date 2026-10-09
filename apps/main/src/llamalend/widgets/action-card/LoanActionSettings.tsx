@@ -1,6 +1,6 @@
 import { LEVERAGE } from '@/llamalend/constants'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
+import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider/RouteProvidersAccordion'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'

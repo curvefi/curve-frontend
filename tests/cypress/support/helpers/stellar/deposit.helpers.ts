@@ -18,7 +18,7 @@ import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { fromEntries } from '@primitives/objects.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { decimalMinus, decimalMultiply, decimalSum, toWei } from '@ui/lib/decimal'
 
 export const BASE_DEPOSIT_AMOUNT = '0.01' satisfies Decimal

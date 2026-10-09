@@ -11,7 +11,7 @@ import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { cyMap } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 
 export const TEST_NETWORK = 'stellar-testnet'
 

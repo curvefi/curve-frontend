@@ -8,7 +8,7 @@ import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { decimalMinus, decimalSum, fromWei } from '@ui/lib/decimal'
 
 export const fetchWithdrawState = async (pool: StellarContract, config: TestnetConfig) => {
