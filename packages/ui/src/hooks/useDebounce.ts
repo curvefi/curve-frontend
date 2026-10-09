@@ -1,5 +1,5 @@
 import { isEqual, pick } from 'lodash'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { objectKeys } from '@primitives/objects.utils'
 import { Duration } from '@ui/features/themes/design/0_primitives'
@@ -101,7 +101,7 @@ export function useFormDebounce<T extends object, TDefaultKey extends keyof T>(
 
   const isDebouncing = !isEqual(debouncedValue, valuesToDebounce)
 
-  const value = useMemo(() => ({ ...values, ...debouncedValue }), [values, debouncedValue])
+  const value = useShallow((values: T) => ({ ...values, ...debouncedValue }))(values)
 
   return [value, isDebouncing] as const
 }
