@@ -14,6 +14,7 @@ import { TableRowTitle } from '@ui/features/tables/TableRowTitle'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
+import { getTokenOrPairSymbol } from '@ui/lib/tokens'
 import { MarketBadges } from './MarketBadges'
 import { UserMarketPositionIndicator } from './UserMarketPositionIndicator'
 
@@ -24,18 +25,17 @@ export const MarketTitleCell = ({
 }: CellContext<CurveTableFeatures, LlamaMarketRow, string>) => {
   const isMobile = useIsMobile()
   const { collateral, borrowed } = market.assets
+  const collateralTokenOrPair = getTokenOrPair(market.blockchainId, collateral)
+  const borrowedTokenOrPair = getTokenOrPair(market.blockchainId, borrowed)
   return (
     <Stack direction="row" sx={{ height: Height.row }}>
       {market.userHasPositions && <UserMarketPositionIndicator market={market} />}
       <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
-        <TokenIcons
-          blockchainId={market.blockchainId}
-          tokens={[getTokenOrPair(market.blockchainId, collateral), getTokenOrPair(market.blockchainId, borrowed)]}
-        />
+        <TokenIcons blockchainId={market.blockchainId} tokens={[collateralTokenOrPair, borrowedTokenOrPair]} />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <TableRowTitle
-              title={[collateral.symbol, borrowed.symbol].join(' • ')}
+              title={[collateralTokenOrPair, borrowedTokenOrPair].map(getTokenOrPairSymbol).join(' • ')}
               url={market.url}
               testId={market.controllerAddress}
             />
