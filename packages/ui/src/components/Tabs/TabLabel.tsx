@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { WithWrapper } from '@ui/components/WithWrapper'
-import { TAB_SUFFIX_CLASS, TAB_TEXT_VARIANTS } from '@ui/features/themes/components/tabs'
+import { TAB_SUFFIX_CLASS, TAB_TEXT_VARIANTS } from '@ui/features/themes/components/mui-tabs'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { TabOption, TabsSwitcherProps } from './TabsSwitcher'
 

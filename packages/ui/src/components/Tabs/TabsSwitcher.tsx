@@ -10,7 +10,7 @@ import {
   HIDE_INACTIVE_BORDERS_CLASS,
   TABS_VARIANT_CLASSES,
   TabSwitcherVariants,
-} from '@ui/features/themes/components/tabs'
+} from '@ui/features/themes/components/mui-tabs'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useTabsOverflow } from '@ui/hooks/useTabsOverflow'
 import { applySxProps } from '@ui/lib/mui'
