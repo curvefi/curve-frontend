@@ -7,6 +7,7 @@ import { getInternalUrl, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
 import { PageHeader } from '@ui/components/PageHeader'
 import { TokenIcons } from '@ui/components/TokenIcons'
@@ -17,6 +18,7 @@ import { ChainIcon } from '@ui/icons/ChainIcon'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { IS_DEVELOPMENT } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
+import { getTokenOrPairSymbol } from '@ui/lib/tokens'
 import { usePageHeader } from './hooks/usePageHeader'
 import { LegacyMetricsRow } from './LegacyMetricsRow'
 import { MetricsRow } from './MetricsRow'
@@ -36,12 +38,18 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader()
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
-  const title = (collateralToken && borrowToken && `${collateralToken.symbol} • ${borrowToken.symbol}`) ?? t`Market`
+  const collateralTokenOrPair = maybe(collateralToken, token => getTokenOrPair(blockchainId, token))
+  const title =
+    maybes(
+      [collateralTokenOrPair, borrowToken],
+      (collateral, { symbol: borrowSymbol }) => `${getTokenOrPairSymbol(collateral)} • ${borrowSymbol}`,
+    ) ?? t`Market`
 
-  const subtitle =
-    collateralToken &&
-    borrowToken &&
-    t`Use ${collateralToken.symbol} to borrow ${marketType === MarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
+  const subtitle = maybes(
+    [collateralToken, borrowToken],
+    (collateral, borrow) =>
+      t`Use ${collateral.symbol} to borrow ${marketType === MarketType.Mint ? t`and mint ` : ''}${borrow.symbol}`,
+  )
 
   const MetricComponent = isNewLlamaMarketDetailPage ? MetricsRow : LegacyMetricsRow
   const metrics = (
@@ -67,10 +75,10 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
         disableUpperCase
         icon={
           <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
-            {collateralToken && borrowToken && (
+            {collateralTokenOrPair && borrowToken && (
               <TokenIcons
                 blockchainId={blockchainId}
-                tokens={[getTokenOrPair(blockchainId, collateralToken), borrowToken]}
+                tokens={[collateralTokenOrPair, borrowToken]}
                 overflowMode="stack"
               />
             )}
