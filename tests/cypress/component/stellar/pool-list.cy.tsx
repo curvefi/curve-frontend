@@ -1,8 +1,9 @@
+import { StellarApp } from '@/stellar/App'
 import { STELLAR_CONTRACT_PATTERN, type StellarContract } from '@/stellar/features/connect-wallet/address'
+import { router } from '@/stellar/routes'
 import { StellarUrls } from '@/stellar/routes/routes'
 import { oneOf } from '@cy/support/generators'
 import { expandFirstRowOnMobile, openDrawer, withExpandedPanelDrawer } from '@cy/support/helpers/data-table.helpers'
-import { mountStellarApp } from '@cy/support/helpers/stellar/StellarTestWrapper'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { oneViewport } from '@cy/support/ui'
 import { PoolColumnId } from '@ui/features/pool-list/columns'
@@ -14,6 +15,17 @@ const poolLinks = () => cy.get('[data-testid^="table-row-link-"]', TIMEOUTS['cur
 const search = () => cy.get('[data-testid="table-text-search-dex-pool-list"] input')
 
 const testCases = [oneViewport()]
+
+/**
+ * Mount the production app and navigate using its browser history, routes, and providers.
+ * This should be an e2e test,
+ **/
+const mountStellarApp = (path: string) => {
+  cy.mount(<StellarApp />)
+  cy.then(() => router.navigate({ to: path }))
+  cy.get('[data-testid="data-table"]', TIMEOUTS['ui.render']).should('be.visible')
+}
+
 
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`Stellar pool list (${breakpoint}, ${width}x${height})`, () => {
