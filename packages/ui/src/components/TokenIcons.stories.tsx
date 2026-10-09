@@ -1,8 +1,8 @@
-import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { TokenIcons } from '@ui/components/TokenIcons'
+import { TokenIcons, type TokenOrPair } from '@ui/components/TokenIcons'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -24,6 +24,11 @@ const TOKENS = [
   { symbol: 'LINK', address: '0x514910771AF9Ca656af840dff83E8264EcF986CA' },
   { symbol: 'MKR', address: '0x9f8F72aA9304c8B593d555F12ef6589cC3A579A2' },
 ]
+
+const TOKEN_PAIR = [
+  { symbol: 'reUSD', address: '0x57aB1E0003F623289CD798B1824Be09a793e4Bec' },
+  { symbol: 'sfrxUSD', address: '0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6' },
+] satisfies TokenOrPair
 
 const TOKEN_COUNT_CASES = [0, 1, 2, 3, 4, 5, 9, 13] as const
 
@@ -127,6 +132,17 @@ export const WithStackOverflow: Story = {
   parameters: {
     docs: {
       description: { story: 'Nine tokens using the stacked overflow treatment instead of the overflow counter.' },
+    },
+  },
+}
+
+export const WithTokenPair: Story = {
+  args: { tokens: [TOKEN_PAIR, { symbol: 'crvUSD', address: CRVUSD_ADDRESS }] },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A token pair takes one slot as a split icon, e.g. a market with an LP token as collateral.',
+      },
     },
   },
 }
