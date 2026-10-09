@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries, type Nullish } from '@primitives/objects.utils'
+import { fromEntries, notFalsy, type Nullish } from '@primitives/objects.utils'
 import { DISABLED_Q, fallbackQ, q, Query, QueryProp } from '@ui/features/queries/util'
 import { decimalMin } from '@ui/lib/decimal'
 
@@ -31,15 +31,15 @@ export const combineQueries = <const TQueries extends Queries, TResult>(
 ) => ({ data: combineQueryData(queries, selector), ...combineQueryState(...queries) }) as QueryProp<TResult>
 
 /** Maps a query's data to another query, and combines the results into a single one. */
-export const subQuery = <Q1, Q2, R>(
+export const combineSubQueries = <Q1, Q2, R>(
   query: Query<Q1[]>,
   getItem: (row: Q1) => Query<Q2> | undefined,
   combine: (...amounts: (Q2 | undefined)[]) => R | undefined,
 ) => {
-  const subQueries = query.data?.map(getItem)?.filter(q => q != null)
+  const subQueries = notFalsy(...(query.data?.map(getItem) ?? []))
   return q({
-    data: subQueries?.some(q => q.data != null) ? combine(...subQueries.map(r => r.data)) : undefined,
-    ...combineQueryState(query, ...(subQueries ?? [])),
+    data: subQueries.some(q => q.data != null) ? combine(...subQueries.map(r => r.data)) : undefined,
+    ...combineQueryState(query, ...subQueries),
   })
 }
 

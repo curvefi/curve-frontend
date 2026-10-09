@@ -12,7 +12,7 @@ import { maybe } from '@primitives/objects.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import type { UserPositionsTableData } from '@ui/features/pool-list/types'
 import { claimablesTotalUsd, litePoolToRowData, poolToRowData } from '@ui/features/pool-list/utils'
-import { subQuery, useCombinedQueries } from '@ui/features/queries/combine'
+import { combineSubQueries, useCombinedQueries } from '@ui/features/queries/combine'
 import { constQ, mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -92,8 +92,8 @@ export const useUserPositionsTable = (
     onReload: () => resetPoolLists({ chainId, userAddress }),
     tableQuery,
     alerts: getPoolListAlerts(tableQuery.data, blockchainId),
-    claimablesTotalUsd: subQuery(tableQuery, row => row.userPosition?.claimablesUsd, decimalSum),
-    totalLiquidityUsd: subQuery(tableQuery, row => row.userPosition?.depositsUsd, decimalSum),
+    claimablesTotalUsd: combineSubQueries(tableQuery, row => row.userPosition?.claimablesUsd, decimalSum),
+    totalLiquidityUsd: combineSubQueries(tableQuery, row => row.userPosition?.depositsUsd, decimalSum),
     labels: {
       errorTitle: t`Could not load pool positions`,
       loading: { title: t`Loading positions` },
