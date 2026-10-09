@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { t } from '@ui/lib/i18n'
-import { MarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns/columns.enum'
 
 type Option<T = string> = { id: T; label: ReactNode }
 

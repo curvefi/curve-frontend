@@ -1,4 +1,4 @@
-import { MarketColumnId } from '../columns'
+import { MarketColumnId } from './columns.enum'
 
 export const DEFAULT_SORT = [{ id: MarketColumnId.Tvl, desc: true }]
 export const DEFAULT_SORT_BORROW = [{ id: MarketColumnId.UserBorrowed, desc: true }]

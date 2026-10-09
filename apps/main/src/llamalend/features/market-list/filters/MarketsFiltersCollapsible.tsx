@@ -5,7 +5,7 @@ import type { CurveTableFeatures, FilterProps } from '@ui/features/tables/data-t
 import { TableActiveFiltersBar } from '@ui/features/tables/TableActiveFiltersBar'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { FavoriteHeartIcon } from '@ui/icons/HeartIcon'
-import { MarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns/columns.enum'
 import { useToggleFilter } from '../hooks/useToggleFilter'
 import { MarketsActiveFiltersChip } from './MarketsActiveFiltersChip'
 

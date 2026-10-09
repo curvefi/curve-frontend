@@ -4,7 +4,8 @@ import type { MigrationOptions } from '@ui/features/storage/useStoredState'
 import { preserveVisibilityChoices, useVisibilitySettings } from '@ui/features/tables/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
+import { POOLS_COLUMN_OPTIONS } from '../columns/column.options'
+import  { PoolColumnId } from '../columns/columns.enum'
 import type { PoolTableVariant } from '../types'
 
 const migration: MigrationOptions<Record<PoolTableVariant, VisibilityGroup<PoolColumnId>[]>> = {

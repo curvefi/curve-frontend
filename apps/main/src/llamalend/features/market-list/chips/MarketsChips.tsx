@@ -4,7 +4,7 @@ import type { FilterProps } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { HeartIcon } from '@ui/icons/HeartIcon'
 import { t } from '@ui/lib/i18n'
-import { MarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns/columns.enum'
 import { useToggleFilter } from '../hooks/useToggleFilter'
 
 const { Spacing } = SizesAndSpaces
