@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { getAddress, zeroAddress } from 'viem'
+import { getAddress, isAddressEqual, zeroAddress } from 'viem'
 import type { MarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user'
@@ -139,8 +139,19 @@ export const hasVault = (market: MarketTemplate) => isLendMarket(market) && 'vau
 export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
 
-/** Only LLv2 markets use the upgraded ZapV2 contract for now */
-export const hasUpgradedZapV2 = (market: MarketTemplate | Nullish) => isV2Market(market)
+/** LLv1 markets whose controller supports delegation use the delegation ZapV2 (no router calldata size limit). */
+const hasV1ZapDelegation = (market: LendMarketTemplate) => {
+  const delegationZap = market.getLlamalend().constants.ALIASES.leverage_zap_v2_transient
+  return (
+    market.version === 'v1' &&
+    !!delegationZap &&
+    isAddressEqual(market.getZapAddress() as Address, delegationZap as Address)
+  )
+}
+
+/** LLv2 markets and the newer LLv1 markets use the delegation ZapV2 contract */
+export const hasZapDelegation = (market: MarketTemplate | Nullish) =>
+  maybe(market, market => isLendMarket(market) && (market.version === 'v2' || hasV1ZapDelegation(market)))
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
