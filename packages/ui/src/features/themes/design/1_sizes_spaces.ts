@@ -290,6 +290,7 @@ export const SizesAndSpaces = {
         sm: '8rem', // 128px
         lg: '25rem', // 400px
       },
+      row: { sm: Sizing[600], md: Sizing[650], lg: Sizing[700] },
     },
     row: Sizing[700],
     chart: MappedChartHeight, // chart libraries require heights in number format

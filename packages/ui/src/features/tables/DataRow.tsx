@@ -3,10 +3,12 @@ import TableRow from '@mui/material/TableRow'
 import type { ReactTable, Row, RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useNavigate } from '@ui/hooks/router'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { hasParentWithClass } from '@ui/lib/dom'
 import { BreakdownRows } from './BreakdownRows'
+import type { DataTableRowHeight } from './categories'
 import {
   CLICKABLE_IN_ROW_CLASS,
   type CurveTableFeatures,
@@ -15,6 +17,8 @@ import {
 } from './data-table.utils'
 import { DataCell } from './DataCell'
 import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
+
+const { Height } = SizesAndSpaces
 
 export type RowBreakdownConfig<TData extends RowData, TItem> = {
   /** Items to render as breakdown rows under the parent row. Fewer than 2 items means no breakdown rows. */
@@ -33,6 +37,7 @@ export type DataRowProps<TData extends RowData> = {
   rowBreakdown?: RowBreakdownConfig<TData, any> // Renders extra rows under a parent row, one per item (e.g. one row per token of a multi-token event)
   shouldStickFirstColumn?: boolean
   verticalAlign?: 'top' | 'middle' | 'bottom'
+  rowHeight?: DataTableRowHeight
 }
 
 const navigate = (url: string, routerNavigate: (href: string) => void) => {
@@ -50,6 +55,7 @@ export const DataRow = <TData extends RowData>({
   rowBreakdown,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
+  rowHeight = 'lg',
 }: DataRowProps<TData>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
@@ -81,6 +87,7 @@ export const DataRow = <TData extends RowData>({
           sx={useMemo(
             () => ({
               marginBlock: 0,
+              minHeight: Height.table.row[rowHeight],
               cursor: isInteractive ? 'pointer' : 'default',
               verticalAlign,
               transition: `border-bottom ${TRANSITION_FUNCTION}`,
@@ -101,7 +108,7 @@ export const DataRow = <TData extends RowData>({
                 },
               }),
             }),
-            [isInteractive, isSelected, verticalAlign],
+            [isInteractive, isSelected, verticalAlign, rowHeight],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}

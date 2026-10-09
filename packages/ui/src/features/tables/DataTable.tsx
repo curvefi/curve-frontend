@@ -54,7 +54,7 @@ export type DataTableProps<TData extends RowData> = {
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
 } & AllOrNone<ConnectionProps & { userAddress: Address | undefined }> &
-  Omit<DataRowProps<TData>, 'table' | 'row'>
+  Omit<DataRowProps<TData>, 'table' | 'row' | 'rowHeight'>
 
 /**
  * DataTable component to render the table with headers and rows.
@@ -87,6 +87,7 @@ export const DataTable = <TData extends RowData>({
     emptyStateSize = 'md',
     emptyStateRowSize = 'sm',
     enablePageChangeScroll = false,
+    rowHeight = 'lg',
   }: DataTableCategoryConfig = DATA_TABLE_CATEGORIES[category]
   const { table } = rowProps
   const { isLoading, error } = table
@@ -161,7 +162,13 @@ export const DataTable = <TData extends RowData>({
             )}
             <TableBody>
               {visibleRows.map(row => (
-                <DataRow key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
+                <DataRow
+                  key={row.id}
+                  row={row}
+                  shouldStickFirstColumn={shouldStickFirstColumn}
+                  rowHeight={rowHeight}
+                  {...rowProps}
+                />
               ))}
               {error ? (
                 <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>
