@@ -1,7 +1,10 @@
+import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import { scanTxPath } from '@legacy-ui/utils'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
-import { TimestampCell, DebtChangeCell, EventTypeCell, CollateralChangeCell } from '../cells'
+import { CollateralChangeCell } from '../cells/CollateralChangeCell'
+import { DebtChangeCell } from '../cells/DebtChangeCell'
+import { EventTypeCell } from '../cells/EventTypeCell'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 import { UserPositionHistoryColumnId } from './columns.enum'
 
