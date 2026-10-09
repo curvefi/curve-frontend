@@ -67,6 +67,17 @@ export const decimalSqrt = (value: Decimal): Decimal => {
 export const decimalDiv = (first: Decimal, second: Decimal) =>
   new BigNumber(first).dividedBy(second).toFixed() as Decimal
 
+/** Round a decimal amount to the token's precision, truncating excess digits by default. */
+export const decimalRound = (
+  value: Decimal,
+  decimals: number,
+  rounding: BigNumber.RoundingMode = BigNumber.ROUND_DOWN,
+) => new BigNumber(value).decimalPlaces(decimals, rounding).toFixed() as Decimal
+
+/** Divide and truncate toward zero at the requested precision, without intermediate rounding or changing global settings. */
+export const decimalDivToPrecision = (numerator: Decimal, denominator: Decimal, decimals: number): Decimal =>
+  new BigNumber(numerator).shiftedBy(decimals).dividedToIntegerBy(denominator).shiftedBy(-decimals).toFixed() as Decimal
+
 export const decimalPercent = (part: Decimal, total: Decimal): Decimal =>
   +total ? decimalMultiply(decimalDiv(part, total), '100') : '0'
 

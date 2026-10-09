@@ -16,7 +16,7 @@ export function useWithdrawPriceImpact(params: QuoteParams, expectedBurn: Query<
     const { amounts, decimals, supply } = params
     if (!amounts || !isComplete(decimals) || !supply || !+supply) return null
     const balanced = scaleReserves(reserves, decimals, burn, supply)
-    const balancedValue = rateAdjustedValue(balanced, rates, decimals)
-    return calculatePriceImpact(rateAdjustedValue(amounts, rates, decimals), balancedValue)
+    const balancedValue = rateAdjustedValue(balanced, rates)
+    return calculatePriceImpact(rateAdjustedValue(amounts, rates), balancedValue)
   })
 }
