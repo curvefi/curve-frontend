@@ -3,7 +3,8 @@ import Typography from '@mui/material/Typography'
 import { IconStack } from '@ui/components/IconStack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { borderStyle } from '@ui/lib/mui'
-import { TokenIcon } from './TokenIcon'
+import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
+import { TokenIcon, type TokenPairAddresses } from './TokenIcon'
 
 const { IconSize } = SizesAndSpaces
 
@@ -37,9 +38,22 @@ const STACK_ICON_SIZE = {
   '4xl': '3xl',
 } as const satisfies Record<TokenIconsSize, keyof typeof IconSize>
 
+type IconToken = { symbol?: string | null; address: string }
+
+/** A token, or a token pair shown as a single split icon (e.g. the coins of an LP token) */
+export type TokenOrPair = IconToken | [IconToken, IconToken]
+
+/** Merges a token pair into the address, symbol and key of a single split icon */
+const toIconToken = (token: TokenOrPair) => {
+  if (!Array.isArray(token)) return { ...token, symbol: token?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL, key: token.address }
+  const [first, second] = token
+  const address: TokenPairAddresses = [first.address, second.address]
+  return { address, symbol: getTokenPairUnit([first.symbol, second.symbol]), key: address.join('-') }
+}
+
 export type TokenIconsProps = {
   blockchainId: string
-  tokens: { symbol?: string | null; address: string }[] | undefined
+  tokens: TokenOrPair[] | undefined
   /** Size of the complete token group, not the individual token icons. */
   size?: TokenIconsSize
   showChainIcon?: boolean
@@ -54,12 +68,13 @@ export type TokenIconsProps = {
  * | Tokens | Behavior |
  * | --- | --- |
  * | 1 | A single `TokenIcon`. |
- * | 2 | The overlapping `TokenPair` layout. |
+ * | 2 | Two overlapping tokens. |
  * | 3 | An inverted token pyramid, with the third token centered on a new row. |
  * | 4 | A 2x2 grid of four tokens. |
  * | 5 or more | A 2x2 grid containing three tokens and a box showing how many additional tokens are hidden. |
  *
  * When `overflowMode` is `stack`, collections of five or more tokens are rendered as an `IconStack` instead.
+ * A token pair takes one slot and is rendered as a single split icon.
  */
 export function TokenIcons({
   blockchainId,
@@ -74,9 +89,11 @@ export function TokenIcons({
     return null
   }
 
+  const iconTokens = tokens.map(toIconToken)
+
   // With only one token we fall back to a normal TokenIcon, but can't directly set the size property, that's for a later refactor.
   if (tokens.length === 1) {
-    const [{ address, symbol }] = tokens
+    const [{ address, symbol }] = iconTokens
     return (
       <TokenIcon
         blockchainId={blockchainId}
@@ -94,9 +111,9 @@ export function TokenIcons({
   if (hasOverflow && overflowMode === 'stack') {
     return (
       <IconStack iconSize={STACK_ICON_SIZE[size]}>
-        {tokens.map(({ address, symbol }, index) => (
+        {iconTokens.map(({ address, symbol, key }, index) => (
           <TokenIcon
-            key={address}
+            key={key}
             blockchainId={blockchainId}
             address={address}
             {...(showTooltips && symbol && { tooltip: symbol })}
@@ -113,15 +130,15 @@ export function TokenIcons({
   }
 
   // We now fall back to the counter layout, which is used for 2-4 tokens and 5+ tokens when overflowMode is 'counter'.
-  const displayedTokens = hasOverflow ? tokens.slice(0, 3) : tokens
+  const displayedTokens = hasOverflow ? iconTokens.slice(0, 3) : iconTokens
   const positions = TOKEN_LAYOUTS[tokens.length > 4 ? 'overflow' : (tokens.length as 2 | 3 | 4)]
 
   return (
     <Box data-testid="token-icons" sx={{ position: 'relative', width: IconSize[size], height: IconSize[size] }}>
-      {displayedTokens.map(({ address, symbol }, index) => (
+      {displayedTokens.map(({ address, symbol, key }, index) => (
         // Wrapper box is needed because positioning TokenIcon directly breaks when the optional chain icon adds an extra wrapper.
         <Box
-          key={address}
+          key={key}
           sx={{
             position: 'absolute',
             width: TOKEN_SIZE,
