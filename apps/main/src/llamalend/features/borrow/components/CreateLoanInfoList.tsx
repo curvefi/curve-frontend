@@ -1,5 +1,5 @@
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market'
+import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'

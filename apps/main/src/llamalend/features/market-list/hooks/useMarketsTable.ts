@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { resetBadDebtMarkets } from '@/llamalend/queries/market'
+import { resetBadDebtMarkets } from '@/llamalend/queries/market/market-bad-debt.query'
 import {
   resetLendingVaults,
   resetAllUserLendingVaults,

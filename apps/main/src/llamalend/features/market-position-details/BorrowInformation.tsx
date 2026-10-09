@@ -4,7 +4,7 @@ import {
   tokenMetric,
   type MarketTokensOrEmpty,
 } from '@/llamalend/llama.utils'
-import { useMarketOraclePrice } from '@/llamalend/queries/market'
+import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'

@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
 import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
-import { useMarketOraclePrice } from '@/llamalend/queries/market'
+import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserPrices } from '@/llamalend/queries/user/user-prices.query'
 import { networks } from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'

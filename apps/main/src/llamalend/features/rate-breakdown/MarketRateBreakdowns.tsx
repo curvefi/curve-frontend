@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { useMarketSnapshots } from '@/llamalend/queries/market'
+import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
 import { MarketHistoricalRatesChart, type RateSnapshot } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePageHeader'

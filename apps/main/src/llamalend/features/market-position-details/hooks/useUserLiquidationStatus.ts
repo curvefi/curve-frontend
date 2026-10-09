@@ -1,5 +1,5 @@
 import { getIsUserCloseToSoftLiquidation, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
-import { useMarketOraclePriceBand } from '@/llamalend/queries/market'
+import { useMarketOraclePriceBand } from '@/llamalend/queries/market/market-oracle-price-band.query'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
 import { useUserHealth } from '@/llamalend/queries/user/user-health.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'

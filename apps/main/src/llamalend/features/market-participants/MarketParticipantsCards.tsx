@@ -1,11 +1,8 @@
 import { useMemo } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import {
-  useMarketBorrowers,
-  useMarketSuppliers,
-  useMarketTotalCollateral,
-  useMarketTotalDebt,
-} from '@/llamalend/queries/market'
+import { useMarketBorrowers, useMarketSuppliers } from '@/llamalend/queries/market/market-participants.query'
+import { useMarketTotalCollateral } from '@/llamalend/queries/market/market-total-collateral.query'
+import { useMarketTotalDebt } from '@/llamalend/queries/market/market-total-debt.query'
 import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
 import {
   AvailableLiquidityMetric,
