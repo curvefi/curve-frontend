@@ -39,10 +39,11 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   const collateralTokenOrPair = maybe(collateralToken, token => getTokenOrPair(blockchainId, token))
+  const borrowTokenOrPair = maybe(borrowToken, token => getTokenOrPair(blockchainId, token))
   const title =
     maybes(
-      [collateralTokenOrPair, borrowToken],
-      (collateral, { symbol: borrowSymbol }) => `${getTokenOrPairSymbol(collateral)} • ${borrowSymbol}`,
+      [collateralTokenOrPair, borrowTokenOrPair],
+      (collateral, borrow) => `${getTokenOrPairSymbol(collateral)} • ${getTokenOrPairSymbol(borrow)}`,
     ) ?? t`Market`
 
   const subtitle = maybes(
@@ -75,10 +76,10 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
         disableUpperCase
         icon={
           <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
-            {collateralTokenOrPair && borrowToken && (
+            {collateralTokenOrPair && borrowTokenOrPair && (
               <TokenIcons
                 blockchainId={blockchainId}
-                tokens={[collateralTokenOrPair, borrowToken]}
+                tokens={[collateralTokenOrPair, borrowTokenOrPair]}
                 overflowMode="stack"
               />
             )}

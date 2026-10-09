@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import { getAddressOrPair } from '@/llamalend/llama.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
@@ -128,7 +129,7 @@ export const LoanFormTokenInput = <
           <TokenLabel
             blockchainId={blockchainId}
             tooltip={token?.symbol}
-            address={token?.address ?? null}
+            address={getAddressOrPair(blockchainId, token?.address) ?? null}
             label={token?.symbol ?? '?'}
           />
         )

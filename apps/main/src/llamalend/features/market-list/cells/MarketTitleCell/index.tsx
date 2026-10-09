@@ -26,15 +26,16 @@ export const MarketTitleCell = ({
   const isMobile = useIsMobile()
   const { collateral, borrowed } = market.assets
   const collateralTokenOrPair = getTokenOrPair(market.blockchainId, collateral)
+  const borrowedTokenOrPair = getTokenOrPair(market.blockchainId, borrowed)
   return (
     <Stack direction="row" sx={{ height: Height.row }}>
       {market.userHasPositions && <UserMarketPositionIndicator market={market} />}
       <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
-        <TokenIcons blockchainId={market.blockchainId} tokens={[collateralTokenOrPair, borrowed]} />
+        <TokenIcons blockchainId={market.blockchainId} tokens={[collateralTokenOrPair, borrowedTokenOrPair]} />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <TableRowTitle
-              title={[getTokenOrPairSymbol(collateralTokenOrPair), borrowed.symbol].join(' • ')}
+              title={[collateralTokenOrPair, borrowedTokenOrPair].map(getTokenOrPairSymbol).join(' • ')}
               url={market.url}
               testId={market.controllerAddress}
             />

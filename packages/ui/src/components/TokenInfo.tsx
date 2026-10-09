@@ -8,7 +8,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { applySxProps, SxProps } from '@ui/lib/mui'
 import { ErrorIconButton } from './ErrorIconButton'
 import { Spinner } from './Spinner'
-import { TokenIcon, type Size } from './TokenIcon'
+import { TokenIcon, type Size, type TokenPairAddresses } from './TokenIcon'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing } = SizesAndSpaces
@@ -22,7 +22,7 @@ type TokenInfoBaseProps = {
 }
 
 export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
-  address: Address
+  address: Address | TokenPairAddresses
   blockchainId: string
   showChainIcon?: boolean
   iconSize?: Size

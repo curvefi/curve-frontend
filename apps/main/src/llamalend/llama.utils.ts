@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { getAddress, isAddressEqual, zeroAddress } from 'viem'
+import { getAddress, zeroAddress } from 'viem'
 import type { MarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user'
@@ -11,6 +11,7 @@ import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
+import type { ActivityToken } from '@evm-ui/features/activity-table/types'
 import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
@@ -29,6 +30,7 @@ import {
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
+import type { TokenPairAddresses } from '@ui/components/TokenIcon'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { QueryProp, toQuery } from '@ui/features/queries/util'
@@ -239,10 +241,29 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
 
+/** Returns the token pair of a known LP token, comparing addresses in lowercase so any address string is accepted */
+const findLpTokenPair = (blockchainId: Chain, address: string) =>
+  recordEntries(LP_TOKEN_PAIRS[blockchainId] ?? {}).find(
+    ([lpAddress]) => lpAddress.toLowerCase() === address.toLowerCase(),
+  )?.[1]
+
 /** Returns the token pair of a known LP token, or the token itself */
 export const getTokenOrPair = (blockchainId: Chain, token: Token): TokenOrPair =>
-  recordEntries(LP_TOKEN_PAIRS[blockchainId] ?? {}).find(([address]) => isAddressEqual(address, token.address))?.[1] ??
-  token
+  findLpTokenPair(blockchainId, token.address) ?? token
+
+/** Returns the addresses of the token pair of a known LP token, or the address itself */
+export const getAddressOrPair = <T extends string | Nullish>(
+  blockchainId: Chain | Nullish,
+  address: T,
+): T | TokenPairAddresses =>
+  maybe(maybes([blockchainId, address], findLpTokenPair), ([first, second]): TokenPairAddresses => [
+    first.address,
+    second.address,
+  ]) ?? address
+
+/** Returns the token of an activity row, with the addresses of its token pair when it is a known LP token */
+export const getActivityToken = (blockchainId: Chain, token: Token | Nullish): ActivityToken | undefined =>
+  maybe(token, ({ symbol, address }) => ({ symbol, address: getAddressOrPair(blockchainId, address) }))
 
 export const getAmmAddress = <T extends MarketTemplate | Nullish>(
   market: T,
