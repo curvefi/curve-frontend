@@ -8,16 +8,16 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useCampaigns } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import type { UserPositionsTableData } from '@ui/features/pool-list/types'
 import { claimablesTotalUsd, litePoolToRowData, poolToRowData } from '@ui/features/pool-list/utils'
-import { aggregateQueries, combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
-import { constQ, mapQuery, useMappedQuery, type Query, type QueryProp } from '@ui/features/queries/util'
+import { subQuery, useCombinedQueries } from '@ui/features/queries/combine'
+import { constQ, mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { enrichPoolRow, getPoolListAlerts } from '../utils'
-import { useUserPoolPositions, type UserPoolPosition } from './useUserPoolPositions'
+import { type UserPoolPosition, useUserPoolPositions } from './useUserPoolPositions'
 
 const getPoolUserPosition = (
   position: UserPoolPosition,
@@ -92,14 +92,8 @@ export const useUserPositionsTable = (
     onReload: () => resetPoolLists({ chainId, userAddress }),
     tableQuery,
     alerts: getPoolListAlerts(tableQuery.data, blockchainId),
-    claimablesTotalUsd: combineQueries(
-      [tableQuery, aggregateQueries(notFalsy(...(tableQuery.data?.map(row => row.userPosition?.claimablesUsd) ?? [])))],
-      (rows, amounts) => (rows.length && amounts.every(amount => amount == null) ? undefined : decimalSum(...amounts)),
-    ),
-    totalLiquidityUsd: combineQueries(
-      [tableQuery, aggregateQueries(notFalsy(...(tableQuery.data?.map(row => row.userPosition?.depositsUsd) ?? [])))],
-      (rows, amounts) => (rows.length && amounts.every(amount => amount == null) ? undefined : decimalSum(...amounts)),
-    ),
+    claimablesTotalUsd: subQuery(tableQuery, row => row.userPosition?.claimablesUsd, decimalSum),
+    totalLiquidityUsd: subQuery(tableQuery, row => row.userPosition?.depositsUsd, decimalSum),
     labels: {
       errorTitle: t`Could not load pool positions`,
       loading: { title: t`Loading positions` },

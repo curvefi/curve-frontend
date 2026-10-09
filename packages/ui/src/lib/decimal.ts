@@ -42,6 +42,9 @@ export const decimalMax = (...data: Decimal[]) =>
 export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
   notFalsy(...data).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
 
+export const sumIfAny = (amounts: (Decimal | undefined)[]) =>
+  amounts.some(amount => amount != null) ? decimalSum(...amounts) : undefined
+
 export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): Decimal =>
   notFalsy(...rest)
     .reduce((acc, value) => acc.minus(value), new BigNumber(first))
