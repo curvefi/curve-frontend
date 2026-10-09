@@ -22,7 +22,7 @@ export const RewardsRateTooltipContent = ({ pool }: { pool: PoolRow }) => {
             <ExtraRewardTooltipItems blockchainId={pool.blockchainId} rewards={extraRewards} />
           </TooltipItems>
         )}
-        {!!campaigns.length && (
+        {!!campaigns?.length && (
           <TooltipItems secondary>
             <TooltipItem title={t`Campaign rewards`}>
               {formatNumber(pool.campaignRewardsApr, 'percent.rate')}

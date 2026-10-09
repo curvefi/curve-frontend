@@ -71,7 +71,7 @@ const menu = [
         component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDepositStake} {...props} />,
       },
     ],
-  } satisfies FormTab<TransferTabsParams>,
+  },
   {
     value: 'withdraw',
     label: t`Withdraw`,
@@ -84,7 +84,7 @@ const menu = [
       { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },
       { value: 'CLAIM', label: t`Claim Rewards`, component: FormClaim },
     ],
-  } satisfies FormTab<TransferTabsParams>,
+  },
   {
     value: 'swap',
     label: t`Swap`,
@@ -109,7 +109,7 @@ const menu = [
       },
     ],
   },
-] satisfies FormTab<TransferTabsParams>[]
+] as const satisfies FormTab<TransferTabsParams>[]
 
 /** Replaces old form-specific pool URLs for expanded-row links that should open a specific form tab. */
 type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }
