@@ -7,6 +7,9 @@ export type StellarAddress = `G${string}` // todo: rename to StellarUser
 export type StellarContract = `C${string}`
 export type StellarSecret = `S${string}`
 
+/** Contract StrKey format; checksum verification belongs to the Stellar SDK. */
+export const STELLAR_CONTRACT_PATTERN = /^C[A-D][A-Z2-7]{54}$/
+
 /**
  * Wrapper to 'convert' Stellar address to EVM addresses (typescript only).
  * TODO: Remove this and make shared code accept either a generic or an union.
