@@ -2,7 +2,8 @@ import { CyHttpMessages } from 'cypress/types/net-stubbing'
 import { oneBool } from '@cy/support/generators'
 import { createLendingVaultChainsResponse } from '@cy/support/helpers/lending-mocks'
 import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
-import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { e2eBaseUrl } from '@cy/support/ui'
 import type { ErrorContext, ErrorReportFormValues } from '@ui/features/report-error'
 import { SENTRY_DSN } from '@ui/features/sentry'
 
@@ -25,7 +26,7 @@ const visitErrorBoundary = (errorFactory: (win: Cypress.AUTWindow) => Error) => 
   }).lendingVaults.as('error')
   const url = '/llamalend/ethereum/markets'
   cy.visit(url, {
-    ...API_LOAD_TIMEOUT,
+    ...TIMEOUTS['ui.pageLoad'],
     onBeforeLoad: win => {
       const { String } = win
       // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
@@ -38,13 +39,13 @@ const visitErrorBoundary = (errorFactory: (win: Cypress.AUTWindow) => Error) => 
       }
     },
   })
-  cy.wait('@error', LOAD_TIMEOUT)
+  cy.wait('@error', TIMEOUTS['mock.prices.markets'])
   return e2eBaseUrl() + url
 }
 
 const visitNotFoundPage = () => {
   const url = '/llamalend/ethereum/markets/non-existent-market'
-  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout })
+  cy.visit(url, { timeout: TIMEOUTS['ui.pageLoad'].timeout })
   return e2eBaseUrl() + url
 }
 
@@ -84,10 +85,10 @@ describe('Error Boundary', () => {
   // note: this must be the first in the file, as firefox might cache responses from other tests
   it('should show error page when it hits the error boundary', () => {
     visitErrorBoundary(({ TypeError }) => new TypeError('toLowerCase is not a function'))
-    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
+    cy.get('[data-testid="error-title"]', TIMEOUTS['ui.render']).should('contain.text', 'Unexpected Error')
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'toLowerCase is not a function')
     cy.get('[data-testid="retry-error-button"]').click()
-    cy.wait('@error', LOAD_TIMEOUT) // API called again
+    cy.wait('@error', TIMEOUTS['mock.prices.markets']) // API called again
   })
 
   const is500 = oneBool() // test either 404 or 500 error page
@@ -131,7 +132,7 @@ describe('Error Boundary', () => {
       },
     ).as('sentryReport')
 
-    cy.get('[data-testid="submit-error-report-button"]', LOAD_TIMEOUT).click()
+    cy.get('[data-testid="submit-error-report-button"]', TIMEOUTS['ui.interaction']).click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
     cy.get('[data-testid="submit-error-report-address"]')
       .invoke('val')
@@ -142,13 +143,13 @@ describe('Error Boundary', () => {
     cy.get('[data-testid="submit-error-report-description"]').type(description)
     cy.get('[data-testid="submit-error-report-submit"]').click()
 
-    cy.wait('@sentryReport', LOAD_TIMEOUT)
+    cy.wait('@sentryReport', TIMEOUTS['mock.sentry.report'])
     cy.get('[data-testid="submit-error-report-modal"]').should('not.exist')
   })
 
   it('should show some guidance when a DOM mutation error occurs', () => {
     visitErrorBoundary(({ DOMException }) => new DOMException(DOM_MUTATION_ERROR, 'NotFoundError'))
-    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
+    cy.get('[data-testid="error-title"]', TIMEOUTS['ui.render']).should('contain.text', 'Unexpected Error')
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
   })
 
@@ -164,7 +165,7 @@ describe('Error Boundary', () => {
       },
     })
 
-    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Root route error')
+    cy.get('[data-testid="error-title"]', TIMEOUTS['ui.render']).should('contain.text', 'Root route error')
     cy.get('[data-testid="submit-error-report-button"]').click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
     cy.get('[data-testid="submit-error-report-address"]')
@@ -180,7 +181,7 @@ describe('Error Boundary', () => {
       },
     })
 
-    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Root layout error')
+    cy.get('[data-testid="error-title"]', TIMEOUTS['ui.render']).should('contain.text', 'Root layout error')
     cy.get('[data-testid="submit-error-report-button"]').click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
     cy.get('[data-testid="submit-error-report-address"]').should('have.value', '')

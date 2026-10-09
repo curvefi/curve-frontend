@@ -7,7 +7,8 @@ import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query
 import { fetchTokenSymbol } from '@/stellar/queries/token/token-symbol.query'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
-import { cyMap, LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { cyMap } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { useUserProfileStore } from '@ui/features/user-profile'
@@ -36,7 +37,7 @@ export type PoolState = Awaited<ReturnType<typeof fetchPoolState>>
 export type PoolAmounts = Record<string, Decimal>
 
 export const poolInput = (address: StellarContract) =>
-  cy.get(`[data-testid="pool-token-input-${address}"]`, LOAD_TIMEOUT)
+  cy.get(`[data-testid="pool-token-input-${address}"]`, TIMEOUTS['ui.render'])
 
 /** Reselect after each action because changing an amount can rerender every token input. */
 export const writePoolAmount = (address: StellarContract, amount: Decimal | undefined) => {
@@ -46,13 +47,13 @@ export const writePoolAmount = (address: StellarContract, amount: Decimal | unde
 }
 
 export const checkPoolSlippage = () =>
-  getActionValue('borrow-slippage').should(
+  getActionValue('borrow-slippage', 'ui.interaction').should(
     'equal',
     formatNumber(useUserProfileStore.getState().maxSlippage.stable, 'percent.rate'),
   )
 
 export const checkPoolPriceImpact = () =>
-  getActionValue('pool-price-impact').should(value => {
+  getActionValue('pool-price-impact', 'stellar.simulation').should(value => {
     expect(value).to.include('%')
     expect(Number.parseFloat(value!)).to.be.finite
   })

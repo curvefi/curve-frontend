@@ -10,7 +10,7 @@ import {
   showV2PoolColumns,
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
-import { API_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { PoolColumnId } from '@ui/features/pool-list/columns'
 
 const expectHeaderOrder = (expected: readonly PoolColumnId[]) =>
@@ -76,7 +76,7 @@ const getColumnHeader = (columnId: PoolColumnId) => cy.get(`[data-testid="data-t
 
 const expectFirstPool = (address: string) =>
   cy
-    .get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT)
+    .get('[data-testid^="data-table-row-"]', TIMEOUTS['mock.prices.pools'])
     .first()
     .find(`[data-testid="table-row-link-${address}"]`)
     .should('exist')
@@ -186,10 +186,10 @@ describe('V2 pool-list columns', () => {
 
     for (const [columnId, firstDescending, firstAscending] of SERVER_SORT_CASES) {
       getColumnHeader(columnId).click()
-      cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
+      cy.wait('@dex-v2-pools', TIMEOUTS['mock.prices.pools'])
       expectFirstPool(firstDescending)
       getColumnHeader(columnId).click()
-      cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
+      cy.wait('@dex-v2-pools', TIMEOUTS['mock.prices.pools'])
       expectFirstPool(firstAscending)
     }
   })

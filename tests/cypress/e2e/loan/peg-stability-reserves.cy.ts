@@ -1,5 +1,6 @@
 import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
-import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { oneViewport } from '@cy/support/ui'
 
 /**
  * Gets pegkeeper cards by test ID suffix.
@@ -15,8 +16,11 @@ describe(`Peg Stability Reserves`, () => {
     ;[width, height] = oneViewport()
 
     cy.viewport(width, height)
-    cy.visit('/crvusd/ethereum/psr/', { onBeforeLoad: window => window.localStorage.clear(), ...LOAD_TIMEOUT })
-    cy.get('[data-testid="pegkeepers"]', LOAD_TIMEOUT).should('be.visible')
+    cy.visit('/crvusd/ethereum/psr/', {
+      onBeforeLoad: window => window.localStorage.clear(),
+      ...TIMEOUTS['ui.pageLoad'],
+    })
+    cy.get('[data-testid="pegkeepers"]', TIMEOUTS['ui.render']).should('be.visible')
   })
 
   it('should render all pegkeepers', () => {

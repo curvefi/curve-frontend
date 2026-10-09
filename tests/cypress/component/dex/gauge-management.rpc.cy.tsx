@@ -24,7 +24,8 @@ import {
   type TenderlyWagmiConfigFromVNet,
 } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import { CurveProvider, useCurve } from '@evm-ui/features/connect-wallet'
 import { Chain } from '@primitives/network.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -144,18 +145,18 @@ describe('Gauge Management (RPC)', () => {
   it('adds a gauge reward token', () => {
     cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} account={privateKey} form="addReward" />)
 
-    cy.get('[data-testid="add-reward-token-selector"]', LOAD_TIMEOUT)
+    cy.get('[data-testid="add-reward-token-selector"]', TIMEOUTS['ui.render'])
       .should('contain', 'DAI')
-      .find('[role="combobox"]', LOAD_TIMEOUT)
+      .find('[role="combobox"]', TIMEOUTS['ui.render'])
       .should('not.have.attr', 'aria-disabled', 'true')
       .click()
     cy.get('input[name="tokenName"]').type(REWARD_TOKEN_SYMBOL)
     cy.get(`[data-testid="token-option-${REWARD_TOKEN_ADDRESS.toLowerCase()}"]`).click()
     cy.get('[data-testid="add-reward-distributor-input"]').clear()
     cy.get('[data-testid="add-reward-distributor-input"]').type(REWARD_DISTRIBUTOR_ADDRESS)
-    cy.get('[data-testid="add-reward-submit-button"]', LOAD_TIMEOUT).click()
+    cy.get('[data-testid="add-reward-submit-button"]', TIMEOUTS['ui.interaction']).click()
 
-    cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid="toast-success"]', TIMEOUTS['evm.confirmation']).should('be.visible')
     expectGaugeRewardDistributor({
       publicRpcUrl,
       gaugeAddress: GAUGE_ADDRESS,
@@ -169,11 +170,11 @@ describe('Gauge Management (RPC)', () => {
       initialBalance => {
         cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} account={privateKey} form="depositReward" />)
 
-        cy.get('[data-testid="deposit-amount"]', LOAD_TIMEOUT).should('be.visible')
+        cy.get('[data-testid="deposit-amount"]', TIMEOUTS['ui.render']).should('be.visible')
         cy.get('[data-testid="deposit-amount"] input[type="text"]').type(DEPOSIT_REWARD_AMOUNT)
-        cy.get('[data-testid="deposit-reward-submit-button"]', LOAD_TIMEOUT).click()
+        cy.get('[data-testid="deposit-reward-submit-button"]', TIMEOUTS['ui.interaction']).click()
 
-        cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('be.visible')
+        cy.get('[data-testid="toast-success"]', TIMEOUTS['evm.confirmation']).should('be.visible')
         expectErc20BalanceChange({
           publicRpcUrl,
           tokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,
