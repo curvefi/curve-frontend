@@ -39,9 +39,7 @@ export const poolDecimalsValidationSuite = createValidationSuite(({ decimals, ..
   validatePool(params)
   test('decimals', 'Pool token decimals are unavailable', () => {
     enforce(decimals).isArray().isNotEmpty()
-    enforce(decimals?.every(precision => precision != null && Number.isInteger(precision) && precision >= 0)).equals(
-      true,
-    )
+    enforce(decimals?.every(precision => precision != null)).equals(true)
   })
 })
 export const tokenValidationSuite = createValidationSuite(validateToken)

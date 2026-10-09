@@ -14,13 +14,13 @@ export const invalidatePoolLiquidity = async ({
   tokens,
   decimals,
 }: PoolQuery & UserQuery & { tokens: StellarContract[]; decimals: number[] }) => {
-  const params = { network, pool }
+  const params = { network, pool, decimals }
   await Promise.allSettled([
     ...zip([...tokens, pool], [...decimals, LP_TOKEN_DECIMALS]).map(([token, decimals]) =>
-      invalidateTokenBalance({ network, token, account, decimals }),
+      invalidateTokenBalance({ ...params, token, account, decimals }),
     ),
-    invalidatePoolReserves({ ...params, decimals }),
+    invalidatePoolReserves(params),
     invalidatePoolSupply(params),
-    invalidatePoolRates({ ...params, decimals }),
+    invalidatePoolRates(params),
   ])
 }

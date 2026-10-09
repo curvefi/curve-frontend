@@ -74,16 +74,9 @@ export const decimalRound = (
   rounding: BigNumber.RoundingMode = BigNumber.ROUND_DOWN,
 ) => new BigNumber(value).decimalPlaces(decimals, rounding).toFixed() as Decimal
 
-/** Divide directly at the requested precision, without intermediate rounding or changing global settings. */
-export const decimalDivToPrecision = (
-  numerator: Decimal,
-  denominator: Decimal,
-  decimals: number,
-  rounding: BigNumber.RoundingMode = BigNumber.ROUND_DOWN,
-): Decimal => {
-  const PreciseDecimal = BigNumber.clone({ DECIMAL_PLACES: decimals, ROUNDING_MODE: rounding })
-  return new PreciseDecimal(numerator).dividedBy(denominator).toFixed() as Decimal
-}
+/** Divide and truncate toward zero at the requested precision, without intermediate rounding or changing global settings. */
+export const decimalDivToPrecision = (numerator: Decimal, denominator: Decimal, decimals: number): Decimal =>
+  new BigNumber(numerator).shiftedBy(decimals).dividedToIntegerBy(denominator).shiftedBy(-decimals).toFixed() as Decimal
 
 export const decimalPercent = (part: Decimal, total: Decimal): Decimal =>
   +total ? decimalMultiply(decimalDiv(part, total), '100') : '0'
