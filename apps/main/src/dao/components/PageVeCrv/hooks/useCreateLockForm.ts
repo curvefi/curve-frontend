@@ -3,7 +3,7 @@ import { useConnection } from 'wagmi'
 import { useCreateLockMutation } from '@/dao/components/PageVeCrv/mutations/create-lock.mutation'
 import { useCreateLockIsApproved } from '@/dao/components/PageVeCrv/queries/create-lock-approved.query'
 import type { CreateLockFormValues } from '@/dao/components/PageVeCrv/queries/create-lock.types'
-import { createLockFormValidationSuite } from '@/dao/components/PageVeCrv/queries/create-lock.validation'
+import { createLockFormValidationSchema } from '@/dao/components/PageVeCrv/queries/create-lock.validation'
 import {
   calcUnlockTime,
   calculateVeCrv,
@@ -15,6 +15,7 @@ import {
 } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
 import { invalidateVeCrvQueries, useLockerCrv } from '@/dao/entities/locker-vecrv-info'
 import { dayjs } from '@evm-ui/utils/dayjs'
+import { zodResolver } from '@hookform/resolvers/zod'
 import type { DateValue } from '@internationalized/date'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -32,7 +33,7 @@ const defaultValues: CreateLockFormValues = {
 const userDefaultValues = { lockedAmount: undefined, days: 0 }
 
 export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
-  const form = useForm<CreateLockFormValues>({ defaultValues, validation: createLockFormValidationSuite })
+  const form = useForm<CreateLockFormValues>({ defaultValues, resolver: zodResolver(createLockFormValidationSchema) })
   const { update } = form
   const values = form.watchValues()
   const { address: userAddress } = useConnection()
