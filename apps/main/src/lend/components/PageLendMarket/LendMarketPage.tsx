@@ -16,7 +16,7 @@ import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/l
 import { useMarketCollateralRewardsEnabled } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header/MarketPageHeader'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import {

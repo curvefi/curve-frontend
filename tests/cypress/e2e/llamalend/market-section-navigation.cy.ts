@@ -1,4 +1,5 @@
-import { getMarketSections, type MarketSectionId } from '@/llamalend/widgets/market-section-nav'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
+import { MarketSectionId } from '@/llamalend/widgets/market-section-nav/types'
 import { oneOf } from '@cy/support/generators'
 import { mockLendingSnapshots, mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/create-loan.helpers'
