@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
 import {
@@ -62,17 +61,14 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
   const unstakeShares = values.isFull ? maxUnstakeShares.data : convertedUnstakeShares.data
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): UnstakeFormParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        unstakeAssets: values.unstakeAssets,
-        unstakeShares,
-        isFull: values.isFull,
-      }),
-      [chainId, marketId, unstakeShares, userAddress, values.isFull, values.unstakeAssets],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      unstakeAssets: values.unstakeAssets,
+      unstakeShares,
+      isFull: values.isFull,
+    } satisfies UnstakeFormParams<ChainId>,
     userDefaultValues,
   )
 

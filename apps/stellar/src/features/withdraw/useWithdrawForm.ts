@@ -1,6 +1,4 @@
-import { identity } from 'lodash'
 import { useEffect, useMemo } from 'react'
-import { useShallow } from 'zustand/react/shallow'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
@@ -61,38 +59,23 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   })
   const { formState, reset } = form
 
-  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
+  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues])
 
-  // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
-  const values = useShallow(identity<WithdrawFormValues>)(form.watchValues())
+  const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce<WithdrawFormQuery, PoolAmountField | 'lpAmount'>(
-    useMemo(
-      () => ({
-        ...values,
-        network,
-        pool,
-        account,
-        tokenCount,
-        decimals: decimals.data,
-        slippage: values.slippage,
-        supply: supply.data,
-        seedLock: config.data?.seedLock,
-        maxLpAmount: lpBalance.data,
-        maxAmounts: maxAmounts.data,
-      }),
-      [
-        values,
-        network,
-        pool,
-        account,
-        tokenCount,
-        decimals.data,
-        supply.data,
-        config.data?.seedLock,
-        lpBalance.data,
-        maxAmounts.data,
-      ],
-    ),
+    {
+      ...values,
+      network,
+      pool,
+      account,
+      tokenCount,
+      decimals: decimals.data,
+      slippage: values.slippage,
+      supply: supply.data,
+      seedLock: config.data?.seedLock,
+      maxLpAmount: lpBalance.data,
+      maxAmounts: maxAmounts.data,
+    },
     userDefaultValues,
   )
   const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: false })

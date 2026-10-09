@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { useCreateLockMutation } from '@/dao/components/PageVeCrv/mutations/create-lock.mutation'
 import { useCreateLockIsApproved } from '@/dao/components/PageVeCrv/queries/create-lock-approved.query'
@@ -38,10 +38,7 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
   const { address: userAddress } = useConnection()
   const crv = useLockerCrv({ chainId, userAddress })
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({ chainId, userAddress, lockedAmount: values.lockedAmount, days: values.days }),
-      [chainId, userAddress, values.days, values.lockedAmount],
-    ),
+    { chainId, userAddress, lockedAmount: values.lockedAmount, days: values.days },
     userDefaultValues,
   )
   const isApproved = useCreateLockIsApproved(params)

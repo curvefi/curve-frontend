@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { useIncreaseLockMutation } from '@/dao/components/PageVeCrv/mutations/increase-lock.mutation'
 import { useIncreaseLockIsApproved } from '@/dao/components/PageVeCrv/queries/increase-lock-approved.query'
@@ -33,10 +33,7 @@ export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
 
   useFormSync(form, { maxLockedAmount: crv.data })
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({ chainId, userAddress, lockedAmount: values.lockedAmount }),
-      [chainId, userAddress, values.lockedAmount],
-    ),
+    { chainId, userAddress, lockedAmount: values.lockedAmount },
     userDefaultValues,
   )
   const isApproved = useIncreaseLockIsApproved(params)

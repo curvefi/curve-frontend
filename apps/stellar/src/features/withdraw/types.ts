@@ -8,7 +8,12 @@ import type { DeepPartial } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type CompleteWithdrawForm = Omit<WithdrawFormValues, 'decimals'> &
-  PoolTokenFields & { decimals: (number | undefined)[] | undefined; tokenCount: number | undefined; slippage: Decimal }
+  PoolTokenFields & {
+    decimals: (number | undefined)[] | undefined
+    maxAmounts: (Decimal | undefined)[] | undefined
+    tokenCount: number | undefined
+    slippage: Decimal
+  }
 
 export type WithdrawFormQuery = PoolQuery & UserParams & CompleteWithdrawForm
 

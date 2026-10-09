@@ -59,10 +59,7 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
     ),
   )
 
-  const [params, isDebouncing] = useFormDebounce(
-    useMemo(() => ({ chainId, userAddress, days: values.days }), [chainId, userAddress, values.days]),
-    userDefaultValues,
-  )
+  const [params, isDebouncing] = useFormDebounce({ chainId, userAddress, days: values.days }, userDefaultValues)
 
   const updateUnlockDate = useCallback(
     (unlockDate: DateValue) => {

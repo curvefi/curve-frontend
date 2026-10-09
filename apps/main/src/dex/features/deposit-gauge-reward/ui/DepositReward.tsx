@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useDepositReward } from '@/dex/entities/gauge/lib/reward-actions'
 import { useDepositRewardEstimateGas } from '@/dex/entities/gauge/model/gauge-gas.query'
@@ -54,10 +53,7 @@ export const DepositReward = () => {
   const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId })
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({ chainId, poolId, rewardTokenId, amount, epoch, userBalance }),
-      [chainId, poolId, rewardTokenId, amount, epoch, userBalance],
-    ),
+    { chainId, poolId, rewardTokenId, amount, epoch, userBalance },
     userDefaultValues,
   )
 
