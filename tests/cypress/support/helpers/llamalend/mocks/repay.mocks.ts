@@ -44,7 +44,6 @@ export const createRepayScenario = ({
     totalBorrowed: oneDecimal(0.1, Math.max(0.2, Number(currentDebt) - 0.1), 2),
   }
   const repayApproveStub = createTransactionStub(TEST_TX_HASH)
-  const repayLeverageApproveStub = createTransactionStub(TEST_TX_HASH)
   const controllerApproval = createControllerApprovalStubs(controllerApproved)
   const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
@@ -70,10 +69,10 @@ export const createRepayScenario = ({
       prices: [oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)],
       priceImpact: oneDecimal(0.01, 1, 3),
     }),
-    repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayLeverageApproveStub),
+    repayIsApproved: createStub(true),
     repayIsAvailable: createStub(true),
     repayIsFull: createStub(false),
-    repayApprove: repayLeverageApproveStub,
+    repayApprove: createTransactionStub(TEST_TX_HASH),
     repay: createTransactionStub(TEST_TX_HASH),
     repayExpectedBorrowed: createStub(expectedBorrowed),
     repayFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),
@@ -112,10 +111,7 @@ export const createRepayScenario = ({
       ...routeMeta,
       calldata: expectedRoute.calldata,
     },
-    isApproved: { userCollateral: DEFAULT_USER_BORROWED },
     estimateGas: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
-    estimateGasApprove: { userCollateral: DEFAULT_USER_BORROWED },
-    approve: { userCollateral: DEFAULT_USER_BORROWED },
     submit: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
     expectedBorrowed: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
     futureLeverage: { stateCollateral: collateral, userCollateral: DEFAULT_USER_BORROWED, ...expectedRoute },
@@ -178,19 +174,15 @@ export const createRepayScenario = ({
           expect(controllerApproval.setControllerApproval).to.not.have.been.called
           expect(leverageStubs.repay).to.not.have.been.called
           expect(leverageStubs.repayExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.metrics)
-          expect(leverageStubs.repayIsApproved).to.have.been.calledWithMatch(leverageExpected.isApproved)
+          // repaying from the position collateral needs no token approval
+          expect(leverageStubs.repayIsApproved).to.not.have.been.called
+          expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
           expect(leverageStubs.repayExpectedBorrowed).to.have.been.calledWithMatch(leverageExpected.expectedBorrowed)
           expect(leverageStubs.repayFutureLeverage).to.have.been.calledWithMatch(leverageExpected.futureLeverage)
-          if (!controllerApproved) {
-            expect(leverageStubs.estimateGasRepay).to.not.have.been.called
-            expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
-          } else if (approved) {
+          if (controllerApproved) {
             expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
-            expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
           } else {
-            expect(leverageStubs.estimateGasRepayApprove).to.have.been.calledWithMatch(
-              leverageExpected.estimateGasApprove,
-            )
+            expect(leverageStubs.estimateGasRepay).to.not.have.been.called
           }
         }
       : () => {
@@ -213,11 +205,7 @@ export const createRepayScenario = ({
           expect(leverageStubs.repay).to.have.been.calledOnce
           expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
           expect(leverageStubs.repay).to.have.been.calledWithMatch(leverageExpected.submit)
-          if (approved) {
-            expect(leverageStubs.repayApprove).to.not.have.been.called
-          } else {
-            expect(leverageStubs.repayApprove).to.have.been.calledWithMatch(leverageExpected.approve)
-          }
+          expect(leverageStubs.repayApprove).to.not.have.been.called
         }
       : () => {
           expect(normalStubs.estimateGasRepay).to.have.been.calledWithExactly(...normalExpected.estimateGas)

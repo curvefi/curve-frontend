@@ -18,19 +18,16 @@ import { mapQuery, q } from '@ui/features/queries/util'
 export function useMaxRepayTokenValues({
   market,
   borrowTokenAddress,
-  collateralTokenAddress,
   params,
   form,
 }: {
   market: MarketTemplate | undefined
   borrowTokenAddress: Address | undefined
-  collateralTokenAddress: Address | undefined
   params: RepayParams
   form: UseFormReturn<RepayFormData>
 }) {
   const { update: updateForm } = form
   const { chainId, userAddress } = params
-  const maxUserCollateral = useTokenBalance({ chainId, userAddress, tokenAddress: collateralTokenAddress })
   const maxUserBorrowed = useTokenBalance({ chainId, userAddress, tokenAddress: borrowTokenAddress })
   const userState = useUserState(params)
   // required for isFull query
@@ -41,7 +38,6 @@ export function useMaxRepayTokenValues({
     mapQuery(userState, d => d.debt),
   )
 
-  useFormSync(form, { maxCollateral: maxUserCollateral.data })
   useFormSync(form, { maxBorrowed: maxBorrowed.data })
   useEffect(
     () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
@@ -55,7 +51,6 @@ export function useMaxRepayTokenValues({
   return {
     isFull,
     max: {
-      userCollateral: { ...q(maxUserCollateral), fieldName: 'maxCollateral' as const },
       userBorrowed: { ...q(maxBorrowed), fieldName: 'maxBorrowed' as const },
       stateCollateral: { ...mapQuery(userState, d => d.collateral), fieldName: 'maxStateCollateral' as const },
       expected: useRepayExpectedBorrowed(params),

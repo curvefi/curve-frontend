@@ -6,7 +6,11 @@ import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { fetchRepayControllerApproval } from '@/llamalend/queries/repay/repay-controller-approval.query'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
-import { getRepayImplementation, isFullRepayFromDebtToken } from '@/llamalend/queries/repay/repay-query.helpers'
+import {
+  getRepayImplementation,
+  isFullRepayFromDebtToken,
+  NO_USER_COLLATERAL,
+} from '@/llamalend/queries/repay/repay-query.helpers'
 import type { RepayFormData } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -19,7 +23,6 @@ import { t } from '@ui/lib/i18n'
 
 type RepayMutation = {
   stateCollateral: Decimal
-  userCollateral: Decimal
   userBorrowed: Decimal
   isFull: boolean
   slippage: Decimal
@@ -36,21 +39,14 @@ type RepayOptions = {
 
 const approveRepay = async (
   market: MarketTemplate,
-  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId, slippage }: RepayMutation,
+  { stateCollateral = '0', userBorrowed = '0', isFull, routeId, slippage }: RepayMutation,
 ) => {
-  if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
+  if (isFullRepayFromDebtToken(isFull, stateCollateral)) {
     return (await getLoanImplementation(market).fullRepayApprove()) as Hex[]
   }
-  const [type, impl] = getRepayImplementation(market.id, {
-    userCollateral,
-    stateCollateral,
-    userBorrowed,
-    routeId,
-    slippage,
-  })
+  const [type, impl] = getRepayImplementation(market.id, { stateCollateral, userBorrowed, routeId, slippage })
   switch (type) {
     case 'zapV2':
-      return (await impl.repayApprove({ userCollateral })) as Hex[]
     case 'deleverage':
       return [] // no approve needed, paying from state
     case 'unleveragedMint':
@@ -62,23 +58,17 @@ const approveRepay = async (
 
 const repay = async (
   market: MarketTemplate,
-  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
+  { stateCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
 ): Promise<Hex> => {
-  if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
+  if (isFullRepayFromDebtToken(isFull, stateCollateral)) {
     return (await getLoanImplementation(market).fullRepay()) as Hex
   }
-  const [type, impl] = getRepayImplementation(market, {
-    userCollateral,
-    stateCollateral,
-    userBorrowed,
-    routeId,
-    slippage,
-  })
+  const [type, impl] = getRepayImplementation(market, { stateCollateral, userBorrowed, routeId, slippage })
   switch (type) {
     case 'zapV2':
       return (await impl.repay({
         stateCollateral,
-        userCollateral,
+        ...NO_USER_COLLATERAL,
         ...parseMutationRoute(market, { routeId, slippage, isRepay: true }),
       })) as Hex
     case 'deleverage':
@@ -112,7 +102,6 @@ export const useRepayMutation = ({
               marketId,
               userAddress: walletAddress,
               stateCollateral: variables.stateCollateral,
-              userCollateral: variables.userCollateral,
               userBorrowed: variables.userBorrowed,
             },
             { staleTime: 0 },
