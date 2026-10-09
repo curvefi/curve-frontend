@@ -1,3 +1,15 @@
+/** Combines abort signals, falling back to AbortController when AbortSignal.any is unavailable. */
+export const anySignal = (signals: AbortSignal[]): AbortSignal => {
+  if (typeof AbortSignal.any === 'function') return AbortSignal.any(signals)
+  const controller = new AbortController()
+  signals.forEach(signal =>
+    controller.signal.aborted || signal.aborted
+      ? controller.abort(signal.reason)
+      : signal.addEventListener('abort', () => controller.abort(signal.reason), { signal: controller.signal }),
+  )
+  return controller.signal
+}
+
 export const handleTimeout = async <T>(promise: Promise<T>, ms: number, message?: string): Promise<T> => {
   let id: ReturnType<typeof setTimeout> | undefined
   const timeout = new Promise<never>(
