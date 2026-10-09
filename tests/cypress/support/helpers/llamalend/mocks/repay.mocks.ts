@@ -174,7 +174,6 @@ export const createRepayScenario = ({
           expect(controllerApproval.setControllerApproval).to.not.have.been.called
           expect(leverageStubs.repay).to.not.have.been.called
           expect(leverageStubs.repayExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.metrics)
-          // repaying from the position collateral needs no token approval
           expect(leverageStubs.repayIsApproved).to.not.have.been.called
           expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
           expect(leverageStubs.repayExpectedBorrowed).to.have.been.calledWithMatch(leverageExpected.expectedBorrowed)

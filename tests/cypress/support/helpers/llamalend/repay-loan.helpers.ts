@@ -23,7 +23,7 @@ export function selectRepayToken({
   cy.get('[data-testid^="repay-input-"] [aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
   cy.get(`[data-testid="token-option-${tokenAddress.toLowerCase()}"]`, LOAD_TIMEOUT)
     .filter(`:has([data-testid="${tokenIconTestId}"])`)
-    .should('have.length', 1) // repaying with collateral from the wallet is disabled, only the position collateral is listed
+    .should('have.length', 1)
     .click()
   cy.get(`[data-testid="${tokenIconTestId}"]`, LOAD_TIMEOUT).should('be.visible')
   cy.get('[data-testid^="repay-input-"]', LOAD_TIMEOUT).contains(symbol).should('be.visible')
