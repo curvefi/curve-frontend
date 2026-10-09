@@ -8,15 +8,15 @@ import { notFalsy } from '@primitives/objects.utils'
 import type { FieldsOf } from '@ui/lib/validation/types'
 import { getUserState } from '../user/user-state.query'
 
-type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId' | 'slippage'>
-export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userBorrowed' | 'routeId' | 'slippage'>
+export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userBorrowed'>
+
+/** Repaying with collateral from the wallet is not supported, but the llamalend.js ZapV2 methods still require it */
+export const NO_USER_COLLATERAL = { userCollateral: '0' } as const
 
 /** Returns true when repayment closes the loan using only debt tokens from the wallet. */
-export const isFullRepayFromDebtToken = (
-  isFull: boolean | undefined,
-  stateCollateral: Decimal,
-  userCollateral: Decimal,
-) => !!isFull && !+stateCollateral && !+userCollateral
+export const isFullRepayFromDebtToken = (isFull: boolean | undefined, stateCollateral: Decimal) =>
+  !!isFull && !+stateCollateral
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
@@ -26,34 +26,30 @@ export const isFullRepayFromDebtToken = (
  */
 export function getRepayImplementation(
   marketId: string | MarketTemplate,
-  { stateCollateral, userCollateral, userBorrowed, routeId, slippage }: RepayFields,
+  { stateCollateral, userBorrowed, routeId, slippage }: RepayFields,
   routeMeta?: Partial<RouteMutationMeta>,
 ) {
   const market = getMarket(marketId)
-  const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
-    v => !!+v,
-  )
+  const [hasUserBorrowed, hasStateCollateral] = [userBorrowed, stateCollateral].map(v => !!+v)
   if (isMintMarket(market)) {
-    if (!hasUserCollateral && !hasStateCollateral) return ['unleveragedMint', market, [userBorrowed]] as const
+    if (!hasStateCollateral) return ['unleveragedMint', market, [userBorrowed]] as const
     if (hasZapV2(market) && !hasUserBorrowed) {
       const route = (routeMeta as RouteMutationMeta) ?? parseMutationRoute(market, { routeId, slippage, isRepay: true })
-      return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, ...route }]] as const
+      return ['zapV2', market.leverageZapV2, [{ stateCollateral, ...NO_USER_COLLATERAL, ...route }]] as const
     }
-    if (hasStateCollateral && !hasUserBorrowed && !hasUserCollateral && hasDeleverage(market))
+    if (hasStateCollateral && !hasUserBorrowed && hasDeleverage(market))
       return ['deleverage', market.deleverage, [stateCollateral]] as const
   } else {
-    if (!hasUserCollateral && !hasStateCollateral)
-      return ['unleveragedLend', market.loan, [{ debt: userBorrowed }]] as const
+    if (!hasStateCollateral) return ['unleveragedLend', market.loan, [{ debt: userBorrowed }]] as const
     if (hasZapV2(market) && !hasUserBorrowed) {
       const route = (routeMeta as RouteMutationMeta) ?? parseMutationRoute(market, { routeId, slippage, isRepay: true })
-      return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, ...route }]] as const
+      return ['zapV2', market.leverageZapV2, [{ stateCollateral, ...NO_USER_COLLATERAL, ...route }]] as const
     }
   }
   throw new Error(
     // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
     `Invalid repay implementation for ${market.constructor.name} market: ${marketId} with ${notFalsy(
       hasUserBorrowed && 'user borrowed',
-      hasUserCollateral && 'user collateral',
       hasStateCollateral && 'state collateral',
     ).join(', ')}`,
   )
@@ -61,13 +57,12 @@ export function getRepayImplementation(
 
 export function getRepayImplementationType(
   marketId: string | MarketTemplate,
-  { userCollateral, stateCollateral, userBorrowed }: FieldsOf<RepayFormFields>,
+  { stateCollateral, userBorrowed }: FieldsOf<RepayFormFields>,
 ) {
   const routeMeta = {} // we are ignoring the args in this helper anyway
   const [implementationType] = getRepayImplementation(
     marketId,
     {
-      userCollateral: userCollateral ?? '0',
       stateCollateral: stateCollateral ?? '0',
       userBorrowed: userBorrowed ?? '0',
       slippage: '0', // irrelevant for this specific helper

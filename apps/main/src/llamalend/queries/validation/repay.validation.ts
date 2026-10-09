@@ -8,7 +8,6 @@ import {
   validateLeverageSupported,
   validateLeverageValuesSupported,
   validateMaxBorrowed,
-  validateMaxCollateral,
   validateMaxStateCollateral,
   validateRoute,
   validateRouteCalldata,
@@ -24,10 +23,10 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
-const validateRepayCollateralField = (field: 'stateCollateral' | 'userCollateral', value: Decimal | Nullish): void => {
-  skipWhen(value == null, () => {
-    test(field, `Collateral amount must be a non-negative number`, () => {
-      enforce(value).isDecimal().gte(0)
+const validateRepayCollateralField = (stateCollateral: Decimal | Nullish): void => {
+  skipWhen(stateCollateral == null, () => {
+    test('stateCollateral', `Collateral amount must be a non-negative number`, () => {
+      enforce(stateCollateral).isDecimal().gte(0)
     })
   })
 }
@@ -40,13 +39,9 @@ const validateRepayBorrowedField = (userBorrowed: Decimal | Nullish): void => {
   )
 }
 
-const validateRepayHasValue = (
-  stateCollateral: Decimal | Nullish,
-  userCollateral: Decimal | Nullish,
-  userBorrowed: Decimal | Nullish,
-) => {
+const validateRepayHasValue = (stateCollateral: Decimal | Nullish, userBorrowed: Decimal | Nullish) => {
   test('root', 'Enter an amount to repay', () => {
-    enforce(stateCollateral ?? userCollateral ?? userBorrowed)
+    enforce(stateCollateral ?? userBorrowed)
       .isDecimal()
       .greaterThan(0)
   })
@@ -55,7 +50,6 @@ const validateRepayHasValue = (
 const validateRepayFieldsForMarket = (
   marketId: MarketTemplate | string | Nullish,
   stateCollateral: Decimal | Nullish,
-  userCollateral: Decimal | Nullish,
   userBorrowed: Decimal | Nullish,
   routeId: string | Nullish,
   leverageProviders: readonly RouteProvider[] | undefined,
@@ -66,12 +60,8 @@ const validateRepayFieldsForMarket = (
     // Get the implementation to validate fields according to market capabilities. Default to 0 just like the queries
     const type =
       market &&
-      getRepayImplementationType(market, {
-        stateCollateral: stateCollateral ?? '0',
-        userCollateral: userCollateral ?? '0',
-        userBorrowed: userBorrowed ?? '0',
-      })
-    const swapRequired = stateCollateral || userCollateral || routeId
+      getRepayImplementationType(market, { stateCollateral: stateCollateral ?? '0', userBorrowed: userBorrowed ?? '0' })
+    const swapRequired = stateCollateral || routeId
     validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
     validateRouteCalldata(routeId, market)
     if (validateLeverageProviders) validateRouteProvider(routeId, leverageProviders, type === 'zapV2')
@@ -88,13 +78,11 @@ const repayValidationGroup = (
   marketId: MarketTemplate | string | Nullish,
   {
     stateCollateral,
-    userCollateral,
     userBorrowed,
     slippage,
     routeId,
     isFull,
     maxStateCollateral,
-    maxCollateral,
     maxBorrowed,
     isControllerApproved,
   }: FieldsOf<RepayFormData & { isControllerApproved: boolean }>,
@@ -115,14 +103,12 @@ const repayValidationGroup = (
   },
 ) => {
   const market = tryGetMarket(marketId)
-  validateRepayCollateralField('userCollateral', userCollateral)
-  validateRepayCollateralField('stateCollateral', stateCollateral)
+  validateRepayCollateralField(stateCollateral)
   validateRepayBorrowedField(userBorrowed)
-  validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
+  validateRepayHasValue(stateCollateral, userBorrowed)
   validateRepayFieldsForMarket(
     market,
     stateCollateral,
-    userCollateral,
     userBorrowed,
     routeId,
     leverageProviders,
@@ -135,7 +121,6 @@ const repayValidationGroup = (
 
   skipWhen(!validateMax, () => {
     validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed, required: maxRequired })
-    validateMaxCollateral(userCollateral, maxCollateral, { required: maxRequired })
     validateMaxStateCollateral(stateCollateral, maxStateCollateral, { required: maxRequired })
   })
 }

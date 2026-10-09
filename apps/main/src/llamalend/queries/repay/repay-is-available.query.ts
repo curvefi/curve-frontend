@@ -9,7 +9,6 @@ export const { useQuery: useRepayIsAvailable, invalidate: invalidateRepayIsAvail
     chainId,
     marketId,
     stateCollateral = '0',
-    userCollateral = '0',
     userBorrowed = '0',
     userAddress,
     slippage,
@@ -21,7 +20,6 @@ export const { useQuery: useRepayIsAvailable, invalidate: invalidateRepayIsAvail
       marketId,
       userAddress,
       stateCollateral,
-      userCollateral,
       userBorrowed,
       slippage,
       routeId,
@@ -30,19 +28,12 @@ export const { useQuery: useRepayIsAvailable, invalidate: invalidateRepayIsAvail
     chainId,
     marketId,
     stateCollateral,
-    userCollateral,
     userBorrowed,
     userAddress,
     slippage,
     routeId,
   }: RepayQuery): Promise<boolean> => {
-    const [type, impl, args] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      slippage,
-      routeId,
-    })
+    const [type, impl, args] = getRepayImplementation(marketId, { stateCollateral, userBorrowed, slippage, routeId })
     switch (type) {
       case 'zapV2':
         return await impl.repayIsAvailable(...args)

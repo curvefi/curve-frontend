@@ -5,14 +5,13 @@ import { parseRoute } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
-import { getRepayImplementation } from './repay-query.helpers'
+import { getRepayImplementation, NO_USER_COLLATERAL } from './repay-query.helpers'
 
 export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceImpact } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
     stateCollateral = '0',
-    userCollateral = '0',
     userBorrowed = '0',
     userAddress,
     slippage,
@@ -24,7 +23,6 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
       marketId,
       userAddress,
       stateCollateral,
-      userCollateral,
       userBorrowed,
       slippage,
       routeId,
@@ -32,24 +30,17 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
   queryFn: async ({
     marketId,
     stateCollateral,
-    userCollateral,
     userBorrowed,
     userAddress,
     slippage,
     routeId,
   }: RepayQuery): Promise<Decimal | null> => {
-    const [type, impl] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      slippage,
-      routeId,
-    })
+    const [type, impl] = getRepayImplementation(marketId, { stateCollateral, userBorrowed, slippage, routeId })
     switch (type) {
       case 'zapV2': {
         const { priceImpact } = await impl.repayExpectedMetrics({
           stateCollateral,
-          userCollateral,
+          ...NO_USER_COLLATERAL,
           healthIsFull: true, // this will be removed, we don't care about health here
           address: userAddress,
           ...parseRoute(routeId),

@@ -21,7 +21,7 @@ import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
-import { decimal, decimalMinus, decimalNegate } from '@ui/lib/decimal'
+import { decimal, decimalMinus } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
@@ -79,7 +79,7 @@ export function RepayLoanInfoList({
   controllerAddress,
   marketType,
   params,
-  values: { stateCollateral, userCollateral, userBorrowed, isFull },
+  values: { stateCollateral, userBorrowed, isFull },
   isControllerApproved,
   tokens: { collateralToken, borrowToken },
   showLeverage,
@@ -98,7 +98,7 @@ export function RepayLoanInfoList({
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
 }) {
-  const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'userBorrowed')
+  const isOpen = form.isTouched('stateCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const { debt, debtDelta } = useRepayRemainingDebt(
@@ -125,7 +125,6 @@ export function RepayLoanInfoList({
             userAddress: params.userAddress,
             collateralToken,
             borrowToken,
-            collateralDelta: userCollateral && decimalNegate(userCollateral),
             expectedBorrowed: debt?.data,
           },
           isOpen,
@@ -145,7 +144,7 @@ export function RepayLoanInfoList({
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
         ),
         // routeImage: useRepayRouteImage(params, isOpen),
-        collateralDelta: userCollateral,
+        collateralDelta: undefined,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta }, isOpen)}
       {...prevLoanState}
