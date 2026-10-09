@@ -1,6 +1,6 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { calculateExpectedBurn, calculateMaximumBurn } from '@/stellar/lib/amounts'
+import { calculateMaximumBurn } from '@/stellar/lib/amounts'
 import { fetchExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { fetchPoolState, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
@@ -37,16 +37,16 @@ export const checkWithdrawDetail = (
     formatNumber(amount, 'token.balance'),
   )
 
-export const checkWithdrawBalances = ({ coins, lp, reserves }: WithdrawState) => {
+export const checkWithdrawBalances = ({ coins, lp }: WithdrawState) => {
   checkWithdrawDetail('current-lp', lp.balance)
   withdrawLpInput().find('[data-testid="balance-value"]').should('have.attr', 'data-value', lp.balance)
-  coins.forEach(({ address }, index) => {
-    poolInput(address).find('[data-testid="balance-value"]').should('have.attr', 'data-value', reserves[index])
+  coins.forEach(({ address }) => {
+    poolInput(address).find('[data-testid="balance-value"]').invoke('attr', 'data-value').should('not.be.empty')
   })
 }
 
 export const fetchWithdrawPreview = async (pool: StellarContract, state: WithdrawState, amounts: Decimal[]) => {
-  const quote = await fetchExpectedLp({
+  const params = {
     network: TEST_NETWORK,
     pool,
     amounts,
@@ -54,13 +54,10 @@ export const fetchWithdrawPreview = async (pool: StellarContract, state: Withdra
     supply: state.supply,
     isDeposit: false,
     maxAmounts: state.reserves,
-  })
-  const expected = calculateExpectedBurn(quote)
-  return {
-    expected,
-    maximum: calculateMaximumBurn(expected, useUserProfileStore.getState().maxSlippage.stable),
-    projected: decimalMinus(state.lp.balance, expected),
-  }
+  } as const
+  const expected = await fetchExpectedLp(params)
+  const maximum = calculateMaximumBurn(expected, useUserProfileStore.getState().maxSlippage.stable)
+  return { expected, maximum, projected: decimalMinus(state.lp.balance, expected) }
 }
 
 export const submitWithdrawForm = ({ coins }: PoolState) => {

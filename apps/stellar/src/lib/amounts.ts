@@ -17,13 +17,6 @@ const applyLpSlippage = (amount: Decimal, slippage: Decimal, rounding: BigNumber
 export const calculateMinimumMint = (quote: Decimal, slippage: Decimal): Decimal =>
   applyLpSlippage(quote, decimalMinus('0', slippage), BigNumber.ROUND_FLOOR)
 
-/** The imbalance quote excludes the smallest LP amount added by execution. */
-export const calculateExpectedBurn = (quote: Decimal): Decimal =>
-  new BigNumber(quote)
-    .decimalPlaces(LP_TOKEN_DECIMALS, BigNumber.ROUND_DOWN)
-    .plus(`1e-${LP_TOKEN_DECIMALS}`)
-    .toFixed() as Decimal
-
 export const calculateMaximumBurn = (expected: Decimal, slippage: Decimal): Decimal =>
   applyLpSlippage(expected, slippage, BigNumber.ROUND_CEIL)
 

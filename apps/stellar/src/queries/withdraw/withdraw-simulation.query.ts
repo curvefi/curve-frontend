@@ -2,6 +2,9 @@ import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-
 import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { withdrawSimulationValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
+import { maybe } from '@primitives/objects.utils'
+import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
+import { getSingleCoinWithdrawIndex } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toBigIntArray, toWei, toWeiArray } from '@ui/lib/decimal'
 
@@ -21,8 +24,9 @@ export const {
     maxAmounts,
     lpAmount,
     maxLpAmount,
+    maxWithdrawIndex,
     seedLock,
-    quote,
+    expected,
     slippage,
   }: WithdrawSimulationParams) =>
     ({
@@ -37,11 +41,38 @@ export const {
       maxAmounts,
       lpAmount,
       maxLpAmount,
+      maxWithdrawIndex,
       seedLock,
-      quote,
+      expected,
       slippage,
     }) as const,
-  queryFn: ({ network, pool, account, amounts, decimals, maximumBurn }: WithdrawSimulationQuery) =>
+  queryFn: ({
+    network,
+    pool,
+    account,
+    amounts,
+    decimals,
+    maximumBurn,
+    lpAmount,
+    maxLpAmount,
+    maxWithdrawIndex,
+    slippage,
+  }: WithdrawSimulationQuery) =>
+    maybe(getSingleCoinWithdrawIndex({ maxWithdrawIndex, lpAmount, maxLpAmount }), index =>
+      simulateContractCall<bigint>(
+        network,
+        pool,
+        'remove_liquidity_one_coin',
+        [
+          account,
+          BigInt(toWei(lpAmount, LP_TOKEN_DECIMALS)),
+          index,
+          BigInt(toWei(calculateMinimumReceived(amounts[index]!, slippage, decimals[index]), decimals[index])),
+          account,
+        ],
+        account,
+      ),
+    ) ??
     simulateContractCall<bigint>(
       network,
       pool,

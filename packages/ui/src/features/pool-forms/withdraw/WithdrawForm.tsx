@@ -1,10 +1,11 @@
 import type { Decimal } from '@primitives/decimal.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import { Form } from '@ui/features/forms/components/Form'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { FormButton } from '@ui/features/forms/FormButton'
-import { allTokenFields } from '@ui/features/pool-forms/pool-form.utils'
+import { allTokenFields, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { LiquidityProviderInput } from '@ui/features/pool-forms/withdraw/LiquidityProviderInput'
-import { type QueryProp } from '@ui/features/queries/util'
+import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import type { PoolFormProps } from '../pool-form.types'
 import { PoolTokenInputs } from '../PoolTokenInputs'
@@ -12,7 +13,7 @@ import type { WithdrawFormValues } from './withdraw-form.utils'
 
 type WithdrawFormProps = PoolFormProps<WithdrawFormValues> & {
   reserves: QueryProp<Decimal[]>
-  maxAmounts: QueryProp<(Decimal | undefined)[]>
+  maxAmounts: QueryProp<Decimal>[]
   decimals: QueryProp<(number | undefined)[]>
   lpBalance: QueryProp<Decimal>
   supply: QueryProp<Decimal>
@@ -48,7 +49,25 @@ export const WithdrawForm = ({
       balance={lpBalance}
       isDisabled={isPending}
     />
-    <PoolTokenInputs tokens={tokens} reserves={reserves} disabled={isPending} positionAmounts={maxAmounts} />
+    <PoolTokenInputs
+      tokens={tokens}
+      reserves={reserves}
+      disabled={isPending}
+      positionAmounts={maxAmounts}
+      positionTooltip={t`Maximum withdrawal into this token`}
+      maxAmounts={maxAmounts}
+      maxSelectedIndex={form.watchValue('maxWithdrawIndex')}
+      onMax={index =>
+        form.update({
+          // Withdraw the full LP balance into the selected coin, clearing the other outputs and balanced mode.
+          ...fromEntries(maxAmounts.map((max, i) => [poolAmountField(i), i === index ? max.data : '0'])),
+          lpAmount: lpBalance.data,
+          maxWithdrawIndex: index,
+          isBalanced: false,
+        })
+      }
+      onValueChange={() => form.update({ maxWithdrawIndex: undefined })}
+    />
     <FormButton
       {...wallet}
       pending={isPending}
