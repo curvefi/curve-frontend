@@ -1,5 +1,6 @@
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { DECIMAL_REGEX } from '@primitives/decimal.utils'
 
 const ExpectedExchangeRate = /1 ETH = \d+(?:\.\d{2,4})?k USDC/
 
@@ -22,11 +23,9 @@ export function writeSwapForm({ amount }: { amount: string }) {
  * Check that the swap route details (exchange rate, price impact, to-amount) have loaded.
  */
 export function checkSwapDetailsLoaded() {
-  getToAmountInput(TIMEOUTS['evm.simulation']).should($el => {
-    expect($el.val()).to.match(/^\d+(\.\d+)?$/)
-  })
-  getActionValue('exchange-rate', 'evm.simulation').should('match', ExpectedExchangeRate)
-  cy.get('[data-testid="price-impact-value"]', TIMEOUTS['evm.simulation']).should('contain', '%')
+  getToAmountInput(TIMEOUTS['evm.simulation']).should($el => expect($el.val()).to.match(DECIMAL_REGEX))
+  getActionValue('exchange-rate', 'ui.render').should('match', ExpectedExchangeRate)
+  cy.get('[data-testid="price-impact-value"]').should('contain', '%')
 }
 
 /**
