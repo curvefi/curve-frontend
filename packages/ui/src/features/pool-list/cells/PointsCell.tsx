@@ -10,7 +10,7 @@ const { Spacing } = SizesAndSpaces
 export const PointsCell = ({ pool }: { pool: PoolRow }) => {
   const campaigns = getCompactPointsCampaigns(pool)
 
-  if (!campaigns.length) {
+  if (!campaigns?.length) {
     return (
       <Typography data-testid="pool-points" variant="tableCellValue" sx={{ textAlign: 'end' }}>
         -

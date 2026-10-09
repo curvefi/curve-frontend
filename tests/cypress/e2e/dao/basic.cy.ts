@@ -1,8 +1,7 @@
-import { LOAD_TIMEOUT } from '@cy/support/ui'
-
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 describe('Basic Access Test', () => {
   it('should open the DAO DApp successfully', () => {
     cy.visit('/dao')
-    cy.title(LOAD_TIMEOUT).should('include', 'Proposals')
+    cy.title(TIMEOUTS['ui.navigation']).should('include', 'Proposals')
   })
 })

@@ -40,12 +40,12 @@ describe('StakeForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      readStakeAvailableAssets()
+      readStakeAvailableAssets(true)
       writeStakeForm({ assets: input.amount })
-      checkStakeSubmit({ buttonText, hasGauge })
+      checkStakeSubmit({ buttonText, hasGauge, isMocked: true })
       // stop test if no gauge because no gas estimation and submit disabled
       if (!hasGauge) return
-      checkSupplyActionInfoValues(expected.actionInfo)
+      checkSupplyActionInfoValues({ ...expected.actionInfo, isMocked: true })
 
       cy.then(() => {
         expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
@@ -59,7 +59,7 @@ describe('StakeForm (mocked)', () => {
         }
       })
 
-      submitStakeForm().then(() => {
+      submitStakeForm(true).then(() => {
         expect(stubs.stake).to.have.been.calledWithExactly(...expected.submit)
         if (approved) {
           expect(stubs.stakeApprove).to.not.have.been.called

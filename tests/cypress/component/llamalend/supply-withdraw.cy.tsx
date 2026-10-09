@@ -38,8 +38,8 @@ describe('WithdrawForm (mocked)', () => {
       )
 
       writeWithdrawForm({ amount: input.amount })
-      checkSupplyActionInfoValues(expected.actionInfo)
-      checkSupplySubmitButtonText('withdraw', buttonText)
+      checkSupplyActionInfoValues({ ...expected.actionInfo, isMocked: true })
+      checkSupplySubmitButtonText('withdraw', buttonText, true)
 
       cy.then(() => {
         expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
@@ -48,7 +48,7 @@ describe('WithdrawForm (mocked)', () => {
         expect(stubs.previewWithdraw).to.have.been.calledWithExactly(...expected.previewWithdraw)
       })
 
-      submitWithdrawForm().then(() => {
+      submitWithdrawForm(true).then(() => {
         if (isFull) {
           expect(stubs.estimateGasRedeem).to.have.been.calledWithExactly(...expected.estimateGas)
           expect(stubs.redeem).to.have.been.calledWithExactly(...expected.submit)

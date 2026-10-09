@@ -1,5 +1,5 @@
 import { oneInt } from '@cy/support/generators'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { assert } from '@primitives/objects.utils'
 import { getRpcUrls } from './vnet'
 
@@ -20,7 +20,13 @@ const requestVirtualNetworkState = ({
   const body = { jsonrpc: '2.0', method, params, id: oneInt() }
 
   return cy
-    .request<JsonRpcResponse>({ method: 'POST', url: adminRpcUrl, body, failOnStatusCode: false, ...LOAD_TIMEOUT })
+    .request<JsonRpcResponse>({
+      method: 'POST',
+      url: adminRpcUrl,
+      body,
+      failOnStatusCode: false,
+      ...TIMEOUTS['tenderly.snapshot'],
+    })
     .then(({ body: response, status, statusText }) => {
       assert(
         status >= 200 && status < 300 && !response.error,

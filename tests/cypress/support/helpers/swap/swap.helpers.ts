@@ -1,5 +1,5 @@
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 
 const ExpectedExchangeRate = /1 ETH = \d+(?:\.\d{2,4})?k USDC/
 
@@ -12,8 +12,8 @@ const getToAmountInput = (options = {}) => cy.get('[data-testid="to-amount"] [na
  * AND the wallet signer is set, ensuring the amount is stored under the correct active key.
  */
 export function writeSwapForm({ amount }: { amount: string }) {
-  cy.get('[data-testid="approval"], [data-testid="swap"]', LOAD_TIMEOUT)
-  getFromAmountInput(LOAD_TIMEOUT).should('be.enabled')
+  cy.get('[data-testid="approval"], [data-testid="swap"]', TIMEOUTS['ui.render'])
+  getFromAmountInput(TIMEOUTS['ui.render']).should('be.enabled')
   getFromAmountInput().type(amount)
   getFromAmountInput().blur()
 }
@@ -22,11 +22,11 @@ export function writeSwapForm({ amount }: { amount: string }) {
  * Check that the swap route details (exchange rate, price impact, to-amount) have loaded.
  */
 export function checkSwapDetailsLoaded() {
-  getToAmountInput(LOAD_TIMEOUT).should($el => {
+  getToAmountInput(TIMEOUTS['evm.simulation']).should($el => {
     expect($el.val()).to.match(/^\d+(\.\d+)?$/)
   })
-  getActionValue('exchange-rate').should('match', ExpectedExchangeRate)
-  cy.get('[data-testid="price-impact-value"]', LOAD_TIMEOUT).should('contain', '%')
+  getActionValue('exchange-rate', 'evm.simulation').should('match', ExpectedExchangeRate)
+  cy.get('[data-testid="price-impact-value"]', TIMEOUTS['evm.simulation']).should('contain', '%')
 }
 
 /**
@@ -35,6 +35,6 @@ export function checkSwapDetailsLoaded() {
  * Returns a Cypress chainable that resolves when the transaction success message is shown.
  */
 export function submitApprovedSwap() {
-  cy.get('[data-testid="swap"]', TRANSACTION_LOAD_TIMEOUT).click()
-  return cy.contains('Transaction complete', TRANSACTION_LOAD_TIMEOUT)
+  cy.get('[data-testid="swap"]', TIMEOUTS['evm.allowance']).click()
+  return cy.contains('Transaction complete', TIMEOUTS['evm.confirmation'])
 }

@@ -1,4 +1,5 @@
-export { AddressCell, TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+export { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
+export { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 export { BreakdownActionLabel } from './BreakdownActionLabel'
 export { LlammaEventActionCell } from './LlammaEventActionCell'
 export { LlammaTokenAmount } from './LlammaTokenAmount'

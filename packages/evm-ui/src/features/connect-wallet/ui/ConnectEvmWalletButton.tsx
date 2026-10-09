@@ -4,7 +4,7 @@ import {
   ConnectWalletButton,
   type ConnectWalletButtonProps,
 } from '@ui/features/connect-wallet/ConnectWalletButton'
-import { useWallet } from '../lib'
+import { useWallet } from '../lib/useWallet'
 
 export const ConnectEvmWalletButton = (props: Omit<ConnectWalletButtonProps, keyof ConnectionProps>) => {
   const { isConnecting, isConnected } = useConnection()

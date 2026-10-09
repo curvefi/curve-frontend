@@ -1,5 +1,5 @@
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
   checkSupplyActionInfoValues,
@@ -9,20 +9,26 @@ import {
   writeSupplyInput,
 } from './supply.helpers'
 
-export const submitDepositForm = ({ solvencyPercent = 100 }: { solvencyPercent?: number }) => {
+export const submitDepositForm = ({
+  solvencyPercent = 100,
+  isMocked = false,
+}: {
+  solvencyPercent?: number
+  isMocked?: boolean
+}) => {
   if (solvencyPercent <= SOLVENCY_THRESHOLDS.solvent && solvencyPercent > SOLVENCY_THRESHOLDS.low) {
-    return confirmLowSolvencyDepositForm()
+    return confirmLowSolvencyDepositForm(isMocked)
   }
-  return submitSupplyForm('deposit', 'Deposit successful!')
+  return submitSupplyForm('deposit', 'Deposit successful!', isMocked)
 }
 
-const confirmLowSolvencyDepositForm = () => {
-  cy.get('[data-testid="supply-deposit-submit-button"]').click(LOAD_TIMEOUT)
+const confirmLowSolvencyDepositForm = (isMocked = false) => {
+  cy.get('[data-testid="supply-deposit-submit-button"]').click(TIMEOUTS['ui.interaction'])
   cy.get('[data-testid="low-solvency-action-checkbox"]').click()
   cy.get('[data-testid="low-solvency-action-submit-button"]').click()
   return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains('Deposit successful!', TRANSACTION_LOAD_TIMEOUT)
+    .get('[data-testid="toast-success"]', TIMEOUTS[getTimeoutCategory('evm.confirmation', isMocked)])
+    .contains('Deposit successful!', TIMEOUTS[getTimeoutCategory('evm.confirmation', isMocked)])
 }
 
 /**
@@ -38,11 +44,13 @@ export function checkDepositSubmit({
   withDisabledAlert,
   maxDeposit,
   solvencyPercent,
+  isMocked = false,
 }: {
   buttonText: string
   withDisabledAlert?: boolean
   maxDeposit?: Decimal
   solvencyPercent: number
+  isMocked?: boolean
 }) {
   if (withDisabledAlert || solvencyPercent < SOLVENCY_THRESHOLDS.low) {
     cy.get('[data-testid="supply-deposit-submit-button"]').should('not.exist')
@@ -50,11 +58,11 @@ export function checkDepositSubmit({
     return
   }
   if (maxDeposit) {
-    cy.get('[data-testid="supply-deposit-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
+    cy.get('[data-testid="supply-deposit-submit-button"]', TIMEOUTS['ui.render']).should('be.disabled')
     return
   }
 
-  checkSupplySubmitButtonText('deposit', buttonText)
+  checkSupplySubmitButtonText('deposit', buttonText, isMocked)
 }
 
 /**
@@ -66,13 +74,15 @@ export const checkDepositDetailsLoaded = ({
   prevSuppliedAssets,
   symbol = 'crvUSD',
   hasApi = true,
+  isMocked = false,
 }: {
   suppliedAssets: Decimal
   prevSuppliedAssets: Decimal
   symbol?: string
   hasApi?: boolean
+  isMocked?: boolean
 }) => {
-  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi })
+  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi, isMocked })
 }
 
 /**
@@ -84,7 +94,7 @@ export const touchDepositForm = () => touchSupplyInput('deposit')
  * Verifies the deposit max-limit error is shown only when a maxDeposit is set.
  */
 export const checkMaxDeposit = (maxDeposit?: Decimal) => {
-  cy.contains(`Amount exceeds maximum of${maxDeposit ? ' ' + maxDeposit : ''}`, LOAD_TIMEOUT).should(
+  cy.contains(`Amount exceeds maximum of${maxDeposit ? ' ' + maxDeposit : ''}`, TIMEOUTS['ui.render']).should(
     maxDeposit ? 'be.visible' : 'not.exist',
   )
 }

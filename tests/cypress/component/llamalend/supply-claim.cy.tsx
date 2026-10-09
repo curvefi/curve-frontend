@@ -51,6 +51,7 @@ describe('SupplyClaimTab (mocked)', () => {
       validateClaimTabState({
         crvButtonDisabled: expected.crvButtonDisabled,
         otherRewardsButtonDisabled: expected.otherRewardsButtonDisabled,
+        isMocked: true,
       })
 
       cy.wrap(stubs.claimableCrv).should('have.been.calledWithExactly', ...expected.claimableCrv)
@@ -70,7 +71,7 @@ describe('SupplyClaimTab (mocked)', () => {
       })
 
       if (expected.crvButtonDisabled && expected.otherRewardsButtonDisabled) {
-        checkClaimDetailsLoaded({ hasCrvRewards: false, hasOtherRewards: false })
+        checkClaimDetailsLoaded({ hasCrvRewards: false, hasOtherRewards: false, isMocked: true })
         return
       }
 
@@ -79,10 +80,11 @@ describe('SupplyClaimTab (mocked)', () => {
         hasCrvRewards: expected.shouldClaimCrv,
         hasOtherRewards: expected.shouldClaimRewards,
         expectedSymbols: expected.table.rows.map(({ symbol }) => symbol),
+        isMocked: true,
       })
 
-      if (expected.shouldClaimCrv) submitClaimAndSettle('crv')
-      if (expected.shouldClaimRewards) submitClaimAndSettle('other')
+      if (expected.shouldClaimCrv) submitClaimAndSettle('crv', { isMocked: true })
+      if (expected.shouldClaimRewards) submitClaimAndSettle('other', { isMocked: true })
 
       cy.then(() => {
         if (expected.shouldClaimCrv) {

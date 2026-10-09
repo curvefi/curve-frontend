@@ -19,9 +19,9 @@ import { FormClaim } from '@/dex/components/PagePool/Withdraw/components/FormCla
 import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormUnstake'
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
-import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
+import { AddRewardToken } from '@/dex/features/add-gauge-reward-token/ui/AddRewardToken'
 import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
-import { DepositReward } from '@/dex/features/deposit-gauge-reward'
+import { DepositReward } from '@/dex/features/deposit-gauge-reward/ui/DepositReward'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
@@ -40,7 +40,7 @@ import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { constQ } from '@ui/features/queries/util'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { PoolAlertBanner } from '../PoolAlertBanner'
@@ -71,7 +71,7 @@ const menu = [
         component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDepositStake} {...props} />,
       },
     ],
-  } satisfies FormTab<TransferTabsParams>,
+  },
   {
     value: 'withdraw',
     label: t`Withdraw`,
@@ -84,7 +84,7 @@ const menu = [
       { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },
       { value: 'CLAIM', label: t`Claim Rewards`, component: FormClaim },
     ],
-  } satisfies FormTab<TransferTabsParams>,
+  },
   {
     value: 'swap',
     label: t`Swap`,
@@ -109,7 +109,7 @@ const menu = [
       },
     ],
   },
-] satisfies FormTab<TransferTabsParams>[]
+] as const satisfies FormTab<TransferTabsParams>[]
 
 /** Replaces old form-specific pool URLs for expanded-row links that should open a specific form tab. */
 type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }

@@ -37,10 +37,10 @@ describe('UnstakeForm (mocked)', () => {
     )
 
     checkSupplyAlert(expected.alert)
-    readUnstakeAvailableAssets()
+    readUnstakeAvailableAssets(true)
     writeUnstakeForm({ assets: input.amount })
-    checkSupplyActionInfoValues(expected.actionInfo)
-    checkSupplySubmitButtonText('unstake', 'Unstake')
+    checkSupplyActionInfoValues({ ...expected.actionInfo, isMocked: true })
+    checkSupplySubmitButtonText('unstake', 'Unstake', true)
 
     cy.then(() => {
       expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
@@ -49,7 +49,7 @@ describe('UnstakeForm (mocked)', () => {
       expect(stubs.estimateGasUnstake).to.have.been.calledWithExactly(...expected.estimateGas)
     })
 
-    submitUnstakeForm().then(() => {
+    submitUnstakeForm(true).then(() => {
       expect(stubs.unstake).to.have.been.calledWithExactly(...expected.submit)
     })
   })
