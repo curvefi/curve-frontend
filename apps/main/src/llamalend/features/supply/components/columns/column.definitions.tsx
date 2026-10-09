@@ -30,7 +30,6 @@ export const CLAIM_TAB_COLUMNS = columnHelper.columns([
           primary={formatNumber(getValue(), { abbreviate: false })}
           secondary={row.original.symbol}
           showChainIcon
-          boldPrimary
         />
       </InlineTableCell>
     ),

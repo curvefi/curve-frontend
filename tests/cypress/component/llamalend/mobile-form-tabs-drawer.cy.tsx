@@ -1,6 +1,7 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { closeDrawer } from '@cy/support/helpers/data-table.helpers'
-import { LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { oneMobileViewport } from '@cy/support/ui'
 import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 import { FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 
@@ -37,8 +38,8 @@ const shouldBeInvisibleOrNotExist = (testId: string) => {
 
 const openMobileAction = (action: string, label: string, panelTestId: string, assertDrawer?: () => void) => {
   shouldBeInvisibleOrNotExist(panelTestId)
-  cy.get(`[data-testid="mobile-form-action-${action}"]`, LOAD_TIMEOUT).click()
-  cy.get('[data-testid="mobile-form-drawer"]', LOAD_TIMEOUT).should('be.visible')
+  cy.get(`[data-testid="mobile-form-action-${action}"]`, TIMEOUTS['ui.interaction']).click()
+  cy.get('[data-testid="mobile-form-drawer"]', TIMEOUTS['ui.render']).should('be.visible')
   cy.get('[data-testid="mobile-form-active-action"]').should('be.visible').and('have.text', label)
   cy.get(`[data-testid="tab-${action}"]`).should('not.exist')
   cy.get(`[data-testid="${panelTestId}"]`).should('be.visible')

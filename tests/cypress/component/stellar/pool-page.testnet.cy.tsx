@@ -8,7 +8,8 @@ import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stella
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
 import { withdrawLpInput, withdrawSubmit } from '@cy/support/helpers/stellar/withdraw.helpers'
 import { createComponentTestRouter } from '@cy/support/routes'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import { RouterProvider } from '@tanstack/react-router'
 
 describe('Stellar testnet pool page', () => {
@@ -24,15 +25,17 @@ describe('Stellar testnet pool page', () => {
         testnetConfig = config
         await connectTestWallet(config)
       })
-      .then(API_LOAD_TIMEOUT, () => deployTestPool(testnetConfig))
-      .then(LOAD_TIMEOUT, async deployedPool => {
+      .then(TIMEOUTS['stellar.deployPool'], () => deployTestPool(testnetConfig))
+      .then(TIMEOUTS['stellar.seedPool'], async deployedPool => {
         pool = deployedPool
         await seedTestPool(pool, testnetConfig)
       })
   })
 
   beforeEach(() =>
-    cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(freshState => (state = freshState)),
+    cy
+      .then(TIMEOUTS['stellar.read'], () => fetchPoolState(pool, testnetConfig))
+      .then(freshState => (state = freshState)),
   )
 
   it('loads a seeded live pool and switches between liquidity actions', () => {
@@ -49,11 +52,11 @@ describe('Stellar testnet pool page', () => {
     )
 
     state.coins.forEach(({ address }) => {
-      cy.get(`[data-testid="pool-token-input-${address}"]`, LOAD_TIMEOUT).should('be.visible')
+      cy.get(`[data-testid="pool-token-input-${address}"]`, TIMEOUTS['ui.render']).should('be.visible')
     })
     checkDepositBalances(state)
 
-    cy.get('[data-testid="tab-withdraw"]', LOAD_TIMEOUT).click()
+    cy.get('[data-testid="tab-withdraw"]', TIMEOUTS['ui.interaction']).click()
     withdrawLpInput().find('input').should('be.enabled')
     withdrawSubmit().should('be.disabled')
   })

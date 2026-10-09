@@ -120,6 +120,7 @@ describe('BorrowMoreForm (mocked)', () => {
           hasLeverageManagement: leverage,
           leverageEnabled: leverage,
           waitForRoutes: leverage,
+          isMocked: true,
         })
         checkBorrowMoreDetailsLoaded({
           expectedCurrentDebt,
@@ -127,11 +128,12 @@ describe('BorrowMoreForm (mocked)', () => {
           leverageEnabled: leverage,
           borrowedSymbol: 'crvUSD',
           controllerApproved,
+          isMocked: true,
         })
         cy.get('[data-testid="borrow-more-submit-button"]').should('be.enabled').and('have.text', buttonText)
 
         cy.then(assertPreSubmit)
-        submitBorrowMoreForm({ controllerApproved }).then(assertSubmit)
+        submitBorrowMoreForm({ controllerApproved, isMocked: true }).then(assertSubmit)
       })
     },
   )

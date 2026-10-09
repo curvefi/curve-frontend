@@ -12,7 +12,7 @@ export function TableRowTitle({ title, url, testId }: { title: ReactNode; url: s
   return (
     <Typography
       component={Stack}
-      variant={isMobile ? 'tableCellMBold' : 'tableCellL'}
+      variant={isMobile ? 'tableCellValueStrong' : 'tableCellTitle'}
       direction="row"
       sx={{ alignItems: 'center', gap: 2 }}
     >

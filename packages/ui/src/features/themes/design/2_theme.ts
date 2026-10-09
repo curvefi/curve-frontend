@@ -1,5 +1,5 @@
 import { alpha } from '@mui/material'
-import { Blues, Grays, Greens, Oranges, Reds, TRANSPARENT, Violets, Yellows } from './0_primitives'
+import { Blues, FontWeight, Grays, Greens, Oranges, Reds, TRANSPARENT, Violets, Yellows } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
 const INSET_OVERLINE = '0 0 auto' as const // Top border only
@@ -19,33 +19,33 @@ const SliderBackground = {
 } as const
 
 const LightFontWeight = {
-  Extra_Light: 200,
-  Light: 300,
-  Normal: 500,
-  Medium: 500,
-  Semi_Bold: 600,
-  Bold: 700,
-  Extra_Bold: 800,
+  Extra_Light: FontWeight[200],
+  Light: FontWeight[300],
+  Normal: FontWeight[450],
+  Medium: FontWeight[500],
+  Semi_Bold: FontWeight[600],
+  Bold: FontWeight[700],
+  Extra_Bold: FontWeight[800],
 } as const
 
 const DarkFontWeight = {
-  Extra_Light: 200,
-  Light: 300,
-  Normal: 400,
-  Medium: 500,
-  Semi_Bold: 500,
-  Bold: 600,
-  Extra_Bold: 700,
+  Extra_Light: FontWeight[200],
+  Light: FontWeight[300],
+  Normal: FontWeight[400],
+  Medium: FontWeight[500],
+  Semi_Bold: FontWeight[500],
+  Bold: FontWeight[600],
+  Extra_Bold: FontWeight[700],
 } as const
 
 const ChadFontWeight = {
-  Extra_Light: 400,
-  Light: 400,
-  Normal: 400,
-  Medium: 400,
-  Semi_Bold: 700,
-  Bold: 700,
-  Extra_Bold: 700,
+  Extra_Light: FontWeight[400],
+  Light: FontWeight[400],
+  Normal: FontWeight[400],
+  Medium: FontWeight[400],
+  Semi_Bold: FontWeight[700],
+  Bold: FontWeight[700],
+  Extra_Bold: FontWeight[700],
 } as const
 
 type TypographyVariantOverride = { fontSize?: string; lineHeight?: string }

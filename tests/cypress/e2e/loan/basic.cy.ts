@@ -2,7 +2,8 @@ import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { shouldLoadMintBorrowDetails } from '@cy/support/helpers/llamalend/market-details.helpers'
 import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
-import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { oneViewport } from '@cy/support/ui'
 
 const MINT_MARKET = 'WBTC'
 
@@ -17,7 +18,7 @@ describe('Mint app', () => {
 
   it('should open', () => {
     cy.visit('/crvusd')
-    cy.title(LOAD_TIMEOUT).should('include', 'Markets')
+    cy.title(TIMEOUTS['ui.navigation']).should('include', 'Markets')
   })
 
   describe('lend market details', () => {

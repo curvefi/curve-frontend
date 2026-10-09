@@ -7,6 +7,9 @@ export type StellarAddress = `G${string}` // todo: rename to StellarUser
 export type StellarContract = `C${string}`
 export type StellarSecret = `S${string}`
 
+/** Contract StrKey format; checksum verification belongs to the Stellar SDK. */
+export const STELLAR_CONTRACT_PATTERN = /^C[A-D][A-Z2-7]{54}$/
+
 /**
  * Wrapper to 'convert' Stellar address to EVM addresses (typescript only).
  * TODO: Remove this and make shared code accept either a generic or an union.
@@ -21,8 +24,10 @@ export const asStellarContract = <T extends Address | Nullish>(address: T) =>
 export const shortenAddress = <T extends StellarAddress | StellarContract | Nullish>(address: T) =>
   maybe(address, shortenString)
 
+export const formatAddress = (address: Address) => shortenAddress(asStellarContract(address))
+
 export const stellarAddressDisplay = {
-  formatAddress: (address: Address) => shortenAddress(asStellarContract(address)),
+  formatAddress,
   scanAddressPath: (chainId: number, address: Address) =>
     `${STELLAR_NETWORKS_BY_ID[chainId as keyof typeof STELLAR_NETWORKS_BY_ID].explorerUrl.replace(/\/$/, '')}/contract/${address}`,
 }

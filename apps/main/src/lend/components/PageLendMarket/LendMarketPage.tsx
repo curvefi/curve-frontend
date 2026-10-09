@@ -31,7 +31,7 @@ import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPag
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import type { Range } from '@ui/features/queries/util'
 import { mapQuery } from '@ui/features/queries/util'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { useLendMarket } from '../../hooks/useLendMarket'

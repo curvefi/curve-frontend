@@ -26,7 +26,6 @@ export const LiquidityUsdCell = ({ getValue, row }: CellContext<CurveTableFeatur
           iconAlignment="start"
           primary={formatNumber(liquidity, 'token.compact')}
           secondary={formatNumber(getValue(), 'usd.notional')}
-          boldPrimary
           sx={{ justifyContent: 'end' }}
         />
       </Box>

@@ -12,7 +12,7 @@ import { getFooterSections } from '@ui/features/layout/Footer/footer-sections.ut
 import { Header } from '@ui/features/layout/Header'
 import { getHeaderSections } from '@ui/features/layout/Header/header-sections.util'
 import { PageLayout } from '@ui/features/layout/PageLayout'
-import type { ChainListOption } from '@ui/features/layout/switch-chain/ui/ChainList'
+import type { ChainListOption } from '@ui/features/layout/switch-chain/ChainList'
 import { BackendMaintenanceGuard } from '@ui/features/maintenance/components/BackendMaintenanceGuard'
 import { useMaintenance } from '@ui/features/maintenance/hooks/useMaintenance'
 import { BACKEND_MAINTENANCE } from '@ui/features/maintenance/maintenance.config'

@@ -1,4 +1,4 @@
-import { API_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { PoolColumnId } from '@ui/features/pool-list/columns'
 import { V2_POOL_FIXTURES } from './dex-pool-list-v2-mocks'
 
@@ -15,20 +15,20 @@ export const visitV2PoolList = ({
 
   cy.viewport(viewport[0], viewport[1])
   cy.visitWithoutTestConnector(`dex/${network}/pools/`)
-  cy.wait('@dex-v2-platforms', API_LOAD_TIMEOUT)
-  cy.wait(['@dex-v2-prices-chains'], API_LOAD_TIMEOUT)
+  cy.wait('@dex-v2-platforms', TIMEOUTS['mock.curveCore.platforms'])
+  cy.wait(['@dex-v2-prices-chains'], TIMEOUTS['mock.prices.chains'])
   if (network === 'taiko') {
-    cy.wait('@dex-v2-lite-pool-chains', API_LOAD_TIMEOUT)
-    cy.wait('@dex-v2-lite-pools', API_LOAD_TIMEOUT)
+    cy.wait('@dex-v2-lite-pool-chains', TIMEOUTS['mock.curveLite.platforms'])
+    cy.wait('@dex-v2-lite-pools', TIMEOUTS['mock.curveLite.pools'])
   } else {
-    cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)
-    cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
+    cy.wait('@dex-v2-pool-chains', TIMEOUTS['mock.prices.chains'])
+    cy.wait('@dex-v2-pools', TIMEOUTS['mock.prices.pools'])
   }
-  cy.wait('@dex-v2-merkl-curve', API_LOAD_TIMEOUT)
-  cy.get('[data-testid="data-table"]', API_LOAD_TIMEOUT).should('be.visible')
+  cy.wait('@dex-v2-merkl-curve', TIMEOUTS['mock.merkl.opportunities'])
+  cy.get('[data-testid="data-table"]', TIMEOUTS['ui.render']).should('be.visible')
 
   if (!isMobile && network === 'ethereum') {
-    cy.get(`[data-testid="data-table-header-${PoolColumnId.NetRate}"]`, API_LOAD_TIMEOUT).should('be.visible')
+    cy.get(`[data-testid="data-table-header-${PoolColumnId.NetRate}"]`, TIMEOUTS['ui.render']).should('be.visible')
   } else {
     const { address } = network === 'taiko' ? V2_POOL_FIXTURES.lite : V2_POOL_FIXTURES.showcase
     const row = getV2PoolRow(address).should('be.visible')
@@ -39,7 +39,7 @@ export const visitV2PoolList = ({
 
 export const getV2PoolRow = (address: string) =>
   cy
-    .get(`[data-testid="table-row-link-${address}"]`, API_LOAD_TIMEOUT)
+    .get(`[data-testid="table-row-link-${address}"]`, TIMEOUTS['ui.render'])
     .should('exist')
     .closest('[data-testid^="data-table-row-"]')
 

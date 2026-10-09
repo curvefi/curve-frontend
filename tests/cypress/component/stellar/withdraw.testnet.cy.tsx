@@ -26,9 +26,10 @@ import {
   type WithdrawState,
   writeWithdrawLp,
 } from '@cy/support/helpers/stellar/withdraw.helpers'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { decimalSum } from '@ui/lib/decimal'
 
 const WITHDRAW_LP_AMOUNT = '0.003' satisfies Decimal
@@ -47,13 +48,13 @@ describe('Stellar testnet withdraw', () => {
         testnetConfig = config
         await connectTestWallet(config)
       })
-      .then(API_LOAD_TIMEOUT, async () => await deployTestPool(testnetConfig))
-      .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
+      .then(TIMEOUTS['stellar.deployPool'], async () => await deployTestPool(testnetConfig))
+      .then(TIMEOUTS['ui.render'], deployedPool => (pool = deployedPool))
   })
 
   beforeEach(() =>
     cy
-      .then(LOAD_TIMEOUT, async () => await fetchWithdrawState(pool, testnetConfig))
+      .then(TIMEOUTS['stellar.read'], async () => await fetchWithdrawState(pool, testnetConfig))
       .then(freshState => (state = freshState)),
   )
 
@@ -84,7 +85,7 @@ describe('Stellar testnet withdraw', () => {
       )
       writePoolForm(state.coins, allCoinDeposit(state.coins))
       submitDepositForm(state)
-      cy.then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig)).then(fresh => {
+      cy.then(TIMEOUTS['stellar.read'], () => fetchWithdrawState(pool, testnetConfig)).then(fresh => {
         expect(+fresh.lp.balance).to.be.greaterThan(0)
         state = fresh
       })
@@ -93,7 +94,7 @@ describe('Stellar testnet withdraw', () => {
     it('requires a connected wallet', () => {
       mountWithdraw({ connected: false })
       state.coins.map(({ address }) => poolInput(address).should('be.visible'))
-      cy.get('[data-testid="pool-withdraw-connect-wallet"]', LOAD_TIMEOUT).should('be.enabled')
+      cy.get('[data-testid="pool-withdraw-connect-wallet"]', TIMEOUTS['ui.render']).should('be.enabled')
       withdrawSubmit().should('not.exist')
     })
 
@@ -148,7 +149,7 @@ describe('Stellar testnet withdraw', () => {
         writePoolAmount(address, '0')
       })
       writePoolAmount(state.coins[0].address, overBudgetOutput)
-      cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT).should(
+      cy.get('[data-testid="loan-form-error-root"]', TIMEOUTS['ui.render']).should(
         'contain.text',
         'Maximum LP required exceeds the LP amount',
       )
@@ -179,16 +180,16 @@ describe('Stellar testnet withdraw', () => {
         withdrawSubmit().should('be.enabled')
         readPoolAmounts(state.coins).then(amounts =>
           cy
-            .then(LOAD_TIMEOUT, () => fetchWithdrawPreview(pool, state, amounts))
+            .then(TIMEOUTS['stellar.simulation'], () => fetchWithdrawPreview(pool, state, amounts))
             .then(({ expected, maximum, projected }) => {
               checkWithdrawDetail('expected-lp', expected)
               checkWithdrawDetail('maximum-lp', maximum)
               checkWithdrawDetail('projected-lp', projected)
               expect(+maximum).to.be.at.most(+WITHDRAW_LP_AMOUNT)
-              checkEstimatedTxCost()
+              checkEstimatedTxCost({ category: 'stellar.simulation' })
               submitWithdrawForm(state)
               checkWithdrawDetail('current-lp', projected)
-              cy.then(LOAD_TIMEOUT, () => fetchWithdrawState(pool, testnetConfig)).then(fresh => {
+              cy.then(TIMEOUTS['stellar.read'], () => fetchWithdrawState(pool, testnetConfig)).then(fresh => {
                 checkWithdrawResult(state, fresh, amounts, expected, projected)
               })
             }),

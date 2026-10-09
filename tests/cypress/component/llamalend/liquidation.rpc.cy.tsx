@@ -14,7 +14,8 @@ import { resetLlamaTestContext } from '@cy/support/helpers/llamalend/test-contex
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { createVirtualNetworkSnapshot, type VnetSnapshot } from '@cy/support/helpers/tenderly/vnet-snapshot'
-import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import { MarketType } from '@evm-ui/types/market'
 import { Chain } from '@primitives/network.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
@@ -97,10 +98,10 @@ describe('Manage liquidation', () => {
   it('resets the position', () => {
     cy.mount(<SoftLiquidationTestWrapper tab="reset" />)
 
-    getActionValue('borrow-price-range', 'previous').should('match', DECIMAL_RANGE_REGEX)
-    getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
-    getActionValue('borrow-debt', 'previous').should('match', DECIMAL_REGEX)
-    getActionValue('borrow-debt').should('match', DECIMAL_REGEX)
+    getActionValue('borrow-price-range', 'evm.simulation', 'previous').should('match', DECIMAL_RANGE_REGEX)
+    getActionValue('borrow-price-range', 'evm.simulation').should('match', DECIMAL_RANGE_REGEX)
+    getActionValue('borrow-debt', 'evm.simulation', 'previous').should('match', DECIMAL_REGEX)
+    getActionValue('borrow-debt', 'evm.simulation').should('match', DECIMAL_REGEX)
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
     writeResetPositionWalletAmount({ amount: RESET_WALLET_AMOUNT })
     submitResetPositionForm({ message: 'Position reset!' })
@@ -109,21 +110,21 @@ describe('Manage liquidation', () => {
   it('improves health', () => {
     cy.mount(<SoftLiquidationTestWrapper tab="improve-health" />)
     writeRepayLoanForm({ amount: IMPROVE_HEALTH_AMOUNT })
-    getActionValue('borrow-price-range', 'previous').should('match', DECIMAL_RANGE_REGEX)
-    getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
+    getActionValue('borrow-price-range', 'evm.simulation', 'previous').should('match', DECIMAL_RANGE_REGEX)
+    getActionValue('borrow-price-range', 'evm.simulation').should('match', DECIMAL_RANGE_REGEX)
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-    cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
+    cy.get('[data-testid="repay-submit-button"]', TIMEOUTS['evm.simulation']).should('not.be.disabled')
     submitRepayForm()
   })
 
   it('closes the position', () => {
     cy.mount(<SoftLiquidationTestWrapper tab="close" />)
-    getActionValue('borrow-debt', 'previous').should('match', DECIMAL_REGEX)
-    getActionValue('borrow-debt').should('equal', '0')
-    getActionValue('borrow-slippage').should('equal', `${Number(SLIPPAGE.leverage.default).toFixed(2)}%`)
+    getActionValue('borrow-debt', 'evm.simulation', 'previous').should('match', DECIMAL_REGEX)
+    getActionValue('borrow-debt', 'evm.simulation').should('equal', '0')
+    getActionValue('borrow-slippage', 'ui.render').should('equal', `${Number(SLIPPAGE.leverage.default).toFixed(2)}%`)
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-    cy.get('[data-testid="close-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
+    cy.get('[data-testid="close-position-submit-button"]', TIMEOUTS['evm.simulation']).should('not.be.disabled')
     submitClosePositionForm()
-    cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid="create-loan-submit-button"]', TIMEOUTS['ui.render']).should('be.visible')
   })
 })

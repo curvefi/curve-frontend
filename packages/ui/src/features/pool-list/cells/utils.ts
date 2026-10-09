@@ -26,6 +26,7 @@ export const getCrvAprDescription = () =>
   t`CRV LP reward APR (max APR can be reached with max boost of ${MAX_CRV_BOOST})`
 export const getCrvAprRange = ({ crvApr, crvAprBoosted }: PoolRowData) =>
   crvApr && crvAprBoosted ? { unboostedRate: crvApr, boostedRate: crvAprBoosted } : null // don't use maybe function as that accepts 0
+
 export const formatCrvAprRange = (range: ReturnType<typeof getCrvAprRange>) =>
   maybe(
     range,
@@ -34,9 +35,9 @@ export const formatCrvAprRange = (range: ReturnType<typeof getCrvAprRange>) =>
   ) ?? formatNumber(null, 'percent.rate')
 
 const isPointsCampaign = ({ reward, tags }: CampaignRewards) => reward?.type !== 'apr' || tags.includes('points')
-export const getPointsCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(isPointsCampaign)
-export const getCompactPointsCampaigns = (pool: PoolRow) => getPointsCampaigns(pool).slice(0, MAX_POINTS_CAMPAIGNS)
+export const getPointsCampaigns = ({ campaigns }: PoolRow) => campaigns?.filter(isPointsCampaign)
+export const getCompactPointsCampaigns = (pool: PoolRow) => getPointsCampaigns(pool)?.slice(0, MAX_POINTS_CAMPAIGNS)
 export const getAprCampaigns = ({ campaigns }: Pick<PoolRow, 'campaigns'>) =>
-  campaigns.filter(campaign => !isPointsCampaign(campaign))
+  campaigns?.filter(campaign => !isPointsCampaign(campaign))
 
 export const getExtraRewards = ({ extraRewardsApr }: PoolRow) => extraRewardsApr.filter(({ apr }) => apr > 0)

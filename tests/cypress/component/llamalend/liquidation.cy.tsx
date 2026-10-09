@@ -32,7 +32,7 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { constQ } from '@ui/features/queries/util'
 
 const CHAIN_ID = 1
@@ -75,10 +75,11 @@ describe('Soft Liquidation Forms (mocked)', () => {
           </MockLoanTestWrapper>,
         )
 
-        writeRepayLoanForm({ amount: borrow })
+        writeRepayLoanForm({ amount: borrow, isMocked: true })
         checkRepayDetailsLoaded({
           debt: { current: debt, future: debtAfterImprove, symbol: 'crvUSD' },
           isPriceChanged: false,
+          isMocked: true,
         })
         cy.get('[data-testid="repay-submit-button"]').should('not.be.disabled')
 
@@ -98,7 +99,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
           }
         })
 
-        submitRepayForm().then(() => {
+        submitRepayForm({ isMocked: true }).then(() => {
           expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
           if (approved) {
             expect(stubs.estimateGasRepayApprove).to.not.have.been.called
@@ -131,13 +132,13 @@ describe('Soft Liquidation Forms (mocked)', () => {
           </MockLoanTestWrapper>,
         )
 
-        checkClosePositionDetailsLoaded({ debt })
+        checkClosePositionDetailsLoaded({ debt, isMocked: true })
 
         cy.then(() => {
           expect(stubs.selfLiquidateIsApproved).to.have.been.calledWithExactly(...expected.closePosition.isApproved)
         })
 
-        submitClosePositionForm().then(() => {
+        submitClosePositionForm(true).then(() => {
           if (approved) {
             expect(stubs.estimateGasSelfLiquidateApprove).to.not.have.been.called
             expect(stubs.selfLiquidateApprove).to.not.have.been.called
@@ -163,15 +164,20 @@ describe('Soft Liquidation Forms (mocked)', () => {
         checkResetPositionInputsLoaded({ convertedBorrowed })
         cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
 
-        clickResetPositionMinimumWalletAmount()
+        clickResetPositionMinimumWalletAmount(true)
         checkResetPositionWalletAmount({ amount: userBorrowed })
         if (approved) {
           cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.estimateGas)
         } else {
           cy.wrap(stubs.estimateGasRepayApprove).should('have.been.calledWithExactly', ...expected.estimateGasApprove)
         }
-        checkResetPositionDetailsLoaded({ debt: { current: debt, future: futureDebt, symbol: 'crvUSD' } })
-        cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
+        checkResetPositionDetailsLoaded({
+          debt: { current: debt, future: futureDebt, symbol: 'crvUSD' },
+          isMocked: true,
+        })
+        cy.get('[data-testid="reset-position-submit-button"]', TIMEOUTS['mock.evm.simulation']).should(
+          'not.be.disabled',
+        )
 
         cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
         cy.then(() => {
@@ -184,7 +190,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
           expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
         })
 
-        submitResetPositionForm({ message: expected.successMessage }).then(() => {
+        submitResetPositionForm({ message: expected.successMessage, isMocked: true }).then(() => {
           expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
           if (approved) {
             expect(stubs.estimateGasRepayApprove).to.not.have.been.called
@@ -211,7 +217,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
       checkResetPositionInputsLoaded({ convertedBorrowed })
       writeResetPositionWalletAmount({ amount: userBorrowed })
 
-      cy.get('[data-testid="loan-form-errors"]', LOAD_TIMEOUT)
+      cy.get('[data-testid="loan-form-errors"]', TIMEOUTS['ui.render'])
         .should(
           'contain.text',
           'Reset is only available for soft-liquidation positions with enough non-converted bands',
@@ -242,8 +248,11 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
       cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.estimateGas)
-      checkResetPositionDetailsLoaded({ debt: { current: debt, future: getFutureDebt('0'), symbol: 'crvUSD' } })
-      cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT)
+      checkResetPositionDetailsLoaded({
+        debt: { current: debt, future: getFutureDebt('0'), symbol: 'crvUSD' },
+        isMocked: true,
+      })
+      cy.get('[data-testid="reset-position-submit-button"]', TIMEOUTS['ui.render'])
         .should('not.be.disabled')
         .and('contain.text', 'Reset position')
         .and('not.contain.text', 'Approve')
@@ -259,7 +268,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
       })
 
-      submitResetPositionForm({ message: expected.successMessage }).then(() => {
+      submitResetPositionForm({ message: expected.successMessage, isMocked: true }).then(() => {
         expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
         expect(stubs.estimateGasRepayApprove).to.not.have.been.called
         expect(stubs.repayApprove).to.not.have.been.called
@@ -299,8 +308,9 @@ describe('Soft Liquidation Forms (mocked)', () => {
       cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.estimateGas)
       checkResetPositionDetailsLoaded({
         debt: { current: debt, future: getFutureDebt(moreUserBorrowed), symbol: 'crvUSD' },
+        isMocked: true,
       })
-      cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
+      cy.get('[data-testid="reset-position-submit-button"]', TIMEOUTS['mock.evm.simulation']).should('not.be.disabled')
 
       cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
       cy.then(() => {
@@ -310,7 +320,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
       })
 
-      submitResetPositionForm({ message: expected.successMessage }).then(() => {
+      submitResetPositionForm({ message: expected.successMessage, isMocked: true }).then(() => {
         expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
         expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
       })

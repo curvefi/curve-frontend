@@ -17,7 +17,7 @@ import {
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
+import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'

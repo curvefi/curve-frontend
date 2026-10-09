@@ -15,7 +15,7 @@ export const LabelCellDisplay = ({
   isFooter?: boolean
 }) => (
   <Typography
-    variant={isFooter ? 'tableCellMBold' : 'tableCellMRegular'}
+    variant={isFooter ? 'tableCellValueStrong' : 'tableCellValue'}
     color={isFooter ? 'textPrimary' : 'textSecondary'}
     sx={{ whiteSpace: 'nowrap' }}
   >
