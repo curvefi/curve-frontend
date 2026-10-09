@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getTransactionActions } from '@evm-ui/features/activity-table'
+import { getTransactionActions } from '@evm-ui/features/activity-table/utils'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { SortingState } from '@tanstack/react-table'
 import type { QueryProp } from '@ui/features/queries/util'

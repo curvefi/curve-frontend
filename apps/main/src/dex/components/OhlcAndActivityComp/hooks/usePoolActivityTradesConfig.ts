@@ -4,12 +4,10 @@ import { usePoolTrades } from '@/dex/entities/pool-trades.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
-import {
-  POOL_TRADES_COLUMNS,
-  usePoolActivityVisibility,
-  useManualPagination,
-  DEFAULT_PAGE_SIZE,
-} from '@evm-ui/features/activity-table'
+import { POOL_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/pool-trades-columns'
+import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
+import { usePoolActivityVisibility } from '@evm-ui/features/activity-table/hooks/usePoolActivityVisibility'
+import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
