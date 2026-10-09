@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 // eslint-disable-next-line no-restricted-imports
-import { DefaultValues, useForm as _useForm } from 'react-hook-form'
+import { DefaultValues, type Resolver, useForm as _useForm } from 'react-hook-form'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { ICreateResult } from '@hookform/resolvers/vest'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
@@ -21,9 +21,11 @@ import type {
 export const useForm = <T extends FieldValues = FieldValues>({
   defaultValues,
   validation,
+  resolver,
 }: {
   defaultValues: T
   validation?: ICreateResult<T>
+  resolver?: Resolver<T>
 }): UseFormReturn<T> => {
   const {
     handleSubmit,
@@ -37,7 +39,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
     formState: { isSubmitting, errors, touchedFields, isDirty, isValid, dirtyFields },
   } = _useForm({
     defaultValues: defaultValues as DefaultValues<T>,
-    resolver: validation && vestResolver(validation),
+    resolver: resolver ?? (validation && vestResolver(validation)),
     mode: 'onChange',
     reValidateMode: 'onBlur',
     resetOptions: { keepErrors: false },

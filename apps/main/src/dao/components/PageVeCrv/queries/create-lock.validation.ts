@@ -1,52 +1,54 @@
-import { skipWhen, test } from 'vest'
+import { test } from 'vest'
+import { z } from 'zod/v4'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
-import type { CalendarDate } from '@internationalized/date'
+import { CalendarDate } from '@internationalized/date'
 import type { Decimal } from '@primitives/decimal.utils'
+import { decimalGreaterThan } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { enforce } from '@ui/lib/validation/enforce-extension'
-import { createValidationSuite } from '@ui/lib/validation/lib'
-import type { CreateLockQuery } from './create-lock.types'
+import { zodDecimal, createValidationSuite } from '@ui/lib/validation/lib'
+import type { CreateLockFormValues, CreateLockQuery } from './create-lock.types'
+
+const AMOUNT_REQUIRED_ERROR = t`Enter an amount to lock`
+const POSITIVE_AMOUNT_ERROR = t`Enter an amount greater than zero`
+const UNLOCK_DATE_ERROR = t`Select a valid unlock date`
 
 const validateCreateLockAmount = (lockedAmount: Decimal | undefined) => {
-  test('lockedAmount', t`Enter an amount to lock`, () => {
+  test('lockedAmount', AMOUNT_REQUIRED_ERROR, () => {
     enforce(lockedAmount).isNotEmpty()
   })
-  test('lockedAmount', t`Enter an amount greater than zero`, () => {
+  test('lockedAmount', POSITIVE_AMOUNT_ERROR, () => {
     enforce(lockedAmount).isDecimal().gt(0)
   })
 }
 
 const validateCreateLockDays = (days: number) => {
-  test('days', t`Select a valid unlock date`, () => {
+  test('days', UNLOCK_DATE_ERROR, () => {
     enforce(days).gt(0)
   })
 }
 
-export const createLockFormValidationSuite = createValidationSuite(
-  ({
-    lockedAmount,
-    maxLockedAmount,
-    utcDate,
-    days,
-  }: {
-    lockedAmount: Decimal | undefined
-    maxLockedAmount: Decimal | undefined
-    utcDate: CalendarDate | null
-    days: number
-  }) => {
-    validateCreateLockAmount(lockedAmount)
-    skipWhen(lockedAmount == null || maxLockedAmount == null, () => {
-      test('maxLockedAmount', t`The maximum lock amount is ${maxLockedAmount}`, () => {
-        enforce(lockedAmount).lte(maxLockedAmount!)
-      })
-    })
-    test('utcDate', t`Select a valid unlock date`, () => {
-      enforce(utcDate).isNotEmpty()
-    })
-    validateCreateLockDays(days)
-  },
-)
+export const createLockFormValidationSchema: z.ZodType<CreateLockFormValues, CreateLockFormValues> = z
+  .object({
+    lockedAmount: zodDecimal(({ input }) =>
+      input == null || input === '' ? AMOUNT_REQUIRED_ERROR : POSITIVE_AMOUNT_ERROR,
+    ).refine(value => decimalGreaterThan(value, '0')),
+    maxLockedAmount: zodDecimal().optional(),
+    utcDate: z
+      .instanceof(CalendarDate, { error: UNLOCK_DATE_ERROR })
+      .nullable()
+      .refine(value => value != null, { error: UNLOCK_DATE_ERROR }),
+    days: z.number({ error: UNLOCK_DATE_ERROR }).positive(),
+  })
+  .refine(
+    ({ lockedAmount, maxLockedAmount }) =>
+      maxLockedAmount == null || !decimalGreaterThan(lockedAmount, maxLockedAmount),
+    {
+      path: ['maxLockedAmount'],
+      error: ({ input }) => t`The maximum lock amount is ${(input as CreateLockFormValues).maxLockedAmount}`,
+    },
+  )
 
 const validateCreateLockQueryContext = ({
   chainId,

@@ -6,7 +6,7 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 
 export type CreateLockFormValues = {
   lockedAmount: Decimal | undefined
-  maxLockedAmount: Decimal | undefined
+  maxLockedAmount?: Decimal
   /** A date-only value: the picker has day granularity and lock expiry is calculated separately by Curve. */
   utcDate: CalendarDate | null
   days: number

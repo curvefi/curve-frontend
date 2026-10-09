@@ -1,6 +1,12 @@
 import { noop } from 'lodash'
 import { create, only, type Suite } from 'vest'
+import { z } from 'zod/v4'
+import { DECIMAL_REGEX, type Decimal } from '@primitives/decimal.utils'
 import { FieldName, FieldsOf } from '@ui/lib/validation/types'
+
+/** Validates decimal strings without changing their representation. */
+export const zodDecimal = (error: string | z.core.$ZodErrorMap = 'Must be a valid decimal number') =>
+  z.string({ error }).regex(DECIMAL_REGEX) as z.ZodType<Decimal, Decimal>
 
 /**
  * This is using `any` because `vest` will try to match every single field,
