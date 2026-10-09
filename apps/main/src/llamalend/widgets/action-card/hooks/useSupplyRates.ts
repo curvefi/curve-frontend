@@ -4,7 +4,7 @@ import {
   useMarketSupplyFutureRates,
   useMarketVaultOnChainRewards,
 } from '@/llamalend/queries/market'
-import { useUserSupplyBoost } from '@/llamalend/queries/user'
+import { useUserSupplyBoost } from '@/llamalend/queries/user/user-supply-boost.query'
 import {
   getLatestSnapshotValue,
   getSupplyApyMetrics,

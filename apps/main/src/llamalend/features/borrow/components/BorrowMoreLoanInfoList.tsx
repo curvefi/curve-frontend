@@ -6,7 +6,7 @@ import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
-import { useUserCurrentLeverage } from '@/llamalend/queries/user'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { type BorrowMoreForm, type BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'

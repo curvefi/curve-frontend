@@ -4,7 +4,8 @@ import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { isLendMarket } from '@/llamalend/llama.utils'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
-import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
+import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
+import { useUserSupplyBoost } from '@/llamalend/queries/user/user-supply-boost.query'
 import {
   formatSupplyExtraIncentives,
   getLatestSnapshotValue,

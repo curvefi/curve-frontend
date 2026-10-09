@@ -6,7 +6,7 @@ import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
-import { useUserCurrentLeverage } from '@/llamalend/queries/user'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'

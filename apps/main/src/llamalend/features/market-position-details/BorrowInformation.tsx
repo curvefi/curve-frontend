@@ -5,8 +5,9 @@ import {
   type MarketTokensOrEmpty,
 } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
-import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
+import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'

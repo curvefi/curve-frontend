@@ -5,7 +5,7 @@ import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-co
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
-import { useUserCurrentLeverage } from '@/llamalend/queries/user'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
