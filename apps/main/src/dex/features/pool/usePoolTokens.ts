@@ -1,6 +1,7 @@
 import type { Address } from 'viem'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
+import { zip } from '@primitives/array.utils'
 import { constQ } from '@ui/features/queries/util'
 
 export const usePoolTokens = ({
@@ -26,13 +27,8 @@ export const usePoolTokens = ({
     decimals: pool[`${coinField}Decimals`],
     balances,
     maxAmounts: tokenAddresses.map(address => balances[address]),
-    tokens: constQ(
-      tokenAddresses.map((address, index) => ({
-        address,
-        blockchainId,
-        symbol: symbols[index],
-        balance: balances[address],
-      })),
+    tokens: zip(tokenAddresses, symbols).map(([address, symbol]) =>
+      constQ({ address, blockchainId, symbol, balance: balances[address] }),
     ),
   }
 }

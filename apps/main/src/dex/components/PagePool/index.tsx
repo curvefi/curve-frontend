@@ -36,6 +36,7 @@ import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import type { Address } from '@primitives/address.utils'
+import { zip } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
@@ -190,11 +191,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             title={constQ(pool.name)}
             tokens={useMemo(
               () =>
-                constQ(
-                  tokens
-                    .map((symbol, index) => ({ symbol, address: tokenAddresses[index] as Address }))
-                    .filter(({ address }) => address),
-                ),
+                zip(tokens, tokenAddresses)
+                  .filter(([, address]) => address)
+                  .map(([symbol, address]) => constQ({ symbol, address: address as Address })),
               [tokenAddresses, tokens],
             )}
             pricesApiPoolData={pricesApiPoolData}

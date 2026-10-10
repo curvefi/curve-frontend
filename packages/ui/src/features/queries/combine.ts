@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type Nullish, fromEntries } from '@primitives/objects.utils'
+import { fromEntries, notFalsy, type Nullish } from '@primitives/objects.utils'
 import { DISABLED_Q, fallbackQ, q, Query, QueryProp } from '@ui/features/queries/util'
 import { decimalMin } from '@ui/lib/decimal'
 
@@ -30,9 +30,18 @@ export const combineQueries = <const TQueries extends Queries, TResult>(
   selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
 ) => ({ data: combineQueryData(queries, selector), ...combineQueryState(...queries) }) as QueryProp<TResult>
 
-/** Collect ordered results, including missing data, preserving loading and error states. Empty input yields []. */
-export const aggregateQueries = <T>(queries: Query<T>[]) =>
-  q({ data: queries.map(result => result.data), ...combineQueryState(...queries) })
+/** Maps a query's data to another query, and combines the results into a single one. */
+export const combineSubQueries = <Q1, Q2, R>(
+  query: Query<Q1[]>,
+  getItem: (row: Q1) => Query<Q2> | undefined,
+  combine: (...amounts: (Q2 | undefined)[]) => R | undefined,
+) => {
+  const subQueries = notFalsy(...(query.data?.map(getItem) ?? []))
+  return q({
+    data: subQueries.some(q => q.data != null) ? combine(...subQueries.map(r => r.data)) : undefined,
+    ...combineQueryState(query, ...subQueries),
+  })
+}
 
 export const pickQuery = <TData>(
   queries: readonly Query<TData>[],

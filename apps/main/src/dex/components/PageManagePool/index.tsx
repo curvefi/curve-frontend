@@ -18,7 +18,7 @@ import { formatNumber } from '@primitives/number.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { Banner } from '@ui/features/banners/Banner'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
-import { mapQuery } from '@ui/features/queries/util'
+import { constQ, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useParams } from '@ui/hooks/router'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
@@ -59,7 +59,7 @@ export const ManagePool = () => {
             blockchainId={blockchainId}
             poolIdOrAddress={poolAddress}
             title={mapQuery(pool, pool => pool.name)}
-            tokens={mapQuery(pool, pool => pool.coins)}
+            tokens={pool.data?.coins.map(constQ)}
             backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
             pricesApiPoolData={pool.data}
           />

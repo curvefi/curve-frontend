@@ -43,7 +43,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
-  const { tokens, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimalsData, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), isBalanced: false }),
     [tokenCount],
@@ -54,7 +54,7 @@ export function useDepositForm(poolParams: PoolQuery) {
   })
   const { formState, reset } = form
 
-  useFormSync(form, { decimals: decimals.data, supply: supply.data })
+  useFormSync(form, { decimals: decimalsData, supply: supply.data })
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
 
   // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
@@ -67,12 +67,12 @@ export function useDepositForm(poolParams: PoolQuery) {
         pool,
         account,
         tokenCount,
-        decimals: decimals.data,
+        decimals: decimalsData,
         slippage: values.slippage,
         supply: supply.data,
-        maxAmounts: maxAmounts.map(q => q.data),
+        maxAmounts: maxAmounts?.map(q => q.data),
       }),
-      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts],
+      [values, network, pool, account, tokenCount, decimalsData, supply.data, maxAmounts],
     ),
     userDefaultValues,
   )
@@ -104,7 +104,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     inputsDisabled: isPending,
     isDisabled:
       isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data !== true),
-    isLoading: isPending || priceImpact.isLoading,
+    isLoading: isPending || config.isLoading || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: depositError,
