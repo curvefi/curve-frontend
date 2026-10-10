@@ -1,6 +1,17 @@
 import { useMemo } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { fromDate } from '@curvefi/prices-api/timestamp'
+import {
+  LLAMMA_EVENTS_BREAKDOWN,
+  LLAMMA_EVENTS_COLUMNS,
+} from '@evm-ui/features/activity-table/columns/llamma-events-columns'
+import { LLAMMA_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/llamma-trades-columns'
+import { createPoolLiquidityColumns } from '@evm-ui/features/activity-table/columns/pool-liquidity-columns'
+import { POOL_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/pool-trades-columns'
+import { MarketEventsExpandedPanel } from '@evm-ui/features/activity-table/panels/MarketEventsExpandedPanel'
+import { MarketTradesExpandedPanel } from '@evm-ui/features/activity-table/panels/MarketTradesExpandedPanel'
+import { PoolLiquidityExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolLiquidityExpandedPanel'
+import { PoolTradesExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolTradesExpandedPanel'
 import { createTestWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test-config'
 import Stack from '@mui/material/Stack'
 import type { Address, Token } from '@primitives/address.utils'
@@ -11,19 +22,6 @@ import { constQ, fakeLoadingQ, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ActivityTable } from './ActivityTable'
-import {
-  createPoolLiquidityColumns,
-  LLAMMA_EVENTS_BREAKDOWN,
-  LLAMMA_EVENTS_COLUMNS,
-  LLAMMA_TRADES_COLUMNS,
-  POOL_TRADES_COLUMNS,
-} from './columns'
-import {
-  MarketEventsExpandedPanel,
-  MarketTradesExpandedPanel,
-  PoolLiquidityExpandedPanel,
-  PoolTradesExpandedPanel,
-} from './panels'
 import type { MarketEventRow, MarketTradeRow, PoolLiquidityRow, PoolTradeRow } from './types'
 
 const { Spacing } = SizesAndSpaces

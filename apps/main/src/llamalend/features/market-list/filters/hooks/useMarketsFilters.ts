@@ -11,7 +11,7 @@ import { parseListFilter, serializeListFilter } from '@ui/features/tables/filter
 import { t } from '@ui/lib/i18n'
 import type { LlamaMarketRow } from '../../../../queries/market-list/llama-market-stats'
 import type { AssetDetails, LlamaMarket } from '../../../../queries/market-list/llama-markets'
-import { MarketColumnId } from '../../columns'
+import { MarketColumnId } from '../../columns/columns.enum'
 
 const ALL_FILTER_VALUE = 'all' as const
 

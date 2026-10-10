@@ -1,4 +1,4 @@
-import { useUserBands } from '@/llamalend/queries/user'
+import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'

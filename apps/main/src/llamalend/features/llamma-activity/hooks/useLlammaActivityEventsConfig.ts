@@ -1,11 +1,9 @@
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
-import {
-  LLAMMA_EVENTS_COLUMNS,
-  useLlammaActivityVisibility,
-  useManualPagination,
-  DEFAULT_PAGE_SIZE,
-} from '@evm-ui/features/activity-table'
+import { LLAMMA_EVENTS_COLUMNS } from '@evm-ui/features/activity-table/columns/llamma-events-columns'
+import { useLlammaActivityVisibility } from '@evm-ui/features/activity-table/hooks/useLlammaActivityVisibility'
+import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
+import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { getPageCount } from '@evm-ui/utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fakeLoadingQ } from '@ui/features/queries/util'

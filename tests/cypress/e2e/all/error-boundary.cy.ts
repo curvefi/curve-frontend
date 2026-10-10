@@ -4,7 +4,7 @@ import { createLendingVaultChainsResponse } from '@cy/support/helpers/lending-mo
 import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { e2eBaseUrl } from '@cy/support/ui'
-import type { ErrorContext, ErrorReportFormValues } from '@ui/features/report-error'
+import type { ErrorContext, ErrorReportFormValues } from '@ui/features/report-error/useErrorReportForm'
 import { SENTRY_DSN } from '@ui/features/sentry'
 
 const INVALID_ICON_ADDRESS = '0x0000000000000000000000000000000000000001' as const

@@ -1,6 +1,6 @@
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { TableSortDrawer } from '@ui/features/tables/TableSortDrawer'
-import { MarketColumnId } from '../columns'
+import type { MarketColumnId } from '../columns/columns.enum'
 import { useMarketsSortOptions } from '../hooks/useMarketsSortOptions'
 
 type Props = { onSortingChange: OnChangeFn<SortingState>; sortField: MarketColumnId }

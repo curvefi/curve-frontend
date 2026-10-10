@@ -6,7 +6,7 @@ import { oneOf } from '@cy/support/generators'
 import { expandFirstRowOnMobile, openDrawer, withExpandedPanelDrawer } from '@cy/support/helpers/data-table.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { oneViewport } from '@cy/support/ui'
-import { PoolColumnId } from '@ui/features/pool-list/columns'
+import { PoolColumnId } from '@ui/features/pool-list/columns/columns.enum'
 import { queryClient } from '@ui/features/queries/query-client'
 
 const NETWORK = 'stellar-testnet'

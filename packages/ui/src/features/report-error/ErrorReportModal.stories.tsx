@@ -5,7 +5,7 @@ import { WagmiProvider } from 'wagmi'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ErrorReportModal } from '@ui/features/report-error'
+import { ErrorReportModal } from '@ui/features/report-error/ErrorReportModal'
 import { t } from '@ui/lib/i18n'
 import { createConfig } from '@wagmi/core'
 

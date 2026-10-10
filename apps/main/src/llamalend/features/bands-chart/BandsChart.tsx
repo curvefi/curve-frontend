@@ -6,9 +6,9 @@ import type {
   BandsPriceRange,
   BandsRangeOverlay,
   ChartDataPoint,
-  FetchedBandsBalances,
   UserBandsPriceRange,
 } from '@/llamalend/features/bands-chart/types'
+import type { FetchedBandsBalances } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import type { LlammaLiquididationRange } from '@evm-ui/features/candle-chart/types'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'

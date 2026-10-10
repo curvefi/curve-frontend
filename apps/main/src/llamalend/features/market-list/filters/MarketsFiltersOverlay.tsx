@@ -6,7 +6,7 @@ import type { QueryProp } from '@ui/features/queries/util'
 import type { CurveTableFeatures, FilterProps } from '@ui/features/tables/data-table.utils'
 import { TableFiltersOverlay } from '@ui/features/tables/TableFiltersOverlay'
 import { t } from '@ui/lib/i18n'
-import { MarketColumnId } from '../columns'
+import type { MarketColumnId } from '../columns/columns.enum'
 import { MarketsFilters } from './MarketsFilters'
 
 type MarketsFiltersOverlayProps = {

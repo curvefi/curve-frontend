@@ -1,7 +1,6 @@
 import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { getUtilizationPercent } from '@/llamalend/llama.utils'
-import { useMarketCapAndAvailable, useMarketTotalDebt, useRateCurve } from '@/llamalend/queries/market'
 import { TotalDebtMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { useAvailableLiquidity } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { TooltipOptions, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
@@ -30,6 +29,9 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../features/market-context'
+import { useMarketCapAndAvailable } from '../queries/market/market-cap-and-available.query'
+import { useRateCurve } from '../queries/market/market-rate-curve.query'
+import { useMarketTotalDebt } from '../queries/market/market-total-debt.query'
 
 const { Spacing, Height } = SizesAndSpaces
 

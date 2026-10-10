@@ -4,7 +4,7 @@ import { handleBreakpoints, Responsive } from '@ui/features/themes/basic-theme'
 import { DesignSystem } from '@ui/features/themes/design'
 import { TRANSPARENT } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { CARD_SIZES, type CardSize } from '../card-sizes'
+import { CARD_SIZES, type CardSize } from './card-sizes'
 
 const { Spacing, Sizing, Tab } = SizesAndSpaces
 

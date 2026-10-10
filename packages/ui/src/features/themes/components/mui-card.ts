@@ -2,9 +2,9 @@
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
 import { DesignSystem } from '@ui/features/themes/design'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { CARD_CONTENT_SIZE_STYLES, cardContentInlineStyles } from '../card-content'
-import { createHeaderStyle, createInlineHeaderStyle } from '../card-header'
-import { CARD_SIZES } from '../card-sizes'
+import { CARD_SIZES } from './card-sizes'
+import { CARD_CONTENT_SIZE_STYLES, cardContentInlineStyles } from './mui-card-content'
+import { createHeaderStyle, createInlineHeaderStyle } from './mui-card-header'
 
 const { BorderWidth } = SizesAndSpaces
 

@@ -1,11 +1,9 @@
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
-import {
-  LLAMMA_TRADES_COLUMNS,
-  useLlammaActivityVisibility,
-  useManualPagination,
-  DEFAULT_PAGE_SIZE,
-} from '@evm-ui/features/activity-table'
+import { LLAMMA_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/llamma-trades-columns'
+import { useLlammaActivityVisibility } from '@evm-ui/features/activity-table/hooks/useLlammaActivityVisibility'
+import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
+import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { getPageCount } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'

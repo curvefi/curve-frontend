@@ -2,7 +2,7 @@
 /// <reference path="./mui-typography.d.ts" />
 import type { Components } from '@mui/material/styles'
 import type { DesignSystem } from '@ui/features/themes/design'
-import { TypographyVariantKey } from '../../typography'
+import { TypographyVariantKey } from '../typography'
 
 const variantMapping = {
   headingXxl: 'h1',

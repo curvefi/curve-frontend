@@ -2,7 +2,7 @@ import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
-import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import type { ChartDataPoint } from '@/llamalend/features/bands-chart/types'
 import {
   LlammaActivityEventsTable,
   type LlammaActivityProps,
@@ -11,8 +11,7 @@ import {
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { VaultActivityEventsTable } from '@/llamalend/features/vault-activity/VaultActivityEventsTable'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
-import { useMarketOraclePrice, useMarketPrice } from '@/llamalend/queries/market'
-import type { VaultActivityProps } from '@evm-ui/features/activity-table'
+import type { VaultActivityProps } from '@evm-ui/features/activity-table/types'
 import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
@@ -40,6 +39,9 @@ import type { TabItem } from '@ui/hooks/useTabs'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit } from '@ui/lib/tokens'
+import type { FetchedBandsBalances } from '../queries/bands/bands-balances.query-helpers'
+import { useMarketOraclePrice } from '../queries/market/market-oracle-price.query'
+import { useMarketPrice } from '../queries/market/market-price.query'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,6 +1,7 @@
 import { isAddress } from 'viem'
 import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
-import { useMarketOraclePrice, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
+import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
+import { useMarketVaultPricePerShare } from '@/llamalend/queries/market/market-vault-price-per-share.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { evmAddressDisplay } from '@evm-ui/utils'
