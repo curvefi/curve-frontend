@@ -61,6 +61,8 @@ export const buildZeroExRouteResponse = async (
     tokenOut: [buyToken],
     amountIn: [amountIn] = [],
     zapAddress: taker,
+    userAddress: txOrigin,
+    slippage,
   } = query
 
   if (amountIn == null || !taker) {
@@ -76,6 +78,11 @@ export const buildZeroExRouteResponse = async (
     buyToken,
     sellAmount: amountIn,
     taker,
+    ...(txOrigin && { txOrigin }),
+    // 0x only accepts integer bps, round up so the ZapV2 minRecv stays the binding slippage check
+    ...(slippage != null && {
+      slippageBps: new BigNumber(slippage).times(100).integerValue(BigNumber.ROUND_CEIL).toFixed() as Decimal,
+    }),
     ...(fee && { swapFeeRecipient: fee.feeReceiver, swapFeeBps: fee.feeBps, swapFeeToken: sellToken }),
   }
   const quote = await getZeroExQuote(params).catch(error => logZeroExError(error, log, params))
