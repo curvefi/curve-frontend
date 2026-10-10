@@ -2,6 +2,7 @@ import { PegKeeper } from '@/loan/components/PagePegKeepers/components/PegKeeper
 import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
 import { ComponentTestWrapper, type Config } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 
 const getVirtualNetwork = createVirtualTestnet(uuid => ({
   slug: `pegkeepers-${uuid}`,
@@ -67,7 +68,7 @@ describe('Peg stability reserve', () => {
       .should('match', /rebalancing\.\.\./i)
 
     // Final updated state
-    cy.get('@est-profit').invoke('text').should('eq', '0')
+    cy.get('@est-profit', TIMEOUTS['tenderly.submit']).invoke('text').should('eq', '0')
     cy.get('@debt')
       .invoke('text')
       .should('match', /10.67McrvUSD/i)
