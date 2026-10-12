@@ -27,8 +27,8 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Checkbox } from '@legacy-ui/Checkbox'
-import { Icon } from '@legacy-ui/Icon'
 import type { Address } from '@primitives/address.utils'
+import { TrashIcon } from '@ui/icons/TrashIcon'
 import { t } from '@ui/lib/i18n'
 import { WarningBox } from '../components/WarningBox'
 import { SelectTokenButton } from './SelectTokenButton'
@@ -88,7 +88,7 @@ export const SelectToken = ({
             <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
             {((swapType === CRYPTOSWAP && network.twocryptoFactory) || swapType === STABLESWAP) && removeToken && (
               <RemoveButton variant="text" onClick={() => removeToken(TOKEN_C, tokensInPool)}>
-                <Icon name="RowDelete" size={16} aria-label={t`Remove token`} />
+                <TrashIcon sx={{ fontSize: 16 }} aria-label={t`Remove token`} />
               </RemoveButton>
             )}
           </Box>
@@ -105,7 +105,7 @@ export const SelectToken = ({
             <Box flex>
               <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
               <RemoveButton variant="text" onClick={() => removeToken(tokenId, tokensInPool)}>
-                <Icon name="RowDelete" size={16} aria-label={t`Remove token`} />
+                <TrashIcon sx={{ fontSize: 16 }} aria-label={t`Remove token`} />
               </RemoveButton>
             </Box>
           </LabelRow>

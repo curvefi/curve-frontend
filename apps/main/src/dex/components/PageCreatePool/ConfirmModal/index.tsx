@@ -16,13 +16,13 @@ import { ChainId, CurveApi, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
-import { Icon } from '@legacy-ui/Icon'
 import { ModalPendingTx } from '@legacy-ui/ModalPendingTx'
 import { Spinner } from '@legacy-ui/Spinner/Spinner'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 import MuiButton from '@mui/material/Button'
 import { RouterLink } from '@ui/components/RouterLink'
 import { useParams } from '@ui/hooks/router'
+import { CheckedIcon } from '@ui/icons/CheckedIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = {
@@ -125,7 +125,7 @@ export const ConfirmModal = ({
               validation.tokensInPool,
               validation.parameters,
               validation.poolInfo,
-            ) && <Icon name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
+            ) && <CheckedIcon sx={{ fontSize: 16 }} aria-label={t`Checkmark filled`} />
           )}
         </NavCreateButton>
       )}

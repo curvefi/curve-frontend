@@ -5,11 +5,12 @@ import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink, InternalLink } from '@legacy-ui/Link'
 import { scanTxPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { CheckedIcon } from '@ui/icons/CheckedIcon'
+import { CrossCircleIcon } from '@ui/icons/CrossCircleIcon'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 
@@ -49,11 +50,7 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
             {pricesProposal.votes.map(vote => (
               <DataRow key={`${vote.txHash}-${vote.supports}`}>
                 <Box flex>
-                  {vote.supports ? (
-                    <ForIcon name="CheckmarkFilled" size={16} />
-                  ) : (
-                    <AgainstIcon name="Misuse" size={16} />
-                  )}
+                  {vote.supports ? <ForIcon sx={{ fontSize: 16 }} /> : <AgainstIcon sx={{ fontSize: 16 }} />}
                   <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${vote.voter}`)}>
                     {vote.topHolder || shortenAddress(vote.voter)}
                   </StyledInternalLink>
@@ -144,12 +141,12 @@ const StyledExternalLink = styled(ExternalLink)`
   flex-direction: column;
 `
 
-const ForIcon = styled(Icon)`
+const ForIcon = styled(CheckedIcon)`
   color: var(--chart-green);
   margin-right: var(--spacing-1);
 `
 
-const AgainstIcon = styled(Icon)`
+const AgainstIcon = styled(CrossCircleIcon)`
   color: var(--chart-red);
   margin-right: var(--spacing-1);
 `

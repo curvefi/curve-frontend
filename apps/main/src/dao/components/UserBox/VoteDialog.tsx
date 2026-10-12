@@ -9,9 +9,10 @@ import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
-import { Icon } from '@legacy-ui/Icon'
 import type { Address } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { CheckedIcon } from '@ui/icons/CheckedIcon'
+import { CrossCircleIcon } from '@ui/icons/CrossCircleIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = {
@@ -112,7 +113,7 @@ export const VoteDialog = ({
               {userProposalVotes?.[proposalKey] && votedFor && (
                 <VotedRow>
                   <VotedRowItem>
-                    <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} /> {t`For`}
+                    <CheckedIcon sx={{ fontSize: 16, color: 'var(--chart-green)' }} /> {t`For`}
                   </VotedRowItem>
                   <VotedRowItem>
                     {formatNumber(userProposalVotes?.[proposalKey].voteFor, { abbreviate: false, fallback: '-' })}{' '}
@@ -126,7 +127,7 @@ export const VoteDialog = ({
               {userProposalVotes?.[proposalKey] && votedAgainst && (
                 <VotedRow>
                   <VotedRowItem>
-                    <Icon color="var(--chart-red)" name="Misuse" size={16} /> {t`Against`}
+                    <CrossCircleIcon sx={{ fontSize: 16, color: 'var(--chart-red)' }} /> {t`Against`}
                   </VotedRowItem>
                   <VotedRowItem>
                     {formatNumber(userProposalVotes?.[proposalKey].voteAgainst, { abbreviate: false, fallback: '-' })}{' '}

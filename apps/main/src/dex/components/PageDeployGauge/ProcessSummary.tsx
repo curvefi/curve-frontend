@@ -4,7 +4,6 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import { Spinner } from '@legacy-ui/Spinner'
 import { scanTxPath } from '@legacy-ui/utils'
@@ -12,6 +11,8 @@ import Button from '@mui/material/Button'
 import { Chain } from '@primitives/network.utils'
 import { shortenString } from '@primitives/string.utils'
 import { RouterLink } from '@ui/components/RouterLink'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
+import { CheckedIcon } from '@ui/icons/CheckedIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = { chainId: ChainId }
@@ -42,7 +43,7 @@ export const ProcessSummary = ({ chainId }: Props) => {
               {deploymentStatus.sidechain.status === 'SUCCESS' && deploymentStatus.sidechain.transaction && (
                 <SuccessfulTransactionInfo>
                   <Box flex flexAlignItems="center">
-                    <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
+                    <StyledCheckmark sx={{ fontSize: 16 }} aria-label={t`Checkmark filled`} />
                     <SuccessMessage>{t`Sidechain gauge successfully deployed`}</SuccessMessage>
                   </Box>
                   <Transaction
@@ -51,7 +52,7 @@ export const ProcessSummary = ({ chainId }: Props) => {
                   >
                     <p>{t`Transaction:`}</p>
                     {shortenString(deploymentStatus.sidechain.transaction.hash)}
-                    <StyledIcon name="Launch" size={16} />
+                    <StyledIcon sx={{ fontSize: 16 }} />
                   </Transaction>
                 </SuccessfulTransactionInfo>
               )}
@@ -74,13 +75,13 @@ export const ProcessSummary = ({ chainId }: Props) => {
               {deploymentStatus.mirror.status == 'SUCCESS' && deploymentStatus.mirror.transaction && (
                 <SuccessfulTransactionInfo>
                   <Box flex flexAlignItems="center">
-                    <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
+                    <StyledCheckmark sx={{ fontSize: 16 }} aria-label={t`Checkmark filled`} />
                     <SuccessMessage>{t`Mirror gauge successfully deployed`}</SuccessMessage>
                   </Box>
                   <Transaction variant="contained" href={scanTxPath(chainId, deploymentStatus.mirror.transaction.hash)}>
                     <p>{t`Transaction:`}</p>
                     {shortenString(deploymentStatus.mirror.transaction.hash)}
-                    <StyledIcon name="Launch" size={16} />
+                    <StyledIcon sx={{ fontSize: 16 }} />
                   </Transaction>
                 </SuccessfulTransactionInfo>
               )}
@@ -152,7 +153,7 @@ const Disclaimer = styled.p`
   font-style: italic;
 `
 
-const StyledCheckmark = styled(Icon)`
+const StyledCheckmark = styled(CheckedIcon)`
   color: var(--primary-400);
   margin-right: var(--spacing-1);
 `
@@ -177,7 +178,7 @@ const Transaction = styled(ExternalLink)`
   }
 `
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(ArrowTopRightIcon)`
   margin: auto 0 auto var(--spacing-1);
 `
 

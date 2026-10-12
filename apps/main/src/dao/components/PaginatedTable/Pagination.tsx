@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
-import { Icon } from '@legacy-ui/Icon'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
 import { t } from '@ui/lib/i18n'
 
 type PaginationProps = { currentPage: number; totalPages: number; onPageChange: (page: number) => void }
@@ -36,7 +36,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
-          <Icon size={16} name="ChevronLeft" />
+          <ChevronDownIcon sx={{ fontSize: 16, rotate: '90deg' }} />
         </PaginationButton>
         {getPageNumbers().map(number => (
           <PageNumber
@@ -55,7 +55,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-          <Icon size={16} name="ChevronRight" />
+          <ChevronDownIcon sx={{ fontSize: 16, rotate: '-90deg' }} />
         </PaginationButton>
         <PaginationButton
           className="first-last-button"

@@ -4,9 +4,9 @@ import type { AriaDialogProps, AriaOverlayProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box/Box'
-import { Icon } from '@legacy-ui/Icon/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { breakpoints } from '@legacy-ui/utils/responsive'
+import { Cross2Icon } from '@ui/icons/Cross2Icon'
 
 export const ModalDialog = ({
   children,
@@ -57,7 +57,7 @@ export const ModalDialog = ({
                 {title}
                 {showCloseButton && (
                   <IconButton testId="close" {...closeButtonProps} ref={closeButtonRef} padding={2}>
-                    <Icon name="Close" size={24} aria-label="Close" />
+                    <Cross2Icon sx={{ fontSize: 24 }} aria-label="Close" />
                   </IconButton>
                 )}
               </Header>

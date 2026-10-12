@@ -23,8 +23,8 @@ import type { TokenState } from '@/dex/components/PageCreatePool/types'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { shortenAddress } from '@evm-ui/utils'
-import { Icon } from '@legacy-ui/Icon'
 import { scanAddressPath } from '@legacy-ui/utils'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = { chainId: ChainId }
@@ -67,7 +67,7 @@ const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) 
         <SummaryData>
           <AddressLink href={scanAddressPath(chainId, token.oracle.address)}>
             {shortenAddress(token.oracle.address)}
-            <Icon name="Launch" size={16} aria-label={t`Link to address`} />
+            <ArrowTopRightIcon sx={{ fontSize: 16 }} aria-label={t`Link to address`} />
           </AddressLink>
         </SummaryData>
       ) : (

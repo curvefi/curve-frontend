@@ -1,9 +1,9 @@
 import { InputHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from '@legacy-ui/Icon/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { InputDebounced } from '@legacy-ui/InputComp/InputDebounced'
 import { InputProvider } from '@legacy-ui/InputComp/InputProvider'
+import { SearchIcon } from '@ui/icons/SearchIcon'
 import { RCEditClear } from '@ui/images'
 
 type Props = {
@@ -34,9 +34,9 @@ export const SearchInput = ({
     inputVariant={variant}
   >
     {variant === 'small' ? (
-      <Icon name="Search" size={16} aria-label="search-icon" />
+      <SearchIcon sx={{ fontSize: 16 }} aria-label="search-icon" />
     ) : (
-      <Icon name="Search" size={24} aria-label="search-icon" />
+      <SearchIcon sx={{ fontSize: 24 }} aria-label="search-icon" />
     )}
     <InputDebounced
       {...props}

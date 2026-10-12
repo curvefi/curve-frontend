@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
 import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
-import { Icon } from '@legacy-ui/Icon'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { formatNumber } from '@primitives/number.utils'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
+import { LockClosedIcon } from '@ui/icons/LockClosedIcon'
 import { aprToApy } from '@ui/lib/rates.utils'
 
 type CampaignRewardsCompProps = {
@@ -39,7 +39,7 @@ export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: 
               : symbol}
           </Multiplier>
         )}
-        {rewardsPool.lock && <StyledIcon size={16} name="Locked" $highContrast={highContrast} />}
+        {rewardsPool.lock && <StyledIcon sx={{ fontSize: 16 }} $highContrast={highContrast} />}
       </Container>
     </Tooltip>
   )
@@ -67,6 +67,6 @@ const Multiplier = styled.span<{ highContrast?: boolean }>`
 `
 
 // note: $ prefix so prop is not passed to <Icon>
-const StyledIcon = styled(Icon)<{ $highContrast?: boolean }>`
+const StyledIcon = styled(LockClosedIcon)<{ $highContrast?: boolean }>`
   color: ${({ $highContrast }) => ($highContrast ? 'var(--white)' : 'var(--page--text-color)')};
 `

@@ -5,9 +5,11 @@ import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { Chain } from '@primitives/network.utils'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
+import { Cross2Icon } from '@ui/icons/Cross2Icon'
+import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import { t } from '@ui/lib/i18n'
 import { GaugeDetails } from '../../GaugeListItem/GaugeDetails'
 import { TitleComp } from '../../GaugeListItem/TitleComp'
@@ -26,7 +28,7 @@ export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGauge
       <TitleWrapper>
         <h5>{t`Vote for new gauge`}</h5>
         <IconButton opacity={1} padding={2} onClick={() => setSelectedGauge(null)}>
-          <Icon name="Close" size={24} aria-label="Close" />
+          <Cross2Icon sx={{ fontSize: 24 }} aria-label="Close" />
         </IconButton>
       </TitleWrapper>
       <MainWrapper>
@@ -46,7 +48,7 @@ export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGauge
           onClick={() => setShowDetails(!showDetails)}
         >
           {showDetails ? t`Hide Gauge Details` : t`Show Gauge Details`}
-          <Icon name={showDetails ? 'ChevronUp' : 'ChevronDown'} size={16} aria-label="Close" />
+          <RotatableIcon icon={ChevronDownIcon} rotated={showDetails} fontSize={16} />
         </StyledIconButton>
         {showDetails && <GaugeDetails gaugeData={gaugeData} />}
       </Box>

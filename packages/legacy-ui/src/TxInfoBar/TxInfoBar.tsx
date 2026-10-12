@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { ExternalLink } from '@legacy-ui/Link'
 import { toArray } from '@primitives/array.utils'
+import { Cross2Icon } from '@ui/icons/Cross2Icon'
 import { RCExternal } from '@ui/images'
 
 type Props = { description: ReactNode; txHash: string | string[] | undefined; onClose?: () => void }
@@ -21,7 +21,7 @@ export const TxInfoBar = ({ description, txHash, onClose }: Props) => (
     </InfoTitle>
     {typeof onClose === 'function' && (
       <StyledIconButton onClick={onClose}>
-        <Icon name="Close" size={24} aria-label="close icon" />
+        <Cross2Icon sx={{ fontSize: 24 }} aria-label="close icon" />
       </StyledIconButton>
     )}
   </StyledInfoBar>

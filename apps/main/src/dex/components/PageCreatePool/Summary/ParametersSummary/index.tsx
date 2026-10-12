@@ -18,7 +18,7 @@ export const ParametersSummary = ({ chainId }: Props) => {
     <CategoryColumn>
       <Box flex>
         {validation.poolType && validation.tokensInPool && validation.parameters && (
-          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
+          <StyledCheckmark sx={{ fontSize: 16 }} aria-label={t`Checkmark filled`} />
         )}
         <SummaryCategoryTitle>{t`Parameters:`}</SummaryCategoryTitle>
       </Box>

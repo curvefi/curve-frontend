@@ -24,7 +24,6 @@ import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Checkbox } from '@legacy-ui/Checkbox'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
@@ -47,6 +46,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { ArrowsHorizontalIcon } from '@ui/icons/ArrowsHorizontalIcon'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
@@ -443,7 +443,7 @@ export const Swap = ({
           }}
           size="medium"
         >
-          <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
+          <ArrowsHorizontalIcon sx={{ fontSize: 24, rotate: '90deg' }} aria-label="icon arrow vertical" />
         </IconButton>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}

@@ -11,8 +11,8 @@ import {
 } from '@/dex/components/PageCreatePool/constants'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
+import { ArrowsHorizontalIcon } from '@ui/icons/ArrowsHorizontalIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = {
@@ -63,11 +63,11 @@ export const SwitchTokensButton = ({ curve, from, to, disabled, className }: Pro
 
   return (
     <IconButton className={className} disabled={disabled} onClick={handleClick} size="medium">
-      <StyledArrowsVertical name="ArrowsVertical" size={20} aria-label={t`Switch tokens`} />
+      <StyledArrowsVertical sx={{ fontSize: 20, rotate: '90deg' }} aria-label={t`Switch tokens`} />
     </IconButton>
   )
 }
 
-const StyledArrowsVertical = styled(Icon)`
+const StyledArrowsVertical = styled(ArrowsHorizontalIcon)`
   color: var(--box--primary--color);
 `
