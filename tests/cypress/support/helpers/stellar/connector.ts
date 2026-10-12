@@ -1,11 +1,15 @@
 /* eslint-disable no-restricted-imports -- Single SDK boundary for Stellar test wallet signing and fixture deployment. */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
-import { sendStellarTransaction } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
+import { fetchTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { type ModuleInterface, ModuleType, Networks } from '@creit.tech/stellar-wallets-kit/types'
+import { TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
+import type { Decimal } from '@primitives/decimal.utils'
 import { contract, Keypair, TransactionBuilder } from '@stellar/stellar-sdk'
+import { decimalGreaterThan, decimalMinus, toWei } from '@ui/lib/decimal'
 
 /** Register a real keypair wallet through the wallet kit's module interface. */
 export const connectTestWallet = ({ deployer }: TestnetConfig) => {
@@ -49,8 +53,34 @@ type Factory = {
   }) => Promise<contract.AssembledTransaction<contract.Result<StellarContract>>>
 }
 
+/** Replenish the existing wallet to the deployment script's target before creating another test pool. */
+const fundTestWallet = async (
+  { deployer, issuer, issuerSecret, coins }: TestnetConfig,
+  targetBalance: Decimal = '100', // mint enough to cover 100 units of each coin
+  rechargeWhenLowerThan: Decimal = '50', // mint more if the balance is below 50 units
+  decimals = 7, // default to 7 decimals for test tokens
+) => {
+  // Mints share the issuer account's sequence number, so confirm each before starting the next.
+  for (const token of coins) {
+    const balance = await fetchTokenBalance(
+      { network: TEST_NETWORK, token, account: deployer.address, decimals },
+      { staleTime: 0 },
+    )
+    const shortfall = decimalMinus(targetBalance, balance)
+    if (decimalGreaterThan(rechargeWhenLowerThan, shortfall)) continue
+
+    const toMint = BigInt(toWei(shortfall, decimals))
+    await sendStellarTransaction(
+      await simulateContractCall<void>(TEST_NETWORK, token, 'mint', [deployer.address, toMint], issuer),
+      contract.basicNodeSigner(Keypair.fromSecret(issuerSecret), Networks.TESTNET).signTransaction,
+    )
+  }
+}
+
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
-export const deployTestPool = async ({ factory: factoryAddress, deployer, coins }: TestnetConfig) => {
+export const deployTestPool = async (config: TestnetConfig) => {
+  await fundTestWallet(config)
+  const { factory: factoryAddress, deployer, coins } = config
   const factory = await contract.Client.from<Factory>({
     contractId: factoryAddress,
     publicKey: deployer.address,

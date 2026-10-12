@@ -6,6 +6,7 @@ export type TestnetConfig = {
   network: StellarNetwork
   deployer: { address: StellarAddress; secret: StellarSecret }
   issuer: StellarAddress
+  issuerSecret: StellarSecret
   factory: StellarContract
   coins: StellarContract[]
 }
