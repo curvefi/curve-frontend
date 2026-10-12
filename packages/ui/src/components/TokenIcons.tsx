@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import type { Address } from '@primitives/address.utils'
 import { IconStack } from '@ui/components/IconStack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { borderStyle } from '@ui/lib/mui'
@@ -38,7 +39,7 @@ const STACK_ICON_SIZE = {
   '4xl': '3xl',
 } as const satisfies Record<TokenIconsSize, keyof typeof IconSize>
 
-type IconToken = { symbol?: string | null; address: string }
+type IconToken = { symbol?: string | null; address: Address }
 
 /** A token, or a token pair shown as a single split icon (e.g. the coins of an LP token) */
 export type TokenOrPair = IconToken | [IconToken, IconToken]

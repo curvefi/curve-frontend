@@ -1,6 +1,7 @@
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
+import type { Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Badge } from '@ui/components/Badge'
 import { Metric } from '@ui/components/Metric'
@@ -21,7 +22,7 @@ const TOKENS = {
   wstETH: { symbol: 'wstETH', address: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0' },
   usdc: { symbol: 'USDC', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
   usdt: { symbol: 'USDT', address: '0xdac17f958d2ee523a2206206994597c13d831ec7' },
-}
+} satisfies Record<string, Token>
 
 const LlamaTitleItems = ({ marketType }: { marketType: 'Lend' | 'Mint' }) => (
   <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>

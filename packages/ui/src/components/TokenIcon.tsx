@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react'
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
+import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
@@ -59,8 +60,8 @@ export type Size = 'sm' | 'mui-sm' | 'mui-md' | 'xs' | 'lg' | 'xl'
 
 export const DEFAULT_SIZE: Size = 'sm'
 
-/** Addresses of two tokens shown as a single icon split in half, e.g. the coins of an LP token */
-export type TokenPairAddresses = [string, string]
+/** Addresses of two tokens shown as a single icon split in half */
+export type TokenPairAddresses = [Address, Address]
 
 export type TokenIconProps = {
   /** Additional CSS class name to apply to the token icon */
