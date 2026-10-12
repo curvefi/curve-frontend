@@ -31,10 +31,14 @@ const testCases = [
   ...[
     { ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE, approved: true, title: 'fills and submits (already approved)' },
     { ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE, approved: false, title: 'fills, approves, and submits' },
-  ].flatMap(testCase => [
-    { ...testCase, leverage: false, repayToken: 'borrowed' as const },
-    { ...testCase, title: `${testCase.title} with leverage`, leverage: true, repayToken: 'collateral' as const },
-  ]),
+  ].map(testCase => ({ ...testCase, leverage: false, repayToken: 'borrowed' as const })),
+  {
+    ...DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
+    approved: true, // repaying from the position collateral needs no token approval
+    title: 'fills and submits with leverage',
+    leverage: true,
+    repayToken: 'collateral' as const,
+  },
   {
     title: 'approves delegation and repays on LLv2 with oversized calldata',
     approved: true,
@@ -68,8 +72,8 @@ describe('RepayForm (mocked)', () => {
         const { collateralToken } = getTokens(market)
         const token =
           repayToken === 'collateral'
-            ? { symbol: collateralToken.symbol, tokenAddress: collateralToken.address, optionIndex: 1 }
-            : { symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, optionIndex: 0 }
+            ? { symbol: collateralToken.symbol, tokenAddress: collateralToken.address }
+            : { symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS }
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId: CHAIN_ID })

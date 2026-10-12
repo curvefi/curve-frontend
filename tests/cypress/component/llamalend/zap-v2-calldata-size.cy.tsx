@@ -135,7 +135,6 @@ describe('ZapV2 router calldata size', () => {
       symbol: collateralToken.symbol,
       tokenAddress: collateralToken.address,
       hasLeverageManagement: true,
-      optionIndex: 1,
     })
     writeRepayLoanForm({ amount: collateral, isMocked: true })
     checkOversizedCalldataBlocked('repay-submit-button')
