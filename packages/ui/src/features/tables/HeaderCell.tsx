@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
+import { maybe } from '@primitives/objects.utils'
 import { flexRender, Subscribe, type Header, type RowData, type SortDirection } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { Sortable } from '@ui/features/tables/Sortable'
@@ -68,7 +69,7 @@ export const HeaderCell = <TData extends RowData>(props: HeaderCellProps<TData>)
     source={props.header.column.table.atoms.sorting}
     selector={sorting => sorting.find(sort => sort.id === props.header.column.id)}
   >
-    {sort => <HeaderCellContent {...props} sortDirection={sort ? (sort.desc ? 'desc' : 'asc') : false} />}
+    {sort => <HeaderCellContent {...props} sortDirection={maybe(sort, sort => (sort.desc ? 'desc' : 'asc'))} />}
   </Subscribe>
 )
 
@@ -78,15 +79,14 @@ const HeaderCellContent = <TData extends RowData>({
   width,
   size,
   sortDirection,
-}: HeaderCellProps<TData> & { sortDirection: false | SortDirection }) => {
+}: HeaderCellProps<TData> & { sortDirection: SortDirection | undefined }) => {
   const { column } = header
-  const { tooltip } = column.columnDef.meta ?? {}
+  const { tooltip, type: columnType } = column.columnDef.meta ?? {}
   const canSort = column.getCanSort()
-  const isSorted = !!sortDirection
   return (
     <Typography
       component="th"
-      sx={useHeaderSx({ canSort, columnType: column.columnDef.meta?.type, isSorted, isSticky, width, size })}
+      sx={useHeaderSx({ canSort, columnType, isSorted: !!sortDirection, isSticky, width, size })}
       colSpan={header.colSpan}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}

@@ -15,7 +15,7 @@ type SortableProps = {
   children: ReactNode
   size: DataTableSize
   isEnabled?: boolean
-  sortDirection: false | SortDirection
+  sortDirection: SortDirection | undefined
 }
 
 const HeaderCellSortableAlign = { extraSmall: 'center', small: 'center', medium: 'end', large: 'end' }
@@ -49,7 +49,7 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(function Sorta
         rotated={sortDirection === 'asc'}
         fontSize={sortDirection ? 20 : 0}
         isEnabled={isEnabled}
-        {...(isEnabled && { testId: `icon-sort-${column?.id}-${sortDirection}` })}
+        {...(isEnabled && { testId: `icon-sort-${column?.id}-${sortDirection ?? false}` })}
       />
     </Stack>
   )
