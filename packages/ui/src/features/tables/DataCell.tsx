@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { type Cell, flexRender, type RowData } from '@tanstack/react-table'
+import { type Cell, flexRender, type RowData, Subscribe } from '@tanstack/react-table'
 import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import { TriangleDown } from '@ui/icons/TriangleDown'
 import { applySxProps } from '@ui/lib/mui'
@@ -31,13 +31,17 @@ export const DataCell = <TData extends RowData>({
       {showCollapseIcon ? (
         <Stack direction="row" sx={{ alignItems: 'center', width: '100%' }}>
           <Box sx={applySxProps({ flexGrow: 1 }, wrapperSx)}>{children}</Box>
-          <RotatableIcon
-            icon={TriangleDown}
-            rotated={row.getIsExpanded()}
-            fontSize={28}
-            testId={`${row.getIsExpanded() ? 'collapse' : 'expand'}-icon`}
-            sx={{ color: t => t.design.Button.Ghost.Default.Label }}
-          />
+          <Subscribe source={row.table.atoms.expanded} selector={expanded => expanded === true || expanded[row.id]}>
+            {isExpanded => (
+              <RotatableIcon
+                icon={TriangleDown}
+                rotated={isExpanded}
+                fontSize={28}
+                testId={`${isExpanded ? 'collapse' : 'expand'}-icon`}
+                sx={{ color: t => t.design.Button.Ghost.Default.Label }}
+              />
+            )}
+          </Subscribe>
         </Stack>
       ) : (
         children
