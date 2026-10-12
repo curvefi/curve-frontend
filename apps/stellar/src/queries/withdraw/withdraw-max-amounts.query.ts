@@ -22,9 +22,8 @@ export const {
   queryKey: ({ network, pool, index, decimals, lpAmount }: WithdrawMaxParams) =>
     ({ name: 'calc_withdraw_one_coin', network, pool, index, decimals, lpAmount }) as const,
   queryFn: async ({ network, pool, index, decimals, lpAmount }: WithdrawMaxQuery) => {
+    if (!+lpAmount) return ZERO // contract doesn't allow zero burn
     const burn = BigInt(toWei(lpAmount, LP_TOKEN_DECIMALS))
-    // The contract's one-coin quote requires a positive burn, including in an unseeded pool.
-    if (burn === 0n) return ZERO
     return fromWei(await readContract<bigint>(network, pool, 'calc_withdraw_one_coin', [burn, index]), decimals)
   },
   category: 'dex.deposit',

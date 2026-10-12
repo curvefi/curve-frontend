@@ -73,9 +73,7 @@ const validateMaxSelection = (
     test('root', 'Max withdrawal requires the full LP balance and a single token output', () => {
       enforce(index).equals(params.maxWithdrawIndex)
       enforce(
-        params.amounts?.every((amount, i) =>
-          i === index ? +(amount ?? '0') > 0 : decimalEqual(amount ?? '0', '0'),
-        ),
+        params.amounts?.every((amount, i) => (i === index ? +(amount ?? '0') > 0 : decimalEqual(amount ?? '0', '0'))),
       ).isTruthy()
     })
   })
