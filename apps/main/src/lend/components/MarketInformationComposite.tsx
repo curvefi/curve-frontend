@@ -1,5 +1,6 @@
 import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/ChartAndActivityComp'
-import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketAdvancedDetails } from '@/llamalend/features/market-advanced-information/MarketAdvancedDetails'
+import { MarketInfoLayout } from '@/llamalend/features/market-advanced-information/MarketInfoLayout'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { MarketHistoricalRatesTabs } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'

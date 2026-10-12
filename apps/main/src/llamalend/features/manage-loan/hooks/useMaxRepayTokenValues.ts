@@ -5,7 +5,7 @@ import {
   useRepayExpectedBorrowed,
 } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
-import { useUserState } from '@/llamalend/queries/user'
+import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
