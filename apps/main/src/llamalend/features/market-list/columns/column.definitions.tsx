@@ -4,31 +4,27 @@ import { MaxReturnOnEquityTooltipContent, SolvencyTooltip } from '@/llamalend/wi
 import { MarketRateType } from '@evm-ui/types/market'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
-import {
-  BoostCell,
-  CompactUsdCell,
-  HealthCell,
-  LineGraphCell,
-  LiquidityUsdCell,
-  LtvCell,
-  MarketTitleCell,
-  MaxLeverageCell,
-  MaxReturnOnEquityCell,
-  PercentCell,
-  PriceCell,
-  RateCell,
-  SolvencyCell,
-  TvlCell,
-  UtilizationCell,
-} from '../cells'
-import {
-  CollateralBorrowHeaderTooltipContent,
-  LendRateHeaderTooltipContent,
-  LiquidityUsdHeaderTooltipContent,
-  NetBorrowAprHeaderTooltipContent,
-  TvlHeaderTooltipContent,
-  UtilizationHeaderTooltipContent,
-} from '../header-tooltips'
+import { BoostCell } from '../cells/BoostCell'
+import { CompactUsdCell } from '../cells/CompactUsdCell'
+import { HealthCell } from '../cells/HealthCell'
+import { LineGraphCell } from '../cells/LineGraphCell'
+import { LiquidityUsdCell } from '../cells/LiquidityUsdCell'
+import { LtvCell } from '../cells/LtvCell'
+import { MarketTitleCell } from '../cells/MarketTitleCell'
+import { MaxLeverageCell } from '../cells/MaxLeverageCell'
+import { MaxReturnOnEquityCell } from '../cells/MaxReturnOnEquityCell'
+import { PercentCell } from '../cells/PercentCell'
+import { PriceCell } from '../cells/PriceCell'
+import { RateCell } from '../cells/RateCell/RateCell'
+import { SolvencyCell } from '../cells/SolvencyCell'
+import { TvlCell } from '../cells/TvlCell'
+import { UtilizationCell } from '../cells/UtilizationCell'
+import { CollateralBorrowHeaderTooltipContent } from '../header-tooltips/CollateralBorrowHeaderTooltipContent'
+import { LendRateHeaderTooltipContent } from '../header-tooltips/LendRateHeaderTooltipContent'
+import { LiquidityUsdHeaderTooltipContent } from '../header-tooltips/LiquidityUsdHeaderTooltipContent'
+import { NetBorrowAprHeaderTooltipContent } from '../header-tooltips/NetBorrowAprHeaderTooltipContent'
+import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
+import { UtilizationHeaderTooltipContent } from '../header-tooltips/UtilizationHeaderTooltipContent'
 import {
   getUserBorrowedUsd,
   getUserCollateralUsd,

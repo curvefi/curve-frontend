@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import type { FilterProps } from '@ui/features/tables/data-table.utils'
-import type { MarketColumnId } from '../columns'
+import type { MarketColumnId } from '../columns/columns.enum'
 
 /** Hook for managing a single boolean filter */
 export function useToggleFilter(

@@ -7,7 +7,7 @@ import {
   type BorrowMoreMaxReceiveParams,
   useBorrowMoreMaxReceiveQueries,
 } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
-import { useMarketMaxLeverage } from '@/llamalend/queries/market'
+import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leverage.query'
 import { BorrowMoreForm } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'

@@ -11,7 +11,7 @@ import {
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
-import { PoolColumnId } from '@ui/features/pool-list/columns'
+import { PoolColumnId } from '@ui/features/pool-list/columns/columns.enum'
 
 const expectHeaderOrder = (expected: readonly PoolColumnId[]) =>
   cy.get('[data-testid="data-table-head"] [data-testid^="data-table-header-"]').should($headers => {

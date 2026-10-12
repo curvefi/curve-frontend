@@ -13,8 +13,8 @@ import type { WithdrawFormValues } from './withdraw-form.utils'
 
 type WithdrawFormProps = PoolFormProps<WithdrawFormValues> & {
   reserves: QueryProp<Decimal[]>
-  maxAmounts: QueryProp<Decimal>[]
-  decimals: QueryProp<(number | undefined)[]>
+  maxAmounts: QueryProp<Decimal>[] | undefined
+  decimals: QueryProp<number>[] | undefined
   lpBalance: QueryProp<Decimal>
   supply: QueryProp<Decimal>
   lpTokenDecimals: number
@@ -60,7 +60,8 @@ export const WithdrawForm = ({
       onMax={index =>
         form.update({
           // Withdraw the full LP balance into the selected coin, clearing the other outputs and balanced mode.
-          ...fromEntries(maxAmounts.map((max, i) => [poolAmountField(i), i === index ? max.data : '0'])),
+          ...(maxAmounts &&
+            fromEntries(maxAmounts.map((max, i) => [poolAmountField(i), i === index ? max.data : '0']))),
           lpAmount: lpBalance.data,
           maxWithdrawIndex: index,
           isBalanced: false,
@@ -80,7 +81,7 @@ export const WithdrawForm = ({
     <FormAlerts
       error={error}
       formErrors={formErrors}
-      handledErrors={['lpAmount', 'maxLpAmount', ...(allTokenFields(tokens.data?.length) ?? [])]}
+      handledErrors={['lpAmount', 'maxLpAmount', ...(allTokenFields(tokens?.length) ?? [])]}
       userAddress={userAddress}
     />
   </Form>

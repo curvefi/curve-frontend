@@ -3,8 +3,8 @@ import type { Components } from '@mui/material/styles'
 import { DesignSystem } from '@ui/features/themes/design'
 import { TRANSPARENT } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { handleBreakpoints } from '../../basic-theme'
-import { CARD_SIZES, type CardSize } from '../card-sizes'
+import { handleBreakpoints } from '../basic-theme'
+import { CARD_SIZES, type CardSize } from './card-sizes'
 
 const { Padding } = SizesAndSpaces
 

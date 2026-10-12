@@ -4,8 +4,12 @@ import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
-import { ClaimTabColumnId } from './columns.enum'
 import { NotionalCell } from './notional-cells'
+
+enum ClaimTabColumnId {
+  Token = 'token',
+  Notional = 'notional',
+}
 
 export type ClaimableToken = ClaimableReward & {
   blockchainId: string

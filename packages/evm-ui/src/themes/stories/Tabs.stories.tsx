@@ -4,7 +4,7 @@ import { objectKeys } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SIZE_TO_ICON_SIZE } from '@ui/components/Tabs/tabs-kebab'
 import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '@ui/components/Tabs/TabsSwitcher'
-import { TABS_SIZES_CLASSES } from '@ui/features/themes/components/tabs/mui-tabs'
+import { TABS_SIZES_CLASSES } from '@ui/features/themes/components/mui-tabs'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
 
 type TabValue = string

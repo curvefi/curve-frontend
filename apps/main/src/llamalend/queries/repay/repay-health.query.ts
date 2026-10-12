@@ -4,14 +4,13 @@ import { repayValidationSuite } from '@/llamalend/queries/validation/repay.valid
 import { parseRoute } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { getRepayImplementation } from './repay-query.helpers'
+import { getRepayImplementation, NO_USER_COLLATERAL } from './repay-query.helpers'
 
 export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRepayHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
     stateCollateral = '0',
-    userCollateral = '0',
     userBorrowed = '0',
     userAddress,
     isHealthFull,
@@ -24,7 +23,6 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
       marketId,
       userAddress,
       stateCollateral,
-      userCollateral,
       userBorrowed,
       isHealthFull,
       slippage,
@@ -33,26 +31,19 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
   queryFn: async ({
     marketId,
     stateCollateral,
-    userCollateral,
     userBorrowed,
     isHealthFull,
     userAddress,
     slippage,
     routeId,
   }: RepayHealthQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      routeId,
-      slippage,
-    })
+    const [type, impl] = getRepayImplementation(marketId, { stateCollateral, userBorrowed, routeId, slippage })
     switch (type) {
       case 'zapV2':
         return (
           await impl.repayExpectedMetrics({
             stateCollateral,
-            userCollateral,
+            ...NO_USER_COLLATERAL,
             healthIsFull: isHealthFull,
             address: userAddress,
             ...parseRoute(routeId),

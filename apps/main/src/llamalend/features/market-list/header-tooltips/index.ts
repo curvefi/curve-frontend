@@ -1,6 +1,0 @@
-export { CollateralBorrowHeaderTooltipContent } from './CollateralBorrowHeaderTooltipContent'
-export { NetBorrowAprHeaderTooltipContent } from './NetBorrowAprHeaderTooltipContent'
-export { LendRateHeaderTooltipContent } from './LendRateHeaderTooltipContent'
-export { UtilizationHeaderTooltipContent } from './UtilizationHeaderTooltipContent'
-export { LiquidityUsdHeaderTooltipContent } from './LiquidityUsdHeaderTooltipContent'
-export { TvlHeaderTooltipContent } from './TvlHeaderTooltipContent'

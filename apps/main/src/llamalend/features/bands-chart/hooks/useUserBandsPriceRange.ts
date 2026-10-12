@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { ChartDataPoint, FetchedBandsBalances, UserBandsPriceRange } from '../types'
+import type { FetchedBandsBalances } from '@/llamalend/queries/bands/bands-balances.query-helpers'
+import { ChartDataPoint, UserBandsPriceRange } from '../types'
 
 /**
  * Calculates the user positions price range

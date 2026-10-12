@@ -13,11 +13,11 @@ import { useIsInLiquidation } from '@/llamalend/features/market-position-details
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/llama.utils'
-import { useMarketCollateralRewardsEnabled } from '@/llamalend/queries/market'
-import { useLoanExists } from '@/llamalend/queries/user'
+import { useMarketCollateralRewardsEnabled } from '@/llamalend/queries/market/market-collateral-rewards-enabled.query'
+import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
-import { MarketPageHeader } from '@/llamalend/widgets/page-header'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
+import { MarketPageHeader } from '@/llamalend/widgets/page-header/MarketPageHeader'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import {
   useMarketResetPosition,
