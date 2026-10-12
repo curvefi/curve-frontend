@@ -12,13 +12,13 @@ export const InfoBox = ({ link1, link2 }: Props) => (
     {link1 && (
       <LinkStyles link2 target="_blank" rel="noopener noreferrer" href={link1.link}>
         {t`${link1.title}`}
-        <ArrowTopRightIcon sx={{ fontSize: 16 }} aria-label={t`Link to address`} />
+        <ArrowTopRightIcon sx={{ fontSize: 16 }} />
       </LinkStyles>
     )}
     {link2 && (
       <LinkStyles target="_blank" rel="noopener noreferrer" href={link2.link}>
         {t`${link2.title}`}
-        <ArrowTopRightIcon sx={{ fontSize: 16 }} aria-label={t`Link to address`} />
+        <ArrowTopRightIcon sx={{ fontSize: 16 }} />
       </LinkStyles>
     )}
   </BoxStyles>

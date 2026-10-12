@@ -125,7 +125,7 @@ export const ConfirmModal = ({
               validation.tokensInPool,
               validation.parameters,
               validation.poolInfo,
-            ) && <CheckedIcon sx={{ fontSize: 16 }} aria-label={t`Checkmark filled`} />
+            ) && <CheckedIcon sx={{ fontSize: 16 }} />
           )}
         </NavCreateButton>
       )}

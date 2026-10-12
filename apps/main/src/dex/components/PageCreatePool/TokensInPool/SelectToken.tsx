@@ -87,8 +87,12 @@ export const SelectToken = ({
           <Box flex>
             <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
             {((swapType === CRYPTOSWAP && network.twocryptoFactory) || swapType === STABLESWAP) && removeToken && (
-              <RemoveButton variant="text" onClick={() => removeToken(TOKEN_C, tokensInPool)}>
-                <TrashIcon sx={{ fontSize: 16 }} aria-label={t`Remove token`} />
+              <RemoveButton
+                variant="text"
+                onClick={() => removeToken(TOKEN_C, tokensInPool)}
+                aria-label={t`Remove token`}
+              >
+                <TrashIcon sx={{ fontSize: 16 }} />
               </RemoveButton>
             )}
           </Box>
@@ -104,8 +108,12 @@ export const SelectToken = ({
             <p>{getTokenName(tokenId)}</p>
             <Box flex>
               <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
-              <RemoveButton variant="text" onClick={() => removeToken(tokenId, tokensInPool)}>
-                <TrashIcon sx={{ fontSize: 16 }} aria-label={t`Remove token`} />
+              <RemoveButton
+                variant="text"
+                onClick={() => removeToken(tokenId, tokensInPool)}
+                aria-label={t`Remove token`}
+              >
+                <TrashIcon sx={{ fontSize: 16 }} />
               </RemoveButton>
             </Box>
           </LabelRow>

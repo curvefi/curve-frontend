@@ -6,7 +6,7 @@ type Props = { message: string; children?: ReactNode; informational?: boolean }
 
 export const WarningBox = ({ message, children, informational = false }: Props) => (
   <WarningBoxWrapper informational={informational}>
-    <StyledIcon sx={{ fontSize: 24 }} aria-label="Information Icon" />
+    <StyledIcon sx={{ fontSize: 24 }} />
     <p>{message}</p>
     {children}
   </WarningBoxWrapper>

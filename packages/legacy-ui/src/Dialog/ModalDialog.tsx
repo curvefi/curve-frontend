@@ -56,8 +56,8 @@ export const ModalDialog = ({
               <Header {...titleProps} showCloseButton={showCloseButton}>
                 {title}
                 {showCloseButton && (
-                  <IconButton testId="close" {...closeButtonProps} ref={closeButtonRef} padding={2}>
-                    <Cross2Icon sx={{ fontSize: 24 }} aria-label="Close" />
+                  <IconButton testId="close" {...closeButtonProps} ref={closeButtonRef} padding={2} aria-label="Close">
+                    <Cross2Icon sx={{ fontSize: 24 }} />
                   </IconButton>
                 )}
               </Header>

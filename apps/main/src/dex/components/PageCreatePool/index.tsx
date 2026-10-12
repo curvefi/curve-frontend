@@ -230,8 +230,7 @@ export const CreatePool = ({ curve }: Props) => {
               <NavButtonsBox>
                 {navigationIndex > 0 && (
                   <NavButtonStyles variant="icon-filled" onClick={() => setNavigationIndex(navigationIndex - 1)}>
-                    <ChevronDownIcon sx={{ fontSize: 24, rotate: '90deg' }} aria-label={t`Chevron left`} />{' '}
-                    {t`Previous`}
+                    <ChevronDownIcon sx={{ fontSize: 24, rotate: '90deg' }} /> {t`Previous`}
                   </NavButtonStyles>
                 )}
                 {navigationIndex < 3 && (
@@ -241,7 +240,7 @@ export const CreatePool = ({ curve }: Props) => {
                     onClick={() => setNavigationIndex(navigationIndex + 1)}
                     disabled={!isNavEnabled()}
                   >
-                    {t`Next`} <ChevronDownIcon sx={{ fontSize: 24, rotate: '-90deg' }} aria-label={t`Chevron right`} />
+                    {t`Next`} <ChevronDownIcon sx={{ fontSize: 24, rotate: '-90deg' }} />
                   </NavButtonStyles>
                 )}
                 {navigationIndex === 3 && (
@@ -266,7 +265,7 @@ export const CreatePool = ({ curve }: Props) => {
             <NavButtonsBoxFixed $navHeight={navHeight}>
               {navigationIndex > 0 && (
                 <NavButtonStyles variant="icon-filled" onClick={() => setNavigationIndex(navigationIndex - 1)}>
-                  <ChevronDownIcon sx={{ fontSize: 24, rotate: '90deg' }} aria-label={t`Chevron left`} /> {t`Previous`}
+                  <ChevronDownIcon sx={{ fontSize: 24, rotate: '90deg' }} /> {t`Previous`}
                 </NavButtonStyles>
               )}
               {navigationIndex < 3 && (
@@ -276,7 +275,7 @@ export const CreatePool = ({ curve }: Props) => {
                   onClick={() => setNavigationIndex(navigationIndex + 1)}
                   disabled={!isNavEnabled()}
                 >
-                  {t`Next`} <ChevronDownIcon sx={{ fontSize: 24, rotate: '-90deg' }} aria-label={t`Chevron right`} />
+                  {t`Next`} <ChevronDownIcon sx={{ fontSize: 24, rotate: '-90deg' }} />
                 </NavButtonStyles>
               )}
               {navigationIndex === 3 && (

@@ -20,8 +20,8 @@ export const TxInfoBar = ({ description, txHash, onClose }: Props) => (
       ))}
     </InfoTitle>
     {typeof onClose === 'function' && (
-      <StyledIconButton onClick={onClose}>
-        <Cross2Icon sx={{ fontSize: 24 }} aria-label="close icon" />
+      <StyledIconButton onClick={onClose} aria-label="close icon">
+        <Cross2Icon sx={{ fontSize: 24 }} />
       </StyledIconButton>
     )}
   </StyledInfoBar>

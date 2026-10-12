@@ -442,8 +442,9 @@ export const Swap = ({
             updateFormValues(cFormValues, null, '')
           }}
           size="medium"
+          aria-label="icon arrow vertical"
         >
-          <ArrowsHorizontalIcon sx={{ fontSize: 24, rotate: '90deg' }} aria-label="icon arrow vertical" />
+          <ArrowsHorizontalIcon sx={{ fontSize: 24, rotate: '90deg' }} />
         </IconButton>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}

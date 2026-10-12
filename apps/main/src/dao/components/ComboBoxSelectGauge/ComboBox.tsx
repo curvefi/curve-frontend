@@ -59,7 +59,7 @@ export const ComboBox = ({
               {showInpSearch && (
                 <Box grid gridColumnGap={1} gridTemplateColumns="1fr auto" margin="1.5rem 0.5rem 0 1rem">
                   <ComboBoxSearchInpWrapper id="inp-search">
-                    <SearchIcon sx={{ fontSize: 24 }} aria-label="search icon" />
+                    <SearchIcon sx={{ fontSize: 24 }} />
                     <StyledInput
                       ref={inputRef}
                       id="select-inp"
@@ -95,8 +95,8 @@ export const ComboBox = ({
                       <RCEditClear className="svg-tooltip" />
                     </ComboBoxSearchInpClearBtn>
                   </ComboBoxSearchInpWrapper>
-                  <IconButton testId="search-close" opacity={1} padding={2} onClick={dialogClose}>
-                    <Cross2Icon sx={{ fontSize: 32 }} aria-label="Close" />
+                  <IconButton testId="search-close" opacity={1} padding={2} onClick={dialogClose} aria-label="Close">
+                    <Cross2Icon sx={{ fontSize: 32 }} />
                   </IconButton>
                 </Box>
               )}

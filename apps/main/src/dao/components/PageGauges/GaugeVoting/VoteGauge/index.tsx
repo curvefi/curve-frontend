@@ -27,8 +27,8 @@ export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGauge
     <Wrapper showDetails={showDetails}>
       <TitleWrapper>
         <h5>{t`Vote for new gauge`}</h5>
-        <IconButton opacity={1} padding={2} onClick={() => setSelectedGauge(null)}>
-          <Cross2Icon sx={{ fontSize: 24 }} aria-label="Close" />
+        <IconButton opacity={1} padding={2} onClick={() => setSelectedGauge(null)} aria-label="Close">
+          <Cross2Icon sx={{ fontSize: 24 }} />
         </IconButton>
       </TitleWrapper>
       <MainWrapper>
