@@ -6,7 +6,7 @@ import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useMarketContext } from '../../market-context'
-import { CLAIM_TAB_COLUMNS } from '../components/columns'
+import { CLAIM_TAB_COLUMNS } from '../components/columns/column.definitions'
 import { useClaimableTokens } from './useClaimableTokens'
 
 export const useSupplyClaimTab = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
