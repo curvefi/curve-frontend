@@ -66,14 +66,14 @@ type PoolUserPosition = {
 type PoolRowContext = {
   chainId: number
   blockchainId: string
-  campaigns: CampaignRewards[]
+  campaigns: CampaignRewards[] | undefined
   /** Absent until a position is known; do not fabricate a zero LP balance. */
   userPosition: PoolUserPosition | undefined
   hasVyperVulnerability: boolean | undefined
   url: string
 }
 
-type PoolRates = {
+export type PoolRates = {
   extraRewardsTotalApr: number
   campaignRewardsApr: number
   rewardsApr: number
@@ -132,5 +132,5 @@ export type PoolTableMeta = TableMeta<CurveTableFeatures, PoolRow> & {
   alerts: PoolAlerts
   /** Formatting and explorer links remain app-specific without duplicating them onto each row. */
   addressDisplay: AddressDisplay
-  crvToken: { address: Address; blockchainId: string }
+  crvToken?: { address: Address; blockchainId: string }
 }

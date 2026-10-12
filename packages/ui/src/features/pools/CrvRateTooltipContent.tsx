@@ -9,7 +9,7 @@ export const CrvRateTooltipContent = ({
   maximumRate,
   unboostedRate,
 }: {
-  crvToken: { address: Address; blockchainId: string }
+  crvToken?: { address: Address; blockchainId: string }
   maximumRate: number | Nullish
   unboostedRate: number | Nullish
 }) => (
@@ -17,10 +17,10 @@ export const CrvRateTooltipContent = ({
     <TooltipDescription text={t`CRV gauge reward APR ranges from the unboosted rate to the maximum boosted rate.`} />
     <TooltipDescription text={t`The maximum rate assumes the full 2.5x gauge boost.`} />
     <TooltipItems secondary>
-      <TooltipItem title={t`Unboosted`} titleIcon={{ ...crvToken, size: 'mui-sm' }} variant="independent">
+      <TooltipItem title={t`Unboosted`} titleIcon={crvToken && { ...crvToken, size: 'mui-sm' }} variant="independent">
         {formatNumber(unboostedRate, 'percent.rate')}
       </TooltipItem>
-      <TooltipItem title={t`Max boost`} titleIcon={{ ...crvToken, size: 'mui-sm' }} variant="independent">
+      <TooltipItem title={t`Max boost`} titleIcon={crvToken && { ...crvToken, size: 'mui-sm' }} variant="independent">
         {formatNumber(maximumRate, 'percent.rate')}
       </TooltipItem>
     </TooltipItems>

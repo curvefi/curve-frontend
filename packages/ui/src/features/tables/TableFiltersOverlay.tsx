@@ -22,7 +22,7 @@ type TableFiltersOverlayProps = {
   disableSticky?: boolean
   drawerTestId: string
   hasActiveFilters: boolean
-  open: boolean
+  open: boolean | undefined
   resetFilters: () => void
   setOpen: (open: boolean) => void
   title: string
@@ -57,7 +57,12 @@ export const TableFiltersOverlay = ({
   )
 
   return isMobile ? (
-    <SwipeableDrawer paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }} open={open} setOpen={setOpen}>
+    <SwipeableDrawer
+      paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
+      open={!!open}
+      setOpen={setOpen}
+      keepMounted={open != null}
+    >
       <DrawerHeader title={title}>
         <Stack>{resetButton}</Stack>
       </DrawerHeader>
@@ -65,7 +70,8 @@ export const TableFiltersOverlay = ({
     </SwipeableDrawer>
   ) : (
     <Popover
-      open={open}
+      keepMounted={open != null}
+      open={!!open}
       onClose={() => setOpen(false)}
       anchorEl={() => anchorRef.current}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}

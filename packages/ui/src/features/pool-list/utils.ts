@@ -1,7 +1,31 @@
+import { sum } from 'lodash'
 import type { LitePool, V2Pool } from '@curvefi/prices-api/pools'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
-import type { PoolClaimables, PoolRowData } from './types'
+import { getAprCampaigns, getCrvAprRange } from './cells/utils'
+import type { PoolClaimables, PoolRates, PoolRowData } from './types'
+
+/** Calculates pool yields independently of network routing, alerts, and wallet state. */
+export const getPoolRates = (pool: PoolRowData, campaigns?: CampaignRewards[]): PoolRates => {
+  const extraRewardsTotalApr = sum(pool.extraRewardsApr.filter(reward => reward.apr > 0).map(reward => reward.apr))
+  const campaignRewardsApr = sum(
+    getAprCampaigns({ campaigns })?.flatMap(({ reward }) => (reward?.type === 'apr' ? [reward.value] : [])),
+  )
+  const rewardsApr = extraRewardsTotalApr + campaignRewardsApr
+  const crv = pool.gauge?.isKilled ? 0 : pool.crvApr
+  const netApr = sum([pool.baseDailyApr, crv, rewardsApr])
+  const crvRange = pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)
+
+  return {
+    extraRewardsTotalApr,
+    campaignRewardsApr,
+    rewardsApr,
+    incentivesApr: sum([crv, rewardsApr]),
+    netApr,
+    netAprBoosted: maybes([netApr, crvRange], (net, range) => net - range.unboostedRate + range.boostedRate),
+  }
+}
 
 /** Maps Prices API data to row data, normalizing API nulls to the existing undefined-based contract. */
 export const poolToRowData = (

@@ -72,7 +72,7 @@ export const RouteProviderCard = ({
             <Box sx={{ display: 'flex', alignItems: 'baseline', gap: Spacing.xxs }}>
               <WithSkeleton loading={isLoading}>
                 <Typography
-                  variant="tableCellMBold"
+                  variant="tableCellValueStrong"
                   component="p"
                   color="textPrimary"
                   data-testid="route-provider-amount"

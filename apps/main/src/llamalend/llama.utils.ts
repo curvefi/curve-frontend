@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import { getAddress, zeroAddress } from 'viem'
 import type { MarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -37,6 +36,7 @@ import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
 import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
+import type { UserState } from './queries/user/user-state.query'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.

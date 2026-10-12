@@ -17,22 +17,30 @@ const withdrawal = z
   })
   .transform(camelizeKeys)
 
-const llammaEvent = z
-  .object({
-    provider: address,
-    deposit: deposit.nullable(),
-    withdrawal: withdrawal.nullable().optional(),
-    block_number: z.number(),
-    timestamp,
-    transaction_hash: address,
-  })
-  .transform(camelizeKeys)
-  .transform(({ deposit, withdrawal, transactionHash, ...data }) => ({
-    ...data,
-    deposit: deposit ? { amount: deposit.amount, amountUsd: deposit.amountUsd, n1: deposit.n1, n2: deposit.n2 } : null,
-    withdrawal: withdrawal ?? null,
-    txHash: transactionHash,
-  }))
+const llammaEventBase = z.object({ provider: address, block_number: z.number(), timestamp, transaction_hash: address })
+
+/** A LLAMMA event is either a deposit or a withdrawal. The API has no event type, so it's derived from the set field. */
+const llammaEvent = z.union([
+  llammaEventBase
+    .extend({ deposit, withdrawal: z.null().optional() })
+    .transform(camelizeKeys)
+    .transform(({ deposit, transactionHash, ...data }) => ({
+      ...data,
+      type: 'deposit' as const,
+      deposit: { amount: deposit.amount, amountUsd: deposit.amountUsd, n1: deposit.n1, n2: deposit.n2 },
+      withdrawal: null,
+      txHash: transactionHash,
+    })),
+  llammaEventBase
+    .extend({ deposit: z.null(), withdrawal })
+    .transform(camelizeKeys)
+    .transform(({ transactionHash, ...data }) => ({
+      ...data,
+      type: 'withdrawal' as const,
+      deposit: null,
+      txHash: transactionHash,
+    })),
+])
 
 const llammaTrade = z
   .object({

@@ -5,6 +5,7 @@ import type { IPoolData } from '@curvefi/api/lib/interfaces'
 import { zip } from '@primitives/array.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { type CurveJS, loadCurve } from '../curve-router/curvejs'
+import { getPoolsData } from '../curve-router/pool-data'
 import type { TokensQuery } from './tokens.schemas'
 
 const MIN_POOL_TVL = 100 // in dollars
@@ -29,38 +30,11 @@ export const getPoolTvl = async (
 /** Build the token catalog with metadata and available trading volumes from the shared Curve.js instance. */
 export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQuery }>) => {
   const { curve, blacklist } = await loadCurve(request.query.chainId, request.log)
-  const {
-    CRVUSD_FACTORY_POOLS_DATA,
-    CRYPTO_FACTORY_POOLS_DATA,
-    DECIMALS: decimals,
-    EXTERNAL_POOLS_DATA,
-    FACTORY_POOLS_DATA,
-    LLAMMAS_DATA,
-    NATIVE_TOKEN: nativeToken,
-    POOLS_DATA,
-    STABLE_NG_FACTORY_POOLS_DATA,
-    TRICRYPTO_FACTORY_POOLS_DATA,
-    TWOCRYPTO_FACTORY_POOLS_DATA,
-  } = curve.getNetworkConstants()
-
-  // Match Curve's pool-data precedence once, without constructing full pool instances for metadata.
-  const poolsData = {
-    ...POOLS_DATA,
-    ...FACTORY_POOLS_DATA,
-    ...CRVUSD_FACTORY_POOLS_DATA,
-    ...CRYPTO_FACTORY_POOLS_DATA,
-    ...STABLE_NG_FACTORY_POOLS_DATA,
-    ...TWOCRYPTO_FACTORY_POOLS_DATA,
-    ...TRICRYPTO_FACTORY_POOLS_DATA,
-    ...EXTERNAL_POOLS_DATA,
-    ...LLAMMAS_DATA,
-  }
+  const { DECIMALS: decimals, NATIVE_TOKEN: nativeToken } = curve.getNetworkConstants()
 
   const pools = notFalsy(
     ...(await Promise.all(
-      curve
-        .getPoolList()
-        .map(id => ({ id, ...poolsData[id] }))
+      getPoolsData(curve)
         .filter(({ swap_address }) => !blacklist.has(swap_address.toLowerCase()))
         .map(async pool => (await getPoolTvl(curve, pool)) > MIN_POOL_TVL && pool),
     )),

@@ -1,5 +1,6 @@
 import { getAddress } from 'viem'
-import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
@@ -42,9 +43,7 @@ const {
 
 export { getUserLitePoolPositionsQueryKey, invalidateUserLitePoolPositions }
 
-export function useUserLitePoolPositions({ chainId, userAddress }: UserChainParams, enabled = true) {
-  const { isHydrated } = useCurve()
-  return useUserLitePoolPositionsQuery({ chainId, userAddress }, enabled && isHydrated)
-}
+export const useUserLitePoolPositions = (params: UserChainParams, enabled = true) =>
+  useHydratedQuery(useUserLitePoolPositionsQuery, params, enabled)
 
 export type UserLitePoolPositions = QueryData<typeof useUserLitePoolPositions>

@@ -6,7 +6,6 @@ import { gaugeDepositRewardValidationGroup } from '@/dex/entities/gauge/model/ga
 import { useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge/model/gauge.query'
 import { useNetworks } from '@/dex/entities/networks'
 import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
-import { AmountTokenInput, EpochInput } from '@/dex/features/deposit-gauge-reward/ui'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
@@ -26,6 +25,8 @@ import { t } from '@ui/lib/i18n'
 import { TIME_FRAMES } from '@ui/lib/time'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { usePoolContext } from '../../pool-context'
+import { AmountTokenInput } from './AmountTokenInput'
+import { EpochInput } from './EpochInput'
 
 const { Spacing } = SizesAndSpaces
 

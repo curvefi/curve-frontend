@@ -10,10 +10,10 @@ import {
   checkSupplyAlert,
 } from './supply.helpers'
 
-export const submitStakeForm = () => submitSupplyForm('stake', 'Stake successful!')
+export const submitStakeForm = (isMocked = false) => submitSupplyForm('stake', 'Stake successful!', isMocked)
 
-export const readStakeAvailableAssets = () =>
-  getSupplyInputBalanceValueAttr('stake')
+export const readStakeAvailableAssets = (isMocked = false) =>
+  getSupplyInputBalanceValueAttr('stake', isMocked)
     .should(balanceValue => expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true))
     .then(balanceValue => balanceValue as Decimal)
 
@@ -25,7 +25,15 @@ export const writeStakeForm = ({ assets }: { assets: Decimal }) => writeSupplyIn
 /**
  * Check the stake submit state for enabled and disabled markets.
  */
-export function checkStakeSubmit({ buttonText, hasGauge = true }: { buttonText: string; hasGauge?: boolean }) {
+export function checkStakeSubmit({
+  buttonText,
+  hasGauge = true,
+  isMocked = false,
+}: {
+  buttonText: string
+  hasGauge?: boolean
+  isMocked?: boolean
+}) {
   if (!hasGauge) {
     cy.get('[data-testid="supply-stake-submit-button"]').should('not.exist')
 
@@ -34,7 +42,7 @@ export function checkStakeSubmit({ buttonText, hasGauge = true }: { buttonText: 
     return
   }
 
-  checkSupplySubmitButtonText('stake', buttonText)
+  checkSupplySubmitButtonText('stake', buttonText, isMocked)
 }
 
 /**
@@ -49,6 +57,7 @@ export function checkStakeDetailsLoaded({
   expectedButtonText = 'Stake',
   symbol = 'crvUSD',
   hasApi = true,
+  isMocked = false,
 }: {
   vaultShares?: Decimal
   prevVaultShares?: Decimal
@@ -57,9 +66,18 @@ export function checkStakeDetailsLoaded({
   expectedButtonText?: string
   symbol?: string
   hasApi?: boolean
+  isMocked?: boolean
 }) {
-  checkSupplyActionInfoValues({ vaultShares, prevVaultShares, suppliedAssets, prevSuppliedAssets, symbol, hasApi })
-  checkSupplySubmitButtonText('stake', expectedButtonText)
+  checkSupplyActionInfoValues({
+    vaultShares,
+    prevVaultShares,
+    suppliedAssets,
+    prevSuppliedAssets,
+    symbol,
+    hasApi,
+    isMocked,
+  })
+  checkSupplySubmitButtonText('stake', expectedButtonText, isMocked)
 }
 
 /**

@@ -1,6 +1,6 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import { useMarketOraclePrice } from '@/llamalend/queries/market'
+import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useResetEstimateGas } from '@/llamalend/queries/reset/reset-gas-estimate.query'
 import { getResetHealthOptions } from '@/llamalend/queries/reset/reset-health.query'
 import { useResetIsApproved } from '@/llamalend/queries/reset/reset-is-approved.query'

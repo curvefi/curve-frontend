@@ -1,21 +1,22 @@
 import { getActionValue, DECIMAL_REGEX } from '@cy/support/helpers/llamalend/action-info.helpers'
 import type { PoolState } from '@cy/support/helpers/stellar/pool.helpers'
-import { API_LOAD_TIMEOUT, cyMap, LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { cyMap } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { range } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapSide } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { decimalDiv, decimalMinus } from '@ui/lib/decimal'
 import { formatToken } from '@ui/lib/tokens'
 
 const SWAP_SIDES = ['pay', 'receive'] as const
 
-export const swapInput = (side: SwapSide) => cy.get(`[data-testid="pool-swap-${side}"]`, LOAD_TIMEOUT)
+export const swapInput = (side: SwapSide) => cy.get(`[data-testid="pool-swap-${side}"]`, TIMEOUTS['ui.render'])
 export const swapAmountInput = (side: SwapSide) =>
   swapInput(side).find(`input[name="${SWAP_FIELDS[side].amountField}"]`)
-export const swapSubmit = () => cy.get('[data-testid="pool-swap-submit"]', LOAD_TIMEOUT)
+export const swapSubmit = () => cy.get('[data-testid="pool-swap-submit"]', TIMEOUTS['ui.render'])
 
 export const writeSwapAmount = (side: SwapSide, amount: Decimal) => {
   swapAmountInput(side).clear()
@@ -45,7 +46,7 @@ export const readSwapAmounts = () =>
   ).then(([inputAmount, outputAmount]) => ({ inputAmount, outputAmount }))
 
 export const readSwapMinimum = () =>
-  getActionValue('pool-swap-minimum-received')
+  getActionValue('pool-swap-minimum-received', 'stellar.simulation')
     .should('match', DECIMAL_REGEX)
     .then(value => value!.match(DECIMAL_REGEX)![0] as Decimal)
 
@@ -54,7 +55,7 @@ export const checkSwapDetails = (
   fromToken: PoolState['coins'][number],
   toToken: PoolState['coins'][number],
 ) => {
-  getActionValue('pool-swap-exchange-rate').should(
+  getActionValue('pool-swap-exchange-rate', 'stellar.simulation').should(
     'equal',
     `${formatToken(1, fromToken.symbol)} = ${formatToken(decimalDiv(outputAmount, inputAmount), toToken.symbol, 'balance')}`,
   )
@@ -63,7 +64,7 @@ export const checkSwapDetails = (
     useUserProfileStore.getState().maxSlippage.stable,
     toToken.decimals,
   )
-  getActionValue('pool-swap-minimum-received').should(
+  getActionValue('pool-swap-minimum-received', 'stellar.simulation').should(
     'equal',
     `${formatNumber(minimum, 'token.balance')} ${toToken.symbol}`,
   )
@@ -71,7 +72,7 @@ export const checkSwapDetails = (
 
 export const submitSwapForm = () => {
   swapSubmit().should('be.enabled').click()
-  cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('contain.text', 'Swap confirmed')
+  cy.get('[data-testid="toast-success"]', TIMEOUTS['stellar.confirmation']).should('contain.text', 'Swap confirmed')
   cyMap(SWAP_SIDES, side => swapAmountInput(side).should('have.value', ''))
   swapSubmit().should('be.disabled')
 }

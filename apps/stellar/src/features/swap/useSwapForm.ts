@@ -10,14 +10,13 @@ import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { swapFormValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import type { SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { fromWei } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { SwapFormQuery } from './types'
 
@@ -40,15 +39,15 @@ export function useSwapForm(poolParams: PoolQuery) {
   const { network, pool } = poolParams
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const config = usePoolConfig(poolParams)
-  const reserves = usePoolReserves(poolParams)
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const { tokens, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const reserves = usePoolReserves({ ...poolParams, decimals: decimals.data })
   const form = useForm<SwapFormValues>(formOptions)
   const { formState, reset } = form
   const values = form.watchValues()
   const { fromIndex, toIndex, editedSide } = values
   const maxAmount = maxAmounts[fromIndex]?.data
-  const maxOutput = maybes([reserves.data?.[toIndex], decimals.data?.[toIndex]], fromWei)
+  const maxOutput = reserves.data?.[toIndex]
 
   const [params, isDebouncing] = useFormDebounce<SwapFormQuery, 'inputAmount' | 'outputAmount' | 'editedSide'>(
     useMemo(
