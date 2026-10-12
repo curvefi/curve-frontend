@@ -70,4 +70,4 @@ export const MAINNET_CRV = {
   blockchainId: 'ethereum',
 } as const
 
-export const evmAddressDisplay = { formatAddress: shortenAddress, scanAddressPath }
+export const evmAddressDisplay = { shortenAddress, scanAddressPath }
