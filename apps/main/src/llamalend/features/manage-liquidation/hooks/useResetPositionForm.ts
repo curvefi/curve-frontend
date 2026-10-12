@@ -4,7 +4,7 @@ import { useResetMutation } from '@/llamalend/mutations/reset.mutation'
 import { useResetIsApproved } from '@/llamalend/queries/reset/reset-is-approved.query'
 import { useResetIsAvailable } from '@/llamalend/queries/reset/reset-is-available.query'
 import { useTokensToShrink } from '@/llamalend/queries/reset/tokens-to-shrink.query'
-import { useUserState } from '@/llamalend/queries/user'
+import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import {
   type ResetForm,
   type ResetParams,

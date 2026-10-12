@@ -1,12 +1,13 @@
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import type { FetchedBandsBalances, SortedBandBalance } from '@/llamalend/queries/bands/types'
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { sortBy } from '@primitives/array.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { recordEntries } from '@primitives/objects.utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import { decimal, decimalDiv, decimalGreaterThan, decimalMultiply, decimalSqrt, decimalSum } from '@ui/lib/decimal'
 
 type BandsBalances = Record<number, { borrowed: string; collateral: string }>
+type SortedBandBalance = { borrowed: Decimal; collateral: Decimal; band: number }
 
 export const sortBands = (bandsBalances: BandsBalances): SortedBandBalance[] =>
   sortBy(
@@ -28,7 +29,7 @@ export async function fetchChartBandBalancesData(
     ? bandsBalancesArr.filter(b => decimalGreaterThan(b.borrowed, '0') || decimalGreaterThan(b.collateral, '0'))
     : bandsBalancesArr
 
-  const { results }: { results: FetchedBandsBalances[] } = await PromisePool.for(bands).process(async b => {
+  const { results } = await PromisePool.for(bands).process(async b => {
     const { collateral, borrowed, band: n } = b
     const [pUp, pDown] = await getPricesImplementation(market).calcBandPrices(n)
     const p_up = decimal(pUp)!
@@ -52,3 +53,5 @@ export async function fetchChartBandBalancesData(
 
   return results
 }
+
+export type FetchedBandsBalances = Awaited<ReturnType<typeof fetchChartBandBalancesData>>[number]

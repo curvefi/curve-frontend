@@ -5,7 +5,7 @@ import {
   showV2PoolColumns,
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
-import { PoolColumnId } from '@ui/features/pool-list/columns'
+import { PoolColumnId } from '@ui/features/pool-list/columns/columns.enum'
 
 const POINTS_BADGE = '[data-testid="pool-points-badge"]'
 const EXTRA_REWARD_BADGE = '[data-testid="pool-extra-reward-badge"]'

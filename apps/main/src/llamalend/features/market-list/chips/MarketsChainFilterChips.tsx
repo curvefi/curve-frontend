@@ -5,7 +5,7 @@ import { getUniqueSortedStrings } from '@evm-ui/utils/sorting'
 import { useMappedQuery, type QueryProp } from '@ui/features/queries/util'
 import { type FilterProps } from '@ui/features/tables/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui/features/tables/filters'
-import { MarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns/columns.enum'
 
 const getChains = (data: LlamaMarket[]) =>
   getUniqueSortedStrings(

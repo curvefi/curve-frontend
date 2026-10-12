@@ -3,8 +3,8 @@ import type { CSSObject } from '@mui/styled-engine'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
 import { TypographyVariantKey } from '@ui/features/themes/typography'
-import { DesignSystem } from '../../design'
-import { SizesAndSpaces } from '../../design/1_sizes_spaces'
+import { DesignSystem } from '../design'
+import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 type TabStyle = { Label?: string; Fill?: string; Outline?: string }
 type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }

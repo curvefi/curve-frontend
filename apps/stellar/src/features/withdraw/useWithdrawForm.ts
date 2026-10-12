@@ -7,7 +7,7 @@ import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
-import { usePoolReserves, useScaleReserves } from '@/stellar/queries/pool/pool-reserves.query'
+import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
@@ -47,8 +47,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
 
   const { tokens, decimals } = usePoolTokens({ ...poolParams, account, tokenAddresses })
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
-  const reserves = usePoolReserves(poolParams)
-  const maxAmounts = useScaleReserves(reserves, decimals)
+  const reserves = q(usePoolReserves({ ...poolParams, decimals: decimals.data }))
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), lpAmount: undefined }),
     [tokenCount],
@@ -74,7 +73,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
       supply: supply.data,
       seedLock: config.data?.seedLock,
       maxLpAmount: lpBalance.data,
-      maxAmounts: maxAmounts.data,
+      maxAmounts: reserves.data,
     },
     userDefaultValues,
   )
@@ -109,10 +108,10 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const isPending = formState.isSubmitting || isWithdrawing
   return {
     form,
-    reserves: q(reserves),
+    reserves,
     decimals: q(decimals),
     lpTokenDecimals: LP_TOKEN_DECIMALS,
-    maxAmounts,
+    maxAmounts: reserves,
     params,
     supply: q(supply),
     lpBalance: q(lpBalance),
