@@ -16,6 +16,9 @@ export const ROUTER_FEE_BPS: Record<MarketAssetsType, Decimal> = {
   [MarketAssetsType.LongTail]: '10',
 }
 
+/** Flat fee for routes outside LlamaLend, i.e. the Balancer migration. */
+export const ROUTER_FEE_BPS_WITHOUT_MARKET: Decimal = '2'
+
 export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, Record<number, Address>> = {
   /** Enso fee splitter contracts distribute router fees 50/50 between Curve and Enso. */
   enso: {
@@ -28,16 +31,20 @@ export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, Reco
   },
 }
 
-/** Selects the configured fee when the provider has a receiver on the chain. */
+/**
+ * Selects the configured fee when the provider has a receiver on the chain.
+ * Requests without a controller (not LlamaLend, e.g. the Balancer migration) carry a flat fee.
+ */
 export const getRouterFee = (
   provider: ExternalRouteProvider,
   { chainId, controllerAddress }: Pick<RoutesQuery, 'chainId' | 'controllerAddress'>,
 ) => {
   const feeReceiver = ROUTER_FEE_RECEIVER_BY_CHAIN_ID[provider][chainId]
   if (!feeReceiver) return
+  if (!controllerAddress) return { feeBps: ROUTER_FEE_BPS_WITHOUT_MARKET, feeReceiver }
 
   const assetsType = assert(
-    controllerAddress && MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)],
+    MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)],
     `A supported controllerAddress is required for ${provider} on chain ${chainId}`,
   )
   return { feeBps: ROUTER_FEE_BPS[assetsType], feeReceiver }

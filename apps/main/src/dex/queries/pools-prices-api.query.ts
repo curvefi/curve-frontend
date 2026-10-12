@@ -6,7 +6,7 @@ import { fromEntries, maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { mapQuery } from '@ui/features/queries/util'
 
-const { useQuery: usePoolsPricesApi } = queryFactory({
+export const { useQuery: usePoolsPricesApi } = queryFactory({
   queryKey: ({ blockchainId }: ChainNameParams) => ({ name: 'pools-prices-api', blockchainId }) as const,
   queryFn: async ({ blockchainId }: ChainNameQuery) => {
     const { pools } = await getPools(blockchainId)
