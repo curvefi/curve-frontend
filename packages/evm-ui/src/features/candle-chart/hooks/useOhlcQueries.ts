@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useReducer, useRef } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useReducer } from 'react'
 import { notFalsy } from '@primitives/objects.utils'
 import { type InfiniteData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 import { createOhlcPageParam, getNextOhlcPageParam, type OhlcPageParam, type OhlcPageResult } from '../query-utils'
@@ -83,20 +83,16 @@ export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey ext
   fetchPage,
   queryKey,
   timeOption,
-}: UseOhlcInfiniteQueryParams<TPage, TQueryKey>) => {
-  const fetchPageRef = useRef(fetchPage)
-  fetchPageRef.current = fetchPage
-
-  // Callers own the endpoint-specific fetcher and include its identity inputs in queryKey.
-  return useInfiniteQuery<TPage, Error, InfiniteData<TPage, OhlcPageParam>, TQueryKey, OhlcPageParam>({
+}: UseOhlcInfiniteQueryParams<TPage, TQueryKey>) =>
+  useInfiniteQuery<TPage, Error, InfiniteData<TPage, OhlcPageParam>, TQueryKey, OhlcPageParam>({
     ...CANDLE_CHART_QUERY_OPTIONS,
     queryKey,
     initialPageParam: createOhlcPageParam(timeOption, anchorEnd),
     enabled,
-    queryFn: ({ pageParam, signal }) => fetchPageRef.current({ pageParam, signal }),
+    // Callers own the endpoint-specific fetcher and include its identity inputs in queryKey.
+    queryFn: fetchPage,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => getNextOhlcPageParam(timeOption, lastPage, lastPageParam),
   })
-}
 
 export const fetchMoreOhlcQueries = (queries: readonly OhlcFetchMoreQuery[]) =>
   Promise.all(queries.filter(canFetchMoreOhlc).map(query => query.fetchNextPage(FETCH_NEXT_PAGE_OPTIONS)))
