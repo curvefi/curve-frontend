@@ -10,7 +10,7 @@ import { t } from '@ui/lib/i18n'
 
 /** Addresses are normalized by the caller; this only controls their presentation. */
 export type AddressDisplay = {
-  formatAddress: (address: Address) => string
+  shortenAddress: (address: Address) => string
   scanAddressPath: (chainId: number, address: Address) => string | undefined
 }
 
@@ -37,7 +37,7 @@ export const AddressActionInfo = ({
   labelTooltip,
   size = 'medium',
   address,
-  display: { formatAddress, scanAddressPath },
+  display: { shortenAddress, scanAddressPath },
   isBorderBottom,
   hideTooltip = false,
   testId,
@@ -50,7 +50,7 @@ export const AddressActionInfo = ({
     value={
       /** TODO: Clarify: The design has this typography component as as semi-bold,
        * should Bold typography variants have an updated font-weight? 🤔 */
-      <Typography variant={VALUE_SIZE[size]}>{maybe(address, formatAddress) ?? UNAVAILABLE_NOTATION}</Typography>
+      <Typography variant={VALUE_SIZE[size]}>{maybe(address, shortenAddress) ?? UNAVAILABLE_NOTATION}</Typography>
     }
     copyValue={address}
     valueTooltip={
