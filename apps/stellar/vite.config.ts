@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import react from '@vitejs/plugin-react'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import babel from '@rolldown/plugin-babel'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import svgr from 'vite-plugin-svgr'
 import { vercel } from 'vite-plugin-vercel/vite'
@@ -23,6 +24,7 @@ export default defineConfig(({ command }) => ({
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-stellar'),
   plugins: [
     react(),
+    babel({ presets: [reactCompilerPreset({ compilationMode: 'annotation' })] }),
     svgr(),
     ...(isVercelDeployment
       ? [

@@ -6,6 +6,7 @@ import tanstack from '@tanstack/eslint-plugin-query'
 import prettier from 'eslint-config-prettier'
 import { importX } from 'eslint-plugin-import-x'
 import noOnlyTests from 'eslint-plugin-no-only-tests'
+import reactHooks from 'eslint-plugin-react-hooks'
 import { reactRefresh } from 'eslint-plugin-react-refresh'
 import storybook from 'eslint-plugin-storybook'
 import unusedImports from 'eslint-plugin-unused-imports'
@@ -51,6 +52,16 @@ const config = [
   importX.flatConfigs.recommended,
   importX.flatConfigs.typescript,
   ...storybook.configs['flat/recommended'],
+
+  // The existing @eslint-react preset already enforces rules-of-hooks and exhaustive-deps.
+  {
+    plugins: { 'react-hooks': reactHooks },
+    rules: Object.fromEntries(
+      Object.entries(reactHooks.configs.flat.recommended.rules).filter(
+        ([rule]) => !['react-hooks/rules-of-hooks', 'react-hooks/exhaustive-deps'].includes(rule),
+      ),
+    ),
+  },
 
   // Project-wide rules + plugins
   {
