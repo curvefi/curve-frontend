@@ -25,7 +25,6 @@ import {
   maybe,
   maybes,
   notFalsy,
-  recordEntries,
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
@@ -241,11 +240,8 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
 
-/** Returns the token pair of a known LP token, comparing addresses in lowercase so any address string is accepted */
-const findLpTokenPair = (blockchainId: Chain, address: string) =>
-  recordEntries(LP_TOKEN_PAIRS[blockchainId] ?? {}).find(
-    ([lpAddress]) => lpAddress.toLowerCase() === address.toLowerCase(),
-  )?.[1]
+/** Returns the token pair of a known LP token */
+const findLpTokenPair = (blockchainId: Chain, address: string) => LP_TOKEN_PAIRS[blockchainId]?.[getAddress(address)]
 
 /** Returns the token pair of a known LP token, or the token itself */
 export const getTokenOrPair = (blockchainId: Chain, token: Token): TokenOrPair =>
