@@ -1,5 +1,6 @@
 import type { TimestampResponse } from '@curvefi/prices-api/timestamp'
 import { shortenAddress } from '@evm-ui/utils'
+import type { Address } from '@primitives/address.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { fromEntries, maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -15,7 +16,7 @@ type PricesGaugeOverviewData = {
   version: string | null
   lp_token: string
   pool: { address: string; name: string; chain: string; tvl_usd: number; trading_volume_24h: number } | null
-  tokens: [{ symbol: string; address: string; precision: number }]
+  tokens: [{ symbol: string; address: Address; precision: number }]
   market: { name: string; chain: string } | null
   is_killed: boolean | null
   emissions: number

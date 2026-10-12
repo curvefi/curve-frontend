@@ -5,10 +5,9 @@ import type { AllPoolTrade, PoolLiquidityEvent } from '@curvefi/prices-api/pools
 import type { Timestamp } from '@curvefi/prices-api/timestamp'
 import type { Token } from '@primitives/address.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import type { TokenPairAddresses } from '@ui/components/TokenIcon'
 
 /** A token of an activity row, whose address can be a token pair so its icon shows both tokens */
-export type ActivityToken = Omit<Token, 'address'> & { address: Token['address'] | TokenPairAddresses }
+export type ActivityToken = Omit<Token, 'address'> & { address: Token['address'] | Token['address'][] }
 
 /** A single token delta of an activity event, used to render one row per token */
 export type ActivityTokenDelta = {

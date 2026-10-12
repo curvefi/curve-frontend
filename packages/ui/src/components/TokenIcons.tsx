@@ -4,7 +4,7 @@ import { IconStack } from '@ui/components/IconStack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { borderStyle } from '@ui/lib/mui'
 import { getTokenOrPairSymbol, type TokenOrPair } from '@ui/lib/tokens'
-import { TokenIcon, type TokenPairAddresses } from './TokenIcon'
+import { TokenIcon } from './TokenIcon'
 
 const { IconSize } = SizesAndSpaces
 
@@ -38,12 +38,12 @@ const STACK_ICON_SIZE = {
   '4xl': '3xl',
 } as const satisfies Record<TokenIconsSize, keyof typeof IconSize>
 
-/** Merges a token pair into the address, symbol and key of a single split icon */
+/** Merges a token pair into the addresses, symbol and key of a single icon */
 const toIconToken = (token: TokenOrPair) => {
   const symbol = getTokenOrPairSymbol(token)
   if (!Array.isArray(token)) return { ...token, symbol, key: token.address }
   const [first, second] = token
-  const address: TokenPairAddresses = [first.address, second.address]
+  const address = [first.address, second.address]
   return { address, symbol, key: address.join('-') }
 }
 

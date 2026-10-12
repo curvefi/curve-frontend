@@ -1,3 +1,4 @@
+import type { Address } from '@primitives/address.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import type { NumberFormatCategory } from '@primitives/number.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -12,9 +13,9 @@ type TokenSymbols = TokenSymbol | TokenPair
 export const getTokenPairUnit = ([first, second]: TokenPair) =>
   first && second ? `${first}/${second}` : UNAVAILABLE_TOKEN_SYMBOL
 
-type IconToken = { symbol?: TokenSymbol; address: string }
+type IconToken = { symbol?: TokenSymbol; address: Address }
 
-/** A token, or a token pair shown as a single split icon (e.g. the coins of an LP token) */
+/** A token, or the pair of tokens it is made of (e.g. the coins of an LP token) */
 export type TokenOrPair = IconToken | [IconToken, IconToken]
 
 /** Returns the symbol of a token, or of a token pair as a unit, e.g. 'reUSD/sfrxUSD'. */

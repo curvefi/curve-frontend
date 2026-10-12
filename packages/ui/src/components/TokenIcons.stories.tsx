@@ -1,6 +1,7 @@
 import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -24,7 +25,7 @@ const TOKENS = [
   { symbol: 'LDO', address: '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32' },
   { symbol: 'LINK', address: '0x514910771AF9Ca656af840dff83E8264EcF986CA' },
   { symbol: 'MKR', address: '0x9f8F72aA9304c8B593d555F12ef6589cC3A579A2' },
-]
+] satisfies Token[]
 
 const TOKEN_PAIR = [
   { symbol: 'reUSD', address: '0x57aB1E0003F623289CD798B1824Be09a793e4Bec' },
