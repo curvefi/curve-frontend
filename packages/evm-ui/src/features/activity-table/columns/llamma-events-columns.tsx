@@ -1,16 +1,14 @@
+import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
+import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import type { RowData } from '@tanstack/react-table'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { RowBreakdownConfig } from '@ui/features/tables/DataRow'
 import { t } from '@ui/lib/i18n'
-import {
-  TimestampCell,
-  AddressCell,
-  BreakdownActionLabel,
-  LlammaEventActionCell,
-  TokenDeltaAmountCell,
-  TokenDeltaUsdCell,
-} from '../cells'
+import { BreakdownActionLabel } from '../cells/BreakdownActionLabel'
+import { LlammaEventActionCell } from '../cells/LlammaEventActionCell'
+import { TokenDeltaAmountCell } from '../cells/TokenDeltaAmountCell'
+import { TokenDeltaUsdCell } from '../cells/TokenDeltaUsdCell'
 import type { ActivityTokenDelta, MarketEventRow } from '../types'
 import { getLlammaEventAction, getLlammaEventTokenDeltas } from '../utils'
 

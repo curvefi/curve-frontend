@@ -20,7 +20,9 @@ import {
   type TableActiveFilterGroup,
   type TableActiveFilterGroupChipsProps,
 } from '@ui/features/tables/TableActiveFilterGroups'
-import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
+import { MARKET_COLUMNS } from '../columns/column.definitions'
+import { MARKET_TITLES } from '../columns/column.titles'
+import { MarketColumnId } from '../columns/columns.enum'
 
 const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))
 

@@ -12,6 +12,8 @@ import type { TypographyVariantKey } from '@ui/features/themes/typography'
 const { Spacing, IconSize, LineHeight, ButtonSize, Badge } = SizesAndSpaces
 const CHIP_TRANSITION = '140ms cubic-bezier(0.23, 1, 0.32, 1)'
 
+export type ChipColors = 'active' | 'alert' | 'default' | 'highlight' | 'warning' | 'accent' | 'selected' | 'unselected'
+
 type ChipSizeDefinition = {
   font: TypographyVariantKey
   height: string
