@@ -29,7 +29,6 @@ import {
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
-import type { TokenPairAddresses } from '@ui/components/TokenIcon'
 import type { TokenOrPair } from '@ui/components/TokenIcons'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
@@ -256,8 +255,8 @@ export const getTokenOrPair = (blockchainId: Chain, token: Token): TokenOrPair =
 export const getAddressOrPair = <T extends string | Nullish>(
   blockchainId: Chain | Nullish,
   address: T,
-): T | TokenPairAddresses =>
-  maybe(maybes([blockchainId, address], findLpTokenPair), ([first, second]): TokenPairAddresses => [
+): T | Address[] =>
+  maybe(maybes([blockchainId, address], findLpTokenPair), ([first, second]): Address[] => [
     first.address,
     second.address,
   ]) ?? address

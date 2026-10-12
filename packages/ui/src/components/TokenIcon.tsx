@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react'
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
+import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
@@ -59,9 +60,6 @@ export type Size = 'sm' | 'mui-sm' | 'mui-md' | 'xs' | 'lg' | 'xl'
 
 export const DEFAULT_SIZE: Size = 'sm'
 
-/** Addresses of two tokens shown as a single icon split in half, e.g. the coins of an LP token */
-export type TokenPairAddresses = [string, string]
-
 export type TokenIconProps = {
   /** Additional CSS class name to apply to the token icon */
   className?: string
@@ -71,8 +69,8 @@ export type TokenIconProps = {
   tooltip?: string
   /** Size variant for the token icon */
   size?: Size
-  /** Token contract address used for fetching the icon image, or a token pair to show split in half */
-  address?: string | TokenPairAddresses | null
+  /** Token contract address used for fetching the icon image, or the addresses of the tokens it is made of, e.g. the coins of an LP token */
+  address?: string | Address[] | null
   /** Secondary token contract address used for fetching the badge image */
   badgeAddress?: string | null
   /** Whether the icon should appear disabled (greyed out) */
@@ -86,7 +84,7 @@ export type TokenIconProps = {
  * Displays a token icon with optional blockchain chain and secondary token badge overlays.
  * Uses WithWrapper to conditionally wrap the icon in a relative-positioned Box only when
  * an overlay is shown, preventing absolute positioning conflicts with other components.
- * When `address` holds a token pair, the icon is split in half between the two tokens.
+ * When `address` holds several addresses, the icon is split between the first two.
  */
 export const TokenIcon = ({
   className = '',
@@ -105,7 +103,8 @@ export const TokenIcon = ({
     sx,
     disabled && { filter: 'saturate(0)' },
   )
-  const testId = `token-icon-${tooltip || toArray(address).join('-')}`
+  const addresses = toArray(address)
+  const testId = `token-icon-${tooltip || addresses.join('-')}`
   return (
     <WithWrapper
       shouldWrap={showChainIcon || !!badgeAddress}
@@ -115,7 +114,8 @@ export const TokenIcon = ({
       }}
     >
       <Tooltip title={tooltip} placement="top">
-        {Array.isArray(address) ? (
+        {addresses.length > 1 ? (
+          // The design only covers two tokens, so the first two are shown as one icon split in half
           <Box
             data-testid={testId}
             className={`${className}`}
@@ -124,7 +124,7 @@ export const TokenIcon = ({
               iconSx,
             )}
           >
-            {address.map((tokenAddress, index) => (
+            {addresses.slice(0, 2).map((tokenAddress, index) => (
               <TokenImage
                 key={tokenAddress}
                 blockchainId={blockchainId}
@@ -143,7 +143,7 @@ export const TokenIcon = ({
         ) : (
           <TokenImage
             blockchainId={blockchainId}
-            address={address}
+            address={addresses[0]}
             data-testid={testId}
             className={`${className}`}
             alt={tooltip}
