@@ -15,8 +15,7 @@ export const FormProvider = <T extends FieldValues>({
   hideFormState = false,
   handleSubmit,
   reset,
-  watchValues,
-  watchValue,
+  values,
   getValues,
   getValue,
   update,
@@ -37,8 +36,7 @@ export const FormProvider = <T extends FieldValues>({
           ({
             handleSubmit,
             reset,
-            watchValues,
-            watchValue,
+            values,
             getValues,
             getValue,
             update,
@@ -47,19 +45,7 @@ export const FormProvider = <T extends FieldValues>({
             isTouched,
             formState,
           }) as UseFormReturn,
-        [
-          handleSubmit,
-          reset,
-          watchValues,
-          watchValue,
-          getValues,
-          getValue,
-          update,
-          setError,
-          clearErrors,
-          isTouched,
-          formState,
-        ],
+        [handleSubmit, reset, values, getValues, getValue, update, setError, clearErrors, isTouched, formState],
       )}
     >
       {children}
@@ -67,7 +53,7 @@ export const FormProvider = <T extends FieldValues>({
         <Accordion title={t`Form state`} ghost size="extraSmall">
           <AccordionDetails>
             <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
-              {JSON.stringify({ values: getValues(), ...formState }, null, 2).slice(2, -2)}
+              {JSON.stringify({ values, ...formState }, null, 2).slice(2, -2)}
             </pre>
           </AccordionDetails>
         </Accordion>

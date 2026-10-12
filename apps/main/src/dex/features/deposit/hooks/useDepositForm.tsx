@@ -54,10 +54,10 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     validation: depositFormValidationSuite,
     defaultValues: { ...userDefaultValues, decimals: undefined, isBalanced: false },
   })
-  const { formState, handleSubmit, update, watchValues, reset } = form
+  const { formState, handleSubmit, update, reset } = form
   const { connect, connectState, wallet } = useWallet()
 
-  const values = useShallow(identity<DepositFormValues>)(watchValues()) // Dynamic field names prevent destructuring dependencies; useShallow keeps the values stable between actual changes.
+  const values = useShallow(identity<DepositFormValues>)(form.values) // Dynamic field names prevent destructuring dependencies; useShallow keeps the values stable between actual changes.
   const { isWrapped } = values
   const canDepositWrapped = hasWrapped(pool)
 

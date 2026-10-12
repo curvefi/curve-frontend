@@ -48,7 +48,10 @@ export const SwapTokenInput = ({
 }) => {
   const { amountField: name, amountIndexField, calculatedIndexField } = SWAP_FIELDS[side]
   const { label, testId, selectorLabel } = INPUT_BY_SIDE[side]
-  const values = form.watchValues()
+  const {
+    values,
+    formState: { errors },
+  } = form
   const token = tokens.data?.[values[amountIndexField]]
   const options = tokens.data?.map((token, index): SwapTokenOption => ({
     ...token,
@@ -57,7 +60,6 @@ export const SwapTokenInput = ({
     index,
   }))
   const [isOpen, onOpen, onClose] = useSwitch(false)
-  const { errors } = form.formState
   const error = form.isTouched('inputAmount', 'outputAmount') ? errors[name] : undefined
 
   return (

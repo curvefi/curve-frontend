@@ -30,8 +30,8 @@ export const AmountTokenInput = ({
   blockchainId: NetworkEnum
   disabled: boolean
 }) => {
-  const { update: updateForm, formState, watchValues } = useFormContext<DepositRewardFormValues>()
-  const { rewardTokenId, amount } = watchValues()
+  const { update: updateForm, formState, values } = useFormContext<DepositRewardFormValues>()
+  const { rewardTokenId, amount } = values
   const { amount: amountError, rewardTokenId: rewardTokenIdError } = fromEntries(formState.visibleErrors)
   const error = amountError ?? rewardTokenIdError
 

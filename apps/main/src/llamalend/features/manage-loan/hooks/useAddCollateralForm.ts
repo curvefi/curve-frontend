@@ -37,7 +37,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const form = useForm<CollateralForm>(formOptions)
 
-  const values = form.watchValues()
+  const { values, formState } = form
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
@@ -60,7 +60,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const { formState } = form
   useCallbackSync(useAddCollateralPrices(params), onPricesUpdated)
 
   useFormSync(form, { maxCollateral: maxCollateral.data })

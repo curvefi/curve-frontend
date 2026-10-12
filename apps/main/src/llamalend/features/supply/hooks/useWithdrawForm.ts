@@ -28,7 +28,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { net
 
   const form = useForm<WithdrawForm>({ validation: withdrawFormValidationSuite, defaultValues: emptyWithdrawForm() })
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       (): WithdrawParams<ChainId> => ({
@@ -51,8 +51,6 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { net
     isPending: isWithdrawing,
     error: withdrawError,
   } = useWithdrawMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
-
-  const { formState } = form
 
   const isPending = formState.isSubmitting || isWithdrawing
 

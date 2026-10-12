@@ -42,10 +42,10 @@ export function LiquidityProviderInput({
   supply: QueryProp<Decimal>
   lpTokenDecimals: number
 }) {
-  const { update, formState, watchValues } = useFormContext<WithdrawFormValues>()
+  const { update, formState, values } = useFormContext<WithdrawFormValues>()
   const { errors, touchedFields } = formState
   const error = (touchedFields.lpAmount ? (errors.lpAmount ?? errors.maxLpAmount) : undefined) ?? balance.error
-  const { lpAmount, slippage } = watchValues()
+  const { lpAmount, slippage } = values
   const tokenCount = tokens.data?.length
 
   const onBalance = useCallback(

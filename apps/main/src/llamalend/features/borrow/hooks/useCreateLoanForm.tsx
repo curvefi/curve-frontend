@@ -87,7 +87,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   // Clear leverage state if the loaded market is not supported by the current provider
   useFormSync(form, { leverageEnabled: false, routeId: undefined }, isLeverageSupported === false)
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       () => ({
@@ -168,7 +168,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
 
-  const { formState } = form
   const collateralTokenAddress = collateralToken?.address
   const maxTokenValues = useMaxTokenValues({ market, collateralTokenAddress, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)

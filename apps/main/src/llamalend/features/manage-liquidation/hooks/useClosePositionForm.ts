@@ -48,14 +48,16 @@ export function useClosePositionForm({
   const form = useForm<CloseLoanMutation>({ defaultValues: { ...userDefaultValues, slippage: defaultSlippage } })
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
-  const values = form.watchValues()
+  const {
+    values,
+    formState: { isSubmitting, visibleErrors },
+  } = form
   const {
     onSubmit,
     isPending: isClosing,
     error: closeError,
   } = useClosePositionMutation({ network, marketId, onReset: () => form.reset(userDefaultValues), userAddress })
 
-  const { isSubmitting, visibleErrors } = form.formState
   const isPending = isSubmitting || isClosing
 
   const selectTableData = useCallback(

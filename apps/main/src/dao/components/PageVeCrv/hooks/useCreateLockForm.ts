@@ -33,8 +33,7 @@ const userDefaultValues = { lockedAmount: undefined, days: 0 }
 
 export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
   const form = useForm<CreateLockFormValues>({ defaultValues, validation: createLockFormValidationSuite })
-  const { update } = form
-  const values = form.watchValues()
+  const { update, values } = form
   const { address: userAddress } = useConnection()
   const crv = useLockerCrv({ chainId, userAddress })
   const [params, isDebouncing] = useFormDebounce(

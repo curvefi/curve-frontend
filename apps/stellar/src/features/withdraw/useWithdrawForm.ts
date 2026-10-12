@@ -63,7 +63,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
 
   // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
-  const values = useShallow(identity<WithdrawFormValues>)(form.watchValues())
+  const values = useShallow(identity<WithdrawFormValues>)(form.values)
   const [params, isDebouncing] = useFormDebounce<WithdrawFormQuery, PoolAmountField | 'lpAmount'>(
     useMemo(
       () => ({

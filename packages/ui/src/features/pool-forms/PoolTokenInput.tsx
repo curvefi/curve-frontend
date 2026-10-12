@@ -43,10 +43,10 @@ export const PoolTokenInput = ({
     tooltip?: NonNullable<LargeTokenInputProps['walletBalance']>['tooltip']
   }
 }) => {
-  const { update, watchValue, getValue, formState } = useFormContext<PoolForm>() // todo: pass form via prop after migration to tanstack forms
+  const { update, values, getValue, formState } = useFormContext<PoolForm>() // todo: pass form via prop after migration to tanstack forms
   const { errors, touchedFields } = formState
   const field = poolAmountField(index)
-  const amount = watchValue(field)
+  const amount = values[field]
   const fieldError = touchedFields[field] ? (errors[field] ?? errors[poolMaxAmountField(index)]) : undefined
   const { position, tooltip } = positionBalance ?? {}
   const limit = max ?? position

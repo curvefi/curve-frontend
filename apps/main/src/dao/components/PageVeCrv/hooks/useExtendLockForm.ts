@@ -33,8 +33,7 @@ const MAX_LOCK_REMAINDER_DAYS = 7
 
 export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
   const form = useForm<ExtendLockFormValues>({ defaultValues, validation: extendLockFormValidationSuite })
-  const { update } = form
-  const values = form.watchValues()
+  const { update, values } = form
   const { address: userAddress } = useConnection()
   const lockedAmountAndUnlockTime = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })
   const currentVeCrv = useLockerVeCrv({ chainId, userAddress })
