@@ -5,14 +5,13 @@ import { parseRoute } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type Range } from '@ui/features/queries/util'
-import { getRepayImplementation } from './repay-query.helpers'
+import { getRepayImplementation, NO_USER_COLLATERAL } from './repay-query.helpers'
 
 export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
     stateCollateral = '0',
-    userCollateral = '0',
     userBorrowed = '0',
     userAddress,
     slippage,
@@ -25,37 +24,21 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
       marketId,
       userAddress,
       stateCollateral,
-      userCollateral,
       userBorrowed,
       slippage,
       routeId,
       isFull,
     }) as const,
-  queryFn: async ({
-    marketId,
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    slippage,
-    routeId,
-    userAddress,
-    isFull,
-  }: RepayQuery) => {
+  queryFn: async ({ marketId, stateCollateral, userBorrowed, slippage, routeId, userAddress, isFull }: RepayQuery) => {
     if (isFull) return null
-    const [type, impl, args] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      slippage,
-      routeId,
-    })
+    const [type, impl, args] = getRepayImplementation(marketId, { stateCollateral, userBorrowed, slippage, routeId })
     // it looks like all implementations have the same signature, but `args` is typed differently for each
     switch (type) {
       case 'zapV2':
         return (
           await impl.repayExpectedMetrics({
             stateCollateral,
-            userCollateral,
+            ...NO_USER_COLLATERAL,
             healthIsFull: true,
             address: userAddress,
             ...parseRoute(routeId),
