@@ -1,10 +1,7 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import {
-  readContract,
-  sendStellarTransaction,
-  simulateContractCall,
-} from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { fetchPoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
 import {
@@ -18,32 +15,32 @@ import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { decimalSum, fromWei, toWei } from '@ui/lib/decimal'
+import { decimalMultiply, decimalSum, toWei } from '@ui/lib/decimal'
 
 export const fetchWithdrawState = async (pool: StellarContract, config: TestnetConfig) => {
-  const [state, reserves] = await Promise.all([
-    fetchPoolState(pool, config),
-    readContract<bigint[]>(TEST_NETWORK, pool, 'get_balances'),
-  ])
-  return { ...state, reserves: reserves.map((reserve, index) => fromWei(reserve, state.coins[index].decimals)) }
+  const state = await fetchPoolState(pool, config)
+  const decimals = state.coins.map(({ decimals }) => decimals)
+  return { ...state, reserves: await fetchPoolReserves({ network: TEST_NETWORK, pool, decimals }, { staleTime: 0 }) }
 }
+
 export type WithdrawState = Awaited<ReturnType<typeof fetchWithdrawState>>
 
 /** Fixture setup: transfer most of the seeded LP to the issuer to keep one-coin withdrawal price impact acceptable. */
 export const seedPoolAndTransferMostLpToIssuer = async (
   pool: StellarContract,
   config: TestnetConfig,
-  ratio = 9n / 10n,
+  ratio: Decimal = '0.9',
 ) => {
   await seedTestPool(pool, config)
   const { lp } = await fetchWithdrawState(pool, config)
   const { issuer, deployer } = config
+  const amount = decimalMultiply(lp.balance, ratio)
   await sendStellarTransaction(
     await simulateContractCall<void>(
       TEST_NETWORK,
       pool,
       'transfer',
-      [deployer.address, issuer.address, BigInt(toWei(lp.balance, LP_TOKEN_DECIMALS)) * ratio],
+      [deployer.address, issuer.address, BigInt(toWei(amount, LP_TOKEN_DECIMALS))],
       deployer.address,
     ),
   )
